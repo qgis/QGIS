@@ -724,11 +724,19 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   //mBandCount = 0;
 
-  std::unique_ptr< QgsScopedRuntimeProfile > profile;
-  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+  if ( mPreloadedProvider )
+  {
+    mDataProvider = qobject_cast< QgsRasterDataProvider * >( mPreloadedProvider.release() );
+  }
+  else
+  {
+    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
 
-  mDataProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, options, flags ) );
+    mDataProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, options, flags ) );
+  }
+
   if ( !mDataProvider )
   {
     //QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
@@ -2353,16 +2361,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
     const QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-    {
-      flags |= QgsDataProvider::FlagTrustDataSource;
-    }
-    if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
-    {
-      flags |= QgsDataProvider::ForceReadOnly;
-    }
-    // read extent
+    QgsDataProvider::ReadFlags flags = providerReadFlags( layer_node, mReadFlags );
+
     if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
     {
       const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
@@ -2373,9 +2373,6 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
         // store the extent
         setExtent( mbr );
-
-        // skip get extent
-        flags |= QgsDataProvider::SkipGetExtent;
       }
     }
     setDataProvider( mProviderKey, providerOptions, flags );

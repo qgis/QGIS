@@ -45,6 +45,8 @@
 #include "qgsmeshlayerprofilegenerator.h"
 #include "qgsmeshlayerelevationproperties.h"
 #include "qgsthreadingutils.h"
+#include "qgsapplication.h"
+#include "qgsruntimeprofiler.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -1836,15 +1838,7 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   }
 
   const QgsDataProvider::ProviderOptions providerOptions;
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-  {
-    flags |= QgsDataProvider::FlagTrustDataSource;
-  }
-  if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
-  {
-    flags |= QgsDataProvider::ForceReadOnly;
-  }
+  QgsDataProvider::ReadFlags flags = providerReadFlags( layer_node, mReadFlags );
 
   const QDomElement elemExtraDatasets = layer_node.firstChildElement( QStringLiteral( "extra-datasets" ) );
   if ( !elemExtraDatasets.isNull() )
@@ -2077,7 +2071,18 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   mProviderKey = provider;
   const QString dataSource = mDataSource;
 
-  mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) );
+  if ( mPreloadedProvider )
+  {
+    mDataProvider = qobject_cast< QgsMeshDataProvider * >( mPreloadedProvider.release() );
+  }
+  else
+  {
+    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+
+    mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) );
+  }
 
   if ( !mDataProvider )
   {

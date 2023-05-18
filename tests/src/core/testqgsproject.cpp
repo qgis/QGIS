@@ -29,6 +29,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayoutmanager.h"
 #include "qgsmarkersymbol.h"
+#include "qgsrasterlayer.h"
+#include "qgssettingsregistrycore.h"
 
 
 class TestQgsProject : public QObject
@@ -61,6 +63,7 @@ class TestQgsProject : public QObject
     void testAttachmentsQgz();
     void testAttachmentIdentifier();
     void testEmbeddedGroupWithJoins();
+    void testAsynchronousLayerLoading();
 };
 
 void TestQgsProject::init()
@@ -957,6 +960,117 @@ void TestQgsProject::testEmbeddedGroupWithJoins()
 
   QgsVectorLayer *vl = p.mapLayer<QgsVectorLayer *>( QStringLiteral( "polys_with_id_32002f94_eebe_40a5_a182_44198ba1bc5a" ) );
   QCOMPARE( vl->fields().count(), 5 );
+}
+
+void TestQgsProject::testAsynchronousLayerLoading()
+{
+  std::unique_ptr<QgsProject> project = std::make_unique<QgsProject>();
+
+  QStringList meshFilters;
+  meshFilters << QStringLiteral( "*.nc" ) << QStringLiteral( "*.2dm" );
+  QStringList rasterFilters;
+  rasterFilters << QStringLiteral( "*.asc" ) << QStringLiteral( "*.tif" );
+  QStringList vectorFilters;
+  vectorFilters << QStringLiteral( "*.shp" );
+
+  QStringList rasterFiles;
+  rasterFiles << QStringLiteral( "band1_byte_attribute_table_epsg4326.tif" )
+              << QStringLiteral( "band1_byte_ct_epsg4326.tif" )
+              << QStringLiteral( "band1_byte_noct_epsg4326.tif" )
+              << QStringLiteral( "band1_int16_noct_epsg4326.tif" )
+              << QStringLiteral( "band3_byte_noct_epsg4326.tif" )
+              << QStringLiteral( "band3_float32_noct_epsg4326.tif" )
+              << QStringLiteral( "band3_int16_noct_epsg4326.tif" )
+              << QStringLiteral( "byte.tif" )
+              << QStringLiteral( "byte_with_nan_nodata.tif" )
+              << QStringLiteral( "dem.tif" )
+              << QStringLiteral( "gtiff_desc.tif" )
+              << QStringLiteral( "gtiff_tags.tif" )
+              << QStringLiteral( "raster_shading.tif" )
+              << QStringLiteral( "rgb_with_mask.tif" )
+              << QStringLiteral( "rnd_percentile_raster1_byte.tif" )
+              << QStringLiteral( "rnd_percentile_raster1_float64.tif" )
+              << QStringLiteral( "rnd_percentile_raster2_byte.tif" )
+              << QStringLiteral( "rnd_percentile_raster2_float64.tif" )
+              << QStringLiteral( "rnd_percentile_raster3_byte.tif" )
+              << QStringLiteral( "rnd_percentile_raster3_float64.tif" )
+              << QStringLiteral( "rnd_percentile_raster4_byte.tif" )
+              << QStringLiteral( "rnd_percentile_raster4_float64.tif" )
+              << QStringLiteral( "rnd_percentile_raster5_byte.tif" )
+              << QStringLiteral( "rnd_percentile_raster5_float64.tif" )
+              << QStringLiteral( "rnd_percentrank_valueraster_float64.tif" )
+              << QStringLiteral( "scale0ingdal23.tif" )
+              << QStringLiteral( "statisticsRas1_float64.asc" )
+              << QStringLiteral( "statisticsRas1_int32.tif" )
+              << QStringLiteral( "statisticsRas2_float64.asc" )
+              << QStringLiteral( "statisticsRas2_int32.tif" )
+              << QStringLiteral( "statisticsRas3_float64.asc" )
+              << QStringLiteral( "statisticsRas3_int32.tif" )
+              << QStringLiteral( "statisticsRas4_float64.asc" )
+              << QStringLiteral( "test.asc" )
+              << QStringLiteral( "unique_1.tif" )
+              << QStringLiteral( "valueRas1_float64.asc" )
+              << QStringLiteral( "valueRas2_float64.asc" )
+              << QStringLiteral( "valueRas3_float64.asc" )
+              << QStringLiteral( "with_color_table.tif" );
+  QStringList vectorFiles;
+  vectorFiles << QStringLiteral( "bug5598.shp" )
+              << QStringLiteral( "empty_spatial_layer.shp" )
+              << QStringLiteral( "filter_test.shp" )
+              << QStringLiteral( "france_parts.shp" )
+              << QStringLiteral( "lines.shp" )
+              << QStringLiteral( "lines_cardinals.shp" )
+              << QStringLiteral( "lines_touching.shp" )
+              << QStringLiteral( "multipatch.shp" )
+              << QStringLiteral( "multipoint.shp" )
+              << QStringLiteral( "points.shp" )
+              << QStringLiteral( "points_relations.shp" )
+              << QStringLiteral( "polys.shp" )
+              << QStringLiteral( "polys_overlapping.shp" )
+              << QStringLiteral( "polys_overlapping_with_cat.shp" )
+              << QStringLiteral( "polys_overlapping_with_id.shp" )
+              << QStringLiteral( "polys_with_id.shp" )
+              << QStringLiteral( "rectangles.shp" )
+              << QStringLiteral( "test_852.shp" );
+
+
+  QList<QgsMapLayer *> layers;
+
+  for ( const QString &rasterFile : std::as_const( rasterFiles ) )
+  {
+    layers << new QgsRasterLayer( QString( TEST_DATA_DIR ) + QStringLiteral( "/raster/" ) + rasterFile, rasterFile, QStringLiteral( "gdal" ) );
+    QVERIFY( layers.last()->isValid() );
+  }
+
+  for ( const QString &vectorFile : std::as_const( vectorFiles ) )
+  {
+    layers << new QgsVectorLayer( QString( TEST_DATA_DIR ) + QString( '/' ) + vectorFile, vectorFile, QStringLiteral( "ogr" ) );
+    qDebug() << layers.last()->name();
+    QVERIFY( layers.last()->isValid() );
+  }
+
+  int layersCount = layers.count();
+
+  project->addMapLayers( layers );
+
+  QCOMPARE( project->mapLayers( true ).count(), layersCount );
+
+  QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgs" ) );
+  projFile.open();
+  QVERIFY( project->write( projFile.fileName() ) );
+
+  project = std::make_unique<QgsProject>();
+  QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue( false );
+
+  QVERIFY( project->readProjectFile( projFile.fileName() ) );
+  QCOMPARE( project->mapLayers( true ).count(), layersCount );
+
+  QVERIFY( project->write( projFile.fileName() ) );
+  project = std::make_unique<QgsProject>();
+
+  QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue( true );
+  QVERIFY( project->readProjectFile( projFile.fileName() ) );
+  QCOMPARE( project->mapLayers( true ).count(), layersCount );
 }
 
 

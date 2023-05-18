@@ -390,9 +390,11 @@ double QgsMapLayer::opacity() const
   return mLayerOpacity;
 }
 
-bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags )
+bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags, QgsDataProvider *preloadedProvider )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mPreloadedProvider.reset( preloadedProvider );
 
   bool layerError;
   mReadFlags = flags;
@@ -928,6 +930,30 @@ bool QgsMapLayer::mapTipsEnabled() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mMapTipsEnabled;
+}
+
+QgsDataProvider::ReadFlags QgsMapLayer::providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags )
+{
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( layerReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+  if ( layerReadFlags & QgsMapLayer::FlagForceReadOnly )
+  {
+    flags |= QgsDataProvider::ForceReadOnly;
+  }
+
+  if ( layerReadFlags & QgsMapLayer::FlagReadExtentFromXml )
+  {
+    const QDomNode extentNode = layerNode.namedItem( QStringLiteral( "extent" ) );
+    if ( !extentNode.isNull() )
+    {
+      flags |= QgsDataProvider::SkipGetExtent;
+    }
+  }
+
+  return flags;
 }
 
 bool QgsMapLayer::isValid() const

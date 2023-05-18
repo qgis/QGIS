@@ -228,31 +228,28 @@ class QgsPostgresConn : public QObject
      *
      * \param connInfo the QgsDataSourceUri connection info with username / password
      * \param readOnly is the connection read only ?
-     * \param shared allow using a shared connection. Should never be
-     *        called from a thread other than the main one.
-     *        An assertion guards against such programmatic error.
-     * \param transaction is the connection a transaction ?
+     * \param shared allow using a shared connection if called from the same thread as the main one.
+     * \param allowRequestCredentials allow credentials request through current QgsCredentials instance if the provided ones are not valid
      *
      * \returns the PostgreSQL connection
      */
-    static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false );
+    static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false, bool allowRequestCredentials = true );
 
     /**
      * Get a new PostgreSQL connection
      *
      * \param uri the QgsDataSourceUri with username / password
      * \param readOnly is the connection read only ?
-     * \param shared allow using a shared connection. Should never be
-     *        called from a thread other than the main one.
-     *        An assertion guards against such programmatic error.
+     * \param shared allow using a shared connection if called from the same thread as the main one.
      * \param transaction is the connection a transaction ?
+     * \param allowRequestCredentials allow credentials request through current QgsCredentials instance if the provided ones are not valid
      *
      * \returns the PostgreSQL connection
      */
-    static QgsPostgresConn *connectDb( const QgsDataSourceUri &uri, bool readOnly, bool shared = true, bool transaction = false );
+    static QgsPostgresConn *connectDb( const QgsDataSourceUri &uri, bool readOnly, bool shared = true, bool transaction = false, bool allowRequestCredentials = true );
 
 
-    QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction );
+    QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction, bool allowRequestCredentials = true );
     ~QgsPostgresConn() override;
 
     void ref();

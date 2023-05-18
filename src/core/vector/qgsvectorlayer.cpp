@@ -1762,16 +1762,10 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
   const QDomElement elem = layer_node.toElement();
   QgsDataProvider::ProviderOptions options { context.transformContext() };
-  QgsDataProvider::ReadFlags flags;
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-  {
-    flags |= QgsDataProvider::FlagTrustDataSource;
-  }
-  if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
-  {
-    flags |= QgsDataProvider::ForceReadOnly;
-    mDataSourceReadOnly = true;
-  }
+
+  mDataSourceReadOnly = mReadFlags & QgsMapLayer::FlagForceReadOnly;
+  QgsDataProvider::ReadFlags flags = providerReadFlags( layer_node, mReadFlags );
+
   if ( ( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) || !setDataProvider( mProviderKey, options, flags ) )
   {
     if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
@@ -2020,7 +2014,11 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
 
-  mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options, flags ) );
+  if ( mPreloadedProvider )
+    mDataProvider = qobject_cast< QgsVectorDataProvider * >( mPreloadedProvider.release() );
+  else
+    mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options, flags ) );
+
   if ( !mDataProvider )
   {
     setValid( false );

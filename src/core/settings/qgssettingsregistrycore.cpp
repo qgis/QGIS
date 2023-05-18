@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QThread>
 
 #include "qgssettingsregistrycore.h"
 
@@ -109,6 +110,9 @@ const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsEnableWMSTilePrefet
 
 const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsMapScales = new QgsSettingsEntryStringList( QStringLiteral( "default_scales" ), QgsSettingsTree::sTreeMap, Qgis::defaultProjectScales().split( ',' ) );
 
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsLayerParallelLoadingMaxCount = new QgsSettingsEntryInteger( QStringLiteral( "provider-parallel-loading-max-count" ), QgsSettingsTree::sTreeCore, QThread::idealThreadCount(), QStringLiteral( "Maximum thread used to load layers in parallel" ), Qgis::SettingsOption(), 1 );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerParallelLoading = new QgsSettingsEntryBool( QStringLiteral( "provider-parallel-loading" ), QgsSettingsTree::sTreeCore, true, QStringLiteral( "Load layers in parallel (only available for some providers (GDAL, OGR and PostgreSQL)" ), Qgis::SettingsOption() );
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
