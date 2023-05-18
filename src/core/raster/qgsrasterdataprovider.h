@@ -41,6 +41,7 @@
 #include "qgsrectangle.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterdataprovidertemporalcapabilities.h"
+#include "qgsrasterdataproviderelevationproperties.h"
 
 class QImage;
 class QByteArray;
@@ -274,6 +275,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() override;
     const QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
+    QgsRasterDataProviderElevationProperties *elevationProperties() override;
+    const QgsRasterDataProviderElevationProperties *elevationProperties() const override SIP_SKIP;
 
     //! \brief Returns whether the provider supplies a legend graphic
     virtual bool supportsLegendGraphic() const { return false; }
@@ -913,6 +916,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Data provider temporal properties
      */
     std::unique_ptr< QgsRasterDataProviderTemporalCapabilities > mTemporalCapabilities;
+
+    std::unique_ptr< QgsRasterDataProviderElevationProperties > mElevationProperties;
 
     std::map<int, std::unique_ptr<QgsRasterAttributeTable>> mAttributeTables;
 

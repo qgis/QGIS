@@ -258,6 +258,10 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
 
 
   mConverter = QgsWmsInterpretationConverter::createConverter( mSettings.mInterpretation );
+  if ( mConverter && mConverter->representsElevation() )
+  {
+    elevationProperties()->setContainsElevationData( true );
+  }
 
   mValid = true;
   QgsDebugMsgLevel( QStringLiteral( "exiting constructor." ), 4 );
@@ -5397,6 +5401,11 @@ Qgis::DataType QgsWmsInterpretationConverter::dataType() const
   return Qgis::DataType::Float32;
 }
 
+bool QgsWmsInterpretationConverter::representsElevation() const
+{
+  return false;
+}
+
 //
 // QgsWmsInterpretationConverterMapTilerTerrainRGB
 //
@@ -5431,6 +5440,11 @@ QgsRasterHistogram QgsWmsInterpretationConverterMapTilerTerrainRGB::histogram( i
   return QgsRasterHistogram();
 }
 
+bool QgsWmsInterpretationConverterMapTilerTerrainRGB::representsElevation() const
+{
+  return true;
+}
+
 //
 // QgsWmsInterpretationConverterTerrariumRGB
 //
@@ -5462,4 +5476,9 @@ QgsRasterBandStats QgsWmsInterpretationConverterTerrariumRGB::statistics( int, i
 QgsRasterHistogram QgsWmsInterpretationConverterTerrariumRGB::histogram( int, int, double, double, const QgsRectangle &, int, bool, QgsRasterBlockFeedback * ) const
 {
   return QgsRasterHistogram();
+}
+
+bool QgsWmsInterpretationConverterTerrariumRGB::representsElevation() const
+{
+  return true;
 }

@@ -31,6 +31,7 @@
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsDataProviderTemporalCapabilities;
+class QgsDataProviderElevationProperties;
 
 
 /**
@@ -232,6 +233,24 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \since QGIS 3.14
      */
     virtual const QgsDataProviderTemporalCapabilities *temporalCapabilities() const SIP_SKIP;
+
+    /**
+     * Returns the provider's elevation properties.
+     *
+     * This may be NULLPTR, depending on the data provider.
+     *
+     * \since QGIS 3.32
+     */
+    virtual QgsDataProviderElevationProperties *elevationProperties();
+
+    /**
+     * Returns the provider's elevation properties.
+     *
+     * This may be NULLPTR, depending on the data provider.
+     *
+     * \since QGIS 3.32
+     */
+    virtual const QgsDataProviderElevationProperties *elevationProperties() const SIP_SKIP;
 
     /**
      * Returns the extent of the layer

@@ -49,6 +49,20 @@ const QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities
   return nullptr;
 }
 
+QgsDataProviderElevationProperties *QgsDataProvider::elevationProperties()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return nullptr;
+}
+
+const QgsDataProviderElevationProperties *QgsDataProvider::elevationProperties() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return nullptr;
+}
+
 void QgsDataProvider::reloadData()
 {
   // Because QgsVirtualLayerTask is not thread safe:

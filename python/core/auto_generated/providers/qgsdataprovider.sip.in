@@ -166,6 +166,16 @@ This may be ``None``, depending on the data provider.
 %End
 
 
+    virtual QgsDataProviderElevationProperties *elevationProperties();
+%Docstring
+Returns the provider's elevation properties.
+
+This may be ``None``, depending on the data provider.
+
+.. versionadded:: 3.32
+%End
+
+
     virtual QgsRectangle extent() const = 0;
 %Docstring
 Returns the extent of the layer

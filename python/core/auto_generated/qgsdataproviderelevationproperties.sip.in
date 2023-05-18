@@ -1,0 +1,50 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdataproviderelevationproperties.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsDataProviderElevationProperties
+{
+%Docstring(signature="appended")
+Base class for handling elevation related properties for a data provider.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsdataproviderelevationproperties.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsRasterDataProviderElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterDataProviderElevationProperties;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    QgsDataProviderElevationProperties();
+%Docstring
+Constructor for QgsDataProviderElevationProperties.
+%End
+
+    virtual ~QgsDataProviderElevationProperties();
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdataproviderelevationproperties.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
