@@ -213,6 +213,8 @@ their own layers, such as WMS
 
     virtual QgsRasterDataProviderTemporalCapabilities *temporalCapabilities();
 
+    virtual QgsRasterDataProviderElevationProperties *elevationProperties();
+
 
     virtual bool supportsLegendGraphic() const;
 %Docstring

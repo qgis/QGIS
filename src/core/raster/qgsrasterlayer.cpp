@@ -997,6 +997,14 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   }
   setCustomProperty( QStringLiteral( "identify/format" ), QgsRasterDataProvider::identifyFormatName( identifyFormat ) );
 
+  if ( QgsRasterDataProviderElevationProperties *properties = mDataProvider->elevationProperties() )
+  {
+    if ( properties->containsElevationData() )
+    {
+      mElevationProperties->setEnabled( true );
+    }
+  }
+
   // Store timestamp
   // TODO move to provider
   mLastModified = lastModified( mDataSource );

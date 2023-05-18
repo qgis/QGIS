@@ -236,6 +236,7 @@ QgsRasterDataProvider::QgsRasterDataProvider()
   : QgsDataProvider( QString(), QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() )
   , QgsRasterInterface( nullptr )
   , mTemporalCapabilities( std::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
+  , mElevationProperties( std::make_unique< QgsRasterDataProviderElevationProperties >() )
 {
 
 }
@@ -245,6 +246,7 @@ QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const Provider
   : QgsDataProvider( uri, options, flags )
   , QgsRasterInterface( nullptr )
   , mTemporalCapabilities( std::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
+  , mElevationProperties( std::make_unique< QgsRasterDataProviderElevationProperties >() )
 {
 }
 
@@ -434,6 +436,20 @@ const QgsRasterDataProviderTemporalCapabilities *QgsRasterDataProvider::temporal
   return mTemporalCapabilities.get();
 }
 
+QgsRasterDataProviderElevationProperties *QgsRasterDataProvider::elevationProperties()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mElevationProperties.get();
+}
+
+const QgsRasterDataProviderElevationProperties *QgsRasterDataProvider::elevationProperties() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mElevationProperties.get();
+}
+
 QgsRasterDataProvider *QgsRasterDataProvider::create( const QString &providerKey,
     const QString &uri,
     const QString &format, int nBands,
@@ -571,10 +587,13 @@ void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider &other
   mZoomedOutResamplingMethod = other.mZoomedOutResamplingMethod;
   mMaxOversampling = other.mMaxOversampling;
 
-  // copy temporal properties
   if ( mTemporalCapabilities && other.mTemporalCapabilities )
   {
     *mTemporalCapabilities = *other.mTemporalCapabilities;
+  }
+  if ( mElevationProperties && other.mElevationProperties )
+  {
+    *mElevationProperties = *other.mElevationProperties;
   }
 }
 
