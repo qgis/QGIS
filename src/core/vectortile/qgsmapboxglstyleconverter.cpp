@@ -562,6 +562,10 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         break;
     }
   }
+  else
+  {
+    lineWidth *= context.pixelSizeConversionFactor();
+  }
 
   double lineOffset = 0.0;
   if ( jsonPaint.contains( QStringLiteral( "line-offset" ) ) )
