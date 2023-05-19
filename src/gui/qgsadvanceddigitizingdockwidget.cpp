@@ -280,7 +280,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::XCoordinate, checked );
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::YCoordinate, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/XYShowInFloater" ), true ).toBool() );
+    // There is no separate menu option for X and Y so let's check for X only.
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/XCoordinateShowInFloater" ), true ).toBool() );
   }
 
   {
@@ -291,7 +292,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/ZShowInFloater" ), true ).toBool() );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/ZCoordinateShowInFloater" ), true ).toBool() );
   }
 
   {
@@ -302,7 +303,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/MShowInFloater" ), true ).toBool() );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/MCoordinateShowInFloater" ), true ).toBool() );
   }
 
   {
@@ -313,7 +314,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/CommonAngleShowInFloater" ), false ).toBool() );
+    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/CommonAngleSnappingShowInFloater" ), false ).toBool() );
   }
 
   {
