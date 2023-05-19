@@ -1324,63 +1324,117 @@ static  QgsMapLayer::ReadFlags projectFlagsToLayerReadFlags( Qgis::ProjectReadFl
   return layerFlags;
 }
 
+struct LayerToLoad
+{
+  QString layerId;
+  QString provider;
+  QString dataSource;
+  QgsDataProvider::ProviderOptions options;
+  QgsDataProvider::ReadFlags flags;
+  QDomElement layerElement;
+};
+
 void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
                                    const QgsReadWriteContext &context,
                                    QMap<QString, QgsDataProvider *> &loadedProviders,
                                    QgsMapLayer::ReadFlags layerReadFlags,
                                    int totalProviderCount )
 {
-
-  QVector<QgsRunnableProviderCreator *> runnables;
-  QThreadPool threadPool;
-
-  threadPool.setMaxThreadCount( QgsSettingsRegistryCore::settingsLayerParallelLoadingMaxCount->value() );
-
   int i = 0;
-  int validLayerCount = 0;
   QEventLoop loop;
+
+  QMap<QString, LayerToLoad> layersToLoad;
+
   for ( const QDomNode &node : parallelLayerNodes )
   {
+    LayerToLoad layerToLoad;
+
     const QDomElement layerElement = node.toElement();
-    QString layerId = layerElement.namedItem( QStringLiteral( "id" ) ).toElement().text();
-    QString provider = layerElement.namedItem( QStringLiteral( "provider" ) ).toElement().text();
-    QString dataSource = layerElement.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
+    layerToLoad.layerElement = layerElement;
+    layerToLoad.layerId = layerElement.namedItem( QStringLiteral( "id" ) ).toElement().text();
+    layerToLoad.provider = layerElement.namedItem( QStringLiteral( "provider" ) ).toElement().text();
+    layerToLoad.dataSource = layerElement.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
 
-    dataSource = QgsProviderRegistry::instance()->relativeToAbsoluteUri( provider, dataSource, context );
+    layerToLoad.dataSource = QgsProviderRegistry::instance()->relativeToAbsoluteUri( layerToLoad.provider, layerToLoad.dataSource, context );
 
-    QgsDataProvider::ProviderOptions options( {context.transformContext()} );
-    QgsDataProvider::ReadFlags flags = QgsMapLayer::providerReadFlags( node, layerReadFlags );
+    layerToLoad.options = QgsDataProvider::ProviderOptions( {context.transformContext()} );
+    layerToLoad.flags = QgsMapLayer::providerReadFlags( node, layerReadFlags );
 
     // Requesting credential from worker thread could lead to deadlocks because the main thread is waiting for worker thread to fininsh
-    flags.setFlag( QgsDataProvider::SkipCredentialsRequest, true );
+    layerToLoad.flags.setFlag( QgsDataProvider::SkipCredentialsRequest, true );
 
-    QgsRunnableProviderCreator *run = new QgsRunnableProviderCreator( layerId, provider, dataSource, options, flags );
-    runnables.append( run );
-    QObject::connect( run, &QgsRunnableProviderCreator::providerCreated, this, [&]( bool isValid )
-    {
-      i++;
-      if ( isValid )
-      {
-        validLayerCount++;
-        emit layerLoaded( validLayerCount, totalProviderCount );
-      }
-      if ( i == parallelLayerNodes.count() )
-        loop.quit();
-    } );
-    threadPool.start( run );
+    layersToLoad.insert( layerToLoad.layerId, layerToLoad );
   }
-  if ( !parallelLayerNodes.isEmpty() )
-    loop.exec();
 
-  for ( QgsRunnableProviderCreator *run : std::as_const( runnables ) )
+  while ( !layersToLoad.isEmpty() )
   {
-    // let's include all layers if the provider is valid (if not, an attempt will be done in the main thread later)
-    std::unique_ptr<QgsDataProvider> provider( run->dataProvider() );
-    if ( provider->isValid() )
-      loadedProviders.insert( run->layerId(), provider.release() );
+    const QList<LayerToLoad> layersToAttemptInParallel = layersToLoad.values();
+    QString layerToAttemptInMainThread;
+
+    QVector<QgsRunnableProviderCreator *> runnables;
+    QThreadPool threadPool;
+    threadPool.setMaxThreadCount( QgsSettingsRegistryCore::settingsLayerParallelLoadingMaxCount->value() );
+
+    for ( const LayerToLoad &lay : layersToAttemptInParallel )
+    {
+      QgsRunnableProviderCreator *run = new QgsRunnableProviderCreator( lay.layerId, lay.provider, lay.dataSource, lay.options, lay.flags );
+      runnables.append( run );
+      QObject::connect( run, &QgsRunnableProviderCreator::providerCreated, run, [&]( bool isValid, const QString & layId )
+      {
+        if ( isValid )
+        {
+          layersToLoad.remove( layId );
+          i++;
+          emit layerLoaded( i, totalProviderCount );
+        }
+        else
+        {
+          if ( layerToAttemptInMainThread.isEmpty() )
+            layerToAttemptInMainThread = layId;
+          threadPool.clear(); //we have to stop all loading provider to try this layer in main thread and maybe have credentials
+        }
+
+        if ( i == parallelLayerNodes.count() || !isValid )
+          loop.quit();
+      } );
+      threadPool.start( run );
+    }
+    if ( !parallelLayerNodes.isEmpty() )
+      loop.exec();
+
+    threadPool.waitForDone(); // to be sure all threads are finished
+
+    // First we take all valid providers
+    for ( QgsRunnableProviderCreator *run : std::as_const( runnables ) )
+    {
+      std::unique_ptr<QgsDataProvider> provider( run->dataProvider() );
+      if ( provider && provider->isValid() )
+        loadedProviders.insert( run->layerId(), provider.release() );
+    }
+
+    qDeleteAll( runnables );
+
+    // We try with the first layer returned invalid but this time in the main thread to maybe have credentials and continue with others not loaded in parallel
+    QMap<QString, LayerToLoad>::ConstIterator it = layersToLoad.find( layerToAttemptInMainThread );
+    if ( it != layersToLoad.constEnd() )
+    {
+      const LayerToLoad &lay =  it.value();
+      QgsDataProvider::ReadFlags providerFlags = lay.flags;
+      providerFlags.setFlag( QgsDataProvider::SkipCredentialsRequest, false );
+      QgsScopedRuntimeProfile profile( "Create data providers/" + lay.layerId, QStringLiteral( "projectload" ) );
+      std::unique_ptr<QgsDataProvider> provider( QgsProviderRegistry::instance()->createProvider( lay.provider, lay.dataSource, lay.options, providerFlags ) );
+      i++;
+      if ( provider && provider->isValid() )
+      {
+        emit layerLoaded( i, totalProviderCount );
+      }
+      layersToLoad.remove( lay.layerId );
+      loadedProviders.insert( lay.layerId, provider.release() );
+    }
+
+    // if there still are some not loaded providers or some invalid in parallel thread we start again
   }
 
-  qDeleteAll( runnables );
 }
 
 bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, Qgis::ProjectReadFlags flags )

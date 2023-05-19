@@ -56,7 +56,7 @@ class QgsRunnableProviderCreator : public QObject, public QRunnable
 
   signals:
     //! Emitted when a provider is created with \a isValid set to True when the provider is valid
-    void providerCreated( bool isValid );
+    void providerCreated( bool isValid, const QString &layerId );
 
   private:
     std::unique_ptr<QgsDataProvider> mDataProvider;

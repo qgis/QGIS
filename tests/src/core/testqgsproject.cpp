@@ -1002,6 +1002,7 @@ void TestQgsProject::testAsynchronousLayerLoading()
               << QStringLiteral( "scale0ingdal23.tif" )
               << QStringLiteral( "statisticsRas1_float64.asc" )
               << QStringLiteral( "statisticsRas1_int32.tif" )
+              << QStringLiteral( "statistXXXX_XXXXXX.asc" ) //invalid name
               << QStringLiteral( "statisticsRas2_float64.asc" )
               << QStringLiteral( "statisticsRas2_int32.tif" )
               << QStringLiteral( "statisticsRas3_float64.asc" )
@@ -1021,6 +1022,7 @@ void TestQgsProject::testAsynchronousLayerLoading()
               << QStringLiteral( "lines.shp" )
               << QStringLiteral( "lines_cardinals.shp" )
               << QStringLiteral( "lines_touching.shp" )
+              << QStringLiteral( "linestXXXX_XXXXXX.shp" )  //invalid name
               << QStringLiteral( "multipatch.shp" )
               << QStringLiteral( "multipoint.shp" )
               << QStringLiteral( "points.shp" )
@@ -1039,21 +1041,27 @@ void TestQgsProject::testAsynchronousLayerLoading()
   for ( const QString &rasterFile : std::as_const( rasterFiles ) )
   {
     layers << new QgsRasterLayer( QString( TEST_DATA_DIR ) + QStringLiteral( "/raster/" ) + rasterFile, rasterFile, QStringLiteral( "gdal" ) );
-    QVERIFY( layers.last()->isValid() );
+    if ( layers.last()->name() == QStringLiteral( "statistXXXX_XXXXXX.asc" ) )
+      QVERIFY( !layers.last()->isValid() );
+    else
+      QVERIFY( layers.last()->isValid() );
   }
 
   for ( const QString &vectorFile : std::as_const( vectorFiles ) )
   {
     layers << new QgsVectorLayer( QString( TEST_DATA_DIR ) + QString( '/' ) + vectorFile, vectorFile, QStringLiteral( "ogr" ) );
-    qDebug() << layers.last()->name();
-    QVERIFY( layers.last()->isValid() );
+    if ( layers.last()->name() == QStringLiteral( "linestXXXX_XXXXXX.shp" ) )
+      QVERIFY( ! layers.last()->isValid() );
+    else
+      QVERIFY( layers.last()->isValid() );
   }
 
   int layersCount = layers.count();
 
   project->addMapLayers( layers );
 
-  QCOMPARE( project->mapLayers( true ).count(), layersCount );
+  QCOMPARE( project->mapLayers( true ).count(), layersCount - 2 );
+  QCOMPARE( project->mapLayers( false ).count(), layersCount );
 
   QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgs" ) );
   projFile.open();
@@ -1063,14 +1071,16 @@ void TestQgsProject::testAsynchronousLayerLoading()
   QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue( false );
 
   QVERIFY( project->readProjectFile( projFile.fileName() ) );
-  QCOMPARE( project->mapLayers( true ).count(), layersCount );
+  QCOMPARE( project->mapLayers( true ).count(), layersCount - 2 );
+  QCOMPARE( project->mapLayers( false ).count(), layersCount );
 
   QVERIFY( project->write( projFile.fileName() ) );
   project = std::make_unique<QgsProject>();
 
   QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue( true );
   QVERIFY( project->readProjectFile( projFile.fileName() ) );
-  QCOMPARE( project->mapLayers( true ).count(), layersCount );
+  QCOMPARE( project->mapLayers( true ).count(), layersCount - 2 );
+  QCOMPARE( project->mapLayers( false ).count(), layersCount );
 }
 
 

@@ -2272,6 +2272,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Returns the property definition used for a data defined server property
     static QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions();
 
+    //! Attempts to preload providers in parallel
     void preloadProviders( const QVector<QDomNode> &asynchronusLayerNodes,
                            const QgsReadWriteContext &context,
                            QMap<QString, QgsDataProvider *> &loadedProviders,

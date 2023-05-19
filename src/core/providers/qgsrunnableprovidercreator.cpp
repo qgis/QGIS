@@ -37,7 +37,7 @@ void QgsRunnableProviderCreator::run()
   QgsScopedRuntimeProfile profile( "Create data providers/" + mLayerId, QStringLiteral( "projectload" ) );
   mDataProvider.reset( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, mOptions, mFlags ) );
   mDataProvider->moveToThread( QObject::thread() );
-  emit providerCreated( mDataProvider->isValid() );
+  emit providerCreated( mDataProvider->isValid(), mLayerId );
 }
 
 QgsDataProvider *QgsRunnableProviderCreator::dataProvider()
