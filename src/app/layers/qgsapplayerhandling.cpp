@@ -58,6 +58,7 @@
 #include "qgsmaplayerutils.h"
 #include "qgsfieldformatter.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsrasterlayerelevationproperties.h"
 
 #include <QObject>
 #include <QMessageBox>
@@ -70,6 +71,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
   {
     case Qgis::LayerType::Raster:
     {
+      QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
       bool ok = false;
       layer->loadDefaultStyle( ok );
       layer->loadDefaultMetadata( ok );
@@ -81,15 +83,24 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
                 && QgsProject::instance()->elevationProperties()->terrainProvider()->offset() == 0
                 && QgsProject::instance()->elevationProperties()->terrainProvider()->scale() == 1 ) )
       {
-        if ( layer->elevationProperties()->hasElevation() )
+        if ( rasterLayer->elevationProperties()->hasElevation() )
         {
           std::unique_ptr< QgsRasterDemTerrainProvider > terrain = std::make_unique<QgsRasterDemTerrainProvider>();
-          terrain->setLayer( qobject_cast< QgsRasterLayer *>( layer ) );
+          terrain->setLayer( rasterLayer );
           QgsProject::instance()->elevationProperties()->setTerrainProvider(
             terrain.release()
           );
         }
       }
+
+      // another bit of (hopefully!) user friendly logic -- while we aren't definitely sure that these layers ARE dems,
+      // we can take a good guess that they are...
+      // (but in this case we aren't sure, so don't apply the above logic which was only for layers we know are DEFINITELY dems)
+      if ( QgsRasterLayerElevationProperties::layerLooksLikeDem( rasterLayer ) )
+      {
+        qgis::down_cast< QgsRasterLayerElevationProperties * >( rasterLayer->elevationProperties() )->setEnabled( true );
+      }
+
       break;
     }
 
