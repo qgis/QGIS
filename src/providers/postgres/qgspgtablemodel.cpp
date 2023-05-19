@@ -423,7 +423,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 {
   if ( !index.isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "invalid index" ) );
+    QgsDebugMsgLevel( QStringLiteral( "invalid index" ), 2 );
     return QString();
   }
 
@@ -460,7 +460,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "unknown geometry type" ) );
+      QgsDebugError( QStringLiteral( "unknown geometry type" ) );
       // no geometry type selected
       return QString();
     }
@@ -472,7 +472,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   if ( !s0.isEmpty() && !s0.intersects( s1 ) )
   {
     // no valid primary candidate selected
-    QgsDebugMsg( QStringLiteral( "no pk candidate selected" ) );
+    QgsDebugError( QStringLiteral( "no pk candidate selected" ) );
     return QString();
   }
 
@@ -490,7 +490,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     ( void )srid.toInt( &ok );
     if ( !ok )
     {
-      QgsDebugMsg( QStringLiteral( "srid not numeric" ) );
+      QgsDebugError( QStringLiteral( "srid not numeric" ) );
       return QString();
     }
   }
@@ -517,7 +517,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   uri.disableSelectAtId( !selectAtId );
   uri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), checkPrimaryKeyUnicity ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
-  QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ), 2 );
   return uri.uri( false );
 }
 

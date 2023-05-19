@@ -42,7 +42,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
 
     if ( uri[i] == '=' )
     {
-      QgsDebugMsg( QStringLiteral( "parameter name expected before =" ) );
+      QgsDebugError( QStringLiteral( "parameter name expected before =" ) );
       i++;
       continue;
     }
@@ -103,7 +103,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
 
           if ( i == uri.length() )
           {
-            QgsDebugMsg( QStringLiteral( "closing parenthesis missing" ) );
+            QgsDebugError( QStringLiteral( "closing parenthesis missing" ) );
           }
 
           mGeometryColumn = uri.mid( start, i - start );
@@ -172,7 +172,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
       }
       else if ( pname == QLatin1String( "hostaddr" ) )
       {
-        QgsDebugMsg( QStringLiteral( "database host ip address ignored" ) );
+        QgsDebugMsgLevel( QStringLiteral( "database host ip address ignored" ), 2 );
       }
       else if ( pname == QLatin1String( "port" ) )
       {
@@ -184,11 +184,11 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
       }
       else if ( pname == QLatin1String( "tty" ) )
       {
-        QgsDebugMsg( QStringLiteral( "backend debug tty ignored" ) );
+        QgsDebugMsgLevel( QStringLiteral( "backend debug tty ignored" ), 2 );
       }
       else if ( pname == QLatin1String( "options" ) )
       {
-        QgsDebugMsg( QStringLiteral( "backend debug options ignored" ) );
+        QgsDebugMsgLevel( QStringLiteral( "backend debug options ignored" ), 2 );
       }
       else if ( pname == QLatin1String( "sslmode" ) )
       {
@@ -203,11 +203,11 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
       }
       else if ( pname == QLatin1String( "krbsrvname" ) )
       {
-        QgsDebugMsg( QStringLiteral( "kerberos server name ignored" ) );
+        QgsDebugMsgLevel( QStringLiteral( "kerberos server name ignored" ), 2 );
       }
       else if ( pname == QLatin1String( "gsslib" ) )
       {
-        QgsDebugMsg( QStringLiteral( "gsslib ignored" ) );
+        QgsDebugMsgLevel( QStringLiteral( "gsslib ignored" ), 2 );
       }
       else if ( pname.startsWith( QgsHttpHeaders::PARAM_PREFIX ) )
       {
@@ -429,7 +429,7 @@ QString QgsDataSourceUri::getValue( const QString &uri, int &i )
     {
       if ( i == uri.length() )
       {
-        QgsDebugMsg( QStringLiteral( "unterminated quoted string in connection info string" ) );
+        QgsDebugError( QStringLiteral( "unterminated quoted string in connection info string" ) );
         return pval;
       }
 
@@ -529,7 +529,7 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
     {
       if ( !QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, mAuthConfigId ) )
       {
-        QgsDebugMsg( QStringLiteral( "Data source URI FAILED to update via loading configuration ID '%1'" ).arg( mAuthConfigId ) );
+        QgsDebugError( QStringLiteral( "Data source URI FAILED to update via loading configuration ID '%1'" ).arg( mAuthConfigId ) );
       }
     }
     else
@@ -575,7 +575,7 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
   {
     if ( it.key().contains( '=' ) || it.key().contains( ' ' ) )
     {
-      QgsDebugMsg( QStringLiteral( "invalid uri parameter %1 skipped" ).arg( it.key() ) );
+      QgsDebugError( QStringLiteral( "invalid uri parameter %1 skipped" ).arg( it.key() ) );
       continue;
     }
 

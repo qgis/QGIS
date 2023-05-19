@@ -455,7 +455,7 @@ void QgsGrassPlugin::addFeature()
   }
   if ( !grassProvider )
   {
-    QgsDebugMsg( "grassProvider is null" );
+    QgsDebugError( "grassProvider is null" );
     return;
   }
   Qgis::AttributeFormSuppression formSuppress = mFormSuppress.value( vectorLayer );
@@ -503,7 +503,7 @@ void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
     }
     if ( !grassProvider )
     {
-      QgsDebugMsg( "grassProvider is null" );
+      QgsDebugError( "grassProvider is null" );
       return;
     }
     grassProvider->setNewFeatureType( QgsGrassProvider::sLastType );
@@ -537,7 +537,7 @@ void QgsGrassPlugin::mapsetChanged()
     catch ( QgsGrass::Exception &e )
     {
       Q_UNUSED( e )
-      QgsDebugMsg( "Cannot read GRASS CRS : " + QString( e.what() ) );
+      QgsDebugError( "Cannot read GRASS CRS : " + QString( e.what() ) );
       mCrs = QgsCoordinateReferenceSystem();
     }
     QgsDebugMsgLevel( "mCrs: " + mCrs.toWkt(), 2 );

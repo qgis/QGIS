@@ -104,7 +104,7 @@ void QgsFavoritesItem::removeDirectory( QgsDirectoryItem *item )
   const int idx = findItem( mChildren, item );
   if ( idx < 0 )
   {
-    QgsDebugMsg( QStringLiteral( "favorites item %1 not found" ).arg( item->path() ) );
+    QgsDebugError( QStringLiteral( "favorites item %1 not found" ).arg( item->path() ) );
     return;
   }
 

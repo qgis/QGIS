@@ -88,7 +88,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
   {
     if ( !block )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot get block" ) );
+      QgsDebugError( QStringLiteral( "Cannot get block" ) );
       continue;
     }
 

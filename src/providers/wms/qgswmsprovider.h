@@ -95,7 +95,7 @@ class QgsCachedImageFetcher: public QgsImageFetcher
   private slots:
     void send()
     {
-      QgsDebugMsg( QStringLiteral( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ) );
+      QgsDebugMsgLevel( QStringLiteral( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ), 2 );
       emit finish( _img );
     }
 };

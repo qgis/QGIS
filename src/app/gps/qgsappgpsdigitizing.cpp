@@ -230,7 +230,7 @@ void QgsAppGpsDigitizing::addVertex( const QgsPoint &wgs84Point )
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform GPS location (%1, %2) to map CRS" ).arg( wgs84Point.x() ).arg( wgs84Point.y() ) );
+      QgsDebugError( QStringLiteral( "Could not transform GPS location (%1, %2) to map CRS" ).arg( wgs84Point.x() ).arg( wgs84Point.y() ) );
       return;
     }
   }

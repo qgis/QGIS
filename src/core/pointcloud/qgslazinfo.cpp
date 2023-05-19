@@ -311,7 +311,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
-      QgsDebugMsg( QStringLiteral( "Request failed: " ) + url.toString() );
+      QgsDebugError( QStringLiteral( "Request failed: " ) + url.toString() );
       lazInfo.mError = QStringLiteral( "Range query 0-374 to \"%1\" failed: \"%2\"" ).arg( url.toString() ).arg( req.errorMessage() );
       return lazInfo;
     }
@@ -335,7 +335,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
-      QgsDebugMsg( QStringLiteral( "Request failed: " ) + url.toString() );
+      QgsDebugError( QStringLiteral( "Request failed: " ) + url.toString() );
 
       lazInfo.mError = QStringLiteral( "Range query %1-%2 to \"%3\" failed: \"%4\"" ).arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 )
                        .arg( url.toString() ).arg( req.errorMessage() );

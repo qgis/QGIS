@@ -282,14 +282,14 @@ void QgsAuthSslConfigWidget::loadSslCustomConfig( const QgsAuthConfigSslServer &
   resetSslCertConfig();
   if ( config.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "Passed-in SSL custom config is null" ) );
+    QgsDebugError( QStringLiteral( "Passed-in SSL custom config is null" ) );
     return;
   }
 
   const QSslCertificate cert( config.sslCertificate() );
   if ( cert.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "SSL custom config's cert is null" ) );
+    QgsDebugError( QStringLiteral( "SSL custom config's cert is null" ) );
     return;
   }
 
@@ -313,7 +313,7 @@ void QgsAuthSslConfigWidget::saveSslCertConfig()
   }
   if ( !QgsApplication::authManager()->storeSslCertCustomConfig( sslCustomConfig() ) )
   {
-    QgsDebugMsg( QStringLiteral( "SSL custom config FAILED to store in authentication database" ) );
+    QgsDebugError( QStringLiteral( "SSL custom config FAILED to store in authentication database" ) );
   }
 }
 

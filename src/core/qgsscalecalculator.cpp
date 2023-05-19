@@ -53,7 +53,7 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canv
 {
   if ( qgsDoubleNear( canvasWidth, 0. ) || qgsDoubleNear( mDpi, 0.0 ) )
   {
-    QgsDebugMsg( QStringLiteral( "Can't calculate scale from the input values" ) );
+    QgsDebugError( QStringLiteral( "Can't calculate scale from the input values" ) );
     return 0;
   }
 
@@ -70,7 +70,7 @@ QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, do
 {
   if ( qgsDoubleNear( scale, 0.0 ) || qgsDoubleNear( mDpi, 0.0 ) )
   {
-    QgsDebugMsg( QStringLiteral( "Can't calculate image size from the input values" ) );
+    QgsDebugError( QStringLiteral( "Can't calculate image size from the input values" ) );
     return QSizeF();
   }
   double conversionFactor = 0;

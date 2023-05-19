@@ -672,7 +672,7 @@ bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming profile line to vector CRS" ) );
+    QgsDebugError( QStringLiteral( "Error transforming profile line to vector CRS" ) );
     return false;
   }
 

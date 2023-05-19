@@ -192,7 +192,7 @@ bool QgsAuthCertInfo::populateCertChain()
 
   if ( mACertChain.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Could not populate QCA certificate chain" ) );
+    QgsDebugError( QStringLiteral( "Could not populate QCA certificate chain" ) );
     mACertChain = certchain;
   }
 
@@ -840,7 +840,7 @@ void QgsAuthCertInfo::btnSaveTrust_clicked()
   const QgsAuthCertUtils::CertTrustPolicy newpolicy( cmbbxTrust->trustPolicy() );
   if ( !QgsApplication::authManager()->storeCertTrustPolicy( mCurrentQCert, newpolicy ) )
   {
-    QgsDebugMsg( QStringLiteral( "Could not set trust policy for certificate" ) );
+    QgsDebugError( QStringLiteral( "Could not set trust policy for certificate" ) );
   }
   mCurrentTrustPolicy = newpolicy;
   decorateCertTreeItem( mCurrentQCert, newpolicy, nullptr );

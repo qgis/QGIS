@@ -61,7 +61,7 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
       if ( !layer->addFeature( newFeature ) )
       {
         couldNotWriteCount++;
-        QgsDebugMsg( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( fid ) );
+        QgsDebugError( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( fid ) );
       }
       else
       {

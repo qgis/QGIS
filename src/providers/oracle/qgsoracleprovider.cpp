@@ -306,9 +306,9 @@ bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, co
 
   if ( !res )
   {
-    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
-                 .arg( qry.lastQuery() )
-                 .arg( qry.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL: %1\nERROR: %2" )
+                   .arg( qry.lastQuery() )
+                   .arg( qry.lastError().text() ) );
   }
 
   logWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( qry ) );
@@ -423,7 +423,7 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
     break;
 
     case PktUnknown:
-      QgsDebugMsg( QStringLiteral( "Unknown key type" ) );
+      QgsDebugError( QStringLiteral( "Unknown key type" ) );
       break;
   }
 }
@@ -470,7 +470,7 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields &fi
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "FAILURE: Key values for feature %1 not found." ).arg( featureId ) );
+        QgsDebugError( QStringLiteral( "FAILURE: Key values for feature %1 not found." ).arg( featureId ) );
         whereClause = "NULL IS NOT NULL";
       }
     }
@@ -1506,7 +1506,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
   }
   catch ( OracleException &e )
   {
-    QgsDebugMsg( QStringLiteral( "Oracle error: %1" ).arg( e.errorMessage() ) );
+    QgsDebugError( QStringLiteral( "Oracle error: %1" ).arg( e.errorMessage() ) );
     pushError( tr( "Oracle error while adding features: %1" ).arg( e.errorMessage() ) );
     if ( !conn->rollback( db ) )
     {
@@ -3790,7 +3790,7 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
   if ( !LoggedExecStatic( qry, sql, args, dsUri.uri() ) )
   {
     errCause = QObject::tr( "Could not execute insert/update [%1]" ).arg( qry.lastError().text() );
-    QgsDebugMsg( QStringLiteral( "execute insert/update failed" ) );
+    QgsDebugError( QStringLiteral( "execute insert/update failed" ) );
     conn->disconnect();
     return false;
   }
@@ -3807,7 +3807,7 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
                             " AND id<>?" ), args, dsUri.uri() ) )
     {
       errCause = QObject::tr( "Could not reset default status [%1]" ).arg( qry.lastError().text() );
-      QgsDebugMsg( QStringLiteral( "execute update failed" ) );
+      QgsDebugError( QStringLiteral( "execute update failed" ) );
       conn->disconnect();
       return false;
     }

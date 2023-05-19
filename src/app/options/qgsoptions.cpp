@@ -2495,7 +2495,7 @@ void QgsOptions::importScales()
   QStringList myScales;
   if ( !QgsScaleUtils::loadScaleList( fileName, myScales, msg ) )
   {
-    QgsDebugMsg( msg );
+    QgsDebugError( msg );
   }
 
   const auto constMyScales = myScales;
@@ -2530,7 +2530,7 @@ void QgsOptions::exportScales()
   QString msg;
   if ( !QgsScaleUtils::saveScaleList( fileName, myScales, msg ) )
   {
-    QgsDebugMsg( msg );
+    QgsDebugError( msg );
   }
 }
 

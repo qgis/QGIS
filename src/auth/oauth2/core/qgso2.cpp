@@ -57,7 +57,7 @@ QgsO2::~QgsO2()
   {
     if ( !QFile::remove( mTokenCacheFile ) )
     {
-      QgsDebugMsg( QStringLiteral( "Could not remove temp token cache file: %1" ).arg( mTokenCacheFile ) );
+      QgsDebugError( QStringLiteral( "Could not remove temp token cache file: %1" ).arg( mTokenCacheFile ) );
     }
   }
 }

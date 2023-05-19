@@ -1224,7 +1224,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
     {
       if ( e.tagName() != QLatin1String( "layer" ) )
       {
-        QgsDebugMsg( "unknown tag " + e.tagName() );
+        QgsDebugError( "unknown tag " + e.tagName() );
       }
       else
       {
@@ -1253,7 +1253,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
               const bool res = layer->setSubSymbol( subSymbol.release() );
               if ( !res )
               {
-                QgsDebugMsg( QStringLiteral( "symbol layer refused subsymbol: " ) + s.attribute( "name" ) );
+                QgsDebugError( QStringLiteral( "symbol layer refused subsymbol: " ) + s.attribute( "name" ) );
               }
               layers.append( layer );
             }
@@ -1270,7 +1270,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
 
   if ( layers.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "no layers for symbol" ) );
+    QgsDebugError( QStringLiteral( "no layers for symbol" ) );
     return nullptr;
   }
 
@@ -1285,7 +1285,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
     symbol = new QgsMarkerSymbol( layers );
   else
   {
-    QgsDebugMsg( "unknown symbol type " + symbolType );
+    QgsDebugError( "unknown symbol type " + symbolType );
     return nullptr;
   }
 
@@ -1380,7 +1380,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
   }
   else
   {
-    QgsDebugMsg( "unknown class " + layerClass );
+    QgsDebugError( "unknown class " + layerClass );
     return nullptr;
   }
 }
@@ -1415,7 +1415,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
   symEl.setAttribute( QStringLiteral( "is_animated" ), symbol->animationSettings().isAnimated() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   symEl.setAttribute( QStringLiteral( "frame_rate" ), qgsDoubleToString( symbol->animationSettings().frameRate() ) );
 
-  //QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
+  //QgsDebugMsgLevel( "num layers " + QString::number( symbol->symbolLayerCount() ), 2 );
 
   QDomElement ddProps = doc.createElement( QStringLiteral( "data_defined_properties" ) );
   symbol->dataDefinedProperties().writeXml( ddProps, QgsSymbol::propertyDefinitions() );
@@ -1487,7 +1487,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     const QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
     if ( graphicElem.isNull() )
     {
-      QgsDebugMsg( QStringLiteral( "Graphic element not found in PointSymbolizer" ) );
+      QgsDebugError( QStringLiteral( "Graphic element not found in PointSymbolizer" ) );
     }
     else
     {
@@ -1529,7 +1529,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     const QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
     if ( strokeElem.isNull() )
     {
-      QgsDebugMsg( QStringLiteral( "Stroke element not found in LineSymbolizer" ) );
+      QgsDebugError( QStringLiteral( "Stroke element not found in LineSymbolizer" ) );
     }
     else
     {
@@ -1566,7 +1566,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     const QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
     if ( fillElem.isNull() && strokeElem.isNull() )
     {
-      QgsDebugMsg( QStringLiteral( "neither Fill nor Stroke element not found in PolygonSymbolizer" ) );
+      QgsDebugError( QStringLiteral( "neither Fill nor Stroke element not found in PolygonSymbolizer" ) );
     }
     else
     {
@@ -1623,7 +1623,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createFillLayerFromSld( QDomElement &elemen
   const QDomElement fillElem = element.firstChildElement( QStringLiteral( "Fill" ) );
   if ( fillElem.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "Fill element not found" ) );
+    QgsDebugError( QStringLiteral( "Fill element not found" ) );
     return nullptr;
   }
 
@@ -1648,7 +1648,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createLineLayerFromSld( QDomElement &elemen
   const QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( strokeElem.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "Stroke element not found" ) );
+    QgsDebugError( QStringLiteral( "Stroke element not found" ) );
     return nullptr;
   }
 
@@ -1667,7 +1667,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createMarkerLayerFromSld( QDomElement &elem
   const QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "Graphic element not found" ) );
+    QgsDebugError( QStringLiteral( "Graphic element not found" ) );
     return nullptr;
   }
 
@@ -1764,7 +1764,7 @@ bool QgsSymbolLayerUtils::needFontMarker( QDomElement &element )
   const QString format = formatElem.firstChild().nodeValue();
   if ( format != QLatin1String( "ttf" ) )
   {
-    QgsDebugMsg( "unsupported Graphic Mark format found: " + format );
+    QgsDebugError( "unsupported Graphic Mark format found: " + format );
     return false;
   }
 
@@ -3072,7 +3072,7 @@ bool QgsSymbolLayerUtils::functionFromSldElement( QDomElement &element, QString 
   const bool valid = !expr->hasParserError();
   if ( !valid )
   {
-    QgsDebugMsg( "parser error: " + expr->parserErrorString() );
+    QgsDebugError( "parser error: " + expr->parserErrorString() );
   }
   else
   {
@@ -3150,7 +3150,7 @@ QgsStringMap QgsSymbolLayerUtils::getSvgParameterList( QDomElement &element )
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "unexpected child of %1" ).arg( paramElem.localName() ) );
+          QgsDebugError( QStringLiteral( "unexpected child of %1" ).arg( paramElem.localName() ) );
         }
       }
 
@@ -3242,7 +3242,7 @@ QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsRe
     }
     else
     {
-      QgsDebugMsg( "unknown tag: " + e.tagName() );
+      QgsDebugError( "unknown tag: " + e.tagName() );
     }
     e = e.nextSiblingElement();
   }
@@ -3264,7 +3264,7 @@ QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsRe
     QStringList parts = it.key().split( '@' );
     if ( parts.count() < 3 )
     {
-      QgsDebugMsg( "found subsymbol with invalid name: " + it.key() );
+      QgsDebugError( "found subsymbol with invalid name: " + it.key() );
       delete it.value(); // we must delete it
       continue; // some invalid syntax
     }
@@ -3273,7 +3273,7 @@ QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsRe
 
     if ( !symbols.contains( symname ) )
     {
-      QgsDebugMsg( "subsymbol references invalid symbol: " + symname );
+      QgsDebugError( "subsymbol references invalid symbol: " + symname );
       delete it.value(); // we must delete it
       continue;
     }
@@ -3281,7 +3281,7 @@ QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsRe
     QgsSymbol *sym = symbols[symname];
     if ( symlayer < 0 || symlayer >= sym->symbolLayerCount() )
     {
-      QgsDebugMsg( "subsymbol references invalid symbol layer: " + QString::number( symlayer ) );
+      QgsDebugError( "subsymbol references invalid symbol layer: " + QString::number( symlayer ) );
       delete it.value(); // we must delete it
       continue;
     }
@@ -3290,7 +3290,7 @@ QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsRe
     const bool res = sym->symbolLayer( symlayer )->setSubSymbol( it.value() );
     if ( !res )
     {
-      QgsDebugMsg( "symbol layer refused subsymbol: " + it.key() );
+      QgsDebugError( "symbol layer refused subsymbol: " + it.key() );
     }
 
 
@@ -3385,7 +3385,7 @@ QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( QDomElement &element )
     return QgsPresetSchemeColorRamp::create( props );
   else
   {
-    QgsDebugMsg( "unknown colorramp type " + rampType );
+    QgsDebugError( "unknown colorramp type " + rampType );
     return nullptr;
   }
 }
@@ -3447,7 +3447,7 @@ QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( const QVariant &value )
     return QgsPresetSchemeColorRamp::create( props );
   else
   {
-    QgsDebugMsg( "unknown colorramp type " + rampType );
+    QgsDebugError( "unknown colorramp type " + rampType );
     return nullptr;
   }
 }
@@ -4014,7 +4014,7 @@ void QgsSymbolLayerUtils::multiplyImageOpacity( QImage *image, qreal opacity )
   const QImage::Format format = image->format();
   if ( format != QImage::Format_ARGB32_Premultiplied && format != QImage::Format_ARGB32 )
   {
-    QgsDebugMsg( QStringLiteral( "no alpha channel." ) );
+    QgsDebugError( QStringLiteral( "no alpha channel." ) );
     return;
   }
 

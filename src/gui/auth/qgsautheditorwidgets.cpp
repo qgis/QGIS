@@ -82,7 +82,7 @@ void QgsAuthMethodPlugins::populateTable()
     const QgsAuthMethod *method = QgsApplication::authManager()->authMethod( authMethodKey );
     if ( !meta || !method )
     {
-      QgsDebugMsg( QStringLiteral( "Load auth method instance FAILED for auth method key (%1)" ).arg( authMethodKey ) );
+      QgsDebugError( QStringLiteral( "Load auth method instance FAILED for auth method key (%1)" ).arg( authMethodKey ) );
       continue;
     }
 

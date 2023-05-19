@@ -127,7 +127,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   {
     QString errmsg = tr( "Cannot read module file (%1)" ).arg( mpath )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
-    QgsDebugMsg( errmsg );
+    QgsDebugError( errmsg );
     mErrors.append( errmsg );
     qFile.close();
     return;
@@ -151,7 +151,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   mXName = QgsGrass::findModule( xName );
   if ( mXName.isNull() )
   {
-    QgsDebugMsg( "Module " + xName + " not found" );
+    QgsDebugError( "Module " + xName + " not found" );
     mErrors.append( tr( "Module %1 not found" ).arg( xName ) );
     return;
   }
@@ -237,7 +237,7 @@ QgsGrassModule::Description QgsGrassModule::description( QString path )
   {
     QString errmsg = tr( "Cannot read module file (%1)" ).arg( path )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
-    QgsDebugMsg( errmsg );
+    QgsDebugError( errmsg );
     QMessageBox::warning( nullptr, tr( "Warning" ), errmsg );
     qFile.close();
     return Description( tr( "Not available, incorrect description (%1)" ).arg( path ) );
@@ -856,7 +856,7 @@ void QgsGrassModule::viewOutput()
       }
       catch ( QgsGrass::Exception &e )
       {
-        QgsDebugMsg( e.what() );
+        QgsDebugError( e.what() );
         continue;
       }
 

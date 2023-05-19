@@ -51,7 +51,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mFactory->mSymbol.get() );
   if ( !handler )
   {
-    QgsDebugMsg( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + mFactory->mSymbol->type() );
+    QgsDebugError( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + mFactory->mSymbol->type() );
     return;
   }
   mHandler.reset( handler );
@@ -63,7 +63,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   QSet<QString> attributeNames;
   if ( !mHandler->prepare( mContext, attributeNames ) )
   {
-    QgsDebugMsg( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
+    QgsDebugError( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
     return;
   }
 

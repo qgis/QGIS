@@ -1253,7 +1253,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
   QList<QgsRasterAttributeTable::MinMaxClass> classes;
   if ( !isValid() )
   {
-    QgsDebugMsg( "minMaxClasses was called on an invalid RAT" );
+    QgsDebugError( "minMaxClasses was called on an invalid RAT" );
     return classes;
   }
 
@@ -1261,7 +1261,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
 
   if ( ! fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) )
   {
-    QgsDebugMsg( "minMaxClasses was called on a ramp raster" );
+    QgsDebugError( "minMaxClasses was called on a ramp raster" );
     return classes;
   }
 
@@ -1275,7 +1275,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
     const Field classificationField { mFields.at( classificationIndex ) };
     if ( ( classificationField.usage != Qgis::RasterAttributeTableFieldUsage::Name && classificationField.usage != Qgis::RasterAttributeTableFieldUsage::Generic ) )
     {
-      QgsDebugMsg( "minMaxClasses was called with a classification column which is not suitable for classification" );
+      QgsDebugError( "minMaxClasses was called with a classification column which is not suitable for classification" );
       return classes;
     }
   }
@@ -1297,7 +1297,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
   }
   else if ( classificationIndex >= mFields.count( ) )
   {
-    QgsDebugMsg( "minMaxClasses was called with a classification column out of range" );
+    QgsDebugError( "minMaxClasses was called with a classification column out of range" );
     return classes;
   }
 
@@ -1313,7 +1313,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
       // This should never happen, could eventually become a Q_ASSERT
       if ( ! ok )
       {
-        QgsDebugMsg( "minMaxClasses could not convert a MinMax value to double" );
+        QgsDebugError( "minMaxClasses could not convert a MinMax value to double" );
         return classes;
       }
       if ( labels.contains( label ) )

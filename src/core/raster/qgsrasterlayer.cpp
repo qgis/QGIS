@@ -1062,9 +1062,9 @@ void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QStr
     const QgsReadWriteContext writeContext;
     if ( ! writeSymbology( styleElem, doc, errorMsg, writeContext ) )
     {
-      QgsDebugMsg( QStringLiteral( "Could not store symbology for layer %1: %2" )
-                   .arg( name(),
-                         errorMsg ) );
+      QgsDebugError( QStringLiteral( "Could not store symbology for layer %1: %2" )
+                     .arg( name(),
+                           errorMsg ) );
     }
     else
     {
@@ -1107,9 +1107,9 @@ void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QStr
       QgsReadWriteContext readContext;
       if ( ! readSymbology( mOriginalStyleElement, errorMsg, readContext ) )
       {
-        QgsDebugMsg( QStringLiteral( "Could not restore symbology for layer %1: %2" )
-                     .arg( name() )
-                     .arg( errorMsg ) );
+        QgsDebugError( QStringLiteral( "Could not restore symbology for layer %1: %2" )
+                       .arg( name() )
+                       .arg( errorMsg ) );
 
       }
       else
@@ -2073,7 +2073,7 @@ void QgsRasterLayer::showStatusMessage( QString const &message )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  // QgsDebugMsg(QString("entered with '%1'.").arg(theMessage));
+  // QgsDebugMsgLevel(QString("entered with '%1'.").arg(theMessage), 2);
 
   // Pass-through
   // TODO: See if we can connect signal-to-signal.  This is a kludge according to the Qt doc.
@@ -2395,7 +2395,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   {
     if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
     {
-      QgsDebugMsg( QStringLiteral( "Raster data provider could not be created for %1" ).arg( mDataSource ) );
+      QgsDebugError( QStringLiteral( "Raster data provider could not be created for %1" ).arg( mDataSource ) );
     }
     return false;
   }

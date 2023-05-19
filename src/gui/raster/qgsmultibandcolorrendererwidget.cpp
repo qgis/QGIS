@@ -252,7 +252,7 @@ void QgsMultiBandColorRendererWidget::minMaxModified()
 
 void QgsMultiBandColorRendererWidget::loadMinMax( int bandNo, double min, double max )
 {
-  QgsDebugMsg( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
+  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ), 2 );
 
   QLineEdit *myMinLineEdit, *myMaxLineEdit;
 
@@ -273,7 +273,7 @@ void QgsMultiBandColorRendererWidget::loadMinMax( int bandNo, double min, double
   }
   else // should not happen
   {
-    QgsDebugMsg( QStringLiteral( "Band not found" ) );
+    QgsDebugError( QStringLiteral( "Band not found" ) );
     return;
   }
 

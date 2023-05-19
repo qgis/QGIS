@@ -180,7 +180,7 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     else
     {
       mWarnings << QObject::tr( "%1: Skipping unknown layer type %2" ).arg( context->layerId(), layerType );
-      QgsDebugMsg( mWarnings.constLast() );
+      QgsDebugError( mWarnings.constLast() );
       continue;
     }
 
@@ -3529,7 +3529,7 @@ void QgsMapBoxGlStyleConverter::parseSources( const QVariantMap &sources, QgsMap
       case Qgis::MapBoxGlStyleSourceType::Image:
       case Qgis::MapBoxGlStyleSourceType::Video:
       case Qgis::MapBoxGlStyleSourceType::Unknown:
-        QgsDebugMsg( QStringLiteral( "Ignoring vector tile style source %1 (%2)" ).arg( name, qgsEnumValueToKey( type ) ) );
+        QgsDebugError( QStringLiteral( "Ignoring vector tile style source %1 (%2)" ).arg( name, qgsEnumValueToKey( type ) ) );
         continue;
     }
   }
@@ -3566,7 +3566,7 @@ bool QgsMapBoxGlStyleConverter::numericArgumentsOnly( const QVariant &bottomVari
 //
 void QgsMapBoxGlStyleConversionContext::pushWarning( const QString &warning )
 {
-  QgsDebugMsg( warning );
+  QgsDebugError( warning );
   mWarnings << warning;
 }
 

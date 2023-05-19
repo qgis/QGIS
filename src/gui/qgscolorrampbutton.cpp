@@ -383,7 +383,7 @@ void QgsColorRampButton::createColorRamp()
   }
   else
   {
-    QgsDebugMsg( "invalid ramp type " + rampType );
+    QgsDebugError( "invalid ramp type " + rampType );
     return;
   }
 

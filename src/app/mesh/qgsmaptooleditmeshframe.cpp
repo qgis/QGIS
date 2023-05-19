@@ -722,7 +722,7 @@ void QgsMapToolEditMeshFrame::forceByLineBySelectedFeature( QgsMapMouseEvent *e 
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
+      QgsDebugError( QStringLiteral( "Could not transform geometry to layer CRS" ) );
     }
     forceByLine( geom );
   }

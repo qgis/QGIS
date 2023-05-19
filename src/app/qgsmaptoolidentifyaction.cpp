@@ -183,7 +183,7 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult> &results )
 {
   // Add new result after raster format change
-  QgsDebugMsg( QStringLiteral( "%1 raster results" ).arg( results.size() ) );
+  QgsDebugMsgLevel( QStringLiteral( "%1 raster results" ).arg( results.size() ), 2 );
   QList<IdentifyResult>::const_iterator rresult;
   for ( rresult = results.constBegin(); rresult != results.constEnd(); ++rresult )
   {
@@ -244,7 +244,7 @@ Qgis::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
 
 void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore &featureStore )
 {
-  QgsDebugMsg( QStringLiteral( "features count = %1" ).arg( featureStore.features().size() ) );
+  QgsDebugMsgLevel( QStringLiteral( "features count = %1" ).arg( featureStore.features().size() ), 2 );
   emit copyToClipboard( featureStore );
 }
 

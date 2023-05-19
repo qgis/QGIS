@@ -216,7 +216,7 @@ QVector<QgsDataItem *> QgsArcGisRestConnectionItem::createChildren()
         std::unique_ptr< QgsErrorItem > error = std::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
         error->setToolTip( errorMessage );
         items.append( error.release() );
-        QgsDebugMsg( "Connection failed - " + errorMessage );
+        QgsDebugError( "Connection failed - " + errorMessage );
       }
       return items;
     }
@@ -272,7 +272,7 @@ QVector<QgsDataItem *> QgsArcGisPortalGroupsItem::createChildren()
       std::unique_ptr< QgsErrorItem > error = std::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
       error->setToolTip( errorMessage );
       items.append( error.release() );
-      QgsDebugMsg( "Connection failed - " + errorMessage );
+      QgsDebugError( "Connection failed - " + errorMessage );
     }
     return items;
   }
@@ -329,7 +329,7 @@ QVector<QgsDataItem *> QgsArcGisPortalGroupItem::createChildren()
       std::unique_ptr< QgsErrorItem > error = std::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
       error->setToolTip( errorMessage );
       items.append( error.release() );
-      QgsDebugMsg( "Connection failed - " + errorMessage );
+      QgsDebugError( "Connection failed - " + errorMessage );
     }
     return items;
   }
@@ -388,7 +388,7 @@ QVector<QgsDataItem *> QgsArcGisRestServicesItem::createChildren()
       std::unique_ptr< QgsErrorItem > error = std::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
       error->setToolTip( errorMessage );
       items.append( error.release() );
-      QgsDebugMsg( "Connection failed - " + errorMessage );
+      QgsDebugError( "Connection failed - " + errorMessage );
     }
     return items;
   }
@@ -441,7 +441,7 @@ QVector<QgsDataItem *> QgsArcGisRestFolderItem::createChildren()
       std::unique_ptr< QgsErrorItem > error = std::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
       error->setToolTip( errorMessage );
       items.append( error.release() );
-      QgsDebugMsg( "Connection failed - " + errorMessage );
+      QgsDebugError( "Connection failed - " + errorMessage );
     }
     return items;
   }
@@ -491,7 +491,7 @@ QVector<QgsDataItem *> QgsArcGisFeatureServiceItem::createChildren()
       std::unique_ptr< QgsErrorItem > error = std::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
       error->setToolTip( errorMessage );
       items.append( error.release() );
-      QgsDebugMsg( "Connection failed - " + errorMessage );
+      QgsDebugError( "Connection failed - " + errorMessage );
     }
     return items;
   }
@@ -539,7 +539,7 @@ QVector<QgsDataItem *> QgsArcGisMapServiceItem::createChildren()
       std::unique_ptr< QgsErrorItem > error = std::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
       error->setToolTip( errorMessage );
       items.append( error.release() );
-      QgsDebugMsg( "Connection failed - " + errorMessage );
+      QgsDebugError( "Connection failed - " + errorMessage );
     }
     return items;
   }

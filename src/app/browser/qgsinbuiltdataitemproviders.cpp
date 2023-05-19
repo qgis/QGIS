@@ -1590,7 +1590,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     else
     {
       // This should never happen!
-      QgsDebugMsg( QStringLiteral( "Error getting parent fields for %1" ).arg( item->name() ) );
+      QgsDebugError( QStringLiteral( "Error getting parent fields for %1" ).arg( item->name() ) );
     }
   }
 }

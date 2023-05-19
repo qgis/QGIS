@@ -115,7 +115,7 @@ void QgsBrowserDockWidget::refresh()
 
 bool QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
 {
-  QgsDebugMsg( QStringLiteral( "rowCount() = %1" ).arg( mWidget->mModel->rowCount( mWidget->mProxyModel->mapToSource( index ) ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "rowCount() = %1" ).arg( mWidget->mModel->rowCount( mWidget->mProxyModel->mapToSource( index ) ) ), 2 );
   QgsDataItem *item = mWidget->mModel->dataItem( mWidget->mProxyModel->mapToSource( index ) );
 
   if ( item && item->type() == Qgis::BrowserItemType::Project )

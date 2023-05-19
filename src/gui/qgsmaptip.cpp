@@ -177,7 +177,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   tipHtml = QgsMapTip::htmlText( tipText, MAX_WIDTH );
 
-  QgsDebugMsg( tipHtml );
+  QgsDebugMsgLevel( tipHtml, 2 );
 
   mPosition = pixelPosition;
   mMapCanvas = pMapCanvas;

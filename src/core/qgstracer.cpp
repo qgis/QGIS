@@ -572,7 +572,7 @@ bool QgsTracer::initGraph()
 
     mHasTopologyProblem = true;
 
-    QgsDebugMsg( QStringLiteral( "Tracer Noding Exception: %1" ).arg( e.what() ) );
+    QgsDebugError( QStringLiteral( "Tracer Noding Exception: %1" ).arg( e.what() ) );
   }
 #endif
 

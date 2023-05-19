@@ -70,7 +70,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
+    QgsDebugError( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
     shouldFilter = false;
     return QgsGeometry();
   }
@@ -116,7 +116,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
+    QgsDebugError( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
     shouldClip = false;
     return QgsGeometry();
   }
@@ -221,7 +221,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
+    QgsDebugError( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
     shouldClip = false;
     return QgsGeometry();
   }

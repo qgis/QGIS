@@ -1046,7 +1046,7 @@ QDateTime QgsArcGisRestUtils::convertDateTime( const QVariant &value )
   QDateTime dt = QDateTime::fromMSecsSinceEpoch( value.toLongLong( &ok ) );
   if ( !ok )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid value %1 for datetime" ).arg( value.toString() ) );
+    QgsDebugError( QStringLiteral( "Invalid value %1 for datetime" ).arg( value.toString() ) );
     return QDateTime();
   }
   else

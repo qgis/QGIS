@@ -145,7 +145,7 @@ void QgsLockedFeature::validateGeometry( QgsGeometry *g )
   while ( !mGeomErrorMarkers.isEmpty() )
   {
     QgsVertexMarker *vm = mGeomErrorMarkers.takeFirst();
-    QgsDebugMsg( "deleting " + vm->toolTip() );
+    QgsDebugMsgLevel( "deleting " + vm->toolTip(), 2 );
     delete vm;
   }
 
@@ -233,7 +233,7 @@ void QgsLockedFeature::createVertexMap()
 
   if ( !mGeometry )
   {
-    QgsDebugMsg( QStringLiteral( "Loading feature" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Loading feature" ), 2 );
     updateGeometry( nullptr );
   }
 

@@ -99,7 +99,7 @@ bool QgsVectorTileLayer::loadDataSource()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Unknown source type: " ) + mSourceType );
+    QgsDebugError( QStringLiteral( "Unknown source type: " ) + mSourceType );
     return false;
   }
 

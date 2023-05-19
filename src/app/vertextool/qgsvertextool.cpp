@@ -80,7 +80,7 @@ static bool isEndpointAtVertexIndex( const QgsGeometry &geom, int vertexIndex )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "is_endpoint_at_vertex_index: unexpected geometry type!" ) );
+    QgsDebugError( QStringLiteral( "is_endpoint_at_vertex_index: unexpected geometry type!" ) );
     return false;
   }
 }
@@ -109,7 +109,7 @@ int adjacentVertexIndexToEndpoint( const QgsGeometry &geom, int vertexIndex )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "adjacent_vertex_index_to_endpoint: unexpected geometry type!" ) );
+    QgsDebugError( QStringLiteral( "adjacent_vertex_index_to_endpoint: unexpected geometry type!" ) );
   }
   return -1;
 }
@@ -2131,7 +2131,7 @@ QgsPoint QgsVertexTool::matchToLayerPoint( const QgsVectorLayer *destLayer, cons
               }
               catch ( QgsCsException & )
               {
-                QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+                QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
               }
             }
             return layerPoint;
@@ -2183,7 +2183,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   QgsVertexId vid;
   if ( !geom.vertexIdFromVertexNr( dragVertexId, vid ) )
   {
-    QgsDebugMsg( QStringLiteral( "invalid vertex index" ) );
+    QgsDebugError( QStringLiteral( "invalid vertex index" ) );
     return;
   }
 
@@ -2194,7 +2194,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   {
     if ( !geomTmp->addZValue( defaultZValue() ) )
     {
-      QgsDebugMsg( QStringLiteral( "add Z value to vertex failed!" ) );
+      QgsDebugError( QStringLiteral( "add Z value to vertex failed!" ) );
       return;
     }
   }
@@ -2204,7 +2204,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   {
     if ( !geomTmp->addMValue( defaultMValue() ) )
     {
-      QgsDebugMsg( QStringLiteral( "add M value to vertex failed!" ) );
+      QgsDebugError( QStringLiteral( "add M value to vertex failed!" ) );
       return;
     }
   }
@@ -2224,7 +2224,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
     if ( !geomTmp->insertVertex( vid, pt ) )
     {
-      QgsDebugMsg( QStringLiteral( "append vertex failed!" ) );
+      QgsDebugError( QStringLiteral( "append vertex failed!" ) );
       return;
     }
   }
@@ -2232,7 +2232,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   {
     if ( !geomTmp->moveVertex( vid, layerPoint ) )
     {
-      QgsDebugMsg( QStringLiteral( "move vertex failed!" ) );
+      QgsDebugError( QStringLiteral( "move vertex failed!" ) );
       return;
     }
   }
@@ -2338,7 +2338,7 @@ void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, 
 
     if ( !topoGeom.moveVertex( point.x(), point.y(), topo.vertexId ) )
     {
-      QgsDebugMsg( QStringLiteral( "[topo] move vertex failed!" ) );
+      QgsDebugError( QStringLiteral( "[topo] move vertex failed!" ) );
       continue;
     }
     edits[topo.layer][topo.fid] = topoGeom;
@@ -2372,7 +2372,7 @@ void QgsVertexTool::addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, 
 
     if ( !topoGeom.insertVertex( pt, topo.vertexId + 1 ) )
     {
-      QgsDebugMsg( QStringLiteral( "[topo] segment insert vertex failed!" ) );
+      QgsDebugError( QStringLiteral( "[topo] segment insert vertex failed!" ) );
       continue;
     }
     edits[topo.layer][topo.fid] = topoGeom;
@@ -2586,7 +2586,7 @@ void QgsVertexTool::deleteVertex()
           res = layer->deleteVertex( fid, vertexId );
         if ( res != Qgis::VectorEditResult::EmptyGeometry && res != Qgis::VectorEditResult::Success )
         {
-          QgsDebugMsg( QStringLiteral( "failed to delete vertex %1 %2 %3!" ).arg( layer->name() ).arg( fid ).arg( vertexId ) );
+          QgsDebugError( QStringLiteral( "failed to delete vertex %1 %2 %3!" ).arg( layer->name() ).arg( fid ).arg( vertexId ) );
           success = false;
         }
       }

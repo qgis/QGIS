@@ -449,7 +449,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 #if 0
     if ( renderer )
     {
-      QgsDebugMsg( QStringLiteral( "alphaBand = %1" ).arg( renderer->alphaBand() ) );
+      QgsDebugMsgLevel( QStringLiteral( "alphaBand = %1" ).arg( renderer->alphaBand() ), 2 );
       if ( renderer->alphaBand() > 0 )
       {
         cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findData( renderer->alphaBand() ) );

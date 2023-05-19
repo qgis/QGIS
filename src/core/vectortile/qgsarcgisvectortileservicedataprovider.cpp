@@ -308,7 +308,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
   mSourcePath = tileServiceUri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
   if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + tileServiceUri );
+    QgsDebugError( QStringLiteral( "Invalid format of URL for XYZ source: " ) + tileServiceUri );
     return false;
   }
 
@@ -342,7 +342,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
+      QgsDebugError( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
     }
   }
   else
@@ -355,7 +355,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
+      QgsDebugError( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
     }
   }
 

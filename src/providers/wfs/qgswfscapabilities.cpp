@@ -303,7 +303,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         if ( !value.isNull() )
         {
           mCaps.maxFeatures = value.text().toInt();
-          QgsDebugMsg( QStringLiteral( "maxFeatures: %1" ).arg( mCaps.maxFeatures ) );
+          QgsDebugMsgLevel( QStringLiteral( "maxFeatures: %1" ).arg( mCaps.maxFeatures ), 2 );
         }
       }
       else if ( contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "CountDefault" ) /* WFS 2.0 (e.g. MapServer) */ )
@@ -312,7 +312,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         if ( !value.isNull() )
         {
           mCaps.maxFeatures = value.text().toInt();
-          QgsDebugMsg( QStringLiteral( "maxFeatures: %1" ).arg( mCaps.maxFeatures ) );
+          QgsDebugMsgLevel( QStringLiteral( "maxFeatures: %1" ).arg( mCaps.maxFeatures ), 2 );
         }
       }
       else if ( contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "ImplementsResultPaging" ) /* WFS 2.0 */ )
@@ -321,7 +321,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         if ( !value.isNull() && value.text() == QLatin1String( "TRUE" ) )
         {
           mCaps.supportsPaging = true;
-          QgsDebugMsg( QStringLiteral( "Supports paging" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Supports paging" ), 2 );
         }
       }
       else if ( contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "ImplementsStandardJoins" ) ||
@@ -331,7 +331,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         if ( !value.isNull() && value.text() == QLatin1String( "TRUE" ) )
         {
           mCaps.supportsJoins = true;
-          QgsDebugMsg( QStringLiteral( "Supports joins" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Supports joins" ), 2 );
         }
       }
     }
@@ -375,7 +375,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
             if ( !value.isNull() )
             {
               mCaps.maxFeatures = value.text().toInt();
-              QgsDebugMsg( QStringLiteral( "maxFeatures: %1" ).arg( mCaps.maxFeatures ) );
+              QgsDebugMsgLevel( QStringLiteral( "maxFeatures: %1" ).arg( mCaps.maxFeatures ), 2 );
             }
             break;
           }
@@ -394,7 +394,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
               if ( value.text() == QLatin1String( "hits" ) )
               {
                 mCaps.supportsHits = true;
-                QgsDebugMsg( QStringLiteral( "Support hits" ) );
+                QgsDebugMsgLevel( QStringLiteral( "Support hits" ), 2 );
                 break;
               }
             }
@@ -586,16 +586,16 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           QgsPointXY ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
           QgsPointXY ptMaxBack( ct.transform( ct.transform( ptMax, Qgis::TransformDirection::Forward ), Qgis::TransformDirection::Reverse ) );
 
-          QgsDebugMsg( featureType.bbox.toString() );
-          QgsDebugMsg( ptMinBack.toString() );
-          QgsDebugMsg( ptMaxBack.toString() );
+          QgsDebugMsgLevel( featureType.bbox.toString(), 2 );
+          QgsDebugMsgLevel( ptMinBack.toString(), 2 );
+          QgsDebugMsgLevel( ptMaxBack.toString(), 2 );
 
           if ( std::fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 &&
                std::fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 &&
                std::fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
                std::fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
           {
-            QgsDebugMsg( QStringLiteral( "Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units" ) );
+            QgsDebugMsgLevel( QStringLiteral( "Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units" ), 2 );
             featureType.bboxSRSIsWGS84 = true;
           }
         }

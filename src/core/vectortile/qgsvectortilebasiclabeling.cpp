@@ -190,7 +190,7 @@ bool QgsVectorTileBasicLabelProvider::prepare( QgsRenderContext &context, QSet<Q
     mSubProviders[i]->mSettings.isExpression = !fields.names().contains( mSubProviders[i]->mSettings.fieldName );
     if ( !mSubProviders[i]->prepare( context, attributeNames ) )
     {
-      QgsDebugMsg( QStringLiteral( "Failed to prepare labeling for style index" ) + QString::number( i ) );
+      QgsDebugError( QStringLiteral( "Failed to prepare labeling for style index" ) + QString::number( i ) );
       mSubProviders[i] = nullptr;
     }
   }

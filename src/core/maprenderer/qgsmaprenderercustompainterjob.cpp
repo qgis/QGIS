@@ -168,7 +168,7 @@ void QgsMapRendererCustomPainterJob::cancelWithoutBlocking()
 {
   if ( !isActive() )
   {
-    QgsDebugMsg( QStringLiteral( "QPAINTER not running!" ) );
+    QgsDebugError( QStringLiteral( "QPAINTER not running!" ) );
     return;
   }
 
@@ -281,16 +281,16 @@ void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJo
   catch ( QgsException &e )
   {
     Q_UNUSED( e )
-    QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
+    QgsDebugError( "Caught unhandled QgsException: " + e.what() );
   }
   catch ( std::exception &e )
   {
     Q_UNUSED( e )
-    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
+    QgsDebugError( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
   }
   catch ( ... )
   {
-    QgsDebugMsg( QStringLiteral( "Caught unhandled unknown exception" ) );
+    QgsDebugError( QStringLiteral( "Caught unhandled unknown exception" ) );
   }
 }
 

@@ -94,7 +94,7 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
   const QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
   if ( errCode != QgsBlockingNetworkRequest::NoError )
   {
-    QgsDebugMsg( QStringLiteral( "Request failed: " ) + url );
+    QgsDebugError( QStringLiteral( "Request failed: " ) + url );
     mIsValid = false;
     return;
   }
@@ -115,7 +115,7 @@ QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointClo
 
   if ( !blockRequest->block() )
   {
-    QgsDebugMsg( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
+    QgsDebugError( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
   }
 
   return blockRequest->block();
@@ -205,7 +205,7 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
 
     if ( reply->error() != QNetworkReply::NoError )
     {
-      QgsDebugMsg( QStringLiteral( "Request failed: " ) + mUrl.toString() );
+      QgsDebugError( QStringLiteral( "Request failed: " ) + mUrl.toString() );
       return false;
     }
 

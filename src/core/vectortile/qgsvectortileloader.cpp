@@ -115,7 +115,7 @@ void QgsVectorTileLoader::tileReplyFinished()
         mError = tr( "Access denied: %1" ).arg( QString( reply->data() ) );
     }
 
-    QgsDebugMsg( QStringLiteral( "Tile download failed! " ) + reply->errorString() );
+    QgsDebugError( QStringLiteral( "Tile download failed! " ) + reply->errorString() );
     mReplies.removeOne( reply );
     reply->deleteLater();
 

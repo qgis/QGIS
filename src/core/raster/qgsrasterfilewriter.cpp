@@ -115,7 +115,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
 
   if ( !iface->sourceInput() )
   {
-    QgsDebugMsg( QStringLiteral( "iface->srcInput() == 0" ) );
+    QgsDebugError( QStringLiteral( "iface->srcInput() == 0" ) );
     return SourceProviderError;
   }
 #ifdef QGISDEBUG
@@ -136,7 +136,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
       const QDir dir = fileInfo.dir();
       if ( !dir.mkdir( fileInfo.fileName() ) )
       {
-        QgsDebugMsg( "Cannot create output VRT directory " + fileInfo.fileName() + " in " + dir.absolutePath() );
+        QgsDebugError( "Cannot create output VRT directory " + fileInfo.fileName() + " in " + dir.absolutePath() );
         return CreateDatasourceError;
       }
     }
@@ -180,7 +180,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   QgsRasterDataProvider *srcProvider = const_cast<QgsRasterDataProvider *>( dynamic_cast<const QgsRasterDataProvider *>( iface->sourceInput() ) );
   if ( !srcProvider )
   {
-    QgsDebugMsg( QStringLiteral( "Cannot get source data provider" ) );
+    QgsDebugError( QStringLiteral( "Cannot get source data provider" ) );
     return SourceProviderError;
   }
 
@@ -336,7 +336,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       }
       if ( nCols != destProvider->xSize() || nRows != destProvider->ySize() )
       {
-        QgsDebugMsg( QStringLiteral( "Created raster does not have requested dimensions" ) );
+        QgsDebugError( QStringLiteral( "Created raster does not have requested dimensions" ) );
         if ( feedback )
         {
           feedback->appendError( QObject::tr( "Created raster does not have requested dimensions" ) );
@@ -345,7 +345,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       }
       if ( nBands != destProvider->bandCount() )
       {
-        QgsDebugMsg( QStringLiteral( "Created raster does not have requested band count" ) );
+        QgsDebugError( QStringLiteral( "Created raster does not have requested band count" ) );
         if ( feedback )
         {
           feedback->appendError( QObject::tr( "Created raster does not have requested band count" ) );
@@ -614,7 +614,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     }
     if ( nCols != destProvider->xSize() || nRows != destProvider->ySize() )
     {
-      QgsDebugMsg( QStringLiteral( "Created raster does not have requested dimensions" ) );
+      QgsDebugError( QStringLiteral( "Created raster does not have requested dimensions" ) );
       if ( feedback )
       {
         feedback->appendError( QObject::tr( "Created raster does not have requested dimensions" ) );
@@ -623,7 +623,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     }
     if ( nOutputBands != destProvider->bandCount() )
     {
-      QgsDebugMsg( QStringLiteral( "Created raster does not have requested band count" ) );
+      QgsDebugError( QStringLiteral( "Created raster does not have requested band count" ) );
       if ( feedback )
       {
         feedback->appendError( QObject::tr( "Created raster does not have requested band count" ) );
@@ -632,7 +632,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     }
     if ( Qgis::DataType::Byte != destProvider->dataType( 1 ) )
     {
-      QgsDebugMsg( QStringLiteral( "Created raster does not have requested data type" ) );
+      QgsDebugError( QStringLiteral( "Created raster does not have requested data type" ) );
       if ( feedback )
       {
         feedback->appendError( QObject::tr( "Created raster does not have requested data type" ) );
@@ -1026,7 +1026,7 @@ QgsRasterDataProvider *QgsRasterFileWriter::initOutput( int nCols, int nRows, co
 
     if ( !destProvider )
     {
-      QgsDebugMsg( QStringLiteral( "No provider created" ) );
+      QgsDebugError( QStringLiteral( "No provider created" ) );
     }
 
     return destProvider;

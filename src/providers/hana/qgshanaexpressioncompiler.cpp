@@ -236,7 +236,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
           {
             if ( binOp->opLeft()->nodeType() != QgsExpressionNode::ntColumnRef )
             {
-              QgsDebugMsg( "Failing IS NULL/IS NOT NULL with non-column on left: " + opLeft );
+              QgsDebugError( "Failing IS NULL/IS NOT NULL with non-column on left: " + opLeft );
               return Fail;
             }
           }

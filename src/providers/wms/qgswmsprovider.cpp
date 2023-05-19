@@ -490,7 +490,7 @@ void QgsWmsProvider::setLayerOrder( QStringList const &layers )
 {
   if ( layers.size() != mSettings.mActiveSubLayers.size() )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid layer list length" ) );
+    QgsDebugError( QStringLiteral( "Invalid layer list length" ) );
     return;
   }
 
@@ -504,7 +504,7 @@ void QgsWmsProvider::setLayerOrder( QStringList const &layers )
   {
     if ( !styleMap.contains( layers[i] ) )
     {
-      QgsDebugMsg( QStringLiteral( "Layer %1 not found" ).arg( layers[i] ) );
+      QgsDebugError( QStringLiteral( "Layer %1 not found" ).arg( layers[i] ) );
       return;
     }
   }
@@ -522,7 +522,7 @@ void QgsWmsProvider::setSubLayerVisibility( QString const &name, bool vis )
 {
   if ( !mActiveSubLayerVisibility.contains( name ) )
   {
-    QgsDebugMsg( QStringLiteral( "Layer %1 not found." ).arg( name ) );
+    QgsDebugError( QStringLiteral( "Layer %1 not found." ).arg( name ) );
     return;
   }
 
@@ -568,13 +568,13 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
 
         if ( !mCaps.mTileMatrixSets.contains( tms ) )
         {
-          QgsDebugMsg( QStringLiteral( "tile matrix set '%1' not found." ).arg( tms ) );
+          QgsDebugError( QStringLiteral( "tile matrix set '%1' not found." ).arg( tms ) );
           continue;
         }
 
         if ( mCaps.mTileMatrixSets[ tms ].crs != mImageCrs )
         {
-          QgsDebugMsg( QStringLiteral( "tile matrix set '%1' has crs %2 instead of %3." ).arg( tms, mCaps.mTileMatrixSets[ tms ].crs, mImageCrs ) );
+          QgsDebugError( QStringLiteral( "tile matrix set '%1' has crs %2 instead of %3." ).arg( tms, mCaps.mTileMatrixSets[ tms ].crs, mImageCrs ) );
           continue;
         }
 
@@ -605,7 +605,7 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Expected tile matrix set '%1' not found." ).arg( mSettings.mTileMatrixSetId ) );
+      QgsDebugError( QStringLiteral( "Expected tile matrix set '%1' not found." ).arg( mSettings.mTileMatrixSetId ) );
       mTileMatrixSet = nullptr;
     }
 
@@ -791,7 +791,7 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
 {
   if ( qApp && qApp->thread() == QThread::currentThread() )
   {
-    QgsDebugMsg( QStringLiteral( "Trying to draw a WMS image on the main thread. Stop it!" ) );
+    QgsDebugError( QStringLiteral( "Trying to draw a WMS image on the main thread. Stop it!" ) );
   }
 
   // compose the URL query string for the WMS server.
@@ -826,7 +826,7 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
       Q_ASSERT( mTileMatrixSet );
       if ( mTileMatrixSet->tileMatrices.isEmpty() )
       {
-        QgsDebugMsg( QStringLiteral( "WMTS tile set is empty!" ) );
+        QgsDebugError( QStringLiteral( "WMTS tile set is empty!" ) );
         return image;
       }
 
@@ -862,7 +862,7 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "empty tile size" ) );
+      QgsDebugError( QStringLiteral( "empty tile size" ) );
       return image;
     }
 
@@ -944,7 +944,7 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
         break;
 
       default:
-        QgsDebugMsg( QStringLiteral( "unexpected tile mode %1" ).arg( mTileLayer->tileMode ) );
+        QgsDebugError( QStringLiteral( "unexpected tile mode %1" ).arg( mTileLayer->tileMode ) );
         return image;
     }
 
@@ -1890,7 +1890,7 @@ bool QgsWmsProvider::setupMBTilesCapabilities( const QString &uri )
     }
     catch ( const QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Failed to reproject extent from MBTiles metadata" ) );
+      QgsDebugError( QStringLiteral( "Failed to reproject extent from MBTiles metadata" ) );
       return false;
     }
     sourceExtent = QgsRectangle( customTopLeft.x(), customBottomRight.y(), customBottomRight.x(), customTopLeft.y() );
@@ -2078,7 +2078,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const &xml, QStr
 
       if ( tagName == QLatin1String( "ServiceException" ) )
       {
-        QgsDebugMsg( QStringLiteral( "  ServiceException." ) );
+        QgsDebugError( QStringLiteral( "  ServiceException." ) );
         parseServiceException( e, errorTitle, errorText );
       }
 
@@ -3502,7 +3502,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "No KVP and no feature info url for format %1" ).arg( formatStr ) );
+      QgsDebugError( QStringLiteral( "No KVP and no feature info url for format %1" ).arg( formatStr ) );
     }
   }
 
@@ -3524,7 +3524,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
 
     if ( mIdentifyResultBodies.isEmpty() ) // no result
     {
-      QgsDebugMsg( QStringLiteral( "mIdentifyResultBodies is empty" ) );
+      QgsDebugError( QStringLiteral( "mIdentifyResultBodies is empty" ) );
       continue;
     }
     else if ( mIdentifyResultBodies.size() == 1 )
@@ -3638,7 +3638,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
         }
         if ( mIdentifyResultBodies.size() == 2 ) // GML+XSD
         {
-          QgsDebugMsg( QStringLiteral( "Multipart with 2 parts - expected GML + XSD" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Multipart with 2 parts - expected GML + XSD" ), 2 );
           // How to find which part is GML and which XSD? Both have
           // Content-Type: application/binary
           // different are Content-Disposition but it is not reliable.
@@ -3684,7 +3684,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
           {
             QgsError err = gmlSchema.error();
             err.append( tr( "Cannot identify" ) );
-            QgsDebugMsg( "guess schema error: " + err.message() );
+            QgsDebugError( "guess schema error: " + err.message() );
             return QgsRasterIdentifyResult( err );
           }
         }
@@ -3763,7 +3763,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
         {
           QgsError err = QGS_ERROR( tr( "Cannot identify" ) );
           err.append( tr( "Result parsing failed. %n feature type(s) were guessed from gml (%2) but no features were parsed.", nullptr, featureTypeNames.size() ).arg( featureTypeNames.join( QLatin1Char( ',' ) ) ) );
-          QgsDebugMsg( "parsing GML error: " + err.message() );
+          QgsDebugError( "parsing GML error: " + err.message() );
           return QgsRasterIdentifyResult( err );
         }
         results.insert( results.size(), QVariant::fromValue( featureStoreList ) );
@@ -3797,7 +3797,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
               crsText = QStringLiteral( "%1:%2" ).arg( crsType, result.value( QLatin1String( "crs" ) ).toObject().value( QLatin1String( "properties" ) ).toObject().value( QStringLiteral( "code" ) ).toString() );
             else
             {
-              QgsDebugMsg( QStringLiteral( "crs not supported:%1" ).arg( result.value( QLatin1String( "crs" ) ).toString() ) );
+              QgsDebugError( QStringLiteral( "crs not supported:%1" ).arg( result.value( QLatin1String( "crs" ) ).toString() ) );
             }
 
             QgsCoordinateReferenceSystem featuresCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsText );
@@ -3906,7 +3906,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
         }
         catch ( const QString &err )
         {
-          QgsDebugMsg( QStringLiteral( "JSON error: %1\nResult: %2" ).arg( err, QString::fromUtf8( mIdentifyResultBodies.value( jsonPart ) ) ) );
+          QgsDebugError( QStringLiteral( "JSON error: %1\nResult: %2" ).arg( err, QString::fromUtf8( mIdentifyResultBodies.value( jsonPart ) ) ) );
           results.insert( results.size(), err );  // string returned for format type "feature" means error
         }
 
@@ -3955,7 +3955,7 @@ void QgsWmsProvider::identifyReplyFinished()
     QgsNetworkReplyParser parser( mIdentifyReply );
     if ( !parser.isValid() )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot parse reply" ) );
+      QgsDebugError( QStringLiteral( "Cannot parse reply" ) );
       mErrorFormat = QStringLiteral( "text/plain" );
       mError = tr( "Cannot parse getfeatureinfo: %1" ).arg( parser.error() );
       emit statusChanged( mError );

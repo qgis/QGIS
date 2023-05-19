@@ -224,7 +224,7 @@ void QgsRendererPropertiesDialog::rendererChanged()
 {
   if ( cboRenderers->currentIndex() == -1 )
   {
-    QgsDebugMsg( QStringLiteral( "No current item -- this should never happen!" ) );
+    QgsDebugError( QStringLiteral( "No current item -- this should never happen!" ) );
     return;
   }
 

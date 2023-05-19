@@ -450,12 +450,12 @@ QString QgsPythonUtilsImpl::getTypeAsString( PyObject *obj )
 
   if ( PyType_Check( obj ) )
   {
-    QgsDebugMsg( QStringLiteral( "got type" ) );
+    QgsDebugMsgLevel( QStringLiteral( "got type" ), 2 );
     return QString( ( ( PyTypeObject * )obj )->tp_name );
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "got object" ) );
+    QgsDebugMsgLevel( QStringLiteral( "got object" ), 2 );
     return PyObjectToQString( obj );
   }
 }
@@ -529,7 +529,7 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject *obj )
   }
 
   // some problem with conversion to Unicode string
-  QgsDebugMsg( QStringLiteral( "unable to convert PyObject to a QString!" ) );
+  QgsDebugError( QStringLiteral( "unable to convert PyObject to a QString!" ) );
   return QStringLiteral( "(qgis error)" );
 }
 
@@ -631,7 +631,7 @@ QString QgsPythonUtilsImpl::getPluginMetadata( const QString &pluginName, const 
   QString res;
   const QString str = QStringLiteral( "qgis.utils.pluginMetadata('%1', '%2')" ).arg( pluginName, function );
   evalString( str, res );
-  //QgsDebugMsg("metadata "+pluginName+" - '"+function+"' = "+res);
+  //QgsDebugMsgLevel("metadata "+pluginName+" - '"+function+"' = "+res, 2);
   return res;
 }
 

@@ -28,7 +28,7 @@
 //
 void QgsMapInfoSymbolConversionContext::pushWarning( const QString &warning )
 {
-  QgsDebugMsg( warning );
+  QgsDebugMsgLevel( warning, 2 );
   mWarnings << warning;
 }
 
@@ -293,7 +293,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
       break;
 
     default:
-      QgsDebugMsg( QStringLiteral( "Unknown line symbol identifier %1" ).arg( identifier ) );
+      QgsDebugError( QStringLiteral( "Unknown line symbol identifier %1" ).arg( identifier ) );
       return nullptr;
   }
 

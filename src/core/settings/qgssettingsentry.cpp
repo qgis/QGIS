@@ -66,7 +66,7 @@ QString QgsSettingsEntryBase::completeKeyPrivate( const QString &key, const QStr
   if ( dynamicKeyPartList.isEmpty() )
   {
     if ( hasDynamicKey() )
-      QgsDebugMsg( QStringLiteral( "Settings '%1' have a dynamic key but the dynamic key part was not provided" ).arg( completeKey ) );
+      QgsDebugError( QStringLiteral( "Settings '%1' have a dynamic key but the dynamic key part was not provided" ).arg( completeKey ) );
 
     return completeKey;
   }
@@ -74,7 +74,7 @@ QString QgsSettingsEntryBase::completeKeyPrivate( const QString &key, const QStr
   {
     if ( !hasDynamicKey() )
     {
-      QgsDebugMsg( QStringLiteral( "Settings '%1' don't have a dynamic key, the provided dynamic key part will be ignored" ).arg( completeKey ) );
+      QgsDebugError( QStringLiteral( "Settings '%1' don't have a dynamic key, the provided dynamic key part will be ignored" ).arg( completeKey ) );
       return completeKey;
     }
 

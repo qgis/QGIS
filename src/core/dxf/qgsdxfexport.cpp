@@ -970,13 +970,13 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString &l
   int n = line.size();
   if ( n == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
   if ( n < 2 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
@@ -1054,7 +1054,7 @@ void QgsDxfExport::appendCurve( const QgsCurve &c, QVector<QgsPoint> &points, QV
       break;
 
     default:
-      QgsDebugMsg( QStringLiteral( "Unexpected curve type %1" ).arg( c.wktTypeStr() ) );
+      QgsDebugError( QStringLiteral( "Unexpected curve type %1" ).arg( c.wktTypeStr() ) );
       break;
   }
 }
@@ -1108,13 +1108,13 @@ void QgsDxfExport::writePolyline( const QgsCurve &curve, const QString &layer, c
   int n = curve.numPoints();
   if ( n == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
   if ( n < 2 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
@@ -1522,7 +1522,7 @@ void QgsDxfExport::writeMText( const QString &layer, const QString &text, const 
   if ( !mTextStream.codec()->canEncode( text ) )
   {
     // TODO return error
-    QgsDebugMsg( QStringLiteral( "could not encode:%1" ).arg( text ) );
+    QgsDebugError( QStringLiteral( "could not encode:%1" ).arg( text ) );
     return;
   }
 #endif
@@ -1810,13 +1810,13 @@ int QgsDxfExport::color_distance( QRgb p1, int index )
   double greenDiff = qGreen( p1 ) - sDxfColors[index][1];
   double blueDiff = qBlue( p1 ) - sDxfColors[index][2];
 #if 0
-  QgsDebugMsg( QStringLiteral( "color_distance( r:%1 g:%2 b:%3 <=> i:%4 r:%5 g:%6 b:%7 ) => %8" )
-               .arg( qRed( p1 ) ).arg( qGreen( p1 ) ).arg( qBlue( p1 ) )
-               .arg( index )
-               .arg( mDxfColors[index][0] )
-               .arg( mDxfColors[index][1] )
-               .arg( mDxfColors[index][2] )
-               .arg( redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff ) );
+  QgsDebugMsgLevel( QStringLiteral( "color_distance( r:%1 g:%2 b:%3 <=> i:%4 r:%5 g:%6 b:%7 ) => %8" )
+                    .arg( qRed( p1 ) ).arg( qGreen( p1 ) ).arg( qBlue( p1 ) )
+                    .arg( index )
+                    .arg( mDxfColors[index][0] )
+                    .arg( mDxfColors[index][1] )
+                    .arg( mDxfColors[index][2] )
+                    .arg( redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff ), 2 );
 #endif
   return redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff;
 }

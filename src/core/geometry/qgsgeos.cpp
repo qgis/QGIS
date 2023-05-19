@@ -2172,7 +2172,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
         coordSeq = GEOSCoordSeq_copyFromArrays_r( ctxt, line->xData(), line->yData(), line->zData(), nullptr, numPoints );
         if ( !coordSeq )
         {
-          QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points" ).arg( numPoints ) );
+          QgsDebugError( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points" ).arg( numPoints ) );
           return nullptr;
         }
       }
@@ -2194,7 +2194,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
         coordSeq = GEOSCoordSeq_copyFromArrays_r( ctxt, x.constData(), y.constData(), !hasZ ? nullptr : z.constData(), nullptr, numPoints + 1 );
         if ( !coordSeq )
         {
-          QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create closed coordinate sequence for %1 points" ).arg( numPoints + 1 ) );
+          QgsDebugError( QStringLiteral( "GEOS Exception: Could not create closed coordinate sequence for %1 points" ).arg( numPoints + 1 ) );
           return nullptr;
         }
       }
@@ -2227,7 +2227,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     coordSeq = GEOSCoordSeq_create_r( ctxt, numOutPoints, coordDims );
     if ( !coordSeq )
     {
-      QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points in %2 dimensions" ).arg( numPoints ).arg( coordDims ) );
+      QgsDebugError( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points in %2 dimensions" ).arg( numPoints ).arg( coordDims ) );
       return nullptr;
     }
 
@@ -2324,7 +2324,7 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
     GEOSCoordSequence *coordSeq = GEOSCoordSeq_create_r( geosinit()->ctxt, 1, coordDims );
     if ( !coordSeq )
     {
-      QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for point with %1 dimensions" ).arg( coordDims ) );
+      QgsDebugError( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for point with %1 dimensions" ).arg( coordDims ) );
       return nullptr;
     }
     if ( precision > 0. )

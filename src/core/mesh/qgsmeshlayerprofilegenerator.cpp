@@ -97,7 +97,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming profile line to mesh CRS" ) );
+    QgsDebugError( QStringLiteral( "Error transforming profile line to mesh CRS" ) );
     return false;
   }
 

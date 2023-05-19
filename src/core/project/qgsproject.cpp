@@ -1177,13 +1177,13 @@ void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_pro
 
   if ( propertiesElem.firstChild().isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "empty ``properties'' XML tag ... bailing" ) );
+    QgsDebugError( QStringLiteral( "empty ``properties'' XML tag ... bailing" ) );
     return;
   }
 
   if ( ! project_properties.readXml( propertiesElem ) )
   {
-    QgsDebugMsg( QStringLiteral( "Project_properties.readXml() failed" ) );
+    QgsDebugError( QStringLiteral( "Project_properties.readXml() failed" ) );
   }
 }
 
@@ -1202,7 +1202,7 @@ QgsPropertyCollection getDataDefinedServerProperties( const QDomDocument &doc, c
   {
     if ( !ddServerProperties.readXml( ddElem, dataDefinedServerPropertyDefinitions ) )
     {
-      QgsDebugMsg( QStringLiteral( "dataDefinedServerProperties.readXml() failed" ) );
+      QgsDebugError( QStringLiteral( "dataDefinedServerProperties.readXml() failed" ) );
     }
   }
   return ddServerProperties;
@@ -1250,7 +1250,7 @@ static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser,
 
   if ( !nl.count() )
   {
-    QgsDebugMsg( QStringLiteral( "unable to find qgis element" ) );
+    QgsDebugError( QStringLiteral( "unable to find qgis element" ) );
     return;
   }
 
@@ -1268,7 +1268,7 @@ QgsProjectVersion getVersion( const QDomDocument &doc )
 
   if ( !nl.count() )
   {
-    QgsDebugMsg( QStringLiteral( " unable to find qgis element in project file" ) );
+    QgsDebugError( QStringLiteral( " unable to find qgis element in project file" ) );
     return QgsProjectVersion( 0, 0, 0, QString() );
   }
 
@@ -1517,7 +1517,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem,
   const Qgis::LayerType layerType( QgsMapLayerFactory::typeFromString( type, ok ) );
   if ( !ok )
   {
-    QgsDebugMsg( QStringLiteral( "Unknown layer type \"%1\"" ).arg( type ) );
+    QgsDebugError( QStringLiteral( "Unknown layer type \"%1\"" ).arg( type ) );
     return false;
   }
 
@@ -1567,7 +1567,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem,
 
   if ( !mapLayer )
   {
-    QgsDebugMsg( QStringLiteral( "Unable to create layer" ) );
+    QgsDebugError( QStringLiteral( "Unable to create layer" ) );
     return false;
   }
 
@@ -1617,7 +1617,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem,
     // It's a bad layer: do not add to legend (the user will decide if she wants to do so)
     addMapLayers( newLayers, false );
     newLayers.first();
-    QgsDebugMsg( "Unable to load " + type + " layer" );
+    QgsDebugError( "Unable to load " + type + " layer" );
     brokenNodes.push_back( layerElem );
   }
 
@@ -1762,7 +1762,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     const QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" )
                                 .arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
 
-    QgsDebugMsg( errorString );
+    QgsDebugError( errorString );
 
     projectFile.close();
 
@@ -2021,11 +2021,11 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   // review the integrity of the retrieved map layers
   if ( !clean && !( flags & Qgis::ProjectReadFlag::DontResolveLayers ) )
   {
-    QgsDebugMsg( QStringLiteral( "Unable to get map layers from project file." ) );
+    QgsDebugError( QStringLiteral( "Unable to get map layers from project file." ) );
 
     if ( !brokenNodes.isEmpty() )
     {
-      QgsDebugMsg( "there are " + QString::number( brokenNodes.size() ) + " broken layers" );
+      QgsDebugError( "there are " + QString::number( brokenNodes.size() ) + " broken layers" );
     }
 
     // we let a custom handler decide what to do with missing layers
@@ -2962,7 +2962,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
           }
           else
           {
-            QgsDebugMsg( QStringLiteral( "Could not restore layer properties for layer %1" ).arg( ml->id() ) );
+            QgsDebugError( QStringLiteral( "Could not restore layer properties for layer %1" ).arg( ml->id() ) );
           }
         }
 

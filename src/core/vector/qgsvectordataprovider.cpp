@@ -506,7 +506,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
     return true;
   }
 
-  QgsDebugMsg( QStringLiteral( "no sufficient native type found" ) );
+  QgsDebugError( QStringLiteral( "no sufficient native type found" ) );
   return false;
 }
 
@@ -516,7 +516,7 @@ QVariant QgsVectorDataProvider::minimumValue( int index ) const
 
   if ( index < 0 || index >= fields().count() )
   {
-    QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
+    QgsDebugError( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
   }
 
@@ -534,7 +534,7 @@ QVariant QgsVectorDataProvider::maximumValue( int index ) const
 
   if ( index < 0 || index >= fields().count() )
   {
-    QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
+    QgsDebugError( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
   }
 
@@ -882,7 +882,7 @@ void QgsVectorDataProvider::pushError( const QString &msg ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDebugMsg( msg );
+  QgsDebugError( msg );
   mErrors << msg;
   emit raiseError( msg );
 }

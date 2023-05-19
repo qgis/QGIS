@@ -4039,12 +4039,12 @@ void QgsLayoutDesignerDialog::restoreWindowState()
 
   if ( !restoreState( settings.value( QStringLiteral( "LayoutDesigner/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultLayerDesignerUIstate ), sizeof defaultLayerDesignerUIstate ), QgsSettings::App ).toByteArray() ) )
   {
-    QgsDebugMsg( QStringLiteral( "restore of layout UI state failed" ) );
+    QgsDebugError( QStringLiteral( "restore of layout UI state failed" ) );
   }
   // restore window geometry
   if ( !restoreGeometry( settings.value( QStringLiteral( "LayoutDesigner/geometry" ), QgsSettings::App ).toByteArray() ) )
   {
-    QgsDebugMsg( QStringLiteral( "restore of layout UI geometry failed" ) );
+    QgsDebugError( QStringLiteral( "restore of layout UI geometry failed" ) );
     // default to 80% of screen size, at 10% from top left corner
     resize( mScreenHelper->availableGeometry().size() * 0.8 );
     QSize pos = mScreenHelper->availableGeometry().size() * 0.1;

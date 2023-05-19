@@ -164,7 +164,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
     QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
     if ( !handle )
     {
-      QgsDebugMsg( QStringLiteral( "Connection to database failed. Import of layer aborted." ) );
+      QgsDebugError( QStringLiteral( "Connection to database failed. Import of layer aborted." ) );
       if ( errorMessage )
         *errorMessage = QObject::tr( "Connection to database failed" );
       return Qgis::VectorExportResult::ErrorConnectionFailed;
@@ -347,10 +347,10 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
     }
     catch ( SLException &e )
     {
-      QgsDebugMsg( QStringLiteral( "creation of data source %1 failed. %2" )
-                   .arg( tableName,
-                         e.errorMessage() )
-                 );
+      QgsDebugError( QStringLiteral( "creation of data source %1 failed. %2" )
+                     .arg( tableName,
+                           e.errorMessage() )
+                   );
 
       if ( errorMessage )
         *errorMessage = QObject::tr( "creation of data source %1 failed. %2" )
@@ -379,7 +379,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
   QgsSpatiaLiteProvider *provider = new QgsSpatiaLiteProvider( dsUri.uri(), providerOptions );
   if ( !provider->isValid() )
   {
-    QgsDebugMsg( "The layer " + tableName + " just created is not valid or not supported by the provider." );
+    QgsDebugError( "The layer " + tableName + " just created is not valid or not supported by the provider." );
     if ( errorMessage )
       *errorMessage = QObject::tr( "loading of the layer %1 failed" )
                       .arg( tableName );
@@ -408,13 +408,13 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
 
       if ( fld.name() == geometryColumn )
       {
-        QgsDebugMsg( QStringLiteral( "Found a field with the same name of the geometry column. Skip it!" ) );
+        QgsDebugError( QStringLiteral( "Found a field with the same name of the geometry column. Skip it!" ) );
         continue;
       }
 
       if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( fld ) )
       {
-        QgsDebugMsg( "error creating field " + fld.name() + ": unsupported type" );
+        QgsDebugError( "error creating field " + fld.name() + ": unsupported type" );
         if ( errorMessage )
           *errorMessage = QObject::tr( "unsupported type for field %1" )
                           .arg( fld.name() );
@@ -440,7 +440,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
 
     if ( !provider->addAttributes( flist ) )
     {
-      QgsDebugMsg( QStringLiteral( "error creating fields " ) );
+      QgsDebugError( QStringLiteral( "error creating fields " ) );
       if ( errorMessage )
         *errorMessage = QObject::tr( "creation of fields failed" );
 
@@ -487,7 +487,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
       int ret = exec_sql( mSqliteHandle, QStringLiteral( "PRAGMA %1" ).arg( pragma ), uri, errMsg );
       if ( ret != SQLITE_OK )
       {
-        QgsDebugMsg( QStringLiteral( "PRAGMA " ) + pragma + QString( " failed : %1" ).arg( errMsg ? errMsg : "" ) );
+        QgsDebugError( QStringLiteral( "PRAGMA " ) + pragma + QString( " failed : %1" ).arg( errMsg ? errMsg : "" ) );
       }
       sqlite3_free( errMsg );
     }
@@ -532,7 +532,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
     // invalid metadata
     mNumberFeatures = 0;
 
-    QgsDebugMsg( QStringLiteral( "Invalid SpatiaLite layer" ) );
+    QgsDebugError( QStringLiteral( "Invalid SpatiaLite layer" ) );
     closeDb();
     return;
   }
@@ -559,7 +559,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
     {
       // the table is not a geometry table
       mNumberFeatures = 0;
-      QgsDebugMsg( QStringLiteral( "Invalid SpatiaLite layer" ) );
+      QgsDebugError( QStringLiteral( "Invalid SpatiaLite layer" ) );
       closeDb();
       gaiaFreeVectorLayersList( list );
       return;
@@ -567,7 +567,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
     if ( !getTableSummaryAbstractInterface( lyr ) )     // gets the extent and feature count
     {
       mNumberFeatures = 0;
-      QgsDebugMsg( QStringLiteral( "Invalid SpatiaLite layer" ) );
+      QgsDebugError( QStringLiteral( "Invalid SpatiaLite layer" ) );
       closeDb();
       gaiaFreeVectorLayersList( list );
       return;
@@ -583,14 +583,14 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
     {
       // the table is not a geometry table
       mNumberFeatures = 0;
-      QgsDebugMsg( QStringLiteral( "Invalid SpatiaLite layer" ) );
+      QgsDebugError( QStringLiteral( "Invalid SpatiaLite layer" ) );
       closeDb();
       return;
     }
     if ( !getTableSummary() )     // gets the extent and feature count
     {
       mNumberFeatures = 0;
-      QgsDebugMsg( QStringLiteral( "Invalid SpatiaLite layer" ) );
+      QgsDebugError( QStringLiteral( "Invalid SpatiaLite layer" ) );
       closeDb();
       return;
     }
@@ -600,7 +600,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
 
   if ( !mSqliteHandle )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid SpatiaLite layer" ) );
+    QgsDebugError( QStringLiteral( "Invalid SpatiaLite layer" ) );
     return;
   }
 
@@ -1402,7 +1402,7 @@ QgsFeatureIterator QgsSpatiaLiteProvider::getFeatures( const QgsFeatureRequest &
 {
   if ( !mValid )
   {
-    QgsDebugMsg( QStringLiteral( "Read attempt on an invalid SpatiaLite data source" ) );
+    QgsDebugError( QStringLiteral( "Read attempt on an invalid SpatiaLite data source" ) );
     return QgsFeatureIterator();
   }
   return QgsFeatureIterator( new QgsSpatiaLiteFeatureIterator( new QgsSpatiaLiteFeatureSource( this ), true, request ) );
@@ -6153,7 +6153,7 @@ bool QgsSpatiaLiteProviderMetadata::saveStyle( const QString &uri, const QString
   QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
   if ( !handle )
   {
-    QgsDebugMsg( QStringLiteral( "Connection to database failed. Save style aborted." ) );
+    QgsDebugError( QStringLiteral( "Connection to database failed. Save style aborted." ) );
     errCause = QObject::tr( "Connection to database failed" );
     return false;
   }
@@ -6327,7 +6327,7 @@ QString QgsSpatiaLiteProviderMetadata::loadStoredStyle( const QString &uri, QStr
   QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
   if ( !handle )
   {
-    QgsDebugMsg( QStringLiteral( "Connection to database failed. Save style aborted." ) );
+    QgsDebugError( QStringLiteral( "Connection to database failed. Save style aborted." ) );
     errCause = QObject::tr( "Connection to database failed" );
     return QString();
   }
@@ -6386,7 +6386,7 @@ int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &
   QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
   if ( !handle )
   {
-    QgsDebugMsg( QStringLiteral( "Connection to database failed. Save style aborted." ) );
+    QgsDebugError( QStringLiteral( "Connection to database failed. Save style aborted." ) );
     errCause = QObject::tr( "Connection to database failed" );
     return -1;
   }
@@ -6488,7 +6488,7 @@ QString QgsSpatiaLiteProviderMetadata::getStyleById( const QString &uri, const Q
   QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
   if ( !handle )
   {
-    QgsDebugMsg( QStringLiteral( "Connection to database failed. Save style aborted." ) );
+    QgsDebugError( QStringLiteral( "Connection to database failed. Save style aborted." ) );
     errCause = QObject::tr( "Connection to database failed" );
     return QString();
   }

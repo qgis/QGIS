@@ -76,7 +76,7 @@ void QgsMssqlGeomColumnTypeThread::run()
       std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( mService, mHost, mDatabase, mUsername, mPassword );
       if ( !db->isValid() )
       {
-        QgsDebugMsg( db->errorText() );
+        QgsDebugError( db->errorText() );
         continue;
       }
 
@@ -84,7 +84,7 @@ void QgsMssqlGeomColumnTypeThread::run()
       q.setForwardOnly( true );
       if ( !q.exec( query ) )
       {
-        QgsDebugMsg( q.lastError().text() );
+        QgsDebugError( q.lastError().text() );
       }
 
       QString type;

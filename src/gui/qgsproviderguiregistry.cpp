@@ -145,7 +145,7 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
 {
 #ifdef HAVE_STATIC_PROVIDERS
   Q_UNUSED( pluginPath )
-  QgsDebugMsg( QStringLiteral( "Forced only static GUI providers" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Forced only static GUI providers" ), 2 );
 #else
   typedef QgsProviderGuiMetadata *factory_function( );
 
@@ -166,7 +166,7 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
 
   if ( mLibraryDirectory.count() == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "No dynamic QGIS GUI provider plugins found in:\n%1\n" ).arg( mLibraryDirectory.path() ) );
+    QgsDebugError( QStringLiteral( "No dynamic QGIS GUI provider plugins found in:\n%1\n" ).arg( mLibraryDirectory.path() ) );
   }
 
   // provider file regex pattern, only files matching the pattern are loaded if the variable is defined
@@ -185,7 +185,7 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
       const QRegularExpressionMatch fileNameMatch = fileRegexp.match( fi.fileName() );
       if ( !fileNameMatch.hasMatch() )
       {
-        QgsDebugMsg( "provider " + fi.fileName() + " skipped because doesn't match pattern " + filePattern );
+        QgsDebugMsgLevel( "provider " + fi.fileName() + " skipped because doesn't match pattern " + filePattern, 2 );
         continue;
       }
     }

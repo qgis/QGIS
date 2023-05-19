@@ -393,8 +393,8 @@ void QgsPluginManager::getCppPluginsMetadata()
       void *handle = dlopen( lib.toLocal8Bit().data(), RTLD_LAZY | RTLD_GLOBAL );
       if ( !handle )
       {
-        QgsDebugMsg( QStringLiteral( "Error in dlopen: " ) );
-        QgsDebugMsg( dlerror() );
+        QgsDebugError( QStringLiteral( "Error in dlopen: " ) );
+        QgsDebugError( dlerror() );
       }
       else
       {
@@ -518,12 +518,12 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       catch ( QgsSettingsException &ex )
       {
-        QgsDebugMsg( QStringLiteral( "Unhandled settings exception loading %1: %2" ).arg( lib, ex.what() ) );
+        QgsDebugError( QStringLiteral( "Unhandled settings exception loading %1: %2" ).arg( lib, ex.what() ) );
         continue;
       }
       catch ( ... )
       {
-        QgsDebugMsg( QStringLiteral( "Unhandled exception loading %1" ).arg( lib ) );
+        QgsDebugError( QStringLiteral( "Unhandled exception loading %1" ).arg( lib ) );
         continue;
       }
     }

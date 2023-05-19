@@ -339,7 +339,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
       }
       catch ( QgsCsException & )
       {
-        QgsDebugMsg( QStringLiteral( "Coordinate exception encountered while calculating GPS bearing rotation" ) );
+        QgsDebugError( QStringLiteral( "Coordinate exception encountered while calculating GPS bearing rotation" ) );
         mCanvas->setRotation( trueNorth - bearing - adjustment );
         mCanvas->refresh();
       }

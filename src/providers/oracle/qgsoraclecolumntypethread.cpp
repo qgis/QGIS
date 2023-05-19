@@ -43,7 +43,7 @@ void QgsOracleColumnTypeThread::run()
   QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( conninfo );
   if ( !conn )
   {
-    QgsDebugMsg( "Connection failed - " + conninfo );
+    QgsDebugError( "Connection failed - " + conninfo );
     mStopped = true;
     return;
   }

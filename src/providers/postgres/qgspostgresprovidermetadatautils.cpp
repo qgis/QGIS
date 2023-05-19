@@ -121,7 +121,7 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Unsupported layer type '%1': skipping metadata record" ).arg( layerType ) );
+        QgsDebugError( QStringLiteral( "Unsupported layer type '%1': skipping metadata record" ).arg( layerType ) );
         continue;
       }
       result.setUri( uri.uri() );

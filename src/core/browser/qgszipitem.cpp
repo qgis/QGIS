@@ -245,7 +245,7 @@ QStringList QgsZipItem::getZipFileList()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Error reading %1" ).arg( mFilePath ) );
+    QgsDebugError( QStringLiteral( "Error reading %1" ).arg( mFilePath ) );
   }
 
   return mZipFileList;

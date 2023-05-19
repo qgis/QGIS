@@ -130,7 +130,7 @@ bool QgsEditFormConfig::setWidgetConfig( const QString &widgetName, const QVaria
 {
   if ( d->mFields.indexOf( widgetName ) != -1 )
   {
-    QgsDebugMsg( QStringLiteral( "Trying to set a widget config for a field on QgsEditFormConfig. Use layer->setEditorWidgetSetup() instead." ) );
+    QgsDebugError( QStringLiteral( "Trying to set a widget config for a field on QgsEditFormConfig. Use layer->setEditorWidgetSetup() instead." ) );
     return false;
   }
 

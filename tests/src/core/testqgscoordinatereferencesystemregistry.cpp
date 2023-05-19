@@ -64,7 +64,7 @@ void TestQgsCoordinateReferenceSystemRegistry::initTestCase()
 
   QSettings().clear();
 
-  QgsDebugMsg( QStringLiteral( "Custom srs database: %1" ).arg( QgsApplication::qgisUserDatabaseFilePath() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Custom srs database: %1" ).arg( QgsApplication::qgisUserDatabaseFilePath() ), 1 );
 }
 
 void TestQgsCoordinateReferenceSystemRegistry::cleanupTestCase()

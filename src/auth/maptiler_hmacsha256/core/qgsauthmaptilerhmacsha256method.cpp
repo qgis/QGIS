@@ -68,7 +68,7 @@ bool QgsAuthMapTilerHmacSha256Method::updateNetworkRequest( QNetworkRequest &req
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
   if ( !config.isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    QgsDebugError( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
     return false;
   }
 
@@ -77,7 +77,7 @@ bool QgsAuthMapTilerHmacSha256Method::updateNetworkRequest( QNetworkRequest &req
 
   if ( splitToken.count() != 2 )
   {
-    QgsDebugMsg( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    QgsDebugError( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
     return false;
   }
 

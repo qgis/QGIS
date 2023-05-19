@@ -182,13 +182,13 @@ void QgsVirtualPointCloudProvider::parseFile()
          !f.contains( "properties" ) || !f["properties"].is_object() ||
          !f.contains( "geometry" ) || !f["geometry"].is_object() )
     {
-      QgsDebugMsg( QStringLiteral( "Malformed STAC item: %1" ).arg( QString::fromStdString( f ) ) );
+      QgsDebugError( QStringLiteral( "Malformed STAC item: %1" ).arg( QString::fromStdString( f ) ) );
       continue;
     }
 
     if ( f["stac_version"] != "1.0.0" )
     {
-      QgsDebugMsg( QStringLiteral( "Unsupported STAC version: %1" ).arg( QString::fromStdString( f["stac_version"] ) ) );
+      QgsDebugError( QStringLiteral( "Unsupported STAC version: %1" ).arg( QString::fromStdString( f["stac_version"] ) ) );
       continue;
     }
 
@@ -211,7 +211,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( !uri.endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) &&
          !uri.endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
-      QgsDebugMsg( QStringLiteral( "Unsupported point cloud uri: %1" ).arg( uri ) );
+      QgsDebugError( QStringLiteral( "Unsupported point cloud uri: %1" ).arg( uri ) );
     }
 
     if ( f["properties"].contains( "pc:count" ) )
@@ -242,7 +242,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Malformed bounding box, skipping item." ) );
+        QgsDebugError( QStringLiteral( "Malformed bounding box, skipping item." ) );
         continue;
       }
     }
@@ -265,7 +265,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Malformed bounding box, skipping item." ) );
+        QgsDebugError( QStringLiteral( "Malformed bounding box, skipping item." ) );
         continue;
       }
 
@@ -275,13 +275,13 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       catch ( QgsCsException & )
       {
-        QgsDebugMsg( QStringLiteral( "Cannot transform bbox to layer crs, skipping item." ) );
+        QgsDebugError( QStringLiteral( "Cannot transform bbox to layer crs, skipping item." ) );
         continue;
       }
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Missing extent information, skipping item." ) );
+      QgsDebugError( QStringLiteral( "Missing extent information, skipping item." ) );
       continue;
     }
 
@@ -322,14 +322,14 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Unexpected geometry type: %1, skipping item." ).arg( QString::fromStdString( geom.at( "type" ) ) ) );
+        QgsDebugError( QStringLiteral( "Unexpected geometry type: %1, skipping item." ).arg( QString::fromStdString( geom.at( "type" ) ) ) );
         continue;
       }
       geometry = QgsGeometry::fromMultiPolygonXY( multiPolygon );
     }
     catch ( std::exception &e )
     {
-      QgsDebugMsg( QStringLiteral( "Malformed geometry item: %1, skipping item." ).arg( QString::fromStdString( e.what() ) ) );
+      QgsDebugError( QStringLiteral( "Malformed geometry item: %1, skipping item." ).arg( QString::fromStdString( e.what() ) ) );
       continue;
     }
 
@@ -355,7 +355,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       catch ( QgsCsException & )
       {
-        QgsDebugMsg( QStringLiteral( "Cannot transform geometry to layer crs, skipping item." ) );
+        QgsDebugError( QStringLiteral( "Cannot transform geometry to layer crs, skipping item." ) );
         continue;
       }
     }

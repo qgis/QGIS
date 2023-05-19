@@ -138,7 +138,7 @@ QByteArray QgsXyzVectorTileDataProviderBase::loadFromNetwork( const QgsTileXYZ &
   QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr, false, feedback );
   if ( errCode != QgsBlockingNetworkRequest::NoError )
   {
-    QgsDebugMsg( QStringLiteral( "Request failed: " ) + url );
+    QgsDebugError( QStringLiteral( "Request failed: " ) + url );
     return QByteArray();
   }
   QgsNetworkReplyContent reply = req.reply();
@@ -288,7 +288,7 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, 
   const QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
   if ( !QgsVectorTileUtils::checkXYZUrlTemplate( sourcePath ) )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + sourcePath );
+    QgsDebugError( QStringLiteral( "Invalid format of URL for XYZ source: " ) + sourcePath );
     mIsValid = false;
     return;
   }

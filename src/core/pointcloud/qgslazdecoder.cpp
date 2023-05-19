@@ -486,7 +486,7 @@ QgsPointCloudBlock *decompressLaz_( FileType &file, const QgsPointCloudAttribute
     if ( lasPointFormat != 0 && lasPointFormat != 1 && lasPointFormat != 2 && lasPointFormat != 3 &&
          lasPointFormat != 6 && lasPointFormat != 7 && lasPointFormat != 8 )
     {
-      QgsDebugMsg( QStringLiteral( "Unexpected point format record (%1) - only 0, 1, 2, 3, 6, 7, 8 are supported" ).arg( lasPointFormat ) );
+      QgsDebugError( QStringLiteral( "Unexpected point format record (%1) - only 0, 1, 2, 3, 6, 7, 8 are supported" ).arg( lasPointFormat ) );
       return nullptr;
     }
 
@@ -575,7 +575,7 @@ QgsPointCloudBlock *decompressLaz_( FileType &file, const QgsPointCloudAttribute
   }
   catch ( std::exception &e )
   {
-    QgsDebugMsg( "Error decompressing laz file: " + QString::fromLatin1( e.what() ) );
+    QgsDebugError( "Error decompressing laz file: " + QString::fromLatin1( e.what() ) );
     return nullptr;
   }
 }
@@ -603,7 +603,7 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLa
   int lasPointFormat = lazInfo.pointFormat();
   if ( lasPointFormat != 6 && lasPointFormat != 7 && lasPointFormat != 8 )
   {
-    QgsDebugMsg( QStringLiteral( "Unexpected point format record (%1) - only 6, 7, 8 are supported for COPC format" ).arg( lasPointFormat ) );
+    QgsDebugError( QStringLiteral( "Unexpected point format record (%1) - only 6, 7, 8 are supported for COPC format" ).arg( lasPointFormat ) );
     return nullptr;
   }
 

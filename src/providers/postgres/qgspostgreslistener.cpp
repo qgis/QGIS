@@ -36,7 +36,7 @@ extern "C"
 std::unique_ptr< QgsPostgresListener > QgsPostgresListener::create( const QString &connString )
 {
   std::unique_ptr< QgsPostgresListener > res( new QgsPostgresListener( connString ) );
-  QgsDebugMsg( QStringLiteral( "starting notification listener" ) );
+  QgsDebugMsgLevel( QStringLiteral( "starting notification listener" ), 2 );
   res->start();
   res->mMutex.lock();
   res->mIsReadyCondition.wait( &res->mMutex );
@@ -53,9 +53,9 @@ QgsPostgresListener::QgsPostgresListener( const QString &connString )
 QgsPostgresListener::~QgsPostgresListener()
 {
   mStop = true;
-  QgsDebugMsg( QStringLiteral( "stopping the loop" ) );
+  QgsDebugMsgLevel( QStringLiteral( "stopping the loop" ), 2 );
   wait();
-  QgsDebugMsg( QStringLiteral( "notification listener stopped" ) );
+  QgsDebugMsgLevel( QStringLiteral( "notification listener stopped" ), 2 );
 }
 
 void QgsPostgresListener::run()
@@ -93,7 +93,7 @@ void QgsPostgresListener::run()
     if ( PQstatus( conn ) != CONNECTION_OK )
     {
       PQfinish( conn );
-      QgsDebugMsg( QStringLiteral( "LISTENer not started" ) );
+      QgsDebugMsgLevel( QStringLiteral( "LISTENer not started" ), 2 );
       return;
     }
   }
@@ -102,7 +102,7 @@ void QgsPostgresListener::run()
   PGresult *res = PQexec( conn, "LISTEN qgis" );
   if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
   {
-    QgsDebugMsg( QStringLiteral( "error in listen" ) );
+    QgsDebugError( QStringLiteral( "error in listen" ) );
     PQclear( res );
     PQfinish( conn );
     mMutex.lock();
@@ -118,7 +118,7 @@ void QgsPostgresListener::run()
   const int sock = PQsocket( conn );
   if ( sock < 0 )
   {
-    QgsDebugMsg( QStringLiteral( "error in socket" ) );
+    QgsDebugError( QStringLiteral( "error in socket" ) );
     PQfinish( conn );
     return;
   }
@@ -135,7 +135,7 @@ void QgsPostgresListener::run()
 
     if ( select( sock + 1, &input_mask, nullptr, nullptr, &timeout ) < 0 )
     {
-      QgsDebugMsg( QStringLiteral( "error in select" ) );
+      QgsDebugError( QStringLiteral( "error in select" ) );
       break;
     }
 
@@ -145,13 +145,13 @@ void QgsPostgresListener::run()
     {
       const QString msg( n->extra );
       emit notify( msg );
-      QgsDebugMsg( "notify " + msg );
+      QgsDebugMsgLevel( "notify " + msg, 2 );
       PQfreemem( n );
     }
 
     if ( mStop )
     {
-      QgsDebugMsg( QStringLiteral( "stop from main thread" ) );
+      QgsDebugMsgLevel( QStringLiteral( "stop from main thread" ), 2 );
       break;
     }
   }

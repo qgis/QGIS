@@ -43,7 +43,7 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
   QgsMbTiles reader( sourcePath );
   if ( !reader.open() )
   {
-    QgsDebugMsg( QStringLiteral( "failed to open MBTiles file: " ) + sourcePath );
+    QgsDebugError( QStringLiteral( "failed to open MBTiles file: " ) + sourcePath );
     mIsValid = false;
     return;
   }
@@ -51,7 +51,7 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
   const QString format = reader.metadataValue( QStringLiteral( "format" ) );
   if ( format != QLatin1String( "pbf" ) )
   {
-    QgsDebugMsg( QStringLiteral( "Cannot open MBTiles for vector tiles. Format = " ) + format );
+    QgsDebugError( QStringLiteral( "Cannot open MBTiles for vector tiles. Format = " ) + format );
     mIsValid = false;
     return;
   }
@@ -79,7 +79,7 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
+    QgsDebugError( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
   }
 
   mIsValid = true;
@@ -204,7 +204,7 @@ QByteArray QgsMbTilesVectorTileDataProvider::loadFromMBTiles( QgsMbTiles &mbTile
   QByteArray data;
   if ( !QgsZipUtils::decodeGzip( gzippedTileData, data ) )
   {
-    QgsDebugMsg( QStringLiteral( "Failed to decompress tile " ) + id.toString() );
+    QgsDebugError( QStringLiteral( "Failed to decompress tile " ) + id.toString() );
     return QByteArray();
   }
 

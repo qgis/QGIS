@@ -193,7 +193,7 @@ void QgsRelationManager::readProject( const QDomDocument &doc, QgsReadWriteConte
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "No relations data present in this document" ) );
+    QgsDebugMsgLevel( QStringLiteral( "No relations data present in this document" ), 2 );
   }
 
   QDomNodeList polymorphicRelationNodes = doc.elementsByTagName( QStringLiteral( "polymorphicRelations" ) );
@@ -223,7 +223,7 @@ void QgsRelationManager::writeProject( QDomDocument &doc )
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
   if ( !nl.count() )
   {
-    QgsDebugMsg( QStringLiteral( "Unable to find qgis element in project file" ) );
+    QgsDebugError( QStringLiteral( "Unable to find qgis element in project file" ) );
     return;
   }
   QDomNode qgisNode = nl.item( 0 );  // there should only be one

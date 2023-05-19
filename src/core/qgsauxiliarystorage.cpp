@@ -802,7 +802,7 @@ QString QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
   const QString err = QString::fromUtf8( sqlite3_errmsg( handler ) );
   const QString msg = QObject::tr( "Unable to execute" );
   const QString errMsg = QObject::tr( "%1 '%2': %3" ).arg( msg, sql, err );
-  QgsDebugMsg( errMsg );
+  QgsDebugError( errMsg );
   return errMsg;
 }
 

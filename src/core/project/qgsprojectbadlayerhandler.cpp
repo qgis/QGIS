@@ -37,7 +37,7 @@ QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const Q
 
   if ( type.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "cannot find ``type'' attribute" ) );
+    QgsDebugError( QStringLiteral( "cannot find ``type'' attribute" ) );
 
     return IS_BOGUS;
   }
@@ -66,7 +66,7 @@ QString QgsProjectBadLayerHandler::dataSource( const QDomNode &layerNode )
 
   if ( dataSourceNode.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "cannot find datasource node" ) );
+    QgsDebugError( QStringLiteral( "cannot find datasource node" ) );
 
     return QString();
   }
@@ -105,7 +105,7 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
       return IS_FILE;
 
     default:
-      QgsDebugMsg( QStringLiteral( "unknown ``type'' attribute" ) );
+      QgsDebugError( QStringLiteral( "unknown ``type'' attribute" ) );
   }
 
   return IS_Unknown;

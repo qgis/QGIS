@@ -25,7 +25,7 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
 {
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
 
-  QgsDebugMsg( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
+  QgsDebugError( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
 
   const QString hostport( QStringLiteral( "%1:%2" )
                           .arg( reply->url().host() )
@@ -38,7 +38,7 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
 
   if ( errscache.contains( dgsthostport ) )
   {
-    QgsDebugMsg( QStringLiteral( "Ignored SSL errors cached item found, ignoring errors if they match for %1" ).arg( hostport ) );
+    QgsDebugMsgLevel( QStringLiteral( "Ignored SSL errors cached item found, ignoring errors if they match for %1" ).arg( hostport ), 2 );
     const QSet<QSslError::SslError> &errenums( errscache.value( dgsthostport ) );
     bool ignore = !errenums.isEmpty();
     if ( ignore )
@@ -55,14 +55,14 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
 
     if ( ignore )
     {
-      QgsDebugMsg( QStringLiteral( "Errors matched cached item's, ignoring all for %1" ).arg( hostport ) );
+      QgsDebugMsgLevel( QStringLiteral( "Errors matched cached item's, ignoring all for %1" ).arg( hostport ), 2 );
       reply->ignoreSslErrors();
       return;
     }
 
-    QgsDebugMsg( QStringLiteral( "Errors %1 for cached item for %2" )
-                 .arg( errenums.isEmpty() ? QStringLiteral( "not found" ) : QStringLiteral( "did not match" ),
-                       hostport ) );
+    QgsDebugMsgLevel( QStringLiteral( "Errors %1 for cached item for %2" )
+                      .arg( errenums.isEmpty() ? QStringLiteral( "not found" ) : QStringLiteral( "did not match" ),
+                            hostport ), 2 );
   }
 
   QgsAuthSslErrorsDialog *dlg = new QgsAuthSslErrorsDialog( reply, errors, QgisApp::instance(), digest, hostport );
@@ -70,7 +70,7 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
   dlg->resize( 580, 512 );
   if ( dlg->exec() )
   {
-    QgsDebugMsg( QStringLiteral( "All SSL errors ignored for %1" ).arg( hostport ) );
+    QgsDebugMsgLevel( QStringLiteral( "All SSL errors ignored for %1" ).arg( hostport ), 2 );
     reply->ignoreSslErrors();
   }
   dlg->deleteLater();

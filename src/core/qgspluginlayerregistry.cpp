@@ -56,7 +56,7 @@ QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
 {
   if ( !mPluginLayerTypes.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" ) );
+    QgsDebugMsgLevel( QStringLiteral( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" ), 2 );
     const QStringList keys = mPluginLayerTypes.keys();
     for ( const QString &key : keys )
     {
@@ -119,7 +119,7 @@ QgsPluginLayer *QgsPluginLayerRegistry::createLayer( const QString &typeName, co
   QgsPluginLayerType *type = pluginLayerType( typeName );
   if ( !type )
   {
-    QgsDebugMsg( "Unknown plugin layer type: " + typeName );
+    QgsDebugError( "Unknown plugin layer type: " + typeName );
     return nullptr;
   }
 

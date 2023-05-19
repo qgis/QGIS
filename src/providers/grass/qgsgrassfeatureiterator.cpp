@@ -201,7 +201,7 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle &rect, bool u
     int lid = list->value[i];
     if ( lid < 1 || lid >= mSelection.size() ) // should not happen
     {
-      QgsDebugMsg( QString( "lid %1 out of range <1,%2>" ).arg( lid ).arg( mSelection.size() ) );
+      QgsDebugError( QString( "lid %1 out of range <1,%2>" ).arg( lid ).arg( mSelection.size() ) );
       continue;
     }
     mSelection.setBit( lid );
@@ -291,7 +291,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
 
       // TODO real cat when line/cat was rewritten?!
       cat = catFromFid( mRequest.filterFid() );
-      QgsDebugMsg( QString( "lid = %1 cat = %2" ).arg( lid ).arg( cat ) );
+      QgsDebugMsgLevel( QString( "lid = %1 cat = %2" ).arg( lid ).arg( cat ), 2 );
     }
   }
   else
@@ -410,7 +410,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
         int numFields = Vect_cidx_get_num_fields( mSource->map() );
         if ( cidxFieldIndex < 0 || cidxFieldIndex >= numFields )
         {
-          QgsDebugMsg( QString( "cidxFieldIndex %1 out of range (0,%2)" ).arg( cidxFieldIndex ).arg( numFields - 1 ) );
+          QgsDebugError( QString( "cidxFieldIndex %1 out of range (0,%2)" ).arg( cidxFieldIndex ).arg( numFields - 1 ) );
           break;
         }
 #if 0
@@ -464,7 +464,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
     }
     if ( type == 0 && mSource->mLayerType != QgsGrassProvider::TopoNode )
     {
-      QgsDebugMsg( "unknown type" );
+      QgsDebugError( "unknown type" );
       close();
       mSource->mLayer->map()->unlockReadWrite();
       return false;
@@ -599,7 +599,7 @@ void QgsGrassFeatureIterator::setFeatureGeometry( QgsFeature &feature, int id, i
   }
   else
   {
-    QgsDebugMsg( QString( "unknown type = %1" ).arg( type ) );
+    QgsDebugError( QString( "unknown type = %1" ).arg( type ) );
   }
   feature.setGeometry( QgsGeometry( geometry ) );
 }

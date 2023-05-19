@@ -65,7 +65,7 @@ void QgsLayoutNorthArrowHandler::updateMapRotation()
       catch ( QgsException &e )
       {
         Q_UNUSED( e )
-        QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
+        QgsDebugError( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
       }
       break;
     }

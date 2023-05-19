@@ -526,7 +526,7 @@ bool QgsOgrProviderMetadata::saveStyle(
       bool ok = OGR_L_SetFeature( hLayer, hFeature.get() ) == 0;
       if ( !ok )
       {
-        QgsDebugMsg( QStringLiteral( "Could not unset previous useAsDefault style" ) );
+        QgsDebugError( QStringLiteral( "Could not unset previous useAsDefault style" ) );
       }
     }
   }

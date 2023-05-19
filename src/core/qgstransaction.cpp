@@ -138,8 +138,8 @@ bool QgsTransaction::addLayer( QgsVectorLayer *layer, bool addLayersInEditMode )
 
   if ( connectionString( layer->source() ) != mConnString )
   {
-    QgsDebugMsg( QStringLiteral( "Couldn't start transaction because connection string for layer %1 : '%2' does not match '%3'" ).arg(
-                   layer->id(), connectionString( layer->source() ), mConnString ) );
+    QgsDebugError( QStringLiteral( "Couldn't start transaction because connection string for layer %1 : '%2' does not match '%3'" ).arg(
+                     layer->id(), connectionString( layer->source() ), mConnString ) );
     return false;
   }
 

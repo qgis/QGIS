@@ -46,10 +46,10 @@ typedef SInt32 SRefCon;
 #include "qgsproviderregistry.h"
 
 #undef QgsDebugCall
-#undef QgsDebugMsg
+#undef QgsDebugError
 #undef QgsDebugMsgLevel
 #define QgsDebugCall
-#define QgsDebugMsg(str)
+#define QgsDebugError(str)
 #define QgsDebugMsgLevel(str, level)
 
 

@@ -233,7 +233,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
       catch ( const Exception &ex )
       {
         errorMessage = QObject::tr( "Connection to database failed" ) + '\n' + QgsHanaUtils::formatErrorMessage( ex.what() );
-        QgsDebugMsg( errorMessage );
+        QgsDebugError( errorMessage );
         QgsMessageLog::logMessage( errorMessage, tr( "SAP HANA" ) );
       }
 

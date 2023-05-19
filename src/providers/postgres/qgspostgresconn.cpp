@@ -729,8 +729,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       columnType = SctRaster;
     else
     {
-      QgsDebugMsg( QStringLiteral( "Unhandled columnType index %1" )
-                   .  arg( columnTypeInt ) );
+      QgsDebugError( QStringLiteral( "Unhandled columnType index %1" )
+                     .  arg( columnTypeInt ) );
     }
 
     int srid = ssrid.isEmpty() ? std::numeric_limits<int>::min() : ssrid.toInt();
@@ -1435,8 +1435,8 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Not logged erroneous query: %1 returned %2 [%3]" )
-                     .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) );
+        QgsDebugError( QStringLiteral( "Not logged erroneous query: %1 returned %2 [%3]" )
+                       .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) );
       }
     }
     logWrapper->setFetchedRows( PQntuples( res ) );
@@ -1454,8 +1454,8 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Connection error: %1 returned %2 [%3]" )
-                   .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ) );
+      QgsDebugError( QStringLiteral( "Connection error: %1 returned %2 [%3]" )
+                     .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ) );
     }
   }
   else
@@ -1468,7 +1468,7 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Not logged query failed: %1\nError: no result buffer" ).arg( query ) );
+      QgsDebugError( QStringLiteral( "Not logged query failed: %1\nError: no result buffer" ).arg( query ) );
     }
   }
 
@@ -1795,7 +1795,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
     break;
 
     default:
-      QgsDebugMsg( QStringLiteral( "unexpected size %1" ).arg( s ) );
+      QgsDebugError( QStringLiteral( "unexpected size %1" ).arg( s ) );
       //intentional fall-through
       FALLTHROUGH
     case 4:

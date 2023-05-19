@@ -60,7 +60,7 @@ QString QgsCacheDirectoryManager::getBaseCacheDirectory( bool createIfNotExistin
     const QMutexLocker locker( &mMutex );
     if ( !QDir( cacheDirectory ).exists( subDir ) )
     {
-      QgsDebugMsg( QStringLiteral( "Creating main cache dir %1/%2" ).arg( cacheDirectory ). arg( subDir ) );
+      QgsDebugMsgLevel( QStringLiteral( "Creating main cache dir %1/%2" ).arg( cacheDirectory ). arg( subDir ), 2 );
       QDir( cacheDirectory ).mkpath( subDir );
     }
   }
@@ -76,7 +76,7 @@ QString QgsCacheDirectoryManager::getCacheDirectory( bool createIfNotExisting )
     const QMutexLocker locker( &mMutex );
     if ( !QDir( baseDirectory ).exists( processPath ) )
     {
-      QgsDebugMsg( QStringLiteral( "Creating our cache dir %1/%2" ).arg( baseDirectory, processPath ) );
+      QgsDebugMsgLevel( QStringLiteral( "Creating our cache dir %1/%2" ).arg( baseDirectory, processPath ), 2 );
       QDir( baseDirectory ).mkpath( processPath );
     }
     if ( mCounter == 0 && mKeepAliveWorks )
@@ -112,7 +112,7 @@ void QgsCacheDirectoryManager::releaseCacheDirectory()
     const QString tmpDirname( getCacheDirectory( false ) );
     if ( QDir( tmpDirname ).exists() )
     {
-      QgsDebugMsg( QStringLiteral( "Removing our cache dir %1" ).arg( tmpDirname ) );
+      QgsDebugMsgLevel( QStringLiteral( "Removing our cache dir %1" ).arg( tmpDirname ), 2 );
       removeDir( tmpDirname );
 
       const QString baseDirname( getBaseCacheDirectory( false ) );
@@ -120,12 +120,12 @@ void QgsCacheDirectoryManager::releaseCacheDirectory()
       const QFileInfoList fileList( baseDir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
       if ( fileList.size() == 0 )
       {
-        QgsDebugMsg( QStringLiteral( "Removing main cache dir %1" ).arg( baseDirname ) );
+        QgsDebugMsgLevel( QStringLiteral( "Removing main cache dir %1" ).arg( baseDirname ), 2 );
         removeDir( baseDirname );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "%1 entries remaining in %2" ).arg( fileList.size() ).arg( baseDirname ) );
+        QgsDebugMsgLevel( QStringLiteral( "%1 entries remaining in %2" ).arg( fileList.size() ).arg( baseDirname ), 2 );
       }
     }
   }
@@ -245,7 +245,7 @@ void QgsCacheDirectoryManager::init()
           }
           else
           {
-            QgsDebugMsg( QStringLiteral( "Cannot attach to shared memory segment of process %1. It must be ghost" ).arg( pid ) );
+            QgsDebugError( QStringLiteral( "Cannot attach to shared memory segment of process %1. It must be ghost" ).arg( pid ) );
           }
         }
         else

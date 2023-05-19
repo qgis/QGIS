@@ -548,7 +548,7 @@ void QgsGrassNewMapset::setRegionPage()
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse )
-        QgsDebugMsg( "Cannot transform point" );
+        QgsDebugError( "Cannot transform point" );
         ok = false;
         break;
       }
@@ -749,7 +749,7 @@ void QgsGrassNewMapset::loadRegions()
   {
     QString errmsg = tr( "Cannot read locations file (%1):" ).arg( path )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
-    QgsDebugMsg( errmsg );
+    QgsDebugError( errmsg );
     QgsGrass::warning( errmsg );
     file.close();
     return;
@@ -801,7 +801,7 @@ void QgsGrassNewMapset::loadRegions()
 #endif
     if ( coor.size() != 2 )
     {
-      QgsDebugMsg( QString( "Cannot parse coordinates: %1" ).arg( coorElem.text() ) );
+      QgsDebugError( QString( "Cannot parse coordinates: %1" ).arg( coorElem.text() ) );
       continue;
     }
 
@@ -814,7 +814,7 @@ void QgsGrassNewMapset::loadRegions()
 #endif
     if ( ll.size() != 2 || ur.size() != 2 )
     {
-      QgsDebugMsg( QString( "Cannot parse coordinates: %1" ).arg( coorElem.text() ) );
+      QgsDebugError( QString( "Cannot parse coordinates: %1" ).arg( coorElem.text() ) );
       continue;
     }
 
@@ -884,7 +884,7 @@ void QgsGrassNewMapset::setSelectedRegion()
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse )
-        QgsDebugMsg( "Cannot transform point" );
+        QgsDebugError( "Cannot transform point" );
         ok = false;
         break;
       }
@@ -972,7 +972,7 @@ void QgsGrassNewMapset::setCurrentRegion()
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse )
-        QgsDebugMsg( "Cannot transform point" );
+        QgsDebugError( "Cannot transform point" );
         ok = false;
         break;
       }
@@ -1105,14 +1105,14 @@ void QgsGrassNewMapset::drawRegion()
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse )
-        QgsDebugMsg( "Cannot transform point" );
+        QgsDebugError( "Cannot transform point" );
         points.removeAt( i );
       }
     }
 
     if ( points.size() < 3 )
     {
-      QgsDebugMsg( "Cannot reproject region." );
+      QgsDebugError( "Cannot reproject region." );
       return;
     }
   }

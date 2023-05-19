@@ -106,7 +106,7 @@ QgsPointCloudBlock *QgsRemoteCopcPointCloudIndex::nodeData( const IndexedPointCl
 
   if ( !blockRequest->block() )
   {
-    QgsDebugMsg( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
+    QgsDebugError( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
   }
 
   return blockRequest->block();
@@ -187,7 +187,7 @@ void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t
 
   if ( reply->error() != QNetworkReply::NoError )
   {
-    QgsDebugMsg( QStringLiteral( "Request failed: " ) + mUrl.toString() );
+    QgsDebugError( QStringLiteral( "Request failed: " ) + mUrl.toString() );
     return;
   }
 

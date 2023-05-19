@@ -96,7 +96,7 @@ bool QgsLayerTreeUtils::readOldLegendLayerOrder( const QDomElement &legendElem, 
   const auto constLayerIndexes = layerIndexes;
   for ( const QString &layerId : constLayerIndexes )
   {
-    QgsDebugMsg( layerId );
+    QgsDebugMsgLevel( layerId, 2 );
     order.append( layerId );
   }
 
