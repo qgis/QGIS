@@ -170,6 +170,68 @@ void QgsRasterLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfac
   mSymbology = symbology;
 }
 
+bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer )
+{
+  // multiple bands => unlikely to be a DEM
+  if ( layer->bandCount() > 1 )
+    return false;
+
+  // raster attribute table => unlikely to be a DEM
+  if ( layer->attributeTable( 1 ) )
+    return false;
+
+  if ( QgsRasterDataProvider *dataProvider = layer->dataProvider() )
+  {
+    // filter out data types which aren't likely to be DEMs
+    switch ( dataProvider->dataType( 1 ) )
+    {
+      case Qgis::DataType::Byte:
+      case Qgis::DataType::UnknownDataType:
+      case Qgis::DataType::CInt16:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::CFloat32:
+      case Qgis::DataType::CFloat64:
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
+        return false;
+
+      case Qgis::DataType::Int8:
+      case Qgis::DataType::UInt16:
+      case Qgis::DataType::Int16:
+      case Qgis::DataType::UInt32:
+      case Qgis::DataType::Int32:
+      case Qgis::DataType::Float32:
+      case Qgis::DataType::Float64:
+        break;
+    }
+  }
+
+  // Check the layer's name for DEM-ish hints.
+  // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
+  // but adding hardcoded localized variants of the strings is encouraged.
+  static const QStringList sPartialCandidates{ QStringLiteral( "dem" ),
+      QStringLiteral( "height" ),
+      QStringLiteral( "elev" ),
+      QStringLiteral( "srtm" ) };
+  const QString layerName = layer->name();
+  for ( const QString &candidate : sPartialCandidates )
+  {
+    if ( layerName.contains( candidate, Qt::CaseInsensitive ) )
+      return true;
+  }
+
+  // these candidates must occur with word boundaries (we don't want to find "aster" in "raster"!)
+  static const QStringList sWordCandidates{ QStringLiteral( "aster" ) };
+  for ( const QString &candidate : sWordCandidates )
+  {
+    const QRegularExpression re( QStringLiteral( "\\b%1\\b" ).arg( candidate ) );
+    if ( re.match( layerName, Qt::CaseInsensitive ).hasMatch() )
+      return true;
+  }
+
+  return false;
+}
+
 void QgsRasterLayerElevationProperties::setDefaultProfileLineSymbol( const QColor &color )
 {
   std::unique_ptr< QgsSimpleLineSymbolLayer > profileLineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( color, 0.6 );

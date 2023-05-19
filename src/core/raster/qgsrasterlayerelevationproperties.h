@@ -24,6 +24,8 @@
 #include "qgsmaplayerelevationproperties.h"
 #include "qgslinesymbol.h"
 
+class QgsRasterLayer;
+
 /**
  * \class QgsRasterLayerElevationProperties
  * \ingroup core
@@ -126,6 +128,23 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
      * \see setProfileSymbology()
      */
     void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+
+    /**
+     * Returns TRUE if a raster \a layer looks like a DEM.
+     *
+     * This method applies some heuristics to \a layer to determine whether it looks like a candidate
+     * for a DEM layer.
+     *
+     * Specifically, it checks:
+     *
+     * - the layer's name for DEM-like wording hints
+     * - whether the layer contains a single band
+     * - whether the layer contains an attribute table (if so, it's unlikely to be a DEM)
+     * - the layer's data type
+     *
+     * \since QGIS 3.32
+     */
+    static bool layerLooksLikeDem( QgsRasterLayer *layer );
 
   private:
 
