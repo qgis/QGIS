@@ -2383,7 +2383,7 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
   QMutexLocker locker( mMutex.get() );
   if ( !mIgnoredSslErrorsCache.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "Ignored SSL errors cache items:" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Ignored SSL errors cache items:" ), 1 );
     QHash<QString, QSet<QSslError::SslError> >::const_iterator i = mIgnoredSslErrorsCache.constBegin();
     while ( i != mIgnoredSslErrorsCache.constEnd() )
     {
@@ -2392,7 +2392,7 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
       {
         errs << QgsAuthCertUtils::sslErrorEnumString( err );
       }
-      QgsDebugError( QStringLiteral( "%1 = %2" ).arg( i.key(), errs.join( ", " ) ) );
+      QgsDebugMsgLevel( QStringLiteral( "%1 = %2" ).arg( i.key(), errs.join( ", " ) ), 1 );
       ++i;
     }
   }
