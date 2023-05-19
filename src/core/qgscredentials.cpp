@@ -25,7 +25,7 @@ void QgsCredentials::setInstance( QgsCredentials *instance )
 {
   if ( sInstance )
   {
-    QgsDebugMsg( QStringLiteral( "already registered an instance of QgsCredentials" ) );
+    QgsDebugError( QStringLiteral( "already registered an instance of QgsCredentials" ) );
   }
 
   sInstance = instance;

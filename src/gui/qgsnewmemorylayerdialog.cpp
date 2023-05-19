@@ -225,7 +225,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "unexpected index" ) );
+    QgsDebugError( QStringLiteral( "unexpected index" ) );
   }
 }
 

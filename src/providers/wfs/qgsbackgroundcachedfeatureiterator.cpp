@@ -605,7 +605,7 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
     mWriterFile.reset( new QFile( mWriterFilename ) );
     if ( !mWriterFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot open %1 for writing" ).arg( mWriterFilename ) );
+      QgsDebugError( QStringLiteral( "Cannot open %1 for writing" ).arg( mWriterFilename ) );
       mWriterFile.reset();
       mWriterFilename.clear();
       mShared->releaseCacheDirectory();
@@ -648,7 +648,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mTimeoutOrInterruptionOccurred )
       return false;
 
-    //QgsDebugMsg(QString("QgsBackgroundCachedSharedData::fetchFeature() : mCacheIterator.nextFeature(cachedFeature)") );
+    //QgsDebugMsgLevel(QString("QgsBackgroundCachedSharedData::fetchFeature() : mCacheIterator.nextFeature(cachedFeature)"), 2 );
 
     if ( mShared->hasGeometry() && mFetchGeometry )
     {
@@ -667,7 +667,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
         }
         catch ( const QgsWkbException & )
         {
-          QgsDebugMsg( QStringLiteral( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
+          QgsDebugError( QStringLiteral( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
           cachedFeature.clearGeometry();
         }
       }
@@ -746,7 +746,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
         mReaderFile.reset( new QFile( mReaderFilename ) );
         if ( !mReaderFile->open( QIODevice::ReadOnly ) )
         {
-          QgsDebugMsg( QStringLiteral( "Cannot open %1" ).arg( mReaderFilename ) );
+          QgsDebugError( QStringLiteral( "Cannot open %1" ).arg( mReaderFilename ) );
           mReaderFile.reset();
           return false;
         }

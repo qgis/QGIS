@@ -121,7 +121,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     catch ( QgsException &e )
     {
       Q_UNUSED( e )
-      QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
+      QgsDebugError( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
     }
 
     identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );

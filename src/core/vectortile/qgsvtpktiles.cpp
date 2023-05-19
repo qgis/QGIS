@@ -360,7 +360,7 @@ QVariantMap QgsVtpkTiles::rootTileMap() const
   zip_file *file = zip_fopen( mZip, tileMapPath.toLocal8Bit().constData(), 0 );
   if ( !file )
   {
-    QgsDebugMsg( QStringLiteral( "Tilemap %1 was not found in vtpk archive" ).arg( tileMapPath ) );
+    QgsDebugError( QStringLiteral( "Tilemap %1 was not found in vtpk archive" ).arg( tileMapPath ) );
     mTileMapPath.clear();
     return mRootTileMap;
   }
@@ -378,7 +378,7 @@ QVariantMap QgsVtpkTiles::rootTileMap() const
     if ( file )
       zip_fclose( file );
     file = nullptr;
-    QgsDebugMsg( QStringLiteral( "Tilemap %1 could not be read from vtpk archive" ).arg( tileMapPath ) );
+    QgsDebugError( QStringLiteral( "Tilemap %1 could not be read from vtpk archive" ).arg( tileMapPath ) );
     mTileMapPath.clear();
   }
   mHasReadTileMap = true;
@@ -421,7 +421,7 @@ QgsRectangle QgsVtpkTiles::extent( const QgsCoordinateTransformContext &context 
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
+      QgsDebugError( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
     }
   }
 
@@ -432,7 +432,7 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
 {
   if ( !mZip )
   {
-    QgsDebugMsg( QStringLiteral( "VTPK tile package not open: " ) + mFilename );
+    QgsDebugError( QStringLiteral( "VTPK tile package not open: " ) + mFilename );
     return QByteArray();
   }
   if ( mPacketSize < 0 )

@@ -369,14 +369,14 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( const QStrin
   QFile file( qlrfile );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QStringLiteral( "Can't open file" ) );
+    QgsDebugError( QStringLiteral( "Can't open file" ) );
     return QList<QgsMapLayer *>();
   }
 
   QDomDocument doc;
   if ( !doc.setContent( &file ) )
   {
-    QgsDebugMsg( QStringLiteral( "Can't set content" ) );
+    QgsDebugError( QStringLiteral( "Can't set content" ) );
     return QList<QgsMapLayer *>();
   }
 

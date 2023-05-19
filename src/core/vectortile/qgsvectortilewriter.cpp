@@ -245,7 +245,7 @@ QgsRectangle QgsVectorTileWriter::fullExtent() const
     }
     catch ( const QgsCsException & )
     {
-      QgsDebugMsg( "Failed to reproject layer extent to destination CRS" );
+      QgsDebugError( "Failed to reproject layer extent to destination CRS" );
     }
   }
   return extent;

@@ -41,7 +41,7 @@ QgsCustomProjectionOptionsWidget::QgsCustomProjectionOptionsWidget( QWidget *par
   // we just check whether there is our database [MD]
   if ( !QFileInfo::exists( QgsApplication::qgisSettingsDirPath() ) )
   {
-    QgsDebugMsg( QStringLiteral( "The qgis.db does not exist" ) );
+    QgsDebugError( QStringLiteral( "The qgis.db does not exist" ) );
   }
 
   populateList();
@@ -367,7 +367,7 @@ void QgsCustomProjectionOptionsWidget::apply()
     }
     if ( ! saveSuccess )
     {
-      QgsDebugMsg( QStringLiteral( "Error when saving CRS '%1'" ).arg( def.name ) );
+      QgsDebugError( QStringLiteral( "Error when saving CRS '%1'" ).arg( def.name ) );
     }
   }
   QgsDebugMsgLevel( QStringLiteral( "We remove the deleted CRS." ), 4 );
@@ -376,7 +376,7 @@ void QgsCustomProjectionOptionsWidget::apply()
     saveSuccess &= QgsApplication::coordinateReferenceSystemRegistry()->removeUserCrs( mDeletedCRSs[i].toLong() );
     if ( ! saveSuccess )
     {
-      QgsDebugMsg( QStringLiteral( "Error deleting CRS for '%1'" ).arg( mDefinitions.at( i ).name ) );
+      QgsDebugError( QStringLiteral( "Error deleting CRS for '%1'" ).arg( mDefinitions.at( i ).name ) );
     }
   }
 }

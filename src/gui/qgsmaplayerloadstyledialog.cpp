@@ -312,7 +312,7 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
   vl->deleteStyleFromDatabase( mSelectedStyleId, msgError );
   if ( !msgError.isNull() )
   {
-    QgsDebugMsg( opInfo + " failed." );
+    QgsDebugError( opInfo + " failed." );
     QMessageBox::warning( this, opInfo, tr( "%1: fail. %2" ).arg( opInfo, msgError ) );
   }
   else

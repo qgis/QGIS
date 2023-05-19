@@ -399,7 +399,7 @@ void ProjectorData::calcSrcRowsCols()
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Cannot get src extent/size" ) );
+      QgsDebugError( QStringLiteral( "Cannot get src extent/size" ) );
     }
   }
 
@@ -847,7 +847,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNo, pd.srcExtent(), pd.srcCols(), pd.srcRows(), feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
+    QgsDebugError( QStringLiteral( "No raster data!" ) );
     return new QgsRasterBlock();
   }
 
@@ -860,7 +860,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   }
   if ( !outputBlock->isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "Cannot create block" ) );
+    QgsDebugError( QStringLiteral( "Cannot create block" ) );
     return outputBlock.release();
   }
 
@@ -905,12 +905,12 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )
       {
-        // QgsDebugMsg( QStringLiteral( "Cannot get input block data: row = %1 col = %2" ).arg( i ).arg( j ) );
+        // QgsDebugError( QStringLiteral( "Cannot get input block data: row = %1 col = %2" ).arg( i ).arg( j ) );
         continue;
       }
       if ( !destBits )
       {
-        // QgsDebugMsg( QStringLiteral( "Cannot set output block data: srcRow = %1 srcCol = %2" ).arg( srcRow ).arg( srcCol ) );
+        // QgsDebugError( QStringLiteral( "Cannot set output block data: srcRow = %1 srcCol = %2" ).arg( srcRow ).arg( srcCol ) );
         continue;
       }
       memcpy( destBits, srcBits, pixelSize );

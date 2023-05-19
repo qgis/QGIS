@@ -355,7 +355,7 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Unhandled source-type: %1." ).arg( sourceType ) );
+      QgsDebugError( QStringLiteral( "Unhandled source-type: %1." ).arg( sourceType ) );
     }
 
     datasetElem = datasetElem.nextSiblingElement( QStringLiteral( "mesh-dataset" ) );
@@ -511,7 +511,7 @@ int QgsMeshDatasetGroupStore::registerDatasetGroup( const QgsMeshDatasetGroupSto
 
     if ( mRegistery.contains( groupIndex ) )
     {
-      QgsDebugMsg( QStringLiteral( "Dupplicate group name for %1." ).arg( name ) );
+      QgsDebugError( QStringLiteral( "Dupplicate group name for %1." ).arg( name ) );
       return -1; // The registery has already a group with this index, we can't have two groups with the same name
     }
   }
@@ -661,7 +661,7 @@ void QgsMeshDatasetGroupStore::createDatasetGroupTreeItems( const QList<int> &in
     {
       auto it = mNameToItem.find( subdatasets[0] );
       if ( it == mNameToItem.end() )
-        QgsDebugMsg( QStringLiteral( "Unable to find parent group for %1." ).arg( name ) );
+        QgsDebugError( QStringLiteral( "Unable to find parent group for %1." ).arg( name ) );
       else
       {
         displayName = subdatasets[1];
@@ -669,12 +669,12 @@ void QgsMeshDatasetGroupStore::createDatasetGroupTreeItems( const QList<int> &in
       }
     }
     else if ( subdatasets.size() != 1 )
-      QgsDebugMsg( QStringLiteral( "Ignoring too deep child group name %1." ).arg( name ) );
+      QgsDebugError( QStringLiteral( "Ignoring too deep child group name %1." ).arg( name ) );
 
     QgsMeshDatasetGroupTreeItem *item = new QgsMeshDatasetGroupTreeItem( displayName, name, meta.isVector(), groupIndex );
     parent->appendChild( item );
     if ( mNameToItem.contains( name ) )
-      QgsDebugMsg( QStringLiteral( "Group %1 is not unique" ).arg( displayName ) );
+      QgsDebugError( QStringLiteral( "Group %1 is not unique" ).arg( displayName ) );
     mNameToItem[name] = item;
   }
 }

@@ -46,7 +46,7 @@ static QString quotedColumn( QString name )
   return "\"" + name.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) + "\"";
 }
 
-#define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY ); QgsDebugMsg( msg ); } while(0)
+#define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY ); QgsDebugError( msg ); } while(0)
 
 
 QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri,

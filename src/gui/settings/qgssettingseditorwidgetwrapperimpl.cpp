@@ -41,7 +41,7 @@ bool QgsSettingsStringEditorWidgetWrapper::setWidgetValue( const QString &value 
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -55,7 +55,7 @@ bool QgsSettingsStringEditorWidgetWrapper::setSettingFromWidget() const
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -68,7 +68,7 @@ QString QgsSettingsStringEditorWidgetWrapper::valueFromWidget() const
   }
   else
   {
-    QgsDebugMsg( QString( "editor is not set, returning a non-existing value" ) );
+    QgsDebugError( QString( "editor is not set, returning a non-existing value" ) );
   }
   return QString();
 }
@@ -91,7 +91,7 @@ bool QgsSettingsBoolEditorWidgetWrapper::setWidgetValue( const bool &value ) con
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -105,7 +105,7 @@ bool QgsSettingsBoolEditorWidgetWrapper::setSettingFromWidget() const
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -119,7 +119,7 @@ bool QgsSettingsBoolEditorWidgetWrapper::valueFromWidget() const
   }
   else
   {
-    QgsDebugMsg( QString( "editor is not set, returning a non-existing value" ) );
+    QgsDebugError( QString( "editor is not set, returning a non-existing value" ) );
   }
   return false;
 }
@@ -143,7 +143,7 @@ bool QgsSettingsIntegerEditorWidgetWrapper::setWidgetValue( const int &value ) c
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -157,7 +157,7 @@ bool QgsSettingsIntegerEditorWidgetWrapper::setSettingFromWidget() const
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -170,7 +170,7 @@ int QgsSettingsIntegerEditorWidgetWrapper::valueFromWidget() const
   }
   else
   {
-    QgsDebugMsg( QString( "editor is not set, returning a non-existing value" ) );
+    QgsDebugError( QString( "editor is not set, returning a non-existing value" ) );
   }
   return std::numeric_limits<int>::quiet_NaN();
 }
@@ -195,7 +195,7 @@ bool QgsSettingsDoubleEditorWidgetWrapper::setWidgetValue( const double &value )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -209,7 +209,7 @@ bool QgsSettingsDoubleEditorWidgetWrapper::setSettingFromWidget() const
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -222,7 +222,7 @@ double QgsSettingsDoubleEditorWidgetWrapper::valueFromWidget() const
   }
   else
   {
-    QgsDebugMsg( QString( "editor is not set, returning a non-existing value" ) );
+    QgsDebugError( QString( "editor is not set, returning a non-existing value" ) );
   }
   return std::numeric_limits<double>::quiet_NaN();
 }
@@ -245,7 +245,7 @@ bool QgsSettingsColorEditorWidgetWrapper::setWidgetValue( const QColor &value ) 
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -258,7 +258,7 @@ void QgsSettingsColorEditorWidgetWrapper::configureEditorPrivateImplementation()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
 }
 
@@ -271,7 +271,7 @@ bool QgsSettingsColorEditorWidgetWrapper::setSettingFromWidget() const
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -284,7 +284,7 @@ QColor QgsSettingsColorEditorWidgetWrapper::valueFromWidget() const
   }
   else
   {
-    QgsDebugMsg( QString( "editor is not set, returning a non-existing value" ) );
+    QgsDebugError( QString( "editor is not set, returning a non-existing value" ) );
   }
   return QColor();
 }
@@ -307,7 +307,7 @@ QColor QgsSettingsColorEditorWidgetWrapper::valueFromWidget() const
 //  }
 //  else
 //  {
-//    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+//    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
 //  }
 //  return false;
 //}
@@ -321,7 +321,7 @@ QColor QgsSettingsColorEditorWidgetWrapper::valueFromWidget() const
 //  }
 //  else
 //  {
-//    QgsDebugMsg( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+//    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
 //  }
 //  return false;
 //}
@@ -334,7 +334,7 @@ QColor QgsSettingsColorEditorWidgetWrapper::valueFromWidget() const
 //  }
 //  else
 //  {
-//    QgsDebugMsg(QString("editor is not set, returning a non-existing value"));
+//    QgsDebugError(QString("editor is not set, returning a non-existing value"));
 //  }
 //  return QStringList();
 //}

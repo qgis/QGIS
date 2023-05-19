@@ -95,7 +95,7 @@ bool Qgs2To3Migration::requiresMigration()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Can not open %1" ).arg( migrationFile.fileName() ) );
+    QgsDebugError( QStringLiteral( "Can not open %1" ).arg( migrationFile.fileName() ) );
     mMigrationFileVersion = settingsMigrationVersion;
   }
 
@@ -113,7 +113,7 @@ QgsError Qgs2To3Migration::migrateStyles()
   if ( !db.open() )
   {
     error.append( db.lastError().text() );
-    QgsDebugMsg( db.lastError().text() );
+    QgsDebugError( db.lastError().text() );
     return error;
   }
 
@@ -133,7 +133,7 @@ QgsError Qgs2To3Migration::migrateStyles()
       QDomDocument doc;
       if ( !doc.setContent( xml ) )
       {
-        QgsDebugMsg( "Cannot open symbol " + name );
+        QgsDebugError( "Cannot open symbol " + name );
         continue;
       }
 
@@ -228,7 +228,7 @@ QgsError Qgs2To3Migration::migrateSettings()
   else
   {
     const QString msg = QString( "Can not open %1" ).arg( inputFile.fileName() );
-    QgsDebugMsg( msg );
+    QgsDebugError( msg );
     error.append( msg );
   }
 
@@ -266,7 +266,7 @@ QgsError Qgs2To3Migration::migrateAuthDb()
   if ( QFile( newAuthDbFilePath ).exists( ) )
   {
     const QString msg = QStringLiteral( "Could not copy old auth DB to %1: file already exists!" ).arg( newAuthDbFilePath );
-    QgsDebugMsg( msg );
+    QgsDebugError( msg );
     error.append( msg );
   }
   else
@@ -281,14 +281,14 @@ QgsError Qgs2To3Migration::migrateAuthDb()
       else
       {
         const QString msg = QStringLiteral( "Could not copy auth DB %1 to %2" ).arg( oldAuthDbFilePath, newAuthDbFilePath );
-        QgsDebugMsg( msg );
+        QgsDebugError( msg );
         error.append( msg );
       }
     }
     else
     {
       const QString msg = QStringLiteral( "Could not copy auth DB %1 to %2: old DB does not exists!" ).arg( oldAuthDbFilePath, newAuthDbFilePath );
-      QgsDebugMsg( msg );
+      QgsDebugError( msg );
       error.append( msg );
     }
   }

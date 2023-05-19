@@ -2246,7 +2246,7 @@ void QgsProjectProperties::pbnImportScales_clicked()
   QStringList myScales;
   if ( !QgsScaleUtils::loadScaleList( fileName, myScales, msg ) )
   {
-    QgsDebugMsg( msg );
+    QgsDebugError( msg );
   }
 
   const auto constMyScales = myScales;
@@ -2291,7 +2291,7 @@ void QgsProjectProperties::pbnExportScales_clicked()
   QString msg;
   if ( !QgsScaleUtils::saveScaleList( fileName, myScales, msg ) )
   {
-    QgsDebugMsg( msg );
+    QgsDebugError( msg );
   }
 }
 

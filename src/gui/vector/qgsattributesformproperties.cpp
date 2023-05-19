@@ -468,7 +468,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Invalid form action" ) );
+        QgsDebugError( QStringLiteral( "Invalid form action" ) );
       }
       break;
     }
@@ -569,7 +569,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
     case Qgis::AttributeEditorType::Invalid:
     {
-      QgsDebugMsg( QStringLiteral( "Not loading invalid attribute editor type..." ) );
+      QgsDebugError( QStringLiteral( "Not loading invalid attribute editor type..." ) );
       break;
     }
   }

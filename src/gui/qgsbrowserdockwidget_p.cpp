@@ -401,7 +401,7 @@ void QgsDockBrowserTreeView::dragMoveEvent( QDragMoveEvent *e )
   // do not accept drops above/below items
   /*if ( dropIndicatorPosition() != QAbstractItemView::OnItem )
       {
-        QgsDebugMsg("drag not on item");
+        QgsDebugMsgLevel("drag not on item", 2);
         e->ignore();
         return;
       }*/

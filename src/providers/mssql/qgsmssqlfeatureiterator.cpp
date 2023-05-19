@@ -135,7 +135,7 @@ QString QgsMssqlFeatureIterator::whereClauseFid( QgsFeatureId featureId )
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "FAILURE: Key values for feature %1 not found." ).arg( featureId ) );
+        QgsDebugError( QStringLiteral( "FAILURE: Key values for feature %1 not found." ).arg( featureId ) );
         whereClause = QStringLiteral( "NULL IS NOT NULL" );
       }
     }
@@ -429,7 +429,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 #if 0
   if ( fieldCount == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "QgsMssqlProvider::select no fields have been requested" ) );
+    QgsDebugError( QStringLiteral( "QgsMssqlProvider::select no fields have been requested" ) );
     mStatement.clear();
   }
 #endif
@@ -456,8 +456,8 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
 
     if ( !mDatabase->isValid() )
     {
-      QgsDebugMsg( QStringLiteral( "Failed to open database" ) );
-      QgsDebugMsg( mDatabase->errorText() );
+      QgsDebugError( QStringLiteral( "Failed to open database" ) );
+      QgsDebugError( mDatabase->errorText() );
       return false;
     }
 
@@ -474,7 +474,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
 
   if ( !mQuery->isActive() )
   {
-    QgsDebugMsg( QStringLiteral( "Read attempt on inactive query" ) );
+    QgsDebugError( QStringLiteral( "Read attempt on inactive query" ) );
     return false;
   }
 
@@ -598,7 +598,7 @@ bool QgsMssqlFeatureIterator::rewind()
 
   if ( mStatement.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "QgsMssqlFeatureIterator::rewind on empty statement" ) );
+    QgsDebugError( QStringLiteral( "QgsMssqlFeatureIterator::rewind on empty statement" ) );
     return false;
   }
 
@@ -667,7 +667,7 @@ bool QgsMssqlFeatureIterator::rewind()
 
   if ( !result )
   {
-    QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( mQuery->lastQuery(), mQuery->lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( mQuery->lastQuery(), mQuery->lastError().text() ) );
     close();
     return false;
   }

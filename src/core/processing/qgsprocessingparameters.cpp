@@ -2856,7 +2856,7 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
     return value.toString();
 
   // unhandled type
-  QgsDebugMsg( QStringLiteral( "unsupported variant type %1" ).arg( QMetaType::typeName( value.userType() ) ) );
+  QgsDebugError( QStringLiteral( "unsupported variant type %1" ).arg( QMetaType::typeName( value.userType() ) ) );
   ok = false;
   return value.toString();
 }

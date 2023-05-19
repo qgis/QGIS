@@ -142,7 +142,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
 
   if ( !hasNormals && !mNormals.empty() )
   {
-    QgsDebugMsg( "Vertex normals count and vertex positions count are different" );
+    QgsDebugError( "Vertex normals count and vertex positions count are different" );
   }
   int verticesCount = mVertexPosition.size() / 3;
 

@@ -404,7 +404,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
 
   if ( !mDataProvider )
   {
-    QgsDebugMsg( QStringLiteral( "Unable to get point cloud data provider" ) );
+    QgsDebugError( QStringLiteral( "Unable to get point cloud data provider" ) );
     setValid( false );
     return;
   }
@@ -415,7 +415,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   setValid( mDataProvider->isValid() );
   if ( !isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ) );
+    QgsDebugError( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ) );
     setError( mDataProvider->error() );
     return;
   }
@@ -973,7 +973,7 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Transformation of extent failed!" ) );
+      QgsDebugError( QStringLiteral( "Transformation of extent failed!" ) );
     }
 
     const QVector<QgsPointCloudSubIndex> subIndex = mDataProvider->subIndexes();

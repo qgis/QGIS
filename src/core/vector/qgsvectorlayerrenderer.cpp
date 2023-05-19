@@ -530,8 +530,8 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
     catch ( const QgsCsException &cse )
     {
       Q_UNUSED( cse )
-      QgsDebugMsg( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
-                   .arg( fet.id() ).arg( cse.what() ) );
+      QgsDebugError( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+                     .arg( fet.id() ).arg( cse.what() ) );
     }
   }
 
@@ -718,7 +718,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
         const QgsSymbolLevelItem &item = level[i];
         if ( !featureLists.contains( item.symbol() ) )
         {
-          QgsDebugMsg( QStringLiteral( "level item's symbol not found!" ) );
+          QgsDebugError( QStringLiteral( "level item's symbol not found!" ) );
           continue;
         }
         const int layer = item.layer();
@@ -753,8 +753,8 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
           catch ( const QgsCsException &cse )
           {
             Q_UNUSED( cse )
-            QgsDebugMsg( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
-                         .arg( fet.id() ).arg( cse.what() ) );
+            QgsDebugError( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+                           .arg( fet.id() ).arg( cse.what() ) );
           }
         }
       }

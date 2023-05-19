@@ -42,7 +42,7 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri
   QgsVtpkTiles reader( sourcePath );
   if ( !reader.open() )
   {
-    QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + sourcePath );
+    QgsDebugError( QStringLiteral( "failed to open VTPK file: " ) + sourcePath );
     mIsValid = false;
     return;
   }
@@ -51,7 +51,7 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri
   const QString format = metadata.value( QStringLiteral( "tileInfo" ) ).toMap().value( QStringLiteral( "format" ) ).toString();
   if ( format != QLatin1String( "pbf" ) )
   {
-    QgsDebugMsg( QStringLiteral( "Cannot open VTPK for vector tiles. Format = " ) + format );
+    QgsDebugError( QStringLiteral( "Cannot open VTPK for vector tiles. Format = " ) + format );
     mIsValid = false;
     return;
   }

@@ -161,7 +161,7 @@ void QgsOpenClUtils::init()
                                      .arg( lpTranslate[0].wCodePage, 4, 16, QLatin1Char( '0' ) )
                                      .arg( d );
 
-                  QgsDebugMsg( QString( "d:%1 subBlock:%2" ).arg( d ).arg( subBlock ) );
+                  QgsDebugMsgLevel( QString( "d:%1 subBlock:%2" ).arg( d ).arg( subBlock ), 2 );
 
                   BOOL r = VerQueryValue( lpVI, subBlock.toUtf8(), ( LPVOID * )&lpBuffer, ( UINT * )&dwUseless );
 
@@ -336,7 +336,7 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
       if ( deviceFound )
         break;
       const std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
-      QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
+      QgsDebugMsgLevel( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), 2 );
       if ( platver.find( "OpenCL " ) != std::string::npos )
       {
         std::vector<cl::Device> devices;
@@ -396,10 +396,10 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
         }
         catch ( cl::Error &e )
         {
-          QgsDebugMsg( QStringLiteral( "Error %1 on platform %3 searching for OpenCL device: %2" )
-                       .arg( errorText( e.err() ),
-                             QString::fromStdString( e.what() ),
-                             QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
+          QgsDebugError( QStringLiteral( "Error %1 on platform %3 searching for OpenCL device: %2" )
+                         .arg( errorText( e.err() ),
+                               QString::fromStdString( e.what() ),
+                               QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
         }
 
       }

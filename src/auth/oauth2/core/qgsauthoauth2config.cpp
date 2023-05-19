@@ -342,7 +342,7 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
       const QVariant variant = QJsonWrapper::parseJson( configtxt, &res, &errStr );
       if ( !res )
       {
-        QgsDebugMsg( QStringLiteral( "Error parsing JSON: %1" ).arg( QString( errStr ) ) );
+        QgsDebugError( QStringLiteral( "Error parsing JSON: %1" ).arg( QString( errStr ) ) );
         return res;
       }
       const QVariantMap variantMap = variant.toMap();
@@ -358,7 +358,7 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
       break;
     }
     default:
-      QgsDebugMsg( QStringLiteral( "Unsupported output format" ) );
+      QgsDebugError( QStringLiteral( "Unsupported output format" ) );
   }
   return true;
 }
@@ -372,7 +372,7 @@ QByteArray QgsAuthOAuth2Config::saveConfigTxt(
 
   if ( !isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "FAILED, config is not valid" ) );
+    QgsDebugError( QStringLiteral( "FAILED, config is not valid" ) );
     if ( ok )
       *ok = res;
     return out;
@@ -386,12 +386,12 @@ QByteArray QgsAuthOAuth2Config::saveConfigTxt(
       out = QJsonWrapper::toJson( variant, &res, &errStr, pretty );
       if ( !res )
       {
-        QgsDebugMsg( QStringLiteral( "Error serializing JSON: %1" ).arg( QString( errStr ) ) );
+        QgsDebugError( QStringLiteral( "Error serializing JSON: %1" ).arg( QString( errStr ) ) );
       }
       break;
     }
     default:
-      QgsDebugMsg( QStringLiteral( "Unsupported output format" ) );
+      QgsDebugError( QStringLiteral( "Unsupported output format" ) );
   }
 
   if ( ok )
@@ -445,11 +445,11 @@ QByteArray QgsAuthOAuth2Config::serializeFromVariant(
       out = QJsonWrapper::toJson( variant, &res, &errStr, pretty );
       if ( !res )
       {
-        QgsDebugMsg( QStringLiteral( "Error serializing JSON: %1" ).arg( QString( errStr ) ) );
+        QgsDebugError( QStringLiteral( "Error serializing JSON: %1" ).arg( QString( errStr ) ) );
       }
       break;
     default:
-      QgsDebugMsg( QStringLiteral( "Unsupported output format" ) );
+      QgsDebugError( QStringLiteral( "Unsupported output format" ) );
   }
 
   if ( ok )
@@ -474,7 +474,7 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
       const QVariant var = QJsonWrapper::parseJson( serial, &res, &errStr );
       if ( !res )
       {
-        QgsDebugMsg( QStringLiteral( "Error parsing JSON to variant: %1" ).arg( QString( errStr ) ) );
+        QgsDebugError( QStringLiteral( "Error parsing JSON to variant: %1" ).arg( QString( errStr ) ) );
         if ( ok )
           *ok = res;
         return vmap;
@@ -482,7 +482,7 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
 
       if ( QgsVariantUtils::isNull( var ) )
       {
-        QgsDebugMsg( QStringLiteral( "Error parsing JSON to variant: %1" ).arg( "invalid or null" ) );
+        QgsDebugError( QStringLiteral( "Error parsing JSON to variant: %1" ).arg( "invalid or null" ) );
         if ( ok )
           *ok = res;
         return vmap;
@@ -490,7 +490,7 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
       vmap = var.toMap();
       if ( vmap.isEmpty() )
       {
-        QgsDebugMsg( QStringLiteral( "Error parsing JSON to variantmap: %1" ).arg( "map empty" ) );
+        QgsDebugError( QStringLiteral( "Error parsing JSON to variantmap: %1" ).arg( "map empty" ) );
         if ( ok )
           *ok = res;
         return vmap;
@@ -498,7 +498,7 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
       break;
     }
     default:
-      QgsDebugMsg( QStringLiteral( "Unsupported output format" ) );
+      QgsDebugError( QStringLiteral( "Unsupported output format" ) );
   }
 
   if ( ok )
@@ -517,7 +517,7 @@ bool QgsAuthOAuth2Config::writeOAuth2Config(
   const QByteArray configtxt = config->saveConfigTxt( format, pretty, &res );
   if ( !res )
   {
-    QgsDebugMsg( QStringLiteral( "FAILED to save config to text" ) );
+    QgsDebugError( QStringLiteral( "FAILED to save config to text" ) );
     return false;
   }
 
@@ -530,19 +530,19 @@ bool QgsAuthOAuth2Config::writeOAuth2Config(
     config_file.close();
     if ( bytesWritten == -1 )
     {
-      QgsDebugMsg( QStringLiteral( "FAILED to write config file: %1" ).arg( file_path ) );
+      QgsDebugError( QStringLiteral( "FAILED to write config file: %1" ).arg( file_path ) );
       return false;
     }
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "FAILED to open for writing config file: %1" ).arg( file_path ) );
+    QgsDebugError( QStringLiteral( "FAILED to open for writing config file: %1" ).arg( file_path ) );
     return false;
   }
 
   if ( !config_file.setPermissions( QFile::ReadOwner | QFile::WriteOwner ) )
   {
-    QgsDebugMsg( QStringLiteral( "FAILED to set permissions config file: %1" ).arg( file_path ) );
+    QgsDebugError( QStringLiteral( "FAILED to set permissions config file: %1" ).arg( file_path ) );
     return false;
   }
 
@@ -566,7 +566,7 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
       namefilters << QStringLiteral( "*.json" );
       break;
     default:
-      QgsDebugMsg( QStringLiteral( "Unsupported output format" ) );
+      QgsDebugError( QStringLiteral( "Unsupported output format" ) );
       if ( ok )
         *ok = res;
       return configs;
@@ -578,12 +578,12 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
 
   if ( configfiles.size() > 0 )
   {
-    QgsDebugMsg( QStringLiteral( "Config files found in: %1...\n%2" )
-                 .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "Config files found in: %1...\n%2" )
+                      .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ), 2 );
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "No config files found in: %1" ).arg( configdir.path() ) );
+    QgsDebugMsgLevel( QStringLiteral( "No config files found in: %1" ).arg( configdir.path() ), 2 );
     if ( ok ) *ok = res;
     return configs;
   }
@@ -602,21 +602,21 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "FAILED to open config for reading: %1" ).arg( configfile ) );
+        QgsDebugError( QStringLiteral( "FAILED to open config for reading: %1" ).arg( configfile ) );
       }
       cfile.close();
     }
 
     if ( configtxt.isEmpty() )
     {
-      QgsDebugMsg( QStringLiteral( "EMPTY read of config: %1" ).arg( configfile ) );
+      QgsDebugError( QStringLiteral( "EMPTY read of config: %1" ).arg( configfile ) );
       continue;
     }
 
     QgsAuthOAuth2Config *config = new QgsAuthOAuth2Config( parent );
     if ( !config->loadConfigTxt( configtxt, format ) )
     {
-      QgsDebugMsg( QStringLiteral( "FAILED to load config: %1" ).arg( configfile ) );
+      QgsDebugError( QStringLiteral( "FAILED to load config: %1" ).arg( configfile ) );
       config->deleteLater();
       continue;
     }
@@ -644,7 +644,7 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
       namefilters << QStringLiteral( "*.json" );
       break;
     default:
-      QgsDebugMsg( QStringLiteral( "Unsupported output format" ) );
+      QgsDebugError( QStringLiteral( "Unsupported output format" ) );
       if ( ok )
         *ok = res;
       return configs;
@@ -656,12 +656,12 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
 
   if ( configfiles.size() > 0 )
   {
-    QgsDebugMsg( QStringLiteral( "Config files found in: %1...\n%2" )
-                 .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "Config files found in: %1...\n%2" )
+                      .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ), 2 );
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "No config files found in: %1" ).arg( configdir.path() ) );
+    QgsDebugMsgLevel( QStringLiteral( "No config files found in: %1" ).arg( configdir.path() ), 2 );
     if ( ok )
       *ok = res;
     return configs;
@@ -681,14 +681,14 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "FAILED to open config for reading: %1" ).arg( configfile ) );
+        QgsDebugError( QStringLiteral( "FAILED to open config for reading: %1" ).arg( configfile ) );
       }
       cfile.close();
     }
 
     if ( configtxt.isEmpty() )
     {
-      QgsDebugMsg( QStringLiteral( "EMPTY read of config: %1" ).arg( configfile ) );
+      QgsDebugError( QStringLiteral( "EMPTY read of config: %1" ).arg( configfile ) );
       continue;
     }
 
@@ -696,12 +696,12 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
     std::unique_ptr<QgsAuthOAuth2Config, std::function<void( QgsAuthOAuth2Config * )> > config( new QgsAuthOAuth2Config( parent ), []( QgsAuthOAuth2Config * cfg ) { cfg->deleteLater( );} );
     if ( !config->loadConfigTxt( configtxt, format ) )
     {
-      QgsDebugMsg( QStringLiteral( "FAILED to load config: %1" ).arg( configfile ) );
+      QgsDebugError( QStringLiteral( "FAILED to load config: %1" ).arg( configfile ) );
       continue;
     }
     if ( config->id().isEmpty() )
     {
-      QgsDebugMsg( QStringLiteral( "NO ID SET for config: %1" ).arg( configfile ) );
+      QgsDebugError( QStringLiteral( "NO ID SET for config: %1" ).arg( configfile ) );
       continue;
     }
     configs.insert( config->id(), configtxt );

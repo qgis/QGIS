@@ -677,7 +677,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement &geom
     {
       x = iter->x();
       y = iter->y();
-      // QgsDebugMsg( QStringLiteral( "x, y is %1,%2" ).arg( x, 'f' ).arg( y, 'f' ) );
+      // QgsDebugMsgLevel( QStringLiteral( "x, y is %1,%2" ).arg( x, 'f' ).arg( y, 'f' ), 2 );
       memcpy( &( wkb )[wkbPosition], &x, sizeof( double ) );
       wkbPosition += sizeof( double );
       memcpy( &( wkb )[wkbPosition], &y, sizeof( double ) );

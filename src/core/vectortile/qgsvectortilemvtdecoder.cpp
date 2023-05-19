@@ -160,7 +160,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         const int valueIndex = static_cast<int>( feature.tags( tagNum + 1 ) );
         if ( valueIndex >= layer.values_size() )
         {
-          QgsDebugMsg( QStringLiteral( "Invalid value index for attribute" ) );
+          QgsDebugError( QStringLiteral( "Invalid value index for attribute" ) );
           continue;
         }
         const ::vector_tile::Tile_Value &value = layer.values( valueIndex );
@@ -181,7 +181,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           f.setAttribute( fieldIndex, static_cast<bool>( value.bool_value() ) );
         else
         {
-          QgsDebugMsg( QStringLiteral( "Unexpected attribute value" ) );
+          QgsDebugError( QStringLiteral( "Unexpected attribute value" ) );
         }
       }
 
@@ -206,7 +206,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         {
           if ( i + static_cast<int>( cmdCount ) * 2 >= feature.geometry_size() )
           {
-            QgsDebugMsg( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
+            QgsDebugError( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
             break;
           }
 
@@ -250,7 +250,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         {
           if ( i + static_cast<int>( cmdCount ) * 2 >= feature.geometry_size() )
           {
-            QgsDebugMsg( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
+            QgsDebugError( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
             break;
           }
           tmpPoints.reserve( tmpPoints.size() + cmdCount );
@@ -294,7 +294,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
               }
               else
               {
-                QgsDebugMsg( QStringLiteral( "Malformed geometry: first ring of a polygon is interior ring" ) );
+                QgsDebugError( QStringLiteral( "Malformed geometry: first ring of a polygon is interior ring" ) );
               }
             }
           }
@@ -302,7 +302,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "Unexpected command ID: %1" ).arg( cmdId ) );
+          QgsDebugError( QStringLiteral( "Unexpected command ID: %1" ).arg( cmdId ) );
         }
       }
 

@@ -916,7 +916,7 @@ bool QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, 
     if ( feedback )
       feedback->appendError( error );
 
-    QgsDebugMsg( error );
+    QgsDebugError( error );
     return false;
   }
   else

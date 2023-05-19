@@ -111,7 +111,7 @@ void QgsFontManager::installUserFonts()
   {
     if ( !QFile::exists( dir ) && !QDir().mkpath( dir ) )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot create local fonts dir: %1" ).arg( dir ) );
+      QgsDebugError( QStringLiteral( "Cannot create local fonts dir: %1" ).arg( dir ) );
       return;
     }
 
@@ -128,7 +128,7 @@ void QgsFontManager::installFontsFromDirectory( const QString &dir )
     const int id = QFontDatabase::addApplicationFont( infoIt->filePath() );
     if ( id == -1 )
     {
-      QgsDebugMsg( QStringLiteral( "The user font %1 could not be installed" ).arg( infoIt->filePath() ) );
+      QgsDebugError( QStringLiteral( "The user font %1 could not be installed" ).arg( infoIt->filePath() ) );
       mUserFontToFamilyMap.remove( infoIt->filePath() );
       mUserFontToIdMap.remove( infoIt->filePath() );
     }
@@ -1134,7 +1134,7 @@ void QgsFontManager::addUserFontDirectory( const QString &directory )
 
   if ( !QFile::exists( directory ) && !QDir().mkpath( directory ) )
   {
-    QgsDebugMsg( QStringLiteral( "Cannot create local fonts dir: %1" ).arg( directory ) );
+    QgsDebugError( QStringLiteral( "Cannot create local fonts dir: %1" ).arg( directory ) );
     return;
   }
 

@@ -144,7 +144,7 @@ void QgsSettingsTreeModelNodeData::addChildForSetting( const QgsSettingsEntryBas
       break;
     default:
       Q_ASSERT( false );
-      QgsDebugMsgLevel( QString( "Not handling that many named parent nodes for %1" ).arg( setting->definitionKey() ), 3 );
+      QgsDebugError( QString( "Not handling that many named parent nodes for %1" ).arg( setting->definitionKey() ) );
       break;
   }
 

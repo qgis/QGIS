@@ -1823,9 +1823,9 @@ bool QgsPostgresRasterProvider::loadFields()
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "Unexpected formatted field type '%1' for field %2" )
-                       .arg( formattedFieldType,
-                             fieldName ) );
+          QgsDebugError( QStringLiteral( "Unexpected formatted field type '%1' for field %2" )
+                         .arg( formattedFieldType,
+                               fieldName ) );
           fieldSize = -1;
           fieldPrec = 0;
         }
@@ -2281,7 +2281,7 @@ QString QgsPostgresRasterProvider::pkSql()
           }
           else
           {
-            QgsDebugMsg( QStringLiteral( "Attribute not found %1" ).arg( keyIndex ) );
+            QgsDebugError( QStringLiteral( "Attribute not found %1" ).arg( keyIndex ) );
           }
         }
         return pkeys.join( ',' ).prepend( '(' ).append( ')' );
@@ -2302,7 +2302,7 @@ void QgsPostgresRasterProvider::findOverviews()
                                       "FROM raster_overviews WHERE r_table_schema = %1 AND r_table_name = %2" ).arg( quotedValue( mSchemaName ),
                                           quotedValue( mTableName ) );
 
-  //QgsDebugMsg( QStringLiteral( "Raster overview information sql: %1" ).arg( sql ) );
+  //QgsDebugMsgLevel( QStringLiteral( "Raster overview information sql: %1" ).arg( sql ), 2 );
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
   if ( PGRES_TUPLES_OK == result.PQresultStatus() )
   {

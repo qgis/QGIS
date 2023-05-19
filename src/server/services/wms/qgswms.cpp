@@ -125,7 +125,7 @@ namespace QgsWms
           if ( mServerIface->serverSettings() && mServerIface->serverSettings()->getPrintDisabled() )
           {
             // GetPrint has been disabled
-            QgsDebugMsg( QStringLiteral( "WMS GetPrint request called, but it has been disabled." ) );
+            QgsDebugError( QStringLiteral( "WMS GetPrint request called, but it has been disabled." ) );
             throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
                                        QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
           }
@@ -156,7 +156,7 @@ class QgsWmsModule: public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsDebugMsg( QStringLiteral( "WMSModule::registerSelf called" ) );
+      QgsDebugMsgLevel( QStringLiteral( "WMSModule::registerSelf called" ), 2 );
       registry.registerService( new  QgsWms::Service( QgsWms::implementationVersion(), serverIface ) ); // 1.3.0 default version
       registry.registerService( new  QgsWms::Service( QStringLiteral( "1.1.1" ), serverIface ) ); // second supported version
     }

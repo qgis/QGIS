@@ -61,7 +61,7 @@ namespace QgsVirtualLayerQueryParser
         {
           err = QString::fromUtf8( errMsg );
           sqlite3_free( errMsg );
-          QgsDebugMsg( QStringLiteral( "Could not create temporary table for virtual layer: %1" ).arg( err ) );
+          QgsDebugError( QStringLiteral( "Could not create temporary table for virtual layer: %1" ).arg( err ) );
           break;
         }
       }
@@ -141,7 +141,7 @@ namespace QgsVirtualLayerQueryParser
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Unknown column type %1" ).arg( columnType ) );
+      QgsDebugError( QStringLiteral( "Unknown column type %1" ).arg( columnType ) );
     }
   }
 

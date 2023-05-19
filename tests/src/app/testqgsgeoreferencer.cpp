@@ -865,13 +865,13 @@ void TestQgsGeoreferencer::testGdalCommands()
 
   window.mTargetCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   command = window.generateGDALtranslateCommand();
-  QgsDebugMsg( command );
+  QgsDebugMsgLevel( command, 1 );
   QCOMPARE( command, QStringLiteral( "gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.00123457 3350122.00234568 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\"" ).arg(
               QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ),
               QDir::tempPath() + QStringLiteral( "/landsat.tif" ) ) );
 
   command = window.generateGDALogr2ogrCommand();
-  QgsDebugMsg( command );
+  QgsDebugMsgLevel( command, 1 );
   QCOMPARE( command, QStringLiteral( "ogr2ogr -gcp 783414 3350122 783414.00123457 3350122.00234568 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:4326 \"\" \"%1\"" ).arg(
               QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) ) );
 }

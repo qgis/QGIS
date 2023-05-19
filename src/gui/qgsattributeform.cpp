@@ -1662,7 +1662,7 @@ void QgsAttributeForm::init()
   if ( mContext.allowCustomUi() && mLayer->editFormConfig().layout() == Qgis::AttributeFormLayout::UiFile &&
        !mLayer->editFormConfig().uiForm().isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
+    QgsDebugMsgLevel( QStringLiteral( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ), 2 );
     const QString path = mLayer->editFormConfig().uiForm();
     QFile *file = QgsApplication::networkContentFetcherRegistry()->localFile( path );
     if ( file && file->open( QFile::ReadOnly ) )
@@ -2333,7 +2333,7 @@ void QgsAttributeForm::initPython()
 
       QgsPythonRunner::run( form );
 
-      QgsDebugMsg( QStringLiteral( "running featureForm init: %1" ).arg( mPyFormVarName ) );
+      QgsDebugMsgLevel( QStringLiteral( "running featureForm init: %1" ).arg( mPyFormVarName ), 2 );
 
       // Legacy
       if ( numArgs == QLatin1String( "3" ) )
@@ -2744,7 +2744,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
     }
 
     default:
-      QgsDebugMsg( QStringLiteral( "Unknown attribute editor widget type encountered..." ) );
+      QgsDebugError( QStringLiteral( "Unknown attribute editor widget type encountered..." ) );
       break;
   }
 

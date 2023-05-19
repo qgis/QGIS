@@ -736,7 +736,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
         s = std::make_unique< QgsFillSymbol >();
         break;
       default:
-        QgsDebugMsg( QStringLiteral( "unknown layer's geometry type" ) );
+        QgsDebugError( QStringLiteral( "unknown layer's geometry type" ) );
         break;
     }
   }
@@ -1466,7 +1466,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     if ( !processedGeometry )
     {
       // shouldn't happen!
-      QgsDebugMsg( QStringLiteral( "No processed geometry to render for part!" ) );
+      QgsDebugError( QStringLiteral( "No processed geometry to render for part!" ) );
       return;
     }
 
@@ -1517,7 +1517,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         info.originalPartIndex = partIndex;
         if ( !qgsgeometry_cast<const QgsPolygon *>( processedGeometry )->exteriorRing() )
         {
-          QgsDebugMsg( QStringLiteral( "cannot render polygon with no exterior ring" ) );
+          QgsDebugError( QStringLiteral( "cannot render polygon with no exterior ring" ) );
           break;
         }
 
@@ -1589,10 +1589,10 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       }
 
       default:
-        QgsDebugMsg( QStringLiteral( "feature %1: unsupported wkb type %2/%3 for rendering" )
-                     .arg( feature.id() )
-                     .arg( QgsWkbTypes::displayString( part->wkbType() ) )
-                     .arg( static_cast< quint32>( part->wkbType() ), 0, 16 ) );
+        QgsDebugError( QStringLiteral( "feature %1: unsupported wkb type %2/%3 for rendering" )
+                       .arg( feature.id() )
+                       .arg( QgsWkbTypes::displayString( part->wkbType() ) )
+                       .arg( static_cast< quint32>( part->wkbType() ), 0, 16 ) );
     }
   };
 

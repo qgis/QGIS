@@ -266,7 +266,7 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
+      QgsDebugError( QStringLiteral( "Could not transform node extent to map CRS" ) );
       rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
     }
   }
@@ -281,7 +281,7 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
   const double mapUnitsPerPixel = renderContext.mapToPixel().mapUnitsPerPixel();
   if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maxErrorPixels < 0.0 ) )
   {
-    QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
+    QgsDebugError( QStringLiteral( "invalid screen error" ) );
     return selectedPoints;
   }
 
@@ -332,7 +332,7 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
+    QgsDebugError( QStringLiteral( "Could not transform geometry to layer CRS" ) );
     return selectedPoints;
   }
 

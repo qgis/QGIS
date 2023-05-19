@@ -264,7 +264,7 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "parent not available" ) );
+    QgsDebugError( QStringLiteral( "parent not available" ) );
   }
 
   // Always keep some minimum size, e.g. if page is not yet loaded
@@ -1499,7 +1499,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   QgsPointCloudLayer *pclayer = pointCloudLayer( item );
   if ( !vlayer && !rlayer && !vtlayer && !pclayer )
   {
-    QgsDebugMsg( QStringLiteral( "Item does not belong to a layer." ) );
+    QgsDebugError( QStringLiteral( "Item does not belong to a layer." ) );
     return;
   }
 
@@ -2356,7 +2356,7 @@ void QgsIdentifyResultsDialog::selectFeatureByAttribute()
   QTreeWidgetItem *item = lstResults->currentItem();
   if ( !item ) // should not happen
   {
-    QgsDebugMsg( QStringLiteral( "Selected item is not feature" ) );
+    QgsDebugError( QStringLiteral( "Selected item is not feature" ) );
     return;
   }
 
@@ -2457,7 +2457,7 @@ void QgsIdentifyResultsDialog::copyFeature()
 
   if ( !item ) // should not happen
   {
-    QgsDebugMsg( QStringLiteral( "Selected item is not feature" ) );
+    QgsDebugError( QStringLiteral( "Selected item is not feature" ) );
     return;
   }
 
@@ -2474,7 +2474,7 @@ void QgsIdentifyResultsDialog::toggleFeatureSelection()
 
   if ( !item ) // should not happen
   {
-    QgsDebugMsg( QStringLiteral( "Selected item is not feature" ) );
+    QgsDebugError( QStringLiteral( "Selected item is not feature" ) );
     return;
   }
 
@@ -2493,7 +2493,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
   QComboBox *combo = qobject_cast<QComboBox *>( sender() );
   if ( !combo )
   {
-    QgsDebugMsg( QStringLiteral( "sender is not QComboBox" ) );
+    QgsDebugError( QStringLiteral( "sender is not QComboBox" ) );
     return;
   }
 
@@ -2502,7 +2502,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
   QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( combo->itemData( index, Qt::UserRole + 1 ).value<QObject *>() );
   if ( !layer )
   {
-    QgsDebugMsg( QStringLiteral( "cannot get raster layer" ) );
+    QgsDebugError( QStringLiteral( "cannot get raster layer" ) );
     return;
   }
 
@@ -2513,7 +2513,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
   QTreeWidgetItem *layItem = layerItem( layer );
   if ( !layItem )
   {
-    QgsDebugMsg( QStringLiteral( "cannot get layer item" ) );
+    QgsDebugError( QStringLiteral( "cannot get layer item" ) );
     return;
   }
 

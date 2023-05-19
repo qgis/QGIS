@@ -209,7 +209,7 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::create( const QDomEl
     }
     else
     {
-      //QgsDebugMsg( QStringLiteral( "failed to init a child rule!" ) );
+      //QgsDebugError( QStringLiteral( "failed to init a child rule!" ) );
     }
     childRuleElem = childRuleElem.nextSiblingElement( QStringLiteral( "rule" ) );
   }

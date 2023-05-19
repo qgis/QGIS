@@ -181,8 +181,8 @@ void QgsSpatiaLiteProviderConnection::dropVectorTable( const QString &schema, co
       ret = sqlite3_exec( sqlite_handle, "VACUUM", nullptr, nullptr, nullptr );
       if ( ret != SQLITE_OK )
       {
-        QgsDebugMsg( QStringLiteral( "Failed to run VACUUM after deleting table on database %1" )
-                     .arg( pathFromUri() ) );
+        QgsDebugError( QStringLiteral( "Failed to run VACUUM after deleting table on database %1" )
+                       .arg( pathFromUri() ) );
       }
 
       QgsSqliteHandle::closeDb( hndl );

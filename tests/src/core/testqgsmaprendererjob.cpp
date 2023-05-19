@@ -451,7 +451,7 @@ void TestQgsMapRendererJob::testRenderedFeatureHandlers()
   QStringList wkts;
   for ( const QgsGeometry &g : std::as_const( geometries1 ) )
   {
-    QgsDebugMsg( g.asWkt( 1 ) );
+    QgsDebugMsgLevel( g.asWkt( 1 ), 1 );
     wkts << g.asWkt( 1 );
   }
   wkts.sort();

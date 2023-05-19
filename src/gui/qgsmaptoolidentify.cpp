@@ -494,7 +494,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
   {
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and proceed with no features found
-    QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+    QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
   return featureCount > 0;
@@ -539,7 +539,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
   {
-    QgsDebugMsg( QStringLiteral( "Out of scale limits" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
     return false;
   }
 
@@ -624,7 +624,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
   {
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and proceed with no features found
-    QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+    QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
   bool filter = false;
@@ -690,7 +690,7 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
   if ( ! vId.isValid( ) )
   {
     // We should not get here ...
-    QgsDebugMsg( "Invalid vertex id!" );
+    QgsDebugError( "Invalid vertex id!" );
     return;
   }
 
@@ -950,7 +950,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
 
 bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, const QgsIdentifyContext &identifyContext )
 {
-  QgsDebugMsg( "point = " + point.toString() );
+  QgsDebugMsgLevel( "point = " + point.toString(), 2 );
   if ( !layer )
     return false;
 
@@ -978,10 +978,10 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse )
-    QgsDebugMsg( QStringLiteral( "coordinate not reprojectable: %1" ).arg( cse.what() ) );
+    QgsDebugError( QStringLiteral( "coordinate not reprojectable: %1" ).arg( cse.what() ) );
     return false;
   }
-  QgsDebugMsg( QStringLiteral( "point = %1 %2" ).arg( point.x() ).arg( point.y() ) );
+  QgsDebugMsgLevel( QStringLiteral( "point = %1 %2" ).arg( point.x() ).arg( point.y() ), 2 );
 
   if ( !layer->extent().contains( point ) )
     return false;
@@ -1041,9 +1041,9 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     int width = static_cast< int >( std::round( viewExtent.width() / mapUnitsPerPixel ) );
     int height = static_cast< int >( std::round( viewExtent.height() / mapUnitsPerPixel ) );
 
-    QgsDebugMsg( QStringLiteral( "viewExtent.width = %1 viewExtent.height = %2" ).arg( viewExtent.width() ).arg( viewExtent.height() ) );
-    QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ) );
-    QgsDebugMsg( QStringLiteral( "xRes = %1 yRes = %2 mapUnitsPerPixel = %3" ).arg( viewExtent.width() / width ).arg( viewExtent.height() / height ).arg( mapUnitsPerPixel ) );
+    QgsDebugMsgLevel( QStringLiteral( "viewExtent.width = %1 viewExtent.height = %2" ).arg( viewExtent.width() ).arg( viewExtent.height() ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "xRes = %1 yRes = %2 mapUnitsPerPixel = %3" ).arg( viewExtent.width() / width ).arg( viewExtent.height() / height ).arg( mapUnitsPerPixel ), 2 );
 
     identifyResult = dprovider->identify( point, format, viewExtent, width, height );
   }
@@ -1197,7 +1197,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     }
     else // text or html
     {
-      QgsDebugMsg( QStringLiteral( "%1 HTML or text values" ).arg( values.size() ) );
+      QgsDebugMsgLevel( QStringLiteral( "%1 HTML or text values" ).arg( values.size() ), 2 );
       for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
         QString value = it.value().toString();

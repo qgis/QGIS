@@ -98,7 +98,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
   {
     QDateTime now( QDateTime::currentDateTime() );
     QDateTime since( sBrokenConnections[ realm ] );
-    QgsDebugMsg( QStringLiteral( "Broken since %1 [%2s ago]" ).arg( since.toString( Qt::ISODate ) ).arg( since.secsTo( now ) ) );
+    QgsDebugError( QStringLiteral( "Broken since %1 [%2s ago]" ).arg( since.toString( Qt::ISODate ) ).arg( since.secsTo( now ) ) );
 
     if ( since.secsTo( now ) < 30 )
     {
@@ -119,7 +119,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
       if ( !ok )
       {
         QDateTime now( QDateTime::currentDateTime() );
-        QgsDebugMsg( QStringLiteral( "get failed: %1 <= %2" ).arg( realm, now.toString( Qt::ISODate ) ) );
+        QgsDebugError( QStringLiteral( "get failed: %1 <= %2" ).arg( realm, now.toString( Qt::ISODate ) ) );
         sBrokenConnections.insert( realm, now );
         break;
       }
@@ -218,7 +218,7 @@ void QgsOracleConn::unref()
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Connection not found" ) );
+      QgsDebugError( QStringLiteral( "Connection not found" ) );
     }
   }
 
@@ -272,9 +272,9 @@ bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList
 
   if ( !res )
   {
-    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
-                 .arg( qry.lastQuery(),
-                       qry.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL: %1\nERROR: %2" )
+                   .arg( qry.lastQuery(),
+                         qry.lastError().text() ) );
   }
 
   return res;
@@ -304,9 +304,9 @@ bool QgsOracleConn::execLogged( QSqlQuery &qry, const QString &sql, const QVaria
   if ( !res )
   {
     logWrapper.setError( qry.lastError().text() );
-    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
-                 .arg( qry.lastQuery(),
-                       qry.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL: %1\nERROR: %2" )
+                   .arg( qry.lastQuery(),
+                         qry.lastError().text() ) );
   }
   else
   {
@@ -509,7 +509,7 @@ bool QgsOracleConn::exec( const QString &query, bool logError, QString *errorMes
     {
       const QString errorMsg { QStringLiteral( "Connection error: %1 returned %2" )
                                .arg( query, error ) };
-      QgsDebugMsg( errorMsg );
+      QgsDebugError( errorMsg );
     }
     if ( errorMessage )
       *errorMessage = error;
@@ -547,7 +547,7 @@ bool QgsOracleConn::execLogged( const QString &query, bool logError, QString *er
     {
       const QString errorMsg { QStringLiteral( "Connection error: %1 returned %2" )
                                .arg( query, error ) };
-      QgsDebugMsg( errorMsg );
+      QgsDebugError( errorMsg );
     }
     if ( errorMessage )
       *errorMessage = error;
@@ -833,7 +833,7 @@ Qgis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
       case 3:
         return Qgis::WkbType::Polygon;
       case 4:
-        QgsDebugMsg( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
+        QgsDebugError( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
         return Qgis::WkbType::Unknown;
       case 5:
         return Qgis::WkbType::MultiPoint;
@@ -842,7 +842,7 @@ Qgis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
       case 7:
         return Qgis::WkbType::MultiPolygon;
       default:
-        QgsDebugMsg( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
+        QgsDebugError( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
         return Qgis::WkbType::Unknown;
     }
   }
@@ -857,7 +857,7 @@ Qgis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
       case 3:
         return Qgis::WkbType::PolygonZ;
       case 4:
-        QgsDebugMsg( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
+        QgsDebugError( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
         return Qgis::WkbType::Unknown;
       case 5:
         return Qgis::WkbType::MultiPointZ;
@@ -866,13 +866,13 @@ Qgis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
       case 7:
         return Qgis::WkbType::MultiPolygonZ;
       default:
-        QgsDebugMsg( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
+        QgsDebugError( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
         return Qgis::WkbType::Unknown;
     }
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "dimension of gtype %1 unsupported" ).arg( gtype ) );
+    QgsDebugError( QStringLiteral( "dimension of gtype %1 unsupported" ).arg( gtype ) );
     return Qgis::WkbType::Unknown;
   }
 }

@@ -212,7 +212,7 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar,  QWidget *pare
 
   if ( !dlg.requestMasterPasswordReset( &newpass, &oldpass, &keepbackup ) )
   {
-    QgsDebugMsg( QStringLiteral( "Master password reset: input canceled by user" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Master password reset: input canceled by user" ), 2 );
     return;
   }
 

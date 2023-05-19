@@ -103,7 +103,7 @@ void QgsGpsBearingItem::updateLine()
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Coordinate exception encountered while drawing GPS bearing line" ) );
+    QgsDebugError( QStringLiteral( "Coordinate exception encountered while drawing GPS bearing line" ) );
     bearingLine.clear();
   }
 

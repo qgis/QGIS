@@ -327,7 +327,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                                outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read red band" ) );
+    QgsDebugError( QStringLiteral( "failed to read red band" ) );
     return QImage();
   }
 
@@ -335,7 +335,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read green band" ) );
+    QgsDebugError( QStringLiteral( "failed to read green band" ) );
     return QImage();
   }
 
@@ -343,7 +343,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read blue band" ) );
+    QgsDebugError( QStringLiteral( "failed to read blue band" ) );
     return QImage();
   }
 
@@ -351,7 +351,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read alpha band" ) );
+    QgsDebugError( QStringLiteral( "failed to read alpha band" ) );
     return QImage();
   }
 

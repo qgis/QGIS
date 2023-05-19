@@ -149,7 +149,7 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( cons
   catch ( const QgsCsException & )
   {
     // bad luck, can't reproject for some reason
-    QgsDebugMsg( QStringLiteral( "Transformation of extent failed." ) );
+    QgsDebugError( QStringLiteral( "Transformation of extent failed." ) );
   }
 }
 
@@ -229,7 +229,7 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming node bounds coordinate" ) );
+    QgsDebugError( QStringLiteral( "Error transforming node bounds coordinate" ) );
   }
   const QgsVector3D worldExtentMin3D = Qgs3DUtils::mapToWorldCoordinates( extentMin3D, map.origin() );
   const QgsVector3D worldExtentMax3D = Qgs3DUtils::mapToWorldCoordinates( extentMax3D, map.origin() );

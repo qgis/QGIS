@@ -691,7 +691,7 @@ bool QgsRasterHistogramWidget::histoSaveAsImage( const QString &filename,
   const QDir myDir( myInfo.dir() );
   if ( ! myDir.exists() )
   {
-    QgsDebugMsg( QStringLiteral( "Error, directory %1 non-existent (theFilename = %2)" ).arg( myDir.absolutePath(), filename ) );
+    QgsDebugError( QStringLiteral( "Error, directory %1 non-existent (theFilename = %2)" ).arg( myDir.absolutePath(), filename ) );
     return false;
   }
 
@@ -922,7 +922,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
   }
   else
   {
-    QgsDebugMsg( "Invalid action " + actionName );
+    QgsDebugError( "Invalid action " + actionName );
     return;
   }
 }
@@ -1067,7 +1067,7 @@ QString findClosestTickVal( double target, const QwtScaleDiv *scale, int div = 1
     }
   }
 
-  // QgsDebugMsg( QStringLiteral( "target=%1 div=%2 closest=%3" ).arg( target ).arg( div ).arg( closest ) );
+  // QgsDebugMsgLevel( QStringLiteral( "target=%1 div=%2 closest=%3" ).arg( target ).arg( div ).arg( closest ), 2 );
   return QLocale().toString( closest );
 }
 

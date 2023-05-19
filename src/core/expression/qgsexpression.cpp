@@ -458,7 +458,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     QgsExpression exp( toReplace );
     if ( exp.hasParserError() )
     {
-      QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
+      QgsDebugError( "Expression parser error: " + exp.parserErrorString() );
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       expr_action += action.midRef( start, index - start );
 #else
@@ -477,7 +477,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
 
     if ( exp.hasEvalError() )
     {
-      QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
+      QgsDebugError( "Expression parser eval error: " + exp.evalErrorString() );
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       expr_action += action.midRef( start, index - start );
 #else

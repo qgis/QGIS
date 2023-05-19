@@ -553,7 +553,7 @@ int QgsAttributeTableModel::idToRow( QgsFeatureId id ) const
 {
   if ( !mIdRowMap.contains( id ) )
   {
-    QgsDebugMsg( QStringLiteral( "idToRow: id %1 not in the map" ).arg( id ) );
+    QgsDebugError( QStringLiteral( "idToRow: id %1 not in the map" ).arg( id ) );
     return -1;
   }
 
@@ -584,7 +584,7 @@ QgsFeatureId QgsAttributeTableModel::rowToId( const int row ) const
 {
   if ( !mRowIdMap.contains( row ) )
   {
-    QgsDebugMsg( QStringLiteral( "rowToId: row %1 not in the map" ).arg( row ) );
+    QgsDebugError( QStringLiteral( "rowToId: row %1 not in the map" ).arg( row ) );
     // return negative infinite (to avoid collision with newly added features)
     return std::numeric_limits<int>::min();
   }

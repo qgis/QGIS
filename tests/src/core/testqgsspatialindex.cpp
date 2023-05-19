@@ -200,14 +200,14 @@ class TestQgsSpatialIndex : public QObject
         while ( fi.nextFeature( f ) )
           ;
       }
-      QgsDebugMsg( QStringLiteral( "iter only: %1 ms" ).arg( t.elapsed() ) );
+      QgsDebugMsgLevel( QStringLiteral( "iter only: %1 ms" ).arg( t.elapsed() ), 1 );
 
       t.start();
       {
         const QgsFeatureIterator fi = vl->getFeatures();
         indexBulk = new QgsSpatialIndex( fi );
       }
-      QgsDebugMsg( QStringLiteral( "bulk load: %1 ms" ).arg( t.elapsed() ) );
+      QgsDebugMsgLevel( QStringLiteral( "bulk load: %1 ms" ).arg( t.elapsed() ), 1 );
 
       t.start();
       {
@@ -217,7 +217,7 @@ class TestQgsSpatialIndex : public QObject
         while ( fi.nextFeature( f ) )
           indexInsert->addFeature( f );
       }
-      QgsDebugMsg( QStringLiteral( "insert:    %1 ms" ).arg( t.elapsed() ) );
+      QgsDebugMsgLevel( QStringLiteral( "insert:    %1 ms" ).arg( t.elapsed() ), 1 );
 
       // test whether a query will give us the same results
       const QgsRectangle rect( 4.9, 4.9, 5.1, 5.1 );

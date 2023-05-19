@@ -19,7 +19,7 @@
 #define RESERVE( vector, size ) try { \
     vector.reserve(size); \
   } catch(const std::exception &e) { \
-   /* QgsDebugMsg( QString( "allocation exception (size=%1; error=%2)" ).arg( size ).arg( e.what() ) );*/ \
+   /* QgsDebugError( QString( "allocation exception (size=%1; error=%2)" ).arg( size ).arg( e.what() ) );*/ \
     throw e; \
   }
 

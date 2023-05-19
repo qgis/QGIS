@@ -281,7 +281,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
               }
               catch ( QgsCsException & )
               {
-                QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+                QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
               }
             }
 
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
               }
               catch ( QgsCsException & )
               {
-                QgsDebugMsg( QStringLiteral( "transformation to destination coordinate failed" ) );
+                QgsDebugError( QStringLiteral( "transformation to destination coordinate failed" ) );
               }
             }
           }

@@ -584,7 +584,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+      QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
       return 2;
     }
   }
@@ -674,7 +674,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
 {
   if ( mode() == CaptureNone )
   {
-    QgsDebugMsg( QStringLiteral( "invalid capture mode" ) );
+    QgsDebugError( QStringLiteral( "invalid capture mode" ) );
     return 2;
   }
 

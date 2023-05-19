@@ -121,7 +121,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming profile line to raster CRS" ) );
+    QgsDebugError( QStringLiteral( "Error transforming profile line to raster CRS" ) );
     return false;
   }
 

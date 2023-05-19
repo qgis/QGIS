@@ -94,7 +94,7 @@ void QgsPointCloud3DRenderContext::updateExtent()
     catch ( const QgsCsException & )
     {
       // bad luck, can't reproject for some reason. Let's use an empty extent to skip filtering.
-      QgsDebugMsg( QStringLiteral( "Transformation of extent failed!" ) );
+      QgsDebugError( QStringLiteral( "Transformation of extent failed!" ) );
       mExtent = QgsRectangle();
     }
   }

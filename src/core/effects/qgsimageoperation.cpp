@@ -388,7 +388,7 @@ void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransfor
 {
   if ( ! properties.ramp )
   {
-    QgsDebugMsg( QStringLiteral( "no color ramp specified for distance transform" ) );
+    QgsDebugError( QStringLiteral( "no color ramp specified for distance transform" ) );
     return;
   }
 

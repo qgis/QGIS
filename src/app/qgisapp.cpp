@@ -4639,7 +4639,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   {
     if ( canvas->objectName() == name )
     {
-      QgsDebugMsg( QStringLiteral( "A map canvas with name '%1' already exists!" ).arg( name ) );
+      QgsDebugError( QStringLiteral( "A map canvas with name '%1' already exists!" ).arg( name ) );
       return nullptr;
     }
   }
@@ -5340,7 +5340,7 @@ void QgisApp::restoreWindowState()
   // so this code was moved to showEvent for now...
   if ( !restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() ) )
   {
-    QgsDebugMsg( QStringLiteral( "restore of UI state failed" ) );
+    QgsDebugError( QStringLiteral( "restore of UI state failed" ) );
   }
 #endif
 
@@ -5354,7 +5354,7 @@ void QgisApp::restoreWindowState()
   // restore window geometry
   if ( !restoreGeometry( settings.value( QStringLiteral( "UI/geometry" ) ).toByteArray() ) )
   {
-    QgsDebugMsg( QStringLiteral( "restore of UI geometry failed" ) );
+    QgsDebugError( QStringLiteral( "restore of UI geometry failed" ) );
     // default to 80% of screen size, at 10% from top left corner
     resize( mScreenHelper->availableGeometry().size() * 0.8 );
     QSize pos = mScreenHelper->availableGeometry().size() * 0.1;
@@ -7667,16 +7667,16 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
             QDomNode layer_node( doc.firstChild( ) );
             if ( ! layer->readSymbology( layer_node, errorMsg, context ) )
             {
-              QgsDebugMsg( QStringLiteral( "Failed to restore original layer style from stored XML for layer %1: %2" )
-                           .arg( layer->name( ),
-                                 errorMsg ) );
+              QgsDebugError( QStringLiteral( "Failed to restore original layer style from stored XML for layer %1: %2" )
+                             .arg( layer->name( ),
+                                   errorMsg ) );
             }
           }
           else
           {
-            QgsDebugMsg( QStringLiteral( "Failed to create XML QDomDocument for layer %1: %2" )
-                         .arg( layer->name( ),
-                               errorMsg ) );
+            QgsDebugError( QStringLiteral( "Failed to create XML QDomDocument for layer %1: %2" )
+                           .arg( layer->name( ),
+                                 errorMsg ) );
           }
         }
         else if ( vlayer && !subsetString.isEmpty() )
@@ -8017,7 +8017,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
     pipe.reset( new QgsRasterPipe() );
     if ( !pipe->set( rasterLayer->dataProvider()->clone() ) )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot set pipe provider" ) );
+      QgsDebugError( QStringLiteral( "Cannot set pipe provider" ) );
       return QString();
     }
 
@@ -8028,7 +8028,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
     }
     if ( !pipe->insert( 1, nuller ) )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot set pipe nuller" ) );
+      QgsDebugError( QStringLiteral( "Cannot set pipe nuller" ) );
       return QString();
     }
 
@@ -8039,7 +8039,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
       projector->setCrs( rasterLayer->crs(), d.outputCrs(), QgsProject::instance()->transformContext() );
       if ( !pipe->insert( 2, projector ) )
       {
-        QgsDebugMsg( QStringLiteral( "Cannot set pipe projector" ) );
+        QgsDebugError( QStringLiteral( "Cannot set pipe projector" ) );
         return QString();
       }
     }
@@ -8052,7 +8052,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
     QgsRasterProjector *projector = pipe->projector();
     if ( !projector )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot get pipe projector" ) );
+      QgsDebugError( QStringLiteral( "Cannot get pipe projector" ) );
       return QString();
     }
     projector->setCrs( rasterLayer->crs(), d.outputCrs(), QgsProject::instance()->transformContext() );
@@ -10404,7 +10404,7 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
 
   if ( ! layer->addFeatures( convertedFeatures ) || !layer->commitChanges() )
   {
-    QgsDebugMsg( QStringLiteral( "Cannot add features or commit changes" ) );
+    QgsDebugError( QStringLiteral( "Cannot add features or commit changes" ) );
     return nullptr;
   }
 
@@ -13112,7 +13112,7 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
   {
     if ( canvas->canvasName() == name )
     {
-      QgsDebugMsg( QStringLiteral( "A map canvas with name '%1' already exists!" ).arg( name ) );
+      QgsDebugError( QStringLiteral( "A map canvas with name '%1' already exists!" ).arg( name ) );
       return nullptr;
     }
   }
@@ -16005,7 +16005,7 @@ void QgisApp::writeProject( QDomDocument &doc )
       if ( storedDialogs.contains( attributeTableDialog ) )
         return;
 
-      QgsDebugMsg( attributeTableDialog->windowTitle() );
+      QgsDebugMsgLevel( attributeTableDialog->windowTitle(), 2 );
       const QDomElement tableElement = attributeTableDialog->writeXml( doc );
       attributeTablesElement.appendChild( tableElement );
       storedDialogs.insert( attributeTableDialog );
@@ -17134,7 +17134,7 @@ void QgisApp::showEvent( QShowEvent *event )
     QgsSettings settings;
     if ( !restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() ) )
     {
-      QgsDebugMsg( QStringLiteral( "restore of UI state failed" ) );
+      QgsDebugError( QStringLiteral( "restore of UI state failed" ) );
     }
   } );
 }

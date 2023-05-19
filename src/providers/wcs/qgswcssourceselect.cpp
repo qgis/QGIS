@@ -78,7 +78,7 @@ void QgsWCSSourceSelect::populateLayerList()
         coverage != coverages.end();
         ++coverage )
   {
-    QgsDebugMsg( QStringLiteral( "coverage orderId = %1 identifier = %2" ).arg( coverage->orderId ).arg( coverage->identifier ) );
+    QgsDebugMsgLevel( QStringLiteral( "coverage orderId = %1 identifier = %2" ).arg( coverage->orderId ).arg( coverage->identifier ), 2 );
 
     QgsTreeWidgetItem *lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
 
@@ -106,7 +106,7 @@ QString QgsWCSSourceSelect::selectedIdentifier()
   const QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
   if ( selectionList.size() < 1 ) return QString(); // should not happen
   QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
-  QgsDebugMsg( " identifier = " + identifier );
+  QgsDebugMsgLevel( " identifier = " + identifier, 2 );
   return identifier;
 }
 
@@ -129,13 +129,13 @@ void QgsWCSSourceSelect::addButtonClicked()
   uri.setParam( QStringLiteral( "crs" ), selectedCrs() );
   //}
 
-  QgsDebugMsg( "selectedFormat = " +  selectedFormat() );
+  QgsDebugMsgLevel( "selectedFormat = " +  selectedFormat(), 2 );
   if ( !selectedFormat().isEmpty() )
   {
     uri.setParam( QStringLiteral( "format" ), selectedFormat() );
   }
 
-  QgsDebugMsg( "selectedTime = " +  selectedTime() );
+  QgsDebugMsgLevel( "selectedTime = " +  selectedTime(), 2 );
   if ( !selectedTime().isEmpty() )
   {
     uri.setParam( QStringLiteral( "time" ), selectedTime() );
@@ -160,7 +160,7 @@ void QgsWCSSourceSelect::addButtonClicked()
   }
 
   QString cache;
-  QgsDebugMsg( QStringLiteral( "selectedCacheLoadControl = %1" ).arg( selectedCacheLoadControl() ) );
+  QgsDebugMsgLevel( QStringLiteral( "selectedCacheLoadControl = %1" ).arg( selectedCacheLoadControl() ), 2 );
   cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
   uri.setParam( QStringLiteral( "cache" ), cache );
 
@@ -237,7 +237,7 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
   const QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
   if ( !c.valid ) { return QStringList(); }
 
-  QgsDebugMsg( "supportedFormat = " + c.supportedFormat.join( "," ) );
+  QgsDebugMsgLevel( "supportedFormat = " + c.supportedFormat.join( "," ), 2 );
   return c.supportedFormat;
 }
 
@@ -261,7 +261,7 @@ QStringList QgsWCSSourceSelect::selectedLayersTimes()
   const QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
   if ( !c.valid ) { return QStringList(); }
 
-  QgsDebugMsg( "times = " + c.times.join( "," ) );
+  QgsDebugMsgLevel( "times = " + c.times.join( "," ), 2 );
   return c.times;
 }
 

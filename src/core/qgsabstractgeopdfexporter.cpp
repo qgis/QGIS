@@ -78,7 +78,7 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
     return false;
 
   const QString composition = createCompositionXml( components, details );
-  QgsDebugMsg( composition );
+  QgsDebugMsgLevel( composition, 2 );
   if ( composition.isEmpty() )
     return false;
 
@@ -181,7 +181,7 @@ bool QgsAbstractGeoPdfExporter::saveTemporaryLayers()
       if ( writer->hasError() )
       {
         mErrorMessage = writer->errorMessage();
-        QgsDebugMsg( mErrorMessage );
+        QgsDebugError( mErrorMessage );
         return false;
       }
       for ( const QgsFeature &feature : features )
@@ -190,7 +190,7 @@ bool QgsAbstractGeoPdfExporter::saveTemporaryLayers()
         if ( !writer->addFeature( f, QgsFeatureSink::FastInsert ) )
         {
           mErrorMessage = writer->errorMessage();
-          QgsDebugMsg( mErrorMessage );
+          QgsDebugError( mErrorMessage );
           return false;
         }
       }
@@ -619,7 +619,7 @@ QString QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::Compositio
       break;
   }
 
-  QgsDebugMsg( QStringLiteral( "Unsupported PDF blend mode %1" ).arg( mode ) );
+  QgsDebugError( QStringLiteral( "Unsupported PDF blend mode %1" ).arg( mode ) );
   return QStringLiteral( "Normal" );
 }
 

@@ -900,7 +900,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
             ( !cmd.endsWith( QLatin1String( ".py" ) ) || process.exitCode() != 1 ) ) )
   {
     QString pathVariable = QgsGrassModule::libraryPathVariable();
-    QgsDebugMsg( "process.exitCode() = " + QString::number( process.exitCode() ) );
+    QgsDebugError( "process.exitCode() = " + QString::number( process.exitCode() ) );
     QString msg = tr( "Cannot start module %1" ).arg( mXName )
                   + "<br><br>" + pathVariable + "=" + environment.value( pathVariable )
                   + "<br><br>PATH=" + environment.value( QStringLiteral( "PATH" ) )
@@ -909,7 +909,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
                   .arg( cmd, arguments.join( QLatin1Char( ' ' ) ),
                         process.readAllStandardOutput().constData(),
                         process.readAllStandardError().constData() );
-    QgsDebugMsg( msg );
+    QgsDebugError( msg );
     errors << msg;
     return gDoc;
   }
@@ -971,7 +971,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
   {
     QString errmsg = tr( "Cannot read module description (%1):" ).arg( mXName )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
-    QgsDebugMsg( errmsg );
+    QgsDebugError( errmsg );
     errors << errmsg;
   }
   return gDoc;

@@ -51,14 +51,14 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   //Invalid band number, segfault prevention
   if ( 0 >= bandNumber )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid parameter" ) );
+    QgsDebugError( QStringLiteral( "Invalid parameter" ) );
     return ct;
   }
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, bandNumber );
   if ( ! myGdalBand )
   {
-    QgsDebugMsg( QStringLiteral( "Could not get raster band %1" ).arg( bandNumber ) );
+    QgsDebugError( QStringLiteral( "Could not get raster band %1" ).arg( bandNumber ) );
     return ct;
   }
 

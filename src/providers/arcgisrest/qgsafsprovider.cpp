@@ -148,7 +148,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Exception raised while transforming layer extent" ) );
+      QgsDebugError( QStringLiteral( "Exception raised while transforming layer extent" ) );
     }
   }
 
@@ -174,7 +174,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     }
     if ( type == QVariant::Invalid )
     {
-      QgsDebugMsg( QStringLiteral( "Skipping unsupported field %1 of type %2" ).arg( fieldName, fieldTypeString ) );
+      QgsDebugError( QStringLiteral( "Skipping unsupported field %1 of type %2" ).arg( fieldName, fieldTypeString ) );
       continue;
     }
     QgsField field( fieldName, type, fieldDataMap[QStringLiteral( "type" )].toString(), fieldDataMap[QStringLiteral( "length" )].toInt() );

@@ -569,7 +569,7 @@ bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis ) c
     interval = ( extent.xMaximum() - extent.xMinimum() ) / 5;
   else
     interval = ( extent.yMaximum() - extent.yMinimum() ) / 5;
-  QgsDebugMsg( QStringLiteral( "interval: %1" ).arg( interval ) );
+  QgsDebugMsgLevel( QStringLiteral( "interval: %1" ).arg( interval ), 2 );
   if ( !qgsDoubleNear( interval, 0.0 ) )
   {
     double interval2 = 0;
@@ -577,7 +577,7 @@ bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis ) c
     if ( factor != 0 )
     {
       interval2 = std::round( interval / factor ) * factor;
-      QgsDebugMsg( QStringLiteral( "interval2: %1" ).arg( interval2 ) );
+      QgsDebugMsgLevel( QStringLiteral( "interval2: %1" ).arg( interval2 ), 2 );
       if ( !qgsDoubleNear( interval2, 0.0 ) )
         interval = interval2;
     }
@@ -632,10 +632,10 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values ) const
   ratio = extent.yMinimum() / values[1];
   values[3] = ( ratio - std::floor( ratio ) ) * values[1];
 
-  QgsDebugMsg( QStringLiteral( "xmax: %1 xmin: %2 width: %3 xInterval: %4 xOffset: %5" ).arg(
-                 extent.xMaximum() ).arg( extent.xMinimum() ).arg( rlayer->width() ).arg( values[0] ).arg( values[2] ) );
-  QgsDebugMsg( QStringLiteral( "ymax: %1 ymin: %2 height: %3 yInterval: %4 yOffset: %5" ).arg(
-                 extent.yMaximum() ).arg( extent.yMinimum() ).arg( rlayer->height() ).arg( values[1] ).arg( values[3] ) );
+  QgsDebugMsgLevel( QStringLiteral( "xmax: %1 xmin: %2 width: %3 xInterval: %4 xOffset: %5" ).arg(
+                      extent.xMaximum() ).arg( extent.xMinimum() ).arg( rlayer->width() ).arg( values[0] ).arg( values[2] ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "ymax: %1 ymin: %2 height: %3 yInterval: %4 yOffset: %5" ).arg(
+                      extent.yMaximum() ).arg( extent.yMinimum() ).arg( rlayer->height() ).arg( values[1] ).arg( values[3] ), 2 );
 
   return true;
 }

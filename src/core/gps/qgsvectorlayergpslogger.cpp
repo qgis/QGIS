@@ -104,7 +104,7 @@ void QgsVectorLayerGpsLogger::endCurrentTrack()
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Error transforming GPS track" ) );
+      QgsDebugError( QStringLiteral( "Error transforming GPS track" ) );
     }
 
     if ( geometry.constGet()->is3D() && !QgsWkbTypes::hasZ( mTracksLayer->wkbType() ) )
@@ -212,7 +212,7 @@ void QgsVectorLayerGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Error transforming GPS point" ) );
+      QgsDebugError( QStringLiteral( "Error transforming GPS point" ) );
     }
 
     QgsAttributeMap attributes;

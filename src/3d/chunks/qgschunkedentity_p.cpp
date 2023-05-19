@@ -143,7 +143,7 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneState &state )
     {
       if ( !node->entity() )
       {
-        QgsDebugMsg( "Active node has null entity - this should never happen!" );
+        QgsDebugError( "Active node has null entity - this should never happen!" );
         continue;
       }
       node->entity()->setEnabled( true );
@@ -158,7 +158,7 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneState &state )
   {
     if ( !node->entity() )
     {
-      QgsDebugMsg( "Active node has null entity - this should never happen!" );
+      QgsDebugError( "Active node has null entity - this should never happen!" );
       continue;
     }
     node->entity()->setEnabled( false );

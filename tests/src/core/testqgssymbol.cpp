@@ -93,7 +93,7 @@ void TestQgsSymbol::initTestCase()
   if ( styleFile.exists() )
   {
     styleFile.remove();
-    QgsDebugMsg( "removed user style file " + styleFile.fileName() );
+    QgsDebugMsgLevel( "removed user style file " + styleFile.fileName(), 1 );
   }
 
   //
@@ -279,7 +279,7 @@ void TestQgsSymbol::testParseColor()
   QMap<QString, QPair< QColor, bool> >::const_iterator i = colorTests.constBegin();
   while ( i != colorTests.constEnd() )
   {
-    QgsDebugMsg( "color string: " +  i.key() );
+    QgsDebugMsgLevel( "color string: " +  i.key(), 1 );
     bool hasAlpha = false;
     const QColor result = QgsSymbolLayerUtils::parseColorWithAlpha( i.key(), hasAlpha );
     QVERIFY( result == i.value().first );
@@ -360,7 +360,7 @@ void TestQgsSymbol::testParseColorList()
   QMap<QString, QColor >::const_iterator i = colorTests.constBegin();
   while ( i != colorTests.constEnd() )
   {
-    QgsDebugMsg( "color list string: " +  i.key() );
+    QgsDebugMsgLevel( "color list string: " +  i.key(), 1 );
     const QList< QColor > result = QgsSymbolLayerUtils::parseColorList( i.key() );
     if ( i.value().isValid() )
     {
@@ -398,7 +398,7 @@ void TestQgsSymbol::testParseColorList()
   QVector< QPair< QString, QList<QColor> > >::const_iterator it = colorListTests.constBegin();
   while ( it != colorListTests.constEnd() )
   {
-    QgsDebugMsg( "color list string: " + ( *it ).first );
+    QgsDebugMsgLevel( "color list string: " + ( *it ).first, 1 );
     const QList< QColor > result = QgsSymbolLayerUtils::parseColorList( ( *it ).first );
     if ( ( *it ).second.length() > 0 )
     {

@@ -247,7 +247,7 @@ void QgsRasterAttributeTableWidget::saveChanges()
     QgsRasterAttributeTable *attributeTable { mRasterLayer->dataProvider()->attributeTable( mCurrentBand ) };
     if ( ! attributeTable )
     {
-      QgsDebugMsg( QStringLiteral( "Error saving RAT: RAT for band %1 is unexpectedly gone!" ).arg( mCurrentBand ) );
+      QgsDebugError( QStringLiteral( "Error saving RAT: RAT for band %1 is unexpectedly gone!" ).arg( mCurrentBand ) );
     }
     else
     {

@@ -80,7 +80,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   }
   else
   {
-    //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": acquiring connection");
+    //QgsDebugMsgLevel( "Feature iterator of " + mSource->mLayerName + ": acquiring connection", 2);
     mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource, mSource->mShareSameDatasetAmongLayers ),
             mRequest.timeout(),
             mRequest.requestMayBeNested(),
@@ -566,7 +566,7 @@ bool QgsOgrFeatureIterator::close()
 
   if ( mConn )
   {
-    //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": releasing connection");
+    //QgsDebugMsgLevel( "Feature iterator of " + mSource->mLayerName + ": releasing connection", 2);
     QgsOgrConnPool::instance()->releaseConnection( mConn );
   }
 

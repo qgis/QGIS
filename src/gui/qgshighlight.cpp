@@ -96,7 +96,7 @@ void QgsHighlight::updateTransformedGeometry()
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform highlight geometry to canvas CRS" ) );
+      QgsDebugError( QStringLiteral( "Could not transform highlight geometry to canvas CRS" ) );
     }
   }
   updateRect();
@@ -342,7 +342,7 @@ void QgsHighlight::paint( QPainter *p )
       }
       catch ( QgsCsException & )
       {
-        QgsDebugMsg( QStringLiteral( "Error transforming canvas extent to layer CRS" ) );
+        QgsDebugError( QStringLiteral( "Error transforming canvas extent to layer CRS" ) );
       }
     }
     if ( !mapExtentInLayerCrs.isFinite() )

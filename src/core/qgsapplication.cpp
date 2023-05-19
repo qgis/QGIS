@@ -771,7 +771,7 @@ QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Could not create colorized icon svg at %1" ).arg( iconPath ) );
+      QgsDebugError( QStringLiteral( "Could not create colorized icon svg at %1" ).arg( iconPath ) );
       return QIcon();
     }
 
@@ -2340,7 +2340,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
 
     if ( sqlite3_exec( database.get(), "DROP VIEW vw_srs", nullptr, nullptr, &errmsg ) != SQLITE_OK )
     {
-      QgsDebugMsg( QStringLiteral( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
+      QgsDebugError( QStringLiteral( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
     }
 
     if ( sqlite3_exec( database.get(),

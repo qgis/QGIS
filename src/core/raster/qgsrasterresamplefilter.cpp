@@ -78,7 +78,7 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface *input )
   // Resampler can only work with single band ARGB32_Premultiplied
   if ( !input )
   {
-    QgsDebugMsg( QStringLiteral( "No input" ) );
+    QgsDebugError( QStringLiteral( "No input" ) );
     return false;
   }
 
@@ -92,14 +92,14 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface *input )
 
   if ( input->bandCount() < 1 )
   {
-    QgsDebugMsg( QStringLiteral( "No input band" ) );
+    QgsDebugError( QStringLiteral( "No input band" ) );
     return false;
   }
 
   if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied &&
        input->dataType( 1 ) != Qgis::DataType::ARGB32 )
   {
-    QgsDebugMsg( QStringLiteral( "Unknown input data type" ) );
+    QgsDebugError( QStringLiteral( "Unknown input data type" ) );
     return false;
   }
 
@@ -195,7 +195,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNumber, bufferedExtent, resWidth, resHeight, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
+    QgsDebugError( QStringLiteral( "No raster data!" ) );
     return outputBlock.release();
   }
 
@@ -248,7 +248,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   else
   {
     // Should not happen
-    QgsDebugMsg( QStringLiteral( "Unexpected resampling" ) );
+    QgsDebugError( QStringLiteral( "Unexpected resampling" ) );
     dstImg = img.scaled( width, height );
   }
 

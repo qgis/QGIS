@@ -56,7 +56,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEdit
       if ( mSetting )
         return setWidgetValue( mSetting->value( mDynamicKeyPartList ) );
 
-      QgsDebugMsg( "editor is not configured" );
+      QgsDebugError( "editor is not configured" );
       return false;
     }
 

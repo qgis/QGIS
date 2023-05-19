@@ -707,7 +707,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
             }
             catch ( const QgsProviderConnectionException &ex )
             {
-              QgsDebugMsg( QStringLiteral( "Error retrieving primary keys: %1" ).arg( ex.what() ) );
+              QgsDebugError( QStringLiteral( "Error retrieving primary keys: %1" ).arg( ex.what() ) );
             }
           }
 

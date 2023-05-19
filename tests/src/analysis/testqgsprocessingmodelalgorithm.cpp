@@ -1395,7 +1395,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   model2.updateDestinationParameters();
   model2.childAlgorithm( QStringLiteral( "cx1" ) ).setDescription( "first step in my model" );
   const QStringList actualParts = model2.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, 2 );
-  QgsDebugMsg( actualParts.join( '\n' ) );
+  QgsDebugMsgLevel( actualParts.join( '\n' ), 1 );
   const QStringList expectedParts = QStringLiteral( "\"\"\"\n"
                                     "Model exported as python.\n"
                                     "Name : 2my model\n"

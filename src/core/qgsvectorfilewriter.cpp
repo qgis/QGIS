@@ -407,14 +407,14 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   mCodec = QTextCodec::codecForName( fileEncoding.toLocal8Bit().constData() );
   if ( !mCodec )
   {
-    QgsDebugMsg( "error finding QTextCodec for " + fileEncoding );
+    QgsDebugError( "error finding QTextCodec for " + fileEncoding );
 
     QgsSettings settings;
     QString enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
     mCodec = QTextCodec::codecForName( enc.toLocal8Bit().constData() );
     if ( !mCodec )
     {
-      QgsDebugMsg( "error finding QTextCodec for " + enc );
+      QgsDebugError( "error finding QTextCodec for " + enc );
       mCodec = QTextCodec::codecForLocale();
       Q_ASSERT( mCodec );
     }
@@ -871,7 +871,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
                           " precision " + QString::number( ogrPrecision ), 2 );
         if ( OGR_L_CreateField( mLayer, fld.get(), true ) != OGRERR_NONE )
         {
-          QgsDebugMsg( "error creating field " + attrField.name() );
+          QgsDebugError( "error creating field " + attrField.name() );
           mErrorMessage = QObject::tr( "Creation of field %1 failed (OGR error: %2)" )
                           .arg( attrField.name(),
                                 QString::fromUtf8( CPLGetLastErrorMsg() ) );
@@ -888,7 +888,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
           if ( ogrIdx < 0 )
           {
-            QgsDebugMsg( "error creating field " + attrField.name() );
+            QgsDebugError( "error creating field " + attrField.name() );
             mErrorMessage = QObject::tr( "Created field %1 not found (OGR error: %2)" )
                             .arg( attrField.name(),
                                   QString::fromUtf8( CPLGetLastErrorMsg() ) );
@@ -3190,7 +3190,7 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
   {
     if ( OGRERR_NONE != OGR_L_CommitTransaction( mLayer ) )
     {
-      QgsDebugMsg( QStringLiteral( "Error while committing transaction on OGRLayer." ) );
+      QgsDebugError( QStringLiteral( "Error while committing transaction on OGRLayer." ) );
     }
   }
   mDS.reset();
@@ -3385,7 +3385,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "No such source field with index '%1' available." ).arg( attrIdx ) );
+        QgsDebugError( QStringLiteral( "No such source field with index '%1' available." ).arg( attrIdx ) );
       }
     }
   }
@@ -3771,7 +3771,7 @@ bool QgsVectorFileWriter::deleteShapeFile( const QString &fileName )
     QFile f( dir.canonicalPath() + '/' + file );
     if ( !f.remove() )
     {
-      QgsDebugMsg( QStringLiteral( "Removing file %1 failed: %2" ).arg( file, f.errorString() ) );
+      QgsDebugError( QStringLiteral( "Removing file %1 failed: %2" ).arg( file, f.errorString() ) );
       ok = false;
     }
   }

@@ -1770,7 +1770,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   {
     if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
     {
-      QgsDebugMsg( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
+      QgsDebugError( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
     }
 
     // for invalid layer sources, we fallback to stored wkbType if available
@@ -5400,12 +5400,12 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       if ( vendorOptionElem.firstChild().nodeType() == QDomNode::ElementNode &&
            vendorOptionElem.firstChild().localName() == QLatin1String( "Literal" ) )
       {
-        QgsDebugMsg( vendorOptionElem.firstChild().localName() );
+        QgsDebugMsgLevel( vendorOptionElem.firstChild().localName(), 2 );
         optionValue = vendorOptionElem.firstChild().firstChild().nodeValue();
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "unexpected child of %1 named %2" ).arg( vendorOptionElem.localName(), optionName ) );
+        QgsDebugError( QStringLiteral( "unexpected child of %1 named %2" ).arg( vendorOptionElem.localName(), optionName ) );
       }
     }
 

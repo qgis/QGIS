@@ -513,7 +513,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
         if ( mPageSize > 0 && mTotalDownloadedFeatureCount == 0 &&
              parser->exceptionText().contains( QLatin1String( "Cannot do natural order without a primary key" ) ) )
         {
-          QgsDebugMsg( QStringLiteral( "Got exception %1. Re-trying with paging disabled" ).arg( parser->exceptionText() ) );
+          QgsDebugError( QStringLiteral( "Got exception %1. Re-trying with paging disabled" ).arg( parser->exceptionText() ) );
           mPageSize = 0;
           mShared->mPageSize = 0;
         }
@@ -521,7 +521,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
         // the examples in the WFS 2.0 spec showing that
         else if ( !mRemoveNSPrefix && parser->exceptionText().contains( QLatin1String( "more than one feature type" ) ) )
         {
-          QgsDebugMsg( QStringLiteral( "Got exception %1. Re-trying by removing namespace prefix" ).arg( parser->exceptionText() ) );
+          QgsDebugError( QStringLiteral( "Got exception %1. Re-trying by removing namespace prefix" ).arg( parser->exceptionText() ) );
           mRemoveNSPrefix = true;
         }
 
@@ -604,7 +604,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
             if ( mShared->mCapabilityExtent.contains( invertedRectangle ) )
             {
               mShared->mGetFeatureEPSGDotHonoursEPSGOrder = true;
-              QgsDebugMsg( QStringLiteral( "Server is likely MapServer. Using mGetFeatureEPSGDotHonoursEPSGOrder mode" ) );
+              QgsDebugMsgLevel( QStringLiteral( "Server is likely MapServer. Using mGetFeatureEPSGDotHonoursEPSGOrder mode" ), 2 );
             }
           }
         }
@@ -622,7 +622,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
             gmlId = QgsBackgroundCachedSharedData::getMD5( f );
             if ( !mShared->mHasWarnedAboutMissingFeatureId )
             {
-              QgsDebugMsg( QStringLiteral( "Server returns features without fid/gml:id. Computing a fake one using feature attributes" ) );
+              QgsDebugError( QStringLiteral( "Server returns features without fid/gml:id. Computing a fake one using feature attributes" ) );
               mShared->mHasWarnedAboutMissingFeatureId = true;
             }
           }
@@ -633,7 +633,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
           else if ( pagingIter == 2 && featureCountForThisResponse == 0 && gmlIdFirstFeatureFirstIter == gmlId )
           {
             disablePaging = true;
-            QgsDebugMsg( QStringLiteral( "Server does not seem to properly support paging since it returned the same first feature for 2 different page requests. Disabling paging" ) );
+            QgsDebugError( QStringLiteral( "Server does not seem to properly support paging since it returned the same first feature for 2 different page requests. Disabling paging" ) );
           }
 
           if ( mShared->mGetFeatureEPSGDotHonoursEPSGOrder && f.hasGeometry() )

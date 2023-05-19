@@ -245,7 +245,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
       if ( !mFields.at( idx ).convertCompatible( attribute ) )
       {
-        QgsDebugMsg( QStringLiteral( "Invalid value %1 for field %2 of type %3" ).arg( attributesData[mFields.at( idx ).name()].toString(), mFields.at( idx ).name(), mFields.at( idx ).typeName() ) );
+        QgsDebugError( QStringLiteral( "Invalid value %1 for field %2 of type %3" ).arg( attributesData[mFields.at( idx ).name()].toString(), mFields.at( idx ).name(), mFields.at( idx ).typeName() ) );
       }
       attributes[idx] = attribute;
       if ( mFields.at( idx ).name() == mObjectIdFieldName )
@@ -591,7 +591,7 @@ QVariantMap QgsAfsSharedData::postData( const QUrl &url, const QByteArray &paylo
   if ( isTestEndpoint )
   {
     const QString localFile = modifiedUrl.toLocalFile() + "_payload";
-    QgsDebugMsg( QStringLiteral( "payload file is %1" ).arg( localFile ) );
+    QgsDebugMsgLevel( QStringLiteral( "payload file is %1" ).arg( localFile ), 2 );
     {
       QFile file( localFile );
       if ( file.open( QFile::WriteOnly | QIODevice::Truncate ) )
@@ -627,7 +627,7 @@ QVariantMap QgsAfsSharedData::postData( const QUrl &url, const QByteArray &paylo
 // Handle network errors
   if ( error != QgsBlockingNetworkRequest::NoError )
   {
-    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+    QgsDebugError( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
     errorText = networkRequest.errorMessage();
 
     // try to get detailed error message from reply
