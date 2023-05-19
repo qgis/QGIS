@@ -18,7 +18,6 @@
 #include <QLocale>
 
 #include "qgsadvanceddigitizingfloater.h"
-#include "qgsmessagelog.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
 #include "qgsfocuswatcher.h"
@@ -176,7 +175,8 @@ void QgsAdvancedDigitizingFloater::setActive( bool active )
 
 void QgsAdvancedDigitizingFloater::setItemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item, bool visible )
 {
-  QgsSettings().setValue( QStringLiteral( "/Cad/%1ShowInFloater" ).arg( QMetaEnum::fromType<QgsAdvancedDigitizingFloater::FloaterItem>().valueToKey( item ) ), visible );
+  const QMetaEnum enumData { QMetaEnum::fromType<QgsAdvancedDigitizingFloater::FloaterItem>() };
+  QgsSettings().setValue( QStringLiteral( "/Cad/%1ShowInFloater" ).arg( enumData.valueToKey( static_cast<int>( item ) ) ), visible );
   mItemsVisibility.setFlag( item, visible );
   switch ( item )
   {
