@@ -547,7 +547,8 @@ static QVariant fcnExpScale( const QVariantList &values, const QgsExpressionCont
   }
 
   // Return exponentially scaled value
-  return QVariant( ( ( rangeMax - rangeMin ) / std::pow( domainMax - domainMin, exponent ) ) * std::pow( val - domainMin, exponent ) + rangeMin );
+  double ratio = ( std::pow( exponent, val - domainMin ) - 1 ) / ( std::pow( exponent, domainMax - domainMin ) - 1 );
+  return QVariant( ( rangeMax - rangeMin ) * ratio + rangeMin );
 }
 
 static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
