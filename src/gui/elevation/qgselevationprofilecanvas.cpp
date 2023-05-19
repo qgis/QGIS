@@ -1062,10 +1062,8 @@ void QgsElevationProfileCanvas::zoomFull()
 
   const QgsDoubleRange zRange = mCurrentJob->zRange();
 
-  double xMinimum = mPlotItem->xMinimum();
-  double xMaximum = mPlotItem->xMaximum();
-  double yMinimum = mPlotItem->yMinimum();
-  double yMaximum = mPlotItem->yMaximum();
+  double yMinimum = 0;
+  double yMaximum = 0;
 
   if ( zRange.upper() < zRange.lower() )
   {
@@ -1088,9 +1086,9 @@ void QgsElevationProfileCanvas::zoomFull()
   }
 
   const double profileLength = profileCurve()->length();
-  xMinimum = 0;
+  double xMinimum = 0;
   // just 2% margin to max distance -- any more is overkill and wasted space
-  xMaximum = profileLength * 1.02;
+  double xMaximum = profileLength * 1.02;
 
   if ( mLockAxisScales )
   {
