@@ -372,7 +372,8 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
   }
 
   const QString driverName = GDALGetDriverShortName( hDriver );
-  if ( driverName == QLatin1String( "PDF" ) )
+  if ( driverName == QLatin1String( "PDF" )
+       || driverName == QLatin1String( "DXF" ) )
   {
     // unwanted drivers -- it's slow to create connections for these, and we don't really want
     // to expose database capabilities for them (even though they kind of are database formats)
