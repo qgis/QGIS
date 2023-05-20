@@ -83,7 +83,8 @@ void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
 
 void QgsVectorLayerCache::setCacheSubsetOfAttributes( const QgsAttributeList &attributes )
 {
-  if ( ! mCachedAttributes.toSet().contains( attributes.toSet() ) && ! mCache.isEmpty() )
+  if ( ! mCache.isEmpty() && ! QSet<int>( mCachedAttributes.cbegin(), mCachedAttributes.cend() )
+       .contains( QSet<int>( attributes.cbegin(), attributes.cend( ) ) ) )
     invalidate();
   mCachedAttributes = attributes;
 }
