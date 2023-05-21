@@ -259,6 +259,30 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
 
     /**
+     * Returns the elevation limit, which is used when profileSymbology() is
+     * Qgis::ProfileSurfaceSymbology::FillBelow or Qgis::ProfileSurfaceSymbology::FillAbove
+     * to limit the fill to a specific elevation range.
+     *
+     * By default this is NaN, which indicates that there is no elevation limit.
+     *
+     * \see setElevationLimit()
+     * \since QGIS 3.32
+     */
+    double elevationLimit() const;
+
+    /**
+     * Sets the elevation \a limit, which is used when profileSymbology() is
+     * Qgis::ProfileSurfaceSymbology::FillBelow or Qgis::ProfileSurfaceSymbology::FillAbove
+     * to limit the fill to a specific elevation range.
+     *
+     * Set to NaN to indicate that there is no elevation limit.
+     *
+     * \see elevationLimit()
+     * \since QGIS 3.32
+     */
+    void setElevationLimit( double limit );
+
+    /**
      * Returns TRUE if the marker symbol should also be shown in continuous surface plots.
      *
      * \note This setting is only used when type() is Qgis::VectorProfileType::ContinuousSurface.
@@ -295,6 +319,7 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
     bool mRespectLayerSymbology = true;
     Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
+    double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
     bool mShowMarkerSymbolInSurfacePlots = false;
 
 };

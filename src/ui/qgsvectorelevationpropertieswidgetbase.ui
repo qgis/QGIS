@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>555</width>
-    <height>611</height>
+    <height>779</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -211,6 +211,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>GroupBox</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Profile Chart Appearance</string>
@@ -229,7 +236,7 @@
       <item row="1" column="0" colspan="2">
        <widget class="QStackedWidget" name="mInterpretationStackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="mPageIndividualFeatures">
          <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,2">
@@ -363,7 +370,7 @@
              <number>0</number>
             </property>
             <widget class="QWidget" name="mPageLine">
-             <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,2">
+             <layout class="QGridLayout" name="gridLayout_8" columnstretch="1,2">
               <property name="leftMargin">
                <number>0</number>
               </property>
@@ -376,14 +383,14 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item>
+              <item row="0" column="0">
                <widget class="QLabel" name="label_9">
                 <property name="text">
                  <string>Line style</string>
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="0" column="1">
                <widget class="QgsSymbolButton" name="mSurfaceLineStyleButton">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -412,10 +419,10 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_10">
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_14">
                 <property name="text">
-                 <string>Fill style</string>
+                 <string>Limit</string>
                 </property>
                </widget>
               </item>
@@ -429,6 +436,26 @@
                 </property>
                 <property name="text">
                  <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QgsDoubleSpinBox" name="mElevationLimitSpinBox">
+                <property name="decimals">
+                 <number>6</number>
+                </property>
+                <property name="minimum">
+                 <double>-99999.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>99999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>Fill style</string>
                 </property>
                </widget>
               </item>

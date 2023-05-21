@@ -34,11 +34,13 @@ QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer
   mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationLine.svg" ) ), tr( "Line" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::Line ) );
   mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillBelow.svg" ) ), tr( "Fill Below" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillBelow ) );
   mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillAbove.svg" ) ), tr( "Fill Above" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillAbove ) );
+  mElevationLimitSpinBox->setClearValue( mElevationLimitSpinBox->minimum(), tr( "No set" ) );
 
   syncToLayer( layer );
 
   connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsMeshElevationPropertiesWidget::onChanged );
+  connect( mElevationLimitSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mStyleComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
@@ -70,6 +72,10 @@ void QgsMeshElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   const QgsMeshLayerElevationProperties *props = qgis::down_cast< const QgsMeshLayerElevationProperties * >( mLayer->elevationProperties() );
   mOffsetZSpinBox->setValue( props->zOffset() );
   mScaleZSpinBox->setValue( props->zScale() );
+  if ( std::isnan( props->elevationLimit() ) )
+    mElevationLimitSpinBox->clear();
+  else
+    mElevationLimitSpinBox->setValue( props->elevationLimit() );
   mLineStyleButton->setSymbol( props->profileLineSymbol()->clone() );
   mFillStyleButton->setSymbol( props->profileFillSymbol()->clone() );
 
@@ -96,6 +102,10 @@ void QgsMeshElevationPropertiesWidget::apply()
   QgsMeshLayerElevationProperties *props = qgis::down_cast< QgsMeshLayerElevationProperties * >( mLayer->elevationProperties() );
   props->setZOffset( mOffsetZSpinBox->value() );
   props->setZScale( mScaleZSpinBox->value() );
+  if ( mElevationLimitSpinBox->value() != mElevationLimitSpinBox->clearValue() )
+    props->setElevationLimit( mElevationLimitSpinBox->value() );
+  else
+    props->setElevationLimit( std::numeric_limits< double >::quiet_NaN() );
   props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
   props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );
   props->setProfileSymbology( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) );

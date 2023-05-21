@@ -45,6 +45,8 @@ QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElem
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
   element.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "symbology" ), qgsEnumValueToKey( mSymbology ) );
+  if ( !std::isnan( mElevationLimit ) )
+    element.setAttribute( QStringLiteral( "elevationLimit" ), qgsDoubleToString( mElevationLimit ) );
 
   writeCommonProperties( element, document, context );
   element.setAttribute( QStringLiteral( "band" ), mBandNumber );
@@ -66,6 +68,10 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
   mEnabled = elevationElement.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
   mSymbology = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "symbology" ) ), Qgis::ProfileSurfaceSymbology::Line );
+  if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
+    mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
+  else
+    mElevationLimit = std::numeric_limits< double >::quiet_NaN();
 
   readCommonProperties( elevationElement, context );
   mBandNumber = elevationElement.attribute( QStringLiteral( "band" ), QStringLiteral( "1" ) ).toInt();
@@ -92,6 +98,7 @@ QgsRasterLayerElevationProperties *QgsRasterLayerElevationProperties::clone() co
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
   res->setProfileFillSymbol( mProfileFillSymbol->clone() );
   res->setProfileSymbology( mSymbology );
+  res->setElevationLimit( mElevationLimit );
   res->setBandNumber( mBandNumber );
   res->copyCommonProperties( this );
   return res.release();
@@ -163,11 +170,33 @@ QgsFillSymbol *QgsRasterLayerElevationProperties::profileFillSymbol() const
 void QgsRasterLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
 {
   mProfileFillSymbol.reset( symbol );
+  emit changed();
+  emit profileRenderingPropertyChanged();
 }
 
 void QgsRasterLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology )
 {
+  if ( mSymbology == symbology )
+    return;
+
   mSymbology = symbology;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+double QgsRasterLayerElevationProperties::elevationLimit() const
+{
+  return mElevationLimit;
+}
+
+void QgsRasterLayerElevationProperties::setElevationLimit( double limit )
+{
+  if ( qgsDoubleNear( mElevationLimit, limit ) )
+    return;
+
+  mElevationLimit = limit;
+  emit changed();
+  emit profileRenderingPropertyChanged();
 }
 
 bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer )
