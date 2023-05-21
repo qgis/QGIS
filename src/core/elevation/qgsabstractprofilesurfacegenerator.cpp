@@ -134,8 +134,8 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
 
   const double minDistance = context.distanceRange().lower();
   const double maxDistance = context.distanceRange().upper();
-  const double minZ = context.elevationRange().lower();
-  const double maxZ = context.elevationRange().upper();
+  double minZ = context.elevationRange().lower();
+  double maxZ = context.elevationRange().upper();
 
   const QRectF visibleRegion( minDistance, minZ, maxDistance - minDistance, maxZ - minZ );
   QPainterPath clipPath;
@@ -148,8 +148,36 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
       mLineSymbol->startRender( context.renderContext() );
       break;
     case Qgis::ProfileSurfaceSymbology::FillBelow:
+      mFillSymbol->startRender( context.renderContext() );
+      if ( !std::isnan( mElevationLimit ) )
+      {
+        double dataLimit = std::numeric_limits< double >::max();
+        for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+        {
+          if ( !std::isnan( pointIt.value() ) )
+          {
+            dataLimit = std::min( pointIt.value(), dataLimit );
+          }
+        }
+        if ( dataLimit > mElevationLimit )
+          minZ = std::max( minZ, mElevationLimit );
+      }
+      break;
     case Qgis::ProfileSurfaceSymbology::FillAbove:
       mFillSymbol->startRender( context.renderContext() );
+      if ( !std::isnan( mElevationLimit ) )
+      {
+        double dataLimit = std::numeric_limits< double >::lowest();
+        for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+        {
+          if ( !std::isnan( pointIt.value() ) )
+          {
+            dataLimit = std::max( pointIt.value(), dataLimit );
+          }
+        }
+        if ( dataLimit < mElevationLimit )
+          maxZ = std::min( maxZ, mElevationLimit );
+      }
       break;
   }
 
@@ -235,6 +263,7 @@ void QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( const QgsAbs
   mLineSymbol.reset( surfaceGenerator->lineSymbol()->clone() );
   mFillSymbol.reset( surfaceGenerator->fillSymbol()->clone() );
   symbology = surfaceGenerator->symbology();
+  mElevationLimit = surfaceGenerator->elevationLimit();
 }
 
 //
@@ -256,4 +285,14 @@ QgsLineSymbol *QgsAbstractProfileSurfaceGenerator::lineSymbol() const
 QgsFillSymbol *QgsAbstractProfileSurfaceGenerator::fillSymbol() const
 {
   return mFillSymbol.get();
+}
+
+double QgsAbstractProfileSurfaceGenerator::elevationLimit() const
+{
+  return mElevationLimit;
+}
+
+void QgsAbstractProfileSurfaceGenerator::setElevationLimit( double limit )
+{
+  mElevationLimit = limit;
 }
