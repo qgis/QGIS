@@ -54,7 +54,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * will inform the cache, when it has been deleted, so indexes can be
      * updated that the wrapped feature needs to be fetched again if needed.
      */
-    class QgsCachedFeature
+    class CORE_EXPORT QgsCachedFeature
     {
       public:
 
