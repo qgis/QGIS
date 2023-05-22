@@ -57,6 +57,11 @@ class TestVectorLayerCache : public QObject
     void testCacheGeom();
     void testFullCacheWithRect(); // Test that if rect is set then no full cache can exist, see #19468
 
+    /**
+     * Test the cache functionality with subset of attributes.
+     */
+    void testMixedAttributesCache();
+
     void onCommittedFeaturesAdded( const QString &, const QgsFeatureList & );
 
   private:
@@ -399,7 +404,7 @@ void TestVectorLayerCache::testCacheGeom()
 
 void TestVectorLayerCache::testFullCacheWithRect()
 {
-  QgsVectorLayerCache cache( mPointsLayer, mPointsLayer->dataProvider()->featureCount() );
+  QgsVectorLayerCache cache( mPointsLayer, static_cast<int>( mPointsLayer->dataProvider()->featureCount() ) );
   // cache geometry
   cache.setCacheGeometry( true );
   QVERIFY( ! cache.hasFullCache() );
@@ -421,6 +426,62 @@ void TestVectorLayerCache::testFullCacheWithRect()
     QVERIFY( f.hasGeometry() );
   }
   QVERIFY( cache.hasFullCache() );
+
+}
+
+void TestVectorLayerCache::testMixedAttributesCache()
+{
+
+  // Test cache with no subset
+  QgsVectorLayerCache cache( mPointsLayer, static_cast<int>( mPointsLayer->dataProvider()->featureCount() ) );
+  QgsFeature f;
+  QgsFeatureIterator it = cache.getFeatures( );
+  it.nextFeature( f );
+
+  QVERIFY( cache.isFidCached( f.id() ) );
+  QVERIFY( cache.mCache[f.id()]->allAttributesFetched() );
+
+  // Test with subset
+  QgsVectorLayerCache cacheSubset( mPointsLayer, static_cast<int>( mPointsLayer->dataProvider()->featureCount() ) );
+  cacheSubset.setCacheSubsetOfAttributes( {2} );
+  QgsFeatureIterator itSubset = cacheSubset.getFeatures( );
+  itSubset.nextFeature( f );
+
+  QVERIFY( ! cacheSubset.isFidCached( f.id() ) );
+  cacheSubset.featureAtId( f.id(), f );
+  QVERIFY( cacheSubset.isFidCached( f.id() ) );
+  QVERIFY( ! cacheSubset.mCache[f.id()]->allAttributesFetched() );
+  QVERIFY( f.attribute( 0 ).isNull() );
+  QVERIFY( f.attribute( 1 ).isNull() );
+  QVERIFY( ! f.attribute( 2 ).isNull() );
+
+  cacheSubset.featureAtIdWithAllAttributes( 0, f );
+  QVERIFY( cacheSubset.isFidCached( 0 ) );
+  QVERIFY( cacheSubset.mCache[ 0 ]->allAttributesFetched() );
+  QVERIFY( ! f.attribute( 0 ).isNull() );
+  QVERIFY( ! f.attribute( 1 ).isNull() );
+  QVERIFY( ! f.attribute( 2 ).isNull() );
+
+  cacheSubset.featureAtIdWithAllAttributes( 1, f );
+  QVERIFY( cacheSubset.isFidCached( 1 ) );
+  QVERIFY( cacheSubset.mCache[1]->allAttributesFetched() );
+  QVERIFY( ! f.attribute( 0 ).isNull() );
+  QVERIFY( ! f.attribute( 1 ).isNull() );
+  QVERIFY( ! f.attribute( 2 ).isNull() );
+
+  // Test subset with request
+  QgsVectorLayerCache cacheSubsetWithRequest( mPointsLayer, static_cast<int>( mPointsLayer->dataProvider()->featureCount() ) );
+  cacheSubsetWithRequest.setCacheSubsetOfAttributes( {1, 2} );
+  QgsFeatureRequest req;
+  req.setSubsetOfAttributes( { 2 } );
+  QgsFeatureIterator itSubsetWithRequest = cacheSubsetWithRequest.getFeatures( req );
+  itSubsetWithRequest.nextFeature( f );
+
+  QVERIFY( cacheSubset.isFidCached( 0 ) );
+  QVERIFY( ! cacheSubsetWithRequest.mCache[f.id()]->allAttributesFetched() );
+  QVERIFY( f.attribute( 0 ).isNull() );
+  QVERIFY( ! f.attribute( 1 ).isNull() );
+  QVERIFY( ! f.attribute( 2 ).isNull() );
 
 }
 
