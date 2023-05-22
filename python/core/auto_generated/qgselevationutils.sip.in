@@ -30,6 +30,22 @@ This method considers the elevation (or z) range available from layers contained
 returns the maximal combined elevation range of these layers.
 %End
 
+    static bool canEnableElevationForLayer( QgsMapLayer *layer );
+%Docstring
+Returns ``True`` if elevation can be enabled for a map ``layer``.
+
+.. versionadded:: 3.32
+%End
+
+    static bool enableElevationForLayer( QgsMapLayer *layer );
+%Docstring
+Automatically enables elevation for a map ``layer``, using reasonable defaults.
+
+Returns ``True`` if the elevation was enabled successfully.
+
+.. versionadded:: 3.32
+%End
+
 };
 
 

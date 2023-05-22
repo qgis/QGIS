@@ -23,6 +23,7 @@
 #include "qgsgeometry.h"
 #include "qobjectuniqueptr.h"
 #include "qgselevationprofilelayertreeview.h"
+#include "ui_qgselevationprofileaddlayersdialogbase.h"
 
 #include <QWidgetAction>
 #include <QElapsedTimer>
@@ -50,6 +51,7 @@ class QLabel;
 class QgsProfilePoint;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryBool;
+class QgsMapLayerProxyModel;
 
 class QgsAppElevationProfileLayerTreeView : public QgsElevationProfileLayerTreeView
 {
@@ -61,6 +63,26 @@ class QgsAppElevationProfileLayerTreeView : public QgsElevationProfileLayerTreeV
   protected:
 
     void contextMenuEvent( QContextMenuEvent *event ) override;
+};
+
+class QgsElevationProfileLayersDialog: public QDialog, private Ui::QgsElevationProfileAddLayersDialogBase
+{
+    Q_OBJECT
+
+  public:
+    QgsElevationProfileLayersDialog( QWidget *parent = nullptr );
+    void setVisibleLayers( const QList<QgsMapLayer *> &layers );
+    void setHiddenLayers( const QList<QgsMapLayer *> &layers );
+    QList< QgsMapLayer * > selectedLayers() const;
+
+  private slots:
+
+    void filterVisible( bool enabled );
+
+  private:
+
+    QgsMapLayerProxyModel *mModel = nullptr;
+    QList< QgsMapLayer * > mVisibleLayers;
 };
 
 class QgsElevationProfileWidget : public QWidget
@@ -93,6 +115,7 @@ class QgsElevationProfileWidget : public QWidget
     void toggleDockModeRequested( bool docked );
 
   private slots:
+    void addLayers();
     void updateCanvasLayers();
     void onTotalPendingJobsCountChanged( int count );
     void setProfileCurve( const QgsGeometry &curve, bool resetView );
