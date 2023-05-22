@@ -172,6 +172,9 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
         imagePainter.setRenderHint( QPainter::Antialiasing, true );
         QgsRenderContext rc = QgsRenderContext::fromQPainter( &imagePainter );
 
+        const double mapUnitsPerPixel = ( xMaximum() - xMinimum() ) / plotArea().width();
+        rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
+
         rc.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
         rc.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
 

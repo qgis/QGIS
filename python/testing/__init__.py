@@ -156,9 +156,12 @@ class TestCase(_TestCase):
         return result
 
     @classmethod
-    def render_layout_check(cls, name: str, layout: QgsLayout, size: QSize):
+    def render_layout_check(cls, name: str,
+                            layout: QgsLayout,
+                            size: Optional[QSize] = None):
         checker = QgsLayoutChecker(name, layout)
-        checker.setSize(size)
+        if size is not None:
+            checker.setSize(size)
         if cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
         result, message = checker.testLayout()
