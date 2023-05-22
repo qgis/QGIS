@@ -305,6 +305,9 @@ QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double dist
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context.setPainterFlagsUsingContext( &p );
+  const double mapUnitsPerPixel = ( distanceMax - distanceMin ) / width;
+  context.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
+
   render( context, width, height, distanceMin, distanceMax, zMin, zMax, sourceId );
   p.end();
 
