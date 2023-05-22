@@ -75,7 +75,6 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void setAllToSkip();
 
   private slots:
-    void comboValueChanged( const QString &text );
     void selectedRowChanged();
     void mFromSelectedPushButton_clicked();
     void mFromLargestPushButton_clicked();
@@ -88,7 +87,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
     //! Create new combo box with the options for featureXX / mean / min / max
-    QComboBox *createMergeComboBox( QVariant::Type columnType ) const;
+    QComboBox *createMergeComboBox( QVariant::Type columnType, int column );
 
     /**
      * Returns the table widget column index of a combo box

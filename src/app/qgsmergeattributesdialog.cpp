@@ -176,7 +176,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     mTableWidget->setColumnCount( col + 1 );
     mFieldToColumnMap[ mFields.at( idx ).name() ] = col;
 
-    QComboBox *cb = createMergeComboBox( mFields.at( idx ).type() );
+    QComboBox *cb = createMergeComboBox( mFields.at( idx ).type(), col );
     if ( ! mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mFields.fieldOriginIndex( idx ) ) &&
          mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
     {
@@ -266,7 +266,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
 }
 
-QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnType ) const
+QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnType, int column )
 {
   QComboBox *newComboBox = new QComboBox();
   //add items for feature
@@ -300,8 +300,11 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
   newComboBox->addItem( tr( "Skip Attribute" ), QStringLiteral( "skip" ) );
   newComboBox->addItem( tr( "Manual Value" ), QStringLiteral( "manual" ) );
 
-  connect( newComboBox, &QComboBox::currentTextChanged,
-           this, &QgsMergeAttributesDialog::comboValueChanged );
+  connect( newComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+  {
+    refreshMergedValue( column );
+  } );
+
   return newComboBox;
 }
 
@@ -315,21 +318,6 @@ int QgsMergeAttributesDialog::findComboColumn( QComboBox *c ) const
     }
   }
   return -1;
-}
-
-void QgsMergeAttributesDialog::comboValueChanged( const QString &text )
-{
-  Q_UNUSED( text )
-  QComboBox *senderComboBox = qobject_cast<QComboBox *>( sender() );
-  if ( !senderComboBox )
-  {
-    return;
-  }
-  int column = findComboColumn( senderComboBox );
-  if ( column < 0 )
-    return;
-
-  refreshMergedValue( column );
 }
 
 void QgsMergeAttributesDialog::selectedRowChanged()
