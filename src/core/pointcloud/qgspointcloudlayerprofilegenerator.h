@@ -95,6 +95,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     QgsDoubleRange zRange() const override;
     QgsPointSequence sampledPoints() const override;
     QVector< QgsGeometry > asGeometries() const override;
+    QVector<  QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     void renderResults( QgsProfileRenderContext &context ) override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
@@ -111,6 +112,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     double mZOffset = 0;
     double mZScale = 1.0;
     double mMaxErrorInLayerCoordinates = 0;
+    QString mLayerId;
 
     friend class QgsPointCloudLayerProfileGenerator;
 };

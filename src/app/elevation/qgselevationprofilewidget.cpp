@@ -24,6 +24,7 @@
 #include "qgsmaplayermodel.h"
 #include "qgsmaptoolprofilecurve.h"
 #include "qgsmaptoolprofilecurvefromfeature.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgsrubberband.h"
 #include "qgsplottoolpan.h"
 #include "qgsplottoolxaxiszoom.h"
@@ -51,7 +52,9 @@
 #include "qgssettingstree.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgselevationutils.h"
-
+#include "qgsprofileexporter.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsterrainprovider.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -307,6 +310,11 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   exportAsImageAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveMapAsImage.svg" ) ) );
   connect( exportAsImageAction, &QAction::triggered, this, &QgsElevationProfileWidget::exportAsImage );
   toolBar->addAction( exportAsImageAction );
+
+  QAction *exportAsLayerAction = new QAction( tr( "Export as Layer" ), this );
+  connect( exportAsLayerAction, &QAction::triggered, this, &QgsElevationProfileWidget::exportAsLayer );
+  toolBar->addAction( exportAsLayerAction );
+
 
   toolBar->addSeparator();
 
@@ -757,6 +765,57 @@ void QgsElevationProfileWidget::exportAsImage()
 
   QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as Image" ), tr( "Successfully saved the profile to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileWithExtension.first ).toString(), QDir::toNativeSeparators( fileWithExtension.first ) ) );
 
+}
+
+
+void QgsElevationProfileWidget::exportAsLayer()
+{
+  std::unique_ptr< QgsCurve > profileCurve;
+  if ( !mProfileCurve.isEmpty() )
+  {
+    if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
+    {
+      profileCurve.reset( curve->clone() );
+    }
+    else if ( const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve *>( mProfileCurve.constGet()->simplifiedTypeRef() ) )
+    {
+      // hm, just grab the first part!
+      profileCurve.reset( multiCurve->curveN( 0 )->clone() );
+    }
+  }
+  if ( !profileCurve )
+    return;
+
+  QgsProfileRequest request( profileCurve.release() );
+  request.setCrs( mMainCanvas->mapSettings().destinationCrs() );
+  request.setTolerance( mSettingsAction->toleranceSpinBox()->value() );
+  request.setTransformContext( QgsProject::instance()->transformContext() );
+  request.setTerrainProvider( QgsProject::instance()->elevationProperties()->terrainProvider() ? QgsProject::instance()->elevationProperties()->terrainProvider()->clone() : nullptr );
+  QgsExpressionContext context;
+  context.appendScope( QgsExpressionContextUtils::globalScope() );
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  request.setExpressionContext( context );
+
+  const QList< QgsMapLayer * > layersToGenerate = mCanvas->layers();
+  QList< QgsAbstractProfileSource * > sources;
+  sources.reserve( layersToGenerate .size() );
+  for ( QgsMapLayer *layer : layersToGenerate )
+  {
+    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
+      sources.append( source );
+  }
+
+  QgsProfileExporter exporter( sources, request, Qgis::ProfileExportType::DistanceVsElevationTable );
+  exporter.run();
+
+  const QList< QgsVectorLayer * > layers = exporter.toLayers();
+  QList< QgsMapLayer * > layersToAdd;
+  for ( QgsVectorLayer *layer : layers )
+  {
+    layersToAdd.append( layer );
+  }
+  if ( !layersToAdd.empty() )
+    QgsProject::instance()->addMapLayers( layersToAdd );
 }
 
 void QgsElevationProfileWidget::nudgeLeft()

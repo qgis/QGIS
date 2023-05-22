@@ -13,6 +13,7 @@ import os
 
 import qgis  # NOQA
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsLineString,
     QgsProfileIdentifyContext,
@@ -65,6 +66,30 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
         self.assertEqual(r.zRange().lower(), 74)
         self.assertEqual(r.zRange().upper(), 154)
 
+        features = r.asFeatures(Qgis.ProfileExportType.Features3D)
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].layerIdentifier, rl.id())
+        self.assertEqual(features[0].geometry.constGet().numPoints(), 1394)
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(1393).asWkt(-2), 'PointZ (-345800 6631600 100)')
+
+        features = r.asFeatures(Qgis.ProfileExportType.Profile2D)
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].layerIdentifier, rl.id())
+        self.assertEqual(features[0].geometry.constGet().numPoints(), 1394)
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'Point (0 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(1393).asWkt(-2), 'Point (3400 100)')
+
+        features = r.asFeatures(Qgis.ProfileExportType.DistanceVsElevationTable)
+        self.assertEqual(len(features), 1394)
+        self.assertEqual(features[0].layerIdentifier, rl.id())
+        self.assertAlmostEqual(features[0].attributes['distance'], 0.3393, 2)
+        self.assertAlmostEqual(features[0].attributes['elevation'], 154.0, 2)
+        self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
+        self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertAlmostEqual(features[-1].attributes['distance'], 3392.69, 2)
+        self.assertAlmostEqual(features[-1].attributes['elevation'], 99.0, 2)
+
     def testGenerationWithStepSize(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
         self.assertTrue(rl.isValid())
@@ -101,6 +126,30 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
         self.assertEqual(r.zRange().lower(), 74)
         self.assertEqual(r.zRange().upper(), 154)
 
+        features = r.asFeatures(Qgis.ProfileExportType.Features3D)
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].layerIdentifier, rl.id())
+        self.assertEqual(features[0].geometry.constGet().numPoints(), 341)
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(340).asWkt(-2), 'PointZ (-345800 6631600 100)')
+
+        features = r.asFeatures(Qgis.ProfileExportType.Profile2D)
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].layerIdentifier, rl.id())
+        self.assertEqual(features[0].geometry.constGet().numPoints(), 341)
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'Point (0 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(340).asWkt(-2), 'Point (3400 100)')
+
+        features = r.asFeatures(Qgis.ProfileExportType.DistanceVsElevationTable)
+        self.assertEqual(len(features), 341)
+        self.assertEqual(features[0].layerIdentifier, rl.id())
+        self.assertAlmostEqual(features[0].attributes['distance'], 0.0, 2)
+        self.assertAlmostEqual(features[0].attributes['elevation'], 154.0, 2)
+        self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
+        self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertAlmostEqual(features[-1].attributes['distance'], 3393.2639, 2)
+        self.assertAlmostEqual(features[-1].attributes['elevation'], 99.0, 2)
+
     def testGenerationWithVerticalLine(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
         self.assertTrue(rl.isValid())
@@ -127,7 +176,7 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
         self.assertEqual(r.zRange().lower(), 74)
         self.assertEqual(r.zRange().upper(), 120)
 
-    def testGenerationWithHorizontallLine(self):
+    def testGenerationWithHorizontalLine(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
         self.assertTrue(rl.isValid())
 

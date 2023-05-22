@@ -165,6 +165,13 @@ Abstract base class for storage of elevation profiles.
 %End
   public:
 
+    struct Feature
+    {
+      QString layerIdentifier;
+      QgsGeometry geometry;
+      QVariantMap attributes;
+    };
+
     virtual ~QgsAbstractProfileResults();
 
     virtual QString type() const = 0;
@@ -186,6 +193,15 @@ as the point z value.
     virtual QVector< QgsGeometry > asGeometries() const = 0;
 %Docstring
 Returns a list of geometries representing the calculated elevation results.
+%End
+
+    virtual QVector< QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = 0 ) const;
+%Docstring
+Returns a list of features representing the calculated elevation results.
+
+The default implementation returns an empty list.
+
+.. versionadded:: 3.32
 %End
 
     virtual void renderResults( QgsProfileRenderContext &context ) = 0;

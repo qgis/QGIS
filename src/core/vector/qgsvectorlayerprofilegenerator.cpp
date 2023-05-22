@@ -60,6 +60,22 @@ QVector<QgsGeometry> QgsVectorLayerProfileResults::asGeometries() const
   return res;
 }
 
+QVector<QgsAbstractProfileResults::Feature> QgsVectorLayerProfileResults::asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback ) const
+{
+  switch ( profileType )
+  {
+    case Qgis::VectorProfileType::IndividualFeatures:
+      if ( type != Qgis::ProfileExportType::DistanceVsElevationTable )
+        return asIndividualFeatures( type, feedback );
+      // distance vs elevation table results are always handled like a continuous surface
+      FALLTHROUGH
+
+    case Qgis::VectorProfileType::ContinuousSurface:
+      return QgsAbstractProfileSurfaceResults::asFeatures( type, feedback );
+  }
+  BUILTIN_UNREACHABLE
+}
+
 QgsProfileSnapResult QgsVectorLayerProfileResults::snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
 {
   switch ( profileType )
@@ -598,11 +614,48 @@ void QgsVectorLayerProfileResults::renderMarkersOverContinuousSurfacePlot( QgsPr
   mMarkerSymbol->stopRender( context.renderContext() );
 }
 
+QVector<QgsAbstractProfileResults::Feature> QgsVectorLayerProfileResults::asIndividualFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback ) const
+{
+  QVector<QgsAbstractProfileResults::Feature> res;
+  res.reserve( features.size() );
+  for ( auto it = features.constBegin(); it != features.constEnd(); ++it )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
+    for ( const Feature &feature : it.value() )
+    {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
+      QgsAbstractProfileResults::Feature outFeature;
+      outFeature.layerIdentifier = mId;
+      outFeature.attributes = {{QStringLiteral( "id" ), feature.featureId }};
+      switch ( type )
+      {
+        case Qgis::ProfileExportType::Features3D:
+          outFeature.geometry = feature.geometry;
+          break;
+
+        case Qgis::ProfileExportType::Profile2D:
+          outFeature.geometry = feature.crossSectionGeometry;
+          break;
+
+        case Qgis::ProfileExportType::DistanceVsElevationTable:
+          break; // unreachable
+      }
+      res << outFeature;
+    }
+  }
+  return res;
+}
+
 void QgsVectorLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
 {
   QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( generator );
   const QgsVectorLayerProfileGenerator *vlGenerator = qgis::down_cast<  const QgsVectorLayerProfileGenerator * >( generator );
 
+  mId = vlGenerator->mId;
   profileType = vlGenerator->mType;
   respectLayerSymbology = vlGenerator->mRespectLayerSymbology;
   mMarkerSymbol.reset( vlGenerator->mProfileMarkerSymbol->clone() );
@@ -614,7 +667,8 @@ void QgsVectorLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstrac
 //
 
 QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *layer, const QgsProfileRequest &request )
-  : mId( layer->id() )
+  : QgsAbstractProfileSurfaceGenerator( request )
+  , mId( layer->id() )
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mTerrainProvider( request.terrainProvider() ? request.terrainProvider()->clone() : nullptr )

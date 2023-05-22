@@ -59,6 +59,11 @@ QgsAbstractProfileGenerator::~QgsAbstractProfileGenerator() = default;
 
 QgsAbstractProfileResults::~QgsAbstractProfileResults() = default;
 
+QVector< QgsAbstractProfileResults::Feature > QgsAbstractProfileResults::asFeatures( Qgis::ProfileExportType, QgsFeedback * ) const
+{
+  return {};
+}
+
 QgsProfileSnapResult QgsAbstractProfileResults::snapPoint( const QgsProfilePoint &, const QgsProfileSnapContext & )
 {
   return QgsProfileSnapResult();

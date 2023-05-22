@@ -2496,6 +2496,13 @@ Qgis.ProfileGeneratorFlag.__doc__ = 'Flags that control the way the :py:class:`Q
 Qgis.ProfileGeneratorFlag.baseClass = Qgis
 Qgis.ProfileGeneratorFlags.baseClass = Qgis
 ProfileGeneratorFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.ProfileExportType.Features3D.__doc__ = "Export profiles as 3D features, with elevation values stored in exported geometry Z values"
+Qgis.ProfileExportType.Profile2D.__doc__ = "Export profiles as 2D profile lines, with elevation stored in exported geometry Y dimension and distance in X dimension"
+Qgis.ProfileExportType.DistanceVsElevationTable.__doc__ = "Export profiles as a table of sampled distance vs elevation values"
+Qgis.ProfileExportType.__doc__ = 'Types of export for elevation profiles.\n\n.. versionadded:: 3.32\n\n' + '* ``Features3D``: ' + Qgis.ProfileExportType.Features3D.__doc__ + '\n' + '* ``Profile2D``: ' + Qgis.ProfileExportType.Profile2D.__doc__ + '\n' + '* ``DistanceVsElevationTable``: ' + Qgis.ProfileExportType.DistanceVsElevationTable.__doc__
+# --
+Qgis.ProfileExportType.baseClass = Qgis
 QgsPointCloudRenderer.PointSymbol = Qgis.PointCloudSymbol
 # monkey patching scoped based enum
 QgsPointCloudRenderer.Square = Qgis.PointCloudSymbol.Square

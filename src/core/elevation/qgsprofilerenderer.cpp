@@ -18,7 +18,6 @@
 #include "qgsabstractprofilesource.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgscurve.h"
-#include "qgsgeos.h"
 #include "qgsprofilesnapping.h"
 
 #include <QtConcurrentMap>
@@ -36,6 +35,12 @@ QgsProfilePlotRenderer::QgsProfilePlotRenderer( const QList< QgsAbstractProfileS
         mGenerators.emplace_back( std::move( generator ) );
     }
   }
+}
+
+QgsProfilePlotRenderer::QgsProfilePlotRenderer( std::vector<std::unique_ptr<QgsAbstractProfileGenerator> > generators, const QgsProfileRequest &request )
+  : mGenerators( std::move( generators ) )
+  , mRequest( request )
+{
 }
 
 QgsProfilePlotRenderer::~QgsProfilePlotRenderer()
@@ -418,6 +423,24 @@ QVector<QgsProfileIdentifyResults> QgsProfilePlotRenderer::identify( const QgsDo
     job->mutex.unlock();
   }
 
+  return res;
+}
+
+QVector<QgsAbstractProfileResults::Feature> QgsProfilePlotRenderer::asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback )
+{
+  QVector<QgsAbstractProfileResults::Feature > res;
+  for ( const auto &job : mJobs )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
+    job->mutex.lock();
+    if ( job->complete && job->results )
+    {
+      res.append( job->results->asFeatures( type, feedback ) );
+    }
+    job->mutex.unlock();
+  }
   return res;
 }
 

@@ -74,6 +74,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
 
     QString type() const override;
     QVector< QgsGeometry > asGeometries() const override;
+    QVector< QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
     QVector<QgsProfileIdentifyResults> identify( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const QgsProfileIdentifyContext &context ) override;
@@ -83,6 +84,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
   private:
     void renderResultsAsIndividualFeatures( QgsProfileRenderContext &context );
     void renderMarkersOverContinuousSurfacePlot( QgsProfileRenderContext &context );
+    QVector< QgsAbstractProfileResults::Feature > asIndividualFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const;
     QgsProfileSnapResult snapPointToIndividualFeatures( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 
     void visitFeaturesAtPoint( const QgsProfilePoint &point, double maximumPointDistanceDelta, double maximumPointElevationDelta, double maximumSurfaceElevationDelta,

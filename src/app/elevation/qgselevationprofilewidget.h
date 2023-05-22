@@ -126,6 +126,7 @@ class QgsElevationProfileWidget : public QWidget
     void clear();
     void exportAsPdf();
     void exportAsImage();
+    void exportAsLayer();
     void nudgeLeft();
     void nudgeRight();
     void nudgeCurve( Qgis::BufferSide side );

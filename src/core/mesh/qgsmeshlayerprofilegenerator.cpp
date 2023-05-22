@@ -56,7 +56,8 @@ QVector<QgsProfileIdentifyResults> QgsMeshLayerProfileResults::identify( const Q
 //
 
 QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer, const QgsProfileRequest &request )
-  : mId( layer->id() )
+  : QgsAbstractProfileSurfaceGenerator( request )
+  , mId( layer->id() )
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mSourceCrs( layer->crs() )
@@ -107,6 +108,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
 
   mResults = std::make_unique< QgsMeshLayerProfileResults >();
   mResults->mLayer = mLayer;
+  mResults->mId = mId;
   mResults->copyPropertiesFromGenerator( this );
 
   // we don't currently have any method to determine line->mesh intersection points, so for now we just sample at about 100(?) points over the line

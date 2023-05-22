@@ -44,6 +44,7 @@ Constructor for QgsProfilePlotRenderer, using the provided list of profile ``sou
 results.
 %End
 
+
     ~QgsProfilePlotRenderer();
 
     QStringList sourceIds() const;
@@ -165,6 +166,8 @@ Identify results visible at the specified profile ``point``.
 %Docstring
 Identify results visible within the specified ranges.
 %End
+
+    QVector< QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = 0 );
 
   signals:
 
