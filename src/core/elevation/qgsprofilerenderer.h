@@ -69,6 +69,17 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources,
                             const QgsProfileRequest &request );
 
+    /**
+     * Constructor for QgsProfilePlotRenderer, using the provided list of profile \a generators to generate the
+     * results.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.32
+     */
+    QgsProfilePlotRenderer( std::vector<std::unique_ptr<QgsAbstractProfileGenerator> > generators,
+                            const QgsProfileRequest &request ) SIP_SKIP;
+
     ~QgsProfilePlotRenderer() override;
 
     /**
@@ -186,6 +197,11 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
      * Identify results visible within the specified ranges.
      */
     QVector<QgsProfileIdentifyResults> identify( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const QgsProfileIdentifyContext &context );
+
+    /**
+     *
+     */
+    QVector< QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr );
 
   signals:
 

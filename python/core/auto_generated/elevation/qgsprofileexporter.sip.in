@@ -1,0 +1,65 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofileexporter.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProfileExporter
+{
+%Docstring(signature="appended")
+Handles exports of elevation profiles in various formats.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsprofileexporter.h"
+%End
+  public:
+
+    QgsProfileExporter( const QList< QgsAbstractProfileSource * > &sources,
+                        const QgsProfileRequest &request,
+                        Qgis::ProfileExportType type );
+%Docstring
+Constructor for QgsProfileExporter, using the provided list of profile ``sources`` to generate the
+results.
+
+After construction, call :py:func:`~QgsProfileExporter.run` to initiate the profile generation.
+%End
+
+
+
+    ~QgsProfileExporter();
+
+    void run( QgsFeedback *feedback = 0 );
+%Docstring
+Runs the profile generation. This method must be called before retrieving any results from the
+exporter.
+%End
+
+    QList< QgsVectorLayer * > toLayers() /Factory/;
+%Docstring
+Returns a list of vector layer containing the exported profile results.
+
+While this method attempts to condense all results into a single layer, multiple layers may be returned
+when the geometry types of exported features differs.
+
+Ownership of the returned layers is transferred to the caller.
+%End
+
+  private:
+    QgsProfileExporter( const QgsProfileExporter &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofileexporter.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -176,6 +176,34 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
         self.assertAlmostEqual(results.zRange().lower(), 2325.1325, 2)
         self.assertAlmostEqual(results.zRange().upper(), 2335.0755, 2)
 
+        features = results.asFeatures(Qgis.ProfileExportType.Features3D)
+        self.assertEqual(len(features), 182)
+        self.assertEqual(features[0].layerIdentifier, pcl.id())
+        self.assertEqual(features[0].geometry.asWkt(1),
+                         'PointZ (515389.1 4918366.7 2326.1)')
+        self.assertEqual(features[-1].layerIdentifier, pcl.id())
+        self.assertEqual(features[-1].geometry.asWkt(1),
+                         'PointZ (515388.3 4918366.7 2334.7)')
+
+        features = results.asFeatures(Qgis.ProfileExportType.Profile2D)
+        self.assertEqual(len(features), 182)
+        self.assertEqual(features[0].layerIdentifier, pcl.id())
+        self.assertEqual(features[0].geometry.asWkt(1),
+                         'Point (1.1 2326.1)')
+        self.assertEqual(features[-1].layerIdentifier, pcl.id())
+        self.assertEqual(features[-1].geometry.asWkt(1),
+                         'Point (0.3 2334.7)')
+
+        features = results.asFeatures(Qgis.ProfileExportType.DistanceVsElevationTable)
+        self.assertEqual(len(features), 182)
+        self.assertEqual(features[0].layerIdentifier, pcl.id())
+        self.assertAlmostEqual(features[0].attributes['distance'], 1.129138, 2)
+        self.assertAlmostEqual(features[0].attributes['elevation'], 2326.052, 2)
+        self.assertEqual(features[0].geometry.asWkt(1), 'PointZ (515389.1 4918366.7 2326.1)')
+        self.assertEqual(features[-1].geometry.asWkt(1), 'PointZ (515388.3 4918366.7 2334.7)')
+        self.assertAlmostEqual(features[-1].attributes['distance'], 0.319292, 2)
+        self.assertAlmostEqual(features[-1].attributes['elevation'], 2334.69125, 2)
+
         # ensure maximum error is considered
         context.setMapUnitsPerDistancePixel(0.0001)
         self.assertTrue(generator.generateProfile(context))

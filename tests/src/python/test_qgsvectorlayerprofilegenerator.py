@@ -116,6 +116,30 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.assertAlmostEqual(results.zRange().lower(), 221.75, 2)
         self.assertAlmostEqual(results.zRange().upper(), 274.0, 2)
 
+        features = results.asFeatures(Qgis.ProfileExportType.Features3D)
+        self.assertEqual(len(features), 3)
+        self.assertEqual(features[0].layerIdentifier, vl.id())
+        self.assertCountEqual([f.geometry.asWkt(-2) for f in features],
+                              ['PointZ (-347400 6632600 300)', 'PointZ (-347500 6632700 300)', 'PointZ (-346400 6632300 200)'])
+
+        features = results.asFeatures(Qgis.ProfileExportType.Profile2D)
+        self.assertEqual(len(features), 3)
+        self.assertEqual(features[0].layerIdentifier, vl.id())
+        self.assertCountEqual([f.geometry.asWkt(-2) for f in features],
+                              ['Point (200 300)', 'Point (0 300)', 'Point (1200 200)'])
+
+        features = results.asFeatures(Qgis.ProfileExportType.DistanceVsElevationTable)
+        self.assertEqual(len(features), 3)
+        self.assertEqual(features[0].layerIdentifier, vl.id())
+        self.assertCountEqual([f.attributes['distance'] for f in features],
+                              [31.204980351872074, 175.61729584080234,
+                               1242.5349752853108])
+        self.assertCountEqual([f.attributes['elevation'] for f in features],
+                              [274.0, 274.0,
+                               221.75])
+        self.assertCountEqual([f.geometry.asWkt(-1) for f in features],
+                              ['PointZ (-347530 6632710 270)', 'PointZ (-347390 6632650 270)', 'PointZ (-346400 6632270 220)'])
+
     def testPointGenerationTerrain(self):
         """
         Points layer with terrain clamping

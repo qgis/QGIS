@@ -59,7 +59,8 @@ QVector<QgsProfileIdentifyResults> QgsRasterLayerProfileResults::identify( const
 //
 
 QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *layer, const QgsProfileRequest &request )
-  : mId( layer->id() )
+  : QgsAbstractProfileSurfaceGenerator( request )
+  , mId( layer->id() )
   , mFeedback( std::make_unique< QgsRasterBlockFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mSourceCrs( layer->crs() )
@@ -138,6 +139,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
 
   mResults = std::make_unique< QgsRasterLayerProfileResults >();
   mResults->mLayer = mLayer;
+  mResults->mId = mId;
   mResults->copyPropertiesFromGenerator( this );
 
   std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( transformedCurve.get() ) );

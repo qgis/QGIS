@@ -1531,6 +1531,13 @@ The development version
     typedef QFlags<Qgis::ProfileGeneratorFlag> ProfileGeneratorFlags;
 
 
+    enum class ProfileExportType
+    {
+      Features3D,
+      Profile2D,
+      DistanceVsElevationTable,
+    };
+
     enum class PointCloudSymbol
       {
       Square,

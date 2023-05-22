@@ -20,10 +20,13 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractprofilegenerator.h"
+
 #include <memory>
 
 #include <qgslinesymbol.h>
 #include <qgsfillsymbol.h>
+
+class QgsProfileRequest;
 
 #define SIP_NO_FILE
 
@@ -40,6 +43,7 @@ class CORE_EXPORT QgsAbstractProfileSurfaceResults : public QgsAbstractProfileRe
 
     ~QgsAbstractProfileSurfaceResults() override;
 
+    QString mId;
     QgsPointSequence mRawPoints;
     QMap< double, double > mDistanceToHeightMap;
     double minZ = std::numeric_limits< double >::max();
@@ -50,10 +54,13 @@ class CORE_EXPORT QgsAbstractProfileSurfaceResults : public QgsAbstractProfileRe
     std::unique_ptr< QgsFillSymbol > mFillSymbol;
     double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
 
+    std::unique_ptr< QgsCurve > mProfileCurve;
+
     QMap< double, double > distanceToHeightMap() const override;
     QgsPointSequence sampledPoints() const override;
     QgsDoubleRange zRange() const override;
     QVector< QgsGeometry > asGeometries() const override;
+    QVector<  QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
@@ -70,6 +77,11 @@ class CORE_EXPORT QgsAbstractProfileSurfaceResults : public QgsAbstractProfileRe
 class CORE_EXPORT QgsAbstractProfileSurfaceGenerator : public QgsAbstractProfileGenerator
 {
   public:
+
+    /**
+     * Constructor for QgsAbstractProfileSurfaceGenerator.
+     */
+    QgsAbstractProfileSurfaceGenerator( const QgsProfileRequest &request );
 
     ~QgsAbstractProfileSurfaceGenerator() override;
 
@@ -118,6 +130,10 @@ class CORE_EXPORT QgsAbstractProfileSurfaceGenerator : public QgsAbstractProfile
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
     std::unique_ptr< QgsFillSymbol > mFillSymbol;
     double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
+
+    std::unique_ptr< QgsCurve > mProfileCurve;
+
+    friend class QgsAbstractProfileSurfaceResults;
 
 };
 

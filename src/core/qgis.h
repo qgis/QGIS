@@ -2611,6 +2611,19 @@ class CORE_EXPORT Qgis
     Q_FLAG( ProfileGeneratorFlags )
 
     /**
+     * Types of export for elevation profiles.
+     *
+     * \since QGIS 3.32
+     */
+    enum class ProfileExportType : int
+    {
+      Features3D, //!< Export profiles as 3D features, with elevation values stored in exported geometry Z values
+      Profile2D, //!< Export profiles as 2D profile lines, with elevation stored in exported geometry Y dimension and distance in X dimension
+      DistanceVsElevationTable, //!< Export profiles as a table of sampled distance vs elevation values
+    };
+    Q_ENUM( ProfileExportType );
+
+    /**
      * Rendering symbols for point cloud points.
      *
      * \since QGIS 3.26

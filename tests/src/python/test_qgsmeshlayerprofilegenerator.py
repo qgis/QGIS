@@ -13,6 +13,7 @@ import os
 
 import qgis  # NOQA
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsLineString,
     QgsMeshLayer,
@@ -58,6 +59,30 @@ class TestQgsMeshLayerProfileGenerator(unittest.TestCase):
         self.assertAlmostEqual(r.zRange().lower(), 80, 2)
         self.assertAlmostEqual(r.zRange().upper(), 152.874, 0)
 
+        features = r.asFeatures(Qgis.ProfileExportType.Features3D)
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].layerIdentifier, ml.id())
+        self.assertEqual(features[0].geometry.constGet().numPoints(), 102)
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(101).asWkt(-2), 'PointZ (-345800 6631600 100)')
+
+        features = r.asFeatures(Qgis.ProfileExportType.Profile2D)
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].layerIdentifier, ml.id())
+        self.assertEqual(features[0].geometry.constGet().numPoints(), 102)
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'Point (0 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(101).asWkt(-2), 'Point (3400 100)')
+
+        features = r.asFeatures(Qgis.ProfileExportType.DistanceVsElevationTable)
+        self.assertEqual(len(features), 102)
+        self.assertEqual(features[0].layerIdentifier, ml.id())
+        self.assertAlmostEqual(features[0].attributes['distance'], 0.0, 2)
+        self.assertAlmostEqual(features[0].attributes['elevation'], 152.87, 2)
+        self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
+        self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertAlmostEqual(features[-1].attributes['distance'], 3393.263, 2)
+        self.assertAlmostEqual(features[-1].attributes['elevation'], 98.780, 2)
+
     def testStepSize(self):
         ml = QgsMeshLayer(os.path.join(unitTestDataPath(), '3d', 'elev_mesh.2dm'), 'mdal', 'mdal')
         self.assertTrue(ml.isValid())
@@ -84,6 +109,30 @@ class TestQgsMeshLayerProfileGenerator(unittest.TestCase):
 
         self.assertAlmostEqual(r.zRange().lower(), 80, 2)
         self.assertAlmostEqual(r.zRange().upper(), 152.874, 0)
+
+        features = r.asFeatures(Qgis.ProfileExportType.Features3D)
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].layerIdentifier, ml.id())
+        self.assertEqual(features[0].geometry.constGet().numPoints(), 216)
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(215).asWkt(-2), 'PointZ (-345800 6631600 100)')
+
+        features = r.asFeatures(Qgis.ProfileExportType.Profile2D)
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].layerIdentifier, ml.id())
+        self.assertEqual(features[0].geometry.constGet().numPoints(), 216)
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'Point (0 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(215).asWkt(-2), 'Point (3400 100)')
+
+        features = r.asFeatures(Qgis.ProfileExportType.DistanceVsElevationTable)
+        self.assertEqual(len(features), 216)
+        self.assertEqual(features[0].layerIdentifier, ml.id())
+        self.assertAlmostEqual(features[0].attributes['distance'], 0.0, 2)
+        self.assertAlmostEqual(features[0].attributes['elevation'], 152.87, 2)
+        self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
+        self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertAlmostEqual(features[-1].attributes['distance'], 3393.263, 2)
+        self.assertAlmostEqual(features[-1].attributes['elevation'], 98.780, 2)
 
     def testSnapping(self):
         ml = QgsMeshLayer(os.path.join(unitTestDataPath(), '3d', 'elev_mesh.2dm'), 'mdal', 'mdal')

@@ -18,6 +18,8 @@
 #include "qgsprofilesnapping.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
+#include "qgslinestring.h"
+#include "qgsprofilerequest.h"
 
 #include <QPainterPath>
 #include <optional>
@@ -49,6 +51,120 @@ QVector<QgsGeometry> QgsAbstractProfileSurfaceResults::asGeometries() const
   res.reserve( mRawPoints.size() );
   for ( const QgsPoint &point : mRawPoints )
     res.append( QgsGeometry( point.clone() ) );
+
+  return res;
+}
+
+QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileSurfaceResults::asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback ) const
+{
+  QVector< QgsAbstractProfileResults::Feature > res;
+  res.reserve( 1 );
+
+  QVector< double > currentLineX;
+  QVector< double > currentLineY;
+  QVector< double > currentLineZ;
+
+  switch ( type )
+  {
+    case Qgis::ProfileExportType::Features3D:
+    {
+      for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+      {
+        if ( feedback && feedback->isCanceled() )
+          break;
+
+
+        if ( std::isnan( pointIt.value() ) )
+        {
+          if ( currentLineX.length() > 1 )
+          {
+            QgsAbstractProfileResults::Feature f;
+            f.layerIdentifier = mId;
+            f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY, currentLineZ ) );
+            res << f;
+          }
+          currentLineX.clear();
+          currentLineY.clear();
+          currentLineZ.clear();
+          continue;
+        }
+
+        std::unique_ptr< QgsPoint > curvePoint( mProfileCurve->interpolatePoint( pointIt.key() ) );
+        currentLineX << curvePoint->x();
+        currentLineY << curvePoint->y();
+        currentLineZ << pointIt.value();
+      }
+
+      if ( currentLineX.length() > 1 )
+      {
+        QgsAbstractProfileResults::Feature f;
+        f.layerIdentifier = mId;
+        f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY, currentLineZ ) );
+        res << f;
+      }
+      break;
+    }
+
+    case Qgis::ProfileExportType::Profile2D:
+    {
+      for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+      {
+        if ( feedback && feedback->isCanceled() )
+          break;
+
+        if ( std::isnan( pointIt.value() ) )
+        {
+          if ( currentLineX.length() > 1 )
+          {
+            QgsAbstractProfileResults::Feature f;
+            f.layerIdentifier = mId;
+            f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY ) );
+            res << f;
+          }
+          currentLineX.clear();
+          currentLineY.clear();
+          continue;
+        }
+
+        currentLineX << pointIt.key();
+        currentLineY << pointIt.value();
+      }
+      if ( currentLineX.length() > 1 )
+      {
+        QgsAbstractProfileResults::Feature f;
+        f.layerIdentifier = mId;
+        f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY ) );
+        res << f;
+      }
+      break;
+    }
+
+    case Qgis::ProfileExportType::DistanceVsElevationTable:
+    {
+      res.reserve( mDistanceToHeightMap.size() );
+      for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+      {
+        if ( feedback && feedback->isCanceled() )
+          break;
+
+        QgsAbstractProfileResults::Feature f;
+        f.layerIdentifier = mId;
+        f.attributes =
+        {
+          { QStringLiteral( "distance" ),  pointIt.key() },
+          { QStringLiteral( "elevation" ),  pointIt.value() }
+        };
+        std::unique_ptr< QgsPoint>  point( mProfileCurve->interpolatePoint( pointIt.key() ) );
+        if ( point->is3D() )
+          point->setZ( pointIt.value() );
+        else
+          point->addZValue( pointIt.value() );
+        f.geometry = QgsGeometry( std::move( point ) );
+        res << f;
+      }
+      break;
+    }
+  }
 
   return res;
 }
@@ -264,11 +380,19 @@ void QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( const QgsAbs
   mFillSymbol.reset( surfaceGenerator->fillSymbol()->clone() );
   symbology = surfaceGenerator->symbology();
   mElevationLimit = surfaceGenerator->elevationLimit();
+
+  mProfileCurve.reset( surfaceGenerator->mProfileCurve->clone() );
 }
 
 //
 // QgsAbstractProfileSurfaceGenerator
 //
+
+QgsAbstractProfileSurfaceGenerator::QgsAbstractProfileSurfaceGenerator( const QgsProfileRequest &request )
+  : mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
+{
+
+}
 
 QgsAbstractProfileSurfaceGenerator::~QgsAbstractProfileSurfaceGenerator() = default;
 
