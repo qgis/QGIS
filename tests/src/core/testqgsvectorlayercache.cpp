@@ -404,7 +404,7 @@ void TestVectorLayerCache::testCacheGeom()
 
 void TestVectorLayerCache::testFullCacheWithRect()
 {
-  QgsVectorLayerCache cache( mPointsLayer, mPointsLayer->dataProvider()->featureCount() );
+  QgsVectorLayerCache cache( mPointsLayer, static_cast<int>( mPointsLayer->dataProvider()->featureCount() ) );
   // cache geometry
   cache.setCacheGeometry( true );
   QVERIFY( ! cache.hasFullCache() );
@@ -433,7 +433,7 @@ void TestVectorLayerCache::testMixedAttributesCache()
 {
 
   // Test cache with no subset
-  QgsVectorLayerCache cache( mPointsLayer, mPointsLayer->dataProvider()->featureCount() );
+  QgsVectorLayerCache cache( mPointsLayer, static_cast<int>( mPointsLayer->dataProvider()->featureCount() ) );
   QgsFeature f;
   QgsFeatureIterator it = cache.getFeatures( );
   it.nextFeature( f );
@@ -442,7 +442,7 @@ void TestVectorLayerCache::testMixedAttributesCache()
   QVERIFY( cache.mCache[f.id()]->allAttributesFetched() );
 
   // Test with subset
-  QgsVectorLayerCache cacheSubset( mPointsLayer, mPointsLayer->dataProvider()->featureCount() );
+  QgsVectorLayerCache cacheSubset( mPointsLayer, static_cast<int>( mPointsLayer->dataProvider()->featureCount() ) );
   cacheSubset.setCacheSubsetOfAttributes( {2} );
   QgsFeatureIterator itSubset = cacheSubset.getFeatures( );
   itSubset.nextFeature( f );
@@ -470,7 +470,7 @@ void TestVectorLayerCache::testMixedAttributesCache()
   QVERIFY( ! f.attribute( 2 ).isNull() );
 
   // Test subset with request
-  QgsVectorLayerCache cacheSubsetWithRequest( mPointsLayer, mPointsLayer->dataProvider()->featureCount() );
+  QgsVectorLayerCache cacheSubsetWithRequest( mPointsLayer, static_cast<int>( mPointsLayer->dataProvider()->featureCount() ) );
   cacheSubsetWithRequest.setCacheSubsetOfAttributes( {1, 2} );
   QgsFeatureRequest req;
   req.setSubsetOfAttributes( { 2 } );
