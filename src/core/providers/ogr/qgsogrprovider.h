@@ -346,6 +346,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     //! Invalidate GDAL /vsicurl/ RAM cache for mFilePath
     void invalidateNetworkCache();
+
+    bool mShapefileHadSpatialIndex = false;
 };
 
 ///@endcond

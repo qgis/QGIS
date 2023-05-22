@@ -35,7 +35,6 @@ email                : sherman at mrcc.com
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsvectorlayer.h"
-#include "qgsproviderregistry.h"
 #include "qgsvariantutils.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -2764,6 +2763,8 @@ bool QgsOgrProvider::doInitialActionsForEdition()
       return false;
   }
 
+  mShapefileHadSpatialIndex = ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) && hasSpatialIndex() );
+
   return true;
 }
 
@@ -3958,6 +3959,12 @@ bool QgsOgrProvider::leaveUpdateMode()
       return false;
     }
   }
+  // GDAL removes the qix, so we recreate it if it was originally there.
+  if ( mShapefileHadSpatialIndex )
+  {
+    createSpatialIndex();
+  }
+
   return true;
 }
 
