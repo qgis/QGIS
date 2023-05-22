@@ -936,6 +936,18 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
     }
   }
 
+  //convert circularstring to compoundcurve
+  if ( QgsWkbTypes::flatType( providerGeomType ) == Qgis::WkbType::CompoundCurve )
+  {
+    QgsCircularString *circularString = qgsgeometry_cast<QgsCircularString *>( geometry );
+    if ( circularString )
+    {
+      std::unique_ptr<QgsCompoundCurve> g = std::make_unique<QgsCompoundCurve>();;
+      g->addCurve( circularString->clone() );
+      outputGeom.reset( g.release() );
+    }
+  }
+
   //convert to curved type if necessary
   if ( !QgsWkbTypes::isCurvedType( geometry->wkbType() ) && QgsWkbTypes::isCurvedType( providerGeomType ) )
   {
