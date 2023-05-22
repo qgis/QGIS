@@ -116,6 +116,7 @@ class QgsElevationProfileWidget : public QWidget
 
   private slots:
     void addLayers();
+    void addLayersInternal( const QList<QgsMapLayer *> &layers );
     void updateCanvasLayers();
     void onTotalPendingJobsCountChanged( int count );
     void setProfileCurve( const QgsGeometry &curve, bool resetView );
