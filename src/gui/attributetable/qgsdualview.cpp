@@ -1149,13 +1149,12 @@ QgsAttributeList QgsDualView::requiredAttributes( const QgsVectorLayer *layer )
 
   const QgsAttributeTableConfig config { layer->attributeTableConfig() };
 
-  const QVector<QgsAttributeTableConfig::ColumnConfig> constCols { config.columns() };
-  for ( int colIdx = 0; colIdx < constCols.count(); ++colIdx )
+  const QVector<QgsAttributeTableConfig::ColumnConfig> constColumnconfigs { config.columns() };
+  for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : std::as_const( constColumnconfigs ) )
   {
-    const QgsAttributeTableConfig::ColumnConfig col { constCols.at( colIdx ) };
-    if ( col.type == QgsAttributeTableConfig::Type::Field && ! col.hidden )
+    if ( columnConfig.type == QgsAttributeTableConfig::Type::Field && ! columnConfig.hidden )
     {
-      attributes.insert( layer->fields().lookupField( col.name ) );
+      attributes.insert( layer->fields().lookupField( columnConfig.name ) );
     }
   }
 
