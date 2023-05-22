@@ -256,9 +256,9 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
   // Returns the average of depth values that are not 1 (void area)
   depth = 0;
   int samplesCount = 0;
-  for ( int x = 0; x < mDepthBufferImage.width(); ++x )
+  for ( int x = 0; x < buffer.width(); ++x )
   {
-    for ( int y = 0; y < mDepthBufferImage.height(); ++y )
+    for ( int y = 0; y < buffer.height(); ++y )
     {
       double d = Qgs3DUtils::decodeDepth( buffer.pixel( x, y ) );
       if ( d < 1 )
