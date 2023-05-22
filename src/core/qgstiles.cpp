@@ -19,6 +19,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
 #include "qgsunittypes.h"
+#include "qgsvectortileutils.h"
 
 QgsTileMatrix QgsTileMatrix::fromWebMercator( int zoomLevel )
 {
@@ -259,8 +260,8 @@ double QgsTileMatrixSet::scaleToZoom( double scale ) const
 
   if ( zoomUnder < 0 )
     return zoomOver;
-  if ( zoomOver < 0 )
-    return zoomUnder;
+  if ( zoomOver < 0 ) // allow overzooming, so the styling is applied correctly
+    return QgsVectorTileUtils::scaleToZoom( scale );
   else
     return ( scaleUnder - scale ) / ( scaleUnder - scaleOver ) * ( zoomOver - zoomUnder ) + zoomUnder;
 }
