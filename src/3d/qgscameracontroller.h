@@ -48,6 +48,7 @@ class QgsCameraPose;
 class QgsVector3D;
 class QgsWindow3DEngine;
 class Qgs3DMapScene;
+class QgsCameraController4Test;
 
 /**
  * \ingroup 3d
@@ -277,9 +278,11 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     double sampleDepthBuffer( const QImage &buffer, int px, int py );
 
+#ifndef SIP_RUN
+    //! Converts screen point to world position
     bool screenPointToWorldPos( QPoint position, Qt3DRender::QCamera *cameraBefore, double &depth, QVector3D &worldPosition );
+#endif
 
-  private:
     //! The 3d scene the controller uses
     Qgs3DMapScene *mScene = nullptr;
 
@@ -329,6 +332,7 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     double mCumulatedWheelY = 0;
 
+    friend QgsCameraController4Test;
 };
 
 #endif // QGSCAMERACONTROLLER_H
