@@ -420,6 +420,11 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
   }
 }
 
+QgsElevationProfileLayerTreeProxyModel *QgsElevationProfileLayerTreeView::proxyModel()
+{
+  return mProxyModel;
+}
+
 void QgsElevationProfileLayerTreeView::resizeEvent( QResizeEvent *event )
 {
   header()->setMinimumSectionSize( viewport()->width() );

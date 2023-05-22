@@ -129,6 +129,13 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
      */
     void populateInitialLayers( QgsProject *project );
 
+    /**
+     * Returns the view's proxy model.
+     *
+     * \since QGIS 3.32
+     */
+    QgsElevationProfileLayerTreeProxyModel *proxyModel();
+
   protected:
 
     void resizeEvent( QResizeEvent *event ) override;

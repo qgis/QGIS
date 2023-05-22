@@ -16,7 +16,7 @@
 #include "qgselevationutils.h"
 #include "qgsproject.h"
 #include "qgsmaplayerelevationproperties.h"
-
+#include "qgsrasterlayerelevationproperties.h"
 
 QgsDoubleRange QgsElevationUtils::calculateZRangeForProject( QgsProject *project )
 {
@@ -52,5 +52,39 @@ QgsDoubleRange QgsElevationUtils::calculateZRangeForProject( QgsProject *project
 
   return QgsDoubleRange( std::isnan( min ) ? std::numeric_limits< double >::lowest() : min,
                          std::isnan( max ) ? std::numeric_limits< double >::max() : max );
+}
+
+bool QgsElevationUtils::canEnableElevationForLayer( QgsMapLayer *layer )
+{
+  return static_cast< bool >( layer->elevationProperties() );
+}
+
+bool QgsElevationUtils::enableElevationForLayer( QgsMapLayer *layer )
+{
+  switch ( layer->type() )
+  {
+    case Qgis::LayerType::Raster:
+    {
+      if ( QgsRasterLayerElevationProperties *properties = qobject_cast<QgsRasterLayerElevationProperties * >( layer->elevationProperties() ) )
+      {
+        properties->setEnabled( true );
+        // This could potentially be made smarter, eg by checking the data type of bands. But that's likely overkill..!
+        properties->setBandNumber( 1 );
+        return true;
+      }
+      break;
+    }
+
+    // can't automatically enable elevation for these layer types
+    case Qgis::LayerType::Vector:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
+      break;
+  }
+  return false;
 }
 

@@ -20,6 +20,8 @@
 #include "qgselevationprofilecanvas.h"
 #include "qgsdockablewidgethelper.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayerelevationproperties.h"
+#include "qgsmaplayermodel.h"
 #include "qgsmaptoolprofilecurve.h"
 #include "qgsmaptoolprofilecurvefromfeature.h"
 #include "qgsrubberband.h"
@@ -47,6 +49,8 @@
 #include "qgselevationprofiletoolmeasure.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgsmaplayerproxymodel.h"
+#include "qgselevationutils.h"
 
 
 #include <QToolBar>
@@ -60,6 +64,71 @@ const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance = new 
 
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowLayerTree = new QgsSettingsEntryBool( QStringLiteral( "show-layer-tree" ), QgsSettingsTree::sTreeElevationProfile, true, QStringLiteral( "Whether the layer tree should be shown for elevation profile plots" ) );
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingLockAxis = new QgsSettingsEntryBool( QStringLiteral( "lock-axis-ratio" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "Whether the the distance and elevation axis scales are locked to each other" ) );
+
+//
+// QgsElevationProfileLayersDialog
+//
+
+QgsElevationProfileLayersDialog::QgsElevationProfileLayersDialog( QWidget *parent )
+  : QDialog( parent )
+{
+  setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  mFilterLineEdit->setShowClearButton( true );
+  mFilterLineEdit->setShowSearchIcon( true );
+
+  mModel = new QgsMapLayerProxyModel( listMapLayers );
+  listMapLayers->setModel( mModel );
+  const QModelIndex firstLayer = mModel->index( 0, 0 );
+  listMapLayers->selectionModel()->select( firstLayer, QItemSelectionModel::Select );
+
+  connect( listMapLayers, &QListView::doubleClicked, this, &QgsElevationProfileLayersDialog::accept );
+
+  connect( mFilterLineEdit, &QLineEdit::textChanged, mModel, &QgsMapLayerProxyModel::setFilterString );
+  connect( mCheckBoxVisibleLayers, &QCheckBox::toggled, this, &QgsElevationProfileLayersDialog::filterVisible );
+
+  mFilterLineEdit->setFocus();
+}
+
+void QgsElevationProfileLayersDialog::setVisibleLayers( const QList<QgsMapLayer *> &layers )
+{
+  mVisibleLayers = layers;
+}
+
+void QgsElevationProfileLayersDialog::setHiddenLayers( const QList<QgsMapLayer *> &layers )
+{
+  mModel->setExceptedLayerList( layers );
+}
+
+QList< QgsMapLayer *> QgsElevationProfileLayersDialog::selectedLayers() const
+{
+  QList< QgsMapLayer * > layers;
+
+  const QModelIndexList selection = listMapLayers->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : selection )
+  {
+    const QModelIndex sourceIndex = mModel->mapToSource( index );
+    if ( !sourceIndex.isValid() )
+    {
+      continue;
+    }
+
+    QgsMapLayer *layer = mModel->sourceLayerModel()->layerFromIndex( sourceIndex );
+    if ( layer )
+      layers << layer;
+  }
+  return layers;
+}
+
+void QgsElevationProfileLayersDialog::filterVisible( bool enabled )
+{
+  if ( enabled )
+    mModel->setLayerAllowlist( mVisibleLayers );
+  else
+    mModel->setLayerAllowlist( QList< QgsMapLayer * >() );
+}
+
 
 QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   : QWidget( nullptr )
@@ -102,6 +171,11 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mIdentifyTool = new QgsElevationProfileToolIdentify( mCanvas );
 
   mCanvas->setTool( mIdentifyTool );
+
+  QAction *addLayerAction = new QAction( tr( "Add Layers" ), this );
+  addLayerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionAddLayer.svg" ) ) );
+  connect( addLayerAction, &QAction::triggered, this, &QgsElevationProfileWidget::addLayers );
+  toolBar->addAction( addLayerAction );
 
   QAction *showLayerTree = new QAction( tr( "Show Layer Tree" ), this );
   showLayerTree->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconLayerTree.svg" ) ) );
@@ -386,6 +460,53 @@ void QgsElevationProfileWidget::cancelJobs()
   mCanvas->cancelJobs();
 }
 
+void QgsElevationProfileWidget::addLayers()
+{
+  QgsElevationProfileLayersDialog addDialog( this );
+  const QMap<QString, QgsMapLayer *> allMapLayers = QgsProject::instance()->mapLayers();
+
+  // The add layers dialog should only show layers which CAN have elevation, yet currently don't
+  // have it enabled. So collect layers which don't match this criteria now for filtering out.
+  QList< QgsMapLayer * > layersWhichAlreadyHaveElevationOrCannotHaveElevation;
+  for ( auto it = allMapLayers.constBegin(); it != allMapLayers.constEnd(); ++it )
+  {
+    if ( !QgsElevationUtils::canEnableElevationForLayer( it.value() ) || it.value()->elevationProperties()->hasElevation() )
+    {
+      layersWhichAlreadyHaveElevationOrCannotHaveElevation << it.value();
+      continue;
+    }
+  }
+  addDialog.setHiddenLayers( layersWhichAlreadyHaveElevationOrCannotHaveElevation );
+
+  addDialog.setVisibleLayers( mMainCanvas->layers( true ) );
+
+  if ( addDialog.exec() == QDialog::Accepted )
+  {
+    const QList<QgsMapLayer *> layers = addDialog.selectedLayers();
+    QList< QgsMapLayer * > updatedLayers;
+    if ( !layers.empty() )
+    {
+      for ( QgsMapLayer *layer : layers )
+      {
+        if ( QgsElevationUtils::enableElevationForLayer( layer ) )
+          updatedLayers << layer;
+      }
+
+      mLayerTreeView->proxyModel()->invalidate();
+      for ( QgsMapLayer *layer : std::as_const( updatedLayers ) )
+      {
+        if ( QgsLayerTreeLayer *node = mLayerTree->findLayer( layer ) )
+        {
+          node->setItemVisibilityChecked( true );
+        }
+      }
+
+      updateCanvasLayers();
+      scheduleUpdate();
+    }
+  }
+}
+
 void QgsElevationProfileWidget::updateCanvasLayers()
 {
   QList<QgsMapLayer *> layers;
@@ -393,6 +514,10 @@ void QgsElevationProfileWidget::updateCanvasLayers()
   layers.reserve( layerOrder.size() );
   for ( QgsMapLayer *layer : layerOrder )
   {
+    // safety check. maybe elevation properties have been disabled externally.
+    if ( !layer->elevationProperties() || !layer->elevationProperties()->hasElevation() )
+      continue;
+
     if ( mLayerTree->findLayer( layer )->isVisible() )
       layers << layer;
   }
