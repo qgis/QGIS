@@ -58,8 +58,19 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
+    bool canDropMimeData( const QMimeData *data, Qt::DropAction action,
+                          int row, int column, const QModelIndex &parent ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+
+  signals:
+
+    /**
+     * Emitted when layers should be added to the profile, e.g. via a drag and drop action.
+     *
+     * \since QGIS 3.32
+     */
+    void addLayers( const QList< QgsMapLayer * > &layers );
 
   private:
 
@@ -135,6 +146,15 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
      * \since QGIS 3.32
      */
     QgsElevationProfileLayerTreeProxyModel *proxyModel();
+
+  signals:
+
+    /**
+     * Emitted when layers should be added to the profile, e.g. via a drag and drop action.
+     *
+     * \since QGIS 3.32
+     */
+    void addLayers( const QList< QgsMapLayer * > &layers );
 
   protected:
 

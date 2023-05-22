@@ -157,6 +157,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mPanTool = new QgsPlotToolPan( mCanvas );
 
   mLayerTreeView = new QgsAppElevationProfileLayerTreeView( mLayerTree.get() );
+  connect( mLayerTreeView, &QgsAppElevationProfileLayerTreeView::addLayers, this, &QgsElevationProfileWidget::addLayersInternal );
 
   connect( mLayerTreeView, &QAbstractItemView::doubleClicked, this, [ = ]( const QModelIndex & index )
   {
@@ -482,28 +483,32 @@ void QgsElevationProfileWidget::addLayers()
 
   if ( addDialog.exec() == QDialog::Accepted )
   {
-    const QList<QgsMapLayer *> layers = addDialog.selectedLayers();
-    QList< QgsMapLayer * > updatedLayers;
-    if ( !layers.empty() )
+    addLayersInternal( addDialog.selectedLayers() );
+  }
+}
+
+void QgsElevationProfileWidget::addLayersInternal( const QList<QgsMapLayer *> &layers )
+{
+  QList< QgsMapLayer * > updatedLayers;
+  if ( !layers.empty() )
+  {
+    for ( QgsMapLayer *layer : layers )
     {
-      for ( QgsMapLayer *layer : layers )
-      {
-        if ( QgsElevationUtils::enableElevationForLayer( layer ) )
-          updatedLayers << layer;
-      }
-
-      mLayerTreeView->proxyModel()->invalidate();
-      for ( QgsMapLayer *layer : std::as_const( updatedLayers ) )
-      {
-        if ( QgsLayerTreeLayer *node = mLayerTree->findLayer( layer ) )
-        {
-          node->setItemVisibilityChecked( true );
-        }
-      }
-
-      updateCanvasLayers();
-      scheduleUpdate();
+      if ( QgsElevationUtils::enableElevationForLayer( layer ) )
+        updatedLayers << layer;
     }
+
+    mLayerTreeView->proxyModel()->invalidate();
+    for ( QgsMapLayer *layer : std::as_const( updatedLayers ) )
+    {
+      if ( QgsLayerTreeLayer *node = mLayerTree->findLayer( layer ) )
+      {
+        node->setItemVisibilityChecked( true );
+      }
+    }
+
+    updateCanvasLayers();
+    scheduleUpdate();
   }
 }
 
