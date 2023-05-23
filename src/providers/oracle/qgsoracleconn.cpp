@@ -38,7 +38,9 @@ QMap<QString, QDateTime> QgsOracleConn::sBrokenConnections;
 QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri, bool transaction )
 {
   const QString conninfo = toPoolName( uri );
-  if ( !transaction )
+  const bool shared = !transaction && QApplication::instance()->thread() == QThread::currentThread();
+
+  if ( shared )
   {
     if ( sConnections.contains( conninfo ) )
     {
@@ -56,7 +58,7 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri, bool trans
     return nullptr;
   }
 
-  if ( !transaction )
+  if ( shared )
   {
     sConnections.insert( conninfo, conn );
   }
@@ -187,7 +189,7 @@ QString QgsOracleConn::toPoolName( const QgsDataSourceUri &uri )
 
 QString QgsOracleConn::connInfo()
 {
-  return sConnections.key( this, QString() );
+  return mConnInfo;
 }
 
 void QgsOracleConn::disconnect()
@@ -213,14 +215,9 @@ void QgsOracleConn::unref()
   if ( !mTransaction )
   {
     QString key = sConnections.key( this, QString() );
-
     if ( !key.isNull() )
     {
       sConnections.remove( key );
-    }
-    else
-    {
-      QgsDebugMsg( QStringLiteral( "Connection not found" ) );
     }
   }
 

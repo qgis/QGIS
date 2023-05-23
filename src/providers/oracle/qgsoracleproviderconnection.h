@@ -19,13 +19,11 @@
 
 #include <QSqlQuery>
 
+class QgsOracleQuery;
+
 struct QgsOracleProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
-
-    QgsOracleProviderResultIterator( int columnCount, const QSqlQuery &query )
-      : mColumnCount( columnCount )
-      , mQuery( query )
-    {}
+    QgsOracleProviderResultIterator( int columnCount, std::unique_ptr<QgsOracleQuery> query );
 
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;
@@ -33,7 +31,7 @@ struct QgsOracleProviderResultIterator: public QgsAbstractDatabaseProviderConnec
   private:
 
     int mColumnCount = 0;
-    QSqlQuery mQuery;
+    std::unique_ptr<QgsOracleQuery> mQuery;
     QVariantList mNextRow;
 
     QVariantList nextRowInternal();
