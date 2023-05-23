@@ -275,7 +275,7 @@ static bool resampleSingleBandRasterStatic( GDALDatasetH hSrcDS, GDALDatasetH hD
   bool retVal = false;
   GDALWarpOperation oOperation;
   CPLErr initResult = oOperation.Initialize( psWarpOptions.get() );
-  if ( initResult != CE_Failure  && initResult != CE_Fatal )
+  if ( initResult != CE_Failure )
     retVal =  oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) ) == CE_None;
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
   return retVal;
