@@ -300,7 +300,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
   newComboBox->addItem( tr( "Skip Attribute" ), QStringLiteral( "skip" ) );
   newComboBox->addItem( tr( "Manual Value" ), QStringLiteral( "manual" ) );
 
-  connect( newComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+  connect( newComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]()
   {
     bool isManual = newComboBox->currentData() == QStringLiteral( "manual" );
     updateManualWidget( column, isManual );
