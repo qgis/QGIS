@@ -379,7 +379,9 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
     std::shared_ptr<QgsOracleSharedData> mShared;
 
-    QgsOracleConn *connectionRW();
+    mutable QgsOracleConn *mConnection = nullptr;
+
+    QgsOracleConn *connectionRW() const;
     QgsOracleConn *connectionRO() const;
 
     friend class QgsOracleFeatureIterator;
