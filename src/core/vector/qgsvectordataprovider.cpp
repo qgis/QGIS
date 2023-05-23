@@ -942,7 +942,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
     QgsCircularString *circularString = qgsgeometry_cast<QgsCircularString *>( geometry );
     if ( circularString )
     {
-      std::unique_ptr<QgsCompoundCurve> g = std::make_unique<QgsCompoundCurve>();;
+      std::unique_ptr<QgsCompoundCurve> g = std::make_unique<QgsCompoundCurve>();
       g->addCurve( circularString->clone() );
       outputGeom.reset( g.release() );
     }
