@@ -293,7 +293,7 @@ QgsDoubleRange QgsProfilePlotRenderer::zRange() const
   return QgsDoubleRange( min, max );
 }
 
-QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId )
+QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId, double devicePixelRatio )
 {
   QImage res( width, height, QImage::Format_ARGB32_Premultiplied );
   res.setDotsPerMeterX( 96 / 25.4 * 1000 );
@@ -305,6 +305,7 @@ QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double dist
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context.setPainterFlagsUsingContext( &p );
+  context.setDevicePixelRatio( devicePixelRatio );
   const double mapUnitsPerPixel = ( distanceMax - distanceMin ) / width;
   context.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 

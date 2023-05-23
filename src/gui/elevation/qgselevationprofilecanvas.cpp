@@ -138,6 +138,8 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       if ( !mRenderer )
         return;
 
+      const double pixelRatio = !scene()->views().empty() ? scene()->views().at( 0 )->devicePixelRatioF() : 1;
+
       const QStringList sourceIds = mRenderer->sourceIds();
       for ( const QString &source : sourceIds )
       {
@@ -149,10 +151,13 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
         }
         else
         {
-          plot = mRenderer->renderToImage( plotArea.width(), plotArea.height(), xMinimum(), xMaximum(), yMinimum(), yMaximum(), source );
+          plot = mRenderer->renderToImage( plotArea.width() * pixelRatio,
+                                           plotArea.height() * pixelRatio, xMinimum(), xMaximum(), yMinimum(), yMaximum(), source, pixelRatio );
+          plot.setDevicePixelRatio( pixelRatio );
           mCachedImages.insert( source, plot );
         }
-        rc.painter()->drawImage( plotArea.left(), plotArea.top(), plot );
+        rc.painter()->drawImage( QPointF( plotArea.left(),
+                                          plotArea.top() ), plot );
       }
     }
 
@@ -161,16 +166,19 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       // cache rendering to an image, so we don't need to redraw the plot
       if ( !mImage.isNull() )
       {
-        painter->drawImage( 0, 0, mImage );
+        painter->drawImage( QPointF( 0, 0 ), mImage );
       }
       else
       {
-        mImage = QImage( mRect.width(), mRect.height(), QImage::Format_ARGB32_Premultiplied );
+        const double pixelRatio = !scene()->views().empty() ? scene()->views().at( 0 )->devicePixelRatioF() : 1;
+        mImage = QImage( mRect.width() * pixelRatio, mRect.height() * pixelRatio, QImage::Format_ARGB32_Premultiplied );
+        mImage.setDevicePixelRatio( pixelRatio );
         mImage.fill( Qt::transparent );
 
         QPainter imagePainter( &mImage );
         imagePainter.setRenderHint( QPainter::Antialiasing, true );
         QgsRenderContext rc = QgsRenderContext::fromQPainter( &imagePainter );
+        rc.setDevicePixelRatio( pixelRatio );
 
         const double mapUnitsPerPixel = ( xMaximum() - xMinimum() ) / plotArea().width();
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
@@ -182,7 +190,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
         render( rc );
         imagePainter.end();
 
-        painter->drawImage( 0, 0, mImage );
+        painter->drawImage( QPointF( 0, 0 ), mImage );
       }
     }
 
