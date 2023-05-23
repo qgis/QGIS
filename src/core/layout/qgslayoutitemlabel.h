@@ -19,7 +19,6 @@
 
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
-#include "qgswebpage.h"
 #include "qgstextformat.h"
 #include <QFont>
 #include <QUrl>
@@ -253,9 +252,6 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
 
   private slots:
 
-    //! Track when QWebPage has finished loading its html contents
-    void loadingHtmlFinished( bool );
-
     void refreshExpressionContext();
 
   private:
@@ -267,7 +263,6 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     Mode mMode = ModeFont;
     double mHtmlUnitsToLayoutUnits = 1.0;
     double htmlUnitsToLayoutUnits(); //calculate scale factor
-    bool mHtmlLoaded = false;
 
     //! Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment
     void itemShiftAdjustSize( double newWidth, double newHeight, double &xShift, double &yShift ) const;
@@ -291,12 +286,18 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     //! Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)
     void replaceDateText( QString &text ) const;
 
+    //! Creates the default font used when rendering labels in HTML mode
+    QFont createDefaultFont() const;
+
     //! Creates an encoded stylesheet url using the current font and label appearance settings
     QUrl createStylesheetUrl() const;
 
+    //! Creates a stylesheet string using the current font and label appearance settings
+    QString createStylesheet() const;
+
     std::unique_ptr< QgsDistanceArea > mDistanceArea;
 
-    std::unique_ptr< QgsWebPage > mWebPage;
+    friend class QgsLayoutItemHtml;
 };
 
 #endif //QGSLAYOUTITEMLABEL_H

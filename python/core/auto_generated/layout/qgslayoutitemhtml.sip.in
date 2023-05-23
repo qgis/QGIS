@@ -47,6 +47,13 @@ Ownership is transferred to the layout.
 Returns a new QgsLayoutItemHtml for the specified parent ``layout``.
 %End
 
+    static QgsLayoutItemHtml *createFromLabel( QgsLayoutItemLabel *label ) /Factory/;
+%Docstring
+Returns a new QgsLayoutItemHtml matching the content and rendering of a given ``label``.
+
+.. versionadded:: 3.32
+%End
+
     void setContentMode( ContentMode mode );
 %Docstring
 Sets the source ``mode`` for item's HTML content.
