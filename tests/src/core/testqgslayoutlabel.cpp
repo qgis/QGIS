@@ -17,6 +17,9 @@
 
 #include "qgsapplication.h"
 #include "qgslayoutitemlabel.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutmanager.h"
+#include "qgslayoutmultiframe.h"
 #include "qgsvectorlayer.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
@@ -51,8 +54,9 @@ class TestQgsLayoutLabel : public QgsTest
     void pageSizeEvaluation();
     void marginMethods(); //tests getting/setting margins
     void render();
-#ifdef WITH_QTWEBKIT
     void renderAsHtml();
+#ifdef WITH_QTWEBKIT
+    void convertToHtml();
     void renderAsHtmlRelative();
 #endif
     void labelRotation();
@@ -285,7 +289,6 @@ void TestQgsLayoutLabel::render()
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
 
-#ifdef WITH_QTWEBKIT
 void TestQgsLayoutLabel::renderAsHtml()
 {
   QgsLayout l( QgsProject::instance() );
@@ -310,6 +313,23 @@ void TestQgsLayoutLabel::renderAsHtml()
   label->update();
 
   QgsLayoutChecker checker( QStringLiteral( "composerlabel_renderhtml" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_label" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 10 ) );
+}
+
+#ifdef WITH_QTWEBKIT
+void TestQgsLayoutLabel::convertToHtml()
+{
+  QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_label_html.qgs" );
+
+  QgsLayout *layout = project.layoutManager()->printLayouts().at( 0 );
+  QVERIFY( layout );
+
+  QgsLayoutMultiFrame *html = layout->multiFrames().at( 0 );
+  QVERIFY( html );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerlabel_converttohtml" ), layout );
   checker.setControlPathPrefix( QStringLiteral( "composer_label" ) );
   QVERIFY( checker.testLayout( mReport, 0, 10 ) );
 }

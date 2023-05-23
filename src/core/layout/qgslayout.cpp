@@ -16,6 +16,8 @@
 
 #include "qgslayout.h"
 #include "qgslayoutitem.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutitemlabel.h"
 #include "qgslayoutmodel.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutguidecollection.h"
@@ -1103,6 +1105,21 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
       else
       {
         item->attemptMoveBy( pasteShiftPos.x(), pasteShiftPos.y() );
+      }
+    }
+
+    // When restoring items on project load saved with QGIS < 3.32, convert HTML-enabled labels into HTML items
+    if ( !position && QgsProjectVersion( 3, 31, 0 ) > mProject->lastSaveVersion() )
+    {
+      if ( QgsLayoutItemLabel *label = qobject_cast<QgsLayoutItemLabel *>( item.get() ) )
+      {
+        if ( label->mode() == QgsLayoutItemLabel::ModeHtml )
+        {
+          QgsLayoutMultiFrame *html = QgsLayoutItemHtml::createFromLabel( label );
+          addMultiFrame( html );
+          newMultiFrames << html;
+          continue;
+        }
       }
     }
 
