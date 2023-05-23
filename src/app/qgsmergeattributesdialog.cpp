@@ -234,7 +234,9 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
     if ( !mVectorLayer->dataProvider()->defaultValueClause( idx ).isEmpty() )
     {
-      mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, mVectorLayer->dataProvider()->defaultValueClause( idx ) );
+      QVariant v = mVectorLayer->dataProvider()->defaultValueClause( idx );
+      mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, v );
+      mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, v );
       setToManual = true;
     }
     else
@@ -774,7 +776,6 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     QComboBox *comboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, widgetIndex ) );
     if ( !comboBox )
       continue;
-
 
     QVariant value;
     QWidget *w = mTableWidget->cellWidget( mFeatureList.size() + 1, widgetIndex );
