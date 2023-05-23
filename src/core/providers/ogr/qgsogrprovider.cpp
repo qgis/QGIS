@@ -2172,7 +2172,6 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
 
 }
 
-
 bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
@@ -2554,16 +2553,8 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   return returnvalue;
 }
 
-bool QgsOgrProvider::createSpatialIndex()
+bool QgsOgrProvider::createSpatialIndexImpl()
 {
-  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
-  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
-
-  if ( !mOgrOrigLayer )
-    return false;
-  if ( !doInitialActionsForEdition() )
-    return false;
-
   QByteArray layerName = mOgrOrigLayer->name();
   if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
   {
@@ -2589,6 +2580,21 @@ bool QgsOgrProvider::createSpatialIndex()
     return true;
   }
   return false;
+}
+
+
+bool QgsOgrProvider::createSpatialIndex()
+{
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
+  if ( !mOgrOrigLayer )
+    return false;
+  if ( !doInitialActionsForEdition() )
+    return false;
+
+  return createSpatialIndexImpl();
+
 }
 
 QString QgsOgrProvider::createIndexName( QString tableName, QString field )
@@ -3858,7 +3864,14 @@ bool QgsOgrProvider::leaveUpdateMode()
   {
     // Only repack once update mode is inactive
     if ( mShapefileMayBeCorrupted )
+    {
       repack();
+    }
+
+    if ( mShapefileHadSpatialIndex )
+    {
+      createSpatialIndexImpl();
+    }
 
     mShapefileMayBeCorrupted = false;
     mDeferRepack = false;
@@ -3904,11 +3917,6 @@ bool QgsOgrProvider::leaveUpdateMode()
       pushError( tr( "Cannot reopen datasource %1 in read-only mode" ).arg( dataSourceUri() ) );
       return false;
     }
-  }
-  // GDAL removes the qix, so we recreate it if it was originally there.
-  if ( mShapefileHadSpatialIndex )
-  {
-    createSpatialIndex();
   }
 
   return true;
