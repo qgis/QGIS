@@ -483,7 +483,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
       Qgis::DataType dataType = dataProvider->dataType( mElevationBand );
 
-      if ( dataType != Qgis::DataType::UnknownDataType ) // resampling data by GDAL is not coptible with unknown data type
+      if ( dataType != Qgis::DataType::UnknownDataType ) // resampling data by GDAL is not compatible with unknown data type
       {
         // we need extra pixels on border to avoid effect border with resampling (at least 2 pixels band for cubic alg)
         int sourceWidth = viewWidth + 4;
