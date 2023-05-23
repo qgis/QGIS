@@ -271,19 +271,29 @@ QgsAbstractFeatureSource *QgsOracleProvider::featureSource() const
 
 void QgsOracleProvider::disconnectDb()
 {
-  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri, false );
-  if ( conn )
-    conn->disconnect();
+  if ( mConnection )
+  {
+    mConnection->unref();
+    mConnection = nullptr;
+  }
 }
 
-QgsOracleConn *QgsOracleProvider::connectionRW()
+QgsOracleConn *QgsOracleProvider::connectionRW() const
 {
-  return mTransaction ? mTransaction->connection() : QgsOracleConn::connectDb( mUri, false );
+  if ( mTransaction )
+  {
+    return mTransaction->connection();
+  }
+  else if ( !mConnection )
+  {
+    mConnection = QgsOracleConn::connectDb( mUri, false );
+  }
+  return mConnection;
 }
 
 QgsOracleConn *QgsOracleProvider::connectionRO() const
 {
-  return mTransaction ? mTransaction->connection() : QgsOracleConn::connectDb( mUri, false );
+  return connectionRW();
 }
 
 bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, const QVariantList &args, const QString &uri, const QString &originatorClass, const QString &queryOrigin )
