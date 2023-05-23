@@ -35,6 +35,7 @@ email                : sherman at mrcc.com
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsvectorlayer.h"
+#include "qgsproviderregistry.h"
 #include "qgsvariantutils.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
