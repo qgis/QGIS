@@ -137,7 +137,7 @@ Does nothing if the generation is already in progress.
 Returns the limits of the retrieved elevation values.
 %End
 
-    QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId = QString() );
+    QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId = QString(), double devicePixelRatio = 1.0 );
 %Docstring
 Renders a portion of the profile to an image with the given ``width`` and ``height``.
 

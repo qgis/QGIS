@@ -163,7 +163,7 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
      *
      * If \a sourceId is empty then all sources will be rendered, otherwise only the matching source will be rendered.
      */
-    QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId = QString() );
+    QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId = QString(), double devicePixelRatio = 1.0 );
 
     /**
      * Renders a portion of the profile using the specified render \a context.
