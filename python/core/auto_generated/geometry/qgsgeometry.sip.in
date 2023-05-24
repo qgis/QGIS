@@ -974,7 +974,6 @@ Example:
 %End
 %MethodCode
     {
-      sipRes = PyTuple_New( 3 );
       int sipIsErr = 0;
       int state;
 
@@ -1000,6 +999,7 @@ Example:
             PyObject *o1 = sipConvertFromType( &newGeometries, sipType_QVector_0100QgsGeometry, Py_None );
             PyObject *o2 = sipConvertFromType( &topologyTestPoints, sipType_QVector_0100QgsPointXY, Py_None );
 
+            sipRes = PyTuple_New( 3 );
             PyTuple_SET_ITEM( sipRes, 0, o0 );
             PyTuple_SET_ITEM( sipRes, 1, o1 );
             PyTuple_SET_ITEM( sipRes, 2, o2 );
@@ -1025,6 +1025,7 @@ Example:
             PyObject *o1 = sipConvertFromType( &newGeometries, sipType_QVector_0100QgsGeometry, Py_None );
             PyObject *o2 = sipConvertFromType( &topologyTestPoints, sipType_QVector_0100QgsPoint, Py_None );
 
+            sipRes = PyTuple_New( 3 );
             PyTuple_SET_ITEM( sipRes, 0, o0 );
             PyTuple_SET_ITEM( sipRes, 1, o1 );
             PyTuple_SET_ITEM( sipRes, 2, o2 );

@@ -1046,7 +1046,6 @@ class CORE_EXPORT QgsGeometry
     SIP_PYOBJECT splitGeometry( SIP_PYOBJECT splitLine SIP_TYPEHINT( List[Union[QgsPoint, QgsPointXY]] ), bool topological, bool splitFeature = true ) SIP_TYPEHINT( Tuple[Qgis.GeometryOperationResult, Union[List[QgsPoint], List[QgsPointXY]], Union[List[QgsPoint], List[QgsPointXY]]] );
     % MethodCode
     {
-      sipRes = PyTuple_New( 3 );
       int sipIsErr = 0;
       int state;
 
@@ -1072,6 +1071,7 @@ class CORE_EXPORT QgsGeometry
             PyObject *o1 = sipConvertFromType( &newGeometries, sipType_QVector_0100QgsGeometry, Py_None );
             PyObject *o2 = sipConvertFromType( &topologyTestPoints, sipType_QVector_0100QgsPointXY, Py_None );
 
+            sipRes = PyTuple_New( 3 );
             PyTuple_SET_ITEM( sipRes, 0, o0 );
             PyTuple_SET_ITEM( sipRes, 1, o1 );
             PyTuple_SET_ITEM( sipRes, 2, o2 );
@@ -1097,6 +1097,7 @@ class CORE_EXPORT QgsGeometry
             PyObject *o1 = sipConvertFromType( &newGeometries, sipType_QVector_0100QgsGeometry, Py_None );
             PyObject *o2 = sipConvertFromType( &topologyTestPoints, sipType_QVector_0100QgsPoint, Py_None );
 
+            sipRes = PyTuple_New( 3 );
             PyTuple_SET_ITEM( sipRes, 0, o0 );
             PyTuple_SET_ITEM( sipRes, 1, o1 );
             PyTuple_SET_ITEM( sipRes, 2, o2 );
