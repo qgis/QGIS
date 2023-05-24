@@ -19,16 +19,12 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMetaObject, Q_RETURN_ARG, Q_ARG, QObject, pyqtSlot
-from qgis.PyQt.QtGui import QColor, QFont, QKeySequence, QFontDatabase
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMetaObject, Q_ARG, QObject, pyqtSlot
+from qgis.PyQt.QtGui import QColor, QKeySequence
 from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.core import Qgis, QgsApplication, QgsSettings
-from qgis.gui import (
-    QgsMessageBar,
-    QgsCodeEditorPython,
-    QgsCodeInterpreter
-)
+from qgis.gui import QgsMessageBar, QgsCodeEditorPython
 import sys
 
 
@@ -85,6 +81,36 @@ class writeOut(QObject):
         return False
 
 
+FULL_HELP_TEXT = QCoreApplication.translate("PythonConsole", """QGIS Python Console
+======================================
+
+The console is a Python interpreter that allows you to execute python commands.
+Modules from QGIS (analysis, core, gui, 3d) and Qt (QtCore, QtGui, QtNetwork,
+QtWidgets, QtXml) as well as Python's math, os, re and sys modules are already
+imported and can be used directly.
+
+Useful variables:
+
+- iface.mainWindow() will return the Qt Main Window
+- iface.mapCanvas() will return the map canvas
+- iface.layerTreeView() will return the Layer Tree
+- iface.activeLayer() will return the active layer
+- QgsProject.instance() will return the current project
+
+From the console, you can type the following special commands:
+
+    - _pyqgis, _pyqgis(object): Open the QGIS Python API (or the Qt documentation) in a web browser
+    - _api, _api(object): Open the QGIS C++ API (or the Qt documentation) in a web browser
+    - _cookbook: Open the PyQGIS Developer Cookbook in a web browser
+    - System commands: Any command starting with an exclamation mark (!) will be executed by the system shell. Examples:
+        !gdalinfo --formats: List all available GDAL drivers
+        !ogr2ogr --help: Show help for the ogr2ogr command
+        !ping www.qgis.org: Ping the QGIS website
+        !pip install black: install black python formatter using pip (if available)
+    - ?: Show this help
+""")
+
+
 class ShellOutputScintilla(QgsCodeEditorPython):
 
     def __init__(self, parent=None):
@@ -130,7 +156,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
                                              "Python Console\n"
-                                             "Use iface to access QGIS API interface or type help(iface) for more info\n"
+                                             "Use iface to access QGIS API interface or type '?' for more info\n"
                                              "Security warning: typing commands from an untrusted source can harm your computer")
 
         txtInit = '\n'.join(['# ' + line for line in txtInit.split('\n')])
@@ -142,6 +168,10 @@ class ShellOutputScintilla(QgsCodeEditorPython):
             self.setText(txtInit)
         else:
             self.setText(txtInit + '\n')
+
+    def insertHelp(self):
+        self.append(FULL_HELP_TEXT)
+        self.moveCursorToEnd()
 
     def initializeLexer(self):
         super().initializeLexer()
