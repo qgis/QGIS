@@ -91,9 +91,10 @@ imported and can be used directly.
 
 Useful variables:
 
+- iface will return the current QGIS interface, class 'QgisInterface'
 - iface.mainWindow() will return the Qt Main Window
 - iface.mapCanvas() will return the map canvas
-- iface.layerTreeView() will return the Layer Tree
+- iface.layerTreeView() will return the layer tree
 - iface.activeLayer() will return the active layer
 - QgsProject.instance() will return the current project
 
