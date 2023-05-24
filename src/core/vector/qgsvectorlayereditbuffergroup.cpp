@@ -181,6 +181,13 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
   {
     for ( orderedLayersIterator = orderedLayers.constBegin(); orderedLayersIterator != orderedLayers.constEnd(); ++orderedLayersIterator )
     {
+      if ( ( *orderedLayersIterator )->editBuffer() == nullptr )
+      {
+        commitErrors << tr( "ERROR: edit buffer of layer '%1' is not valid." ).arg( ( *orderedLayersIterator )->name() );
+        success = false;
+        break;
+      }
+
       success = ( *orderedLayersIterator )->editBuffer()->commitChangesCheckGeometryTypeCompatibility( commitErrors );
       if ( ! success )
         break;
@@ -382,93 +389,46 @@ bool QgsVectorLayerEditBufferGroup::isEditing() const
 
 QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChildren( QSet<QgsVectorLayer *> layers )
 {
-  QSet<QgsVectorLayer *> referencingLayers;
-  QSet<QgsVectorLayer *> referencedLayers;
-
-  {
-    const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->relations().values();
-    for ( const QgsRelation &relation : relations )
-    {
-      referencingLayers.insert( relation.referencingLayer() );
-      referencedLayers.insert( relation.referencedLayer() );
-    }
-  }
-
   QList<QgsVectorLayer *> orderedLayers;
+  QSet<QgsVectorLayer *> unorderedLayers = layers;
 
-  // Layers that are only parents
+  bool layerOrdered = true;
+  while ( ! unorderedLayers.isEmpty() && layerOrdered )
   {
-    QSet<QgsVectorLayer *> onlyParents = referencedLayers - referencingLayers;
-    orderedLayers.append( onlyParents.values() );
-  }
-
-  // Other related layers
-  {
-    QSet<QgsVectorLayer *> intersection = referencedLayers;
-    intersection.intersect( referencingLayers );
-
-    QQueue<QgsVectorLayer *> otherLayersQueue;
-    otherLayersQueue.append( intersection.values() );
-    while ( ! otherLayersQueue.isEmpty() )
+    layerOrdered = false;
+    QSet<QgsVectorLayer *>::iterator unorderedLayerIterator = unorderedLayers.begin();
+    while ( unorderedLayerIterator != unorderedLayers.end() )
     {
-      QgsVectorLayer *layer = otherLayersQueue.dequeue();
+      // Get referencing relation to find referenced layers
+      const QList<QgsRelation> referencingRelations = QgsProject::instance()->relationManager()->referencingRelations( *unorderedLayerIterator );
 
-      int insertIndex = -1;
-      const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencingRelations( layer );
-      for ( const QgsRelation &relation : relations )
+      // If this layer references at least one modified layer continue
+      bool layerReferencingModifiedLayer = false;
+      for ( const QgsRelation &relation : referencingRelations )
       {
-        QgsVectorLayer *referencedLayer = relation.referencedLayer();
-        int index = orderedLayers.indexOf( referencedLayer );
-        if ( index >= 0 )
+        if ( unorderedLayers.contains( relation.referencedLayer() ) )
         {
-          insertIndex = std::max( insertIndex, index + 1 );
-        }
-        else
-        {
-          // Check if there is a circular relation
-          bool circularRelation = false;
-          const QList<QgsRelation> backRelations = QgsProject::instance()->relationManager()->referencingRelations( referencedLayer );
-          for ( const QgsRelation &backRelation : backRelations )
-          {
-            if ( backRelation.referencedLayer() == layer )
-            {
-              QgsLogger::warning( tr( "Circular relation between layers '%1' and '%2'. Correct saving order of layers can't be guaranteed" ).arg( layer->name(), referencedLayer->name() ) );
-              insertIndex = orderedLayers.size();
-              circularRelation = true;
-              break;
-            }
-          }
-
-          if ( !circularRelation )
-          {
-            insertIndex = -1;
-            break;
-          }
+          layerReferencingModifiedLayer = true;
+          break;
         }
       }
-
-      // No place found this cycle
-      if ( insertIndex == -1 )
+      if ( layerReferencingModifiedLayer )
       {
-        otherLayersQueue.enqueue( layer );
+        ++unorderedLayerIterator;
         continue;
       }
 
-      orderedLayers.insert( insertIndex, layer );
+      // No modified layer is referencing this layer
+      orderedLayers.append( *unorderedLayerIterator );
+      unorderedLayerIterator = unorderedLayers.erase( unorderedLayerIterator );
+      layerOrdered = true;
     }
   }
 
-  // Layers that are only children
+  if ( ! unorderedLayers.isEmpty() )
   {
-    QSet<QgsVectorLayer *> onlyChildren = referencingLayers - referencedLayers;
-    orderedLayers.append( onlyChildren.values() );
-  }
-
-  // Layers without relations (all other layers)
-  {
-    QSet<QgsVectorLayer *> layersWithoutRelations = layers - referencedLayers;
-    layersWithoutRelations -= referencingLayers;
-    orderedLayers.append( layersWithoutRelations.values() );
+    QgsLogger::warning( tr( "Circular relation between some layers. Correct saving order of layers can't be guaranteed" ) );
+    orderedLayers.append( unorderedLayers.values() );
   }
 
   return orderedLayers;
