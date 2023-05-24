@@ -51,8 +51,8 @@ SOFTWARE.
 #include <string>
 #include <iostream>
 
-#define BIG_ENDIAN 1
-#define LITTLE_ENDIAN 0
+#define PLYXX_BIG_ENDIAN 1
+#define PLYXX_LITTLE_ENDIAN 0
 
 namespace libply
 {
@@ -383,11 +383,11 @@ namespace libply
       uint32_t endian;
       if ( format == File::Format::BINARY_LITTLE_ENDIAN )
       {
-        endian = LITTLE_ENDIAN;
+        endian = PLYXX_LITTLE_ENDIAN;
       }
       else
       {
-        endian = BIG_ENDIAN;
+        endian = PLYXX_BIG_ENDIAN;
       }
       if ( !p.isList )
       {
@@ -581,11 +581,11 @@ namespace libply
 
     if ( format == File::Format::BINARY_LITTLE_ENDIAN )
     {
-      endian = LITTLE_ENDIAN;
+      endian = PLYXX_LITTLE_ENDIAN;
     }
     else
     {
-      endian = BIG_ENDIAN;
+      endian =  PLYXX_BIG_ENDIAN;
     }
 
     const std::vector<PropertyDefinition> properties = elementDefinition.properties;
