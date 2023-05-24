@@ -988,10 +988,10 @@ class CORE_EXPORT QgsGeometry
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
-     * \returns OperationResult a result code: success or reason of failure
+     * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
-    Q_DECL_DEPRECATED Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QVector<QgsPointXY> &topologyTestPoints SIP_OUT, bool splitFeature = true ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature = true ) SIP_SKIP;
 
     /**
      * Splits this geometry according to a given line.
@@ -1003,7 +1003,7 @@ class CORE_EXPORT QgsGeometry
      * fix this bug?
      * \param skipIntersectionTest set to TRUE to skip the potentially expensive initial intersection check. Only set this flag if an intersection
      * test has already been performed by the caller! Not available in Python bindings.
-     * \returns OperationResult a result code: success or reason of failure
+     * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
      *
      * Example:
      *
@@ -1015,7 +1015,108 @@ class CORE_EXPORT QgsGeometry
      *  > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
      * \endcode
      */
-    Qgis::GeometryOperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true, bool skipIntersectionTest SIP_PYARGREMOVE = false );
+    Qgis::GeometryOperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true, bool skipIntersectionTest SIP_PYARGREMOVE = false ) SIP_SKIP;
+
+
+    /*
+     This SIP code is to support overloaded methods of splitGeometry.
+     When the deprecated method is removed in QGIS 4.0 this code can be dropped
+     TODO QGIS 4 remove MethodCode
+    */
+#ifdef SIP_RUN
+
+    /**
+     * Splits this geometry according to a given line.
+     * \param splitLine the line that splits the geometry
+     * \param topological TRUE if topological editing is enabled
+     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
+     *
+     * \returns a tuple (Qgis.GeometryOperationResult, List[QgsGeometry], List[Union[QgsPoint, QgsPointXY]]) (result code, list of new geometries, list of topological points)
+     *
+     * Example:
+     *
+     * \code{.py}
+     *  geometry = QgsGeometry.fromWkt('CompoundCurveZ ((2749546.2003820720128715 1262904.45356595050543547 100, 2749557.82053794478997588 1262920.05570670193992555 200))')
+     *  split_line = [QgsPoint(2749544.19, 1262914.79), QgsPoint(2749557.64, 1262897.30)]
+     *  result, new_geometries, point_xy = geometry.splitGeometry(split_line, False)
+     *  print(geometry.asWkt(2))
+     *  > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
+     * \endcode
+     */
+    SIP_PYOBJECT splitGeometry( SIP_PYOBJECT splitLine SIP_TYPEHINT( List[Union[QgsPoint, QgsPointXY]] ), bool topological, bool splitFeature = true ) SIP_TYPEHINT( Tuple[Qgis.GeometryOperationResult, Union[List[QgsPoint], List[QgsPointXY]], Union[List[QgsPoint], List[QgsPointXY]]] );
+    % MethodCode
+    {
+      int sipIsErr = 0;
+      int state;
+
+      if ( PyList_Check( a0 ) && PyList_GET_SIZE( a0 ) )
+      {
+        PyObject *p0 = PyList_GetItem( a0, 0 );
+        if ( sipCanConvertToType( p0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+             sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+        {
+          QVector<QgsGeometry> newGeometries;
+          QVector<QgsPointXY> topologyTestPoints;
+
+          QVector<QgsPointXY> *splitLine = reinterpret_cast<QVector<QgsPointXY> *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( sipIsErr )
+          {
+            sipReleaseType( splitLine, sipType_QVector_0100QgsPointXY, state );
+          }
+          else
+          {
+            Qgis::GeometryOperationResult result = sipCpp->splitGeometry( *splitLine, newGeometries, a1, topologyTestPoints, a2 );
+
+            PyObject *o0 = sipConvertFromEnum( static_cast<int>( result ), sipType_Qgis_GeometryOperationResult );
+            PyObject *o1 = sipConvertFromType( &newGeometries, sipType_QVector_0100QgsGeometry, Py_None );
+            PyObject *o2 = sipConvertFromType( &topologyTestPoints, sipType_QVector_0100QgsPointXY, Py_None );
+
+            sipRes = PyTuple_New( 3 );
+            PyTuple_SET_ITEM( sipRes, 0, o0 );
+            PyTuple_SET_ITEM( sipRes, 1, o1 );
+            PyTuple_SET_ITEM( sipRes, 2, o2 );
+          }
+        }
+
+        else if ( sipCanConvertToType( p0, sipType_QgsPoint, SIP_NOT_NONE ) &&
+                  sipCanConvertToType( a0, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) )
+        {
+          QVector<QgsGeometry> newGeometries;
+          QVector<QgsPoint> topologyTestPoints;
+
+          QVector<QgsPoint> *splitLine = reinterpret_cast<QVector<QgsPoint> *>( sipConvertToType( a0, sipType_QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( sipIsErr )
+          {
+            sipReleaseType( splitLine, sipType_QVector_0100QgsPoint, state );
+          }
+          else
+          {
+            Qgis::GeometryOperationResult result = sipCpp->splitGeometry( *splitLine, newGeometries, a1, topologyTestPoints, a2 );
+
+            PyObject *o0 = sipConvertFromEnum( static_cast<int>( result ), sipType_Qgis_GeometryOperationResult );
+            PyObject *o1 = sipConvertFromType( &newGeometries, sipType_QVector_0100QgsGeometry, Py_None );
+            PyObject *o2 = sipConvertFromType( &topologyTestPoints, sipType_QVector_0100QgsPoint, Py_None );
+
+            sipRes = PyTuple_New( 3 );
+            PyTuple_SET_ITEM( sipRes, 0, o0 );
+            PyTuple_SET_ITEM( sipRes, 1, o1 );
+            PyTuple_SET_ITEM( sipRes, 2, o2 );
+          }
+        }
+        else
+        {
+          sipIsErr = 1;
+          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Could not convert first argument to a list of QgsPoint or QgsPointXY." ).toUtf8().constData() );
+        }
+      }
+      else
+      {
+        sipIsErr = 1;
+        PyErr_SetString( PyExc_TypeError, QStringLiteral( "First argument is not a list of points or is empty." ).toUtf8().constData() );
+      }
+    }
+    % End
+#endif
 
     /**
      * Splits this geometry according to a given curve.
