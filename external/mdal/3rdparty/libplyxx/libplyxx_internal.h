@@ -108,24 +108,24 @@ namespace libply
   };
 
   template <typename T>
-  T endian_convert(T w, uint32_t endian)
+  T endian_convert( T w, uint32_t endian )
   {
     // This gets optimized out into if (endian == host_endian) return w;
     union { uint64_t quad; uint32_t islittle; } t;
     t.quad = 1;
-    if (t.islittle ^ endian) return w;
+    if ( t.islittle ^ endian ) return w;
 
-    auto ptr = reinterpret_cast<std::uint8_t*>(&w);
-    std::array<std::uint8_t, sizeof(T)> raw_src, raw_dst;
+    auto ptr = reinterpret_cast<std::uint8_t *>( &w );
+    std::array<std::uint8_t, sizeof( T )> raw_src, raw_dst;
 
-    for(std::size_t i = 0; i < sizeof(T); ++i)
-        raw_src[i] = ptr[i];
+    for ( std::size_t i = 0; i < sizeof( T ); ++i )
+      raw_src[i] = ptr[i];
 
-    std::reverse_copy(raw_src.begin(), raw_src.end(), raw_dst.begin());
+    std::reverse_copy( raw_src.begin(), raw_src.end(), raw_dst.begin() );
 
-    for(std::size_t i = 0; i < sizeof(T); ++i)
-        ptr[i] = raw_dst[i];
-    return *reinterpret_cast<T*>(ptr);
+    for ( std::size_t i = 0; i < sizeof( T ); ++i )
+      ptr[i] = raw_dst[i];
+    return *reinterpret_cast<T *>( ptr );
   };
 
   /// Type conversion functions.
@@ -244,7 +244,7 @@ namespace libply
 
   inline std::stringstream &write_convert_DOUBLE( IProperty &property, std::stringstream &ss )
   {
-    ss << MDAL::doubleToString( static_cast<double>( property ), 12);
+    ss << MDAL::doubleToString( static_cast<double>( property ), 12 );
     return ss;
   }
 
