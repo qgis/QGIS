@@ -483,45 +483,48 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
       Qgis::DataType dataType = dataProvider->dataType( mElevationBand );
 
-      // we need extra pixels on border to avoid effect border with resampling (at least 2 pixels band for cubic alg)
-      int sourceWidth = viewWidth + 4;
-      int sourceHeight = viewHeight + 4;
-      viewExtentInLayerCoordinate = QgsRectangle(
-                                      viewExtentInLayerCoordinate.xMinimum() - xLayerResol * 2,
-                                      viewExtentInLayerCoordinate.yMinimum() - yLayerResol * 2,
-                                      viewExtentInLayerCoordinate.xMaximum() + xLayerResol * 2,
-                                      viewExtentInLayerCoordinate.yMaximum() + yLayerResol * 2 );
+      if ( dataType != Qgis::DataType::UnknownDataType ) // resampling data by GDAL is not compatible with unknown data type
+      {
+        // we need extra pixels on border to avoid effect border with resampling (at least 2 pixels band for cubic alg)
+        int sourceWidth = viewWidth + 4;
+        int sourceHeight = viewHeight + 4;
+        viewExtentInLayerCoordinate = QgsRectangle(
+                                        viewExtentInLayerCoordinate.xMinimum() - xLayerResol * 2,
+                                        viewExtentInLayerCoordinate.yMinimum() - yLayerResol * 2,
+                                        viewExtentInLayerCoordinate.xMaximum() + xLayerResol * 2,
+                                        viewExtentInLayerCoordinate.yMaximum() + yLayerResol * 2 );
 
-      // Now we can do the resampling
-      std::unique_ptr<QgsRasterBlock> sourcedata( dataProvider->block( mElevationBand, viewExtentInLayerCoordinate, sourceWidth, sourceHeight, mFeedback ) );
-      gdal::dataset_unique_ptr gdalDsInput =
-        QgsGdalUtils::blockToSingleBandMemoryDataset( viewExtentInLayerCoordinate, sourcedata.get() );
+        // Now we can do the resampling
+        std::unique_ptr<QgsRasterBlock> sourcedata( dataProvider->block( mElevationBand, viewExtentInLayerCoordinate, sourceWidth, sourceHeight, mFeedback ) );
+        gdal::dataset_unique_ptr gdalDsInput =
+          QgsGdalUtils::blockToSingleBandMemoryDataset( viewExtentInLayerCoordinate, sourcedata.get() );
 
 
-      elevationBlock.reset( new QgsRasterBlock( dataType,
-                            outputWidth,
-                            outputHeight ) );
+        elevationBlock.reset( new QgsRasterBlock( dataType,
+                              outputWidth,
+                              outputHeight ) );
 
-      elevationBlock->setNoDataValue( dataProvider->sourceNoDataValue( mElevationBand ) );
+        elevationBlock->setNoDataValue( dataProvider->sourceNoDataValue( mElevationBand ) );
 
-      gdal::dataset_unique_ptr gdalDsOutput =
-        QgsGdalUtils::blockToSingleBandMemoryDataset( mRasterViewPort->mDrawnExtent, elevationBlock.get() );
+        gdal::dataset_unique_ptr gdalDsOutput =
+          QgsGdalUtils::blockToSingleBandMemoryDataset( mRasterViewPort->mDrawnExtent, elevationBlock.get() );
 
-      // For coordinate transformation, we try to obtain a coordinate operation string from the transform context.
-      // Depending of the CRS, if we can't we use GDAL transformation directly from the source and destination CRS
-      QString coordinateOperation;
-      const QgsCoordinateTransformContext &transformContext = renderContext()->transformContext();
-      if ( transformContext.mustReverseCoordinateOperation( mRasterViewPort->mDestCRS, mRasterViewPort->mSrcCRS ) )
-        coordinateOperation = transformContext.calculateCoordinateOperation( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS );
-      else
-        coordinateOperation = transformContext.calculateCoordinateOperation( mRasterViewPort->mDestCRS, mRasterViewPort->mSrcCRS );
+        // For coordinate transformation, we try to obtain a coordinate operation string from the transform context.
+        // Depending of the CRS, if we can't we use GDAL transformation directly from the source and destination CRS
+        QString coordinateOperation;
+        const QgsCoordinateTransformContext &transformContext = renderContext()->transformContext();
+        if ( transformContext.mustReverseCoordinateOperation( mRasterViewPort->mDestCRS, mRasterViewPort->mSrcCRS ) )
+          coordinateOperation = transformContext.calculateCoordinateOperation( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS );
+        else
+          coordinateOperation = transformContext.calculateCoordinateOperation( mRasterViewPort->mDestCRS, mRasterViewPort->mSrcCRS );
 
-      if ( coordinateOperation.isEmpty() )
-        canRenderElevation = QgsGdalUtils::resampleSingleBandRaster( gdalDsInput.get(), gdalDsOutput.get(), alg,
-                             mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS );
-      else
-        canRenderElevation = QgsGdalUtils::resampleSingleBandRaster( gdalDsInput.get(), gdalDsOutput.get(), alg,
-                             coordinateOperation.toUtf8().constData() );
+        if ( coordinateOperation.isEmpty() )
+          canRenderElevation = QgsGdalUtils::resampleSingleBandRaster( gdalDsInput.get(), gdalDsOutput.get(), alg,
+                               mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS );
+        else
+          canRenderElevation = QgsGdalUtils::resampleSingleBandRaster( gdalDsInput.get(), gdalDsOutput.get(), alg,
+                               coordinateOperation.toUtf8().constData() );
+      }
     }
 
     if ( canRenderElevation )
