@@ -79,7 +79,7 @@ namespace libply
       virtual IProperty &operator=( unsigned char value ) = 0;
       virtual IProperty &operator=( char value ) = 0;
       virtual IProperty &operator=( unsigned short value ) = 0;
-      virtual IProperty &operator=( short value) = 0;
+      virtual IProperty &operator=( short value ) = 0;
       virtual IProperty &operator=( unsigned int value ) = 0;
       virtual IProperty &operator=( int value ) = 0;
       virtual IProperty &operator=( float value ) = 0;
@@ -105,7 +105,7 @@ namespace libply
 
       virtual ~ScalarProperty() = default;
 
-      virtual ScalarProperty &operator= ( unsigned char value) override 
+      virtual ScalarProperty &operator= ( unsigned char value ) override
       {
         m_value = static_cast<InternalType>( value );
         return *this;
@@ -115,12 +115,12 @@ namespace libply
         m_value = static_cast<InternalType>( value );
         return *this;
       };
-      virtual ScalarProperty &operator= ( unsigned short value) override
+      virtual ScalarProperty &operator= ( unsigned short value ) override
       {
         m_value = static_cast<InternalType>( value );
         return *this;
       };
-      virtual ScalarProperty &operator= ( short value ) override 
+      virtual ScalarProperty &operator= ( short value ) override
       {
         m_value = static_cast<InternalType>( value );
         return *this;
