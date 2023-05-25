@@ -17,9 +17,14 @@
 #include "qgsprofileexporter.h"
 #include "qgsabstractprofilesource.h"
 #include "qgsabstractprofilegenerator.h"
+#include "qgsdxfexport.h"
 #include "qgsprofilerenderer.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorfilewriter.h"
+
+#include <QThread>
+#include <QFileInfo>
 
 QgsProfileExporter::QgsProfileExporter( const QList<QgsAbstractProfileSource *> &sources, const QgsProfileRequest &request, Qgis::ProfileExportType type )
   : mType( type )
@@ -89,11 +94,12 @@ QList< QgsVectorLayer *> QgsProfileExporter::toLayers()
       }
     }
 
+    // note -- 2d profiles have no CRS associated, the coordinate values are not location based!
     std::unique_ptr< QgsVectorLayer > outputLayer( QgsMemoryProviderUtils::createMemoryLayer(
           QStringLiteral( "profile" ),
           outputFields,
           static_cast< Qgis::WkbType >( wkbTypeIt.key() ),
-          mRequest.crs(),
+          mType == Qgis::ProfileExportType::Profile2D ? QgsCoordinateReferenceSystem() : mRequest.crs(),
           false ) );
 
     QList< QgsFeature > featuresToAdd;
@@ -118,4 +124,188 @@ QList< QgsVectorLayer *> QgsProfileExporter::toLayers()
     res << outputLayer.release();
   }
   return res;
+}
+
+//
+// QgsProfileExporterTask
+//
+
+QgsProfileExporterTask::QgsProfileExporterTask( const QList<QgsAbstractProfileSource *> &sources,
+    const QgsProfileRequest &request,
+    Qgis::ProfileExportType type,
+    const QString &destination,
+    const QgsCoordinateTransformContext &transformContext
+                                              )
+  : QgsTask( tr( "Exporting elevation profile" ), QgsTask::CanCancel )
+  , mDestination( destination )
+  , mTransformContext( transformContext )
+{
+  mExporter = std::make_unique< QgsProfileExporter >( sources, request, type );
+}
+
+bool QgsProfileExporterTask::run()
+{
+  mFeedback = std::make_unique< QgsFeedback >();
+
+  mExporter->run( mFeedback.get() );
+
+  mLayers = mExporter->toLayers();
+
+  if ( mFeedback->isCanceled() )
+  {
+    mResult = ExportResult::Canceled;
+    return true;
+  }
+
+  if ( !mDestination.isEmpty() && !mLayers.empty() )
+  {
+    const QFileInfo destinationFileInfo( mDestination );
+    const QString fileExtension = destinationFileInfo.completeSuffix();
+    const QString driverName = QgsVectorFileWriter::driverForExtension( fileExtension );
+
+    if ( driverName == QLatin1String( "DXF" ) )
+    {
+      // DXF gets special handling -- we use the inbuilt QgsDxfExport class
+      QgsDxfExport dxf;
+      QList< QgsDxfExport::DxfLayer > dxfLayers;
+      for ( QgsVectorLayer *layer : std::as_const( mLayers ) )
+      {
+        QgsDxfExport::DxfLayer dxfLayer( layer );
+        dxfLayers.append( dxfLayer );
+        if ( layer->crs().isValid() )
+          dxf.setDestinationCrs( layer->crs() );
+      }
+      dxf.addLayers( dxfLayers );
+      QFile dxfFile( mDestination );
+      switch ( dxf.writeToFile( &dxfFile, QStringLiteral( "UTF-8" ) ) )
+      {
+        case QgsDxfExport::ExportResult::Success:
+          mResult = ExportResult::Success;
+          mCreatedFiles.append( mDestination );
+          break;
+
+        case QgsDxfExport::ExportResult::InvalidDeviceError:
+        case QgsDxfExport::ExportResult::DeviceNotWritableError:
+          mResult = ExportResult::DeviceError;
+          break;
+
+        case QgsDxfExport::ExportResult::EmptyExtentError:
+          mResult = ExportResult::DxfExportFailed;
+          break;
+      }
+    }
+    else
+    {
+      // use vector file writer
+      const bool outputFormatIsMultiLayer = QgsVectorFileWriter::supportedFormatExtensions( QgsVectorFileWriter::SupportsMultipleLayers ).contains( fileExtension );
+
+      int layerCount = 1;
+      for ( QgsVectorLayer *layer : std::as_const( mLayers ) )
+      {
+        QString thisLayerFilename;
+        QgsVectorFileWriter::SaveVectorOptions options;
+        if ( outputFormatIsMultiLayer )
+        {
+          thisLayerFilename = mDestination;
+          options.actionOnExistingFile = layerCount == 1 ? QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteFile
+                                         : QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteLayer;
+          if ( mLayers.size() > 1 )
+            options.layerName = QStringLiteral( "profile_%1" ).arg( layerCount );
+        }
+        else
+        {
+          options.actionOnExistingFile = QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteFile;
+          if ( mLayers.size() > 1 )
+          {
+            thisLayerFilename = QStringLiteral( "%1/%2_%3.%4" ).arg( destinationFileInfo.path(), destinationFileInfo.baseName() ).arg( layerCount ).arg( fileExtension );
+          }
+          else
+          {
+            thisLayerFilename = mDestination;
+          }
+        }
+        options.driverName = driverName;
+        options.feedback = mFeedback.get();
+        QString newFileName;
+        QgsVectorFileWriter::WriterError result = QgsVectorFileWriter::writeAsVectorFormatV3(
+              layer,
+              thisLayerFilename,
+              mTransformContext,
+              options,
+              &mError,
+              &newFileName
+            );
+        switch ( result )
+        {
+          case QgsVectorFileWriter::NoError:
+            mResult = ExportResult::Success;
+            if ( !mCreatedFiles.contains( newFileName ) )
+              mCreatedFiles.append( newFileName );
+            break;
+
+          case QgsVectorFileWriter::ErrDriverNotFound:
+          case QgsVectorFileWriter::ErrCreateDataSource:
+          case QgsVectorFileWriter::ErrCreateLayer:
+            mResult = ExportResult::DeviceError;
+            break;
+
+          case QgsVectorFileWriter::ErrAttributeTypeUnsupported:
+          case QgsVectorFileWriter::ErrAttributeCreationFailed:
+          case QgsVectorFileWriter::ErrProjection:
+          case QgsVectorFileWriter::ErrFeatureWriteFailed:
+          case QgsVectorFileWriter::ErrInvalidLayer:
+          case QgsVectorFileWriter::ErrSavingMetadata:
+            mResult = ExportResult::LayerExportFailed;
+            break;
+
+
+          case QgsVectorFileWriter::Canceled:
+            mResult = ExportResult::Canceled;
+            break;
+        }
+
+        if ( mResult != ExportResult::Success )
+          break;
+        layerCount += 1;
+      }
+    }
+  }
+  else if ( mLayers.empty() )
+  {
+    mResult = ExportResult::Empty;
+  }
+
+  for ( QgsVectorLayer *layer : std::as_const( mLayers ) )
+  {
+    layer->moveToThread( nullptr );
+  }
+
+  mExporter.reset();
+  return true;
+}
+
+void QgsProfileExporterTask::cancel()
+{
+  if ( mFeedback )
+    mFeedback->cancel();
+
+  QgsTask::cancel();
+}
+
+QList<QgsVectorLayer *> QgsProfileExporterTask::takeLayers()
+{
+  QList<QgsVectorLayer *> res;
+  res.reserve( mLayers.size() );
+  for ( QgsVectorLayer *layer : std::as_const( mLayers ) )
+  {
+    layer->moveToThread( QThread::currentThread() );
+    res.append( layer );
+  }
+  mLayers.clear();
+  return res;
+}
+
+QgsProfileExporterTask::ExportResult QgsProfileExporterTask::result() const
+{
+  return mResult;
 }
