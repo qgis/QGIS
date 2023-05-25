@@ -65,6 +65,45 @@
 
 /**
  * \ingroup core
+ * \brief Temporarily moves a QObject to the current thread, then resets it back to nullptr thread on destruction.
+ *
+ * \since QGIS 3.32
+ */
+class QgsScopedAssignObjectToCurrentThread
+{
+  public:
+
+    /**
+     * Assigns \a object to the current thread.
+     *
+     * If \a object is already assigned to the current thread, no action will be taken.
+     *
+     * \warning \a object must be assigned to the nullptr thread or the current thread, or this class will assert.
+     */
+    QgsScopedAssignObjectToCurrentThread( QObject *object )
+      : mObject( object )
+    {
+      Q_ASSERT_X( mObject->thread() == nullptr || mObject->thread() == QThread::currentThread(), "QgsScopedAssignObjectToCurrentThread", "QObject was already assigned to a different thread!" );
+      if ( mObject->thread() != QThread::currentThread() )
+        mObject->moveToThread( QThread::currentThread() );
+    }
+
+    ~QgsScopedAssignObjectToCurrentThread()
+    {
+      mObject->moveToThread( nullptr );
+    }
+
+    //! QgsScopedAssignObjectToCurrentThread cannot be copied
+    QgsScopedAssignObjectToCurrentThread( const QgsScopedAssignObjectToCurrentThread &other ) = delete;
+    //! QgsScopedAssignObjectToCurrentThread cannot be copied
+    QgsScopedAssignObjectToCurrentThread &operator =( const QgsScopedAssignObjectToCurrentThread & ) = delete;
+
+  private:
+    QObject *mObject = nullptr;
+};
+
+/**
+ * \ingroup core
  * \brief Provides threading utilities for QGIS.
  *
  * \since QGIS 3.4
