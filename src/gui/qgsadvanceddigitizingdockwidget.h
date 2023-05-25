@@ -1052,7 +1052,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     double mCommonAngleConstraint; // if 0: do not snap to common angles
 
     //! Flag that controls whether snapping to features has priority over common angle
-    bool mSnappingToFeaturesOverridesCommonAngle = false;
+    bool mSnappingPrioritizeFeatures = false;
 
     // point list and current snap point / segment
     QList<QgsPoint> mCadPointList;
@@ -1087,6 +1087,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     QMenu *mCommonAngleActionsMenu = nullptr;
     QMenu *mFloaterActionsMenu = nullptr;
+
+    static const QgsSettingsEntryBool *settingsCadSnappingPriorityPrioritizeFeature;
 
     friend class TestQgsAdvancedDigitizing;
     friend class TestQgsAdvancedDigitizingDockWidget;
