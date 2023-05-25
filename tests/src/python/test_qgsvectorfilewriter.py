@@ -834,6 +834,17 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SkipNonSpatialFormats)
         self.assertFalse('ODS' in [f.driverName for f in formats])
 
+        # multilayer formats
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SupportsMultipleLayers)
+        self.assertTrue('DXF' in [f.driverName for f in formats])
+        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
+        self.assertTrue('XLSX' in [f.driverName for f in formats])
+
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SupportsMultipleLayers | QgsVectorFileWriter.SkipNonSpatialFormats)
+        self.assertTrue('DXF' in [f.driverName for f in formats])
+        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
+        self.assertFalse('XLSX' in [f.driverName for f in formats])
+
     def testOgrDriverList(self):
         # test with drivers in recommended order
         drivers = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SortRecommended)
@@ -859,6 +870,17 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         # skip non-spatial
         formats = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SkipNonSpatialFormats)
         self.assertFalse('ODS' in [f.driverName for f in formats])
+
+        # multilayer formats
+        formats = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SupportsMultipleLayers)
+        self.assertTrue('DXF' in [f.driverName for f in formats])
+        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
+        self.assertTrue('XLSX' in [f.driverName for f in formats])
+
+        formats = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SupportsMultipleLayers | QgsVectorFileWriter.SkipNonSpatialFormats)
+        self.assertTrue('DXF' in [f.driverName for f in formats])
+        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
+        self.assertFalse('XLSX' in [f.driverName for f in formats])
 
     def testSupportedFormatExtensions(self):
         formats = QgsVectorFileWriter.supportedFormatExtensions()

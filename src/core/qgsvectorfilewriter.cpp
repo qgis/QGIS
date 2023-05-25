@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsfields.h"
 
+#include "qgsgdalutils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgscoordinatereferencesystem.h"
@@ -3785,6 +3786,33 @@ void QgsVectorFileWriter::setSymbologyScale( double d )
   mRenderContext.setRendererScale( mSymbologyScale );
 }
 
+QStringList multiLayerFormats()
+{
+  QStringList driverNames;
+  const QSet< QString > multiLayerExtensions = qgis::listToSet( QgsGdalUtils::multiLayerFileExtensions() );
+
+  for ( int i = 0; i < GDALGetDriverCount(); ++i )
+  {
+    GDALDriverH driver = GDALGetDriver( i );
+    if ( !driver )
+    {
+      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+      continue;
+    }
+
+    const QString driverExtensions = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSIONS, "" );
+    if ( driverExtensions.isEmpty() )
+      continue;
+
+    const QSet< QString > splitExtensions = qgis::listToSet( driverExtensions.split( ' ', Qt::SkipEmptyParts ) );
+    if ( splitExtensions.intersects( multiLayerExtensions ) )
+    {
+      driverNames << OGR_Dr_GetName( driver );
+    }
+  }
+  return driverNames;
+}
+
 QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supportedFiltersAndFormats( const VectorFormatOptions options )
 {
   static QReadWriteLock sFilterLock;
@@ -3802,12 +3830,20 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
   QgsApplication::registerOgrDrivers();
   int const drvCount = OGRGetDriverCount();
 
+  const QStringList multiLayerDrivers = multiLayerFormats();
+
   for ( int i = 0; i < drvCount; ++i )
   {
     OGRSFDriverH drv = OGRGetDriver( i );
     if ( drv )
     {
-      QString drvName = OGR_Dr_GetName( drv );
+      const QString drvName = OGR_Dr_GetName( drv );
+
+      if ( options & SupportsMultipleLayers )
+      {
+        if ( !multiLayerDrivers.contains( drvName ) )
+          continue;
+      }
 
       GDALDriverH gdalDriver = GDALGetDriverByName( drvName.toLocal8Bit().constData() );
       char **metadata = nullptr;
@@ -3918,13 +3954,21 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
   QgsApplication::registerOgrDrivers();
   const int drvCount = OGRGetDriverCount();
 
+  const QStringList multiLayerDrivers = multiLayerFormats();
+
   QStringList writableDrivers;
   for ( int i = 0; i < drvCount; ++i )
   {
     OGRSFDriverH drv = OGRGetDriver( i );
     if ( drv )
     {
-      QString drvName = OGR_Dr_GetName( drv );
+      const QString drvName = OGR_Dr_GetName( drv );
+
+      if ( options & SupportsMultipleLayers )
+      {
+        if ( !multiLayerDrivers.contains( drvName ) )
+          continue;
+      }
 
       if ( options & SkipNonSpatialFormats )
       {
