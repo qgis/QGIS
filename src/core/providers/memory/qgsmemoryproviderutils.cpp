@@ -81,6 +81,10 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
     else
       parts << QStringLiteral( "crs=wkt:%1" ).arg( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   }
+  else
+  {
+    parts << QStringLiteral( "crs=" );
+  }
   for ( const QgsField &field : fields )
   {
     const QString lengthPrecision = QStringLiteral( "(%1,%2)" ).arg( field.length() ).arg( field.precision() );

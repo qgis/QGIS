@@ -532,6 +532,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.name(), 'my name')
         self.assertTrue(layer.fields().isEmpty())
+        self.assertFalse(layer.dataProvider().crs().isValid())
 
         # similar layers should have unique sources
         layer2 = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields())
