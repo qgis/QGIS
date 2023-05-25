@@ -149,6 +149,7 @@ Constructor for MetaData
     {
       SortRecommended,
       SkipNonSpatialFormats,
+      SupportsMultipleLayers,
     };
     typedef QFlags<QgsVectorFileWriter::VectorFormatOption> VectorFormatOptions;
 

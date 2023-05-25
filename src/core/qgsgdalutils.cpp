@@ -702,6 +702,7 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
     QStringLiteral( "pbf" ),
     QStringLiteral( "vrt" ),
     QStringLiteral( "nc" ),
+    QStringLiteral( "dxf" ),
     QStringLiteral( "shp.zip" ) };
   return SUPPORTED_DB_LAYERS_EXTENSIONS;
 #endif
