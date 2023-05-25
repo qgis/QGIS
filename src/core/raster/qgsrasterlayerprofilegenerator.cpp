@@ -23,11 +23,12 @@
 #include "qgsgeometryengine.h"
 #include "qgsgeos.h"
 #include "qgslinesymbol.h"
-#include "qgsgeometryutils.h"
 #include "qgsprofilepoint.h"
 #include "qgsfillsymbol.h"
+#include "qgsthreadingutils.h"
 
 #include <QPolygonF>
+#include <QThread>
 
 //
 // QgsRasterLayerProfileResults
@@ -75,6 +76,7 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
   , mStepDistance( request.stepDistance() )
 {
   mRasterProvider.reset( layer->dataProvider()->clone() );
+  mRasterProvider->moveToThread( nullptr );
 
   mSymbology = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
   mElevationLimit = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->elevationLimit();
@@ -98,6 +100,8 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
 {
   if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;
+
+  QgsScopedAssignObjectToCurrentThread assignProviderToCurrentThread( mRasterProvider.get() );
 
   const double startDistanceOffset = std::max( !context.distanceRange().isInfinite() ? context.distanceRange().lower() : 0, 0.0 );
   const double endDistance = context.distanceRange().upper();
