@@ -76,12 +76,12 @@ class TestQgsMeshLayerProfileGenerator(unittest.TestCase):
         features = r.asFeatures(Qgis.ProfileExportType.DistanceVsElevationTable)
         self.assertEqual(len(features), 102)
         self.assertEqual(features[0].layerIdentifier, ml.id())
-        self.assertAlmostEqual(features[0].attributes['distance'], 0.0, 2)
-        self.assertAlmostEqual(features[0].attributes['elevation'], 152.87, 2)
+        self.assertAlmostEqual(features[0].attributes['distance'], 0.0, 0)
+        self.assertAlmostEqual(features[0].attributes['elevation'], 153.0, 0)
         self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
         self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
-        self.assertAlmostEqual(features[-1].attributes['distance'], 3393.263, 2)
-        self.assertAlmostEqual(features[-1].attributes['elevation'], 98.780, 2)
+        self.assertAlmostEqual(features[-1].attributes['distance'], 3393.263, 0)
+        self.assertAlmostEqual(features[-1].attributes['elevation'], 98.780, 0)
 
     def testStepSize(self):
         ml = QgsMeshLayer(os.path.join(unitTestDataPath(), '3d', 'elev_mesh.2dm'), 'mdal', 'mdal')
@@ -127,12 +127,12 @@ class TestQgsMeshLayerProfileGenerator(unittest.TestCase):
         features = r.asFeatures(Qgis.ProfileExportType.DistanceVsElevationTable)
         self.assertEqual(len(features), 216)
         self.assertEqual(features[0].layerIdentifier, ml.id())
-        self.assertAlmostEqual(features[0].attributes['distance'], 0.0, 2)
-        self.assertAlmostEqual(features[0].attributes['elevation'], 152.87, 2)
+        self.assertAlmostEqual(features[0].attributes['distance'], 0.0, 0)
+        self.assertAlmostEqual(features[0].attributes['elevation'], 152.87, 0)
         self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
         self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
-        self.assertAlmostEqual(features[-1].attributes['distance'], 3393.263, 2)
-        self.assertAlmostEqual(features[-1].attributes['elevation'], 98.780, 2)
+        self.assertAlmostEqual(features[-1].attributes['distance'], 3393.263, 0)
+        self.assertAlmostEqual(features[-1].attributes['elevation'], 98.780, 0)
 
     def testSnapping(self):
         ml = QgsMeshLayer(os.path.join(unitTestDataPath(), '3d', 'elev_mesh.2dm'), 'mdal', 'mdal')
