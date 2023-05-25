@@ -107,7 +107,7 @@ QVector<QgsGeometry> QgsPointCloudLayerProfileResults::asGeometries() const
 QVector<QgsAbstractProfileResults::Feature> QgsPointCloudLayerProfileResults::asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback ) const
 {
   QVector<  QgsAbstractProfileResults::Feature > res;
-  res.reserve( results.size() );
+  res.reserve( static_cast< int >( results.size() ) );
   switch ( type )
   {
     case Qgis::ProfileExportType::Features3D:
