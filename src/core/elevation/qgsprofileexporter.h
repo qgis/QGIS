@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgsprofilerequest.h"
+#include "qgstaskmanager.h"
 
 class QgsAbstractProfileSource;
 class QgsAbstractProfileGenerator;
@@ -58,6 +59,8 @@ class CORE_EXPORT QgsProfileExporter
     /**
      * Runs the profile generation. This method must be called before retrieving any results from the
      * exporter.
+     *
+     * This method is safe to run in a background thread.
      */
     void run( QgsFeedback *feedback = nullptr );
 
@@ -83,5 +86,87 @@ class CORE_EXPORT QgsProfileExporter
     QVector< QgsAbstractProfileResults::Feature > mFeatures;
 
 };
+
+/**
+ * \brief Handles exports of elevation profiles in various formats in a background task.
+ *
+ * \ingroup core
+ * \since QGIS 3.32
+ */
+class CORE_EXPORT QgsProfileExporterTask : public QgsTask
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Results of exporting the profile.
+     */
+    enum class ExportResult
+    {
+      Success, //!< Successful export
+      Empty, //!< Results were empty
+      DeviceError, //!< Could not open output file device
+      DxfExportFailed, //!< Generic error when outputting to DXF
+      LayerExportFailed, //!< Generic error when outputting to files
+      Canceled, //!< Export was canceled
+    };
+    Q_ENUM( ExportResult );
+
+    /**
+     * Constructor for QgsProfileExporterTask, saving results to the specified \a destination file.
+     *
+     * If \a destination is an empty string then the profile results will be generated only and can
+     * be retrieved by calling takeLayers().
+     */
+    QgsProfileExporterTask( const QList< QgsAbstractProfileSource * > &sources,
+                            const QgsProfileRequest &request,
+                            Qgis::ProfileExportType type,
+                            const QString &destination,
+                            const QgsCoordinateTransformContext &transformContext );
+
+    bool run() override;
+    void cancel() override;
+
+    /**
+     * Returns a list of vector layer containing the exported profile results.
+     *
+     * While this method attempts to condense all results into a single layer, multiple layers may be returned
+     * when the geometry types of exported features differs.
+     *
+     * Ownership of the returned layers is transferred to the caller.
+     */
+    QList< QgsVectorLayer * > takeLayers() SIP_FACTORY;
+
+    /**
+     * Returns the result of the export operation.
+     *
+     * \see error()
+     */
+    QgsProfileExporterTask::ExportResult result() const;
+
+    /**
+     * Returns a list of layer files created during the export.
+     */
+    QStringList createdFiles() const { return mCreatedFiles; }
+
+    /**
+     * Returns a descriptive error message, if available.
+     */
+    QString error() const { return mError; }
+
+  private:
+
+    std::unique_ptr< QgsProfileExporter > mExporter;
+    QList< QgsVectorLayer * > mLayers;
+
+    std::unique_ptr< QgsFeedback > mFeedback;
+    QString mDestination;
+    QgsCoordinateTransformContext mTransformContext;
+    ExportResult mResult = ExportResult::Success;
+    QString mError;
+    QStringList mCreatedFiles;
+};
+
 
 #endif // QGSPROFILEEXPORTER_H
