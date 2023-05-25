@@ -168,6 +168,11 @@ Identify results visible within the specified ranges.
 %End
 
     QVector< QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = 0 );
+%Docstring
+Exports the profile results as a set of features.
+
+.. versionadded:: 3.32
+%End
 
   signals:
 
