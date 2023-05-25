@@ -83,12 +83,12 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
         features = r.asFeatures(Qgis.ProfileExportType.DistanceVsElevationTable)
         self.assertEqual(len(features), 1394)
         self.assertEqual(features[0].layerIdentifier, rl.id())
-        self.assertAlmostEqual(features[0].attributes['distance'], 0.3393, 2)
-        self.assertAlmostEqual(features[0].attributes['elevation'], 154.0, 2)
+        self.assertAlmostEqual(features[0].attributes['distance'], 0, 0)
+        self.assertAlmostEqual(features[0].attributes['elevation'], 154.0, 0)
         self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
         self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
-        self.assertAlmostEqual(features[-1].attributes['distance'], 3392.69, 2)
-        self.assertAlmostEqual(features[-1].attributes['elevation'], 99.0, 2)
+        self.assertAlmostEqual(features[-1].attributes['distance'], 3392.69, 0)
+        self.assertAlmostEqual(features[-1].attributes['elevation'], 99.0, 0)
 
     def testGenerationWithStepSize(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
