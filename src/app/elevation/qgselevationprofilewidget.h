@@ -51,6 +51,7 @@ class QLabel;
 class QgsProfilePoint;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
 class QgsMapLayerProxyModel;
 
 class QgsAppElevationProfileLayerTreeView : public QgsElevationProfileLayerTreeView
@@ -93,6 +94,7 @@ class QgsElevationProfileWidget : public QWidget
     static const QgsSettingsEntryDouble *settingTolerance;
     static const QgsSettingsEntryBool *settingShowLayerTree;
     static const QgsSettingsEntryBool *settingLockAxis;
+    static const QgsSettingsEntryString *settingLastExportDir;
 
     QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();
@@ -126,7 +128,7 @@ class QgsElevationProfileWidget : public QWidget
     void clear();
     void exportAsPdf();
     void exportAsImage();
-    void exportAsLayer();
+    void exportResults( Qgis::ProfileExportType type );
     void nudgeLeft();
     void nudgeRight();
     void nudgeCurve( Qgis::BufferSide side );
