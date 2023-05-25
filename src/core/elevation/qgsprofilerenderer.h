@@ -199,7 +199,9 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     QVector<QgsProfileIdentifyResults> identify( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const QgsProfileIdentifyContext &context );
 
     /**
+     * Exports the profile results as a set of features.
      *
+     * \since QGIS 3.32
      */
     QVector< QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr );
 
