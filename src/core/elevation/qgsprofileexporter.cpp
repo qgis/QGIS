@@ -226,6 +226,7 @@ bool QgsProfileExporterTask::run()
         }
         options.driverName = driverName;
         options.feedback = mFeedback.get();
+        options.fileEncoding = QStringLiteral( "UTF-8" );
         QString newFileName;
         QgsVectorFileWriter::WriterError result = QgsVectorFileWriter::writeAsVectorFormatV3(
               layer,

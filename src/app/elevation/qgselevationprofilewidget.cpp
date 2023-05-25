@@ -67,7 +67,7 @@ const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance = new 
 
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowLayerTree = new QgsSettingsEntryBool( QStringLiteral( "show-layer-tree" ), QgsSettingsTree::sTreeElevationProfile, true, QStringLiteral( "Whether the layer tree should be shown for elevation profile plots" ) );
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingLockAxis = new QgsSettingsEntryBool( QStringLiteral( "lock-axis-ratio" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "Whether the the distance and elevation axis scales are locked to each other" ) );
-
+const QgsSettingsEntryString *QgsElevationProfileWidget::settingLastExportDir = new QgsSettingsEntryString( QStringLiteral( "last-export-dir" ), QgsSettingsTree::sTreeElevationProfile, QString(), QStringLiteral( "Last elevation profile export directory" ) );
 //
 // QgsElevationProfileLayersDialog
 //
@@ -311,10 +311,28 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( exportAsImageAction, &QAction::triggered, this, &QgsElevationProfileWidget::exportAsImage );
   toolBar->addAction( exportAsImageAction );
 
-  QAction *exportAsLayerAction = new QAction( tr( "Export as Layer" ), this );
-  connect( exportAsLayerAction, &QAction::triggered, this, &QgsElevationProfileWidget::exportAsLayer );
-  toolBar->addAction( exportAsLayerAction );
+  QMenu *exportMenu = new QMenu( this );
 
+  QAction *exportAs3DFeaturesAction = new QAction( tr( "Export 3D Features…" ), this );
+  connect( exportAs3DFeaturesAction, &QAction::triggered, this, [this] { exportResults( Qgis::ProfileExportType::Features3D ); } );
+  exportMenu->addAction( exportAs3DFeaturesAction );
+
+  QAction *exportAs2DProfileAction = new QAction( tr( "Export 2D Profile…" ), this );
+  connect( exportAs2DProfileAction, &QAction::triggered, this, [this] { exportResults( Qgis::ProfileExportType::Profile2D ); } );
+  exportMenu->addAction( exportAs2DProfileAction );
+
+  QAction *exportAsTableAction = new QAction( tr( "Export Distance/Elevation Table…" ), this );
+  connect( exportAsTableAction, &QAction::triggered, this, [this] { exportResults( Qgis::ProfileExportType::DistanceVsElevationTable ); } );
+  exportMenu->addAction( exportAsTableAction );
+
+  QToolButton *exportResultsButton = new QToolButton();
+  exportResultsButton->setAutoRaise( true );
+  exportResultsButton->setToolTip( tr( "Export Results" ) );
+  exportResultsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSaveAs.svg" ) ) );
+  exportResultsButton->setPopupMode( QToolButton::InstantPopup );
+  exportResultsButton->setMenu( exportMenu );
+
+  toolBar->addWidget( exportResultsButton );
 
   toolBar->addSeparator();
 
@@ -767,8 +785,7 @@ void QgsElevationProfileWidget::exportAsImage()
 
 }
 
-
-void QgsElevationProfileWidget::exportAsLayer()
+void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
 {
   std::unique_ptr< QgsCurve > profileCurve;
   if ( !mProfileCurve.isEmpty() )
@@ -785,6 +802,18 @@ void QgsElevationProfileWidget::exportAsLayer()
   }
   if ( !profileCurve )
     return;
+
+  QString initialExportDirectory = settingLastExportDir->value();
+  if ( initialExportDirectory.isEmpty() )
+    initialExportDirectory = QDir::homePath();
+
+  QString selectedFilter;
+  QString file = QFileDialog::getSaveFileName( this, tr( "Select Output File" ), initialExportDirectory, QgsVectorFileWriter::fileFilterString(), &selectedFilter );
+  if ( file.isEmpty() )
+    return;
+
+  settingLastExportDir->setValue( QFileInfo( file ).path() );
+  file = QgsFileUtils::ensureFileNameHasExtension( file, QgsFileUtils::extensionsFromFilter( selectedFilter ) );
 
   QgsProfileRequest request( profileCurve.release() );
   request.setCrs( mMainCanvas->mapSettings().destinationCrs() );
@@ -805,17 +834,37 @@ void QgsElevationProfileWidget::exportAsLayer()
       sources.append( source );
   }
 
-  QgsProfileExporter exporter( sources, request, Qgis::ProfileExportType::DistanceVsElevationTable );
-  exporter.run();
-
-  const QList< QgsVectorLayer * > layers = exporter.toLayers();
-  QList< QgsMapLayer * > layersToAdd;
-  for ( QgsVectorLayer *layer : layers )
+  QgsProfileExporterTask *exportTask = new QgsProfileExporterTask( sources, request, type, file, QgsProject::instance()->transformContext() );
+  connect( exportTask, &QgsTask::taskCompleted, this, [exportTask]
   {
-    layersToAdd.append( layer );
-  }
-  if ( !layersToAdd.empty() )
-    QgsProject::instance()->addMapLayers( layersToAdd );
+    switch ( exportTask->result() )
+    {
+      case QgsProfileExporterTask::ExportResult::Success:
+      {
+        if ( exportTask->createdFiles().size() == 1 )
+        {
+          const QString fileName = exportTask->createdFiles().at( 0 );
+          QgisApp::instance()->messageBar()->pushSuccess( tr( "Exported Profile" ), tr( "Successfully saved the profile to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
+        }
+        else if ( !exportTask->createdFiles().empty() )
+        {
+          const QString firstFile = exportTask->createdFiles().at( 0 );
+          const QString firstFilePath = QFileInfo( firstFile ).path();
+          QgisApp::instance()->messageBar()->pushSuccess( tr( "Exported Profile" ), tr( "Successfully saved the profile to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( firstFile ).toString(), QDir::toNativeSeparators( firstFilePath ) ) );
+        }
+        break;
+      }
+
+      case QgsProfileExporterTask::ExportResult::Empty:
+      case QgsProfileExporterTask::ExportResult::DeviceError:
+      case QgsProfileExporterTask::ExportResult::DxfExportFailed:
+      case QgsProfileExporterTask::ExportResult::LayerExportFailed:
+      case QgsProfileExporterTask::ExportResult::Canceled:
+        QgisApp::instance()->messageBar()->pushCritical( tr( "Export Failed" ), tr( "The elevation profile could not be exported" ) );
+        break;
+    }
+  } );
+  QgsApplication::taskManager()->addTask( exportTask );
 }
 
 void QgsElevationProfileWidget::nudgeLeft()
