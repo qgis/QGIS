@@ -36,8 +36,14 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmeshlayer.h"
 #include "qgsunittypes.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QActionGroup>
+
+
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnappingPriorityPrioritizeFeature = new QgsSettingsEntryBool( QStringLiteral( "cad-snapping-prioritize-feature" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if snapping to features has piority over snapping to common angles." ) ) ;
+
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsDockWidget( parent )
@@ -145,18 +151,26 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   {
-    QAction *action = new QAction( tr( "Snapping to features has priority over common angles" ), mCommonAngleActionsMenu );
-    action->setCheckable( true );
-    mCommonAngleActionsMenu->addAction( action );
-    connect( action, &QAction::changed, this, [ = ]
+    QMenu *snappingPriorityMenu = new QMenu( tr( "Snapping Priority" ), mCommonAngleActionsMenu );
+    QActionGroup *snappingPriorityActionGroup = new QActionGroup( snappingPriorityMenu );
+    QAction *featuresAction = new QAction( tr( "Prioritize Snapping to Features" ), snappingPriorityActionGroup );
+    featuresAction->setCheckable( true );
+    QAction *anglesAction = new QAction( tr( "Prioritize Snapping to Angle" ), snappingPriorityActionGroup );
+    anglesAction->setCheckable( true );
+    snappingPriorityActionGroup->addAction( featuresAction );
+    snappingPriorityActionGroup->addAction( anglesAction );
+    snappingPriorityMenu->addAction( anglesAction );
+    snappingPriorityMenu->addAction( featuresAction );
+    connect( anglesAction, &QAction::changed, this, [ = ]
     {
-      mSnappingToFeaturesOverridesCommonAngle = action->isChecked();
-      QgsSettings().setValue( QStringLiteral( "/Cad/SnappingToFeaturesOverridesCommonAngle" ), action->isChecked() );
+      mSnappingPrioritizeFeatures = featuresAction->isChecked();
+      settingsCadSnappingPriorityPrioritizeFeature->setValue( featuresAction->isChecked() );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/SnappingToFeaturesOverridesCommonAngle" ), false ).toBool() );
+    featuresAction->setChecked( settingsCadSnappingPriorityPrioritizeFeature->value( ) );
+    anglesAction->setChecked( ! featuresAction->isChecked() );
+    mCommonAngleActionsMenu->addMenu( snappingPriorityMenu );
   }
 
-  mCommonAngleActionsMenu->addSeparator();
 
   for ( QList< QPair<double, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
   {
@@ -1195,7 +1209,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   context.mConstraint = _constraint( mMConstraint.get() );
   context.distanceConstraint = _constraint( mDistanceConstraint.get() );
   context.angleConstraint = _constraint( mAngleConstraint.get() );
-  context.snappingToFeaturesOverridesCommonAngle = mSnappingToFeaturesOverridesCommonAngle;
+  context.snappingToFeaturesOverridesCommonAngle = mSnappingPrioritizeFeatures;
 
   context.lineExtensionConstraint = _constraint( mLineExtensionConstraint.get() );
   context.xyVertexConstraint = _constraint( mXyVertexConstraint.get() );
