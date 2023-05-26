@@ -104,7 +104,7 @@ void TestQgsDwgImportDialog::importDxfDocument()
   layerNames = QStringList() << "hatches"
                << "lines"
                << "polylines";
-  const auto layerTreeLayersGruen = group0->findLayers();
+  const auto layerTreeLayersGruen = groupGruen->findLayers();
   for ( QgsLayerTreeLayer *layerTreeLayer : layerTreeLayersGruen )
     QVERIFY2( layerNames.removeOne( layerTreeLayer->name() ), QString( "Unexpected layer name: '%1'" ).arg( layerTreeLayer->name() ).toLatin1() );
 
