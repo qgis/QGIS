@@ -31,11 +31,12 @@ from qgis.core import (Qgis,
 from processing.core.ProcessingConfig import (ProcessingConfig, Setting)
 from grassprovider.Grass7Utils import Grass7Utils
 from grassprovider.Grass7Algorithm import Grass7Algorithm
-from processing.tools.system import isWindows, isMac
+from processing.tools.system import isWindows, isMac, mkdir
 
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
-    descriptionFolder = Grass7Utils.grassDescriptionPath()
+    descriptionFolders = Grass7Utils.grassDescriptionFolders()
+    mkdir(descriptionFolders[0])
 
     def __init__(self):
         super().__init__()
@@ -86,18 +87,19 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
 
     def createAlgsList(self):
         algs = []
-        folder = self.descriptionFolder
-        for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith('txt'):
-                try:
-                    alg = Grass7Algorithm(os.path.join(folder, descriptionFile))
-                    if alg.name().strip() != '':
-                        algs.append(alg)
-                    else:
-                        QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), Qgis.Critical)
-                except Exception as e:
-                    QgsMessageLog.logMessage(
-                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)), self.tr('Processing'), Qgis.Critical)
+        folders = self.descriptionFolders
+        for folder in folders:
+            for descriptionFile in os.listdir(folder):
+                if descriptionFile.endswith('txt'):
+                    try:
+                        alg = Grass7Algorithm(os.path.join(folder, descriptionFile))
+                        if alg.name().strip() != '':
+                            algs.append(alg)
+                        else:
+                            QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), Qgis.Critical)
+                    except Exception as e:
+                        QgsMessageLog.logMessage(
+                            self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)), self.tr('Processing'), Qgis.Critical)
         return algs
 
     def loadAlgorithms(self):

@@ -25,6 +25,7 @@ import re
 import uuid
 import math
 import importlib
+from pathlib import Path
 
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 
@@ -139,11 +140,16 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         # Use the ext mechanism
         name = self.name().replace('.', '_')
+        self.module = None
         try:
-            self.module = importlib.import_module(
-                'grassprovider.ext.{}'.format(name))
-        except ImportError:
-            self.module = None
+            extpath = Path(self.descriptionFile).parents[1].joinpath('ext', name + '.py')
+            # this check makes it a bit faster
+            if extpath.exists():
+                spec = importlib.util.spec_from_file_location('grassprovider.ext.' + name, extpath)
+                self.module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(self.module)
+        except:
+            pass
 
     def createInstance(self):
         return self.__class__(self.descriptionFile)
