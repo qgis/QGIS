@@ -182,6 +182,50 @@ Ownership of ``format`` is transferred to the plot.
 .. seealso:: :py:func:`numericFormat`
 %End
 
+    QString labelSuffix() const;
+%Docstring
+Returns the axis label suffix, or an empty string if no label suffix is to be used.
+
+.. seealso:: :py:func:`setLabelSuffix`
+
+.. seealso:: :py:func:`labelSuffixPlacement`
+
+.. versionadded:: 3.32
+%End
+
+    void setLabelSuffix( const QString &suffix );
+%Docstring
+Sets the axis label ``suffix``. Set to an empty string if no label suffix is to be used.
+
+.. seealso:: :py:func:`labelSuffix`
+
+.. seealso:: :py:func:`setLabelSuffixPlacement`
+
+.. versionadded:: 3.32
+%End
+
+    Qgis::PlotAxisSuffixPlacement labelSuffixPlacement() const;
+%Docstring
+Returns the placement for the axis label suffixes.
+
+.. seealso:: :py:func:`setLabelSuffixPlacement`
+
+.. seealso:: :py:func:`labelSuffix`
+
+.. versionadded:: 3.32
+%End
+
+    void setLabelSuffixPlacement( Qgis::PlotAxisSuffixPlacement placement );
+%Docstring
+Sets the ``placement`` for the axis label suffixes.
+
+.. seealso:: :py:func:`labelSuffixPlacement`
+
+.. seealso:: :py:func:`setLabelSuffix`
+
+.. versionadded:: 3.32
+%End
+
   private:
     QgsPlotAxis( const QgsPlotAxis &other );
 };

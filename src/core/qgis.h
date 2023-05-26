@@ -2227,6 +2227,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( GraduatedMethod )
 
     /**
+     * Placement options for suffixes in the labels for axis of plots.
+     *
+     * \since QGIS 3.32
+     */
+    enum class PlotAxisSuffixPlacement
+    {
+      EveryLabel, //!< Place suffix after every value label
+      FirstLabel, //!< Place suffix after the first label value only
+      LastLabel, //!< Place suffix after the last label value only
+      FirstAndLastLabels, //!< Place suffix after the first and last label values only
+    };
+    Q_ENUM( PlotAxisSuffixPlacement )
+
+    /**
      * DpiMode enum
      * \since QGIS 3.26
      */

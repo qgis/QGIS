@@ -1320,6 +1320,14 @@ The development version
       Size,
     };
 
+    enum class PlotAxisSuffixPlacement
+    {
+      EveryLabel,
+      FirstLabel,
+      LastLabel,
+      FirstAndLastLabels,
+    };
+
     enum class DpiMode
     {
       All,
