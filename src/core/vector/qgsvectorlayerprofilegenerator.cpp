@@ -814,9 +814,6 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
   // our feature request is using the optimised distance within check (allowing use of spatial index)
   // BUT this will also include points which are within the tolerance distance before/after the end of line.
   // So we also need to double check that they fall within the flat buffered curve too.
-  std::unique_ptr< QgsAbstractGeometry > bufferedCurve( mProfileCurveEngine->buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
-  QgsGeos bufferedCurveEngine( bufferedCurve.get() );
-  bufferedCurveEngine.prepareGeometry();
 
   QgsFeature feature;
   QgsFeatureIterator it = mSource->getFeatures( request );
@@ -827,7 +824,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
     const QgsGeometry g = feature.geometry();
     for ( auto it = g.const_parts_begin(); !mFeedback->isCanceled() && it != g.const_parts_end(); ++it )
     {
-      if ( bufferedCurveEngine.intersects( *it ) )
+      if ( mProfileBoxEngine->intersects( *it ) )
       {
         processIntersectionPoint( qgsgeometry_cast< const QgsPoint * >( *it ), feature );
       }
