@@ -478,7 +478,7 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
 void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible )
 {
   QgsLayerTreeGroup *layerGroup = group->addGroup( name );
-  QgsDebugMsgLevel( QStringLiteral( " %1" ).arg( name ) ) ;
+  QgsDebugMsgLevel( QStringLiteral( " %1" ).arg( name ), 2 ) ;
   Q_ASSERT( layerGroup );
 
   const QList<QgsVectorLayer *> layersList = createLayers( layers );

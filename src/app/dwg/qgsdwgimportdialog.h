@@ -20,12 +20,13 @@
 
 #include "ui_qgsdwgimportbase.h"
 #include "qgshelp.h"
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 class QgsLayerTreeGroup;
 class QgsMapToolPan;
 
-class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
+class APP_EXPORT QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
 {
     Q_OBJECT
   public:
@@ -61,6 +62,8 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
 
     QgsMapToolPan *mPanTool = nullptr;
     QList<QgsVectorLayer *> mPreviewLayers;
+
+    friend class TestQgsDwgImportDialog;
 };
 
 #endif // QGSDWGIMPORTDIALOG_H
