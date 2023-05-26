@@ -8,7 +8,7 @@
     "description": "a geometry"
   }],
   "examples": [{
-    "expression": "geom_to_wkb( $geometry )",
+    "expression": "geom_to_wkb( @geometry )",
     "returns": "binary blob containing a geometry object"
   }],
   "tags": ["wkb", "binary", "representation", "known", "conversion"]

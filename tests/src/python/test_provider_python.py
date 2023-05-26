@@ -84,6 +84,7 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsPythonProvider, cls).setUpClass()
         # Register the provider
         r = QgsProviderRegistry.instance()
         metadata = QgsProviderMetadata(PyProvider.providerKey(), PyProvider.description(), PyProvider.createProvider)
@@ -117,10 +118,6 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
         f4.setAttributes([4])
 
         cls.poly_provider.addFeatures([f1, f2, f3, f4])
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     def getEditableLayer(self):
         return self.createLayer()

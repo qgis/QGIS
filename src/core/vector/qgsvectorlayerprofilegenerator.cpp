@@ -644,6 +644,8 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
     mTerrainProvider->prepare(); // must be done on main thread
 
   mSymbology = qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
+  mElevationLimit = qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->elevationLimit();
+
   mLineSymbol.reset( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() );
   mFillSymbol.reset( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
@@ -672,7 +674,7 @@ bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming profile line to vector CRS" ) );
+    QgsDebugError( QStringLiteral( "Error transforming profile line to vector CRS" ) );
     return false;
   }
 

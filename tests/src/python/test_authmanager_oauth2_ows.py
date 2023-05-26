@@ -131,6 +131,7 @@ class TestAuthManager(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         """Run before all tests:
         Creates an auth configuration"""
         cls.port = QGIS_SERVER_ENDPOINT_PORT
@@ -179,6 +180,7 @@ class TestAuthManager(unittest.TestCase):
         cls.server.kill()
         rmtree(QGIS_AUTH_DB_DIR_PATH)
         del cls.server
+        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     RasterLayerCalculator.py
@@ -154,7 +152,7 @@ class RasterCalculator(QgisAlgorithm):
         entries = []
         for name, lyr in layersDict.items():
             for n in range(lyr.bandCount()):
-                ref = '{:s}@{:d}'.format(name, n + 1)
+                ref = f'{name:s}@{n + 1:d}'
 
                 if ref in expression:
                     entry = QgsRasterCalculatorEntry()
@@ -260,8 +258,8 @@ class RasterCalculator(QgisAlgorithm):
                 # !!!found!!! => substitute in expression
                 # and add in the list of layers that will be passed to raster calculator
                 nameToMap = varName
-                new = "{}@".format(nameToMap)
-                old = "{}@".format(varDescription)
+                new = f"{nameToMap}@"
+                old = f"{varDescription}@"
                 expression = expression.replace(old, new)
 
                 layersDict[nameToMap] = lyr

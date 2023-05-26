@@ -37,6 +37,21 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(tile.row(), 2)
         self.assertEqual(tile.zoomLevel(), 3)
 
+    def testQgsTileXYZRepr(self):
+        tile = QgsTileXYZ(1, 2, 3)
+        self.assertEqual(str(tile), '<QgsTileXYZ: 1, 2, 3>')
+
+    def testQgsTileXYZEquality(self):
+        tile = QgsTileXYZ(1, 2, 3)
+        tile2 = QgsTileXYZ(1, 2, 3)
+        self.assertEqual(tile, tile2)
+        tile2 = QgsTileXYZ(1, 2, 4)
+        self.assertNotEqual(tile, tile2)
+        tile2 = QgsTileXYZ(1, 4, 3)
+        self.assertNotEqual(tile, tile2)
+        tile2 = QgsTileXYZ(4, 2, 3)
+        self.assertNotEqual(tile, tile2)
+
     def testQgsTileRange(self):
         range = QgsTileRange(1, 2, 3, 4)
         self.assertEqual(range.startColumn(), 1)
@@ -79,6 +94,14 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(matrix_set.maximumZoom(), 1)
         self.assertEqual(matrix_set.crs().authid(), 'EPSG:4326')
 
+        range = QgsTileRange(1, 3, 4, 7)
+        tiles = matrix_set.tilesInRange(range, 1)
+        self.assertEqual(len(tiles), 12)
+        self.assertEqual(min(t.column() for t in tiles), 1)
+        self.assertEqual(max(t.column() for t in tiles), 3)
+        self.assertEqual(min(t.row() for t in tiles), 4)
+        self.assertEqual(max(t.row() for t in tiles), 7)
+
         # should not apply any special logic here, and return scales unchanged
         self.assertEqual(matrix_set.calculateTileScaleForMap(1000, QgsCoordinateReferenceSystem('EPSG:4326'),
                                                              QgsRectangle(0, 2, 20, 12), QSize(20, 10), 96), 1000)
@@ -107,6 +130,23 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(matrix_set.tileMatrix(1).zoomLevel(), 1)
         self.assertEqual(matrix_set.tileMatrix(2).zoomLevel(), 2)
         self.assertEqual(matrix_set.tileMatrix(99).zoomLevel(), -1)
+
+        tiles = matrix_set.tilesInRange(QgsTileRange(1, 3, 4, 7), 1)
+        self.assertEqual(len(tiles), 12)
+        self.assertEqual(min(t.column() for t in tiles), 1)
+        self.assertEqual(max(t.column() for t in tiles), 3)
+        self.assertEqual(min(t.row() for t in tiles), 4)
+        self.assertEqual(max(t.row() for t in tiles), 7)
+        self.assertEqual(min(t.zoomLevel() for t in tiles), 1)
+        self.assertEqual(max(t.zoomLevel() for t in tiles), 1)
+        tiles = matrix_set.tilesInRange(QgsTileRange(2, 4, 1, 3), 2)
+        self.assertEqual(len(tiles), 9)
+        self.assertEqual(min(t.column() for t in tiles), 2)
+        self.assertEqual(max(t.column() for t in tiles), 4)
+        self.assertEqual(min(t.row() for t in tiles), 1)
+        self.assertEqual(max(t.row() for t in tiles), 3)
+        self.assertEqual(min(t.zoomLevel() for t in tiles), 2)
+        self.assertEqual(max(t.zoomLevel() for t in tiles), 2)
 
         self.assertAlmostEqual(matrix_set.scaleToZoom(776503144), 1, 5)
         self.assertEqual(matrix_set.scaleToZoom(1776503144), 1)
@@ -422,6 +462,432 @@ class TestQgsTiles(unittest.TestCase):
         self.assertAlmostEqual(vector_tile_set.tileMatrix(0).scale(), 511647836.791828, 5)
         self.assertAlmostEqual(vector_tile_set.tileMatrix(1).scale(), 255823918.395914, 5)
         self.assertAlmostEqual(vector_tile_set.tileMatrix(2).scale(), 127911959.197957, 5)
+
+    def test_esri_with_tilemap(self):
+        """
+        Test handling a tile matrix set with an ESRI tilemap indicating missing/replaced tiles
+        """
+        esri_metadata = {
+            "currentVersion": 11.0,
+            "name": "Map",
+            "copyrightText": "usa",
+            "capabilities": "TilesOnly",
+            "type": "indexedVector",
+            "tileMap": "tilemap",
+            "defaultStyles": "resources/styles",
+            "tiles": [
+                "tile/{z}/{y}/{x}.pbf"
+            ],
+            "exportTilesAllowed": False,
+            "initialExtent": {
+                "xmin": 4.5783729072156216,
+                "ymin": 46.874323689779565,
+                "xmax": 16.331358957713661,
+                "ymax": 55.452061808267452,
+                "spatialReference": {
+                    "wkid": 4326,
+                    "latestWkid": 4326
+                }
+            },
+            "fullExtent": {
+                "xmin": 4.5783729072156216,
+                "ymin": 46.874323689779565,
+                "xmax": 16.331358957713661,
+                "ymax": 55.452061808267452,
+                "spatialReference": {
+                    "wkid": 4326,
+                    "latestWkid": 4326
+                }
+            },
+            "minScale": 295828763.79585469,
+            "maxScale": 564.24858817263544,
+            "tileInfo": {
+                "rows": 512,
+                "cols": 512,
+                "dpi": 96,
+                "format": "pbf",
+                "origin": {
+                    "x": -180,
+                    "y": 90
+                },
+                "spatialReference": {
+                    "wkid": 4326,
+                    "latestWkid": 4326
+                },
+                "lods": [
+                    {
+                        "level": 0,
+                        "resolution": 0.703125,
+                        "scale": 295828763.79585469
+                    },
+                    {
+                        "level": 1,
+                        "resolution": 0.3515625,
+                        "scale": 147914381.89792734
+                    },
+                    {
+                        "level": 2,
+                        "resolution": 0.17578125,
+                        "scale": 73957190.948963672
+                    },
+                    {
+                        "level": 3,
+                        "resolution": 0.087890625,
+                        "scale": 36978595.474481836
+                    },
+                    {
+                        "level": 4,
+                        "resolution": 0.0439453125,
+                        "scale": 18489297.737240918
+                    },
+                    {
+                        "level": 5,
+                        "resolution": 0.02197265625,
+                        "scale": 9244648.868620459
+                    },
+                    {
+                        "level": 6,
+                        "resolution": 0.010986328125,
+                        "scale": 4622324.4343102295
+                    },
+                    {
+                        "level": 7,
+                        "resolution": 0.0054931640625,
+                        "scale": 2311162.2171551147
+                    },
+                    {
+                        "level": 8,
+                        "resolution": 0.00274658203125,
+                        "scale": 1155581.1085775574
+                    },
+                    {
+                        "level": 9,
+                        "resolution": 0.001373291015625,
+                        "scale": 577790.55428877869
+                    },
+                    {
+                        "level": 10,
+                        "resolution": 0.0006866455078125,
+                        "scale": 288895.27714438934
+                    },
+                    {
+                        "level": 11,
+                        "resolution": 0.00034332275390625,
+                        "scale": 144447.63857219467
+                    },
+                    {
+                        "level": 12,
+                        "resolution": 0.000171661376953125,
+                        "scale": 72223.819286097336
+                    },
+                    {
+                        "level": 13,
+                        "resolution": 8.58306884765625e-05,
+                        "scale": 36111.909643048668
+                    },
+                    {
+                        "level": 14,
+                        "resolution": 4.291534423828125e-05,
+                        "scale": 18055.954821524334
+                    },
+                    {
+                        "level": 15,
+                        "resolution": 2.1457672119140625e-05,
+                        "scale": 9027.977410762167
+                    },
+                    {
+                        "level": 16,
+                        "resolution": 1.0728836059570312e-05,
+                        "scale": 4513.9887053810835
+                    },
+                    {
+                        "level": 17,
+                        "resolution": 5.3644180297851562e-06,
+                        "scale": 2256.9943526905417
+                    },
+                    {
+                        "level": 18,
+                        "resolution": 2.6822090148925781e-06,
+                        "scale": 1128.4971763452709
+                    },
+                    {
+                        "level": 19,
+                        "resolution": 1.3411045074462891e-06,
+                        "scale": 564.24858817263544
+                    }
+                ]
+            },
+            "maxzoom": 19,
+            "minLOD": 0,
+            "maxLOD": 14,
+            "resourceInfo": {
+                "styleVersion": 8,
+                "tileCompression": "gzip",
+                "cacheInfo": {
+                    "storageInfo": {
+                        "packetSize": 128,
+                        "storageFormat": "compactV2"
+                    }
+                }
+            }
+        }
+
+        tilemap = {"index": [0, [[[0, 0, [0, 0, 0, [[0, 0, [0, [1, 1, [
+            [0, 1, 0, [1, 1, 1, 1]],
+            [[1, 1, 1, 1], [1, 1, 1, [1, 1, 1, 1]], [1, 1, 1, 1],
+             [[1, 1, 1, 1], [1, [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]],
+              1, [1, 1, 1, 1]]], 1, 1], [[[1, 1, 1, 1], [1, 1, 1, 1], [
+                  [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]],
+                  [1, 1, 1, 1], [1, 1, 1, 1], 1], [[1, 1, 1, 1], 1, 1, 1]],
+            [1, 1, [1, 1, 1, 1], 1],
+            [[1, [1, 1, 1, 1], 0, 1], 1, 0,
+                  0], 1]], 0, 0], 0], 0, 0, 0]],
+            0], 0, 0, 0], 0, 0, 0], 0, 0]
+        }
+
+        vector_tile_set_orig = QgsVectorTileMatrixSet()
+        self.assertTrue(vector_tile_set_orig.fromEsriJson(esri_metadata, tilemap))
+
+        self.assertEqual(vector_tile_set_orig.minimumZoom(), 0)
+        self.assertEqual(vector_tile_set_orig.maximumZoom(), 19)
+
+        # use a copy, to also test that tilemap copying works correctly
+        vector_tile_set = QgsVectorTileMatrixSet(vector_tile_set_orig)
+
+        # check tile availability
+        # zoom level not available
+        self.assertEqual(
+            vector_tile_set.tileAvailability(QgsTileXYZ(0, 0, 101)),
+            Qgis.TileAvailability.NotAvailable)
+
+        # zoom level 0
+        self.assertEqual(vector_tile_set.tileMatrix(0).matrixWidth(), 1)
+        self.assertEqual(vector_tile_set.tileMatrix(0).matrixHeight(), 1)
+        self.assertEqual(vector_tile_set.tileAvailability(QgsTileXYZ(0, 0, 0)),
+                         Qgis.TileAvailability.Available)
+        # tile outside matrix
+        self.assertEqual(vector_tile_set.tileAvailability(QgsTileXYZ(1, 0, 0)),
+                         Qgis.TileAvailability.NotAvailable)
+        self.assertEqual(vector_tile_set.tileAvailability(QgsTileXYZ(0, 1, 0)),
+                         Qgis.TileAvailability.NotAvailable)
+
+        tiles = vector_tile_set.tilesInRange(QgsTileRange(0, 0, 0, 0), 0)
+        self.assertEqual(tiles, [QgsTileXYZ(0, 0, 0)])
+
+        # zoom level 1
+        self.assertEqual(vector_tile_set.tileMatrix(1).matrixWidth(), 2)
+        self.assertEqual(vector_tile_set.tileMatrix(1).matrixHeight(), 2)
+        self.assertEqual(vector_tile_set.tileAvailability(QgsTileXYZ(0, 0, 1)),
+                         Qgis.TileAvailability.NotAvailable)
+        self.assertEqual(vector_tile_set.tileAvailability(QgsTileXYZ(1, 0, 1)),
+                         Qgis.TileAvailability.Available)
+        self.assertEqual(vector_tile_set.tileAvailability(QgsTileXYZ(0, 1, 1)),
+                         Qgis.TileAvailability.NotAvailable)
+        self.assertEqual(vector_tile_set.tileAvailability(QgsTileXYZ(1, 1, 1)),
+                         Qgis.TileAvailability.NotAvailable)
+
+        tiles = vector_tile_set.tilesInRange(QgsTileRange(0, 1, 0, 1), 1)
+        self.assertEqual(tiles, [QgsTileXYZ(1, 0, 1)])
+
+        # zoom level 2
+        self.assertEqual(vector_tile_set.tileMatrix(2).matrixWidth(), 4)
+        self.assertEqual(vector_tile_set.tileMatrix(2).matrixHeight(), 4)
+
+        for col in range(4):
+            for row in range(4):
+                if col == 2 and row == 0:
+                    expected = Qgis.TileAvailability.Available
+                else:
+                    expected = Qgis.TileAvailability.NotAvailable
+
+                self.assertEqual(
+                    vector_tile_set.tileAvailability(QgsTileXYZ(col, row, 2)),
+                    expected)
+
+        tiles = vector_tile_set.tilesInRange(QgsTileRange(0, 2, 0, 2), 2)
+        self.assertEqual(tiles, [QgsTileXYZ(2, 0, 2)])
+
+        # zoom level 3
+        self.assertEqual(vector_tile_set.tileMatrix(3).matrixWidth(), 8)
+        self.assertEqual(vector_tile_set.tileMatrix(3).matrixHeight(), 8)
+        for col in range(8):
+            for row in range(8):
+                if col == 4 and row == 0:
+                    expected = Qgis.TileAvailability.Available
+                else:
+                    expected = Qgis.TileAvailability.NotAvailable
+
+                self.assertEqual(
+                    vector_tile_set.tileAvailability(QgsTileXYZ(col, row, 3)),
+                    expected)
+
+        tiles = vector_tile_set.tilesInRange(QgsTileRange(0, 7, 0, 7), 3)
+        self.assertEqual(tiles, [QgsTileXYZ(4, 0, 3)])
+
+        # zoom level 4
+        self.assertEqual(vector_tile_set.tileMatrix(4).matrixWidth(), 16)
+        self.assertEqual(vector_tile_set.tileMatrix(4).matrixHeight(), 16)
+        for col in range(16):
+            for row in range(16):
+                if col == 8 and row == 1:
+                    expected = Qgis.TileAvailability.Available
+                else:
+                    expected = Qgis.TileAvailability.NotAvailable
+
+                tile = QgsTileXYZ(col, row, 4)
+                self.assertEqual(vector_tile_set.tileAvailability(tile),
+                                 expected, msg=f'Failed for {tile}')
+
+        tiles = vector_tile_set.tilesInRange(QgsTileRange(0, 15, 0, 15), 4)
+        self.assertEqual(tiles, [QgsTileXYZ(8, 1, 4)])
+
+        # zoom level 5
+        self.assertEqual(vector_tile_set.tileMatrix(5).matrixWidth(), 32)
+        self.assertEqual(vector_tile_set.tileMatrix(5).matrixHeight(), 32)
+        for col in range(32):
+            for row in range(32):
+                if col == 17 and row == 3:
+                    expected = Qgis.TileAvailability.Available
+                else:
+                    expected = Qgis.TileAvailability.NotAvailable
+
+                tile = QgsTileXYZ(col, row, 5)
+                self.assertEqual(vector_tile_set.tileAvailability(tile),
+                                 expected, msg=f'Failed for {tile}')
+
+        tiles = vector_tile_set.tilesInRange(QgsTileRange(0, 31, 0, 31), 5)
+        self.assertEqual(tiles, [QgsTileXYZ(17, 3, 5)])
+
+        # zoom level 6
+        self.assertEqual(vector_tile_set.tileMatrix(6).matrixWidth(), 64)
+        self.assertEqual(vector_tile_set.tileMatrix(6).matrixHeight(), 64)
+        for col in range(64):
+            for row in range(64):
+                if col == 34 and row == 6:
+                    expected = Qgis.TileAvailability.Available
+                else:
+                    expected = Qgis.TileAvailability.NotAvailable
+
+                tile = QgsTileXYZ(col, row, 6)
+                self.assertEqual(vector_tile_set.tileAvailability(tile),
+                                 expected, msg=f'Failed for {tile}')
+
+        tiles = vector_tile_set.tilesInRange(QgsTileRange(0, 63, 0, 63), 6)
+        self.assertEqual(tiles, [QgsTileXYZ(34, 6, 6)])
+
+        # zoom level 7
+        self.assertEqual(vector_tile_set.tileMatrix(7).matrixWidth(), 128)
+        self.assertEqual(vector_tile_set.tileMatrix(7).matrixHeight(), 128)
+        for col in range(128):
+            for row in range(128):
+                if col == 68 and row == 13:
+                    expected = Qgis.TileAvailability.Available
+                else:
+                    expected = Qgis.TileAvailability.NotAvailable
+
+                tile = QgsTileXYZ(col, row, 7)
+                self.assertEqual(vector_tile_set.tileAvailability(tile),
+                                 expected, msg=f'Failed for {tile}')
+
+        tiles = vector_tile_set.tilesInRange(QgsTileRange(0, 127, 0, 127), 7)
+        self.assertEqual(tiles, [QgsTileXYZ(68, 13, 7)])
+
+        # zoom level 8
+        self.assertEqual(vector_tile_set.tileMatrix(8).matrixWidth(), 256)
+        self.assertEqual(vector_tile_set.tileMatrix(8).matrixHeight(), 256)
+        for col in range(256):
+            for row in range(256):
+                if col == 137 and row == 26:
+                    expected = Qgis.TileAvailability.Available
+                else:
+                    expected = Qgis.TileAvailability.NotAvailable
+
+                tile = QgsTileXYZ(col, row, 8)
+                self.assertEqual(vector_tile_set.tileAvailability(tile),
+                                 expected, msg=f'Failed for {tile}')
+
+        tiles = vector_tile_set.tilesInRange(QgsTileRange(0, 255, 0, 255), 8)
+        self.assertEqual(tiles, [QgsTileXYZ(137, 26, 8)])
+
+        # zoom level 9
+        self.assertEqual(vector_tile_set.tileMatrix(9).matrixWidth(), 512)
+        self.assertEqual(vector_tile_set.tileMatrix(9).matrixHeight(), 512)
+        for col in range(512):
+            for row in range(512):
+                if col in (274, 275) and row == 52:
+                    expected = Qgis.TileAvailability.AvailableNoChildren
+                elif col in (274, 275) and row == 53:
+                    expected = Qgis.TileAvailability.Available
+                else:
+                    expected = Qgis.TileAvailability.NotAvailable
+
+                tile = QgsTileXYZ(col, row, 9)
+                self.assertEqual(vector_tile_set.tileAvailability(tile),
+                                 expected, msg=f'Failed for {tile}')
+
+        tiles = vector_tile_set.tilesInRange(QgsTileRange(0, 511, 0, 511), 9)
+        self.assertCountEqual(tiles, [QgsTileXYZ(274, 52, 9),
+                                      QgsTileXYZ(275, 52, 9),
+                                      QgsTileXYZ(274, 53, 9),
+                                      QgsTileXYZ(275, 53, 9)])
+
+        # zoom level 10
+        self.assertEqual(vector_tile_set.tileMatrix(10).matrixWidth(), 1024)
+        self.assertEqual(vector_tile_set.tileMatrix(10).matrixHeight(), 1024)
+        for col in range(1024):
+            for row in range(1024):
+                if col in (548, 549, 550, 551) and row in (104, 105):
+                    expected = Qgis.TileAvailability.UseLowerZoomLevelTile
+                elif (col in (548, 549, 550, 551) and row == 106) \
+                        or (col == 550 and row == 107):
+                    expected = Qgis.TileAvailability.Available
+                elif col in (548, 549, 551) and row == 107:
+                    expected = Qgis.TileAvailability.AvailableNoChildren
+                else:
+                    expected = Qgis.TileAvailability.NotAvailable
+
+                tile = QgsTileXYZ(col, row, 10)
+                self.assertEqual(vector_tile_set.tileAvailability(tile),
+                                 expected, msg=f'Failed for {tile}')
+
+        tiles = vector_tile_set.tilesInRange(QgsTileRange(0, 1023, 0, 1023), 10)
+        # we want to see the zoom level 9 tiles here, as the tilemap indicates
+        # that they should be used instead of zoom level 10 tiles for their
+        # extents
+        self.assertCountEqual(tiles, [QgsTileXYZ(274, 52, 9),
+                                      QgsTileXYZ(275, 52, 9),
+                                      QgsTileXYZ(548, 106, 10),
+                                      QgsTileXYZ(549, 106, 10),
+                                      QgsTileXYZ(550, 106, 10),
+                                      QgsTileXYZ(551, 106, 10),
+                                      QgsTileXYZ(548, 107, 10),
+                                      QgsTileXYZ(549, 107, 10),
+                                      QgsTileXYZ(550, 107, 10),
+                                      QgsTileXYZ(551, 107, 10)])
+
+        # zoom level 11
+        self.assertEqual(vector_tile_set.tileMatrix(11).matrixWidth(), 2048)
+        self.assertEqual(vector_tile_set.tileMatrix(11).matrixHeight(), 2048)
+        for col in range(2048):
+            for row in range(2048):
+                if (col in (1096, 1097, 1098, 1099, 1100, 1101, 1102, 1103)
+                        and row in (208, 209, 210, 211)) \
+                        or (col in (1096, 1097, 1098, 1099, 1102, 1103) and row in (214, 215)):
+                    expected = Qgis.TileAvailability.UseLowerZoomLevelTile
+                elif (col in (1098, 1099, 1100, 1101) and row == 212) \
+                        or (col == 1100 and row == 214) \
+                        or (col in (1097, 1098, 1099, 1100, 1101, 1102) and row == 213):
+                    expected = Qgis.TileAvailability.Available
+                elif (col in (1096, 1097, 1098, 1099, 1100, 1101) and row == 214) \
+                        or (col in (1097, 1102, 1103) and row == 212)\
+                        or (col == 1103 and row == 213):
+                    expected = Qgis.TileAvailability.AvailableNoChildren
+                else:
+                    expected = Qgis.TileAvailability.NotAvailable
+
+                tile = QgsTileXYZ(col, row, 11)
+                self.assertEqual(vector_tile_set.tileAvailability(tile),
+                                 expected, msg=f'Failed for {tile}')
 
 
 if __name__ == '__main__':

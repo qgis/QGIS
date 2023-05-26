@@ -31,6 +31,7 @@ class TestQgsZip(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.zipDir = os.path.join(unitTestDataPath(), "zip")
 
     def test_zip_ok(self):

@@ -30,6 +30,7 @@
 #include "qgswmsgetlegendgraphics.h"
 #include "qgswmsrenderer.h"
 #include "qgsserverprojectutils.h"
+#include "qgsmapsettings.h"
 
 #include <QImage>
 #include <QJsonObject>

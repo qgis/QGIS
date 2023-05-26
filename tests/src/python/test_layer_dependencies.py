@@ -39,16 +39,6 @@ start_app()
 
 class TestLayerDependencies(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        """Run before all tests"""
-        pass
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        pass
-
     def setUp(self):
         """Run before each test."""
         # create a temp SpatiaLite db with a trigger

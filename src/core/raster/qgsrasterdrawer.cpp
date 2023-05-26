@@ -69,7 +69,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
 
   // last pipe filter has only 1 band
   const int bandNumber = 1;
-  mIterator->startRasterRead( bandNumber, viewPort->mWidth, viewPort->mHeight, viewPort->mDrawnExtent, feedback );
+  mIterator->startRasterRead( bandNumber, viewPort->mWidth * p->device()->devicePixelRatio(), viewPort->mHeight * p->device()->devicePixelRatio(), viewPort->mDrawnExtent, feedback );
 
   //number of cols/rows in output pixels
   int nCols = 0;
@@ -88,7 +88,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
   {
     if ( !block )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot get block" ) );
+      QgsDebugError( QStringLiteral( "Cannot get block" ) );
       continue;
     }
 
@@ -148,9 +148,11 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     return;
   }
 
-  //top left position in device coords
-  const QPoint tlPoint = QPoint( std::floor( viewPort->mTopLeftPoint.x() + topLeftCol / mDpiScaleFactor ), std::floor( viewPort->mTopLeftPoint.y() + topLeftRow / mDpiScaleFactor ) );
+  const double devicePixelRatio = p->device()->devicePixelRatio();
 
+  //top left position in device coords
+  const QPoint tlPoint = QPoint( std::floor( viewPort->mTopLeftPoint.x() + topLeftCol / mDpiScaleFactor / devicePixelRatio ),
+                                 std::floor( viewPort->mTopLeftPoint.y() + topLeftRow / mDpiScaleFactor / devicePixelRatio ) );
   const QgsScopedQPainterState painterState( p );
   p->setRenderHint( QPainter::Antialiasing, false );
 
@@ -174,11 +176,14 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     }
   }
 
-  p->drawImage( tlPoint, mDpiScaleFactor != 1.0 ? img.scaledToHeight( std::ceil( img.height() / mDpiScaleFactor ) ) : img );
+  p->drawImage( QRect( tlPoint.x(), tlPoint.y(),
+                       std::ceil( img.width() / mDpiScaleFactor / devicePixelRatio ),
+                       std::ceil( img.height() / mDpiScaleFactor / devicePixelRatio ) ),
+                img );
 
 #if 0
   // For debugging:
-  QRectF br = QRectF( tlPoint, img.size() );
+  QRectF br = QRectF( tlPoint, img.size() / mDpiScaleFactor / devicePixelRatio );
   QPointF c = br.center();
   double rad = std::max( br.width(), br.height() ) / 10;
   p->drawRoundedRect( br, rad, rad );

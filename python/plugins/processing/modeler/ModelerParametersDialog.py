@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ModelerParametersDialog.py
@@ -161,7 +159,7 @@ class ModelerParametersDialog(QDialog):
         if not algHelp:
             algHelp = QgsHelp.helpUrl("processing_algs/{}/{}.html#{}".format(
                 self.widget.algorithm().provider().helpId(), self.algorithm().groupId(),
-                "{}{}".format(self.algorithm().provider().helpId(), self.algorithm().name()))).toString()
+                f"{self.algorithm().provider().helpId()}{self.algorithm().name()}")).toString()
 
         if algHelp not in [None, ""]:
             webbrowser.open(algHelp)

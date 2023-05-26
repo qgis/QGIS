@@ -444,6 +444,18 @@ class TemplateInheritance5 : SomethingElse
 %End
 }
 
+typedef YourSuperTemplate<Abc,Def,Ghi> YourSuperTemplateAbcDefGhiBase;
+
+class TemplateInheritance6 : SomethingElse, YourSuperTemplateAbcDefGhiBase
+{
+
+%TypeHeaderCode
+#include "sipifyheader.h"
+#include "yoursupertemplate.h"
+typedef YourSuperTemplate<Abc,Def,Ghi> YourSuperTemplateAbcDefGhiBase;
+%End
+}
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

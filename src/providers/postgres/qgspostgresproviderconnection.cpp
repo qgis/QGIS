@@ -133,6 +133,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
   };
 
+  mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::SetFieldComment;
+
   // see https://www.postgresql.org/docs/current/ddl-system-columns.html
   mIllegalFieldNames =
   {
@@ -586,6 +588,16 @@ void QgsPostgresProviderConnection::deleteSpatialIndex( const QString &schema, c
                      QgsPostgresConn::quotedIdentifier( indexName ) ), false );
 }
 
+void QgsPostgresProviderConnection::setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const
+{
+  executeSqlPrivate( QStringLiteral( "COMMENT ON COLUMN %1.%2.%3 IS %4;" )
+                     .arg( QgsPostgresConn::quotedIdentifier( schema ),
+                           QgsPostgresConn::quotedIdentifier( tableName ),
+                           QgsPostgresConn::quotedIdentifier( fieldName ),
+                           QgsPostgresConn::quotedValue( comment )
+                         ) );
+}
+
 QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
   checkCapability( Capability::Tables );
@@ -695,7 +707,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
             }
             catch ( const QgsProviderConnectionException &ex )
             {
-              QgsDebugMsg( QStringLiteral( "Error retrieving primary keys: %1" ).arg( ex.what() ) );
+              QgsDebugError( QStringLiteral( "Error retrieving primary keys: %1" ).arg( ex.what() ) );
             }
           }
 

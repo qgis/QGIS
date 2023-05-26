@@ -58,6 +58,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   // BROWSER Add the browser widget to the first stacked widget page
   mBrowserWidget = new QgsBrowserDockWidget( QStringLiteral( "Browser" ), mBrowserModel, this );
   mBrowserWidget->setFeatures( QDockWidget::NoDockWidgetFeatures );
+  mBrowserWidget->setTitleBarWidget( new QWidget( mBrowserWidget ) );
   ui->mOptionsStackedWidget->addWidget( mBrowserWidget );
   mPageProviderKeys.append( QStringLiteral( "browser" ) );
   mPageProviderNames.append( QStringLiteral( "browser" ) );

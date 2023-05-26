@@ -987,6 +987,8 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
       layerTypeHint = QgsProcessingUtils::LayerHint::Raster;
     else if ( definition && definition->type() == QgsProcessingParameterPointCloudDestination::typeName() )
       layerTypeHint = QgsProcessingUtils::LayerHint::PointCloud;
+    else if ( definition && definition->type() == QgsProcessingParameterVectorTileDestination::typeName() )
+      layerTypeHint = QgsProcessingUtils::LayerHint::VectorTile;
 
     context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName, layerTypeHint ) );
   }
@@ -2275,6 +2277,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterAnnotationLayer( name ) );
   else if ( type == QgsProcessingParameterPointCloudAttribute::typeName() )
     def.reset( new QgsProcessingParameterPointCloudAttribute( name ) );
+  else if ( type == QgsProcessingParameterVectorTileDestination::typeName() )
+    def.reset( new QgsProcessingParameterVectorTileDestination( name ) );
   else
   {
     QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( type );
@@ -2393,6 +2397,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterAnnotationLayer::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "attribute" ) )
     return QgsProcessingParameterPointCloudAttribute::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QLatin1String( "vectortiledestination" ) )
+    return QgsProcessingParameterVectorTileDestination::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -2850,7 +2856,7 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
     return value.toString();
 
   // unhandled type
-  QgsDebugMsg( QStringLiteral( "unsupported variant type %1" ).arg( QMetaType::typeName( value.userType() ) ) );
+  QgsDebugError( QStringLiteral( "unsupported variant type %1" ).arg( QMetaType::typeName( value.userType() ) ) );
   ok = false;
   return value.toString();
 }
@@ -4375,6 +4381,7 @@ QString QgsProcessingParameterMultipleLayers::createFileFilter() const
     case QgsProcessing::TypeMapLayer:
     case QgsProcessing::TypePlugin:
     case QgsProcessing::TypeAnnotation:
+    case QgsProcessing::TypeVectorTile:
       return createAllMapLayerFileFilter();
   }
   return QString();
@@ -4933,7 +4940,7 @@ QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, 
 
   if ( mUsesStaticStrings )
   {
-    if ( value.type() == QVariant::StringList )
+    if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
     {
       QStringList parts;
       const QStringList constList = value.toStringList();
@@ -5318,9 +5325,10 @@ QgsProcessingParameterAuthConfig *QgsProcessingParameterAuthConfig::fromScriptCo
 // QgsProcessingParameterExpression
 //
 
-QgsProcessingParameterExpression::QgsProcessingParameterExpression( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional )
+QgsProcessingParameterExpression::QgsProcessingParameterExpression( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional, Qgis::ExpressionType type )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mParentLayerParameterName( parentLayerParameterName )
+  , mExpressionType( type )
 {
 
 }
@@ -5364,7 +5372,16 @@ QString QgsProcessingParameterExpression::asPythonString( const QgsProcessing::P
       code += QStringLiteral( ", parentLayerParameterName='%1'" ).arg( mParentLayerParameterName );
 
       QgsProcessingContext c;
-      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      code += QStringLiteral( ", defaultValue=%1" ).arg( valueAsPythonString( mDefault, c ) );
+
+      if ( mExpressionType == Qgis::ExpressionType::PointCloud )
+      {
+        code += QStringLiteral( ", type=Qgis.ExpressionType.PointCloud)" );
+      }
+      else
+      {
+        code += QStringLiteral( ")" );
+      }
       return code;
     }
   }
@@ -5381,10 +5398,21 @@ void QgsProcessingParameterExpression::setParentLayerParameterName( const QStrin
   mParentLayerParameterName = parentLayerParameterName;
 }
 
+Qgis::ExpressionType QgsProcessingParameterExpression::expressionType() const
+{
+  return mExpressionType;
+}
+
+void QgsProcessingParameterExpression::setExpressionType( Qgis::ExpressionType expressionType )
+{
+  mExpressionType = expressionType;
+}
+
 QVariantMap QgsProcessingParameterExpression::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameterName );
+  map.insert( QStringLiteral( "expression_type" ), static_cast< int >( mExpressionType ) );
   return map;
 }
 
@@ -5392,13 +5420,15 @@ bool QgsProcessingParameterExpression::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mParentLayerParameterName = map.value( QStringLiteral( "parent_layer" ) ).toString();
+  mExpressionType = static_cast< Qgis::ExpressionType >( map.value( QStringLiteral( "expression_type" ) ).toInt() );
   return true;
 }
 
 QgsProcessingParameterExpression *QgsProcessingParameterExpression::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterExpression( name, description, definition, QString(), isOptional );
+  return new QgsProcessingParameterExpression( name, description, definition, QString(), isOptional, Qgis::ExpressionType::Qgis );
 }
+
 
 QgsProcessingParameterVectorLayer::QgsProcessingParameterVectorLayer( const QString &name, const QString &description, const QList<int> &types, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
@@ -6410,6 +6440,7 @@ bool QgsProcessingParameterFeatureSink::hasGeometry() const
     case QgsProcessing::TypeVectorPoint:
     case QgsProcessing::TypeVectorLine:
     case QgsProcessing::TypeVectorPolygon:
+    case QgsProcessing::TypeVectorTile:
       return true;
 
     case QgsProcessing::TypeRaster:
@@ -7111,6 +7142,7 @@ bool QgsProcessingParameterVectorDestination::hasGeometry() const
     case QgsProcessing::TypeVectorPoint:
     case QgsProcessing::TypeVectorLine:
     case QgsProcessing::TypeVectorPolygon:
+    case QgsProcessing::TypeVectorTile:
       return true;
 
     case QgsProcessing::TypeRaster:
@@ -9026,7 +9058,7 @@ QStringList QgsProcessingParameterPointCloudDestination::supportedOutputPointClo
   else
   {
     QString ext = QgsProcessingUtils::defaultPointCloudExtension();
-    return QStringList() << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+    return QStringList() << ext;
   }
 }
 
@@ -9254,4 +9286,108 @@ QgsProcessingParameterPointCloudAttribute *QgsProcessingParameterPointCloudAttri
   }
 
   return new QgsProcessingParameterPointCloudAttribute( name, description, def.isEmpty() ? QVariant() : def, parent, allowMultiple, isOptional, defaultToAllAttributes );
+}
+
+//
+// QgsProcessingParameterVectorTileDestination
+//
+
+QgsProcessingParameterVectorTileDestination::QgsProcessingParameterVectorTileDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
+{
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterVectorTileDestination::clone() const
+{
+  return new QgsProcessingParameterVectorTileDestination( *this );
+}
+
+bool QgsProcessingParameterVectorTileDestination::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  QVariant var = input;
+  if ( !var.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
+  {
+    const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+    var = fromVar.sink;
+  }
+
+  if ( var.userType() == QMetaType::type( "QgsProperty" ) )
+  {
+    const QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  if ( var.type() != QVariant::String )
+    return false;
+
+  if ( var.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QString QgsProcessingParameterVectorTileDestination::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.userType() == QMetaType::type( "QgsProperty" ) )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
+  {
+    const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    {
+      return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
+    }
+    else
+    {
+      return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( fromVar.sink.asExpression() );
+    }
+  }
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QgsProcessingOutputDefinition *QgsProcessingParameterVectorTileDestination::toOutputDefinition() const
+{
+  return new QgsProcessingOutputVectorTileLayer( name(), description() );
+}
+
+QString QgsProcessingParameterVectorTileDestination::defaultFileExtension() const
+{
+  return QgsProcessingUtils::defaultVectorTileExtension();
+}
+
+QString QgsProcessingParameterVectorTileDestination::createFileFilter() const
+{
+  const QStringList exts = supportedOutputVectorTileLayerExtensions();
+  QStringList filters;
+  for ( const QString &ext : exts )
+  {
+    filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+  return filters.join( QLatin1String( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+}
+
+QStringList QgsProcessingParameterVectorTileDestination::supportedOutputVectorTileLayerExtensions() const
+{
+  QString ext = QgsProcessingUtils::defaultVectorTileExtension();
+  return QStringList() << ext;
+}
+
+QgsProcessingParameterVectorTileDestination *QgsProcessingParameterVectorTileDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  return new QgsProcessingParameterVectorTileDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }

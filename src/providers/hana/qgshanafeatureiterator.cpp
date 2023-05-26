@@ -449,8 +449,8 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
         }
         break;
         case QgsSqlExpressionCompiler::Result::Fail:
-          QgsDebugMsg( QStringLiteral( "Unable to compile filter expression: '%1'" )
-                       .arg( request.filterExpression()->expression() ).toStdString().c_str() );
+          QgsDebugError( QStringLiteral( "Unable to compile filter expression: '%1'" )
+                         .arg( request.filterExpression()->expression() ).toStdString().c_str() );
           break;
         case QgsSqlExpressionCompiler::Result::None:
           break;

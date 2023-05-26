@@ -18,9 +18,8 @@
 #include "qgsogrexpressioncompiler.h"
 #include "qgssqliteexpressioncompiler.h"
 
-#include "qgscplhttpfetchoverrider.h"
 #include "qgsogrutils.h"
-#include "qgsapplication.h"
+#include "qgscplhttpfetchoverrider.h"
 #include "qgsgeometry.h"
 #include "qgsexception.h"
 #include "qgswkbtypes.h"
@@ -60,8 +59,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
                        ( mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFid
                          && mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFids );
 
-  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
-  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrFeatureIterator" ) )
+  mCplHttpFetchOverrider = std::make_unique< QgsCPLHTTPFetchOverrider >( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( *mCplHttpFetchOverrider, QStringLiteral( "QgsOgrFeatureIterator" ) )
 
   for ( const auto &id :  mRequest.filterFids() )
   {
@@ -81,7 +80,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   }
   else
   {
-    //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": acquiring connection");
+    //QgsDebugMsgLevel( "Feature iterator of " + mSource->mLayerName + ": acquiring connection", 2);
     mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource, mSource->mShareSameDatasetAmongLayers ),
             mRequest.timeout(),
             mRequest.requestMayBeNested(),
@@ -328,7 +327,7 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
   feature.setValid( false );
   gdal::ogr_feature_unique_ptr fet;
 
-  if ( mAllowResetReading && !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
+  if ( mAllowResetReading && !mSource->mCanDriverShareSameDatasetAmongLayers )
   {
     OGRLayerH nextFeatureBelongingLayer;
     bool found = false;
@@ -401,14 +400,24 @@ bool QgsOgrFeatureIterator::checkFeature( gdal::ogr_feature_unique_ptr &fet, Qgs
 void QgsOgrFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
 {
   mInterruptionChecker = interruptionChecker;
+  if ( mCplHttpFetchOverrider && QThread::currentThread() == mCplHttpFetchOverrider->thread() )
+  {
+    mCplHttpFetchOverrider->setFeedback( interruptionChecker );
+  }
 }
 
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
 
-  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg, mInterruptionChecker );
-  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrFeatureIterator" ) )
+  // if we are on the same thread as the iterator was created in, we don't need to initializer another
+  // QgsCPLHTTPFetchOverrider (which is expensive)
+  std::unique_ptr< QgsCPLHTTPFetchOverrider > localHttpFetchOverride;
+  if ( QThread::currentThread() != mCplHttpFetchOverrider->thread() )
+  {
+    localHttpFetchOverride = std::make_unique< QgsCPLHTTPFetchOverrider >( mAuthCfg, mInterruptionChecker );
+    QgsSetCPLHTTPFetchOverriderInitiatorClass( *localHttpFetchOverride, QStringLiteral( "QgsOgrFeatureIterator" ) )
+  }
 
   feature.setValid( false );
 
@@ -456,7 +465,7 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 
   // OSM layers (especially large ones) need the GDALDataset::GetNextFeature() call rather than OGRLayer::GetNextFeature()
   // see more details here: https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
-  if ( !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
+  if ( !mSource->mCanDriverShareSameDatasetAmongLayers )
   {
     OGRLayerH nextFeatureBelongingLayer;
     while ( fet.reset( GDALDatasetGetNextFeature( mConn->ds, &nextFeatureBelongingLayer, nullptr, nullptr, nullptr ) ), fet )
@@ -489,7 +498,7 @@ void QgsOgrFeatureIterator::resetReading()
   {
     return;
   }
-  if ( !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
+  if ( !mSource->mCanDriverShareSameDatasetAmongLayers )
   {
     GDALDatasetResetReading( mConn->ds );
   }
@@ -557,7 +566,7 @@ bool QgsOgrFeatureIterator::close()
 
   if ( mConn )
   {
-    //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": releasing connection");
+    //QgsDebugMsgLevel( "Feature iterator of " + mSource->mLayerName + ": releasing connection", 2);
     QgsOgrConnPool::instance()->releaseConnection( mConn );
   }
 
@@ -693,6 +702,8 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   for ( int i = ( p->mFirstFieldIsFid ) ? 1 : 0; i < mFields.size(); i++ )
     mFieldsWithoutFid.append( mFields.at( i ) );
   QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( mDataSource, mShareSameDatasetAmongLayers ) );
+
+  mCanDriverShareSameDatasetAmongLayers = QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mDriverName );
 }
 
 QgsOgrFeatureSource::~QgsOgrFeatureSource()

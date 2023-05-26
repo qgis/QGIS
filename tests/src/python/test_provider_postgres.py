@@ -31,6 +31,7 @@ from qgis.PyQt.QtCore import (
     QDir,
     QObject,
     QTemporaryDir,
+    QTemporaryFile,
     QTime,
     QVariant,
 )
@@ -66,6 +67,7 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsVectorLayerUtils,
     QgsWkbTypes,
+    QgsSettingsTree
 )
 from qgis.gui import QgsAttributeForm, QgsGui
 from qgis.testing import start_app, unittest
@@ -82,6 +84,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsPostgresProvider, cls).setUpClass()
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
@@ -103,10 +106,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         cls.poly_provider = cls.poly_vl.dataProvider()
         QgsGui.editorWidgetRegistry().initEditors()
         cls.con = psycopg2.connect(cls.dbconn)
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     def execSQLCommand(self, sql):
         self.assertTrue(self.con)
@@ -3239,6 +3238,7 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsPostgresProviderCompoundKey, cls).setUpClass()
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
@@ -3249,10 +3249,6 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
             'test', 'postgres')
         assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     def enableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', True)
@@ -3343,6 +3339,7 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsPostgresProviderBigintSinglePk, cls).setUpClass()
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
@@ -3354,10 +3351,6 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
         cls.con = psycopg2.connect(cls.dbconn)
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     def getSource(self):
         """ drops/recreates the test data anew, like TestPyQgsPostgresProvider::getSource above. """
@@ -3912,6 +3905,66 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertTrue(vl.changeAttributeValue(8, 8, geom))
         self.assertEqual(vl.getFeature(8)['geom'].asWkt(), geom.asWkt())
         self.assertEqual(vl.getFeature(8)['geom'].crs(), geom.crs())
+
+
+class TestPyQgsPostgresProviderAsyncCreation(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        cls.dbconn = 'service=qgis_test'
+        if 'QGIS_PGTEST_DB' in os.environ:
+            cls.dbconn = os.environ['QGIS_PGTEST_DB']
+        # Create test layers
+        vl1 = QgsVectorLayer(
+            cls.dbconn + ' sslmode=disable srid=4326 type=POINT table="qgis_test"."b31799_test_table" (geom) sql=',
+            'layer 1', 'postgres')
+
+        vl2 = QgsVectorLayer(
+            cls.dbconn + ' sslmode=disable srid=3857 type=POINT table="qgis_test"."array_tbl" (geom) sql=', 'layer 2',
+            'postgres')
+        cls.layers = [vl1, vl2]
+
+        cls.con = psycopg2.connect(cls.dbconn)
+        cls.projectTempFile = QTemporaryFile(QDir.temp().absoluteFilePath("XXXXXX_test.qgs"))
+        cls.projectTempFile.open()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+
+    def testReadProject(self):
+
+        self.assertTrue(len(self.layers) > 0)
+        for layer in self.layers:
+            self.assertTrue(layer.isValid())
+
+        project = QgsProject()
+        project.addMapLayers(self.layers)
+
+        project_layers = project.mapLayers(True)
+        self.assertEqual(len(project_layers), len(self.layers))
+
+        self.assertTrue(project.write(self.projectTempFile.fileName()))
+
+        settings = QgsSettingsTree.node('core').childSetting('provider-parallel-loading')
+        self.assertTrue(settings is not None)
+        current_value = settings.valueAsVariant()
+        settings.setVariantValue(True)
+
+        project = QgsProject()
+        self.assertTrue(project.read(self.projectTempFile.fileName()))
+        project_layers = project.mapLayers(True)
+        self.assertEqual(len(project_layers), len(self.layers))
+
+        settings.setVariantValue(False)
+
+        project = QgsProject()
+        self.assertTrue(project.read(self.projectTempFile.fileName()))
+        project_layers = project.mapLayers(True)
+        self.assertEqual(len(project_layers), len(self.layers))
+
+        settings.setVariantValue(current_value)
 
 
 if __name__ == '__main__':

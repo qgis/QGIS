@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : QtSqlDB
@@ -19,8 +17,6 @@ email                : jef at norbit dot de
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import range
-from builtins import object
 
 from qgis.PyQt.QtCore import QVariant, QDate, QTime, QDateTime, QByteArray
 from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery, QSqlField
@@ -60,16 +56,16 @@ def TimestampFromTicks(ticks):
 class ConnectionError(Exception):
 
     def __init__(self, *args, **kwargs):
-        super(ConnectionError, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class ExecError(Exception):
 
     def __init__(self, *args, **kwargs):
-        super(ExecError, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
-class QtSqlDBCursor(object):
+class QtSqlDBCursor:
 
     def __init__(self, conn):
         self.qry = QSqlQuery(conn)
@@ -189,7 +185,7 @@ class QtSqlDBCursor(object):
         raise ExecError("nyi")
 
 
-class QtSqlDBConnection(object):
+class QtSqlDBConnection:
     connections = 0
 
     def __init__(self, driver, dbname, user, passwd):

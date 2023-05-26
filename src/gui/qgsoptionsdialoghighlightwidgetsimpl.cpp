@@ -26,8 +26,6 @@
 #include <QTextDocumentFragment>
 
 #include "qgsoptionsdialoghighlightwidget.h"
-#include "qgsmessagebaritem.h"
-#include "qgslogger.h"
 
 #include "qgsoptionsdialoghighlightwidgetsimpl.h"
 

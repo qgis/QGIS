@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -20,7 +18,6 @@ email                : even.rouault at spatialys.com
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
 
 from functools import cmp_to_key
 

@@ -20,10 +20,10 @@ from qgis.core import (
     QgsLineSymbol,
     QgsProject,
     QgsReadWriteContext,
+    QgsLayoutChecker
 )
 from qgis.testing import start_app, unittest
 
-from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -35,6 +35,7 @@ class TestQgsLayoutPolyline(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super(TestQgsLayoutPolyline, cls).setUpClass()
         cls.item_class = QgsLayoutItemPolyline
 
     def __init__(self, methodName):

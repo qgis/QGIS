@@ -2208,10 +2208,10 @@ Acts on all layers.</string>
      <normaloff>:/images/themes/default/mActionAddWfsLayer.svg</normaloff>:/images/themes/default/mActionAddWfsLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add WFS Layer…</string>
+    <string>Add WFS / OGC API - Features Layer…</string>
    </property>
    <property name="toolTip">
-    <string>Add WFS Layer</string>
+    <string>Add WFS / OGC API - Features Layer</string>
    </property>
   </action>
   <action name="mActionFeatureAction">
@@ -3363,7 +3363,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   <action name="mActionElevationProfile">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mLayoutItem3DMap.svg</normaloff>:/images/themes/default/mLayoutItem3DMap.svg</iconset>
+     <normaloff>:/images/themes/default/mActionNewElevationProfile.svg</normaloff>:/images/themes/default/mActionNewElevationProfile.svg</iconset>
    </property>
    <property name="text">
     <string>Elevation Profile</string>

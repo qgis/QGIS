@@ -117,6 +117,10 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot
           plotPainter.setRenderHint( QPainter::Antialiasing, true );
           QgsRenderContext plotRc = QgsRenderContext::fromQPainter( &plotPainter );
           plotRc.setDevicePixelRatio( devicePixelRatio );
+
+          const double mapUnitsPerPixel = ( xMaximum() - xMinimum() ) / plotArea.width();
+          plotRc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
+
           mRenderer->render( plotRc, plotArea.width(), plotArea.height(), xMinimum(), xMaximum(), yMinimum(), yMaximum(), source );
           plotPainter.end();
 

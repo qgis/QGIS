@@ -27,6 +27,7 @@ class TestQgsPointCloudDataProvider(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.report = "<h1>Python QgsPointCloudDataProvider Tests</h1>\n"
 
     @classmethod
@@ -34,6 +35,7 @@ class TestQgsPointCloudDataProvider(unittest.TestCase):
         report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
+        super().tearDownClass()
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testStatistics(self):

@@ -5,6 +5,7 @@ set(QGIS_QUICK_GUI_MOC_HDRS
   qgsquickelevationprofilecanvas.h
   qgsquickmapcanvasmap.h
   qgsquickmapsettings.h
+  qgsquickmaptoscreen.h
   qgsquickmaptransform.h
   qgsquickutils.h
 )
@@ -14,6 +15,7 @@ set(QGIS_QUICK_GUI_SRC
   qgsquickelevationprofilecanvas.cpp
   qgsquickmapcanvasmap.cpp
   qgsquickmapsettings.cpp
+  qgsquickmaptoscreen.cpp
   qgsquickmaptransform.cpp
   qgsquickutils.cpp
 )

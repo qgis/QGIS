@@ -134,7 +134,7 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   QCOMPARE( mAttributeTable->item( 0, 3 )->flags(), Qt::ItemIsUserCheckable );
 
   // Check that we can get a custom CRS with crsObject()
-  QCOMPARE( d.crsObject(), crs ) ;
+  QCOMPARE( d.crs(), crs ) ;
 
   //d.exec();
 }

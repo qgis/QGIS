@@ -157,6 +157,7 @@ library object.
     {
       FileBasedUris,
       SaveLayerMetadata,
+      ParallelCreateProvider,
     };
     typedef QFlags<QgsProviderMetadata::ProviderCapability> ProviderCapabilities;
 

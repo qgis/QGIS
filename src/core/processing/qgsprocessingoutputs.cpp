@@ -45,6 +45,10 @@ QgsProcessingOutputPointCloudLayer::QgsProcessingOutputPointCloudLayer( const QS
   : QgsProcessingOutputDefinition( name, description )
 {}
 
+QgsProcessingOutputVectorTileLayer::QgsProcessingOutputVectorTileLayer( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{}
+
 QgsProcessingOutputHtml::QgsProcessingOutputHtml( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}

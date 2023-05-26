@@ -180,6 +180,15 @@ called when set as currently active map tool
 called when map tool is being deactivated
 %End
 
+    virtual void reactivate();
+%Docstring
+Called when the map tool is being activated while it is already active.
+
+The default implementation emits the reactivated () signal.
+
+.. versionadded:: 3.32
+%End
+
     virtual void clean();
 %Docstring
 convenient method to clean members
@@ -288,6 +297,12 @@ signal emitted once the map tool is activated
     void deactivated();
 %Docstring
 signal emitted once the map tool is deactivated
+%End
+
+    void reactivated();
+%Docstring
+
+.. versionadded:: 3.32
 %End
 
   protected:

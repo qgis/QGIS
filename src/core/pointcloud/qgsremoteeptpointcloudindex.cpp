@@ -28,21 +28,16 @@
 #include <QQueue>
 #include <QTimer>
 
-#include "qgseptdecoder.h"
-#include "qgscoordinatereferencesystem.h"
+#include "qgsapplication.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
-#include "qgsmessagelog.h"
-
 #include "qgstiledownloadmanager.h"
 #include "qgsblockingnetworkrequest.h"
-
-#include "qgsfileutils.h"
-#include "qgsapplication.h"
 #include "qgseptpointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
+#include "qgsnetworkaccessmanager.h"
 
 ///@cond PRIVATE
 
@@ -99,7 +94,7 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
   const QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
   if ( errCode != QgsBlockingNetworkRequest::NoError )
   {
-    QgsDebugMsg( QStringLiteral( "Request failed: " ) + url );
+    QgsDebugError( QStringLiteral( "Request failed: " ) + url );
     mIsValid = false;
     return;
   }
@@ -120,7 +115,7 @@ QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointClo
 
   if ( !blockRequest->block() )
   {
-    QgsDebugMsg( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
+    QgsDebugError( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
   }
 
   return blockRequest->block();
@@ -198,21 +193,23 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
 
     const QString fileUrl = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mUrlDirectoryPart, node.toString() );
     QNetworkRequest nr( fileUrl );
-
+    QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsRemoteEptPointCloudIndex" ) );
     nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-    QgsBlockingNetworkRequest req;
-    const QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
-    if ( errCode != QgsBlockingNetworkRequest::NoError )
+    std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( nr ) );
+
+    QEventLoop loop;
+    connect( reply.get(), &QgsTileDownloadManagerReply::finished, &loop, &QEventLoop::quit );
+    loop.exec();
+
+    if ( reply->error() != QNetworkReply::NoError )
     {
-      QgsDebugMsgLevel( QStringLiteral( "unable to read hierarchy from file %1" ).arg( fileUrl ), 2 );
+      QgsDebugError( QStringLiteral( "Request failed: " ) + mUrl.toString() );
       return false;
     }
 
-    const QgsNetworkReplyContent reply = req.reply();
-
-    const QByteArray dataJsonH = reply.content();
+    const QByteArray dataJsonH = reply->data();
     QJsonParseError errH;
     const QJsonDocument docH = QJsonDocument::fromJson( dataJsonH, &errH );
     if ( errH.error != QJsonParseError::NoError )

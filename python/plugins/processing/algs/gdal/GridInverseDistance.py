@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     GridInverseDistance.py
@@ -176,14 +174,14 @@ class GridInverseDistance(GdalAlgorithm):
             arguments.append(fieldName)
 
         params = 'invdist'
-        params += ':power={}'.format(self.parameterAsDouble(parameters, self.POWER, context))
-        params += ':smoothing={}'.format(self.parameterAsDouble(parameters, self.SMOOTHING, context))
-        params += ':radius1={}'.format(self.parameterAsDouble(parameters, self.RADIUS_1, context))
-        params += ':radius2={}'.format(self.parameterAsDouble(parameters, self.RADIUS_2, context))
-        params += ':angle={}'.format(self.parameterAsDouble(parameters, self.ANGLE, context))
-        params += ':max_points={}'.format(self.parameterAsInt(parameters, self.MAX_POINTS, context))
-        params += ':min_points={}'.format(self.parameterAsInt(parameters, self.MIN_POINTS, context))
-        params += ':nodata={}'.format(self.parameterAsDouble(parameters, self.NODATA, context))
+        params += f':power={self.parameterAsDouble(parameters, self.POWER, context)}'
+        params += f':smoothing={self.parameterAsDouble(parameters, self.SMOOTHING, context)}'
+        params += f':radius1={self.parameterAsDouble(parameters, self.RADIUS_1, context)}'
+        params += f':radius2={self.parameterAsDouble(parameters, self.RADIUS_2, context)}'
+        params += f':angle={self.parameterAsDouble(parameters, self.ANGLE, context)}'
+        params += f':max_points={self.parameterAsInt(parameters, self.MAX_POINTS, context)}'
+        params += f':min_points={self.parameterAsInt(parameters, self.MIN_POINTS, context)}'
+        params += f':nodata={self.parameterAsDouble(parameters, self.NODATA, context)}'
 
         arguments.append('-a')
         arguments.append(params)

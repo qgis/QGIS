@@ -298,6 +298,17 @@
         "year": 2021
       },
       "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "AR",
+        "name": "QGIS Argentina",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1320478408997036032\/f0KZMOOp_400x400.jpg",
+        "website": "http:\/\/qgis.ar",
+        "year": 2022
+      },
+      "geometry": null
     }
   ]
 }

@@ -54,6 +54,9 @@ QVariant QgsEditorWidgetWrapper::defaultValue() const
 
 QgsEditorWidgetWrapper *QgsEditorWidgetWrapper::fromWidget( QWidget *widget )
 {
+  if ( !widget )
+    return nullptr;
+
   return qobject_cast<QgsEditorWidgetWrapper *>( widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper *>() );
 }
 

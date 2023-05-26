@@ -29,6 +29,7 @@ class TestPyQgsExternalStorageWebDav(TestPyQgsExternalStorageBase, unittest.Test
         """Run before all tests:"""
 
         super().setUpClass()
+        unittest.TestCase.setUpClass()
 
         cls.url = "http://{}:{}/webdav_tests".format(
             os.environ.get('QGIS_WEBDAV_HOST', 'localhost'), os.environ.get('QGIS_WEBDAV_PORT', '80'))

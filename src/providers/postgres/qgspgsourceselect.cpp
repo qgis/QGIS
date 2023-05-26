@@ -451,7 +451,7 @@ void QgsPgSourceSelect::btnConnect_clicked()
   // populate the table list
   QgsDataSourceUri uri = QgsPostgresConn::connUri( cmbConnections->currentText() );
 
-  QgsDebugMsg( "Connection info: " + uri.connectionInfo( false ) );
+  QgsDebugMsgLevel( "Connection info: " + uri.connectionInfo( false ), 2 );
 
   mDataSrcUri = uri;
   mUseEstimatedMetadata = uri.useEstimatedMetadata();
@@ -526,7 +526,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
 {
   if ( !index.parent().isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "schema item found" ) );
+    QgsDebugMsgLevel( QStringLiteral( "schema item found" ), 2 );
     return;
   }
 
@@ -535,7 +535,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   QString uri = mTableModel->layerURI( index, connectionInfo( false ), mUseEstimatedMetadata );
   if ( uri.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "no uri" ) );
+    QgsDebugMsgLevel( QStringLiteral( "no uri" ), 2 );
     return;
   }
 

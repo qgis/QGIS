@@ -153,6 +153,8 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     /**
      * Returns a list of the raster format file extensions supported by this provider.
      * \see supportedOutputVectorLayerExtensions()
+     * \see supportedOutputPointCloudLayerExtensions()
+     * \see supportedOutputVectorTileLayerExtensions()
      */
     virtual QStringList supportedOutputRasterLayerExtensions() const;
 
@@ -163,6 +165,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputRasterLayerExtensions()
      * \see supportsNonFileBasedOutput()
      * \see supportedOutputPointCloudLayerExtensions()
+     * \see supportedOutputVectorTileLayerExtensions()
      */
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 
@@ -170,6 +173,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Returns a list of the point cloud format file extensions supported by this provider.
      * \see supportedOutputVectorLayerExtensions()
      * \see supportedOutputRasterLayerExtensions()
+     * \see supportedOutputVectorTileLayerExtensions()
      * \see supportedOutputTableExtensions()
      * \see defaultVectorFileExtension()
      * \see supportsNonFileBasedOutput()
@@ -177,6 +181,21 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \since QGIS 3.24
      */
     virtual QStringList supportedOutputPointCloudLayerExtensions() const;
+
+    /**
+     * Returns a list of the vector tile format file extensions supported by this provider.
+     *
+     * By default returns a list containing only "mbtiles" extension.
+     *
+     * \see supportedOutputVectorLayerExtensions()
+     * \see supportedOutputRasterLayerExtensions()
+     * \see supportedOutputTableExtensions()
+     * \see defaultVectorFileExtension()
+     * \see supportsNonFileBasedOutput()
+     *
+     * \since QGIS 3.32
+     */
+    virtual QStringList supportedOutputVectorTileLayerExtensions() const;
 
     /**
      * Returns a list of the table (geometry-less vector layers) file extensions supported by this provider.
@@ -217,6 +236,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputVectorLayerExtensions()
      * \see defaultRasterFileExtension()
      * \see defaultPointCloudFileExtension()
+     * \see defaultVectorTileFileExtension()
      */
     virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
 
@@ -231,6 +251,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputRasterLayerExtensions()
      * \see defaultVectorFileExtension()
      * \see defaultPointCloudFileExtension()
+     * \see defaultVectorTileFileExtension()
      */
     virtual QString defaultRasterFileExtension() const;
 
@@ -245,10 +266,27 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputPointCloudLayerExtensions()
      * \see defaultVectorFileExtension()
      * \see defaultRasterFileExtension()
+     * \see defaultVectorTileFileExtension()
      *
      * \since QGIS 3.24
      */
     virtual QString defaultPointCloudFileExtension() const;
+
+    /**
+     * Returns the default file extension to use for vector tile outputs created by the
+     * provider.
+     *
+     * The default implementation returns the user's default Processing vector tile output format
+     * setting, if it's supported by the provider (see supportedOutputVectorTileLayerExtensions()).
+     * Otherwise the first reported supported vector tile format will be used.
+     *
+     * \see supportedOutputPointCloudLayerExtensions()
+     * \see defaultVectorFileExtension()
+     * \see defaultRasterFileExtension()
+     *
+     * \since QGIS 3.32
+     */
+    virtual QString defaultVectorTileFileExtension() const;
 
     /**
      * Returns TRUE if the provider supports non-file based outputs (such as memory layers

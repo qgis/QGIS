@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ogr2ogr.py
@@ -89,11 +87,11 @@ class ogr2ogr(GdalAlgorithm):
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
         if outputFormat in ('SQLite', 'GPKG') and os.path.isfile(output):
-            raise QgsProcessingException(self.tr('Output file "{}" already exists.'.format(output)))
+            raise QgsProcessingException(self.tr('Output file "{}" already exists.').format(output))
 
         arguments = []
         if outputFormat:
-            arguments.append('-f {}'.format(outputFormat))
+            arguments.append(f'-f {outputFormat}')
 
         if options:
             arguments.append(options)

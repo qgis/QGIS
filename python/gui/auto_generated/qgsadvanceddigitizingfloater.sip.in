@@ -30,6 +30,21 @@ feature. It proxies display and actions to :py:class:`QgsMapToolAdvancedDigitizi
 %End
   public:
 
+    enum class FloaterItem
+    {
+      XCoordinate,
+      YCoordinate,
+      MCoordinate,
+      ZCoordinate,
+      Angle,
+      CommonAngleSnapping,
+      Distance,
+      Bearing,
+    };
+    typedef QFlags<QgsAdvancedDigitizingFloater::FloaterItem> FloaterItems;
+
+
+
     explicit QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 %Docstring
 Create an advanced digitizing floater widget
@@ -48,6 +63,15 @@ Note that the floater may be active but not visible (e.g. if the mouse is not ov
 .. versionadded:: 3.8
 %End
 
+    bool itemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item ) const;
+%Docstring
+Returns ``True`` if the floater ``item`` visibility setting is enabled.
+
+:param item: floater item
+
+.. versionadded:: 3.32
+%End
+
   public slots:
 
     void setActive( bool active );
@@ -58,6 +82,16 @@ Note that the floater may be active but not visible (e.g. if the mouse is not ov
 :param active:
 
 .. versionadded:: 3.8
+%End
+
+    void setItemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item, bool visible );
+%Docstring
+Set whether the floater ``item`` should be visible or not.
+
+:param item: floater item
+:param visible:
+
+.. versionadded:: 3.32
 %End
 
   private:

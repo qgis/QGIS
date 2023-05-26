@@ -40,7 +40,7 @@ namespace QgsGuiUtils
     QString lastUsedFilter = settings.value( "/UI/" + filterName, "" ).toString();
     const QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", QDir::homePath() ).toString();
 
-    QgsDebugMsg( "Opening file dialog with filters: " + filters );
+    QgsDebugMsgLevel( "Opening file dialog with filters: " + filters, 3 );
     if ( !cancelAll )
     {
       selectedFiles = QFileDialog::getOpenFileNames( nullptr, title, lastUsedDir, filters, &lastUsedFilter );
@@ -80,7 +80,7 @@ namespace QgsGuiUtils
       const QFileInfo fi( firstFileName );
       const QString path = fi.path();
 
-      QgsDebugMsg( "Writing last used dir: " + path );
+      QgsDebugMsgLevel( "Writing last used dir: " + path, 2 );
 
       settings.setValue( "/UI/" + filterName, lastUsedFilter );
       settings.setValue( "/UI/" + filterName + "Dir", path );
@@ -164,7 +164,7 @@ namespace QgsGuiUtils
     }
 
     selectedFilter = fileDialog->selectedNameFilter();
-    QgsDebugMsg( "Selected filter: " + selectedFilter );
+    QgsDebugMsgLevel( "Selected filter: " + selectedFilter, 2 );
     ext = filterMap.value( selectedFilter, QString() );
 
     if ( !ext.isNull() )
@@ -251,7 +251,7 @@ namespace QgsGuiUtils
   QSize iconSize( bool dockableToolbar )
   {
     const QgsSettings s;
-    const int w = s.value( QStringLiteral( "/qgis/iconSize" ), 32 ).toInt();
+    const int w = s.value( QStringLiteral( "/qgis/toolbarIconSize" ), 32 ).toInt();
     QSize size( w, w );
 
     if ( dockableToolbar )

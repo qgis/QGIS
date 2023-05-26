@@ -465,16 +465,51 @@ void QgisAppInterface::showProjectPropertiesDialog( const QString &currentPage )
 
 QMap<QString, QVariant> QgisAppInterface::defaultStyleSheetOptions()
 {
-  return qgis->styleSheetBuilder()->defaultOptions();
+  QMap<QString, QVariant> res = qgis->styleSheetBuilder()->defaultOptions();
+
+  // for compatibility with older code, re-add the fontPointSize and fontFamily values which are
+  // no longer handled by the styleSheetBuilder method.
+  res.insert( QStringLiteral( "fontPointSize" ), qgis->styleSheetBuilder()->fontSize() );
+  res.insert( QStringLiteral( "fontFamily" ), qgis->styleSheetBuilder()->fontFamily() );
+
+  return res;
 }
 
 void QgisAppInterface::buildStyleSheet( const QMap<QString, QVariant> &opts )
 {
-  qgis->styleSheetBuilder()->buildStyleSheet( opts );
+  // remove unwanted fontPointSize / fontFamily keys, which may be present from older code
+  QMap< QString, QVariant> newOpts = opts;
+  if ( newOpts.contains( QStringLiteral( "fontPointSize" ) ) && (
+         newOpts.value( QStringLiteral( "fontPointSize" ) ).toDouble() == qgis->styleSheetBuilder()->defaultFont().pointSizeF()
+         || newOpts.value( QStringLiteral( "fontPointSize" ) ).toString() == QString::number( qgis->styleSheetBuilder()->defaultFont().pointSizeF() ) ) )
+  {
+    newOpts.remove( QStringLiteral( "fontPointSize" ) );
+  }
+  if ( newOpts.contains( QStringLiteral( "fontFamily" ) ) &&
+       newOpts.value( QStringLiteral( "fontFamily" ) ).toString() == qgis->styleSheetBuilder()->defaultFont().family() )
+  {
+    newOpts.remove( QStringLiteral( "fontFamily" ) );
+  }
+
+  qgis->styleSheetBuilder()->applyStyleSheet( newOpts );
 }
 
 void QgisAppInterface::saveStyleSheetOptions( const QMap<QString, QVariant> &opts )
 {
+  // remove unwanted fontPointSize / fontFamily keys, which may be present from older code
+  QMap< QString, QVariant> newOpts = opts;
+  if ( newOpts.contains( QStringLiteral( "fontPointSize" ) ) && (
+         newOpts.value( QStringLiteral( "fontPointSize" ) ).toDouble() == qgis->styleSheetBuilder()->defaultFont().pointSizeF()
+         || newOpts.value( QStringLiteral( "fontPointSize" ) ).toString() == QString::number( qgis->styleSheetBuilder()->defaultFont().pointSizeF() ) ) )
+  {
+    newOpts.remove( QStringLiteral( "fontPointSize" ) );
+  }
+  if ( newOpts.contains( QStringLiteral( "fontFamily" ) ) &&
+       newOpts.value( QStringLiteral( "fontFamily" ) ).toString() == qgis->styleSheetBuilder()->defaultFont().family() )
+  {
+    newOpts.remove( QStringLiteral( "fontFamily" ) );
+  }
+
   qgis->styleSheetBuilder()->saveToSettings( opts );
 }
 

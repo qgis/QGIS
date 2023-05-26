@@ -21,6 +21,7 @@ class TestQgsColorUtils(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         try:
             QColor.ExtendedRgb
             cls.has_extended_rgb = True

@@ -272,10 +272,11 @@ static bool resampleSingleBandRasterStatic( GDALDatasetH hSrcDS, GDALDatasetH hD
   psWarpOptions->papszWarpOptions = CSLSetNameValue( psWarpOptions-> papszWarpOptions, "INIT_DEST", "NO_DATA" );
 
   // Initialize and execute the warp operation.
+  bool retVal = false;
   GDALWarpOperation oOperation;
-  oOperation.Initialize( psWarpOptions.get() );
-
-  const bool retVal { oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) ) == CE_None };
+  CPLErr initResult = oOperation.Initialize( psWarpOptions.get() );
+  if ( initResult != CE_Failure )
+    retVal =  oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) ) == CE_None;
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
   return retVal;
 }
@@ -327,7 +328,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                                outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read red band" ) );
+    QgsDebugError( QStringLiteral( "failed to read red band" ) );
     return QImage();
   }
 
@@ -335,7 +336,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read green band" ) );
+    QgsDebugError( QStringLiteral( "failed to read green band" ) );
     return QImage();
   }
 
@@ -343,7 +344,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read blue band" ) );
+    QgsDebugError( QStringLiteral( "failed to read blue band" ) );
     return QImage();
   }
 
@@ -351,7 +352,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read alpha band" ) );
+    QgsDebugError( QStringLiteral( "failed to read alpha band" ) );
     return QImage();
   }
 

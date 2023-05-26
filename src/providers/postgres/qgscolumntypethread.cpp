@@ -46,7 +46,7 @@ void QgsGeomColumnTypeThread::run()
   mConn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
   if ( !mConn )
   {
-    QgsDebugMsg( "Connection failed - " + uri.connectionInfo( false ) );
+    QgsDebugError( "Connection failed - " + uri.connectionInfo( false ) );
     return;
   }
 

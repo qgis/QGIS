@@ -273,7 +273,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 
 bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
 {
-  QgsDebugMsg( "inserting attribute " + field.name() + " of type " + field.typeName() );
+  QgsDebugMsgLevel( "inserting attribute " + field.name() + " of type " + field.typeName(), 2 );
   mLayer->beginEditCommand( tr( "Added attribute" ) );
   if ( mLayer->addAttribute( field ) )
   {

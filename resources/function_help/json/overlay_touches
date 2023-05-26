@@ -40,8 +40,8 @@
     "expression": "array_sort(overlay_touches(layer:='regions', expression:=\"name\", filter:= population > 10000))",
     "returns": "an ordered array of names, for the regions touched by the current feature and with a population greater than 10000"
   }, {
-    "expression": "overlay_touches(layer:='regions', expression:= geom_to_wkt($geometry), limit:=2)",
+    "expression": "overlay_touches(layer:='regions', expression:= geom_to_wkt(@geometry), limit:=2)",
     "returns": "an array of geometries (in WKT), for up to two regions touched by the current feature"
   }],
-  "tags": ["least", "predicate", "touches", "current", "target", "array", "geos", "described", "underlying", "touched", "st_touches", "features"]
+  "tags": ["predicate", "touches", "current", "target", "array", "geos", "touched", "st_touches", "features"]
 }

@@ -25,7 +25,6 @@
 #include "qgspointcloudexpression.h"
 
 
-
 template <typename T>
 bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value )
 {
@@ -118,6 +117,8 @@ class TestQgsPointCloudExpression: public QObject
     void testEvaluating_data();
     void testEvaluating();
     void testBlockResize();
+    void testConversionToPdal_data();
+    void testConversionToPdal();
 
   private:
     QString mTestDataDir;
@@ -316,12 +317,10 @@ void TestQgsPointCloudExpression::cleanupTestCase()
 
 void TestQgsPointCloudExpression::init()
 {
-
 }
 
 void TestQgsPointCloudExpression::cleanup()
 {
-
 }
 
 void TestQgsPointCloudExpression::testCreateBlock()
@@ -387,7 +386,6 @@ void TestQgsPointCloudExpression::testParsing_data()
   QTest::newRow( "pow" ) << "2 ^ 8" << true;
   QTest::newRow( "arithmetic" ) << "1+2*3" << true;
   QTest::newRow( "logic" ) << "be or not be" << true;
-
 }
 
 void TestQgsPointCloudExpression::testParsing()
@@ -506,7 +504,6 @@ void TestQgsPointCloudExpression::testEvaluating_data()
   QTest::newRow( "multiple attributes compared arithmetic" ) << "ReturnNumber = NumberOfReturns -1" << 2 << true;
   QTest::newRow( "multiple attributes compared arithmetic" ) << "ReturnNumber = NumberOfReturns -1" << 3 << false;
   QTest::newRow( "multiple attributes compared arithmetic" ) << "ReturnNumber = NumberOfReturns -1" << 4 << false;
-
 }
 
 void TestQgsPointCloudExpression::testEvaluating()
@@ -548,6 +545,43 @@ void TestQgsPointCloudExpression::testBlockResize()
   QCOMPARE( mBlock->pointCount(), 0 );
   data.resize( 0 );
   QCOMPARE( QByteArray( mBlock->data(), mBlock->pointCount() * recordSize ), data );
+}
+
+void TestQgsPointCloudExpression::testConversionToPdal_data()
+{
+  QTest::addColumn<QString>( "string" );
+  QTest::addColumn<QString>( "converted" );
+
+  QTest::newRow( "single attribute comparison" ) << "X > 100" << "X > 100";
+  QTest::newRow( "single attribute comparison" ) << "X >= 100" << "X >= 100";
+  QTest::newRow( "single attribute comparison" ) << "X < 100" << "X < 100";
+  QTest::newRow( "single attribute comparison" ) << "X <= 100" << "X <= 100";
+  QTest::newRow( "single attribute comparison" ) << "X = 100" << "X == 100";
+  QTest::newRow( "single attribute comparison" ) << "X <> 100" << "X != 100";
+  QTest::newRow( "single attribute comparison" ) << "NOT (NumberOfReturns = 1)" << "!(NumberOfReturns == 1)";
+
+  QTest::newRow( "multiple attribute comparison" ) << "X > 100 AND ReturnNumber = 1" << "X > 100 && ReturnNumber == 1";
+  QTest::newRow( "multiple attribute comparison" ) << "X > 100 OR ReturnNumber = 1" << "X > 100 || ReturnNumber == 1";
+  QTest::newRow( "multiple attribute comparison" ) << "(X > 100 OR ReturnNumber = 1) AND Classification <> 2" << "(X > 100 || ReturnNumber == 1) && Classification != 2";
+
+  QTest::newRow( "single attribute in()" ) << "Classification in (1, 3, 5)" << "((Classification == 1) || (Classification == 3) || (Classification == 5))";
+
+  QTest::newRow( "single attribute not in()" ) << "Classification not in (1, 3, 5)" << "((Classification != 1) && (Classification != 3) && (Classification != 5))";
+
+  QTest::newRow( "arifmetic operators" ) << "Red > Green + 50" << "Red > Green + 50";
+  QTest::newRow( "arifmetic operators" ) << "Red > Green - 50" << "Red > Green - 50";
+  QTest::newRow( "arifmetic operators" ) << "Red = Intensity * 64.0" << "Red == Intensity * 64";
+  QTest::newRow( "arifmetic operators" ) << "Red = Green / 128" << "Red == Green / 128";
+}
+
+void TestQgsPointCloudExpression::testConversionToPdal()
+{
+  QFETCH( QString, string );
+  QFETCH( QString, converted );
+
+  QgsPointCloudExpression exp( string );
+
+  QCOMPARE( exp.asPdalExpression(), converted );
 }
 
 QGSTEST_MAIN( TestQgsPointCloudExpression )

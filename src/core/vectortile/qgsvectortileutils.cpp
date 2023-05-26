@@ -27,6 +27,7 @@
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 
+#include "qgsvectortileloader.h"
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilerenderer.h"
@@ -86,7 +87,8 @@ int QgsVectorTileUtils::scaleToZoomLevel( double mapScale, int sourceMinZoom, in
 QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *mvt, QgsTileXYZ tileID, const QString &layerName )
 {
   QgsVectorTileMVTDecoder decoder( mvt->tileMatrixSet() );
-  decoder.decode( tileID, mvt->getRawTile( tileID ) );
+  const QgsVectorTileRawData rawTile = mvt->getRawTile( tileID );
+  decoder.decode( rawTile );
   QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
   fieldNames << QStringLiteral( "_geom_type" );
   QMap<QString, QgsFields> perLayerFields;
@@ -162,19 +164,6 @@ struct LessThanTileRequest
     return d1 < d2;
   }
 };
-
-QVector<QgsTileXYZ> QgsVectorTileUtils::tilesInRange( QgsTileRange range, int zoomLevel )
-{
-  QVector<QgsTileXYZ> tiles;
-  for ( int tileRow = range.startRow(); tileRow <= range.endRow(); ++tileRow )
-  {
-    for ( int tileColumn = range.startColumn(); tileColumn <= range.endColumn(); ++tileColumn )
-    {
-      tiles.append( QgsTileXYZ( tileColumn, tileRow, zoomLevel ) );
-    }
-  }
-  return tiles;
-}
 
 void QgsVectorTileUtils::sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center )
 {

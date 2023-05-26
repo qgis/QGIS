@@ -131,7 +131,7 @@ bool QgsPdalIndexingTask::runUntwine()
       {
         // TODO: propagate the error message to GUI
         mErrorMessage = QStringLiteral( "Untwine error: %1" ).arg( QString::fromStdString( untwineProcess.errorMessage() ) );
-        QgsDebugMsg( mErrorMessage );
+        QgsDebugError( mErrorMessage );
         return false;
       }
 

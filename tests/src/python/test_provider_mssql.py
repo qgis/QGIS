@@ -45,6 +45,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsMssqlProvider, cls).setUpClass()
         # These are the connection details for the SQL Server instance running on Travis
         cls.dbconn = "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' "
         if 'QGIS_MSSQLTEST_DB' in os.environ:
@@ -69,11 +70,6 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         # Use connections API
         md = QgsProviderRegistry.instance().providerMetadata('mssql')
         cls.conn_api = md.createConnection(cls.dbconn, {})
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        pass
 
     def setUp(self):
         for t in ['new_table', 'new_table_multipoint', 'new_table_multipolygon']:

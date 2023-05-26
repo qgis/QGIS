@@ -1600,7 +1600,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   {
     // Q_ASSERT( 0 && "invalid ramp type" );
     // bailing out is rather harsh!
-    QgsDebugMsg( QStringLiteral( "invalid ramp type %1" ).arg( rampType ) );
+    QgsDebugError( QStringLiteral( "invalid ramp type %1" ).arg( rampType ) );
     return QString();
   }
 
@@ -2655,7 +2655,7 @@ void QgsStyleManagerDialog::groupRenamed( QStandardItem *item )
   if ( isReadOnly() )
     return;
 
-  QgsDebugMsg( QStringLiteral( "Symbol group edited: data=%1 text=%2" ).arg( item->data( Qt::UserRole + 1 ).toString(), item->text() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Symbol group edited: data=%1 text=%2" ).arg( item->data( Qt::UserRole + 1 ).toString(), item->text() ), 2 );
   int id = item->data( Qt::UserRole + 1 ).toInt();
   QString name = item->text();
   mBlockGroupUpdates++;

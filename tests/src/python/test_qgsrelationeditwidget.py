@@ -50,6 +50,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         Setup the involved layers and relations for a n:m relation
         :return:
         """
+        super().setUpClass()
         cls.mapCanvas = QgsMapCanvas()
         QgsGui.editorWidgetRegistry().initEditors(cls.mapCanvas)
         cls.dbconn = 'service=\'qgis_test\''
@@ -88,6 +89,8 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.mapCanvas = None
         cls.vltools = None
         cls.relMgr = None
+
+        super().tearDownClass()
 
     def setUp(self):
         self.rel_a = QgsRelation()

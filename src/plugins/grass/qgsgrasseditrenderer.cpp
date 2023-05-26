@@ -140,7 +140,7 @@ QgsSymbol *QgsGrassEditRenderer::symbolForFeature( const QgsFeature &feature, Qg
   else
   {
     // should not happen
-    QgsDebugMsg( "unknown symbol code" );
+    QgsDebugError( "unknown symbol code" );
   }
 
   if ( symbol )

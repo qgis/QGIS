@@ -72,7 +72,7 @@
       "returns": "an ordered array of names, for the regions intersected by the current feature and with a population greater than 10000"
     },
     {
-      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), limit:=2)",
+      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt(@geometry), limit:=2)",
       "returns": "an array of geometries (in WKT), for up to two regions intersected by the current feature"
     },
     {
@@ -84,13 +84,13 @@
       "returns": "TRUE if the current feature spatially intersects a region and the intersection area maximum inscribed circle's radius (of at least one of the parts in case of multipart) is greater or equal to 0.54"
     },
     {
-      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), return_details:=true)",
+      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt(@geometry), return_details:=true)",
       "returns": "an array of maps containing 'id', 'result', 'overlap' and 'radius'"
     },
     {
-      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), sort_by_intersection_size:='des')",
+      "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt(@geometry), sort_by_intersection_size:='des')",
       "returns": "an array of geometries (in WKT) ordered by the overlap value in descending order"
     }
   ],
-  "tags": ["intersected", "least", "predicate", "current", "target", "array", "geos", "postgis", "described", "st_intersects", "intersects", "underlying", "features"]
+  "tags": ["intersected", "predicate", "current", "target", "array", "geos", "postgis", "described", "st_intersects", "intersects", "underlying", "features"]
 }

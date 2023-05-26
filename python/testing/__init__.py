@@ -28,15 +28,31 @@ import functools
 import filecmp
 import tempfile
 from pathlib import Path
+from typing import Optional
 
-from qgis.PyQt.QtCore import QVariant, QDateTime, QDate
+from qgis.PyQt.QtCore import (
+    QVariant,
+    QDateTime,
+    QDate,
+    QDir,
+    QUrl,
+    QSize
+)
+from qgis.PyQt.QtGui import (
+    QImage,
+    QDesktopServices
+)
 from qgis.core import (
     QgsApplication,
     QgsFeatureRequest,
     QgsCoordinateReferenceSystem,
     NULL,
     QgsVectorLayer,
-    QgsRenderChecker
+    QgsRenderChecker,
+    QgsMultiRenderChecker,
+    QgsMapSettings,
+    QgsLayout,
+    QgsLayoutChecker,
 )
 
 import unittest
@@ -47,6 +63,112 @@ unittest.util._MAX_LENGTH = 2000
 
 
 class TestCase(_TestCase):
+
+    @staticmethod
+    def is_ci_run() -> bool:
+        """
+        Returns True if the test is being run on the CI environment
+        """
+        return os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN") == 'true'
+
+    @classmethod
+    def setUpClass(cls):
+        cls.report = ''
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.report:
+            cls.write_local_html_report(cls.report)
+
+    @classmethod
+    def control_path_prefix(cls) -> Optional[str]:
+        """
+        Returns the prefix for test control images used by the class
+        """
+        return None
+
+    @classmethod
+    def write_local_html_report(cls, report: str):
+        report_dir = QgsRenderChecker.testReportDir()
+        if not report_dir.exists():
+            QDir().mkpath(report_dir.path())
+
+        report_file = report_dir.filePath('index.html')
+
+        # only append to existing reports if running under CI
+        if cls.is_ci_run() or \
+                os.environ.get("QGIS_APPEND_TO_TEST_REPORT") == 'true':
+            file_mode = 'ta'
+        else:
+            file_mode = 'wt'
+
+        with open(report_file, file_mode, encoding='utf-8') as f:
+            f.write(f"<h1>Python {cls.__name__} Tests</h1>\n")
+            f.write(report)
+
+        if not TestCase.is_ci_run():
+            QDesktopServices.openUrl(QUrl.fromLocalFile(report_file))
+
+    @classmethod
+    def image_check(cls,
+                    name: str,
+                    reference_image: str,
+                    image: QImage,
+                    control_name=None,
+                    color_tolerance: int = 2,
+                    allowed_mismatch: int = 20) -> bool:
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsMultiRenderChecker()
+        if cls.control_path_prefix():
+            checker.setControlPathPrefix(cls.control_path_prefix())
+        checker.setControlName(control_name or "expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(color_tolerance)
+        result = checker.runTest(name, allowed_mismatch)
+        if not result:
+            cls.report += f"<h2>Render {name}</h2>\n"
+            cls.report += checker.report()
+
+        return result
+
+    @classmethod
+    def render_map_settings_check(cls,
+                                  name: str,
+                                  reference_image: str,
+                                  map_settings: QgsMapSettings,
+                                  color_tolerance: Optional[int] = None,
+                                  allowed_mismatch: Optional[int] = None) -> bool:
+        checker = QgsMultiRenderChecker()
+        checker.setMapSettings(map_settings)
+
+        if cls.control_path_prefix():
+            checker.setControlPathPrefix(cls.control_path_prefix())
+        checker.setControlName("expected_" + reference_image)
+        if color_tolerance:
+            checker.setColorTolerance(color_tolerance)
+        result = checker.runTest(name, allowed_mismatch or 0)
+        if not result:
+            cls.report += f"<h2>Render {name}</h2>\n"
+            cls.report += checker.report()
+
+        return result
+
+    @classmethod
+    def render_layout_check(cls, name: str,
+                            layout: QgsLayout,
+                            size: Optional[QSize] = None):
+        checker = QgsLayoutChecker(name, layout)
+        if size is not None:
+            checker.setSize(size)
+        if cls.control_path_prefix():
+            checker.setControlPathPrefix(cls.control_path_prefix())
+        result, message = checker.testLayout()
+        if not result:
+            cls.report += f"<h2>Render {name}</h2>\n"
+            cls.report += checker.report()
+        return result
 
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):
         """

@@ -578,7 +578,7 @@ QgsRectangle Qgs3DUtils::tryReprojectExtent2D( const QgsRectangle &extent, const
     catch ( const QgsCsException & )
     {
       // bad luck, can't reproject for some reason
-      QgsDebugMsg( QStringLiteral( "3D utils: transformation of extent failed: " ) + extentMapCrs.toString( -1 ) );
+      QgsDebugError( QStringLiteral( "3D utils: transformation of extent failed: " ) + extentMapCrs.toString( -1 ) );
     }
   }
   return extentMapCrs;
@@ -816,4 +816,30 @@ QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Q
       results[ nullptr ] = result;  // Terrain hits are not tied to a layer so we use nullptr as their key here
   }
   return results;
+}
+
+float Qgs3DUtils::screenSpaceError( float epsilon, float distance, float screenSize, float fov )
+{
+  /* This routine approximately calculates how an error (epsilon) of an object in world coordinates
+   * at given distance (between camera and the object) will look like in screen coordinates.
+   *
+   * the math below simply uses triangle similarity:
+   *
+   *             epsilon                       phi
+   *   -----------------------------  = ----------------
+   *   [ frustum width at distance ]    [ screen width ]
+   *
+   * Then we solve for phi, substituting [frustum width at distance] = 2 * distance * tan(fov / 2)
+   *
+   *  ________xxx__      xxx = real world error (epsilon)
+   *  \     |     /        x = screen space error (phi)
+   *   \    |    /
+   *    \___|_x_/   near plane (screen space)
+   *     \  |  /
+   *      \ | /
+   *       \|/    angle = field of view
+   *       camera
+   */
+  float phi = epsilon * screenSize / ( 2 * distance * tan( fov * M_PI / ( 2 * 180 ) ) );
+  return phi;
 }

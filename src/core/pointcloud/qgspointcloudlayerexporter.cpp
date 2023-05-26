@@ -119,8 +119,8 @@ void QgsPointCloudLayerExporter::setFilterGeometry( QgsMapLayer *layer, bool sel
   }
   catch ( const QgsCsException &cse )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming union of filter layer: %1" ).arg( cse.what() ) );
-    QgsDebugMsg( QStringLiteral( "FilterGeometry will be ignored." ) );
+    QgsDebugError( QStringLiteral( "Error transforming union of filter layer: %1" ).arg( cse.what() ) );
+    QgsDebugError( QStringLiteral( "FilterGeometry will be ignored." ) );
     return;
   }
   setFilterGeometry( unaryUnion.constGet() );
@@ -212,7 +212,7 @@ void QgsPointCloudLayerExporter::doExport()
     }
     catch ( const QgsCsException &cse )
     {
-      QgsDebugMsg( QStringLiteral( "Error transforming extent: %1" ).arg( cse.what() ) );
+      QgsDebugError( QStringLiteral( "Error transforming extent: %1" ).arg( cse.what() ) );
     }
   }
 
@@ -243,7 +243,7 @@ void QgsPointCloudLayerExporter::doExport()
       catch ( std::runtime_error &e )
       {
         setLastError( QString::fromLatin1( e.what() ) );
-        QgsDebugMsg( QStringLiteral( "PDAL has thrown an exception: {}" ).arg( e.what() ) );
+        QgsDebugError( QStringLiteral( "PDAL has thrown an exception: {}" ).arg( e.what() ) );
       }
 #endif
       break;
@@ -264,7 +264,7 @@ void QgsPointCloudLayerExporter::doExport()
       saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( ogrDriver );
       saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( ogrDriver );
       saveOptions.layerOptions << layerCreationOptions;
-      saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+      saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
       saveOptions.actionOnExistingFile = mActionOnExistingFile;
       saveOptions.feedback = mFeedback;
       mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), Qgis::WkbType::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
@@ -408,7 +408,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
       }
       catch ( const QgsCsException &cse )
       {
-        QgsDebugMsg( QStringLiteral( "Error transforming point: %1" ).arg( cse.what() ) );
+        QgsDebugError( QStringLiteral( "Error transforming point: %1" ).arg( cse.what() ) );
       }
     }
     handleNode();

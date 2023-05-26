@@ -76,6 +76,7 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
   mRasterProvider.reset( layer->dataProvider()->clone() );
 
   mSymbology = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
+  mElevationLimit = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->elevationLimit();
   mLineSymbol.reset( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() );
   mFillSymbol.reset( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
@@ -121,7 +122,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming profile line to raster CRS" ) );
+    QgsDebugError( QStringLiteral( "Error transforming profile line to raster CRS" ) );
     return false;
   }
 

@@ -10,10 +10,15 @@ __date__ = '04/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
+from qgis.PyQt.QtXml import QDomDocument
+
 from qgis.core import (
     QgsCoordinateTransformContext,
     QgsVectorTileLayer,
     QgsVtpkTiles,
+    QgsTileRange,
+    QgsTileXYZ,
+    QgsReadWriteContext
 )
 from qgis.testing import start_app, unittest
 
@@ -155,6 +160,45 @@ class TestQgsVtpk(unittest.TestCase):
         self.assertTrue(layer.loadDefaultMetadata())
         # make sure metadata was loaded
         self.assertEqual(layer.metadata().identifier(), 'FD610B57-9B73-48E5-A7E5-DA07C8D2C245')
+
+    def testVectorTileLayerTileMap(self):
+        # note that this is only the "shell" of a vtpk -- there's no tiles here
+        # as the file is just for tilemap handling tests
+        layer = QgsVectorTileLayer(f"type=vtpk&url={unitTestDataPath() + '/vector_tile/vtpk_indexed.vtpk'}", 'tiles')
+        layer.setOpacity(0.5)
+        self.assertTrue(layer.isValid())
+
+        tiles = layer.tileMatrixSet().tilesInRange(QgsTileRange(0, 1023, 0, 1023), 10)
+        # we want to see the zoom level 9 tiles here, as the tilemap indicates
+        # that they should be used instead of zoom level 10 tiles for their
+        # extents
+        expected = [QgsTileXYZ(274, 52, 9),
+                    QgsTileXYZ(275, 52, 9),
+                    QgsTileXYZ(548, 106, 10),
+                    QgsTileXYZ(549, 106, 10),
+                    QgsTileXYZ(550, 106, 10),
+                    QgsTileXYZ(551, 106, 10),
+                    QgsTileXYZ(548, 107, 10),
+                    QgsTileXYZ(549, 107, 10),
+                    QgsTileXYZ(550, 107, 10),
+                    QgsTileXYZ(551, 107, 10)]
+        self.assertCountEqual(tiles, expected)
+
+        # ensure that tilemap is correctly handled when restoring layers
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(layer.writeLayerXml(elem, doc, QgsReadWriteContext()))
+
+        layer2 = QgsVectorTileLayer(f"type=vtpk&url={unitTestDataPath() + '/vector_tile/vtpk_indexed.vtpk'}", 'tiles')
+        tiles = layer2.tileMatrixSet().tilesInRange(
+            QgsTileRange(0, 1023, 0, 1023), 10)
+        self.assertCountEqual(tiles, expected)
+
+        self.assertTrue(layer2.readLayerXml(elem, QgsReadWriteContext()))
+        self.assertEqual(layer2.opacity(), 0.5)
+        tiles = layer2.tileMatrixSet().tilesInRange(
+            QgsTileRange(0, 1023, 0, 1023), 10)
+        self.assertCountEqual(tiles, expected)
 
 
 if __name__ == '__main__':

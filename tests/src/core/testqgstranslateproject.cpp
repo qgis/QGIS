@@ -213,7 +213,7 @@ void TestQgsTranslateProject::translateProject()
   QList<QgsAttributeEditorContainer *> containers;
   for ( QgsAttributeEditorElement *element : elements )
   {
-    if ( element->type() == QgsAttributeEditorElement::AeTypeContainer )
+    if ( element->type() == Qgis::AttributeEditorType::Container )
       containers.append( dynamic_cast<QgsAttributeEditorContainer *>( element ) );
   }
 
@@ -224,7 +224,7 @@ void TestQgsTranslateProject::translateProject()
   //Flightattends -> Flugbegleitung
   for ( QgsAttributeEditorElement *element : containers.at( 1 )->children() )
   {
-    if ( element->type() == QgsAttributeEditorElement::AeTypeContainer )
+    if ( element->type() == Qgis::AttributeEditorType::Container )
       QCOMPARE( element->name(), QStringLiteral( "Flugbegleitung" ) );
   }
 

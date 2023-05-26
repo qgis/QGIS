@@ -41,7 +41,7 @@ endif
 
 QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye focal jammy kinetic lunar"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye bookworm jammy kinetic lunar"))
 	DISTRIBUTION := sid
 endif
 
@@ -106,8 +106,10 @@ ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
 endif
 
-ifeq (,$(findstring $(DISTRIBUTION),"sid kinetic lunar"))
+ifneq (,$(findstring $(DISTRIBUTION),"jammy bullseye"))
 	CMAKE_OPTS += -DWITH_PDAL=TRUE
+else
+	CMAKE_OPTS += -DWITH_PDAL=FALSE
 endif
 
 ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
@@ -193,6 +195,10 @@ CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
 
 ifneq (,$(WITH_ORACLE))
 	CONTROL_EXPRESSIONS += oracle
+endif
+
+ifeq ($(shell pkg-config --exists pdal && dpkg --compare-versions $$(pkg-config --modversion pdal) ge 2.5 && echo 1 || echo 0),1)
+	CONTROL_EXPRESSIONS += pdal_wrench
 endif
 
 define gentemplate

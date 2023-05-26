@@ -27,12 +27,15 @@
 #include <set>
 #include "qgis_sip.h"
 
+
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
 class QgsOgrFeatureIterator;
 class QgsOgrProvider;
 class QgsOgrDataset;
+class QgsCPLHTTPFetchOverrider;
+
 using QgsOgrDatasetSharedPtr = std::shared_ptr< QgsOgrDataset>;
 
 class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
@@ -60,6 +63,7 @@ class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
     Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
     QgsOgrDatasetSharedPtr mSharedDS = nullptr;
     QgsTransaction *mTransaction = nullptr;
+    bool mCanDriverShareSameDatasetAmongLayers = true;
 
     friend class QgsOgrFeatureIterator;
     friend class QgsOgrExpressionCompiler;
@@ -120,6 +124,8 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
 
     QgsGeometry mDistanceWithinGeom;
     std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
+
+    std::unique_ptr< QgsCPLHTTPFetchOverrider > mCplHttpFetchOverrider;
 
     QVector< int > mRequestAttributes;
 

@@ -32,10 +32,10 @@ from qgis.core import (
     QgsSingleSymbolRenderer,
     QgsSymbolLayer,
     QgsVectorLayer,
+    QgsLayoutChecker
 )
 from qgis.testing import start_app, unittest
 
-from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -47,6 +47,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super(TestQgsLayoutMap, cls).setUpClass()
         cls.item_class = QgsLayoutItemMap
 
     def setUp(self):

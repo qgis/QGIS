@@ -17,13 +17,16 @@
 
 #include "qgsconfig.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerelevationproperties.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgsprojecttimesettings.h"
 #include "qgspointcloudlayer.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
+#include "qgsterrainprovider.h"
 #ifdef HAVE_3D
 #include "qgspointcloudlayer3drenderer.h"
 #endif
@@ -55,6 +58,7 @@
 #include "qgsmaplayerutils.h"
 #include "qgsfieldformatter.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsrasterlayerelevationproperties.h"
 
 #include <QObject>
 #include <QMessageBox>
@@ -65,8 +69,42 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
 {
   switch ( layer->type() )
   {
-    case Qgis::LayerType::Vector:
     case Qgis::LayerType::Raster:
+    {
+      QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
+      bool ok = false;
+      layer->loadDefaultStyle( ok );
+      layer->loadDefaultMetadata( ok );
+
+      // if there's no (useful) terrain provider for the current project, and we know that this
+      // layer contains elevation, then automatically set it as the terrain provider
+      if ( !QgsProject::instance()->elevationProperties()->terrainProvider()
+           || ( dynamic_cast< QgsFlatTerrainProvider * >( QgsProject::instance()->elevationProperties()->terrainProvider() )
+                && QgsProject::instance()->elevationProperties()->terrainProvider()->offset() == 0
+                && QgsProject::instance()->elevationProperties()->terrainProvider()->scale() == 1 ) )
+      {
+        if ( rasterLayer->elevationProperties()->hasElevation() )
+        {
+          std::unique_ptr< QgsRasterDemTerrainProvider > terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+          terrain->setLayer( rasterLayer );
+          QgsProject::instance()->elevationProperties()->setTerrainProvider(
+            terrain.release()
+          );
+        }
+      }
+
+      // another bit of (hopefully!) user friendly logic -- while we aren't definitely sure that these layers ARE dems,
+      // we can take a good guess that they are...
+      // (but in this case we aren't sure, so don't apply the above logic which was only for layers we know are DEFINITELY dems)
+      if ( QgsRasterLayerElevationProperties::layerLooksLikeDem( rasterLayer ) )
+      {
+        qgis::down_cast< QgsRasterLayerElevationProperties * >( rasterLayer->elevationProperties() )->setEnabled( true );
+      }
+
+      break;
+    }
+
+    case Qgis::LayerType::Vector:
     {
       bool ok = false;
       layer->loadDefaultStyle( ok );

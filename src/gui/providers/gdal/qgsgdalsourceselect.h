@@ -47,6 +47,7 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
     void setProtocolWidgetsVisibility();
 
     void radioSrcFile_toggled( bool checked );
+    void radioSrcOgcApi_toggled( bool checked );
     void radioSrcProtocol_toggled( bool checked );
     void cmbProtocolTypes_currentIndexChanged( const QString &text );
 
@@ -59,7 +60,7 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
 
     QString mRasterPath;
     QStringList mDataSources;
-
+    bool mIsOgcApi = false;
 };
 
 ///@endcond

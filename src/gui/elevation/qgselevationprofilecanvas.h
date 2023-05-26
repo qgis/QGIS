@@ -224,6 +224,22 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
 
+    /**
+     * Returns TRUE if the distance and elevation scales are locked to each other.
+     *
+     * \see setLockAxisScales()
+     * \since QGIS 3.32
+     */
+    bool lockAxisScales() const;
+
+    /**
+     * Sets whether the distance and elevation scales are locked to each other.
+     *
+     * \see lockAxisScales()
+     * \since QGIS 3.32
+     */
+    void setLockAxisScales( bool lock );
+
   signals:
 
     /**
@@ -274,7 +290,11 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
     void setupLayerConnections( QgsMapLayer *layer, bool isDisconnect );
 
+    void adjustRangeForAxisScaleLock( double &xMinimum, double &xMaximum, double &yMinimum, double &yMaximum ) const;
+
     QgsScreenHelper *mScreenHelper = nullptr;
+
+    bool mLockAxisScales = false;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;

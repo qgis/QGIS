@@ -160,6 +160,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
               mDistanceUnits = mContextOptionsWidget->distanceUnit();
               mAreaUnits = mContextOptionsWidget->areaUnit();
               mTemporaryFolderOverride = mContextOptionsWidget->temporaryFolder();
+              mMaximumThreads = mContextOptionsWidget->maximumThreads();
             } );
           }
         }
@@ -869,6 +870,7 @@ void QgsProcessingAlgorithmDialogBase::applyContextOverrides( QgsProcessingConte
     context->setDistanceUnit( mDistanceUnits );
     context->setAreaUnit( mAreaUnits );
     context->setTemporaryFolder( mTemporaryFolderOverride );
+    context->setMaximumThreads( mMaximumThreads );
   }
 }
 
@@ -1010,10 +1012,13 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
     mAreaUnitsCombo->addItem( title, QVariant::fromValue( unit ) );
   }
 
+  mThreadsSpinBox->setRange( 1, QThread::idealThreadCount() );
+
   connect( mComboInvalidFeatureFiltering, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mDistanceUnitsCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mAreaUnitsCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mTemporaryFolderWidget, &QgsFileWidget::fileChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mThreadsSpinBox, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
 }
 
 void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingContext *context )
@@ -1022,6 +1027,7 @@ void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingConte
   whileBlocking( mDistanceUnitsCombo )->setCurrentIndex( mDistanceUnitsCombo->findData( QVariant::fromValue( context->distanceUnit() ) ) );
   whileBlocking( mAreaUnitsCombo )->setCurrentIndex( mAreaUnitsCombo->findData( QVariant::fromValue( context->areaUnit() ) ) );
   whileBlocking( mTemporaryFolderWidget )->setFilePath( context->temporaryFolder() );
+  whileBlocking( mThreadsSpinBox )->setValue( context->maximumThreads() );
 }
 
 QgsFeatureRequest::InvalidGeometryCheck QgsProcessingContextOptionsWidget::invalidGeometryCheck() const
@@ -1042,6 +1048,11 @@ Qgis::AreaUnit QgsProcessingContextOptionsWidget::areaUnit() const
 QString QgsProcessingContextOptionsWidget::temporaryFolder()
 {
   return mTemporaryFolderWidget->filePath();
+}
+
+int QgsProcessingContextOptionsWidget::maximumThreads() const
+{
+  return mThreadsSpinBox->value();
 }
 
 ///@endcond

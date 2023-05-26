@@ -50,6 +50,7 @@ class TestAuthManager(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         cls.authm = QgsApplication.authManager()
         assert not cls.authm.isDisabled(), cls.authm.disabledMessage()
 
@@ -60,11 +61,6 @@ class TestAuthManager(unittest.TestCase):
         db2 = QFileInfo(AUTHDBDIR + '/qgis-auth.db').canonicalFilePath()
         msg = 'Auth db temp path does not match db path of manager'
         assert db1 == db2, msg
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        pass
 
     def setUp(self):
         """Run before each test."""

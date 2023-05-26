@@ -234,6 +234,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     return;
   }
 
+  connect( mEnableMapTips, &QAbstractButton::toggled, mHtmlMapTipGroupBox, &QWidget::setEnabled );
+  mEnableMapTips->setChecked( mRasterLayer->mapTipsEnabled() );
+
   updateRasterAttributeTableOptionsPage();
 
   connect( mRasterLayer, &QgsRasterLayer::rendererChanged, this, &QgsRasterLayerProperties::updateRasterAttributeTableOptionsPage );
@@ -446,7 +449,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 #if 0
     if ( renderer )
     {
-      QgsDebugMsg( QStringLiteral( "alphaBand = %1" ).arg( renderer->alphaBand() ) );
+      QgsDebugMsgLevel( QStringLiteral( "alphaBand = %1" ).arg( renderer->alphaBand() ), 2 );
       if ( renderer->alphaBand() > 0 )
       {
         cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findData( renderer->alphaBand() ) );
@@ -867,6 +870,7 @@ void QgsRasterLayerProperties::sync()
   mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
 
+  mEnableMapTips->setChecked( mRasterLayer->mapTipsEnabled() );
   mMapTipWidget->setText( mRasterLayer->mapTipTemplate() );
 
   //WMS print layer
@@ -1126,6 +1130,7 @@ void QgsRasterLayerProperties::apply()
 
   mRasterLayer->pipe()->setDataDefinedProperties( mPropertyCollection );
 
+  mRasterLayer->setMapTipsEnabled( mEnableMapTips->isChecked() );
   mRasterLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   // Force a redraw of the legend

@@ -20,6 +20,7 @@
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelabeling.h"
+#include "qgsvectortileloader.h"
 #include "qgsvectortileutils.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsdatasourceuri.h"
@@ -45,7 +46,8 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
 {
   mDataSource = uri;
 
-  setValid( loadDataSource() );
+  if ( !uri.isEmpty() )
+    setValid( loadDataSource() );
 
   // set a default renderer
   QgsVectorTileBasicRenderer *renderer = new QgsVectorTileBasicRenderer;
@@ -98,7 +100,7 @@ bool QgsVectorTileLayer::loadDataSource()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Unknown source type: " ) + mSourceType );
+    QgsDebugError( QStringLiteral( "Unknown source type: " ) + mSourceType );
     return false;
   }
 
@@ -154,12 +156,15 @@ bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 
   setValid( loadDataSource() );
 
-  const QDomElement matrixSetElement = layerNode.firstChildElement( QStringLiteral( "matrixSet" ) );
-  if ( !matrixSetElement.isNull() )
+  if ( !mDataProvider || !( qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() )->providerFlags() & Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider ) )
   {
-    mMatrixSet.readXml( matrixSetElement, context );
-    setCrs( mMatrixSet.crs() );
+    const QDomElement matrixSetElement = layerNode.firstChildElement( QStringLiteral( "matrixSet" ) );
+    if ( !matrixSetElement.isNull() )
+    {
+      mMatrixSet.readXml( matrixSetElement, context );
+    }
   }
+  setCrs( mMatrixSet.crs() );
 
   QString errorMsg;
   if ( !readSymbology( layerNode, errorMsg, context ) )
@@ -176,7 +181,10 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::VectorTile ) );
 
-  mapLayerNode.appendChild( mMatrixSet.writeXml( doc, context ) );
+  if ( !mDataProvider || !( qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() )->providerFlags() & Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider ) )
+  {
+    mapLayerNode.appendChild( mMatrixSet.writeXml( doc, context ) );
+  }
 
   // add provider node
   if ( mDataProvider )
@@ -475,7 +483,7 @@ QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
   if ( !mDataProvider || !mDataProvider->isValid() )
     return QString();
 
-  if ( qgis::down_cast< QgsVectorTileDataProvider * >( mDataProvider.get() )->providerCapabilities() & QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata )
+  if ( qgis::down_cast< QgsVectorTileDataProvider * >( mDataProvider.get() )->providerCapabilities() & Qgis::VectorTileProviderCapability::ReadLayerMetadata )
   {
     setMetadata( mDataProvider->layerMetadata() );
   }
@@ -517,6 +525,9 @@ QString QgsVectorTileLayer::htmlMetadata() const
   info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source type" ) % QStringLiteral( "</td><td>" ) % sourceType() % QStringLiteral( "</td></tr>\n" );
 
   info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Zoom levels" ) % QStringLiteral( "</td><td>" ) % QStringLiteral( "%1 - %2" ).arg( sourceMinZoom() ).arg( sourceMaxZoom() ) % QStringLiteral( "</td></tr>\n" );
+
+  if ( mDataProvider )
+    info += qobject_cast< const QgsVectorTileDataProvider * >( mDataProvider.get() )->htmlMetadata();
 
   info += QLatin1String( "</table>\n<br>" );
 
@@ -567,16 +578,15 @@ QString QgsVectorTileLayer::sourcePath() const
   return QString();
 }
 
-QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
+QgsVectorTileRawData QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsVectorTileDataProvider *vtProvider = qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() );
   if ( !vtProvider )
-    return QByteArray();
+    return QgsVectorTileRawData();
 
-  const QgsTileMatrix tileMatrix = mMatrixSet.tileMatrix( tileID.zoomLevel() );
-  return vtProvider->readTile( tileMatrix, tileID );
+  return vtProvider->readTile( mMatrixSet, tileID );
 }
 
 void QgsVectorTileLayer::setRenderer( QgsVectorTileRenderer *r )
@@ -713,64 +723,61 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
       const int tileZoom = tileMatrixSet().scaleToZoomLevel( context.scale() );
       const QgsTileMatrix tileMatrix = tileMatrixSet().tileMatrix( tileZoom );
       const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
+      const QVector< QgsTileXYZ> tiles = tileMatrixSet().tilesInRange( tileRange, tileZoom );
 
-      for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
+      for ( const QgsTileXYZ &tileID : tiles )
       {
-        for ( int col = tileRange.startColumn(); col <= tileRange.endColumn(); ++col )
+        const QgsVectorTileRawData data = getRawTile( tileID );
+        if ( data.data.isEmpty() )
+          continue;  // failed to get data
+
+        QgsVectorTileMVTDecoder decoder( tileMatrixSet() );
+        if ( !decoder.decode( data ) )
+          continue;  // failed to decode
+
+        QMap<QString, QgsFields> perLayerFields;
+        const QStringList layerNames = decoder.layers();
+        for ( const QString &layerName : layerNames )
         {
-          QgsTileXYZ tileID( col, row, tileZoom );
-          QByteArray data = getRawTile( tileID );
-          if ( data.isEmpty() )
-            continue;  // failed to get data
+          QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
+          perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
+        }
 
-          QgsVectorTileMVTDecoder decoder( tileMatrixSet() );
-          if ( !decoder.decode( tileID, data ) )
-            continue;  // failed to decode
-
-          QMap<QString, QgsFields> perLayerFields;
-          const QStringList layerNames = decoder.layers();
-          for ( const QString &layerName : layerNames )
+        const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+        const QStringList featuresLayerNames = features.keys();
+        for ( const QString &layerName : featuresLayerNames )
+        {
+          const QgsFields fFields = perLayerFields[layerName];
+          const QVector<QgsFeature> &layerFeatures = features[layerName];
+          for ( const QgsFeature &f : layerFeatures )
           {
-            QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
-            perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
-          }
+            if ( renderContext && mRenderer && !mRenderer->willRenderFeature( f, tileID.zoomLevel(), layerName, *renderContext ) )
+              continue;
 
-          const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
-          const QStringList featuresLayerNames = features.keys();
-          for ( const QString &layerName : featuresLayerNames )
-          {
-            const QgsFields fFields = perLayerFields[layerName];
-            const QVector<QgsFeature> &layerFeatures = features[layerName];
-            for ( const QgsFeature &f : layerFeatures )
+            if ( f.geometry().intersects( r ) )
             {
-              if ( renderContext && mRenderer && !mRenderer->willRenderFeature( f, tileZoom, layerName, *renderContext ) )
-                continue;
-
-              if ( f.geometry().intersects( r ) )
+              bool selectFeature = true;
+              if ( selectionGeomPrepared )
               {
-                bool selectFeature = true;
-                if ( selectionGeomPrepared )
+                switch ( relationship )
                 {
-                  switch ( relationship )
-                  {
-                    case Qgis::SelectGeometryRelationship::Intersect:
-                      selectFeature = selectionGeomPrepared->intersects( f.geometry().constGet() );
-                      break;
-                    case Qgis::SelectGeometryRelationship::Within:
-                      selectFeature = selectionGeomPrepared->contains( f.geometry().constGet() );
-                      break;
-                  }
+                  case Qgis::SelectGeometryRelationship::Intersect:
+                    selectFeature = selectionGeomPrepared->intersects( f.geometry().constGet() );
+                    break;
+                  case Qgis::SelectGeometryRelationship::Within:
+                    selectFeature = selectionGeomPrepared->contains( f.geometry().constGet() );
+                    break;
                 }
+              }
 
-                if ( selectFeature )
-                {
-                  QgsFeature derivedFeature = f;
-                  addDerivedFields( derivedFeature, tileZoom, layerName );
-                  if ( flags & Qgis::SelectionFlag::SingleFeatureSelection )
-                    singleSelectCandidates << derivedFeature;
-                  else
-                    mSelectedFeatures.insert( derivedFeature.id(), derivedFeature );
-                }
+              if ( selectFeature )
+              {
+                QgsFeature derivedFeature = f;
+                addDerivedFields( derivedFeature, tileID.zoomLevel(), layerName );
+                if ( flags & Qgis::SelectionFlag::SingleFeatureSelection )
+                  singleSelectCandidates << derivedFeature;
+                else
+                  mSelectedFeatures.insert( derivedFeature.id(), derivedFeature );
               }
             }
           }

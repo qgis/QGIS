@@ -169,7 +169,7 @@ Constructor for QgsLayoutChecker.
 Sets the output (reference) image ``size``.
 %End
 
-    bool testLayout( QString &report, int page = 0, int pixelDiff = 0, bool createReferenceImage = false );
+    bool testLayout( QString &report /Out/, int page = 0, int pixelDiff = 0, bool createReferenceImage = false );
 %Docstring
 Runs a render check on the layout, adding results to the specified ``report``.
 
@@ -182,7 +182,12 @@ in this case the test will always return ``True``.
 The page number is specified via ``page``, where 0 corresponds to the first
 page in the layout.
 
-Returns ``False`` if the rendered layout differs from the expected reference image.
+:param page: page number from layout to render and check
+:param pixelDiff: number of pixels which are permitted to differ from reference image.
+:param createReferenceImage: if ``True``, the rendered reference image will be regenerated instead of performing a comparison test with the existing image
+
+:return: - ``True`` if the rendered layout matches the expected reference image.
+         - report: will be set to generated test report
 %End
 
 };

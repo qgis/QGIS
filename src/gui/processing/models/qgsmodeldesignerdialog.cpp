@@ -30,6 +30,7 @@
 #include "qgsmodelcomponentgraphicitem.h"
 #include "processing/models/qgsprocessingmodelgroupbox.h"
 #include "processing/models/qgsmodelinputreorderwidget.h"
+#include "processing/models/qgsmodeloutputreorderwidget.h"
 #include "qgsmessageviewer.h"
 #include "qgsmessagebaritem.h"
 #include "qgspanelwidget.h"
@@ -152,6 +153,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionSnapSelected, &QAction::triggered, mView, &QgsModelGraphicsView::snapSelected );
   connect( mActionValidate, &QAction::triggered, this, &QgsModelDesignerDialog::validate );
   connect( mActionReorderInputs, &QAction::triggered, this, &QgsModelDesignerDialog::reorderInputs );
+  connect( mActionReorderOutputs, &QAction::triggered, this, &QgsModelDesignerDialog::reorderOutputs );
   connect( mActionEditHelp, &QAction::triggered, this, &QgsModelDesignerDialog::editHelp );
   connect( mReorderInputsButton, &QPushButton::clicked, this, &QgsModelDesignerDialog::reorderInputs );
 
@@ -1024,6 +1026,20 @@ void QgsModelDesignerDialog::reorderInputs()
     const QStringList inputOrder = dlg.inputOrder();
     beginUndoCommand( tr( "Reorder Inputs" ) );
     mModel->setParameterOrder( inputOrder );
+    endUndoCommand();
+  }
+}
+
+void QgsModelDesignerDialog::reorderOutputs()
+{
+  QgsModelOutputReorderDialog dlg( this );
+  dlg.setModel( mModel.get() );
+  if ( dlg.exec() )
+  {
+    const QStringList outputOrder = dlg.outputOrder();
+    beginUndoCommand( tr( "Reorder Outputs" ) );
+    mModel->setOutputOrder( outputOrder );
+    mModel->setOutputGroup( dlg.outputGroup() );
     endUndoCommand();
   }
 }

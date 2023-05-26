@@ -91,7 +91,7 @@ void QgsAttributeTableDialog::readXml( const QDomElement &element )
 
 void QgsAttributeTableDialog::updateMultiEditButtonState()
 {
-  if ( ! mLayer || ( mLayer->editFormConfig().layout() == QgsEditFormConfig::EditorLayout::UiFileLayout ) )
+  if ( ! mLayer || ( mLayer->editFormConfig().layout() == Qgis::AttributeFormLayout::UiFile ) )
     return;
 
   mActionToggleMultiEdit->setEnabled( mLayer->isEditable() );
@@ -172,7 +172,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   layout()->setContentsMargins( 0, 0, 0, 0 );
   static_cast< QGridLayout * >( layout() )->setVerticalSpacing( 0 );
 
-  int size = settings.value( QStringLiteral( "/qgis/iconSize" ), 16 ).toInt();
+  int size = settings.value( QStringLiteral( "/qgis/toolbarIconSize" ), 16 ).toInt();
   if ( size > 32 )
   {
     size -= 16;
@@ -198,39 +198,39 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   QgsAttributeEditorContext editorContext = QgisApp::instance()->createAttributeEditorContext();
   editorContext.setDistanceArea( da );
 
-  QgsFeatureRequest r;
+  QgsFeatureRequest request;
   bool needsGeom = false;
   if ( mLayer && mLayer->geometryType() != Qgis::GeometryType::Null &&
        initialMode == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( layer, mc->extent() ) );
-    r.setFilterRect( extent );
+    request.setFilterRect( extent );
     needsGeom = true;
   }
   else if ( initialMode == QgsAttributeTableFilterModel::ShowSelected )
   {
-    r.setFilterFids( layer->selectedFeatureIds() );
+    request.setFilterFids( layer->selectedFeatureIds() );
   }
   else if ( initialMode == QgsAttributeTableFilterModel::ShowEdited )
   {
-    r.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
+    request.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
   }
   else if ( !filterExpression.isEmpty() )
   {
-    r.setFilterExpression( filterExpression );
+    request.setFilterExpression( filterExpression );
   }
   if ( !needsGeom )
-    r.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+
 
   // Initialize dual view
   if ( mLayer )
   {
-    mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, editorContext, false );
-
+    request.setSubsetOfAttributes( mMainView->requiredAttributes( mLayer ) );
+    mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), request, editorContext, false );
     QgsAttributeTableConfig config = mLayer->attributeTableConfig();
     mMainView->setAttributeTableConfig( config );
-
     mFeatureFilterWidget->init( mLayer, editorContext, mMainView, QgisApp::instance()->messageBar(), QgsMessageBar::defaultMessageTimeout() );
   }
 
@@ -427,7 +427,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     connect( mActionSearchForm, &QAction::toggled, mMainView, &QgsDualView::toggleSearchMode );
     updateMultiEditButtonState();
 
-    if ( mLayer->editFormConfig().layout() == QgsEditFormConfig::EditorLayout::UiFileLayout )
+    if ( mLayer->editFormConfig().layout() == Qgis::AttributeFormLayout::UiFile )
     {
       //not supported with custom UI
       mActionToggleMultiEdit->setEnabled( false );

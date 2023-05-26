@@ -41,23 +41,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QComboBox" name="mSymbologyModeComboBox">
-     <item>
-      <property name="text">
-       <string>No symbology</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Feature symbology</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Symbol layer symbology</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QComboBox" name="mSymbologyModeComboBox"/>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="mSymbologyScaleLabel">

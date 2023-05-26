@@ -134,6 +134,14 @@ QgsMapLayerType.GroupLayer.is_monkey_patched = True
 QgsMapLayerType.GroupLayer.__doc__ = "Composite group layer. Added in QGIS 3.24"
 QgsMapLayerType.baseClass = Qgis
 
+# Monkey patch QgsDxfExport
+QgsDxfExport.SymbologyExport = Qgis.FeatureSymbologyExport
+QgsDxfExport.SymbologyExport.FeatureSymbology = Qgis.FeatureSymbologyExport.PerFeature
+QgsDxfExport.SymbologyExport.SymbolLayerSymbology = Qgis.FeatureSymbologyExport.PerSymbolLayer
+QgsDxfExport.NoSymbology = Qgis.FeatureSymbologyExport.NoSymbology
+QgsDxfExport.FeatureSymbology = Qgis.FeatureSymbologyExport.PerFeature
+QgsDxfExport.SymbolLayerSymbology = Qgis.FeatureSymbologyExport.PerSymbolLayer
+
 GEOWKT = geoWkt()
 PROJECT_SCALES = Qgis.defaultProjectScales()
 GEOPROJ4 = geoProj4()

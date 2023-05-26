@@ -28,6 +28,7 @@
 #include "qgslayertreelayer.h"
 #include "qgslayertree.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgscoordinatetransform.h"
 
 #include "qgsexception.h"
 

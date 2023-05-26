@@ -50,7 +50,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
       spnSize->setSuffix( tr( " degrees" ) );
       break;
     default:
-      QgsDebugMsg( QStringLiteral( "Error: not picked up map units - actual value = %1" ).arg( qgsEnumValueToKey( units ) ) );
+      QgsDebugError( QStringLiteral( "Error: not picked up map units - actual value = %1" ).arg( qgsEnumValueToKey( units ) ) );
   }
   spnSize->setValue( mDeco.mPreferredSize );
 

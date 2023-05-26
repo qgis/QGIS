@@ -120,6 +120,13 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      */
     int errorCount() const { return mErrorCount; }
 
+    /**
+     * Returns the attribute capabilities of the exporter.
+     *
+     * \since QGIS 3.32
+     */
+    Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const;
+
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;

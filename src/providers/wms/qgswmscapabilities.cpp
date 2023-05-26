@@ -481,7 +481,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
       mErrorFormat = QStringLiteral( "text/plain" );
       mError = QObject::tr( "empty capabilities document" );
     }
-    QgsDebugMsg( QStringLiteral( "response is empty" ) );
+    QgsDebugError( QStringLiteral( "response is empty" ) );
     return false;
   }
 
@@ -490,7 +490,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
   {
     mErrorFormat = QStringLiteral( "text/html" );
     mError = response;
-    QgsDebugMsg( QStringLiteral( "starts with <html>" ) );
+    QgsDebugError( QStringLiteral( "starts with <html>" ) );
     return false;
   }
 
@@ -507,7 +507,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
 
     // TODO[MD] mError += QObject::tr( "\nTried URL: %1" ).arg( url );
 
-    QgsDebugMsg( "!domOK: " + mError );
+    QgsDebugError( "!domOK: " + mError );
 
     return false;
   }
@@ -919,7 +919,7 @@ void QgsWmsCapabilities::parseCapability( const QDomElement &element, QgsWmsCapa
       QgsWmsOperationType *operationType = nullptr;
       if ( href.isNull() )
       {
-        QgsDebugMsg( QStringLiteral( "http get missing from ows:Operation '%1'" ).arg( name ) );
+        QgsDebugError( QStringLiteral( "http get missing from ows:Operation '%1'" ).arg( name ) );
       }
       else if ( name == QLatin1String( "GetTile" ) )
       {
@@ -935,7 +935,7 @@ void QgsWmsCapabilities::parseCapability( const QDomElement &element, QgsWmsCapa
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "ows:Operation %1 ignored" ).arg( name ) );
+        QgsDebugError( QStringLiteral( "ows:Operation %1 ignored" ).arg( name ) );
       }
 
       if ( operationType )
@@ -1355,7 +1355,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "CRS/SRS attribute not found in BoundingBox" ) );
+          QgsDebugError( QStringLiteral( "CRS/SRS attribute not found in BoundingBox" ) );
         }
       }
       else if ( tagName == QLatin1String( "Dimension" ) )
@@ -1707,7 +1707,7 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
           boundingBoxProperty.crs = nodeElement.attribute( QStringLiteral( "crs" ) );
         else
         {
-          QgsDebugMsg( QStringLiteral( "crs of bounding box undefined" ) );
+          QgsDebugError( QStringLiteral( "crs of bounding box undefined" ) );
         }
 
         if ( !boundingBoxProperty.crs.isEmpty() )
@@ -1725,7 +1725,7 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "tileset tag %1 ignored" ).arg( nodeElement.tagName() ) );
+        QgsDebugError( QStringLiteral( "tileset tag %1 ignored" ).arg( nodeElement.tagName() ) );
       }
     }
     node = node.nextSibling();
@@ -1827,7 +1827,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Could not parse topLeft" ) );
+        QgsDebugError( QStringLiteral( "Could not parse topLeft" ) );
         continue;
       }
 
@@ -1915,7 +1915,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
           boundingBoxProperty.crs = bbox.attribute( QStringLiteral( "crs" ) );
         else
         {
-          QgsDebugMsg( QStringLiteral( "crs of bounding box undefined" ) );
+          QgsDebugError( QStringLiteral( "crs of bounding box undefined" ) );
         }
 
         if ( !boundingBoxProperty.crs.isEmpty() )
@@ -2032,7 +2032,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         fmt = Qgis::RasterIdentifyFormat::Feature;
       else
       {
-        QgsDebugMsg( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
+        QgsDebugError( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
         continue;
       }
 
@@ -2175,7 +2175,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
       if ( !mTileMatrixSets.contains( setLink.tileMatrixSet ) )
       {
-        QgsDebugMsg( QStringLiteral( "  TileMatrixSet %1 not found." ).arg( setLink.tileMatrixSet ) );
+        QgsDebugError( QStringLiteral( "  TileMatrixSet %1 not found." ).arg( setLink.tileMatrixSet ) );
         continue;
       }
 
@@ -2219,7 +2219,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
           }
           else
           {
-            QgsDebugMsg( QStringLiteral( "   TileMatrix id:%1 not found." ).arg( id ) );
+            QgsDebugError( QStringLiteral( "   TileMatrix id:%1 not found." ).arg( id ) );
           }
 
           QgsDebugMsgLevel( QStringLiteral( "   TileMatrixLimit id:%1 row:%2-%3 col:%4-%5 matrix:%6x%7 %8" )
@@ -2281,7 +2281,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
           fmt = Qgis::RasterIdentifyFormat::Feature;
         else
         {
-          QgsDebugMsg( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
+          QgsDebugError( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
           continue;
         }
 
@@ -2290,10 +2290,10 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "UNEXPECTED resourceType in ResourcURL format=%1 resourceType=%2 template=%3" )
-                     .arg( format,
-                           resourceType,
-                           tmpl ) );
+        QgsDebugError( QStringLiteral( "UNEXPECTED resourceType in ResourcURL format=%1 resourceType=%2 template=%3" )
+                       .arg( format,
+                             resourceType,
+                             tmpl ) );
       }
     }
 
@@ -2322,7 +2322,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
     {
       if ( !detectTileLayerBoundingBox( tileLayer ) )
       {
-        QgsDebugMsg( "failed to detect bounding box for " + tileLayer.identifier + " - using extent of the whole world" );
+        QgsDebugError( "failed to detect bounding box for " + tileLayer.identifier + " - using extent of the whole world" );
 
         QgsWmsBoundingBoxProperty boundingBoxProperty;
         boundingBoxProperty.crs = DEFAULT_LATLON_CRS;

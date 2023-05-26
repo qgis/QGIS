@@ -266,7 +266,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( double minimum, 
 {
   if ( valuesRequired() )
   {
-    QgsDebugMsg( QStringLiteral( "The classification method %1 tries to calculate classes without values while they are required." ).arg( name() ) );
+    QgsDebugError( QStringLiteral( "The classification method %1 tries to calculate classes without values while they are required." ).arg( name() ) );
   }
 
   // get the breaks

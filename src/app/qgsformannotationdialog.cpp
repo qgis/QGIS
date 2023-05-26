@@ -21,6 +21,8 @@
 #include "qgsannotationmanager.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgssettingsentryimpl.h"
+
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -38,6 +40,13 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *it
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
+  // Form annotation can only be created from an ui file
+  // Mask the source radio button and the source text edit
+  mFileRadioButton->setChecked( true );
+  mFileRadioButton->hide();
+  mSourceRadioButton->hide();
+  mHtmlSourceTextEdit->hide();
+
   if ( item && item->annotation() )
   {
     QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( item->annotation() );
@@ -49,6 +58,12 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *it
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsFormAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
+
+  connect( mLiveCheckBox, &QCheckBox::toggled, this, &QgsFormAnnotationDialog::onLiveUpdateToggled );
+  mLiveCheckBox->setChecked( QgsAnnotationWidget::settingLiveUpdate->value() );
+  connect( mEmbeddedWidget, &QgsAnnotationWidget::changed, this, &QgsFormAnnotationDialog::onSettingsChanged );
+  connect( mFileLineEdit, &QLineEdit::textChanged, this, &QgsFormAnnotationDialog::onSettingsChanged );
+  connect( mLiveCheckBox, &QCheckBox::toggled, this, &QgsFormAnnotationDialog::onSettingsChanged );
 
   QgsGui::enableAutoGeometryRestore( this );
 }
@@ -63,9 +78,12 @@ void QgsFormAnnotationDialog::applySettingsToItem()
 
   if ( mItem && mItem->annotation() )
   {
-    QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( mItem->annotation() );
-    annotation->setDesignerForm( mFileLineEdit->text() );
-    mItem->update();
+    if ( !mFileLineEdit->text().isEmpty() )
+    {
+      QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( mItem->annotation() );
+      annotation->setDesignerForm( mFileLineEdit->text() );
+      mItem->update();
+    }
   }
 }
 
@@ -78,6 +96,10 @@ void QgsFormAnnotationDialog::mBrowseToolButton_clicked()
     directory = fi.absolutePath();
   }
   const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, QStringLiteral( "*.ui" ) );
+  if ( filename.isEmpty() )
+  {
+    return;
+  }
   mFileLineEdit->setText( filename );
 }
 
@@ -99,4 +121,20 @@ void QgsFormAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 void QgsFormAnnotationDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
+}
+
+void QgsFormAnnotationDialog::onSettingsChanged()
+{
+  if ( mLiveCheckBox->isChecked() )
+  {
+    applySettingsToItem();
+  }
+}
+
+void QgsFormAnnotationDialog::onLiveUpdateToggled( bool checked )
+{
+  // Apply and Cancel buttons make no sense when live update is on
+  mButtonBox->button( QDialogButtonBox::Apply )->setHidden( checked );
+  mButtonBox->button( QDialogButtonBox::Cancel )->setHidden( checked );
+  QgsAnnotationWidget::settingLiveUpdate->setValue( checked );
 }

@@ -33,8 +33,7 @@
 
 
 QgsOptionsDialogHighlightWidget::QgsOptionsDialogHighlightWidget( QWidget *widget )
-  : QObject( widget )
-  , mWidget( widget )
+  : mWidget( widget )
 {}
 
 QgsOptionsDialogHighlightWidget *QgsOptionsDialogHighlightWidget::createWidget( QWidget *widget )
@@ -50,6 +49,11 @@ QgsOptionsDialogHighlightWidget *QgsOptionsDialogHighlightWidget::createWidget( 
       // return invalid widget
       return nullptr;
     }
+  }
+
+  if ( dynamic_cast<QgsOptionsDialogHighlightWidget *>( widget ) )
+  {
+    return dynamic_cast<QgsOptionsDialogHighlightWidget *>( widget );
   }
 
   if ( qobject_cast<QLabel *>( widget ) )
@@ -91,21 +95,27 @@ bool QgsOptionsDialogHighlightWidget::searchHighlight( const QString &text )
   if ( !mWidget )
     return found;
 
-  if ( mChangedStyle )
+  if ( mEventFilter )
+  {
+    mWidget->removeEventFilter( mEventFilter );
+    delete mEventFilter;
+    mEventFilter = nullptr;
+  }
+
+  if ( !text.isEmpty() )
+  {
+    found = searchText( mSearchText );
+  }
+  else
   {
     reset();
     mChangedStyle = false;
   }
 
-  if ( mInstalledFilter )
+  if ( mChangedStyle )
   {
-    mWidget->removeEventFilter( this );
-    mInstalledFilter = false;
-  }
-
-  if ( !text.isEmpty() )
-  {
-    found = searchText( text );
+    reset();
+    mChangedStyle = false;
   }
 
   if ( found )
@@ -113,30 +123,38 @@ bool QgsOptionsDialogHighlightWidget::searchHighlight( const QString &text )
 
     if ( !mWidget->isVisible() )
     {
-      mWidget->installEventFilter( this );
-      mInstalledFilter = true;
+      mEventFilter = new QgsOptionsDialogHighlightWidgetEventFilter( this );
+      mWidget->installEventFilter( mEventFilter );
     }
     else
     {
-      mChangedStyle = highlightText( text );
+      mChangedStyle = highlightText( mSearchText );
     }
   }
 
   return found;
 }
 
-bool QgsOptionsDialogHighlightWidget::eventFilter( QObject *obj, QEvent *event )
+
+
+///@cond PRIVATE
+
+QgsOptionsDialogHighlightWidgetEventFilter::QgsOptionsDialogHighlightWidgetEventFilter( QgsOptionsDialogHighlightWidget *highlightWidget )
+  : QObject( highlightWidget->widget() )
+  , mHighlightWidget( highlightWidget )
+{}
+
+bool QgsOptionsDialogHighlightWidgetEventFilter::eventFilter( QObject *obj, QEvent *event )
 {
-  if ( mInstalledFilter && event->type() == QEvent::Show && obj == mWidget )
+  if ( event->type() == QEvent::Show && obj == mHighlightWidget->widget() )
   {
-    mWidget->removeEventFilter( this );
-    mInstalledFilter = false;
+    mHighlightWidget->widget()->removeEventFilter( this );
     // instead of catching the event and calling show again
     // it might be better to use a timer to change the style
     // after the widget is shown
 #if 1
-    mWidget->show();
-    mChangedStyle = highlightText( mSearchText );
+    mHighlightWidget->widget()->show();
+    mHighlightWidget->mChangedStyle = mHighlightWidget->highlightText( mHighlightWidget->mSearchText );
     return true;
 #else
     QTimer::singleShot( 500, this, [ = ]
@@ -148,5 +166,6 @@ bool QgsOptionsDialogHighlightWidget::eventFilter( QObject *obj, QEvent *event )
   return QObject::eventFilter( obj, event );
 }
 
+///@endcond
 
 

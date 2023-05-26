@@ -112,18 +112,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     //! Slot to choose path to project to open after launch
     void selectProjectOnLaunch();
 
-    //! Slot to select the default font point size for app
-    void spinFontSize_valueChanged( int fontSize );
-
-    //! Slot to set font family for app to Qt default
-    void mFontFamilyRadioQt_released();
-
-    //! Slot to set font family for app to custom choice
-    void mFontFamilyRadioCustom_released();
-
-    //! Slot to select custom font family choice for app
-    void mFontFamilyComboBox_currentFontChanged( const QFont &font );
-
     void mProxyTypeComboBox_currentIndexChanged( int idx );
 
     //! Add a new URL to no proxy URL list
@@ -292,8 +280,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
   protected:
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
-    QMap<QString, QVariant> mStyleSheetNewOpts;
-    QMap<QString, QVariant> mStyleSheetOldOpts;
 
     static const int PALETTE_COLOR_ROLE = Qt::UserRole + 1;
     static const int PALETTE_LABEL_ROLE = Qt::UserRole + 2;

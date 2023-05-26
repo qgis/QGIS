@@ -38,6 +38,7 @@ class QgsProcessingAlgorithm;
 class QgsVectorTileLayer;
 class QgsPointCloudLayer;
 class QgsAnnotationLayer;
+class QgsVectorTileLayer;
 
 #include <QString>
 #include <QVariant>
@@ -63,6 +64,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      */
     static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
@@ -83,6 +85,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      */
     static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
@@ -101,6 +104,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.6
@@ -119,6 +123,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleMeshLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
@@ -137,6 +142,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleMeshLayers()
      * \see compatiblePluginLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
@@ -155,11 +161,31 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleMeshLayers()
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
+     * \see compatibleVectorTileLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
      */
     static QList<QgsAnnotationLayer *> compatibleAnnotationLayers( QgsProject *project, bool sort = true );
+
+    /**
+     * Returns a list of vector tile layers from a \a project which are compatible with the processing
+     * framework.
+     *
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
+     * value.
+     *
+     * \see compatibleRasterLayers()
+     * \see compatibleVectorLayers()
+     * \see compatibleMeshLayers()
+     * \see compatiblePluginLayers()
+     * \see compatiblePointCloudLayers()
+     * \see compatibleAnnotationLayers()
+     * \see compatibleLayers()
+     *
+     * \since QGIS 3.32
+     */
+    static QList<QgsVectorTileLayer *> compatibleVectorTileLayers( QgsProject *project, bool sort = true );
 
     /**
      * Returns a list of map layers from a \a project which are compatible with the processing
@@ -205,6 +231,7 @@ class CORE_EXPORT QgsProcessingUtils
       Mesh, //!< Mesh layer type, since QGIS 3.6
       PointCloud, //!< Point cloud layer type, since QGIS 3.22
       Annotation, //!< Annotation layer type, since QGIS 3.22
+      VectorTile, //!< Vector tile layer type, since QGIS 3.32
     };
 
     /**
@@ -471,6 +498,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see defaultRasterExtension()
      * \see defaultPointCloudExtension()
+     * \see defaultVectorTileExtension()
      * \since QGIS 3.10
      */
     static QString defaultVectorExtension();
@@ -484,6 +512,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see defaultVectorExtension()
      * \see defaultPointCloudExtension()
+     * \see defaultVectorTileExtension()
      * \since QGIS 3.10
      */
     static QString defaultRasterExtension();
@@ -496,9 +525,23 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see defaultVectorExtension()
      * \see defaultRasterExtension()
+     * \see defaultVectorTileExtension()
      * \since QGIS 3.24
      */
     static QString defaultPointCloudExtension();
+
+    /**
+     * Returns the default vector tile extension to use, in the absence of all other constraints (e.g.
+     * provider based support for extensions).
+     *
+     * This method returns a fallback value of "mbtiles".
+     *
+     * \see defaultVectorExtension()
+     * \see defaultRasterExtension()
+     * \see defaultPointCloudExtension()
+     * \since QGIS 3.32
+     */
+    static QString defaultVectorTileExtension();
 
     /**
      * Removes any raw pointer values from an input \a map, replacing them with

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     BatchInputSelectionPanel.py
@@ -50,7 +48,7 @@ class BatchInputSelectionPanel(QWidget):
     valueChanged = pyqtSignal()
 
     def __init__(self, param, row, col, dialog):
-        super(BatchInputSelectionPanel, self).__init__(None)
+        super().__init__(None)
         self.param = param
         self.dialog = dialog
         self.row = row

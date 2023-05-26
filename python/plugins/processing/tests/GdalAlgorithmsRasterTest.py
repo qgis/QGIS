@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     GdalAlgorithmRasterTest.py
@@ -674,7 +672,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'FORMULA': formula,
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+                 f'--overwrite --calc "{formula}" --format JPEG --type Float32 -A {source} --A_band 1 --outfile {output}'])
 
             if GdalUtils.version() >= 3030000:
                 extent = QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:4326'))
@@ -685,7 +683,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                             'PROJWIN': extent,
                                             'OUTPUT': output}, context, feedback),
                     ['gdal_calc.py',
-                     '--overwrite --calc "{}" --format JPEG --type Float32 --projwin 1.0 4.0 3.0 2.0 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+                     f'--overwrite --calc "{formula}" --format JPEG --type Float32 --projwin 1.0 4.0 3.0 2.0 -A {source} --A_band 1 --outfile {output}'])
 
                 # Inputs A and B share same pixel size and CRS
                 self.assertEqual(
@@ -697,7 +695,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                             'EXTENT_OPT': 3,
                                             'OUTPUT': output}, context, feedback),
                     ['gdal_calc.py',
-                     '--overwrite --calc "{}" --format JPEG --type Float32 --extent=intersect -A {} --A_band 1 -B "{}" --B_band 1 --outfile {}'.format(formula, source2, source3, output)])
+                     f'--overwrite --calc "{formula}" --format JPEG --type Float32 --extent=intersect -A {source2} --A_band 1 -B "{source3}" --B_band 1 --outfile {output}'])
 
                 # Test mutually exclusive --extent and --projwin. Should raise an exception
                 self.assertRaises(
@@ -729,7 +727,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'FORMULA': formula,
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+                 f'--overwrite --calc "{formula}" --format JPEG --type Float32 -A {source} --A_band 1 --outfile {output}'])
 
             # additional creation options
             formula = 'A*2'
@@ -740,7 +738,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --co COMPRESS=JPEG --co JPEG_QUALITY=75 --outfile {}'.format(formula, source, output)])
+                 f'--overwrite --calc "{formula}" --format JPEG --type Float32 -A {source} --A_band 1 --co COMPRESS=JPEG --co JPEG_QUALITY=75 --outfile {output}'])
 
             # additional parameters
             formula = 'A*2'
@@ -751,7 +749,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '--debug --quiet',
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --debug --quiet --outfile {}'.format(formula, source, output)])
+                 f'--overwrite --calc "{formula}" --format JPEG --type Float32 -A {source} --A_band 1 --debug --quiet --outfile {output}'])
 
     def testGdalInfo(self):
         context = QgsProcessingContext()
@@ -1193,7 +1191,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 ['gdaldem',
                  'hillshade ' +
                  '"' + source_with_space + '" ' +
-                 '"{}/check out.tif" -of GTiff -b 1 -z 5.0 -s 2.0 -az 90.0 -alt 20.0'.format(outdir)])
+                 f'"{outdir}/check out.tif" -of GTiff -b 1 -z 5.0 -s 2.0 -az 90.0 -alt 20.0'])
 
             # compute edges
             self.assertEqual(
@@ -1312,7 +1310,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 ['gdaldem',
                  'aspect ' +
                  '"' + source_with_space + '" ' +
-                 '"{}/check out.tif" -of GTiff -b 1'.format(outdir)])
+                 f'"{outdir}/check out.tif" -of GTiff -b 1'])
 
             # compute edges
             self.assertEqual(
@@ -1503,7 +1501,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  'color-relief ' +
                  '"' + source_with_space + '" ' +
                  colorTable + ' ' +
-                 '"{}/check out.tif" -of GTiff -b 1'.format(outdir)])
+                 f'"{outdir}/check out.tif" -of GTiff -b 1'])
 
             # compute edges
             self.assertEqual(
@@ -1860,7 +1858,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 alg.getConsoleCommands({'INPUT': [source],
                                         'OUTPUT': outdir}, context, feedback),
                 ['gdal_retile.py',
-                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -targetDir {} '.format(outdir) +
+                 f'-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -targetDir {outdir} ' +
                  source])
 
             # with input srs
@@ -1869,7 +1867,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'SOURCE_CRS': 'EPSG:3111',
                                         'OUTPUT': outdir}, context, feedback),
                 ['gdal_retile.py',
-                 '-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:3111 -r near -ot Float32 -targetDir {} {}'.format(outdir, source)
+                 f'-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:3111 -r near -ot Float32 -targetDir {outdir} {source}'
                  ])
 
             # with target using proj string
@@ -1879,7 +1877,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'SOURCE_CRS': custom_crs,
                                         'OUTPUT': outdir}, context, feedback),
                 ['gdal_retile.py',
-                 '-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:20936 -r near -ot Float32 -targetDir {} {}'.format(outdir, source)
+                 f'-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:20936 -r near -ot Float32 -targetDir {outdir} {source}'
                  ])
 
             # with target using custom projection
@@ -1898,7 +1896,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'SOURCE_CRS': 'POSTGIS:3111',
                                         'OUTPUT': outdir}, context, feedback),
                 ['gdal_retile.py',
-                 '-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:3111 -r near -ot Float32 -targetDir {} {}'.format(outdir, source)
+                 f'-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:3111 -r near -ot Float32 -targetDir {outdir} {source}'
                  ])
 
             self.assertEqual(
@@ -1907,7 +1905,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'DELIMITER': '',
                                         'OUTPUT': outdir}, context, feedback),
                 ['gdal_retile.py',
-                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -csv out.csv -targetDir {} '.format(outdir) +
+                 f'-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -csv out.csv -targetDir {outdir} ' +
                  source])
 
             self.assertEqual(
@@ -1916,7 +1914,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'DELIMITER': ';',
                                         'OUTPUT': outdir}, context, feedback),
                 ['gdal_retile.py',
-                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -csv out.csv -csvDelim ";" -targetDir {} '.format(outdir) +
+                 f'-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -csv out.csv -csvDelim ";" -targetDir {outdir} ' +
                  source])
 
             # additional parameters
@@ -1925,7 +1923,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '-v -tileIndex tindex.shp',
                                         'OUTPUT': outdir}, context, feedback),
                 ['gdal_retile.py',
-                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -v -tileIndex tindex.shp -targetDir {} '.format(outdir) +
+                 f'-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -v -tileIndex tindex.shp -targetDir {outdir} ' +
                  source])
 
             self.assertEqual(
@@ -1933,7 +1931,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'ONLY_PYRAMIDS': True,
                                         'OUTPUT': outdir}, context, feedback),
                 ['gdal_retile.py',
-                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -pyramidOnly -targetDir {} '.format(outdir) +
+                 f'-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -pyramidOnly -targetDir {outdir} ' +
                  source])
 
             self.assertEqual(
@@ -1941,7 +1939,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'DIR_FOR_ROW': True,
                                         'OUTPUT': outdir}, context, feedback),
                 ['gdal_retile.py',
-                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -useDirForEachRow -targetDir {} '.format(outdir) +
+                 f'-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -useDirForEachRow -targetDir {outdir} ' +
                  source])
 
     def testWarp(self):
@@ -2290,11 +2288,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NO_MASK': False,
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_fillnodata.py',
-                 '-md 10 -b 1 -mask ' +
-                 mask +
-                 ' -of GTiff ' +
-                 source + ' ' +
-                 outsource])
+                 f'{source} {outsource} -md 10 -b 1 -mask {mask} -of GTiff'])
 
             # without mask value
             self.assertEqual(
@@ -2305,10 +2299,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NO_MASK': False,
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_fillnodata.py',
-                 '-md 10 -b 1 ' +
-                 '-of GTiff ' +
-                 source + ' ' +
-                 outsource])
+                 f'{source} {outsource} -md 10 -b 1 -of GTiff'])
 
             # nomask true
             self.assertEqual(
@@ -2319,10 +2310,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NO_MASK': True,
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_fillnodata.py',
-                 '-md 10 -b 1 -nomask ' +
-                 '-of GTiff ' +
-                 source + ' ' +
-                 outsource])
+                 f'{source} {outsource} -md 10 -b 1 -nomask -of GTiff'])
 
             # creation options
             self.assertEqual(
@@ -2331,9 +2319,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_fillnodata.py',
-                 '-md 10 -b 1 -of GTiff -co COMPRESS=JPEG -co JPEG_QUALITY=75 ' +
-                 source + ' ' +
-                 outsource])
+                 f'{source} {outsource} -md 10 -b 1 -of GTiff -co COMPRESS=JPEG -co JPEG_QUALITY=75'])
 
             # additional parameters
             self.assertEqual(
@@ -2342,9 +2328,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '-q',
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_fillnodata.py',
-                 '-md 10 -b 1 -of GTiff -q ' +
-                 source + ' ' +
-                 outsource])
+                 f'{source} {outsource} -md 10 -b 1 -of GTiff -q'])
 
     def testGdalAddo(self):
         context = QgsProcessingContext()

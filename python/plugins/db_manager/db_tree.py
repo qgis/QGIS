@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -28,6 +26,7 @@ from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
 from .db_model import DBModel, PluginItem
 from .db_plugins.plugin import DBPlugin, Schema, Table
+from .db_plugins.vlayers.plugin import LTable
 
 
 class DBTree(QTreeView):
@@ -122,7 +121,7 @@ class DBTree(QTreeView):
 
         menu = QMenu(self)
 
-        if isinstance(item, (Table, Schema)):
+        if isinstance(item, (Table, Schema)) and not isinstance(item, LTable):
             menu.addAction(QCoreApplication.translate("DBTree", "Rename…"), self.rename)
             menu.addAction(QCoreApplication.translate("DBTree", "Delete…"), self.delete)
 

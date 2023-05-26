@@ -24,10 +24,10 @@ from qgis.core import (
     QgsLayoutUtils,
     QgsProject,
     QgsReadWriteContext,
+    QgsLayoutChecker
 )
 from qgis.testing import start_app, unittest
 
-from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -39,6 +39,7 @@ class TestQgsLayoutPolygon(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super(TestQgsLayoutPolygon, cls).setUpClass()
         cls.item_class = QgsLayoutItemPolygon
 
     def __init__(self, methodName):

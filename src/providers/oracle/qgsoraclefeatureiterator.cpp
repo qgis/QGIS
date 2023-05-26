@@ -516,7 +516,7 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
         break;
 
       case PktUnknown:
-        QgsDebugMsg( QStringLiteral( "Cannot query without primary key." ) );
+        QgsDebugError( QStringLiteral( "Cannot query without primary key." ) );
         return false;
     }
 

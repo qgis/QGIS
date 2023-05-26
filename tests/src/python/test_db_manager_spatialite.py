@@ -31,6 +31,7 @@ class TestPyQgsDBManagerSpatialite(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
 
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsDBManagerSpatialite.com")
@@ -58,6 +59,7 @@ class TestPyQgsDBManagerSpatialite(unittest.TestCase):
 
         QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
+        super().tearDownClass()
 
     def testSupportedDbTypes(self):
         self.assertIn('spatialite', supportedDbTypes())

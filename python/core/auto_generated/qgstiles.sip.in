@@ -47,7 +47,17 @@ Returns tile's zoom level (Z)
 Returns tile coordinates in a formatted string
 %End
 
+    bool operator==( const QgsTileXYZ &other ) const;
+    bool operator!=( const QgsTileXYZ &other ) const;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
+
 
 
 class QgsTileRange
@@ -232,6 +242,8 @@ Defines a set of tile matrices for multiple zoom levels.
 %End
   public:
 
+    QgsTileMatrixSet();
+
     virtual ~QgsTileMatrixSet();
 
     bool isEmpty() const;
@@ -288,6 +300,19 @@ Returns the maximum zoom level for tiles present in the set.
 %Docstring
 Deletes any existing matrices which fall outside the zoom range specified
 by ``minimumZoom`` to ``maximumZoom``, inclusive.
+%End
+
+    Qgis::TileAvailability tileAvailability( QgsTileXYZ id ) const;
+%Docstring
+Returns the availability of the given tile in this matrix.
+
+This method can be used to determine whether a particular tile actually
+exists within the matrix, or is not available (e.g. due to holes within the matrix).
+
+This method returns :py:class:`Qgis`.TileAvailability.Available by default, unless specific
+tile availability is known for the given ``id``.
+
+.. versionadded:: 3.32
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -356,6 +381,15 @@ Sets the scale to tile zoom method.
 
 .. seealso:: :py:func:`scaleToTileZoomMethod`
 %End
+
+    QVector<QgsTileXYZ> tilesInRange( QgsTileRange range, int zoomLevel ) const;
+%Docstring
+Returns a list of tiles in the given tile range.
+
+.. versionadded:: 3.32
+%End
+
+  protected:
 
 };
 

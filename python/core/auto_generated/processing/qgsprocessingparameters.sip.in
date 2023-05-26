@@ -337,6 +337,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterAnnotationLayer;
     else if ( sipCpp->type() == QgsProcessingParameterPointCloudAttribute::typeName() )
       sipType = sipType_QgsProcessingParameterPointCloudAttribute;
+    else if ( sipCpp->type() == QgsProcessingParameterVectorTileDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterVectorTileDestination;
     else
       sipType = nullptr;
 %End
@@ -2889,7 +2891,7 @@ An expression parameter for processing algorithms.
 
     QgsProcessingParameterExpression( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                       const QString &parentLayerParameterName = QString(),
-                                      bool optional = false );
+                                      bool optional = false, Qgis::ExpressionType type = Qgis::ExpressionType::Qgis );
 %Docstring
 Constructor for QgsProcessingParameterExpression.
 %End
@@ -2920,6 +2922,24 @@ Returns the name of the parent layer parameter, or an empty string if this is no
 Sets the name of the parent layer parameter. Use an empty string if this is not required.
 
 .. seealso:: :py:func:`parentLayerParameterName`
+%End
+
+    Qgis::ExpressionType expressionType() const;
+%Docstring
+Returns the parameter's expression type.
+
+.. seealso:: :py:func:`setExpressionType`
+
+.. versionadded:: 3.32
+%End
+
+    void setExpressionType( Qgis::ExpressionType type );
+%Docstring
+Sets the parameter's expression ``type``.
+
+.. seealso:: :py:func:`expressionType`
+
+.. versionadded:: 3.32
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -4882,6 +4902,62 @@ If ``True``, this will override any existing :py:func:`~QgsProcessingParameterPo
 Creates a new parameter using the definition from a script code.
 %End
 
+};
+
+class QgsProcessingParameterVectorTileDestination : QgsProcessingDestinationParameter
+{
+%Docstring(signature="appended")
+A vector tile layer destination parameter, for specifying the destination path for a vector tile layer
+created by the algorithm.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterVectorTileDestination( const QString &name, const QString &description = QString(),
+        const QVariant &defaultValue = QVariant(),
+        bool optional = false,
+        bool createByDefault = true );
+%Docstring
+Constructor for QgsProcessingParameterVectorTileDestination.
+
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then this destination
+output will not be created by default.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
+
+    virtual QString defaultFileExtension() const;
+
+    virtual QString createFileFilter() const;
+
+
+    virtual QStringList supportedOutputVectorTileLayerExtensions() const;
+%Docstring
+Returns a list of the point cloud format file extensions supported for this parameter.
+
+.. seealso:: :py:func:`defaultFileExtension`
+%End
+
+    static QgsProcessingParameterVectorTileDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
 };
 
 

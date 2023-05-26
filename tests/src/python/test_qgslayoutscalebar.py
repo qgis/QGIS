@@ -22,6 +22,7 @@ class TestQgsLayoutScaleBar(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super(TestQgsLayoutScaleBar, cls).setUpClass()
         cls.item_class = QgsLayoutItemScaleBar
 
 

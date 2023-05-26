@@ -648,7 +648,11 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
   gotRequestEncounteredSslError = false;
   QNetworkRequest req{ u };
   const QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QCOMPARE( rep.errorString(), QStringLiteral( "SSL handshake failed" ) );
+#else
+  QCOMPARE( rep.errorString(), QStringLiteral( "SSL handshake failed: The certificate has expired" ) );
+#endif
   while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
   {
     qApp->processEvents();

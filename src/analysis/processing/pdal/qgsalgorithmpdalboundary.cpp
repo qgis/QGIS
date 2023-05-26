@@ -44,7 +44,7 @@ QString QgsPdalBoundaryAlgorithm::groupId() const
 
 QStringList QgsPdalBoundaryAlgorithm::tags() const
 {
-  return QObject::tr( "extent,envelope,bounds,bounding,boundary,vector" ).split( ',' );
+  return QObject::tr( "pdal,lidar,extent,envelope,bounds,bounding,boundary,vector" ).split( ',' );
 }
 
 QString QgsPdalBoundaryAlgorithm::shortHelpString() const
@@ -101,7 +101,7 @@ QStringList QgsPdalBoundaryAlgorithm::createArgumentLists( const QVariantMap &pa
   }
 
   applyCommonParameters( args, layer->crs(), parameters, context );
-  applyThreadsParameter( args );
+  applyThreadsParameter( args, context );
   return args;
 }
 

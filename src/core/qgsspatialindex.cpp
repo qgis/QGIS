@@ -456,16 +456,16 @@ bool QgsSpatialIndex::addFeature( QgsFeatureId id, const QgsRectangle &bounds )
   catch ( Tools::Exception &e )
   {
     Q_UNUSED( e )
-    QgsDebugMsg( QStringLiteral( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
+    QgsDebugError( QStringLiteral( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
   }
   catch ( const std::exception &e )
   {
     Q_UNUSED( e )
-    QgsDebugMsg( QStringLiteral( "std::exception caught: " ).arg( e.what() ) );
+    QgsDebugError( QStringLiteral( "std::exception caught: " ).arg( e.what() ) );
   }
   catch ( ... )
   {
-    QgsDebugMsg( QStringLiteral( "unknown spatial index exception caught" ) );
+    QgsDebugError( QStringLiteral( "unknown spatial index exception caught" ) );
   }
 
   return false;

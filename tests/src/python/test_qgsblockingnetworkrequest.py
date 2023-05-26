@@ -26,11 +26,13 @@ class TestQgsBlockingNetworkRequest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.server, cls.port = mockedwebserver.launch()
 
     @classmethod
     def tearDownClass(cls):
         cls.server.stop()
+        super().tearDownClass()
 
     def testFetchEmptyUrl(self):
         request = QgsBlockingNetworkRequest()

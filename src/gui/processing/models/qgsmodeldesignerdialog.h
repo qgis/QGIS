@@ -183,6 +183,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void populateZoomToMenu();
     void validate();
     void reorderInputs();
+    void reorderOutputs();
     void setPanelVisibility( bool hidden );
     void editHelp();
 

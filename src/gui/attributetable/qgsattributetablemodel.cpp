@@ -91,6 +91,22 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
   return mLayerCache->featureAtId( fid, mFeat );
 }
 
+bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid, int fieldIdx ) const
+{
+  QgsDebugMsgLevel( QStringLiteral( "loading feature %1 with field %2" ).arg( fid, fieldIdx ), 3 );
+
+  if ( mLayerCache->cacheSubsetOfAttributes().contains( fieldIdx ) )
+  {
+    return loadFeatureAtId( fid );
+  }
+
+  if ( fid == std::numeric_limits<int>::min() )
+  {
+    return false;
+  }
+  return mLayerCache->featureAtIdWithAllAttributes( fid, mFeat );
+}
+
 int QgsAttributeTableModel::extraColumns() const
 {
   return mExtraColumns;
@@ -553,7 +569,7 @@ int QgsAttributeTableModel::idToRow( QgsFeatureId id ) const
 {
   if ( !mIdRowMap.contains( id ) )
   {
-    QgsDebugMsg( QStringLiteral( "idToRow: id %1 not in the map" ).arg( id ) );
+    QgsDebugError( QStringLiteral( "idToRow: id %1 not in the map" ).arg( id ) );
     return -1;
   }
 
@@ -584,7 +600,7 @@ QgsFeatureId QgsAttributeTableModel::rowToId( const int row ) const
 {
   if ( !mRowIdMap.contains( row ) )
   {
-    QgsDebugMsg( QStringLiteral( "rowToId: row %1 not in the map" ).arg( row ) );
+    QgsDebugError( QStringLiteral( "rowToId: row %1 not in the map" ).arg( row ) );
     // return negative infinite (to avoid collision with newly added features)
     return std::numeric_limits<int>::min();
   }
@@ -702,9 +718,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     return static_cast<Qt::Alignment::Int>( widgetData.fieldFormatter->alignmentFlag( mLayer, fieldId, widgetData.config ) | Qt::AlignVCenter );
   }
 
-  if ( mFeat.id() != rowId || !mFeat.isValid() )
+  if ( mFeat.id() != rowId || !mFeat.isValid() || ! mLayerCache->cacheSubsetOfAttributes().contains( fieldId ) )
   {
-    if ( !loadFeatureAtId( rowId ) )
+    if ( !loadFeatureAtId( rowId, fieldId ) )
       return QVariant( "ERROR" );
 
     if ( mFeat.id() != rowId )

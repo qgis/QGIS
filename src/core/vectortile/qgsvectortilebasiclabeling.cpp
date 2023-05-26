@@ -190,7 +190,7 @@ bool QgsVectorTileBasicLabelProvider::prepare( QgsRenderContext &context, QSet<Q
     mSubProviders[i]->mSettings.isExpression = !fields.names().contains( mSubProviders[i]->mSettings.fieldName );
     if ( !mSubProviders[i]->prepare( context, attributeNames ) )
     {
-      QgsDebugMsg( QStringLiteral( "Failed to prepare labeling for style index" ) + QString::number( i ) );
+      QgsDebugError( QStringLiteral( "Failed to prepare labeling for style index" ) + QString::number( i ) );
       mSubProviders[i] = nullptr;
     }
   }
@@ -200,7 +200,7 @@ bool QgsVectorTileBasicLabelProvider::prepare( QgsRenderContext &context, QSet<Q
 void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileRendererData &tile, QgsRenderContext &context )
 {
   const QgsVectorTileFeatures tileData = tile.features();
-  int zoomLevel = tile.id().zoomLevel();
+  const int zoomLevel = tile.renderZoomLevel();
 
   for ( int i = 0; i < mStyles.count(); ++i )
   {

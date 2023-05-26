@@ -77,6 +77,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeAnnotationLayer() );
   addParameterType( new QgsProcessingParameterTypePointCloudDestination() );
   addParameterType( new QgsProcessingParameterTypePointCloudAttribute() );
+  addParameterType( new QgsProcessingParameterTypeVectorTileDestination() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
@@ -116,6 +117,13 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
 
   provider->setParent( this );
   mProviders[ provider->id()] = provider;
+
+  mCachedInformation.clear();
+  connect( provider, &QgsProcessingProvider::algorithmsLoaded, this, [this]
+  {
+    mCachedInformation.clear();
+  } );
+
   emit providerAdded( provider->id() );
   return true;
 }
@@ -133,6 +141,9 @@ bool QgsProcessingRegistry::removeProvider( QgsProcessingProvider *provider )
   provider->unload();
 
   delete mProviders.take( id );
+
+  mCachedInformation.clear();
+
   emit providerRemoved( id );
   return true;
 }
@@ -157,6 +168,22 @@ QList< const QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithms() cons
     algs.append( it.value()->algorithms() );
   }
   return algs;
+}
+
+QgsProcessingAlgorithmInformation QgsProcessingRegistry::algorithmInformation( const QString &id ) const
+{
+  const auto it = mCachedInformation.constFind( id );
+  if ( it != mCachedInformation.constEnd() )
+    return *it;
+
+  QgsProcessingAlgorithmInformation info;
+  if ( const QgsProcessingAlgorithm *algorithm = algorithmById( id ) )
+  {
+    info.displayName = algorithm->displayName();
+    info.icon = algorithm->icon();
+  }
+  mCachedInformation.insert( id, info );
+  return info;
 }
 
 const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QString &constId ) const

@@ -48,8 +48,6 @@ class CORE_EXPORT QgsVectorTileUtils
 {
   public:
 
-    //! Returns a list of tiles in the given tile range
-    static QVector<QgsTileXYZ> tilesInRange( QgsTileRange range, int zoomLevel );
     //! Orders tile requests according to the distance from view center (given in tile matrix coords)
     static void sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center );
 

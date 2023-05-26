@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     AlgorithmDialog.py
@@ -245,7 +243,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     elapsed = '{0} {1:0.2f} {2} ({3} {4} {5:0.0f} {2})'.format(
                         result, delta_t, str_seconds, minutes, str_minutes, seconds)
                 else:
-                    elapsed = '{0} {1:0.2f} {2}'.format(
+                    elapsed = '{} {:0.2f} {}'.format(
                         result, delta_t, str_seconds)
 
                 return elapsed
@@ -296,6 +294,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     if self.history_log_id is not None:
                         # can't deepcopy this!
                         self.history_details['results'] = {k: v for k, v in results.items() if k != 'CHILD_INPUTS'}
+                        self.history_details['log'] = self.feedback.htmlLog()
 
                         QgsGui.historyProviderRegistry().updateEntry(self.history_log_id, self.history_details)
 
@@ -353,7 +352,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     resultsList.addResult(icon=self.algorithm().icon(), name=out.description(),
                                           timestamp=time.localtime(),
                                           result=result[out.name()])
-            if not handleAlgorithmResults(self.algorithm(), context, feedback, not keepOpen, result):
+            if not handleAlgorithmResults(
+                    self.algorithm(),
+                    context,
+                    feedback,
+                    result):
                 self.resetGui()
                 return
 

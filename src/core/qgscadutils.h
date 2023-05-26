@@ -135,6 +135,12 @@ class CORE_EXPORT QgsCadUtils
         QgsCadUtils::AlignMapPointConstraint xyVertexConstraint;
 
         /**
+         * Flag to set snapping to features priority over common angle.
+         * \since QGIS 3.32
+         */
+        bool snappingToFeaturesOverridesCommonAngle = false;
+
+        /**
          * Dumps the context's properties, for debugging.
          * \note Not available in Python bindings.
          */

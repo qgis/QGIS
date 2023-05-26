@@ -39,6 +39,7 @@ class TestQgsSymbolLayerRegistry(unittest.TestCase):
         Setup the involved layers and relations for a n:m relation
         :return:
         """
+        super().setUpClass()
         cls.registry = QgsApplication.instance().symbolLayerRegistry()
 
     def testCreateInstance(self):

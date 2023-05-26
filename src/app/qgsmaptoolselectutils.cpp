@@ -197,7 +197,7 @@ bool transformSelectGeometry( const QgsGeometry &selectGeometry, QgsGeometry &se
   {
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and leave existing selection unchanged
-    QgsDebugMsg( QStringLiteral( "Caught CRS exception " ) );
+    QgsDebugError( QStringLiteral( "Caught CRS exception " ) );
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "CRS Exception" ),
       QObject::tr( "Selection extends beyond layer's coordinate system" ),

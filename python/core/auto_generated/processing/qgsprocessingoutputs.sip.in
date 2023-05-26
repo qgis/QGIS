@@ -33,6 +33,8 @@ as generated layers or calculated values.
       sipType = sipType_QgsProcessingOutputRasterLayer;
     else if ( sipCpp->type() == QgsProcessingOutputPointCloudLayer::typeName() )
       sipType = sipType_QgsProcessingOutputPointCloudLayer;
+    else if ( sipCpp->type() == QgsProcessingOutputVectorTileLayer::typeName() )
+      sipType = sipType_QgsProcessingOutputVectorTileLayer;
     else if ( sipCpp->type() == QgsProcessingOutputMapLayer::typeName() )
       sipType = sipType_QgsProcessingOutputMapLayer;
     else if ( sipCpp->type() == QgsProcessingOutputMultipleLayers::typeName() )
@@ -451,6 +453,31 @@ flow which branches out from this algorithm.
     QgsProcessingOutputConditionalBranch( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputConditionalBranch.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the output class.
+%End
+    virtual QString type() const;
+};
+
+class QgsProcessingOutputVectorTileLayer : QgsProcessingOutputDefinition
+{
+%Docstring(signature="appended")
+A vector tile layer output for processing algorithms.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputVectorTileLayer( const QString &name, const QString &description = QString() );
+%Docstring
+Constructor for QgsProcessingOutputVectorTileLayer.
 %End
 
     static QString typeName();

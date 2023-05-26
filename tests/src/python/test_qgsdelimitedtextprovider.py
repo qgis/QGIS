@@ -144,6 +144,7 @@ class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestQgsDelimitedTextProviderXY, cls).setUpClass()
         # Create test layer
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
         cls.basetestfile = os.path.join(srcpath, 'delimited_xy.csv')
@@ -161,10 +162,6 @@ class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):
         assert cls.vl.isValid(), f"{cls.basetestfile} is invalid"
         cls.source = cls.vl.dataProvider()
 
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-
     def treat_time_as_string(self):
         return False
 
@@ -180,6 +177,7 @@ class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestQgsDelimitedTextProviderWKT, cls).setUpClass()
         # Create test layer
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
         cls.basetestfile = os.path.join(srcpath, 'delimited_wkt.csv')
@@ -210,10 +208,6 @@ class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
         assert cls.vl_poly.isValid(), f"{cls.basetestpolyfile} is invalid"
         cls.poly_provider = cls.vl_poly.dataProvider()
 
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-
     def treat_time_as_string(self):
         return False
 
@@ -229,6 +223,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         # toggle full ctest output to debug flaky CI test
         print('CTEST_FULL_OUTPUT')
         cls.tmp_dir = QTemporaryDir()

@@ -509,7 +509,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     catch ( QgsCsException &e )
     {
       Q_UNUSED( e )
-      QgsDebugMsg( QStringLiteral( "Transform error caught: %1" ).arg( e.what() ) );
+      QgsDebugError( QStringLiteral( "Transform error caught: %1" ).arg( e.what() ) );
     }
   }
 
@@ -1244,7 +1244,7 @@ void QgsMapCanvas::notifyRendererErrors( const QgsMapRendererJob::Errors &errors
 
 void QgsMapCanvas::updateDevicePixelFromScreen()
 {
-  mSettings.setDevicePixelRatio( devicePixelRatio() );
+  mSettings.setDevicePixelRatio( static_cast<float>( devicePixelRatioF() ) );
   // TODO: QGIS 4 -> always respect screen dpi
   if ( QgsSettingsRegistryGui::settingsRespectScreenDPI->value() )
   {
@@ -2713,6 +2713,12 @@ void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
   if ( !tool )
     return;
 
+  if ( tool == mMapTool )
+  {
+    mMapTool->reactivate();
+    return;
+  }
+
   if ( mMapTool )
   {
     if ( clean )
@@ -2929,7 +2935,7 @@ void QgsMapCanvas::setRenderFlag( bool flag )
 void QgsMapCanvas::connectNotify( const char *signal )
 {
   Q_UNUSED( signal )
-  QgsDebugMsg( "QgsMapCanvas connected to " + QString( signal ) );
+  QgsDebugMsgLevel( "QgsMapCanvas connected to " + QString( signal ), 2 );
 } //connectNotify
 #endif
 
@@ -3236,7 +3242,7 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Couldn't read mapcanvas information from project" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Couldn't read mapcanvas information from project" ), 2 );
     if ( !project->viewSettings()->defaultViewExtent().isNull() )
     {
       setReferencedExtent( project->viewSettings()->defaultViewExtent() );
@@ -3254,7 +3260,7 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
   if ( !nl.count() )
   {
-    QgsDebugMsg( QStringLiteral( "Unable to find qgis element in project file" ) );
+    QgsDebugError( QStringLiteral( "Unable to find qgis element in project file" ) );
     return;
   }
   QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element OK

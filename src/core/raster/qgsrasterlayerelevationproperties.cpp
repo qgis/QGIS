@@ -45,6 +45,8 @@ QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElem
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
   element.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "symbology" ), qgsEnumValueToKey( mSymbology ) );
+  if ( !std::isnan( mElevationLimit ) )
+    element.setAttribute( QStringLiteral( "elevationLimit" ), qgsDoubleToString( mElevationLimit ) );
 
   writeCommonProperties( element, document, context );
   element.setAttribute( QStringLiteral( "band" ), mBandNumber );
@@ -66,6 +68,10 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
   mEnabled = elevationElement.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
   mSymbology = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "symbology" ) ), Qgis::ProfileSurfaceSymbology::Line );
+  if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
+    mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
+  else
+    mElevationLimit = std::numeric_limits< double >::quiet_NaN();
 
   readCommonProperties( elevationElement, context );
   mBandNumber = elevationElement.attribute( QStringLiteral( "band" ), QStringLiteral( "1" ) ).toInt();
@@ -92,6 +98,7 @@ QgsRasterLayerElevationProperties *QgsRasterLayerElevationProperties::clone() co
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
   res->setProfileFillSymbol( mProfileFillSymbol->clone() );
   res->setProfileSymbology( mSymbology );
+  res->setElevationLimit( mElevationLimit );
   res->setBandNumber( mBandNumber );
   res->copyCommonProperties( this );
   return res.release();
@@ -163,11 +170,95 @@ QgsFillSymbol *QgsRasterLayerElevationProperties::profileFillSymbol() const
 void QgsRasterLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
 {
   mProfileFillSymbol.reset( symbol );
+  emit changed();
+  emit profileRenderingPropertyChanged();
 }
 
 void QgsRasterLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology )
 {
+  if ( mSymbology == symbology )
+    return;
+
   mSymbology = symbology;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+double QgsRasterLayerElevationProperties::elevationLimit() const
+{
+  return mElevationLimit;
+}
+
+void QgsRasterLayerElevationProperties::setElevationLimit( double limit )
+{
+  if ( qgsDoubleNear( mElevationLimit, limit ) )
+    return;
+
+  mElevationLimit = limit;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer )
+{
+  // multiple bands => unlikely to be a DEM
+  if ( layer->bandCount() > 1 )
+    return false;
+
+  // raster attribute table => unlikely to be a DEM
+  if ( layer->attributeTable( 1 ) )
+    return false;
+
+  if ( QgsRasterDataProvider *dataProvider = layer->dataProvider() )
+  {
+    // filter out data types which aren't likely to be DEMs
+    switch ( dataProvider->dataType( 1 ) )
+    {
+      case Qgis::DataType::Byte:
+      case Qgis::DataType::UnknownDataType:
+      case Qgis::DataType::CInt16:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::CFloat32:
+      case Qgis::DataType::CFloat64:
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
+        return false;
+
+      case Qgis::DataType::Int8:
+      case Qgis::DataType::UInt16:
+      case Qgis::DataType::Int16:
+      case Qgis::DataType::UInt32:
+      case Qgis::DataType::Int32:
+      case Qgis::DataType::Float32:
+      case Qgis::DataType::Float64:
+        break;
+    }
+  }
+
+  // Check the layer's name for DEM-ish hints.
+  // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
+  // but adding hardcoded localized variants of the strings is encouraged.
+  static const QStringList sPartialCandidates{ QStringLiteral( "dem" ),
+      QStringLiteral( "height" ),
+      QStringLiteral( "elev" ),
+      QStringLiteral( "srtm" ) };
+  const QString layerName = layer->name();
+  for ( const QString &candidate : sPartialCandidates )
+  {
+    if ( layerName.contains( candidate, Qt::CaseInsensitive ) )
+      return true;
+  }
+
+  // these candidates must occur with word boundaries (we don't want to find "aster" in "raster"!)
+  static const QStringList sWordCandidates{ QStringLiteral( "aster" ) };
+  for ( const QString &candidate : sWordCandidates )
+  {
+    const QRegularExpression re( QStringLiteral( "\\b%1\\b" ).arg( candidate ) );
+    if ( re.match( layerName, Qt::CaseInsensitive ).hasMatch() )
+      return true;
+  }
+
+  return false;
 }
 
 void QgsRasterLayerElevationProperties::setDefaultProfileLineSymbol( const QColor &color )

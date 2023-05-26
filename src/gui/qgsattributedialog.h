@@ -136,6 +136,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
 
     static int sFormCounter;
 
+    bool mFirstShow = true;
     void saveGeometry();
     void restoreGeometry();
 };

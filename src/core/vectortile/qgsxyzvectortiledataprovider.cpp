@@ -57,12 +57,12 @@ bool QgsXyzVectorTileDataProviderBase::supportsAsync() const
   return true;
 }
 
-QByteArray QgsXyzVectorTileDataProviderBase::readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback ) const
+QgsVectorTileRawData QgsXyzVectorTileDataProviderBase::readTile( const QgsTileMatrixSet &set, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
-  return loadFromNetwork( id, tileMatrix, sourcePath(), mAuthCfg, mHeaders, feedback );
+  return QgsVectorTileRawData( id, loadFromNetwork( id, set.tileMatrix( id.zoomLevel() ), sourcePath(), mAuthCfg, mHeaders, feedback ) );
 }
 
-QList<QgsVectorTileRawData> QgsXyzVectorTileDataProviderBase::readTiles( const QgsTileMatrix &tileMatrix, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
+QList<QgsVectorTileRawData> QgsXyzVectorTileDataProviderBase::readTiles( const QgsTileMatrixSet &set, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
 {
   QList<QgsVectorTileRawData> rawTiles;
   rawTiles.reserve( tiles.size() );
@@ -72,7 +72,7 @@ QList<QgsVectorTileRawData> QgsXyzVectorTileDataProviderBase::readTiles( const Q
     if ( feedback && feedback->isCanceled() )
       break;
 
-    const QByteArray rawData = loadFromNetwork( id, tileMatrix, source, mAuthCfg, mHeaders, feedback );
+    const QByteArray rawData = loadFromNetwork( id, set.tileMatrix( id.zoomLevel() ), source, mAuthCfg, mHeaders, feedback );
     if ( !rawData.isEmpty() )
     {
       rawTiles.append( QgsVectorTileRawData( id, rawData ) );
@@ -81,7 +81,7 @@ QList<QgsVectorTileRawData> QgsXyzVectorTileDataProviderBase::readTiles( const Q
   return rawTiles;
 }
 
-QNetworkRequest QgsXyzVectorTileDataProviderBase::tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const
+QNetworkRequest QgsXyzVectorTileDataProviderBase::tileRequest( const QgsTileMatrixSet &set, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const
 {
   QString urlTemplate = sourcePath();
 
@@ -101,7 +101,7 @@ QNetworkRequest QgsXyzVectorTileDataProviderBase::tileRequest( const QgsTileMatr
     }
   }
 
-  const QString url = QgsVectorTileUtils::formatXYZUrlTemplate( urlTemplate, id, tileMatrix );
+  const QString url = QgsVectorTileUtils::formatXYZUrlTemplate( urlTemplate, id, set.tileMatrix( id.zoomLevel() ) );
 
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsXyzVectorTileDataProvider" ) );
@@ -138,7 +138,7 @@ QByteArray QgsXyzVectorTileDataProviderBase::loadFromNetwork( const QgsTileXYZ &
   QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr, false, feedback );
   if ( errCode != QgsBlockingNetworkRequest::NoError )
   {
-    QgsDebugMsg( QStringLiteral( "Request failed: " ) + url );
+    QgsDebugError( QStringLiteral( "Request failed: " ) + url );
     return QByteArray();
   }
   QgsNetworkReplyContent reply = req.reply();
@@ -288,7 +288,7 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, 
   const QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
   if ( !QgsVectorTileUtils::checkXYZUrlTemplate( sourcePath ) )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + sourcePath );
+    QgsDebugError( QStringLiteral( "Invalid format of URL for XYZ source: " ) + sourcePath );
     mIsValid = false;
     return;
   }

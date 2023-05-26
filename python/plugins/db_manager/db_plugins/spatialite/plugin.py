@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -19,7 +17,6 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
 
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import SpatiaLiteDBConnector

@@ -129,6 +129,12 @@ QPointF QgsTileMatrix::mapToTileCoordinates( const QgsPointXY &mapPoint ) const
 // QgsTileMatrixSet
 //
 
+QgsTileMatrixSet::QgsTileMatrixSet()
+{
+  mTileAvailabilityFunction = []( QgsTileXYZ ) { return Qgis::TileAvailability::Available; };
+  mTileReplacementFunction = []( QgsTileXYZ id, QgsTileXYZ & replacement ) { replacement = id; return Qgis::TileAvailability::Available; };
+}
+
 bool QgsTileMatrixSet::isEmpty() const
 {
   return mTileMatrices.isEmpty();
@@ -202,6 +208,11 @@ void QgsTileMatrixSet::dropMatricesOutsideZoomRange( int minimumZoom, int maximu
       ++it;
     }
   }
+}
+
+Qgis::TileAvailability QgsTileMatrixSet::tileAvailability( QgsTileXYZ id ) const
+{
+  return mTileAvailabilityFunction( id );
 }
 
 QgsCoordinateReferenceSystem QgsTileMatrixSet::crs() const
@@ -398,3 +409,32 @@ QDomElement QgsTileMatrixSet::writeXml( QDomDocument &document, const QgsReadWri
 
   return setElement;
 }
+
+QVector<QgsTileXYZ> QgsTileMatrixSet::tilesInRange( QgsTileRange range, int zoomLevel ) const
+{
+  QVector<QgsTileXYZ> tiles;
+  tiles.reserve( ( range.endColumn() - range.startColumn() + 1 ) * ( range.endRow() - range.startRow() + 1 ) );
+
+  for ( int tileRow = range.startRow(); tileRow <= range.endRow(); ++tileRow )
+  {
+    for ( int tileColumn = range.startColumn(); tileColumn <= range.endColumn(); ++tileColumn )
+    {
+      QgsTileXYZ tile( tileColumn, tileRow, zoomLevel );
+      QgsTileXYZ replacement;
+      switch ( mTileReplacementFunction( tile, replacement ) )
+      {
+        case Qgis::TileAvailability::NotAvailable:
+          break;
+
+        case Qgis::TileAvailability::Available:
+        case Qgis::TileAvailability::AvailableNoChildren:
+        case Qgis::TileAvailability::UseLowerZoomLevelTile:
+          if ( !tiles.contains( replacement ) )
+            tiles.append( replacement );
+          break;
+      }
+    }
+  }
+  return tiles;
+}
+

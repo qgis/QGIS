@@ -112,7 +112,7 @@ QByteArray QgsAuthCertUtils::fileData( const QString &path )
   QFile file( path );
   if ( !file.exists() )
   {
-    QgsDebugMsg( QStringLiteral( "Read file error, file not found: %1" ).arg( path ) );
+    QgsDebugError( QStringLiteral( "Read file error, file not found: %1" ).arg( path ) );
     return data;
   }
   // TODO: add checks for locked file, etc., to ensure it can be read
@@ -134,7 +134,7 @@ QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString &certspath
   certs = QSslCertificate::fromData( payload, sniffEncoding( payload ) );
   if ( certs.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Parsed cert(s) EMPTY for path: %1" ).arg( certspath ) );
+    QgsDebugError( QStringLiteral( "Parsed cert(s) EMPTY for path: %1" ).arg( certspath ) );
   }
   return certs;
 }
@@ -185,7 +185,7 @@ QSslCertificate QgsAuthCertUtils::certFromFile( const QString &certpath )
   }
   if ( cert.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "Parsed cert is NULL for path: %1" ).arg( certpath ) );
+    QgsDebugError( QStringLiteral( "Parsed cert is NULL for path: %1" ).arg( certpath ) );
   }
   return cert;
 }
@@ -250,7 +250,7 @@ QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString &pemtext
   certs = QSslCertificate::fromData( pemtext.toLatin1(), QSsl::Pem );
   if ( certs.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Parsed cert(s) EMPTY" ) );
+    QgsDebugError( QStringLiteral( "Parsed cert(s) EMPTY" ) );
   }
   return certs;
 }
@@ -307,7 +307,7 @@ QByteArray QgsAuthCertUtils::pkcs8PrivateKey( QByteArray &pkcs8Der )
 
   if ( pkcs8Der.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "ERROR, passed DER is empty" ) );
+    QgsDebugError( QStringLiteral( "ERROR, passed DER is empty" ) );
     return pkcs1;
   }
   // Dump as unarmored PEM format, e.g. missing '-----BEGIN|END...' wrapper
@@ -316,7 +316,7 @@ QByteArray QgsAuthCertUtils::pkcs8PrivateKey( QByteArray &pkcs8Der )
   QFileInfo asnDefsRsrc( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/pkcs8.asn" ) );
   if ( ! asnDefsRsrc.exists() )
   {
-    QgsDebugMsg( QStringLiteral( "ERROR, pkcs.asn resource file not found: %1" ).arg( asnDefsRsrc.filePath() ) );
+    QgsDebugError( QStringLiteral( "ERROR, pkcs.asn resource file not found: %1" ).arg( asnDefsRsrc.filePath() ) );
     return pkcs1;
   }
   const char *asnDefsFile = asnDefsRsrc.absoluteFilePath().toLocal8Bit().constData();
@@ -339,15 +339,15 @@ QByteArray QgsAuthCertUtils::pkcs8PrivateKey( QByteArray &pkcs8Der )
       QgsDebugMsgLevel( QStringLiteral( "Parse: done.\n" ), 4 );
       break;
     case ASN1_FILE_NOT_FOUND:
-      QgsDebugMsg( QStringLiteral( "ERROR, file not found: %1" ).arg( asnDefsFile ) );
+      QgsDebugError( QStringLiteral( "ERROR, file not found: %1" ).arg( asnDefsFile ) );
       return pkcs1;
     case ASN1_SYNTAX_ERROR:
     case ASN1_IDENTIFIER_NOT_FOUND:
     case ASN1_NAME_TOO_LONG:
-      QgsDebugMsg( QStringLiteral( "ERROR, asn1 parsing: %1" ).arg( errorDescription ) );
+      QgsDebugError( QStringLiteral( "ERROR, asn1 parsing: %1" ).arg( errorDescription ) );
       return pkcs1;
     default:
-      QgsDebugMsg( QStringLiteral( "ERROR, libtasn1: %1" ).arg( asn1_strerror( asn1_result ) ) );
+      QgsDebugError( QStringLiteral( "ERROR, libtasn1: %1" ).arg( asn1_strerror( asn1_result ) ) );
       return pkcs1;
   }
 
@@ -358,7 +358,7 @@ QByteArray QgsAuthCertUtils::pkcs8PrivateKey( QByteArray &pkcs8Der )
 
   if ( asn1_result != ASN1_SUCCESS )
   {
-    QgsDebugMsg( QStringLiteral( "ERROR, structure creation: %1" ).arg( asn1_strerror( asn1_result ) ) );
+    QgsDebugError( QStringLiteral( "ERROR, structure creation: %1" ).arg( asn1_strerror( asn1_result ) ) );
     goto PKCS1DONE;
   }
 
@@ -377,7 +377,7 @@ QByteArray QgsAuthCertUtils::pkcs8PrivateKey( QByteArray &pkcs8Der )
 
   if ( asn1_result != ASN1_SUCCESS )
   {
-    QgsDebugMsg( QStringLiteral( "ERROR, decoding: %1" ).arg( errorDescription ) );
+    QgsDebugError( QStringLiteral( "ERROR, decoding: %1" ).arg( errorDescription ) );
     goto PKCS1DONE;
   }
   else
@@ -387,7 +387,7 @@ QByteArray QgsAuthCertUtils::pkcs8PrivateKey( QByteArray &pkcs8Der )
 
   if ( QgsLogger::debugLevel() >= 4 )
   {
-    QgsDebugMsg( QStringLiteral( "DECODING RESULT:" ) );
+    QgsDebugMsgLevel( QStringLiteral( "DECODING RESULT:" ), 2 );
     asn1_print_structure( stdout, structure, "", ASN1_PRINT_NAME_TYPE_VALUE );
   }
 
@@ -400,19 +400,19 @@ QByteArray QgsAuthCertUtils::pkcs8PrivateKey( QByteArray &pkcs8Der )
 
   if ( asn1_result != ASN1_MEM_ERROR ) // not sure why ASN1_MEM_ERROR = success, but it does
   {
-    QgsDebugMsg( QStringLiteral( "ERROR, asn1 read privateKey value type: %1" ).arg( asn1_strerror( asn1_result ) ) );
+    QgsDebugError( QStringLiteral( "ERROR, asn1 read privateKey value type: %1" ).arg( asn1_strerror( asn1_result ) ) );
     goto PKCS1DONE;
   }
 
   if ( oct_etype != ASN1_ETYPE_OCTET_STRING )
   {
-    QgsDebugMsg( QStringLiteral( "ERROR, asn1 privateKey value not octet string, but type: %1" ).arg( static_cast<int>( oct_etype ) ) );
+    QgsDebugError( QStringLiteral( "ERROR, asn1 privateKey value not octet string, but type: %1" ).arg( static_cast<int>( oct_etype ) ) );
     goto PKCS1DONE;
   }
 
   if ( oct_len == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "ERROR, asn1 privateKey octet string empty" ) );
+    QgsDebugError( QStringLiteral( "ERROR, asn1 privateKey octet string empty" ) );
     goto PKCS1DONE;
   }
 
@@ -421,13 +421,13 @@ QByteArray QgsAuthCertUtils::pkcs8PrivateKey( QByteArray &pkcs8Der )
 
   if ( asn1_result != ASN1_SUCCESS )
   {
-    QgsDebugMsg( QStringLiteral( "ERROR, asn1 read privateKey value: %1" ).arg( asn1_strerror( asn1_result ) ) );
+    QgsDebugError( QStringLiteral( "ERROR, asn1 read privateKey value: %1" ).arg( asn1_strerror( asn1_result ) ) );
     goto PKCS1DONE;
   }
 
   if ( oct_len == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "ERROR, asn1 privateKey value octet string empty" ) );
+    QgsDebugError( QStringLiteral( "ERROR, asn1 privateKey value octet string empty" ) );
     goto PKCS1DONE;
   }
 
@@ -450,14 +450,14 @@ QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
   QStringList empty;
   if ( !QCA::isSupported( "pkcs12" ) )
   {
-    QgsDebugMsg( QStringLiteral( "QCA does not support PKCS#12" ) );
+    QgsDebugError( QStringLiteral( "QCA does not support PKCS#12" ) );
     return empty;
   }
 
   const QCA::KeyBundle bundle( QgsAuthCertUtils::qcaKeyBundle( bundlepath, bundlepass ) );
   if ( bundle.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "FAILED to convert PKCS#12 file to QCA key bundle: %1" ).arg( bundlepath ) );
+    QgsDebugError( QStringLiteral( "FAILED to convert PKCS#12 file to QCA key bundle: %1" ).arg( bundlepath ) );
     return empty;
   }
 
@@ -488,7 +488,7 @@ QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
   // can currently only support RSA and DSA between QCA and Qt
   if ( keyalg == QSsl::Opaque )
   {
-    QgsDebugMsg( QStringLiteral( "FAILED to read PKCS#12 key (only RSA and DSA algorithms supported): %1" ).arg( bundlepath ) );
+    QgsDebugError( QStringLiteral( "FAILED to read PKCS#12 key (only RSA and DSA algorithms supported): %1" ).arg( bundlepath ) );
     return empty;
   }
 
@@ -504,21 +504,21 @@ QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
     QByteArray pkcs8Der = bundle.privateKey().toDER().toByteArray();
     if ( pkcs8Der.isEmpty() )
     {
-      QgsDebugMsg( QStringLiteral( "FAILED to convert PKCS#12 key to DER-encoded format: %1" ).arg( bundlepath ) );
+      QgsDebugError( QStringLiteral( "FAILED to convert PKCS#12 key to DER-encoded format: %1" ).arg( bundlepath ) );
       return empty;
     }
 
     QByteArray pkcs1Der = QgsAuthCertUtils::pkcs8PrivateKey( pkcs8Der );
     if ( pkcs1Der.isEmpty() )
     {
-      QgsDebugMsg( QStringLiteral( "FAILED to convert PKCS#12 key from PKCS#8 to PKCS#1: %1" ).arg( bundlepath ) );
+      QgsDebugError( QStringLiteral( "FAILED to convert PKCS#12 key from PKCS#8 to PKCS#1: %1" ).arg( bundlepath ) );
       return empty;
     }
 
     QSslKey pkcs1Key( pkcs1Der, QSsl::Rsa, QSsl::Der, QSsl::PrivateKey );
     if ( pkcs1Key.isNull() )
     {
-      QgsDebugMsg( QStringLiteral( "FAILED to convert PKCS#12 key from PKCS#8 to PKCS#1 QSslKey: %1" ).arg( bundlepath ) );
+      QgsDebugError( QStringLiteral( "FAILED to convert PKCS#12 key from PKCS#8 to PKCS#1 QSslKey: %1" ).arg( bundlepath ) );
       return empty;
     }
     keyPem = QString( pkcs1Key.toPem( passarray.toByteArray() ) );
@@ -584,19 +584,19 @@ QString QgsAuthCertUtils::pemTextToTempFile( const QString &name, const QByteArr
     const qint64 bytesWritten = pemFile.write( pemtext );
     if ( bytesWritten == -1 )
     {
-      QgsDebugMsg( QStringLiteral( "FAILED to write to temp PEM file: %1" ).arg( pemFilePath ) );
+      QgsDebugError( QStringLiteral( "FAILED to write to temp PEM file: %1" ).arg( pemFilePath ) );
       pemFilePath.clear();
     }
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "FAILED to open writing for temp PEM file: %1" ).arg( pemFilePath ) );
+    QgsDebugError( QStringLiteral( "FAILED to open writing for temp PEM file: %1" ).arg( pemFilePath ) );
     pemFilePath.clear();
   }
 
   if ( !pemFile.setPermissions( QFile::ReadUser ) )
   {
-    QgsDebugMsg( QStringLiteral( "FAILED to set permissions on temp PEM file: %1" ).arg( pemFilePath ) );
+    QgsDebugError( QStringLiteral( "FAILED to set permissions on temp PEM file: %1" ).arg( pemFilePath ) );
     pemFilePath.clear();
   }
 
@@ -678,7 +678,7 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
     const QCA::Certificate acert( QCA::Certificate::fromPEM( qcert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
     if ( res != QCA::ConvertGood || acert.isNull() )
     {
-      QgsDebugMsg( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
+      QgsDebugError( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
       return QString();
     }
   }
@@ -762,7 +762,7 @@ QCA::Certificate QgsAuthCertUtils::qtCertToQcaCert( const QSslCertificate &cert 
   QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
   if ( res != QCA::ConvertGood || qcacert.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
+    QgsDebugError( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
     qcacert = QCA::Certificate();
   }
   return qcacert;
@@ -947,13 +947,13 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
   const QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
   if ( res != QCA::ConvertGood || qcacert.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
+    QgsDebugError( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
     return usages;
   }
 
   if ( qcacert.isCA() )
   {
-    QgsDebugMsg( QStringLiteral( "Certificate has 'CA:TRUE' basic constraint" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Certificate has 'CA:TRUE' basic constraint" ), 2 );
     usages << QgsAuthCertUtils::CertAuthorityUsage;
   }
 
@@ -962,12 +962,12 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
   {
     if ( certconst.known() == QCA::KeyCertificateSign )
     {
-      QgsDebugMsg( QStringLiteral( "Certificate has 'Certificate Sign' key usage" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Certificate has 'Certificate Sign' key usage" ), 2 );
       usages << QgsAuthCertUtils::CertIssuerUsage;
     }
     else if ( certconst.known() == QCA::ServerAuth )
     {
-      QgsDebugMsg( QStringLiteral( "Certificate has 'server authentication' extended key usage" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Certificate has 'server authentication' extended key usage" ), 2 );
       usages << QgsAuthCertUtils::TlsServerUsage;
     }
   }
@@ -999,7 +999,7 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
   //       always seems to return QCA::ErrorInvalidPurpose (enum #5)
   QCA::Validity v_tlsclient;
   v_tlsclient = qcacert.validate( trustedCAs, untrustedCAs, QCA::UsageTLSClient, QCA::ValidateAll );
-  //QgsDebugMsg( QStringLiteral( "QCA::UsageTLSClient validity: %1" ).arg( static_cast<int>(v_tlsclient) ) );
+  //QgsDebugMsgLevel( QStringLiteral( "QCA::UsageTLSClient validity: %1" ).arg( static_cast<int>(v_tlsclient) ), 2 );
   if ( v_tlsclient == QCA::ValidityGood )
   {
     usages << QgsAuthCertUtils::TlsClientUsage;
@@ -1047,13 +1047,13 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
   QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QString( "qca-ossl" ) ) );
   if ( res != QCA::ConvertGood || qcacert.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
+    QgsDebugError( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
     return false;
   }
 
   if ( qcacert.isCA() )
   {
-    QgsDebugMsg( QStringLiteral( "SSL server certificate has 'CA:TRUE' basic constraint (and should not)" ) );
+    QgsDebugMsgLevel( QStringLiteral( "SSL server certificate has 'CA:TRUE' basic constraint (and should not)" ), 2 );
     return false;
   }
 
@@ -1062,7 +1062,7 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
   {
     if ( certconst.known() == QCA::KeyCertificateSign )
     {
-      QgsDebugMsg( QStringLiteral( "SSL server certificate has 'Certificate Sign' key usage (and should not)" ) );
+      QgsDebugError( QStringLiteral( "SSL server certificate has 'Certificate Sign' key usage (and should not)" ) );
       return false;
     }
   }
@@ -1076,22 +1076,22 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
   {
     if ( certconst.known() == QCA::DigitalSignature )
     {
-      QgsDebugMsg( QStringLiteral( "SSL server certificate has 'digital signature' key usage" ) );
+      QgsDebugMsgLevel( QStringLiteral( "SSL server certificate has 'digital signature' key usage" ), 2 );
       dsignature = true;
     }
     else if ( certconst.known() == QCA::KeyEncipherment )
     {
-      QgsDebugMsg( QStringLiteral( "SSL server certificate has 'key encipherment' key usage" ) );
+      QgsDebugMsgLevel( QStringLiteral( "SSL server certificate has 'key encipherment' key usage" ), 2 );
       keyencrypt = true;
     }
     else if ( certconst.known() == QCA::KeyAgreement )
     {
-      QgsDebugMsg( QStringLiteral( "SSL server certificate has 'key agreement' key usage" ) );
+      QgsDebugMsgLevel( QStringLiteral( "SSL server certificate has 'key agreement' key usage" ), 2 );
       keyencrypt = true;
     }
     else if ( certconst.known() == QCA::ServerAuth )
     {
-      QgsDebugMsg( QStringLiteral( "SSL server certificate has 'server authentication' extended key usage" ) );
+      QgsDebugMsgLevel( QStringLiteral( "SSL server certificate has 'server authentication' extended key usage" ), 2 );
       serverauth = true;
     }
   }
@@ -1130,12 +1130,12 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
     {
       if ( certconst.known() == QCA::EncipherOnly )
       {
-        QgsDebugMsg( QStringLiteral( "SSL server public key has 'encipher only' key usage" ) );
+        QgsDebugMsgLevel( QStringLiteral( "SSL server public key has 'encipher only' key usage" ), 2 );
         encipheronly = true;
       }
       else if ( certconst.known() == QCA::DecipherOnly )
       {
-        QgsDebugMsg( QStringLiteral( "SSL server public key has 'decipher only' key usage" ) );
+        QgsDebugMsgLevel( QStringLiteral( "SSL server public key has 'decipher only' key usage" ), 2 );
         decipheronly = true;
       }
     }
@@ -1401,7 +1401,7 @@ QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useI
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Key is not DSA, RSA: validation is not supported by QCA" ) );
+    QgsDebugError( QStringLiteral( "Key is not DSA, RSA: validation is not supported by QCA" ) );
   }
   if ( ! keyValid )
   {

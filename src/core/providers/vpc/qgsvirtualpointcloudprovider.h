@@ -29,7 +29,7 @@
 class QgsCopcPointCloudIndex;
 class QgsRemoteCopcPointCloudIndex;
 
-class QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
+class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
 {
     Q_OBJECT
   public:
@@ -59,6 +59,9 @@ class QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
     QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override SIP_FACTORY;
     bool renderInPreview( const QgsDataProvider::PreviewContext & ) override { return false; }
+
+  signals:
+    void subIndexLoaded( int i );
 
   private:
     void parseFile();

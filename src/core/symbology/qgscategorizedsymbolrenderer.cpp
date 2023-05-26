@@ -177,7 +177,7 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrN
   {
     if ( !cat.symbol() )
     {
-      QgsDebugMsg( QStringLiteral( "invalid symbol in a category! ignoring..." ) );
+      QgsDebugError( QStringLiteral( "invalid symbol in a category! ignoring..." ) );
     }
     mCategories << cat;
   }
@@ -228,7 +228,7 @@ QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, 
   {
     if ( mSymbolHash.isEmpty() )
     {
-      QgsDebugMsg( QStringLiteral( "there are no hashed symbols!!!" ) );
+      QgsDebugError( QStringLiteral( "there are no hashed symbols!!!" ) );
     }
     else
     {
@@ -345,7 +345,7 @@ void QgsCategorizedSymbolRenderer::addCategory( const QgsRendererCategory &cat )
 {
   if ( !cat.symbol() )
   {
-    QgsDebugMsg( QStringLiteral( "invalid symbol in a category! ignoring..." ) );
+    QgsDebugError( QStringLiteral( "invalid symbol in a category! ignoring..." ) );
     return;
   }
 

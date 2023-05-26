@@ -24,22 +24,22 @@ Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const
 }
 
 
-bool QgsSettingsEntryString::checkValue( const QString &value ) const
+bool QgsSettingsEntryString::checkValuePrivate( const QString &value ) const
 {
   if ( value.length() < mMinLength )
   {
-    QgsDebugMsg( QStringLiteral( "Can't set value for settings. String length '%1' is shorter than minimum length '%2'." )
-                 .arg( value.length() )
-                 .arg( mMinLength ) );
+    QgsDebugError( QStringLiteral( "Can't set value for settings. String length '%1' is shorter than minimum length '%2'." )
+                   .arg( value.length() )
+                   .arg( mMinLength ) );
     return false;
   }
 
   if ( mMaxLength >= 0
        && value.length() > mMaxLength )
   {
-    QgsDebugMsg( QStringLiteral( "Can't set value for settings. String length '%1' is longer than maximum length '%2'." )
-                 .arg( value.length() )
-                 .arg( mMinLength ) );
+    QgsDebugError( QStringLiteral( "Can't set value for settings. String length '%1' is longer than maximum length '%2'." )
+                   .arg( value.length() )
+                   .arg( mMinLength ) );
     return false;
   }
 
@@ -89,21 +89,21 @@ Qgis::SettingsType QgsSettingsEntryBool::settingsType() const
 }
 
 
-bool QgsSettingsEntryInteger::checkValue( int value ) const
+bool QgsSettingsEntryInteger::checkValuePrivate( const int &value ) const
 {
   if ( value < mMinValue )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
-                 .arg( QString::number( value ) )
-                 .arg( QString::number( mMinValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
+                   .arg( QString::number( value ) )
+                   .arg( QString::number( mMinValue ) ) );
     return false;
   }
 
   if ( value > mMaxValue )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
-                 .arg( QString::number( value ) )
-                 .arg( QString::number( mMaxValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
+                   .arg( QString::number( value ) )
+                   .arg( QString::number( mMaxValue ) ) );
     return false;
   }
 
@@ -130,21 +130,21 @@ int QgsSettingsEntryInteger::minValue() const
   return mMaxValue;
 }
 
-bool QgsSettingsEntryInteger64::checkValue( qlonglong value ) const
+bool QgsSettingsEntryInteger64::checkValuePrivate( const qlonglong &value ) const
 {
   if ( value < mMinValue )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
-                 .arg( QString::number( value ) )
-                 .arg( QString::number( mMinValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
+                   .arg( QString::number( value ) )
+                   .arg( QString::number( mMinValue ) ) );
     return false;
   }
 
   if ( value > mMaxValue )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
-                 .arg( QString::number( value ) )
-                 .arg( QString::number( mMaxValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
+                   .arg( QString::number( value ) )
+                   .arg( QString::number( mMaxValue ) ) );
     return false;
   }
 
@@ -173,19 +173,19 @@ qlonglong QgsSettingsEntryInteger64::minValue() const
 
 
 
-bool QgsSettingsEntryDouble::checkValue( double value ) const
+bool QgsSettingsEntryDouble::checkValuePrivate( const double &value ) const
 {
   if ( value < mMinValue )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
-                 .arg( QString::number( value ), QString::number( mMinValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
+                   .arg( QString::number( value ), QString::number( mMinValue ) ) );
     return false;
   }
 
   if ( value > mMaxValue )
   {
-    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
-                 .arg( QString::number( value ), QString::number( mMaxValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
+                   .arg( QString::number( value ), QString::number( mMaxValue ) ) );
     return false;
   }
 
@@ -233,11 +233,11 @@ Qgis::SettingsType QgsSettingsEntryColor::settingsType() const
   return Qgis::SettingsType::Color;
 }
 
-bool QgsSettingsEntryColor::checkValue( const QColor &value ) const
+bool QgsSettingsEntryColor::checkValuePrivate( const QColor &value ) const
 {
   if ( !mAllowAlpha && value.alpha() != 255 )
   {
-    QgsDebugMsg( QStringLiteral( "Setting %1 doesn't allow transparency and the given color has transparency." ).arg( definitionKey() ) );
+    QgsDebugError( QStringLiteral( "Setting %1 doesn't allow transparency and the given color has transparency." ).arg( definitionKey() ) );
     return false;
   }
 
@@ -263,7 +263,7 @@ bool QgsSettingsEntryColor::copyValueFromKeys( const QString &redKey, const QStr
       settings.remove( alphaKey );
     }
 
-    setVariantValuePrivate( oldValue );
+    setVariantValue( oldValue );
     return true;
   }
   return false;

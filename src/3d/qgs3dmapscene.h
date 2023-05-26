@@ -57,6 +57,7 @@ class QgsShadowRenderingFrameGraph;
 class QgsPostprocessingEntity;
 class QgsChunkNode;
 class QgsDoubleRange;
+class Qgs3DMapSceneEntity;
 
 
 /**
@@ -280,7 +281,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qt3DLogic::QFrameAction *mFrameAction = nullptr;
     QgsCameraController *mCameraController = nullptr;
     QgsTerrainEntity *mTerrain = nullptr;
-    QList<QgsChunkedEntity *> mChunkEntities;
+    QList<Qgs3DMapSceneEntity *> mSceneEntities;
     //! Entity that shows view center - useful for debugging camera issues
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;
     //! Keeps track of entities that belong to a particular layer

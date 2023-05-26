@@ -70,15 +70,15 @@ bool QgsMssqlTableModel::searchableColumn( int column ) const
 
 void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
 {
-  QgsDebugMsg( QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7 view=%8" )
-               .arg( layerProperty.schemaName,
-                     layerProperty.tableName,
-                     layerProperty.geometryColName,
-                     layerProperty.type,
-                     layerProperty.srid,
-                     layerProperty.pkCols.join( ',' ),
-                     layerProperty.sql,
-                     layerProperty.isView ? "yes" : "no" ) );
+  QgsDebugMsgLevel( QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7 view=%8" )
+                    .arg( layerProperty.schemaName,
+                          layerProperty.tableName,
+                          layerProperty.geometryColName,
+                          layerProperty.type,
+                          layerProperty.srid,
+                          layerProperty.pkCols.join( ',' ),
+                          layerProperty.sql,
+                          layerProperty.isView ? "yes" : "no" ), 2 );
 
   // is there already a root item with the given scheme Name?
   QStandardItem *schemaItem = nullptr;

@@ -390,9 +390,11 @@ double QgsMapLayer::opacity() const
   return mLayerOpacity;
 }
 
-bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags )
+bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags, QgsDataProvider *preloadedProvider )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mPreloadedProvider.reset( preloadedProvider );
 
   bool layerError;
   mReadFlags = flags;
@@ -910,6 +912,48 @@ void QgsMapLayer::setMapTipTemplate( const QString &mapTip )
 
   mMapTipTemplate = mapTip;
   emit mapTipTemplateChanged();
+}
+
+void QgsMapLayer::setMapTipsEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mMapTipsEnabled == enabled )
+    return;
+
+  mMapTipsEnabled = enabled;
+  emit mapTipsEnabledChanged();
+}
+
+bool QgsMapLayer::mapTipsEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMapTipsEnabled;
+}
+
+QgsDataProvider::ReadFlags QgsMapLayer::providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags )
+{
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( layerReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+  if ( layerReadFlags & QgsMapLayer::FlagForceReadOnly )
+  {
+    flags |= QgsDataProvider::ForceReadOnly;
+  }
+
+  if ( layerReadFlags & QgsMapLayer::FlagReadExtentFromXml )
+  {
+    const QDomNode extentNode = layerNode.namedItem( QStringLiteral( "extent" ) );
+    if ( !extentNode.isNull() )
+    {
+      flags |= QgsDataProvider::SkipGetExtent;
+    }
+  }
+
+  return flags;
 }
 
 bool QgsMapLayer::isValid() const
@@ -2479,7 +2523,7 @@ bool QgsMapLayer::hasMapTips() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return !mMapTipTemplate.isEmpty();
+  return mapTipsEnabled() && !mMapTipTemplate.isEmpty();
 }
 
 void QgsMapLayer::setProviderType( const QString &providerType )

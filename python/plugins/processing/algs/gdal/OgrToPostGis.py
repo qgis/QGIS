@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     OgrToPostGis.py
@@ -292,7 +290,7 @@ class OgrToPostGis(GdalAlgorithm):
         if len(table) == 0:
             table = layername.lower()
         if schema:
-            table = '{}.{}'.format(schema, table)
+            table = f'{schema}.{table}'
         arguments.append('-nln')
         arguments.append(table)
         if ssrs.isValid():

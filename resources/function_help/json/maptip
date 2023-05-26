@@ -41,7 +41,7 @@
       "expression": "maptip('streets', get_feature_by_id('streets', 1))",
       "returns": "The maptip of the feature with the ID 1 on the layer 'streets'."
     }, {
-      "expression": "maptip('a_layer_id', $currentfeature, 'False')",
+      "expression": "maptip('a_layer_id', @feature, 'False')",
       "returns": "The maptip of the given feature not evaluated."
     }]
   }],

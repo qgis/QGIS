@@ -296,8 +296,8 @@ namespace
           }
         }
         else
-          QgsDebugMsg( QStringLiteral( "Unknown value type ('%1') for parameter %2" )
-                       .arg( QString::number( field.type ), QString::number( paramIndex ) ) );
+          QgsDebugError( QStringLiteral( "Unknown value type ('%1') for parameter %2" )
+                         .arg( QString::number( field.type ), QString::number( paramIndex ) ) );
         break;
     }
   }
@@ -811,7 +811,7 @@ bool QgsHanaProvider::deleteFeatures( const QgsFeatureIds &ids )
 
   if ( mIsQuery )
   {
-    QgsDebugMsg( QStringLiteral( "Cannot delete features (is a query)" ) );
+    QgsDebugError( QStringLiteral( "Cannot delete features (is a query)" ) );
     return false;
   }
 
@@ -854,7 +854,7 @@ bool QgsHanaProvider::truncate()
 {
   if ( mIsQuery )
   {
-    QgsDebugMsg( QStringLiteral( "Cannot truncate (is a query)" ) );
+    QgsDebugError( QStringLiteral( "Cannot truncate (is a query)" ) );
     return false;
   }
 

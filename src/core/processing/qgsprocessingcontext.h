@@ -101,6 +101,7 @@ class CORE_EXPORT QgsProcessingContext
       mAreaUnit = other.mAreaUnit;
       mLogLevel = other.mLogLevel;
       mTemporaryFolderOverride = other.mTemporaryFolderOverride;
+      mMaximumThreads = other.mMaximumThreads;
     }
 
     /**
@@ -296,6 +297,22 @@ class CORE_EXPORT QgsProcessingContext
          * Associated output name from algorithm which generated the layer.
          */
         QString outputName;
+
+        /**
+         * Optional name for a layer tree group under which to place the layer when loading it into a project.
+         *
+         * \since QGIS 3.32
+         */
+        QString groupName;
+
+        /**
+         * Optional sorting key for sorting output layers when loading them into a project.
+         *
+         * Layers with a greater sort key will be placed over layers with a lesser sort key.
+         *
+         * \since QGIS 3.32
+         */
+        int layerSortKey = 0;
 
         /**
          * Layer type hint.
@@ -681,6 +698,36 @@ class CORE_EXPORT QgsProcessingContext
     void setTemporaryFolder( const QString &folder );
 
     /**
+     * Returns the (optional) number of threads to use when running algorithms.
+     *
+     * \warning Not all algorithms which support multithreaded execution will
+     * respect this setting, depending on the multi-threading framework in use.
+     * Multithreaded algorithms must check this value and adapt their thread
+     * handling accordingly -- the setting will not be automatically applied.
+     *
+     * \see setMaximumThreads()
+     * \since QGIS 3.32
+     */
+    int maximumThreads() const;
+
+    /**
+     * Sets the (optional) number of \a threads to use when running algorithms.
+     *
+     * If set, this overrides the standard global Processing number of threads setting.
+     * Note that if algorithm implementation does not support multhreaded execution, this
+     * setting will be ignored.
+     *
+     * \warning Not all algorithms which support multithreaded execution will
+     * respect this setting, depending on the multi-threading framework in use.
+     * Multithreaded algorithms must check this value and adapt their thread
+     * handling accordingly -- the setting will not be automatically applied.
+     *
+     * \see maximumThreads()
+     * \since QGIS 3.32
+     */
+    void setMaximumThreads( int threads );
+
+    /**
      * Exports the context's settings to a variant map.
      *
      * \since QGIS 3.24
@@ -737,6 +784,7 @@ class CORE_EXPORT QgsProcessingContext
     LogLevel mLogLevel = DefaultLevel;
 
     QString mTemporaryFolderOverride;
+    int mMaximumThreads = QThread::idealThreadCount();
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );

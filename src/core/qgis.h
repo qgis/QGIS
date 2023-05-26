@@ -655,6 +655,24 @@ class CORE_EXPORT Qgis
     Q_ENUM( VectorExportResult )
 
     /**
+     * Capabilities supported by a QgsVectorFileWriter object.
+     * \since QGIS 3.32
+     */
+    enum class VectorFileWriterCapability : int
+    {
+      FieldAliases = 1 << 0, //!< Writer can support field aliases
+      FieldComments = 1 << 2, //!< Writer can support field comments
+    };
+    Q_ENUM( VectorFileWriterCapability )
+
+    /**
+     * Capabilities supported by a QgsVectorFileWriter object.
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( VectorFileWriterCapabilities, VectorFileWriterCapability )
+    Q_FLAG( VectorFileWriterCapabilities )
+
+    /**
      * SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.
      * \since QGIS 3.22
      */
@@ -1717,7 +1735,7 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.28
      */
     Q_DECLARE_FLAGS( RasterTemporalCapabilityFlags, RasterTemporalCapabilityFlag )
-    Q_ENUM( RasterTemporalCapabilityFlags )
+    Q_FLAG( RasterTemporalCapabilityFlags )
 
     /**
      * Indicates the direction (forward or inverse) of a transform.
@@ -1749,7 +1767,7 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     Q_DECLARE_FLAGS( CoordinateTransformationFlags, CoordinateTransformationFlag )
-    Q_ENUM( CoordinateTransformationFlags )
+    Q_FLAG( CoordinateTransformationFlags )
 
     /**
      * Flags which adjust the way maps are rendered.
@@ -2468,6 +2486,24 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( LineExtensionSide )
 
+
+    /**
+     * Advanced digitizing constraint type.
+     * \since QGIS 3.32
+     */
+    enum class CadConstraintType : int
+    {
+      Generic,      //!< Generic value
+      Angle,        //!< Angle value
+      Distance,     //!< Distance value
+      XCoordinate,  //!< X Coordinate value
+      YCoordinate,  //!< Y Coordinate value
+      ZValue,       //!< Z value
+      MValue,       //!< M value
+    };
+    Q_ENUM( CadConstraintType )
+
+
     /**
      * Flags which control the behavior of QgsProjects.
      *
@@ -2543,6 +2579,7 @@ class CORE_EXPORT Qgis
     {
       Line, //!< The elevation surface will be rendered using a line symbol
       FillBelow, //!< The elevation surface will be rendered using a fill symbol below the surface level
+      FillAbove, //!< The elevation surface will be rendered using a fill symbol above the surface level (since QGIS 3.32)
     };
     Q_ENUM( ProfileSurfaceSymbology );
 
@@ -2818,6 +2855,8 @@ class CORE_EXPORT Qgis
       Python, //!< Python
       R, //!< R Stats
       Sql, //!< SQL
+      Batch, //!< Windows batch files
+      Bash, //!< Bash scripts
       Unknown, //!< Unknown/other language
     };
     Q_ENUM( ScriptLanguage )
@@ -3396,6 +3435,177 @@ class CORE_EXPORT Qgis
     Q_FLAG( DatabaseProviderConnectionCapabilities2 )
 
     /**
+     * User profile selection policy.
+     *
+     * \since QGIS 3.32
+     */
+    enum class UserProfileSelectionPolicy : int
+    {
+      LastProfile, //!< Open the last closed profile (only mode supported prior to QGIS 3.32)
+      DefaultProfile, //!< Open a specific profile
+      AskUser, //!< Let the user choose which profile to open
+    };
+    Q_ENUM( UserProfileSelectionPolicy )
+
+    /**
+     * Attribute editor types.
+     *
+     * \note Prior to QGIS 3.32 this was available as QgsAttributeEditorElement::AttributeEditorType.
+     *
+     * \since QGIS 3.32
+     */
+    enum class AttributeEditorType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeEditorElement, AttributeEditorType ) : int
+      {
+      Container SIP_MONKEYPATCH_COMPAT_NAME( AeTypeContainer ), //!< A container
+      Field SIP_MONKEYPATCH_COMPAT_NAME( AeTypeField ), //!< A field
+      Relation SIP_MONKEYPATCH_COMPAT_NAME( AeTypeRelation ), //!< A relation
+      QmlElement SIP_MONKEYPATCH_COMPAT_NAME( AeTypeQmlElement ), //!< A QML element
+      HtmlElement SIP_MONKEYPATCH_COMPAT_NAME( AeTypeHtmlElement ), //!< A HTML element
+      Action SIP_MONKEYPATCH_COMPAT_NAME( AeTypeAction ), //!< A layer action element (since QGIS 3.22)
+      TextElement SIP_MONKEYPATCH_COMPAT_NAME( AeTypeTextElement ), //!< A text element (since QGIS 3.30)
+      SpacerElement SIP_MONKEYPATCH_COMPAT_NAME( AeTypeSpacerElement ), //!< A spacer element (since QGIS 3.30)
+      Invalid SIP_MONKEYPATCH_COMPAT_NAME( AeTypeInvalid ), //!< Invalid
+    };
+    Q_ENUM( AttributeEditorType )
+
+    /**
+     * Attribute editor container types.
+     *
+     * \since QGIS 3.32
+     */
+    enum class AttributeEditorContainerType : int
+    {
+      GroupBox, //!< A group box
+      Tab, //!< A tab widget
+      Row, //!< A row of editors (horizontal layout)
+    };
+    Q_ENUM( AttributeEditorContainerType )
+
+    /**
+     * Available form types for layout of the attribute form editor.
+     *
+     * \note Prior to QGIS 3.32 this was available as QgsEditFormConfig::EditorLayout.
+     *
+     * \since QGIS 3.32
+     */
+    enum class AttributeFormLayout SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsEditFormConfig, EditorLayout ) : int
+      {
+      AutoGenerated SIP_MONKEYPATCH_COMPAT_NAME( GeneratedLayout ) = 0, //!< Autogenerate a simple tabular layout for the form
+      DragAndDrop SIP_MONKEYPATCH_COMPAT_NAME( TabLayout ) = 1, //!< "Drag and drop" layout. Needs to be configured.
+      UiFile SIP_MONKEYPATCH_COMPAT_NAME( UiFileLayout ) = 2 //!< Load a .ui file for the layout. Needs to be configured.
+    };
+    Q_ENUM( AttributeFormLayout )
+
+    /**
+     * Available form types for layout of the attribute form editor.
+     *
+     * \note Prior to QGIS 3.32 this was available as QgsEditFormConfig::FeatureFormSuppress.
+     *
+     * \since QGIS 3.32
+     */
+    enum class AttributeFormSuppression SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsEditFormConfig, FeatureFormSuppress ) : int
+      {
+      Default SIP_MONKEYPATCH_COMPAT_NAME( SuppressDefault ) = 0, //!< Use the application-wide setting.
+      On SIP_MONKEYPATCH_COMPAT_NAME( SuppressOn ) = 1, //!< Always suppress feature form.
+      Off SIP_MONKEYPATCH_COMPAT_NAME( SuppressOff ) = 2 //!< Never suppress feature form.
+    };
+    Q_ENUM( AttributeFormSuppression )
+
+    /**
+     * The Python init code source for attribute forms.
+     *
+     * \note Prior to QGIS 3.32 this was available as QgsEditFormConfig::PythonInitCodeSource.
+     *
+     * \since QGIS 3.32
+     */
+    enum class AttributeFormPythonInitCodeSource SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsEditFormConfig, PythonInitCodeSource ) : int
+      {
+      NoSource SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceNone ) = 0, //!< Do not use Python code at all
+      File SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceFile ) = 1, //!< Load the Python code from an external file
+      Dialog SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceDialog ) = 2, //!< Use the Python code provided in the dialog
+      Environment SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceEnvironment ) = 3 //!< Use the Python code available in the Python environment
+    };
+    Q_ENUM( AttributeFormPythonInitCodeSource )
+
+    /**
+     * Expression types
+     *
+     * \since QGIS 3.32
+     */
+    enum class ExpressionType
+    {
+      Qgis, //!< Native QGIS expression
+      PointCloud, //!< Point cloud expression
+    };
+    Q_ENUM( ExpressionType )
+
+    /**
+     * Options for exporting features considering their symbology.
+     *
+     * \note Prior to QGIS 3.32 this was available as QgsVectorFileWriter::SymbologyExport.
+     *
+     * \since QGIS 3.32
+     */
+    enum class FeatureSymbologyExport SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorFileWriter, SymbologyExport ) : int
+      {
+      NoSymbology = 0, //!< Export only data
+      PerFeature SIP_MONKEYPATCH_COMPAT_NAME( FeatureSymbology ), //!< Keeps the number of features and export symbology per feature
+      PerSymbolLayer SIP_MONKEYPATCH_COMPAT_NAME( SymbolLayerSymbology ) //!< Exports one feature per symbol layer (considering symbol levels)
+    };
+    Q_ENUM( FeatureSymbologyExport )
+
+    /**
+     * Flags for vector tile data providers.
+     *
+     * \since QGIS 3.32
+     */
+    enum class VectorTileProviderFlag : int
+    {
+      AlwaysUseTileMatrixSetFromProvider = 1 << 1, //!< Vector tile layer must always use the tile matrix set from the data provider, and should never store, restore or override the definition of this matrix set.
+    };
+    Q_ENUM( VectorTileProviderFlag )
+
+    /**
+     * Vector tile data provider flags.
+     *
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( VectorTileProviderFlags, VectorTileProviderFlag )
+    Q_FLAG( VectorTileProviderFlags )
+
+    /**
+     * Enumeration with capabilities that vector tile data providers might implement.
+     * \since QGIS 3.32
+     */
+    enum class VectorTileProviderCapability : int
+    {
+      ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. See QgsDataProvider::layerMetadata()
+    };
+    Q_ENUM( VectorTileProviderCapability )
+
+    /**
+     * Vector tile data provider capabilities.
+     *
+     * \since QGIS 3.32
+     */
+    Q_DECLARE_FLAGS( VectorTileProviderCapabilities, VectorTileProviderCapability )
+    Q_FLAG( VectorTileProviderCapabilities )
+
+    /**
+     * Possible availability states for a tile within a tile matrix.
+     *
+     * \since QGIS 3.32
+     */
+    enum class TileAvailability
+    {
+      Available, //!< Tile is available within the matrix
+      NotAvailable, //!< Tile is not available within the matrix, e.g. there is no content for the tile
+      AvailableNoChildren, //!< Tile is available within the matrix, and is known to have no children (ie no higher zoom level tiles exist covering this tile's region)
+      UseLowerZoomLevelTile, //!< Tile is not available at the requested zoom level, it should be replaced by a tile from a lower zoom level instead182
+    };
+    Q_ENUM( TileAvailability )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -3554,6 +3764,9 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayerTreeFilterFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelLinePlacementFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelPolygonPlacementFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

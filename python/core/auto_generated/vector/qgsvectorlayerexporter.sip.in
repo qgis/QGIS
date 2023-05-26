@@ -105,6 +105,13 @@ Returns the number of error messages encountered during the export.
 .. seealso:: :py:func:`errorCode`
 %End
 
+    Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const;
+%Docstring
+Returns the attribute capabilities of the exporter.
+
+.. versionadded:: 3.32
+%End
+
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );

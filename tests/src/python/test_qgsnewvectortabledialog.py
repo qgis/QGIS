@@ -42,6 +42,7 @@ class TestPyQgsNewVectorTableDialog(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         start_app()
         gpkg_original_path = '{}/qgis_server/test_project_wms_grouped_layers.gpkg'.format(
             TEST_DATA_DIR)

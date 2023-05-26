@@ -633,13 +633,15 @@ or layer with temporary data (as temporary mesh layer dataset)
     typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
 
 
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags() );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context,
+                       QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags(), QgsDataProvider *preloadedProvider /Transfer/ = 0 );
 %Docstring
 Sets state from DOM document
 
 :param layerElement: The DOM element corresponding to ``maplayer'' tag
 :param context: writing context (e.g. for conversion between relative and absolute paths)
 :param flags: optional argument which can be used to control layer reading behavior.
+:param preloadedProvider: optional preloaded data provider that will be used as data provider for this layer, takes ownership (since QGIS 3.32)
 \note
 
 The DOM node corresponds to a DOM document project file XML element read
@@ -1563,6 +1565,31 @@ It may also contain embedded expressions.
 .. versionadded:: 3.30
 %End
 
+    void setMapTipsEnabled( bool enabled );
+%Docstring
+Enable or disable map tips for this layer
+
+:param enabled: Whether map tips are enabled for this layer
+
+.. versionadded:: 3.32
+%End
+
+    bool mapTipsEnabled() const;
+%Docstring
+Returns true if map tips are enabled for this layer
+
+.. versionadded:: 3.32
+%End
+
+    static QgsDataProvider::ReadFlags providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags );
+%Docstring
+Returns provider read flag deduced from layer read flags ``layerReadFlags`` and a dom node ``layerNode``
+that describes a layer (corresponding to ``maplayer'' tag in a DOM document project file read by :py:class:`QgsProject`).
+This static method is used when loading a project.
+
+.. versionadded:: 3.32
+%End
+
   public slots:
 
     void setMinimumScale( double scale );
@@ -1914,6 +1941,15 @@ Emitted when the map tip template changes
 .. versionadded:: 3.30
 %End
 
+    void mapTipsEnabledChanged();
+%Docstring
+Emitted when map tips are enabled or disabled for the layer.
+
+.. seealso:: :py:func:`setMapTipsEnabled`
+
+.. versionadded:: 3.32
+%End
+
   protected:
 
     void clone( QgsMapLayer *layer ) const;
@@ -2056,6 +2092,7 @@ this method is now deprecated and always return ``False``, because circular depe
 
 .. deprecated:: QGIS 3.10
 %End
+
 
 
 

@@ -21,7 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Updated (c) 2021 Runette Software Ltd to make multiplatform, to complete the typemaps and add to voxel types.
+Updated (c) 2021 / 23 Runette Software Ltd to make multiplatform, to complete the
+typemaps and add voxel types.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -50,6 +51,9 @@ SOFTWARE.
 #include <string>
 #include <iostream>
 
+#define PLYXX_BIG_ENDIAN 1
+#define PLYXX_LITTLE_ENDIAN 0
+
 namespace libply
 {
   File::File( const std::string &filename )
@@ -68,6 +72,11 @@ namespace libply
   Metadata File::metadata() const
   {
     return m_parser->metadata;
+  }
+
+  std::string File::format() const
+  {
+    return formatString( m_parser->format );
   }
 
 
@@ -205,15 +214,15 @@ namespace libply
     line = m_lineReader.getline();
     if ( line == "format ascii 1.0" )
     {
-      m_format = File::Format::ASCII;
+      format = File::Format::ASCII;
     }
     else if ( line == "format binary_little_endian 1.0" )
     {
-      m_format = File::Format::BINARY_LITTLE_ENDIAN;
+      format = File::Format::BINARY_LITTLE_ENDIAN;
     }
     else if ( line == "format binary_big_endian 1.0" )
     {
-      m_format = File::Format::BINARY_BIG_ENDIAN;
+      format = File::Format::BINARY_BIG_ENDIAN;
     }
     else
     {
@@ -241,6 +250,10 @@ namespace libply
       else if ( lineType == "comment" )
       {
         addMetadata( line_substring, metadata );
+      }
+      else if ( lineType == "obj_info" )
+      {
+        // ignore
       }
       else
       {
@@ -285,7 +298,7 @@ namespace libply
 
     std::ifstream &filestream = m_lineReader.filestream();
 
-    if ( m_format == File::Format::BINARY_BIG_ENDIAN || m_format == File::Format::BINARY_LITTLE_ENDIAN )
+    if ( format == File::Format::BINARY_BIG_ENDIAN || format == File::Format::BINARY_LITTLE_ENDIAN )
     {
       filestream.clear();
       filestream.seekg( m_dataOffset );
@@ -303,14 +316,14 @@ namespace libply
         buffer = buffers[elementIndex];
       }
 
-      if ( m_format == File::Format::ASCII )
+      if ( format == File::Format::ASCII )
       {
         auto line = m_lineReader.getline();
         parseLine( line, elementDefinition, *buffer );
       }
       else
       {
-        readBinaryElement( filestream, elementDefinition, *buffer );
+        readBinaryElement( filestream, elementDefinition, *buffer, format );
       }
 
       readCallback( *buffer );
@@ -324,7 +337,7 @@ namespace libply
     const std::vector<PropertyDefinition> properties = elementDefinition.properties;
     size_t t_idx = 0;
     size_t e_idx = 0;
-    for ( PropertyDefinition p : properties )
+    for ( const PropertyDefinition &p : properties )
     {
       if ( t_idx == m_tokens.size() ||  e_idx == elementBuffer.size() )
       {
@@ -358,21 +371,30 @@ namespace libply
     }
   }
 
-  void FileParser::readBinaryElement( std::ifstream &fs, const ElementDefinition &elementDefinition, ElementBuffer &elementBuffer )
+  void FileParser::readBinaryElement( std::ifstream &fs, const ElementDefinition &elementDefinition, ElementBuffer &elementBuffer, File::Format format )
   {
     const auto &properties = elementDefinition.properties;
     const unsigned int MAX_PROPERTY_SIZE = 8;
     char buffer[MAX_PROPERTY_SIZE];
     size_t e_idx = 0;
 
-    for ( PropertyDefinition p : properties )
+    for ( const PropertyDefinition &p : properties )
     {
+      uint32_t endian;
+      if ( format == File::Format::BINARY_LITTLE_ENDIAN )
+      {
+        endian = PLYXX_LITTLE_ENDIAN;
+      }
+      else
+      {
+        endian = PLYXX_BIG_ENDIAN;
+      }
       if ( !p.isList )
       {
         if ( e_idx == elementBuffer.size() ) return; //TODO throw an error
         const auto size = TYPE_SIZE_MAP.at( p.type );
         fs.read( buffer, size );
-        p.castFunction( buffer, elementBuffer[e_idx] );
+        p.castFunction( buffer, elementBuffer[e_idx], endian );
         e_idx++;
       }
       else
@@ -381,7 +403,7 @@ namespace libply
         const auto lengthType = p.listLengthType;
         const auto lengthTypeSize = TYPE_SIZE_MAP.at( lengthType );
         fs.read( buffer, lengthTypeSize );
-        size_t listLength = static_cast<size_t>( *buffer );
+        size_t listLength = static_cast<size_t>( static_cast<unsigned long>( *buffer ) );
 
         ListProperty *lp = dynamic_cast<ListProperty *>( &elementBuffer[e_idx] );
         lp->define( p.type, listLength );
@@ -391,7 +413,7 @@ namespace libply
         for ( size_t i = 0; i < listLength; i++ )
         {
           fs.read( buffer, size );
-          castFunction( buffer, lp->value( i ) );
+          castFunction( buffer, lp->value( i ), endian );
         }
         e_idx++;
       }
@@ -490,8 +512,9 @@ namespace libply
       case Type::UINT32: return "uint";
       case Type::INT32: return "int";
       case Type::FLOAT32: return "float";
-      case Type::FLOAT64: return "double";
-      case Type::COORDINATE: return "double";
+      case Type::FLOAT64:
+      case Type::COORDINATE:
+        return "double";
     }
     return "";
   }
@@ -523,7 +546,7 @@ namespace libply
     std::stringstream ss;
     const std::vector<PropertyDefinition> properties = elementDefinition.properties;
     size_t e_idx = 0;
-    for ( PropertyDefinition p : properties )
+    for ( const PropertyDefinition &p : properties )
     {
       if ( !p.isList )
       {
@@ -545,41 +568,52 @@ namespace libply
           file << convert( lp->value( i ), ss ).str() << " ";
         }
         e_idx++;
-        for ( size_t i = 0; i < buffer.size(); ++i )
-        {
-
-        }
       }
     }
     file << '\n';
   }
 
-  void writeBinaryProperties( std::ofstream &file, ElementBuffer &buffer, const ElementDefinition &elementDefinition )
+  void writeBinaryProperties( std::ofstream &file, ElementBuffer &buffer, const ElementDefinition &elementDefinition, File::Format format )
   {
     const unsigned int MAX_PROPERTY_SIZE = 8;
     char write_buffer[MAX_PROPERTY_SIZE];
 
-    if ( elementDefinition.properties.front().isList )
-    {
-      unsigned char list_size = static_cast<unsigned char>( buffer.size() );
-      file.write( reinterpret_cast<char *>( &list_size ), sizeof( list_size ) );
+    uint32_t endian;
 
-      auto &cast = elementDefinition.properties.front().writeCastFunction;
-      for ( size_t i = 0; i < buffer.size(); ++i )
-      {
-        size_t write_size;
-        cast( buffer[i], write_buffer, write_size );
-        file.write( reinterpret_cast<char *>( write_buffer ), write_size );
-      }
+    if ( format == File::Format::BINARY_LITTLE_ENDIAN )
+    {
+      endian = PLYXX_LITTLE_ENDIAN;
     }
     else
     {
-      for ( size_t i = 0; i < buffer.size(); ++i )
+      endian =  PLYXX_BIG_ENDIAN;
+    }
+
+    const std::vector<PropertyDefinition> properties = elementDefinition.properties;
+    size_t e_idx = 0;
+    for ( const PropertyDefinition &p : properties )
+    {
+      if ( !p.isList )
       {
-        auto &cast = elementDefinition.properties.at( i ).writeCastFunction;
+        auto &cast = p.writeCastFunction;
         size_t write_size;
-        cast( buffer[i], write_buffer, write_size );
-        file.write( reinterpret_cast<char *>( write_buffer ), write_size );
+        cast( buffer[e_idx], write_buffer, write_size, endian );
+        file.write( reinterpret_cast<char *>( write_buffer ), static_cast<std::streamsize>( write_size ) );
+        e_idx++;
+      }
+      else
+      {
+        auto &cast = p.writeCastFunction;
+        ListProperty *lp = dynamic_cast<ListProperty *>( &buffer[e_idx] );
+        unsigned char list_size = static_cast<unsigned char>( lp->size() );
+        file.write( reinterpret_cast<char *>( &list_size ), sizeof( list_size ) );
+        for ( size_t i = 0; i < lp->size(); i++ )
+        {
+          size_t write_size;
+          cast( lp->value( i ), write_buffer, write_size, endian );
+          file.write( reinterpret_cast<char *>( write_buffer ), static_cast<std::streamsize>( write_size ) );
+        }
+        e_idx++;
       }
     }
   }
@@ -593,7 +627,7 @@ namespace libply
     }
     else
     {
-      writeBinaryProperties( file, buffer, elementDefinition );
+      writeBinaryProperties( file, buffer, elementDefinition, format );
     }
   }
 
@@ -601,7 +635,7 @@ namespace libply
   {
     const size_t size = elementDefinition.size;
     ElementBuffer buffer( elementDefinition );
-    //buffer.reset( elementDefinition.properties.size() );
+
     for ( size_t i = 0; i < size; ++i )
     {
       writeProperties( file, buffer, i, elementDefinition, format, callback );
@@ -611,7 +645,8 @@ namespace libply
   FileOut::FileOut( const std::string &filename, File::Format format )
     : m_filename( filename ), m_format( format )
   {
-    createFile();
+    std::ofstream f( m_filename, std::ios::trunc );
+    f.close();
   }
 
   void FileOut::setElementsDefinition( const ElementsDefinition &definitions )
@@ -626,34 +661,20 @@ namespace libply
 
   void FileOut::write()
   {
-    writeHeader();
-    writeData();
-  }
-
-  void FileOut::createFile()
-  {
-    std::ofstream f( m_filename, std::ios::trunc );
-    f.close();
-  }
-
-  void FileOut::writeHeader()
-  {
-    std::ofstream file( m_filename, std::ios::out | std::ios::binary );
-
+    std::ofstream file( m_filename, std::ios::in | std::ios::out | std::ios::binary | std::ios::app );
     file << "ply" << std::endl;
     file << "format " << formatString( m_format ) << " 1.0" << std::endl;
+    file << "obj_info Generated by MDAL" << std::endl;
+    for ( const std::pair<const std::string, std::string> &item : metadata )
+    {
+      file << "comment " << item.first << ": " << item.second << std::endl;
+    }
     for ( const auto &def : m_definitions )
     {
       writeElementDefinition( file, def );
     }
     file << "end_header" << std::endl;
 
-    file.close();
-  }
-
-  void FileOut::writeData()
-  {
-    std::ofstream file( m_filename, std::ios::out | std::ios::binary | std::ios::app );
     for ( const auto &elem : m_definitions )
     {
       writeElements( file, elem, m_format, m_writeCallbacks[elem.name] );

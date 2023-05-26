@@ -445,10 +445,11 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
       const QString geomColSql
       {
         QStringLiteral( R"raw(
-                        SELECT %4 UPPER( %1.STGeometryType()), %1.STSrid
+                        SELECT %4 UPPER( %1.STGeometryType()), %1.STSrid,
+                            %1.HasZ, %1.HasM
                         FROM %2.%3
                         WHERE %1 IS NOT NULL
-                        GROUP BY %1.STGeometryType(), %1.STSrid
+                        GROUP BY %1.STGeometryType(), %1.STSrid, %1.HasZ, %1.HasM
                         )raw" )
         .arg( QgsMssqlProvider::quotedIdentifier( table.geometryColumn() ),
               QgsMssqlProvider::quotedIdentifier( table.schema() ),
@@ -461,7 +462,16 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
         const auto geomColResults { executeSqlPrivate( geomColSql ).rows() };
         for ( const auto &row : geomColResults )
         {
-          table.addGeometryColumnType( QgsWkbTypes::parseType( row[0].toString() ),
+          Qgis::WkbType geometryType { QgsWkbTypes::parseType( row[0].toString() ) };
+          if ( row[2].toString() == '1' )
+          {
+            geometryType = QgsWkbTypes::addZ( geometryType );
+          }
+          if ( row[3].toString() == '1' )
+          {
+            geometryType = QgsWkbTypes::addM( geometryType );
+          }
+          table.addGeometryColumnType( geometryType,
                                        QgsCoordinateReferenceSystem::fromEpsgId( row[1].toLongLong( ) ) );
           ++geomColCount;
         }

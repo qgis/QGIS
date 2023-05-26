@@ -264,7 +264,15 @@ void QgsVectorDataProvider::setEncoding( const QString &e )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
+  // Use UTF-8 if no encoding is specified
+  if ( e.isEmpty() )
+  {
+    mEncoding = QTextCodec::codecForName( "UTF-8" );
+  }
+  else
+  {
+    mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
+  }
   if ( !mEncoding && e != QLatin1String( "System" ) )
   {
     if ( !e.isEmpty() )
@@ -498,7 +506,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
     return true;
   }
 
-  QgsDebugMsg( QStringLiteral( "no sufficient native type found" ) );
+  QgsDebugError( QStringLiteral( "no sufficient native type found" ) );
   return false;
 }
 
@@ -508,7 +516,7 @@ QVariant QgsVectorDataProvider::minimumValue( int index ) const
 
   if ( index < 0 || index >= fields().count() )
   {
-    QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
+    QgsDebugError( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
   }
 
@@ -526,7 +534,7 @@ QVariant QgsVectorDataProvider::maximumValue( int index ) const
 
   if ( index < 0 || index >= fields().count() )
   {
-    QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
+    QgsDebugError( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
   }
 
@@ -748,6 +756,11 @@ static bool _compareEncodings( const QString &s1, const QString &s2 )
   return s1.toLower() < s2.toLower();
 }
 
+static bool _removeDuplicateEncodings( const QString &s1, const QString &s2 )
+{
+  return s1.compare( s2, Qt::CaseInsensitive ) == 0;
+}
+
 QStringList QgsVectorDataProvider::availableEncodings()
 {
   static std::once_flag initialized;
@@ -806,8 +819,10 @@ QStringList QgsVectorDataProvider::availableEncodings()
     smEncodings << "System";
 #endif
 
-    // Do case-insensitive sorting of encodings
+    // Do case-insensitive sorting of encodings then remove duplicates
     std::sort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
+    const auto last = std::unique( sEncodings.begin(), sEncodings.end(), _removeDuplicateEncodings );
+    sEncodings.erase( last, sEncodings.end() );
 
   } );
 
@@ -867,7 +882,7 @@ void QgsVectorDataProvider::pushError( const QString &msg ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDebugMsg( msg );
+  QgsDebugError( msg );
   mErrors << msg;
   emit raiseError( msg );
 }

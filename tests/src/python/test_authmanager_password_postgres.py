@@ -77,6 +77,7 @@ class TestAuthManager(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests:
         Creates an auth configuration"""
+        super().setUpClass()
         cls.username = 'docker'
         cls.password = 'docker'
         cls.dbname = 'qgis_test'

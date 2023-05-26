@@ -50,7 +50,7 @@ QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
     }
     catch ( QgsProviderConnectionException &ex )
     {
-      QgsDebugMsg( QStringLiteral( "Error creating fields item: %1" ).arg( ex.what() ) );
+      QgsDebugError( QStringLiteral( "Error creating fields item: %1" ).arg( ex.what() ) );
     }
   }
 }
@@ -120,13 +120,13 @@ QgsVectorLayer *QgsFieldsItem::layer()
     catch ( const QgsProviderConnectionException & )
     {
       // This should never happen!
-      QgsDebugMsg( QStringLiteral( "Error getting connection from %1" ).arg( mConnectionUri ) );
+      QgsDebugError( QStringLiteral( "Error getting connection from %1" ).arg( mConnectionUri ) );
     }
   }
   else
   {
     // This should never happen!
-    QgsDebugMsg( QStringLiteral( "Error getting metadata for provider %1" ).arg( providerKey() ) );
+    QgsDebugError( QStringLiteral( "Error getting metadata for provider %1" ).arg( providerKey() ) );
   }
   return nullptr;
 }

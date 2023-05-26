@@ -32,6 +32,7 @@ class TestQgsProviderConnectionComboBox(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain(cls.__name__)
         QCoreApplication.setApplicationName(cls.__name__)
@@ -55,6 +56,7 @@ class TestQgsProviderConnectionComboBox(unittest.TestCase):
         """Run after all tests"""
         os.unlink(cls.gpkg_path)
         os.unlink(cls.gpkg_path2)
+        super().tearDownClass()
 
     def testCombo(self):
         """ test combobox functionality """

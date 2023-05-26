@@ -360,6 +360,11 @@ QSGNode *QgsQuickMapCanvasMap::updatePaintNode( QSGNode *oldNode, QQuickItem::Up
     mDirty = false;
   }
 
+  if ( mImage.isNull() )
+  {
+    return nullptr;
+  }
+
   QSGSimpleTextureNode *node = static_cast<QSGSimpleTextureNode *>( oldNode );
   if ( !node )
   {

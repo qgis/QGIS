@@ -310,6 +310,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
     layer->setProviderEncoding( mDataProvider->encoding() );
   layer->setDisplayExpression( displayExpression() );
   layer->setMapTipTemplate( mapTipTemplate() );
+  layer->setMapTipsEnabled( mapTipsEnabled() );
   layer->setReadOnly( isReadOnly() );
   layer->selectByIds( selectedFeatureIds() );
   layer->setAttributeTableConfig( attributeTableConfig() );
@@ -1761,21 +1762,15 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
   const QDomElement elem = layer_node.toElement();
   QgsDataProvider::ProviderOptions options { context.transformContext() };
-  QgsDataProvider::ReadFlags flags;
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-  {
-    flags |= QgsDataProvider::FlagTrustDataSource;
-  }
-  if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
-  {
-    flags |= QgsDataProvider::ForceReadOnly;
-    mDataSourceReadOnly = true;
-  }
+
+  mDataSourceReadOnly = mReadFlags & QgsMapLayer::FlagForceReadOnly;
+  QgsDataProvider::ReadFlags flags = providerReadFlags( layer_node, mReadFlags );
+
   if ( ( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) || !setDataProvider( mProviderKey, options, flags ) )
   {
     if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
     {
-      QgsDebugMsg( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
+      QgsDebugError( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
     }
 
     // for invalid layer sources, we fallback to stored wkbType if available
@@ -2019,7 +2014,11 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
 
-  mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options, flags ) );
+  if ( mPreloadedProvider )
+    mDataProvider = qobject_cast< QgsVectorDataProvider * >( mPreloadedProvider.release() );
+  else
+    mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options, flags ) );
+
   if ( !mDataProvider )
   {
     setValid( false );
@@ -2313,7 +2312,11 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   readStyle( layerNode, errorMessage, context, categories );
 
   if ( categories.testFlag( MapTips ) )
-    mMapTipTemplate = layerNode.namedItem( QStringLiteral( "mapTip" ) ).toElement().text();
+  {
+    QDomElement mapTipElem = layerNode.namedItem( QStringLiteral( "mapTip" ) ).toElement();
+    setMapTipTemplate( mapTipElem.text() );
+    setMapTipsEnabled( mapTipElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt() == 1 );
+  }
 
   if ( categories.testFlag( LayerConfiguration ) )
     mDisplayExpression = layerNode.namedItem( QStringLiteral( "previewExpression" ) ).toElement().text();
@@ -2994,6 +2997,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( MapTips ) )
   {
     QDomElement mapTipElem = doc.createElement( QStringLiteral( "mapTip" ) );
+    mapTipElem.setAttribute( QStringLiteral( "enabled" ), mapTipsEnabled() );
     QDomText mapTipText = doc.createTextNode( mMapTipTemplate );
     mapTipElem.appendChild( mapTipText );
     node.toElement().appendChild( mapTipElem );
@@ -3952,7 +3956,7 @@ bool QgsVectorLayer::hasMapTips() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // display expressions are used as a fallback when no explicit map tip template is set
-  return !mapTipTemplate().isEmpty() || !displayExpression().isEmpty();
+  return mapTipsEnabled() && ( !mapTipTemplate().isEmpty() || !displayExpression().isEmpty() );
 }
 
 bool QgsVectorLayer::isEditable() const
@@ -5396,12 +5400,12 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       if ( vendorOptionElem.firstChild().nodeType() == QDomNode::ElementNode &&
            vendorOptionElem.firstChild().localName() == QLatin1String( "Literal" ) )
       {
-        QgsDebugMsg( vendorOptionElem.firstChild().localName() );
+        QgsDebugMsgLevel( vendorOptionElem.firstChild().localName(), 2 );
         optionValue = vendorOptionElem.firstChild().firstChild().nodeValue();
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "unexpected child of %1 named %2" ).arg( vendorOptionElem.localName(), optionName ) );
+        QgsDebugError( QStringLiteral( "unexpected child of %1 named %2" ).arg( vendorOptionElem.localName(), optionName ) );
       }
     }
 

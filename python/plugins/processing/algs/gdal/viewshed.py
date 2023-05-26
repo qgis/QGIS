@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     viewshed.py
@@ -129,17 +127,17 @@ class viewshed(GdalAlgorithm):
 
         arguments = [
             '-b',
-            '{}'.format(self.parameterAsInt(parameters, self.BAND, context)),
+            f'{self.parameterAsInt(parameters, self.BAND, context)}',
             '-ox',
-            '{}'.format(observer.x()),
+            f'{observer.x()}',
             '-oy',
-            '{}'.format(observer.y()),
+            f'{observer.y()}',
             '-oz',
-            '{}'.format(self.parameterAsDouble(parameters, self.OBSERVER_HEIGHT, context)),
+            f'{self.parameterAsDouble(parameters, self.OBSERVER_HEIGHT, context)}',
             '-tz',
-            '{}'.format(self.parameterAsDouble(parameters, self.TARGET_HEIGHT, context)),
+            f'{self.parameterAsDouble(parameters, self.TARGET_HEIGHT, context)}',
             '-md',
-            '{}'.format(self.parameterAsDouble(parameters, self.MAX_DISTANCE, context)),
+            f'{self.parameterAsDouble(parameters, self.MAX_DISTANCE, context)}',
 
             '-f',
             QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])

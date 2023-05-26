@@ -400,7 +400,7 @@ bool QgsPostgresFeatureIterator::prepareSimplification( const QgsSimplifyMethod 
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Simplification method type (%1) is not recognised by PostgresFeatureIterator" ).arg( methodType ) );
+      QgsDebugError( QStringLiteral( "Simplification method type (%1) is not recognised by PostgresFeatureIterator" ).arg( methodType ) );
     }
   }
   return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod );
@@ -796,7 +796,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
       break;
 
     case PktUnknown:
-      QgsDebugMsg( QStringLiteral( "Cannot declare cursor without primary key." ) );
+      QgsDebugError( QStringLiteral( "Cannot declare cursor without primary key." ) );
       return false;
   }
 

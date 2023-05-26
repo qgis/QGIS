@@ -151,7 +151,7 @@ bool QgsPointCloudLayerRenderer::render()
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Transformation of extent failed!" ) );
+    QgsDebugError( QStringLiteral( "Transformation of extent failed!" ) );
   }
 
   bool canceled = false;
@@ -222,7 +222,7 @@ bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex *pc )
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
+      QgsDebugError( QStringLiteral( "Could not transform node extent to map CRS" ) );
       rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
     }
   }
@@ -236,7 +236,7 @@ bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex *pc )
   double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
   if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
   {
-    QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
+    QgsDebugError( QStringLiteral( "invalid screen error" ) );
     return false;
   }
   double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
@@ -368,7 +368,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
 
       if ( !block )
       {
-        QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
+        QgsDebugError( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
         return;
       }
 

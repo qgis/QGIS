@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ResultsDock.py
@@ -46,7 +44,7 @@ with warnings.catch_warnings():
 class ResultsDock(QgsDockWidget, WIDGET):
 
     def __init__(self):
-        super(ResultsDock, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         resultsList.resultAdded.connect(self.addResult)
@@ -77,7 +75,7 @@ class ResultsDock(QgsDockWidget, WIDGET):
 
     def updateDescription(self, current, previous):
         if isinstance(current, TreeResultItem):
-            html = '<b>Algorithm</b>: {}<br><b>File path</b>: <a href="{}">{}</a>'.format(current.algorithm, QUrl.fromLocalFile(current.filename).toString(), QDir.toNativeSeparators(current.filename))
+            html = f'<b>Algorithm</b>: {current.algorithm}<br><b>File path</b>: <a href="{QUrl.fromLocalFile(current.filename).toString()}">{QDir.toNativeSeparators(current.filename)}</a>'
             self.txtDescription.setHtml(html)
 
     def openLink(self, url):
@@ -92,6 +90,6 @@ class TreeResultItem(QTreeWidgetItem):
     def __init__(self, result):
         QTreeWidgetItem.__init__(self)
         self.setIcon(0, result.icon)
-        self.setText(0, '{0} [{1}]'.format(result.name, time.strftime('%I:%M:%S%p', result.timestamp)))
+        self.setText(0, '{} [{}]'.format(result.name, time.strftime('%I:%M:%S%p', result.timestamp)))
         self.algorithm = result.name
         self.filename = result.filename

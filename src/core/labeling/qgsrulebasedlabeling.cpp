@@ -275,7 +275,7 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElemen
     }
     else
     {
-      //QgsDebugMsg( QStringLiteral( "failed to init a child rule!" ) );
+      //QgsDebugError( QStringLiteral( "failed to init a child rule!" ) );
     }
     childRuleElem = childRuleElem.nextSiblingElement( QStringLiteral( "rule" ) );
   }

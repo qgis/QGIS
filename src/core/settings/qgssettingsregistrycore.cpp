@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QThread>
 
 #include "qgssettingsregistrycore.h"
 
@@ -107,8 +108,11 @@ const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowFeatur
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching = new QgsSettingsEntryBool( QStringLiteral( "enable_wms_tile_prefetch" ), QgsSettingsTree::sTreeWms, false, QStringLiteral( "Whether to include WMS layers when rendering tiles adjacent to the visible map area" ) );
 
-const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsMapScales = new QgsSettingsEntryStringList( QStringLiteral( "scales" ), QgsSettingsTree::sTreeMap, Qgis::defaultProjectScales().split( ',' ) );
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsMapScales = new QgsSettingsEntryStringList( QStringLiteral( "default_scales" ), QgsSettingsTree::sTreeMap, Qgis::defaultProjectScales().split( ',' ) );
 
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsLayerParallelLoadingMaxCount = new QgsSettingsEntryInteger( QStringLiteral( "provider-parallel-loading-max-count" ), QgsSettingsTree::sTreeCore, QThread::idealThreadCount(), QStringLiteral( "Maximum thread used to load layers in parallel" ), Qgis::SettingsOption(), 1 );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerParallelLoading = new QgsSettingsEntryBool( QStringLiteral( "provider-parallel-loading" ), QgsSettingsTree::sTreeCore, true, QStringLiteral( "Load layers in parallel (only available for some providers (GDAL, OGR and PostgreSQL)" ), Qgis::SettingsOption() );
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
@@ -150,10 +154,41 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_lines" ), true );
   pal::Pal::settingsRenderingLabelCandidatesLimitPolygons->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_polygons" ), true );
 
+  // handle bad migration - Fix profiles for old QGIS versions (restore the Map/scales key on windows)
+  // TODO: Remove this from QGIS 3.36
+  // PR Link: https://github.com/qgis/QGIS/pull/52580
+  if ( QgsSettings().contains( QStringLiteral( "Map/scales" ) ) )
+  {
+    const QStringList oldScales = QgsSettings().value( QStringLiteral( "Map/scales" ) ).toStringList();
+    if ( ! oldScales.isEmpty() && !oldScales.at( 0 ).isEmpty() )
+      QgsSettings().setValue( QStringLiteral( "Map/scales" ), oldScales.join( ',' ) );
+    else
+      QgsSettings().setValue( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() );
+  }
+
   // migrate only one way for map scales
   if ( !settingsMapScales->exists() )
-    settingsMapScales->setValue( QgsSettings().value( QStringLiteral( "Map/scales" ) ).toString().split( ',' ) );
-
+  {
+    // Handle bad migration. Prefer map/scales over Map/scales
+    // TODO: Discard this part starting from QGIS 3.36
+    const QStringList oldScales = QgsSettings().value( QStringLiteral( "map/scales" ) ).toStringList();
+    if ( ! oldScales.isEmpty() && !oldScales.at( 0 ).isEmpty() )
+    {
+      // If migration has failed before (QGIS < 3.30.2), all scales might be
+      // concatenated in the first element of the list
+      QStringList actualScales;
+      for ( const QString &element : oldScales )
+      {
+        actualScales << element.split( "," );
+      }
+      settingsMapScales->setValue( actualScales );
+    }
+    // TODO: keep only this part of the migration starting from QGIS 3.36
+    else if ( QgsSettings().contains( QStringLiteral( "Map/scales" ) ) )
+    {
+      settingsMapScales->setValue( QgsSettings().value( QStringLiteral( "Map/scales" ) ).toString().split( ',' ) );
+    }
+  }
 
   // digitizing settings - added in 3.30
   {

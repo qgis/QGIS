@@ -298,7 +298,7 @@ void QgsMssqlSourceSelect::populateConnectionList()
 // Slot for performing action when the Add button is clicked
 void QgsMssqlSourceSelect::addButtonClicked()
 {
-  QgsDebugMsg( QStringLiteral( "mConnInfo:%1" ).arg( mConnInfo ) );
+  QgsDebugMsgLevel( QStringLiteral( "mConnInfo:%1" ).arg( mConnInfo ), 2 );
   mSelectedTables.clear();
 
   const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( cmbConnections->currentText() );
@@ -376,7 +376,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   if ( !service.isEmpty() )
     mConnInfo += " service='" + service + '\'';
 
-  QgsDebugMsg( QStringLiteral( "GetDatabase" ) );
+  QgsDebugMsgLevel( QStringLiteral( "GetDatabase" ), 2 );
   std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( service, host, database, username, password );
 
   if ( !db->isValid() )
@@ -431,6 +431,16 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
       layer.isView = q.value( 5 ).toBool();
       layer.pkCols = QStringList(); //TODO
       layer.isGeography = false;
+      const int dimensions { q.value( 6 ).toInt( ) };
+
+      if ( dimensions >= 3 )
+      {
+        layer.type = layer.type.append( 'Z' );
+      }
+      if ( dimensions == 4 )
+      {
+        layer.type = layer.type.append( 'M' );
+      }
 
       QString type = layer.type;
       QString srid = layer.srid;
@@ -524,7 +534,7 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
 {
   if ( !index.parent().isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "schema item found" ) );
+    QgsDebugMsgLevel( QStringLiteral( "schema item found" ), 2 );
     return;
   }
 

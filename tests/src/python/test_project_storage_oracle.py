@@ -29,13 +29,12 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsProjectStorageOracle(TestPyQgsProjectStorageBase, unittest.TestCase):
+class TestPyQgsProjectStorageOracle(unittest.TestCase, TestPyQgsProjectStorageBase):
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-
-        super().setUpClass()
+        super(TestPyQgsProjectStorageOracle, cls).setUpClass()
 
         cls.dbconn = "host=localhost dbname=XEPDB1 port=1521 user='QGIS' password='qgis'"
         if 'QGIS_ORACLETEST_DB' in os.environ:
@@ -59,10 +58,6 @@ class TestPyQgsProjectStorageOracle(TestPyQgsProjectStorageBase, unittest.TestCa
         cls.project_storage_type = 'oracle'
 
         assert cls.con.open()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     def execSQLCommand(self, sql, ignore_errors=False):
         self.assertTrue(self.con)

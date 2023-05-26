@@ -436,7 +436,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       originY = deviceHeight - originY - size.height();
       break;
     default:
-      QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+      QgsDebugError( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
 
   const QgsScopedQPainterState painterState( context.painter() );

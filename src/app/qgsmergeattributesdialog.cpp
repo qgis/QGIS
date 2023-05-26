@@ -28,6 +28,7 @@
 #include "qgsgui.h"
 #include "qgsfieldformatter.h"
 #include "qgsfieldformatterregistry.h"
+#include "qgseditorwidgetwrapper.h"
 
 #include <limits>
 #include <QComboBox>
@@ -105,11 +106,8 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
       break;
   }
 
-  if ( ! mFeatureList.isEmpty() )
-    mTargetFeatureId = mFeatureList.first().id();
-
   connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
-  connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
+  connect( mTableWidget, &QTableWidget::cellClicked, this, &QgsMergeAttributesDialog::tableWidgetCellClicked );
 
   setAttributeTableConfig( mVectorLayer->attributeTableConfig() );
 }
@@ -179,7 +177,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     mTableWidget->setColumnCount( col + 1 );
     mFieldToColumnMap[ mFields.at( idx ).name() ] = col;
 
-    QComboBox *cb = createMergeComboBox( mFields.at( idx ).type() );
+    QComboBox *cb = createMergeComboBox( mFields.at( idx ).type(), col );
     if ( ! mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mFields.fieldOriginIndex( idx ) ) &&
          mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
     {
@@ -233,9 +231,12 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   {
     int idx = mTableWidget->horizontalHeaderItem( j )->data( FieldIndex ).toInt();
     bool setToManual = false;
+
     if ( !mVectorLayer->dataProvider()->defaultValueClause( idx ).isEmpty() )
     {
-      mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, mVectorLayer->dataProvider()->defaultValueClause( idx ) );
+      QVariant v = mVectorLayer->dataProvider()->defaultValueClause( idx );
+      mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, v );
+      mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, v );
       setToManual = true;
     }
     else
@@ -265,10 +266,9 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   {
     refreshMergedValue( i );
   }
-
 }
 
-QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnType ) const
+QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnType, int column )
 {
   QComboBox *newComboBox = new QComboBox();
   //add items for feature
@@ -302,8 +302,13 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
   newComboBox->addItem( tr( "Skip Attribute" ), QStringLiteral( "skip" ) );
   newComboBox->addItem( tr( "Manual Value" ), QStringLiteral( "manual" ) );
 
-  connect( newComboBox, &QComboBox::currentTextChanged,
-           this, &QgsMergeAttributesDialog::comboValueChanged );
+  connect( newComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]()
+  {
+    bool isManual = newComboBox->currentData() == QStringLiteral( "manual" );
+    updateManualWidget( column, isManual );
+    refreshMergedValue( column );
+  } );
+
   return newComboBox;
 }
 
@@ -317,21 +322,6 @@ int QgsMergeAttributesDialog::findComboColumn( QComboBox *c ) const
     }
   }
   return -1;
-}
-
-void QgsMergeAttributesDialog::comboValueChanged( const QString &text )
-{
-  Q_UNUSED( text )
-  QComboBox *senderComboBox = qobject_cast<QComboBox *>( sender() );
-  if ( !senderComboBox )
-  {
-    return;
-  }
-  int column = findComboColumn( senderComboBox );
-  if ( column < 0 )
-    return;
-
-  refreshMergedValue( column );
 }
 
 void QgsMergeAttributesDialog::selectedRowChanged()
@@ -382,54 +372,59 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   const int fieldIdx = mTableWidget->horizontalHeaderItem( col )->data( FieldIndex ).toInt();
 
   //evaluate behavior (feature value or min / max / mean )
-  QTableWidgetItem *item = mTableWidget->item( mTableWidget->rowCount() - 1, col );
   const QString mergeBehaviorString = comboBox->currentData().toString();
-  QVariant mergeResult; // result to show in the merge result field
-  if ( mergeBehaviorString == QLatin1String( "concat" ) )
+
+  if ( mergeBehaviorString == QLatin1String( "manual" ) )
   {
-    mergeResult = concatenationAttribute( col );
-  }
-  else if ( mergeBehaviorString == QLatin1String( "skip" ) )
-  {
-    mergeResult = tr( "Skipped" );
-  }
-  else if ( mergeBehaviorString == QLatin1String( "manual" ) )
-  {
-    mergeResult = item->data( Qt::DisplayRole );
-  }
-  else if ( mergeBehaviorString.startsWith( 'f' ) )
-  {
-    //an existing feature value
-    QgsFeatureId featureId = STRING_TO_FID( mergeBehaviorString.mid( 1 ) );
-    mergeResult = featureAttribute( featureId, fieldIdx );
+    // nothing to do
   }
   else
   {
-    //numerical statistic
-    QgsStatisticalSummary::Statistic stat = static_cast< QgsStatisticalSummary::Statistic >( comboBox->currentData().toInt() );
-    mergeResult = calcStatistic( fieldIdx, stat );
+    QVariant mergeResult; // result to show in the merge result field
+    QTableWidgetItem *item = mTableWidget->item( mTableWidget->rowCount() - 1, col );
+
+    if ( mergeBehaviorString == QLatin1String( "concat" ) )
+    {
+      mergeResult = concatenationAttribute( col );
+    }
+    else if ( mergeBehaviorString == QLatin1String( "skip" ) )
+    {
+      mergeResult = tr( "Skipped" );
+    }
+    else if ( mergeBehaviorString.startsWith( 'f' ) )
+    {
+      //an existing feature value
+      QgsFeatureId featureId = STRING_TO_FID( mergeBehaviorString.mid( 1 ) );
+      mergeResult = featureAttribute( featureId, fieldIdx );
+    }
+    else
+    {
+      //numerical statistic
+      QgsStatisticalSummary::Statistic stat = static_cast< QgsStatisticalSummary::Statistic >( comboBox->currentData().toInt() );
+      mergeResult = calcStatistic( fieldIdx, stat );
+    }
+
+    //insert string into table widget
+    mUpdating = true; // prevent combobox changing to "manual" value
+
+    // Result formatting
+    QString stringVal;
+    if ( mergeBehaviorString != QLatin1String( "skip" ) &&  mergeBehaviorString != QLatin1String( "manual" ) )
+    {
+      const QgsEditorWidgetSetup setup = mFields.at( fieldIdx ).editorWidgetSetup();
+      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      stringVal = formatter->representValue( mVectorLayer, fieldIdx, setup.config(), QVariant(), mergeResult );
+    }
+    else
+    {
+      stringVal = mergeResult.toString();
+    }
+
+    item->setData( Qt::DisplayRole, stringVal );
+    item->setData( Qt::UserRole, mergeResult );
+
+    mUpdating = false;
   }
-
-  //insert string into table widget
-  mUpdating = true; // prevent combobox changing to "manual" value
-
-  // Result formatting
-  QString stringVal;
-  if ( mergeBehaviorString != QLatin1String( "skip" ) &&  mergeBehaviorString != QLatin1String( "manual" ) )
-  {
-    const QgsEditorWidgetSetup setup = mFields.at( fieldIdx ).editorWidgetSetup();
-    const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-    stringVal = formatter->representValue( mVectorLayer, fieldIdx, setup.config(), QVariant(), mergeResult );
-  }
-  else
-  {
-    stringVal = mergeResult.toString();
-  }
-
-  item->setData( Qt::DisplayRole, stringVal );
-  item->setData( Qt::UserRole, mergeResult );
-
-  mUpdating = false;
 }
 
 QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int fieldIdx )
@@ -682,7 +677,51 @@ void QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked()
     mTargetFeatureId = mFeatureList.first().id();
 }
 
-void QgsMergeAttributesDialog::tableWidgetCellChanged( int row, int column )
+void QgsMergeAttributesDialog::updateManualWidget( int column, bool isManual )
+{
+  int row = mTableWidget->rowCount() - 1;
+  int idx = mTableWidget->horizontalHeaderItem( column )->data( FieldIndex ).toInt();
+
+
+  if ( isManual )
+  {
+    QTableWidgetItem *item = mTableWidget->takeItem( row, column );
+    if ( item )
+    {
+      QVariant currentValue = item->data( Qt::UserRole );
+      delete item;
+
+      const QgsAttributeEditorContext context;
+      QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( mVectorLayer, idx, nullptr, this, context );
+      QWidget *w = eww->widget();
+      mTableWidget->setCellWidget( row, column, w );
+      eww->setValue( currentValue );
+    }
+  }
+  else
+  {
+    QWidget *w = mTableWidget->cellWidget( row, column );
+    QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( w );
+
+    if ( eww )
+    {
+      QVariant currentValue = eww->value();
+      const QgsEditorWidgetSetup setup = mFields.at( idx ).editorWidgetSetup();
+      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      QString stringVal = formatter->representValue( mVectorLayer, idx, setup.config(), QVariant(), currentValue );
+
+      mTableWidget->removeCellWidget( row, column );
+
+      QTableWidgetItem *mergedItem = new QTableWidgetItem();
+      mergedItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      mergedItem->setData( Qt::DisplayRole, stringVal );
+      mergedItem->setData( Qt::UserRole, currentValue );
+      mTableWidget->setItem( row, column, mergedItem );
+    }
+  }
+}
+
+void QgsMergeAttributesDialog::tableWidgetCellClicked( int row, int column )
 {
   if ( mUpdating )
     return;
@@ -692,6 +731,8 @@ void QgsMergeAttributesDialog::tableWidgetCellChanged( int row, int column )
     //only looking for edits in the final row
     return;
   }
+
+  updateManualWidget( column, true );
 
   QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, column ) );
   if ( currentComboBox )
@@ -736,16 +777,27 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     if ( !comboBox )
       continue;
 
-    QTableWidgetItem *currentItem = mTableWidget->item( mFeatureList.size() + 1, widgetIndex );
-    if ( !currentItem )
-      continue;
+    QVariant value;
+    QWidget *w = mTableWidget->cellWidget( mFeatureList.size() + 1, widgetIndex );
+    QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( w );
+    if ( eww )
+    {
+      value = eww->value();
+    }
+    else
+    {
+      QTableWidgetItem *currentItem = mTableWidget->item( mFeatureList.size() + 1, widgetIndex );
+      if ( !currentItem )
+        continue;
+      value = currentItem->data( Qt::UserRole );
+    }
 
     if ( fieldIdx >= results.count() )
       results.resize( fieldIdx + 1 ); // make sure the results vector is long enough (maybe not necessary)
 
     if ( comboBox->currentData().toString() != QLatin1String( "skip" ) )
     {
-      results[fieldIdx] = currentItem->data( Qt::UserRole );
+      results[fieldIdx] = value;
     }
     widgetIndex++;
   }

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     ModelerParameterDefinitionDialog.py
@@ -81,7 +79,7 @@ class ModelerParameterDefinitionDialog(QDialog):
     def closeEvent(self, event):
         settings = QgsSettings()
         settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())
-        super(ModelerParameterDefinitionDialog, self).closeEvent(event)
+        super().closeEvent(event)
 
     def switchToCommentTab(self):
         self.tab.setCurrentIndex(1)
@@ -240,7 +238,7 @@ class ModelerParameterDefinitionDialog(QDialog):
 
             paramTypeDef = QgsApplication.instance().processingRegistry().parameterType(typeId)
             if not paramTypeDef:
-                msg = self.tr('The parameter `{}` is not registered, are you missing a required plugin?'.format(typeId))
+                msg = self.tr('The parameter `{}` is not registered, are you missing a required plugin?').format(typeId)
                 raise UndefinedParameterException(msg)
             self.param = paramTypeDef.create(name)
             self.param.setDescription(description)

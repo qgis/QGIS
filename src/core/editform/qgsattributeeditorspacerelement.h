@@ -36,7 +36,7 @@ class CORE_EXPORT QgsAttributeEditorSpacerElement : public QgsAttributeEditorEle
      * \param parent       The parent (used as container)
     */
     QgsAttributeEditorSpacerElement( const QString &name, QgsAttributeEditorElement *parent )
-      : QgsAttributeEditorElement( AeTypeSpacerElement, name, parent )
+      : QgsAttributeEditorElement( Qgis::AttributeEditorType::SpacerElement, name, parent )
     {}
 
     QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;

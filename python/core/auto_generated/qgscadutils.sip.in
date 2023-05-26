@@ -102,6 +102,8 @@ Defines constraints for the :py:func:`QgsCadUtils.alignMapPoint()` method.
         QgsCadUtils::AlignMapPointConstraint lineExtensionConstraint;
         QgsCadUtils::AlignMapPointConstraint xyVertexConstraint;
 
+        bool snappingToFeaturesOverridesCommonAngle;
+
 
         QList< QgsPoint > cadPoints() const;
 %Docstring

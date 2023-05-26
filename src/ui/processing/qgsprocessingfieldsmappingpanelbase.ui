@@ -117,6 +117,17 @@
         </widget>
        </item>
        <item>
+        <widget class="QToolButton" name="mInvertSelectionButton">
+         <property name="text">
+          <string>Invert selection</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../images/images.qrc">
+           <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -187,6 +198,7 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

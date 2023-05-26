@@ -50,7 +50,7 @@ QList<QgsCoordinateReferenceSystemRegistry::UserCrsDetails> QgsCoordinateReferen
   int result = database.open_v2( QgsApplication::qgisUserDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QStringLiteral( "Can't open database: %1" ).arg( database.errorMessage() ) );
+    QgsDebugError( QStringLiteral( "Can't open database: %1" ).arg( database.errorMessage() ) );
     return res;
   }
 
@@ -133,9 +133,9 @@ long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateRefere
   int myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QStringLiteral( "Can't open or create database %1: %2" )
-                 .arg( QgsApplication::qgisUserDatabaseFilePath(),
-                       database.errorMessage() ) );
+    QgsDebugError( QStringLiteral( "Can't open or create database %1: %2" )
+                   .arg( QgsApplication::qgisUserDatabaseFilePath(),
+                         database.errorMessage() ) );
     return false;
   }
   statement = database.prepare( mySql, myResult );
@@ -194,9 +194,9 @@ bool QgsCoordinateReferenceSystemRegistry::updateUserCrs( long id, const QgsCoor
   const int myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QStringLiteral( "Can't open or create database %1: %2" )
-                 .arg( QgsApplication::qgisUserDatabaseFilePath(),
-                       database.errorMessage() ) );
+    QgsDebugError( QStringLiteral( "Can't open or create database %1: %2" )
+                   .arg( QgsApplication::qgisUserDatabaseFilePath(),
+                         database.errorMessage() ) );
     return false;
   }
 
@@ -251,8 +251,8 @@ bool QgsCoordinateReferenceSystemRegistry::removeUserCrs( long id )
   int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
-                 QgsApplication::qgisUserDatabaseFilePath() ) );
+    QgsDebugError( QStringLiteral( "Can't open database: %1 \n please notify QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+                   QgsApplication::qgisUserDatabaseFilePath() ) );
     return false;
   }
 
@@ -261,7 +261,7 @@ bool QgsCoordinateReferenceSystemRegistry::removeUserCrs( long id )
     sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
     if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
     {
-      QgsDebugMsg( QStringLiteral( "failed to remove custom CRS from database: %1 [%2]" ).arg( sql, database.errorMessage() ) );
+      QgsDebugError( QStringLiteral( "failed to remove custom CRS from database: %1 [%2]" ).arg( sql, database.errorMessage() ) );
       res = false;
     }
     else
@@ -301,15 +301,15 @@ bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &proj
   int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
-                 QgsApplication::qgisUserDatabaseFilePath() ) );
+    QgsDebugError( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+                   QgsApplication::qgisUserDatabaseFilePath() ) );
     return false;
   }
   int srsResult = srsDatabase.open( QgsApplication::srsDatabaseFilePath() );
   if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QStringLiteral( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDatabaseFilePath(),
-                 srsDatabase.errorMessage() ) );
+    QgsDebugError( QStringLiteral( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDatabaseFilePath(),
+                   srsDatabase.errorMessage() ) );
     return false;
   }
 
@@ -332,14 +332,14 @@ bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &proj
       sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
       if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
       {
-        QgsDebugMsg( QStringLiteral( "Could not insert projection into database: %1 [%2]" ).arg( sql, database.errorMessage() ) );
+        QgsDebugError( QStringLiteral( "Could not insert projection into database: %1 [%2]" ).arg( sql, database.errorMessage() ) );
         return false;
       }
     }
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "prepare failed: %1 [%2]" ).arg( srsSql, srsDatabase.errorMessage() ) );
+    QgsDebugError( QStringLiteral( "prepare failed: %1 [%2]" ).arg( srsSql, srsDatabase.errorMessage() ) );
     return false;
   }
 

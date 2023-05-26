@@ -365,7 +365,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming profile line to layer CRS" ) );
+    QgsDebugError( QStringLiteral( "Error transforming profile line to layer CRS" ) );
     return false;
   }
 
@@ -397,7 +397,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform node extent to curve CRS" ) );
+    QgsDebugError( QStringLiteral( "Could not transform node extent to curve CRS" ) );
     rootNodeExtentInCurveCrs = rootNodeExtentLayerCoords;
   }
 
@@ -406,7 +406,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   const double mapUnitsPerPixel = context.mapUnitsPerDistancePixel();
   if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumErrorPixels < 0.0 ) )
   {
-    QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
+    QgsDebugError( QStringLiteral( "invalid screen error" ) );
     return false;
   }
   double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
@@ -600,7 +600,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPo
 
       if ( !block )
       {
-        QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
+        QgsDebugError( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
         return;
       }
 

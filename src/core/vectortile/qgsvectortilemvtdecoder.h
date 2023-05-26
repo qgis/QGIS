@@ -28,6 +28,7 @@ class QgsFeature;
 #include "qgsvectortilerenderer.h"
 #include "qgsvectortilematrixset.h"
 
+class QgsVectorTileRawData;
 
 /**
  * \ingroup core
@@ -46,7 +47,7 @@ class CORE_EXPORT QgsVectorTileMVTDecoder
     ~QgsVectorTileMVTDecoder();
 
     //! Tries to decode raw tile data, returns true on success
-    bool decode( QgsTileXYZ tileID, const QByteArray &rawTileData );
+    bool decode( const QgsVectorTileRawData &rawTileData );
 
     //! Returns a list of sub-layer names in a tile. It can only be called after a successful decode()
     QStringList layers() const;

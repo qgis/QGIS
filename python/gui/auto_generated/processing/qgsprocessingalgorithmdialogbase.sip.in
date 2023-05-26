@@ -11,6 +11,7 @@
 
 
 
+
 class QgsProcessingAlgorithmDialogBase : QDialog, QgsProcessingParametersGenerator, QgsProcessingContextGenerator
 {
 %Docstring(signature="appended")

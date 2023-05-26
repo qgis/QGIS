@@ -1157,6 +1157,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext &context )
 {
   double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
+  const double deviceRatio = context.renderContext().devicePixelRatio();
   if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
@@ -1173,12 +1174,16 @@ bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext &context )
   const double pw = static_cast< int >( std::round( ( ( qgsDoubleNear( mPen.widthF(), 0.0 ) ? 1 : mPen.widthF() * 4 ) + 1 ) ) ) / 2 * 2; // make even (round up); handle cosmetic pen
   const int imageSize = ( static_cast< int >( scaledSize ) + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
   const double center = imageSize / 2.0;
-  if ( imageSize > MAXIMUM_CACHE_WIDTH )
+  if ( imageSize * deviceRatio > MAXIMUM_CACHE_WIDTH )
   {
     return false;
   }
 
-  mCache = QImage( QSize( imageSize, imageSize ), QImage::Format_ARGB32_Premultiplied );
+  mCache = QImage( QSize( imageSize * deviceRatio,
+                          imageSize * deviceRatio ), QImage::Format_ARGB32_Premultiplied );
+  mCache.setDevicePixelRatio( context.renderContext().devicePixelRatio() );
+  mCache.setDotsPerMeterX( std::round( context.renderContext().scaleFactor() * 1000 ) );
+  mCache.setDotsPerMeterY( std::round( context.renderContext().scaleFactor() * 1000 ) );
   mCache.fill( 0 );
 
   const bool needsBrush = shapeIsFilled( mShape );
@@ -1338,7 +1343,7 @@ void QgsSimpleMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   if ( mUsingCache && qgsDoubleNear( mCachedOpacity, context.opacity() ) )
   {
     const QImage &img = context.selected() ? mSelCache : mCache;
-    const double s = img.width();
+    const double s = img.width() / img.devicePixelRatioF();
 
     bool hasDataDefinedSize = false;
     const double scaledSize = calculateSize( context, hasDataDefinedSize );
@@ -1750,7 +1755,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Unsupported dxf marker name %1" ).arg( encodeShape( shape ) ) );
+    QgsDebugError( QStringLiteral( "Unsupported dxf marker name %1" ).arg( encodeShape( shape ) ) );
     return false;
   }
 
@@ -2325,7 +2330,8 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
 
   bool hasDataDefinedSize = false;
   const double scaledWidth = calculateSize( context, hasDataDefinedSize );
-  const double width = context.renderContext().convertToPainterUnits( scaledWidth, mSizeUnit, mSizeMapUnitScale );
+  const double devicePixelRatio = context.renderContext().devicePixelRatio();
+  const double width = context.renderContext().convertToPainterUnits( scaledWidth, mSizeUnit, mSizeMapUnitScale ) * devicePixelRatio;
 
   //don't render symbols with a width below one or above 10,000 pixels
   if ( static_cast< int >( width ) < 1 || 10000.0 < width )
@@ -2415,11 +2421,28 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
       {
         QImage transparentImage = img.copy();
         QgsSymbolLayerUtils::multiplyImageOpacity( &transparentImage, context.opacity() );
-        p->drawImage( -transparentImage.width() / 2.0, -transparentImage.height() / 2.0, transparentImage );
+        if ( devicePixelRatio == 1 )
+        {
+          p->drawImage( -transparentImage.width() / 2.0, -transparentImage.height() / 2.0, transparentImage );
+        }
+        else
+        {
+          p->drawImage( QRectF( -transparentImage.width() / 2.0 / devicePixelRatio, -transparentImage.height() / 2.0 / devicePixelRatio,
+                                transparentImage.width() / devicePixelRatio, transparentImage.height() / devicePixelRatio
+                              ), transparentImage );
+        }
       }
       else
       {
-        p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
+        if ( devicePixelRatio == 1 )
+        {
+          p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
+        }
+        else
+        {
+          p->drawImage( QRectF( -img.width() / 2.0 / devicePixelRatio, -img.height() / 2.0 / devicePixelRatio,
+                                img.width() / devicePixelRatio, img.height() / devicePixelRatio ), img );
+        }
       }
     }
   }

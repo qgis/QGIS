@@ -25,7 +25,6 @@
 #include "ui_qgsaddtaborgroupbase.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
-#include "qgshelp.h"
 
 class QTreeWidgetItem;
 class QgsVectorLayer;
@@ -37,40 +36,47 @@ class QgsVectorLayer;
  * \note This class is not a part of public API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroupBase
+class GUI_EXPORT QgsAddAttributeFormContainerDialog : public QDialog, private Ui::QgsAddTabOrGroupBase
 {
     Q_OBJECT
 
   public:
-    typedef QPair<QString, QTreeWidgetItem *> TabPair;
+    typedef QPair<QString, QTreeWidgetItem *> ContainerPair;
 
   public:
     //! constructor
-    QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair> &tabList, QTreeWidgetItem *currentTab = nullptr, QWidget *parent = nullptr );
+    QgsAddAttributeFormContainerDialog( QgsVectorLayer *lyr, const QList<ContainerPair> &existingContainerList, QTreeWidgetItem *currentTab = nullptr, QWidget *parent = nullptr );
 
     //! Returns the name of the tab or group
     QString name();
 
-    //! Returns tree item corresponding to the added tab
-    QTreeWidgetItem *tab();
+    /**
+     * Returns tree item corresponding to the selected parent container.
+     *
+     * Will be NULLPTR when a new tab is created.
+     */
+    QTreeWidgetItem *parentContainerItem();
 
     //! Returns the column count
     int columnCount() const;
 
-    //! Returns whether the tab button is checked
-    bool tabButtonIsChecked();
+    /**
+     * Returns the container type.
+     *
+     * \since QGIS 3.32
+     */
+    Qgis::AttributeEditorContainerType containerType() const;
 
     //! Accepts the dialog
     void accept() override;
 
   private slots:
-    void mGroupButton_toggled( bool checked );
-    void mTabButton_toggled( bool checked );
     void showHelp();
+    void containerTypeChanged();
 
   protected:
     QgsVectorLayer *mLayer = nullptr;
-    QList< TabPair > mTabs;
+    QList< ContainerPair > mExistingContainers;
 };
 
 #endif

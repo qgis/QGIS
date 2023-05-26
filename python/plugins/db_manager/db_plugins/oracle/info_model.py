@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
 Name                 : DB Manager
@@ -509,7 +507,7 @@ class ORTableInfo(TableInfo):
         tbl.append((QApplication.translate("DBManagerPlugin",
                                            "Use no index:"),
                     values[9]))
-        tbl.append(('<a href="action:mview/refresh">{0}</a>'.format(
+        tbl.append(('<a href="action:mview/refresh">{}</a>'.format(
             QApplication.translate("DBManagerPlugin", "Refresh the materialized view")),
             ""))
         ret.append(HtmlTable(tbl))
@@ -595,7 +593,7 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
             tbl.append(
                 (QApplication.translate(
                     "DBManagerPlugin", "Spatial ref:"),
-                 "{0} ({1})".format(sr_info, srid)))
+                 "{} ({})".format(sr_info, srid)))
 
         # estimated extent
         if not self.table.estimatedExtent:

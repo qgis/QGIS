@@ -287,7 +287,7 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
   {
     QString errmsg = tr( "Cannot read config file (%1):" ).arg( filePath )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
-    QgsDebugMsg( errmsg );
+    QgsDebugError( errmsg );
     QMessageBox::warning( nullptr, tr( "Warning" ), errmsg );
     file.close();
     return false;
@@ -353,7 +353,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
 
       if ( e.tagName() != QLatin1String( "section" ) && e.tagName() != QLatin1String( "grass" ) )
       {
-        QgsDebugMsg( QString( "Unknown tag: %1" ).arg( e.tagName() ) );
+        QgsDebugError( QString( "Unknown tag: %1" ).arg( e.tagName() ) );
         continue;
       }
 
@@ -530,7 +530,7 @@ void QgsGrassTools::closeTools()
 //
 void QgsGrassTools::mFilterInput_textChanged( QString text )
 {
-  QgsDebugMsg( "GRASS modules filter changed to :" + text );
+  QgsDebugMsgLevel( "GRASS modules filter changed to :" + text, 2 );
   mTreeModelProxy->setFilter( text );
   if ( text.isEmpty() )
   {
@@ -637,7 +637,7 @@ int QgsGrassTools::debug( QStandardItem *item )
       return 0;
     }
     QgsGrassModule *module = new QgsGrassModule( this, name, mIface, false );
-    QgsDebugMsg( QString( "module: %1 errors: %2" ).arg( name ).arg( module->errors().size() ) );
+    QgsDebugMsgLevel( QString( "module: %1 errors: %2" ).arg( name ).arg( module->errors().size() ), 2 );
     for ( QString error : module->errors() )
     {
       // each error may have multiple rows and may be html formatted (<br>)

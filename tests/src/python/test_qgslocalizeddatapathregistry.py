@@ -39,11 +39,13 @@ class TestQgsLocalizedDataPathRegistry(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.temp_path = tempfile.mkdtemp()
 
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(cls.temp_path)
+        super().tearDownClass()
 
     def setUp(self):
         QgsApplication.localizedDataPathRegistry().registerPath(BASE_PATH)

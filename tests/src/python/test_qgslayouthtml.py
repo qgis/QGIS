@@ -19,11 +19,11 @@ from qgis.core import (
     QgsLayoutItemHtml,
     QgsLayoutMultiFrame,
     QgsProject,
+    QgsLayoutChecker
 )
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
 
-from qgslayoutchecker import QgsLayoutChecker
 from utilities import unitTestDataPath
 
 start_app()

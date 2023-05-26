@@ -15,7 +15,7 @@
  ***************************************************************************/
 #include "qgsattributeeditorqmlelement.h"
 
-
+#include <QDomText>
 
 QgsAttributeEditorElement *QgsAttributeEditorQmlElement::clone( QgsAttributeEditorElement *parent ) const
 {

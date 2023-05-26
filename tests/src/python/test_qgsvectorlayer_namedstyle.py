@@ -19,11 +19,6 @@ from qgis.testing import unittest
 
 class TestPyQgsVectorLayerNamedStyle(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        """Run before all tests"""
-        pass
-
     def testLoadWriteRenderingScaleVisibility(self):
         """Test write and load scale visibility, see GH #33840"""
 

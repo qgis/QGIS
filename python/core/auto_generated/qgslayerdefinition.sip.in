@@ -108,14 +108,14 @@ Class used to work with layer dependencies stored in a XML project or layer defi
 %End
       public:
 
-        DependencySorter( const QDomDocument &doc );
+        explicit DependencySorter( const QDomDocument &doc );
 %Docstring
 Constructor
 
 :param doc: The XML document containing maplayer elements
 %End
 
-        DependencySorter( const QString &fileName );
+        explicit DependencySorter( const QString &fileName );
 %Docstring
 Constructor
 
@@ -140,6 +140,13 @@ Whether some cyclic dependency has been detected
         bool hasMissingDependency() const;
 %Docstring
 Whether some dependency is missing
+%End
+
+        bool isLayerDependent( const QString &layerId ) const;
+%Docstring
+Returns whether the layer associated with the``layerId`` is dependent from another layer
+
+.. versionadded:: 3.32
 %End
 
     };

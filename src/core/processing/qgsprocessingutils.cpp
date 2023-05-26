@@ -100,6 +100,11 @@ QList<QgsAnnotationLayer *> QgsProcessingUtils::compatibleAnnotationLayers( QgsP
   return res;
 }
 
+QList<QgsVectorTileLayer *> QgsProcessingUtils::compatibleVectorTileLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsVectorTileLayer >( project, sort );
+}
+
 template<typename T> QList<T *> QgsProcessingUtils::compatibleMapLayers( QgsProject *project, bool sort )
 {
   if ( !project )
@@ -150,6 +155,10 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   for ( QgsAnnotationLayer *al : annotationLayers )
     layers << al;
   layers << project->mainAnnotationLayer();
+
+  const auto vectorTileLayers = compatibleMapLayers< QgsVectorTileLayer >( project, false );
+  for ( QgsVectorTileLayer *vtl : vectorTileLayers )
+    layers << vtl;
 
   const auto pluginLayers = compatibleMapLayers< QgsPluginLayer >( project, false );
   for ( QgsPluginLayer *pl : pluginLayers )
@@ -235,6 +244,9 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
       case LayerHint::Annotation:
         return l->type() == Qgis::LayerType::Annotation;
+
+      case LayerHint::VectorTile:
+        return l->type() == Qgis::LayerType::VectorTile;
     }
     return true;
   };
@@ -373,9 +385,23 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
         pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, preferredProviders.at( 0 ).metadata()->key(), pointCloudOptions );
       }
     }
-    if ( pointCloudLayer->isValid() )
+    if ( pointCloudLayer && pointCloudLayer->isValid() )
     {
       return pointCloudLayer.release();
+    }
+  }
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::VectorTile )
+  {
+    QgsDataSourceUri dsUri;
+    dsUri.setParam( "type", "mbtiles" );
+    dsUri.setParam( "url", uri );
+
+    std::unique_ptr< QgsVectorTileLayer > tileLayer;
+    tileLayer = std::make_unique< QgsVectorTileLayer >( dsUri.encodedUri(), name );
+
+    if ( tileLayer->isValid() )
+    {
+      return tileLayer.release();
     }
   }
   return nullptr;
@@ -824,6 +850,18 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       throw QgsProcessingException( QObject::tr( "Could not create memory layer" ) );
     }
 
+    if ( QgsProcessingFeedback *feedback = context.feedback() )
+    {
+      for ( const QgsField &field : fields )
+      {
+        // TODO -- support these!
+        if ( !field.alias().isEmpty() )
+          feedback->pushWarning( QObject::tr( "%1: Aliases are not compatible with scratch layers" ).arg( field.name() ) );
+        if ( !field.alias().isEmpty() )
+          feedback->pushWarning( QObject::tr( "%1: Comments are not compatible with scratch layers" ).arg( field.name() ) );
+      }
+    }
+
     layer->setCustomProperty( QStringLiteral( "OnConvertFormatRegeneratePrimaryKey" ), static_cast< bool >( sinkFlags & QgsFeatureSink::RegeneratePrimaryKey ) );
 
     // update destination to layer ID
@@ -858,7 +896,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       saveOptions.driverName = format;
       saveOptions.datasourceOptions = !datasourceOptions.isEmpty() ? datasourceOptions : QgsVectorFileWriter::defaultDatasetOptions( format );
       saveOptions.layerOptions = !layerOptions.isEmpty() ? layerOptions : QgsVectorFileWriter::defaultLayerOptions( format );
-      saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+      saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
       if ( remappingDefinition )
       {
         saveOptions.actionOnExistingFile = QgsVectorFileWriter::AppendToLayerNoNewFields;
@@ -882,6 +920,18 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       {
         throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, writer->errorMessage() ) );
       }
+
+      if ( QgsProcessingFeedback *feedback = context.feedback() )
+      {
+        for ( const QgsField &field : fields )
+        {
+          if ( !field.alias().isEmpty() && !( writer->capabilities() & Qgis::VectorFileWriterCapability::FieldAliases ) )
+            feedback->pushWarning( QObject::tr( "%1: Aliases are not supported by %2" ).arg( field.name(), writer->driverLongName() ) );
+          if ( !field.alias().isEmpty()  && !( writer->capabilities() & Qgis::VectorFileWriterCapability::FieldComments ) )
+            feedback->pushWarning( QObject::tr( "%1: Comments are not supported by %2" ).arg( field.name(), writer->driverLongName() ) );
+        }
+      }
+
       destination = finalFileName;
       if ( !saveOptions.layerName.isEmpty() && !finalLayerName.isEmpty() )
         destination += QStringLiteral( "|layername=%1" ).arg( finalLayerName );
@@ -921,6 +971,18 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
           remappingDefinition->setDestinationFields( layer->fields() );
         }
 
+        if ( QgsProcessingFeedback *feedback = context.feedback() )
+        {
+          const Qgis::VectorDataProviderAttributeEditCapabilities capabilities = layer->dataProvider() ? layer->dataProvider()->attributeEditCapabilities() : Qgis::VectorDataProviderAttributeEditCapabilities();
+          for ( const QgsField &field : fields )
+          {
+            if ( !field.alias().isEmpty() && !( capabilities & Qgis::VectorDataProviderAttributeEditCapability::EditAlias ) )
+              feedback->pushWarning( QObject::tr( "%1: Aliases are not supported by the %2 provider" ).arg( field.name(), providerKey ) );
+            if ( !field.alias().isEmpty()  && !( capabilities & Qgis::VectorDataProviderAttributeEditCapability::EditComment ) )
+              feedback->pushWarning( QObject::tr( "%1: Comments are not supported by the %2 provider" ).arg( field.name(), providerKey ) );
+          }
+        }
+
         std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = std::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, layer->dataProvider(), false );
         context.temporaryLayerStore()->addMapLayer( layer.release() );
         remapSink->setExpressionContext( context.expressionContext() );
@@ -943,6 +1005,17 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
           uri += QStringLiteral( "|layername=%1" ).arg( layerName );
           // update destination to generated URI
           destination = uri;
+        }
+
+        if ( QgsProcessingFeedback *feedback = context.feedback() )
+        {
+          for ( const QgsField &field : fields )
+          {
+            if ( !field.alias().isEmpty() && !( exporter->attributeEditCapabilities() & Qgis::VectorDataProviderAttributeEditCapability::EditAlias ) )
+              feedback->pushWarning( QObject::tr( "%1: Aliases are not supported by the %2 provider" ).arg( field.name(), providerKey ) );
+            if ( !field.alias().isEmpty()  && !( exporter->attributeEditCapabilities() & Qgis::VectorDataProviderAttributeEditCapability::EditComment ) )
+              feedback->pushWarning( QObject::tr( "%1: Comments are not supported by the %2 provider" ).arg( field.name(), providerKey ) );
+          }
         }
 
         return new QgsProcessingFeatureSink( exporter.release(), destination, context, true );
@@ -1337,6 +1410,11 @@ QString QgsProcessingUtils::defaultRasterExtension()
 QString QgsProcessingUtils::defaultPointCloudExtension()
 {
   return QStringLiteral( "las" );
+}
+
+QString QgsProcessingUtils::defaultVectorTileExtension()
+{
+  return QStringLiteral( "mbtiles" );
 }
 
 QVariantMap QgsProcessingUtils::removePointerValuesFromMap( const QVariantMap &map )

@@ -130,6 +130,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
                       }
                       break;
                     case Qgis::ProfileSurfaceSymbology::FillBelow:
+                    case Qgis::ProfileSurfaceSymbology::FillAbove:
                       if ( QgsFillSymbol *fillSymbol = elevationProperties->profileFillSymbol() )
                       {
                         symbol.reset( fillSymbol->clone() );
@@ -154,6 +155,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
                   }
                   break;
                 case Qgis::ProfileSurfaceSymbology::FillBelow:
+                case Qgis::ProfileSurfaceSymbology::FillAbove:
                   if ( QgsFillSymbol *fillSymbol = rlProps->profileFillSymbol() )
                   {
                     symbol.reset( fillSymbol->clone() );
@@ -175,6 +177,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
                   }
                   break;
                 case Qgis::ProfileSurfaceSymbology::FillBelow:
+                case Qgis::ProfileSurfaceSymbology::FillAbove:
                   if ( QgsFillSymbol *fillSymbol = mlProps->profileFillSymbol() )
                   {
                     symbol.reset( fillSymbol->clone() );
@@ -235,6 +238,44 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
   return QgsLayerTreeModel::data( index, role );
 }
 
+bool QgsElevationProfileLayerTreeModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( QgsLayerTreeLayer *layerNode = qobject_cast< QgsLayerTreeLayer * >( index2node( index ) ) )
+  {
+    if ( role == Qt::CheckStateRole )
+    {
+      const bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
+      if ( QgsMapLayer *layer = layerNode->layer() )
+      {
+        layer->setCustomProperty( QStringLiteral( "_include_in_elevation_profiles" ), checked );
+      }
+    }
+  }
+
+  return QgsLayerTreeModel::setData( index, value, role );
+}
+
+bool QgsElevationProfileLayerTreeModel::canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const
+{
+  if ( action == Qt::IgnoreAction )
+    return true;
+
+  if ( !data->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+    return false;
+
+  // don't accept moves from other layer trees -- only allow internal drag
+  if ( action == Qt::MoveAction )
+  {
+    const QString source = data->data( QStringLiteral( "application/qgis.layertree.source" ) );
+    if ( source.isEmpty() || source != QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
+    {
+      return false;
+    }
+  }
+
+  return QgsLayerTreeModel::canDropMimeData( data, action, row, column, parent );
+}
+
 bool QgsElevationProfileLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   if ( action == Qt::IgnoreAction )
@@ -243,10 +284,48 @@ bool QgsElevationProfileLayerTreeModel::dropMimeData( const QMimeData *data, Qt:
   if ( !data->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
     return false;
 
-  // don't accept drags from other layer trees -- only allow internal drag
+  // don't accept moves from other layer trees -- only allow internal drag
   const QString source = data->data( QStringLiteral( "application/qgis.layertree.source" ) );
   if ( source.isEmpty() || source != QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
-    return false;
+  {
+    if ( action == Qt::CopyAction )
+    {
+      QByteArray encodedLayerTreeData = data->data( QStringLiteral( "application/qgis.layertreemodeldata" ) );
+
+      QDomDocument layerTreeDoc;
+      if ( !layerTreeDoc.setContent( QString::fromUtf8( encodedLayerTreeData ) ) )
+        return false;
+
+      QDomElement rootLayerTreeElem = layerTreeDoc.documentElement();
+      if ( rootLayerTreeElem.tagName() != QLatin1String( "layer_tree_model_data" ) )
+        return false;
+
+      QList<QgsMapLayer *> layersToAdd;
+
+      QDomElement elem = rootLayerTreeElem.firstChildElement();
+      while ( !elem.isNull() )
+      {
+        std::unique_ptr< QgsLayerTreeNode > node( QgsLayerTreeNode::readXml( elem, QgsProject::instance() ) );
+        if ( node && QgsLayerTree::isLayer( node.get() ) )
+        {
+          if ( QgsMapLayer *layer = qobject_cast< QgsLayerTreeLayer * >( node.get() )->layer() )
+          {
+            layersToAdd << layer;
+          }
+        }
+        elem = elem.nextSiblingElement();
+      }
+
+      if ( !layersToAdd.empty() )
+        emit addLayers( layersToAdd );
+
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
 
   return QgsLayerTreeModel::dropMimeData( data, action, row, column, parent );
 }
@@ -336,6 +415,7 @@ QgsElevationProfileLayerTreeView::QgsElevationProfileLayerTreeView( QgsLayerTree
   , mLayerTree( rootNode )
 {
   mModel = new QgsElevationProfileLayerTreeModel( rootNode, this );
+  connect( mModel, &QgsElevationProfileLayerTreeModel::addLayers, this, &QgsElevationProfileLayerTreeView::addLayers );
   mProxyModel = new QgsElevationProfileLayerTreeProxyModel( mModel, this );
 
   setHeaderHidden( true );
@@ -388,8 +468,21 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
   for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )
   {
     QgsLayerTreeLayer *node = mLayerTree->addLayer( layer );
-    node->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
+
+    if ( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).isValid() )
+    {
+      node->setItemVisibilityChecked( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).toBool() );
+    }
+    else
+    {
+      node->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
+    }
   }
+}
+
+QgsElevationProfileLayerTreeProxyModel *QgsElevationProfileLayerTreeView::proxyModel()
+{
+  return mProxyModel;
 }
 
 void QgsElevationProfileLayerTreeView::resizeEvent( QResizeEvent *event )

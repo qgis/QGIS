@@ -250,7 +250,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
     const bool isScalar = metadata.isScalar();
     if ( isScalar )
     {
-      QgsDebugMsg( QStringLiteral( "Dataset has no vector values" ) );
+      QgsDebugError( QStringLiteral( "Dataset has no vector values" ) );
     }
     else
     {

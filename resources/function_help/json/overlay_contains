@@ -40,8 +40,8 @@
     "expression": "array_sort(overlay_contains(layer:='regions', expression:=\"name\", filter:= population > 10000))",
     "returns": "an ordered array of names, for the regions contained in the current feature and with a population greater than 10000"
   }, {
-    "expression": "overlay_contains(layer:='regions', expression:= geom_to_wkt($geometry), limit:=2)",
+    "expression": "overlay_contains(layer:='regions', expression:= geom_to_wkt(@geometry), limit:=2)",
     "returns": "an array of geometries (in WKT), for up to two regions contained in the current feature"
   }],
-  "tags": ["least", "predicate", "current", "contained", "target", "contains", "array", "geos", "st_contains", "postgis", "described", "underlying", "features"]
+  "tags": ["predicate", "contained", "target", "contains", "array", "geos", "st_contains", "postgis", "underlying", "features"]
 }

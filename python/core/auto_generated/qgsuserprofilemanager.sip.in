@@ -143,6 +143,30 @@ with no arguments.
 Set the default profile name from the current active profile.
 %End
 
+    QString lastProfileName() const;
+%Docstring
+Returns the name of the most recently closed profile. Empty if its the first time QGIS has been run.
+
+.. versionadded:: 3.32
+%End
+
+
+    Qgis::UserProfileSelectionPolicy userProfileSelectionPolicy() const;
+%Docstring
+Returns the user profile selection policy.
+
+.. versionadded:: 3.32
+%End
+
+    void setUserProfileSelectionPolicy( Qgis::UserProfileSelectionPolicy policy );
+%Docstring
+Sets the user profile selection policy.
+
+:param policy: The policy to use when selecting a user profile.
+
+.. versionadded:: 3.32
+%End
+
     QgsUserProfile *profileForName( const QString &name ) const /Factory/;
 %Docstring
 Returns the profile found for a given name.

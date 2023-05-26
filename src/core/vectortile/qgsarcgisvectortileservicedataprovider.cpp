@@ -72,9 +72,14 @@ QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( 
   mLayerMetadata = other.mLayerMetadata;
 }
 
-QgsVectorTileDataProvider::ProviderCapabilities QgsArcGisVectorTileServiceDataProvider::providerCapabilities() const
+Qgis::VectorTileProviderFlags QgsArcGisVectorTileServiceDataProvider::providerFlags() const
 {
-  return QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata;
+  return QgsXyzVectorTileDataProviderBase::providerFlags() | Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider;
+}
+
+Qgis::VectorTileProviderCapabilities QgsArcGisVectorTileServiceDataProvider::providerCapabilities() const
+{
+  return Qgis::VectorTileProviderCapability::ReadLayerMetadata;
 }
 
 QString QgsArcGisVectorTileServiceDataProvider::name() const
@@ -154,6 +159,16 @@ QString QgsArcGisVectorTileServiceDataProvider::styleUrl() const
   // for ArcMap VectorTileServices we default to the defaultStyles URL from the layer configuration
   return mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
          + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString();
+}
+
+QString QgsArcGisVectorTileServiceDataProvider::htmlMetadata() const
+{
+  QString metadata;
+
+  if ( !mTileMapUrl.isEmpty() )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tilemap" ) % QStringLiteral( "</td><td><a href=\"%1\">%1</a>" ).arg( mTileMapUrl ) % QStringLiteral( "</td></tr>\n" );
+
+  return metadata;
 }
 
 bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnection()
@@ -256,16 +271,50 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
     }
   }
 
+  // read tileMap if available
+  QVariantMap tileMap;
+  const QString tileMapEndpoint = mArcgisLayerConfiguration.value( QStringLiteral( "tileMap" ) ).toString();
+  if ( !tileMapEndpoint.isEmpty() )
+  {
+    mTileMapUrl = tileServiceUri + '/' + tileMapEndpoint;
+    QUrl tilemapUrl( mTileMapUrl );
+    tilemapUrl.setQuery( query );
+
+    QNetworkRequest tileMapRequest = QNetworkRequest( tilemapUrl );
+    QgsSetRequestInitiatorClass( tileMapRequest, QStringLiteral( "QgsVectorTileLayer" ) )
+
+    QgsBlockingNetworkRequest tileMapNetworkRequest;
+    switch ( tileMapNetworkRequest.get( tileMapRequest ) )
+    {
+      case QgsBlockingNetworkRequest::NoError:
+        break;
+
+      case QgsBlockingNetworkRequest::NetworkError:
+      case QgsBlockingNetworkRequest::TimeoutError:
+      case QgsBlockingNetworkRequest::ServerExceptionError:
+        return false;
+    }
+
+    const QgsNetworkReplyContent tileMapContent = tileMapNetworkRequest.reply();
+    const QByteArray tileMapRaw = tileMapContent.content();
+
+    const QJsonDocument tileMapDoc = QJsonDocument::fromJson( tileMapRaw, &err );
+    if ( !tileMapDoc.isNull() )
+    {
+      tileMap = tileMapDoc.object().toVariantMap();
+    }
+  }
+
   mSourcePath = tileServiceUri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
   if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + tileServiceUri );
+    QgsDebugError( QStringLiteral( "Invalid format of URL for XYZ source: " ) + tileServiceUri );
     return false;
   }
 
   mArcgisLayerConfiguration.insert( QStringLiteral( "serviceUri" ), tileServiceUri );
 
-  mMatrixSet.fromEsriJson( mArcgisLayerConfiguration );
+  mMatrixSet.fromEsriJson( mArcgisLayerConfiguration, tileMap );
   mCrs = mMatrixSet.crs();
 
   // if hardcoded zoom limits aren't specified, take them from the server
@@ -293,7 +342,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
+      QgsDebugError( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
     }
   }
   else
@@ -306,7 +355,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
+      QgsDebugError( QStringLiteral( "Could not transform layer extent to layer CRS" ) );
     }
   }
 

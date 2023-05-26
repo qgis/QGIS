@@ -206,6 +206,24 @@ Converts a plot point to the equivalent canvas point.
 .. seealso:: :py:func:`canvasPointToPlotPoint`
 %End
 
+    bool lockAxisScales() const;
+%Docstring
+Returns ``True`` if the distance and elevation scales are locked to each other.
+
+.. seealso:: :py:func:`setLockAxisScales`
+
+.. versionadded:: 3.32
+%End
+
+    void setLockAxisScales( bool lock );
+%Docstring
+Sets whether the distance and elevation scales are locked to each other.
+
+.. seealso:: :py:func:`lockAxisScales`
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void activeJobCountChanged( int count );

@@ -61,6 +61,10 @@
 #include "qgshistoryproviderregistry.h"
 #include "qgslayermetadatasourceselectprovider.h"
 #include "qgssensorguiregistry.h"
+#include "qgshistoryentry.h"
+
+#include "qgssettingseditorwidgetregistry.h"
+
 
 #include <QPushButton>
 #include <QToolButton>
@@ -181,11 +185,16 @@ QgsHistoryProviderRegistry *QgsGui::historyProviderRegistry()
   return instance()->mHistoryProviderRegistry;
 }
 
+QgsSettingsEditorWidgetRegistry *QgsGui::settingsEditorWidgetRegistry()
+{
+  return instance()->mSettingsEditorRegistry;
+}
+
 void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 {
   if ( widget->objectName().isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore" ) );
+    QgsDebugError( QStringLiteral( "WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore" ) );
   }
   instance()->mWidgetStateHelper->registerWidget( widget, key );
 }
@@ -237,6 +246,7 @@ QgsGui::~QgsGui()
   delete mRelationEditorRegistry;
   delete mSettingsRegistryGui;
   delete mSensorGuiRegistry;
+  delete mSettingsEditorRegistry;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -287,6 +297,8 @@ QgsGui::QgsGui()
 
   mSettingsRegistryGui = new QgsSettingsRegistryGui();
 
+  mSettingsEditorRegistry = new QgsSettingsEditorWidgetRegistry();
+
   mCodeEditorColorSchemeRegistry = new QgsCodeEditorColorSchemeRegistry();
 
   // provider gui registry initialize QgsProviderRegistry too
@@ -325,6 +337,8 @@ QgsGui::QgsGui()
   mWidgetStateHelper = new QgsWidgetStateHelper();
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
+
+  qRegisterMetaType< QgsHistoryEntry >( "QgsHistoryEntry" );
 }
 
 bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )

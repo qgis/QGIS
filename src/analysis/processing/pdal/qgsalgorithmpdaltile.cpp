@@ -45,7 +45,7 @@ QString QgsPdalTileAlgorithm::groupId() const
 
 QStringList QgsPdalTileAlgorithm::tags() const
 {
-  return QObject::tr( "export,tile" ).split( ',' );
+  return QObject::tr( "pdal,lidar,export,tile" ).split( ',' );
 }
 
 QString QgsPdalTileAlgorithm::shortHelpString() const
@@ -80,8 +80,11 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
     feedback->reportError( QObject::tr( "No layers selected" ), true );
   }
 
-  const QString outputDir = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputDir );
+
+  if ( !QDir().mkpath( outputDir ) )
+    throw QgsProcessingException( QStringLiteral( "Failed to create output directory." ) );
 
   int length = parameterAsInt( parameters, QStringLiteral( "LENGTH" ), context );
 
@@ -101,7 +104,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
     args << QStringLiteral( "--a_srs=%1" ).arg( crs.authid() );
   }
 
-  applyThreadsParameter( args );
+  applyThreadsParameter( args, context );
 
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {

@@ -133,7 +133,7 @@ QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, Q
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse )
-      QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+      QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
       transformedVertex = QgsMeshVertex();
     }
   }
@@ -303,7 +303,7 @@ QgsRectangle QgsTriangularMesh::nativeExtent()
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse )
-      QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+      QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
     }
   }
   else
@@ -406,7 +406,7 @@ QgsPointXY QgsTriangularMesh::transformFromLayerToTrianglesCoordinates( const Qg
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse )
-      QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+      QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
       mapPoint = point;
     }
   }
@@ -559,7 +559,7 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
 
     if ( size == 0 || int( size ) >= indexes.size() )
     {
-      QgsDebugMsg( QStringLiteral( "Mesh simplification failed after %1 path" ).arg( path + 1 ) );
+      QgsDebugError( QStringLiteral( "Mesh simplification failed after %1 path" ).arg( path + 1 ) );
       delete simplifiedMesh;
       break;
     }

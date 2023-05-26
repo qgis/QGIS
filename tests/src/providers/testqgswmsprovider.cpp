@@ -167,6 +167,9 @@ class TestQgsWmsProvider: public QgsTest
       mapSettings.setOutputSize( QSize( 400, 400 ) );
       mapSettings.setOutputDpi( 96 );
       QVERIFY( imageCheck( "mbtiles_1", mapSettings ) );
+
+      // since no terrain interpretation set, we don't know for sure that the layer contains elevation
+      QVERIFY( !layer.dataProvider()->elevationProperties()->containsElevationData() );
     }
 
     void testMBTilesSample()
@@ -184,6 +187,9 @@ class TestQgsWmsProvider: public QgsTest
       const double value = layer.dataProvider()->sample( QgsPointXY( -496419, 7213350 ), 1, &ok );
       QVERIFY( ok );
       QCOMPARE( value, 1167617.375 );
+
+      // ensure that terrain interpretation correctly indicates that the layer contains elevation
+      QVERIFY( layer.dataProvider()->elevationProperties()->containsElevationData() );
     }
 
     void testMbtilesProviderMetadata()

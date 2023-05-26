@@ -4028,7 +4028,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     QgsPointXY center = context.mapExtent().center();
     if ( geom.rotate( m2p.mapRotation(), center ) != Qgis::GeometryOperationResult::Success )
     {
-      QgsDebugMsg( QStringLiteral( "Error rotating geometry" ).arg( geom.asWkt() ) );
+      QgsDebugError( QStringLiteral( "Error rotating geometry" ).arg( geom.asWkt() ) );
       return QgsGeometry();
     }
   }
@@ -4081,7 +4081,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
       QgsGeometry bufferGeom = geom.makeValid();
       if ( bufferGeom.isNull() )
       {
-        QgsDebugMsg( QStringLiteral( "Could not repair geometry: %1" ).arg( bufferGeom.lastError() ) );
+        QgsDebugError( QStringLiteral( "Could not repair geometry: %1" ).arg( bufferGeom.lastError() ) );
         return QgsGeometry();
       }
       geom = bufferGeom;

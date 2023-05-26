@@ -66,7 +66,7 @@ void QgsConstantRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Desired extent" ) ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "ProjectCrs" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ),
-                QgsProcessingParameterNumber::Double, 0.00001, false, 0.01 ) );
+                QgsProcessingParameterNumber::Double, 1, false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NUMBER" ), QObject::tr( "Constant value" ),
                 QgsProcessingParameterNumber::Double, 1, false ) );
 
@@ -94,6 +94,11 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
   const double pixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
   const double value = parameterAsDouble( parameters, QStringLiteral( "NUMBER" ), context );
   const int typeId = parameterAsInt( parameters, QStringLiteral( "OUTPUT_TYPE" ), context );
+
+  if ( pixelSize <= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Pixel size must be greater than 0." ) );
+  }
 
   //implement warning if input float has decimal places but is written to integer raster
   double fractpart;

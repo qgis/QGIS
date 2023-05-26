@@ -370,7 +370,7 @@ bool QgsGrassModuleInputProxy::filterAcceptsRow( int sourceRow, const QModelInde
     }
     else
     {
-      QgsDebugMsg( "mapset " + mapset + " is not in search path" );
+      QgsDebugError( "mapset " + mapset + " is not in search path" );
       return false;
     }
   }

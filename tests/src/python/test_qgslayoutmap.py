@@ -45,6 +45,7 @@ from qgis.core import (
     QgsProperty,
     QgsRasterLayer,
     QgsReadWriteContext,
+    QgsLayoutChecker,
     QgsRectangle,
     QgsSingleSymbolRenderer,
     QgsTextFormat,
@@ -54,7 +55,6 @@ from qgis.core import (
 )
 from qgis.testing import start_app, unittest
 
-from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -66,6 +66,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super(TestQgsLayoutMap, cls).setUpClass()
         cls.item_class = QgsLayoutItemMap
         cls.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"
 
@@ -74,6 +75,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
+        super(TestQgsLayoutMap, cls).tearDownClass()
 
     def __init__(self, methodName):
         """Run once on class initialization."""

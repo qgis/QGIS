@@ -62,7 +62,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
   if ( block->isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Couldn't create raster block" ) );
+    QgsDebugError( QStringLiteral( "Couldn't create raster block" ) );
     block->setError( { tr( "Couldn't create raster block." ), QStringLiteral( "Raster" ) } );
     block->setValid( false );
     return block.release();
@@ -73,7 +73,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
   if ( tmpExtent.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Extent outside provider extent" ) );
+    QgsDebugError( QStringLiteral( "Extent outside provider extent" ) );
     block->setError( { tr( "Extent outside provider extent." ), QStringLiteral( "Raster" ) } );
     block->setValid( false );
     block->setIsNoData();
@@ -123,7 +123,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
          fromCol < 0 || fromCol >= width || toCol < 0 || toCol >= width )
     {
       // Should not happen
-      QgsDebugMsg( QStringLiteral( "Row or column limits out of range" ) );
+      QgsDebugError( QStringLiteral( "Row or column limits out of range" ) );
       block->setError( { tr( "Row or column limits out of range" ), QStringLiteral( "Raster" ) } );
       block->setValid( false );
       return block.release();
@@ -161,7 +161,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
     if ( !readBlock( bandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits(), feedback ) )
     {
-      QgsDebugMsg( QStringLiteral( "Error occurred while reading block" ) );
+      QgsDebugError( QStringLiteral( "Error occurred while reading block" ) );
       block->setError( { tr( "Error occurred while reading block." ), QStringLiteral( "Raster" ) } );
       block->setValid( false );
       block->setIsNoData();
@@ -187,7 +187,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
         if ( tmpRow < 0 || tmpRow >= tmpHeight || tmpCol < 0 || tmpCol >= tmpWidth )
         {
-          QgsDebugMsg( QStringLiteral( "Source row or column limits out of range" ) );
+          QgsDebugError( QStringLiteral( "Source row or column limits out of range" ) );
           block->setIsNoData(); // so that the problem becomes obvious and fixed
           block->setError( { tr( "Source row or column limits out of range." ), QStringLiteral( "Raster" ) } );
           block->setValid( false );
@@ -201,12 +201,12 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
         char *bits = block->bits( index );
         if ( !tmpBits )
         {
-          QgsDebugMsg( QStringLiteral( "Cannot get input block data tmpRow = %1 tmpCol = %2 tmpIndex = %3." ).arg( tmpRow ).arg( tmpCol ).arg( tmpIndex ) );
+          QgsDebugError( QStringLiteral( "Cannot get input block data tmpRow = %1 tmpCol = %2 tmpIndex = %3." ).arg( tmpRow ).arg( tmpCol ).arg( tmpIndex ) );
           continue;
         }
         if ( !bits )
         {
-          QgsDebugMsg( QStringLiteral( "Cannot set output block data." ) );
+          QgsDebugError( QStringLiteral( "Cannot set output block data." ) );
           continue;
         }
         memcpy( bits, tmpBits, pixelSize );
@@ -217,7 +217,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   {
     if ( !readBlock( bandNo, boundingBox, width, height, block->bits(), feedback ) )
     {
-      QgsDebugMsg( QStringLiteral( "Error occurred while reading block" ) );
+      QgsDebugError( QStringLiteral( "Error occurred while reading block" ) );
       block->setIsNoData();
       block->setError( { tr( "Error occurred while reading block." ), QStringLiteral( "Raster" ) } );
       block->setValid( false );
@@ -236,6 +236,7 @@ QgsRasterDataProvider::QgsRasterDataProvider()
   : QgsDataProvider( QString(), QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() )
   , QgsRasterInterface( nullptr )
   , mTemporalCapabilities( std::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
+  , mElevationProperties( std::make_unique< QgsRasterDataProviderElevationProperties >() )
 {
 
 }
@@ -245,6 +246,7 @@ QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const Provider
   : QgsDataProvider( uri, options, flags )
   , QgsRasterInterface( nullptr )
   , mTemporalCapabilities( std::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
+  , mElevationProperties( std::make_unique< QgsRasterDataProviderElevationProperties >() )
 {
 }
 
@@ -275,7 +277,7 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
 
   if ( format != Qgis::RasterIdentifyFormat::Value || !( capabilities() & IdentifyValue ) )
   {
-    QgsDebugMsg( QStringLiteral( "Format not supported" ) );
+    QgsDebugError( QStringLiteral( "Format not supported" ) );
     return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
   }
 
@@ -367,7 +369,7 @@ bool QgsRasterDataProvider::writeBlock( QgsRasterBlock *block, int band, int xOf
     return false;
   if ( !isEditable() )
   {
-    QgsDebugMsg( QStringLiteral( "writeBlock() called on read-only provider." ) );
+    QgsDebugError( QStringLiteral( "writeBlock() called on read-only provider." ) );
     return false;
   }
   return write( block->bits(), band, block->width(), block->height(), xOffset, yOffset );
@@ -379,7 +381,7 @@ QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods(
   QList<QPair<QString, QString> > methods = QgsProviderRegistry::instance()->pyramidResamplingMethods( providerKey );
   if ( methods.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "provider pyramidResamplingMethods returned no methods" ) );
+    QgsDebugMsgLevel( QStringLiteral( "provider pyramidResamplingMethods returned no methods" ), 2 );
   }
   return methods;
 }
@@ -434,6 +436,20 @@ const QgsRasterDataProviderTemporalCapabilities *QgsRasterDataProvider::temporal
   return mTemporalCapabilities.get();
 }
 
+QgsRasterDataProviderElevationProperties *QgsRasterDataProvider::elevationProperties()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mElevationProperties.get();
+}
+
+const QgsRasterDataProviderElevationProperties *QgsRasterDataProvider::elevationProperties() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mElevationProperties.get();
+}
+
 QgsRasterDataProvider *QgsRasterDataProvider::create( const QString &providerKey,
     const QString &uri,
     const QString &format, int nBands,
@@ -449,7 +465,7 @@ QgsRasterDataProvider *QgsRasterDataProvider::create( const QString &providerKey
                                  height, geoTransform, crs, createOptions );
   if ( !ret )
   {
-    QgsDebugMsg( "Cannot resolve 'createRasterDataProviderFunction' function in " + providerKey + " provider" );
+    QgsDebugError( "Cannot resolve 'createRasterDataProviderFunction' function in " + providerKey + " provider" );
   }
 
   // TODO: it would be good to return invalid QgsRasterDataProvider
@@ -571,10 +587,13 @@ void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider &other
   mZoomedOutResamplingMethod = other.mZoomedOutResamplingMethod;
   mMaxOversampling = other.mMaxOversampling;
 
-  // copy temporal properties
   if ( mTemporalCapabilities && other.mTemporalCapabilities )
   {
     *mTemporalCapabilities = *other.mTemporalCapabilities;
+  }
+  if ( mElevationProperties && other.mElevationProperties )
+  {
+    *mElevationProperties = *other.mElevationProperties;
   }
 }
 
@@ -783,13 +802,13 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
 
   if ( ! query.hasQueryItem( QStringLiteral( "crs" ) ) )
   {
-    QgsDebugMsg( "crs is missing" );
+    QgsDebugError( "crs is missing" );
     if ( ok ) *ok = false;
     return components;
   }
   if ( ! components.crs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) ) )
   {
-    QgsDebugMsg( "failed to create crs" );
+    QgsDebugError( "failed to create crs" );
     if ( ok ) *ok = false;
     return components;
   }
@@ -797,14 +816,14 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
 
   if ( ! query.hasQueryItem( QStringLiteral( "extent" ) ) )
   {
-    QgsDebugMsg( "extent is missing" );
+    QgsDebugError( "extent is missing" );
     if ( ok ) *ok = false;
     return components;
   }
   QStringList pointValuesList = query.queryItemValue( QStringLiteral( "extent" ) ).split( ',' );
   if ( pointValuesList.size() != 4 )
   {
-    QgsDebugMsg( "the extent is not correct" );
+    QgsDebugError( "the extent is not correct" );
     if ( ok ) *ok = false;
     return components;
   }
@@ -813,7 +832,7 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
 
   if ( ! query.hasQueryItem( QStringLiteral( "width" ) ) )
   {
-    QgsDebugMsg( "width is missing" );
+    QgsDebugError( "width is missing" );
     if ( ok ) *ok = false;
     return components;
   }
@@ -821,14 +840,14 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   components.width = query.queryItemValue( QStringLiteral( "width" ) ).toInt( & flagW );
   if ( !flagW ||  components.width < 0 )
   {
-    QgsDebugMsg( "invalid or negative width input" );
+    QgsDebugError( "invalid or negative width input" );
     if ( ok ) *ok = false;
     return components;
   }
 
   if ( ! query.hasQueryItem( QStringLiteral( "height" ) ) )
   {
-    QgsDebugMsg( "height is missing" );
+    QgsDebugError( "height is missing" );
     if ( ok ) *ok = false;
     return components;
   }
@@ -836,14 +855,14 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   components.height = query.queryItemValue( QStringLiteral( "height" ) ).toInt( & flagH );
   if ( !flagH ||  components.height < 0 )
   {
-    QgsDebugMsg( "invalid or negative width input" );
+    QgsDebugError( "invalid or negative width input" );
     if ( ok ) *ok = false;
     return components;
   }
 
   if ( ! query.hasQueryItem( QStringLiteral( "formula" ) ) )
   {
-    QgsDebugMsg( "formula is missing" );
+    QgsDebugError( "formula is missing" );
     if ( ok ) *ok = false;
     return components;
   }
@@ -863,7 +882,7 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
 
     if ( rLayer.uri.isNull() || rLayer.provider.isNull() )
     {
-      QgsDebugMsg( "One or more raster information are missing" );
+      QgsDebugError( "One or more raster information are missing" );
       if ( ok ) *ok = false;
       return components;
     }

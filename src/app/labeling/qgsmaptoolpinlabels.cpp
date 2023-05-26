@@ -115,12 +115,12 @@ void QgsMapToolPinLabels::showPinnedLabels( bool show )
   mShowPinned = show;
   if ( mShowPinned )
   {
-    QgsDebugMsg( QStringLiteral( "Toggling on pinned label highlighting" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Toggling on pinned label highlighting" ), 2 );
     highlightPinnedLabels();
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Toggling off pinned label highlighting" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Toggling off pinned label highlighting" ), 2 );
     removePinnedHighlights();
   }
 }
@@ -130,7 +130,7 @@ void QgsMapToolPinLabels::updatePinnedLabels()
 {
   if ( mShowPinned )
   {
-    QgsDebugMsg( QStringLiteral( "Updating highlighting due to layer editing mode change" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Updating highlighting due to layer editing mode change" ), 2 );
     highlightPinnedLabels();
   }
 }
@@ -218,7 +218,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
       {
-        QgsDebugMsg( QStringLiteral( "Failed to cast to vector layer" ) );
+        QgsDebugError( QStringLiteral( "Failed to cast to vector layer" ) );
         continue;
       }
       if ( vlayer->isEditable() )
@@ -292,7 +292,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *
 
     if ( !mCurrentLabel.valid )
     {
-      QgsDebugMsg( QStringLiteral( "Failed to get label details" ) );
+      QgsDebugError( QStringLiteral( "Failed to get label details" ) );
       continue;
     }
 
@@ -306,7 +306,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Unpin failed for layer" ) );
+        QgsDebugError( QStringLiteral( "Unpin failed for layer" ) );
       }
     }
     // pin label
@@ -319,7 +319,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Pin failed for layer" ) );
+        QgsDebugError( QStringLiteral( "Pin failed for layer" ) );
       }
     }
   }
@@ -344,7 +344,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
   // skip diagrams
   if ( labelpos.isDiagram )
   {
-    QgsDebugMsg( QStringLiteral( "Label is diagram, skipping" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Label is diagram, skipping" ), 2 );
     return false;
   }
 
@@ -423,10 +423,10 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
 
   if ( writeFailed )
   {
-    QgsDebugMsg( QStringLiteral( "Write to attribute table failed" ) );
+    QgsDebugError( QStringLiteral( "Write to attribute table failed" ) );
 
 #if 0
-    QgsDebugMsg( QStringLiteral( "Undoing and removing failed command from layer's undo stack" ) );
+    QgsDebugError( QStringLiteral( "Undoing and removing failed command from layer's undo stack" ) );
     int lastCmdIndx = vlayer->undoStack()->count();
     const QgsUndoCommand *lastCmd = qobject_cast<const QgsUndoCommand *>( vlayer->undoStack()->command( lastCmdIndx ) );
     if ( lastCmd )

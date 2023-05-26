@@ -538,6 +538,11 @@ namespace QgsWms
                                        QVariant( false ) );
     save( pWithMapTip );
 
+    const QgsWmsParameter pWithDisplayName( QgsWmsParameter::WITH_DISPLAY_NAME,
+                                            QVariant::Bool,
+                                            QVariant( false ) );
+    save( pWithDisplayName );
+
     const QgsWmsParameter pWmtver( QgsWmsParameter::WMTVER );
     save( pWmtver );
 
@@ -2097,6 +2102,11 @@ namespace QgsWms
     return mWmsParameters.value( QgsWmsParameter::WITH_MAPTIP ).toBool();
   }
 
+  bool QgsWmsParameters::withDisplayName() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::WITH_DISPLAY_NAME ).toBool();
+  }
+
   QString QgsWmsParameters::wmtver() const
   {
     return mWmsParameters.value( QgsWmsParameter::WMTVER ).toString();
@@ -2182,11 +2192,11 @@ namespace QgsWms
     return scale;
   }
 
-  QgsDxfExport::SymbologyExport QgsWmsParameters::dxfMode() const
+  Qgis::FeatureSymbologyExport QgsWmsParameters::dxfMode() const
   {
     const QMap<DxfFormatOption, QString> options = formatOptions<QgsWmsParameters::DxfFormatOption>();
 
-    QgsDxfExport::SymbologyExport symbol = QgsDxfExport::NoSymbology;
+    Qgis::FeatureSymbologyExport symbol = Qgis::FeatureSymbologyExport::NoSymbology;
 
     if ( ! options.contains( DxfFormatOption::MODE ) )
     {
@@ -2196,11 +2206,11 @@ namespace QgsWms
     const QString mode = options[ DxfFormatOption::MODE ];
     if ( mode.compare( QLatin1String( "SymbolLayerSymbology" ), Qt::CaseInsensitive ) == 0 )
     {
-      symbol = QgsDxfExport::SymbolLayerSymbology;
+      symbol = Qgis::FeatureSymbologyExport::PerSymbolLayer;
     }
     else if ( mode.compare( QLatin1String( "FeatureSymbology" ), Qt::CaseInsensitive ) == 0 )
     {
-      symbol = QgsDxfExport::FeatureSymbology;
+      symbol = Qgis::FeatureSymbologyExport::PerFeature;
     }
 
     return symbol;

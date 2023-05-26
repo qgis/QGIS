@@ -180,13 +180,6 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       Canceled, //!< Writing was interrupted by manual cancellation
     };
 
-    enum SymbologyExport
-    {
-      NoSymbology = 0, //export only data
-      FeatureSymbology, //Keeps the number of features and export symbology per feature
-      SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
-    };
-
     /**
      * Source for exported field names.
      *
@@ -352,7 +345,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
         QString *newFilename = nullptr,
-        QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
+        Qgis::FeatureSymbologyExport symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology,
         double symbologyScale = 1.0,
         const QgsRectangle *filterExtent = nullptr,
         Qgis::WkbType overrideGeometryType = Qgis::WkbType::Unknown,
@@ -435,7 +428,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
         QString *newFilename = nullptr,
-        QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
+        Qgis::FeatureSymbologyExport symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology,
         double symbologyScale = 1.0,
         const QgsRectangle *filterExtent = nullptr,
         Qgis::WkbType overrideGeometryType = Qgis::WkbType::Unknown,
@@ -499,7 +492,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QStringList attributesExportNames;
 
         //! Symbology to export
-        QgsVectorFileWriter::SymbologyExport symbologyExport = NoSymbology;
+        Qgis::FeatureSymbologyExport symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
 
         //! Scale of symbology
         double symbologyScale = 1.0;
@@ -604,7 +597,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            const QStringList &datasourceOptions = QStringList(),
                                            const QStringList &layerOptions = QStringList(),
                                            QString *newFilename = nullptr,
-                                           QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
+                                           Qgis::FeatureSymbologyExport symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology,
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
 #ifndef SIP_RUN
                                                , QString *newLayer = nullptr,
@@ -644,7 +637,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            const QStringList &datasourceOptions,
                                            const QStringList &layerOptions,
                                            QString *newFilename,
-                                           QgsVectorFileWriter::SymbologyExport symbologyExport,
+                                           Qgis::FeatureSymbologyExport symbologyExport,
                                            QgsVectorFileWriter::FieldValueConverter *fieldValueConverter,
                                            const QString &layerName,
                                            QgsVectorFileWriter::ActionOnExistingFile action,
@@ -825,6 +818,29 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! Retrieves error message
     QString errorMessage() const;
 
+    /**
+     * Returns the GDAL (short) driver name associated with the output file.
+     *
+     * \see driverLongName()
+     * \since QGIS 3.32
+     */
+    QString driver() const;
+
+    /**
+     * Returns the GDAL long driver name associated with the output file.
+     *
+     * \see driver()
+     * \since QGIS 3.32
+     */
+    QString driverLongName() const;
+
+    /**
+     * Returns the capabilities supported by the writer.
+     *
+     * \since QGIS 3.32
+     */
+    Qgis::VectorFileWriterCapabilities capabilities() const;
+
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;
@@ -848,8 +864,19 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      */
     static bool deleteShapeFile( const QString &fileName );
 
-    QgsVectorFileWriter::SymbologyExport symbologyExport() const { return mSymbologyExport; }
-    void setSymbologyExport( QgsVectorFileWriter::SymbologyExport symExport ) { mSymbologyExport = symExport; }
+    /**
+     * Returns the feature symbology export handling for the writer.
+     *
+     * \see setSymbologyExport()
+     */
+    Qgis::FeatureSymbologyExport symbologyExport() const { return mSymbologyExport; }
+
+    /**
+     * Sets the feature symbology export handling for the writer.
+     *
+     * \see symbologyExport()
+     */
+    void setSymbologyExport( Qgis::FeatureSymbologyExport symExport ) { mSymbologyExport = symExport; }
 
     /**
      * Returns the reference scale for output.
@@ -937,7 +964,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! Map attribute indizes to OGR field indexes
     QMap<int, int> mAttrIdxToOgrIdx;
 
-    SymbologyExport mSymbologyExport;
+    Qgis::FeatureSymbologyExport mSymbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
 
     QMap< QgsSymbolLayer *, QString > mSymbolLayerTable;
 
@@ -945,6 +972,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     double mSymbologyScale;
 
     QString mOgrDriverName;
+    QString mOgrDriverLongName;
 
     //! Field value converter
     FieldValueConverter *mFieldValueConverter = nullptr;
@@ -1040,6 +1068,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     bool mUsingTransaction = false;
     QSet< QVariant::Type > mSupportedListSubTypes;
+
+    Qgis::VectorFileWriterCapabilities mCapabilities;
 
     void createSymbolLayerTable( QgsVectorLayer *vl, const QgsCoordinateTransform &ct, OGRDataSourceH ds );
     gdal::ogr_feature_unique_ptr createFeature( const QgsFeature &feature );

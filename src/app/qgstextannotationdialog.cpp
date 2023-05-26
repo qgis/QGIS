@@ -24,6 +24,7 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsfillsymbol.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QColorDialog>
 #include <QGraphicsScene>
@@ -68,6 +69,14 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsTextAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
+
+
+  connect( mLiveCheckBox, &QCheckBox::toggled, this, &QgsTextAnnotationDialog::onLiveUpdateToggled );
+  mLiveCheckBox->setChecked( QgsAnnotationWidget::settingLiveUpdate->value() );
+  connect( mLiveCheckBox, &QCheckBox::toggled, this, &QgsTextAnnotationDialog::onSettingsChanged );
+  connect( mEmbeddedWidget, &QgsAnnotationWidget::changed, this, &QgsTextAnnotationDialog::onSettingsChanged );
+  connect( mTextEdit, &QTextEdit::textChanged, this, &QgsTextAnnotationDialog::onSettingsChanged );
+
 }
 
 void QgsTextAnnotationDialog::showEvent( QShowEvent * )
@@ -138,6 +147,7 @@ void QgsTextAnnotationDialog::changeCurrentFormat()
 
   //color
   mTextEdit->setTextColor( mFontColorButton->color() );
+  onSettingsChanged();
 }
 
 void QgsTextAnnotationDialog::mFontColorButton_colorChanged( const QColor &color )
@@ -177,4 +187,20 @@ void QgsTextAnnotationDialog::deleteItem()
 void QgsTextAnnotationDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
+}
+
+void QgsTextAnnotationDialog::onSettingsChanged()
+{
+  if ( mLiveCheckBox->isChecked() )
+  {
+    applyTextToItem();
+  }
+}
+
+void QgsTextAnnotationDialog::onLiveUpdateToggled( bool checked )
+{
+  // Apply and Cancel buttons make no sense when live update is on
+  mButtonBox->button( QDialogButtonBox::Apply )->setHidden( checked );
+  mButtonBox->button( QDialogButtonBox::Cancel )->setHidden( checked );
+  QgsAnnotationWidget::settingLiveUpdate->setValue( checked );
 }

@@ -14,6 +14,19 @@
    <string>Form Annotation</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0">
+    <widget class="QStackedWidget" name="mStackedWidget">
+     <widget class="QWidget" name="page"/>
+     <widget class="QWidget" name="page_2"/>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QRadioButton" name="mSourceRadioButton">
+     <property name="text">
+      <string>Source</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -38,13 +51,7 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
-    <widget class="QStackedWidget" name="mStackedWidget">
-     <widget class="QWidget" name="page"/>
-     <widget class="QWidget" name="page_2"/>
-    </widget>
-   </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -55,17 +62,24 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QgsCodeEditorHTML" name="mHtmlSourceTextEdit"/>
+    <widget class="QgsCodeEditorHTML" name="mHtmlSourceTextEdit" native="true"/>
    </item>
-   <item row="1" column="0">
-    <widget class="QRadioButton" name="mSourceRadioButton">
+   <item row="4" column="0">
+    <widget class="QCheckBox" name="mLiveCheckBox">
      <property name="text">
-      <string>Source</string>
+      <string>Live update</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorhtml.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -101,11 +115,4 @@
    </hints>
   </connection>
  </connections>
- <customwidgets>
-  <customwidget>
-   <class>QgsCodeEditorHTML</class>
-   <extends>QWidget</extends>
-   <header>qgscodeeditorhtml.h</header>
-  </customwidget>
-</customwidgets>
 </ui>

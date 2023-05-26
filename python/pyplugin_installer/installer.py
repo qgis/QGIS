@@ -120,22 +120,21 @@ class QgsPluginInstaller(QObject):
         """ Fetch plugins from all enabled repositories."""
         """  reloadMode = true:  Fully refresh data from QgsSettings to mRepositories  """
         """  reloadMode = false: Fetch unready repositories only """
-        with OverrideCursor(Qt.WaitCursor):
-            if reloadMode:
-                repositories.load()
-                plugins.clearRepoCache()
-                plugins.getAllInstalled()
+        if reloadMode:
+            repositories.load()
+            plugins.clearRepoCache()
+            plugins.getAllInstalled()
 
-            for key in repositories.allEnabled():
-                if reloadMode or repositories.all()[key]["state"] == 3:  # if state = 3 (error or not fetched yet), try to fetch once again
-                    repositories.requestFetching(key, force_reload=reloadMode)
+        for key in repositories.allEnabled():
+            if reloadMode or repositories.all()[key]["state"] == 3:  # if state = 3 (error or not fetched yet), try to fetch once again
+                repositories.requestFetching(key, force_reload=reloadMode)
 
-            if repositories.fetchingInProgress():
-                fetchDlg = QgsPluginInstallerFetchingDialog(iface.mainWindow())
-                fetchDlg.exec_()
-                del fetchDlg
-                for key in repositories.all():
-                    repositories.killConnection(key)
+        if repositories.fetchingInProgress():
+            fetchDlg = QgsPluginInstallerFetchingDialog(iface.mainWindow())
+            fetchDlg.exec_()
+            del fetchDlg
+            for key in repositories.all():
+                repositories.killConnection(key)
 
         # display error messages for every unavailable repository, unless Shift pressed nor all repositories are unavailable
         keepQuiet = QgsApplication.keyboardModifiers() == Qt.KeyboardModifiers(Qt.ShiftModifier)

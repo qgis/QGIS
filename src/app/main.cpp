@@ -105,6 +105,7 @@ typedef SInt32 SRefCon;
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 #include "layers/qgsapplayerhandling.h"
+#include "options/qgsuserprofileselectiondialog.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -254,7 +255,7 @@ static void dumpBacktrace( unsigned int depth )
       // stdin from pipe
       if ( dup( fd[0] ) != STDIN_FILENO )
       {
-        QgsDebugMsg( QStringLiteral( "dup to stdin failed" ) );
+        QgsDebugError( QStringLiteral( "dup to stdin failed" ) );
       }
 
       close( fd[1] );        // close writing end
@@ -274,7 +275,7 @@ static void dumpBacktrace( unsigned int depth )
     {
       if ( stderr_new >= 0 )
         close( stderr_new );
-      QgsDebugMsg( QStringLiteral( "dup to stderr failed" ) );
+      QgsDebugError( QStringLiteral( "dup to stderr failed" ) );
     }
 
     close( fd[1] );  // close duped pipe
@@ -292,7 +293,7 @@ static void dumpBacktrace( unsigned int depth )
     if ( dup_stderr != STDERR_FILENO )
     {
       close( dup_stderr );
-      QgsDebugMsg( QStringLiteral( "dup to stderr failed" ) );
+      QgsDebugError( QStringLiteral( "dup to stderr failed" ) );
     }
     close( stderr_fd );
     wait( &status );
@@ -473,6 +474,7 @@ int main( int argc, char *argv[] )
 {
   //log messages written before creating QgsApplication
   QStringList preApplicationLogMessages;
+  QStringList preApplicationWarningMessages;
 
 #ifdef Q_OS_UNIX
   // Increase file resource limits (i.e., number of allowed open files)
@@ -499,17 +501,17 @@ int main( int argc, char *argv[] )
 
       if ( setrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
       {
-        QgsDebugMsg( QStringLiteral( "RLIMIT_NOFILE Soft NEW: %1 / %2" )
-                     .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
+        QgsDebugMsgLevel( QStringLiteral( "RLIMIT_NOFILE Soft NEW: %1 / %2" )
+                          .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ), 2 );
       }
     }
     Q_UNUSED( oldSoft ) //avoid warnings
-    QgsDebugMsg( QStringLiteral( "RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
-                 .arg( oldSoft ).arg( rescLimit.rlim_max ) );
+    QgsDebugMsgLevel( QStringLiteral( "RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
+                      .arg( oldSoft ).arg( rescLimit.rlim_max ), 2 );
   }
 #endif
 
-  QgsDebugMsg( QStringLiteral( "Starting qgis main" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Starting qgis main" ), 1 );
 #ifdef WIN32  // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
@@ -567,7 +569,7 @@ int main( int argc, char *argv[] )
   bool mySkipVersionCheck = false;
   bool hideBrowser = false;
 #if defined(ANDROID)
-  QgsDebugMsg( QStringLiteral( "Android: Splash hidden" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Android: Splash hidden" ), 2 );
   myHideSplash = true;
 #endif
 
@@ -577,7 +579,7 @@ int main( int argc, char *argv[] )
   bool myCustomization = true;
 
   QString dxfOutputFile;
-  QgsDxfExport::SymbologyExport dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
+  Qgis::FeatureSymbologyExport dxfSymbologyMode = Qgis::FeatureSymbologyExport::PerSymbolLayer;
   double dxfScale = 50000.0;
   QString dxfEncoding = QStringLiteral( "CP1252" );
   QString dxfMapTheme;
@@ -615,10 +617,10 @@ int main( int argc, char *argv[] )
 
 // TODO Fix android
 #if defined(ANDROID)
-  QgsDebugMsg( QStringLiteral( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
+  QgsDebugMsgLevel( QStringLiteral( "Android: All params stripped" ), 2 );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
   QString configpath = QgsApplication::qgisSettingsDirPath();
-  QgsDebugMsg( QStringLiteral( "Android: configpath set to %1" ).arg( configpath ) );
+  QgsDebugMsgLevel( QStringLiteral( "Android: configpath set to %1" ).arg( configpath ), 2 );
 #endif
 
   QStringList args;
@@ -665,7 +667,7 @@ int main( int argc, char *argv[] )
         }
         else if ( arg == QLatin1String( "--skipbadlayers" ) || arg == QLatin1String( "-B" ) )
         {
-          QgsDebugMsg( QStringLiteral( "Skipping bad layers" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Skipping bad layers" ), 2 );
           mySkipBadLayers = true;
         }
         else if ( arg == QLatin1String( "--nocustomization" ) || arg == QLatin1String( "-C" ) )
@@ -800,15 +802,15 @@ int main( int argc, char *argv[] )
           QString mode( args[++i] );
           if ( mode == QLatin1String( "none" ) )
           {
-            dxfSymbologyMode = QgsDxfExport::NoSymbology;
+            dxfSymbologyMode = Qgis::FeatureSymbologyExport::NoSymbology;
           }
           else if ( mode == QLatin1String( "symbollayer" ) )
           {
-            dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
+            dxfSymbologyMode = Qgis::FeatureSymbologyExport::PerSymbolLayer;
           }
           else if ( mode == QLatin1String( "feature" ) )
           {
-            dxfSymbologyMode = QgsDxfExport::FeatureSymbology;
+            dxfSymbologyMode = Qgis::FeatureSymbologyExport::PerFeature;
           }
           else
           {
@@ -917,6 +919,14 @@ int main( int argc, char *argv[] )
     exit( 1 ); //exit for now until a version of qgis is capable of running non interactive
   }
 
+// Set up for high displays
+// The following values are set by default in Qt6
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling, true );
+  QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
+  QGuiApplication::setHighDpiScaleFactorRoundingPolicy( Qt::HighDpiScaleFactorRoundingPolicy::PassThrough );
+#endif
+
   // GUI customization is enabled according to settings (loaded when instance is created)
   // we force disabled here if --nocustomization argument is used
   if ( !myCustomization )
@@ -981,7 +991,7 @@ int main( int argc, char *argv[] )
   {
     if ( !QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
     {
-      preApplicationLogMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
+      preApplicationWarningMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
     }
     else
     {
@@ -999,7 +1009,7 @@ int main( int argc, char *argv[] )
     else if ( globalSettings.contains( QStringLiteral( "core/profilesPath" ) ) )
     {
       configLocalStorageLocation = globalSettings.value( QStringLiteral( "core/profilesPath" ), "" ).toString();
-      QgsDebugMsg( QStringLiteral( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
+      QgsDebugMsgLevel( QStringLiteral( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ), 1 );
     }
 
     // If it is still empty at this point we get it from the standard location.
@@ -1009,16 +1019,86 @@ int main( int argc, char *argv[] )
     }
   }
 
+  // Create the application. At this point, the profile is not yet selected
+  // But we need the Qt Application to be created to be able to display the
+  // profile selection dialog if needed
+  QgsApplication myApp( argc, argv, myUseGuiFlag, QString(), QStringLiteral( "desktop" ) );
+
+  // Preload the translation. The GUI is not yet initilaized, so only
+  // the profile selection dialog will be translated with the system locale, or
+  // the one specified with --lang
+  if ( !translationCode.isNull() && !translationCode.isEmpty() )
+  {
+    QgsApplication::setTranslation( translationCode );
+  }
+  else
+  {
+    QgsApplication::setTranslation( QLocale().name() );
+  }
+
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );
+
+  // If profile name was not explicitly set, use the policy to determine which profile to use
+  if ( profileName.isEmpty() )
+  {
+
+    // If no profiles exist, use the default profile
+    if ( manager.allProfiles().isEmpty() )
+    {
+      profileName = manager.defaultProfileName();
+    }
+    else
+    {
+      switch ( manager.userProfileSelectionPolicy() )
+      {
+        // Use the last closed profile (default behavior prior to QGIS 3.32)
+        case Qgis::UserProfileSelectionPolicy::LastProfile:
+          profileName = manager.lastProfileName();
+          // If last used profile no longer exists, use the default profile
+          if ( !manager.profileExists( profileName ) )
+          {
+            profileName  = manager.defaultProfileName();
+          }
+          break;
+
+        // Ask the user to select a profile (if more than one exists)
+        case Qgis::UserProfileSelectionPolicy::AskUser:
+        {
+          if ( manager.allProfiles().size() == 1 )
+          {
+            profileName = manager.allProfiles()[0];
+            break;
+          }
+          QgsUserProfileSelectionDialog dlg( &manager );
+          if ( dlg.exec() == QDialog::Accepted )
+          {
+            profileName = dlg.selectedProfileName();
+          }
+          else
+          {
+            // Exit QGIS if the user cancels the profile selection dialog
+            return 0;
+          }
+          break;
+        }
+
+        // Use the default profile
+        case Qgis::UserProfileSelectionPolicy::DefaultProfile:
+          profileName = manager.defaultProfileName();
+          break;
+      }
+    }
+  }
+
+  // Calling getProfile() will create the profile if it doesn't exist, and init the QgsSettings
   QgsUserProfile *profile = manager.getProfile( profileName, true );
   QString profileFolder = profile->folder();
   profileName = profile->name();
   delete profile;
 
   {
-    /* Translation file for QGIS.
-    */
+    // The profile is selected, we can now set up the translation file for QGIS.
     QString myUserTranslation = QgsApplication::settingsLocaleUserLocale->value();
     QString myGlobalLocale = QgsApplication::settingsLocaleGlobalLocale->value();
     bool myShowGroupSeparatorFlag = false; // Default to false
@@ -1081,14 +1161,17 @@ int main( int argc, char *argv[] )
     QgsApplication::setTranslation( translationCode );
   }
 
-  QgsApplication myApp( argc, argv, myUseGuiFlag, QString(), QStringLiteral( "desktop" ) );
-
   // Set locale to emit QgsApplication's localeChanged signal
   QgsApplication::setLocale( QLocale() );
 
+  QgsApplication::init( profileFolder );
+
   //write the log messages written before creating QgsApplication
+  for ( const QString &preApplicationLogMessage : std::as_const( preApplicationWarningMessages ) )
+    QgsMessageLog::logMessage( preApplicationLogMessage, QString(), Qgis::MessageLevel::Warning );
+
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
-    QgsMessageLog::logMessage( preApplicationLogMessage );
+    QgsMessageLog::logMessage( preApplicationLogMessage, QString(), Qgis::MessageLevel::Info );
 
   // Settings migration is only supported on the default profile for now.
   if ( profileName == QLatin1String( "default" ) )
@@ -1116,7 +1199,7 @@ int main( int argc, char *argv[] )
 
         if ( runMigration )
         {
-          QgsDebugMsg( QStringLiteral( "RUNNING MIGRATION" ) );
+          QgsDebugMsgLevel( QStringLiteral( "RUNNING MIGRATION" ), 2 );
           migration->runMigration();
         }
       }
@@ -1132,8 +1215,6 @@ int main( int argc, char *argv[] )
   QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileName ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileFolder ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( rootProfileFolder ), 2 );
-
-  QgsApplication::init( profileFolder );
 
   // Redefine QgsApplication::libraryPaths as necessary.
   // IMPORTANT: Do *after* QgsApplication myApp(...), but *before* Qt uses any plugins,
@@ -1396,19 +1477,18 @@ int main( int argc, char *argv[] )
   }
 
   //set up splash screen
-  QString mySplashPath( QgsCustomization::instance()->splashPath() );
-  QPixmap myPixmap( mySplashPath + QStringLiteral( "splash.png" ) );
+  QString splashPath( QgsCustomization::instance()->splashPath() );
+  QPixmap pixmap( splashPath + QStringLiteral( "splash.png" ) );
 
-  double screenDpi = 96;
   if ( QScreen *screen = QGuiApplication::primaryScreen() )
   {
-    screenDpi = screen->physicalDotsPerInch();
+    pixmap.setDevicePixelRatio( screen->devicePixelRatio() );
   }
 
-  int w = 600 * screenDpi / 96;
-  int h = 300 * screenDpi / 96;
+  int w = 600 * pixmap.devicePixelRatioF();
+  int h = 300 * pixmap.devicePixelRatioF();
 
-  QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+  QSplashScreen *mypSplash = new QSplashScreen( pixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
 
   // Force splash screen to start on primary screen
   if ( QScreen *screen = QGuiApplication::primaryScreen() )
@@ -1420,7 +1500,7 @@ int main( int argc, char *argv[] )
   if ( !takeScreenShots && !myHideSplash && !settings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
   {
     //for win and linux we can just automask and png transparency areas will be used
-    mypSplash->setMask( myPixmap.mask() );
+    mypSplash->setMask( pixmap.mask() );
     mypSplash->show();
   }
 
@@ -1428,7 +1508,7 @@ int main( int argc, char *argv[] )
   // use restoreDefaultWindowState setting only if NOT using command line (then it is set already)
   if ( myRestoreDefaultWindowState || settings.value( QStringLiteral( "qgis/restoreDefaultWindowState" ), false ).toBool() )
   {
-    QgsDebugMsg( QStringLiteral( "Resetting /UI/state settings!" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Resetting /UI/state settings!" ), 2 );
     settings.remove( QStringLiteral( "/UI/state" ) );
     settings.remove( QStringLiteral( "/qgis/restoreDefaultWindowState" ) );
   }
@@ -1469,7 +1549,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   for ( const QString &layerName : std::as_const( sFileList ) )
   {
-    QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( layerName ) );
+    QgsDebugMsgLevel( QStringLiteral( "Trying to load file : %1" ).arg( layerName ), 2 );
     // don't load anything with a .qgs extension - these are project files
     if ( layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) ||
          layerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) ||
@@ -1534,7 +1614,7 @@ int main( int argc, char *argv[] )
 
     if ( !ok )
     {
-      QgsDebugMsg( QStringLiteral( "Error while parsing initial extent!" ) );
+      QgsDebugError( QStringLiteral( "Error while parsing initial extent!" ) );
     }
     else
     {

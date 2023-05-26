@@ -20,6 +20,7 @@
 #include "qgswmsparameters.h"
 #include "qgswmsrenderer.h"
 #include "qgswmsrendercontext.h"
+#include "qgsdxfexport.h"
 
 /**
  * \ingroup UnitTests
@@ -62,7 +63,7 @@ void TestQgsServerWmsDxf::use_title_as_layername_true()
   QCOMPARE( int( parameters.dxfScale() ), 250 );
   QCOMPARE( parameters.dxfCodec(), QString( "my_codec_name" ) );
   QCOMPARE( parameters.dxfUseLayerTitleAsName(), false );
-  QCOMPARE( parameters.dxfMode(), QgsDxfExport::SymbolLayerSymbology );
+  QCOMPARE( parameters.dxfMode(), Qgis::FeatureSymbologyExport::PerSymbolLayer );
   QCOMPARE( int( parameters.dxfLayerAttributes().size() ), 1 );
   QCOMPARE( parameters.dxfLayerAttributes()[0], QString( "name" ) );
 
@@ -108,7 +109,7 @@ void TestQgsServerWmsDxf::use_title_as_layername_false()
   QCOMPARE( int( parameters.dxfScale() ), 250 );
   QCOMPARE( parameters.dxfCodec(), QString( "my_codec_name" ) );
   QCOMPARE( parameters.dxfUseLayerTitleAsName(), true );
-  QCOMPARE( parameters.dxfMode(), QgsDxfExport::SymbolLayerSymbology );
+  QCOMPARE( parameters.dxfMode(), Qgis::FeatureSymbologyExport::PerSymbolLayer );
   QCOMPARE( int( parameters.dxfLayerAttributes().size() ), 3 );
   QCOMPARE( parameters.dxfLayerAttributes()[0], QString( "pif" ) );
   QCOMPARE( parameters.dxfLayerAttributes()[1], QString( "paf" ) );

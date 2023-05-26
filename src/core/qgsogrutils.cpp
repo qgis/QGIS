@@ -291,7 +291,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
     }
 
     default:
-      QgsDebugMsg( "Unhandled variant type in variantToOGRField" );
+      QgsDebugError( "Unhandled variant type in variantToOGRField" );
       OGR_RawField_SetUnset( res.get() );
       break;
   }
@@ -410,7 +410,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
     if ( ok )
       *ok = false;
 
-    QgsDebugMsg( QStringLiteral( "ogrFet->GetFieldDefnRef(attindex) returns NULL" ) );
+    QgsDebugError( QStringLiteral( "ogrFet->GetFieldDefnRef(attindex) returns NULL" ) );
     return QVariant();
   }
 
@@ -1287,11 +1287,11 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
         unit = Qgis::RenderUnit::MapUnits;
         return true;
       }
-      QgsDebugMsg( QStringLiteral( "Unknown unit %1" ).arg( unitString ) );
+      QgsDebugError( QStringLiteral( "Unknown unit %1" ).arg( unitString ) );
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Could not parse style size %1" ).arg( size ) );
+      QgsDebugError( QStringLiteral( "Could not parse style size %1" ).arg( size ) );
     }
     return false;
   };
@@ -1654,6 +1654,8 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
 
       std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, symbolSize, -angle );
       simpleMarker->setSizeUnit( symbolSizeUnit );
+      simpleMarker->setStrokeWidth( 1.0 );
+      simpleMarker->setStrokeWidthUnit( Qgis::RenderUnit::Points );
 
       if ( isFilled && QgsSimpleMarkerSymbolLayer::shapeIsFilled( shape ) )
       {

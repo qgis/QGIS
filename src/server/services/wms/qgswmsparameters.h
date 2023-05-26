@@ -27,7 +27,6 @@
 #include "qgsprojectversion.h"
 #include "qgsogcutils.h"
 #include "qgsserverparameters.h"
-#include "qgsdxfexport.h"
 
 namespace QgsWms
 {
@@ -181,6 +180,7 @@ namespace QgsWms
         GRID_INTERVAL_Y,
         WITH_GEOMETRY,
         WITH_MAPTIP,
+        WITH_DISPLAY_NAME,
         WMTVER,
         ATLAS_PK,
         FORMAT_OPTIONS,
@@ -1307,6 +1307,13 @@ namespace QgsWms
       bool withMapTip() const;
 
       /**
+       * \brief withDisplayName
+       * \returns TRUE if the display name is requested for feature info response
+       * \since QGIS 3.32
+       */
+      bool withDisplayName() const;
+
+      /**
        * Returns WMTVER parameter or an empty string if not defined.
        * \since QGIS 3.4
        */
@@ -1350,7 +1357,7 @@ namespace QgsWms
        * Returns the DXF MODE parameter.
        * \since QGIS 3.8
        */
-      QgsDxfExport::SymbologyExport dxfMode() const;
+      Qgis::FeatureSymbologyExport dxfMode() const;
 
       /**
        * Returns the DXF CODEC parameter.

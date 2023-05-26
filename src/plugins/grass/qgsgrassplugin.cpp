@@ -455,10 +455,10 @@ void QgsGrassPlugin::addFeature()
   }
   if ( !grassProvider )
   {
-    QgsDebugMsg( "grassProvider is null" );
+    QgsDebugError( "grassProvider is null" );
     return;
   }
-  QgsEditFormConfig::FeatureFormSuppress formSuppress = mFormSuppress.value( vectorLayer );
+  Qgis::AttributeFormSuppression formSuppress = mFormSuppress.value( vectorLayer );
   if ( sender() == mAddPointAction )
   {
     qGisInterface->mapCanvas()->setMapTool( mAddPoint );
@@ -473,7 +473,7 @@ void QgsGrassPlugin::addFeature()
   {
     qGisInterface->mapCanvas()->setMapTool( mAddBoundary );
     grassProvider->setNewFeatureType( GV_BOUNDARY );
-    formSuppress = QgsEditFormConfig::SuppressOn;
+    formSuppress = Qgis::AttributeFormSuppression::On;
   }
   else if ( sender() == mAddCentroidAction )
   {
@@ -484,7 +484,7 @@ void QgsGrassPlugin::addFeature()
   {
     qGisInterface->mapCanvas()->setMapTool( mAddArea );
     grassProvider->setNewFeatureType( GV_AREA );
-    formSuppress = QgsEditFormConfig::SuppressOn;
+    formSuppress = Qgis::AttributeFormSuppression::On;
   }
   QgsEditFormConfig formConfig = vectorLayer->editFormConfig();
   formConfig.setSuppress( formSuppress );
@@ -503,7 +503,7 @@ void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
     }
     if ( !grassProvider )
     {
-      QgsDebugMsg( "grassProvider is null" );
+      QgsDebugError( "grassProvider is null" );
       return;
     }
     grassProvider->setNewFeatureType( QgsGrassProvider::sLastType );
@@ -537,7 +537,7 @@ void QgsGrassPlugin::mapsetChanged()
     catch ( QgsGrass::Exception &e )
     {
       Q_UNUSED( e )
-      QgsDebugMsg( "Cannot read GRASS CRS : " + QString( e.what() ) );
+      QgsDebugError( "Cannot read GRASS CRS : " + QString( e.what() ) );
       mCrs = QgsCoordinateReferenceSystem();
     }
     QgsDebugMsgLevel( "mCrs: " + mCrs.toWkt(), 2 );

@@ -310,7 +310,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     initializeRegistry();
   }
   QgsSettings settings;
-  int size = settings.value( QStringLiteral( "/qgis/iconSize" ), QGIS_ICON_SIZE ).toInt();
+  int size = settings.value( QStringLiteral( "/qgis/toolbarIconSize" ), QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
   setStyleSheet( QgisApp::instance()->styleSheet() );
 
@@ -591,9 +591,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   //Ctrl+= should also trigger zoom in
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
+  ctrlEquals->setObjectName( QStringLiteral( "LayoutZoomIn" ) );
   connect( ctrlEquals, &QShortcut::activated, mActionZoomIn, &QAction::trigger );
   //Backspace should also trigger delete selection
   QShortcut *backSpace = new QShortcut( QKeySequence( QStringLiteral( "Backspace" ) ), this );
+  backSpace->setObjectName( QStringLiteral( "LayoutDeleteSelection" ) );
   connect( backSpace, &QShortcut::activated, mActionDeleteSelection, &QAction::trigger );
 
 #ifdef Q_OS_MAC
@@ -4039,12 +4041,12 @@ void QgsLayoutDesignerDialog::restoreWindowState()
 
   if ( !restoreState( settings.value( QStringLiteral( "LayoutDesigner/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultLayerDesignerUIstate ), sizeof defaultLayerDesignerUIstate ), QgsSettings::App ).toByteArray() ) )
   {
-    QgsDebugMsg( QStringLiteral( "restore of layout UI state failed" ) );
+    QgsDebugError( QStringLiteral( "restore of layout UI state failed" ) );
   }
   // restore window geometry
   if ( !restoreGeometry( settings.value( QStringLiteral( "LayoutDesigner/geometry" ), QgsSettings::App ).toByteArray() ) )
   {
-    QgsDebugMsg( QStringLiteral( "restore of layout UI geometry failed" ) );
+    QgsDebugError( QStringLiteral( "restore of layout UI geometry failed" ) );
     // default to 80% of screen size, at 10% from top left corner
     resize( mScreenHelper->availableGeometry().size() * 0.8 );
     QSize pos = mScreenHelper->availableGeometry().size() * 0.1;

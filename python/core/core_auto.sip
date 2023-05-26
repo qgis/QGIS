@@ -31,6 +31,7 @@
 %Include auto_generated/qgsdatabaseschemamodel.sip
 %Include auto_generated/qgsdatabasetablemodel.sip
 %Include auto_generated/qgsdatadefinedsizelegend.sip
+%Include auto_generated/qgsdataproviderelevationproperties.sip
 %Include auto_generated/qgsdataprovidertemporalcapabilities.sip
 %Include auto_generated/qgsdatasourceuri.sip
 %Include auto_generated/qgsdatetimestatisticalsummary.sip
@@ -610,6 +611,7 @@
 %Include auto_generated/raster/qgsrasterchecker.sip
 %Include auto_generated/raster/qgsrastercontourrenderer.sip
 %Include auto_generated/raster/qgsrasterdataprovider.sip
+%Include auto_generated/raster/qgsrasterdataproviderelevationproperties.sip
 %Include auto_generated/raster/qgsrasterdataprovidertemporalcapabilities.sip
 %Include auto_generated/raster/qgsrasterdrawer.sip
 %Include auto_generated/raster/qgsrasterfilewriter.sip

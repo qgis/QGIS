@@ -84,7 +84,7 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( "Could not transform geocode bounds to WGS84" );
+      QgsDebugError( "Could not transform geocode bounds to WGS84" );
     }
   }
 

@@ -241,6 +241,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestQgsVectorLayer, cls).setUpClass()
         QgsGui.editorWidgetRegistry().initEditors()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
@@ -2657,6 +2658,34 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.reselect()
         self.assertCountEqual(layer.selectedFeatureIds(), [5])
 
+    def testGetFeaturesVirtualFieldsSubset(self):
+        """Test that when a subset is requested virtual fields are returned nullified"""
+
+        vl = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
+        virt_field_idx = vl.addExpressionField('\'Importance: \' || Importance', QgsField('virt_1', QVariant.String))
+
+        self.assertEqual(vl.fields().lookupField('virt_1'), virt_field_idx)
+
+        req = QgsFeatureRequest()
+        req.setSubsetOfAttributes([0, 1])
+        attrs = next(vl.getFeatures(req)).attributes()
+        self.assertEqual(attrs, ['Jet', 90, None, None, None, None, None])
+
+        attrs = next(vl.getFeatures()).attributes()
+        self.assertEqual(attrs, ['Jet', 90, 3.0, 2, 0, 2, 'Importance: 3'])
+
+        req.setSubsetOfAttributes([0, 2])
+        attrs = next(vl.getFeatures(req)).attributes()
+        self.assertEqual(attrs, ['Jet', None, 3.0, None, None, None, None])
+
+        req.setSubsetOfAttributes([0, 1, 6])
+        attrs = next(vl.getFeatures(req)).attributes()
+        self.assertEqual(attrs, ['Jet', 90, 3.0, None, None, None, 'Importance: 3'])
+
+        req.setSubsetOfAttributes([6])
+        attrs = next(vl.getFeatures(req)).attributes()
+        self.assertEqual(attrs, [None, None, 3.0, None, None, None, 'Importance: 3'])
+
     def testAggregate(self):
         """ Test aggregate calculation """
         layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")
@@ -3013,6 +3042,10 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
                          QgsFieldConstraints.ConstraintOriginLayer)
         self.assertEqual(layer.fields().at(0).constraints().constraintStrength(QgsFieldConstraints.ConstraintNotNull),
                          QgsFieldConstraints.ConstraintStrengthHard)
+        self.assertEqual(layer.fieldConstraintsAndStrength(0)[QgsFieldConstraints.ConstraintNotNull],
+                         QgsFieldConstraints.ConstraintStrengthHard)
+        self.assertEqual(len(layer.fieldConstraintsAndStrength(1)), 0)
+        self.assertEqual(len(layer.fieldConstraintsAndStrength(2)), 0)
 
         layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintNotNull)
         layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
@@ -3065,6 +3098,8 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer2.readXml(elem, QgsReadWriteContext()))
         self.assertFalse(layer2.fieldConstraints(0))
         self.assertFalse(layer2.fieldConstraints(1))
+        self.assertFalse(layer2.fieldConstraintsAndStrength(0))
+        self.assertFalse(layer2.fieldConstraintsAndStrength(1))
 
         # set some constraints
         layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintNotNull)
@@ -3083,7 +3118,9 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer3.fields().at(0).constraints().constraints(), QgsFieldConstraints.ConstraintNotNull)
         self.assertEqual(layer3.fields().at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
                          QgsFieldConstraints.ConstraintOriginLayer)
-        self.assertEqual(layer.fields().at(0).constraints().constraintStrength(QgsFieldConstraints.ConstraintNotNull),
+        self.assertEqual(layer3.fields().at(0).constraints().constraintStrength(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintStrengthHard)
+        self.assertEqual(layer3.fieldConstraintsAndStrength(0)[QgsFieldConstraints.ConstraintNotNull],
                          QgsFieldConstraints.ConstraintStrengthHard)
         self.assertEqual(layer3.fields().at(1).constraints().constraints(),
                          QgsFieldConstraints.ConstraintNotNull | QgsFieldConstraints.ConstraintUnique)
@@ -3091,9 +3128,13 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
                          QgsFieldConstraints.ConstraintOriginLayer)
         self.assertEqual(layer3.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique),
                          QgsFieldConstraints.ConstraintOriginLayer)
-        self.assertEqual(layer.fields().at(1).constraints().constraintStrength(QgsFieldConstraints.ConstraintNotNull),
+        self.assertEqual(layer3.fields().at(1).constraints().constraintStrength(QgsFieldConstraints.ConstraintNotNull),
                          QgsFieldConstraints.ConstraintStrengthSoft)
-        self.assertEqual(layer.fields().at(1).constraints().constraintStrength(QgsFieldConstraints.ConstraintUnique),
+        self.assertEqual(layer3.fields().at(1).constraints().constraintStrength(QgsFieldConstraints.ConstraintUnique),
+                         QgsFieldConstraints.ConstraintStrengthHard)
+        self.assertEqual(layer3.fieldConstraintsAndStrength(1)[QgsFieldConstraints.ConstraintNotNull],
+                         QgsFieldConstraints.ConstraintStrengthSoft)
+        self.assertEqual(layer3.fieldConstraintsAndStrength(1)[QgsFieldConstraints.ConstraintUnique],
                          QgsFieldConstraints.ConstraintStrengthHard)
 
     def testGetSetConstraintExpressions(self):
@@ -3548,6 +3589,7 @@ class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSo
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer for FeatureSourceTestCase
+        super(TestQgsVectorLayerSourceAddedFeaturesInBuffer, cls).setUpClass()
         cls.source = cls.getSource()
 
     def testGetFeaturesSubsetAttributes2(self):
@@ -3618,6 +3660,7 @@ class TestQgsVectorLayerSourceChangedGeometriesInBuffer(unittest.TestCase, Featu
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer for FeatureSourceTestCase
+        super(TestQgsVectorLayerSourceChangedGeometriesInBuffer, cls).setUpClass()
         cls.source = cls.getSource()
 
     def testGetFeaturesSubsetAttributes2(self):
@@ -3718,6 +3761,7 @@ class TestQgsVectorLayerSourceChangedAttributesInBuffer(unittest.TestCase, Featu
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestQgsVectorLayerSourceChangedAttributesInBuffer, cls).setUpClass()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 
@@ -3838,6 +3882,7 @@ class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(unittest.Te
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer, cls).setUpClass()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 
@@ -3938,6 +3983,7 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, Feature
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestQgsVectorLayerSourceDeletedFeaturesInBuffer, cls).setUpClass()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 

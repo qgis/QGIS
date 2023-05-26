@@ -19,6 +19,7 @@
 
 #include "qgslogger.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include "lazperf/readers.hpp"
 
@@ -302,6 +303,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
   // Fetch header data
   {
     QNetworkRequest nr( url );
+    QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsLazInfo" ) );
     nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
     nr.setRawHeader( "Range", "bytes=0-374" );
@@ -309,7 +311,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
-      QgsDebugMsg( QStringLiteral( "Request failed: " ) + url.toString() );
+      QgsDebugError( QStringLiteral( "Request failed: " ) + url.toString() );
       lazInfo.mError = QStringLiteral( "Range query 0-374 to \"%1\" failed: \"%2\"" ).arg( url.toString() ).arg( req.errorMessage() );
       return lazInfo;
     }
@@ -323,6 +325,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
   // Fetch VLR data
   {
     QNetworkRequest nr( url );
+    QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsLazInfo" ) );
     nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
     uint32_t firstVlrOffset = lazInfo.firstVariableLengthRecord();
@@ -332,7 +335,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
-      QgsDebugMsg( QStringLiteral( "Request failed: " ) + url.toString() );
+      QgsDebugError( QStringLiteral( "Request failed: " ) + url.toString() );
 
       lazInfo.mError = QStringLiteral( "Range query %1-%2 to \"%3\" failed: \"%4\"" ).arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 )
                        .arg( url.toString() ).arg( req.errorMessage() );
@@ -349,6 +352,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
 bool QgsLazInfo::supportsRangeQueries( QUrl &url )
 {
   QNetworkRequest nr( url );
+  QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsLazInfo" ) );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
   nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
   nr.setRawHeader( "Range", "bytes=0-0" );

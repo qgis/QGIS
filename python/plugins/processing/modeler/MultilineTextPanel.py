@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     MultilineTextPanel.py
@@ -28,7 +26,7 @@ class MultilineTextPanel(QWidget):
     USE_TEXT = 0
 
     def __init__(self, options, parent=None):
-        super(MultilineTextPanel, self).__init__(parent)
+        super().__init__(parent)
         self.options = options
         self.verticalLayout = QVBoxLayout(self)
         self.verticalLayout.setSpacing(2)

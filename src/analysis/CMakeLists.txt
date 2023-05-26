@@ -70,6 +70,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdifference.cpp
   processing/qgsalgorithmdissolve.cpp
   processing/qgsalgorithmdistancewithin.cpp
+  processing/qgsalgorithmdownloadvectortiles.cpp
   processing/qgsalgorithmdrape.cpp
   processing/qgsalgorithmdropfields.cpp
   processing/qgsalgorithmdropgeometry.cpp
@@ -419,29 +420,39 @@ endif()
 
 if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
   set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
+    ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
+
     processing/pdal/qgspdalalgorithms.cpp
 
     processing/pdal/qgspdalalgorithmbase.cpp
 
+    processing/pdal/qgsalgorithmpdalassignprojection.cpp
     processing/pdal/qgsalgorithmpdalboundary.cpp
     processing/pdal/qgsalgorithmpdalbuildvpc.cpp
     processing/pdal/qgsalgorithmpdalclip.cpp
     processing/pdal/qgsalgorithmpdalconvertformat.cpp
+    processing/pdal/qgsalgorithmpdalcreatecopc.cpp
     processing/pdal/qgsalgorithmpdaldensity.cpp
     processing/pdal/qgsalgorithmpdalexportraster.cpp
     processing/pdal/qgsalgorithmpdalexportrastertin.cpp
     processing/pdal/qgsalgorithmpdalexportvector.cpp
     processing/pdal/qgsalgorithmpdalfilter.cpp
-    processing/pdal/qgsalgorithmpdalfixprojection.cpp
     processing/pdal/qgsalgorithmpdalinformation.cpp
     processing/pdal/qgsalgorithmpdalmerge.cpp
     processing/pdal/qgsalgorithmpdalreproject.cpp
+    processing/pdal/qgsalgorithmpdalthinbydecimate.cpp
+    processing/pdal/qgsalgorithmpdalthinbyradius.cpp
     processing/pdal/qgsalgorithmpdaltile.cpp
-    processing/pdal/qgsalgorithmpdalthin.cpp
   )
 
   set(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS}
+    ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.hpp
+
     processing/pdal/qgspdalalgorithms.h
+  )
+
+  include_directories(
+    ${CMAKE_SOURCE_DIR}/external/untwine/api
   )
 endif()
 

@@ -31,6 +31,7 @@
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsDataProviderTemporalCapabilities;
+class QgsDataProviderElevationProperties;
 
 
 /**
@@ -126,6 +127,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       SkipGetExtent = 1 << 3, //!< Skip the extent from provider
       SkipFullScan = 1 << 4, //!< Skip expensive full scan on files (i.e. on delimited text) (since QGIS 3.24)
       ForceReadOnly = 1 << 5, //!< Open layer in a read-only mode (since QGIS 3.28)
+      SkipCredentialsRequest =  1 << 6, //! Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread (since QGIS 3.32).
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -231,6 +233,24 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \since QGIS 3.14
      */
     virtual const QgsDataProviderTemporalCapabilities *temporalCapabilities() const SIP_SKIP;
+
+    /**
+     * Returns the provider's elevation properties.
+     *
+     * This may be NULLPTR, depending on the data provider.
+     *
+     * \since QGIS 3.32
+     */
+    virtual QgsDataProviderElevationProperties *elevationProperties();
+
+    /**
+     * Returns the provider's elevation properties.
+     *
+     * This may be NULLPTR, depending on the data provider.
+     *
+     * \since QGIS 3.32
+     */
+    virtual const QgsDataProviderElevationProperties *elevationProperties() const SIP_SKIP;
 
     /**
      * Returns the extent of the layer

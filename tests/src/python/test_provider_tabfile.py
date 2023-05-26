@@ -37,6 +37,7 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         cls.basetestpath = tempfile.mkdtemp()
         cls.dirs_to_cleanup = [cls.basetestpath]
 
@@ -45,6 +46,7 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
         """Run after all tests"""
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
+        super().tearDownClass()
 
     def testDateTimeFormats(self):
         # check that date and time formats are correctly interpreted

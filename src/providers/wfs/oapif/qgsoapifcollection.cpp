@@ -40,7 +40,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
     else
 #endif
     {
-      QgsDebugMsg( QStringLiteral( "missing id in collection" ) );
+      QgsDebugError( QStringLiteral( "missing id in collection" ) );
       return false;
     }
   }

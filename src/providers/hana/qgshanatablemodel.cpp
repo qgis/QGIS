@@ -345,7 +345,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   const QSet<QString> pkColumnsSelected( qgis::listToSet( pkItem->data( Qt::UserRole + 2 ).toStringList() ) );
   if ( !pkColumnsAll.isEmpty() && !pkColumnsAll.intersects( pkColumnsSelected ) )
   {
-    QgsDebugMsg( QStringLiteral( "no pk candidate selected" ) );
+    QgsDebugError( QStringLiteral( "no pk candidate selected" ) );
     return QString();
   }
 

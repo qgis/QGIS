@@ -467,14 +467,14 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   if ( sql.rootNode()->nodeType() != QgsSQLStatement::ntSelect )
   {
     // Shouldn't happen
-    QgsDebugMsg( QStringLiteral( "SQL statement is not a SELECT. This should not happen" ) );
+    QgsDebugError( QStringLiteral( "SQL statement is not a SELECT. This should not happen" ) );
     return false;
   }
   const QgsSQLStatement::NodeSelect *select = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
   if ( !select )
   {
     // Makes Coverity happy, but cannot happen in practice
-    QgsDebugMsg( QStringLiteral( "should not happen" ) );
+    QgsDebugError( QStringLiteral( "should not happen" ) );
     return false;
   }
   mShared->mDistinctSelect = select->distinct();
@@ -743,7 +743,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       if ( columnTableTypename != mShared->mURI.typeName() )
       {
         warningMsg = tr( "The geometry field of a typename that is not the main typename is ignored in the selected fields." );
-        QgsDebugMsg( warningMsg );
+        QgsDebugError( warningMsg );
       }
     }
     // Regular field
@@ -753,7 +753,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       int idx = tableFields.lookupField( columnRef->name() );
       if ( idx < 0 )
       {
-        QgsDebugMsg( QStringLiteral( "Should not happen. Cannot find field for %1" ).arg( columnRef->name() ) );
+        QgsDebugError( QStringLiteral( "Should not happen. Cannot find field for %1" ).arg( columnRef->name() ) );
         continue;
       }
 
@@ -868,17 +868,17 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueI
         {
           if ( mShared->mWKBType == Qgis::WkbType::Point )
           {
-            QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Point. Advertizing optimistically as MultiPoint" ) );
+            QgsDebugMsgLevel( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Point. Advertizing optimistically as MultiPoint" ), 2 );
             mShared->mWKBType = Qgis::WkbType::MultiPoint;
           }
           else if ( mShared->mWKBType == Qgis::WkbType::LineString )
           {
-            QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of LineString. Advertizing optimistically as MultiLineString" ) );
+            QgsDebugMsgLevel( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of LineString. Advertizing optimistically as MultiLineString" ), 2 );
             mShared->mWKBType = Qgis::WkbType::MultiLineString;
           }
           else if ( mShared->mWKBType == Qgis::WkbType::Polygon )
           {
-            QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Polygon. Advertizing optimistically as MultiPolygon" ) );
+            QgsDebugMsgLevel( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Polygon. Advertizing optimistically as MultiPolygon" ), 2 );
             mShared->mWKBType = Qgis::WkbType::MultiPolygon;
           }
           else
@@ -1208,7 +1208,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
     QString gmlid = mShared->findUniqueId( *idIt );
     if ( gmlid.isEmpty() )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( *idIt ) );
+      QgsDebugError( QStringLiteral( "Cannot identify feature of id %1" ).arg( *idIt ) );
       continue;
     }
     QDomElement featureIdElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "FeatureId" ) );
@@ -1264,7 +1264,7 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     QString gmlid = mShared->findUniqueId( geomIt.key() );
     if ( gmlid.isEmpty() )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( geomIt.key() ) );
+      QgsDebugError( QStringLiteral( "Cannot identify feature of id %1" ).arg( geomIt.key() ) );
       continue;
     }
     QDomElement updateElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Update" ) );
@@ -1355,7 +1355,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     QString gmlid = mShared->findUniqueId( attIt.key() );
     if ( gmlid.isEmpty() )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( attIt.key() ) );
+      QgsDebugError( QStringLiteral( "Cannot identify feature of id %1" ).arg( attIt.key() ) );
       continue;
     }
 
@@ -2050,7 +2050,7 @@ bool QgsWFSProvider::getCapabilities()
     {
       QgsSettings settings;
       mShared->mPageSize = settings.value( QStringLiteral( "wfs/max_feature_count_if_not_provided" ), "1000" ).toInt();
-      QgsDebugMsg( QStringLiteral( "Server declares paging but does not advertise max feature count and user did not specify it. Using %1" ).arg( mShared->mPageSize ) );
+      QgsDebugError( QStringLiteral( "Server declares paging but does not advertise max feature count and user did not specify it. Using %1" ).arg( mShared->mPageSize ) );
     }
   }
   else

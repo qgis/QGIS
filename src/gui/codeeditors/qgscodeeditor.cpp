@@ -495,6 +495,10 @@ QString QgsCodeEditor::languageToString( Qgis::ScriptLanguage language )
       return tr( "R" );
     case Qgis::ScriptLanguage::Sql:
       return tr( "SQL" );
+    case Qgis::ScriptLanguage::Batch:
+      return tr( "Batch" );
+    case Qgis::ScriptLanguage::Bash:
+      return tr( "Bash" );
     case Qgis::ScriptLanguage::Unknown:
       return QString();
   }

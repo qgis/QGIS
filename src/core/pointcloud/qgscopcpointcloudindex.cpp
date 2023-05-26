@@ -159,7 +159,7 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
   file.read( rawBlockData.data(), blockSize );
   if ( !file )
   {
-    QgsDebugMsg( QStringLiteral( "Could not read file %1" ).arg( mFileName ) );
+    QgsDebugError( QStringLiteral( "Could not read file %1" ).arg( mFileName ) );
     return nullptr;
   }
   QgsRectangle filterRect = request.filterRect();

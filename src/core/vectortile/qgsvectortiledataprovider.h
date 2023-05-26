@@ -19,13 +19,48 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsdataprovider.h"
+#include "qgstiles.h"
 
-class QgsTileMatrix;
+#include <QCache>
+#include <QReadWriteLock>
+
+class QgsTileMatrixSet;
 class QgsTileXYZ;
 class QgsVectorTileRawData;
 class QgsVectorTileMatrixSet;
 
 #define SIP_NO_FILE
+
+/**
+ * Shared data class for vector tile layer data providers.
+ *
+ * \note Not available in Python bindings
+ *
+ * \ingroup core
+ * \since QGIS 3.32
+ */
+class QgsVectorTileDataProviderSharedData
+{
+  public:
+    QgsVectorTileDataProviderSharedData();
+
+    /**
+     * Retrieves previously cached raw tile data for a tile with matching \a id.
+     *
+     * Returns TRUE if tile data was already cached and could be retrieved.
+     */
+    bool getCachedTileData( QgsVectorTileRawData &data, QgsTileXYZ id );
+
+    /**
+     * Stores raw tile data in the shared cache.
+     */
+    void storeCachedTileData( const QgsVectorTileRawData &data );
+
+    QCache< QgsTileXYZ, QgsVectorTileRawData > mTileCache;
+
+    QReadWriteLock mMutex; //!< Access to all data members is guarded by the mutex
+
+};
 
 /**
  * Base class for vector tile layer data providers.
@@ -40,19 +75,6 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     Q_OBJECT
 
   public:
-
-    /**
-     * Enumeration with capabilities that vector tile data providers might implement.
-     * \since QGIS 3.32
-     */
-    enum class ProviderCapability : int
-    {
-      ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. See QgsDataProvider::layerMetadata()
-    };
-    Q_ENUM( ProviderCapability )
-
-    //! Provider capabilities
-    Q_DECLARE_FLAGS( ProviderCapabilities, ProviderCapability )
 
     /**
      * Constructor for QgsVectorTileDataProvider, with the specified \a uri.
@@ -72,10 +94,16 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     QgsVectorTileDataProvider &operator=( const QgsVectorTileDataProvider &other ) = delete;
 
     /**
+     * Returns flags reflecting the behavior of the data provider.
+     * \since QGIS 3.32
+     */
+    virtual Qgis::VectorTileProviderFlags providerFlags() const;
+
+    /**
      * Returns flags containing the supported capabilities of the data provider.
      * \since QGIS 3.32
      */
-    virtual QgsVectorTileDataProvider::ProviderCapabilities providerCapabilities() const;
+    virtual Qgis::VectorTileProviderCapabilities providerCapabilities() const;
 
     QgsRectangle extent() const override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
@@ -105,19 +133,19 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     /**
      * Returns raw tile data for a single tile.
      */
-    virtual QByteArray readTile( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const = 0;
+    virtual QgsVectorTileRawData readTile( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const = 0;
 
     /**
      * Returns raw tile data for a range of tiles.
      */
-    virtual QList<QgsVectorTileRawData> readTiles( const QgsTileMatrix &tileMatrix, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const = 0;
+    virtual QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &tileMatrixSet, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const = 0;
 
     /**
      * Returns a network request for a tile.
      *
      * The default implementation returns an invalid request.
      */
-    virtual QNetworkRequest tileRequest( const QgsTileMatrix &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const;
+    virtual QNetworkRequest tileRequest( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const;
 
     /**
      * Returns the style definition for the provider, if available.
@@ -149,10 +177,19 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      * \see spriteDefinition()
      */
     virtual QImage spriteImage() const;
+
+    /**
+     * Returns metadata in a format suitable for feeding directly
+     * into a subset of the GUI properties "Metadata" tab.
+     */
+    virtual QString htmlMetadata() const;
+
+  protected:
+
+    std::shared_ptr<QgsVectorTileDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
+
 };
 
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorTileDataProvider::ProviderCapabilities )
 
 
 #endif // QGSVECTORTILEDATAPROVIDER_H

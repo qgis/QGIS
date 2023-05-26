@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     EditScriptDialog.py
@@ -62,7 +60,7 @@ class ScriptEditorDialog(BASE, WIDGET):
     hasChanged = False
 
     def __init__(self, filePath=None, parent=None):
-        super(ScriptEditorDialog, self).__init__(parent)
+        super().__init__(parent)
         self.setupUi(self)
         self.setAttribute(Qt.WA_DeleteOnClose)
 
@@ -218,7 +216,7 @@ class ScriptEditorDialog(BASE, WIDGET):
             try:
                 with codecs.open(self.filePath, "w", encoding="utf-8") as f:
                     f.write(text)
-            except IOError as e:
+            except OSError as e:
                 QMessageBox.warning(self,
                                     self.tr("I/O error"),
                                     self.tr("Unable to save edits:\n{}").format(str(e))

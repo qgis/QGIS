@@ -203,11 +203,11 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
 #endif
     for ( const QString &lev : constSplit )
     {
-      QgsDebugMsg( "lev= " + lev );
+      QgsDebugMsgLevel( "lev= " + lev, 3 );
       const int tmpInt = lev.toInt();
       if ( tmpInt > 0 )
       {
-        QgsDebugMsg( "tmpInt= " + QString::number( tmpInt ) );
+        QgsDebugMsgLevel( "tmpInt= " + QString::number( tmpInt ), 3 );
         // if number is valid, add to overview list
         mOverviewList << tmpInt;
       }

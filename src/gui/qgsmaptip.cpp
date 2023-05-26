@@ -177,7 +177,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   tipHtml = QgsMapTip::htmlText( tipText, MAX_WIDTH );
 
-  QgsDebugMsg( tipHtml );
+  QgsDebugMsgLevel( tipHtml, 2 );
 
   mPosition = pixelPosition;
   mMapCanvas = pMapCanvas;
@@ -280,7 +280,7 @@ void QgsMapTip::clear( QgsMapCanvas *, int msDelay )
 QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer || !vlayer->isSpatial() )
+  if ( !vlayer || !vlayer->isSpatial() || !vlayer->mapTipsEnabled() )
   {
     return QString();
   }
@@ -389,7 +389,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas )
 {
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-  if ( !rlayer )
+  if ( !rlayer || !rlayer->mapTipsEnabled() )
   {
     return QString();
   }
@@ -423,8 +423,8 @@ QString QgsMapTip::htmlText( const QString &text, int maxWidth )
 
   const QgsSettings settings;
   const QFont defaultFont = qApp->font();
-  const int fontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), defaultFont.pointSize() ).toInt();
-  const QString fontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), defaultFont.family() ).toString();
+  const int fontSize = defaultFont.pointSize();
+  const QString fontFamily = defaultFont.family();
   const QString backgroundColor = QgsApplication::palette().base().color().name();
   const QString strokeColor = QgsApplication::palette().shadow().color().name();
   const QString textColor = QgsApplication::palette().toolTipText().color().name();

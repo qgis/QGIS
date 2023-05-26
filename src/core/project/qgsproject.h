@@ -2223,9 +2223,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * The optional \a flags argument can be used to control layer reading behavior.
      *
+     * If the provider is already created, it can be passed with \a provider (takes ownership)
+     *
      * \note not available in Python bindings
      */
-    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() ) SIP_SKIP;
+    bool addLayer( const QDomElement &layerElem,
+                   QList<QDomNode> &brokenNodes,
+                   QgsReadWriteContext &context,
+                   Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags(),
+                   QgsDataProvider *provider = nullptr ) SIP_SKIP;
 
     /**
      * Remove auxiliary layer of the corresponding layer.
@@ -2265,6 +2271,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     //! Returns the property definition used for a data defined server property
     static QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions();
+
+    void preloadProviders( const QVector<QDomNode> &asynchronusLayerNodes,
+                           const QgsReadWriteContext &context,
+                           QMap<QString, QgsDataProvider *> &loadedProviders,
+                           QgsMapLayer::ReadFlags layerReadFlags,
+                           int totalProviderCount );
 
     Qgis::ProjectCapabilities mCapabilities;
 

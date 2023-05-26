@@ -474,6 +474,10 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
     setOkEnabled();
   } );
 
+  mSymbologyModeComboBox->addItem( tr( "No Symbology" ), QVariant::fromValue( Qgis::FeatureSymbologyExport::NoSymbology ) );
+  mSymbologyModeComboBox->addItem( tr( "Feature Symbology" ), QVariant::fromValue( Qgis::FeatureSymbologyExport::PerFeature ) );
+  mSymbologyModeComboBox->addItem( tr( "Symbol Layer Symbology" ), QVariant::fromValue( Qgis::FeatureSymbologyExport::PerSymbolLayer ) );
+
   //last dxf symbology mode
   mSymbologyModeComboBox->setCurrentIndex( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSymbologyMode" ), settings.value( QStringLiteral( "qgis/lastDxfSymbologyMode" ), "2" ).toString() ).toInt() );
 
@@ -582,11 +586,10 @@ QString QgsDxfExportDialog::saveFile() const
 }
 
 
-QgsDxfExport::SymbologyExport QgsDxfExportDialog::symbologyMode() const
+Qgis::FeatureSymbologyExport QgsDxfExportDialog::symbologyMode() const
 {
-  return ( QgsDxfExport::SymbologyExport )mSymbologyModeComboBox->currentIndex();
+  return mSymbologyModeComboBox->currentData().value< Qgis::FeatureSymbologyExport >();
 }
-
 
 void QgsDxfExportDialog::setOkEnabled()
 {

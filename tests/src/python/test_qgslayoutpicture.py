@@ -26,10 +26,10 @@ from qgis.core import (
     QgsProject,
     QgsReadWriteContext,
     QgsRectangle,
+    QgsLayoutChecker
 )
 from qgis.testing import start_app, unittest
 
-from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -41,6 +41,7 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super(TestQgsLayoutPicture, cls).setUpClass()
         cls.item_class = QgsLayoutItemPicture
 
         # Bring up a simple HTTP server, for remote picture tests

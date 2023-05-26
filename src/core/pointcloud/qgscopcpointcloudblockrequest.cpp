@@ -20,7 +20,7 @@
 #include "qgstiledownloadmanager.h"
 #include "qgslazdecoder.h"
 #include "qgsapplication.h"
-#include "qgsremotecopcpointcloudindex.h"
+#include "qgsnetworkaccessmanager.h"
 
 //
 // QgsCopcPointCloudBlockRequest
@@ -36,6 +36,8 @@ QgsCopcPointCloudBlockRequest::QgsCopcPointCloudBlockRequest( const IndexedPoint
     mBlockOffset( blockOffset ), mBlockSize( blockSize ), mPointCount( pointCount ), mLazInfo( lazInfo )
 {
   QNetworkRequest nr( mUri );
+  QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsCopcPointCloudBlockRequest" ) );
+  QgsSetRequestInitiatorId( nr, node.toString() );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 

@@ -228,6 +228,13 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     QgsAttributeTableConfig attributeTableConfig() const;
 
+    /**
+     * Returns the list of required attributes according to the attribute table configuration of the \a layer,
+     * only visible attributes and virtual fields referenced fields are returned.
+     * \since QGIS 3.32
+     */
+    static QgsAttributeList requiredAttributes( const QgsVectorLayer *layer );
+
   public slots:
 
     /**
@@ -425,7 +432,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     //! Returns TRUE if the expression dialog has been accepted
     bool modifySort();
-
 
     QgsFieldConditionalFormatWidget *mConditionalFormatWidget = nullptr;
     QgsAttributeEditorContext mEditorContext;

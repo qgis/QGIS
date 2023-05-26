@@ -182,8 +182,8 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
   QSqlQuery qry( *pconn.get() );
   if ( !qry.prepare( sql ) )
   {
-    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
-                 .arg( qry.lastQuery(), qry.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL: %1\nERROR: %2" )
+                   .arg( qry.lastQuery(), qry.lastError().text() ) );
     return false;
   }
 

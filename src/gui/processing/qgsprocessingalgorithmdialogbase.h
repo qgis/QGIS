@@ -25,6 +25,8 @@
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingwidgetwrapper.h"
 
+#include <QThread>
+
 ///@cond NOT_STABLE
 
 class QgsProcessingAlgorithm;
@@ -475,6 +477,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     Qgis::DistanceUnit mDistanceUnits = Qgis::DistanceUnit::Unknown;
     Qgis::AreaUnit mAreaUnits = Qgis::AreaUnit::Unknown;
     QString mTemporaryFolderOverride;
+    int mMaximumThreads = QThread::idealThreadCount();
 
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
     void scrollToBottomOfLog();
@@ -564,6 +567,10 @@ class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, priv
      */
     QString temporaryFolder();
 
+    /**
+     * Returns the number of threads to use selected in the widget.
+     */
+    int maximumThreads() const;
 };
 
 #endif

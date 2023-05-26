@@ -39,6 +39,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   mSurfaceLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mSurfaceFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
   mSurfaceMarkerStyleButton->setSymbolType( Qgis::SymbolType::Marker );
+  mElevationLimitSpinBox->setClearValue( mElevationLimitSpinBox->minimum(), tr( "No set" ) );
 
   mComboClamping->addItem( tr( "Clamped to Terrain" ), static_cast< int >( Qgis::AltitudeClamping::Terrain ) );
   mComboClamping->addItem( tr( "Relative to Terrain" ), static_cast< int >( Qgis::AltitudeClamping::Relative ) );
@@ -52,6 +53,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
 
   mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationLine.svg" ) ), tr( "Line" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::Line ) );
   mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillBelow.svg" ) ), tr( "Fill Below" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillBelow ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillAbove.svg" ) ), tr( "Fill Above" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillAbove ) );
 
   initializeDataDefinedButton( mOffsetDDBtn, QgsMapLayerElevationProperties::ZOffset );
   initializeDataDefinedButton( mExtrusionDDBtn, QgsMapLayerElevationProperties::ExtrusionHeight );
@@ -60,6 +62,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
 
   connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
+  connect( mElevationLimitSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mExtrusionSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mExtrusionGroupBox, &QGroupBox::toggled, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mComboClamping, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
@@ -88,6 +91,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
         mSymbologyStackedWidget->setCurrentWidget( mPageLine );
         break;
       case Qgis::ProfileSurfaceSymbology::FillBelow:
+      case Qgis::ProfileSurfaceSymbology::FillAbove:
         mSymbologyStackedWidget->setCurrentWidget( mPageFill );
         break;
     }
@@ -131,6 +135,10 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mComboBinding->setCurrentIndex( mComboBinding->findData( static_cast< int >( props->binding() ) ) );
   mOffsetZSpinBox->setValue( props->zOffset() );
   mScaleZSpinBox->setValue( props->zScale() );
+  if ( std::isnan( props->elevationLimit() ) )
+    mElevationLimitSpinBox->clear();
+  else
+    mElevationLimitSpinBox->setValue( props->elevationLimit() );
   mExtrusionGroupBox->setChecked( props->extrusionEnabled() );
   mExtrusionSpinBox->setValue( props->extrusionHeight() );
   mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( static_cast< int >( props->type() ) ) );
@@ -150,6 +158,7 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
       mSymbologyStackedWidget->setCurrentWidget( mPageLine );
       break;
     case Qgis::ProfileSurfaceSymbology::FillBelow:
+    case Qgis::ProfileSurfaceSymbology::FillAbove:
       mSymbologyStackedWidget->setCurrentWidget( mPageFill );
       break;
   }
@@ -209,6 +218,10 @@ void QgsVectorElevationPropertiesWidget::apply()
   props->setBinding( static_cast< Qgis::AltitudeBinding >( mComboBinding->currentData().toInt() ) );
   props->setExtrusionEnabled( mExtrusionGroupBox->isChecked() );
   props->setExtrusionHeight( mExtrusionSpinBox->value() );
+  if ( mElevationLimitSpinBox->value() != mElevationLimitSpinBox->clearValue() )
+    props->setElevationLimit( mElevationLimitSpinBox->value() );
+  else
+    props->setElevationLimit( std::numeric_limits< double >::quiet_NaN() );
 
   props->setRespectLayerSymbology( mCheckRespectLayerSymbology->isChecked() );
   props->setShowMarkerSymbolInSurfacePlots( mCheckBoxShowMarkersAtSampledPoints->isChecked() );

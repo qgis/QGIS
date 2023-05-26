@@ -95,7 +95,7 @@ class QgsCachedImageFetcher: public QgsImageFetcher
   private slots:
     void send()
     {
-      QgsDebugMsg( QStringLiteral( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ) );
+      QgsDebugMsgLevel( QStringLiteral( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ), 2 );
       emit finish( _img );
     }
 };
@@ -111,6 +111,9 @@ class QgsWmsInterpretationConverter
 
     //! Returns the output datatype of this converter
     virtual Qgis::DataType dataType() const;
+
+    //! Returns TRUE if the interpretation represents elevation values
+    virtual bool representsElevation() const;
 
     //! Returns statistics related to converted values
     virtual QgsRasterBandStats statistics( int bandNo,
@@ -153,6 +156,8 @@ class QgsWmsInterpretationConverterMapTilerTerrainRGB : public QgsWmsInterpretat
                                   bool includeOutOfRange = false,
                                   QgsRasterBlockFeedback *feedback = nullptr ) const override;
 
+    bool representsElevation() const override;
+
     static QString displayName() {return QObject::tr( "MapTiler Terrain RGB" );}
     static QString interpretationKey() {return QStringLiteral( "maptilerterrain" );}
 };
@@ -176,6 +181,8 @@ class QgsWmsInterpretationConverterTerrariumRGB : public QgsWmsInterpretationCon
                                   int sampleSize = 0,
                                   bool includeOutOfRange = false,
                                   QgsRasterBlockFeedback *feedback = nullptr ) const override;
+
+    bool representsElevation() const override;
 
     static QString displayName() {return QObject::tr( "Terrarium Terrain RGB" );}
     static QString interpretationKey() {return QStringLiteral( "terrariumterrain" );}

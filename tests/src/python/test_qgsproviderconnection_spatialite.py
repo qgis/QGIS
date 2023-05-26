@@ -56,10 +56,12 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
     # Provider test cases can define a schema and table name for SQL query layers test
     sqlVectorLayerSchema = ''
     sqlVectorLayerTable = 'cdb_lines'
+    sqlVectorLayerCrs = 'EPSG:25832'
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsProviderConnectionSpatialite, cls).setUpClass()
         TestPyQgsProviderConnectionBase.setUpClass()
         cls.basetestpath = tempfile.mkdtemp()
         spatialite_original_path = f'{TEST_DATA_DIR}/qgis_server/test_project_wms_grouped_layers.sqlite'
@@ -73,6 +75,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
     def tearDownClass(cls):
         """Run after all tests"""
         os.unlink(cls.spatialite_path)
+        super(TestPyQgsProviderConnectionSpatialite, cls).tearDownClass()
 
     def test_spatialite_connections_from_uri(self):
         """Create a connection from a layer uri and retrieve it"""

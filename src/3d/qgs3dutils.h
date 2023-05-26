@@ -261,6 +261,19 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.32
      */
     static QgsRectangle tryReprojectExtent2D( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs1, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context );
+
+    /**
+     * This routine approximately calculates how an error (\a epsilon) of an object in world coordinates
+     * at given \a distance (between camera and the object) will look like in screen coordinates.
+     *
+     * \param epsilon error in world coordinates
+     * \param distance distance between camera and object
+     * \param screenSize screen width or height in pixels
+     * \param fov camera's field of view in degrees
+     *
+     * \since QGIS 3.32
+     */
+    static float screenSpaceError( float epsilon, float distance, float screenSize, float fov );
 };
 
 #endif // QGS3DUTILS_H

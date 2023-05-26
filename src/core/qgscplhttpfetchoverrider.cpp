@@ -20,9 +20,10 @@
 #include "cpl_http.h"
 #include "gdal.h"
 
-QgsCPLHTTPFetchOverrider::QgsCPLHTTPFetchOverrider( const QString &authCfg, QgsFeedback *feedback ):
-  mAuthCfg( authCfg ),
-  mFeedback( feedback )
+QgsCPLHTTPFetchOverrider::QgsCPLHTTPFetchOverrider( const QString &authCfg, QgsFeedback *feedback )
+  : mAuthCfg( authCfg )
+  , mFeedback( feedback )
+  , mThread( QThread::currentThread() )
 {
   CPLHTTPPushFetchCallback( QgsCPLHTTPFetchOverrider::callback, this );
 }
@@ -57,7 +58,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
   {
     if ( CSLFetchNameValue( papszOptions, pszOption ) )
     {
-      QgsDebugMsg( QStringLiteral( "Option %1 not handled" ).arg( pszOption ) );
+      QgsDebugError( QStringLiteral( "Option %1 not handled" ).arg( pszOption ) );
       return nullptr;
     }
   }
@@ -112,7 +113,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Invalid CUSTOMREQUEST = %1 when POSTFIELDS is defined" ).arg( pszCustomRequest ) );
+      QgsDebugError( QStringLiteral( "Invalid CUSTOMREQUEST = %1 when POSTFIELDS is defined" ).arg( pszCustomRequest ) );
       return nullptr;
     }
   }
@@ -132,7 +133,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Invalid CUSTOMREQUEST = %1 when POSTFIELDS is not defined" ).arg( pszCustomRequest ) );
+      QgsDebugError( QStringLiteral( "Invalid CUSTOMREQUEST = %1 when POSTFIELDS is not defined" ).arg( pszCustomRequest ) );
       return nullptr;
     }
   }
@@ -187,4 +188,14 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
 void QgsCPLHTTPFetchOverrider::setAttribute( QNetworkRequest::Attribute code, const QVariant &value )
 {
   mAttributes[code] = value;
+}
+
+void QgsCPLHTTPFetchOverrider::setFeedback( QgsFeedback *feedback )
+{
+  mFeedback = feedback;
+}
+
+QThread *QgsCPLHTTPFetchOverrider::thread() const
+{
+  return mThread;
 }

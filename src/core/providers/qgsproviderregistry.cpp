@@ -245,7 +245,7 @@ void QgsProviderRegistry::init()
 
   // add dynamic providers
 #ifdef HAVE_STATIC_PROVIDERS
-  QgsDebugMsg( QStringLiteral( "Forced only static providers" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Forced only static providers" ), 2 );
 #else
   typedef QgsProviderMetadata *factory_function( );
 
@@ -264,7 +264,7 @@ void QgsProviderRegistry::init()
 
   if ( mLibraryDirectory.count() == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "No dynamic QGIS data provider plugins found in:\n%1\n" ).arg( mLibraryDirectory.path() ) );
+    QgsDebugError( QStringLiteral( "No dynamic QGIS data provider plugins found in:\n%1\n" ).arg( mLibraryDirectory.path() ) );
   }
 
   // provider file regex pattern, only files matching the pattern are loaded if the variable is defined
@@ -284,7 +284,7 @@ void QgsProviderRegistry::init()
     {
       if ( fi.fileName().indexOf( fileRegexp ) == -1 )
       {
-        QgsDebugMsg( "provider " + fi.fileName() + " skipped because doesn't match pattern " + filePattern );
+        QgsDebugMsgLevel( "provider " + fi.fileName() + " skipped because doesn't match pattern " + filePattern, 2 );
         continue;
       }
     }
@@ -299,7 +299,7 @@ void QgsProviderRegistry::init()
     QLibrary myLib( fi.filePath() );
     if ( !myLib.load() )
     {
-      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
+      QgsDebugError( QStringLiteral( "Checking %1: ...invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
       continue;
     }
 
@@ -313,7 +313,7 @@ void QgsProviderRegistry::init()
       {
         if ( findMetadata_( mProviders, meta->key() ) )
         {
-          QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
+          QgsDebugError( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
           delete meta;
           continue;
         }
@@ -333,7 +333,7 @@ void QgsProviderRegistry::init()
         {
           if ( findMetadata_( mProviders, meta->key() ) )
           {
-            QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
+            QgsDebugError( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
             delete meta;
             continue;
           }
@@ -352,7 +352,7 @@ void QgsProviderRegistry::init()
   }
 
 #endif
-  QgsDebugMsg( QStringLiteral( "Loaded %1 providers (%2) " ).arg( mProviders.size() ).arg( providerList().join( ';' ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "Loaded %1 providers (%2) " ).arg( mProviders.size() ).arg( providerList().join( ';' ) ), 1 );
 
   QStringList pointCloudWildcards;
   QStringList pointCloudFilters;
@@ -823,7 +823,7 @@ QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
   Q_UNUSED( parent );
   Q_UNUSED( fl );
   Q_UNUSED( widgetMode );
-  QgsDebugMsg( "deprecated call - use QgsGui::sourceSelectProviderRegistry()->createDataSourceWidget() instead" );
+  QgsDebugError( "deprecated call - use QgsGui::sourceSelectProviderRegistry()->createDataSourceWidget() instead" );
   return nullptr;
 }
 
@@ -838,7 +838,7 @@ QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
 
   QLibrary myLib( lib );
 
-  QgsDebugMsg( "Library name is " + myLib.fileName() );
+  QgsDebugMsgLevel( "Library name is " + myLib.fileName(), 2 );
 
   if ( myLib.load() )
   {
@@ -846,7 +846,7 @@ QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
   }
   else
   {
-    QgsDebugMsg( "Cannot load library: " + myLib.errorString() );
+    QgsDebugError( "Cannot load library: " + myLib.errorString() );
     return nullptr;
   }
 }
@@ -861,19 +861,19 @@ QLibrary *QgsProviderRegistry::createProviderLibrary( QString const &providerKey
 
   std::unique_ptr< QLibrary > myLib( new QLibrary( lib ) );
 
-  QgsDebugMsg( "Library name is " + myLib->fileName() );
+  QgsDebugMsgLevel( "Library name is " + myLib->fileName(), 2 );
 
   if ( myLib->load() )
     return myLib.release();
 
-  QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
+  QgsDebugError( "Cannot load library: " + myLib->errorString() );
 
   return nullptr;
 }
 
 void QgsProviderRegistry::registerGuis( QWidget * )
 {
-  QgsDebugMsg( "deprecated - use QgsGui::providerGuiRegistry() instead." );
+  QgsDebugError( "deprecated - use QgsGui::providerGuiRegistry() instead." );
 }
 
 bool QgsProviderRegistry::registerProvider( QgsProviderMetadata *providerMetadata )

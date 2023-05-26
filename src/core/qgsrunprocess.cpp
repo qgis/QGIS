@@ -36,7 +36,7 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
 {
   // Make up a string from the command and arguments that we'll use
   // for display purposes
-  QgsDebugMsg( "Running command: " + action );
+  QgsDebugMsgLevel( "Running command: " + action, 2 );
 
   mCommand = action;
 
@@ -179,7 +179,7 @@ void QgsRunProcess::processError( QProcess::ProcessError err )
   }
   else
   {
-    QgsDebugMsg( "Got error: " + QString( "%d" ).arg( err ) );
+    QgsDebugError( "Got error: " + QString( "%d" ).arg( err ) );
   }
 }
 
@@ -239,7 +239,7 @@ QStringList QgsRunProcess::splitCommand( const QString &command )
 QgsRunProcess::QgsRunProcess( const QString &action, bool )
 {
   Q_UNUSED( action )
-  QgsDebugMsg( "Skipping command: " + action );
+  QgsDebugError( "Skipping command: " + action );
 }
 
 QgsRunProcess::~QgsRunProcess()

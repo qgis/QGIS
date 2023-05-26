@@ -43,7 +43,6 @@ class LayerMetadataProviderTestBase():
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain(cls.__name__)
         QCoreApplication.setApplicationName(cls.__name__)

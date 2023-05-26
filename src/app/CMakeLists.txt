@@ -260,6 +260,8 @@ set(QGIS_APP_SRCS
   options/qgsrasterrenderingoptions.cpp
   options/qgsrenderingoptions.cpp
   options/qgsvectorrenderingoptions.cpp
+  options/qgsuserprofileoptions.cpp
+  options/qgsuserprofileselectiondialog.cpp
 
   gps/qgsappgpsconnection.cpp
   gps/qgsappgpsdigitizing.cpp
@@ -282,7 +284,7 @@ set(QGIS_APP_SRCS
   pluginmanager/qgspluginsortfilterproxymodel.cpp
   pluginmanager/qgspluginitemdelegate.cpp
 
-  qgssettingstreewidget.cpp
+  qgssettingstreewidgetold.cpp
   qgssettingsregistryapp.cpp
   qgsvariantdelegate.cpp
   qgscrashhandler.cpp
@@ -534,6 +536,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/app/options
   ${CMAKE_SOURCE_DIR}/src/app/pointcloud
+  ${CMAKE_SOURCE_DIR}/src/app/settings
   ${CMAKE_SOURCE_DIR}/src/app/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/src/python

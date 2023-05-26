@@ -228,7 +228,7 @@ void QgsAuthIdentitiesEditor::showCertInfo( QTreeWidgetItem *item )
 
   if ( !QgsApplication::authManager()->existsCertIdentity( digest ) )
   {
-    QgsDebugMsg( QStringLiteral( "Certificate identity does not exist in database" ) );
+    QgsDebugError( QStringLiteral( "Certificate identity does not exist in database" ) );
     return;
   }
 
@@ -320,7 +320,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
 
   if ( !item )
   {
-    QgsDebugMsg( QStringLiteral( "Current tree widget item not set" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Current tree widget item not set" ), 2 );
     return;
   }
 
@@ -335,7 +335,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
 
   if ( !QgsApplication::authManager()->existsCertIdentity( digest ) )
   {
-    QgsDebugMsg( QStringLiteral( "Certificate identity does not exist in database" ) );
+    QgsDebugError( QStringLiteral( "Certificate identity does not exist in database" ) );
     return;
   }
 

@@ -59,6 +59,7 @@ class TestQgsAttributeForm : public QObject
     void testDefaultValueUpdateRecursion();
     void testSameFieldSync();
     void testZeroDoubles();
+    void testMinimumWidth();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -1127,7 +1128,7 @@ void TestQgsAttributeForm::testSameFieldSync()
   editFormConfig.clearTabs();
   editFormConfig.addTab( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
   editFormConfig.addTab( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
-  editFormConfig.setLayout( QgsEditFormConfig::TabLayout );
+  editFormConfig.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
   layer->setEditFormConfig( editFormConfig );
 
   layer->startEditing();
@@ -1162,6 +1163,51 @@ void TestQgsAttributeForm::testZeroDoubles()
   const QList<QLineEdit *> les = form.findChildren<QLineEdit *>( "col0" );
   QCOMPARE( les.count(), 1 );
   QCOMPARE( les.at( 0 )->text(), QStringLiteral( "0" ) );
+}
+
+void TestQgsAttributeForm::testMinimumWidth()
+{
+  // ensure that the minimum width of editor widgets is as small as possible for the actual attribute form mode.
+  const QString def = QStringLiteral( "Point?field=col0:double" );
+  QgsVectorLayer layer { def, QStringLiteral( "test" ), QStringLiteral( "memory" ) };
+  layer.setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
+  QgsFeature ft( layer.dataProvider()->fields(), 1 );
+  ft.setAttribute( QStringLiteral( "col0" ), 0.0 );
+  QgsAttributeEditorContext context;
+  context.setAttributeFormMode( QgsAttributeEditorContext::SingleEditMode );
+  std::unique_ptr< QgsAttributeForm > form = std::make_unique< QgsAttributeForm >( &layer, QgsFeature(), context );
+  form->setFeature( ft );
+  form->show();
+  // we don't want the larger width requirement of the search wrappers to be enforced when the attribute form
+  // is not in search modes
+  QLineEdit le;
+  const QFontMetrics leMetrics( le.fontMetrics() );
+  QGSVERIFYLESSTHAN( form->minimumWidth(), leMetrics.horizontalAdvance( 'x' ) * 20 );
+
+  form->setMode( QgsAttributeEditorContext::SearchMode );
+  QGSVERIFYLESSTHAN( form->minimumWidth(), leMetrics.horizontalAdvance( 'x' ) * 150 );
+
+  context.setAttributeFormMode( QgsAttributeEditorContext::AddFeatureMode );
+  form = std::make_unique< QgsAttributeForm >( &layer, QgsFeature(), context );
+  form->setFeature( ft );
+  form->show();
+  form->setMode( QgsAttributeEditorContext::AddFeatureMode );
+  QGSVERIFYLESSTHAN( form->minimumWidth(), leMetrics.horizontalAdvance( 'x' ) * 20 );
+
+  context.setAttributeFormMode( QgsAttributeEditorContext::AggregateSearchMode );
+  form = std::make_unique< QgsAttributeForm >( &layer, QgsFeature(), context );
+  form->setFeature( ft );
+  form->show();
+  form->setMode( QgsAttributeEditorContext::AggregateSearchMode );
+  QGSVERIFYLESSTHAN( form->minimumWidth(), leMetrics.horizontalAdvance( 'x' ) * 150 );
+
+  context.setAttributeFormMode( QgsAttributeEditorContext::MultiEditMode );
+  form = std::make_unique< QgsAttributeForm >( &layer, QgsFeature(), context );
+  form->setFeature( ft );
+  form->setMode( QgsAttributeEditorContext::MultiEditMode );
+  form->show();
+  QGSVERIFYLESSTHAN( form->minimumWidth(), leMetrics.horizontalAdvance( 'x' ) * 100 );
+
 }
 
 QGSTEST_MAIN( TestQgsAttributeForm )

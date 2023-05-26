@@ -93,20 +93,20 @@ void *qgsMalloc( size_t size )
 {
   if ( size == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "Zero size requested" ) );
+    QgsDebugError( QStringLiteral( "Zero size requested" ) );
     return nullptr;
   }
 
   if ( ( size >> ( 8 * sizeof( size ) - 1 ) ) != 0 )
   {
-    QgsDebugMsg( QStringLiteral( "qgsMalloc - bad size requested: %1" ).arg( size ) );
+    QgsDebugError( QStringLiteral( "qgsMalloc - bad size requested: %1" ).arg( size ) );
     return nullptr;
   }
 
   void *p = malloc( size );
   if ( !p )
   {
-    QgsDebugMsg( QStringLiteral( "Allocation of %1 bytes failed." ).arg( size ) );
+    QgsDebugError( QStringLiteral( "Allocation of %1 bytes failed." ).arg( size ) );
   }
   return p;
 }

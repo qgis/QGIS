@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     GdalAlgorithm.py
@@ -118,7 +116,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         elif input_layer.dataProvider().name().lower() == 'wfs':
             uri = QgsDataSourceUri(input_layer.source())
             baseUrl = uri.param('url').split('?')[0]
-            ogr_data_path = "WFS:{}".format(baseUrl)
+            ogr_data_path = f"WFS:{baseUrl}"
             ogr_layer_name = uri.param('typename')
         else:
             # vector layer, but not OGR - get OGR compatible path

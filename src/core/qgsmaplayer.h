@@ -81,6 +81,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( bool isValid READ isValid NOTIFY isValidChanged )
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
+    Q_PROPERTY( bool mapTipsEnabled READ mapTipsEnabled WRITE setMapTipsEnabled NOTIFY mapTipsEnabledChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -642,6 +643,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param layerElement The DOM element corresponding to ``maplayer'' tag
      * \param context writing context (e.g. for conversion between relative and absolute paths)
      * \param flags optional argument which can be used to control layer reading behavior.
+     * \param preloadedProvider optional preloaded data provider that will be used as data provider for this layer, takes ownership (since QGIS 3.32)
      * \note
      *
      * The DOM node corresponds to a DOM document project file XML element read
@@ -654,7 +656,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \returns TRUE if successful
      */
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags() );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context,
+                       QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags(), QgsDataProvider *preloadedProvider SIP_TRANSFER = nullptr );
 
     /**
      * Stores state in DOM node
@@ -733,7 +736,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
       }
 
       T v;
@@ -789,7 +792,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
       }
     }
 
@@ -811,7 +814,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
       }
 
       T v = defaultValue;
@@ -879,7 +882,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
       }
     }
 #endif
@@ -1571,6 +1574,29 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void setMapTipTemplate( const QString &mapTipTemplate );
 
+    /**
+     *  Enable or disable map tips for this layer
+     *
+     *  \param enabled Whether map tips are enabled for this layer
+     *  \since QGIS 3.32
+     */
+    void setMapTipsEnabled( bool enabled );
+
+    /**
+     *  Returns true if map tips are enabled for this layer
+     *  \since QGIS 3.32
+     */
+    bool mapTipsEnabled() const;
+
+    /**
+     * Returns provider read flag deduced from layer read flags \a layerReadFlags and a dom node \a layerNode
+     * that describes a layer (corresponding to ``maplayer'' tag in a DOM document project file read by QgsProject).
+     * This static method is used when loading a project.
+     *
+     * \since QGIS 3.32
+     */
+    static QgsDataProvider::ReadFlags providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags );
+
   public slots:
 
     /**
@@ -1863,6 +1889,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void mapTipTemplateChanged();
 
+    /**
+     * Emitted when map tips are enabled or disabled for the layer.
+     *
+     * \see setMapTipsEnabled()
+     * \since QGIS 3.32
+     */
+    void mapTipsEnabledChanged();
+
   private slots:
 
     void onNotified( const QString &message );
@@ -2090,6 +2124,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString generalHtmlMetadata() const;
 #endif
 
+#ifndef SIP_RUN
+
+    /**
+     * Optionally used when loading a project, it is released when the layer is effectively created
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 3.32
+     */
+    std::unique_ptr<QgsDataProvider> mPreloadedProvider;
+#endif
+
   private:
 
     virtual QString baseURI( PropertyType type ) const;
@@ -2185,6 +2231,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Maptip template
     QString mMapTipTemplate;
+
+    //! Flag indicating whether map tips are enabled for this layer or not
+    bool mMapTipsEnabled = true;
 
     friend class QgsVectorLayer;
     friend class TestQgsMapLayer;

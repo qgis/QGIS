@@ -65,10 +65,12 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
     # Provider test cases can define a schema and table name for SQL query layers test
     sqlVectorLayerSchema = ''
     sqlVectorLayerTable = 'cdb_lines'
+    sqlVectorLayerCrs = 'EPSG:25832'
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super(TestPyQgsProviderConnectionGpkg, cls).setUpClass()
         TestPyQgsProviderConnectionBase.setUpClass()
         gpkg_original_path = f'{TEST_DATA_DIR}/qgis_server/test_project_wms_grouped_layers.gpkg'
         cls.temp_dir = QTemporaryDir()

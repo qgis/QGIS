@@ -712,9 +712,9 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
   if ( database.open_v2( dbPath, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, nullptr ) )
   {
     // failure
-    QgsDebugMsg( QStringLiteral( "Failure while connecting to: %1\n%2" )
-                 .arg( dbPath,
-                       QString::fromUtf8( sqlite3_errmsg( database.get() ) ) ) );
+    QgsDebugError( QStringLiteral( "Failure while connecting to: %1\n%2" )
+                   .arg( dbPath,
+                         QString::fromUtf8( sqlite3_errmsg( database.get() ) ) ) );
     return nullptr;
   }
 
@@ -722,7 +722,7 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
   if ( !checkMetadata( database.get() ) )
   {
     // failure
-    QgsDebugMsg( QStringLiteral( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
+    QgsDebugError( QStringLiteral( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
     return nullptr;
   }
 

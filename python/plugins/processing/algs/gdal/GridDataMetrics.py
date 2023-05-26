@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     GridDataMetrics.py
@@ -170,11 +168,11 @@ class GridDataMetrics(GdalAlgorithm):
             arguments.append(fieldName)
 
         params = self.metrics[self.parameterAsEnum(parameters, self.METRIC, context)][1]
-        params += ':radius1={}'.format(self.parameterAsDouble(parameters, self.RADIUS_1, context))
-        params += ':radius2={}'.format(self.parameterAsDouble(parameters, self.RADIUS_2, context))
-        params += ':angle={}'.format(self.parameterAsDouble(parameters, self.ANGLE, context))
-        params += ':min_points={}'.format(self.parameterAsInt(parameters, self.MIN_POINTS, context))
-        params += ':nodata={}'.format(self.parameterAsDouble(parameters, self.NODATA, context))
+        params += f':radius1={self.parameterAsDouble(parameters, self.RADIUS_1, context)}'
+        params += f':radius2={self.parameterAsDouble(parameters, self.RADIUS_2, context)}'
+        params += f':angle={self.parameterAsDouble(parameters, self.ANGLE, context)}'
+        params += f':min_points={self.parameterAsInt(parameters, self.MIN_POINTS, context)}'
+        params += f':nodata={self.parameterAsDouble(parameters, self.NODATA, context)}'
 
         arguments.append('-a')
         arguments.append(params)

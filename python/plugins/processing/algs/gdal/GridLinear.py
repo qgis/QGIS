@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     GridLinear.py
@@ -139,8 +137,8 @@ class GridLinear(GdalAlgorithm):
             arguments.append(fieldName)
 
         params = 'linear'
-        params += ':radius={}'.format(self.parameterAsDouble(parameters, self.RADIUS, context))
-        params += ':nodata={}'.format(self.parameterAsDouble(parameters, self.NODATA, context))
+        params += f':radius={self.parameterAsDouble(parameters, self.RADIUS, context)}'
+        params += f':nodata={self.parameterAsDouble(parameters, self.NODATA, context)}'
 
         arguments.append('-a')
         arguments.append(params)

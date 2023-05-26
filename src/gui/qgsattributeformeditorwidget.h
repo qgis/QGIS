@@ -151,7 +151,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     bool mIsMixed;
     bool mIsChanged;
 
-    void updateWidgets() override;
+    void updateWidgets() final;
 
     friend class TestQgsAttributeForm;
 };

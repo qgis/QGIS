@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
@@ -92,6 +94,14 @@ Constructor for QgsSettingsEntryBase.
 %End
 
     virtual ~QgsSettingsEntryBase();
+
+    virtual QString typeId() const;
+%Docstring
+Returns the id of the type of settings
+This can be re-implemented in a custom implementation of a setting
+
+.. versionadded:: 3.32
+%End
 
     QString name() const;
 %Docstring
@@ -191,26 +201,21 @@ Returns settings section. The settings section of the parent group is returned i
    the key is entirely self-defined
 %End
 
- virtual bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const /Deprecated/;
+    bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Set settings value.
 
 :param value: specifies the value to set.
 :param dynamicKeyPart: specifies the dynamic part of the settings key.
-
-.. deprecated:: QGIS 3.26
-   use setVariantValuePrivate or an implementation setValue instead
 %End
 
- virtual bool setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const /Deprecated/;
+    bool setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const;
 %Docstring
 Set settings value.
+This should be called from any implementation as it takes care of actually calling QSettings
 
 :param value: specifies the value to set.
 :param dynamicKeyPartList: specifies the list of dynamic parts of the settings key.
-
-.. deprecated:: QGIS 3.26
-   use setVariantValuePrivate or an implementation setValue instead
 %End
 
     QVariant valueAsVariant( const QString &dynamicKeyPart = QString() ) const;
@@ -330,31 +335,23 @@ Returns the parent tree element
 .. versionadded:: 3.30
 %End
 
-  protected:
-
-    bool setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList = QStringList() ) const;
+    virtual bool checkValueVariant( const QVariant &value ) const;
 %Docstring
-Sets the settings value with a variant value.
-This should be called from any implementation as it takes care of actually calling QSettings
-
-.. versionadded:: 3.26
+Returns ``True`` if the given ``value`` is valid towards the setting definition
 %End
 
 };
 
-
 template<T>
-class QgsSettingsEntryByReference : QgsSettingsEntryBase
+class QgsSettingsEntryBaseTemplate : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
 
-Base abstract class for settings entry which are passed by reference
+Base abstract class for settings entries with typed get and set methods
 
 .. seealso:: :py:class:`QgsSettingsEntryBase`
 
-.. seealso:: :py:class:`QgsSettingsEntryByValue`
-
-.. versionadded:: 3.26
+.. versionadded:: 3.32
 %End
 
 %TypeHeaderCode
@@ -362,13 +359,13 @@ Base abstract class for settings entry which are passed by reference
 %End
   public:
 
-    QgsSettingsEntryByReference( const QString &name,
-                                 QgsSettingsTreeNode *parent,
-                                 const T &defaultValue,
-                                 const QString &description = QString(),
-                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+    QgsSettingsEntryBaseTemplate( const QString &name,
+                                  QgsSettingsTreeNode *parent,
+                                  const QVariant &defaultValue,
+                                  const QString &description = QString(),
+                                  Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring
-Constructor for QgsSettingsEntryByReference.
+Constructor for :py:class:`QgsSettingsEntryByReference`.
 
 :param name: specifies the key of the settings.
 :param parent: specifies the parent in the tree of settings.
@@ -381,13 +378,13 @@ Constructor for QgsSettingsEntryByReference.
 .. versionadded:: 3.30
 %End
 
-    QgsSettingsEntryByReference( const QString &key,
-                                 const QString &section,
-                                 const T &defaultValue,
-                                 const QString &description = QString(),
-                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+    QgsSettingsEntryBaseTemplate( const QString &key,
+                                  const QString &section,
+                                  const QVariant &defaultValue,
+                                  const QString &description = QString(),
+                                  Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring
-Constructor for QgsSettingsEntryByReference.
+Constructor for :py:class:`QgsSettingsEntryByReference`.
 
 :param key: specifies the key of the settings.
 :param section: specifies the section.
@@ -424,22 +421,6 @@ Returns the settings value with a ``defaultValueOverride`` and with an optional 
 Returns the settings value with a ``defaultValueOverride`` for the ``dynamicKeyPartList``
 %End
 
- T value( const QString &dynamicKeyPart, bool useDefaultValueOverride, const T &defaultValueOverride ) const /Deprecated/;
-%Docstring
-Returns the settings value for the ``dynamicKeyPart`` and  with a ``defaultValueOverride``
-
-.. deprecated:: QGIS 3.26
-   use valueAsVariantWithDefaultOverride instead
-%End
-
- T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const T &defaultValueOverride ) const /Deprecated/;
-%Docstring
-Returns the settings value for the ``dynamicKeyPartList`` and  with a ``defaultValueOverride``
-
-.. deprecated:: QGIS 3.26
-   use valueAsVariantWithDefaultOverride instead
-%End
-
     bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Set settings value.
@@ -473,15 +454,17 @@ Returns the former value
 Returns the current value (or default) if there is no former value.
 %End
 
-  protected:
-    bool setValuePrivate( const T &value, const QStringList &dynamicKeyPartList ) const;
-%Docstring
-Sets the settings value with an optional list of dynamic parts
-%End
+    virtual bool checkValueVariant( const QVariant &value ) const;
 
     virtual T convertFromVariant( const QVariant &value ) const = 0;
 %Docstring
 Converts the variant value to the value type of the setting
+%End
+
+  protected:
+    virtual bool setValuePrivate( const T &value, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Sets the settings value with an optional list of dynamic parts
 %End
 
     virtual QVariant convertToVariant( const T &value ) const;
@@ -489,152 +472,13 @@ Converts the variant value to the value type of the setting
 Converts the value to a variant
 %End
 
-    virtual bool checkValue( const T &value ) const;
+    virtual bool checkValuePrivate( const T &value ) const;
 %Docstring
 Check if the value is valid
 %End
 };
 
 
-template<T>
-class QgsSettingsEntryByValue : QgsSettingsEntryBase
-{
-%Docstring(signature="appended")
-
-Base abstract class for settings entry which are passed by value
-
-.. seealso:: :py:class:`QgsSettingsEntryBase`
-
-.. seealso:: :py:class:`QgsSettingsEntryByReference`
-
-.. versionadded:: 3.26
-%End
-
-%TypeHeaderCode
-#include "qgssettingsentry.h"
-%End
-  public:
-
-    QgsSettingsEntryByValue( const QString &key, QgsSettingsTreeNode *parent, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() );
-%Docstring
-Constructor for QgsSettingsEntryByValue.
-
-:param key: specifies the key of the settings.
-:param parent: specifies the parent in the tree of settings.
-:param defaultValue: specifies the default value for the settings entry.
-:param description: specifies a description for the settings entry.
-:param options: specifies the options for the settings entry.
-
-:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
-%End
-
-    QgsSettingsEntryByValue( const QString &key, const QString &section, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() );
-%Docstring
-Constructor for QgsSettingsEntryByValue.
-
-:param key: specifies the key of the settings.
-:param section: specifies the section.
-:param defaultValue: specifies the default value for the settings entry.
-:param description: specifies a description for the settings entry.
-:param options: specifies the options for the settings entry.
-%End
-
-    virtual Qgis::SettingsType settingsType() const = 0;
-
-    T value( const QString &dynamicKeyPart = QString() ) const;
-%Docstring
-Returns settings value.
-
-:param dynamicKeyPart: specifies the dynamic part of the settings key.
-%End
-
-    T value( const QStringList &dynamicKeyPartList )  const;
-%Docstring
-Returns settings value.
-
-:param dynamicKeyPartList: specifies the list of dynamic parts of the settings key.
-%End
-
-    T valueWithDefaultOverride( T defaultValueOverride, const QString &dynamicKeyPart = QString() ) const;
-%Docstring
-Returns the settings value with a ``defaultValueOverride`` and with an optional ``dynamicKeyPart``
-%End
-
-    T valueWithDefaultOverride( T defaultValueOverride, const QStringList &dynamicKeyPartList ) const;
-%Docstring
-Returns the settings value with a ``defaultValueOverride`` for the ``dynamicKeyPartList``
-%End
-
- T value( const QString &dynamicKeyPart, bool useDefaultValueOverride, T defaultValueOverride ) const /Deprecated/;
-%Docstring
-Returns the settings value for the ``dynamicKeyPart`` and  with a ``defaultValueOverride``
-
-.. deprecated:: QGIS 3.26
-   use valueWithDefaultOverride instead
-%End
-
- T value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, T defaultValueOverride ) const  /Deprecated/;
-%Docstring
-Returns the settings value for the ``dynamicKeyPartList`` and  with a ``defaultValueOverride``
-
-.. deprecated:: QGIS 3.26
-   use valueWithDefaultOverride instead
-%End
-
-    bool setValue( T value, const QString &dynamicKeyPart = QString() ) const;
-%Docstring
-Set settings value.
-
-:param value: specifies the value to set.
-:param dynamicKeyPart: specifies the dynamic part of the settings key.
-%End
-
-    bool setValue( T value, const QStringList &dynamicKeyPartList ) const;
-%Docstring
-Set settings value.
-
-:param value: specifies the value to set.
-:param dynamicKeyPartList: specifies the list of dynamic parts of the settings key.
-%End
-
-    T defaultValue() const;
-%Docstring
-Returns settings default value.
-%End
-
-    T formerValue( const QString &dynamicKeyPart = QString() ) const;
-%Docstring
-Returns the former value
-Returns the current value (or default) if there is no former value.
-%End
-
-    T formerValue( const QStringList &dynamicKeyPartList ) const;
-%Docstring
-Returns the former value
-Returns the current value (or default) if there is no former value.
-%End
-
-  protected:
-    virtual bool setValuePrivate( T value, const QStringList &dynamicKeyPartList ) const;
-%Docstring
-Sets the settings value with an optional list of dynamic parts
-%End
-
-    virtual T convertFromVariant( const QVariant &value ) const = 0;
-%Docstring
-Converts the variant value to the value type of the setting
-%End
-
-    virtual QVariant convertToVariant( T value ) const;
-%Docstring
-Converts the value to a variant
-%End
-
-    virtual bool checkValue( T value ) const;
-%Docstring
-Check if the value is valid
-%End
-};
 
 
 /************************************************************************

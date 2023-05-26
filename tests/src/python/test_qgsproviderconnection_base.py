@@ -61,6 +61,7 @@ class TestPyQgsProviderConnectionBase():
     # Provider test cases can define a schema and table name for SQL query layers test
     sqlVectorLayerSchema = None  # string, empty string for schema-less DBs (SQLite)
     sqlVectorLayerTable = None   # string
+    sqlVectorLayerCrs = None   # string
 
     @classmethod
     def setUpClass(cls):
@@ -69,11 +70,6 @@ class TestPyQgsProviderConnectionBase():
         QCoreApplication.setOrganizationDomain(cls.__name__)
         QCoreApplication.setApplicationName(cls.__name__)
         start_app()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        pass
 
     def setUp(self):
         QgsSettings().clear()
@@ -544,6 +540,11 @@ class TestPyQgsProviderConnectionBase():
             print(f"FIXME: {self.providerKey} data provider test case does not define self.sqlVectorLayerTable for query layers test!")
             return
 
+        crs = getattr(self, 'sqlVectorLayerCrs', None)
+        if crs is None:
+            print(f"FIXME: {self.providerKey} data provider test case does not define self.sqlVectorLayerCrs for query layers test!")
+            return
+
         sql_layer_capabilities = conn.sqlLayerDefinitionCapabilities()
 
         # Try a simple select first
@@ -566,6 +567,7 @@ class TestPyQgsProviderConnectionBase():
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.isSpatial())
         self.assertEqual(vl.name(), options.layerName)
+        self.assertEqual(vl.sourceCrs().authid(), crs)
 
         # Test that a database connection can be retrieved from an existing layer
         vlconn = QgsMapLayerUtils.databaseConnection(vl)

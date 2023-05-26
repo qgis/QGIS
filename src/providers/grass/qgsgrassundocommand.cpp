@@ -32,7 +32,7 @@ QgsGrassUndoCommandChangeAttribute::QgsGrassUndoCommandChangeAttribute( QgsGrass
 
 void QgsGrassUndoCommandChangeAttribute::undo()
 {
-  QgsDebugMsg( QString( "mLid = %1 mField = %2, mCat = %3" ).arg( mLid ).arg( mField ).arg( mCat ) );
+  QgsDebugMsgLevel( QString( "mLid = %1 mField = %2, mCat = %3" ).arg( mLid ).arg( mField ).arg( mCat ), 2 );
   if ( mDeleteCat )
   {
     int realLine = mLid;
@@ -40,19 +40,19 @@ void QgsGrassUndoCommandChangeAttribute::undo()
     {
       realLine = mProvider->mLayer->map()->newLids().value( mLid );
     }
-    QgsDebugMsg( QString( "realLine = %1" ).arg( realLine ) );
+    QgsDebugMsgLevel( QString( "realLine = %1" ).arg( realLine ), 2 );
 
     int type = mProvider->readLine( mProvider->mPoints, mProvider->mCats, realLine );
     if ( type <= 0 )
     {
-      QgsDebugMsg( "cannot read line" );
+      QgsDebugError( "cannot read line" );
     }
     else
     {
       if ( Vect_field_cat_del( mProvider->mCats, mProvider->mLayerField, mCat ) == 0 )
       {
         // should not happen
-        QgsDebugMsg( "the line does not have the category" );
+        QgsDebugError( "the line does not have the category" );
       }
       else
       {

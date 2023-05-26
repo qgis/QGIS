@@ -341,11 +341,11 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &rect, Qgis::
   }
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsg( QStringLiteral( "Rect projection..." ) );
-  QgsDebugMsg( QStringLiteral( "Xmin : %1 --> %2" ).arg( rect.xMinimum() ).arg( x1 ) );
-  QgsDebugMsg( QStringLiteral( "Ymin : %1 --> %2" ).arg( rect.yMinimum() ).arg( y1 ) );
-  QgsDebugMsg( QStringLiteral( "Xmax : %1 --> %2" ).arg( rect.xMaximum() ).arg( x2 ) );
-  QgsDebugMsg( QStringLiteral( "Ymax : %1 --> %2" ).arg( rect.yMaximum() ).arg( y2 ) );
+  QgsDebugMsgLevel( QStringLiteral( "Rect projection..." ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Xmin : %1 --> %2" ).arg( rect.xMinimum() ).arg( x1 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Ymin : %1 --> %2" ).arg( rect.yMinimum() ).arg( y1 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Xmax : %1 --> %2" ).arg( rect.xMaximum() ).arg( x2 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Ymax : %1 --> %2" ).arg( rect.yMaximum() ).arg( y2 ), 2 );
 #endif
   return QgsRectangle( x1, y1, x2, y2 );
 }
@@ -374,7 +374,7 @@ void QgsCoordinateTransform::transformInPlace( double &x, double &y, double &z,
   if ( !d->mIsValid || d->mShortCircuit )
     return;
 #ifdef QGISDEBUG
-// QgsDebugMsg(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__));
+// QgsDebugMsgLevel(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__), 2);
 #endif
   // transform x
   try
@@ -404,7 +404,7 @@ void QgsCoordinateTransform::transformInPlace( float &x, float &y, float &z,
   if ( !d->mIsValid || d->mShortCircuit )
     return;
 #ifdef QGISDEBUG
-  // QgsDebugMsg(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__));
+  // QgsDebugMsgLevel(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__), 2);
 #endif
   // transform x
   try
@@ -645,7 +645,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
       y[( i * nXPoints ) + j] = pointY;
       // and the height...
       z[( i * nXPoints ) + j] = 0.0;
-      // QgsDebugMsg(QString("BBox coord: (%1, %2)").arg(x[(i*numP) + j]).arg(y[(i*numP) + j]));
+      // QgsDebugMsgLevel(QString("BBox coord: (%1, %2)").arg(x[(i*numP) + j]).arg(y[(i*numP) + j]), 2);
       pointX += dx;
     }
     pointY += dy;
@@ -751,7 +751,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   double xorg = *x;
   double yorg = *y;
-  QgsDebugMsg( QStringLiteral( "[[[[[[ Number of points to transform: %1 ]]]]]]" ).arg( numPoints ) );
+  QgsDebugMsgLevel( QStringLiteral( "[[[[[[ Number of points to transform: %1 ]]]]]]" ).arg( numPoints ), 2 );
 #endif
 
 #ifdef QGISDEBUG
@@ -882,7 +882,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     // don't flood console with thousands of duplicate transform error messages
     if ( msg != mLastError )
     {
-      QgsDebugMsg( "Projection failed emitting invalid transform signal: " + msg );
+      QgsDebugError( "Projection failed emitting invalid transform signal: " + msg );
       mLastError = msg;
     }
     QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
@@ -891,9 +891,9 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   }
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsg( QStringLiteral( "[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]" )
-               .arg( xorg, 0, 'g', 15 ).arg( yorg, 0, 'g', 15 )
-               .arg( *x, 0, 'g', 15 ).arg( *y, 0, 'g', 15 ) );
+  QgsDebugMsgLevel( QStringLiteral( "[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]" )
+                    .arg( xorg, 0, 'g', 15 ).arg( yorg, 0, 'g', 15 )
+                    .arg( *x, 0, 'g', 15 ).arg( *y, 0, 'g', 15 ), 2 );
 #endif
 }
 

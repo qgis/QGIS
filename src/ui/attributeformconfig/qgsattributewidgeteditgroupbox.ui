@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>283</width>
-    <height>242</height>
+    <height>298</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,6 +35,55 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="mSizeGroupBox">
+     <property name="title">
+      <string>Size</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <widget class="QLabel" name="mColumnsLabel_2">
+        <property name="text">
+         <string>Horizontal stretch</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsSpinBox" name="mHozStretchSpin">
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mColumnsLabel_3">
+        <property name="text">
+         <string>Vertical stretch</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsSpinBox" name="mVertStretchSpin">
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QgsCollapsibleGroupBox" name="mWidgetSpecificConfigGroupBox">
      <property name="title">
       <string>GroupBox</string>
@@ -55,6 +104,11 @@
    <extends>QWidget</extends>
    <header>qgsformlabelformatwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

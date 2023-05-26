@@ -254,7 +254,7 @@ String ResultSet::getString(unsigned short columnIndex)
             SQL_C_CHAR, &ret[0], ret.size(), &ind);
         ret.resize(ind);
     }
-    return String(move(ret));
+    return String(std::move(ret));
 }
 //------------------------------------------------------------------------------
 NString ResultSet::getNString(unsigned short columnIndex)
@@ -293,7 +293,7 @@ NString ResultSet::getNString(unsigned short columnIndex)
             SQL_C_WCHAR, &ret[0], ret.size()*sizeof(char16_t), &ind);
         ret.resize(ind/2);
     }
-    return NString(move(ret));
+    return NString(std::move(ret));
 }
 //------------------------------------------------------------------------------
 Binary ResultSet::getBinary(unsigned short columnIndex)
@@ -331,7 +331,7 @@ Binary ResultSet::getBinary(unsigned short columnIndex)
         EXEC_STMT(SQLGetData, parent_->hstmt_, columnIndex,
             SQL_C_BINARY, ret.data(), ret.size(), &ind);
     }
-    return Binary(move(ret));
+    return Binary(std::move(ret));
 }
 //------------------------------------------------------------------------------
 static size_t convertLength(SQLLEN ind)

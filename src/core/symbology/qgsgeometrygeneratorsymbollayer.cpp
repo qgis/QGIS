@@ -445,7 +445,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
+      QgsDebugError( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
     }
 
     f.setGeometry( coerceToExpectedType( result ) );
@@ -488,7 +488,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
         }
         catch ( QgsCsException & )
         {
-          QgsDebugMsg( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
+          QgsDebugError( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
         }
         f.setGeometry( coerceToExpectedType( result ) );
         break;

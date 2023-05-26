@@ -27,13 +27,13 @@ class QgsHanaException final : public QException
     explicit QgsHanaException( const QString &what ) noexcept
       : mMessage( QgsHanaUtils::formatErrorMessage( what.toStdString().c_str() ).toStdString() )
     {
-      QgsDebugMsg( what );
+      QgsDebugError( what );
     }
 
     explicit QgsHanaException( const char *what ) noexcept
       : mMessage( QgsHanaUtils::formatErrorMessage( what ).toStdString() )
     {
-      QgsDebugMsg( what );
+      QgsDebugError( what );
     }
 
     void raise() const override  { throw *this;  }

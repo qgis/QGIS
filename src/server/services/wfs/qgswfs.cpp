@@ -137,7 +137,7 @@ class QgsWfsModule: public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsDebugMsg( QStringLiteral( "WFSModule::registerSelf called" ) );
+      QgsDebugMsgLevel( QStringLiteral( "WFSModule::registerSelf called" ), 2 );
       registry.registerService( new  QgsWfs::Service( QgsWfs::implementationVersion(), serverIface ) ); // 1.1.0 default version
       registry.registerService( new  QgsWfs::Service( QStringLiteral( "1.0.0" ), serverIface ) ); // second version
     }

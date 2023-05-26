@@ -1189,13 +1189,13 @@ sqlite3_database_unique_ptr QgsOfflineEditing::openLoggingDb()
     const int rc = database.open( absoluteDbPath );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugMsg( QStringLiteral( "Could not open the SpatiaLite logging database" ) );
+      QgsDebugError( QStringLiteral( "Could not open the SpatiaLite logging database" ) );
       showWarning( tr( "Could not open the SpatiaLite logging database" ) );
     }
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "dbPath is empty!" ) );
+    QgsDebugError( QStringLiteral( "dbPath is empty!" ) );
   }
   return database;
 }

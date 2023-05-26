@@ -36,6 +36,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgsvectortileloader.h"
 
 /**
  * \ingroup UnitTests
@@ -129,11 +130,11 @@ void TestQgsVectorTileLayer::cleanupTestCase()
 void TestQgsVectorTileLayer::test_basic()
 {
   // tile fetch test
-  const QByteArray tile0rawData = mLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
-  QCOMPARE( tile0rawData.length(), 64822 );
+  const QgsVectorTileRawData tile0rawData = mLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
+  QCOMPARE( tile0rawData.data.length(), 64822 );
 
-  const QByteArray invalidTileRawData = mLayer->getRawTile( QgsTileXYZ( 0, 0, 99 ) );
-  QCOMPARE( invalidTileRawData.length(), 0 );
+  const QgsVectorTileRawData invalidTileRawData = mLayer->getRawTile( QgsTileXYZ( 0, 0, 99 ) );
+  QCOMPARE( invalidTileRawData.data.length(), 0 );
 
   // an xyz vector tile layer should be considered as a basemap layer
   QCOMPARE( mLayer->properties(), Qgis::MapLayerProperties( Qgis::MapLayerProperty::IsBasemapLayer ) );

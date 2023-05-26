@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     TestTools.py
@@ -149,7 +147,7 @@ def createTest(text):
 
     alg = QgsApplication.processingRegistry().createAlgorithmById(alg_id)
 
-    definition['name'] = 'Test ({})'.format(alg_id)
+    definition['name'] = f'Test ({alg_id})'
     definition['algorithm'] = alg_id
 
     params = {}

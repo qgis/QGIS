@@ -641,6 +641,9 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
       layoutSize *= dotsPerMM; // output size will be in dots (pixels)
       painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
+      const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) / layoutSize.width();
+      rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
+
       QList< QgsAbstractProfileSource * > sources;
       for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
       {
@@ -888,6 +891,10 @@ void QgsLayoutItemElevationProfile::profileGenerationFinished()
   mPlot->setRenderer( mRenderJob.get() );
 
   QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( mLayout, mPainter.get() );
+
+  const double mapUnitsPerPixel = static_cast< double >( mPlot->xMaximum() - mPlot->xMinimum() )  /
+                                  mCacheRenderingImage->size().width();
+  rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
   // size must be in pixels, not layout units
   mPlot->setSize( mCacheRenderingImage->size() );

@@ -42,7 +42,7 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri
   QgsVtpkTiles reader( sourcePath );
   if ( !reader.open() )
   {
-    QgsDebugMsg( QStringLiteral( "failed to open VTPK file: " ) + sourcePath );
+    QgsDebugError( QStringLiteral( "failed to open VTPK file: " ) + sourcePath );
     mIsValid = false;
     return;
   }
@@ -51,7 +51,7 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri
   const QString format = metadata.value( QStringLiteral( "tileInfo" ) ).toMap().value( QStringLiteral( "format" ) ).toString();
   if ( format != QLatin1String( "pbf" ) )
   {
-    QgsDebugMsg( QStringLiteral( "Cannot open VTPK for vector tiles. Format = " ) + format );
+    QgsDebugError( QStringLiteral( "Cannot open VTPK for vector tiles. Format = " ) + format );
     mIsValid = false;
     return;
   }
@@ -83,9 +83,14 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QgsVtpkVecto
   mSpriteImage = other.mSpriteImage;
 }
 
-QgsVectorTileDataProvider::ProviderCapabilities QgsVtpkVectorTileDataProvider::providerCapabilities() const
+Qgis::VectorTileProviderFlags QgsVtpkVectorTileDataProvider::providerFlags() const
 {
-  return QgsVectorTileDataProvider::ProviderCapability::ReadLayerMetadata;
+  return Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider;
+}
+
+Qgis::VectorTileProviderCapabilities QgsVtpkVectorTileDataProvider::providerCapabilities() const
+{
+  return Qgis::VectorTileProviderCapability::ReadLayerMetadata;
 }
 
 QString QgsVtpkVectorTileDataProvider::name() const
@@ -171,51 +176,111 @@ QImage QgsVtpkVectorTileDataProvider::spriteImage() const
   return mSpriteImage;
 }
 
-QByteArray QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrix &, const QgsTileXYZ &id, QgsFeedback *feedback ) const
+QgsVectorTileRawData QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatrixSet &, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QgsVectorTileRawData data;
+  if ( mShared->getCachedTileData( data, id ) )
+    return data;
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
   QgsVtpkTiles reader( dsUri.param( QStringLiteral( "url" ) ) );
   reader.open();
-  return loadFromVtpk( reader, id, feedback );
+  const QgsVectorTileRawData rawData = loadFromVtpk( reader, id, feedback );
+  mShared->storeCachedTileData( rawData );
+  return rawData;
 }
 
-QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsTileMatrix &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
+QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
 
-  QgsVtpkTiles reader( dsUri.param( QStringLiteral( "url" ) ) );
-  reader.open();
+  // defer actual creation of reader until we need it -- maybe everything is already present in the cache!
+  std::unique_ptr< QgsVtpkTiles > reader;
 
   QList<QgsVectorTileRawData> rawTiles;
+  QSet< QgsTileXYZ > fetchedTiles;
   rawTiles.reserve( tiles.size() );
+  fetchedTiles.reserve( tiles.size() );
   for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
     if ( feedback && feedback->isCanceled() )
       break;
 
-    const QByteArray rawData = loadFromVtpk( reader, id, feedback );
-    if ( !rawData.isEmpty() )
+    if ( fetchedTiles.contains( id ) )
+      continue;
+
+    QgsVectorTileRawData data;
+    if ( mShared->getCachedTileData( data, id ) )
     {
-      rawTiles.append( QgsVectorTileRawData( id, rawData ) );
+      rawTiles.append( data );
+      fetchedTiles.insert( data.id );
+    }
+    else
+    {
+      if ( !reader )
+      {
+        reader = std::make_unique< QgsVtpkTiles >( dsUri.param( QStringLiteral( "url" ) ) );
+        reader->open();
+      }
+      const QgsVectorTileRawData rawData = loadFromVtpk( *reader, id, feedback );
+      if ( !rawData.data.isEmpty() && !fetchedTiles.contains( rawData.id ) )
+      {
+        rawTiles.append( rawData );
+        fetchedTiles.insert( rawData.id );
+        mShared->storeCachedTileData( rawData );
+      }
     }
   }
   return rawTiles;
 }
 
-QByteArray QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback * )
+QString QgsVtpkVectorTileDataProvider::htmlMetadata() const
 {
-  const QByteArray tileData = vtpkTileReader.tileData( id.zoomLevel(), id.column(), id.row() );
-  if ( tileData.isEmpty() )
+  QString metadata;
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+  QgsVtpkTiles reader( dsUri.param( QStringLiteral( "url" ) ) );
+  reader.open();
+
+  if ( !reader.rootTileMap().isEmpty() )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "VTPK storage" ) % QStringLiteral( "</td><td>" ) % tr( "Indexed VTPK (tilemap is present)" ) % QStringLiteral( "</td></tr>\n" );
+  else
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "VTPK storage" ) % QStringLiteral( "</td><td>" ) % tr( "Flat VTPK (no tilemap)" ) % QStringLiteral( "</td></tr>\n" );
+
+  if ( reader.metadata().contains( QStringLiteral( "minLOD" ) ) )
   {
-    return QByteArray();
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tile detail levels" ) % QStringLiteral( "</td><td>" ) % QStringLiteral( "%1 - %2" ).arg( reader.metadata().value( QStringLiteral( "minLOD" ) ).toInt() ).arg( reader.metadata().value( QStringLiteral( "maxLOD" ) ).toInt() ) % QStringLiteral( "</td></tr>\n" );
   }
-  return tileData;
+
+  return metadata;
+}
+
+QgsVectorTileRawData QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback * )
+{
+  QgsTileXYZ requestedTile = id;
+  QByteArray tileData = vtpkTileReader.tileData( requestedTile.zoomLevel(), requestedTile.column(), requestedTile.row() );
+  // I **think** here ESRI software will detect a zero size tile and automatically fallback to lower zoom level tiles
+  // I.e. they treat EVERY vtpk a bit like an indexed VTPK, but without the up-front tilemap information.
+  // See https://github.com/qgis/QGIS/issues/52872
+  while ( !tileData.isNull() && tileData.size() == 0 && requestedTile.zoomLevel() > vtpkTileReader.matrixSet().minimumZoom() )
+  {
+    requestedTile = QgsTileXYZ( requestedTile.column() / 2, requestedTile.row() / 2, requestedTile.zoomLevel() - 1 );
+    tileData = vtpkTileReader.tileData( requestedTile.zoomLevel(), requestedTile.column(), requestedTile.row() );
+  }
+
+  if ( tileData.isNull() )
+    return QgsVectorTileRawData();
+
+  QgsVectorTileRawData res( id, tileData );
+  res.tileGeometryId = requestedTile;
+  return res;
 }
 
 

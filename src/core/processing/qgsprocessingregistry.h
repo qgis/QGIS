@@ -27,6 +27,24 @@ class QgsProcessingParameterType;
 class QgsProcessingAlgorithmConfigurationWidgetFactory;
 
 /**
+ * \class QgsProcessingAlgorithmInformation
+ * \ingroup core
+ * \brief Contains basic properties for a Processing algorithm.
+ * \since QGIS 3.32
+ */
+class CORE_EXPORT QgsProcessingAlgorithmInformation
+{
+  public:
+
+    //! Algorithm display name
+    QString displayName;
+
+    //! Algorithm icon
+    QIcon icon;
+};
+
+
+/**
  * \class QgsProcessingRegistry
  * \ingroup core
  * \brief Registry for various processing components, including providers, algorithms
@@ -94,6 +112,16 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      * \see algorithmById()
      */
     QList< const QgsProcessingAlgorithm *> algorithms() const;
+
+    /**
+     * Returns basic algorithm information for the algorithm with matching ID.
+     *
+     * This method uses an internal cache to ensure that information is quickly
+     * returned and is suitable for calling many times.
+     *
+     * \since QGIS 3.32
+     */
+    QgsProcessingAlgorithmInformation algorithmInformation( const QString &id ) const;
 
     /**
      * Finds an algorithm by its ID. If no matching algorithm is found, NULLPTR
@@ -215,9 +243,13 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
 
     QMap< QString, QString > mAlgorithmAliases;
 
+    mutable QMap< QString, QgsProcessingAlgorithmInformation > mCachedInformation;
+
 #ifdef SIP_RUN
     QgsProcessingRegistry( const QgsProcessingRegistry &other );
 #endif
+
+    friend class TestQgsProcessing;
 };
 
 #endif // QGSPROCESSINGREGISTRY_H

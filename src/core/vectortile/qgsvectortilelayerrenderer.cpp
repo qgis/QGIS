@@ -26,6 +26,7 @@
 #include "qgsmapclippingutils.h"
 #include "qgsrendercontext.h"
 #include "qgsvectortiledataprovider.h"
+#include "qgstextrenderer.h"
 
 #include <QElapsedTimer>
 #include <QThread>
@@ -110,13 +111,13 @@ bool QgsVectorTileLayerRenderer::render()
   {
     QElapsedTimer tFetch;
     tFetch.start();
-    rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mDataProvider.get(), mTileMatrix, viewCenter, mTileRange, mFeedback.get() );
+    rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mDataProvider.get(), mTileMatrixSet, viewCenter, mTileRange, mTileZoom, mFeedback.get() );
     QgsDebugMsgLevel( QStringLiteral( "Tile fetching time: %1" ).arg( tFetch.elapsed() / 1000. ), 2 );
     QgsDebugMsgLevel( QStringLiteral( "Fetched tiles: %1" ).arg( rawTiles.count() ), 2 );
   }
   else
   {
-    asyncLoader.reset( new QgsVectorTileLoader( mDataProvider.get(), mTileMatrix, mTileRange, viewCenter, mFeedback.get(), renderContext()->rendererUsage() ) );
+    asyncLoader.reset( new QgsVectorTileLoader( mDataProvider.get(), mTileMatrixSet, mTileRange, mTileZoom, viewCenter, mFeedback.get(), renderContext()->rendererUsage() ) );
     QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData & rawTile )
     {
       QgsDebugMsgLevel( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString(), 2 );
@@ -217,7 +218,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
 
   // currently only MVT encoding supported
   QgsVectorTileMVTDecoder decoder( mTileMatrixSet );
-  if ( !decoder.decode( rawTile.id, rawTile.data ) )
+  if ( !decoder.decode( rawTile ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Failed to parse raw tile data! " ) + rawTile.id.toString(), 2 );
     return;
@@ -229,12 +230,14 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   const QgsCoordinateTransform ct = ctx.coordinateTransform();
 
   QgsVectorTileRendererData tile( rawTile.id );
+  tile.setRenderZoomLevel( mTileZoom );
+
   tile.setFields( mPerLayerFields );
   tile.setFeatures( decoder.layerFeatures( mPerLayerFields, ct, &mRequiredLayers ) );
 
   try
   {
-    tile.setTilePolygon( QgsVectorTileUtils::tilePolygon( rawTile.id, ct, mTileMatrix, ctx.mapToPixel() ) );
+    tile.setTilePolygon( QgsVectorTileUtils::tilePolygon( rawTile.id, ct, mTileMatrixSet.tileMatrix( rawTile.id.zoomLevel() ), ctx.mapToPixel() ) );
   }
   catch ( QgsCsException & )
   {
@@ -278,9 +281,14 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
     ctx.painter()->setPen( pen );
     ctx.painter()->setBrush( brush );
     ctx.painter()->drawPolygon( tile.tilePolygon() );
-#if 0
-    ctx.painter()->setBrush( QBrush( QColor( 255, 0, 0 ) ) );
-    ctx.painter()->drawText( tile.tilePolygon().boundingRect().center(), tile.id().toString() );
+#if 1
+    QgsTextFormat format;
+    format.setColor( QColor( 255, 0, 0 ) );
+    format.buffer().setEnabled( true );
+
+    QgsTextRenderer::drawText( QRectF( QPoint( 0, 0 ), ctx.outputSize() ).intersected( tile.tilePolygon().boundingRect() ),
+                               0, Qgis::TextHorizontalAlignment::Center, { tile.id().toString() },
+                               ctx, format, true, Qgis::TextVerticalAlignment::VerticalCenter );
 #endif
   }
 }

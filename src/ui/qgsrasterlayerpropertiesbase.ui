@@ -1477,7 +1477,20 @@ p, li { white-space: pre-wrap; }
                <number>0</number>
               </property>
               <item row="0" column="0">
-               <widget class="QGroupBox" name="groupBox_2">
+               <widget class="QCheckBox" name="mEnableMapTips">
+                <property name="toolTip">
+                 <string>Indicates whether map tips are displayed for this layer or not</string>
+                </property>
+                <property name="text">
+                 <string>Enable map tips</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QGroupBox" name="mHtmlMapTipGroupBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>

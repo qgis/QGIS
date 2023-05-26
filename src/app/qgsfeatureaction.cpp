@@ -227,13 +227,13 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttrib
   // override application-wide setting with any layer setting
   switch ( mLayer->editFormConfig().suppress() )
   {
-    case QgsEditFormConfig::SuppressOn:
+    case Qgis::AttributeFormSuppression::On:
       isDisabledAttributeValuesDlg = true;
       break;
-    case QgsEditFormConfig::SuppressOff:
+    case Qgis::AttributeFormSuppression::Off:
       isDisabledAttributeValuesDlg = false;
       break;
-    case QgsEditFormConfig::SuppressDefault:
+    case Qgis::AttributeFormSuppression::Default:
       break;
   }
 

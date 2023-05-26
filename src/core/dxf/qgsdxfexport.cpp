@@ -323,9 +323,17 @@ void QgsDxfExport::writeTables()
   // Iterate through all layers and get symbol layer pointers
   QgsRenderContext context = renderContext();
   QList< QPair< QgsSymbolLayer *, QgsSymbol * > > slList;
-  if ( mSymbologyExport != NoSymbology )
+  switch ( mSymbologyExport )
   {
-    slList = symbolLayers( context );
+    case Qgis::FeatureSymbologyExport::PerFeature:
+    case Qgis::FeatureSymbologyExport::PerSymbolLayer:
+    {
+      slList = symbolLayers( context );
+      break;
+    }
+
+    case Qgis::FeatureSymbologyExport::NoSymbology:
+      break;
   }
 
   // Line types
@@ -584,9 +592,16 @@ void QgsDxfExport::writeBlocks()
 
   // Iterate through all layers and get symbol layer pointers
   QList< QPair< QgsSymbolLayer *, QgsSymbol * > > slList;
-  if ( mSymbologyExport != NoSymbology )
+  switch ( mSymbologyExport )
   {
-    slList = symbolLayers( ct );
+    case Qgis::FeatureSymbologyExport::PerFeature:
+    case Qgis::FeatureSymbologyExport::PerSymbolLayer:
+    {
+      slList = symbolLayers( ct );
+      break;
+    }
+    case Qgis::FeatureSymbologyExport::NoSymbology:
+      break;
   }
 
   for ( const auto &symbolLayer : std::as_const( slList ) )
@@ -651,7 +666,7 @@ void QgsDxfExport::writeEntities()
   {
     QgsSymbolRenderContext sctx( mRenderContext, Qgis::RenderUnit::Millimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
 
-    if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology &&
+    if ( mSymbologyExport == Qgis::FeatureSymbologyExport::PerSymbolLayer &&
          ( job->renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) &&
          job->renderer->usingSymbolLevels() )
     {
@@ -680,7 +695,7 @@ void QgsDxfExport::writeEntities()
       if ( !job->renderer->willRenderFeature( fet, mRenderContext ) )
         continue;
 
-      if ( mSymbologyExport == NoSymbology )
+      if ( mSymbologyExport == Qgis::FeatureSymbologyExport::NoSymbology )
       {
         addFeature( sctx, ct, lName, nullptr, nullptr ); // no symbology at all
       }
@@ -689,7 +704,7 @@ void QgsDxfExport::writeEntities()
         const QgsSymbolList symbolList = job->renderer->symbolsForFeature( fet, mRenderContext );
         bool hasSymbology = symbolList.size() > 0;
 
-        if ( hasSymbology && mSymbologyExport == QgsDxfExport::SymbolLayerSymbology ) // symbol layer symbology, but layer does not use symbol levels
+        if ( hasSymbology && mSymbologyExport == Qgis::FeatureSymbologyExport::PerSymbolLayer ) // symbol layer symbology, but layer does not use symbol levels
         {
           for ( QgsSymbol *symbol : symbolList )
           {
@@ -955,13 +970,13 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString &l
   int n = line.size();
   if ( n == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
   if ( n < 2 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
@@ -1039,7 +1054,7 @@ void QgsDxfExport::appendCurve( const QgsCurve &c, QVector<QgsPoint> &points, QV
       break;
 
     default:
-      QgsDebugMsg( QStringLiteral( "Unexpected curve type %1" ).arg( c.wktTypeStr() ) );
+      QgsDebugError( QStringLiteral( "Unexpected curve type %1" ).arg( c.wktTypeStr() ) );
       break;
   }
 }
@@ -1093,13 +1108,13 @@ void QgsDxfExport::writePolyline( const QgsCurve &curve, const QString &layer, c
   int n = curve.numPoints();
   if ( n == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
   if ( n < 2 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
@@ -1507,7 +1522,7 @@ void QgsDxfExport::writeMText( const QString &layer, const QString &text, const 
   if ( !mTextStream.codec()->canEncode( text ) )
   {
     // TODO return error
-    QgsDebugMsg( QStringLiteral( "could not encode:%1" ).arg( text ) );
+    QgsDebugError( QStringLiteral( "could not encode:%1" ).arg( text ) );
     return;
   }
 #endif
@@ -1560,7 +1575,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
 
   QColor penColor;
   QColor brushColor;
-  if ( mSymbologyExport != NoSymbology && symbolLayer )
+  if ( mSymbologyExport != Qgis::FeatureSymbologyExport::NoSymbology && symbolLayer )
   {
     penColor = colorFromSymbolLayer( symbolLayer, ctx );
     brushColor = symbolLayer->dxfBrushColor( ctx );
@@ -1571,7 +1586,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
   double width = -1;
   double offset = 0.0;
   double angle = 0.0;
-  if ( mSymbologyExport != NoSymbology && symbolLayer )
+  if ( mSymbologyExport != Qgis::FeatureSymbologyExport::NoSymbology && symbolLayer )
   {
     width = symbolLayer->dxfWidth( *this, ctx );
     offset = symbolLayer->dxfOffset( *this, ctx );
@@ -1584,7 +1599,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
   }
 
   QString lineStyleName = QStringLiteral( "CONTINUOUS" );
-  if ( mSymbologyExport != NoSymbology )
+  if ( mSymbologyExport != Qgis::FeatureSymbologyExport::NoSymbology )
   {
     lineStyleName = lineStyleFromSymbolLayer( symbolLayer );
   }
@@ -1795,13 +1810,13 @@ int QgsDxfExport::color_distance( QRgb p1, int index )
   double greenDiff = qGreen( p1 ) - sDxfColors[index][1];
   double blueDiff = qBlue( p1 ) - sDxfColors[index][2];
 #if 0
-  QgsDebugMsg( QStringLiteral( "color_distance( r:%1 g:%2 b:%3 <=> i:%4 r:%5 g:%6 b:%7 ) => %8" )
-               .arg( qRed( p1 ) ).arg( qGreen( p1 ) ).arg( qBlue( p1 ) )
-               .arg( index )
-               .arg( mDxfColors[index][0] )
-               .arg( mDxfColors[index][1] )
-               .arg( mDxfColors[index][2] )
-               .arg( redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff ) );
+  QgsDebugMsgLevel( QStringLiteral( "color_distance( r:%1 g:%2 b:%3 <=> i:%4 r:%5 g:%6 b:%7 ) => %8" )
+                    .arg( qRed( p1 ) ).arg( qGreen( p1 ) ).arg( qBlue( p1 ) )
+                    .arg( index )
+                    .arg( mDxfColors[index][0] )
+                    .arg( mDxfColors[index][1] )
+                    .arg( mDxfColors[index][2] )
+                    .arg( redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff ), 2 );
 #endif
   return redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff;
 }
@@ -1876,7 +1891,7 @@ QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsR
     for ( QgsSymbol *symbol : symbols )
     {
       int maxSymbolLayers = symbol->symbolLayerCount();
-      if ( mSymbologyExport != SymbolLayerSymbology )
+      if ( mSymbologyExport != Qgis::FeatureSymbologyExport::PerSymbolLayer )
       {
         maxSymbolLayers = 1;
       }
@@ -2141,7 +2156,7 @@ bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer *layer ) const
   if ( !layer )
     return false;
 
-  if ( mSymbologyExport == QgsDxfExport::NoSymbology )
+  if ( mSymbologyExport == Qgis::FeatureSymbologyExport::NoSymbology )
     return true;
 
   return layer->isInScaleRange( mSymbologyScale );

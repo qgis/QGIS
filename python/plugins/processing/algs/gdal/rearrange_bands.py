@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     rearrange_bands.py
@@ -114,7 +112,7 @@ class rearrange_bands(GdalAlgorithm):
 
         bands = self.parameterAsInts(parameters, self.BANDS, context)
         arguments = [
-            '-b {}'.format(band)
+            f'-b {band}'
             for band in bands
         ]
 

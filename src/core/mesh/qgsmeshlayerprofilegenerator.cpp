@@ -71,6 +71,7 @@ QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer,
   mTriangularMesh = *layer->triangularMesh();
 
   mSymbology = qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
+  mElevationLimit = qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->elevationLimit();
   mLineSymbol.reset( qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() );
   mFillSymbol.reset( qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
@@ -97,7 +98,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming profile line to mesh CRS" ) );
+    QgsDebugError( QStringLiteral( "Error transforming profile line to mesh CRS" ) );
     return false;
   }
 
