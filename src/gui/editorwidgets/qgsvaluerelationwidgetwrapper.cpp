@@ -291,7 +291,7 @@ QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
   }
   else
   {
-    QComboBox *combo = new QComboBox( parent );
+    QgsToolTipComboBox *combo = new QgsToolTipComboBox( parent );
     combo->setMinimumContentsLength( 1 );
     combo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
     return combo;
@@ -301,7 +301,7 @@ QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
 void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
 {
 
-  mComboBox = qobject_cast<QComboBox *>( editor );
+  mComboBox = qobject_cast<QgsToolTipComboBox *>( editor );
   mTableWidget = qobject_cast<QgsFilteredTableWidget *>( editor );
   mLineEdit = qobject_cast<QLineEdit *>( editor );
 
