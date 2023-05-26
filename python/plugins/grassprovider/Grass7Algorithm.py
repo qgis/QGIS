@@ -148,7 +148,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 spec = importlib.util.spec_from_file_location('grassprovider.ext.' + name, extpath)
                 self.module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(self.module)
-        except:
+        except Exception:
             pass
 
     def createInstance(self):
