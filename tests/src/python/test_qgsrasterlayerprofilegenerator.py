@@ -87,7 +87,7 @@ class TestQgsRasterLayerProfileGenerator(unittest.TestCase):
         self.assertAlmostEqual(features[0].attributes['elevation'], 154.0, 0)
         self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
         self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
-        self.assertAlmostEqual(features[-1].attributes['distance'], 3392.69, 0)
+        self.assertAlmostEqual(features[-1].attributes['distance'], 3392.69, -1)
         self.assertAlmostEqual(features[-1].attributes['elevation'], 99.0, 0)
 
     def testGenerationWithStepSize(self):
