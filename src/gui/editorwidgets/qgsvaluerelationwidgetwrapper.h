@@ -20,9 +20,9 @@
 
 #include "qgseditorwidgetwrapper.h"
 #include "qgsvaluerelationfieldformatter.h"
+#include "qgstooltipcombobox.h"
 #include "qgis_gui.h"
 
-class QComboBox;
 class QLineEdit;
 class QgsValueRelationWidgetFactory;
 class QgsFilterLineEdit;
@@ -206,7 +206,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     //! Sets the values for the widgets, re-creates the cache when required
     void populate( );
 
-    QComboBox *mComboBox = nullptr;
+    QgsToolTipComboBox *mComboBox = nullptr;
     QgsFilteredTableWidget *mTableWidget = nullptr;
     QLineEdit *mLineEdit = nullptr;
 
