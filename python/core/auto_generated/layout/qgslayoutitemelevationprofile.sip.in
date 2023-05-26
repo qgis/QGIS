@@ -152,6 +152,24 @@ Returns the profile request used to generate the elevation profile.
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 
+    Qgis::DistanceUnit distanceUnit() const;
+%Docstring
+Returns the units for the distance axis.
+
+.. seealso:: :py:func:`setDistanceUnit`
+
+.. versionadded:: 3.32
+%End
+
+    void setDistanceUnit( Qgis::DistanceUnit unit );
+%Docstring
+Sets the ``unit`` for the distance axis.
+
+.. seealso:: :py:func:`distanceUnit`
+
+.. versionadded:: 3.32
+%End
+
   public slots:
 
     virtual void refresh();

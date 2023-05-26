@@ -227,7 +227,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
     }
 
     QgsProject *mProject = nullptr;
-    double mXScaleFactor = 1.0 / 1000;
+    double mXScaleFactor = 1.0;
 
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
 

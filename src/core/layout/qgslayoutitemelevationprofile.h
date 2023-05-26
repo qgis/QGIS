@@ -167,6 +167,22 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
+    /**
+     * Returns the units for the distance axis.
+     *
+     * \see setDistanceUnit()
+     * \since QGIS 3.32
+     */
+    Qgis::DistanceUnit distanceUnit() const;
+
+    /**
+     * Sets the \a unit for the distance axis.
+     *
+     * \see distanceUnit()
+     * \since QGIS 3.32
+     */
+    void setDistanceUnit( Qgis::DistanceUnit unit );
+
   public slots:
 
     void refresh() override;
@@ -188,6 +204,7 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     QList< QgsMapLayerRef > mLayers;
 
     QgsCoordinateReferenceSystem mCrs;
+    Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
     std::unique_ptr< QgsCurve> mCurve;
     bool mAtlasDriven = false;
 
