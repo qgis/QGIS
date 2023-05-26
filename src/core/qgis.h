@@ -2233,6 +2233,7 @@ class CORE_EXPORT Qgis
      */
     enum class PlotAxisSuffixPlacement
     {
+      NoLabels, //!< Do not place suffixes
       EveryLabel, //!< Place suffix after every value label
       FirstLabel, //!< Place suffix after the first label value only
       LastLabel, //!< Place suffix after the last label value only

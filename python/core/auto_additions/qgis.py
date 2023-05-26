@@ -2257,11 +2257,12 @@ Qgis.GraduatedMethod.__doc__ = 'Methods for modifying symbols by range in a grad
 # --
 Qgis.GraduatedMethod.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.PlotAxisSuffixPlacement.NoLabels.__doc__ = "Do not place suffixes"
 Qgis.PlotAxisSuffixPlacement.EveryLabel.__doc__ = "Place suffix after every value label"
 Qgis.PlotAxisSuffixPlacement.FirstLabel.__doc__ = "Place suffix after the first label value only"
 Qgis.PlotAxisSuffixPlacement.LastLabel.__doc__ = "Place suffix after the last label value only"
 Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels.__doc__ = "Place suffix after the first and last label values only"
-Qgis.PlotAxisSuffixPlacement.__doc__ = 'Placement options for suffixes in the labels for axis of plots.\n\n.. versionadded:: 3.32\n\n' + '* ``EveryLabel``: ' + Qgis.PlotAxisSuffixPlacement.EveryLabel.__doc__ + '\n' + '* ``FirstLabel``: ' + Qgis.PlotAxisSuffixPlacement.FirstLabel.__doc__ + '\n' + '* ``LastLabel``: ' + Qgis.PlotAxisSuffixPlacement.LastLabel.__doc__ + '\n' + '* ``FirstAndLastLabels``: ' + Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels.__doc__
+Qgis.PlotAxisSuffixPlacement.__doc__ = 'Placement options for suffixes in the labels for axis of plots.\n\n.. versionadded:: 3.32\n\n' + '* ``NoLabels``: ' + Qgis.PlotAxisSuffixPlacement.NoLabels.__doc__ + '\n' + '* ``EveryLabel``: ' + Qgis.PlotAxisSuffixPlacement.EveryLabel.__doc__ + '\n' + '* ``FirstLabel``: ' + Qgis.PlotAxisSuffixPlacement.FirstLabel.__doc__ + '\n' + '* ``LastLabel``: ' + Qgis.PlotAxisSuffixPlacement.LastLabel.__doc__ + '\n' + '* ``FirstAndLastLabels``: ' + Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels.__doc__
 # --
 Qgis.PlotAxisSuffixPlacement.baseClass = Qgis
 # monkey patching scoped based enum
