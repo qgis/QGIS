@@ -2395,42 +2395,44 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &tileLayer
   if ( tileLayer.setLinks.isEmpty() )
     return false;
 
-  // take first supported tile matrix set
-  const QgsWmtsTileMatrixSetLink &setLink = *tileLayer.setLinks.constBegin();
+  // add valid bounding boxes for all linked tile matrix set
+  const QList<QgsWmtsTileMatrixSetLink> links = tileLayer.setLinks.values();
+  for ( QgsWmtsTileMatrixSetLink setLink : links )
+  {
+    QHash<QString, QgsWmtsTileMatrixSet>::const_iterator tmsIt = mTileMatrixSets.constFind( setLink.tileMatrixSet );
+    if ( tmsIt == mTileMatrixSets.constEnd() )
+      continue;
 
-  QHash<QString, QgsWmtsTileMatrixSet>::const_iterator tmsIt = mTileMatrixSets.constFind( setLink.tileMatrixSet );
-  if ( tmsIt == mTileMatrixSets.constEnd() )
-    return false;
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tmsIt->crs );
+    if ( !crs.isValid() )
+      continue;
 
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tmsIt->crs );
-  if ( !crs.isValid() )
-    return false;
+    // take most coarse tile matrix ...
+    QMap<double, QgsWmtsTileMatrix>::const_iterator tmIt = --tmsIt->tileMatrices.constEnd();
+    if ( tmIt == tmsIt->tileMatrices.constEnd() )
+      continue;
 
-  // take most coarse tile matrix ...
-  QMap<double, QgsWmtsTileMatrix>::const_iterator tmIt = --tmsIt->tileMatrices.constEnd();
-  if ( tmIt == tmsIt->tileMatrices.constEnd() )
-    return false;
+    const QgsWmtsTileMatrix &tm = *tmIt;
+    double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
+    // the magic number below is "standardized rendering pixel size" defined
+    // in WMTS (and WMS 1.3) standard, being 0.28 pixel
+    double res = tm.scaleDenom * 0.00028 / metersPerUnit;
+    QgsPointXY bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
+                            tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
 
-  const QgsWmtsTileMatrix &tm = *tmIt;
-  double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
-  // the magic number below is "standardized rendering pixel size" defined
-  // in WMTS (and WMS 1.3) standard, being 0.28 pixel
-  double res = tm.scaleDenom * 0.00028 / metersPerUnit;
-  QgsPointXY bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
-                          tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
+    QgsDebugMsgLevel( QStringLiteral( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
+                      .arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ), 2 );
 
-  QgsDebugMsgLevel( QStringLiteral( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
-                    .arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ), 2 );
+    QgsRectangle extent( tm.topLeft, bottomRight );
+    extent.normalize();
 
-  QgsRectangle extent( tm.topLeft, bottomRight );
-  extent.normalize();
+    QgsWmsBoundingBoxProperty boundingBoxProperty;
+    boundingBoxProperty.box = extent;
+    boundingBoxProperty.crs = crs.authid();
+    tileLayer.boundingBoxes << boundingBoxProperty;
+  }
 
-  QgsWmsBoundingBoxProperty boundingBoxProperty;
-  boundingBoxProperty.box = extent;
-  boundingBoxProperty.crs = crs.authid();
-  tileLayer.boundingBoxes << boundingBoxProperty;
-
-  return true;
+  return !tileLayer.boundingBoxes.isEmpty();
 }
 
 
