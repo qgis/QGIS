@@ -345,6 +345,56 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( mLockRatioAction, &QAction::toggled, this, &QgsElevationProfileWidget::axisScaleLockToggled );
   mOptionsMenu->addAction( mLockRatioAction );
 
+  mDistanceUnitMenu = new QMenu( tr( "Distance Units" ), this );
+  QActionGroup *unitGroup = new QActionGroup( this );
+  for ( Qgis::DistanceUnit unit :
+        {
+          Qgis::DistanceUnit::Kilometers,
+          Qgis::DistanceUnit::Meters,
+          Qgis::DistanceUnit::Centimeters,
+          Qgis::DistanceUnit::Millimeters,
+          Qgis::DistanceUnit::Miles,
+          Qgis::DistanceUnit::NauticalMiles,
+          Qgis::DistanceUnit::Yards,
+          Qgis::DistanceUnit::Feet,
+          Qgis::DistanceUnit::Inches,
+          Qgis::DistanceUnit::Degrees,
+        } )
+  {
+    QString title;
+    if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) )
+    {
+      title = QgsStringUtils::capitalize( QgsUnitTypes::toString( unit ), Qgis::Capitalization::TitleCase );
+    }
+    else
+    {
+      title = QgsUnitTypes::toString( unit );
+    }
+    QAction *action = new QAction( title );
+    action->setData( QVariant::fromValue( unit ) );
+    action->setCheckable( true );
+    action->setActionGroup( unitGroup );
+    connect( action, &QAction::toggled, this, [ = ]( bool active )
+    {
+      if ( active )
+      {
+        mCanvas->setDistanceUnit( unit );
+      }
+    } );
+    mDistanceUnitMenu->addAction( action );
+  }
+  connect( mDistanceUnitMenu, &QMenu::aboutToShow, this, [ = ]
+  {
+    for ( QAction *action : mDistanceUnitMenu->actions() )
+    {
+      if ( action->data().value< Qgis::DistanceUnit >() == mCanvas->distanceUnit() && !action->isChecked() )
+        action->setChecked( true );
+    }
+  } );
+
+  mOptionsMenu->addMenu( mDistanceUnitMenu );
+  mOptionsMenu->addSeparator();
+
   mSettingsAction = new QgsElevationProfileWidgetSettingsAction( mOptionsMenu );
 
   mSettingsAction->toleranceSpinBox()->setValue( settingTolerance->value() );
@@ -480,6 +530,12 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
   mMapPointRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
   mMapPointRubberBand->setColor( QColor( 0, 0, 0 ) );
   mMapPointRubberBand->hide();
+
+  mCanvas->setDistanceUnit( mMainCanvas->mapSettings().destinationCrs().mapUnits() );
+  connect( mMainCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
+  {
+    mCanvas->setDistanceUnit( mMainCanvas->mapSettings().destinationCrs().mapUnits() );
+  } );
 }
 
 void QgsElevationProfileWidget::cancelJobs()

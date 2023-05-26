@@ -153,6 +153,7 @@ class QgsElevationProfileWidget : public QWidget
     QAction *mNudgeLeftAction = nullptr;
     QAction *mNudgeRightAction = nullptr;
     QAction *mLockRatioAction = nullptr;
+    QMenu *mDistanceUnitMenu = nullptr;
 
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;
