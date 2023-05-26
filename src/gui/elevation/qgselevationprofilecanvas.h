@@ -240,6 +240,22 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void setLockAxisScales( bool lock );
 
+    /**
+     * Returns the distance unit used by the canvas.
+     *
+     * \see setDistanceUnit()
+     * \since QGIS 3.32
+     */
+    Qgis::DistanceUnit distanceUnit() const;
+
+    /**
+     * Sets the distance \a unit used by the canvas.
+     *
+     * \see distanceUnit()
+     * \since QGIS 3.32
+     */
+    void setDistanceUnit( Qgis::DistanceUnit unit );
+
   signals:
 
     /**
@@ -298,6 +314,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;
+    Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
 
     QgsWeakMapLayerPointerList mLayers;
 

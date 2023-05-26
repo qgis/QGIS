@@ -224,6 +224,24 @@ Sets whether the distance and elevation scales are locked to each other.
 .. versionadded:: 3.32
 %End
 
+    Qgis::DistanceUnit distanceUnit() const;
+%Docstring
+Returns the distance unit used by the canvas.
+
+.. seealso:: :py:func:`setDistanceUnit`
+
+.. versionadded:: 3.32
+%End
+
+    void setDistanceUnit( Qgis::DistanceUnit unit );
+%Docstring
+Sets the distance ``unit`` used by the canvas.
+
+.. seealso:: :py:func:`distanceUnit`
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void activeJobCountChanged( int count );
