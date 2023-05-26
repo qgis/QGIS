@@ -26,6 +26,7 @@ from qgis.core import (
     QgsRenderContext,
     QgsSymbolLayer,
     QgsTextFormat,
+    Qgis
 )
 from qgis.testing import start_app, unittest
 
@@ -34,13 +35,9 @@ app = start_app()
 
 class TestQgsPlot(unittest.TestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsPlot Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return 'plot'
 
     def testPlot(self):
         plot = Qgs2DPlot()
@@ -100,10 +97,294 @@ class TestQgsPlot(unittest.TestCase):
         plot.render(rc)
         painter.end()
 
-        assert self.imageCheck('plot_2d_base', 'plot_2d_base', im)
+        assert self.image_check('plot_2d_base', 'plot_2d_base', im)
 
         plot_rect = plot.interiorPlotArea(rc)
         self.assertAlmostEqual(plot_rect.left(), 64.8, 0)
+        self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
+        self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
+
+    def testPlotSuffixAll(self):
+        plot = Qgs2DPlot()
+        plot.setSize(QSizeF(600, 500))
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        x_axis_format.setColor(QColor(255, 0, 0))
+        plot.xAxis().setTextFormat(x_axis_format)
+
+        x_axis_number_format = QgsBasicNumericFormat()
+        x_axis_number_format.setNumberDecimalPlaces(1)
+        x_axis_number_format.setShowTrailingZeros(True)
+        plot.xAxis().setNumericFormat(x_axis_number_format)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        y_axis_format.setColor(QColor(0, 255, 0))
+        plot.yAxis().setTextFormat(y_axis_format)
+
+        y_axis_number_format = QgsBasicNumericFormat()
+        y_axis_number_format.setShowPlusSign(True)
+        plot.yAxis().setNumericFormat(y_axis_number_format)
+
+        plot.setXMinimum(3)
+        plot.setXMaximum(9)
+
+        plot.setYMinimum(2)
+        plot.setYMaximum(12)
+
+        plot.xAxis().setLabelSuffix('x')
+        plot.xAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.EveryLabel)
+        plot.yAxis().setLabelSuffix('y')
+        plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.EveryLabel)
+
+        im = QImage(600, 500, QImage.Format_ARGB32)
+        im.fill(Qt.white)
+        im.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(96 / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        plot.render(rc)
+        painter.end()
+
+        assert self.image_check('plot_2d_base_suffix_all', 'plot_2d_base_suffix_all', im)
+
+        plot_rect = plot.interiorPlotArea(rc)
+        self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
+        self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
+        self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
+
+    def testPlotSuffixFirst(self):
+        plot = Qgs2DPlot()
+        plot.setSize(QSizeF(600, 500))
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        x_axis_format.setColor(QColor(255, 0, 0))
+        plot.xAxis().setTextFormat(x_axis_format)
+
+        x_axis_number_format = QgsBasicNumericFormat()
+        x_axis_number_format.setNumberDecimalPlaces(1)
+        x_axis_number_format.setShowTrailingZeros(True)
+        plot.xAxis().setNumericFormat(x_axis_number_format)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        y_axis_format.setColor(QColor(0, 255, 0))
+        plot.yAxis().setTextFormat(y_axis_format)
+
+        y_axis_number_format = QgsBasicNumericFormat()
+        y_axis_number_format.setShowPlusSign(True)
+        plot.yAxis().setNumericFormat(y_axis_number_format)
+
+        plot.setXMinimum(3)
+        plot.setXMaximum(9)
+
+        plot.setYMinimum(2)
+        plot.setYMaximum(12)
+
+        plot.xAxis().setLabelSuffix('x')
+        plot.xAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.FirstLabel)
+        plot.yAxis().setLabelSuffix('y')
+        plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.FirstLabel)
+
+        im = QImage(600, 500, QImage.Format_ARGB32)
+        im.fill(Qt.white)
+        im.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(96 / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        plot.render(rc)
+        painter.end()
+
+        assert self.image_check('plot_2d_base_suffix_first', 'plot_2d_base_suffix_first', im)
+
+        plot_rect = plot.interiorPlotArea(rc)
+        self.assertAlmostEqual(plot_rect.left(), 64.82, 0)
+        self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
+        self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
+
+    def testPlotSuffixLast(self):
+        plot = Qgs2DPlot()
+        plot.setSize(QSizeF(600, 500))
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        x_axis_format.setColor(QColor(255, 0, 0))
+        plot.xAxis().setTextFormat(x_axis_format)
+
+        x_axis_number_format = QgsBasicNumericFormat()
+        x_axis_number_format.setNumberDecimalPlaces(1)
+        x_axis_number_format.setShowTrailingZeros(True)
+        plot.xAxis().setNumericFormat(x_axis_number_format)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        y_axis_format.setColor(QColor(0, 255, 0))
+        plot.yAxis().setTextFormat(y_axis_format)
+
+        y_axis_number_format = QgsBasicNumericFormat()
+        y_axis_number_format.setShowPlusSign(True)
+        plot.yAxis().setNumericFormat(y_axis_number_format)
+
+        plot.setXMinimum(3)
+        plot.setXMaximum(9.5)
+
+        plot.setYMinimum(2)
+        plot.setYMaximum(12)
+
+        plot.xAxis().setLabelSuffix('x')
+        plot.xAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.LastLabel)
+        plot.yAxis().setLabelSuffix('y')
+        plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.LastLabel)
+
+        im = QImage(600, 500, QImage.Format_ARGB32)
+        im.fill(Qt.white)
+        im.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(96 / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        plot.render(rc)
+        painter.end()
+
+        assert self.image_check('plot_2d_base_suffix_last', 'plot_2d_base_suffix_last', im)
+
+        plot_rect = plot.interiorPlotArea(rc)
+        self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
+        self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
+        self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
+
+    def testPlotSuffixFirstAndLast(self):
+        plot = Qgs2DPlot()
+        plot.setSize(QSizeF(600, 500))
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        x_axis_format.setColor(QColor(255, 0, 0))
+        plot.xAxis().setTextFormat(x_axis_format)
+
+        x_axis_number_format = QgsBasicNumericFormat()
+        x_axis_number_format.setNumberDecimalPlaces(1)
+        x_axis_number_format.setShowTrailingZeros(True)
+        plot.xAxis().setNumericFormat(x_axis_number_format)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        y_axis_format.setColor(QColor(0, 255, 0))
+        plot.yAxis().setTextFormat(y_axis_format)
+
+        y_axis_number_format = QgsBasicNumericFormat()
+        y_axis_number_format.setShowPlusSign(True)
+        plot.yAxis().setNumericFormat(y_axis_number_format)
+
+        plot.setXMinimum(3)
+        plot.setXMaximum(9.5)
+
+        plot.setYMinimum(2)
+        plot.setYMaximum(12)
+
+        plot.xAxis().setLabelSuffix('x')
+        plot.xAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels)
+        plot.yAxis().setLabelSuffix('y')
+        plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels)
+
+        im = QImage(600, 500, QImage.Format_ARGB32)
+        im.fill(Qt.white)
+        im.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(96 / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        plot.render(rc)
+        painter.end()
+
+        assert self.image_check('plot_2d_base_suffix_first_and_last', 'plot_2d_base_suffix_first_and_last', im)
+
+        plot_rect = plot.interiorPlotArea(rc)
+        self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
         self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
@@ -164,7 +445,7 @@ class TestQgsPlot(unittest.TestCase):
         plot.render(rc)
         painter.end()
 
-        assert self.imageCheck('plot_2d_intervals', 'plot_2d_intervals', im)
+        assert self.image_check('plot_2d_intervals', 'plot_2d_intervals', im)
 
     def testPlotDataDefinedProperties(self):
         plot = Qgs2DPlot()
@@ -219,7 +500,7 @@ class TestQgsPlot(unittest.TestCase):
         plot.render(rc)
         painter.end()
 
-        assert self.imageCheck('plot_2d_data_defined', 'plot_2d_data_defined', im)
+        assert self.image_check('plot_2d_data_defined', 'plot_2d_data_defined', im)
 
         plot_rect = plot.interiorPlotArea(rc)
         self.assertAlmostEqual(plot_rect.left(), 44.71, 0)
@@ -364,6 +645,13 @@ class TestQgsPlot(unittest.TestCase):
         plot.xAxis().setLabelInterval(32)
         plot.yAxis().setLabelInterval(23)
 
+        plot.xAxis().setLabelSuffix('km')
+        plot.xAxis().setLabelSuffixPlacement(
+            Qgis.PlotAxisSuffixPlacement.LastLabel)
+        plot.yAxis().setLabelSuffix('m')
+        plot.yAxis().setLabelSuffixPlacement(
+            Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels)
+
         doc = QDomDocument()
         elem = doc.createElement('test')
         plot.writeXml(elem, doc, QgsReadWriteContext())
@@ -398,20 +686,12 @@ class TestQgsPlot(unittest.TestCase):
         self.assertEqual(res.yAxis().gridMinorSymbol().color().name(), '#ff4433')
         self.assertEqual(res.yAxis().gridMajorSymbol().color().name(), '#0066ff')
 
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'plot_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("plot")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
+        self.assertEqual(res.xAxis().labelSuffix(), 'km')
+        self.assertEqual(res.xAxis().labelSuffixPlacement(),
+                         Qgis.PlotAxisSuffixPlacement.LastLabel)
+        self.assertEqual(res.yAxis().labelSuffix(), 'm')
+        self.assertEqual(res.yAxis().labelSuffixPlacement(),
+                         Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels)
 
 
 if __name__ == '__main__':
