@@ -85,7 +85,7 @@ bool QgsPlotAxis::readXml( const QDomElement &element, const QgsReadWriteContext
   mLabelInterval = element.attribute( QStringLiteral( "labelInterval" ) ).toDouble();
 
   mLabelSuffix = element.attribute( QStringLiteral( "suffix" ) );
-  mSuffixPlacement = qgsEnumKeyToValue( element.attribute( QStringLiteral( "suffixPlacement" ) ), Qgis::PlotAxisSuffixPlacement::EveryLabel );
+  mSuffixPlacement = qgsEnumKeyToValue( element.attribute( QStringLiteral( "suffixPlacement" ) ), Qgis::PlotAxisSuffixPlacement::NoLabels );
 
   const QDomElement numericFormatElement = element.firstChildElement( QStringLiteral( "numericFormat" ) );
   mNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElement, context ) );
@@ -265,6 +265,9 @@ void Qgs2DPlot::render( QgsRenderContext &context )
     QString text = mYAxis.numericFormat()->formatDouble( currentY, numericContext );
     switch ( mYAxis.labelSuffixPlacement() )
     {
+      case Qgis::PlotAxisSuffixPlacement::NoLabels:
+        break;
+
       case Qgis::PlotAxisSuffixPlacement::EveryLabel:
         text += yAxisSuffix;
         break;
@@ -372,6 +375,9 @@ void Qgs2DPlot::render( QgsRenderContext &context )
     QString text = mXAxis.numericFormat()->formatDouble( currentX, numericContext );
     switch ( mXAxis.labelSuffixPlacement() )
     {
+      case Qgis::PlotAxisSuffixPlacement::NoLabels:
+        break;
+
       case Qgis::PlotAxisSuffixPlacement::EveryLabel:
         text += xAxisSuffix;
         break;
@@ -408,6 +414,9 @@ void Qgs2DPlot::render( QgsRenderContext &context )
     QString text = mYAxis.numericFormat()->formatDouble( currentY, numericContext );
     switch ( mYAxis.labelSuffixPlacement() )
     {
+      case Qgis::PlotAxisSuffixPlacement::NoLabels:
+        break;
+
       case Qgis::PlotAxisSuffixPlacement::EveryLabel:
         text += yAxisSuffix;
         break;
@@ -506,6 +515,9 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
     QString text = mXAxis.numericFormat()->formatDouble( currentX, numericContext );
     switch ( mXAxis.labelSuffixPlacement() )
     {
+      case Qgis::PlotAxisSuffixPlacement::NoLabels:
+        break;
+
       case Qgis::PlotAxisSuffixPlacement::EveryLabel:
         text += xAxisSuffix;
         break;
@@ -543,6 +555,9 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
     {
       switch ( mYAxis.labelSuffixPlacement() )
       {
+        case Qgis::PlotAxisSuffixPlacement::NoLabels:
+          break;
+
         case Qgis::PlotAxisSuffixPlacement::EveryLabel:
           thisLabelWidth += yAxisSuffixWidth;
           break;

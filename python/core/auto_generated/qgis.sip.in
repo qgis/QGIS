@@ -1322,6 +1322,7 @@ The development version
 
     enum class PlotAxisSuffixPlacement
     {
+      NoLabels,
       EveryLabel,
       FirstLabel,
       LastLabel,
