@@ -228,6 +228,11 @@ double QgsGraphicsViewMouseHandles::rectHandlerBorderTolerance()
 Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoordPos )
 {
   QgsGraphicsViewMouseHandles::MouseAction mouseAction = mouseActionForPosition( itemCoordPos );
+  double normalizedRotation = std::fmod( rotation(), 360 );
+  if ( normalizedRotation < 0 )
+  {
+    normalizedRotation += 360;
+  }
   switch ( mouseAction )
   {
     case NoAction:
@@ -237,15 +242,15 @@ Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoor
     case ResizeUp:
     case ResizeDown:
       //account for rotation
-      if ( ( rotation() <= 22.5 || rotation() >= 337.5 ) || ( rotation() >= 157.5 && rotation() <= 202.5 ) )
+      if ( ( normalizedRotation <= 22.5 || normalizedRotation >= 337.5 ) || ( normalizedRotation >= 157.5 && normalizedRotation <= 202.5 ) )
       {
         return Qt::SizeVerCursor;
       }
-      else if ( ( rotation() >= 22.5 && rotation() <= 67.5 ) || ( rotation() >= 202.5 && rotation() <= 247.5 ) )
+      else if ( ( normalizedRotation >= 22.5 && normalizedRotation <= 67.5 ) || ( normalizedRotation >= 202.5 && normalizedRotation <= 247.5 ) )
       {
         return Qt::SizeBDiagCursor;
       }
-      else if ( ( rotation() >= 67.5 && rotation() <= 112.5 ) || ( rotation() >= 247.5 && rotation() <= 292.5 ) )
+      else if ( ( normalizedRotation >= 67.5 && normalizedRotation <= 112.5 ) || ( normalizedRotation >= 247.5 && normalizedRotation <= 292.5 ) )
       {
         return Qt::SizeHorCursor;
       }
@@ -256,15 +261,15 @@ Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoor
     case ResizeLeft:
     case ResizeRight:
       //account for rotation
-      if ( ( rotation() <= 22.5 || rotation() >= 337.5 ) || ( rotation() >= 157.5 && rotation() <= 202.5 ) )
+      if ( ( normalizedRotation <= 22.5 || normalizedRotation >= 337.5 ) || ( normalizedRotation >= 157.5 && normalizedRotation <= 202.5 ) )
       {
         return Qt::SizeHorCursor;
       }
-      else if ( ( rotation() >= 22.5 && rotation() <= 67.5 ) || ( rotation() >= 202.5 && rotation() <= 247.5 ) )
+      else if ( ( normalizedRotation >= 22.5 && normalizedRotation <= 67.5 ) || ( normalizedRotation >= 202.5 && normalizedRotation <= 247.5 ) )
       {
         return Qt::SizeFDiagCursor;
       }
-      else if ( ( rotation() >= 67.5 && rotation() <= 112.5 ) || ( rotation() >= 247.5 && rotation() <= 292.5 ) )
+      else if ( ( normalizedRotation >= 67.5 && normalizedRotation <= 112.5 ) || ( normalizedRotation >= 247.5 && normalizedRotation <= 292.5 ) )
       {
         return Qt::SizeVerCursor;
       }
@@ -276,15 +281,15 @@ Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoor
     case ResizeLeftUp:
     case ResizeRightDown:
       //account for rotation
-      if ( ( rotation() <= 22.5 || rotation() >= 337.5 ) || ( rotation() >= 157.5 && rotation() <= 202.5 ) )
+      if ( ( normalizedRotation <= 22.5 || normalizedRotation >= 337.5 ) || ( normalizedRotation >= 157.5 && normalizedRotation <= 202.5 ) )
       {
         return Qt::SizeFDiagCursor;
       }
-      else if ( ( rotation() >= 22.5 && rotation() <= 67.5 ) || ( rotation() >= 202.5 && rotation() <= 247.5 ) )
+      else if ( ( normalizedRotation >= 22.5 && normalizedRotation <= 67.5 ) || ( normalizedRotation >= 202.5 && normalizedRotation <= 247.5 ) )
       {
         return Qt::SizeVerCursor;
       }
-      else if ( ( rotation() >= 67.5 && rotation() <= 112.5 ) || ( rotation() >= 247.5 && rotation() <= 292.5 ) )
+      else if ( ( normalizedRotation >= 67.5 && normalizedRotation <= 112.5 ) || ( normalizedRotation >= 247.5 && normalizedRotation <= 292.5 ) )
       {
         return Qt::SizeBDiagCursor;
       }
@@ -295,15 +300,15 @@ Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoor
     case ResizeRightUp:
     case ResizeLeftDown:
       //account for rotation
-      if ( ( rotation() <= 22.5 || rotation() >= 337.5 ) || ( rotation() >= 157.5 && rotation() <= 202.5 ) )
+      if ( ( normalizedRotation <= 22.5 || normalizedRotation >= 337.5 ) || ( normalizedRotation >= 157.5 && normalizedRotation <= 202.5 ) )
       {
         return Qt::SizeBDiagCursor;
       }
-      else if ( ( rotation() >= 22.5 && rotation() <= 67.5 ) || ( rotation() >= 202.5 && rotation() <= 247.5 ) )
+      else if ( ( normalizedRotation >= 22.5 && normalizedRotation <= 67.5 ) || ( normalizedRotation >= 202.5 && normalizedRotation <= 247.5 ) )
       {
         return Qt::SizeHorCursor;
       }
-      else if ( ( rotation() >= 67.5 && rotation() <= 112.5 ) || ( rotation() >= 247.5 && rotation() <= 292.5 ) )
+      else if ( ( normalizedRotation >= 67.5 && normalizedRotation <= 112.5 ) || ( normalizedRotation >= 247.5 && normalizedRotation <= 292.5 ) )
       {
         return Qt::SizeFDiagCursor;
       }
