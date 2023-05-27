@@ -535,6 +535,11 @@ write as DXF
 Gets line width
 %End
 
+    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+%Docstring
+Gets marker size
+%End
+
     virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 %Docstring
 Gets offset
@@ -1043,6 +1048,8 @@ Writes the symbol layer definition as a SLD XML element.
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
+    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual double dxfAngle( QgsSymbolRenderContext &context ) const;
 
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) = 0;
 %Docstring
