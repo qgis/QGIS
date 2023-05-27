@@ -353,7 +353,7 @@ override_dh_installmime:
 override_dh_python3:
 	dh_python3
 	dh_python3 usr/share/qgis/grass/scripts
-ifeq (,$(findstring $(DISTRIBUTION),"jammy kinetic lunar sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"bullseye focal"))
 	dh_sip3 -ppython3-qgis
 endif
 
