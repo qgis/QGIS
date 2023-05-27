@@ -1590,8 +1590,6 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
           break;
       }
     }
-
-    size *= QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), mSizeUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
   }
 
   if ( mSizeUnit == QgsUnitTypes::RenderMillimeters )
