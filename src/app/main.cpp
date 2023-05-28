@@ -34,6 +34,7 @@
 #include <QMessageBox>
 #include <QStandardPaths>
 #include <QScreen>
+#include <QSurfaceFormat>
 
 #include <cstdio>
 #include <cstdlib>
@@ -943,19 +944,22 @@ int main( int argc, char *argv[] )
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
 #endif
 
-  // Set up an OpenGL Context to be shared between threads beforehand
-  // for plugins that depend on Qt WebEngine module.
-  // As suggested by Qt documentation at:
-  //   - https://doc.qt.io/qt-5/qtwebengine.html
-  //   - https://code.qt.io/cgit/qt/qtwebengine.git/plain/src/webenginewidgets/api/qtwebenginewidgetsglobal.cpp
-#if 0
-  // this is disabled, because it breaks Qt 3D. See
-  // https://interest.qt-project.narkive.com/GYwuMDac/qwebengineview-qsurfaceformat-errors-in-console
-  // https://bugreports.qt.io/browse/QTBUG-60614
-  // https://bugreports.qt.io/browse/QTBUG-60605
+  // Initialize the default surface format for all 
+  // QWindow and QWindow derived components
+#if !defined(QT_NO_OPENGL)
+  QSurfaceFormat format;
+  format.setVersion(4, 3);
+  format.setProfile(QSurfaceFormat::CoreProfile);
+  format.setDepthBufferSize(24);
+  format.setSamples(4);
+  format.setStencilBufferSize(8);
+  QSurfaceFormat::setDefaultFormat(format);
+#endif
+
+  // Enable resource sharing between OpenGL contexts 
+  // which is required for Qt WebEngine module
 #if !defined(QT_NO_OPENGL)
   QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts, true );
-#endif
 #endif
 
   // Set up the QgsSettings Global Settings:
