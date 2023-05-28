@@ -62,6 +62,7 @@
 #include <QPrinter>
 #include <QSplitter>
 #include <QShortcut>
+#include <QActionGroup>
 
 const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance = new QgsSettingsEntryDouble( QStringLiteral( "tolerance" ), QgsSettingsTree::sTreeElevationProfile, 0.1, QStringLiteral( "Tolerance distance for elevation profile plots" ), Qgis::SettingsOptions(), 0 );
 
