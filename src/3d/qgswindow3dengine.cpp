@@ -16,16 +16,16 @@
 #include "qgswindow3dengine.h"
 
 #include <Qt3DRender/QRenderCapture>
-#include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 
 #include "qgspreviewquad.h"
+#include "qgs3dwindow.h"
 
 QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
   : QgsAbstract3DEngine( parent )
 {
-  mWindow3D = new Qt3DExtras::Qt3DWindow;
+  mWindow3D = new Qgs3DWindow;
 
   mRoot = new Qt3DCore::QEntity;
   mWindow3D->setRootEntity( mRoot );
