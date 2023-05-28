@@ -108,7 +108,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
         case Qgis::DistanceUnit::Centimeters:
         case Qgis::DistanceUnit::Millimeters:
         case Qgis::DistanceUnit::Inches:
-          return QgsUnitTypes::toAbbreviatedString( mDistanceUnit );
+          return QStringLiteral( " %1" ).arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) );
 
         case Qgis::DistanceUnit::Degrees:
           return QObject::tr( "°" );

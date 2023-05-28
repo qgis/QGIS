@@ -942,7 +942,7 @@ void QgsLayoutItemElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
     case Qgis::DistanceUnit::Centimeters:
     case Qgis::DistanceUnit::Millimeters:
     case Qgis::DistanceUnit::Inches:
-      mPlot->xAxis().setLabelSuffix( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) );
+      mPlot->xAxis().setLabelSuffix( QStringLiteral( " %1" ).arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) ) );
       break;
 
     case Qgis::DistanceUnit::Degrees:
