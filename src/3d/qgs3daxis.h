@@ -70,7 +70,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      * @param camera camera controller used to track camera movements
      * @param map 3D map settings
      */
-    Qgs3DAxis(Qgs3DWindow *parentWindow,  Qt3DCore::QEntity *parent3DScene,
+    Qgs3DAxis( Qgs3DWindow *parentWindow,  Qt3DCore::QEntity *parent3DScene,
                Qgs3DMapScene *mapScene, QgsCameraController *camera, Qgs3DMapSettings *map );
     ~Qgs3DAxis() override;
 

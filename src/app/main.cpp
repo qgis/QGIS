@@ -944,19 +944,19 @@ int main( int argc, char *argv[] )
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
 #endif
 
-  // Initialize the default surface format for all 
+  // Initialize the default surface format for all
   // QWindow and QWindow derived components
 #if !defined(QT_NO_OPENGL)
   QSurfaceFormat format;
-  format.setVersion(4, 3);
-  format.setProfile(QSurfaceFormat::CoreProfile);
-  format.setDepthBufferSize(24);
-  format.setSamples(4);
-  format.setStencilBufferSize(8);
-  QSurfaceFormat::setDefaultFormat(format);
+  format.setVersion( 4, 3 );
+  format.setProfile( QSurfaceFormat::CoreProfile );
+  format.setDepthBufferSize( 24 );
+  format.setSamples( 4 );
+  format.setStencilBufferSize( 8 );
+  QSurfaceFormat::setDefaultFormat( format );
 #endif
 
-  // Enable resource sharing between OpenGL contexts 
+  // Enable resource sharing between OpenGL contexts
   // which is required for Qt WebEngine module
 #if !defined(QT_NO_OPENGL)
   QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts, true );
