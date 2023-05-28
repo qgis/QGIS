@@ -1586,9 +1586,9 @@ bool QgsAuthManager::eraseAuthenticationDatabase( bool backup, QString *backuppa
   clearAllCachedConfigs();
   updateConfigAuthMethods();
 
-  #ifndef QT_NO_SSL
+#ifndef QT_NO_SSL
   initSslCaches();
-  #endif
+#endif
 
   emit authDatabaseChanged();
 
