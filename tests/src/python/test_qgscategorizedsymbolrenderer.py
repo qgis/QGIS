@@ -1441,6 +1441,38 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
 """,
         )
 
+    def test_layer_counts(self):
+        layer = QgsVectorLayer("Point?field=test_field:string", "test_layer", "memory")
+        fields = QgsFields()
+        fields.append(QgsField("test_field", QVariant.String))
+
+        # add test values
+        for attr_value in ["a"] * 3 + ["b"] * 2 + [None]:
+            f = QgsFeature(fields)
+            f.setAttributes([attr_value])
+            layer.dataProvider().addFeature(f)
+
+        self.assertEqual(layer.featureCount(), 6)
+
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute("test_field")
+
+        renderer.addCategory(QgsRendererCategory("a", createMarkerSymbol(), "a"))
+        renderer.addCategory(QgsRendererCategory("b", createMarkerSymbol(), "b"))
+        # add default category
+        renderer.addCategory(QgsRendererCategory(None, createMarkerSymbol(), "nulls"))
+
+        self.assertEqual(renderer.legendKeys(), {"0", "1", "2"})
+
+        layer.setRenderer(renderer)
+
+        counter = layer.countSymbolFeatures()
+        counter.waitForFinished()
+
+        self.assertEqual(layer.featureCount("0"), 3)
+        self.assertEqual(layer.featureCount("1"), 2)
+        self.assertEqual(layer.featureCount("2"), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
