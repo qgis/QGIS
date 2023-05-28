@@ -1194,10 +1194,7 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
     }
     else
     {
-      // Numeric NULL cat value is stored as an empty string
-      if ( QgsVariantUtils::isNull( value ) && ( value.userType() == QMetaType::Type::Double || value.userType() == QMetaType::Type::Int ||
-           value.userType() == QMetaType::Type::UInt || value.userType() == QMetaType::Type::LongLong ||
-           value.userType() == QMetaType::Type::ULongLong || value.userType() == QMetaType::Type::Bool ) )
+      if ( QgsVariantUtils::isNull( value ) )
       {
         match = cat.value().toString().isEmpty();
       }
