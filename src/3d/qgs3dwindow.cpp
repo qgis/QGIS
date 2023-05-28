@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <Qt3DCore/qaspectengine>
-#include <Qt3DCore/qentity>
-#include <Qt3DExtras/qforwardrenderer>
-#include <Qt3DRender/qrendersettings>
-#include <Qt3DRender/qrenderaspect>
-#include <Qt3DInput/qinputaspect>
-#include <Qt3DInput/qinputsettings>
-#include <Qt3DLogic/qlogicaspect>
-#include <Qt3DRender/qcamera>
+#include <Qt3DCore/QAspectEngine>
+#include <Qt3DCore/QEntity>
+#include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DInput/QInputAspect>
+#include <Qt3DInput/QInputSettings>
+#include <Qt3DLogic/QLogicAspect>
+#include <Qt3DRender/QCamera>
 
 #include "qgs3dwindow.h"
 
