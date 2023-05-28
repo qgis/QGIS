@@ -55,6 +55,7 @@ class Qgs3DWindow : public QWindow
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for Qgs3DWindow.
      */
@@ -107,6 +108,7 @@ class Qgs3DWindow : public QWindow
 
 
   protected:
+
     /**
      * Manages the display events specified in e.
      */
@@ -118,6 +120,7 @@ class Qgs3DWindow : public QWindow
     void resizeEvent( QResizeEvent * ) override;
 
   private:
+
     Qt3DCore::QAspectEngine *m_aspectEngine;
 
     // Aspects
