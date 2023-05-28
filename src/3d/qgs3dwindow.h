@@ -17,7 +17,6 @@
 #define QGS3DWINDOW_H
 
 #include <QtGui/QWindow>
-#include <Qt3DRender/qrenderapi.h>
 
 
 namespace Qt3DCore
@@ -59,7 +58,7 @@ class Qgs3DWindow : public QWindow
     /**
      * Constructor for Qgs3DWindow.
      */
-    Qgs3DWindow( QScreen *screen = nullptr, Qt3DRender::API = Qt3DRender::API::OpenGL );
+    Qgs3DWindow();
 
     /**
      * Destructor for Qgs3DWindow.

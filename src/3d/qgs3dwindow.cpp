@@ -25,7 +25,7 @@
 
 #include "qgs3dwindow.h"
 
-Qgs3DWindow::Qgs3DWindow( QScreen *screen, Qt3DRender::API api )
+Qgs3DWindow::Qgs3DWindow()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
   , m_renderAspect( new Qt3DRender::QRenderAspect )
   , m_inputAspect( new Qt3DInput::QInputAspect )
