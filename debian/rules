@@ -327,7 +327,7 @@ override_dh_auto_install:
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
 
-ifneq (,$(findstring $(DISTRIBUTION),"jammy kinetic lunar sid"))
+ifeq (,$(findstring $(DISTRIBUTION),"focal bullseye"))
 	mkdir -p $(CURDIR)/debian/libqgis-dev
 	cd $(CURDIR)/debian/tmp && find . -name "*.sip" | tar --remove-files -cf - -T - | tar -C $(CURDIR)/debian/libqgis-dev -xf - --xform 's,\./usr/lib/python./dist-packages/qgis,usr/share/sip/qgis,'
 	find $(CURDIR)/debian/tmp/ -depth -empty -type d -delete
