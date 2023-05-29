@@ -56,18 +56,6 @@ Qgs3DWindow::~Qgs3DWindow()
   delete m_aspectEngine;
 }
 
-void Qgs3DWindow::registerAspect( Qt3DCore::QAbstractAspect *aspect )
-{
-  Q_ASSERT( !isVisible() );
-  m_aspectEngine->registerAspect( aspect );
-}
-
-void Qgs3DWindow::registerAspect( const QString &name )
-{
-  Q_ASSERT( !isVisible() );
-  m_aspectEngine->registerAspect( name );
-}
-
 void Qgs3DWindow::setRootEntity( Qt3DCore::QEntity *root )
 {
   if ( m_userRoot != root )

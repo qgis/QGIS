@@ -66,16 +66,6 @@ class Qgs3DWindow : public QWindow
     ~Qgs3DWindow();
 
     /**
-     * Registers the specified aspect.
-     */
-    void registerAspect( Qt3DCore::QAbstractAspect *aspect );
-
-    /**
-     * Registers the specified aspect name.
-     */
-    void registerAspect( const QString &name );
-
-    /**
      * Sets the specified root entity of the scene.
      */
     void setRootEntity( Qt3DCore::QEntity *root );
