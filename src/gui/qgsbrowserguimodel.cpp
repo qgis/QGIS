@@ -55,15 +55,29 @@ Qt::ItemFlags QgsBrowserGuiModel::flags( const QModelIndex &index ) const
     flags |= Qt::ItemIsDropEnabled;
   else
   {
-    // new support
-    const QList<QgsDataItemGuiProvider *> providers = QgsGui::dataItemGuiProviderRegistry()->providers();
-    for ( QgsDataItemGuiProvider *provider : providers )
+    // Cache the value of acceptDrop(), as it can be slow to evaluate.
+    // e.g. for a OGR datasource, this requires to open it. And this method
+    // is called each time the browser is redrawn.
+    QVariant cached = ptr->property( "_qgs_accept_drop_cached" );
+    if ( cached.isValid() )
     {
-      if ( provider->acceptDrop( ptr, createDataItemContext() ) )
-      {
+      if ( cached.toBool() )
         flags |= Qt::ItemIsDropEnabled;
-        break;
+    }
+    else
+    {
+      // new support
+      const QList<QgsDataItemGuiProvider *> providers = QgsGui::dataItemGuiProviderRegistry()->providers();
+      for ( QgsDataItemGuiProvider *provider : providers )
+      {
+        if ( provider->acceptDrop( ptr, createDataItemContext() ) )
+        {
+          flags |= Qt::ItemIsDropEnabled;
+          break;
+        }
       }
+
+      ptr->setProperty( "_qgs_accept_drop_cached", ( flags & Qt::ItemIsDropEnabled ) != 0 );
     }
   }
   return flags;
