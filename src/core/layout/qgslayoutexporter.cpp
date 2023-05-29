@@ -1240,17 +1240,19 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice 
 
 void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPagedPaintDevice *device, bool setFirstPageSize )
 {
-  if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
+  if ( QPdfWriter *pdf = dynamic_cast<QPdfWriter *>( device ) )
+  {
+    pdf->setResolution( static_cast< int>( std::round( layout->renderContext().dpi() ) ) );
+  }
+#ifndef QT_NO_PRINTER
+  else if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
   {
     printer->setFullPage( true );
     printer->setColorMode( QPrinter::Color );
     //set user-defined resolution
     printer->setResolution( static_cast< int>( std::round( layout->renderContext().dpi() ) ) );
   }
-  else if ( QPdfWriter *pdf = dynamic_cast<QPdfWriter *>( device ) )
-  {
-    pdf->setResolution( static_cast< int>( std::round( layout->renderContext().dpi() ) ) );
-  }
+#endif
 
   if ( setFirstPageSize )
   {
@@ -1281,6 +1283,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPagedPaintDevi
   // layout starts page numbering at 0
   int fromPage = 0;
   int toPage = mLayout->pageCollection()->pageCount() - 1;
+
+#ifndef QT_NO_PRINTER
   if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
   {
     if ( printer->fromPage() >= 1 )
@@ -1288,6 +1292,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPagedPaintDevi
     if ( printer->toPage() >= 1 )
       toPage = printer->toPage() - 1;
   }
+#endif
 
   bool pageExported = false;
   if ( rasterize )
@@ -1352,10 +1357,12 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPagedPaintDev
   device->setPageLayout( pageLayout );
   device->setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
 
+#ifndef QT_NO_PRINTER
   if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
   {
     printer->setFullPage( true );
   }
+#endif
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds, const QString &filename, unsigned int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const
