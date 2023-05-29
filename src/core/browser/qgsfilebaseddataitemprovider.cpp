@@ -292,7 +292,12 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
   }
 
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
-  if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::ListFieldDomains ) )
+  if ( conn )
+  {
+    mCachedCapabilities = conn->capabilities();
+    mHasCachedCapabilities = true;
+  }
+  if ( conn && ( mCachedCapabilities & QgsAbstractDatabaseProviderConnection::Capability::ListFieldDomains ) )
   {
     QString domainError;
     QStringList fieldDomains;
@@ -313,7 +318,7 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
       children.append( domainsItem.release() );
     }
   }
-  if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
+  if ( conn && ( mCachedCapabilities & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
   {
     QString relationError;
     QList< QgsWeakRelation > relations;
@@ -402,6 +407,20 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
     }
   }
   return conn;
+}
+
+QgsAbstractDatabaseProviderConnection::Capabilities QgsFileDataCollectionItem::databaseConnectionCapabilities() const
+{
+  if ( mHasCachedCapabilities )
+    return mCachedCapabilities;
+
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
+  if ( conn )
+  {
+    mCachedCapabilities = conn->capabilities();
+    mHasCachedCapabilities = true;
+  }
+  return mCachedCapabilities;
 }
 
 //

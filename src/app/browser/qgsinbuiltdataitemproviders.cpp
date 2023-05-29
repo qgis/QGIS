@@ -1597,12 +1597,10 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
     if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
     {
-
       QAction *newTableAction = new QAction( QObject::tr( "New Table…" ), menu );
 
       QObject::connect( newTableAction, &QAction::triggered, item, [ item, context]
       {
-
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( item->databaseConnection() );
         // This should never happen but let's play safe
         if ( ! conn2 )
@@ -1810,14 +1808,14 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
 bool QgsDatabaseItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiContext )
 {
-  if ( !qobject_cast< QgsFileDataCollectionItem * >( item ) )
+  QgsFileDataCollectionItem *fileDataCollectionItem = qobject_cast< QgsFileDataCollectionItem * >( item );
+  if ( !fileDataCollectionItem )
     return false;
 
   if ( qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
     return false; // GPKG is handled elsewhere (QgsGeoPackageItemGuiProvider)
 
-  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() );
-  if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
+  if ( fileDataCollectionItem->databaseConnectionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
   {
     return true;
   }
