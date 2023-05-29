@@ -61,7 +61,7 @@ from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
 
 from providertestbase import ProviderTestCase
-from utilities import unitTestDataPath
+from utilities import compareWkt, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -228,6 +228,60 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
                 'name LIKE \'Ap_le\'',
                 'name LIKE \'Ap\\_le\''
                 }
+
+    def testOrderByCompiled(self):
+        self.runOrderByTests()
+
+        # Below checks test particular aspects of the ORDER BY optimization for
+        # Geopackage
+
+        # Test orderBy + filter expression
+        request = QgsFeatureRequest().setFilterExpression('"cnt">=200').addOrderBy('num_char')
+        values = [f['pk'] for f in self.source.getFeatures(request)]
+        self.assertEqual(values, [2, 3, 4])
+        values = [f.geometry().asWkt() for f in self.source.getFeatures(request)]
+        # Check that we get geometries
+        assert compareWkt(values[0], "Point (-68.2 70.8)"), values[0]
+
+        # Test orderBy + subset string
+        request = QgsFeatureRequest().addOrderBy('num_char')
+        self.source.setSubsetString("cnt >= 200")
+        values = [f['pk'] for f in self.source.getFeatures(request)]
+        self.source.setSubsetString(None)
+        self.assertEqual(values, [2, 3, 4])
+
+        # Test orderBy + subset string + filter expression
+        request = QgsFeatureRequest().setFilterExpression('"cnt"<=300').addOrderBy('num_char')
+        self.source.setSubsetString("cnt >= 200")
+        values = [f['pk'] for f in self.source.getFeatures(request)]
+        self.source.setSubsetString(None)
+        self.assertEqual(values, [2, 3])
+
+        # Test orderBy + extent
+        # Note that currently the spatial filter will not use the spatial index
+        # (probably too tricky to implement on the OGR side since it would need
+        # to analyze the SQL SELECT, but QGIS could probably add the JOIN with
+        # the RTree)
+        extent = QgsRectangle(-70, 67, -60, 80)
+        request = QgsFeatureRequest().setFilterRect(extent).addOrderBy('num_char')
+        values = [f['pk'] for f in self.source.getFeatures(request)]
+        self.assertEqual(values, [2, 4])
+
+        # Test orderBy + subset string which is a SELECT
+        # (excluded by the optimization)
+        # For some weird reason, we need to re-open a new connection to the
+        # dataset (this weird behavior predates the optimization)
+        request = QgsFeatureRequest().addOrderBy('num_char')
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        shutil.copy(os.path.join(srcpath, 'geopackage.gpkg'), tmpdir)
+        datasource = os.path.join(tmpdir, 'geopackage.gpkg')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        vl.setSubsetString("SELECT * FROM \"geopackage\" WHERE cnt >= 200")
+        values = [f['pk'] for f in vl.getFeatures(request)]
+        self.assertEqual(values, [2, 3, 4])
+        del vl
 
 
 class ErrorReceiver():

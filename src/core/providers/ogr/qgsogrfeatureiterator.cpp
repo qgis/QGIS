@@ -28,6 +28,8 @@
 #include "qgsgeometryengine.h"
 #include "qgsdbquerylog.h"
 
+#include <sqlite3.h>
+
 #include <QTextCodec>
 #include <QFile>
 
@@ -138,6 +140,132 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
                    !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) ||
                    ( mSource->mOgrGeometryTypeFilter != wkbUnknown );
 
+  bool filterExpressionAlreadyTakenIntoAccount = false;
+
+#if SQLITE_VERSION_NUMBER >= 3030000L
+  // For GeoPackage, try to compile order by expressions as a SQL statement
+  // Only SQLite >= 3.30.0 supports NULLS FIRST / NULLS LAST
+  // A potential further optimization would be to translate mFilterRect
+  // as a JOIN with the GPKG RTree when it exists, instead of having just OGR
+  // evaluating it as a post processing.
+  const auto constOrderBy = request.orderBy();
+  if ( !constOrderBy.isEmpty() &&
+       source->mDriverName == QLatin1String( "GPKG" ) &&
+       ( request.filterType() == QgsFeatureRequest::FilterNone ||
+         request.filterType() == QgsFeatureRequest::FilterExpression ) &&
+       ( mSource->mSubsetString.isEmpty() ||
+         !mSource->mSubsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) ) )
+  {
+    QByteArray sql = QByteArray( "SELECT " );
+    for ( int i = 0; i < source->mFields.size(); ++i )
+    {
+      if ( i > 0 )
+        sql += QByteArray( ", " );
+      sql += QgsOgrProviderUtils::quotedIdentifier( source->mFields[i].name().toUtf8(), source->mDriverName );
+    }
+    if ( strcmp( OGR_L_GetGeometryColumn( mOgrLayer ), "" ) != 0 )
+    {
+      sql += QByteArray( ", " );
+      sql += QgsOgrProviderUtils::quotedIdentifier( OGR_L_GetGeometryColumn( mOgrLayer ), source->mDriverName );
+    }
+    sql += QByteArray( " FROM " );
+    sql += QgsOgrProviderUtils::quotedIdentifier( OGR_L_GetName( mOgrLayer ), source->mDriverName );
+
+    if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+    {
+      QgsSQLiteExpressionCompiler compiler(
+        source->mFields,
+        request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
+      QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
+      if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
+      {
+        QString whereClause = compiler.result();
+        sql += QByteArray( " WHERE " );
+        if ( mSource->mSubsetString.isEmpty() )
+        {
+          sql += whereClause.toUtf8();
+        }
+        else
+        {
+          sql += QByteArray( "(" );
+          sql += mSource->mSubsetString.toUtf8();
+          sql += QByteArray( ") AND (" );
+          sql += whereClause.toUtf8();
+          sql += QByteArray( ")" );
+        }
+        mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+        mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
+      }
+      else
+      {
+        sql.clear();
+      }
+    }
+    else if ( !mSource->mSubsetString.isEmpty() )
+    {
+      sql += QByteArray( " WHERE " );
+      sql += mSource->mSubsetString.toUtf8();
+    }
+
+    if ( !sql.isEmpty() )
+    {
+      sql += QByteArray( " ORDER BY " );
+      bool firstOrderBy = true;
+      for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
+      {
+        QgsExpression expression = clause.expression();
+        QgsSQLiteExpressionCompiler compiler(
+          source->mFields, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
+        QgsSqlExpressionCompiler::Result result = compiler.compile( &expression );
+        if ( result == QgsSqlExpressionCompiler::Complete &&
+             expression.rootNode()->nodeType() == QgsExpressionNode::ntColumnRef )
+        {
+          if ( !firstOrderBy )
+            sql += QByteArray( ", " );
+          sql += compiler.result().toUtf8();
+          sql += QByteArray( " COLLATE NOCASE" );
+          sql += clause.ascending() ? QByteArray( " ASC" ) : QByteArray( " DESC" );
+          if ( clause.nullsFirst() )
+            sql += QByteArray( " NULLS FIRST" );
+          else
+            sql += QByteArray( " NULLS LAST" );
+        }
+        else
+        {
+          sql.clear();
+          break;
+        }
+        firstOrderBy = false;
+      }
+    }
+
+    if ( !sql.isEmpty() )
+    {
+      mOrderByCompiled = true;
+
+      if ( mOrderByCompiled && request.limit() >= 0 )
+      {
+        sql += QByteArray( " LIMIT " );
+        sql += QString::number( request.limit() ).toUtf8();
+      }
+      QgsDebugMsgLevel( QStringLiteral( "Using optimized orderBy as: %1" ).arg( QString::fromUtf8( sql ) ), 4 );
+      filterExpressionAlreadyTakenIntoAccount = true;
+      if ( mOgrLayerOri && mOgrLayer != mOgrLayerOri )
+      {
+        GDALDatasetReleaseResultSet( mConn->ds, mOgrLayer );
+        mOgrLayer = mOgrLayerOri;
+      }
+      mOgrLayerOri = mOgrLayer;
+      mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, sql );
+      if ( !mOgrLayer )
+      {
+        close();
+        return;
+      }
+    }
+  }
+#endif
+
   QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
 
   // ensure that all attributes required for expression filter are being fetched
@@ -214,7 +342,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
       break;
   }
 
-  if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( request.filterType() == QgsFeatureRequest::FilterExpression && !filterExpressionAlreadyTakenIntoAccount )
   {
     QgsSqlExpressionCompiler *compiler = nullptr;
     if ( source->mDriverName == QLatin1String( "SQLite" ) || source->mDriverName == QLatin1String( "GPKG" ) )
@@ -308,6 +436,13 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
 QgsOgrFeatureIterator::~QgsOgrFeatureIterator()
 {
   close();
+}
+
+bool QgsOgrFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys )
+{
+  Q_UNUSED( orderBys )
+  // Preparation has already been done in the constructor, so we just communicate the result
+  return mOrderByCompiled;
 }
 
 bool QgsOgrFeatureIterator::nextFeatureFilterExpression( QgsFeature &f )
