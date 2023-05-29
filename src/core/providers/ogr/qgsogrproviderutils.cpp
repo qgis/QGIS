@@ -1336,7 +1336,7 @@ QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
   }
 }
 
-OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString )
+QString QgsOgrProviderUtils::cleanSubsetString( const QString &subsetString )
 {
   // Remove any comments
   QStringList lines {subsetString.split( QChar( '\n' ) )};
@@ -1365,7 +1365,12 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     }
   }
 
-  const QString cleanedSubsetString {lines.join( QChar( '\n' ) ).trimmed() };
+  return lines.join( QChar( '\n' ) ).trimmed();
+}
+
+OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString )
+{
+  const QString cleanedSubsetString {cleanSubsetString( subsetString )};
 
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   GDALDriverH driver = GDALGetDatasetDriver( ds );
