@@ -77,7 +77,8 @@ class CORE_EXPORT QgsVectorTileLoader : public QObject
       const QPointF &viewCenter,
       const QgsTileRange &range,
       int zoomLevel,
-      QgsFeedback *feedback = nullptr );
+      QgsFeedback *feedback = nullptr,
+      Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown );
 
     //
     // non-static stuff

@@ -147,7 +147,7 @@ QString QgsVectorTileLoader::error() const
 
 //////
 
-QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QPointF &viewCenter, const QgsTileRange &range, int zoomLevel, QgsFeedback *feedback )
+QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QPointF &viewCenter, const QgsTileRange &range, int zoomLevel, QgsFeedback *feedback, Qgis::RendererUsage usage )
 {
   if ( feedback && feedback->isCanceled() )
     return {};
@@ -158,5 +158,5 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   if ( tiles.size() < 10000 )
     QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
 
-  return provider->readTiles( tileMatrixSet, tiles, feedback );
+  return provider->readTiles( tileMatrixSet, tiles, feedback, usage );
 }
