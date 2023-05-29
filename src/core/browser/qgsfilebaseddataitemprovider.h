@@ -22,6 +22,7 @@
 #include "qgsdatacollectionitem.h"
 #include "qgslayeritem.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 #include <QString>
 #include <QVector>
 
@@ -136,9 +137,19 @@ class CORE_EXPORT QgsFileDataCollectionItem final: public QgsDataCollectionItem
     QgsMimeDataUtils::UriList mimeUris() const override;
     QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
+    /**
+     * Returns the associated connection capabilities, if a databaseConnection() is available.
+     *
+     * \see databaseConnectionCapabilities2()
+     * \since QGIS 3.32
+     */
+    QgsAbstractDatabaseProviderConnection::Capabilities databaseConnectionCapabilities() const;
+
   private:
 
     QList< QgsProviderSublayerDetails> mSublayers;
+    mutable bool mHasCachedCapabilities = false;
+    mutable QgsAbstractDatabaseProviderConnection::Capabilities mCachedCapabilities;
 };
 
 
