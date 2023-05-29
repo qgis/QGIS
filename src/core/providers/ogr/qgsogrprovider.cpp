@@ -2093,12 +2093,14 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   if ( !mOgrOrigLayer )
     return false;
 
-  if ( theSQL == mSubsetString && mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::Uncounted ) )
+  const QString cleanSql = QgsOgrProviderUtils::cleanSubsetString( theSQL );
+
+  if ( cleanSql == mSubsetString && mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::Uncounted ) )
     return true;
 
-  const bool subsetStringHasChanged { theSQL != mSubsetString };
+  const bool subsetStringHasChanged { cleanSql != mSubsetString };
 
-  if ( !theSQL.isEmpty() )
+  if ( !cleanSql.isEmpty() )
   {
     QRecursiveMutex *mutex = nullptr;
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
@@ -2106,7 +2108,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
     OGRLayerH subsetLayerH;
     {
       QMutexLocker locker( mutex );
-      subsetLayerH = QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), theSQL );
+      subsetLayerH = QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), cleanSql );
     }
     if ( !subsetLayerH )
     {
@@ -2115,7 +2117,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
     }
     if ( layer != subsetLayerH )
     {
-      mOgrSqlLayer = QgsOgrProviderUtils::getSqlLayer( mOgrOrigLayer.get(), subsetLayerH, theSQL );
+      mOgrSqlLayer = QgsOgrProviderUtils::getSqlLayer( mOgrOrigLayer.get(), subsetLayerH, cleanSql );
       Q_ASSERT( mOgrSqlLayer.get() );
       mOgrLayer = mOgrSqlLayer.get();
     }
@@ -2136,7 +2138,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
       OGR_L_SetAttributeFilter( layer, nullptr );
     }
   }
-  mSubsetString = theSQL;
+  mSubsetString = cleanSql;
 
   QVariantMap parts;
   parts.insert( QStringLiteral( "path" ), mFilePath );

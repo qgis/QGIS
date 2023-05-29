@@ -154,6 +154,9 @@ class CORE_EXPORT QgsOgrProviderUtils
                                    bool firstAttrIsFid,
                                    const QString &subsetString );
 
+    //! Remove comments from subset string (typically a full SELECT) and trim
+    static QString cleanSubsetString( const QString &subsetString );
+
     /**
      * Sets a subset string for an OGR \a layer.
      * Might return either layer, or a new OGR SQL result layer
