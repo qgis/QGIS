@@ -43,7 +43,7 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
 
     bool supportsAsync() const override;
     QgsVectorTileRawData readTile( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
-    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr, Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown ) const override;
     QNetworkRequest tileRequest( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
 
   protected:
@@ -59,7 +59,8 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
                                        const QString &requestUrl,
                                        const QString &authid,
                                        const QgsHttpHeaders &headers,
-                                       QgsFeedback *feedback = nullptr );
+                                       QgsFeedback *feedback = nullptr,
+                                       Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown );
 
 };
 

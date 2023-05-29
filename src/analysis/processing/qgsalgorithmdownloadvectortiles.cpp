@@ -187,7 +187,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     const QPointF viewCenter = tileMatrix.mapToTileCoordinates( mExtent.center() );
 
     long long tileNumber = 0;
-    rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mProvider.get(), mTileMatrixSet, viewCenter, it.value(), it.key(), &multiStepFeedback );
+    rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mProvider.get(), mTileMatrixSet, viewCenter, it.value(), it.key(), &multiStepFeedback, Qgis::RendererUsage::Export );
     for ( const QgsVectorTileRawData &rawTile : std::as_const( rawTiles ) )
     {
       if ( feedback->isCanceled() )

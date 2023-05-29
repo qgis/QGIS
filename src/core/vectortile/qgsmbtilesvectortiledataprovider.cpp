@@ -162,7 +162,7 @@ QgsVectorTileRawData QgsMbTilesVectorTileDataProvider::readTile( const QgsTileMa
   return QgsVectorTileRawData( id, loadFromMBTiles( mbReader, id, feedback ) );
 }
 
-QList<QgsVectorTileRawData> QgsMbTilesVectorTileDataProvider::readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
+QList<QgsVectorTileRawData> QgsMbTilesVectorTileDataProvider::readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback, Qgis::RendererUsage ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
