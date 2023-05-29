@@ -110,10 +110,6 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
       mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString );
       // If the mSubsetString was a full SELECT ...., then mOgrLayer will be a OGR SQL layer != mOgrLayerOri
 
-      mFieldsWithoutFid.clear();
-      for ( int i = ( mFirstFieldIsFid ) ? 1 : 0; i < mSource->mFields.size(); i++ )
-        mFieldsWithoutFid.append( mSource->mFields.at( i ) );
-
       if ( !mOgrLayer )
       {
         close();
