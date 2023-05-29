@@ -547,6 +547,16 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1))]
         self.assertEqual(len(got), 1)  # this is the current behavior, broken
 
+        # Test setSubsetString() with a SELECT ... statement not selecting
+        # the FID column
+        vl = QgsVectorLayer(f'{tmpfile}', 'test', 'ogr')
+        vl.setSubsetString("SELECT name FROM test_layer WHERE name = 'two'")
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(len(got), 1)
+
+        attributes = got[0].attributes()
+        self.assertEqual(attributes[0], 'two')
+
     def testEditSubsetString(self):
 
         tmpfile = os.path.join(self.basetestpath, 'testEditSubsetString.gpkg')
