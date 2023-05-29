@@ -33,7 +33,7 @@ class TestQgsDwgImportDialog : public QObject
     void cleanupTestCase() {} // will be called after the last testfunction was executed.
     void cleanup(); // will be called after every testfunction.
 
-    void importDxfDocument();
+    void importDwgDocument();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -56,7 +56,7 @@ void TestQgsDwgImportDialog::cleanup()
   QgsProject::instance()->removeAllMapLayers();
 }
 
-void TestQgsDwgImportDialog::importDxfDocument()
+void TestQgsDwgImportDialog::importDwgDocument()
 {
 
   QgsDwgImportDialog dwgImportDialog( nullptr, Qt::WindowFlags() );
