@@ -1008,7 +1008,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "scale_polynomial(10,0,10,100,200,0.5)" ) << "scale_polynomial(10,0,10,100,200,0.5)" << false << QVariant( 200. );
       QTest::newRow( "scale_polynomial(-1,0,10,100,200,0.5)" ) << "scale_polynomial(-1,0,10,100,200,0.5)" << false << QVariant( 100. );
       QTest::newRow( "scale_polynomial(4,0,9,0,90,0.5)" ) << "scale_polynomial(4,0,9,0,90,0.5)" << false << QVariant( 60. );
-      // this is an alias for scale_polynomial to preserve backwar compatibility
+      // this is an alias for scale_polynomial to preserve backward compatibility
       QTest::newRow( "scale_exp(0.5,0,1,0,1,2)" ) << "scale_exp(0.5,0,1,0,1,2)" << false << QVariant( 0.25 );
       QTest::newRow( "scale_exp(0,0,10,100,200,2)" ) << "scale_exp(0,0,10,100,200,2)" << false << QVariant( 100. );
       QTest::newRow( "scale_exp(5,0,10,100,200,2)" ) << "scale_exp(5,0,10,100,200,2)" << false << QVariant( 125. );
