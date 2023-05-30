@@ -201,6 +201,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! Does the real job of settings the subset string and adds an argument to disable update capabilities
     bool _setSubsetString( const QString &theSQL, bool updateFeatureCount = true, bool updateCapabilities = true, bool hasExistingRef = true );
 
+    bool  createSpatialIndexImpl();
+
     QList< QgsProviderSublayerDetails > _subLayers( Qgis::SublayerQueryFlags flags ) const;
 
     QgsFields mAttributeFields;
@@ -346,6 +348,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     //! Invalidate GDAL /vsicurl/ RAM cache for mFilePath
     void invalidateNetworkCache();
+
+    bool mShapefileHadSpatialIndex = false;
 };
 
 ///@endcond
