@@ -948,9 +948,14 @@ int main( int argc, char *argv[] )
   // QWindow and QWindow derived components
 #if !defined(QT_NO_OPENGL)
   QSurfaceFormat format;
-  format.setRenderableType(QSurfaceFormat::OpenGL);
-  format.setVersion( 4, 3 );
+  format.setRenderableType( QSurfaceFormat::OpenGL );
+#ifdef Q_OS_MAC
+  format.setVersion( 4, 1 ); //OpenGL is deprecated on MacOS, use last supported version
   format.setProfile( QSurfaceFormat::CoreProfile );
+#else
+  format.setVersion( 4, 3 );
+  format.setProfile( QSurfaceFormat::CompatibilityProfile ); // Chromium only supports core profile on mac
+#endif
   format.setDepthBufferSize( 24 );
   format.setSamples( 4 );
   format.setStencilBufferSize( 8 );
