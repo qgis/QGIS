@@ -948,6 +948,7 @@ int main( int argc, char *argv[] )
   // QWindow and QWindow derived components
 #if !defined(QT_NO_OPENGL)
   QSurfaceFormat format;
+  format.setRenderableType(QSurfaceFormat::OpenGL);
   format.setVersion( 4, 3 );
   format.setProfile( QSurfaceFormat::CoreProfile );
   format.setDepthBufferSize( 24 );
