@@ -61,7 +61,7 @@ void QgsPdalExportRasterAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterPointCloudAttribute( QStringLiteral( "ATTRIBUTE" ), QObject::tr( "Attribute" ), QStringLiteral( "Z" ), QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of the density raster" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of the density raster" ), QgsProcessingParameterNumber::Double, 1, false, 1e-6 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_SIZE" ), QObject::tr( "Tile size for parallel runs" ), QgsProcessingParameterNumber::Integer, 1000, false, 1 ) );
 
   createCommonParameters();
@@ -96,7 +96,7 @@ QStringList QgsPdalExportRasterAlgorithm::createArgumentLists( const QVariantMap
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
   const QString attribute = parameterAsString( parameters, QStringLiteral( "ATTRIBUTE" ), context );
-  const int resolution = parameterAsDouble( parameters, QStringLiteral( "RESOLUTION" ), context );
+  const double resolution = parameterAsDouble( parameters, QStringLiteral( "RESOLUTION" ), context );
   const int tileSize = parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context );
 
   QStringList args = { QStringLiteral( "to_raster" ),
