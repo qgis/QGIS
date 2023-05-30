@@ -96,7 +96,8 @@ bool QgsSettingsEntryBase::keyIsValid( const QString &key ) const
       return key == definitionKey();
   }
 
-  const QRegularExpression regularExpression( definitionKey().replace( QRegularExpression( QStringLiteral( "%\\d+" ) ), QStringLiteral( ".*" ) ) );
+  const thread_local QRegularExpression digitRx( QStringLiteral( "%\\d+" ) );
+  const QRegularExpression regularExpression( definitionKey().replace( digitRx, QStringLiteral( ".*" ) ) );
   const QRegularExpressionMatch regularExpressionMatch = regularExpression.match( key );
   return regularExpressionMatch.hasMatch();
 }

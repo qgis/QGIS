@@ -306,7 +306,7 @@ QgsUserColorScheme::QgsUserColorScheme( const QString &filename )
     }
     if ( !in.atEnd() )
     {
-      const QRegularExpression rx( "Name:\\s*(\\S.*)$" );
+      const thread_local QRegularExpression rx( "Name:\\s*(\\S.*)$" );
       const QRegularExpressionMatch match = rx.match( line );
       if ( match.hasMatch() )
       {

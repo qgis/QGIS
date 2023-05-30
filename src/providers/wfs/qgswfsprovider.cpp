@@ -1721,8 +1721,8 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     // attribute ref
     QString ref = attributeElement.attribute( QStringLiteral( "ref" ) );
 
-    const QRegularExpression gmlPT( QStringLiteral( "gml:(.*)PropertyType" ) );
-    const QRegularExpression gmlRefProperty( QStringLiteral( "gml:(.*)Property" ) );
+    const thread_local QRegularExpression gmlPT( QStringLiteral( "gml:(.*)PropertyType" ) );
+    const thread_local QRegularExpression gmlRefProperty( QStringLiteral( "gml:(.*)Property" ) );
 
     // gmgml: is Geomedia Web Server
     if ( ! foundGeometryAttribute && type == QLatin1String( "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" ) )

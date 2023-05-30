@@ -127,7 +127,7 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
   const int separatorIndex = dest.indexOf( '|' );
   if ( separatorIndex > -1 )
   {
-    const QRegularExpression layerNameRx( QStringLiteral( "\\|layername=([^\\|]*)" ) );
+    const thread_local QRegularExpression layerNameRx( QStringLiteral( "\\|layername=([^\\|]*)" ) );
     const QRegularExpressionMatch match = layerNameRx.match( dest );
     if ( match.hasMatch() )
     {

@@ -408,7 +408,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   int counter = 0;
   mBadRowCount = 0;
   QStringList values;
-  const QRegularExpression wktre( "^\\s*(?:MULTI)?(?:POINT|LINESTRING|POLYGON)\\s*Z?\\s*M?\\(", QRegularExpression::CaseInsensitiveOption );
+  const thread_local QRegularExpression wktre( "^\\s*(?:MULTI)?(?:POINT|LINESTRING|POLYGON)\\s*Z?\\s*M?\\(", QRegularExpression::CaseInsensitiveOption );
 
   while ( counter < mExampleRowCount )
   {

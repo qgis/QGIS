@@ -305,7 +305,7 @@ QgsGeoPackageProjectUri QgsGeoPackageProjectStorage::decodeUri( const QString &u
   QgsGeoPackageProjectUri gpkgUri;
 
   // Check for windows paths: github issue #33057
-  const QRegularExpression winLocalPath { R"(^[A-Za-z]:)" };
+  const thread_local QRegularExpression winLocalPath { R"(^[A-Za-z]:)" };
   // Check for windows network shares: github issue #31310
   const QString path { ( winLocalPath.match( urlAsString ).hasMatch() ||
                          urlAsString.startsWith( QLatin1String( "//" ) ) ) ?

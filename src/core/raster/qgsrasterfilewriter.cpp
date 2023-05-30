@@ -1209,7 +1209,7 @@ QStringList QgsRasterFileWriter::supportedFormatExtensions( const RasterFormatOp
   const auto formats = supportedFiltersAndFormats( options );
   QStringList extensions;
 
-  const QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]*)" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]*)" ) );
 
   for ( const FilterFormatDetails &format : formats )
   {
