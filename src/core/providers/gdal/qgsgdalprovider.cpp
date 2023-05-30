@@ -264,7 +264,7 @@ QString QgsGdalProvider::expandAuthConfig( const QString &dsName )
 {
   QString uri( dsName );
   // Check for authcfg
-  QRegularExpression authcfgRe( " authcfg='([^']+)'" );
+  const thread_local QRegularExpression authcfgRe( " authcfg='([^']+)'" );
   QRegularExpressionMatch match;
   if ( uri.contains( authcfgRe, &match ) )
   {
@@ -2514,6 +2514,9 @@ static bool _parseGpkgColons( const QString &src, QString &filename, QString &ta
 QString QgsGdalProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
 {
   const QString src = uri;
+
+  const thread_local QRegularExpression nitfRadasatRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" );
+
   if ( src.startsWith( QLatin1String( "NETCDF:" ) ) )
   {
     // NETCDF:filename:variable
@@ -2566,7 +2569,7 @@ QString QgsGdalProviderMetadata::absoluteToRelativeUri( const QString &uri, cons
       return "HDF5:\"" + context.pathResolver().writePath( filename ) + "\":" + match.captured( 2 );
     }
   }
-  else if ( src.contains( QRegularExpression( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+  else if ( src.contains( nitfRadasatRegExp ) )
   {
     // NITF_IM:0:filename
     // RADARSAT_2_CALIB:?:filename
@@ -2584,11 +2587,13 @@ QString QgsGdalProviderMetadata::absoluteToRelativeUri( const QString &uri, cons
 QString QgsGdalProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
 {
   const QString src = uri;
+
+  const thread_local QRegularExpression nitfImRadarSatRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" );
   if ( src.startsWith( QLatin1String( "NETCDF:" ) ) )
   {
     // NETCDF:filename:variable
     // filename can be quoted with " as it can contain colons
-    const QRegularExpression netcdfDecodedRegExp( QRegularExpression::anchoredPattern( "NETCDF:(.+):([^:]+)" ) );
+    const thread_local QRegularExpression netcdfDecodedRegExp( QRegularExpression::anchoredPattern( "NETCDF:(.+):([^:]+)" ) );
     const QRegularExpressionMatch match = netcdfDecodedRegExp.match( src );
     if ( match.hasMatch() )
     {
@@ -2612,7 +2617,7 @@ QString QgsGdalProviderMetadata::relativeToAbsoluteUri( const QString &uri, cons
   {
     // HDF4_SDS:subdataset_type:file_name:subdataset_index
     // filename can be quoted with " as it can contain colons
-    const QRegularExpression hdf4DecodedRegExp( QRegularExpression::anchoredPattern( "HDF4_SDS:([^:]+):(.+):([^:]+)" ) );
+    const thread_local QRegularExpression hdf4DecodedRegExp( QRegularExpression::anchoredPattern( "HDF4_SDS:([^:]+):(.+):([^:]+)" ) );
     const QRegularExpressionMatch match = hdf4DecodedRegExp.match( src );
     if ( match.hasMatch() )
     {
@@ -2626,7 +2631,7 @@ QString QgsGdalProviderMetadata::relativeToAbsoluteUri( const QString &uri, cons
   {
     // HDF5:file_name:subdataset
     // filename can be quoted with " as it can contain colons
-    const QRegularExpression hdf5DecodedRegExp( QRegularExpression::anchoredPattern( "HDF5:(.+):([^:]+)" ) );
+    const thread_local QRegularExpression hdf5DecodedRegExp( QRegularExpression::anchoredPattern( "HDF5:(.+):([^:]+)" ) );
     const QRegularExpressionMatch match = hdf5DecodedRegExp.match( src );
     if ( match.hasMatch() )
     {
@@ -2636,11 +2641,11 @@ QString QgsGdalProviderMetadata::relativeToAbsoluteUri( const QString &uri, cons
       return "HDF5:\"" + context.pathResolver().readPath( filename ) + "\":" + match.captured( 2 );
     }
   }
-  else if ( src.contains( QRegularExpression( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+  else if ( src.contains( nitfImRadarSatRegExp ) )
   {
     // NITF_IM:0:filename
     // RADARSAT_2_CALIB:?:filename
-    const QRegularExpression niftRadarsatDecodedRegExp( QRegularExpression::anchoredPattern( "([^:]+):([^:]+):(.+)" ) );
+    const thread_local QRegularExpression niftRadarsatDecodedRegExp( QRegularExpression::anchoredPattern( "([^:]+):([^:]+):(.+)" ) );
     const QRegularExpressionMatch match = niftRadarsatDecodedRegExp.match( src );
     if ( match.hasMatch() )
     {
@@ -2752,7 +2757,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     QString myGdalDriverLongName = GDALGetMetadataItem( myGdalDriver, GDAL_DMD_LONGNAME, "" );
     // remove any superfluous (.*) strings at the end as
     // they'll confuse QFileDialog::getOpenFileNames()
-    myGdalDriverLongName.remove( QRegularExpression( "\\(.*\\)$" ) );
+    const thread_local QRegularExpression driverLongNameCleanRegex( "\\(.*\\)$" );
+    myGdalDriverLongName.remove( driverLongNameCleanRegex );
 
     // if we have both the file name extension and the long name,
     // then we've all the information we need for the current

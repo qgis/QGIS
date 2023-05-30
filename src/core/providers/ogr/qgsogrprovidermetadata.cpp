@@ -144,7 +144,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
 
   int layerId = -1;
 
-  const QRegularExpression authcfgRegex( " authcfg='([^']+)'" );
+  const thread_local QRegularExpression authcfgRegex( " authcfg='([^']+)'" );
   QRegularExpressionMatch match;
   if ( path.contains( authcfgRegex, &match ) )
   {
@@ -158,7 +158,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
   {
     path = path.mid( vsiPrefix.count() );
 
-    const QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.gz|\\.tar\\.gz|\\.tgz)([^|]+)" ) );
+    const thread_local QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.gz|\\.tar\\.gz|\\.tgz)([^|]+)" ) );
     QRegularExpressionMatch match = vsiRegex.match( path );
     if ( match.hasMatch() )
     {
@@ -173,13 +173,12 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
 
   if ( path.contains( '|' ) )
   {
-    const QRegularExpression geometryTypeRegex( QStringLiteral( "\\|geometrytype=([a-zA-Z0-9]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
-    const QRegularExpression uniqueGeometryTypeRegex( QStringLiteral( "\\|uniqueGeometryType=([a-z]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
-    const QRegularExpression layerNameRegex( QStringLiteral( "\\|layername=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
-    const QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
-    const QRegularExpression subsetRegex( QStringLiteral( "\\|subset=((?:.*[\r\n]*)*)\\Z" ) );
-    const QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
-
+    const thread_local QRegularExpression geometryTypeRegex( QStringLiteral( "\\|geometrytype=([a-zA-Z0-9]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+    const thread_local QRegularExpression uniqueGeometryTypeRegex( QStringLiteral( "\\|uniqueGeometryType=([a-z]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+    const thread_local QRegularExpression layerNameRegex( QStringLiteral( "\\|layername=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+    const thread_local QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+    const thread_local QRegularExpression subsetRegex( QStringLiteral( "\\|subset=((?:.*[\r\n]*)*)\\Z" ) );
+    const thread_local QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
 
     // we first try to split off the geometry type component, if that's present. That's a known quantity which
     // will never be more than a-z characters
@@ -1274,7 +1273,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       const QStringList wildcards = QgsOgrProviderUtils::wildcards();
       for ( const QString &wildcard : wildcards )
       {
-        const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( wildcard ), QRegularExpression::CaseInsensitiveOption );
+        const thread_local QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( wildcard ), QRegularExpression::CaseInsensitiveOption );
         if ( rx.match( pathInfo.fileName() ).hasMatch() )
         {
           matches = true;
