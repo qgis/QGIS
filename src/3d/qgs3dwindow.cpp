@@ -15,6 +15,9 @@
 
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QEntity>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <Qt3DCore/QCoreAspect>
+#endif
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QRenderAspect>
@@ -40,6 +43,9 @@ Qgs3DWindow::Qgs3DWindow()
 {
 
   // register aspects
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  m_aspectEngine->registerAspect( new Qt3DCore::QCoreAspect );
+#endif
   m_aspectEngine->registerAspect( m_renderAspect );
   m_aspectEngine->registerAspect( m_inputAspect );
   m_aspectEngine->registerAspect( m_logicAspect );
