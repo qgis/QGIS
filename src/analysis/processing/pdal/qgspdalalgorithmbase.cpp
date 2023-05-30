@@ -21,6 +21,8 @@
 #include "qgsrunprocess.h"
 #include "qgspointcloudexpression.h"
 
+#include <QRegularExpression>
+
 ///@cond PRIVATE
 
 //
@@ -134,7 +136,21 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   const QStringList processArgs = createArgumentLists( parameters, context, feedback );
   const QString wrenchPath = wrenchExecutableBinary();
 
-  feedback->pushCommandInfo( QObject::tr( "wrench command: " ) + wrenchPath + ' ' + processArgs.join( ' ' ) );
+  QStringList logArgs;
+  QRegularExpression re( "[\\s\\\"\\'\\(\\)\\&;]" );
+  for ( const QString &arg : processArgs )
+  {
+    if ( arg.contains( re ) )
+    {
+      logArgs << QStringLiteral( "\"%1\"" ).arg( arg );
+    }
+    else
+    {
+      logArgs << arg;
+    }
+  }
+
+  feedback->pushCommandInfo( QObject::tr( "wrench command: " ) + wrenchPath + ' ' + logArgs.join( ' ' ) );
 
   double progress = 0;
   QString buffer;
