@@ -2904,15 +2904,20 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
   }
   else
   {
-    expression = QStringLiteral( "scale_exp(@vector_tile_zoom,%1,%2,%3,%4,%5)" ).arg( zoomMin )
-                 .arg( zoomMax )
-                 .arg( minValueExpr )
-                 .arg( maxValueExpr )
-                 .arg( base );
+    // use formula to scale value exponentially as scale_exp expression function
+    // gives wrong resutls, see https://github.com/qgis/QGIS/pull/53164
+    QString ratioExpr = QStringLiteral( "(%1^(@vector_tile_zoom - %2) - 1) / (%1^(%3 - %2) - 1)" ).arg( base ).arg( zoomMin ).arg( zoomMax );
+    expression = QStringLiteral( "(%1) + (%2) * ((%3) - (%1))" ).arg( minValueExpr ).arg( ratioExpr ).arg( maxValueExpr );
+    // can be uncommented when scale_exponential expression function gets to the old LTR
+    //expression = QStringLiteral( "scale_exponential(@vector_tile_zoom,%1,%2,%3,%4,%5)" ).arg( zoomMin )
+    //             .arg( zoomMax )
+    //             .arg( minValueExpr )
+    //             .arg( maxValueExpr )
+    //             .arg( base );
   }
 
   if ( multiplier != 1 )
-    return QStringLiteral( "%1 * %2" ).arg( expression ).arg( multiplier );
+    return QStringLiteral( "(%1) * %2" ).arg( expression ).arg( multiplier );
   else
     return expression;
 }
