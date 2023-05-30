@@ -2423,7 +2423,8 @@ QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, Qgis::
   {
     // Force quadrant segments to be at least 8, see
     // https://github.com/qgis/QGIS/issues/53165#issuecomment-1563470832
-    if ( segments < 8 ) segments = 8;
+    if ( segments < 8 )
+      segments = 8;
     offset.reset( GEOSOffsetCurve_r( geosinit()->ctxt, mGeos.get(), distance, segments, static_cast< int >( joinStyle ), miterLimit ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
