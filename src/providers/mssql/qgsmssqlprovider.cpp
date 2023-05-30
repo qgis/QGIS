@@ -1377,11 +1377,13 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           // Z and M on the end of a WKT string isn't valid for
           // SQL Server so we have to remove it first.
           wkt = geom.asWkt();
-          wkt.replace( QRegularExpression( QStringLiteral( "[mzMZ]+\\s*\\(" ) ), QStringLiteral( "(" ) );
+          const thread_local QRegularExpression wktRx( QStringLiteral( "[mzMZ]+\\s*\\(" ) );
+          wkt.replace( wktRx, QStringLiteral( "(" ) );
           // if we have M value only, we need to insert null-s for the Z value
           if ( QgsWkbTypes::hasM( geom.wkbType() ) && !QgsWkbTypes::hasZ( geom.wkbType() ) )
           {
-            wkt.replace( QRegularExpression( QStringLiteral( "(?=\\s[0-9+-.]+[,)])" ) ), QStringLiteral( " NULL" ) );
+            const thread_local QRegularExpression nullRx( QStringLiteral( "(?=\\s[0-9+-.]+[,)])" ) );
+            wkt.replace( QRegularExpression( nullRx ), QStringLiteral( " NULL" ) );
           }
         }
         query.addBindValue( wkt );
@@ -1732,7 +1734,8 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QString wkt = it->asWkt();
       // Z and M on the end of a WKT string isn't valid for
       // SQL Server so we have to remove it first.
-      wkt.replace( QRegularExpression( QStringLiteral( "[mzMZ]+\\s*\\(" ) ), QStringLiteral( "(" ) );
+      const thread_local QRegularExpression zmRegExp( QStringLiteral( "[mzMZ]+\\s*\\(" ) );
+      wkt.replace( zmRegExp, QStringLiteral( "(" ) );
       query.addBindValue( wkt );
     }
 

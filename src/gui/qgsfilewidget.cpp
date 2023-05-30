@@ -494,7 +494,7 @@ void QgsFileDropEdit::setFilters( const QString &filters )
   if ( filters.contains( QStringLiteral( "*.*" ) ) )
     return; // everything is allowed!
 
-  QRegularExpression rx( QStringLiteral( "\\*\\.(\\w+)" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "\\*\\.(\\w+)" ) );
   QRegularExpressionMatchIterator i = rx.globalMatch( filters );
   while ( i.hasNext() )
   {

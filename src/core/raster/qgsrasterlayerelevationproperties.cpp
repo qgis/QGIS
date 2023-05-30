@@ -253,7 +253,7 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
   static const QStringList sWordCandidates{ QStringLiteral( "aster" ) };
   for ( const QString &candidate : sWordCandidates )
   {
-    const QRegularExpression re( QStringLiteral( "\\b%1\\b" ).arg( candidate ) );
+    const thread_local QRegularExpression re( QStringLiteral( "\\b%1\\b" ).arg( candidate ) );
     if ( re.match( layerName, Qt::CaseInsensitive ).hasMatch() )
       return true;
   }

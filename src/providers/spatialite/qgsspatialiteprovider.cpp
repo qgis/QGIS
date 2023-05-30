@@ -944,7 +944,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
 
     QString sqlDef = QString::fromUtf8( results[ 1 ] );
     // extract definition
-    QRegularExpression re( QStringLiteral( R"raw(\((.+)\))raw" ), QRegularExpression::PatternOption::DotMatchesEverythingOption );
+    const thread_local QRegularExpression re( QStringLiteral( R"raw(\((.+)\))raw" ), QRegularExpression::PatternOption::DotMatchesEverythingOption );
     QRegularExpressionMatch match = re.match( sqlDef );
     if ( match.hasMatch() )
     {
@@ -4391,7 +4391,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
 QString QgsSpatiaLiteProvider::createIndexName( QString tableName, QString field )
 {
-  QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
+  const thread_local QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
   tableName.replace( safeExp, QStringLiteral( "_" ) );
   field.replace( safeExp, QStringLiteral( "_" ) );
   return QStringLiteral( "%1_%2_idx" ).arg( tableName, field );

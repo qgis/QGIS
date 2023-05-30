@@ -70,7 +70,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
                                QStringLiteral( "%1####.png" ).arg( QgsProject::instance()->baseName() )
                                , QgsSettings::App ).toString();
   mTemplateLineEdit->setText( templateText );
-  const QRegularExpression rx( QStringLiteral( "^\\w+#+\\.{1}\\w+$" ) ); //e.g. anyprefix#####.png
+  const thread_local QRegularExpression rx( QStringLiteral( "^\\w+#+\\.{1}\\w+$" ) ); //e.g. anyprefix#####.png
   QValidator *validator = new QRegularExpressionValidator( rx, this );
   mTemplateLineEdit->setValidator( validator );
 

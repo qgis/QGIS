@@ -137,7 +137,8 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     {
       // word wrap
       QString commentText { layerProperty.tableComment };
-      commentText.replace( QRegularExpression( QStringLiteral( "^\n*" ) ), QString() );
+      const thread_local QRegularExpression newLineRx( QStringLiteral( "^\n*" ) );
+      commentText.replace( newLineRx, QString() );
       commentItem->setText( commentText );
       commentItem->setToolTip( QStringLiteral( "<span>%1</span>" ).arg( commentText.replace( '\n', QLatin1String( "<br/>" ) ) ) );
       commentItem->setTextAlignment( Qt::AlignTop );

@@ -274,8 +274,7 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
 QString QgsCrsDefinitionWidget::multiLineWktToSingleLine( const QString &wkt )
 {
   QString res = wkt;
-  QRegularExpression re( QStringLiteral( "\\s*\\n\\s*" ) );
-  re.setPatternOptions( QRegularExpression::MultilineOption );
+  const thread_local QRegularExpression re( QStringLiteral( "\\s*\\n\\s*" ), QRegularExpression::MultilineOption );
   res.replace( re, QString() );
   return res;
 }

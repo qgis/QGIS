@@ -459,8 +459,8 @@ bool QgsGmlStreamingParser::processData( const QByteArray &pdata, bool atEnd, QS
     {
       // Specified encoding is unknown, Expat only accepts UTF-8, UTF-16, ISO-8859-1
       // Try to get encoding string and convert data to utf-8
-      QRegularExpression reEncoding( QStringLiteral( "<?xml.*encoding=['\"]([^'\"]*)['\"].*?>" ),
-                                     QRegularExpression::CaseInsensitiveOption );
+      const thread_local QRegularExpression reEncoding( QStringLiteral( "<?xml.*encoding=['\"]([^'\"]*)['\"].*?>" ),
+          QRegularExpression::CaseInsensitiveOption );
       QRegularExpressionMatch match = reEncoding.match( pdata );
       const QString encoding = match.hasMatch() ? match.captured( 1 ) : QString();
       mCodec = !encoding.isEmpty() ? QTextCodec::codecForName( encoding.toLatin1() ) : nullptr;

@@ -44,7 +44,7 @@ QWidget *QgsHtmlWidgetWrapper::createWidget( QWidget *parent )
     {
       if ( attributeChanged )
       {
-        const QRegularExpression expRe { QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption };
+        const thread_local QRegularExpression expRe { QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption };
         const QRegularExpressionMatch match { expRe.match( mHtmlCode ) };
         if ( match.hasMatch() && QgsValueRelationFieldFormatter::expressionRequiresFormScope( match.captured( 1 ) ) )
         {

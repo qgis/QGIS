@@ -2508,7 +2508,8 @@ QString QgsMapLayer::generateId( const QString &layerName )
   // underscore) with an underscore.
   // Note that the first backslash in the regular expression is
   // there for the compiler, so the pattern is actually \W
-  id.replace( QRegularExpression( "[\\W]" ), QStringLiteral( "_" ) );
+  const thread_local QRegularExpression idRx( QStringLiteral( "[\\W]" ) );
+  id.replace( idRx, QStringLiteral( "_" ) );
   return id;
 }
 

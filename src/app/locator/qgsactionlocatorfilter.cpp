@@ -63,8 +63,8 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     searchActions( string, widget, found );
   }
 
-  QRegularExpression extractFromTooltip( QStringLiteral( "<b>(.*)</b>" ) );
-  QRegularExpression newLineToSpace( QStringLiteral( "[\\s\\n\\r]+" ) );
+  const thread_local QRegularExpression extractFromTooltip( QStringLiteral( "<b>(.*)</b>" ) );
+  const thread_local QRegularExpression newLineToSpace( QStringLiteral( "[\\s\\n\\r]+" ) );
 
   const auto constActions = parent->actions();
   for ( QAction *action : constActions )

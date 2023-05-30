@@ -517,7 +517,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromStr
 {
   QgsPalettedRasterRenderer::ClassData classes;
 
-  const QRegularExpression linePartRx( QStringLiteral( "[\\s,:]+" ) );
+  const thread_local QRegularExpression linePartRx( QStringLiteral( "[\\s,:]+" ) );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   const QStringList parts = string.split( '\n', QString::SkipEmptyParts );

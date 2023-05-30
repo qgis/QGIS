@@ -756,7 +756,7 @@ void QgsPropertyOverrideButton::updateGui()
   {
     icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpressionOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpression.svg" ) );
 
-    QRegularExpression rx( QStringLiteral( "^project_color\\('(.*)'\\)$" ) );
+    const thread_local QRegularExpression rx( QStringLiteral( "^project_color\\('(.*)'\\)$" ) );
     QRegularExpressionMatch match = rx.match( mExpressionString );
     if ( match.hasMatch() )
     {
@@ -912,7 +912,7 @@ void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
         {
           if ( state && mProperty.isProjectColor() )
           {
-            QRegularExpression rx( QStringLiteral( "^project_color\\('(.*)'\\)$" ) );
+            const thread_local QRegularExpression rx( QStringLiteral( "^project_color\\('(.*)'\\)$" ) );
             QRegularExpressionMatch match = rx.match( mExpressionString );
             if ( match.hasMatch() )
             {

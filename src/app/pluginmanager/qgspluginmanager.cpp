@@ -908,7 +908,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += QStringLiteral( "<img src=\"%1\" style=\"float:right;max-width:64px;max-height:64px;\">" ).arg( iconPath );
   }
 
-  const QRegularExpression stripHtml = QRegularExpression( QStringLiteral( "&lt;[^\\s].*?&gt;" ) );
+  const thread_local QRegularExpression stripHtml = QRegularExpression( QStringLiteral( "&lt;[^\\s].*?&gt;" ) );
 
   QString name = metadata->value( QStringLiteral( "name" ) );
   name = name.remove( stripHtml );
@@ -922,7 +922,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   {
     QString about = metadata->value( QStringLiteral( "about" ) );
     // The regular expression ensures that a new line will be present after the closure of a paragraph tag (i.e. </p>)
-    about = about.replace( QRegularExpression( QStringLiteral( "&lt;\\/p&gt;([^\\n])" ) ), QStringLiteral( "&lt;/p&gt;\n\\1" ) ).remove( stripHtml );
+    const thread_local QRegularExpression pTagRe( QStringLiteral( "&lt;\\/p&gt;([^\\n])" ) );
+    about = about.replace( pTagRe, QStringLiteral( "&lt;/p&gt;\n\\1" ) ).remove( stripHtml );
     html += about.replace( '\n', QLatin1String( "<br/>" ) );
     html += QLatin1String( "<br/><br/>" );
   }
@@ -1478,7 +1479,7 @@ void QgsPluginManager::leFilter_textChanged( QString text )
     QgsDebugMsgLevel( "PluginManager filter changed to :" + text, 3 );
   }
 
-  const QRegularExpression filterRegExp( text, QRegularExpression::CaseInsensitiveOption );
+  const thread_local  QRegularExpression filterRegExp( text, QRegularExpression::CaseInsensitiveOption );
   mModelProxy->setFilterRegularExpression( filterRegExp );
 }
 

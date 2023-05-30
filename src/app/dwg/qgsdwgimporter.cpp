@@ -3148,12 +3148,18 @@ void QgsDwgImporter::cleanText( QString &res )
   {
     const QString prev( res );
 
-    res = res.replace( QRegularExpression( "\\\\f[0-9A-Za-z| ]{0,};" ),                          QString( "" ) );            // font setting
-    res = res.replace( QRegularExpression( "([^\\\\]|^){" ),                                     QStringLiteral( "\\1" ) );  // grouping
-    res = res.replace( QRegularExpression( "([^\\\\])}" ),                                       QStringLiteral( "\\1" ) );
-    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[loLOkx]" ),                          QStringLiteral( "\\1" ) );  // underline, overstrike, strike through
-    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[HhWwAaCcQq]\\d*(\\.\\d*)?[xX]?;?" ), QStringLiteral( "\\1" ) );  // text height, width, alignment, color and slanting
-    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[ACQ]\\d+;" ),                        QStringLiteral( "\\1" ) );  // alignment, color and slanting
+    const thread_local QRegularExpression fontSettingRe( QStringLiteral( "\\\\f[0-9A-Za-z| ]{0,};" ) );
+    res = res.replace( fontSettingRe, QString( "" ) ); // font setting
+    const thread_local QRegularExpression groupingRe( QStringLiteral( "([^\\\\]|^){" ) );
+    res = res.replace( groupingRe, QStringLiteral( "\\1" ) );  // grouping
+    const thread_local QRegularExpression groupingRe2( QStringLiteral( "([^\\\\])}" ) );
+    res = res.replace( groupingRe2, QStringLiteral( "\\1" ) );
+    const thread_local QRegularExpression textDecorationRe( QStringLiteral( "([^\\\\]|^)\\\\[loLOkx]" ) );
+    res = res.replace( textDecorationRe, QStringLiteral( "\\1" ) );  // underline, overstrike, strike through
+    const thread_local QRegularExpression textSizeRe( QStringLiteral( "([^\\\\]|^)\\\\[HhWwAaCcQq]\\d*(\\.\\d*)?[xX]?;?" ) );
+    res = res.replace( textSizeRe, QStringLiteral( "\\1" ) );  // text height, width, alignment, color and slanting
+    const thread_local QRegularExpression alignmentRe( QStringLiteral( "([^\\\\]|^)\\\\[ACQ]\\d+;" ) );
+    res = res.replace( alignmentRe, QStringLiteral( "\\1" ) );  // alignment, color and slanting
 
     if ( res == prev )
       break;

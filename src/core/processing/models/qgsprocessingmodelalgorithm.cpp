@@ -966,7 +966,8 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
   auto safeName = []( const QString & name )->QString
   {
     QString s = name;
-    return s.replace( QRegularExpression( QStringLiteral( "[\\s'\"\\(\\):\\.]" ) ), QStringLiteral( "_" ) );
+    const thread_local QRegularExpression safeNameRe( QStringLiteral( "[\\s'\"\\(\\):\\.]" ) );
+    return s.replace( safeNameRe, QStringLiteral( "_" ) );
   };
 
   // "static"/single value sources

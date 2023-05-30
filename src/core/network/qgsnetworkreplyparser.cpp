@@ -51,7 +51,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
     const QString contentType = mReply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsgLevel( "contentType: " + contentType, 2 );
 
-    const QRegularExpression re( ".*boundary=\"?([^\"]+)\"?\\s?", QRegularExpression::CaseInsensitiveOption );
+    const thread_local QRegularExpression re( ".*boundary=\"?([^\"]+)\"?\\s?", QRegularExpression::CaseInsensitiveOption );
     const QRegularExpressionMatch match = re.match( contentType );
     if ( !( match.capturedStart( 0 ) == 0 ) )
     {

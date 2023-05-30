@@ -1365,7 +1365,7 @@ int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, Qgis::SymbolT
   unmatchedSymbols = style->symbolNames();
   const QSet< QString > allSymbolNames( unmatchedSymbols.begin(), unmatchedSymbols.end() );
 
-  const QRegularExpression tolerantMatchRe( QStringLiteral( "[^\\w\\d ]" ), QRegularExpression::UseUnicodePropertiesOption );
+  const thread_local QRegularExpression tolerantMatchRe( QStringLiteral( "[^\\w\\d ]" ), QRegularExpression::UseUnicodePropertiesOption );
 
   for ( int catIdx = 0; catIdx < mCategories.count(); ++catIdx )
   {

@@ -372,7 +372,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     // to avoid double extensions like .gpkg.shp
     if ( !mLastUsedFilename.isEmpty() )
     {
-      QRegularExpression rx( "\\.(.*?)[\\s]" );
+      const thread_local QRegularExpression rx( "\\.(.*?)[\\s]" );
       QString ext;
       ext = rx.match( getFilterForFormat( format ) ).captured( 1 );
       if ( !ext.isEmpty() )

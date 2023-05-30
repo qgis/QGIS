@@ -434,7 +434,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 
   if ( uri.contains( QLatin1String( "authcfg" ) ) )
   {
-    QRegularExpression authcfgRe( QStringLiteral( " authcfg='([^']+)'" ) );
+    const thread_local QRegularExpression authcfgRe( QStringLiteral( " authcfg='([^']+)'" ) );
     QRegularExpressionMatch match;
     if ( uri.contains( authcfgRe, &match ) )
     {
@@ -2623,7 +2623,7 @@ bool QgsOgrProvider::createSpatialIndex()
 
 QString QgsOgrProvider::createIndexName( QString tableName, QString field )
 {
-  QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
+  const thread_local QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
   tableName.replace( safeExp, QStringLiteral( "_" ) );
   field.replace( safeExp, QStringLiteral( "_" ) );
   return tableName + "_" + field + "_idx";
