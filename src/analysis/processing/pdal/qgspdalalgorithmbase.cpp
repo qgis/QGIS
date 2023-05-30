@@ -137,7 +137,7 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   const QString wrenchPath = wrenchExecutableBinary();
 
   QStringList logArgs;
-  QRegularExpression re( "[\\s\\\"\\'\\(\\)\\&;]" );
+  const thread_local QRegularExpression re( "[\\s\\\"\\'\\(\\)\\&;]" );
   for ( const QString &arg : processArgs )
   {
     if ( arg.contains( re ) )
