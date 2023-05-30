@@ -569,7 +569,7 @@ QModelIndex QgsBrowserModel::parent( const QModelIndex &index ) const
   if ( !item )
     return QModelIndex();
 
-  return findItem( item->parent() );
+  return findItem( item->parent(), item->parent() ? item->parent()->parent() : nullptr );
 }
 
 QModelIndex QgsBrowserModel::findItem( QgsDataItem *item, QgsDataItem *parent ) const
