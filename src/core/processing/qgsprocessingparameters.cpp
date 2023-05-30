@@ -5376,11 +5376,11 @@ QString QgsProcessingParameterExpression::asPythonString( const QgsProcessing::P
 
       if ( mExpressionType == Qgis::ExpressionType::PointCloud )
       {
-        code += QStringLiteral( ", type=Qgis.ExpressionType.PointCloud)" );
+        code += QLatin1String( ", type=Qgis.ExpressionType.PointCloud)" );
       }
       else
       {
-        code += QStringLiteral( ")" );
+        code += QLatin1Char( ')' );
       }
       return code;
     }

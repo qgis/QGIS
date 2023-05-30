@@ -167,7 +167,7 @@ class ProcessingHistoryNode : public QgsHistoryEntryGroup
         return true;
 
       QString execAlgorithmDialogCommand = mPythonCommand;
-      execAlgorithmDialogCommand.replace( QStringLiteral( "processing.run(" ), QStringLiteral( "processing.execAlgorithmDialog(" ) );
+      execAlgorithmDialogCommand.replace( QLatin1String( "processing.run(" ), QLatin1String( "processing.execAlgorithmDialog(" ) );
 
       // adding to this list? Also update the BatchPanel.py imports!!
       const QStringList script =

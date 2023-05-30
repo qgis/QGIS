@@ -80,7 +80,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
   QString outputFileName( outputName );
 
   QFileInfo fi( outputFileName );
-  if ( fi.suffix() != QStringLiteral( "vpc" ) )
+  if ( fi.suffix() != QLatin1String( "vpc" ) )
   {
     outputFileName = fi.path() + '/' + fi.completeBaseName() + QStringLiteral( ".vpc" );
     if ( context.willLoadLayerOnCompletion( outputName ) )

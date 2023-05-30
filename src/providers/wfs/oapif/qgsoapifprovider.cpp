@@ -412,7 +412,7 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
     }
     QgsOapifOptionsRequest optionsOneItemRequest( uri );
     QString url( mShared->mItemsUrl );
-    url += QStringLiteral( "/" );
+    url += QLatin1Char( '/' );
     url += testId;
     supportedOptions = optionsOneItemRequest.sendOPTIONS( url );
     if ( supportedOptions.contains( QLatin1String( "PUT" ) ) )
@@ -1058,7 +1058,7 @@ bool QgsOapifSharedData::computeFilter( const QgsExpression &expr,
       return true;
     }
     serverSideParameters = getEncodedQueryParam( QStringLiteral( "filter" ), compiler.result() );
-    serverSideParameters += QStringLiteral( "&filter-lang=cql2-text" );
+    serverSideParameters += QLatin1String( "&filter-lang=cql2-text" );
     if ( compiler.geometryLiteralUsed() )
     {
       if ( mSourceCrs
@@ -1204,12 +1204,12 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
       // Combine mServerFilter and mServerExpression
       QStringList components1 = mShared->mServerFilter.split( QLatin1Char( '&' ) );
       QStringList components2 = mShared->mServerExpression.split( QLatin1Char( '&' ) );
-      Q_ASSERT( components1[0].startsWith( QStringLiteral( "filter=" ) ) );
-      Q_ASSERT( components2[0].startsWith( QStringLiteral( "filter=" ) ) );
-      url += QStringLiteral( "filter=" );
+      Q_ASSERT( components1[0].startsWith( QLatin1String( "filter=" ) ) );
+      Q_ASSERT( components2[0].startsWith( QLatin1String( "filter=" ) ) );
+      url += QLatin1String( "filter=" );
       url += '(';
       url += components1[0].mid( static_cast<int>( strlen( "filter=" ) ) );
-      url += QStringLiteral( ") AND (" );
+      url += QLatin1String( ") AND (" );
       url += components2[0].mid( static_cast<int>( strlen( "filter=" ) ) );
       url += ')';
       // Add components1 extra parameters: filter-lang and filter-crs

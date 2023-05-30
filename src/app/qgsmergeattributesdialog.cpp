@@ -304,7 +304,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
 
   connect( newComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]()
   {
-    bool isManual = newComboBox->currentData() == QStringLiteral( "manual" );
+    bool isManual = newComboBox->currentData() == QLatin1String( "manual" );
     updateManualWidget( column, isManual );
     refreshMergedValue( column );
   } );

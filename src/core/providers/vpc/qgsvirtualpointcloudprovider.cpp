@@ -499,7 +499,7 @@ QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVari
 {
   Q_UNUSED( configuration )
 
-  if ( mAttributes.indexOf( QStringLiteral( "Classification" ) ) >= 0 )
+  if ( mAttributes.indexOf( QLatin1String( "Classification" ) ) >= 0 )
   {
     return new QgsPointCloudClassifiedRenderer( QStringLiteral( "Classification" ), QgsPointCloudClassifiedRenderer::defaultCategories() );
   }

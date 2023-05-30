@@ -650,15 +650,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   const QString sep = QgsMeasureDialog::settingClipboardSeparator->value();
 
-  if ( sep.isEmpty() || sep == QStringLiteral( "\t" ) )
+  if ( sep.isEmpty() || sep == QLatin1String( "\t" ) )
     mSeparatorTab->setChecked( true );
-  else if ( sep == QStringLiteral( "," ) )
+  else if ( sep == QLatin1String( "," ) )
     mSeparatorComma->setChecked( true );
-  else if ( sep == QStringLiteral( ";" ) )
+  else if ( sep == QLatin1String( ";" ) )
     mSeparatorSemicolon->setChecked( true );
-  else if ( sep == QStringLiteral( " " ) )
+  else if ( sep == QLatin1String( " " ) )
     mSeparatorSpace->setChecked( true );
-  else if ( sep == QStringLiteral( ":" ) )
+  else if ( sep == QLatin1String( ":" ) )
     mSeparatorColon->setChecked( true );
   else
   {
