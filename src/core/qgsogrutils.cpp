@@ -40,6 +40,7 @@
 #include "qgsvariantutils.h"
 
 #include <cmath>
+#include <limits>
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -219,7 +220,7 @@ int QgsOgrUtils::OGRTZFlagFromQt( const QDateTime &datetime )
   return 100 + datetime.offsetFromUtc() / ( 60 * 15 );
 }
 
-std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &value )
+std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &value, OGRFieldType type )
 {
   std::unique_ptr< OGRField > res = std::make_unique< OGRField >();
 
@@ -229,51 +230,172 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       OGR_RawField_SetUnset( res.get() );
       break;
     case QVariant::Bool:
-      res->Integer = value.toBool() ? 1 : 0;
+    {
+      const int val = value.toBool() ? 1 : 0;
+      if ( type == OFTInteger )
+        res->Integer = val;
+      else if ( type == OFTInteger64 )
+        res->Integer64 = val;
+      else if ( type == OFTReal )
+        res->Real = val;
+      else
+      {
+        QgsDebugError( "Unsupported output data type for Bool" );
+        return nullptr;
+      }
       break;
+    }
     case QVariant::Int:
-      res->Integer = value.toInt();
+    {
+      const int val = value.toInt();
+      if ( type == OFTInteger )
+        res->Integer = val;
+      else if ( type == OFTInteger64 )
+        res->Integer64 = val;
+      else if ( type == OFTReal )
+        res->Real = val;
+      else
+      {
+        QgsDebugError( "Unsupported output data type for Int" );
+        return nullptr;
+      }
       break;
+    }
     case QVariant::LongLong:
-      res->Integer64 = value.toLongLong();
+    {
+      const qint64 val = value.toLongLong();
+      if ( type == OFTInteger )
+      {
+        if ( val <= std::numeric_limits<int>::max() &&
+             val >= std::numeric_limits<int>::min() )
+        {
+          res->Integer = static_cast<int>( val );
+        }
+        else
+        {
+          QgsDebugError( "Value does not fit on Integer" );
+          return nullptr;
+        }
+      }
+      else if ( type == OFTInteger64 )
+        res->Integer64 = val;
+      else if ( type == OFTReal )
+      {
+        res->Real = static_cast<double>( val );
+      }
+      else
+      {
+        QgsDebugError( "Unsupported output data type for LongLong" );
+        return nullptr;
+      }
       break;
+    }
     case QVariant::Double:
-      res->Real = value.toDouble();
+    {
+      double val = value.toDouble();
+      if ( type == OFTInteger )
+      {
+        if ( val <= std::numeric_limits<int>::max() &&
+             val >= std::numeric_limits<int>::min() )
+        {
+          res->Integer = static_cast<int>( val );
+        }
+        else
+        {
+          QgsDebugError( "Value does not fit on Integer" );
+          return nullptr;
+        }
+      }
+      else if ( type == OFTInteger64 )
+      {
+        if ( val <= static_cast<double>( std::numeric_limits<qint64>::max() ) &&
+             val >= static_cast<double>( std::numeric_limits<qint64>::min() ) )
+        {
+          res->Integer64 = static_cast<qint64>( val );
+        }
+        else
+        {
+          QgsDebugError( "Value does not fit on Integer64" );
+          return nullptr;
+        }
+      }
+      else if ( type == OFTReal )
+      {
+        res->Real = val;
+      }
+      else
+      {
+        QgsDebugError( "Unsupported output data type for LongLong" );
+        return nullptr;
+      }
       break;
+    }
     case QVariant::Char:
     case QVariant::String:
-      res->String = CPLStrdup( value.toString().toUtf8().constData() );
+    {
+      if ( type == OFTString )
+        res->String = CPLStrdup( value.toString().toUtf8().constData() );
+      else
+      {
+        QgsDebugError( "Unsupported output data type for String" );
+        return nullptr;
+      }
       break;
+    }
     case QVariant::Date:
     {
-      const QDate date = value.toDate();
-      res->Date.Day = date.day();
-      res->Date.Month = date.month();
-      res->Date.Year = date.year();
-      res->Date.TZFlag = 0;
+      if ( type == OFTDate )
+      {
+        const QDate date = value.toDate();
+        res->Date.Day = date.day();
+        res->Date.Month = date.month();
+        res->Date.Year = static_cast<GInt16>( date.year() );
+        res->Date.TZFlag = 0;
+      }
+      else
+      {
+        QgsDebugError( "Unsupported output data type for Date" );
+        return nullptr;
+      }
       break;
     }
     case QVariant::Time:
     {
-      const QTime time = value.toTime();
-      res->Date.Hour = time.hour();
-      res->Date.Minute = time.minute();
-      res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
-      res->Date.TZFlag = 0;
+      if ( type == OFTTime )
+      {
+        const QTime time = value.toTime();
+        res->Date.Hour = time.hour();
+        res->Date.Minute = time.minute();
+        res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
+        res->Date.TZFlag = 0;
+      }
+      else
+      {
+        QgsDebugError( "Unsupported output data type for Time" );
+        return nullptr;
+      }
       break;
     }
     case QVariant::DateTime:
     {
-      const QDateTime dt = value.toDateTime();
-      const QDate date = dt.date();
-      res->Date.Day = date.day();
-      res->Date.Month = date.month();
-      res->Date.Year = static_cast<GInt16>( date.year() );
-      const QTime time = dt.time();
-      res->Date.Hour = time.hour();
-      res->Date.Minute = time.minute();
-      res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
-      res->Date.TZFlag = OGRTZFlagFromQt( dt );
+      if ( type == OFTDateTime )
+      {
+        const QDateTime dt = value.toDateTime();
+        const QDate date = dt.date();
+        res->Date.Day = date.day();
+        res->Date.Month = date.month();
+        res->Date.Year = static_cast<GInt16>( date.year() );
+        const QTime time = dt.time();
+        res->Date.Hour = time.hour();
+        res->Date.Minute = time.minute();
+        res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
+        res->Date.TZFlag = OGRTZFlagFromQt( dt );
+      }
+      else
+      {
+        QgsDebugError( "Unsupported output data type for DateTime" );
+        return nullptr;
+      }
       break;
     }
 
@@ -2181,8 +2303,10 @@ OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
 
     case Qgis::FieldDomainType::Range:
     {
-      std::unique_ptr< OGRField > min = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->minimum() );
-      std::unique_ptr< OGRField > max = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->maximum() );
+      std::unique_ptr< OGRField > min = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->minimum(), domainFieldType );
+      std::unique_ptr< OGRField > max = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->maximum(), domainFieldType );
+      if ( !min || !max )
+        return nullptr;
       res = OGR_RangeFldDomain_Create(
               domain->name().toUtf8().constData(),
               domain->description().toUtf8().constData(),
