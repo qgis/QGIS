@@ -19,7 +19,9 @@
 
 #include "qgsapplication.h"
 #include "qgsrunprocess.h"
+#include "qgspointcloudlayer.h"
 #include "qgspointcloudexpression.h"
+#include "qgsrasterlayerelevationproperties.h"
 
 #include <QRegularExpression>
 
@@ -32,6 +34,11 @@
 void QgsPdalAlgorithmBase::setOutputValue( const QString &name, const QVariant &value )
 {
   mOutputValues.insert( name, value );
+}
+
+void QgsPdalAlgorithmBase::enableElevationPropertiesPostProcessor( bool enable )
+{
+  mEnableElevationProperties = enable;
 }
 
 QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
@@ -130,6 +137,21 @@ QStringList QgsPdalAlgorithmBase::createArgumentLists( const QVariantMap &parame
   Q_UNUSED( feedback );
   return QStringList();
 }
+
+class EnableElevationPropertiesPostProcessor : public QgsProcessingLayerPostProcessorInterface
+{
+  public:
+
+    void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &, QgsProcessingFeedback * ) override
+    {
+      if ( QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer ) )
+      {
+        QgsRasterLayerElevationProperties *props = qgis::down_cast< QgsRasterLayerElevationProperties * >( rl->elevationProperties() );
+        props->setEnabled( true );
+        rl->trigger3DUpdate();
+      }
+    }
+};
 
 QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
@@ -239,6 +261,12 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   while ( it != mOutputValues.constEnd() )
   {
     outputs[ it.key() ] = it.value();
+
+    const QString outputLayerName = it.value().toString();
+    if ( context.willLoadLayerOnCompletion( outputLayerName ) && mEnableElevationProperties )
+    {
+      context.layerToLoadOnCompletionDetails( outputLayerName ).setPostProcessor( new EnableElevationPropertiesPostProcessor() );
+    }
     ++it;
   }
 

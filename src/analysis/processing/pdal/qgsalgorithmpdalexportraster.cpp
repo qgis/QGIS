@@ -99,6 +99,11 @@ QStringList QgsPdalExportRasterAlgorithm::createArgumentLists( const QVariantMap
   const double resolution = parameterAsDouble( parameters, QStringLiteral( "RESOLUTION" ), context );
   const int tileSize = parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context );
 
+  if ( attribute == 'Z' )
+  {
+    enableElevationPropertiesPostProcessor( true );
+  }
+
   QStringList args = { QStringLiteral( "to_raster" ),
                        QStringLiteral( "--input=%1" ).arg( layer->source() ),
                        QStringLiteral( "--output=%1" ).arg( outputFile ),

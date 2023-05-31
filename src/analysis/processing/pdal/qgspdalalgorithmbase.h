@@ -41,6 +41,8 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
   protected:
     void setOutputValue( const QString &name, const QVariant &value );
 
+    void enableElevationPropertiesPostProcessor( bool enable );
+
     /**
      * Creates common advanced parameters, such as expression and rectangle filters
      */
@@ -78,6 +80,7 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
 
   private:
     QMap<QString, QVariant> mOutputValues;
+    bool mEnableElevationProperties = false;
 };
 
 ///@endcond PRIVATE
