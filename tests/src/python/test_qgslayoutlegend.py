@@ -40,8 +40,7 @@ from qgis.core import (QgsPrintLayout,
                        QgsRendererCategory,
                        QgsFillSymbol,
                        QgsGeometryGeneratorSymbolLayer,
-                       QgsSymbol,
-                       QgsTextFormat
+                       QgsSymbol
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -820,15 +819,9 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setSymbolWidth(20)
         legend.setSymbolHeight(10)
 
-        text_format = QgsTextFormat()
-        text_format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
-        text_format.setSize(16)
-
         for legend_item in [QgsLegendStyle.Title, QgsLegendStyle.Group, QgsLegendStyle.Subgroup,
                             QgsLegendStyle.Symbol, QgsLegendStyle.SymbolLabel]:
-            style = legend.style(legend_item)
-            style.setTextFormat(text_format)
-            legend.setStyle(legend_item, style)
+            legend.setStyleFont(legend_item, QgsFontUtils.getStandardTestFont('Bold', 16))
 
         # disable auto resizing
         legend.setResizeToContents(False)
@@ -884,15 +877,9 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setSymbolWidth(20)
         legend.setSymbolHeight(10)
 
-        text_format = QgsTextFormat()
-        text_format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
-        text_format.setSize(16)
-
         for legend_item in [QgsLegendStyle.Title, QgsLegendStyle.Group, QgsLegendStyle.Subgroup,
                             QgsLegendStyle.Symbol, QgsLegendStyle.SymbolLabel]:
-            style = legend.style(legend_item)
-            style.setTextFormat(text_format)
-            legend.setStyle(legend_item, style)
+            legend.setStyleFont(legend_item, QgsFontUtils.getStandardTestFont('Bold', 16))
 
         # disable auto resizing
         legend.setResizeToContents(False)
