@@ -3073,14 +3073,25 @@ void QgsGdalProvider::initBaseDataset()
        || GDALGetGCPCount( mGdalBaseDataset ) > 0
        || GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
   {
-    QgsLogger::warning( QStringLiteral( "Creating Warped VRT." ) );
+    QgsDebugMsgLevel( QStringLiteral( "Creating Warped VRT." ), 2 );
 
     gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
+
     // Add alpha band to the output VRT dataset if there's no way for GDAL to
-    // respresent the fact that some pixels should be transparent (in the empty regions
+    // represent the fact that some pixels should be transparent (in the empty regions
     // when the raster is rotated). For example, this fixes the issue for RGB rasters
     // (with no alpha channel) or single-band raster without "no data" value set.
-    if ( GDALGetMaskFlags( GDALGetRasterBand( mGdalBaseDataset, 1 ) ) == GMF_ALL_VALID )
+
+    // South-up oriented raster without any rotation, GCP or RPC doesn't need alpha band
+    const bool isSouthUpWithoutRotationGcpOrRPC = ( hasGeoTransform
+        && ( mGeoTransform[1] > 0.0
+             && mGeoTransform[2] == 0.0
+             && mGeoTransform[4] == 0.0
+             && mGeoTransform[5] > 0.0 ) )
+        && GDALGetGCPCount( mGdalBaseDataset ) == 0
+        && !GDALGetMetadata( mGdalBaseDataset, "RPC" );
+
+    if ( !isSouthUpWithoutRotationGcpOrRPC && GDALGetMaskFlags( GDALGetRasterBand( mGdalBaseDataset, 1 ) ) == GMF_ALL_VALID )
     {
       psWarpOptions->nDstAlphaBand = GDALGetRasterCount( mGdalBaseDataset ) + 1;
     }
