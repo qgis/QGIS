@@ -818,13 +818,10 @@ void QgsGrassNewMapset::loadRegions()
       continue;
     }
 
-    // Add region
-    mRegionsComboBox->addItem( nameElem.text() );
+    const QgsRectangle rect( ll[0].toDouble(), ll[1].toDouble(), ur[0].toDouble(), ur[1].toDouble() );
 
-    QgsPointXY llp( ll[0].toDouble(), ll[1].toDouble() );
-    mRegionsPoints.push_back( llp );
-    QgsPointXY urp( ur[0].toDouble(), ur[1].toDouble() );
-    mRegionsPoints.push_back( urp );
+    // Add region
+    mRegionsComboBox->addItem( nameElem.text(), QVariant::fromValue( rect ) );
   }
   mRegionsComboBox->setCurrentIndex( -1 );
 
@@ -833,29 +830,24 @@ void QgsGrassNewMapset::loadRegions()
 
 void QgsGrassNewMapset::setSelectedRegion()
 {
+  if ( mRegionsComboBox->currentIndex() < 0 )
+    return;
 
-  // mRegionsPoints are in EPSG 4326 = LL WGS84
-  int index = 2 * mRegionsComboBox->currentIndex();
+  const QgsRectangle currentRect = mRegionsComboBox->currentData().value< QgsRectangle >();
 
   std::vector<QgsPointXY> points;
   // corners ll lr ur ul
-  points.push_back( QgsPointXY( mRegionsPoints[index] ) );
-  points.push_back( QgsPointXY( mRegionsPoints[index + 1].x(),
-                                mRegionsPoints[index].y() ) );
-  points.push_back( QgsPointXY( mRegionsPoints[index + 1] ) );
-  points.push_back( QgsPointXY( mRegionsPoints[index].x(),
-                                mRegionsPoints[index + 1].y() ) );
+  points.push_back( QgsPointXY( currentRect.xMinimum(), currentRect.yMinimum() ) );
+  points.push_back( QgsPointXY( currentRect.xMaximum(), currentRect.yMinimum() ) );
+  points.push_back( QgsPointXY( currentRect.xMaximum(), currentRect.yMaximum() ) );
+  points.push_back( QgsPointXY( currentRect.xMinimum(), currentRect.yMaximum() ) );
 
   // Convert to currently selected coordinate system
-
 
   // Warning: seems that crashes if source == dest
   if ( mProjectionSelector->crs().srsid() != GEOCRS_ID )
   {
-    // Warning: QgsCoordinateReferenceSystem::EpsgCrsId is broken (using epsg_id)
-    //QgsCoordinateReferenceSystem source ( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-    QgsCoordinateReferenceSystem source = QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID );
-
+    const QgsCoordinateReferenceSystem source( QStringLiteral( "EPSG:4326" ) );
     if ( !source.isValid() )
     {
       QgsGrass::warning( tr( "Cannot create QgsCoordinateReferenceSystem" ) );

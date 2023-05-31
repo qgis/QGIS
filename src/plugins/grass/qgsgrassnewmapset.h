@@ -226,8 +226,6 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     //! Locations were initialized
     bool mRegionsInited;
 
-    std::vector<QgsPointXY> mRegionsPoints;
-
     //! Last projection used for region
     QgsCoordinateReferenceSystem mCrs;
 };
