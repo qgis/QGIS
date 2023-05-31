@@ -680,7 +680,7 @@ static void tilingPass2(BaseInfo &m_b, TileGrid &m_grid, FileInfo &m_srsFileInfo
           pdal::PointId pointId = view->size();
           for (size_t i = 0; i < ptCnt; i+= readChunkSize)
           {
-              size_t nPointsToRead = std::min(readChunkSize, ptCnt-i);
+              size_t nPointsToRead = (std::min)(readChunkSize, ptCnt-i);
               fileReader.read(contentPtr, nPointsToRead*m_b.pointSize);
               for (std::size_t a = 0; a < nPointsToRead; ++a)
               {

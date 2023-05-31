@@ -178,7 +178,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double r
 }
 
 
-void ToRaster::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints)
+void ToRaster::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
     if (ends_with(inputFile, ".vpc"))
     {

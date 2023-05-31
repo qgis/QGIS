@@ -49,6 +49,11 @@ struct Alg
 
     bool verbose = false;        // write extra debugging output from the algorithm
 
+    point_count_t totalPoints = 0;   // calculated number of points from the input data
+    BOX3D bounds;                    // calculated 3D bounding box from the input data
+    SpatialReference crs;            // CRS of the input data (only valid when needsSingleCrs==true)
+
+
     pdal::ProgramArgs programArgs;
 
     Alg() = default;
@@ -74,7 +79,7 @@ struct Alg
      * Prepares pipelines that the algorithm needs to run and populates the given vector.
      * Pipelines are then run in a thread pool.
      */
-    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints) = 0;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) = 0;
     /**
      * Runs and post-processing code when pipelines are done executing.
      */
@@ -94,7 +99,7 @@ struct Info : public Alg
     // impl
     virtual void addArgs() override;
     virtual bool checkArgs() override;
-    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints) override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
     virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
 };
 
@@ -116,7 +121,7 @@ struct Translate : public Alg
     // impl
     virtual void addArgs() override;
     virtual bool checkArgs() override;
-    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints) override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
     virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
 };
 
@@ -141,7 +146,7 @@ struct Density : public Alg
     // impl
     virtual void addArgs() override;
     virtual bool checkArgs() override;
-    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints) override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
     virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
 
     // new
@@ -164,7 +169,7 @@ struct Boundary : public Alg
     // impl
     virtual void addArgs() override;
     virtual bool checkArgs() override;
-    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints) override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
     virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
 
 };
@@ -187,7 +192,7 @@ struct Clip : public Alg
     // impl
     virtual void addArgs() override;
     virtual bool checkArgs() override;
-    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints) override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
     virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
 
     // new
@@ -210,7 +215,7 @@ struct Merge : public Alg
     // impl
     virtual void addArgs() override;
     virtual bool checkArgs() override;
-    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints) override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
 
 };
 
@@ -236,7 +241,7 @@ struct Thin : public Alg
     // impl
     virtual void addArgs() override;
     virtual bool checkArgs() override;
-    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints) override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
     virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
 };
 
@@ -267,7 +272,7 @@ struct ToRaster : public Alg
     // impl
     virtual void addArgs() override;
     virtual bool checkArgs() override;
-    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints) override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
     virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
 };
 
@@ -296,7 +301,7 @@ struct ToRasterTin : public Alg
     // impl
     virtual void addArgs() override;
     virtual bool checkArgs() override;
-    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints) override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
     virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
 };
 
@@ -316,6 +321,6 @@ struct ToVector : public Alg
     // impl
     virtual void addArgs() override;
     virtual bool checkArgs() override;
-    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints) override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
     virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
 };

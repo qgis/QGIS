@@ -154,7 +154,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const pd
 }
 
 
-void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &, point_count_t &totalPoints)
+void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
     pdal::Options crop_opts;
     BOX2D bbox;
