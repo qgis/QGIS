@@ -288,7 +288,7 @@ class QgsOracleConn : public QObject
     bool mTransaction = false;
     int mSavePointId = 1;
 
-    static QMap<QString, QgsOracleConn *> sConnections;
+    static QMap<QPair<QString, QThread *>, QgsOracleConn *> sConnections;
     static int snConnections;
     static QMap<QString, QDateTime> sBrokenConnections;
 

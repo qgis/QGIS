@@ -29,7 +29,7 @@
 #include <QSqlField>
 #include <QSqlDriver>
 
-QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
+QMap<QPair<QString, QThread *>, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;
 const int QgsOracleConn::sGeomTypeSelectLimit = 100;
 QMap<QString, QDateTime> QgsOracleConn::sBrokenConnections;
@@ -37,15 +37,15 @@ QMap<QString, QDateTime> QgsOracleConn::sBrokenConnections;
 QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri, bool transaction )
 {
   const QString conninfo = toPoolName( uri );
-  const bool shared = !transaction && QApplication::instance()->thread() == QThread::currentThread();
+  const QPair<QString, QThread *> connInfoThread( conninfo, QThread::currentThread() );
 
-  if ( shared )
+  if ( !transaction )
   {
-    if ( sConnections.contains( conninfo ) )
+    if ( sConnections.contains( connInfoThread ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "Using cached connection for %1" ).arg( conninfo ), 2 );
-      sConnections[conninfo]->mRef++;
-      return sConnections[conninfo];
+      sConnections[connInfoThread]->mRef++;
+      return sConnections[connInfoThread];
     }
   }
 
@@ -57,9 +57,9 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri, bool trans
     return nullptr;
   }
 
-  if ( shared )
+  if ( !transaction )
   {
-    sConnections.insert( conninfo, conn );
+    sConnections.insert( connInfoThread, conn );
   }
 
   return conn;
@@ -212,8 +212,8 @@ void QgsOracleConn::unref()
 
   if ( !mTransaction )
   {
-    QString key = sConnections.key( this, QString() );
-    if ( !key.isNull() )
+    QPair<QString, QThread *> key = sConnections.key( this, QPair<QString, QThread *>() );
+    if ( !key.first.isNull() )
     {
       sConnections.remove( key );
     }
