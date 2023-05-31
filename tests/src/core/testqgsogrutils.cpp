@@ -817,27 +817,101 @@ void TestQgsOgrUtils::ogrFieldToVariant()
 
 void TestQgsOgrUtils::variantToOgrField()
 {
-  std::unique_ptr<OGRField> field( QgsOgrUtils::variantToOGRField( QVariant() ) );
+  std::unique_ptr<OGRField> field( QgsOgrUtils::variantToOGRField( QVariant(), OFTInteger ) );
   QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant() );
 
-  field = QgsOgrUtils::variantToOGRField( QVariant( true ) );
+  field = QgsOgrUtils::variantToOGRField( QVariant( true ), OFTInteger );
   QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant( 1 ) );
-  field = QgsOgrUtils::variantToOGRField( QVariant( false ) );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( true ), OFTInteger64 );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger64 ), QVariant( 1 ) );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( true ), OFTReal );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTReal ), QVariant( 1 ) );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( false ), OFTInteger );
   QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant( 0 ) );
-  field = QgsOgrUtils::variantToOGRField( QVariant( 11 ) );
+
+  // Incompatible data type
+  field = QgsOgrUtils::variantToOGRField( QVariant( false ), OFTString );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTString ), QVariant() );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( 11 ), OFTInteger );
   QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant( 11 ) );
-  field = QgsOgrUtils::variantToOGRField( QVariant( 11LL ) );
-  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger64 ), QVariant( 11LL ) );
-  field = QgsOgrUtils::variantToOGRField( QVariant( 5.5 ) );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( 11 ), OFTInteger64 );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger64 ), QVariant( 11 ) );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( 11 ), OFTReal );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTReal ), QVariant( 11 ) );
+
+  // Incompatible data type
+  field = QgsOgrUtils::variantToOGRField( QVariant( 11 ), OFTString );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTString ), QVariant() );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( 1234567890123LL ), OFTInteger64 );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger64 ), QVariant( 1234567890123LL ) );
+
+  // Does not fit
+  field = QgsOgrUtils::variantToOGRField( QVariant( 1234567890123LL ), OFTInteger );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger64 ), QVariant() );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( 1234567890123LL ), OFTReal );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTReal ), QVariant( 1234567890123.0 ) );
+
+  // Incompatible data type
+  field = QgsOgrUtils::variantToOGRField( QVariant( 1234567890123LL ), OFTString );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTString ), QVariant() );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( 5.5 ), OFTReal );
   QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTReal ), QVariant( 5.5 ) );
-  field = QgsOgrUtils::variantToOGRField( QVariant( QStringLiteral( "abc" ) ) );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( 5.0 ), OFTInteger );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant( 5 ) );
+
+  // Does not fit
+  field = QgsOgrUtils::variantToOGRField( QVariant( 1e30 ), OFTInteger );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant() );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( 5.0 ), OFTInteger64 );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger64 ), QVariant( 5 ) );
+
+  // Does not fit
+  field = QgsOgrUtils::variantToOGRField( QVariant( 1e100 ), OFTInteger64 );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger64 ), QVariant() );
+
+  // Incompatible data type
+  field = QgsOgrUtils::variantToOGRField( QVariant( 1e100 ), OFTString );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTString ), QVariant() );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( QStringLiteral( "abc" ) ), OFTString );
   QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTString ), QVariant( QStringLiteral( "abc" ) ) );
-  field = QgsOgrUtils::variantToOGRField( QVariant( QDate( 2021, 2, 3 ) ) );
+
+  // Incompatible data type
+  field = QgsOgrUtils::variantToOGRField( QVariant( QStringLiteral( "abc" ) ), OFTInteger );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant() );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( QDate( 2021, 2, 3 ) ), OFTDate );
   QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTDate ), QVariant( QDate( 2021, 2, 3 ) ) );
-  field = QgsOgrUtils::variantToOGRField( QVariant( QTime( 12, 13, 14, 50 ) ) );
+
+  // Incompatible data type
+  field = QgsOgrUtils::variantToOGRField( QVariant( QDate( 2021, 2, 3 ) ), OFTInteger );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant() );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( QTime( 12, 13, 14, 50 ) ), OFTTime );
   QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTTime ), QVariant( QTime( 12, 13, 14, 50 ) ) );
-  field = QgsOgrUtils::variantToOGRField( QVariant( QDateTime( QDate( 2021, 2, 3 ), QTime( 12, 13, 14, 50 ) ) ) );
+
+  // Incompatible data type
+  field = QgsOgrUtils::variantToOGRField( QVariant( QTime( 12, 13, 14, 50 ) ), OFTInteger );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant() );
+
+  field = QgsOgrUtils::variantToOGRField( QVariant( QDateTime( QDate( 2021, 2, 3 ), QTime( 12, 13, 14, 50 ) ) ), OFTDateTime );
   QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTDateTime ), QVariant( QDateTime( QDate( 2021, 2, 3 ), QTime( 12, 13, 14, 50 ) ) ) );
+
+  // Incompatible data type
+  field = QgsOgrUtils::variantToOGRField( QVariant( QDateTime( QDate( 2021, 2, 3 ), QTime( 12, 13, 14, 50 ) ) ), OFTInteger );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( field.get(), OFTInteger ), QVariant() );
+
 }
 
 void TestQgsOgrUtils::testOgrFieldTypeToQVariantType_data()

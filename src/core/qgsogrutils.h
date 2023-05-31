@@ -175,11 +175,13 @@ class CORE_EXPORT QgsOgrUtils
     static QVariant OGRFieldtoVariant( const OGRField *value, OGRFieldType type );
 
     /**
-     * Converts a QVariant to an OGRField value.
+     * Converts a QVariant to an OGRField value of specified type.
+     *
+     * Returns nullptr in case of error
      *
      * \since QGIS 3.26
      */
-    static std::unique_ptr<OGRField> variantToOGRField( const QVariant &value );
+    static std::unique_ptr<OGRField> variantToOGRField( const QVariant &value, OGRFieldType type );
 
     /**
      * Gets the value of OGRField::Date::TZFlag from the timezone of a QDateTime.
