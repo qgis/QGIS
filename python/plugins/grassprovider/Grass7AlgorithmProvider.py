@@ -31,7 +31,7 @@ from qgis.core import (Qgis,
 from processing.core.ProcessingConfig import (ProcessingConfig, Setting)
 from grassprovider.Grass7Utils import Grass7Utils
 from grassprovider.Grass7Algorithm import Grass7Algorithm
-from processing.tools.system import isWindows, isMac, mkdir
+from processing.tools.system import isWindows, isMac
 
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
