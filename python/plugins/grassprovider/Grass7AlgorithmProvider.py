@@ -36,7 +36,6 @@ from processing.tools.system import isWindows, isMac, mkdir
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
     descriptionFolders = Grass7Utils.grassDescriptionFolders()
-    mkdir(descriptionFolders[0])
 
     def __init__(self):
         super().__init__()
