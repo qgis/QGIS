@@ -254,8 +254,14 @@ class Grass7Utils:
         return folder or ''
 
     @staticmethod
+    def userDescriptionFolder():
+        folder = os.path.join(userFolder(), 'grassaddons', 'description')
+        mkdir(folder)
+        return os.path.abspath(folder)
+
+    @staticmethod
     def grassDescriptionFolders():
-        return [os.path.join(userFolder(), 'grassaddons', 'description'), os.path.join(os.path.dirname(__file__), 'description')]
+        return [Grass7Utils.userDescriptionFolder(), os.path.join(os.path.dirname(__file__), 'description')]
 
     @staticmethod
     def getWindowsCodePage():
