@@ -1825,7 +1825,7 @@ class CORE_EXPORT Qgis
       RenderingSubSymbol       = 0x10000, //!< Set whenever a sub-symbol of a parent symbol is currently being rendered. Can be used during symbol and symbol layer rendering to determine whether the symbol being rendered is a subsymbol. (Since QGIS 3.24)
       HighQualityImageTransforms = 0x20000, //!< Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map (since QGIS 3.24)
       SkipSymbolRendering      = 0x40000, //!< Disable symbol rendering while still drawing labels if enabled (since QGIS 3.24)
-      DisableFeatureClipping    = 0x80000, //!< Disable feature geometry clipping to mapExtent() (since QGIS 3.30)
+      DisableFeatureClipping    = 0x80000, //!< Disable feature geometry clipping to mapExtent() (since QGIS 3.32)
     };
     //! Render context flags
     Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
