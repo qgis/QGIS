@@ -254,7 +254,24 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
     return;
   }
 
-  const QgsCoordinateTransform transform( target.toGeographicCrs(), target, QgsCoordinateTransformContext() );
+  QgsCoordinateReferenceSystem source;
+  try
+  {
+    if ( target.celestialBodyName() == QLatin1String( "Earth" ) )
+    {
+      source = QgsCoordinateReferenceSystem( "EPSG:4326" );
+    }
+    else
+    {
+      source = target.toGeographicCrs();
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+    source = target.toGeographicCrs();
+  }
+
+  const QgsCoordinateTransform transform( source, target, QgsCoordinateTransformContext() );
   try
   {
     const QgsPointXY res = transform.transform( QgsPointXY( longitude, latitude ) );
