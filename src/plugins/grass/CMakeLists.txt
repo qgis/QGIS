@@ -1,3 +1,5 @@
+include(CopyResources)
+
 add_subdirectory(modules)
 add_subdirectory(scripts)
 
@@ -241,18 +243,34 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
     )
 endmacro(ADD_GRASSPLUGIN)
 
-file (GLOB GMLS *.gml)
-install (FILES ${GMLS}
-         DESTINATION ${QGIS_DATA_DIR}/grass)
+file (GLOB GMLS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" *.gml)
+ADD_QGIS_RESOURCES("${CMAKE_CURRENT_SOURCE_DIR}" grass DEST_GRASS_GML_RESOURCES "${GMLS}")
 
-install (FILES themes/default/grass_arrow.svg themes/default/grass_plus.svg themes/default/grass_arrow.png themes/default/grass_plus.png
-         DESTINATION ${QGIS_DATA_DIR}/grass/modules)
+set (GRASS_ICONS
+    grass_arrow.svg
+    grass_plus.svg
+    grass_arrow.png
+    grass_plus.png )
+ADD_QGIS_RESOURCES("${CMAKE_CURRENT_SOURCE_DIR}/themes/default" grass/modules DEST_GRASS_MODULE_ICONS "${GRASS_ICONS}")
+
+set (DEST_GRASS_RESOURCES
+    "${DEST_GRASS_GML_RESOURCES}"
+    "${DEST_GRASS_MODULE_ICONS}")
 
 if(NOT WIN32)
-  install(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" FILES_MATCHING PATTERN "*.keytab" )
-  install(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" )
-  install(DIRECTORY qtermwidget/color-schemes/ DESTINATION "${COLORSCHEMES_DIR}" FILES_MATCHING PATTERN "*.*schem*")
+  file (GLOB KB_LAYOUTS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/kb-layouts" "qtermwidget/kb-layouts/*.keytab")
+  ADD_QGIS_RESOURCES("${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/kb-layouts" grass/qtermwidget/kb-layouts DEST_GRASS_KB_LAYOUTS "${KB_LAYOUTS}")
+
+  file (GLOB COLOR_SCHEMES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/color-schemes" "qtermwidget/color-schemes/*.*schem*")
+  ADD_QGIS_RESOURCES("${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/color-schemes" grass/qtermwidget/color-schemes DEST_GRASS_COLOR_SCHEMES "${COLOR_SCHEMES}")
+
+  set (DEST_GRASS_RESOURCES
+      "${DEST_GRASS_RESOURCES}"
+      "${DEST_GRASS_KB_LAYOUTS}"
+      "${DEST_GRASS_COLOR_SCHEMES}")
 endif()
+
+add_custom_target(grass_resources ALL DEPENDS ${DEST_GRASS_RESOURCES})
 
 foreach(GRASS_BUILD_VERSION 6 7 8)
   if(GRASS_FOUND${GRASS_BUILD_VERSION})

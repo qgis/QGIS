@@ -65,7 +65,8 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
 
   mTerminal->setSize( QSize( 80, 25 ) );
   //mTerminal->setColorScheme( COLOR_SCHEME_BLACK_ON_WHITE );
-  mTerminal->setColorScheme( QgsApplication::pkgDataPath() + "/grass/qtermwidget/color-schemes/BlackOnWhite.schema" );
+  mTerminal->addCustomColorSchemeDir( QgsApplication::pkgDataPath() + "/grass/qtermwidget/color-schemes/" );
+  mTerminal->setColorScheme( QgsApplication::pkgDataPath() + "/grass/qtermwidget/color-schemes/BlackOnWhite.colorscheme" );
   mTerminal->startShellProgram();
   mTerminal->setFocus( Qt::MouseFocusReason );
 
