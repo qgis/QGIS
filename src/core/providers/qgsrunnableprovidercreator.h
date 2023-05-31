@@ -51,9 +51,6 @@ class QgsRunnableProviderCreator : public QObject, public QRunnable
      */
     QgsDataProvider *dataProvider();
 
-    //! Returns the layer id \a layerId corresponding to the layer associated to the created provider.
-    QString layerId() const;
-
   signals:
     //! Emitted when a provider is created with \a isValid set to True when the provider is valid
     void providerCreated( bool isValid, const QString &layerId );

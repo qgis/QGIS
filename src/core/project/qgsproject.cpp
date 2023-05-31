@@ -1371,21 +1371,29 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
     const QList<LayerToLoad> layersToAttemptInParallel = layersToLoad.values();
     QString layerToAttemptInMainThread;
 
-    QVector<QgsRunnableProviderCreator *> runnables;
+    QHash<QString, QgsRunnableProviderCreator *> runnables;
     QThreadPool threadPool;
     threadPool.setMaxThreadCount( QgsSettingsRegistryCore::settingsLayerParallelLoadingMaxCount->value() );
 
     for ( const LayerToLoad &lay : layersToAttemptInParallel )
     {
       QgsRunnableProviderCreator *run = new QgsRunnableProviderCreator( lay.layerId, lay.provider, lay.dataSource, lay.options, lay.flags );
-      runnables.append( run );
+      runnables.insert( lay.layerId, run );
+
       QObject::connect( run, &QgsRunnableProviderCreator::providerCreated, run, [&]( bool isValid, const QString & layId )
       {
         if ( isValid )
         {
           layersToLoad.remove( layId );
           i++;
-          emit layerLoaded( i, totalProviderCount );
+          QgsRunnableProviderCreator *finishedRun = runnables.value( layId, nullptr );
+          if ( finishedRun )
+          {
+            std::unique_ptr<QgsDataProvider> provider( finishedRun->dataProvider() );
+            if ( provider && provider->isValid() )
+              loadedProviders.insert( layId, provider.release() );
+            emit layerLoaded( i, totalProviderCount );
+          }
         }
         else
         {
@@ -1399,18 +1407,9 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
       } );
       threadPool.start( run );
     }
-    if ( !parallelLayerNodes.isEmpty() )
-      loop.exec();
+    loop.exec();
 
     threadPool.waitForDone(); // to be sure all threads are finished
-
-    // First we take all valid providers
-    for ( QgsRunnableProviderCreator *run : std::as_const( runnables ) )
-    {
-      std::unique_ptr<QgsDataProvider> provider( run->dataProvider() );
-      if ( provider && provider->isValid() )
-        loadedProviders.insert( run->layerId(), provider.release() );
-    }
 
     qDeleteAll( runnables );
 

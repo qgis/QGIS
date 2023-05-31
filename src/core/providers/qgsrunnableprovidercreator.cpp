@@ -44,8 +44,3 @@ QgsDataProvider *QgsRunnableProviderCreator::dataProvider()
 {
   return mDataProvider.release();
 }
-
-QString QgsRunnableProviderCreator::layerId() const
-{
-  return mLayerId;
-}
