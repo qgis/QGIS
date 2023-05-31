@@ -178,7 +178,7 @@ std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double resoluti
 }
 
 
-void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints)
+void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
     if (ends_with(inputFile, ".vpc"))
     {
@@ -313,7 +313,7 @@ void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>
     }
 }
 
-void ToRasterTin::finalize(std::vector<std::unique_ptr<PipelineManager>>& )
+void ToRasterTin::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
 {
     if (!tileOutputFiles.empty())
     {

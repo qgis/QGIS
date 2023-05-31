@@ -199,7 +199,7 @@ public:
     mutex.lock();
     current += count;
 
-    int new_percent = (int)std::round(std::min(1.0,((double)current/(double)total))*100)/2;
+    int new_percent = (int)std::round((std::min)(1.0,((double)current/(double)total))*100)/2;
     while (new_percent > last_percent)
     {
         ++last_percent;

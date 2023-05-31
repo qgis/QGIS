@@ -109,7 +109,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double r
     return manager;
 }
 
-void Boundary::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &, point_count_t &)
+void Boundary::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
     if (ends_with(inputFile, ".vpc"))
     {
@@ -148,14 +148,10 @@ void Boundary::finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines
     if (pipelines.empty())
         return;
 
-    // TODO: may be copc reader too... we could get input's CRS from QuickInfo
-    PipelineManager *pm = pipelines[0].get();
-    std::string crs_wkt = pm->getMetadata().findChild("readers.las").findChild("spatialreference").value();
-
     GDALAllRegister();
 
     OGRSpatialReferenceH hSrs;
-    hSrs = OSRNewSpatialReference(crs_wkt.c_str());
+    hSrs = OSRNewSpatialReference(crs.getWKT().c_str());
     assert(hSrs);
 
     OGRwkbGeometryType wkbType = /*wkt.find("MULTI") == std::string::npos ? wkbPolygon :*/ wkbMultiPolygon;
@@ -194,8 +190,13 @@ void Boundary::finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines
         {
             std::cerr << "Failed to parse geometry: " << wkt << std::endl;
         }
+        if ( wkbFlatten(OGR_G_GetGeometryType(geom)) == wkbPolygon)
+        {
+            // this function takes ownership of "geom" and then creates new instance
+            geom = OGR_G_ForceToMultiPolygon(geom);
+        }
         OGRFeatureH hFeature = OGR_F_Create(OGR_L_GetLayerDefn(hLayer));
-        if (OGR_F_SetGeometry(hFeature, geom) != OGRERR_NONE)
+        if (OGR_F_SetGeometryDirectly(hFeature, geom) != OGRERR_NONE)
         {
             std::cerr << "Could not set geometry " << wkt << std::endl;
         }
