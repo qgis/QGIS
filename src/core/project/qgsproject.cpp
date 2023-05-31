@@ -1387,13 +1387,13 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
           layersToLoad.remove( layId );
           i++;
           QgsRunnableProviderCreator *finishedRun = runnables.value( layId, nullptr );
-          if ( finishedRun )
-          {
-            std::unique_ptr<QgsDataProvider> provider( finishedRun->dataProvider() );
-            if ( provider && provider->isValid() )
-              loadedProviders.insert( layId, provider.release() );
-            emit layerLoaded( i, totalProviderCount );
-          }
+          Q_ASSERT( finishedRun );
+
+          std::unique_ptr<QgsDataProvider> provider( finishedRun->dataProvider() );
+          Q_ASSERT( provider && provider->isValid() );
+
+          loadedProviders.insert( layId, provider.release() );
+          emit layerLoaded( i, totalProviderCount );
         }
         else
         {
