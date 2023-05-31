@@ -17,8 +17,10 @@
 
 #include <QToolButton>
 #include "qgis_gui.h"
+#include "qgsexpressioncontext.h"
 
 class QgsVectorLayer;
+class QgsExpressionContextGenerator;
 
 /**
  * \ingroup gui
@@ -53,6 +55,13 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
     void setExpressionText( const QString &expression );
 
     /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the button when required.
+     * \since QGIS 3.32
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
+    /**
      * Returns the current associated vectorLayer
      * May be NULLPTR
      */
@@ -76,6 +85,7 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
     QAction *mSetExpressionAction = nullptr;
     QAction *mClearExpressionAction = nullptr;
     QString mExpression;
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
     void updateMenu();
 

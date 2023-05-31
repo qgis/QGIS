@@ -41,6 +41,14 @@ Sets the current text used as filter expression.
 This will update the menu
 %End
 
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context generator class that will be used to retrieve
+an expression context for the button when required.
+
+.. versionadded:: 3.32
+%End
+
     QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the current associated vectorLayer
