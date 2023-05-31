@@ -62,8 +62,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
 
-  protected:
-    void resizeEvent( QResizeEvent *event ) override;
 
   private slots:
     void resetView();
