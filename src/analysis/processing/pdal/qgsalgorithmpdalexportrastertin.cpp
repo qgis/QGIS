@@ -97,6 +97,8 @@ QStringList QgsPdalExportRasterTinAlgorithm::createArgumentLists( const QVariant
   const double resolution = parameterAsDouble( parameters, QStringLiteral( "RESOLUTION" ), context );
   const int tileSize = parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context );
 
+  enableElevationPropertiesPostProcessor( true );
+
   QStringList args = { QStringLiteral( "to_raster_tin" ),
                        QStringLiteral( "--input=%1" ).arg( layer->source() ),
                        QStringLiteral( "--output=%1" ).arg( outputFile ),
