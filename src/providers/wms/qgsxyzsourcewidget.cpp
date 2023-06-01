@@ -59,8 +59,6 @@ void QgsXyzSourceWidget::setSourceUri( const QString &uri )
   mAuthSettings->setConfigId( mSourceParts.value( QStringLiteral( "authcfg" ) ).toString() );
 
   setInterpretation( mSourceParts.value( QStringLiteral( "interpretation" ) ).toString() );
-
-  mIsValid = true;
 }
 
 QString QgsXyzSourceWidget::sourceUri() const
