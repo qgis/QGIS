@@ -30,6 +30,12 @@ jobs:
 
       - uses: actions/checkout@v3
 
+      # To be removed
+      # Workaround a bug where the initial /etc/dnf/dnf.conf file contains
+      # just the "tsflags=nodocs" line
+      - name: Replace broken dnf.conf
+        run: printf '[main]\ngpgcheck=True\ninstallonly_limit=3\nclean_requirements_on_remove=True\nbest=False\nskip_if_unavailable=True\ntsflags=nodocs' > /etc/dnf/dnf.conf
+
       - name: Update system
         run: dnf -y update
 
