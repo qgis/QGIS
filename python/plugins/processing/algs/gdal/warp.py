@@ -163,7 +163,7 @@ class warp(GdalAlgorithm):
         return 'gdalwarp'
 
     def tags(self):
-        tags = self.tr('transform,reproject,crs,srs').split(',')
+        tags = self.tr('transform,reproject,crs,srs,resample').split(',')
         tags.extend(super().tags())
         return tags
 
