@@ -1197,6 +1197,12 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     {
       filterSettings.setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
     }
+
+    if ( mInAtlas )
+    {
+      filterSettings.setFilterExpressionsContext( createExpressionContext() );
+    }
+
     mLegendModel->setFilterSettings( &filterSettings );
   }
   else
@@ -1384,16 +1390,19 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         expressionContext = mLayoutLegend->createExpressionContext();
 
       const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
-      if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
+      if ( ! legendnodes.isEmpty() )
       {
-        for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
+        if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
         {
-          if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
-            symnode->evaluateLabel( expressionContext );
+          for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
+          {
+            if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
+              symnode->evaluateLabel( expressionContext );
+          }
         }
+        else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
+          name = symnode->evaluateLabel( expressionContext );
       }
-      else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-        name = symnode->evaluateLabel( expressionContext );
     }
     node->setCustomProperty( QStringLiteral( "cached_name" ), name );
     return name;

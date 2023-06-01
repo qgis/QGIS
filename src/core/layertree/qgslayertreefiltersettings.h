@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
 
@@ -72,6 +73,18 @@ class CORE_EXPORT QgsLayerTreeFilterSettings
      * \see layerFilterExpressions()
      */
     void setLayerFilterExpressions( const QMap<QString, QString> &expressions );
+
+    /**
+     * Sets the filter expression context.
+     * \see filterExpressionsContext()
+     */
+    void setFilterExpressionsContext( const QgsExpressionContext &context );
+
+    /**
+     * Returns the filter expression context.
+     * \see setFilterExpressionsContext()
+     */
+    QgsExpressionContext filterExpressionsContext() const;
 
     /**
      * Sets layer filter expressions using a layer \a tree.
@@ -171,6 +184,8 @@ class CORE_EXPORT QgsLayerTreeFilterSettings
 
     // geometry must be in layer CRS
     QMap<QString, QVector< QgsGeometry > > mLayerExtents;
+
+    QgsExpressionContext mFilterExpressionsContext;
 
 };
 
