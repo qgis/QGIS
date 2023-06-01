@@ -201,6 +201,7 @@ class TestQgsGrassProvider: public QgsTest
     void mapsets();
     void maps();
     void vectorLayers();
+    void invalidLayer();
     void region();
     void info();
     void rasterImport();
@@ -485,6 +486,16 @@ void TestQgsGrassProvider::vectorLayers()
     reportRow( QStringLiteral( "ERROR: %1" ).arg( e.what() ) );
   }
   GVERIFY( ok );
+}
+
+void TestQgsGrassProvider::invalidLayer()
+{
+  std::unique_ptr< QgsVectorLayer > brokenLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "/not/valid" ), QStringLiteral( "test" ), QStringLiteral( "grass" ) );
+  QVERIFY( !brokenLayer->isValid() );
+  QgsVectorDataProvider *provider = brokenLayer->dataProvider();
+  QVERIFY( provider );
+  QVERIFY( !provider->isValid() );
+  QVERIFY( provider->fields().isEmpty() );
 }
 
 void TestQgsGrassProvider::region()
