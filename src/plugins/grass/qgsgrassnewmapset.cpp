@@ -978,7 +978,7 @@ void QgsGrassNewMapset::drawRegion()
 
   for ( int shift = -360; shift <= 360; shift += 360 )
   {
-    for ( int i = 0; i < 12; i++ )
+    for ( int i = 0; i < points.size() - 1; i++ )
     {
       double x1 = points[i].x();
       double x2 = points[i + 1].x();
