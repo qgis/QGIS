@@ -74,9 +74,10 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
-  connect( mDatabaseButton, &QPushButton::clicked, this, &QgsGrassNewMapset::mDatabaseButton_clicked );
-  connect( mDatabaseLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mDatabaseLineEdit_returnPressed );
-  connect( mDatabaseLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mDatabaseLineEdit_textChanged );
+  mDirectoryWidget->setStorageMode( QgsFileWidget::GetDirectory );
+  mDirectoryWidget->lineEdit()->setShowClearButton( false );
+  connect( mDirectoryWidget, &QgsFileWidget::fileChanged, this, &QgsGrassNewMapset::databaseChanged );
+
   connect( mCreateLocationRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mCreateLocationRadioButton_clicked );
   connect( mSelectLocationRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mSelectLocationRadioButton_clicked );
   connect( mLocationComboBox, &QComboBox::editTextChanged, this, &QgsGrassNewMapset::mLocationComboBox_textChanged );
@@ -130,7 +131,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   {
     gisdbase = QDir::homePath() + QDir::separator() + "grassdata";
   }
-  mDatabaseLineEdit->setText( gisdbase );
+  mDirectoryWidget->setFilePath( gisdbase );
   databaseChanged();
 
   // LOCATION
@@ -154,24 +155,11 @@ QgsGrassNewMapset::~QgsGrassNewMapset()
 {
   sRunning = false;
 }
-/*************************** DATABASE *******************************/
-void QgsGrassNewMapset::browseDatabase()
-{
-  QString selectedDir = QFileDialog::getExistingDirectory( this, nullptr, mDatabaseLineEdit->text() );
-  if ( selectedDir.isEmpty() )
-  {
-    return;
-  }
-
-  mDatabaseLineEdit->setText( selectedDir );
-  databaseChanged();
-}
 
 void QgsGrassNewMapset::databaseChanged()
 {
-
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "GRASS/lastGisdbase" ), mDatabaseLineEdit->text() );
+  settings.setValue( QStringLiteral( "GRASS/lastGisdbase" ), mDirectoryWidget->filePath() );
 
   button( QWizard::NextButton )->setEnabled( false );
   setError( mDatabaseErrorLabel );
@@ -223,9 +211,9 @@ void QgsGrassNewMapset::databaseChanged()
   }
 }
 
-QString QgsGrassNewMapset::gisdbase()
+QString QgsGrassNewMapset::gisdbase() const
 {
-  return mDatabaseLineEdit->text().trimmed();
+  return mDirectoryWidget->filePath();
 }
 
 bool QgsGrassNewMapset::gisdbaseExists()
@@ -262,8 +250,8 @@ void QgsGrassNewMapset::setLocations()
       if ( gisdbaseDir[i] == QLatin1String( "." ) || gisdbaseDir[i] == QLatin1String( ".." ) )
         continue;
 
-      QString windName = mDatabaseLineEdit->text() + "/" + gisdbaseDir[i] + "/PERMANENT/DEFAULT_WIND";
-      QString locationName = mDatabaseLineEdit->text() + "/" + gisdbaseDir[i];
+      QString windName = mDirectoryWidget->filePath() + "/" + gisdbaseDir[i] + "/PERMANENT/DEFAULT_WIND";
+      QString locationName = mDirectoryWidget->filePath() + "/" + gisdbaseDir[i];
       QFileInfo locationInfo( locationName );
 
       if ( QFile::exists( windName ) && locationInfo.isWritable() )
@@ -1155,7 +1143,7 @@ void QgsGrassNewMapset::setMapsets()
   }
 
   // Get available mapsets
-  QString locationPath = mDatabaseLineEdit->text() + "/" + mLocationComboBox->currentText();
+  QString locationPath = mDirectoryWidget->filePath() + "/" + mLocationComboBox->currentText();
   QDir d( locationPath );
 
   // Add all subdirs containing WIND
@@ -1192,7 +1180,7 @@ void QgsGrassNewMapset::mapsetChanged()
   // Check if exists
   if ( mSelectLocationRadioButton->isChecked() )
   {
-    QString locationPath = mDatabaseLineEdit->text() + "/" + mLocationComboBox->currentText();
+    QString locationPath = mDirectoryWidget->filePath() + "/" + mLocationComboBox->currentText();
     if ( QFile::exists( locationPath + "/" + mapset ) )
     {
       setError( mMapsetErrorLabel, tr( "The mapset already exists" ) );
@@ -1218,8 +1206,7 @@ void QgsGrassNewMapset::mOpenNewMapsetCheckBox_stateChanged( int state )
 
 void QgsGrassNewMapset::setFinishPage()
 {
-
-  mDatabaseLabel->setText( tr( "Database" ) + " : " + mDatabaseLineEdit->text() );
+  mDatabaseLabel->setText( tr( "Database" ) + " : " + mDirectoryWidget->filePath() );
 
   QString location;
   if ( mSelectLocationRadioButton->isChecked() )
@@ -1307,7 +1294,7 @@ void QgsGrassNewMapset::createMapset()
   if ( mOpenNewMapsetCheckBox->isChecked() )
   {
     QString error = QgsGrass::openMapset(
-                      mDatabaseLineEdit->text(), location, mapset );
+                      mDirectoryWidget->filePath(), location, mapset );
 
     if ( !error.isEmpty() )
     {

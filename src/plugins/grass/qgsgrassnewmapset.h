@@ -69,13 +69,8 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void close();
 
   public slots:
-    //! Browse database
-    void mDatabaseButton_clicked() { browseDatabase(); }
-    void browseDatabase();
 
     //! Database changed
-    void mDatabaseLineEdit_returnPressed() { databaseChanged(); }
-    void mDatabaseLineEdit_textChanged() { databaseChanged(); }
     void databaseChanged();
 
     /***************** LOCATION *****************/
@@ -186,7 +181,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void setError( QLabel *line, const QString &err = QString() );
   private:
     //! Gets current gisdbase
-    QString gisdbase();
+    QString gisdbase() const;
 
     //! Test if current gisdbase directory exists
     bool gisdbaseExists();
