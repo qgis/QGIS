@@ -243,7 +243,13 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
   if ( !description().isEmpty() )
     lines << baseIndent + QStringLiteral( "# %1" ).arg( description() );
   if ( !mComment.description().isEmpty() )
-    lines << baseIndent + QStringLiteral( "# %1" ).arg( mComment.description() );
+  {
+    const QStringList parts = mComment.description().split( QStringLiteral( "\n" ) );
+    for ( const QString &part : parts )
+    {
+      lines << baseIndent + QStringLiteral( "# %1" ).arg( part );
+    }
+  }
 
   QStringList paramParts;
   QStringList paramComments;
