@@ -30,6 +30,7 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsextentwidget.h"
 
 #include "cpl_conv.h"
 #include "ogr_srs_api.h"
@@ -68,6 +69,8 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
                                       Qt::WindowFlags f )
   : QWizard( parent, f )
   , QgsGrassNewMapsetBase()
+  , mIface( iface )
+  , mPlugin( plugin )
 {
   QgsDebugMsgLevel( "QgsGrassNewMapset()", 3 );
 
@@ -78,6 +81,13 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   mDirectoryWidget->lineEdit()->setShowClearButton( false );
   connect( mDirectoryWidget, &QgsFileWidget::fileChanged, this, &QgsGrassNewMapset::databaseChanged );
 
+  mExtentWidget = new QgsExtentWidget( nullptr, QgsExtentWidget::ExpandedStyle );
+  QVBoxLayout *extentLayout = new QVBoxLayout();
+  extentLayout->setContentsMargins( 0, 0, 0, 0 );
+  extentLayout->addWidget( mExtentWidget );
+  mExtentWidgetFrame->setLayout( extentLayout );
+  mExtentWidget->setMapCanvas( mIface->mapCanvas() );
+
   connect( mCreateLocationRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mCreateLocationRadioButton_clicked );
   connect( mSelectLocationRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mSelectLocationRadioButton_clicked );
   connect( mLocationComboBox, &QComboBox::editTextChanged, this, &QgsGrassNewMapset::mLocationComboBox_textChanged );
@@ -85,15 +95,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   connect( mLocationLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mLocationLineEdit_textChanged );
   connect( mNoProjRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mNoProjRadioButton_clicked );
   connect( mProjRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mProjRadioButton_clicked );
-  connect( mNorthLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mNorthLineEdit_returnPressed );
-  connect( mNorthLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mNorthLineEdit_textChanged );
-  connect( mSouthLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mSouthLineEdit_returnPressed );
-  connect( mSouthLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mSouthLineEdit_textChanged );
-  connect( mEastLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mEastLineEdit_returnPressed );
-  connect( mEastLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mEastLineEdit_textChanged );
-  connect( mWestLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mWestLineEdit_returnPressed );
-  connect( mWestLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mWestLineEdit_textChanged );
-  connect( mCurrentRegionButton, &QPushButton::clicked, this, &QgsGrassNewMapset::mCurrentRegionButton_clicked );
+  connect( mExtentWidget, &QgsExtentWidget::extentChanged, this, &QgsGrassNewMapset::regionChanged );
   connect( mRegionButton, &QPushButton::clicked, this, &QgsGrassNewMapset::mRegionButton_clicked );
   connect( mMapsetLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mMapsetLineEdit_returnPressed );
   connect( mMapsetLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mMapsetLineEdit_textChanged );
@@ -103,7 +105,6 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
 #endif
 
   sRunning = true;
-  mIface = iface;
   mProjectionSelector = nullptr;
   mPreviousPage = -1;
   mRegionModified = false;
@@ -116,7 +117,6 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   QgsDebugMsgLevel( QString( "mPixmap.isNull() = %1" ).arg( mPixmap.isNull() ), 3 );
 
   mRegionsInited = false;
-  mPlugin = plugin;
 
   setError( mDatabaseErrorLabel );
   setError( mLocationErrorLabel );
@@ -498,73 +498,19 @@ void QgsGrassNewMapset::setRegionPage()
   {
     QgsDebugMsgLevel( QString( "selectedCrsId() = %1" ).arg( mProjectionSelector->crs().srsid() ), 2 );
 
-    if ( mProjectionSelector->crs().srsid() > 0 )
+    if ( mProjectionSelector->crs().isValid() )
     {
-      newCrs = mProjectionSelector->crs();
-      if ( ! newCrs.isValid() )
-      {
-        QgsGrass::warning( tr( "Cannot create projection." ) );
-      }
+      mCrs = mProjectionSelector->crs();
     }
   }
 
-  // Reproject previous region if it was modified
-  // and if previous and current projection is valid
-  if ( mRegionModified && newCrs.isValid() && mCrs.isValid()
-       && newCrs.srsid() != mCrs.srsid() )
-  {
-    QgsCoordinateTransform trans( mCrs, newCrs, QgsProject::instance() );
-
-    double n = mNorthLineEdit->text().toDouble();
-    double s = mSouthLineEdit->text().toDouble();
-    double e = mEastLineEdit->text().toDouble();
-    double w = mWestLineEdit->text().toDouble();
-
-    std::vector<QgsPointXY> points;
-
-    // TODO: this is not perfect
-    points.push_back( QgsPointXY( w, s ) );
-    points.push_back( QgsPointXY( e, n ) );
-
-    bool ok = true;
-    for ( int i = 0; i < 2; i++ )
-    {
-      try
-      {
-        points[i] = trans.transform( points[i] );
-      }
-      catch ( QgsCsException &cse )
-      {
-        Q_UNUSED( cse )
-        QgsDebugError( "Cannot transform point" );
-        ok = false;
-        break;
-      }
-    }
-
-    if ( ok )
-    {
-      int precision = newCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 1;
-      mNorthLineEdit->setText( qgsDoubleToString( points[1].y(), precision ) );
-      mSouthLineEdit->setText( qgsDoubleToString( points[0].y(), precision ) );
-      mEastLineEdit->setText( qgsDoubleToString( points[1].x(), precision ) );
-      mWestLineEdit->setText( qgsDoubleToString( points[0].x(), precision ) );
-    }
-    else
-    {
-      QgsGrass::warning( tr( "Cannot reproject previously set region, default region set." ) );
-      setGrassRegionDefaults();
-    }
-  }
-
-  // Set current region projection
-  mCrs = newCrs;
+  mExtentWidget->setOutputCrs( mCrs );
 
   // Enable / disable region selection widgets
   if ( mNoProjRadioButton->isChecked() )
   {
     mRegionMap->hide();
-    mCurrentRegionButton->hide();
+    mExtentWidgetFrame->hide();
     mRegionsComboBox->hide();
     mRegionButton->hide();
     mSetRegionFrame->hide();
@@ -572,14 +518,10 @@ void QgsGrassNewMapset::setRegionPage()
   else
   {
     mRegionMap->show();
-    mCurrentRegionButton->show();
+    mExtentWidgetFrame->show();
     mRegionsComboBox->show();
     mRegionButton->show();
     mSetRegionFrame->show();
-
-    QgsRectangle ext = mIface->mapCanvas()->extent();
-
-    mCurrentRegionButton->setEnabled( !ext.isEmpty() );
   }
 
   checkRegion();
@@ -604,45 +546,35 @@ void QgsGrassNewMapset::setGrassRegionDefaults()
     extSet = true;
   }
 
+  QgsRectangle defaultExtent;
   if ( extSet &&
        ( mNoProjRadioButton->isChecked() ||
          ( mProjRadioButton->isChecked()
-           && srs.srsid() == mProjectionSelector->crs().srsid() )
+           && srs == mProjectionSelector->crs() )
        )
      )
   {
-    mNorthLineEdit->setText( QString::number( ext.yMaximum() ) );
-    mSouthLineEdit->setText( QString::number( ext.yMinimum() ) );
-    mEastLineEdit->setText( QString::number( ext.xMaximum() ) );
-    mWestLineEdit->setText( QString::number( ext.xMinimum() ) );
+    defaultExtent = ext;
   }
   else if ( mCellHead.proj == PROJECTION_XY )
   {
-    mNorthLineEdit->setText( QStringLiteral( "1000" ) );
-    mSouthLineEdit->setText( QStringLiteral( "0" ) );
-    mEastLineEdit->setText( QStringLiteral( "1000" ) );
-    mWestLineEdit->setText( QStringLiteral( "0" ) );
+    defaultExtent = QgsRectangle( 0, 0, 1000, 1000 );
   }
   else if ( mCellHead.proj == PROJECTION_LL )
   {
-    mNorthLineEdit->setText( QStringLiteral( "90" ) );
-    mSouthLineEdit->setText( QStringLiteral( "-90" ) );
-    mEastLineEdit->setText( QStringLiteral( "180" ) );
-    mWestLineEdit->setText( QStringLiteral( "-180" ) );
+    defaultExtent = QgsRectangle( -180, -90, 180, 90 );
   }
   else
   {
-    mNorthLineEdit->setText( QStringLiteral( "100000" ) );
-    mSouthLineEdit->setText( QStringLiteral( "-100000" ) );
-    mEastLineEdit->setText( QStringLiteral( "100000" ) );
-    mWestLineEdit->setText( QStringLiteral( "-100000" ) );
+    defaultExtent = QgsRectangle( -100000, -100000, 100000, 100000 );
   }
+  mExtentWidget->setOutputExtentFromUser( defaultExtent, mProjectionSelector->crs() );
+
   mRegionModified = false;
 }
 
 void QgsGrassNewMapset::regionChanged()
 {
-
   mRegionModified = true;
   checkRegion();
   drawRegion();
@@ -650,24 +582,16 @@ void QgsGrassNewMapset::regionChanged()
 
 void QgsGrassNewMapset::checkRegion()
 {
-
   bool err = false;
 
   setError( mRegionErrorLabel );
   button( QWizard::NextButton )->setEnabled( false );
 
-  if ( mNorthLineEdit->text().trimmed().length() == 0
-       || mSouthLineEdit->text().trimmed().length() == 0
-       || mEastLineEdit->text().trimmed().length() == 0
-       || mWestLineEdit->text().trimmed().length() == 0 )
-  {
-    return;
-  }
-
-  double n = mNorthLineEdit->text().toDouble();
-  double s = mSouthLineEdit->text().toDouble();
-  double e = mEastLineEdit->text().toDouble();
-  double w = mWestLineEdit->text().toDouble();
+  const QgsRectangle extent = mExtentWidget->outputExtent();
+  double n = extent.yMaximum();
+  double s = extent.yMinimum();
+  double e = extent.xMaximum();
+  double w = extent.xMinimum();
 
   if ( n <= s )
   {
@@ -912,10 +836,8 @@ void QgsGrassNewMapset::setSelectedRegion()
     }
   }
 
-  mNorthLineEdit->setText( QString::number( n ) );
-  mSouthLineEdit->setText( QString::number( s ) );
-  mEastLineEdit->setText( QString::number( e ) );
-  mWestLineEdit->setText( QString::number( w ) );
+  const QgsRectangle newRegion( e, s, w, n );
+  mExtentWidget->setOutputExtentFromUser( newRegion, mProjectionSelector->crs() );
 
   mRegionModified = true;
   checkRegion();
@@ -924,50 +846,6 @@ void QgsGrassNewMapset::setSelectedRegion()
 
 void QgsGrassNewMapset::setCurrentRegion()
 {
-
-  QgsRectangle ext = mIface->mapCanvas()->extent();
-
-  QgsCoordinateReferenceSystem srs = mIface->mapCanvas()->mapSettings().destinationCrs();
-  QgsDebugMsgLevel( "srs = " + srs.toWkt(), 3 );
-
-  std::vector<QgsPointXY> points;
-
-  // TODO: this is not perfect
-  points.push_back( QgsPointXY( ext.xMinimum(), ext.yMinimum() ) );
-  points.push_back( QgsPointXY( ext.xMaximum(), ext.yMaximum() ) );
-
-  // TODO add a method, this code is copy-paste from setSelectedRegion
-  if ( srs.isValid() && mCrs.isValid()
-       && srs.srsid() != mCrs.srsid() )
-  {
-    QgsCoordinateTransform trans( srs, mCrs, QgsProject::instance() );
-
-    bool ok = true;
-    for ( int i = 0; i < 2; i++ )
-    {
-      try
-      {
-        points[i] = trans.transform( points[i] );
-      }
-      catch ( QgsCsException &cse )
-      {
-        Q_UNUSED( cse )
-        QgsDebugError( "Cannot transform point" );
-        ok = false;
-        break;
-      }
-    }
-
-    if ( !ok )
-    {
-      QgsGrass::warning( tr( "Cannot reproject region" ) );
-      return;
-    }
-  }
-  mNorthLineEdit->setText( QString::number( points[1].y() ) );
-  mSouthLineEdit->setText( QString::number( points[0].y() ) );
-  mEastLineEdit->setText( QString::number( points[1].x() ) );
-  mWestLineEdit->setText( QString::number( points[0].x() ) );
 
   mRegionModified = true;
   checkRegion();
@@ -995,10 +873,11 @@ void QgsGrassNewMapset::drawRegion()
   QPainter p( &pm );
   p.setPen( QPen( QColor( 255, 0, 0 ), 3 ) );
 
-  double n = mNorthLineEdit->text().toDouble();
-  double s = mSouthLineEdit->text().toDouble();
-  double e = mEastLineEdit->text().toDouble();
-  double w = mWestLineEdit->text().toDouble();
+  const QgsRectangle extent = mExtentWidget->outputExtent();
+  double n = extent.yMaximum();
+  double s = extent.yMinimum();
+  double e = extent.xMinimum();
+  double w = extent.xMaximum();
 
   // Shift if LL and W > E
   if ( mCellHead.proj == PROJECTION_LL && w > e )
