@@ -1136,18 +1136,22 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
         return;
 
       double sizeOut = 0.0;
-      // only one size used for SVG/marker symbol sizing/scaling (no use of shapeSize.y() or Y field in gui)
-      if ( background.sizeType() == QgsTextBackgroundSettings::SizeFixed )
       {
-        sizeOut = context.convertToPainterUnits( background.size().width(), background.sizeUnit(), background.sizeMapUnitScale() );
-      }
-      else if ( background.sizeType() == QgsTextBackgroundSettings::SizeBuffer )
-      {
-        sizeOut = std::max( component.size.width(), component.size.height() );
-        double bufferSize = context.convertToPainterUnits( background.size().width(), background.sizeUnit(), background.sizeMapUnitScale() );
+        QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1 );
 
-        // add buffer
-        sizeOut += bufferSize * 2;
+        // only one size used for SVG/marker symbol sizing/scaling (no use of shapeSize.y() or Y field in gui)
+        if ( background.sizeType() == QgsTextBackgroundSettings::SizeFixed )
+        {
+          sizeOut = context.convertToPainterUnits( background.size().width(), background.sizeUnit(), background.sizeMapUnitScale() );
+        }
+        else if ( background.sizeType() == QgsTextBackgroundSettings::SizeBuffer )
+        {
+          sizeOut = std::max( component.size.width(), component.size.height() );
+          double bufferSize = context.convertToPainterUnits( background.size().width(), background.sizeUnit(), background.sizeMapUnitScale() );
+
+          // add buffer
+          sizeOut += bufferSize * 2;
+        }
       }
 
       // don't bother rendering symbols smaller than 1x1 pixels in size
