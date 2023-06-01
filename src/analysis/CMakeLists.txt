@@ -120,6 +120,10 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmjoinbynearest.cpp
   processing/qgsalgorithmjoinwithlines.cpp
   processing/qgsalgorithmkmeansclustering.cpp
+  processing/qgsalgorithmlayoutatlastoimage.cpp
+  processing/qgsalgorithmlayoutatlastopdf.cpp
+  processing/qgsalgorithmlayouttoimage.cpp
+  processing/qgsalgorithmlayouttopdf.cpp
   processing/qgsalgorithmlinedensity.cpp
   processing/qgsalgorithmlineintersection.cpp
   processing/qgsalgorithmlinesubstring.cpp
@@ -407,16 +411,6 @@ set(QGIS_ANALYSIS_HDRS
   vector/qgsgeometrysnappersinglesource.h
   vector/qgszonalstatistics.h
 )
-
-if (${QT_VERSION_BASE}PrintSupport_FOUND)
-  set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
-
-    processing/qgsalgorithmlayoutatlastoimage.cpp
-    processing/qgsalgorithmlayoutatlastopdf.cpp
-    processing/qgsalgorithmlayouttoimage.cpp
-    processing/qgsalgorithmlayouttopdf.cpp
-  )
-endif()
 
 if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
   set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
