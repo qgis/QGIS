@@ -463,13 +463,16 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     layers.append( l );
   }
 
-  l = createLayer( layerFilter, QStringLiteral( "inserts" ) );
-  if ( l && l->renderer() )
+  if ( !cbExpandInserts->isChecked() )
   {
-    QgsSingleSymbolRenderer *ssr = dynamic_cast<QgsSingleSymbolRenderer *>( l->renderer() );
-    if ( ssr && ssr->symbol() && ssr->symbol()->symbolLayer( 0 ) )
-      ssr->symbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( QStringLiteral( "180-angle*180.0/pi()" ) ) );
-    layers.append( l );
+    l = createLayer( layerFilter, QStringLiteral( "inserts" ) );
+    if ( l && l->renderer() )
+    {
+      QgsSingleSymbolRenderer *ssr = dynamic_cast<QgsSingleSymbolRenderer *>( l->renderer() );
+      if ( ssr && ssr->symbol() && ssr->symbol()->symbolLayer( 0 ) )
+        ssr->symbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( QStringLiteral( "180-angle*180.0/pi()" ) ) );
+      layers.append( l );
+    }
   }
 
   return layers;

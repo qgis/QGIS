@@ -30,8 +30,8 @@ class TestQgsDwgImportDialog : public QObject
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase() {} // will be called after the last testfunction was executed.
-    void cleanup(); // will be called after every testfunction.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void importDwgDocument();
 
@@ -51,14 +51,13 @@ void TestQgsDwgImportDialog::initTestCase()
   mDataDir += "/dwg";
 }
 
-void TestQgsDwgImportDialog::cleanup()
+void TestQgsDwgImportDialog::cleanupTestCase()
 {
   QgsProject::instance()->removeAllMapLayers();
 }
 
 void TestQgsDwgImportDialog::importDwgDocument()
 {
-
   QgsDwgImportDialog dwgImportDialog( nullptr, Qt::WindowFlags() );
 
   // Set target gpkg
@@ -69,6 +68,9 @@ void TestQgsDwgImportDialog::importDwgDocument()
   QString uri = QString( mDataDir + "/entities.dwg" );
   dwgImportDialog.leDrawing->setText( uri );
   dwgImportDialog.pbImportDrawing_clicked();
+
+  // Set Expand Inserts checkbox
+  dwgImportDialog.cbExpandInserts->setChecked( false );
 
   // Check that a default group name was assigned
   QCOMPARE( dwgImportDialog.leLayerGroup->text(), "entities" );
