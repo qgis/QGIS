@@ -731,6 +731,7 @@ class CORE_EXPORT Qgis
       Remote, //!< Remote drive
       CdRom, //!< CD-ROM
       RamDisk, //!< RAM disk
+      Cloud, //!< Cloud storage -- files may be remote or locally stored, depending on user configuration
     };
     Q_ENUM( DriveType )
 

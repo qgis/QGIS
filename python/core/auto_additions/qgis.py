@@ -772,7 +772,8 @@ Qgis.DriveType.Fixed.__doc__ = "Fixed drive"
 Qgis.DriveType.Remote.__doc__ = "Remote drive"
 Qgis.DriveType.CdRom.__doc__ = "CD-ROM"
 Qgis.DriveType.RamDisk.__doc__ = "RAM disk"
-Qgis.DriveType.__doc__ = 'Drive types\n\n.. versionadded:: 3.20\n\n' + '* ``Unknown``: ' + Qgis.DriveType.Unknown.__doc__ + '\n' + '* ``Invalid``: ' + Qgis.DriveType.Invalid.__doc__ + '\n' + '* ``Removable``: ' + Qgis.DriveType.Removable.__doc__ + '\n' + '* ``Fixed``: ' + Qgis.DriveType.Fixed.__doc__ + '\n' + '* ``Remote``: ' + Qgis.DriveType.Remote.__doc__ + '\n' + '* ``CdRom``: ' + Qgis.DriveType.CdRom.__doc__ + '\n' + '* ``RamDisk``: ' + Qgis.DriveType.RamDisk.__doc__
+Qgis.DriveType.Cloud.__doc__ = "Cloud storage -- files may be remote or locally stored, depending on user configuration"
+Qgis.DriveType.__doc__ = 'Drive types\n\n.. versionadded:: 3.20\n\n' + '* ``Unknown``: ' + Qgis.DriveType.Unknown.__doc__ + '\n' + '* ``Invalid``: ' + Qgis.DriveType.Invalid.__doc__ + '\n' + '* ``Removable``: ' + Qgis.DriveType.Removable.__doc__ + '\n' + '* ``Fixed``: ' + Qgis.DriveType.Fixed.__doc__ + '\n' + '* ``Remote``: ' + Qgis.DriveType.Remote.__doc__ + '\n' + '* ``CdRom``: ' + Qgis.DriveType.CdRom.__doc__ + '\n' + '* ``RamDisk``: ' + Qgis.DriveType.RamDisk.__doc__ + '\n' + '* ``Cloud``: ' + Qgis.DriveType.Cloud.__doc__
 # --
 Qgis.DriveType.baseClass = Qgis
 QgsNetworkContentFetcherRegistry.FetchingMode = Qgis.ActionStart
