@@ -142,9 +142,6 @@ without requiring a transparent background for the image
 
 };
 
-%Feature TESTS
-%If (TESTS)
-
 
 class QgsLayoutChecker : QgsMultiRenderChecker
 {
@@ -191,8 +188,6 @@ page in the layout.
 %End
 
 };
-
-%End
 
 
 /************************************************************************
