@@ -3789,8 +3789,19 @@ QString QgsProject::homePath() const
   }
   else if ( !fileName().isEmpty() )
   {
-    mCachedHomePath = pfi.path();
 
+    // If it's not stored in the file system, try to get the path from the storage
+    if ( QgsProjectStorage *storage = projectStorage() )
+    {
+      const QString storagePath { storage->filePath( fileName() ) };
+      if ( ! storagePath.isEmpty() && QFileInfo::exists( storagePath ) )
+      {
+        mCachedHomePath = QFileInfo( storagePath ).path();
+        return mCachedHomePath;
+      }
+    }
+
+    mCachedHomePath = pfi.path();
     return mCachedHomePath;
   }
 
