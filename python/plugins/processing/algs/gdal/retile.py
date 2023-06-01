@@ -20,6 +20,7 @@ __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
 from qgis.core import (QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterCrs,
@@ -53,7 +54,7 @@ class retile(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     OUTPUT_CSV = 'OUTPUT_CSV'
 
-    TYPES = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+    TYPES = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64', 'Int8']
 
     def __init__(self):
         super().__init__()
@@ -182,8 +183,11 @@ class retile(GdalAlgorithm):
         arguments.append('-r')
         arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
 
-        arguments.append('-ot')
-        arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
+        data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
+        if self.TYPES[data_type] == 'Int8' and GdalUtils.version() < 3070000:
+            raise QgsProcessingException(self.tr('Int8 data type requires GDAL version 3.7 or later'))
+
+        arguments.append('-ot ' + self.TYPES[data_type])
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:

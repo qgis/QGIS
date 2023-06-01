@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "gdal.h"
 #include "qgsalgorithmreclassifybylayer.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsreclassifyutils.h"
@@ -77,6 +78,9 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
 bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   mDataType = QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( parameterAsEnum( parameters, QStringLiteral( "DATA_TYPE" ), context ) );
+  if ( mDataType == Qgis::DataType::Int8 && atoi( GDALVersionInfo( "VERSION_NUM" ) ) < GDAL_COMPUTE_VERSION( 3, 7, 0 ) )
+    throw QgsProcessingException( QObject::tr( "Int8 data type requires GDAL version 3.7 or later" ) );
+
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_RASTER" ), context );
 
   if ( !layer )
