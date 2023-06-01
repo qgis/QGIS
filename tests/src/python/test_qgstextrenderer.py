@@ -10,6 +10,7 @@ __date__ = '2016-09'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
+from typing import Optional
 
 import qgis  # NOQA
 from PyQt5.QtSvg import QSvgGenerator
@@ -1480,7 +1481,9 @@ class PyQgsTextRenderer(unittest.TestCase):
                     vAlignment=QgsTextRenderer.AlignTop,
                     flags=Qgis.TextRendererFlags(),
                     image_size=400,
-                    mode=Qgis.TextLayoutMode.Rectangle):
+                    mode=Qgis.TextLayoutMode.Rectangle,
+                    reference_scale: Optional[float] = None,
+                    renderer_scale: Optional[float] = None):
 
         image = QImage(image_size, image_size, QImage.Format_RGB32)
 
@@ -1492,6 +1495,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         context.setPainter(painter)
         context.setScaleFactor(96 / 25.4)  # 96 DPI
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+        if renderer_scale:
+            context.setRendererScale(renderer_scale)
+        if reference_scale:
+            context.setSymbologyReferenceScale(reference_scale)
 
         painter.begin(image)
         painter.setRenderHint(QPainter.Antialiasing)
@@ -2247,6 +2254,20 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
         format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
         assert self.checkRender(format, 'background_marker_fixed_pixels', QgsTextRenderer.Background)
+
+    def testDrawBackgroundMarkerFixedReferenceScale(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(16)
+        format.background().setEnabled(True)
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple(
+            {'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
+        format.background().setSize(QSizeF(6, 8))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'background_marker_fixed_reference_scale',
+                                reference_scale=10000, renderer_scale=5000)
 
     def testDrawBackgroundMarkerFixedMapUnits(self):
         format = QgsTextFormat()
