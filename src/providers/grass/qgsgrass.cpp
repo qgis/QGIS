@@ -791,7 +791,10 @@ int QgsGrass::error_routine( const char *msg, int fatal )
   // with -fexception option on Linux (works on Windows)
   // GRASS developers are reluctant to add -fexception by default
   // https://trac.osgeo.org/grass/ticket/869
-  QgsDebugError( QStringLiteral( "error_routine (fatal = %1): %2" ).arg( fatal ).arg( msg ) );
+  if ( fatal )
+    QgsDebugError( QStringLiteral( "error_routine (fatal = %1): %2" ).arg( fatal ).arg( msg ) );
+  else
+    QgsDebugMsgLevel( QStringLiteral( "error_routine (fatal = %1): %2" ).arg( fatal ).arg( msg ), 2 );
 
   sErrorMessage = msg;
 
