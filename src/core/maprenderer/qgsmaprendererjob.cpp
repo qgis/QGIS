@@ -551,7 +551,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
 
     // Disable clipping if source or dest CRS geographic status differs
     // Fix #45200 and possibly other issues
-    if ( ct.isValid() && ( ct.sourceCrs().isGeographic() != ct.destinationCrs().isGeographic() ) )
+    if ( mSettings.rendererUsage() == Qgis::RendererUsage::View && ct.isValid() && ( ct.sourceCrs().isGeographic() != ct.destinationCrs().isGeographic() ) )
     {
       job.context()->setFlag( Qgis::RenderContextFlag::DisableFeatureClipping, true );
     }
