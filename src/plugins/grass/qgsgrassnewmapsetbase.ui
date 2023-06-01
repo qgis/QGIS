@@ -248,116 +248,10 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <layout class="QGridLayout" name="gridLayout_1">
-      <item row="1" column="5">
-       <widget class="QLineEdit" name="mEastLineEdit"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="textLabel3">
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>North</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QLineEdit" name="mNorthLineEdit">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLineEdit" name="mWestLineEdit">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QLineEdit" name="mSouthLineEdit"/>
-      </item>
-      <item row="1" column="3">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QLabel" name="textLabel4">
-          <property name="minimumSize">
-           <size>
-            <width>20</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>West</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="textLabel5">
-          <property name="minimumSize">
-           <size>
-            <width>20</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>East</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="textLabel6">
-        <property name="minimumSize">
-         <size>
-          <width>20</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>South</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QLabel" name="mRegionErrorLabel">
-      <property name="text">
-       <string>Region Error</string>
-      </property>
-     </widget>
+     <widget class="QWidget" name="mExtentWidgetFrame" native="true"/>
     </item>
     <item>
      <layout class="QHBoxLayout">
-      <item>
-       <widget class="QPushButton" name="mCurrentRegionButton">
-        <property name="text">
-         <string>Set current QGIS extent</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="QFrame" name="mSetRegionFrame">
         <property name="frameShape">
@@ -379,6 +273,13 @@
          <property name="bottomMargin">
           <number>3</number>
          </property>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Preset regions</string>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QComboBox" name="mRegionsComboBox">
            <property name="sizePolicy">
@@ -403,6 +304,13 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="mRegionErrorLabel">
+      <property name="text">
+       <string>Region Error</string>
+      </property>
+     </widget>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
