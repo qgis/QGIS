@@ -160,9 +160,6 @@ class CORE_EXPORT QgsMultiRenderChecker
     bool mIsCiRun = false;
 };
 
-SIP_FEATURE( TESTS )
-SIP_IF_FEATURE( TESTS )
-
 ///@cond PRIVATE
 
 /**
@@ -215,8 +212,6 @@ class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
     int mDotsPerMeter;
 };
 ///@endcond
-
-SIP_END
 
 
 #endif // QGSMULTIRENDERCHECKER_H
