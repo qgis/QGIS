@@ -44,11 +44,9 @@ from qgis.core import (
     QgsProperty,
     QgsReadWriteContext,
     QgsRectangle,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsSimpleFillSymbolLayer,
     QgsStringUtils,
-    QgsSymbolLayerId,
     QgsSymbolLayerReference,
     QgsTextBackgroundSettings,
     QgsTextBufferSettings,
@@ -79,15 +77,11 @@ class PyQgsTextRenderer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.report = "<h1>Python QgsTextRenderer Tests</h1>\n"
         QgsFontUtils.loadStandardTestFonts(['Bold', 'Oblique'])
 
     @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return 'text_renderer'
 
     def testValid(self):
         t = QgsTextFormat()
@@ -1480,22 +1474,6 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertAlmostEqual(metrics.width(string), 51.9, 1)
         self.assertAlmostEqual(metrics2.width(string), 104.15, 1)
 
-    def imageCheck(self, name, reference_image, image):
-        PyQgsTextRenderer.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("text_renderer")
-        checker.setControlName(reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        if checker.report():
-            PyQgsTextRenderer.report += checker.report()
-            print(checker.report())
-        return result
-
     def checkRender(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                     text=['test'],
                     rect=QRectF(100, 100, 50, 250),
@@ -1555,7 +1533,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         # painter.drawText(rect, align, '\n'.join(text))
 
         painter.end()
-        return self.imageCheck(name, name, image)
+        return self.image_check(name, name, image, control_name=name)
 
     def checkRenderPoint(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                          text=['test'],
@@ -1602,7 +1580,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         # painter.drawText(point, '\n'.join(text))
 
         painter.end()
-        return self.imageCheck(name, name, image)
+        return self.image_check(name, name, image, control_name=name)
 
     def testDrawMassiveFont(self):
         """
@@ -1666,7 +1644,7 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         painter.end()
 
-        self.assertTrue(self.imageCheck('draw_document_rect', 'draw_document_rect', image))
+        self.assertTrue(self.image_check('draw_document_rect', 'draw_document_rect', image, 'draw_document_rect'))
 
     def testDrawRectCapHeightMode(self):
         """
@@ -1727,7 +1705,7 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         painter.end()
 
-        self.assertTrue(self.imageCheck('draw_document_rect_cap_height', 'draw_document_rect_cap_height', image))
+        self.assertTrue(self.image_check('draw_document_rect_cap_height', 'draw_document_rect_cap_height', image, 'draw_document_rect_cap_height'))
 
     def testDrawRectAscentMode(self):
         """
@@ -1788,7 +1766,7 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         painter.end()
 
-        self.assertTrue(self.imageCheck('draw_document_rect_ascent', 'draw_document_rect_ascent', image))
+        self.assertTrue(self.image_check('draw_document_rect_ascent', 'draw_document_rect_ascent', image, 'draw_document_rect_ascent'))
 
     def testDrawDocumentShadowPlacement(self):
         """
@@ -1838,7 +1816,7 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         painter.end()
 
-        self.assertTrue(self.imageCheck('draw_document_shadow_lowest', 'draw_document_shadow_lowest', image))
+        self.assertTrue(self.image_check('draw_document_shadow_lowest', 'draw_document_shadow_lowest', image, 'draw_document_shadow_lowest'))
 
     def testDrawForcedItalic(self):
         """
@@ -3778,7 +3756,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 0)
 
         painter.end()
-        self.assertTrue(self.imageCheck('text_on_line_at_start', 'text_on_line_at_start', image))
+        self.assertTrue(self.image_check('text_on_line_at_start', 'text_on_line_at_start', image, 'text_on_line_at_start'))
 
     def testDrawTextOnLineAtOffset(self):
         format = QgsTextFormat()
@@ -3813,7 +3791,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 100)
 
         painter.end()
-        self.assertTrue(self.imageCheck('text_on_line_at_offset', 'text_on_line_at_offset', image))
+        self.assertTrue(self.image_check('text_on_line_at_offset', 'text_on_line_at_offset', image, 'text_on_line_at_offset'))
 
     def testDrawTextOnCurvedLine(self):
         format = QgsTextFormat()
@@ -3852,7 +3830,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         QgsTextRenderer.drawTextOnLine(line, 'm<sup>y</sup> <span style="font-size: 29pt; color: red;">curv<sup style="font-size: 10pt">ed</sup></span> te<sub>xt</sub>', context, format, 20, 0)
 
         painter.end()
-        self.assertTrue(self.imageCheck('text_on_curved_line', 'text_on_curved_line', image))
+        self.assertTrue(self.image_check('text_on_curved_line', 'text_on_curved_line', image, 'text_on_curved_line'))
 
     def testDrawTextOnCurvedLineUpsideDown(self):
         format = QgsTextFormat()
@@ -3891,7 +3869,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         QgsTextRenderer.drawTextOnLine(line, 'm<sup>y</sup> <span style="font-size: 29pt; color: red;">curv<sup style="font-size: 10pt">ed</sup></span> te<sub>xt</sub>', context, format, 20, 0)
 
         painter.end()
-        self.assertTrue(self.imageCheck('text_on_curved_line_upside_down', 'text_on_curved_line_upside_down', image))
+        self.assertTrue(self.image_check('text_on_curved_line_upside_down', 'text_on_curved_line_upside_down', image, 'text_on_curved_line_upside_down'))
 
     def testDrawTextOnCurvedLineBackground(self):
         format = QgsTextFormat()
@@ -3933,7 +3911,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 20, 0)
 
         painter.end()
-        self.assertTrue(self.imageCheck('text_on_curved_line_background', 'text_on_curved_line_background', image))
+        self.assertTrue(self.image_check('text_on_curved_line_background', 'text_on_curved_line_background', image, 'text_on_curved_line_background'))
 
     def testDrawTextOnCurvedLineOffsetFromLine(self):
         format = QgsTextFormat()
@@ -3969,7 +3947,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 20, -20)
 
         painter.end()
-        self.assertTrue(self.imageCheck('text_on_curved_line_offset_line', 'text_on_curved_line_offset_line', image))
+        self.assertTrue(self.image_check('text_on_curved_line_offset_line', 'text_on_curved_line_offset_line', image, 'text_on_curved_line_offset_line'))
 
     def testDrawTextOnCurvedLineOffsetFromLinePositive(self):
         format = QgsTextFormat()
@@ -4005,7 +3983,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 20, 20)
 
         painter.end()
-        self.assertTrue(self.imageCheck('text_on_curved_line_offset_line_positive', 'text_on_curved_line_offset_line_positive', image))
+        self.assertTrue(self.image_check('text_on_curved_line_offset_line_positive', 'text_on_curved_line_offset_line_positive', image, 'text_on_curved_line_offset_line_positive'))
 
 
 if __name__ == '__main__':
