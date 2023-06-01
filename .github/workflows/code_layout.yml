@@ -144,7 +144,7 @@ jobs:
           sudo apt install -y \
               expect \
               silversearcher-ag
-      - uses: tj-actions/changed-files@v35
+      - uses: tj-actions/changed-files@v36
         id: changed_files
         with:
           separator: ' '
