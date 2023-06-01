@@ -25,36 +25,25 @@
    <property name="title">
     <string>GRASS Database</string>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_5">
-    <item>
-     <layout class="QHBoxLayout">
-      <item>
-       <widget class="QLabel" name="textLabel2">
-        <property name="text">
-         <string>Database directory</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="mDatabaseLineEdit"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="mDatabaseButton">
-        <property name="text">
-         <string>Browse…</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QLabel" name="mDatabaseErrorLabel">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="3" column="0" colspan="2">
+     <widget class="QLabel" name="mDatabaseHelpLabel">
       <property name="text">
-       <string>Database Error</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;GRASS data are stored in tree directory structure. The GRASS database is the top-level directory in this tree structure.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
-    <item>
+    <item row="0" column="1">
+     <widget class="QgsFileWidget" name="mDirectoryWidget" native="true">
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
      <widget class="Line" name="line1">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -76,17 +65,21 @@
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QLabel" name="mDatabaseHelpLabel">
+    <item row="1" column="0">
+     <widget class="QLabel" name="mDatabaseErrorLabel">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;GRASS data are stored in tree directory structure. The GRASS database is the top-level directory in this tree structure.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
+       <string>Database error</string>
       </property>
      </widget>
     </item>
-    <item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="textLabel2">
+      <property name="text">
+       <string>Database directory</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0" colspan="2">
      <spacer name="verticalSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -682,6 +675,14 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
