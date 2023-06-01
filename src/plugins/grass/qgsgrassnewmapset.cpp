@@ -1368,6 +1368,7 @@ void QgsGrassNewMapset::pageSelected( int index )
       if ( !mProjectionSelector )
       {
         QGridLayout *projectionLayout = new QGridLayout( mProjectionFrame );
+        projectionLayout->setContentsMargins( 0, 0, 0, 0 );
 
         mProjectionSelector = new QgsProjectionSelectionTreeWidget( mProjectionFrame );
         mProjectionSelector->setEnabled( false );
