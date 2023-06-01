@@ -456,6 +456,7 @@ The development version
       Remote,
       CdRom,
       RamDisk,
+      Cloud,
     };
 
     enum class ActionStart

@@ -290,6 +290,82 @@ std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
   pathArray[static_cast< size_t >( nativePath.length() )] = 0;
   return pathArray;
 }
+
+
+void fileAttributesOld( HANDLE handle, DWORD &fileAttributes, bool &hasFileAttributes )
+{
+  hasFileAttributes = false;
+  BY_HANDLE_FILE_INFORMATION info;
+  if ( GetFileInformationByHandle( handle, &info ) )
+  {
+    hasFileAttributes = true;
+    fileAttributes = info.dwFileAttributes;
+  }
+}
+
+// File attributes for Windows starting from version 8.
+void fileAttributesNew( HANDLE handle, DWORD &fileAttributes, bool &hasFileAttributes )
+{
+  hasFileAttributes = false;
+#if WINVER >= 0x0602
+  _FILE_BASIC_INFO infoEx;
+  if ( GetFileInformationByHandleEx(
+         handle,
+         FileBasicInfo,
+         &infoEx, sizeof( infoEx ) ) )
+  {
+    hasFileAttributes = true;
+    fileAttributes = infoEx.FileAttributes;
+  }
+  else
+  {
+    // GetFileInformationByHandleEx() is observed to fail for FAT32, QTBUG-74759
+    fileAttributesOld( handle, fileAttributes, hasFileAttributes );
+  }
+#else
+  fileAttributesOld( handle, fileAttributes, hasFileAttributes );
+#endif
+}
+
+bool pathIsLikelyCloudStorage( QString path )
+{
+  // For OneDrive detection need the attributes of a file from the path, not the directory itself.
+  // So just grab the first file in the path.
+  QDirIterator dirIt( path, QDir::Files );
+  if ( dirIt.hasNext() )
+  {
+    path = dirIt.next();
+  }
+
+  std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
+  const HANDLE handle = CreateFileW( pathArray.get(), 0, FILE_SHARE_READ,
+                                     nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr );
+  if ( handle != INVALID_HANDLE_VALUE )
+  {
+    bool hasFileAttributes = false;
+    DWORD attributes = 0;
+    fileAttributesNew( handle, attributes, hasFileAttributes );
+    CloseHandle( handle );
+    if ( hasFileAttributes )
+    {
+      /* From the Win32 API documentation:
+         *
+         * FILE_ATTRIBUTE_RECALL_ON_OPEN:
+         * When this attribute is set, it means that the file or directory has no physical representation
+         * on the local system; the item is virtual. Opening the item will be more expensive than normal,
+         * e.g. it will cause at least some of it to be fetched from a remote store
+         *
+         * FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS
+         * When this attribute is set, it means that the file or directory is not fully present locally.
+         * For a file that means that not all of its data is on local storage (e.g. it may be sparse with
+         * some data still in remote storage).
+         */
+      return ( attributes & FILE_ATTRIBUTE_RECALL_ON_OPEN )
+             || ( attributes & FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS );
+    }
+  }
+  return false;
+}
 #endif
 
 Qgis::DriveType QgsFileUtils::driveType( const QString &path )
@@ -332,8 +408,12 @@ Qgis::DriveType QgsFileUtils::driveType( const QString &path )
   QString prevPath;
   while ( currentPath != prevPath )
   {
+    if ( pathIsLikelyCloudStorage( currentPath ) )
+      return Qgis::DriveType::Cloud;
+
     prevPath = currentPath;
     currentPath = QFileInfo( currentPath ).path();
+
     const Qgis::DriveType type = pathType( currentPath );
     if ( type != Qgis::DriveType::Unknown && type != Qgis::DriveType::Invalid )
       return type;
@@ -367,6 +447,7 @@ bool QgsFileUtils::pathIsSlowDevice( const QString &path )
       case Qgis::DriveType::Removable:
       case Qgis::DriveType::Remote:
       case Qgis::DriveType::CdRom:
+      case Qgis::DriveType::Cloud:
         return true;
     }
   }
