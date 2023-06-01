@@ -1076,6 +1076,20 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(p.homePath(), '/tmp/not/existing/here')
         self.assertEqual(len(path_changed_spy), 1)
 
+        # Tests whether the home paths of a GPKG stored project returns the GPKG folder.
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, 'relative_paths_gh30387.gpkg')
+            copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relative_paths_gh30387.gpkg'), path)
+            project = QgsProject()
+            # Project URI
+            uri = f'geopackage://{path}?projectName=relative_project'
+            project.setFileName(uri)
+            self.assertTrue(project.write())
+            # Verify
+            project = QgsProject()
+            self.assertTrue(project.read(uri))
+            self.assertEqual(project.homePath(), d)
+
     def testDirtyBlocker(self):
         # first test manual QgsProjectDirtyBlocker construction
         p = QgsProject()
