@@ -697,7 +697,13 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
           else
           {
             if ( !mParameterComponents.value( defClone->name() ).comment()->description().isEmpty() )
-              lines << indent + indent + QStringLiteral( "# %1" ).arg( mParameterComponents.value( defClone->name() ).comment()->description() );
+            {
+              const QStringList parts = mParameterComponents.value( defClone->name() ).comment()->description().split( QStringLiteral( "\n" ) );
+              for ( const QString &part : parts )
+              {
+                lines << indent + indent + QStringLiteral( "# %1" ).arg( part );
+              }
+            }
           }
 
           if ( defClone->flags() & QgsProcessingParameterDefinition::FlagAdvanced )
@@ -833,7 +839,6 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
             // not optional, or required elsewhere in model
             if ( required )
             {
-
               childParams.insert( destParam->name(), QStringLiteral( "QgsProcessing.TEMPORARY_OUTPUT" ) );
             }
           }
