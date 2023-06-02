@@ -490,6 +490,18 @@ class CORE_EXPORT Qgis
     Q_FLAG( SymbolRenderHints )
 
     /**
+     * \brief Modes for handling how symbol and text entity rotation is handled when maps are rotated.
+     *
+     * \since QGIS 3.32
+     */
+    enum class SymbolRotationMode : int
+    {
+      RespectMapRotation, //!< Entity is rotated along with the map
+      IgnoreMapRotation, //!< Entity ignores map rotation
+    };
+    Q_ENUM( SymbolRotationMode )
+
+    /**
      * \brief Flags controlling behavior of symbols
      *
      * \since QGIS 3.20

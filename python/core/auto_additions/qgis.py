@@ -512,6 +512,12 @@ QgsSymbol.RenderHints = Qgis.SymbolRenderHints
 Qgis.SymbolRenderHints.baseClass = Qgis
 SymbolRenderHints = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.SymbolRotationMode.RespectMapRotation.__doc__ = "Entity is rotated along with the map"
+Qgis.SymbolRotationMode.IgnoreMapRotation.__doc__ = "Entity ignores map rotation"
+Qgis.SymbolRotationMode.__doc__ = 'Modes for handling how symbol and text entity rotation is handled when maps are rotated.\n\n.. versionadded:: 3.32\n\n' + '* ``RespectMapRotation``: ' + Qgis.SymbolRotationMode.RespectMapRotation.__doc__ + '\n' + '* ``IgnoreMapRotation``: ' + Qgis.SymbolRotationMode.IgnoreMapRotation.__doc__
+# --
+Qgis.SymbolRotationMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.SymbolFlag.RendererShouldUseSymbolLevels.__doc__ = "If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results"
 Qgis.SymbolFlag.__doc__ = 'Flags controlling behavior of symbols\n\n.. versionadded:: 3.20\n\n' + '* ``RendererShouldUseSymbolLevels``: ' + Qgis.SymbolFlag.RendererShouldUseSymbolLevels.__doc__
 # --
