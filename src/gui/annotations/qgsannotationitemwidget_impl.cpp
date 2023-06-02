@@ -326,6 +326,8 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
   mRotationModeCombo->addItem( tr( "Ignore Map Rotation" ), QVariant::fromValue( Qgis::SymbolRotationMode::IgnoreMapRotation ) );
   mRotationModeCombo->addItem( tr( "Rotate With Map" ), QVariant::fromValue( Qgis::SymbolRotationMode::RespectMapRotation ) );
 
+  mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
+
   mTextFormatWidget->setDockMode( dockMode() );
   connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [ = ]
   {
@@ -355,6 +357,12 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
+
+  connect( mAlignmentComboBox, &QgsAlignmentComboBox::changed, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
 }
 
 QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
@@ -364,6 +372,7 @@ QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
   newItem->setText( mTextEdit->toPlainText() );
   newItem->setAngle( mSpinTextAngle->value() );
   newItem->setRotationMode( mRotationModeCombo->currentData().value< Qgis::SymbolRotationMode >() );
+  newItem->setAlignment( mAlignmentComboBox->currentAlignment() );
   mPropertiesWidget->updateItem( newItem );
   return newItem;
 }
@@ -376,6 +385,7 @@ void QgsAnnotationPointTextItemWidget::updateItem( QgsAnnotationItem *item )
     pointTextItem->setText( mTextEdit->toPlainText() );
     pointTextItem->setAngle( mSpinTextAngle->value() );
     pointTextItem->setRotationMode( mRotationModeCombo->currentData().value< Qgis::SymbolRotationMode >() );
+    pointTextItem->setAlignment( mAlignmentComboBox->currentAlignment() );
     mPropertiesWidget->updateItem( pointTextItem );
   }
 }
@@ -416,6 +426,7 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mTextEdit->setPlainText( mItem->text() );
   mSpinTextAngle->setValue( mItem->angle() );
   mRotationModeCombo->setCurrentIndex( mRotationModeCombo->findData( QVariant::fromValue( mItem->rotationMode() ) ) );
+  mAlignmentComboBox->setCurrentAlignment( mItem->alignment() & Qt::AlignHorizontal_Mask );
   mPropertiesWidget->setItem( mItem.get() );
   mBlockChangedSignal = false;
 
