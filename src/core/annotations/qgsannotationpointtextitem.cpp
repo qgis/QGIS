@@ -134,6 +134,33 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox() const
   return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x(), mPoint.y() );
 }
 
+QgsRectangle rotateBoundingBoxAroundBottomLeft( const QgsRectangle &original, double angleClockwiseDegrees )
+{
+  const double angleRadians = -M_PI * angleClockwiseDegrees / 180.0;
+  const double x = original.xMinimum();
+  const double y = original.yMinimum();
+
+  const double w = original.width();
+  const double h = original.height();
+  const double ux = std::cos( angleRadians );
+  const double uy = std::sin( angleRadians );
+  const double wx = w * ux, wy = w * uy; // vector along w
+  const double hx = h * -uy, hy = h * ux; // vector along h
+
+  if ( ux > 0 )
+  {
+    return uy > 0 ?
+           QgsRectangle( x + hx, y, x + wx, y + hy + wy ) :
+           QgsRectangle( x, y + wy, x + wx + hx, y + hy );
+  }
+  else
+  {
+    return uy > 0 ?
+           QgsRectangle( x + hx + wx, y + hy, x, y + wy ) :
+           QgsRectangle( x + wx, y + wy + hy, x + hx, y );
+  }
+}
+
 QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context ) const
 {
   const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
@@ -147,7 +174,26 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context 
   const double widthInMapUnits = context.convertToMapUnits( widthInPixels, Qgis::RenderUnit::Pixels );
   const double heightInMapUnits = context.convertToMapUnits( heightInPixels, Qgis::RenderUnit::Pixels );
 
-  return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x() + widthInMapUnits, mPoint.y() + heightInMapUnits );
+  double angle = mAngle;
+  switch ( mRotationMode )
+  {
+    case Qgis::SymbolRotationMode::RespectMapRotation:
+      angle += context.mapToPixel().mapRotation();
+      break;
+
+    case Qgis::SymbolRotationMode::IgnoreMapRotation:
+      break;
+  }
+
+  const QgsRectangle unrotatedRect( mPoint.x(), mPoint.y(), mPoint.x() + widthInMapUnits, mPoint.y() + heightInMapUnits );
+  if ( !qgsDoubleNear( angle, 0 ) )
+  {
+    return rotateBoundingBoxAroundBottomLeft( unrotatedRect, angle );
+  }
+  else
+  {
+    return unrotatedRect;
+  }
 }
 
 QList<QgsAnnotationItemNode> QgsAnnotationPointTextItem::nodes() const
