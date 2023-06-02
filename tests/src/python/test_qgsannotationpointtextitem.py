@@ -187,7 +187,7 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         format.setSize(20)
         item.setFormat(format)
 
-        item.setAngle(30)
+        item.setAngle(-30)
         item.setAlignment(Qt.AlignRight)
 
         settings = QgsMapSettings()
@@ -222,7 +222,7 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         format.setSize(20)
         item.setFormat(format)
 
-        item.setAngle(30)
+        item.setAngle(-30)
         item.setAlignment(Qt.AlignRight)
 
         settings = QgsMapSettings()
@@ -257,7 +257,7 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         format.setSize(20)
         item.setFormat(format)
 
-        item.setAngle(30)
+        item.setAngle(-30)
         item.setAlignment(Qt.AlignRight)
 
         settings = QgsMapSettings()

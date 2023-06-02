@@ -59,7 +59,7 @@ void QgsAnnotationPointTextItem::render( QgsRenderContext &context, QgsFeedback 
   context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
 
   const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
-  QgsTextRenderer::drawText( pt, mAngle * M_PI / 180.0,
+  QgsTextRenderer::drawText( pt, -mAngle * M_PI / 180.0,
                              QgsTextRenderer::convertQtHAlignment( mAlignment ),
                              displayText.split( '\n' ), context, mTextFormat );
 }
