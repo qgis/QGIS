@@ -134,31 +134,15 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox() const
   return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x(), mPoint.y() );
 }
 
-QgsRectangle rotateBoundingBoxAroundBottomLeft( const QgsRectangle &original, double angleClockwiseDegrees )
+QgsRectangle rotateBoundingBoxAroundPoint( double cx, double cy, const QgsRectangle &original, double angleClockwiseDegrees )
 {
+  QTransform t;
+  t.translate( cx, cy );
   const double angleRadians = -M_PI * angleClockwiseDegrees / 180.0;
-  const double x = original.xMinimum();
-  const double y = original.yMinimum();
-
-  const double w = original.width();
-  const double h = original.height();
-  const double ux = std::cos( angleRadians );
-  const double uy = std::sin( angleRadians );
-  const double wx = w * ux, wy = w * uy; // vector along w
-  const double hx = h * -uy, hy = h * ux; // vector along h
-
-  if ( ux > 0 )
-  {
-    return uy > 0 ?
-           QgsRectangle( x + hx, y, x + wx, y + hy + wy ) :
-           QgsRectangle( x, y + wy, x + wx + hx, y + hy );
-  }
-  else
-  {
-    return uy > 0 ?
-           QgsRectangle( x + hx + wx, y + hy, x, y + wy ) :
-           QgsRectangle( x + wx, y + wy + hy, x + hx, y );
-  }
+  t.rotateRadians( angleRadians );
+  t.translate( -cx, -cy );
+  const QRectF result = t.mapRect( original.toRectF() );
+  return QgsRectangle( result );
 }
 
 QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context ) const
@@ -185,10 +169,25 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context 
       break;
   }
 
-  const QgsRectangle unrotatedRect( mPoint.x(), mPoint.y(), mPoint.x() + widthInMapUnits, mPoint.y() + heightInMapUnits );
+  QgsRectangle unrotatedRect;
+  switch ( mAlignment & Qt::AlignHorizontal_Mask )
+  {
+    case Qt::AlignRight:
+      unrotatedRect = QgsRectangle( mPoint.x() - widthInMapUnits, mPoint.y(), mPoint.x(), mPoint.y() + heightInMapUnits );
+      break;
+
+    case Qt::AlignHCenter:
+      unrotatedRect = QgsRectangle( mPoint.x() - widthInMapUnits * 0.5, mPoint.y(), mPoint.x() + widthInMapUnits * 0.5, mPoint.y() + heightInMapUnits );
+      break;
+
+    default:
+      unrotatedRect = QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x() + widthInMapUnits, mPoint.y() + heightInMapUnits );
+      break;
+  }
+
   if ( !qgsDoubleNear( angle, 0 ) )
   {
-    return rotateBoundingBoxAroundBottomLeft( unrotatedRect, angle );
+    return rotateBoundingBoxAroundPoint( mPoint.x(), mPoint.y(), unrotatedRect, angle );
   }
   else
   {
