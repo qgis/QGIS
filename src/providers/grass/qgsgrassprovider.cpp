@@ -435,7 +435,7 @@ QgsFields QgsGrassProvider::fields() const
   {
     return mTopoFields;
   }
-  else
+  else if ( mLayer )
   {
     // Original fields must be returned during editing because edit buffer updates fields by indices
     if ( mEditBuffer )
@@ -447,11 +447,12 @@ QgsFields QgsGrassProvider::fields() const
       return mLayer->tableFields();
     }
   }
+  return QgsFields();
 }
 
 int QgsGrassProvider::keyField()
 {
-  return mLayer->keyColumn();
+  return mLayer ? mLayer->keyColumn() : -1;
 }
 
 QVariant QgsGrassProvider::minimumValue( int index ) const
@@ -653,6 +654,8 @@ void QgsGrassProvider::ensureUpdated() const
 
 int QgsGrassProvider::numLines( void )
 {
+  if ( !isValid() )
+    return -1;
 
   //return ( Vect_get_num_lines( map() ) );
   return mLayer->map()->numLines();
@@ -660,6 +663,8 @@ int QgsGrassProvider::numLines( void )
 
 int QgsGrassProvider::numNodes( void )
 {
+  if ( !isValid() )
+    return -1;
 
   return ( Vect_get_num_nodes( map() ) );
 }
@@ -746,7 +751,7 @@ int QgsGrassProvider::rewriteLine( int oldLid, int type, struct line_pnts *Point
 {
   QgsDebugMsgLevel( QString( "n_points = %1 n_cats = %2" ).arg( Points->n_points ).arg( Cats->n_cats ), 2 );
 
-  if ( !map() || !isEdited() )
+  if ( !isValid() || !map() || !isEdited() )
   {
     return -1;
   }
@@ -1165,6 +1170,9 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
 
 void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
 {
+  if ( !mLayer )
+    return;
+
   // fid is negative for new features
 
   int lid = QgsGrassFeatureIterator::lidFromFid( fid );
@@ -1503,6 +1511,9 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
 
 void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
 {
+  if ( !mLayer )
+    return;
+
   QgsDebugMsgLevel( QString( "fid = %1" ).arg( fid ), 2 );
 
   int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
@@ -1634,6 +1645,9 @@ void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
 
 void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
+  if ( !mLayer )
+    return;
+
   int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
   int realLine = oldLid;
   if ( mLayer->map()->newLids().contains( oldLid ) ) // if it was changed already
@@ -1683,6 +1697,9 @@ void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &g
 
 void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
+  if ( !mLayer )
+    return;
+
   QgsDebugMsgLevel( QString( "fid = %1 idx = %2 value = %3" ).arg( fid ).arg( idx ).arg( value.toString() ), 2 );
 
   int layerField = QgsGrassFeatureIterator::layerFromFid( fid );
@@ -1842,6 +1859,9 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
 
 void QgsGrassProvider::onAttributeAdded( int idx )
 {
+  if ( !mLayer )
+    return;
+
   QgsDebugMsgLevel( QString( "idx = %1" ).arg( idx ), 2 );
   if ( idx < 0 || idx >= mEditLayer->fields().size() )
   {
@@ -1864,6 +1884,9 @@ void QgsGrassProvider::onAttributeAdded( int idx )
 
 void QgsGrassProvider::onAttributeDeleted( int idx )
 {
+  if ( !mLayer )
+    return;
+
   QgsDebugMsgLevel( QString( "idx = %1 mEditLayerFields.size() = %2" ).arg( idx ).arg( mEditLayerFields.size() ), 2 );
   // The field was already removed from mEditLayer->fields() -> using stored last version of fields
   if ( idx < 0 || idx >= mEditLayerFields.size() )
@@ -1891,7 +1914,7 @@ void QgsGrassProvider::onAttributeDeleted( int idx )
 
 void QgsGrassProvider::setAddedFeaturesSymbol()
 {
-  if ( !mEditBuffer )
+  if ( !mEditBuffer || !mLayer )
   {
     return;
   }
@@ -1920,6 +1943,9 @@ void QgsGrassProvider::setAddedFeaturesSymbol()
 
 void QgsGrassProvider::onUndoIndexChanged( int currentIndex )
 {
+  if ( !mLayer )
+    return;
+
   QgsDebugMsgLevel( QString( "currentIndex = %1" ).arg( currentIndex ), 2 );
   // multiple commands maybe undone with single undoIndexChanged signal
   QList<int> indexes = mLayer->map()->undoCommands().keys();
@@ -1948,6 +1974,9 @@ void QgsGrassProvider::onUndoIndexChanged( int currentIndex )
 
 bool QgsGrassProvider::addAttributes( const QList<QgsField> &attributes )
 {
+  if ( !mLayer )
+    return false;
+
   Q_UNUSED( attributes )
   // update fields because QgsVectorLayerEditBuffer::commitChanges() checks old /new fields count
   mLayer->updateFields();
@@ -1956,6 +1985,9 @@ bool QgsGrassProvider::addAttributes( const QList<QgsField> &attributes )
 
 bool QgsGrassProvider::deleteAttributes( const QgsAttributeIds &attributes )
 {
+  if ( !mLayer )
+    return false;
+
   Q_UNUSED( attributes )
   // update fields because QgsVectorLayerEditBuffer::commitChanges() checks old /new fields count
   mLayer->updateFields();
@@ -1964,6 +1996,9 @@ bool QgsGrassProvider::deleteAttributes( const QgsAttributeIds &attributes )
 
 void QgsGrassProvider::onBeforeCommitChanges()
 {
+  if ( !mLayer )
+    return;
+
   mLayer->map()->clearUndoCommands();
 }
 
@@ -2019,6 +2054,9 @@ int QgsGrassProvider::cidxGetMaxCat( int idx )
 
 int QgsGrassProvider::getNewCat()
 {
+  if ( !mLayer )
+    return 1;
+
   QgsDebugMsgLevel( QString( "get new cat for cidxFieldIndex() = %1" ).arg( mLayer->cidxFieldIndex() ), 2 );
   if ( mLayer->cidxFieldIndex() == -1 )
   {
@@ -2033,6 +2071,9 @@ int QgsGrassProvider::getNewCat()
 
 QgsGrassVectorMapLayer *QgsGrassProvider::openLayer() const
 {
+  if ( !mLayer )
+    return nullptr;
+
   return mLayer->map()->openLayer( mLayerField );
 }
 
@@ -2061,6 +2102,9 @@ QgsGrassVectorMapLayer *QgsGrassProvider::otherEditLayer( int layerField )
       return layer;
     }
   }
+  if ( !mLayer )
+    return nullptr;
+
   QgsGrassVectorMapLayer *layer = mLayer->map()->openLayer( layerField );
   if ( layer )
   {
