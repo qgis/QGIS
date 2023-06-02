@@ -132,6 +132,24 @@ Sets the text's ``alignment`` relative to the reference :py:func:`~QgsAnnotation
 .. seealso:: :py:func:`alignment`
 %End
 
+    Qgis::SymbolRotationMode rotationMode() const;
+%Docstring
+Returns the rotation mode for the text item.
+
+.. seealso:: :py:func:`setRotationMode`
+
+.. versionadded:: 3.32
+%End
+
+    void setRotationMode( Qgis::SymbolRotationMode mode );
+%Docstring
+Sets the rotation ``mode`` for the text item.
+
+.. seealso:: :py:func:`rotationMode`
+
+.. versionadded:: 3.32
+%End
+
   private:
     QgsAnnotationPointTextItem( const QgsAnnotationPointTextItem &other );
 };

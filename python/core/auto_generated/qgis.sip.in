@@ -313,6 +313,12 @@ The development version
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
 
+    enum class SymbolRotationMode
+    {
+      RespectMapRotation,
+      IgnoreMapRotation,
+    };
+
     enum class SymbolFlag
     {
       RendererShouldUseSymbolLevels,
