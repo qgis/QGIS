@@ -1479,7 +1479,7 @@ void QgsPluginManager::leFilter_textChanged( QString text )
     QgsDebugMsgLevel( "PluginManager filter changed to :" + text, 3 );
   }
 
-  const thread_local  QRegularExpression filterRegExp( text, QRegularExpression::CaseInsensitiveOption );
+  const QRegularExpression filterRegExp( text, QRegularExpression::CaseInsensitiveOption );
   mModelProxy->setFilterRegularExpression( filterRegExp );
 }
 
