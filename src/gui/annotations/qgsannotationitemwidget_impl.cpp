@@ -321,6 +321,8 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
 
   mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
 
+  mSpinTextAngle->setClearValue( 0 );
+
   mTextFormatWidget->setDockMode( dockMode() );
   connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [ = ]
   {
@@ -338,6 +340,12 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
+
+  connect( mSpinTextAngle, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
 }
 
 QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
@@ -345,6 +353,7 @@ QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
   QgsAnnotationPointTextItem *newItem = mItem->clone();
   newItem->setFormat( mTextFormatWidget->format() );
   newItem->setText( mTextEdit->toPlainText() );
+  newItem->setAngle( mSpinTextAngle->value() );
   mPropertiesWidget->updateItem( newItem );
   return newItem;
 }
@@ -355,6 +364,7 @@ void QgsAnnotationPointTextItemWidget::updateItem( QgsAnnotationItem *item )
   {
     pointTextItem->setFormat( mTextFormatWidget->format() );
     pointTextItem->setText( mTextEdit->toPlainText() );
+    pointTextItem->setAngle( mSpinTextAngle->value() );
     mPropertiesWidget->updateItem( pointTextItem );
   }
 }
@@ -393,6 +403,7 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mBlockChangedSignal = true;
   mTextFormatWidget->setFormat( mItem->format() );
   mTextEdit->setPlainText( mItem->text() );
+  mSpinTextAngle->setValue( mItem->angle() );
   mPropertiesWidget->setItem( mItem.get() );
   mBlockChangedSignal = false;
 
