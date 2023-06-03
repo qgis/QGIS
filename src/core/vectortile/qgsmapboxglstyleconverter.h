@@ -29,6 +29,7 @@ class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
 class QgsVectorTileBasicRendererStyle;
 class QgsVectorTileBasicLabelingStyle;
+class QgsMapLayer;
 class QgsRasterLayer;
 
 /**
