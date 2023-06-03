@@ -24,7 +24,6 @@
 #include <memory>
 #include <cmath>
 
-#include "qgstolerance.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
@@ -3226,6 +3225,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( SystemOfMeasurement )
 
     /**
+    * Type of unit of tolerance value from settings.
+    * For map (project) units, use ProjectUnits.
+    *
+    * \since QGIS 3.32
+    */
+    enum class MapUnitType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTolerance, UnitType ) : int
+      {
+      Layer SIP_MONKEYPATCH_COMPAT_NAME( LayerUnits ), //!< Layer unit value
+      Pixels, //!< Pixels unit of tolerance
+      Project  SIP_MONKEYPATCH_COMPAT_NAME( ProjectUnits ) //!< Map (project) units
+    };
+    Q_ENUM( MapUnitType )
+
+    /**
      * Unit types.
      *
      * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::UnitType.
@@ -3701,7 +3714,7 @@ class CORE_EXPORT Qgis
      * Default snapping distance units.
      *  \since QGIS 3.0
      */
-    static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
+    static const Qgis::MapUnitType DEFAULT_SNAP_UNITS;
 
     /**
      * A string with default project scales.

@@ -38,12 +38,12 @@ double _ratioMU2LU( const QgsMapSettings &mapSettings, QgsMapLayer *layer )
   return ratio;
 }
 
-double QgsTolerance::toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, QgsTolerance::UnitType units )
+double QgsTolerance::toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapUnitType units )
 {
   // converts to map units
-  if ( units == ProjectUnits )
+  if ( units == Qgis::MapUnitType::Project )
     return tolerance;
-  else if ( units == Pixels )
+  else if ( units == Qgis::MapUnitType::Pixels )
     return tolerance * mapSettings.mapUnitsPerPixel();
   else // units == LayerUnits
   {
@@ -53,14 +53,14 @@ double QgsTolerance::toleranceInProjectUnits( double tolerance, QgsMapLayer *lay
 }
 
 
-double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, QgsTolerance::UnitType units )
+double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapUnitType units )
 {
   // converts to layer units
-  if ( units == LayerUnits )
+  if ( units == Qgis::MapUnitType::Layer )
   {
     return tolerance;
   }
-  else if ( units == Pixels )
+  else if ( units == Qgis::MapUnitType::Pixels )
   {
     const double layerUnitsPerPixel = computeMapUnitPerPixel( layer, mapSettings );
     return tolerance * layerUnitsPerPixel;
@@ -75,23 +75,23 @@ double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, 
 double QgsTolerance::vertexSearchRadius( const QgsMapSettings &mapSettings )
 {
   const double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit->value();
-  UnitType units = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit->value();
-  if ( units == LayerUnits )
-    units = ProjectUnits;
+  Qgis::MapUnitType units = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit->value();
+  if ( units == Qgis::MapUnitType::Layer )
+    units = Qgis::MapUnitType::Project;
   return toleranceInProjectUnits( tolerance, nullptr, mapSettings, units );
 }
 
 double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
   const double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit->value();
-  const UnitType units = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit->value();
+  const Qgis::MapUnitType units = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit->value();
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }
 
 double QgsTolerance::defaultTolerance( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
   const double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance->value();
-  const UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit->value();
+  const Qgis::MapUnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit->value();
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }
 

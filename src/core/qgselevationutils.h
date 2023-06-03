@@ -20,6 +20,7 @@
 #include "qgsrange.h"
 
 class QgsProject;
+class QgsMapLayer;
 
 /**
  * \ingroup core

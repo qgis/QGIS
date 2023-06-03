@@ -28,6 +28,9 @@
 #include <QObject>
 #include <QDomElement>
 
+class QgsMapLayer;
+
+
 /**
  * \class QgsMapLayerElevationProperties
  * \ingroup core

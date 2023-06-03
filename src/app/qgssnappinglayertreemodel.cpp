@@ -70,8 +70,8 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     const QVariant val = index.model()->data( index.model()->sibling( index.row(), QgsSnappingLayerTreeModel::UnitsColumn, index ), Qt::UserRole );
     if ( val.isValid() )
     {
-      const QgsTolerance::UnitType units = static_cast<QgsTolerance::UnitType>( val.toInt() );
-      if ( units == QgsTolerance::Pixels )
+      const Qgis::MapUnitType units = static_cast<Qgis::MapUnitType>( val.toInt() );
+      if ( units == Qgis::MapUnitType::Pixels )
       {
         w->setDecimals( 0 );
       }
@@ -91,8 +91,8 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   if ( index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
     QComboBox *w = new QComboBox( parent );
-    w->addItem( tr( "px" ), QgsTolerance::Pixels );
-    w->addItem( QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() ), QgsTolerance::ProjectUnits );
+    w->addItem( tr( "px" ), QVariant::fromValue( Qgis::MapUnitType::Pixels ) );
+    w->addItem( QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() ), QVariant::fromValue( Qgis::MapUnitType::Project ) );
     return w;
   }
 
@@ -149,11 +149,11 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
-    const QgsTolerance::UnitType units = static_cast<QgsTolerance::UnitType>( val.toInt() );
+    const Qgis::MapUnitType units = static_cast<Qgis::MapUnitType>( val.toInt() );
     QComboBox *w = qobject_cast<QComboBox *>( editor );
     if ( w )
     {
-      w->setCurrentIndex( w->findData( units ) );
+      w->setCurrentIndex( w->findData( QVariant::fromValue( units ) ) );
     }
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
@@ -611,9 +611,9 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       {
         switch ( ls.units() )
         {
-          case QgsTolerance::Pixels:
+          case Qgis::MapUnitType::Pixels:
             return tr( "pixels" );
-          case QgsTolerance::ProjectUnits:
+          case Qgis::MapUnitType::Project:
             return QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() );
           default:
             return QVariant();
@@ -622,7 +622,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
 
       if ( role == Qt::UserRole )
       {
-        return ls.units();
+        return QVariant::fromValue( ls.units() );
       }
     }
 
@@ -784,7 +784,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setUnits( static_cast<QgsTolerance::UnitType>( value.toInt() ) );
+      ls.setUnits( static_cast<Qgis::MapUnitType>( value.toInt() ) );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );

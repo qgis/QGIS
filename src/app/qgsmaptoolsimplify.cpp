@@ -41,9 +41,9 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
   mMethodComboBox->addItem( tr( "Simplify by Area (Visvalingam)" ), QgsMapToolSimplify::SimplifyVisvalingam );
   mMethodComboBox->addItem( tr( "Smooth" ), QgsMapToolSimplify::Smooth );
 
-  mToleranceUnitsComboBox->addItem( tr( "Layer Units" ), QgsTolerance::LayerUnits );
-  mToleranceUnitsComboBox->addItem( tr( "Pixels" ), QgsTolerance::Pixels );
-  mToleranceUnitsComboBox->addItem( tr( "Map Units" ), QgsTolerance::ProjectUnits );
+  mToleranceUnitsComboBox->addItem( tr( "Layer Units" ), QVariant::fromValue( Qgis::MapUnitType::Layer ) );
+  mToleranceUnitsComboBox->addItem( tr( "Pixels" ), QVariant::fromValue( Qgis::MapUnitType::Pixels ) );
+  mToleranceUnitsComboBox->addItem( tr( "Map Units" ), QVariant::fromValue( Qgis::MapUnitType::Project ) );
 
   mToleranceSpinBox->setShowClearButton( false );
 
@@ -56,7 +56,7 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
 
   // communication with map tool
   connect( mToleranceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimplifyUserInputWidget::toleranceChanged );
-  connect( mToleranceUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( const int index ) {emit toleranceUnitsChanged( ( QgsTolerance::UnitType )index );} );
+  connect( mToleranceUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( const int index ) {emit toleranceUnitsChanged( ( Qgis::MapUnitType )index );} );
   connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( const int method ) {emit methodChanged( ( QgsMapToolSimplify::Method )method );} );
   connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
@@ -81,14 +81,14 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
 
 void QgsSimplifyUserInputWidget::setConfig( QgsMapToolSimplify::Method method,
     double tolerance,
-    QgsTolerance::UnitType units,
+    Qgis::MapUnitType units,
     double smoothOffset,
     int smoothIterations )
 {
   mMethodComboBox->setCurrentIndex( mMethodComboBox->findData( method ) );
 
   mToleranceSpinBox->setValue( tolerance );
-  mToleranceUnitsComboBox->setCurrentIndex( mToleranceUnitsComboBox->findData( units ) );
+  mToleranceUnitsComboBox->setCurrentIndex( mToleranceUnitsComboBox->findData( QVariant::fromValue( units ) ) );
   mOffsetSpin->setValue( 100 * smoothOffset );
   mIterationsSpin->setValue( smoothIterations );
 }
@@ -142,7 +142,7 @@ QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas *canvas )
 {
   const QgsSettings settings;
   mTolerance = settings.value( QStringLiteral( "digitizing/simplify_tolerance" ), 1 ).toDouble();
-  mToleranceUnits = static_cast< QgsTolerance::UnitType >( settings.value( QStringLiteral( "digitizing/simplify_tolerance_units" ), 0 ).toInt() );
+  mToleranceUnits = static_cast< Qgis::MapUnitType >( settings.value( QStringLiteral( "digitizing/simplify_tolerance_units" ), 0 ).toInt() );
   mMethod = static_cast< QgsMapToolSimplify::Method >( settings.value( QStringLiteral( "digitizing/simplify_method" ), 0 ).toInt() );
   mSmoothIterations = settings.value( QStringLiteral( "digitizing/smooth_iterations" ), 1 ).toInt();
   mSmoothOffset = settings.value( QStringLiteral( "digitizing/smooth_offset" ), 0.25 ).toDouble();
@@ -165,12 +165,12 @@ void QgsMapToolSimplify::setTolerance( double tolerance )
     updateSimplificationPreview();
 }
 
-void QgsMapToolSimplify::setToleranceUnits( QgsTolerance::UnitType units )
+void QgsMapToolSimplify::setToleranceUnits( Qgis::MapUnitType units )
 {
   mToleranceUnits = units;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "digitizing/simplify_tolerance_units" ), units );
+  settings.setValue( QStringLiteral( "digitizing/simplify_tolerance_units" ), QVariant::fromValue( units ) );
 
   if ( !mSelectedFeatures.isEmpty() )
     updateSimplificationPreview();

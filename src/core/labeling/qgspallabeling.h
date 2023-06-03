@@ -33,6 +33,7 @@
 #include "qgsgeometry.h"
 #include "qgsfields.h"
 #include "qgspointxy.h"
+#include "qgsmaplayer.h"
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
 #include "qgstextformat.h"

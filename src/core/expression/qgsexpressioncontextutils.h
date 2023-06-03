@@ -20,7 +20,9 @@
 #include "qgsfeature.h"
 #include "qgspointlocator.h"
 #include "qgsexpressioncontext.h"
+#include "qgsmapsettings.h"
 #include "qgsmeshdataprovider.h"
+
 #include <QString>
 #include <QVariantMap>
 

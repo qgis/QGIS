@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsMapLayerElevationProperties : QObject
 {
 %Docstring(signature="appended")
