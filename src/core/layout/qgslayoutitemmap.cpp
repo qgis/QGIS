@@ -599,6 +599,27 @@ QgsLayoutItemMapOverview *QgsLayoutItemMap::overview()
   return mOverviewStack->overview( 0 );
 }
 
+double QgsLayoutItemMap::estimatedFrameBleed() const
+{
+  double frameBleed = QgsLayoutItem::estimatedFrameBleed();
+
+  // Check if any of the grids are enabled
+  if ( mGridStack )
+  {
+    for ( int i = 0; i < mGridStack->size(); ++i )
+    {
+      const QgsLayoutItemMapGrid *grid = qobject_cast<QgsLayoutItemMapGrid *>( mGridStack->item( i ) );
+      if ( grid->enabled() )
+      {
+        // Grid bleed is the grid frame width + grid frame offset + half the pen width
+        frameBleed = std::max( frameBleed, grid->frameWidth() + grid->frameMargin() + grid->framePenSize() / 2.0 );
+      }
+    }
+  }
+
+  return frameBleed;
+}
+
 void QgsLayoutItemMap::draw( QgsLayoutItemRenderContext & )
 {
 }
