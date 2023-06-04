@@ -118,9 +118,17 @@ void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolPan::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
-  if ( !mPinching )
+  const bool panSingle = ( e->modifiers() & Qt::ControlModifier ) &&
+                         mCanvas->allowInteraction( QgsMapCanvasInteractionBlocker::Interaction::MapPanOnSingleClick ) ;
+  if ( !mPinching && !panSingle )
   {
-    mCanvas->zoomWithCenter( e->x(), e->y(), true );
+    // Calculate the new center point
+    const QgsPointXY mousePos = e->mapPoint();
+    const QgsPointXY oldCenter = mCanvas->center();
+    const double factor = mCanvas->zoomInFactor();
+    const QgsPointXY center = QgsPointXY( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * factor ),
+                                          mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * factor ) );
+    mCanvas->zoomByFactor( factor, &center );
   }
 }
 
