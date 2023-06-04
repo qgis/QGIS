@@ -86,6 +86,7 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QgsGraphicsViewMouseHandles
     void startMacroCommand( const QString &text ) override;
     void endMacroCommand() override;
     void drawMovePreview( QPainter *painter ) override;
+    void mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) override;
   public slots:
 
     //! Sets up listeners to sizeChanged signal for all selected items
@@ -101,6 +102,8 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QgsGraphicsViewMouseHandles
     QGraphicsLineItem *mVerticalSnapLine = nullptr;
 
     std::unique_ptr< QgsAbstractLayoutUndoCommand > mItemCommand;
+
+    QImage mItemCachedImage;
 };
 
 ///@endcond PRIVATE

@@ -32,6 +32,9 @@
 #include <QWidget>
 #include <limits>
 
+
+#define CACHE_SIZE_LIMIT 5000
+
 ///@cond PRIVATE
 
 QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *view )
@@ -83,6 +86,7 @@ void QgsLayoutMouseHandles::selectionChanged()
   }
 
   resetStatusBar();
+  mItemCachedImage = QImage();
   updateHandles();
 }
 
@@ -212,32 +216,93 @@ void QgsLayoutMouseHandles::drawMovePreview( QPainter *painter )
     return;
   }
 
-  QList<QGraphicsItem *> itemsToDraw;
-  expandItemList( selectedItems, itemsToDraw );
+  double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( nullptr, painter ) * 25.4;
+  double widthInPixels = 0;
+  double heightInPixels = 0;
 
-  QgsScopedQPainterState painterState( painter );
-  // Draw a semi-transparent version of the selected items
-  painter->setOpacity( 0.5 );
-  // the MouseHandles can be rotated if a single rotated item is selected, so we need
-  // so we need to compensate for the rotation before applying the translation offset
-  painter->rotate( -rotation() );
-  painter->translate( transform().dx(), transform().dy() );
-  painter->rotate( rotation() );
+  widthInPixels = boundingRect().width() * QgsLayoutUtils::scaleFactorFromItemStyle( nullptr, painter );
+  heightInPixels = boundingRect().height() * QgsLayoutUtils::scaleFactorFromItemStyle( nullptr, painter );
 
-  // Sort items by z value, so that items with a higher z value are drawn on top of items with a lower z value
-  std::sort( itemsToDraw.begin(), itemsToDraw.end(), []( QGraphicsItem * a, QGraphicsItem * b )
+  // limit size of image for better performance
+  if ( ( widthInPixels > CACHE_SIZE_LIMIT || heightInPixels > CACHE_SIZE_LIMIT ) )
   {
-    return a->zValue() < b->zValue();
-  } );
-
-  for ( QGraphicsItem *item : itemsToDraw )
-  {
-    QgsScopedQPainterState innerState( painter );
-    // Apply the item's transform to the painter
-    painter->setTransform( item->itemTransform( this ), true );
-    // Draw the item
-    item->paint( painter, nullptr, nullptr );
+    double scale = 1.0;
+    if ( widthInPixels > heightInPixels )
+    {
+      scale = widthInPixels / CACHE_SIZE_LIMIT;
+      widthInPixels = CACHE_SIZE_LIMIT;
+      heightInPixels /= scale;
+    }
+    else
+    {
+      scale = heightInPixels / CACHE_SIZE_LIMIT;
+      heightInPixels = CACHE_SIZE_LIMIT;
+      widthInPixels /= scale;
+    }
+    destinationDpi = destinationDpi / scale;
   }
+
+  // create image if not already cached
+  if ( mItemCachedImage.isNull() )
+  {
+    QImage image = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
+    image.fill( Qt::transparent );
+    image.setDotsPerMeterX( 1000 * destinationDpi * 25.4 );
+    image.setDotsPerMeterY( 1000 * destinationDpi * 25.4 );
+    QPainter p( &image );
+    p.setRenderHint( QPainter::Antialiasing, true );
+    QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, &p, destinationDpi );
+    // painter is already scaled to dots
+    // need to translate so that item origin is at 0,0 in painter coordinates (not bounding rect origin)
+    p.translate( -boundingRect().x() * context.scaleFactor(), -boundingRect().y() * context.scaleFactor() );
+    // scale to layout units for background and frame rendering
+    p.scale( context.scaleFactor(), context.scaleFactor() );
+
+    QList<QGraphicsItem *> itemsToDraw;
+    expandItemList( selectedItems, itemsToDraw );
+
+    // Draw a semi-transparent version of the selected items
+    // painter->setOpacity( 0.5 );
+    // the MouseHandles can be rotated if a single rotated item is selected, so we need
+    // so we need to compensate for the rotation before applying the translation offset
+    p.rotate( -rotation() );
+    p.translate( transform().dx(), transform().dy() );
+    p.rotate( rotation() );
+
+    // Sort items by z value, so that items with a higher z value are drawn on top of items with a lower z value
+    std::sort( itemsToDraw.begin(), itemsToDraw.end(), []( QGraphicsItem * a, QGraphicsItem * b )
+    {
+      return a->zValue() < b->zValue();
+    } );
+
+    for ( QGraphicsItem *item : itemsToDraw )
+    {
+      QgsScopedQPainterState innerState( &p );
+      // Apply the item's transform to the painter
+      p.setTransform( item->itemTransform( this ), true );
+      // Draw the item
+      item->paint( &p, nullptr, nullptr );
+    }
+
+    p.scale( 1 / context.scaleFactor(), 1 / context.scaleFactor() );
+    p.end();
+    mItemCachedImage = image;
+  }
+
+  // Draw the cached image as a semi-transparent overlay
+  const QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, destinationDpi );
+  const QgsScopedQPainterState painterState( painter );
+  painter->setOpacity( 0.5 );
+  painter->setRenderHint( QPainter::Antialiasing, true );
+  painter->scale( 1 / context.scaleFactor(), 1 / context.scaleFactor() );
+  painter->drawImage( boundingRect().x() * context.scaleFactor(),
+                      boundingRect().y() * context.scaleFactor(), mItemCachedImage );
+}
+
+void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
+{
+  QgsGraphicsViewMouseHandles::mouseReleaseEvent( event );
+  mItemCachedImage = QImage();
 }
 
 void QgsLayoutMouseHandles::hideAlignItems()
