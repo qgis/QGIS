@@ -109,7 +109,7 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
     int id() const { return mId; }
     void setId( int id );
 
-    bool contains( QPoint p, QgsGcpPoint::PointType type );
+    bool contains( QPoint p, QgsGcpPoint::PointType type, double &distance );
 
     QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
     QgsMapCanvas *dstCanvas() const { return mDstCanvas; }
