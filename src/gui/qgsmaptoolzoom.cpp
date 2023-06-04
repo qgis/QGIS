@@ -113,8 +113,26 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
     delete mRubberBand;
     mRubberBand = nullptr;
 
-    // change to zoom in/out by the default multiple
-    mCanvas->zoomWithCenter( e->x(), e->y(), !mZoomOut );
+    QgsPointXY mousePos = e->mapPoint();
+    bool centerOnPoint = e->modifiers().testFlag( Qt::ControlModifier );
+    const double factor =  zoomFactor();
+
+    QgsPointXY center;
+    // When Ctrl is pressed, zoom in/out and center the map on the point
+    if ( centerOnPoint )
+    {
+      center = mousePos;
+    }
+    // Otherwise, keep the clicked point under the mouse cursor
+    else
+    {
+      // Calculate the new center point
+      QgsPointXY oldCenter = mCanvas->center();
+      center = QgsPointXY( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * factor ),
+                           mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * factor ) );
+    }
+    mCanvas->zoomByFactor( factor, &center );
+
   }
   else
   {
@@ -161,6 +179,18 @@ void QgsMapToolZoom::setZoomMode( bool zoomOut, bool force )
 
   mZoomOut = zoomOut;
   setCursor( mZoomOut ? mZoomOutCursor : mZoomInCursor );
+}
+
+double QgsMapToolZoom::zoomFactor()
+{
+  double factor = mZoomOut ? canvas()->zoomOutFactor() : canvas()->zoomInFactor();
+
+  // If Shift is pressed, use a finer zoom
+  if ( QGuiApplication::keyboardModifiers() & Qt::ShiftModifier )
+  {
+    factor = 1.0 + ( factor - 1.0 ) / 10.0;
+  }
+  return factor;
 }
 
 void QgsMapToolZoom::keyPressEvent( QKeyEvent *e )

@@ -68,6 +68,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
 
   private:
     void setZoomMode( bool zoomOut, bool force = false );
+    double zoomFactor();
 };
 
 #endif
