@@ -111,6 +111,9 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     void paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes,
                         bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
 
+    //! Draw move previews
+    virtual void drawMovePreview( QPainter *painter );
+
     //! Sets the mouse cursor for the QGraphicsView attached to the composition
     virtual void setViewportCursor( Qt::CursorShape cursor ) = 0;
 

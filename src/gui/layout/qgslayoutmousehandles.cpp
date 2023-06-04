@@ -204,6 +204,42 @@ void QgsLayoutMouseHandles::endMacroCommand()
   mLayout->undoStack()->endMacro();
 }
 
+void QgsLayoutMouseHandles::drawMovePreview( QPainter *painter )
+{
+  const QList<QGraphicsItem *> selectedItems = selectedSceneItems( false );
+  if ( selectedItems.isEmpty() )
+  {
+    return;
+  }
+
+  QList<QGraphicsItem *> itemsToDraw;
+  expandItemList( selectedItems, itemsToDraw );
+
+  QgsScopedQPainterState painterState( painter );
+  // Draw a semi-transparent version of the selected items
+  painter->setOpacity( 0.5 );
+  // the MouseHandles can be rotated if a single rotated item is selected, so we need
+  // so we need to compensate for the rotation before applying the translation offset
+  painter->rotate( -rotation() );
+  painter->translate( transform().dx(), transform().dy() );
+  painter->rotate( rotation() );
+
+  // Sort items by z value, so that items with a higher z value are drawn on top of items with a lower z value
+  std::sort( itemsToDraw.begin(), itemsToDraw.end(), []( QGraphicsItem * a, QGraphicsItem * b )
+  {
+    return a->zValue() < b->zValue();
+  } );
+
+  for ( QGraphicsItem *item : itemsToDraw )
+  {
+    QgsScopedQPainterState innerState( painter );
+    // Apply the item's transform to the painter
+    painter->setTransform( item->itemTransform( this ), true );
+    // Draw the item
+    item->paint( painter, nullptr, nullptr );
+  }
+}
+
 void QgsLayoutMouseHandles::hideAlignItems()
 {
   mHorizontalSnapLine->hide();

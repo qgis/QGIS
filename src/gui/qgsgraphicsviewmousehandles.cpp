@@ -42,6 +42,11 @@ void QgsGraphicsViewMouseHandles::paintInternal( QPainter *painter, bool showHan
     return;
   }
 
+  if ( showTemporaryBoundingBoxes && mIsDragging )
+  {
+    drawMovePreview( painter );
+  }
+
   if ( showStaticBoundingBoxes )
   {
     //draw resize handles around bounds of entire selection
@@ -197,6 +202,11 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
     path.addPolygon( itemBounds );
     painter->drawPath( path );
   }
+}
+
+void QgsGraphicsViewMouseHandles::drawMovePreview( QPainter * )
+{
+  // Default implementation does nothing
 }
 
 double QgsGraphicsViewMouseHandles::rectHandlerBorderTolerance()
