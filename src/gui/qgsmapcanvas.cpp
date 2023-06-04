@@ -2668,13 +2668,13 @@ void QgsMapCanvas::setWheelFactor( double factor )
 
 void QgsMapCanvas::zoomIn()
 {
-  // magnification is alreday handled in zoomByFactor
+  // magnification is already handled in zoomByFactor
   zoomByFactor( zoomInFactor() );
 }
 
 void QgsMapCanvas::zoomOut()
 {
-  // magnification is alreday handled in zoomByFactor
+  // magnification is already handled in zoomByFactor
   zoomByFactor( zoomOutFactor() );
 }
 
@@ -2689,16 +2689,8 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 
   // transform the mouse pos to map coordinates
   QgsPointXY center  = getCoordinateTransform()->toMapCoordinates( x, y );
+  zoomByFactor( scaleFactor, &center, !mScaleLocked );
 
-  if ( mScaleLocked )
-  {
-    ScaleRestorer restorer( this );
-    setMagnificationFactor( mapSettings().magnificationFactor() / scaleFactor, &center );
-  }
-  else
-  {
-    zoomByFactor( scaleFactor, &center );
-  }
 }
 
 void QgsMapCanvas::setScaleLocked( bool isLocked )
