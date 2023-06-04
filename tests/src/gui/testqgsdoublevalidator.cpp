@@ -72,8 +72,12 @@ void TestQgsDoubleValidator::validate_data()
 
   QTest::newRow( "exponent <e> C negative" ) << QString( "44446ecn1" ) << int( QValidator::Acceptable ) << false;
   QTest::newRow( "exponent <e> locale negative" ) << QString( "44446eln1" ) << int( QValidator::Acceptable ) << false;
+
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0)) || (QT_VERSION >= QT_VERSION_CHECK(6, 5, 2)) // https://bugreports.qt.io/browse/QTBUG-113443
   QTest::newRow( "locale decimal exponent <E> positive" ) << QString( "444ld46E1" ) << int( QValidator::Acceptable ) << false;
   QTest::newRow( "locale decimal exponent <E> positive sign" ) << QString( "444ld46E+1" ) << int( QValidator::Acceptable ) << false;
+#endif
+
   QTest::newRow( "locale exponent locale negative" ) << QString( "4446leln1" ) << int( QValidator::Acceptable ) << false;
 
 
@@ -108,8 +112,12 @@ void TestQgsDoubleValidator::toDouble_data()
 
   QTest::newRow( "exponent <e> C negative" ) << QString( "44446ecn1" ) << 4444.6;
   QTest::newRow( "exponent <e> locale negative" ) << QString( "44446eln1" ) << 4444.6;
+
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0)) || (QT_VERSION >= QT_VERSION_CHECK(6, 5, 2)) // https://bugreports.qt.io/browse/QTBUG-113443
   QTest::newRow( "locale decimal exponent <E> positive" ) << QString( "444ld46E1" ) << 4444.6;
   QTest::newRow( "locale decimal exponent <E> positive sign" ) << QString( "444ld46E+1" ) << 4444.6;
+#endif
+
   QTest::newRow( "locale exponent locale negative" ) << QString( "44446leln1" ) << 4444.6;
 
   // QgsDoubleValidator doesn't expect group separator but it tolerates it,
