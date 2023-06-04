@@ -3052,20 +3052,33 @@ QgsProject *QgsMapCanvas::project()
 
 void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 {
+  // use start and end box points to calculate the extent
+  const QgsPointXY start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
+  const QgsPointXY end = getCoordinateTransform()->toMapCoordinates( releasePoint );
+
+  const double dx = end.x() - start.x();
+  const double dy = end.y() - start.y();
+
+  QgsPointXY newCenter;
+
+  // If the mouse hasn't moved, and Ctrl is pressed we want to pan to the clicked point
+  if ( dx == 0.0 && dy == 0.0 )
+  {
+    if ( QApplication::keyboardModifiers() & Qt::ControlModifier )
+      newCenter = end;
+    else
+      return;
+  }
+  // Otherwise, we want to pan by the distance the mouse has moved
+  else
+  {
+    newCenter = center();
+    newCenter.set( newCenter.x() - dx, newCenter.y() - dy );
+  }
   // move map image and other items to standard position
   moveCanvasContents( true ); // true means reset
 
-  // use start and end box points to calculate the extent
-  QgsPointXY start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
-  QgsPointXY end = getCoordinateTransform()->toMapCoordinates( releasePoint );
-
-  // modify the center
-  double dx = end.x() - start.x();
-  double dy = end.y() - start.y();
-  QgsPointXY c = center();
-  c.set( c.x() - dx, c.y() - dy );
-  setCenter( c );
-
+  setCenter( newCenter );
   refresh();
 }
 
