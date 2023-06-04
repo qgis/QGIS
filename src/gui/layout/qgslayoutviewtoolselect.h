@@ -47,6 +47,7 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
+    void keyReleaseEvent( QKeyEvent *event ) override;
     void deactivate() override;
 
     ///@cond PRIVATE

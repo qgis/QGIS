@@ -807,6 +807,7 @@
         <file>themes/default/cursors/mZoomIn.svg</file>
         <file>themes/default/cursors/mZoomOut.svg</file>
         <file>themes/default/cursors/mIdentify.svg</file>
+        <file>themes/default/cursors/mCopy.svg</file>
         <file>themes/default/mIconQgsProjectFile.svg</file>
         <file>themes/default/mIconPythonFile.svg</file>
         <file>themes/default/mIconQptFile.svg</file>

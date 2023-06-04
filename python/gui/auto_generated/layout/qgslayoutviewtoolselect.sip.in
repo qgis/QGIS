@@ -38,6 +38,8 @@ Constructor for QgsLayoutViewToolSelect.
 
     virtual void keyPressEvent( QKeyEvent *event );
 
+    virtual void keyReleaseEvent( QKeyEvent *event );
+
     virtual void deactivate();
 
 

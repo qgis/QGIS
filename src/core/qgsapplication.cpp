@@ -860,6 +860,11 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
       activeY = 5;
       name = QStringLiteral( "mSampler.svg" );
       break;
+    case Copy:
+      activeX = 5;
+      activeY = 5;
+      name = QStringLiteral( "mCopy.svg" );
+      break;
       // No default
   }
   // It should never get here!

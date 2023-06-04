@@ -364,6 +364,7 @@ control the color of parameter based SVG icons.
       CapturePoint,
       Select,
       Sampler,
+      Copy,
     };
 
     static QCursor getThemeCursor( Cursor cursor );

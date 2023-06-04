@@ -175,9 +175,21 @@ void QgsLayoutViewToolSelect::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
   }
   else
   {
-    if ( !mMouseHandles->isDragging() && !mMouseHandles->isResizing() )
+    if ( mMouseHandles->isDragging() )
     {
-      if ( layout()->layoutItemAt( event->layoutPoint(), true, searchToleranceInLayoutUnits() ) )
+      bool ctrlPressed = event->modifiers() & Qt::ControlModifier;
+      if ( ctrlPressed )
+      {
+        view()->viewport()->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Copy ) );
+      }
+      else
+      {
+        view()->viewport()->setCursor( Qt::SizeAllCursor );
+      }
+    }
+    else
+    {
+      if ( layout()->layoutItemAt( event->layoutPoint(), true ) )
       {
         view()->viewport()->setCursor( Qt::SizeAllCursor );
       }
@@ -307,13 +319,33 @@ void QgsLayoutViewToolSelect::wheelEvent( QWheelEvent *event )
 
 void QgsLayoutViewToolSelect::keyPressEvent( QKeyEvent *event )
 {
-  if ( mMouseHandles->isDragging() || mMouseHandles->isResizing() )
+  if ( mMouseHandles->isDragging() )
+  {
+    if ( event->key() == Qt::Key_Control )
+    {
+      view()->viewport()->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Copy ) );
+    }
+    return;
+  }
+  if ( mMouseHandles->isResizing() )
   {
     return;
   }
   else
   {
     event->ignore();
+  }
+}
+
+void QgsLayoutViewToolSelect::keyReleaseEvent( QKeyEvent *event )
+{
+  if ( mMouseHandles->isDragging() )
+  {
+    if ( event->key() == Qt::Key_Control )
+    {
+      view()->viewport()->setCursor( Qt::SizeAllCursor );
+    }
+    return;
   }
 }
 
