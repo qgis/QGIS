@@ -864,6 +864,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      */
     QgsLayoutItemMapItemClipPathSettings *itemClippingSettings() { return mItemClippingSettings; }
 
+    // Reimplement estimatedFrameBleed to take the grid frame into account
+    double estimatedFrameBleed() const override;
+
   protected:
 
     void draw( QgsLayoutItemRenderContext &context ) override;

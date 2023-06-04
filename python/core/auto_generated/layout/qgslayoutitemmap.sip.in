@@ -927,6 +927,9 @@ Returns the map's item based clip path settings.
 .. versionadded:: 3.16
 %End
 
+    virtual double estimatedFrameBleed() const;
+
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
