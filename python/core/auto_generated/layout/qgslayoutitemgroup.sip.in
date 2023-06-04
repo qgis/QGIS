@@ -73,6 +73,10 @@ Returns a list of items contained by the group.
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
 
+
+    virtual QRectF rectWithFrame() const;
+
+
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );
 

@@ -218,9 +218,25 @@ void QgsLayoutMouseHandles::expandItemList( const QList<QGraphicsItem *> &items,
     {
       // if a group is selected, we don't draw the bounds of the group - instead we draw the bounds of the grouped items
       const QList<QgsLayoutItem *> groupItems = static_cast< QgsLayoutItemGroup * >( item )->items();
-      collected.reserve( collected.size() + groupItems.size() );
-      for ( QgsLayoutItem *groupItem : groupItems )
-        collected.append( groupItem );
+      expandItemList( groupItems, collected );
+    }
+    else
+    {
+      collected << item;
+    }
+  }
+}
+
+
+void QgsLayoutMouseHandles::expandItemList( const QList<QgsLayoutItem *> &items, QList<QGraphicsItem *> &collected ) const
+{
+  for ( QGraphicsItem *item : items )
+  {
+    if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
+    {
+      // if a group is selected, we don't draw the bounds of the group - instead we draw the bounds of the grouped items
+      const QList<QgsLayoutItem *> groupItems = static_cast< QgsLayoutItemGroup * >( item )->items();
+      expandItemList( groupItems, collected );
     }
     else
     {
