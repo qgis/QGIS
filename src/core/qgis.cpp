@@ -60,7 +60,7 @@ const double Qgis::DEFAULT_M_COORDINATE = 0.0;
 
 const double Qgis::DEFAULT_SNAP_TOLERANCE = 12.0;
 
-const Qgis::MapUnitType Qgis::DEFAULT_SNAP_UNITS = Qgis::MapUnitType::Pixels;
+const Qgis::MapToolUnit Qgis::DEFAULT_SNAP_UNITS = Qgis::MapToolUnit::Pixels;
 
 #ifdef Q_OS_WIN
 const double Qgis::UI_SCALE_FACTOR = 1.5;

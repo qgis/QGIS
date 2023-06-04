@@ -1857,7 +1857,7 @@ The development version
       USCS,
     };
 
-    enum class MapUnitType
+    enum class MapToolUnit
       {
       Layer,
       Pixels,
@@ -2115,7 +2115,7 @@ The development version
 
     static const double DEFAULT_SNAP_TOLERANCE;
 
-    static const Qgis::MapUnitType DEFAULT_SNAP_UNITS;
+    static const Qgis::MapToolUnit DEFAULT_SNAP_UNITS;
 
     static QString defaultProjectScales();
 %Docstring

@@ -27,14 +27,14 @@ start_app()
 class TestCoreAdditions(unittest.TestCase):
 
     def testMetaEnum(self):
-        me = metaEnumFromValue(Qgis.MapUnitType.Pixels)
+        me = metaEnumFromValue(Qgis.MapToolUnit.Pixels)
         self.assertIsNotNone(me)
-        self.assertEqual(me.valueToKey(Qgis.MapUnitType.Pixels), 'Pixels')
+        self.assertEqual(me.valueToKey(Qgis.MapToolUnit.Pixels), 'Pixels')
 
         # check that using same variable twice doesn't segfault
-        me = metaEnumFromValue(Qgis.MapUnitType.Pixels, QgsTolerance)
+        me = metaEnumFromValue(Qgis.MapToolUnit.Pixels, QgsTolerance)
         self.assertIsNotNone(me)
-        self.assertEqual(me.valueToKey(Qgis.MapUnitType.Pixels), 'Pixels')
+        self.assertEqual(me.valueToKey(Qgis.MapToolUnit.Pixels), 'Pixels')
 
         # do not raise error
         self.assertIsNone(metaEnumFromValue(1, QgsTolerance, False))

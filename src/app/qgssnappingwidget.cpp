@@ -203,10 +203,10 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
 
   // units
   mUnitsComboBox = new QComboBox();
-  mUnitsComboBox->addItem( tr( "px" ), QVariant::fromValue( Qgis::MapUnitType::Pixels ) );
+  mUnitsComboBox->addItem( tr( "px" ), QVariant::fromValue( Qgis::MapToolUnit::Pixels ) );
   // Get canvas units
   const QString mapCanvasDistanceUnits { QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() ) };
-  mUnitsComboBox->addItem( mapCanvasDistanceUnits, QVariant::fromValue( Qgis::MapUnitType::Project ) );
+  mUnitsComboBox->addItem( mapCanvasDistanceUnits, QVariant::fromValue( Qgis::MapToolUnit::Project ) );
   mUnitsComboBox->setToolTip( tr( "Snapping Unit Type: Pixels (px) or Project/Map Units (%1)" ).arg( mapCanvasDistanceUnits ) );
   mUnitsComboBox->setObjectName( QStringLiteral( "SnappingUnitComboBox" ) );
   connect( mUnitsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
@@ -446,7 +446,7 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
       mTypeButton->setDefaultAction( action );
   }
 
-  if ( static_cast<Qgis::MapUnitType>( mUnitsComboBox->currentData().toInt() ) != config.units() )
+  if ( static_cast<Qgis::MapToolUnit>( mUnitsComboBox->currentData().toInt() ) != config.units() )
   {
     mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( QVariant::fromValue( config.units() ) ) );
   }
@@ -580,7 +580,7 @@ void QgsSnappingWidget::changeMaxScale( double maxScale )
 
 void QgsSnappingWidget::changeUnit( int idx )
 {
-  Qgis::MapUnitType unit = static_cast<Qgis::MapUnitType>( mUnitsComboBox->itemData( idx ).toInt() );
+  Qgis::MapToolUnit unit = static_cast<Qgis::MapToolUnit>( mUnitsComboBox->itemData( idx ).toInt() );
   mConfig.setUnits( unit );
   mProject->setSnappingConfig( mConfig );
 
@@ -732,7 +732,7 @@ void QgsSnappingWidget::snappingScaleModeTriggered( QAction *action )
 
 void QgsSnappingWidget::updateToleranceDecimals()
 {
-  if ( mConfig.units() == Qgis::MapUnitType::Pixels )
+  if ( mConfig.units() == Qgis::MapToolUnit::Pixels )
   {
     mToleranceSpinBox->setDecimals( 0 );
   }

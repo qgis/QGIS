@@ -93,7 +93,7 @@ This is a container of advanced configuration (per layer) of the snapping of the
 %End
       public:
 
- IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, Qgis::MapUnitType units ) /Deprecated/;
+ IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, Qgis::MapToolUnit units ) /Deprecated/;
 %Docstring
 IndividualLayerSettings
 
@@ -106,7 +106,7 @@ IndividualLayerSettings
    use the method with :py:class:`Qgis`.SnappingTypes instead.
 %End
 
-        IndividualLayerSettings( bool enabled, Qgis::SnappingTypes type, double tolerance, Qgis::MapUnitType units, double minScale = 0.0, double maxScale = 0.0 );
+        IndividualLayerSettings( bool enabled, Qgis::SnappingTypes type, double tolerance, Qgis::MapToolUnit units, double minScale = 0.0, double maxScale = 0.0 );
 %Docstring
 IndividualLayerSettings
 
@@ -180,12 +180,12 @@ Returns the tolerance
 Sets the tolerance
 %End
 
-        Qgis::MapUnitType units() const;
+        Qgis::MapToolUnit units() const;
 %Docstring
 Returns the type of units
 %End
 
-        void setUnits( Qgis::MapUnitType units );
+        void setUnits( Qgis::MapToolUnit units );
 %Docstring
 Sets the type of units
 %End
@@ -338,12 +338,12 @@ Returns the scale dependency mode
 .. versionadded:: 3.14
 %End
 
-    Qgis::MapUnitType units() const;
+    Qgis::MapToolUnit units() const;
 %Docstring
 Returns the type of units
 %End
 
-    void setUnits( Qgis::MapUnitType units );
+    void setUnits( Qgis::MapToolUnit units );
 %Docstring
 Sets the type of units
 %End

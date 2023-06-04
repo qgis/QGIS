@@ -70,8 +70,8 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     const QVariant val = index.model()->data( index.model()->sibling( index.row(), QgsSnappingLayerTreeModel::UnitsColumn, index ), Qt::UserRole );
     if ( val.isValid() )
     {
-      const Qgis::MapUnitType units = static_cast<Qgis::MapUnitType>( val.toInt() );
-      if ( units == Qgis::MapUnitType::Pixels )
+      const Qgis::MapToolUnit units = static_cast<Qgis::MapToolUnit>( val.toInt() );
+      if ( units == Qgis::MapToolUnit::Pixels )
       {
         w->setDecimals( 0 );
       }
@@ -91,8 +91,8 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   if ( index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
     QComboBox *w = new QComboBox( parent );
-    w->addItem( tr( "px" ), QVariant::fromValue( Qgis::MapUnitType::Pixels ) );
-    w->addItem( QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() ), QVariant::fromValue( Qgis::MapUnitType::Project ) );
+    w->addItem( tr( "px" ), QVariant::fromValue( Qgis::MapToolUnit::Pixels ) );
+    w->addItem( QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() ), QVariant::fromValue( Qgis::MapToolUnit::Project ) );
     return w;
   }
 
@@ -149,7 +149,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
-    const Qgis::MapUnitType units = static_cast<Qgis::MapUnitType>( val.toInt() );
+    const Qgis::MapToolUnit units = static_cast<Qgis::MapToolUnit>( val.toInt() );
     QComboBox *w = qobject_cast<QComboBox *>( editor );
     if ( w )
     {
@@ -611,9 +611,9 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       {
         switch ( ls.units() )
         {
-          case Qgis::MapUnitType::Pixels:
+          case Qgis::MapToolUnit::Pixels:
             return tr( "pixels" );
-          case Qgis::MapUnitType::Project:
+          case Qgis::MapToolUnit::Project:
             return QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() );
           default:
             return QVariant();
@@ -784,7 +784,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setUnits( static_cast<Qgis::MapUnitType>( value.toInt() ) );
+      ls.setUnits( static_cast<Qgis::MapToolUnit>( value.toInt() ) );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );

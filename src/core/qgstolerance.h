@@ -65,7 +65,7 @@ class CORE_EXPORT QgsTolerance
      * \returns value of tolerance in map units
      * \since QGIS 2.8
      */
-    static double toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapUnitType units );
+    static double toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapToolUnit units );
 
     /**
      * Static function to translate tolerance value into layer units
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsTolerance
      * \param units type of units to be translated
      * \returns value of tolerance in layer units
      */
-    static double toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapUnitType units = Qgis::MapUnitType::Layer );
+    static double toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapToolUnit units = Qgis::MapToolUnit::Layer );
 
   private:
     static double computeMapUnitPerPixel( QgsMapLayer *layer, const QgsMapSettings &mapSettings );

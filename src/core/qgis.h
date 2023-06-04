@@ -3230,13 +3230,13 @@ class CORE_EXPORT Qgis
     *
     * \since QGIS 3.32
     */
-    enum class MapUnitType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTolerance, UnitType ) : int
+    enum class MapToolUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTolerance, UnitType ) : int
       {
       Layer SIP_MONKEYPATCH_COMPAT_NAME( LayerUnits ), //!< Layer unit value
       Pixels, //!< Pixels unit of tolerance
       Project  SIP_MONKEYPATCH_COMPAT_NAME( ProjectUnits ) //!< Map (project) units
     };
-    Q_ENUM( MapUnitType )
+    Q_ENUM( MapToolUnit )
 
     /**
      * Unit types.
@@ -3714,7 +3714,7 @@ class CORE_EXPORT Qgis
      * Default snapping distance units.
      *  \since QGIS 3.0
      */
-    static const Qgis::MapUnitType DEFAULT_SNAP_UNITS;
+    static const Qgis::MapToolUnit DEFAULT_SNAP_UNITS;
 
     /**
      * A string with default project scales.

@@ -1077,8 +1077,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultSnappingToleranceSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance->defaultValue() );
   mSearchRadiusVertexEditSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit->value() );
   mSearchRadiusVertexEditSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit->defaultValue() );
-  Qgis::MapUnitType defSnapUnits = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit->value();
-  if ( defSnapUnits == Qgis::MapUnitType::Project || defSnapUnits == Qgis::MapUnitType::Layer )
+  Qgis::MapToolUnit defSnapUnits = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit->value();
+  if ( defSnapUnits == Qgis::MapToolUnit::Project || defSnapUnits == Qgis::MapToolUnit::Layer )
   {
     index = mDefaultSnappingToleranceComboBox->findText( tr( "map units" ) );
   }
@@ -1087,8 +1087,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     index = mDefaultSnappingToleranceComboBox->findText( tr( "pixels" ) );
   }
   mDefaultSnappingToleranceComboBox->setCurrentIndex( index );
-  Qgis::MapUnitType defRadiusUnits = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit->value();
-  if ( defRadiusUnits == Qgis::MapUnitType::Project || defRadiusUnits == Qgis::MapUnitType::Layer )
+  Qgis::MapToolUnit defRadiusUnits = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit->value();
+  if ( defRadiusUnits == Qgis::MapToolUnit::Project || defRadiusUnits == Qgis::MapToolUnit::Layer )
   {
     index = mSearchRadiusVertexEditComboBox->findText( tr( "map units" ) );
   }
@@ -1740,9 +1740,9 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance->setValue( mDefaultSnappingToleranceSpinBox->value() );
   QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit->setValue( mSearchRadiusVertexEditSpinBox->value() );
   QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit->setValue(
-    ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? Qgis::MapUnitType::Project : Qgis::MapUnitType::Pixels ) );
+    ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? Qgis::MapToolUnit::Project : Qgis::MapToolUnit::Pixels ) );
   QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit->setValue(
-    ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? Qgis::MapUnitType::Project : Qgis::MapUnitType::Pixels ) );
+    ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? Qgis::MapToolUnit::Project : Qgis::MapToolUnit::Pixels ) );
 
   QgsSettingsRegistryCore::settingsDigitizingSnapColor->setValue( mSnappingMarkerColorButton->color() );
   QgsSettingsRegistryCore::settingsDigitizingSnapTooltip->setValue( mSnappingTooltipsCheckbox->isChecked() );

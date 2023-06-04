@@ -50,7 +50,7 @@ The value is read from settings and transformed if necessary.
 :return: value of default tolerance in layer units
 %End
 
-    static double toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapUnitType units );
+    static double toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapToolUnit units );
 %Docstring
 Static function to translate tolerance value into map units
 
@@ -64,7 +64,7 @@ Static function to translate tolerance value into map units
 .. versionadded:: 2.8
 %End
 
-    static double toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapUnitType units = Qgis::MapUnitType::Layer );
+    static double toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapToolUnit units = Qgis::MapToolUnit::Layer );
 %Docstring
 Static function to translate tolerance value into layer units
 

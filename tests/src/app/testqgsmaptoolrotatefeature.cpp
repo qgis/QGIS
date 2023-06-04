@@ -214,9 +214,9 @@ void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchorSnapping()
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   const double tolerance = cfg.tolerance();
-  const Qgis::MapUnitType units = cfg.units();
+  const Qgis::MapToolUnit units = cfg.units();
   cfg.setTolerance( 0.5 );
-  cfg.setUnits( Qgis::MapUnitType::Layer );
+  cfg.setUnits( Qgis::MapToolUnit::Layer );
   mCanvas->snappingUtils()->setConfig( cfg );
 
   // set anchor point, should snap to (1.1, 5)
