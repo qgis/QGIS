@@ -279,6 +279,13 @@ Sets a section ``label``, to display above the first page shown in the
 view.
 %End
 
+    void copyPasteSelectedItems( const QPointF &layoutPoint );
+%Docstring
+Copies the selected items to the clipboard, and pastes them at the specified ``layoutPoint``
+
+.. versionadded:: 3.32
+%End
+
   public slots:
 
     void zoomFull();

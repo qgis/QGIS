@@ -179,6 +179,11 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     //! Returns the mouse handle bounds of current selection
     QRectF selectionBounds() const;
 
+    //! Returns whether items can be copied by Ctrl+dragging
+    virtual bool copyDragEnabled() const { return false; }
+
+    virtual void copyDrag() {}
+
     /**
      * Resizes a QRectF relative to a resized bounding rectangle.
      * \param rectToResize QRectF to resize, contained within boundsBefore. The

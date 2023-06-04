@@ -574,29 +574,37 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
 
   if ( mCurrentMouseMoveAction == MoveItem )
   {
-    //move selected items
-    startMacroCommand( tr( "Move Items" ) );
-
-    QPointF mEndHandleMovePos = scenePos();
-
-    double deltaX = mEndHandleMovePos.x() - mBeginHandlePos.x();
-    double deltaY = mEndHandleMovePos.y() - mBeginHandlePos.y();
-
-    //move all selected items
-    const QList<QGraphicsItem *> selectedItems = selectedSceneItems( false );
-    for ( QGraphicsItem *item : selectedItems )
+    //If Ctrl is pressed, copy the items instead of moving them
+    if ( copyDragEnabled() && event->modifiers() & Qt::ControlModifier )
     {
-      if ( itemIsLocked( item ) || ( item->flags() & QGraphicsItem::ItemIsSelectable ) == 0 || itemIsGroupMember( item ) )
-      {
-        //don't move locked items, or grouped items (group takes care of that)
-        continue;
-      }
-
-      createItemCommand( item );
-      moveItem( item, deltaX, deltaY );
-      endItemCommand( item );
+      copyDrag();
     }
-    endMacroCommand();
+    else
+    {
+      //move selected items
+      startMacroCommand( tr( "Move Items" ) );
+
+      QPointF mEndHandleMovePos = scenePos();
+
+      double deltaX = mEndHandleMovePos.x() - mBeginHandlePos.x();
+      double deltaY = mEndHandleMovePos.y() - mBeginHandlePos.y();
+
+      //move all selected items
+      const QList<QGraphicsItem *> selectedItems = selectedSceneItems( false );
+      for ( QGraphicsItem *item : selectedItems )
+      {
+        if ( itemIsLocked( item ) || ( item->flags() & QGraphicsItem::ItemIsSelectable ) == 0 || itemIsGroupMember( item ) )
+        {
+          //don't move locked items, or grouped items (group takes care of that)
+          continue;
+        }
+
+        createItemCommand( item );
+        moveItem( item, deltaX, deltaY );
+        endItemCommand( item );
+      }
+      endMacroCommand();
+    }
   }
   else if ( mCurrentMouseMoveAction != NoAction )
   {

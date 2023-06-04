@@ -250,6 +250,30 @@ void QgsLayoutMouseHandles::moveItem( QGraphicsItem *item, double deltaX, double
   qgis::down_cast< QgsLayoutItem * >( item )->attemptMoveBy( deltaX, deltaY );
 }
 
+bool QgsLayoutMouseHandles::copyDragEnabled() const
+{
+  return true;
+}
+
+void QgsLayoutMouseHandles::copyDrag()
+{
+  double minX = std::numeric_limits<double>::max();
+  double minY = std::numeric_limits<double>::max();
+  // Get the minimum reference point of the selected items
+  for ( const QGraphicsItem *item : selectedSceneItems( false ) )
+  {
+    if ( const QgsLayoutItem *layoutItem = dynamic_cast< const QgsLayoutItem * >( item ) )
+    {
+      QPointF itemPos = layoutItem->pagePos();
+      minX = std::min( minX, itemPos.x() );
+      minY = std::min( minY, itemPos.y() );
+    }
+  }
+
+  const QPointF refPos = QPointF( minX, minY ) + QPointF( transform().dx(), transform().dy() );
+  mView->copyPasteSelectedItems( refPos );
+}
+
 void QgsLayoutMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
 {
   QgsLayoutItem *layoutItem = dynamic_cast< QgsLayoutItem * >( item );

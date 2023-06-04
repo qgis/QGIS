@@ -77,6 +77,8 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QgsGraphicsViewMouseHandles
     void expandItemList( const QList< QGraphicsItem * > &items, QList< QGraphicsItem * > &collected ) const override;
     void expandItemList( const QList< QgsLayoutItem * > &items, QList< QGraphicsItem * > &collected ) const;
     void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) override;
+    bool copyDragEnabled() const override;
+    void copyDrag() override;
     void setItemRect( QGraphicsItem *item, QRectF rect ) override;
     void showStatusMessage( const QString &message ) override;
     void hideAlignItems() override;

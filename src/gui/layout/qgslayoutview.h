@@ -296,6 +296,13 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void setSectionLabel( const QString &label );
 
+    /**
+     * Copies the selected items to the clipboard, and pastes them at the specified \a layoutPoint
+     *
+     * \since QGIS 3.32
+    */
+    void copyPasteSelectedItems( const QPointF &layoutPoint );
+
   public slots:
 
     /**

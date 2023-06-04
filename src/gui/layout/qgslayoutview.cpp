@@ -1256,6 +1256,28 @@ QGraphicsLineItem *QgsLayoutView::createSnapLine() const
   return item.release();
 }
 
+void QgsLayoutView::copyPasteSelectedItems( const QPointF &layoutPoint )
+{
+  // Copy the selected items to the application clipboard
+  copySelectedItems( ClipboardCopy );
+
+  // Paste them at the new location
+  auto items = pasteItems( layoutPoint );
+
+  // Deselect previously selected items
+  whileBlocking( currentLayout() )->deselectAll();
+
+  // Select the pasted items
+  for ( QgsLayoutItem *item : items )
+  {
+    item->setSelected( true );
+  }
+
+  // Focus the first item. This will update the item properties dock
+  emit itemFocused( items.at( 0 ) );
+
+}
+
 //
 // QgsLayoutViewSnapMarker
 //
