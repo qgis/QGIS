@@ -76,20 +76,22 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
 
     void finalizeRestoreFromXml() override;
     ExportLayerBehavior exportLayerBehavior() const override;
+
+    QRectF rectWithFrame() const override;
+
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
-  private:
+  private slots:
+    void updateBoundingRect();
 
-    void resetBoundingRect();
-    void updateBoundingRect( QgsLayoutItem *item );
-    void setSceneRect( const QRectF &rectangle );
+  private:
 
     QList< QString > mItemUuids;
     QList< QPointer< QgsLayoutItem >> mItems;
-    QRectF mBoundingRectangle;
+    QRectF mRectWithFrame;
 };
 
 #endif //QGSLAYOUTITEMGROUP_H

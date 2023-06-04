@@ -141,6 +141,15 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
     return;
   }
 
+  QList< QGraphicsItem * > itemsToDraw;
+  expandItemList( selectedItems, itemsToDraw );
+
+  if ( itemsToDraw.size() <= 1 )
+  {
+    // Single item selected. The items bounds are drawn by the MouseHandles itself.
+    return;
+  }
+
   //use difference mode so that they are visible regardless of item colors
   QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( QPainter::CompositionMode_Difference );
@@ -151,9 +160,6 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
   selectedItemPen.setWidth( 0 );
   painter->setPen( selectedItemPen );
   painter->setBrush( Qt::NoBrush );
-
-  QList< QGraphicsItem * > itemsToDraw;
-  expandItemList( selectedItems, itemsToDraw );
 
   for ( QGraphicsItem *item : std::as_const( itemsToDraw ) )
   {
@@ -173,24 +179,16 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
     else if ( isResizing() && !itemIsLocked( item ) )
     {
       //if currently resizing, calculate relative resize of this item
-      if ( selectedItems.size() > 1 )
-      {
-        //get item bounds in mouse handle item's coordinate system
-        QRectF thisItemRect = mapRectFromItem( item, itemRect( item ) );
-        //now, resize it relative to the current resized dimensions of the mouse handles
-        relativeResizeRect( thisItemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
-        itemBounds = QPolygonF( thisItemRect );
-      }
-      else
-      {
-        //single item selected
-        itemBounds = rect();
-      }
+      //get item bounds in mouse handle item's coordinate system
+      QRectF thisItemRect = mapRectFromItem( item, itemRect( item ) );
+      //now, resize it relative to the current resized dimensions of the mouse handles
+      relativeResizeRect( thisItemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
+      itemBounds = QPolygonF( thisItemRect );
     }
     else
     {
-      //not resizing or moving, so just map from scene bounds
-      itemBounds = mapRectFromItem( item, itemRect( item ) );
+      // not resizing or moving, so just map the item's bounds to the mouse handle item's coordinate system
+      itemBounds = item->mapToItem( this, itemRect( item ) );
     }
 
     // drawPolygon causes issues on windows - corners of path may be missing resulting in triangles being drawn
