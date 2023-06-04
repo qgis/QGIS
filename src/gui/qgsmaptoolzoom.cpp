@@ -113,8 +113,8 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
     delete mRubberBand;
     mRubberBand = nullptr;
 
-    QgsPointXY mousePos = e->mapPoint();
-    bool centerOnPoint = e->modifiers().testFlag( Qt::ControlModifier );
+    const QgsPointXY mousePos = e->mapPoint();
+    const bool centerOnPoint = e->modifiers().testFlag( Qt::ControlModifier );
     const double factor =  zoomFactor();
 
     QgsPointXY center;
@@ -127,7 +127,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
     else
     {
       // Calculate the new center point
-      QgsPointXY oldCenter = mCanvas->center();
+      const QgsPointXY oldCenter = mCanvas->center();
       center = QgsPointXY( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * factor ),
                            mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * factor ) );
     }
