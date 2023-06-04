@@ -245,10 +245,10 @@ void QgsLayoutMouseHandles::drawMovePreview( QPainter *painter )
   // create image if not already cached
   if ( mItemCachedImage.isNull() )
   {
-    QImage image = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
+    QImage image = QImage( static_cast<int>( widthInPixels ), static_cast<int>( heightInPixels ), QImage::Format_ARGB32 );
     image.fill( Qt::transparent );
-    image.setDotsPerMeterX( 1000 * destinationDpi * 25.4 );
-    image.setDotsPerMeterY( 1000 * destinationDpi * 25.4 );
+    image.setDotsPerMeterX( static_cast<int>( 1000 * destinationDpi * 25.4 ) );
+    image.setDotsPerMeterY( static_cast<int>( 1000 * destinationDpi * 25.4 ) );
     QPainter p( &image );
     p.setRenderHint( QPainter::Antialiasing, true );
     QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, &p, destinationDpi );
@@ -295,8 +295,8 @@ void QgsLayoutMouseHandles::drawMovePreview( QPainter *painter )
   painter->setOpacity( 0.5 );
   painter->setRenderHint( QPainter::Antialiasing, true );
   painter->scale( 1 / context.scaleFactor(), 1 / context.scaleFactor() );
-  painter->drawImage( boundingRect().x() * context.scaleFactor(),
-                      boundingRect().y() * context.scaleFactor(), mItemCachedImage );
+  painter->drawImage( QPointF( boundingRect().x() * context.scaleFactor(),
+                               boundingRect().y() * context.scaleFactor() ), mItemCachedImage );
 }
 
 void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
