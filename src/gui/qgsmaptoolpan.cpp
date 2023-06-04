@@ -90,7 +90,9 @@ void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else // add pan to mouse cursor
       {
-        if ( mCanvas->allowInteraction( QgsMapCanvasInteractionBlocker::Interaction::MapPanOnSingleClick ) )
+        const bool panSingle = ( e->modifiers() & Qt::ControlModifier ) &&
+                               mCanvas->allowInteraction( QgsMapCanvasInteractionBlocker::Interaction::MapPanOnSingleClick ) ;
+        if ( panSingle )
         {
           // transform the mouse pos to map coordinates
           const QgsPointXY prevCenter = mCanvas->center();
