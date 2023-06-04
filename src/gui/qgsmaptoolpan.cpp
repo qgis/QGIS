@@ -51,7 +51,7 @@ void QgsMapToolPan::deactivate()
 
 QgsMapTool::Flags QgsMapToolPan::flags() const
 {
-  return QgsMapTool::Transient | QgsMapTool::AllowZoomRect | QgsMapTool::ShowContextMenu;
+  return QgsMapTool::AllowZoomRect | QgsMapTool::ShowContextMenu;
 }
 
 void QgsMapToolPan::canvasPressEvent( QgsMapMouseEvent *e )

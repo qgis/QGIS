@@ -49,7 +49,7 @@ QgsMapToolZoom::~QgsMapToolZoom()
 
 QgsMapTool::Flags QgsMapToolZoom::flags() const
 {
-  return QgsMapTool::Transient | QgsMapTool::ShowContextMenu;
+  return QgsMapTool::ShowContextMenu;
 }
 
 void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent *e )
