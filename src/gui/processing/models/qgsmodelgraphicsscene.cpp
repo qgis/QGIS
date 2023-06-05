@@ -265,6 +265,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       }
 
       item->setPos( pos );
+      item->component()->setPosition( pos );
       outputItems.insert( outputIt.key(), item );
       addItem( new QgsModelArrowItem( mChildAlgorithmItems[it.value().childId()], Qt::BottomEdge, idx, QgsModelArrowItem::Marker::Circle, item, QgsModelArrowItem::Marker::Circle ) );
 
