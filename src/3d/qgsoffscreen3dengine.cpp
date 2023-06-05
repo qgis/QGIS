@@ -76,23 +76,24 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   QSurfaceFormat format;
 
   //Use default format when shared OpenGL context is enabled
-  if (QCoreApplication::instance() && QCoreApplication::instance()->testAttribute(Qt::AA_ShareOpenGLContexts))
+  if ( QCoreApplication::instance() && QCoreApplication::instance()->testAttribute( Qt::AA_ShareOpenGLContexts ) )
   {
     format = QSurfaceFormat::defaultFormat();
   }
   //Set the surface format when used outside of QGIS application
-  else {
-      format.setRenderableType(QSurfaceFormat::OpenGL);
+  else
+  {
+    format.setRenderableType( QSurfaceFormat::OpenGL );
 #ifdef Q_OS_MAC
-    format.setVersion(4, 1); //OpenGL is deprecated on MacOS, use last supported version
-    format.setProfile(QSurfaceFormat::CoreProfile);
+    format.setVersion( 4, 1 ); //OpenGL is deprecated on MacOS, use last supported version
+    format.setProfile( QSurfaceFormat::CoreProfile );
 #else
-    format.setVersion(4, 3);
-    format.setProfile(QSurfaceFormat::CoreProfile);
+    format.setVersion( 4, 3 );
+    format.setProfile( QSurfaceFormat::CoreProfile );
 #endif
-    format.setDepthBufferSize(24);
-    format.setSamples(4);
-    format.setStencilBufferSize(8);
+    format.setDepthBufferSize( 24 );
+    format.setSamples( 4 );
+    format.setStencilBufferSize( 8 );
   }
 
   mOffscreenSurface->setFormat( format );
