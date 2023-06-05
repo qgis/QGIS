@@ -467,7 +467,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   pen.setColor( lightness > 0.7 ? Qt::black : Qt::white );
   imagePainter.setPen( pen );
   imagePainter.setBrush( Qt::NoBrush );
-  imagePainter.drawEllipse( QPointF( x + center.x(), y + center.y() ), 4.0 * devicePixelRatioF(), 4.0 * devicePixelRatioF());
+  imagePainter.drawEllipse( QPointF( x + center.x(), y + center.y() ), 4.0 * devicePixelRatioF(), 4.0 * devicePixelRatioF() );
   imagePainter.end();
 
   //draw image onto widget
