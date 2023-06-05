@@ -688,6 +688,7 @@ void QgsGeoreferencerMainWindow::deleteDataPoint( QPoint coords )
       if ( lastPickedDistance < 0 || lastPickedDistance > distance )
       {
         dataPoint = *it;
+        lastPickedDistance = distance;
       }
     }
   }
