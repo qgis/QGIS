@@ -164,6 +164,12 @@ QString QgsRectangle::asPolygon() const
 
   QTextStream foo( &rep );
 
+  if ( isNull() )
+  {
+    foo << "EMPTY";
+    return rep;
+  }
+
   foo.setRealNumberPrecision( 8 );
   foo.setRealNumberNotation( QTextStream::FixedNotation );
   // NOTE: a polygon isn't a polygon unless its closed. In the case of

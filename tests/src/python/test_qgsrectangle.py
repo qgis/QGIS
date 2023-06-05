@@ -142,7 +142,7 @@ class TestQgsRectangle(unittest.TestCase):
 
     def testAsPolygon(self):
         """Test string representation as polygon"""
-        self.assertEqual(QgsRectangle().asPolygon(), '0.00000000 0.00000000, 0.00000000 0.00000000, 0.00000000 0.00000000, 0.00000000 0.00000000, 0.00000000 0.00000000')
+        self.assertEqual(QgsRectangle().asPolygon(), 'EMPTY')
         self.assertEqual(QgsRectangle(0, 0.1, 0.2, 0.3).asPolygon(), '0.00000000 0.10000000, 0.00000000 0.30000000, 0.20000000 0.30000000, 0.20000000 0.10000000, 0.00000000 0.10000000')
 
     def testToBox3d(self):
