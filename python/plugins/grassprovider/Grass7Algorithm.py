@@ -148,7 +148,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 spec = importlib.util.spec_from_file_location('grassprovider.ext.' + name, extpath)
                 self.module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(self.module)
-        except Exception:
+        except Exception as e:
+            QgsMessageLog.logMessage(self.tr('Failed to load: {0}\n{1}').format(extpath, str(e)), 'Processing', Qgis.Critical)
             pass
 
     def createInstance(self):
