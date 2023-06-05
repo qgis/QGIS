@@ -256,8 +256,8 @@ class Grass7Utils:
     @staticmethod
     def userDescriptionFolder():
         """
-        Creates and returns a directory for users to create additional algorithm descriptions.
-        Or modified versions of stock algorithm descriptions shipped with QGIS.
+        Creates and returns a directory for users to create additional algorithm descriptions
+        or modified versions of stock algorithm descriptions shipped with QGIS.
         """
         folder = os.path.join(userFolder(), 'grassaddons', 'description')
         mkdir(folder)
