@@ -43,12 +43,7 @@ class CORE_EXPORT QgsRectangle
   public:
 
     //! Constructor for a null rectangle
-    QgsRectangle()
-      : mXmin( std::numeric_limits<double>::max() )
-      , mYmin( std::numeric_limits<double>::max() )
-      , mXmax( -std::numeric_limits<double>::max() )
-      , mYmax( -std::numeric_limits<double>::max() )
-    {}
+    QgsRectangle() = default; // optimised constructor for null rectangle - no need to call normalize here
 
     /**
      * Constructs a QgsRectangle from a set of x and y minimum and maximum coordinates.
@@ -613,10 +608,10 @@ class CORE_EXPORT QgsRectangle
 
   private:
 
-    double mXmin = 0.0;
-    double mYmin = 0.0;
-    double mXmax = 0.0;
-    double mYmax = 0.0;
+    double mXmin = std::numeric_limits<double>::max();
+    double mYmin = std::numeric_limits<double>::max();
+    double mXmax = -std::numeric_limits<double>::max();
+    double mYmax = -std::numeric_limits<double>::max();
 
 };
 
