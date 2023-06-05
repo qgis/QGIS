@@ -50,6 +50,16 @@ namespace Qt3DLogic
   class QLogicAspect;
 }
 
+/**
+ * \ingroup 3d
+ * \brief qgs3dWindow is a convenience wrapper to simplify the creation of a 3D window ready to be used with QGIS.
+ *
+ * \note This is a port of qtwindow3d which does not set the default surface when initialized.
+ * \note The default surface must be set before the construction of the QApplication when using shared OpenGL context.
+ * \note This is required in order to use QT3d and QtWebEngine at the same time.
+ *
+ * \since QGIS 3.32
+ */
 class Qgs3DWindow : public QWindow
 {
     Q_OBJECT
