@@ -928,6 +928,8 @@ void QgsGrassNewMapset::drawRegion()
     }
 
     QgsCoordinateTransform trans( source, dest, QgsProject::instance() );
+    trans.setAllowFallbackTransforms( true );
+    trans.setBallparkTransformsAreAppropriate( true );
 
     for ( int i = points.size() - 1; i >= 0; i-- )
     {
