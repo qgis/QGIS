@@ -56,9 +56,8 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
                 self.tr('Log console output'), False))
             ProcessingConfig.addSetting(Setting(
                 self.name(),
-                Grass7Utils.GRASS_HELP_PATH,
-                self.tr('Location of GRASS docs'),
-                Grass7Utils.grassHelpPath()))
+                Grass7Utils.GRASS_HELP_URL,
+                self.tr('Location of GRASS docs'), ''))
             # Add settings for using r.external/v.external instead of r.in.gdal/v.in.ogr
             # but set them to False by default because the {r,v}.external implementations
             # have some bugs on windows + there are algorithms that can't be used with
@@ -82,7 +81,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
     def unload(self):
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
-        ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
+        ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_URL)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_REXTERNAL)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_VEXTERNAL)
 
