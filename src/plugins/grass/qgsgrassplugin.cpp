@@ -712,7 +712,7 @@ void QgsGrassPlugin::closeMapset()
 
 void QgsGrassPlugin::newMapset()
 {
-  if ( !QgsGrassNewMapset::isRunning() )
+  if ( !mNewMapset )
   {
     mNewMapset = new QgsGrassNewMapset( qGisInterface,
                                         this, qGisInterface->mainWindow() );

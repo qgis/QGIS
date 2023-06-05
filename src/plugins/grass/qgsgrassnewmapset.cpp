@@ -62,8 +62,6 @@ QString temp3( GRASS_VERSION_MINOR );
 QString temp4( GRASS_VERSION_RELEASE );
 #endif
 
-bool QgsGrassNewMapset::sRunning = false;
-
 QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
                                       QgsGrassPlugin *plugin, QWidget *parent,
                                       Qt::WindowFlags f )
@@ -103,11 +101,6 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
 #ifdef Q_OS_MAC
   setWizardStyle( QWizard::ClassicStyle );
 #endif
-
-  sRunning = true;
-  mProjectionSelector = nullptr;
-  mPreviousPage = -1;
-  mRegionModified = false;
 
   QString mapPath = QStringLiteral( ":/images/grass/world.png" );
   QgsDebugMsgLevel( QString( "mapPath = %1" ).arg( mapPath ), 2 );
@@ -151,10 +144,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   connect( this, &QWizard::currentIdChanged, this, &QgsGrassNewMapset::pageSelected );
 }
 
-QgsGrassNewMapset::~QgsGrassNewMapset()
-{
-  sRunning = false;
-}
+QgsGrassNewMapset::~QgsGrassNewMapset() = default;
 
 void QgsGrassNewMapset::databaseChanged()
 {
@@ -1303,16 +1293,9 @@ void QgsGrassNewMapset::pageSelected( int index )
   mPreviousPage = index;
 }
 
-bool QgsGrassNewMapset::isRunning( void )
-{
-  return sRunning;
-}
-
 void QgsGrassNewMapset::close( void )
 {
-
   hide();
-  sRunning = false;
   deleteLater();
 }
 
