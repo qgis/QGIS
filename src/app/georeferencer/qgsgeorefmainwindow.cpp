@@ -677,18 +677,29 @@ void QgsGeoreferencerMainWindow::addPoint( const QgsPointXY &sourceCoords, const
 
 void QgsGeoreferencerMainWindow::deleteDataPoint( QPoint coords )
 {
+  QgsGeorefDataPoint *dataPoint = nullptr;
+  double lastPickedDistance = -1.0;
   for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
   {
     QgsGeorefDataPoint *pt = *it;
-    if ( pt->contains( coords, QgsGcpPoint::PointType::Source ) ) // first operand for removing from GCP table
+    double distance = 0.0;
+    if ( pt->contains( coords, QgsGcpPoint::PointType::Source, distance ) ) // first operand for removing from GCP table
     {
-      delete *it;
-      mPoints.erase( it );
-      mGCPListWidget->setGCPList( &mPoints );
-      mCanvas->refresh();
-      updateGeorefTransform();
-      break;
+      if ( lastPickedDistance < 0 || lastPickedDistance > distance )
+      {
+        dataPoint = *it;
+        lastPickedDistance = distance;
+      }
     }
+  }
+
+  if ( dataPoint )
+  {
+    mPoints.removeAll( dataPoint );
+    delete dataPoint;
+    mGCPListWidget->setGCPList( &mPoints );
+    mCanvas->refresh();
+    updateGeorefTransform();
   }
 }
 
@@ -706,12 +717,17 @@ void QgsGeoreferencerMainWindow::selectPoint( QPoint p )
   const QgsGcpPoint::PointType pointType = sender() == mToolMovePoint ? QgsGcpPoint::PointType::Source : QgsGcpPoint::PointType::Destination;
   QgsGeorefDataPoint *&mvPoint = pointType == QgsGcpPoint::PointType::Source ? mMovingPoint : mMovingPointQgis;
 
+  double lastPickedDistance = -1.0;
   for ( QgsGCPList::const_iterator it = mPoints.constBegin(); it != mPoints.constEnd(); ++it )
   {
-    if ( ( *it )->contains( p, pointType ) )
+    double distance = 0.0;
+    if ( ( *it )->contains( p, pointType, distance ) )
     {
-      mvPoint = *it;
-      break;
+      if ( lastPickedDistance < 0.0 || lastPickedDistance > distance )
+      {
+        lastPickedDistance = distance;
+        mvPoint = *it;
+      }
     }
   }
 }
