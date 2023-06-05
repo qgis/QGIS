@@ -156,8 +156,11 @@ QString QgsRectangle::toString( int precision ) const
 
 QString QgsRectangle::asPolygon() const
 {
-//   QString rep = tmp.sprintf("%16f %16f,%16f %16f,%16f %16f,%16f %16f,%16f %16f",
-//     xmin, ymin, xmin, ymax, xmax, ymax, xmax, ymin, xmin, ymin);
+  if ( isNull() )
+  {
+    return "EMPTY";
+  }
+
   QString rep;
 
   QTextStream foo( &rep );
