@@ -63,12 +63,6 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     //! Next page
     int nextId() const override;
 
-    //! Is running
-    static bool isRunning();
-
-    //! Close
-    void close();
-
   public slots:
 
     //! Database changed
@@ -170,9 +164,6 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
 
     //! New page was selected
     void pageSelected( int index );
-
-    //! Close event
-    void closeEvent( QCloseEvent *e ) override;
 
     //! Key event
     void keyPressEvent( QKeyEvent *e ) override;

@@ -1292,16 +1292,3 @@ void QgsGrassNewMapset::pageSelected( int index )
   }
   mPreviousPage = index;
 }
-
-void QgsGrassNewMapset::close( void )
-{
-  hide();
-  deleteLater();
-}
-
-void QgsGrassNewMapset::closeEvent( QCloseEvent *e )
-{
-
-  e->accept();
-  close();
-}
