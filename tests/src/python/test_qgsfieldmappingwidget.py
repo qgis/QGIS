@@ -91,7 +91,7 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 7), Qt.DisplayRole), 'my comment')
 
         self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), '"source_field1"')
-        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'my alias')
+        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2 (my alias)')
         self.assertEqual(model.data(model.index(1, 6), Qt.DisplayRole), 'my alias')
         self.assertFalse(model.data(model.index(1, 7), Qt.DisplayRole))
 
@@ -172,7 +172,7 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), Qt.DisplayRole), '"source_field2"')
         self.assertEqual(model.data(model.index(0, 1), Qt.DisplayRole), 'destination_field1')
         self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), '"source_field1"')
-        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'my alias')
+        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2 (my alias)')
         self.assertEqual(model.data(model.index(2, 0), Qt.DisplayRole), '"source_field3"')
         self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
 
