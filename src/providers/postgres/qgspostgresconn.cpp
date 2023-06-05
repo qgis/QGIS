@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspostgresconn.h"
+#include "qgspostgresresult.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
@@ -47,101 +48,6 @@
 #endif
 
 const int PG_DEFAULT_TIMEOUT = 30;
-
-QgsPostgresResult::~QgsPostgresResult()
-{
-  if ( mRes )
-    ::PQclear( mRes );
-  mRes = nullptr;
-}
-
-QgsPostgresResult &QgsPostgresResult::operator=( PGresult *result )
-{
-  if ( mRes )
-    ::PQclear( mRes );
-  mRes = result;
-  return *this;
-}
-
-QgsPostgresResult &QgsPostgresResult::operator=( const QgsPostgresResult &src )
-{
-  if ( mRes )
-    ::PQclear( mRes );
-  mRes = src.result();
-  return *this;
-}
-
-ExecStatusType QgsPostgresResult::PQresultStatus()
-{
-  return mRes ? ::PQresultStatus( mRes ) : PGRES_FATAL_ERROR;
-}
-
-QString QgsPostgresResult::PQresultErrorMessage()
-{
-  return mRes ? QString::fromUtf8( ::PQresultErrorMessage( mRes ) ) : QObject::tr( "no result buffer" );
-}
-
-int QgsPostgresResult::PQntuples()
-{
-  Q_ASSERT( mRes );
-  return ::PQntuples( mRes );
-}
-
-QString QgsPostgresResult::PQgetvalue( int row, int col )
-{
-  Q_ASSERT( mRes );
-  return PQgetisnull( row, col )
-         ? QString()
-         : QString::fromUtf8( ::PQgetvalue( mRes, row, col ) );
-}
-
-bool QgsPostgresResult::PQgetisnull( int row, int col )
-{
-  Q_ASSERT( mRes );
-  return ::PQgetisnull( mRes, row, col );
-}
-
-int QgsPostgresResult::PQnfields()
-{
-  Q_ASSERT( mRes );
-  return ::PQnfields( mRes );
-}
-
-QString QgsPostgresResult::PQfname( int col )
-{
-  Q_ASSERT( mRes );
-  return QString::fromUtf8( ::PQfname( mRes, col ) );
-}
-
-Oid QgsPostgresResult::PQftable( int col )
-{
-  Q_ASSERT( mRes );
-  return ::PQftable( mRes, col );
-}
-
-int QgsPostgresResult::PQftablecol( int col )
-{
-  Q_ASSERT( mRes );
-  return ::PQftablecol( mRes, col );
-}
-
-Oid QgsPostgresResult::PQftype( int col )
-{
-  Q_ASSERT( mRes );
-  return ::PQftype( mRes, col );
-}
-
-int QgsPostgresResult::PQfmod( int col )
-{
-  Q_ASSERT( mRes );
-  return ::PQfmod( mRes, col );
-}
-
-Oid QgsPostgresResult::PQoidValue()
-{
-  Q_ASSERT( mRes );
-  return ::PQoidValue( mRes );
-}
 
 QgsPoolPostgresConn::QgsPoolPostgresConn( const QString &connInfo )
   : mPgConn( QgsPostgresConnPool::instance()->acquireConnection( connInfo ) )

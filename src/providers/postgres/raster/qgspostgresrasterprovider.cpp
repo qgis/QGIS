@@ -16,6 +16,7 @@
 
 #include <cstring>
 #include "qgspostgresrasterprovider.h"
+#include "qgspostgresresult.h"
 #include "qgspostgresprovidermetadatautils.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"

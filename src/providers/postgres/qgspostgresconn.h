@@ -29,6 +29,7 @@
 #include "qgswkbtypes.h"
 #include "qgsconfig.h"
 #include "qgsvectordataprovider.h"
+#include "qgspostgresresult.h"
 
 extern "C"
 {
@@ -149,54 +150,6 @@ struct QgsPostgresLayerProperty
            .arg( nSpCols );
   }
 #endif
-};
-
-class QgsPostgresResult
-{
-  public:
-    explicit QgsPostgresResult( PGresult *result = nullptr ) : mRes( result ) {}
-    ~QgsPostgresResult();
-
-    QgsPostgresResult &operator=( PGresult *result );
-    QgsPostgresResult &operator=( const QgsPostgresResult &src );
-
-    QgsPostgresResult( const QgsPostgresResult &rh ) = delete;
-
-    ExecStatusType PQresultStatus();
-    QString PQresultErrorMessage();
-
-    int PQntuples();
-    QString PQgetvalue( int row, int col );
-    bool PQgetisnull( int row, int col );
-
-    int PQnfields();
-    QString PQfname( int col );
-    Oid PQftable( int col );
-    Oid PQftype( int col );
-    int PQfmod( int col );
-    int PQftablecol( int col );
-    Oid PQoidValue();
-
-    PGresult *result() const { return mRes; }
-
-  private:
-    PGresult *mRes = nullptr;
-
-};
-
-struct PGException
-{
-    explicit PGException( QgsPostgresResult &r )
-      : mWhat( r.PQresultErrorMessage() )
-    {}
-
-    QString errorMessage() const
-    {
-      return mWhat;
-    }
-
-  private:
-    QString mWhat;
 };
 
 //! Wraps acquireConnection() and releaseConnection() from a QgsPostgresConnPool.

@@ -7,6 +7,7 @@ set(PG_SRCS
   qgspostgresdataitems.cpp
   qgspostgresfeatureiterator.cpp
   qgspostgresprojectstorage.cpp
+  qgspostgresresult.cpp
   qgspostgrestransaction.cpp
   qgspgtablemodel.cpp
   qgscolumntypethread.cpp
@@ -95,6 +96,7 @@ set(PGRASTER_SRCS
   raster/qgspostgresrasterutils.cpp
   qgspostgresconn.cpp
   qgspostgresprovidermetadatautils.cpp
+  qgspostgresresult.cpp
 )
 
 # static library
