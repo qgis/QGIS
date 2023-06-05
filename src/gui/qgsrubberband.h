@@ -30,6 +30,7 @@
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
+class QgsMapLayer;
 class QPaintEvent;
 class QgsSymbol;
 

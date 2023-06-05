@@ -23,6 +23,7 @@
 #include "qgis_sip.h"
 #include "qgsguiutils.h"
 
+class QgsMapLayer;
 class QgsProviderSourceWidget;
 class QgsProviderSourceWidgetProvider;
 class QgsProviderGuiRegistry;
