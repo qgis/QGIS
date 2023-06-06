@@ -167,6 +167,13 @@ double QgsSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &
   return 1.0;
 }
 
+double QgsSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
+{
+  Q_UNUSED( e )
+  Q_UNUSED( context )
+  return 1.0;
+}
+
 double QgsSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( e )
@@ -899,6 +906,40 @@ void QgsMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const
 QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
 {
   return {};
+}
+
+double QgsMarkerSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
+{
+  double size = mSize;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertySize ) )
+  {
+    bool ok = false;
+    size = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertySize, context.renderContext().expressionContext(), mSize, &ok );
+
+    if ( ok )
+    {
+      switch ( mScaleMethod )
+      {
+        case Qgis::ScaleMethod::ScaleArea:
+          size = std::sqrt( size );
+          break;
+        case Qgis::ScaleMethod::ScaleDiameter:
+          break;
+      }
+    }
+  }
+  return size * QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), mSizeUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+}
+
+double QgsMarkerSymbolLayer::dxfAngle( QgsSymbolRenderContext &context ) const
+{
+  double angle = mAngle;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+  {
+    context.setOriginalValueVariable( mAngle );
+    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle );
+  }
+  return angle;
 }
 
 void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )

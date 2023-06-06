@@ -541,6 +541,9 @@ class CORE_EXPORT QgsSymbolLayer
     //! Gets line width
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 
+    //! Gets marker size
+    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+
     //! Gets offset
     virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 
@@ -967,6 +970,8 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
+    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    virtual double dxfAngle( QgsSymbolRenderContext &context ) const override;
 
     /**
      * Returns the approximate bounding box of the marker symbol layer, taking into account

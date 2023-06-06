@@ -379,7 +379,7 @@ void QgsDxfExport::writeTables()
     if ( !ml )
       continue;
 
-    if ( hasDataDefinedProperties( ml, symbolLayer.second ) )
+    if ( hasBlockBreakingDataDefinedProperties( ml, symbolLayer.second ) )
       continue;
 
     QString name = QStringLiteral( "symbolLayer%1" ).arg( i++ );
@@ -614,7 +614,7 @@ void QgsDxfExport::writeBlocks()
     QgsSymbolRenderContext ctx( ct, Qgis::RenderUnit::MapUnits, symbolLayer.second->opacity(), false, symbolLayer.second->renderHints(), nullptr );
 
     // markers with data defined properties are inserted inline
-    if ( hasDataDefinedProperties( ml, symbolLayer.second ) )
+    if ( hasBlockBreakingDataDefinedProperties( ml, symbolLayer.second ) )
     {
       continue;
     }
@@ -649,6 +649,8 @@ void QgsDxfExport::writeBlocks()
     writeGroup( 100, QStringLiteral( "AcDbBlockEnd" ) );
 
     mPointSymbolBlocks.insert( ml, block );
+    mPointSymbolBlockSizes.insert( ml, ml->dxfSize( *this, ctx ) );
+    mPointSymbolBlockAngles.insert( ml, ml->dxfAngle( ctx ) );
   }
   endSection();
 }
@@ -953,6 +955,8 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
   }
   else
   {
+    const double scale = symbolLayer->dxfSize( *this, ctx ) / mPointSymbolBlockSizes.value( symbolLayer );
+
     // insert block reference
     writeGroup( 0, QStringLiteral( "INSERT" ) );
     writeHandle();
@@ -960,7 +964,12 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
     writeGroup( 100, QStringLiteral( "AcDbBlockReference" ) );
     writeGroup( 8, layer );
     writeGroup( 2, blockIt.value() ); // Block name
-    writeGroup( 50, angle ); // angle
+    writeGroup( 50, mPointSymbolBlockAngles.value( symbolLayer ) - angle );
+    if ( scale != 1.0 )
+    {
+      writeGroup( 41, scale );
+      writeGroup( 42, scale );
+    }
     writeGroup( 0, pt );  // Insertion point (in OCS)
   }
 }
@@ -2059,19 +2068,24 @@ void QgsDxfExport::addGeometryGeneratorSymbolLayer( QgsSymbolRenderContext &ctx,
   }
 }
 
-bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbol *symbol )
+bool QgsDxfExport::hasBlockBreakingDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbol *symbol )
 {
   if ( !sl || !symbol )
   {
     return false;
   }
 
-  if ( symbol->renderHints() & Qgis::SymbolRenderHint::DynamicRotation )
+  bool blockBreak = false;
+  if ( sl->hasDataDefinedProperties() )
   {
-    return true;
+    QSet<int> properties = sl->dataDefinedProperties().propertyKeys();
+    // Remove data defined properties handled through DXF property codes
+    properties.remove( QgsSymbolLayer::PropertySize );
+    properties.remove( QgsSymbolLayer::PropertyAngle );
+    blockBreak = !properties.isEmpty();
   }
 
-  return sl->hasDataDefinedProperties();
+  return blockBreak;
 }
 
 double QgsDxfExport::dashSize() const
