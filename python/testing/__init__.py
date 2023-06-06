@@ -77,7 +77,7 @@ class TestCase(_TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        if cls.report:
+        if hasattr(cls, 'report') and cls.report:
             cls.write_local_html_report(cls.report)
 
     @classmethod
