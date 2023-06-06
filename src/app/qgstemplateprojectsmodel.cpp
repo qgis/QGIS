@@ -21,6 +21,7 @@
 #include "qgsprojectlistitemdelegate.h"
 #include "qgsproject.h"
 
+#include <QApplication>
 #include <QStandardPaths>
 #include <QDir>
 #include <QCryptographicHash>
@@ -54,8 +55,8 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() { emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), QgsProjectListItemDelegate::CrsRole ); } );
   emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), QgsProjectListItemDelegate::CrsRole );
   emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled ) ;
-  const QSize previewSize( 250, 177 );
-  QImage image( previewSize, QImage::Format_ARGB32 );
+  const double devicePixelRatio = qobject_cast< QGuiApplication * >( QCoreApplication::instance() )->devicePixelRatio();
+  QImage image( QSize( 250 * devicePixelRatio, 177 * devicePixelRatio ), QImage::Format_ARGB32 );
   const QgsSettings settings;
   const int myRed = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
   const int myGreen = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
@@ -63,7 +64,7 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   image.fill( QColor( myRed, myGreen, myBlue ) );
   QPainter painter( &image );
   painter.setOpacity( 0.5 );
-  const QRect rect( 20, 20, 210, 137 );
+  const QRect rect( 20, 20, image.width() - 40, image.height() - 40 );
   QPen pen;
   pen.setStyle( Qt::DashLine );
   pen.setColor( Qt::gray );

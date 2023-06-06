@@ -83,13 +83,15 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
                index.data( QgsProjectListItemDelegate::CrsRole ).toString() ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
+  QSizeF iconSize = icon.size() / painter->device()->devicePixelRatio();
   if ( !icon.isNull() )
   {
-    painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels, icon );
+    painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels,
+                         iconSize.width(), iconSize.height(),  icon );
   }
 
-  painter->translate( option.rect.left() + ( !icon.isNull() ? icon.width() + 3.125 * mRoundedRectSizePixels : 1.875 * mRoundedRectSizePixels ), option.rect.top() + 1.875 * mRoundedRectSizePixels );
-  ctx.clip = QRect( 0, 0, option.rect.width() - ( !icon.isNull() ? icon.width() - 4.375 * mRoundedRectSizePixels : 3.125 *  mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
+  painter->translate( option.rect.left() + ( !icon.isNull() ? iconSize.width() + 3.125 * mRoundedRectSizePixels : 1.875 * mRoundedRectSizePixels ), option.rect.top() + 1.875 * mRoundedRectSizePixels );
+  ctx.clip = QRect( 0, 0, option.rect.width() - ( !icon.isNull() ? iconSize.width() - 4.375 * mRoundedRectSizePixels : 3.125 *  mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
   doc.documentLayout()->draw( painter, ctx );
 }
 
@@ -238,9 +240,12 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
 
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
+  QSizeF iconSize = icon.size() / painter->device()->devicePixelRatio();
   if ( !icon.isNull() )
   {
     painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels, icon );
+    painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels,
+                         iconSize.width(), iconSize.height(),  icon );
   }
 
   // Gross, but not well supported in Qt
@@ -249,8 +254,8 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
   painter->drawPixmap( mDismissRect.topLeft(), pixmap );
   mDismissRect.setTop( 10 );
 
-  painter->translate( option.rect.left() + ( !icon.isNull() ? icon.width() + 3.125 * mRoundedRectSizePixels : 1.875 * mRoundedRectSizePixels ), option.rect.top() + 1.875 * mRoundedRectSizePixels );
-  ctx.clip = QRect( 0, 0, option.rect.width() - ( !icon.isNull() ? icon.width() - 4.375 * mRoundedRectSizePixels : 3.125 *  mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
+  painter->translate( option.rect.left() + ( !icon.isNull() ? iconSize.width() + 3.125 * mRoundedRectSizePixels : 1.875 * mRoundedRectSizePixels ), option.rect.top() + 1.875 * mRoundedRectSizePixels );
+  ctx.clip = QRect( 0, 0, option.rect.width() - ( !icon.isNull() ? iconSize.width() - 4.375 * mRoundedRectSizePixels : 3.125 *  mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
   doc.documentLayout()->draw( painter, ctx );
 }
 
