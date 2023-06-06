@@ -140,6 +140,21 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
 
+  pixStyleMarker->setFixedSize( 24, 24 );
+  pixStyleMarker->load( QgsApplication::iconPath( QStringLiteral( "mIconPointLayer.svg" ) ) );
+
+  pixStyleFill->setFixedSize( 24, 24 );
+  pixStyleFill->load( QgsApplication::iconPath( QStringLiteral( "mIconPolygonLayer.svg" ) ) );
+
+  pixStyleLine->setFixedSize( 24, 24 );
+  pixStyleLine->load( QgsApplication::iconPath( QStringLiteral( "mIconLineLayer.svg" ) ) );
+
+  pixStyleColorRamp->setFixedSize( 24, 24 );
+  pixStyleColorRamp->load( QgsApplication::iconPath( QStringLiteral( "styleicons/color.svg" ) ) );
+
+  pixStyleTextFormat->setFixedSize( 24, 24 );
+  pixStyleTextFormat->load( QgsApplication::iconPath( QStringLiteral( "text.svg" ) ) );
+
   mCoordinateDisplayComboBox->addItem( tr( "Map Units" ), static_cast<int>( Qgis::CoordinateDisplayType::MapCrs ) );
   mCoordinateDisplayComboBox->addItem( tr( "Map Geographic (degrees)" ), static_cast<int>( Qgis::CoordinateDisplayType::MapGeographic ) );
   mCoordinateDisplayComboBox->addItem( tr( "Custom Projection Units" ), static_cast<int>( Qgis::CoordinateDisplayType::CustomCrs ) );
