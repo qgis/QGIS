@@ -56,7 +56,7 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
 
   // communication with map tool
   connect( mToleranceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimplifyUserInputWidget::toleranceChanged );
-  connect( mToleranceUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) {emit toleranceUnitsChanged( mToleranceUnitsComboBox->currentData().value< Qgis::MapToolUnit >();} );
+  connect( mToleranceUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) {emit toleranceUnitsChanged( mToleranceUnitsComboBox->currentData().value<Qgis::MapToolUnit>() );} );
   connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( const int method ) {emit methodChanged( ( QgsMapToolSimplify::Method )method );} );
   connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
