@@ -37,7 +37,6 @@ QgsLayerTreeFilterSettings::QgsLayerTreeFilterSettings( const QgsLayerTreeFilter
   , mFlags( other.mFlags )
   , mLayers( other.mLayers )
   , mLayerExtents( other.mLayerExtents )
-  , mFilterExpressionsContext( other.mFilterExpressionsContext )
 {
 
 }
@@ -50,7 +49,6 @@ QgsLayerTreeFilterSettings &QgsLayerTreeFilterSettings::operator=( const QgsLaye
   mFlags = other.mFlags;
   mLayers = other.mLayers;
   mLayerExtents = other.mLayerExtents;
-  mFilterExpressionsContext = other.mFilterExpressionsContext;
   return *this;
 }
 
@@ -67,16 +65,6 @@ QMap<QString, QString> QgsLayerTreeFilterSettings::layerFilterExpressions() cons
 void QgsLayerTreeFilterSettings::setLayerFilterExpressions( const QMap<QString, QString> &expressions )
 {
   mLayerFilterExpressions = expressions;
-}
-
-void QgsLayerTreeFilterSettings::setFilterExpressionsContext( const QgsExpressionContext &context )
-{
-  mFilterExpressionsContext = context;
-}
-
-QgsExpressionContext QgsLayerTreeFilterSettings::filterExpressionsContext() const
-{
-  return mFilterExpressionsContext;
 }
 
 void QgsLayerTreeFilterSettings::setLayerFilterExpressionsFromLayerTree( QgsLayerTree *tree )

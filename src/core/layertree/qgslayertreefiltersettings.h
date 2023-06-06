@@ -75,18 +75,6 @@ class CORE_EXPORT QgsLayerTreeFilterSettings
     void setLayerFilterExpressions( const QMap<QString, QString> &expressions );
 
     /**
-     * Sets the filter expression context.
-     * \see filterExpressionsContext()
-     */
-    void setFilterExpressionsContext( const QgsExpressionContext &context );
-
-    /**
-     * Returns the filter expression context.
-     * \see setFilterExpressionsContext()
-     */
-    QgsExpressionContext filterExpressionsContext() const;
-
-    /**
      * Sets layer filter expressions using a layer \a tree.
      */
     void setLayerFilterExpressionsFromLayerTree( QgsLayerTree *tree );
@@ -184,8 +172,6 @@ class CORE_EXPORT QgsLayerTreeFilterSettings
 
     // geometry must be in layer CRS
     QMap<QString, QVector< QgsGeometry > > mLayerExtents;
-
-    QgsExpressionContext mFilterExpressionsContext;
 
 };
 

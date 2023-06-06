@@ -57,20 +57,6 @@ Sets the map of layer IDs to legend filter expression.
 .. seealso:: :py:func:`layerFilterExpressions`
 %End
 
-    void setFilterExpressionsContext( const QgsExpressionContext &context );
-%Docstring
-Sets the filter expression context.
-
-.. seealso:: :py:func:`filterExpressionsContext`
-%End
-
-    QgsExpressionContext filterExpressionsContext() const;
-%Docstring
-Returns the filter expression context.
-
-.. seealso:: :py:func:`setFilterExpressionsContext`
-%End
-
     void setLayerFilterExpressionsFromLayerTree( QgsLayerTree *tree );
 %Docstring
 Sets layer filter expressions using a layer ``tree``.

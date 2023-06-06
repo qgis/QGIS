@@ -1350,6 +1350,8 @@ void TestQgsLegendRenderer::testFilterByExpressionWithContext()
   scope->setVariable( QStringLiteral( "test_var" ), QStringLiteral( "test_value" ) );
   context.appendScope( scope.release() );
 
+  mapSettings.setExpressionContext( context );
+
   // Point layer
   QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL3->id() );
   QVERIFY( layer );
@@ -1357,7 +1359,6 @@ void TestQgsLegendRenderer::testFilterByExpressionWithContext()
 
   QgsLayerTreeFilterSettings filterSettings( mapSettings );
   filterSettings.setLayerFilterExpressionsFromLayerTree( root.get() );
-  filterSettings.setFilterExpressionsContext( context );
 
   legendModel.setFilterSettings( &filterSettings );
   QgsLegendSettings settings;

@@ -1120,7 +1120,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         linkedFilterMaps.insert( mMap );
     }
 
-    QgsMapSettings ms;
+    QgsMapSettings mapSettings;
     QgsGeometry filterGeometry;
     if ( mMap )
     {
@@ -1128,7 +1128,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
       const QgsRectangle requestRectangle = mMap->requestedExtent();
       QSizeF size( requestRectangle.width(), requestRectangle.height() );
       size *= mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
-      ms = mMap->mapSettings( requestRectangle, size, dpi, true );
+      mapSettings = mMap->mapSettings( requestRectangle, size, dpi, true );
 
       filterGeometry = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
     }
@@ -1138,14 +1138,16 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
       const QgsRectangle requestRectangle = ( *linkedFilterMaps.constBegin() )->requestedExtent();
       QSizeF size( requestRectangle.width(), requestRectangle.height() );
       size *= mLayout->convertFromLayoutUnits( ( *linkedFilterMaps.constBegin() )->mapUnitsToLayoutUnits(), Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
-      ms = ( *linkedFilterMaps.constBegin() )->mapSettings( requestRectangle, size, dpi, true );
+      mapSettings = ( *linkedFilterMaps.constBegin() )->mapSettings( requestRectangle, size, dpi, true );
 
       filterGeometry = QgsGeometry::fromQPolygonF( ( *linkedFilterMaps.constBegin() )->visibleExtentPolygon() );
     }
 
-    const QgsGeometry atlasGeometry = mInAtlas ? mLayout->reportContext().currentGeometry( ms.destinationCrs() ) : QgsGeometry();
+    mapSettings.setExpressionContext( createExpressionContext() );
 
-    QgsLayerTreeFilterSettings filterSettings( ms );
+    const QgsGeometry atlasGeometry = mInAtlas ? mLayout->reportContext().currentGeometry( mapSettings.destinationCrs() ) : QgsGeometry();
+
+    QgsLayerTreeFilterSettings filterSettings( mapSettings );
 
     if ( !linkedFilterMaps.empty() )
     {
@@ -1157,7 +1159,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         QgsGeometry mapExtent = QgsGeometry::fromQPolygonF( map->visibleExtentPolygon() );
 
         //transform back to destination CRS
-        const QgsCoordinateTransform mapTransform( map->crs(), ms.destinationCrs(), mLayout->project() );
+        const QgsCoordinateTransform mapTransform( map->crs(), mapSettings.destinationCrs(), mLayout->project() );
         try
         {
           mapExtent.transform( mapTransform );
@@ -1175,7 +1177,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
             mapExtent = mapExtent.intersection( atlasGeometry );
           }
 
-          filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( mapExtent, ms.destinationCrs() ) );
+          filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( mapExtent, mapSettings.destinationCrs() ) );
         }
       }
     }
@@ -1183,9 +1185,9 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     if ( mInAtlas )
     {
       if ( !filterGeometry.isEmpty() )
-        filterGeometry = mLayout->reportContext().currentGeometry( ms.destinationCrs() );
+        filterGeometry = mLayout->reportContext().currentGeometry( mapSettings.destinationCrs() );
       else
-        filterGeometry = filterGeometry.intersection( mLayout->reportContext().currentGeometry( ms.destinationCrs() ) );
+        filterGeometry = filterGeometry.intersection( mLayout->reportContext().currentGeometry( mapSettings.destinationCrs() ) );
     }
 
     filterSettings.setLayerFilterExpressionsFromLayerTree( mLegendModel->rootGroup() );
@@ -1196,11 +1198,6 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     else
     {
       filterSettings.setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
-    }
-
-    if ( mInAtlas )
-    {
-      filterSettings.setFilterExpressionsContext( createExpressionContext() );
     }
 
     mLegendModel->setFilterSettings( &filterSettings );

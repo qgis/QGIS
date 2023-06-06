@@ -80,14 +80,6 @@ void QgsMapHitTest::run()
       context.setExtent( extent.boundingBox() );
     }
 
-    // If not explicitly set, the expression context from the filter settings can be a default constructed one,
-    // with no scopes, when it is set it is meant to override the context from the map settings (e.g. when
-    // set from layout items).
-    if ( mSettings.filterExpressionsContext().scopeCount() > 0 )
-    {
-      context.setExpressionContext( mSettings.filterExpressionsContext() );
-    }
-
     context.expressionContext() << QgsExpressionContextUtils::layerScope( vl );
     SymbolSet &usedSymbols = mHitTest[vl->id()];
     SymbolSet &usedSymbolsRuleKey = mHitTestRuleKey[vl->id()];
@@ -386,13 +378,6 @@ bool QgsMapHitTestTask::run()
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
 
-  // If not explicitly set, the expression context from the filter settings can be a default constructed one,
-  // with no scopes, when it is set it is meant to override the context from the map settings (e.g. when
-  // set from layout items).
-  if ( mSettings.filterExpressionsContext().scopeCount() > 0 )
-  {
-    context.setExpressionContext( mSettings.filterExpressionsContext() );
-  }
   context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
 
   std::size_t layerIdx = 0;
