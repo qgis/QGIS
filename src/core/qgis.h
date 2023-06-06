@@ -3226,7 +3226,7 @@ class CORE_EXPORT Qgis
 
     /**
     * Type of unit of tolerance value from settings.
-    * For map (project) units, use ProjectUnits.
+    * For map (project) units, use MapToolUnit::Project.
     *
     * \since QGIS 3.32
     */

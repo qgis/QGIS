@@ -580,7 +580,7 @@ void QgsSnappingWidget::changeMaxScale( double maxScale )
 
 void QgsSnappingWidget::changeUnit( int idx )
 {
-  Qgis::MapToolUnit unit = static_cast<Qgis::MapToolUnit>( mUnitsComboBox->itemData( idx ).toInt() );
+  Qgis::MapToolUnit unit = mUnitsComboBox->itemData( idx ).value< Qgis::MapToolUnit >();
   mConfig.setUnits( unit );
   mProject->setSnappingConfig( mConfig );
 
