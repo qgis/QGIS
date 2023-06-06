@@ -33,7 +33,6 @@
 #include "qgsgeometry.h"
 #include "qgsfields.h"
 #include "qgspointxy.h"
-#include "qgsmaplayer.h"
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
 #include "qgstextformat.h"
@@ -68,6 +67,7 @@ class QPicture;
 class QgsGeometry;
 class QgsCoordinateTransform;
 class QgsLabelSearchTree;
+class QgsMapLayer;
 class QgsMapSettings;
 class QgsLabelFeature;
 class QgsLabelingEngine;
