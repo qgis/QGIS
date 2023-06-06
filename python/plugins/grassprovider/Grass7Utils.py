@@ -47,7 +47,7 @@ class Grass7Utils:
     GRASS_REGION_CELLSIZE = 'GRASS7_REGION_CELLSIZE'
     GRASS_LOG_COMMANDS = 'GRASS7_LOG_COMMANDS'
     GRASS_LOG_CONSOLE = 'GRASS7_LOG_CONSOLE'
-    GRASS_HELP_PATH = 'GRASS_HELP_PATH'
+    GRASS_HELP_URL = 'GRASS_HELP_URL'
     GRASS_USE_REXTERNAL = 'GRASS_USE_REXTERNAL'
     GRASS_USE_VEXTERNAL = 'GRASS_USE_VEXTERNAL'
 
@@ -561,9 +561,9 @@ class Grass7Utils:
 
     @staticmethod
     def grassHelpPath():
-        helpPath = ProcessingConfig.getSetting(Grass7Utils.GRASS_HELP_PATH)
+        helpPath = ProcessingConfig.getSetting(Grass7Utils.GRASS_HELP_URL)
 
-        if helpPath is None:
+        if not helpPath:
             if isWindows() or isMac():
                 if Grass7Utils.path is not None:
                     localPath = os.path.join(Grass7Utils.path, 'docs/html')
@@ -578,14 +578,14 @@ class Grass7Utils:
                         helpPath = os.path.abspath(path)
                         break
 
-        if helpPath is not None:
+        if helpPath:
             return helpPath
         elif Grass7Utils.version:
             version = Grass7Utils.version.replace('.', '')[:2]
             return 'https://grass.osgeo.org/grass{}/manuals/'.format(version)
         else:
             # GRASS not available!
-            return 'https://grass.osgeo.org/grass78/manuals/'
+            return 'https://grass.osgeo.org/grass82/manuals/'
 
     @staticmethod
     def getSupportedOutputRasterExtensions():
