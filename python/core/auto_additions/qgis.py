@@ -3114,7 +3114,7 @@ QgsTolerance.ProjectUnits = Qgis.MapToolUnit.Project
 QgsTolerance.UnitType.ProjectUnits = Qgis.MapToolUnit.Project
 QgsTolerance.ProjectUnits.is_monkey_patched = True
 QgsTolerance.ProjectUnits.__doc__ = "Map (project) units"
-Qgis.MapToolUnit.__doc__ = 'Type of unit of tolerance value from settings.\nFor map (project) units, use ProjectUnits.\n\n.. versionadded:: 3.32\n\n' + '* ``LayerUnits``: ' + Qgis.MapToolUnit.Layer.__doc__ + '\n' + '* ``Pixels``: ' + Qgis.MapToolUnit.Pixels.__doc__ + '\n' + '* ``ProjectUnits``: ' + Qgis.MapToolUnit.Project.__doc__
+Qgis.MapToolUnit.__doc__ = 'Type of unit of tolerance value from settings.\nFor map (project) units, use MapToolUnit.Project.\n\n.. versionadded:: 3.32\n\n' + '* ``LayerUnits``: ' + Qgis.MapToolUnit.Layer.__doc__ + '\n' + '* ``Pixels``: ' + Qgis.MapToolUnit.Pixels.__doc__ + '\n' + '* ``ProjectUnits``: ' + Qgis.MapToolUnit.Project.__doc__
 # --
 Qgis.MapToolUnit.baseClass = Qgis
 QgsUnitTypes.UnitType = Qgis.UnitType
