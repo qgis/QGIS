@@ -586,7 +586,7 @@ class Grass7Utils:
             return 'https://grass.osgeo.org/grass{}/manuals/'.format(version)
         else:
             # GRASS not available!
-            return 'https://grass.osgeo.org/grass82/manuals/'
+            return 'https://grass.osgeo.org/grass-stable/manuals/'
 
     @staticmethod
     def getSupportedOutputRasterExtensions():
