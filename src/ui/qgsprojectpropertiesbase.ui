@@ -1219,50 +1219,32 @@
                    </widget>
                   </item>
                   <item row="3" column="0">
-                   <widget class="QLabel" name="label_14">
+                   <widget class="QSvgWidget" name="pixStyleColorRamp">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/styleicons/color.svg</pixmap>
                     </property>
                    </widget>
                   </item>
                   <item row="2" column="0">
-                   <widget class="QLabel" name="pixStyleFill">
+                   <widget class="QSvgWidget" name="pixStyleFill" native="true">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/mIconPolygonLayer.svg</pixmap>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
-                   <widget class="QLabel" name="pixStyleLine">
+                   <widget class="QSvgWidget" name="pixStyleLine" native="true">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/mIconLineLayer.svg</pixmap>
                     </property>
                    </widget>
                   </item>
@@ -1303,18 +1285,12 @@
                    </widget>
                   </item>
                   <item row="0" column="0">
-                   <widget class="QLabel" name="pixStyleMarker">
+                   <widget class="QSvgWidget" name="pixStyleMarker" native="true">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/mIconPointLayer.svg</pixmap>
                     </property>
                    </widget>
                   </item>
@@ -1377,18 +1353,12 @@
                    </widget>
                   </item>
                   <item row="4" column="0">
-                   <widget class="QLabel" name="label_39">
+                   <widget class="QSvgWidget" name="pixStyleTextFormat">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/text.svg</pixmap>
                     </property>
                    </widget>
                   </item>
@@ -3530,6 +3500,11 @@
    <extends>QWidget</extends>
    <header>qgsextentwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QSvgWidget</class>
+   <extends>QWidget</extends>
+   <header>qsvgwidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
