@@ -142,14 +142,14 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         name = self.name().replace('.', '_')
         self.module = None
         try:
-            extpath = Path(self.descriptionFile).parents[1].joinpath('ext', name + '.py')
+            extpath = self.descriptionFile.parents[1].joinpath('ext', name + '.py')
             # this check makes it a bit faster
             if extpath.exists():
                 spec = importlib.util.spec_from_file_location('grassprovider.ext.' + name, extpath)
                 self.module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(self.module)
         except Exception as e:
-            QgsMessageLog.logMessage(self.tr('Failed to load: {0}\n{1}').format(extpath, str(e)), 'Processing', Qgis.Critical)
+            QgsMessageLog.logMessage(self.tr('Failed to load: {0}\n{1}').format(extpath, e), 'Processing', Qgis.Critical)
             pass
 
     def createInstance(self):
@@ -207,7 +207,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         """
         Create algorithm parameters and outputs from a text file.
         """
-        with open(self.descriptionFile) as lines:
+        with self.descriptionFile.open() as lines:
             # First line of the file is the Grass algorithm name
             line = lines.readline().strip('\n').strip()
             self.grass7Name = line
