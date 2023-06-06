@@ -15741,12 +15741,14 @@ void QgisApp::onSnappingConfigChanged()
 void QgisApp::createPreviewImage( const QString &path, const QIcon &icon )
 {
   // Render the map canvas
+  const double devicePixelRatio = mMapCanvas->mapSettings().devicePixelRatio();
   QSize previewSize( 250, 177 ); // h = w / std::sqrt(2)
   QRect previewRect( QPoint( ( mMapCanvas->width() - previewSize.width() ) / 2
                              , ( mMapCanvas->height() - previewSize.height() ) / 2 )
                      , previewSize );
 
-  QPixmap previewImage( previewSize );
+  QPixmap previewImage( previewSize * devicePixelRatio );
+  previewImage.setDevicePixelRatio( devicePixelRatio );
   previewImage.fill();
   QPainter previewPainter( &previewImage );
   mMapCanvas->render( &previewPainter, QRect( QPoint(), previewSize ), previewRect );
