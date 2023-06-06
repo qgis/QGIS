@@ -418,17 +418,17 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual(self.settings.value('testqQgisSettings/temp', section=QgsSettings.Core), None)
 
     def test_enumValue(self):
-        self.settings.setValue('enum', 'LayerUnits')
-        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.LayerUnits)
+        self.settings.setValue('enum', 'Layer')
+        self.assertEqual(self.settings.enumValue('enum', Qgis.MapToolUnit.Pixels), Qgis.MapToolUnit.Layer)
         self.settings.setValue('enum', 'dummy_setting')
-        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.Pixels)
-        self.assertEqual(type(self.settings.enumValue('enum', QgsTolerance.Pixels)), QgsTolerance.UnitType)
+        self.assertEqual(self.settings.enumValue('enum', Qgis.MapToolUnit.Pixels), Qgis.MapToolUnit.Pixels)
+        self.assertEqual(type(self.settings.enumValue('enum', Qgis.MapToolUnit.Pixels)), QgsTolerance.UnitType)
 
     def test_setEnumValue(self):
-        self.settings.setValue('enum', 'LayerUnits')
-        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.LayerUnits)
-        self.settings.setEnumValue('enum', QgsTolerance.Pixels)
-        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.Pixels)
+        self.settings.setValue('enum', 'Layer')
+        self.assertEqual(self.settings.enumValue('enum', Qgis.MapToolUnit.Pixels), Qgis.MapToolUnit.Layer)
+        self.settings.setEnumValue('enum', Qgis.MapToolUnit.Pixels)
+        self.assertEqual(self.settings.enumValue('enum', Qgis.MapToolUnit.Pixels), Qgis.MapToolUnit.Pixels)
 
     def test_flagValue(self):
         pointAndLine = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.LineLayer)

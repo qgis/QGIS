@@ -29,6 +29,8 @@
 #include "qgswfsserviceexception.h"
 #include "qgsserversettings.h"
 
+class QgsMapLayer;
+
 /**
  * \ingroup server
  * \brief WMS implementation
@@ -77,5 +79,3 @@ namespace QgsWfs
 } // namespace QgsWfs
 
 #endif
-
-

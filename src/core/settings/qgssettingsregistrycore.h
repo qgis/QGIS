@@ -93,13 +93,13 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const QgsSettingsEntryDouble *settingsDigitizingDefaultSnappingTolerance;
 
     //! Settings entry digitizing default snapping tolerance unit
-    static const QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *settingsDigitizingDefaultSnappingToleranceUnit;
+    static const QgsSettingsEntryEnumFlag<Qgis::MapToolUnit> *settingsDigitizingDefaultSnappingToleranceUnit;
 
     //! Settings entry digitizing search radius vertex edit
     static const QgsSettingsEntryDouble *settingsDigitizingSearchRadiusVertexEdit;
 
     //! Settings entry digitizing search radius vertex edit unit
-    static const QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *settingsDigitizingSearchRadiusVertexEditUnit;
+    static const QgsSettingsEntryEnumFlag<Qgis::MapToolUnit> *settingsDigitizingSearchRadiusVertexEditUnit;
 
     //! Settings entry digitizing snap color
     static const QgsSettingsEntryColor *settingsDigitizingSnapColor;

@@ -25,6 +25,7 @@ class QgsGeometryValidationModel;
 class QgsGeometryValidationService;
 class QgsRubberBand;
 class QgisApp;
+class QgsMapLayer;
 class QgsVectorLayer;
 
 /**

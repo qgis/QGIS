@@ -14,6 +14,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import (
+    Qgis,
     QgsMapLayer,
     QgsTolerance,
     metaEnumFromValue,
@@ -26,14 +27,14 @@ start_app()
 class TestCoreAdditions(unittest.TestCase):
 
     def testMetaEnum(self):
-        me = metaEnumFromValue(QgsTolerance.Pixels)
+        me = metaEnumFromValue(Qgis.MapToolUnit.Pixels)
         self.assertIsNotNone(me)
-        self.assertEqual(me.valueToKey(QgsTolerance.Pixels), 'Pixels')
+        self.assertEqual(me.valueToKey(Qgis.MapToolUnit.Pixels), 'Pixels')
 
         # check that using same variable twice doesn't segfault
-        me = metaEnumFromValue(QgsTolerance.Pixels, QgsTolerance)
+        me = metaEnumFromValue(Qgis.MapToolUnit.Pixels, QgsTolerance)
         self.assertIsNotNone(me)
-        self.assertEqual(me.valueToKey(QgsTolerance.Pixels), 'Pixels')
+        self.assertEqual(me.valueToKey(Qgis.MapToolUnit.Pixels), 'Pixels')
 
         # do not raise error
         self.assertIsNone(metaEnumFromValue(1, QgsTolerance, False))

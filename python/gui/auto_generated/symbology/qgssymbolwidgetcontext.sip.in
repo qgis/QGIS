@@ -9,7 +9,6 @@
 
 
 
-
 class QgsSymbolWidgetContext
 {
 %Docstring(signature="appended")

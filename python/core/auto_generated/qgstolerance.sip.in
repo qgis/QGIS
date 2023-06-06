@@ -24,16 +24,6 @@ This is the class is providing tolerance value in map unit values.
 
   public:
 
-    enum UnitType
-    {
-      //! Layer unit value
-      LayerUnits,
-      //! Pixels unit of tolerance
-      Pixels,
-      //! Map (project) units. Added in 2.8
-      ProjectUnits
-    };
-
     static double vertexSearchRadius( const QgsMapSettings &mapSettings );
 %Docstring
 Static function to get vertex tolerance value.
@@ -60,7 +50,7 @@ The value is read from settings and transformed if necessary.
 :return: value of default tolerance in layer units
 %End
 
-    static double toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, QgsTolerance::UnitType units );
+    static double toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapToolUnit units );
 %Docstring
 Static function to translate tolerance value into map units
 
@@ -74,7 +64,7 @@ Static function to translate tolerance value into map units
 .. versionadded:: 2.8
 %End
 
-    static double toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, UnitType units = LayerUnits );
+    static double toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, Qgis::MapToolUnit units = Qgis::MapToolUnit::Layer );
 %Docstring
 Static function to translate tolerance value into layer units
 

@@ -1863,6 +1863,13 @@ The development version
       USCS,
     };
 
+    enum class MapToolUnit
+      {
+      Layer,
+      Pixels,
+      Project
+    };
+
     enum class UnitType
       {
       Distance,
@@ -2114,7 +2121,7 @@ The development version
 
     static const double DEFAULT_SNAP_TOLERANCE;
 
-    static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
+    static const Qgis::MapToolUnit DEFAULT_SNAP_UNITS;
 
     static QString defaultProjectScales();
 %Docstring

@@ -67,6 +67,7 @@ class QPicture;
 class QgsGeometry;
 class QgsCoordinateTransform;
 class QgsLabelSearchTree;
+class QgsMapLayer;
 class QgsMapSettings;
 class QgsLabelFeature;
 class QgsLabelingEngine;

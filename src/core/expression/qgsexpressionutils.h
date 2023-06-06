@@ -31,6 +31,7 @@
 #include <QLocale>
 #include <functional>
 
+class QgsMapLayer;
 class QgsGradientColorRamp;
 class QgsVectorLayerFeatureSource;
 

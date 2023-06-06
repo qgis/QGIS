@@ -39,9 +39,9 @@ const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::set
 
 const QgsSettingsEntryEnumFlag<Qgis::SnappingType> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType = new QgsSettingsEntryEnumFlag<Qgis::SnappingType>( QStringLiteral( "default-snap-type" ), QgsSettingsTree::sTreeDigitizing, Qgis::SnappingType::Vertex );
 
-const QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit = new QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "default-snapping-tolerance-unit" ), QgsSettingsTree::sTreeDigitizing, Qgis::DEFAULT_SNAP_UNITS );
+const QgsSettingsEntryEnumFlag<Qgis::MapToolUnit> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit = new QgsSettingsEntryEnumFlag<Qgis::MapToolUnit>( QStringLiteral( "default-snapping-tolerance-unit" ), QgsSettingsTree::sTreeDigitizing, Qgis::DEFAULT_SNAP_UNITS );
 
-const QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit = new QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "search-radius-vertex-edit-unit" ), QgsSettingsTree::sTreeDigitizing, QgsTolerance::Pixels );
+const QgsSettingsEntryEnumFlag<Qgis::MapToolUnit> *QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit = new QgsSettingsEntryEnumFlag<Qgis::MapToolUnit>( QStringLiteral( "search-radius-vertex-edit-unit" ), QgsSettingsTree::sTreeDigitizing, Qgis::MapToolUnit::Pixels );
 
 const QgsSettingsEntryEnumFlag<Qgis::JoinStyle> *QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle = new QgsSettingsEntryEnumFlag<Qgis::JoinStyle>( QStringLiteral( "offset-join-style" ), QgsSettingsTree::sTreeDigitizing, Qgis::JoinStyle::Round );
 
@@ -569,4 +569,3 @@ void QgsSettingsRegistryCore::backwardCompatibility()
     }
   }
 }
-

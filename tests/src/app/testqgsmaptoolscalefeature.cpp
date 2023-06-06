@@ -238,9 +238,9 @@ void TestQgsMapToolScaleFeature::testScaleFeatureManualAnchorSnapping()
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   const double tolerance = cfg.tolerance();
-  const QgsTolerance::UnitType units = cfg.units();
+  const Qgis::MapToolUnit units = cfg.units();
   cfg.setTolerance( 0.5 );
-  cfg.setUnits( QgsTolerance::LayerUnits );
+  cfg.setUnits( Qgis::MapToolUnit::Layer );
   mCanvas->snappingUtils()->setConfig( cfg );
 
   //set manual anchor point, should snap to (-2, -2)

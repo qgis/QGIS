@@ -58,7 +58,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     double tolerance() const { return mTolerance; }
 
-    QgsTolerance::UnitType toleranceUnits() const { return mToleranceUnits; }
+    Qgis::MapToolUnit toleranceUnits() const { return mToleranceUnits; }
 
     QString statusText() const;
 
@@ -74,7 +74,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     //! Slot to change display when slidebar is moved
     void setTolerance( double tolerance );
 
-    void setToleranceUnits( QgsTolerance::UnitType units );
+    void setToleranceUnits( Qgis::MapToolUnit units );
 
     //! Slot to store feature after simplification
     void storeSimplified();
@@ -110,7 +110,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     //! Real value of tolerance
     double mTolerance = 1.0;
 
-    QgsTolerance::UnitType mToleranceUnits = QgsTolerance::LayerUnits;
+    Qgis::MapToolUnit mToleranceUnits = Qgis::MapToolUnit::Layer;
 
     //! stores actual selection rect
     QRect mSelectionRect;
@@ -142,14 +142,14 @@ class APP_EXPORT QgsSimplifyUserInputWidget : public QWidget, private Ui::Simpli
     void enableOkButton( bool enabled );
 
     void setConfig( QgsMapToolSimplify::Method method, double tolerance,
-                    QgsTolerance::UnitType units, double smoothOffset,
+                    Qgis::MapToolUnit units, double smoothOffset,
                     int smoothIterations );
 
   signals:
     void accepted();
     void rejected();
     void toleranceChanged( double tolerance );
-    void toleranceUnitsChanged( QgsTolerance::UnitType units );
+    void toleranceUnitsChanged( Qgis::MapToolUnit units );
     void methodChanged( QgsMapToolSimplify::Method method );
     void smoothOffsetChanged( double offset );
     void smoothIterationsChanged( int iterations );

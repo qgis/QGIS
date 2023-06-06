@@ -3107,6 +3107,22 @@ QgsUnitTypes.USCSSystem.__doc__ = "United States customary system"
 Qgis.SystemOfMeasurement.__doc__ = 'Systems of unit measurement.\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.SystemOfMeasurement.\n\n.. versionadded:: 3.30\n\n' + '* ``UnknownSystem``: ' + Qgis.SystemOfMeasurement.Unknown.__doc__ + '\n' + '* ``MetricSystem``: ' + Qgis.SystemOfMeasurement.Metric.__doc__ + '\n' + '* ``ImperialSystem``: ' + Qgis.SystemOfMeasurement.Imperial.__doc__ + '\n' + '* ``USCSSystem``: ' + Qgis.SystemOfMeasurement.USCS.__doc__
 # --
 Qgis.SystemOfMeasurement.baseClass = Qgis
+QgsTolerance.UnitType = Qgis.MapToolUnit
+# monkey patching scoped based enum
+QgsTolerance.LayerUnits = Qgis.MapToolUnit.Layer
+QgsTolerance.UnitType.LayerUnits = Qgis.MapToolUnit.Layer
+QgsTolerance.LayerUnits.is_monkey_patched = True
+QgsTolerance.LayerUnits.__doc__ = "Layer unit value"
+QgsTolerance.Pixels = Qgis.MapToolUnit.Pixels
+QgsTolerance.Pixels.is_monkey_patched = True
+QgsTolerance.Pixels.__doc__ = "Pixels unit of tolerance"
+QgsTolerance.ProjectUnits = Qgis.MapToolUnit.Project
+QgsTolerance.UnitType.ProjectUnits = Qgis.MapToolUnit.Project
+QgsTolerance.ProjectUnits.is_monkey_patched = True
+QgsTolerance.ProjectUnits.__doc__ = "Map (project) units"
+Qgis.MapToolUnit.__doc__ = 'Type of unit of tolerance value from settings.\nFor map (project) units, use MapToolUnit.Project.\n\n.. versionadded:: 3.32\n\n' + '* ``LayerUnits``: ' + Qgis.MapToolUnit.Layer.__doc__ + '\n' + '* ``Pixels``: ' + Qgis.MapToolUnit.Pixels.__doc__ + '\n' + '* ``ProjectUnits``: ' + Qgis.MapToolUnit.Project.__doc__
+# --
+Qgis.MapToolUnit.baseClass = Qgis
 QgsUnitTypes.UnitType = Qgis.UnitType
 # monkey patching scoped based enum
 QgsUnitTypes.TypeDistance = Qgis.UnitType.Distance
