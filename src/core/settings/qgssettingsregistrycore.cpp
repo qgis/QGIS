@@ -237,33 +237,40 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // connections settings - added in 3.30
   const QStringList services = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" )};
-  for ( const QString &service : services )
+  for ( const QString &service : std::as_const( services ) )
   {
+    const QStringList existingConnections { QgsOwsConnection::connectionList( service.toLower() ) };
     QgsSettings settings;
     settings.beginGroup( QStringLiteral( "qgis/connections-%1" ).arg( service.toLower() ) );
     const QStringList connections = settings.childGroups();
     if ( connections.count() == 0 )
       continue;
-    for ( const QString &connection : connections )
+    for ( const QString &connection : std::as_const( connections ) )
     {
-      QgsOwsConnection::settingsUrl->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/url" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsVersion->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/version" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsIgnoreGetMapURI->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetMapURI" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetFeatureInfoURI" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsSmoothPixmapTransform->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/smoothPixmapTransform" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsReportedLayerExtents->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/reportedLayerExtents" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsDpiMode->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/dpiMode" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsTilePixelRatio->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/tilePixelRatio" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsMaxNumFeatures->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/maxnumfeatures" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsPagesize->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/pagesize" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsPagingEnabled->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/pagingenabled" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsPreferCoordinatesForWfsT11->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/preferCoordinatesForWfsT11" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsIgnoreAxisOrientation->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreAxisOrientation" ), {service.toLower(), connection}, true );
-      QgsOwsConnection::settingsInvertAxisOrientation->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {service.toLower(), connection}, true );
+      // Do not migrate if new setting is already set
+      if ( existingConnections.contains( connection ) )
+      {
+        continue;
+      }
+      const QStringList connectionArguments {service.toLower(), connection };
+      QgsOwsConnection::settingsUrl->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/url" ), connectionArguments, true );
+      QgsOwsConnection::settingsVersion->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/version" ), connectionArguments, true );
+      QgsOwsConnection::settingsIgnoreGetMapURI->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetMapURI" ), connectionArguments, true );
+      QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetFeatureInfoURI" ), connectionArguments, true );
+      QgsOwsConnection::settingsSmoothPixmapTransform->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/smoothPixmapTransform" ), connectionArguments, true );
+      QgsOwsConnection::settingsReportedLayerExtents->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/reportedLayerExtents" ), connectionArguments, true );
+      QgsOwsConnection::settingsDpiMode->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/dpiMode" ), connectionArguments, true );
+      QgsOwsConnection::settingsTilePixelRatio->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/tilePixelRatio" ), connectionArguments, true );
+      QgsOwsConnection::settingsMaxNumFeatures->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/maxnumfeatures" ), connectionArguments, true );
+      QgsOwsConnection::settingsPagesize->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/pagesize" ), connectionArguments, true );
+      QgsOwsConnection::settingsPagingEnabled->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/pagingenabled" ), connectionArguments, true );
+      QgsOwsConnection::settingsPreferCoordinatesForWfsT11->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/preferCoordinatesForWfsT11" ), connectionArguments, true );
+      QgsOwsConnection::settingsIgnoreAxisOrientation->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreAxisOrientation" ), connectionArguments, true );
+      QgsOwsConnection::settingsInvertAxisOrientation->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), connectionArguments, true );
 
       Q_NOWARN_DEPRECATED_PUSH
       settings.beginGroup( service );
-      QgsOwsConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), {service.toLower(), connection} );
+      QgsOwsConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), connectionArguments );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
 

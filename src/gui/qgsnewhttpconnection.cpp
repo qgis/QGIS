@@ -97,15 +97,16 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     // populate the fields with the stored setting parameters
 
     txtName->setText( connectionName );
-    txtUrl->setText( QgsOwsConnection::settingsUrl->value( {mServiceName.toLower(), connectionName} ) );
-    mHttpHeaders->setHeaders( QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {mServiceName.toLower(), connectionName} ) ) );
+    const QStringList settingsArguments { mServiceName.toLower(), connectionName };
+    txtUrl->setText( QgsOwsConnection::settingsUrl->value( settingsArguments ) );
+    mHttpHeaders->setHeaders( QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( settingsArguments ) ) );
 
     updateServiceSpecificSettings();
 
     // Authentication
-    mAuthSettings->setUsername( QgsOwsConnection::settingsUsername->value( {mServiceName, connectionName} ) );
-    mAuthSettings->setPassword( QgsOwsConnection::settingsPassword->value( {mServiceName, connectionName} ) );
-    mAuthSettings->setConfigId( QgsOwsConnection::settingsAuthCfg->value( {mServiceName, connectionName} ) );
+    mAuthSettings->setUsername( QgsOwsConnection::settingsUsername->value( settingsArguments ) );
+    mAuthSettings->setPassword( QgsOwsConnection::settingsPassword->value( settingsArguments ) );
+    mAuthSettings->setConfigId( QgsOwsConnection::settingsAuthCfg->value( settingsArguments ) );
   }
   mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
 
@@ -440,7 +441,7 @@ void QgsNewHttpConnection::accept()
     QgsOwsConnection::settingsPagingEnabled->setValue( cbxWfsFeaturePaging->isChecked(), detailsParameters );
   }
 
-  QStringList credentialsParameters = {mServiceName, newConnectionName};
+  const QStringList credentialsParameters = {mServiceName.toLower(), newConnectionName};
   QgsOwsConnection::settingsUsername->setValue( mAuthSettings->username(), credentialsParameters );
   QgsOwsConnection::settingsPassword->setValue( mAuthSettings->password(), credentialsParameters );
   QgsOwsConnection::settingsAuthCfg->setValue( mAuthSettings->configId(), credentialsParameters );
