@@ -27,6 +27,9 @@
 #include "qgsrelationshipsitem.h"
 #include "qgsproviderutils.h"
 #include "qgsprovidermetadata.h"
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,4,0)
+#include "qgsgdalutils.h"
+#endif
 #include <QUrlQuery>
 
 //
@@ -347,6 +350,62 @@ bool QgsFileDataCollectionItem::hasDragEnabled() const
   return true;
 }
 
+bool QgsFileDataCollectionItem::canAddVectorLayers() const
+{
+  // if we've previously opened a connection for this item, we can use the previously
+  // determined capababilities to return an accurate answer.
+  if ( mHasCachedCapabilities )
+    return mCachedCapabilities & QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable;
+
+  if ( mHasCachedDropSupport )
+    return mCachedSupportsDrop;
+
+  // otherwise, we are limited to VERY VERY cheap calculations only!!
+  // DO NOT UNDER *****ANY***** CIRCUMSTANCES OPEN DATASETS HERE!!!!
+
+  mHasCachedDropSupport = true;
+  if ( !QFileInfo( path() ).isWritable() )
+  {
+    mCachedSupportsDrop = false;
+    return mCachedSupportsDrop;
+  }
+
+  GDALDriverH hDriver = GDALIdentifyDriverEx( path().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+  if ( !hDriver )
+  {
+    mCachedSupportsDrop = false;
+    return mCachedSupportsDrop;
+  }
+
+  // explicitly blocklist some drivers which we don't want to expose drop support for
+  const QString driverName = GDALGetDriverShortName( hDriver );
+  if ( driverName == QLatin1String( "PDF" )
+       || driverName == QLatin1String( "DXF" ) )
+  {
+    mCachedSupportsDrop = false;
+    return mCachedSupportsDrop;
+  }
+
+  // DO NOT UNDER *****ANY***** CIRCUMSTANCES OPEN DATASETS HERE!!!!
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  const bool isSingleTableDriver = GDALGetMetadataItem( hDriver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) == nullptr;
+#else
+  const QFileInfo pathInfo( path() );
+  const QString suffix = pathInfo.suffix().toLower();
+  const bool isSingleTableDriver = !QgsGdalUtils::multiLayerFileExtensions().contains( suffix );
+#endif
+
+  if ( isSingleTableDriver )
+  {
+    mCachedSupportsDrop = false;
+    return mCachedSupportsDrop;
+  }
+
+  // DO NOT UNDER *****ANY***** CIRCUMSTANCES OPEN DATASETS HERE!!!!
+  mCachedSupportsDrop = true;
+  return mCachedSupportsDrop;
+}
+
 QgsMimeDataUtils::UriList QgsFileDataCollectionItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri collectionUri;
@@ -405,6 +464,14 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
       conn = static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( md->encodeUri( parts ), {} ) );
     }
   }
+
+  if ( conn )
+  {
+    mCachedCapabilities = conn->capabilities();
+    mCachedCapabilities2 = conn->capabilities2();
+    mHasCachedCapabilities = true;
+  }
+
   return conn;
 }
 
