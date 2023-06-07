@@ -203,6 +203,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   mGroupFontButton->registerExpressionContextGenerator( this );
   mLayerFontButton->registerExpressionContextGenerator( this );
   mItemFontButton->registerExpressionContextGenerator( this );
+  mExpressionFilterButton->registerExpressionContextGenerator( this );
 
   mTitleFontButton->setLayer( coverageLayer() );
   mGroupFontButton->setLayer( coverageLayer() );

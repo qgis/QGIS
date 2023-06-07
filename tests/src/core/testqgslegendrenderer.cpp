@@ -194,6 +194,7 @@ class TestQgsLegendRenderer : public QgsTest
     void testRasterStroke();
     void testFilterByPolygon();
     void testFilterByExpression();
+    void testFilterByExpressionWithContext();
     void testDiagramAttributeLegend();
     void testDiagramSizeLegend();
     void testDataDefinedSizeCollapsed();
@@ -1325,6 +1326,69 @@ void TestQgsLegendRenderer::testFilterByExpression()
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   res = _renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, testName2 ) );
+
+}
+
+void TestQgsLegendRenderer::testFilterByExpressionWithContext()
+{
+  const QString testName = QStringLiteral( "legend_filter_by_expression_context" );
+
+  std::unique_ptr<QgsLayerTree> root = std::make_unique<QgsLayerTree>();
+  root->addLayer( mVL3 );
+  QgsLayerTreeModel legendModel( root.get() );
+
+  QgsMapSettings mapSettings;
+  // extent and size to include all red and green points
+  mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
+  mapSettings.setOutputSize( QSize( 400, 100 ) );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setLayers( QgsProject::instance()->mapLayers().values() );
+
+
+  QgsExpressionContext context;
+  std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "test_scope" ) );
+  scope->setVariable( QStringLiteral( "test_var" ), QStringLiteral( "test_value" ) );
+  context.appendScope( scope.release() );
+
+  mapSettings.setExpressionContext( context );
+
+  // Point layer
+  QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL3->id() );
+  QVERIFY( layer );
+  QgsLayerTreeUtils::setLegendFilterByExpression( *layer, QStringLiteral( "@test_var = 'test_value'" ) );
+
+  QgsLayerTreeFilterSettings filterSettings( mapSettings );
+  filterSettings.setLayerFilterExpressionsFromLayerTree( root.get() );
+
+  legendModel.setFilterSettings( &filterSettings );
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  QImage res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
+
+  // Skip visibility
+  filterSettings.setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
+  legendModel.setFilterSettings( &filterSettings );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName + "2" ) );
+
+  // False expression
+  QgsLayerTreeUtils::setLegendFilterByExpression( *layer, QStringLiteral( "@test_var != 'test_value'" ) );
+  filterSettings.setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
+  filterSettings.setLayerFilterExpressionsFromLayerTree( root.get() );
+  legendModel.setFilterSettings( &filterSettings );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName + "3" ) );
+
+  // False expression with visibility check
+  filterSettings.setFlags( Qgis::LayerTreeFilterFlags() );
+  legendModel.setFilterSettings( &filterSettings );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  res = _renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName + "3" ) );
+
 }
 
 void TestQgsLegendRenderer::testDiagramAttributeLegend()
