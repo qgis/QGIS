@@ -51,7 +51,7 @@ class DefineProjection(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
                                                             self.tr('Input Shapefile'), types=[QgsProcessing.TypeVectorAnyGeometry]))
-        self.addParameter(QgsProcessingParameterCrs(self.CRS, 'CRS'))
+        self.addParameter(QgsProcessingParameterCrs(self.CRS, 'CRS', 'EPSG:4326'))
         self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT,
                                                       self.tr('Layer with projection')))
 
