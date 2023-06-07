@@ -88,6 +88,7 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent )
   {
     if ( !mBlockSignals )
     {
+      mDeferredInvalidCrsSet = false;
       emit crsChanged();
       emit hasValidSelectionChanged( hasValidSelection() );
     }
