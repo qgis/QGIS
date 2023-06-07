@@ -97,15 +97,16 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     // populate the fields with the stored setting parameters
 
     txtName->setText( connectionName );
-    txtUrl->setText( QgsOwsConnection::settingsUrl->value( {mServiceName.toLower(), connectionName} ) );
-    mHttpHeaders->setHeaders( QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {mServiceName.toLower(), connectionName} ) ) );
+    const QStringList detailParameters { mServiceName.toLower(), connectionName };
+    txtUrl->setText( QgsOwsConnection::settingsUrl->value( detailParameters ) );
+    mHttpHeaders->setHeaders( QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( detailParameters ) ) );
 
     updateServiceSpecificSettings();
 
     // Authentication
-    mAuthSettings->setUsername( QgsOwsConnection::settingsUsername->value( {mServiceName, connectionName} ) );
-    mAuthSettings->setPassword( QgsOwsConnection::settingsPassword->value( {mServiceName, connectionName} ) );
-    mAuthSettings->setConfigId( QgsOwsConnection::settingsAuthCfg->value( {mServiceName, connectionName} ) );
+    mAuthSettings->setUsername( QgsOwsConnection::settingsUsername->value( detailParameters ) );
+    mAuthSettings->setPassword( QgsOwsConnection::settingsPassword->value( detailParameters ) );
+    mAuthSettings->setConfigId( QgsOwsConnection::settingsAuthCfg->value( detailParameters ) );
   }
   mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
 
@@ -440,7 +441,7 @@ void QgsNewHttpConnection::accept()
     QgsOwsConnection::settingsPagingEnabled->setValue( cbxWfsFeaturePaging->isChecked(), detailsParameters );
   }
 
-  QStringList credentialsParameters = {mServiceName, newConnectionName};
+  QStringList credentialsParameters = {mServiceName.toLower(), newConnectionName};
   QgsOwsConnection::settingsUsername->setValue( mAuthSettings->username(), credentialsParameters );
   QgsOwsConnection::settingsPassword->setValue( mAuthSettings->password(), credentialsParameters );
   QgsOwsConnection::settingsAuthCfg->setValue( mAuthSettings->configId(), credentialsParameters );

@@ -59,7 +59,7 @@ void QgsXyzSourceWidget::setSourceUri( const QString &uri )
   mSpinZMax->setValue( mCheckBoxZMax->isChecked() ? mSourceParts.value( QStringLiteral( "zmax" ) ).toInt() : 18 );
   mAuthSettings->setUsername( mSourceParts.value( QStringLiteral( "username" ) ).toString() );
   mAuthSettings->setPassword( mSourceParts.value( QStringLiteral( "password" ) ).toString() );
-  mEditReferer->setText( mSourceParts.value( QStringLiteral( "referer" ) ).toString() );
+  mEditReferer->setText( mSourceParts.value( QStringLiteral( "http-header:referer" ) ).toString() );
 
   int index = 0;  // default is "unknown"
   if ( mSourceParts.value( QStringLiteral( "tilePixelRatio" ) ).toInt() == 2. )
