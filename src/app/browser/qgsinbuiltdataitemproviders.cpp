@@ -1864,6 +1864,10 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
 bool QgsDatabaseItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiContext )
 {
+  // WARNING: This method will be called from the MAIN THREAD AND WILL BLOCK QGIS WHILE THE
+  // BROWSER IS BEING POPULATED
+  // We are limited to VERY VERY cheap calculations only!!
+  // DO NOT UNDER *****ANY***** CIRCUMSTANCES OPEN DATASETS HERE!!!!
   QgsFileDataCollectionItem *fileDataCollectionItem = qobject_cast< QgsFileDataCollectionItem * >( item );
   if ( !fileDataCollectionItem )
     return false;
@@ -1871,11 +1875,15 @@ bool QgsDatabaseItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiCo
   if ( qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
     return false; // GPKG is handled elsewhere (QgsGeoPackageItemGuiProvider)
 
-  if ( fileDataCollectionItem->databaseConnectionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
+  if ( fileDataCollectionItem->canAddVectorLayers() )
   {
     return true;
   }
 
+  // WARNING: This method will be called from the MAIN THREAD AND WILL BLOCK QGIS WHILE THE
+  // BROWSER IS BEING POPULATED
+  // We are limited to VERY VERY cheap calculations only!!
+  // DO NOT UNDER *****ANY***** CIRCUMSTANCES OPEN DATASETS HERE!!!!
   return false;
 }
 

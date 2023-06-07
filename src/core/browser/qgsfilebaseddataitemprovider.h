@@ -134,6 +134,24 @@ class CORE_EXPORT QgsFileDataCollectionItem final: public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
     bool hasDragEnabled() const override;
+
+    /**
+     * Returns TRUE if the file is likely to support addition of vector layers.
+     *
+     * This method is designed to be cheap to evaluate, so that it is safe to call
+     * within the main thread.
+     *
+     * By default it relies solely on a basic check of the associated driver's theoretical
+     * capabilities, and does not actually open the dataset to determine whether the particular
+     * file definitely can support layer additions.
+     *
+     * If a connection has previously been opened for this item, then the results will
+     * be updated to use the actual capabilities determined by that connection.
+     *
+     * \since QGIS 3.32
+     */
+    bool canAddVectorLayers() const;
+
     QgsMimeDataUtils::UriList mimeUris() const override;
     QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
@@ -159,6 +177,8 @@ class CORE_EXPORT QgsFileDataCollectionItem final: public QgsDataCollectionItem
     mutable bool mHasCachedCapabilities = false;
     mutable QgsAbstractDatabaseProviderConnection::Capabilities mCachedCapabilities;
     mutable Qgis::DatabaseProviderConnectionCapabilities2 mCachedCapabilities2;
+    mutable bool mHasCachedDropSupport = false;
+    mutable bool mCachedSupportsDrop = false;
 };
 
 
