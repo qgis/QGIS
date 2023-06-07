@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsxmlutils.h"
 #include "qgsprocessinghistoryprovider.h"
+#include "qgsprocessingutils.h"
 #include "qgshistoryentry.h"
 #include "qgsdbqueryhistoryprovider.h"
 
@@ -103,7 +104,8 @@ long long QgsHistoryProviderRegistry::addEntry( const QgsHistoryEntry &entry, bo
   if ( options.storageBackends & Qgis::HistoryProviderBackend::LocalProfile )
   {
     QDomDocument xmlDoc;
-    xmlDoc.appendChild( QgsXmlUtils::writeVariant( entry.entry, xmlDoc ) );
+    const QVariant cleanedMap = QgsProcessingUtils::removePointerValuesFromMap( entry.entry );
+    xmlDoc.appendChild( QgsXmlUtils::writeVariant( cleanedMap, xmlDoc ) );
     const QString entryXml = xmlDoc.toString();
     const QString dateTime = entry.timestamp.toString( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
 
@@ -190,8 +192,9 @@ bool QgsHistoryProviderRegistry::updateEntry( long long id, const QVariantMap &e
   {
     case Qgis::HistoryProviderBackend::LocalProfile:
     {
+      const QVariantMap cleanedMap = QgsProcessingUtils::removePointerValuesFromMap( entry );
       QDomDocument xmlDoc;
-      xmlDoc.appendChild( QgsXmlUtils::writeVariant( entry, xmlDoc ) );
+      xmlDoc.appendChild( QgsXmlUtils::writeVariant( cleanedMap, xmlDoc ) );
       const QString entryXml = xmlDoc.toString();
 
       QString query = qgs_sqlite3_mprintf( "UPDATE history SET xml='%q' WHERE id = %d;",
