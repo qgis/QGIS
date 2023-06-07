@@ -68,9 +68,7 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
   conn.authCfg = QgsXyzConnectionSettings::settingsUsername->value( name );
   conn.username = QgsXyzConnectionSettings::settingsPassword->value( name );
   conn.password = QgsXyzConnectionSettings::settingsPassword->value( name );
-
-  QgsHttpHeaders httpHeaders( QgsXyzConnectionSettings::settingsHeaders->value( name ) );
-
+  conn.httpHeaders = QgsXyzConnectionSettings::settingsHeaders->value( name );
   conn.tilePixelRatio = static_cast<int>( QgsXyzConnectionSettings::settingsTilePixelRatio->value( name ) );
   conn.hidden = QgsXyzConnectionSettings::settingsHidden->value( name );
   conn.interpretation = QgsXyzConnectionSettings::settingsInterpretation->value( name );
