@@ -473,7 +473,7 @@ void TestQgsProcessingAlgsPt1::packageAlg()
   selectedPolygonsPackagedLayer = std::make_unique< QgsVectorLayer >( outputGpkg + "|layername=polygons", "polygons", "ogr" );
   QVERIFY( selectedPolygonsPackagedLayer->isValid() );
   QCOMPARE( selectedPolygonsPackagedLayer->wkbType(), mPolygonLayer->wkbType() );
-  QCOMPARE( selectedPolygonsPackagedLayer->featureCount(), 10 ); // With enabled SELECTED_FEATURES_ONLY all features should be saved when there is no selection
+  QCOMPARE( selectedPolygonsPackagedLayer->featureCount(), 0 ); // With enabled SELECTED_FEATURES_ONLY no features should be saved when there is no selection
 }
 
 void TestQgsProcessingAlgsPt1::rasterLayerProperties()
