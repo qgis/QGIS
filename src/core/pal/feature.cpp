@@ -543,8 +543,24 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
   double distanceToLabel = getLabelDistance();
   const QgsMargins &visualMargin = mLF->visualMargin();
 
-  double symbolWidthOffset = ( mLF->offsetType() == Qgis::LabelOffsetType::FromSymbolBounds ? mLF->symbolSize().width() / 2.0 : 0.0 );
-  double symbolHeightOffset = ( mLF->offsetType() == Qgis::LabelOffsetType::FromSymbolBounds ? mLF->symbolSize().height() / 2.0 : 0.0 );
+  double symbolWidthOffset{ 0 };
+  double symbolHeightOffset{ 0 };
+
+  if ( mLF->offsetType() == Qgis::LabelOffsetType::FromSymbolBounds )
+  {
+    // Multi?
+    if ( mLF->feature().geometry().constParts().hasNext() )
+    {
+      const QgsGeometry geom{ QgsGeos::fromGeos( mLF->geometry() ) };
+      symbolWidthOffset = ( mLF->symbolSize().width() - geom.boundingBox().width() ) / 2.0;
+      symbolHeightOffset = ( mLF->symbolSize().height() - geom.boundingBox().height() ) / 2.0;
+    }
+    else
+    {
+      symbolWidthOffset = mLF->symbolSize().width() / 2.0;
+      symbolHeightOffset = mLF->symbolSize().height() / 2.0;
+    }
+  }
 
   double cost = 0.0001;
   std::size_t i = lPos.size();
