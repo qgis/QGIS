@@ -248,7 +248,22 @@ double QgsTileMatrixSet::scaleToZoom( double scale ) const
   if ( zoomUnder < 0 )
     return zoomOver;
   if ( zoomOver < 0 )
-    return zoomUnder;
+  {
+    // allow overzooming, so the styling is applied correctly
+    scaleOver = tileMatrix( maximumZoom() ).scale() / 2;
+    zoomOver = maximumZoom() + 1;
+    while ( true )
+    {
+      if ( scaleOver < scale && scale < scaleUnder )
+      {
+        return ( scaleUnder - scale ) / ( scaleUnder - scaleOver ) * ( zoomOver - zoomUnder ) + zoomUnder;
+      }
+      scaleUnder = scaleOver;
+      zoomUnder = zoomOver;
+      scaleOver = scaleOver / 2;
+      zoomOver += 1;
+    }
+  }
   else
     return ( scaleUnder - scale ) / ( scaleUnder - scaleOver ) * ( zoomOver - zoomUnder ) + zoomUnder;
 }
