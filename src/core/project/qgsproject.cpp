@@ -464,6 +464,7 @@ QgsProject::~QgsProject()
   mIsBeingDeleted = true;
 
   clear();
+  releaseHandlesToProjectArchive();
   delete mBadLayerHandler;
   delete mRelationManager;
   delete mLayerTreeRegistryBridge;
@@ -1079,10 +1080,14 @@ void QgsProject::clear()
 
   mLabelingEngineSettings->clear();
 
+  // must happen BEFORE archive reset, because we need to release the hold on any files which
+  // exists within the archive. Otherwise the archive can't be removed.
+  releaseHandlesToProjectArchive();
+
   mAuxiliaryStorage.reset( new QgsAuxiliaryStorage() );
   mArchive.reset( new QgsArchive() );
 
-  // must happen after archive reset!
+  // must happen AFTER archive reset, as it will populate a new style database within the new archive
   mStyleSettings->reset();
 
   emit labelingEngineSettingsChanged();
@@ -1436,6 +1441,11 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
 
 }
 
+void QgsProject::releaseHandlesToProjectArchive()
+{
+  mStyleSettings->removeProjectStyle();
+}
+
 bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, Qgis::ProjectReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1750,6 +1760,7 @@ bool QgsProject::read( Qgis::ProjectReadFlags flags )
         std::unique_ptr<QgsArchive> archive( new QgsArchive() );
         if ( archive->unzip( attachmentsZip ) )
         {
+          releaseHandlesToProjectArchive();
           mArchive = std::move( archive );
         }
       }
@@ -1868,11 +1879,24 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   // start new project, just keep the file name and auxiliary storage
   profile.switchTask( tr( "Creating auxiliary storage" ) );
   const QString fileName = mFile.fileName();
+
+
+  // NOTE [ND] -- I suspect this is wrong, as the archive may contain any number of non-auxiliary
+  // storage related files from the previously loaded project.
   std::unique_ptr<QgsAuxiliaryStorage> aStorage = std::move( mAuxiliaryStorage );
   std::unique_ptr<QgsArchive> archive = std::move( mArchive );
+
   clear();
+  // this is ugly, but clear() will have created a new archive and started populating it. We
+  // need to release handles to this archive now as the subsequent call to move will need
+  // to delete it, and requires free access to do so.
+  releaseHandlesToProjectArchive();
+
   mAuxiliaryStorage = std::move( aStorage );
   mArchive = std::move( archive );
+
+
+
   mFile.setFileName( fileName );
   mCachedHomePath.clear();
   mProjectScope.reset();
@@ -2281,7 +2305,10 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   profile.switchTask( tr( "Loading style properties" ) );
   const QDomElement styleSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectStyleSettings" ) );
   if ( !styleSettingsElement.isNull() )
+  {
+    mStyleSettings->removeProjectStyle();
     mStyleSettings->readXml( styleSettingsElement, context, flags );
+  }
 
   // restore time settings
   profile.switchTask( tr( "Loading temporal settings" ) );
@@ -4257,6 +4284,7 @@ bool QgsProject::unzip( const QString &filename, Qgis::ProjectReadFlags flags )
   }
 
   // Keep the archive
+  releaseHandlesToProjectArchive();
   mArchive = std::move( archive );
 
   // load auxiliary storage
@@ -4325,6 +4353,7 @@ bool QgsProject::zip( const QString &filename )
     // fixes the current archive and keep the previous version of qgd
     if ( !mArchive->exists() )
     {
+      releaseHandlesToProjectArchive();
       mArchive.reset( new QgsProjectArchive() );
       mArchive->unzip( mFile.fileName() );
       static_cast<QgsProjectArchive *>( mArchive.get() )->clearProjectFile();

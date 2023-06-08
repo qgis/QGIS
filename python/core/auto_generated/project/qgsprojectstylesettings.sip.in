@@ -120,6 +120,13 @@ Sets the default symbol opacity.
 Resets the settings to a default state.
 %End
 
+    void removeProjectStyle();
+%Docstring
+Removes and deletes the project style database.
+
+.. versionadded:: 3.32
+%End
+
     void setProjectStyle( QgsStyle *style /Transfer/ );
 %Docstring
 Sets the style database to use for the project style.
