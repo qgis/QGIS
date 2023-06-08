@@ -397,7 +397,10 @@ class ProcessingPlugin(QObject):
                             canvas.mapTool().reset()
                         except Exception:
                             pass
-                        canvas.setMapTool(prevMapTool)
+                        try:
+                            canvas.setMapTool(prevMapTool)
+                        except RuntimeError:
+                            pass
                 else:
                     feedback = MessageBarProgress(algname=alg.displayName())
                     context = dataobjects.createContext(feedback)
