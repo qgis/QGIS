@@ -2653,7 +2653,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
-    profiler->start( tr( "Create metadata provider registry" ) );
+    profiler->start( tr( "Create layer metadata provider registry" ) );
     mLayerMetadataProviderRegistry = new QgsLayerMetadataProviderRegistry();
     profiler->end();
   }
@@ -2789,16 +2789,6 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   {
     profiler->start( tr( "Setup 3D renderer registry" ) );
     m3DRendererRegistry = new Qgs3DRendererRegistry();
-    profiler->end();
-  }
-  {
-    profiler->start( tr( "Setup project storage registry" ) );
-    mProjectStorageRegistry = new QgsProjectStorageRegistry();
-    profiler->end();
-  }
-  {
-    profiler->start( tr( "Setup layer metadata provider registry" ) );
-    mLayerMetadataProviderRegistry = new QgsLayerMetadataProviderRegistry();
     profiler->end();
   }
   {
