@@ -430,7 +430,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   //use sourceIn mode for nicer antialiasing
   imagePainter.setCompositionMode( QPainter::CompositionMode_SourceIn );
   QPen pen;
-  pen.setWidth( 2 * devicePixelRatioF() );
+  pen.setWidthF( 2 * devicePixelRatioF() );
   //adapt pen color for hue
   pen.setColor( h > 20 && h < 200 ? Qt::black : Qt::white );
   imagePainter.setPen( pen );
