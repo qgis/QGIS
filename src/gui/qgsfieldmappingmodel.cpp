@@ -117,7 +117,7 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
           }
           case ColumnDataIndex::DestinationName:
           {
-            return f.field.displayName();
+            return f.field.displayNameWithAlias();
           }
           case ColumnDataIndex::DestinationType:
           {
