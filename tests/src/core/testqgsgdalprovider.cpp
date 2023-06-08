@@ -202,10 +202,10 @@ void TestQgsGdalProvider::testVrtAlphaBandRequired()
   QVERIFY( rp );
 
   QCOMPARE( rp->bandCount(), 4 );
-  QCOMPARE( rp->colorInterpretation( 1 ), Qgis::RasterColorInterpretation::RedBand );
-  QCOMPARE( rp->colorInterpretation( 2 ), Qgis::RasterColorInterpretation::GreenBand );
-  QCOMPARE( rp->colorInterpretation( 3 ), Qgis::RasterColorInterpretation::BlueBand );
-  QCOMPARE( rp->colorInterpretation( 4 ), Qgis::RasterColorInterpretation::AlphaBand );
+  QCOMPARE( rp->colorInterpretation( 1 ), QgsRaster::ColorInterpretation::RedBand );
+  QCOMPARE( rp->colorInterpretation( 2 ), QgsRaster::ColorInterpretation::GreenBand );
+  QCOMPARE( rp->colorInterpretation( 3 ), QgsRaster::ColorInterpretation::BlueBand );
+  QCOMPARE( rp->colorInterpretation( 4 ), QgsRaster::ColorInterpretation::AlphaBand );
 }
 
 void TestQgsGdalProvider::testVrtAlphaBandNotRequired()
@@ -220,7 +220,7 @@ void TestQgsGdalProvider::testVrtAlphaBandNotRequired()
   QGSCOMPARENEAR( rp->extent().yMinimum(), 5279975, 0.0001 );
   QGSCOMPARENEAR( rp->extent().yMaximum(), 5280075, 0.0001 );
   QCOMPARE( rp->bandCount(), 1 );
-  QCOMPARE( rp->colorInterpretation( 1 ), Qgis::RasterColorInterpretation::Undefined );
+  QCOMPARE( rp->colorInterpretation( 1 ), QgsRaster::ColorInterpretation::Undefined );
 }
 
 void TestQgsGdalProvider::noData()
