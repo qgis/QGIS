@@ -240,7 +240,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
         res->Real = val;
       else
       {
-        QgsDebugError( "Unsupported output data type for Bool" );
+        QgsDebugMsg( "Unsupported output data type for Bool" );
         return nullptr;
       }
       break;
@@ -256,7 +256,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
         res->Real = val;
       else
       {
-        QgsDebugError( "Unsupported output data type for Int" );
+        QgsDebugMsg( "Unsupported output data type for Int" );
         return nullptr;
       }
       break;
@@ -273,7 +273,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
         }
         else
         {
-          QgsDebugError( "Value does not fit on Integer" );
+          QgsDebugMsg( "Value does not fit on Integer" );
           return nullptr;
         }
       }
@@ -285,7 +285,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       else
       {
-        QgsDebugError( "Unsupported output data type for LongLong" );
+        QgsDebugMsg( "Unsupported output data type for LongLong" );
         return nullptr;
       }
       break;
@@ -302,7 +302,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
         }
         else
         {
-          QgsDebugError( "Value does not fit on Integer" );
+          QgsDebugMsg( "Value does not fit on Integer" );
           return nullptr;
         }
       }
@@ -315,7 +315,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
         }
         else
         {
-          QgsDebugError( "Value does not fit on Integer64" );
+          QgsDebugMsg( "Value does not fit on Integer64" );
           return nullptr;
         }
       }
@@ -325,7 +325,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       else
       {
-        QgsDebugError( "Unsupported output data type for LongLong" );
+        QgsDebugMsg( "Unsupported output data type for LongLong" );
         return nullptr;
       }
       break;
@@ -337,7 +337,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
         res->String = CPLStrdup( value.toString().toUtf8().constData() );
       else
       {
-        QgsDebugError( "Unsupported output data type for String" );
+        QgsDebugMsg( "Unsupported output data type for String" );
         return nullptr;
       }
       break;
@@ -354,7 +354,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       else
       {
-        QgsDebugError( "Unsupported output data type for Date" );
+        QgsDebugMsg( "Unsupported output data type for Date" );
         return nullptr;
       }
       break;
@@ -371,7 +371,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       else
       {
-        QgsDebugError( "Unsupported output data type for Time" );
+        QgsDebugMsg( "Unsupported output data type for Time" );
         return nullptr;
       }
       break;
@@ -393,7 +393,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       }
       else
       {
-        QgsDebugError( "Unsupported output data type for DateTime" );
+        QgsDebugMsg( "Unsupported output data type for DateTime" );
         return nullptr;
       }
       break;
