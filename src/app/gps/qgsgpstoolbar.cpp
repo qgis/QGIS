@@ -63,7 +63,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
       mConnection->disconnectGps();
   } );
 
-  mRecenterAction = new QAction( tr( "Recenter" ) );
+  mRecenterAction = new QAction( tr( "Recenter" ), this );
   mRecenterAction->setToolTip( tr( "Recenter map on GPS location" ) );
   mRecenterAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionRecenter.svg" ) ) );
   mRecenterAction->setEnabled( false );
@@ -123,7 +123,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   addSeparator();
 
-  mShowInfoAction = new QAction( tr( "Information" ) );
+  mShowInfoAction = new QAction( tr( "Information" ), this );
   mShowInfoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionPropertiesWidget.svg" ) ) );
   mShowInfoAction->setToolTip( tr( "Show GPS Information Panel" ) );
   mShowInfoAction->setCheckable( true );
