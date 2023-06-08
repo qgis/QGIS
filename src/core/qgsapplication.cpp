@@ -460,7 +460,7 @@ void QgsApplication::installTranslators()
 {
   if ( *sTranslation() != QLatin1String( "C" ) )
   {
-    mQgisTranslator = new QTranslator();
+    mQgisTranslator = new QTranslator( this );
     if ( mQgisTranslator->load( QStringLiteral( "qgis_" ) + *sTranslation(), i18nPath() ) )
     {
       installTranslator( mQgisTranslator );
@@ -481,7 +481,7 @@ void QgsApplication::installTranslators()
     qtTranslationsPath = prefix + qtTranslationsPath.mid( QLibraryInfo::location( QLibraryInfo::PrefixPath ).length() );
 #endif
 
-    mQtTranslator = new QTranslator();
+    mQtTranslator = new QTranslator( this );
     if ( mQtTranslator->load( QStringLiteral( "qt_" ) + *sTranslation(), qtTranslationsPath ) )
     {
       installTranslator( mQtTranslator );
@@ -491,7 +491,7 @@ void QgsApplication::installTranslators()
       QgsDebugMsgLevel( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( qtTranslationsPath, *sTranslation() ), 2 );
     }
 
-    mQtBaseTranslator = new QTranslator();
+    mQtBaseTranslator = new QTranslator( this );
     if ( mQtBaseTranslator->load( QStringLiteral( "qtbase_" ) + *sTranslation(), qtTranslationsPath ) )
     {
       installTranslator( mQtBaseTranslator );
