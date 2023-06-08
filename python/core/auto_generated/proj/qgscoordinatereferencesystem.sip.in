@@ -915,9 +915,12 @@ the projection method used by the CRS.
 
     bool hasAxisInverted() const;
 %Docstring
-Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS.
+Returns whether the axis order is inverted for the CRS compared to the order east/north (longitude/latitude).
+E.g. with WMS 1.3 the axis order for EPSG:4326 is north/east (latitude/longitude), i.e. inverted.
 
 :return: ``True`` if CRS axis is inverted
+
+.. seealso:: :py:func:`axisOrdering`
 %End
 
     SIP_PYOBJECT axisOrdering() const /TypeHint="List[Qgis.CrsAxisDirection]"/;
