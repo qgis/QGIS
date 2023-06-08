@@ -838,6 +838,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS, i.e. if "north" is the first axis, instead of "east".
      * \returns TRUE if CRS axis is inverted
+     *
+     * \see axisOrdering()
      */
     bool hasAxisInverted() const;
 
