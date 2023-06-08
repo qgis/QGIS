@@ -836,7 +836,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QgsProjOperation operation() const;
 
     /**
-     * Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS, i.e. if "north" is the first axis, instead of "east".
+     * Returns whether the axis order is inverted for the CRS compared to the order east/north (longitude/latitude).
+     * E.g. with WMS 1.3 the axis order for EPSG:4326 is north/east (latitude/longitude), i.e. inverted.
      * \returns TRUE if CRS axis is inverted
      *
      * \see axisOrdering()
