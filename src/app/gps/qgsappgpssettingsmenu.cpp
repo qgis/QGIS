@@ -222,7 +222,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   addSeparator();
 
-  mActionGpkgLog = new QAction( "Log to GeoPackage/Spatialite…" );
+  mActionGpkgLog = new QAction( tr( "Log to GeoPackage/Spatialite…" ), this );
   mActionGpkgLog->setCheckable( true );
   connect( mActionGpkgLog, &QAction::toggled, this, [ = ]( bool checked )
   {
@@ -254,7 +254,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   } );
   addAction( mActionGpkgLog );
 
-  mActionNmeaLog = new QAction( "Log NMEA Sentences…" );
+  mActionNmeaLog = new QAction( tr( "Log NMEA Sentences…" ), this );
   mActionNmeaLog->setCheckable( true );
   connect( mActionNmeaLog, &QAction::toggled, this, [ = ]( bool checked )
   {
