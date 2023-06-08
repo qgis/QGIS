@@ -35,7 +35,9 @@ from qgis.core import (
     QgsTextFormat,
     QgsVertexId,
 )
-from qgis.testing import start_app, unittest
+
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTestFont, unitTestDataPath
 
@@ -43,7 +45,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsAnnotationPointTextItem(unittest.TestCase):
+class TestQgsAnnotationPointTextItem(QgisTestCase):
 
     @classmethod
     def control_path_prefix(cls):

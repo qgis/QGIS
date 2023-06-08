@@ -57,12 +57,10 @@ from qgis.core import (
 
 import unittest
 
-# Get a backup, we will patch this one later
-_TestCase = unittest.TestCase
 unittest.util._MAX_LENGTH = 2000
 
 
-class TestCase(_TestCase):
+class QgisTestCase(unittest.TestCase):
 
     @staticmethod
     def is_ci_run() -> bool:
@@ -106,7 +104,7 @@ class TestCase(_TestCase):
             f.write(f"<h1>Python {cls.__name__} Tests</h1>\n")
             f.write(report)
 
-        if not TestCase.is_ci_run():
+        if not QgisTestCase.is_ci_run():
             QDesktopServices.openUrl(QUrl.fromLocalFile(report_file))
 
     @classmethod
@@ -221,13 +219,13 @@ class TestCase(_TestCase):
             result_wkt = layer_result.dataProvider().crs().toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
 
             if use_asserts:
-                _TestCase.assertEqual(self, layer_expected.dataProvider().crs(), layer_result.dataProvider().crs())
+                self.assertEqual(self, layer_expected.dataProvider().crs(), layer_result.dataProvider().crs())
             elif layer_expected.dataProvider().crs() != layer_result.dataProvider().crs():
                 return False
 
         # Compare features
         if use_asserts:
-            _TestCase.assertEqual(self, layer_expected.featureCount(), layer_result.featureCount())
+            self.assertEqual(self, layer_expected.featureCount(), layer_result.featureCount())
         elif layer_expected.featureCount() != layer_result.featureCount():
             return False
 
@@ -290,8 +288,8 @@ class TestCase(_TestCase):
                     features_expected.remove(feat_expected_equal)
                 else:
                     if use_asserts:
-                        _TestCase.assertTrue(
-                            self, False,
+                        self.assertTrue(
+                            False,
                             'Unexpected result feature: fid {}, geometry: {}, attributes: {}'.format(
                                 feat.id(),
                                 feat.geometry().constGet().asWkt(precision) if feat.geometry() else 'NULL',
@@ -309,7 +307,7 @@ class TestCase(_TestCase):
                             feat.geometry().constGet().asWkt(precision) if feat.geometry() else 'NULL',
                             feat.attributes())
                         )
-                    _TestCase.assertTrue(self, False, 'Some expected features not found in results:\n' + '\n'.join(lst_missing))
+                    self.assertTrue(False, 'Some expected features not found in results:\n' + '\n'.join(lst_missing))
                 else:
                     return False
 
@@ -457,8 +455,7 @@ class TestCase(_TestCase):
             equal = False
 
         if use_asserts:
-            _TestCase.assertTrue(
-                self,
+            self.assertTrue(
                 equal, ''
                 ' Features (Expected fid: {}, Result fid: {}) differ in geometry with method {}: \n\n'
                 '  At given precision ({}):\n'
@@ -499,8 +496,7 @@ class TestCase(_TestCase):
                 continue
 
             if use_asserts:
-                _TestCase.assertIn(
-                    self,
+                self.assertIn(
                     field_expected.name().lower(),
                     [name.lower() for name in feat1.fields().names()])
 
@@ -540,8 +536,7 @@ class TestCase(_TestCase):
                     attr_result = round(attr_result, cmp['precision'])
 
             if use_asserts:
-                _TestCase.assertEqual(
-                    self,
+                self.assertEqual(
                     attr_expected,
                     attr_result,
                     'Features {}/{} differ in attributes\n\n * Field expected: {} ({})\n * result  : {} ({})\n\n * Expected: {} != Result  : {}'.format(
@@ -625,9 +620,7 @@ def expectedFailure(*args):
         return realExpectedFailure
 
 
-# Patch unittest
-unittest.TestCase = TestCase
-unittest.expectedFailure = expectedFailure
+QgisTestCase.expectedFailure = expectedFailure
 
 
 def start_app(cleanup=True):
