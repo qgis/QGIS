@@ -140,7 +140,6 @@ class CORE_EXPORT QgsFileDataCollectionItem final: public QgsDataCollectionItem
     /**
      * Returns the associated connection capabilities, if a databaseConnection() is available.
      *
-     * \see databaseConnectionCapabilities2()
      * \since QGIS 3.32
      */
     QgsAbstractDatabaseProviderConnection::Capabilities databaseConnectionCapabilities() const;
