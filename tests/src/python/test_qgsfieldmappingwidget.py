@@ -59,6 +59,7 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         f = QgsField('destination_field1', QVariant.Int, 'integer', 10, 8)
         self.assertTrue(destination_fields.append(f))
         f = QgsField('destination_field2', QVariant.String)
+        f.setAlias('my alias')
         self.assertTrue(destination_fields.append(f))
         f = QgsField('destination_field3', QVariant.String)
         self.assertTrue(destination_fields.append(f))
@@ -94,7 +95,7 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 4), Qt.DisplayRole), 8)
 
         self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), '"source_field1"')
-        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2')
+        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2 (my alias)')
 
         self.assertEqual(model.data(model.index(2, 0), Qt.DisplayRole), QVariant())
         self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
@@ -169,7 +170,7 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), Qt.DisplayRole), '"source_field2"')
         self.assertEqual(model.data(model.index(0, 1), Qt.DisplayRole), 'destination_field1')
         self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), '"source_field1"')
-        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2')
+        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2 (my alias)')
         self.assertEqual(model.data(model.index(2, 0), Qt.DisplayRole), '"source_field3"')
         self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
 
