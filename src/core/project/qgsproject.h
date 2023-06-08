@@ -2279,6 +2279,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
                            QgsMapLayer::ReadFlags layerReadFlags,
                            int totalProviderCount );
 
+    /**
+     * Releases any handles to files stored in the project archive, so that the
+     * archive can be safely removed.
+     */
+    void releaseHandlesToProjectArchive();
+
     Qgis::ProjectCapabilities mCapabilities;
 
     std::unique_ptr< QgsMapLayerStore > mLayerStore;

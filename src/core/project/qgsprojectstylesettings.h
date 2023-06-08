@@ -123,6 +123,13 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     void reset();
 
     /**
+     * Removes and deletes the project style database.
+     *
+     * \since QGIS 3.32
+     */
+    void removeProjectStyle();
+
+    /**
      * Sets the style database to use for the project style.
      *
      * \see projectStyle()
