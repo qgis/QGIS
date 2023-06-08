@@ -48,16 +48,6 @@
 #include <netinet/in.h>
 #endif
 
-QgsPoolPostgresConn::QgsPoolPostgresConn( const QString &connInfo )
-  : mPgConn( QgsPostgresConnPool::instance()->acquireConnection( connInfo ) )
-{
-}
-
-QgsPoolPostgresConn::~QgsPoolPostgresConn()
-{
-  if ( mPgConn )
-    QgsPostgresConnPool::instance()->releaseConnection( mPgConn );
-}
 
 
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;

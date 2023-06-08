@@ -97,6 +97,21 @@ class QgsSqlConnectionPool : public QgsConnectionPool<T *, T_Group>
       sInstance = nullptr;
     }
 
+
+    /**
+     * Call instance and acquire a connection, return a shared pointer with a destructor
+     * that will call the connection pool instance's release of the connection.
+     */
+    static std::shared_ptr<T> getConnectionFromInstance( const QString &connInfo )
+    {
+      return std::shared_ptr<T>( instance()->acquireConnection( connInfo ),
+                                 []( T * connection )
+      {
+        if ( connection )
+          instance()->releaseConnection( connection );
+      } );
+    }
+
     QString connectionToName( T *connection ) override
     {
       return connection->connInfo();

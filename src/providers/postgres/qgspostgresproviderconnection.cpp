@@ -255,17 +255,13 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
   return execSqlPrivate( sql, true, feedback );
 }
 
-QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
+QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPostgresConn> pgconn ) const
 {
   return execSqlPrivate( sql, resolveTypes, feedback, pgconn ).rows();
 }
 
-QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPostgresConn> pgconn ) const
 {
-  if ( ! pgconn )
-  {
-    pgconn = std::make_shared<QgsPoolPostgresConn>( QgsDataSourceUri( uri() ).connectionInfo( false ) );
-  }
 
   std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator = std::make_shared<QgsPostgresProviderResultIterator>( resolveTypes );
   QueryResult results( iterator );
@@ -276,9 +272,9 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
     return results;
   }
 
-  QgsPostgresConn *conn = pgconn->get();
+  pgconn = QgsPostgresConnPool::getConnectionFromInstance( QgsDataSourceUri( uri() ).connectionInfo( false ) );
 
-  if ( ! conn )
+  if ( ! pgconn )
   {
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
   }
@@ -297,12 +293,12 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
       qtConnection = QObject::connect( feedback, &QgsFeedback::canceled, [ &pgconn ]
       {
         if ( pgconn )
-          pgconn->get()->PQCancel();
+          pgconn->PQCancel();
       } );
     }
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->LoggedPQexec( "QgsPostgresProviderConnection", sql ) );
+    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( pgconn->LoggedPQexec( "QgsPostgresProviderConnection", sql ) );
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
 
@@ -312,20 +308,20 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
     }
 
     QString errCause;
-    if ( conn->PQstatus() != CONNECTION_OK || ! res->result() )
+    if ( pgconn->PQstatus() != CONNECTION_OK || ! res->result() )
     {
       errCause = QObject::tr( "Connection error: %1 returned %2 [%3]" )
-                 .arg( sql ).arg( conn->PQstatus() )
-                 .arg( conn->PQerrorMessage() );
+                 .arg( sql ).arg( pgconn->PQstatus() )
+                 .arg( pgconn->PQerrorMessage() );
     }
     else
     {
-      const QString err { conn->PQerrorMessage() };
+      const QString err { pgconn->PQerrorMessage() };
       if ( ! err.isEmpty() )
       {
         errCause = QObject::tr( "SQL error: %1 returned %2 [%3]" )
                    .arg( sql )
-                   .arg( conn->PQstatus() )
+                   .arg( pgconn->PQstatus() )
                    .arg( err );
       }
     }

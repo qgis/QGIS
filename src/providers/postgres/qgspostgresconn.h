@@ -153,18 +153,6 @@ struct QgsPostgresLayerProperty
 #endif
 };
 
-//! Wraps acquireConnection() and releaseConnection() from a QgsPostgresConnPool.
-// This can be used for creating std::shared_ptr<QgsPoolPostgresConn>.
-class QgsPoolPostgresConn
-{
-    class QgsPostgresConn *mPgConn;
-  public:
-    QgsPoolPostgresConn( const QString &connInfo );
-    ~QgsPoolPostgresConn();
-
-    class QgsPostgresConn *get() const { return mPgConn; }
-};
-
 #include "qgsconfig.h"
 constexpr int sPostgresConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
 #define QGS_QUERY_LOG_ORIGIN_PG_CON QString(QString( __FILE__ ).mid( sPostgresConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")")
