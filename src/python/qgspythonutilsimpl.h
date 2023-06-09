@@ -36,17 +36,17 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
     /* general purpose functions */
 
-    void initPython( QgisInterface *interface, bool installErrorHook, const QString &faultHandlerLogPath = QString() ) override;
+    void initPython( QgisInterface *interface, bool installErrorHook, const QString &faultHandlerLogPath = QString() ) final;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    void initServerPython( QgsServerInterface *interface ) override;
-    bool startServerPlugin( QString packageName ) override;
+    void initServerPython( QgsServerInterface *interface ) final;
+    bool startServerPlugin( QString packageName ) final;
 #endif
-    void exitPython() override;
-    bool isEnabled() override;
-    bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) override;
-    QString runStringUnsafe( const QString &command, bool single = true ) override; // returns error traceback on failure, empty QString on success
-    bool evalString( const QString &command, QString &result ) override;
-    bool getError( QString &errorClassName, QString &errorText ) override;
+    void exitPython() final;
+    bool isEnabled() final;
+    bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) final;
+    QString runStringUnsafe( const QString &command, bool single = true ) final; // returns error traceback on failure, empty QString on success
+    bool evalString( const QString &command, QString &result ) final;
+    bool getError( QString &errorClassName, QString &errorText ) final;
 
     /**
      * Returns the path where QGIS Python related files are located.
@@ -80,17 +80,17 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
      */
     QStringList extraPluginsPaths() const;
 
-    QStringList pluginList() override;
-    bool isPluginLoaded( const QString &packageName ) override;
-    QStringList listActivePlugins() override;
-    bool loadPlugin( const QString &packageName ) override;
-    bool startPlugin( const QString &packageName ) override;
-    bool startProcessingPlugin( const QString &packageName ) override;
-    QString getPluginMetadata( const QString &pluginName, const QString &function ) override;
-    bool pluginHasProcessingProvider( const QString &pluginName ) override;
-    bool canUninstallPlugin( const QString &packageName ) override;
-    bool unloadPlugin( const QString &packageName ) override;
-    bool isPluginEnabled( const QString &packageName ) const override;
+    QStringList pluginList() final;
+    bool isPluginLoaded( const QString &packageName ) final;
+    QStringList listActivePlugins() final;
+    bool loadPlugin( const QString &packageName ) final;
+    bool startPlugin( const QString &packageName ) final;
+    bool startProcessingPlugin( const QString &packageName ) final;
+    QString getPluginMetadata( const QString &pluginName, const QString &function ) final;
+    bool pluginHasProcessingProvider( const QString &pluginName ) final;
+    bool canUninstallPlugin( const QString &packageName ) final;
+    bool unloadPlugin( const QString &packageName ) final;
+    bool isPluginEnabled( const QString &packageName ) const final;
 
   protected:
 
