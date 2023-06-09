@@ -427,7 +427,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAuthSettings->setWarningText( QgsAuthSettingsWidget::formattedWarning( QgsAuthSettingsWidget::UserSettings ) );
 
   //Web proxy settings
-  grpProxy->setChecked( mSettings->value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() );
+  grpProxy->setChecked( mSettings->value( QStringLiteral( "proxy/proxyEnabled" ), true ).toBool() );
   leProxyHost->setText( mSettings->value( QStringLiteral( "proxy/proxyHost" ), QString() ).toString() );
   leProxyPort->setText( mSettings->value( QStringLiteral( "proxy/proxyPort" ), QString() ).toString() );
 
