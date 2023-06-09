@@ -55,6 +55,11 @@ QgsRasterCalcNode::~QgsRasterCalcNode()
 {
   delete mLeft;
   delete mRight;
+  for ( int i = 0; i < mFunctionArgs.size(); ++i )
+  {
+    if(mFunctionArgs.at( i ))
+      delete mFunctionArgs.at( i );
+  }
 }
 
 bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row ) const
