@@ -2026,6 +2026,8 @@ QgisApp::~QgisApp()
   mMapStylingDock = nullptr;
   delete mCoordsEdit;
   mCoordsEdit = nullptr;
+  delete mLayerTreeView;
+  mLayerTreeView = nullptr;
 
   QgsGui::nativePlatformInterface()->cleanup();
 
