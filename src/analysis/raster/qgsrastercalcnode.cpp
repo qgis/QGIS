@@ -225,14 +225,22 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
     QVector <QgsRasterMatrix *> matrixContainer;
     for ( int i = 0; i < mFunctionArgs.size(); ++i )
     {
-      std::unique_ptr< QgsRasterMatrix > singleMatrix( new QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() ) );
+      QgsRasterMatrix * singleMatrix = new QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
+      matrixContainer.append( singleMatrix );
       if ( !mFunctionArgs.at( i ) || !mFunctionArgs.at( i )->calculate( rasterData, *singleMatrix, row ) )
       {
+        for ( int i = 0; i < matrixContainer.size(); ++i )
+        {
+          delete matrixContainer.at( i );
+        }
         return false;
       }
-      matrixContainer.append( singleMatrix.release() );
     }
     evaluateFunction( matrixContainer, result );
+    for ( int i = 0; i < matrixContainer.size(); ++i )
+    {
+      delete matrixContainer.at( i );
+    }
     return true;
   }
   return false;
