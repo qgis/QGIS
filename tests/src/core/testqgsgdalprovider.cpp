@@ -220,7 +220,7 @@ void TestQgsGdalProvider::testVrtAlphaBandNotRequired()
   QGSCOMPARENEAR( rp->extent().yMinimum(), 5279975, 0.0001 );
   QGSCOMPARENEAR( rp->extent().yMaximum(), 5280075, 0.0001 );
   QCOMPARE( rp->bandCount(), 1 );
-  QCOMPARE( rp->colorInterpretation( 1 ), QgsRaster::ColorInterpretation::Undefined );
+  QCOMPARE( rp->colorInterpretation( 1 ), QgsRaster::ColorInterpretation::UndefinedColorInterpretation );
 }
 
 void TestQgsGdalProvider::noData()
