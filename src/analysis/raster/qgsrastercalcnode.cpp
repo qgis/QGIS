@@ -57,7 +57,7 @@ QgsRasterCalcNode::~QgsRasterCalcNode()
   delete mRight;
   for ( int i = 0; i < mFunctionArgs.size(); ++i )
   {
-    if(mFunctionArgs.at( i ))
+    if( mFunctionArgs.at( i ) )
       delete mFunctionArgs.at( i );
   }
 }
@@ -225,7 +225,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
     QVector <QgsRasterMatrix *> matrixContainer;
     for ( int i = 0; i < mFunctionArgs.size(); ++i )
     {
-      QgsRasterMatrix * singleMatrix = new QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
+      QgsRasterMatrix *singleMatrix = new QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
       matrixContainer.append( singleMatrix );
       if ( !mFunctionArgs.at( i ) || !mFunctionArgs.at( i )->calculate( rasterData, *singleMatrix, row ) )
       {
