@@ -132,8 +132,13 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         self.infoBar.setSizePolicy(sizePolicy)
         self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
+        self._old_stdout = sys.stdout
+        self._old_stderr = sys.stderr
+
         sys.stdout = writeOut(self, sys.stdout)
         sys.stderr = writeOut(self, sys.stderr, "_traceback")
+
+        QgsApplication.instance().aboutToQuit.connect(self.on_app_exit)
 
         self.insertInitText()
         self.refreshSettingsOutput()
@@ -153,6 +158,13 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         self.selectAllShortcut = QShortcut(QKeySequence.SelectAll, self)
         self.selectAllShortcut.setContext(Qt.WidgetWithChildrenShortcut)
         self.selectAllShortcut.activated.connect(self.selectAll)
+
+    def on_app_exit(self):
+        """
+        Prepares the console for a graceful close
+        """
+        sys.stdout = self._old_stdout
+        sys.stderr = self._old_stderr
 
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
