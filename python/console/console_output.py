@@ -19,6 +19,7 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
+from qgis.PyQt import sip
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMetaObject, Q_ARG, QObject, pyqtSlot
 from qgis.PyQt.QtGui import QColor, QKeySequence
 from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
@@ -43,6 +44,8 @@ class writeOut(QObject):
 
     @pyqtSlot(str)
     def write(self, m):
+        if sip.isdeleted(self.sO):
+            return
 
         # This manage the case when console is called from another thread
         if QThread.currentThread() != QCoreApplication.instance().thread():
