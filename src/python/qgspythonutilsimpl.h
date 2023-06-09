@@ -133,6 +133,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
   private:
 
     bool mErrorHookInstalled = false;
+    QString mFaultHandlerLogPath;
 };
 
 #endif

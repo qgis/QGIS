@@ -224,8 +224,9 @@ void QgsPythonUtilsImpl::initPython( QgisInterface *interface, const bool instal
     QString escapedPath = faultHandlerLogPath;
     escapedPath.replace( '\\', QLatin1String( "\\\\" ) );
     escapedPath.replace( '\'', QLatin1String( "\\'" ) );
-    runString( QStringLiteral( "fault_handler_file=open('%1', 'wt')" ).arg( escapedPath ) );
-    runString( QStringLiteral( "faulthandler.enable(file=fault_handler_file)" ) );
+    runString( QStringLiteral( "__qgis_fault_handler_file=open('%1', 'wt')" ).arg( escapedPath ) );
+    runString( QStringLiteral( "faulthandler.enable(file=__qgis_fault_handler_file)" ) );
+    mFaultHandlerLogPath = faultHandlerLogPath;
   }
 
   if ( interface )
@@ -282,8 +283,30 @@ bool QgsPythonUtilsImpl::startServerPlugin( QString packageName )
 
 void QgsPythonUtilsImpl::exitPython()
 {
+  if ( !mFaultHandlerLogPath.isEmpty() )
+  {
+    runString( QStringLiteral( "faulthandler.disable()" ) );
+    runString( QStringLiteral( "__qgis_fault_handler_file.close()" ) );
+
+    // remove fault handler log file only if it's empty
+    QFile faultHandlerFile( mFaultHandlerLogPath );
+    bool faultHandlerLogEmpty = false;
+    if ( faultHandlerFile.open( QIODevice::ReadOnly ) )
+    {
+      faultHandlerLogEmpty = faultHandlerFile.size() == 0;
+      faultHandlerFile.close();
+    }
+    if ( faultHandlerLogEmpty )
+    {
+      QFile::remove( mFaultHandlerLogPath );
+    }
+
+    mFaultHandlerLogPath.clear();
+  }
+
   if ( mErrorHookInstalled )
     uninstallErrorHook();
+
   // causes segfault!
   //Py_Finalize();
   mMainModule = nullptr;
