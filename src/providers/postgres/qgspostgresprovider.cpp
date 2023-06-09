@@ -250,12 +250,6 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     return;
   }
 
-  // Set the PostgreSQL message level so that we don't get the
-  // 'there is no transaction in progress' warning.
-#ifndef QGISDEBUG
-  mConnectionRO->PQexecNR( QStringLiteral( "set client_min_messages to error" ) );
-#endif
-
   setNativeTypes( mConnectionRO->nativeTypes() );
 
   QString key;
