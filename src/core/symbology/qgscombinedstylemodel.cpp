@@ -69,7 +69,7 @@ void QgsCombinedStyleModel::addStyle( QgsStyle *style )
   addSourceModel( titleModel );
   mTitleModels.insert( style, titleModel );
 
-  QgsStyleModel *styleModel = new QgsStyleModel( style );
+  QgsStyleModel *styleModel = new QgsStyleModel( style, this );
 
   for ( QSize size : std::as_const( mAdditionalSizes ) )
   {
