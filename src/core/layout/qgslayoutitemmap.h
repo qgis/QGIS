@@ -18,6 +18,7 @@
 #define QGSLAYOUTITEMMAP_H
 
 #include "qgis_core.h"
+#include "qgsgrouplayer.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
 #include "qgsmaplayerref.h"
@@ -1184,6 +1185,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     void createStagedRenderJob( const QgsRectangle &extent, const QSizeF size, double dpi );
 
     QPolygonF calculateVisibleExtentPolygon( bool includeClipping ) const;
+
+    /**
+     * Key is the original layer id, value is the cloned group
+     */
+    std::map<QString, std::unique_ptr<QgsGroupLayer>> mGroupLayers;
 
     friend class QgsLayoutItemMapGrid;
     friend class QgsLayoutItemMapOverview;

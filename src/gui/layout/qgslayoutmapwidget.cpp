@@ -1535,7 +1535,8 @@ void QgsLayoutMapWidget::storeCurrentLayerSet()
   if ( !mMapItem )
     return;
 
-  const QList<QgsMapLayer *> layers = mMapCanvas->mapSettings().layers();
+  QList<QgsMapLayer *> layers = mMapCanvas->mapSettings().layers();
+
   mMapItem->setLayers( layers );
 
   if ( mMapItem->keepLayerStyles() )
