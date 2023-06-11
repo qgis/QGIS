@@ -3,7 +3,7 @@ Makes each output cell value a function of the values assigned to the correspond
 Raster (r.*)
 QgsProcessingParameterMultipleLayers|input|Input raster layer(s)|3|None|False
 QgsProcessingParameterBoolean|-n|Propagate NULLs|False
-QgsProcessingParameterEnum|method|Aggregate operation|average;count;median;mode;minimum;min_raster;maximum;max_raster;stddev;range;sum;variance;diversity;slope;offset;detcoeff;quart1;quart3;perc90;skewness;kurtosis;quantile|True|0|True
+QgsProcessingParameterEnum|method|Aggregate operation|average;count;median;mode;minimum;min_raster;maximum;max_raster;stddev;range;sum;variance;diversity;slope;offset;detcoeff;quart1;quart3;perc90;skewness;kurtosis;quantile;tvalue|True|0|True
 QgsProcessingParameterString|quantile|Quantile to calculate for method=quantile|None|False|True
 QgsProcessingParameterString|weights|Weighting factor for each input map, default value is 1.0|None|False|True
 *QgsProcessingParameterRange|range|Ignore values outside this range (lo,hi)|QgsProcessingParameterNumber.Double|None|True
