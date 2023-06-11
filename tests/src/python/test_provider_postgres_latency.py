@@ -21,7 +21,16 @@ import time
 
 import psycopg2
 import qgis  # NOQA
-from qgis.core import QgsFeatureRequest, QgsVectorLayer
+from qgis.PyQt.QtCore import (
+    QDir,
+    QTemporaryFile,
+)
+from qgis.core import (
+    QgsFeatureRequest,
+    QgsProject,
+    QgsSettingsTree,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
 
 QGISAPP = start_app()
@@ -127,6 +136,37 @@ class TestPyQgsPostgresProviderLatency(unittest.TestCase):
         duration = round(abs(time.time() - start_time), 1)
         self.setDelay(0)
         self.assertTrue(duration < 10, error_string.format(duration))
+
+    def testProjectOpenTime(self):
+        """ open project, provider-parallel-loading = False """
+
+        projectFile = QTemporaryFile(QDir.temp().absoluteFilePath("testProjectOpenTime.qgz"))
+        projectFile.open()
+
+        project = QgsProject()
+        set_new_layer = ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql='
+        project.addMapLayer(QgsVectorLayer(self.dbconn + set_new_layer, 'test_vl_01', 'postgres'))
+        project.addMapLayer(QgsVectorLayer(self.dbconn + set_new_layer, 'test_vl_02', 'postgres'))
+        project.addMapLayer(QgsVectorLayer(self.dbconn + set_new_layer, 'test_vl_03', 'postgres'))
+        project.addMapLayer(QgsVectorLayer(self.dbconn + set_new_layer, 'test_vl_04', 'postgres'))
+        project.addMapLayer(QgsVectorLayer(self.dbconn + set_new_layer, 'test_vl_05', 'postgres'))
+        self.assertTrue(project.write(projectFile.fileName()))
+
+        settings = QgsSettingsTree.node('core').childSetting('provider-parallel-loading')
+        settings.setVariantValue(False)
+
+        davg = 8.8
+        dmin = round(davg - 0.2, 1)
+        dmax = round(davg + 0.3, 1)
+        error_string = 'expected from {0}s to {1}s, got {2}s\nHINT: set davg={2} to pass the test :)'
+
+        project = QgsProject()
+        self.setDelay(100)
+        start_time = time.time()
+        self.assertTrue(project.read(projectFile.fileName()))
+        duration = round(abs(time.time() - start_time), 1)
+        self.setDelay(0)
+        self.assertTrue(duration > dmin and duration < dmax, error_string.format(dmin, dmax, duration))
 
 
 if __name__ == '__main__':
