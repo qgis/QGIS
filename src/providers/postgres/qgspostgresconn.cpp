@@ -2049,14 +2049,14 @@ void QgsPostgresConn::deduceEndian()
   closeCursor( QStringLiteral( "oidcursor" ) );
 }
 
-void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata )
+void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata, QgsFeedback *feedback )
 {
   QVector<QgsPostgresLayerProperty *> vect;
   vect << &layerProperty;
-  retrieveLayerTypes( vect, useEstimatedMetadata );
+  retrieveLayerTypes( vect, useEstimatedMetadata, feedback );
 }
 
-void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &layerProperties, bool useEstimatedMetadata )
+void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &layerProperties, bool useEstimatedMetadata, QgsFeedback *feedback )
 {
   QString table;
   QString query;
@@ -2221,6 +2221,9 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
 
   for ( int i = 0; i < res.PQntuples(); i++ )
   {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
     int idx = res.PQgetvalue( i, 0 ).toInt();
     auto srids_and_types = QgsPostgresStringUtils::parseArray( res.PQgetvalue( i, 1 ) );
     QgsPostgresLayerProperty &layerProperty = *layerProperties[idx];

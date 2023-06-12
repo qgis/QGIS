@@ -198,7 +198,7 @@ void QgsGeoPackageProviderConnection::deleteSpatialIndex( const QString &schema,
                          QgsSqliteUtils::quotedString( geometryColumn ) ) );
 }
 
-QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
+QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
 {
 
   // List of GPKG quoted system and dummy tables names to be excluded from the tables listing
@@ -224,6 +224,8 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
 
     for ( const auto &row : std::as_const( results ) )
     {
+      if ( feedback && feedback->isCanceled() )
+        break;
 
       if ( row.size() != 6 )
       {

@@ -1270,7 +1270,7 @@ void QgsAbstractDatabaseProviderConnection::renameField( const QString &schema, 
   }
 }
 
-QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tables( const QString &, const QgsAbstractDatabaseProviderConnection::TableFlags & ) const
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tables( const QString &, const QgsAbstractDatabaseProviderConnection::TableFlags &, QgsFeedback * ) const
 {
   checkCapability( Capability::Tables );
   return QList<QgsAbstractDatabaseProviderConnection::TableProperty>();

@@ -598,14 +598,17 @@ void QgsPostgresProviderConnection::setFieldComment( const QString &fieldName, c
                          ) );
 }
 
-QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
+QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::Tables );
   QList<QgsPostgresProviderConnection::TableProperty> tables;
   QString errCause;
   // TODO: set flags from the connection if flags argument is 0
   const QgsDataSourceUri dsUri { uri() };
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ), -1, false, feedback );
+  if ( feedback && feedback->isCanceled() )
+    return {};
+
   if ( !conn )
   {
     errCause = QObject::tr( "Connection failed: %1" ).arg( uri() );
@@ -662,7 +665,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
                                       ( pr.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown ||
                                         pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
           {
-            conn->retrieveLayerTypes( pr, useEstimatedMetadata );
+            conn->retrieveLayerTypes( pr, useEstimatedMetadata, feedback );
           }
           QgsPostgresProviderConnection::TableProperty property;
           property.setFlags( prFlags );
