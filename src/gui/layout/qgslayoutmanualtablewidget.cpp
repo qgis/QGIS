@@ -32,7 +32,7 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
 {
   setupUi( this );
 
-  connect( mSetContentsButton, &QPushButton::clicked, this, &QgsLayoutManualTableWidget::setTableContents );
+  connect( mSetContentsButton, &QPushButton::clicked, this, &QgsLayoutManualTableWidget::openTableDesigner );
   connect( mMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutManualTableWidget::mMarginSpinBox_valueChanged );
   connect( mGridStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutManualTableWidget::mGridStrokeWidthSpinBox_valueChanged );
   connect( mGridColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutManualTableWidget::mGridColorButton_colorChanged );
@@ -167,7 +167,7 @@ bool QgsLayoutManualTableWidget::setNewItem( QgsLayoutItem *item )
   return true;
 }
 
-void QgsLayoutManualTableWidget::setTableContents()
+void QgsLayoutManualTableWidget::openTableDesigner()
 {
   if ( !mTable )
   {

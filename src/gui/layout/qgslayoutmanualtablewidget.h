@@ -46,6 +46,11 @@ class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, pub
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
     QgsExpressionContext createExpressionContext() const override;
 
+
+  public slots:
+    //! Opens the table editor dialog
+    void openTableDesigner();
+
   protected:
 
     bool setNewItem( QgsLayoutItem *item ) override;
@@ -62,7 +67,6 @@ class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, pub
 
   private slots:
 
-    void setTableContents();
     void mMarginSpinBox_valueChanged( double d );
     void mGridStrokeWidthSpinBox_valueChanged( double d );
     void mGridColorButton_colorChanged( const QColor &newColor );

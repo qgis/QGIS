@@ -75,6 +75,7 @@
 #include "qgsscreenhelper.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsconfigureshortcutsdialog.h"
+#include "qgslayoutmanualtablewidget.h"
 #include "ui_defaults.h"
 
 #include <QShortcut>
@@ -1388,6 +1389,12 @@ void QgsLayoutDesignerDialog::onItemDoubleClicked( QgsLayoutItem *item )
 {
   // Always show the item properties when it is double clicked
   showItemOptions( item, true );
+
+  // If the item is a manual table, we want to open the table editor
+  if ( QgsLayoutManualTableWidget *editor = qobject_cast< QgsLayoutManualTableWidget * >( mItemPropertiesStack->mainPanel() ) )
+  {
+    editor->openTableDesigner();
+  }
 }
 
 void QgsLayoutDesignerDialog::open()
