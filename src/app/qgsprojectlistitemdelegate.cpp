@@ -75,15 +75,15 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
 
   const int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.1 );
   const int textSize = static_cast<int>( titleSize * 0.85 );
+  QSizeF iconSize = icon.size() / painter->device()->devicePixelRatio();
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( QString::number( titleSize ),
                index.data( QgsProjectListItemDelegate::TitleRole ).toString(),
                index.data( QgsProjectListItemDelegate::PinRole ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
                mShowPath ? index.data( QgsProjectListItemDelegate::NativePathRole ).toString() : QString(),
                index.data( QgsProjectListItemDelegate::CrsRole ).toString() ) );
-  doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
+  doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
-  QSizeF iconSize = icon.size() / painter->device()->devicePixelRatio();
   if ( !icon.isNull() )
   {
     painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels,
@@ -99,6 +99,11 @@ QSize QgsProjectListItemDelegate::sizeHint( const QStyleOptionViewItem &option, 
 {
   QTextDocument doc;
   const QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
+  QSizeF iconSize = icon.size();
+  if ( QWidget *w = qobject_cast<QWidget *>( option.styleObject ) )
+  {
+    iconSize /= w->devicePixelRatio();
+  }
 
   int width;
   if ( option.rect.width() < 450 )
@@ -118,9 +123,9 @@ QSize QgsProjectListItemDelegate::sizeHint( const QStyleOptionViewItem &option, 
                      index.data( QgsProjectListItemDelegate::PinRole ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
                      index.data( QgsProjectListItemDelegate::NativePathRole ).toString(),
                      index.data( QgsProjectListItemDelegate::CrsRole ).toString() ) );
-  doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
+  doc.setTextWidth( width - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
-  return QSize( width, std::max( ( double ) doc.size().height() + 1.25 * mRoundedRectSizePixels, static_cast<double>( icon.height() ) ) + 2.5 * mRoundedRectSizePixels );
+  return QSize( width, std::max( ( double ) doc.size().height() + 1.25 * mRoundedRectSizePixels, static_cast<double>( iconSize.height() ) ) + 2.5 * mRoundedRectSizePixels );
 }
 
 bool QgsProjectListItemDelegate::showPath() const
@@ -231,6 +236,7 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
 
   const int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.1 );
   const int textSize = static_cast<int>( titleSize * 0.85 );
+  QSizeF iconSize = icon.size() / painter->device()->devicePixelRatio();
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span>%5</div>" ).arg( textSize ).arg( QString::number( titleSize ),
                index.data( QgsNewsFeedModel::Title ).toString(),
@@ -238,9 +244,8 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
                index.data( QgsNewsFeedModel::Content ).toString() ) );
 
 
-  doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
+  doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
-  QSizeF iconSize = icon.size() / painter->device()->devicePixelRatio();
   if ( !icon.isNull() )
   {
     painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels,
@@ -262,6 +267,11 @@ QSize QgsNewsItemListItemDelegate::sizeHint( const QStyleOptionViewItem &option,
 {
   QTextDocument doc;
   const QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
+  QSizeF iconSize = icon.size();
+  if ( QWidget *w = qobject_cast<QWidget *>( option.styleObject ) )
+  {
+    iconSize /= w->devicePixelRatio();
+  }
 
   int width;
   if ( option.rect.width() < 450 )
@@ -279,9 +289,9 @@ QSize QgsNewsItemListItemDelegate::sizeHint( const QStyleOptionViewItem &option,
                index.data( QgsNewsFeedModel::Title ).toString(),
                index.data( QgsNewsFeedModel::Sticky ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
                index.data( QgsNewsFeedModel::Content ).toString() ) );
-  doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
+  doc.setTextWidth( width - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
-  return QSize( width, std::max( ( double ) doc.size().height() + 1.25 * mRoundedRectSizePixels, static_cast<double>( icon.height() ) ) + 2.5 * mRoundedRectSizePixels );
+  return QSize( width, std::max( ( double ) doc.size().height() + 1.25 * mRoundedRectSizePixels, static_cast<double>( iconSize.height() ) ) + 2.5 * mRoundedRectSizePixels );
 }
 
 
