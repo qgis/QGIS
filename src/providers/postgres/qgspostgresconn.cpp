@@ -1261,6 +1261,7 @@ bool QgsPostgresConn::setSessionRole( const QString &sessionRole )
   if ( sessionRole.isEmpty() )
     return resetSessionRole();
   else
+  {
     if ( sessionRole == mCurrentSessionRole )
     {
       return true;
@@ -1277,6 +1278,7 @@ bool QgsPostgresConn::setSessionRole( const QString &sessionRole )
         return true;
       }
     }
+  }
 }
 bool QgsPostgresConn::resetSessionRole()
 {
