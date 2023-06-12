@@ -57,7 +57,7 @@ QgsRasterCalcNode::~QgsRasterCalcNode()
   delete mRight;
   for ( int i = 0; i < mFunctionArgs.size(); ++i )
   {
-    if( mFunctionArgs.at( i ) )
+    if ( mFunctionArgs.at( i ) )
       delete mFunctionArgs.at( i );
   }
 }
