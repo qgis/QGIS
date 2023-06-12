@@ -24,6 +24,8 @@
 #include "qgsgui.h"
 #include "qgshistoryproviderregistry.h"
 #include "qgshistoryentry.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
 
 #include <QClipboard>
 #include <QShortcut>
@@ -337,8 +339,7 @@ void QgsQueryResultWidget::cancelApiFetcher()
   if ( mApiFetcher )
   {
     mApiFetcher->stopFetching();
-    mApiFetcherWorkerThread.quit();
-    mApiFetcherWorkerThread.wait();
+    // apiFetcher and apiFetcherWorkerThread will be deleted when the thread fetchingFinished signal is emitted
   }
 }
 
@@ -546,16 +547,21 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
     mSqlErrorText->setExtraKeywords( keywords );
 
     // Add dynamic keywords in a separate thread
-    mApiFetcher = std::make_unique<QgsConnectionsApiFetcher>( connection );
-    mApiFetcher->moveToThread( &mApiFetcherWorkerThread );
-    connect( &mApiFetcherWorkerThread, &QThread::started, mApiFetcher.get(), &QgsConnectionsApiFetcher::fetchTokens );
-    connect( mApiFetcher.get(), &QgsConnectionsApiFetcher::tokensReady, this, &QgsQueryResultWidget::tokensReady );
-    connect( mApiFetcher.get(), &QgsConnectionsApiFetcher::fetchingFinished, &mApiFetcherWorkerThread, [ = ]
+    QThread *apiFetcherWorkerThread = new QThread();
+    QgsConnectionsApiFetcher *apiFetcher = new QgsConnectionsApiFetcher( mConnection->uri(), mConnection->providerKey() );
+    apiFetcher->moveToThread( apiFetcherWorkerThread );
+    connect( apiFetcherWorkerThread, &QThread::started, apiFetcher, &QgsConnectionsApiFetcher::fetchTokens );
+    connect( apiFetcher, &QgsConnectionsApiFetcher::tokensReady, this, &QgsQueryResultWidget::tokensReady );
+    connect( apiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, apiFetcherWorkerThread, [apiFetcher, apiFetcherWorkerThread]
     {
-      mApiFetcherWorkerThread.quit();
-      mApiFetcherWorkerThread.wait();
+      apiFetcherWorkerThread->quit();
+      apiFetcherWorkerThread->wait();
+      apiFetcherWorkerThread->deleteLater();
+      apiFetcher->deleteLater();
     } );
-    mApiFetcherWorkerThread.start();
+
+    mApiFetcher = apiFetcher;
+    apiFetcherWorkerThread->start();
   }
 
   updateButtons();
@@ -577,14 +583,29 @@ void QgsQueryResultWidget::notify( const QString &title, const QString &text, Qg
 
 void QgsConnectionsApiFetcher::fetchTokens()
 {
-  if ( ! mStopFetching && mConnection )
+  if ( mStopFetching )
   {
+    emit fetchingFinished();
+    return;
+  }
+
+
+  QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( mProviderKey );
+  if ( !md )
+  {
+    emit fetchingFinished();
+    return;
+  }
+  std::unique_ptr< QgsAbstractDatabaseProviderConnection > connection( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mUri, {} ) ) );
+  if ( ! mStopFetching && connection )
+  {
+    mFeedback = std::make_unique< QgsFeedback >();
     QStringList schemas;
-    if ( mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
+    if ( connection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
     {
       try
       {
-        schemas = mConnection->schemas();
+        schemas = connection->schemas();
         emit tokensReady( schemas );
       }
       catch ( QgsProviderConnectionException &ex )
@@ -602,16 +623,23 @@ void QgsConnectionsApiFetcher::fetchTokens()
 
       if ( mStopFetching )
       {
+        connection.reset();
+        emit fetchingFinished();
         return;
       }
 
       QStringList tableNames;
       try
       {
-        const QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables = mConnection->tables( schema );
+        const QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables = connection->tables( schema, QgsAbstractDatabaseProviderConnection::TableFlags(), mFeedback.get() );
         for ( const QgsAbstractDatabaseProviderConnection::TableProperty &table : std::as_const( tables ) )
         {
-          if ( mStopFetching ) { return; }
+          if ( mStopFetching )
+          {
+            connection.reset();
+            emit fetchingFinished();
+            return;
+          }
           tableNames.push_back( table.tableName() );
         }
         emit tokensReady( tableNames );
@@ -627,15 +655,19 @@ void QgsConnectionsApiFetcher::fetchTokens()
 
         if ( mStopFetching )
         {
+          connection.reset();
+          emit fetchingFinished();
           return;
         }
 
         QStringList fieldNames;
         try
         {
-          const QgsFields fields( mConnection->fields( schema, table, mFeedback.get() ) );
+          const QgsFields fields( connection->fields( schema, table, mFeedback.get() ) );
           if ( mStopFetching )
           {
+            connection.reset();
+            emit fetchingFinished();
             return;
           }
 
@@ -644,6 +676,8 @@ void QgsConnectionsApiFetcher::fetchTokens()
             fieldNames.push_back( field.name() );
             if ( mStopFetching )
             {
+              connection.reset();
+              emit fetchingFinished();
               return;
             }
           }
@@ -656,14 +690,17 @@ void QgsConnectionsApiFetcher::fetchTokens()
       }
     }
   }
+
+  connection.reset();
   emit fetchingFinished();
 }
 
 void QgsConnectionsApiFetcher::stopFetching()
 {
   mStopFetching = 1;
+  if ( mFeedback )
+    mFeedback->cancel();
 }
-
 
 QgsQueryResultItemDelegate::QgsQueryResultItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
