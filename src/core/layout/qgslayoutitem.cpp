@@ -1489,6 +1489,12 @@ void QgsLayoutItem::refreshFrame( bool updateItem )
   }
 }
 
+QColor QgsLayoutItem::backgroundColor( bool useDataDefined ) const
+{
+  return useDataDefined ? brush().color() : mBackgroundColor;
+}
+
+
 void QgsLayoutItem::refreshBackgroundColor( bool updateItem )
 {
   //data defined fill color set?
