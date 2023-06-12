@@ -842,10 +842,12 @@ Sets whether this item has a background drawn under it or not.
 .. seealso:: :py:func:`setBackgroundColor`
 %End
 
-    QColor backgroundColor() const;
+    QColor backgroundColor( bool useDataDefined = true ) const;
 %Docstring
 Returns the background color for this item. This is only used if :py:func:`~QgsLayoutItem.hasBackground`
 returns ``True``.
+
+:param useDataDefined: If true, then returns the data defined override for the background color
 
 .. seealso:: :py:func:`setBackgroundColor`
 

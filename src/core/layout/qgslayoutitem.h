@@ -811,10 +811,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     /**
      * Returns the background color for this item. This is only used if hasBackground()
      * returns TRUE.
+     * \param useDataDefined If true, then returns the data defined override for the background color
      * \see setBackgroundColor()
      * \see hasBackground()
      */
-    QColor backgroundColor() const { return mBackgroundColor; }
+    QColor backgroundColor( bool useDataDefined = true ) const;
 
     /**
      * Sets the background \a color for this item.
