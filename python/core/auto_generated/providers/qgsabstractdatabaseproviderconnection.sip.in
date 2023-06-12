@@ -662,9 +662,11 @@ ignored if not supported by the backend).
 %End
 
 
-    virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const throw( QgsProviderConnectionException );
+    virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
 %Docstring
 Returns information on a ``table`` in the given ``schema``.
+
+Since QGIS 3.32 the optional ``feedback`` argument can be used to cancel the request.
 
 :raises QgsProviderConnectionException: if any errors are encountered or if the table does not exist.
 
@@ -694,9 +696,11 @@ Returns information about the existing schemas.
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
-    virtual QgsFields fields( const QString &schema, const QString &table ) const throw( QgsProviderConnectionException );
+    virtual QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
 %Docstring
 Returns the fields of a ``table`` and ``schema``.
+
+Since QGIS 3.32 the optional ``feedback`` argument can be used to cancel the request.
 
 .. note::
 

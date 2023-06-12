@@ -1277,10 +1277,10 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseP
 }
 
 
-QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProviderConnection::table( const QString &schema, const QString &name ) const
+QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProviderConnection::table( const QString &schema, const QString &name, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::Tables );
-  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tables( schema ) };
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tables( schema, TableFlags(), feedback ) };
   for ( const auto &t : constTables )
   {
     if ( t.tableName() == name )
@@ -1334,7 +1334,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> 
 }
 
 
-QgsFields QgsAbstractDatabaseProviderConnection::fields( const QString &schema, const QString &tableName ) const
+QgsFields QgsAbstractDatabaseProviderConnection::fields( const QString &schema, const QString &tableName, QgsFeedback * ) const
 {
   QgsVectorLayer::LayerOptions options { false, true };
   options.skipCrsValidation = true;

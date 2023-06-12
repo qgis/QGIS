@@ -68,10 +68,10 @@ void QgsGeoPackageProviderConnection::remove( const QString &name ) const
   settings.remove( name );
 }
 
-QgsAbstractDatabaseProviderConnection::TableProperty QgsGeoPackageProviderConnection::table( const QString &schema, const QString &name ) const
+QgsAbstractDatabaseProviderConnection::TableProperty QgsGeoPackageProviderConnection::table( const QString &schema, const QString &name, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::Tables );
-  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tables( schema ) };
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tables( schema, TableFlags(), feedback ) };
   for ( const auto &t : constTables )
   {
     if ( t.tableName() == name )
@@ -511,7 +511,7 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
 }
 
 
-QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const QString &table ) const
+QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const QString &table, QgsFeedback * ) const
 {
   Q_UNUSED( schema )
 

@@ -789,11 +789,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Returns information on a \a table in the given \a schema.
      *
+     * Since QGIS 3.32 the optional \a feedback argument can be used to cancel the request.
+     *
      * \throws QgsProviderConnectionException if any errors are encountered or if the table does not exist.
      * \note Not available in Python bindings
      * \since QGIS 3.12
      */
-    virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
+    virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns information on the tables in the given schema.
@@ -817,6 +819,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Returns the fields of a \a table and \a schema.
      *
+     * Since QGIS 3.32 the optional \a feedback argument can be used to cancel the request.
+     *
      * \note the default implementation creates a temporary vector layer, providers may
      * choose to override this method for a greater efficiency of to overcome provider's
      * behavior when the layer does not expose all fields (GPKG for example hides geometry
@@ -824,7 +828,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException if any errors are encountered.
      * \since QGIS 3.16
      */
-    virtual QgsFields fields( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
+    virtual QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns a list of native types supported by the connection.

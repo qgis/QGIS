@@ -633,12 +633,19 @@ void QgsConnectionsApiFetcher::fetchTokens()
         QStringList fieldNames;
         try
         {
-          const QgsFields fields( mConnection->fields( schema, table ) );
-          if ( mStopFetching ) { return; }
+          const QgsFields fields( mConnection->fields( schema, table, mFeedback.get() ) );
+          if ( mStopFetching )
+          {
+            return;
+          }
+
           for ( const auto &field : std::as_const( fields ) )
           {
             fieldNames.push_back( field.name() );
-            if ( mStopFetching ) { return; }
+            if ( mStopFetching )
+            {
+              return;
+            }
           }
           emit tokensReady( fieldNames );
         }

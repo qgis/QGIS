@@ -1828,19 +1828,22 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::
   } );
 }
 
-QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QString &tableName ) const
+QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QString &tableName, QgsFeedback *feedback ) const
 {
   // Try the base implementation first and fall back to a more complex approach for the
   // few PG-specific corner cases that do not work with the base implementation.
   try
   {
-    return QgsAbstractDatabaseProviderConnection::fields( schema, tableName );
+    return QgsAbstractDatabaseProviderConnection::fields( schema, tableName, feedback );
   }
   catch ( QgsProviderConnectionException &ex )
   {
     // This table might expose multiple geometry columns (different geom type or SRID)
     // but we are only interested in fields here, so let's pick the first one.
-    TableProperty tableInfo { table( schema, tableName ) };
+    TableProperty tableInfo { table( schema, tableName, feedback ) };
+    if ( feedback && feedback->isCanceled() )
+      return QgsFields();
+
     try
     {
       QgsDataSourceUri tUri { tableUri( schema, tableName ) };

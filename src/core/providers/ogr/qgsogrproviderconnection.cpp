@@ -214,7 +214,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOgrProviderConnec
   return tableInfo;
 }
 
-QgsAbstractDatabaseProviderConnection::TableProperty QgsOgrProviderConnection::table( const QString &, const QString &table ) const
+QgsAbstractDatabaseProviderConnection::TableProperty QgsOgrProviderConnection::table( const QString &, const QString &table, QgsFeedback * ) const
 {
   const QVariantMap parts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri() );
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
