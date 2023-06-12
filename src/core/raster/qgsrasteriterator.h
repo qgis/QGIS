@@ -103,7 +103,7 @@ class CORE_EXPORT QgsRasterIterator
     */
     bool readNextRasterPart( int bandNumber,
                              int &nCols, int &nRows,
-                             QgsRasterBlock **block,
+                             QgsRasterBlock **block SIP_TRANSFERBACK,
                              int &topLeftCol, int &topLeftRow );
 
     /**
