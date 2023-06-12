@@ -1262,28 +1262,40 @@ bool QgsPostgresConn::setSessionRole( const QString &sessionRole )
     return resetSessionRole();
   else
     if ( sessionRole == mCurrentSessionRole )
+    {
       return true;
+    }
     else
+    {
       if ( !LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET ROLE %1" ).arg( quotedValue( sessionRole ) ) ) )
+      {
         return false;
+      }
       else
       {
         mCurrentSessionRole = sessionRole;
         return true;
       }
+    }
 }
 bool QgsPostgresConn::resetSessionRole()
 {
   if ( mCurrentSessionRole.isEmpty() )
+  {
     return true;
+  }
   else
+  {
     if ( !LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "RESET ROLE" ) ) )
+    {
       return false;
+    }
     else
     {
       mCurrentSessionRole.clear();
       return true;
     }
+  }
 }
 
 QString QgsPostgresConn::quotedIdentifier( const QString &ident )
