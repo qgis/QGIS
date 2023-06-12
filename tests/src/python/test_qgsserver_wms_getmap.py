@@ -31,6 +31,10 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
     QgsVectorLayerTemporalProperties,
+    QgsTextFormat,
+    QgsPalLayerSettings,
+    QgsVectorLayerSimpleLabeling,
+    QgsFontUtils,
 )
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.PyQt.QtGui import QColor, QImage
@@ -2107,6 +2111,84 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         range_extent = t.xpath("//wms:Layer/wms:Name[text()='test_range']/../wms:Extent", namespaces=ns)[0]
         self.assertEqual(range_extent.attrib, {'name': 'TIME'})
         self.assertEqual(range_extent.text, '2003-03-03/2004-04-04')
+
+    def testGetMapOpacities(self):
+
+        layer = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=name:string&key=pk',
+            'test', 'memory')
+
+        provider = layer.dataProvider()
+
+        f1 = QgsFeature()
+        f1.setAttributes([1, 'Label1'])
+        f1.setGeometry(QgsGeometry.fromWkt('Point (2 2)'))
+        self.assertTrue(f1.isValid())
+
+        f2 = QgsFeature()
+        f2.setAttributes([1, 'Label2'])
+        f2.setGeometry(QgsGeometry.fromWkt('Point (1 1)'))
+        self.assertTrue(f2.isValid())
+
+        self.assertTrue(provider.addFeatures([f1, f2]))
+
+        project = QgsProject()
+        self.assertTrue(project.addMapLayers([layer]))
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "name"
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        layer.setLabelsEnabled(True)
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "test",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "0,0,2,2",
+            "HEIGHT": "20",
+            "WIDTH": "20",
+            "CRS": "EPSG:4326",
+            "DPI": 96,
+            "OPACITIES": "128"
+        }.items())])
+
+        request = QgsBufferServerRequest(qs)
+        response = QgsBufferServerResponse()
+        server = QgsServer()
+        server.handleRequest(request, response, project)
+        image = QImage.fromData(response.body(), "PNG")
+        self.assertEqual(image.pixelColor(15, 18).name(), '#7f7f7f')
+
+        # Test restorer
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "test",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "0,0,2,2",
+            "HEIGHT": "20",
+            "WIDTH": "20",
+            "CRS": "EPSG:4326",
+            "DPI": 96,
+        }.items())])
+
+        request = QgsBufferServerRequest(qs)
+        response = QgsBufferServerResponse()
+        server = QgsServer()
+        server.handleRequest(request, response, project)
+        image = QImage.fromData(response.body(), "PNG")
+        self.assertEqual(image.pixelColor(15, 18).name(), '#000000')
 
 
 if __name__ == '__main__':

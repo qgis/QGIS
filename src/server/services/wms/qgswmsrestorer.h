@@ -56,6 +56,7 @@ class QgsLayerRestorer
     {
       QString name;
       double mOpacity;
+      double mLabelingOpacity;
       QString mNamedStyle;
       QString mFilter;
       QgsFeatureIds mSelectedFeatureIds;
