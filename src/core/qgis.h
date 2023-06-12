@@ -1469,6 +1469,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( GeometryValidationEngine )
 
     /**
+     * Geometry conversion options
+     * \since QGIS 3.32
+     */
+    enum class GeometryConversionOption : int
+    {
+      RespectGeometryType = 1 << 0, //!< Respect the geometry type (line stays a line and is not converted to multipoint)
+      PolygonToLineTakeEnveloppeOnly = 1 << 1, //!< If the a polygon is converted to a single linestring, discard any donut to allow conversion
+    };
+    //! Geometry conversion option flags
+    Q_DECLARE_FLAGS( GeometryConversionOptions, GeometryConversionOption )
+    Q_ENUM( GeometryConversionOption )
+    Q_FLAG( GeometryConversionOptions )
+
+    /**
      * Side of line to buffer.
      *
      * \since QGIS 3.22

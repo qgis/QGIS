@@ -888,6 +888,14 @@ The development version
       Geos,
     };
 
+    enum class GeometryConversionOption
+    {
+      RespectGeometryType,
+      PolygonToLineTakeEnveloppeOnly,
+    };
+    typedef QFlags<Qgis::GeometryConversionOption> GeometryConversionOptions;
+
+
     enum class BufferSide
       {
       Left,

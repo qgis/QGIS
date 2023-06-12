@@ -1469,6 +1469,14 @@ QgsGeometry.ValidatorGeos.__doc__ = "Use GEOS validation methods"
 Qgis.GeometryValidationEngine.__doc__ = 'Available engines for validating geometries.\n\n.. versionadded:: 3.22\n\n' + '* ``ValidatorQgisInternal``: ' + Qgis.GeometryValidationEngine.QgisInternal.__doc__ + '\n' + '* ``ValidatorGeos``: ' + Qgis.GeometryValidationEngine.Geos.__doc__
 # --
 Qgis.GeometryValidationEngine.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.GeometryConversionOption.RespectGeometryType.__doc__ = "Respect the geometry type (line stays a line and is not converted to multipoint)"
+Qgis.GeometryConversionOption.PolygonToLineTakeEnveloppeOnly.__doc__ = "If the a polygon is converted to a single linestring, discard any donut to allow conversion"
+Qgis.GeometryConversionOption.__doc__ = 'Geometry conversion options\n\n.. versionadded:: 3.32\n\n' + '* ``RespectGeometryType``: ' + Qgis.GeometryConversionOption.RespectGeometryType.__doc__ + '\n' + '* ``PolygonToLineTakeEnveloppeOnly``: ' + Qgis.GeometryConversionOption.PolygonToLineTakeEnveloppeOnly.__doc__
+# --
+Qgis.GeometryConversionOption.baseClass = Qgis
+Qgis.GeometryConversionOptions.baseClass = Qgis
+GeometryConversionOptions = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsGeometry.BufferSide = Qgis.BufferSide
 # monkey patching scoped based enum
 QgsGeometry.SideLeft = Qgis.BufferSide.Left

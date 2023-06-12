@@ -1424,11 +1424,12 @@ json QgsGeometry::asJsonObject( int precision ) const
 
 }
 
-QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM ) const
+QVector<QgsGeometry>  QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM, Qgis::GeometryConversionOptions options ) const
 {
-  QVector< QgsGeometry > res;
+  QVector<QgsGeometry> res;
+
   if ( isNull() )
-    return res;
+    return QVector<QgsGeometry>();
 
   if ( wkbType() == type || type == Qgis::WkbType::Unknown )
   {
@@ -1438,7 +1439,7 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
 
   if ( type == Qgis::WkbType::NoGeometry )
   {
-    return res;
+    return QVector<QgsGeometry>();
   }
 
   QgsGeometry newGeom = *this;
@@ -1449,41 +1450,150 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
     newGeom = QgsGeometry( d->geometry.get()->segmentize() );
   }
 
+  // compoundcurve -> circularstring (possible if compoundcurve consists of one circular string)
+  if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::CircularString )
+  {
+    QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( d->geometry.get() );
+    if ( compoundCurve )
+    {
+      if ( compoundCurve->nCurves() == 1 )
+      {
+        const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( compoundCurve->curveAt( 0 ) );
+        if ( circularString )
+        {
+          newGeom = QgsGeometry( circularString->clone() );
+        }
+        else
+        {
+          return QVector<QgsGeometry>();
+        }
+      }
+      else
+      {
+        return QVector<QgsGeometry>();
+      }
+    }
+  }
+
+  // compoundcurve -> linestring (possible if compoundcurve consists of one linestring)
+  if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::LineString )
+  {
+    QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( d->geometry.get() );
+    if ( compoundCurve )
+    {
+      if ( compoundCurve->nCurves() == 1 )
+      {
+        const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( compoundCurve->curveAt( 0 ) );
+        if ( lineString )
+        {
+          newGeom = QgsGeometry( lineString->clone() );
+        }
+        else
+        {
+          return QVector<QgsGeometry>();
+        }
+      }
+      else
+      {
+        return QVector<QgsGeometry>();
+      }
+    }
+  }
+
+  // linestring/circularstring -> compoundcurve
+  if ( QgsWkbTypes::flatType( newGeom.wkbType() ) != Qgis::WkbType::CompoundCurve &&
+       QgsWkbTypes::flatType( type ) == Qgis::WkbType::CompoundCurve )
+  {
+    QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( d->geometry.get() );
+    if ( curve )
+    {
+      std::unique_ptr<QgsCompoundCurve> g = std::make_unique<QgsCompoundCurve>();
+      g->addCurve( curve->clone() );
+      newGeom = QgsGeometry( g.release() );
+    }
+  }
+
   // polygon -> line
   if ( QgsWkbTypes::geometryType( type ) == Qgis::GeometryType::Line &&
        newGeom.type() == Qgis::GeometryType::Polygon )
   {
-    // boundary gives us a (multi)line string of exterior + interior rings
-    newGeom = QgsGeometry( newGeom.constGet()->boundary() );
+    if ( !options.testFlag( Qgis::GeometryConversionOption::RespectGeometryType ) )
+    {
+      if ( options.testFlag( Qgis::GeometryConversionOption::PolygonToLineTakeEnveloppeOnly ) )
+      {
+        const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( d->geometry.get() );
+        if ( ms )
+        {
+          std::unique_ptr<QgsMultiLineString> g = std::make_unique<QgsMultiLineString>();
+          for ( int i = 0; i < ms->numGeometries(); ++i )
+          {
+            const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( ms->geometryN( i ) );
+            g->addGeometry( polygon->exteriorRing()->clone() );
+          }
+          newGeom = QgsGeometry( g.release() );
+        }
+        else
+        {
+          const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( d->geometry.get() );
+          if ( polygon )
+          {
+            newGeom = QgsGeometry( polygon->exteriorRing()->clone() );
+            qDebug() << newGeom.asWkt();
+          }
+          else
+          {
+            Q_ASSERT( false );
+            return QVector<QgsGeometry>();
+          }
+        }
+      }
+      else
+      {
+        // boundary gives us a (multi)line string of exterior + interior rings
+        newGeom = QgsGeometry( newGeom.constGet()->boundary() );
+      }
+    }
+    else
+    {
+      return QVector<QgsGeometry>();
+    }
   }
+
   // line -> polygon
   if ( QgsWkbTypes::geometryType( type ) == Qgis::GeometryType::Polygon &&
        newGeom.type() == Qgis::GeometryType::Line )
   {
-    std::unique_ptr< QgsGeometryCollection > gc( QgsGeometryFactory::createCollectionOfType( type ) );
-    const QgsGeometry source = newGeom;
-    for ( auto part = source.const_parts_begin(); part != source.const_parts_end(); ++part )
+    if ( !options.testFlag( Qgis::GeometryConversionOption::RespectGeometryType ) )
     {
-      std::unique_ptr< QgsAbstractGeometry > exterior( ( *part )->clone() );
-      if ( QgsCurve *curve = qgsgeometry_cast< QgsCurve * >( exterior.get() ) )
+      std::unique_ptr< QgsGeometryCollection > gc( QgsGeometryFactory::createCollectionOfType( type ) );
+      const QgsGeometry source = newGeom;
+      for ( auto part = source.const_parts_begin(); part != source.const_parts_end(); ++part )
       {
-        if ( QgsWkbTypes::isCurvedType( type ) )
+        std::unique_ptr< QgsAbstractGeometry > exterior( ( *part )->clone() );
+        if ( QgsCurve *curve = qgsgeometry_cast< QgsCurve * >( exterior.get() ) )
         {
-          std::unique_ptr< QgsCurvePolygon > cp = std::make_unique< QgsCurvePolygon >();
-          cp->setExteriorRing( curve );
-          exterior.release();
-          gc->addGeometry( cp.release() );
-        }
-        else
-        {
-          std::unique_ptr< QgsPolygon > p = std::make_unique< QgsPolygon  >();
-          p->setExteriorRing( qgsgeometry_cast< QgsLineString * >( curve ) );
-          exterior.release();
-          gc->addGeometry( p.release() );
+          if ( QgsWkbTypes::isCurvedType( type ) )
+          {
+            std::unique_ptr< QgsCurvePolygon > cp = std::make_unique< QgsCurvePolygon >();
+            cp->setExteriorRing( curve );
+            exterior.release();
+            gc->addGeometry( cp.release() );
+          }
+          else
+          {
+            std::unique_ptr< QgsPolygon > p = std::make_unique< QgsPolygon  >();
+            p->setExteriorRing( qgsgeometry_cast< QgsLineString * >( curve ) );
+            exterior.release();
+            gc->addGeometry( p.release() );
+          }
         }
       }
+      newGeom = QgsGeometry( std::move( gc ) );
     }
-    newGeom = QgsGeometry( std::move( gc ) );
+    else
+    {
+      return QVector<QgsGeometry>();
+    }
   }
 
   // line/polygon -> points
@@ -1491,18 +1601,25 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
        ( newGeom.type() == Qgis::GeometryType::Line ||
          newGeom.type() == Qgis::GeometryType::Polygon ) )
   {
-    // lines/polygons to a point layer, extract all vertices
-    std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >();
-    const QgsGeometry source = newGeom;
-    QSet< QgsPoint > added;
-    for ( auto vertex = source.vertices_begin(); vertex != source.vertices_end(); ++vertex )
+    if ( !options.testFlag( Qgis::GeometryConversionOption::RespectGeometryType ) )
     {
-      if ( added.contains( *vertex ) )
-        continue; // avoid duplicate points, e.g. start/end of rings
-      mp->addGeometry( ( *vertex ).clone() );
-      added.insert( *vertex );
+      // lines/polygons to a point layer, extract all vertices
+      std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >();
+      const QgsGeometry source = newGeom;
+      QSet< QgsPoint > added;
+      for ( auto vertex = source.vertices_begin(); vertex != source.vertices_end(); ++vertex )
+      {
+        if ( added.contains( *vertex ) )
+          continue; // avoid duplicate points, e.g. start/end of rings
+        mp->addGeometry( ( *vertex ).clone() );
+        added.insert( *vertex );
+      }
+      newGeom = QgsGeometry( std::move( mp ) );
     }
-    newGeom = QgsGeometry( std::move( mp ) );
+    else
+    {
+      return QVector<QgsGeometry>();
+    }
   }
 
   // Single -> multi

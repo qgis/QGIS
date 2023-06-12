@@ -2061,7 +2061,7 @@ Exports the geometry to a GeoJSON string.
 %End
 
 
-    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0 ) const;
+    QVector<QgsGeometry> coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, Qgis::GeometryConversionOptions options = Qgis::GeometryConversionOptions() ) const;
 %Docstring
 Attempts to coerce this geometry into the specified destination ``type``.
 
@@ -2087,6 +2087,11 @@ By default 0.0 is used for Z and M.
    of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
    to coerce geometries to the desired ``type``. It also correctly maintains curves and z/m values
    wherever appropriate.
+
+.. note::
+
+   In PyQGIS, the method is named coerceToType (for API compatibility)
+
 
 .. versionadded:: 3.14
 %End
