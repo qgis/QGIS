@@ -95,6 +95,9 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
 
     bool shouldBlockEvent( QInputEvent *event ) const;
 
+    //! Initializes a drag operation \since QGIS 3.34
+    void startMove( QPointF sceneCoordPos );
+
   public slots:
 
     //! Redraws handles when selected item size changes

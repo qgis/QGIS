@@ -426,6 +426,27 @@ bool QgsGraphicsViewMouseHandles::shouldBlockEvent( QInputEvent * ) const
   return mIsDragging || mIsResizing;
 }
 
+void QgsGraphicsViewMouseHandles::startMove( QPointF sceneCoordPos )
+{
+  //save current cursor position
+  mMouseMoveStartPos = sceneCoordPos;
+  //save current item geometry
+  mBeginMouseEventPos = sceneCoordPos;
+  mBeginHandlePos = scenePos();
+  mBeginHandleWidth = rect().width();
+  mBeginHandleHeight = rect().height();
+  mCurrentMouseMoveAction = MoveItem;
+  mIsDragging = true;
+  hideAlignItems();
+
+  // Explicitly call grabMouse to ensure the mouse handles receive the subsequent mouse move events.
+  if ( mView->scene()->mouseGrabberItem() != this )
+  {
+    grabMouse();
+  }
+
+}
+
 void QgsGraphicsViewMouseHandles::selectedItemSizeChanged()
 {
   if ( !isDragging() && !isResizing() )
@@ -535,6 +556,10 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
     return;
   }
 
+  // Mouse may have been grabbed from the QgsLayoutViewSelectTool, so we need to release it explicitly
+  // otherwise, hover events will not be received
+  ungrabMouse();
+
   QPointF mouseMoveStopPoint = event->lastScenePos();
   double diffX = mouseMoveStopPoint.x() - mMouseMoveStartPos.x();
   double diffY = mouseMoveStopPoint.y() - mMouseMoveStartPos.y();
@@ -626,7 +651,6 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
 
   //reset default action
   mCurrentMouseMoveAction = MoveItem;
-  setViewportCursor( Qt::ArrowCursor );
   //redraw handles
   resetTransform();
   updateHandles();
