@@ -243,7 +243,6 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
   QSizeF iconSize = icon.size() / painter->device()->devicePixelRatio();
   if ( !icon.isNull() )
   {
-    painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels, icon );
     painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels,
                          iconSize.width(), iconSize.height(),  icon );
   }
