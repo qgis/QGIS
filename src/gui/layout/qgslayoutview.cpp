@@ -138,6 +138,7 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
   {
     mTool->deactivate();
     disconnect( mTool, &QgsLayoutViewTool::itemFocused, this, &QgsLayoutView::itemFocused );
+    disconnect( mTool, &QgsLayoutViewTool::itemDoubleClicked, this, &QgsLayoutView::itemDoubleClicked );
   }
 
   if ( mSnapMarker )
@@ -152,6 +153,7 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
   tool->activate();
   mTool = tool;
   connect( mTool, &QgsLayoutViewTool::itemFocused, this, &QgsLayoutView::itemFocused );
+  connect( mTool, &QgsLayoutViewTool::itemDoubleClicked, this, &QgsLayoutView::itemDoubleClicked );
   emit toolSet( mTool );
 }
 

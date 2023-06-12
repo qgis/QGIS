@@ -190,6 +190,13 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
      */
     void itemFocused( QgsLayoutItem *item );
 
+    /**
+     * Emitted when an \a item is double clicked.
+     * Can be used to perform custom actions, i.e. open the table designer for fixed tables.
+     * \since QGIS 3.34
+     */
+    void itemDoubleClicked( QgsLayoutItem *item );
+
   protected:
 
     /**

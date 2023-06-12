@@ -292,6 +292,17 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   mMouseHandles->selectionChanged();
 }
 
+void QgsLayoutViewToolSelect::layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event )
+{
+  QgsLayoutItem *clickedItem = layout()->layoutItemAt( event->layoutPoint() );
+  if ( clickedItem )
+  {
+    emit itemDoubleClicked( clickedItem ) ;
+    return;
+  }
+  event->ignore();
+}
+
 void QgsLayoutViewToolSelect::wheelEvent( QWheelEvent *event )
 {
   if ( mMouseHandles->shouldBlockEvent( event ) )

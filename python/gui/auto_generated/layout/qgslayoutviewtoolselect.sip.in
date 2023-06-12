@@ -34,6 +34,8 @@ Constructor for QgsLayoutViewToolSelect.
 
     virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 
+    virtual void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event );
+
     virtual void wheelEvent( QWheelEvent *event );
 
     virtual void keyPressEvent( QKeyEvent *event );

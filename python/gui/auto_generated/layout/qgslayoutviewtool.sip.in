@@ -170,6 +170,14 @@ Emitted when an ``item`` is "focused" by the tool, i.e. it should become the act
 item and should have its properties displayed in any designer windows.
 %End
 
+    void itemDoubleClicked( QgsLayoutItem *item );
+%Docstring
+Emitted when an ``item`` is double clicked.
+Can be used to perform custom actions, i.e. open the table designer for fixed tables.
+
+.. versionadded:: 3.34
+%End
+
   protected:
 
     void setFlags( QgsLayoutViewTool::Flags flags );

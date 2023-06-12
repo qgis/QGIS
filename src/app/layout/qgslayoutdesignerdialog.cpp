@@ -874,6 +874,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   {
     showItemOptions( item, false );
   } );
+  connect( mView, &QgsLayoutView::itemDoubleClicked, this, &QgsLayoutDesignerDialog::onItemDoubleClicked );
 
   // Panel and toolbar submenus
   mToolbarMenu->addAction( mLayoutToolbar->toggleViewAction() );
@@ -1381,6 +1382,12 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
   if ( bringPanelToFront )
     mItemDock->setUserVisible( true );
 
+}
+
+void QgsLayoutDesignerDialog::onItemDoubleClicked( QgsLayoutItem *item )
+{
+  // Always show the item properties when it is double clicked
+  showItemOptions( item, true );
 }
 
 void QgsLayoutDesignerDialog::open()

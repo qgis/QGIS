@@ -528,6 +528,13 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void itemFocused( QgsLayoutItem *item );
 
     /**
+     * Emitted when an \a item is double clicked in the view.
+     * Can be used to perform custom actions, i.e. open the table designer for fixed tables.
+     * \since QGIS 3.34
+     */
+    void itemDoubleClicked( QgsLayoutItem *item );
+
+    /**
      * Emitted in the destructor when the view is about to be deleted,
      * but is still in a perfectly valid state.
      */

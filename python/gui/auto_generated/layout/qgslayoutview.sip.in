@@ -550,6 +550,14 @@ Emitted when an ``item`` is "focused" in the view, i.e. it becomes the active
 item and should have its properties displayed in any designer windows.
 %End
 
+    void itemDoubleClicked( QgsLayoutItem *item );
+%Docstring
+Emitted when an ``item`` is double clicked in the view.
+Can be used to perform custom actions, i.e. open the table designer for fixed tables.
+
+.. versionadded:: 3.34
+%End
+
     void willBeDeleted();
 %Docstring
 Emitted in the destructor when the view is about to be deleted,

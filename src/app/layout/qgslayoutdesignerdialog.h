@@ -154,6 +154,12 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true );
 
     /**
+     * Perform custom action when an item is double clicked
+     * \since QGIS 3.34
+     */
+    void onItemDoubleClicked( QgsLayoutItem *item );
+
+    /**
      * Selects the specified \a items.
      */
     void selectItems( const QList<QgsLayoutItem *> &items );
