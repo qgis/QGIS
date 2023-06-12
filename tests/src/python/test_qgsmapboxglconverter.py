@@ -62,7 +62,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                          'scale_linear(@vector_tile_zoom,5,13,27,29)')
         self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1.5),
                          '(27) + ((1.5^(@vector_tile_zoom - 5) - 1) / (1.5^(13 - 5) - 1)) * ((29) - (27))')
-        #'scale_exp(@vector_tile_zoom,5,13,27,29,1.5)')
+        # 'scale_exp(@vector_tile_zoom,5,13,27,29,1.5)')
 
         # same values, return nice and simple expression!
         self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 27, 1.5),
@@ -238,7 +238,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                               }, conversion_context)
         self.assertEqual(prop.expressionString(),
                          '(11) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(150 - 0) - 1)) * ((15) - (11))')
-        #'scale_exponential(@vector_tile_zoom,0,150,11,15,2)')
+        # 'scale_exponential(@vector_tile_zoom,0,150,11,15,2)')
         self.assertEqual(default_val, 11.0)
 
         prop, default_val = QgsMapBoxGlStyleConverter.parseInterpolateByZoom({'base': 2,
@@ -247,7 +247,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                               }, conversion_context, multiplier=5)
         self.assertEqual(prop.expressionString(),
                          '((11) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(150 - 0) - 1)) * ((15) - (11))) * 5')
-        #'scale_exponential(@vector_tile_zoom,0,150,11,15,2) * 5')
+        # 'scale_exponential(@vector_tile_zoom,0,150,11,15,2) * 5')
         self.assertEqual(default_val, 55.0)
 
     def testInterpolateOpacityByZoom(self):
