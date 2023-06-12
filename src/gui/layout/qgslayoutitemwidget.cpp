@@ -745,7 +745,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
   };
   block( true );
 
-  mBackgroundColorButton->setColor( mItem->backgroundColor() );
+  mBackgroundColorButton->setColor( mItem->backgroundColor( false ) );
   mFrameColorButton->setColor( mItem->frameStrokeColor() );
   mStrokeUnitsComboBox->setUnit( mItem->frameStrokeWidth().units() );
   mStrokeWidthSpinBox->setValue( mItem->frameStrokeWidth().length() );
