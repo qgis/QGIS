@@ -1190,7 +1190,13 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
 
   legendContext.setHighlightedVariables( highlighted );
 
-  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, QStringLiteral( "generic" ), legendContext );
+  // Passing the vector layer to expression dialog exposes the fields, but we still want generic
+  // layer variables
+  QgsExpressionContextScope *limitedLayerScope { QgsExpressionContextUtils::layerScope( vl ) };
+  limitedLayerScope->setFields( QgsFields() );
+  legendContext.appendScope( limitedLayerScope );
+
+  QgsExpressionBuilderDialog expressiondialog( nullptr, currentExpression, nullptr, QStringLiteral( "generic" ), legendContext );
   if ( expressiondialog.exec() )
     layerNode->setLabelExpression( expressiondialog.expressionText() );
 
