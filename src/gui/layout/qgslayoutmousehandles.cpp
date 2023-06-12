@@ -99,7 +99,17 @@ void QgsLayoutMouseHandles::setViewportCursor( Qt::CursorShape cursor )
 
 QList<QGraphicsItem *> QgsLayoutMouseHandles::sceneItemsAtPoint( QPointF scenePoint )
 {
-  QList< QGraphicsItem * > items = mLayout->items( scenePoint );
+  QList< QGraphicsItem * > items;
+  if ( QgsLayoutViewToolSelect *tool = qobject_cast< QgsLayoutViewToolSelect *>( mView->tool() ) )
+  {
+    const double searchTolerance = tool->searchToleranceInLayoutUnits();
+    const QRectF area( scenePoint.x() - searchTolerance, scenePoint.y() - searchTolerance, 2 * searchTolerance, 2 * searchTolerance );
+    items = mLayout->items( area );
+  }
+  else
+  {
+    items = mLayout->items( scenePoint );
+  }
   items.erase( std::remove_if( items.begin(), items.end(), []( QGraphicsItem * item )
   {
     return !dynamic_cast<QgsLayoutItem *>( item );

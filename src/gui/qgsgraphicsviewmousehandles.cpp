@@ -465,7 +465,6 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
 
   //save current cursor position
   mMouseMoveStartPos = event->lastScenePos();
-  mLastMouseEventPos = event->lastScenePos();
   //save current item geometry
   mBeginMouseEventPos = event->lastScenePos();
   mBeginHandlePos = scenePos();
@@ -526,8 +525,6 @@ void QgsGraphicsViewMouseHandles::mouseMoveEvent( QGraphicsSceneMouseEvent *even
     //resize from center if alt depressed
     resizeMouseMove( event->lastScenePos(), event->modifiers() & Qt::ShiftModifier, event->modifiers() & Qt::AltModifier );
   }
-
-  mLastMouseEventPos = event->lastScenePos();
 }
 
 void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
