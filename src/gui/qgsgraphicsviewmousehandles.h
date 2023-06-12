@@ -216,9 +216,6 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     //! Start point of the last mouse move action (in scene coordinates)
     QPointF mMouseMoveStartPos;
 
-    //! Position of the last mouse move event (in scene coordinates)
-    QPointF mLastMouseEventPos;
-
     MouseAction mCurrentMouseMoveAction = NoAction;
 
     //! True if user is currently dragging items

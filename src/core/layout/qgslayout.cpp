@@ -298,15 +298,23 @@ QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid, bool incl
   return nullptr;
 }
 
-QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const bool ignoreLocked ) const
+QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const bool ignoreLocked, double searchTolerance ) const
 {
-  return layoutItemAt( position, nullptr, ignoreLocked );
+  return layoutItemAt( position, nullptr, ignoreLocked, searchTolerance );
 }
 
-QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked ) const
+QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked, double searchTolerance ) const
 {
   //get a list of items which intersect the specified position, in descending z order
-  const QList<QGraphicsItem *> itemList = items( position, Qt::IntersectsItemShape, Qt::DescendingOrder );
+  QList<QGraphicsItem *> itemList;
+  if ( searchTolerance == 0 )
+  {
+    itemList = items( position, Qt::IntersectsItemShape, Qt::DescendingOrder );
+  }
+  else
+  {
+    itemList = items( QRectF( position.x() - searchTolerance, position.y() - searchTolerance, 2 * searchTolerance, 2 * searchTolerance ), Qt::IntersectsItemShape, Qt::DescendingOrder );
+  }
 
   bool foundBelowItem = false;
   for ( QGraphicsItem *graphicsItem : itemList )
