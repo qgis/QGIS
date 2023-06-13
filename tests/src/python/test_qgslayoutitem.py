@@ -98,7 +98,8 @@ class TestQgsLayoutItem(unittest.TestCase):
 
         item.dataDefinedProperties().setProperty(QgsLayoutObject.BackgroundColor, QgsProperty.fromExpression("'blue'"))
         item.refreshDataDefinedProperty()
-        self.assertEqual(item.backgroundColor(), QColor(255, 0, 0))  # should not change
+        self.assertEqual(item.backgroundColor(False), QColor(255, 0, 0))  # should not change
+        self.assertEqual(item.backgroundColor(True).name(), item.brush().color().name())
         self.assertEqual(item.brush().color().name(), QColor(0, 0, 255).name())
 
     def testSelected(self):
