@@ -29,6 +29,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgslinesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
@@ -1268,7 +1269,7 @@ void TestQgsDxfExport::testDataDefinedPoints()
 
   QgsDxfExport d;
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
-  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
+  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
