@@ -31,6 +31,7 @@ Abstract base class - its implementations define different approaches to the lab
       sipType = 0;
 %End
   public:
+
     QgsAbstractVectorLayerLabeling();
 %Docstring
 Default constructor
@@ -82,6 +83,17 @@ or exported to a vector format.
 
 .. versionadded:: 3.0
 %End
+
+    virtual void multiplyOpacity( double opacityFactor ) = 0;
+%Docstring
+Multiply opacity by ``opacityFactor``.
+
+This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
+by ``opacity`` effectively changing the opacity of the whole labeling elements.
+
+.. versionadded:: 3.32
+%End
+
 
 
     static QgsAbstractVectorLayerLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
@@ -172,6 +184,7 @@ Set pal settings (takes ownership).
 
     virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 
+    virtual void multiplyOpacity( double opacityFactor );
 
     static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring

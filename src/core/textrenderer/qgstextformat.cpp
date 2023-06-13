@@ -312,6 +312,15 @@ double QgsTextFormat::opacity() const
   return d->opacity;
 }
 
+void QgsTextFormat::multiplyOpacity( double opacityFactor )
+{
+  d->opacity *= opacityFactor;
+  mBufferSettings.setOpacity( mBufferSettings.opacity() * opacityFactor );
+  mShadowSettings.setOpacity( mShadowSettings.opacity() * opacityFactor );
+  mBackgroundSettings.setOpacity( mBackgroundSettings.opacity() * opacityFactor );
+  mMaskSettings.setOpacity( mMaskSettings.opacity() * opacityFactor );
+}
+
 void QgsTextFormat::setOpacity( double opacity )
 {
   d->isValid = true;

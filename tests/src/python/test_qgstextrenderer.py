@@ -970,6 +970,24 @@ class PyQgsTextRenderer(unittest.TestCase):
         # should have skipped the missing fonts and fallen back to the test font family entry, NOT the default application font!
         self.assertEqual(t.font().family(), getTestFont().family())
 
+    def testMultiplyOpacity(self):
+
+        s = self.createFormatSettings()
+        old_opacity = s.opacity()
+        old_buffer_opacity = s.buffer().opacity()
+        old_shadow_opacity = s.shadow().opacity()
+        old_mask_opacity = s.mask().opacity()
+
+        s.multiplyOpacity(0.5)
+
+        self.assertEqual(s.opacity(), old_opacity * 0.5)
+        self.assertEqual(s.buffer().opacity(), old_buffer_opacity * 0.5)
+        self.assertEqual(s.shadow().opacity(), old_shadow_opacity * 0.5)
+        self.assertEqual(s.mask().opacity(), old_mask_opacity * 0.5)
+
+        s.multiplyOpacity(2.0)
+        self.checkTextFormat(s)
+
     def containsAdvancedEffects(self):
         t = QgsTextFormat()
         self.assertFalse(t.containsAdvancedEffects())

@@ -582,3 +582,26 @@ void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QVariantMap &props ) c
   }
 
 }
+
+void QgsRuleBasedLabeling::multiplyOpacity( double opacityFactor )
+{
+  if ( !mRootRule )
+  {
+    return;
+  }
+
+  const QgsRuleBasedLabeling::RuleList rules = mRootRule->children();
+  for ( Rule *rule : rules )
+  {
+    QgsPalLayerSettings *settings = rule->settings();
+
+    if ( settings && settings->drawLabels )
+    {
+      QgsTextFormat format { settings->format() };
+      format.multiplyOpacity( opacityFactor );
+      settings->setFormat( format );
+    }
+
+  }
+}
+

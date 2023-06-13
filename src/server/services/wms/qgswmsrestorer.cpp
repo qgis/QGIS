@@ -44,19 +44,10 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
           settings.mOpacity = vLayer->opacity();
           settings.mSelectedFeatureIds = vLayer->selectedFeatureIds();
           settings.mFilter = vLayer->subsetString();
-          settings.mLabelingOpacity = -1;
           // Labeling opacity
           if ( vLayer->labelsEnabled() && vLayer->labeling() )
           {
-            QgsAbstractVectorLayerLabeling *labeling { vLayer->labeling() };
-            if ( QgsVectorLayerSimpleLabeling *simpleLabeling = static_cast<QgsVectorLayerSimpleLabeling *>( labeling ) )
-            {
-              settings.mLabelingOpacity =  simpleLabeling->settings( ).format().opacity();
-            }
-            else if ( QgsRuleBasedLabeling *ruleLabeling = static_cast<QgsRuleBasedLabeling *>( labeling ) )
-            {
-              settings.mLabelingOpacity =  ruleLabeling->settings( ).format().opacity();
-            }
+            settings.mLabeling = vLayer->labeling()->clone();
           }
         }
         break;
@@ -115,25 +106,9 @@ QgsLayerRestorer::~QgsLayerRestorer()
           vLayer->setOpacity( settings.mOpacity );
           vLayer->selectByIds( settings.mSelectedFeatureIds );
           vLayer->setSubsetString( settings.mFilter );
-          if ( settings.mLabelingOpacity != -1 )
+          if ( settings.mLabeling )
           {
-            QgsAbstractVectorLayerLabeling *labeling { vLayer->labeling() };
-            if ( QgsVectorLayerSimpleLabeling *simpleLabeling = static_cast<QgsVectorLayerSimpleLabeling *>( labeling ) )
-            {
-              std::unique_ptr<QgsPalLayerSettings> labelSettings = std::make_unique<QgsPalLayerSettings>( simpleLabeling->settings( ) );
-              QgsTextFormat format { labelSettings->format() };
-              format.setOpacity( settings.mLabelingOpacity );
-              labelSettings->setFormat( format );
-              simpleLabeling->setSettings( labelSettings.release() );
-            }
-            else if ( QgsRuleBasedLabeling *ruleLabeling = static_cast<QgsRuleBasedLabeling *>( labeling ) )
-            {
-              std::unique_ptr<QgsPalLayerSettings> labelSettings = std::make_unique<QgsPalLayerSettings>( simpleLabeling->settings( ) );
-              QgsTextFormat format { labelSettings->format() };
-              format.setOpacity( settings.mLabelingOpacity );
-              labelSettings->setFormat( format );
-              ruleLabeling->setSettings( labelSettings.release() );
-            }
+            vLayer->setLabeling( settings.mLabeling );
           }
         }
         break;

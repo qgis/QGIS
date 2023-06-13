@@ -2112,7 +2112,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertEqual(range_extent.attrib, {'name': 'TIME'})
         self.assertEqual(range_extent.text, '2003-03-03/2004-04-04')
 
-    def testGetMapOpacities(self):
+    def test_get_map_labeling_opacities(self):
+        """Test if OPACITIES is also applied to labels"""
 
         layer = QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=name:string&key=pk',
@@ -2135,13 +2136,26 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         project = QgsProject()
         self.assertTrue(project.addMapLayers([layer]))
 
-        format = QgsTextFormat()
-        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
-        format.setSize(20)
-        format.setNamedStyle("Bold")
-        format.setColor(QColor(0, 0, 0))
+        text_format = QgsTextFormat()
+        text_format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        text_format.setSize(20)
+        text_format.setNamedStyle("Bold")
+        text_format.setColor(QColor(0, 0, 0))
+
+        buffer_settings = text_format.buffer()
+        buffer_settings.setEnabled(True)
+        buffer_settings.setColor(QColor(0, 0, 0))
+        buffer_settings.setOpacity(0.5)
+        buffer_settings.setSize(10)
+
+        shadow_settings = text_format.shadow()
+        shadow_settings.setEnabled(True)
+        shadow_settings.setColor(QColor(0, 0, 0))
+        shadow_settings.setOpacity(0.5)
+        shadow_settings.setOffsetDistance(20)
+
         settings = QgsPalLayerSettings()
-        settings.setFormat(format)
+        settings.setFormat(text_format)
         settings.fieldName = "name"
         layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
         layer.setLabelsEnabled(True)
@@ -2154,8 +2168,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "STYLES": "",
             "FORMAT": "image/png",
             "BBOX": "0,0,2,2",
-            "HEIGHT": "20",
-            "WIDTH": "20",
+            "HEIGHT": "200",
+            "WIDTH": "200",
             "CRS": "EPSG:4326",
             "DPI": 96,
             "OPACITIES": "128"
@@ -2166,7 +2180,13 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         server = QgsServer()
         server.handleRequest(request, response, project)
         image = QImage.fromData(response.body(), "PNG")
-        self.assertEqual(image.pixelColor(15, 18).name(), '#7f7f7f')
+        image.save('/tmp/img.png')
+        # Text
+        self.assertEqual(image.pixelColor(105, 84).name(), '#5f5f5f')
+        # Buffer
+        self.assertEqual(image.pixelColor(92, 84).name(), '#bfbfbf')
+        # Shadow
+        self.assertEqual(image.pixelColor(169, 136).name(), '#f0f0f0')
 
         # Test restorer
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -2177,8 +2197,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "STYLES": "",
             "FORMAT": "image/png",
             "BBOX": "0,0,2,2",
-            "HEIGHT": "20",
-            "WIDTH": "20",
+            "HEIGHT": "200",
+            "WIDTH": "200",
             "CRS": "EPSG:4326",
             "DPI": 96,
         }.items())])
@@ -2188,7 +2208,13 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         server = QgsServer()
         server.handleRequest(request, response, project)
         image = QImage.fromData(response.body(), "PNG")
-        self.assertEqual(image.pixelColor(15, 18).name(), '#000000')
+        image.save('/tmp/img2.png')
+        # Text
+        self.assertEqual(image.pixelColor(105, 84).name(), '#000000')
+        # Buffer
+        self.assertEqual(image.pixelColor(92, 84).name(), '#7f7f7f')
+        # Shadow
+        self.assertEqual(image.pixelColor(169, 136).name(), '#c1c1c1')
 
 
 if __name__ == '__main__':

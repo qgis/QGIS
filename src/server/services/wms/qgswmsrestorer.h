@@ -26,6 +26,7 @@
 #include "qgswmsrendercontext.h"
 
 class QgsMapLayer;
+class QgsAbstractVectorLayerLabeling;
 
 /**
  * \ingroup server
@@ -56,7 +57,7 @@ class QgsLayerRestorer
     {
       QString name;
       double mOpacity;
-      double mLabelingOpacity;
+      QgsAbstractVectorLayerLabeling *mLabeling = nullptr;
       QString mNamedStyle;
       QString mFilter;
       QgsFeatureIds mSelectedFeatureIds;

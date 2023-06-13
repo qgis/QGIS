@@ -3197,22 +3197,7 @@ namespace QgsWms
           if ( vl->labelsEnabled() && vl->labeling() )
           {
             QgsAbstractVectorLayerLabeling *labeling { vl->labeling() };
-            if ( QgsVectorLayerSimpleLabeling *simpleLabeling = static_cast<QgsVectorLayerSimpleLabeling *>( labeling ) )
-            {
-              std::unique_ptr<QgsPalLayerSettings> settings = std::make_unique<QgsPalLayerSettings>( simpleLabeling->settings( ) );
-              QgsTextFormat format { settings->format() };
-              format.setOpacity( vl->opacity() );
-              settings->setFormat( format );
-              simpleLabeling->setSettings( settings.release() );
-            }
-            else if ( QgsRuleBasedLabeling *ruleLabeling = static_cast<QgsRuleBasedLabeling *>( labeling ) )
-            {
-              std::unique_ptr<QgsPalLayerSettings> settings = std::make_unique<QgsPalLayerSettings>( simpleLabeling->settings( ) );
-              QgsTextFormat format { settings->format() };
-              format.setOpacity( vl->opacity() );
-              settings->setFormat( format );
-              ruleLabeling->setSettings( settings.release() );
-            }
+            labeling->multiplyOpacity( opacity / 255. );
           }
           break;
         }

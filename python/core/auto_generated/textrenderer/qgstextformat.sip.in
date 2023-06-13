@@ -395,6 +395,19 @@ opaque).
 .. seealso:: :py:func:`setOpacity`
 %End
 
+    void multiplyOpacity( double opacityFactor );
+%Docstring
+Multiply opacity by ``opacityFactor``.
+
+This method multiplies the opacity of all the labeling elements (text, shadow, buffer etc.)
+by ``opacityFactor`` effectively changing the opacity of the whole labeling.
+
+It is currently used by the WMS server to apply the OPACITIES parameters to the layer rendering
+of a GetMap request.
+
+.. versionadded:: 3.32
+%End
+
     void setOpacity( double opacity );
 %Docstring
 Sets the text's opacity.
