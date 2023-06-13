@@ -451,7 +451,7 @@ class ProviderTestCase(FeatureSourceTestCase):
             provider_extent = self.source.extent()
             self.source.setSubsetString(None)
             self.assertEqual(count, 0)
-            self.assertTrue(provider_extent.isEmpty())
+            self.assertTrue(provider_extent.isNull())
             self.assertEqual(self.source.featureCount(), 5)
 
     def testUnique(self):
