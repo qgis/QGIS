@@ -22,6 +22,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 import shutil
 import os
 import sys
+from typing import List
 from functools import partial
 
 from qgis.core import (QgsApplication,
@@ -38,9 +39,25 @@ from qgis.gui import (QgsGui,
                       QgsOptionsWidgetFactory,
                       QgsCustomDropHandler,
                       QgsProcessingHistoryDialog)
-from qgis.PyQt.QtCore import QObject, Qt, QItemSelectionModel, QCoreApplication, QDir, QFileInfo, pyqtSlot
-from qgis.PyQt.QtWidgets import QWidget, QMenu, QAction
-from qgis.PyQt.QtGui import QIcon, QKeySequence
+from qgis.PyQt.QtCore import (
+    QObject,
+    Qt,
+    QItemSelectionModel,
+    QCoreApplication,
+    QDir,
+    QFileInfo,
+    pyqtSlot,
+    QMetaObject
+)
+from qgis.PyQt.QtWidgets import (
+    QWidget,
+    QMenu,
+    QAction
+)
+from qgis.PyQt.QtGui import (
+    QIcon,
+    QKeySequence
+)
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
@@ -177,6 +194,7 @@ class ProcessingPlugin(QObject):
         self.locator_filter = None
         self.edit_features_locator_filter = None
         self.initialized = False
+        self._gui_connections: List[QMetaObject.Connection] = []
         self.initProcessing()
 
     def initProcessing(self):
@@ -203,7 +221,9 @@ class ProcessingPlugin(QObject):
         self.locator_filter = AlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.locator_filter)
         # Invalidate the locator filter for in-place when active layer changes
-        iface.currentLayerChanged.connect(lambda _: self.iface.invalidateLocatorResults())
+        self._gui_connections.append(
+            iface.currentLayerChanged.connect(lambda _: self.iface.invalidateLocatorResults())
+        )
         self.edit_features_locator_filter = InPlaceAlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.edit_features_locator_filter)
 
@@ -303,9 +323,19 @@ class ProcessingPlugin(QObject):
         createButtons()
 
         # In-place editing button state sync
-        self.iface.currentLayerChanged.connect(self.sync_in_place_button_state)
-        self.iface.mapCanvas().selectionChanged.connect(self.sync_in_place_button_state)
-        self.iface.actionToggleEditing().triggered.connect(partial(self.sync_in_place_button_state, None))
+
+        # we need to explicitly store and disconnect these connections
+        # on plugin unload -- they aren't cleaned up automatically (see
+        # https://github.com/qgis/QGIS/issues/53455)
+        self._gui_connections.append(
+            self.iface.currentLayerChanged.connect(self.sync_in_place_button_state)
+        )
+        self._gui_connections.append(
+            self.iface.mapCanvas().selectionChanged.connect(self.sync_in_place_button_state)
+        )
+        self._gui_connections.append(
+            self.iface.actionToggleEditing().triggered.connect(partial(self.sync_in_place_button_state, None))
+        )
         self.sync_in_place_button_state()
 
         # Sync project models
@@ -314,7 +344,9 @@ class ProcessingPlugin(QObject):
         self.projectMenuSeparator = None
 
         self.projectProvider = QgsApplication.instance().processingRegistry().providerById("project")
-        self.projectProvider.algorithmsLoaded.connect(self.updateProjectModelMenu)
+        self._gui_connections.append(
+            self.projectProvider.algorithmsLoaded.connect(self.updateProjectModelMenu)
+        )
 
     def updateProjectModelMenu(self):
         """Add projects models to menu"""
@@ -433,6 +465,9 @@ class ProcessingPlugin(QObject):
         self.iface.showOptionsDialog(self.iface.mainWindow(), currentPage='processingOptions')
 
     def unload(self):
+        for connection in self._gui_connections:
+            self.disconnect(connection)
+        self._gui_connections = []
         self.toolbox.setVisible(False)
         self.iface.removeDockWidget(self.toolbox)
         self.iface.attributesToolBar().removeAction(self.toolboxAction)
