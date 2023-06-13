@@ -532,6 +532,8 @@ class QgsPostgresConn : public QObject
 
     bool mTransaction;
 
+    QString mCurrentSessionRole;
+
     mutable QRecursiveMutex mLock;
 
     /* Mutex protecting sCrsCache */
