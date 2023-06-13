@@ -71,11 +71,11 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     void dropSchema( const QString &name, bool force = false ) const override;
     void renameSchema( const QString &name, const QString &newName ) const override;
     QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
-    QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const override;
+    QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
-        const TableFlags &flags = TableFlags() ) const override;
+        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QStringList schemas( ) const override;
-    QgsFields fields( const QString &schema, const QString &table ) const override;
+    QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QIcon icon() const override;

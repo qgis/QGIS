@@ -350,7 +350,7 @@ long long QgssMssqlProviderResultIterator::rowCountPrivate() const
 }
 
 
-QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
+QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::Tables );
   QList<QgsMssqlProviderConnection::TableProperty> tables;
@@ -427,6 +427,9 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
   const QList<QVariantList> results { executeSqlPrivate( query, false ).rows() };
   for ( const auto &row : results )
   {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
     Q_ASSERT( row.count( ) == 6 );
     QgsMssqlProviderConnection::TableProperty table;
     table.setSchema( row[0].toString() );

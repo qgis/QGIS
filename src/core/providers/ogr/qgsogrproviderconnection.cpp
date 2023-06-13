@@ -183,7 +183,7 @@ QString QgsOgrProviderConnection::tableUri( const QString &, const QString &name
   return QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->encodeUri( parts );
 }
 
-QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOgrProviderConnection::tables( const QString &, const TableFlags &flags ) const
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOgrProviderConnection::tables( const QString &, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   QList<QgsAbstractDatabaseProviderConnection::TableProperty> tableInfo;
 
@@ -191,11 +191,14 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOgrProviderConnec
   const QList< QgsProviderSublayerDetails > subLayers = metadata->querySublayers(
         uri(),
         ( flags & TableFlag::IncludeSystemTables ) ? Qgis::SublayerQueryFlag::IncludeSystemTables : Qgis::SublayerQueryFlags(),
-        nullptr );
+        feedback );
 
   tableInfo.reserve( subLayers.size() );
   for ( const QgsProviderSublayerDetails &subLayer : subLayers )
   {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
     tableInfo.append( table( QString(), subLayer.name() ) );
   }
 
@@ -211,7 +214,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOgrProviderConnec
   return tableInfo;
 }
 
-QgsAbstractDatabaseProviderConnection::TableProperty QgsOgrProviderConnection::table( const QString &, const QString &table ) const
+QgsAbstractDatabaseProviderConnection::TableProperty QgsOgrProviderConnection::table( const QString &, const QString &table, QgsFeedback * ) const
 {
   const QVariantMap parts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri() );
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();

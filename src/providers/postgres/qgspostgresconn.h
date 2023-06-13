@@ -398,12 +398,12 @@ class QgsPostgresConn : public QObject
     /**
      * Determine type and srid of a layer from data (possibly estimated)
      */
-    void retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata );
+    void retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata, QgsFeedback *feedback = nullptr );
 
     /**
      * Determine type and srid of a vector of layers from data (possibly estimated)
      */
-    void retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &layerProperties, bool useEstimatedMetadata );
+    void retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &layerProperties, bool useEstimatedMetadata, QgsFeedback *feedback = nullptr );
 
     /**
      * Gets information about the spatial tables

@@ -1506,7 +1506,7 @@ QString QgsOracleProviderConnection::tableUri( const QString &schema, const QStr
 }
 
 
-QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::Tables );
   QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables;
@@ -1531,6 +1531,9 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderCon
 
   for ( auto &pr : properties )
   {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
     // Classify
     TableFlags prFlags;
     if ( pr.isView )

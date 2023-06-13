@@ -288,7 +288,7 @@ bool QgsSpatiaLiteProviderConnection::spatialIndexExists( const QString &schema,
   return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toInt() == 1;
 }
 
-QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
+QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::Tables );
   if ( ! schema.isEmpty() )
@@ -356,6 +356,9 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
       const QList<QgsSpatiaLiteConnection::TableEntry> constTables = connection.tables();
       for ( const QgsSpatiaLiteConnection::TableEntry &entry : constTables )
       {
+        if ( feedback && feedback->isCanceled() )
+          break;
+
         QString tableName { tableNotLowercaseNames.value( entry.tableName, entry.tableName ) };
         dsUri.setDataSource( QString(), tableName, entry.column, QString(), QString() );
         QgsSpatiaLiteProviderConnection::TableProperty property;

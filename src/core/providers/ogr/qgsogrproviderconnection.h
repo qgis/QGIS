@@ -75,8 +75,8 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     void remove( const QString &name ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
-        const TableFlags &flags = TableFlags() ) const override;
-    QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const override;
+        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
