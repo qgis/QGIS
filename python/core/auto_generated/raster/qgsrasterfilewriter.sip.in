@@ -12,6 +12,9 @@ class QgsRasterFileWriter
 {
 %Docstring(signature="appended")
 The raster file writer which allows you to save a raster to a new file.
+
+The writer defaults to creating GeoTIFF outputs using GDAL. Alternative formats and
+data providers can be used by calling :py:func:`~setOutputFormat` and :py:func:`~setOutputProviderKey`.
 %End
 
 %TypeHeaderCode
@@ -27,6 +30,9 @@ The raster file writer which allows you to save a raster to a new file.
 
 
     QgsRasterFileWriter( const QString &outputUrl );
+%Docstring
+Constructor for QgsRasterFileWriter, writing to the specified output URL/filename.
+%End
 
     QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
         int width, int height,
@@ -100,25 +106,85 @@ Write raster file
 .. versionadded:: 3.8
 %End
 
-
     QString outputUrl() const;
 %Docstring
-Returns the output URL for the raster.
+Returns the output URL (filename) for the raster.
 
 .. versionadded:: 3.0
 %End
 
     void setOutputFormat( const QString &format );
+%Docstring
+Sets the output ``format``.
+
+For GDAL disk based outputs this should match the GDAL driver name, e.g. "GTiff" for GeoTiff exports.
+
+.. seealso:: :py:func:`outputFormat`
+%End
+
     QString outputFormat() const;
+%Docstring
+Returns the output format.
+
+For GDAL disk based outputs this will match the GDAL driver name, e.g. "GTiff" for GeoTiff exports.
+
+.. seealso:: :py:func:`setOutputFormat`
+%End
 
     void setOutputProviderKey( const QString &key );
+%Docstring
+Sets the name of the data provider for the raster output.
+
+E.g. set to "gdal" to use GDAL to create disk based raster files.
+
+.. seealso:: :py:func:`outputProviderKey`
+%End
+
     QString outputProviderKey() const;
+%Docstring
+Returns the name of the data provider for the raster output.
+
+.. seealso:: :py:func:`setOutputProviderKey`
+%End
 
     void setTiledMode( bool t );
+%Docstring
+Sets whether the output should be tiled.
+
+Tiled outputs will automatically split the raster into multiple parts, based on the
+:py:func:`~QgsRasterFileWriter.maxTileWidth` value.
+
+.. seealso:: :py:func:`tiledMode`
+%End
+
     bool tiledMode() const;
+%Docstring
+Returns whether the output will be tiled.
+
+.. seealso:: :py:func:`setTiledMode`
+%End
 
     void setMaxTileWidth( int w );
+%Docstring
+Sets the maximum tile width (in pixels) for tiled outputs.
+
+.. seealso:: :py:func:`maxTileWidth`
+
+.. seealso:: :py:func:`setMaxTileHeight`
+
+.. seealso:: :py:func:`tiledMode`
+%End
+
     int maxTileWidth() const;
+%Docstring
+Returns the maximum tile width (in pixels) for tiled outputs.
+
+.. seealso:: :py:func:`maxTileHeight`
+
+.. seealso:: :py:func:`setMaxTileWidth`
+
+.. seealso:: :py:func:`tiledMode`
+%End
 
     Qgis::RasterBuildPyramidOption buildPyramidsFlag() const;
 %Docstring
@@ -135,7 +201,18 @@ Sets the pyramid building option.
 %End
 
     QList< int > pyramidsList() const;
+%Docstring
+Returns the list of pyramids which will be created for the output file.
+
+.. seealso:: :py:func:`setPyramidsList`
+%End
+
     void setPyramidsList( const QList< int > &list );
+%Docstring
+Sets the ``list`` of pyramids which will be created for the output file.
+
+.. seealso:: :py:func:`pyramidsList`
+%End
 
     QString pyramidsResampling() const;
     void setPyramidsResampling( const QString &str );
@@ -155,13 +232,58 @@ Sets the raster pyramid format.
 %End
 
     void setMaxTileHeight( int h );
+%Docstring
+Sets the maximum tile height (in pixels) for tiled outputs.
+
+.. seealso:: :py:func:`maxTileHeight`
+
+.. seealso:: :py:func:`setMaxTileWidth`
+
+.. seealso:: :py:func:`tiledMode`
+%End
+
     int maxTileHeight() const;
+%Docstring
+Returns the maximum tile height (in pixels) for tiled outputs.
+
+.. seealso:: :py:func:`maxTileWidth`
+
+.. seealso:: :py:func:`setMaxTileHeight`
+
+.. seealso:: :py:func:`tiledMode`
+%End
 
     void setCreateOptions( const QStringList &list );
+%Docstring
+Sets a list of data source creation options to use when
+creating the output raster file.
+
+.. seealso:: :py:func:`createOptions`
+%End
+
     QStringList createOptions() const;
+%Docstring
+Returns the list of data source creation options which will be used when
+creating the output raster file.
+
+.. seealso:: :py:func:`setCreateOptions`
+%End
 
     void setPyramidsConfigOptions( const QStringList &list );
+%Docstring
+Sets a ``list`` of configuration options to use when
+creating the pyramids for the output raster file.
+
+.. seealso:: :py:func:`pyramidsConfigOptions`
+%End
+
     QStringList pyramidsConfigOptions() const;
+%Docstring
+Returns the list of configuration options used when
+creating the pyramids for the output raster file.
+
+.. seealso:: :py:func:`setPyramidsConfigOptions`
+%End
 
     static QString filterForDriver( const QString &driverName );
 %Docstring
