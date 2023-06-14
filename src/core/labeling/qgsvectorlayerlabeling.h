@@ -108,7 +108,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      *
      * \since QGIS 3.32
      */
-    virtual void multiplyOpacity( double opacityFactor ) = 0;
+    virtual void multiplyOpacity( double opacityFactor ) { Q_UNUSED( opacityFactor ); };
 
 
     // static stuff
