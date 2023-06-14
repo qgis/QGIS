@@ -33,6 +33,9 @@ class QgsRasterInterface;
 /**
  * \ingroup core
  * \brief The raster file writer which allows you to save a raster to a new file.
+ *
+ * The writer defaults to creating GeoTIFF outputs using GDAL. Alternative formats and
+ * data providers can be used by calling setOutputFormat() and setOutputProviderKey().
  */
 class CORE_EXPORT QgsRasterFileWriter
 {
@@ -48,6 +51,9 @@ class CORE_EXPORT QgsRasterFileWriter
     };
     Q_DECLARE_FLAGS( RasterFormatOptions, RasterFormatOption )
 
+    /**
+     * Constructor for QgsRasterFileWriter, writing to the specified output URL/filename.
+     */
     QgsRasterFileWriter( const QString &outputUrl );
 
     /**
@@ -107,23 +113,79 @@ class CORE_EXPORT QgsRasterFileWriter
         const QgsCoordinateTransformContext &transformContext,
         QgsRasterBlockFeedback *feedback = nullptr );
 
-
     /**
-     * Returns the output URL for the raster.
+     * Returns the output URL (filename) for the raster.
      * \since QGIS 3.0
      */
     QString outputUrl() const { return mOutputUrl; }
 
+    /**
+     * Sets the output \a format.
+     *
+     * For GDAL disk based outputs this should match the GDAL driver name, e.g. "GTiff" for GeoTiff exports.
+     *
+     * \see outputFormat()
+     */
     void setOutputFormat( const QString &format ) { mOutputFormat = format; }
+
+    /**
+     * Returns the output format.
+     *
+     * For GDAL disk based outputs this will match the GDAL driver name, e.g. "GTiff" for GeoTiff exports.
+     *
+     * \see setOutputFormat()
+     */
     QString outputFormat() const { return mOutputFormat; }
 
+    /**
+     * Sets the name of the data provider for the raster output.
+     *
+     * E.g. set to "gdal" to use GDAL to create disk based raster files.
+     *
+     * \see outputProviderKey()
+     */
     void setOutputProviderKey( const QString &key ) { mOutputProviderKey = key; }
+
+    /**
+     * Returns the name of the data provider for the raster output.
+     *
+     * \see setOutputProviderKey()
+     */
     QString outputProviderKey() const { return mOutputProviderKey; }
 
+    /**
+     * Sets whether the output should be tiled.
+     *
+     * Tiled outputs will automatically split the raster into multiple parts, based on the
+     * maxTileWidth() value.
+     *
+     * \see tiledMode()
+     */
     void setTiledMode( bool t ) { mTiledMode = t; }
+
+    /**
+     * Returns whether the output will be tiled.
+     *
+     * \see setTiledMode()
+     */
     bool tiledMode() const { return mTiledMode; }
 
+    /**
+     * Sets the maximum tile width (in pixels) for tiled outputs.
+     *
+     * \see maxTileWidth()
+     * \see setMaxTileHeight()
+     * \see tiledMode()
+     */
     void setMaxTileWidth( int w ) { mMaxTileWidth = w; }
+
+    /**
+     * Returns the maximum tile width (in pixels) for tiled outputs.
+     *
+     * \see maxTileHeight()
+     * \see setMaxTileWidth()
+     * \see tiledMode()
+     */
     int maxTileWidth() const { return mMaxTileWidth; }
 
     /**
@@ -140,7 +202,18 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     void setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption f ) { mBuildPyramidsFlag = f; }
 
+    /**
+     * Returns the list of pyramids which will be created for the output file.
+     *
+     * \see setPyramidsList()
+     */
     QList< int > pyramidsList() const { return mPyramidsList; }
+
+    /**
+     * Sets the \a list of pyramids which will be created for the output file.
+     *
+     * \see pyramidsList()
+     */
     void setPyramidsList( const QList< int > &list ) { mPyramidsList = list; }
 
     QString pyramidsResampling() const { return mPyramidsResampling; }
@@ -160,13 +233,54 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     void setPyramidsFormat( Qgis::RasterPyramidFormat f ) { mPyramidsFormat = f; }
 
+    /**
+     * Sets the maximum tile height (in pixels) for tiled outputs.
+     *
+     * \see maxTileHeight()
+     * \see setMaxTileWidth()
+     * \see tiledMode()
+     */
     void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
+
+    /**
+     * Returns the maximum tile height (in pixels) for tiled outputs.
+     *
+     * \see maxTileWidth()
+     * \see setMaxTileHeight()
+     * \see tiledMode()
+     */
     int maxTileHeight() const { return mMaxTileHeight; }
 
+    /**
+     * Sets a list of data source creation options to use when
+     * creating the output raster file.
+     *
+     * \see createOptions()
+     */
     void setCreateOptions( const QStringList &list ) { mCreateOptions = list; }
+
+    /**
+     * Returns the list of data source creation options which will be used when
+     * creating the output raster file.
+     *
+     * \see setCreateOptions()
+     */
     QStringList createOptions() const { return mCreateOptions; }
 
+    /**
+     * Sets a \a list of configuration options to use when
+     * creating the pyramids for the output raster file.
+     *
+     * \see pyramidsConfigOptions()
+     */
     void setPyramidsConfigOptions( const QStringList &list ) { mPyramidsConfigOptions = list; }
+
+    /**
+     * Returns the list of configuration options used when
+     * creating the pyramids for the output raster file.
+     *
+     * \see setPyramidsConfigOptions()
+     */
     QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
 
     //! Creates a filter for an GDAL driver key
