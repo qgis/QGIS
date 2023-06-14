@@ -28,9 +28,11 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
 {
   for ( QgsMapLayer *layer : layers )
   {
-    QgsLayerSettings settings;
-    settings.name = layer->name();
 
+    mLayerSettings.emplace( layer, QgsLayerSettings() );
+    QgsLayerSettings &settings = mLayerSettings[layer ];
+
+    settings.name = layer->name();
     settings.mNamedStyle = layer->styleManager()->currentStyle();
 
     switch ( layer->type() )
@@ -47,7 +49,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
           // Labeling opacity
           if ( vLayer->labelsEnabled() && vLayer->labeling() )
           {
-            settings.mLabeling = vLayer->labeling()->clone();
+            settings.mLabeling.reset( vLayer->labeling()->clone() );
           }
         }
         break;
@@ -72,15 +74,14 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
         break;
     }
 
-    mLayerSettings[layer] = settings;
   }
 }
 
 QgsLayerRestorer::~QgsLayerRestorer()
 {
-  for ( auto it = mLayerSettings.constBegin(); it != mLayerSettings.constEnd(); it++ )
+  for ( auto it = mLayerSettings.begin(); it != mLayerSettings.end(); it++ )
   {
-    QgsMapLayer *layer = it.key();
+    QgsMapLayer *layer = it->first;
 
     // Firstly check if a SLD file has been loaded for rendering and removed it
     const QString sldStyleName { layer->customProperty( "sldStyleName", "" ).toString() };
@@ -91,9 +92,9 @@ QgsLayerRestorer::~QgsLayerRestorer()
     }
 
     // Then restore the previous style
-    const QgsLayerSettings settings = it.value();
+    QgsLayerSettings &settings = it->second;
     layer->styleManager()->setCurrentStyle( settings.mNamedStyle );
-    layer->setName( it.value().name );
+    layer->setName( it->second.name );
 
     switch ( layer->type() )
     {
@@ -108,7 +109,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
           vLayer->setSubsetString( settings.mFilter );
           if ( settings.mLabeling )
           {
-            vLayer->setLabeling( settings.mLabeling );
+            vLayer->setLabeling( settings.mLabeling.release() );
           }
         }
         break;

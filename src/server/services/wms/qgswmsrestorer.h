@@ -57,13 +57,13 @@ class QgsLayerRestorer
     {
       QString name;
       double mOpacity;
-      QgsAbstractVectorLayerLabeling *mLabeling = nullptr;
+      std::unique_ptr<QgsAbstractVectorLayerLabeling> mLabeling;
       QString mNamedStyle;
       QString mFilter;
       QgsFeatureIds mSelectedFeatureIds;
     };
 
-    QMap<QgsMapLayer *, QgsLayerSettings> mLayerSettings;
+    std::map<QgsMapLayer *, QgsLayerSettings> mLayerSettings;
 };
 
 namespace QgsWms
