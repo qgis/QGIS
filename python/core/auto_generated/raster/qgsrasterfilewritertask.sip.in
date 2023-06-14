@@ -71,7 +71,7 @@ Emitted when writing the layer is successfully completed. The ``outputUrl``
 parameter indicates the file path for the written file(s).
 %End
 
-    void errorOccurred( Qgis::RasterFileWriterResult error );
+    void errorOccurred( int error );
 %Docstring
 Emitted when an error occurs which prevented the file being written (or if
 the task is canceled). The writing ``error`` will be reported.
@@ -80,7 +80,7 @@ the task is canceled). The writing ``error`` will be reported.
    Use errorOccurred(int, const QString&)
 %End
 
-    void errorOccurred( Qgis::RasterFileWriterResult error, const QString &errorMessage );
+    void errorOccurred( int error, const QString &errorMessage );
 %Docstring
 Emitted when an error occurs which prevented the file being written (or if
 the task is canceled). The writing ``error`` will be reported and a

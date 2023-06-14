@@ -8115,8 +8115,9 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   } );
 
   // when an error occurs:
-  connect( writerTask, qOverload< Qgis::RasterFileWriterResult, const QString &>( &QgsRasterFileWriterTask::errorOccurred ), this, [ = ]( Qgis::RasterFileWriterResult error, const QString & errorMessage )
+  connect( writerTask, qOverload< int, const QString &>( &QgsRasterFileWriterTask::errorOccurred ), this, [ = ]( int errorInt, const QString & errorMessage )
   {
+    const Qgis::RasterFileWriterResult error = static_cast < Qgis::RasterFileWriterResult >( errorInt );
     if ( error != Qgis::RasterFileWriterResult::Canceled )
     {
       QString errorCodeStr;

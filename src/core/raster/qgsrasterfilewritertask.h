@@ -86,7 +86,7 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
      * the task is canceled). The writing \a error will be reported.
      * \deprecated since QGIS 3.10. Use errorOccurred(int, const QString&)
      */
-    void errorOccurred( Qgis::RasterFileWriterResult error );
+    void errorOccurred( int error );
 
     /**
      * Emitted when an error occurs which prevented the file being written (or if
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
      * \a errorMessage will be potentially set.
      * \since QGIS 3.10
      */
-    void errorOccurred( Qgis::RasterFileWriterResult error, const QString &errorMessage );
+    void errorOccurred( int error, const QString &errorMessage );
 
   protected:
 
