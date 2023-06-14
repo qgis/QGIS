@@ -102,15 +102,11 @@ QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
   mWidget = new QgsProcessingHistoryWidget();
   vl->addWidget( mWidget, 1 );
 
-  mButtonBox = new QDialogButtonBox();
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Close | QDialogButtonBox::Help );
 
   QPushButton *clearButton = new QPushButton( tr( "Clear" ) );
   clearButton->setToolTip( tr( "Clear history" ) );
   mButtonBox->addButton( clearButton, QDialogButtonBox::ActionRole );
-
-  QPushButton *helpButton = new QPushButton( tr( "Help" ) );
-  helpButton->setToolTip( tr( "Show help" ) );
-  mButtonBox->addButton( helpButton, QDialogButtonBox::HelpRole );
 
   QPushButton *saveButton = new QPushButton( tr( "Save As…" ) );
   saveButton->setToolTip( tr( "Save history" ) );
@@ -118,7 +114,8 @@ QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
 
   connect( clearButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::clearHistory );
   connect( saveButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::saveLog );
-  connect( helpButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::openHelp );
+  connect( mButtonBox->button( QDialogButtonBox::Help ), &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::openHelp );
+  connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [ = ]() { close(); } );
 
   vl->addWidget( mButtonBox );
 
