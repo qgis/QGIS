@@ -1131,6 +1131,47 @@ Qgis.RasterAttributeTableType.Athematic.__doc__ = ""
 Qgis.RasterAttributeTableType.__doc__ = 'The RasterAttributeTableType enum represents the type of RAT.\nnote Directly mapped from GDALRATTableType enum values.\n\n.. versionadded:: 3.30\n\n' + '* ``Thematic``: ' + Qgis.RasterAttributeTableType.Thematic.__doc__ + '\n' + '* ``Athematic``: ' + Qgis.RasterAttributeTableType.Athematic.__doc__
 # --
 Qgis.RasterAttributeTableType.baseClass = Qgis
+QgsRasterFileWriter.Mode = Qgis.RasterExportType
+# monkey patching scoped based enum
+QgsRasterFileWriter.Raw = Qgis.RasterExportType.Raw
+QgsRasterFileWriter.Raw.is_monkey_patched = True
+QgsRasterFileWriter.Raw.__doc__ = "Raw data"
+QgsRasterFileWriter.Image = Qgis.RasterExportType.RenderedImage
+QgsRasterFileWriter.Mode.Image = Qgis.RasterExportType.RenderedImage
+QgsRasterFileWriter.Image.is_monkey_patched = True
+QgsRasterFileWriter.Image.__doc__ = "Rendered image"
+Qgis.RasterExportType.__doc__ = 'Raster file export types.\n\nPrior to QGIS 3.32 this was available as :py:class:`QgsRasterFileWriter`.Mode\n\n.. versionadded:: 3.32\n\n' + '* ``Raw``: ' + Qgis.RasterExportType.Raw.__doc__ + '\n' + '* ``Image``: ' + Qgis.RasterExportType.RenderedImage.__doc__
+# --
+Qgis.RasterExportType.baseClass = Qgis
+QgsRasterFileWriter.WriterError = Qgis.RasterFileWriterResult
+# monkey patching scoped based enum
+QgsRasterFileWriter.NoError = Qgis.RasterFileWriterResult.Success
+QgsRasterFileWriter.WriterError.NoError = Qgis.RasterFileWriterResult.Success
+QgsRasterFileWriter.NoError.is_monkey_patched = True
+QgsRasterFileWriter.NoError.__doc__ = "Successful export"
+QgsRasterFileWriter.SourceProviderError = Qgis.RasterFileWriterResult.SourceProviderError
+QgsRasterFileWriter.SourceProviderError.is_monkey_patched = True
+QgsRasterFileWriter.SourceProviderError.__doc__ = "Source data provider error"
+QgsRasterFileWriter.DestProviderError = Qgis.RasterFileWriterResult.DestinationProviderError
+QgsRasterFileWriter.WriterError.DestProviderError = Qgis.RasterFileWriterResult.DestinationProviderError
+QgsRasterFileWriter.DestProviderError.is_monkey_patched = True
+QgsRasterFileWriter.DestProviderError.__doc__ = "Destination data provider error"
+QgsRasterFileWriter.CreateDatasourceError = Qgis.RasterFileWriterResult.CreateDatasourceError
+QgsRasterFileWriter.CreateDatasourceError.is_monkey_patched = True
+QgsRasterFileWriter.CreateDatasourceError.__doc__ = "Data source creation error"
+QgsRasterFileWriter.WriteError = Qgis.RasterFileWriterResult.WriteError
+QgsRasterFileWriter.WriteError.is_monkey_patched = True
+QgsRasterFileWriter.WriteError.__doc__ = "Write error"
+QgsRasterFileWriter.NoDataConflict = Qgis.RasterFileWriterResult.NoDataConflict
+QgsRasterFileWriter.NoDataConflict.is_monkey_patched = True
+QgsRasterFileWriter.NoDataConflict.__doc__ = "Internal error if a value used for 'no data' was found in input"
+QgsRasterFileWriter.WriteCanceled = Qgis.RasterFileWriterResult.Canceled
+QgsRasterFileWriter.WriterError.WriteCanceled = Qgis.RasterFileWriterResult.Canceled
+QgsRasterFileWriter.WriteCanceled.is_monkey_patched = True
+QgsRasterFileWriter.WriteCanceled.__doc__ = "Writing was manually canceled"
+Qgis.RasterFileWriterResult.__doc__ = 'Raster file export results.\n\nPrior to QGIS 3.32 this was available as :py:class:`QgsRasterFileWriter`.WriterError\n\n.. versionadded:: 3.32\n\n' + '* ``NoError``: ' + Qgis.RasterFileWriterResult.Success.__doc__ + '\n' + '* ``SourceProviderError``: ' + Qgis.RasterFileWriterResult.SourceProviderError.__doc__ + '\n' + '* ``DestProviderError``: ' + Qgis.RasterFileWriterResult.DestinationProviderError.__doc__ + '\n' + '* ``CreateDatasourceError``: ' + Qgis.RasterFileWriterResult.CreateDatasourceError.__doc__ + '\n' + '* ``WriteError``: ' + Qgis.RasterFileWriterResult.WriteError.__doc__ + '\n' + '* ``NoDataConflict``: ' + Qgis.RasterFileWriterResult.NoDataConflict.__doc__ + '\n' + '* ``WriteCanceled``: ' + Qgis.RasterFileWriterResult.Canceled.__doc__
+# --
+Qgis.RasterFileWriterResult.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.MeshEditingErrorType.NoError.__doc__ = "No type"
 Qgis.MeshEditingErrorType.InvalidFace.__doc__ = "An error occurs due to an invalid face (for example, vertex indexes are unordered)"

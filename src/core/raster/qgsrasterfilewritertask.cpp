@@ -64,7 +64,7 @@ bool QgsRasterFileWriterTask::run()
 
   mError = mWriter.writeRaster( mPipe.get(), mColumns, mRows, mExtent, mCrs, mTransformContext, mFeedback.get() );
 
-  return mError == QgsRasterFileWriter::NoError;
+  return mError == Qgis::RasterFileWriterResult::Success;
 }
 
 void QgsRasterFileWriterTask::finished( bool result )

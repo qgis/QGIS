@@ -166,7 +166,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 
   delete pipe;
 
-  if ( res != QgsRasterFileWriter::NoError )
+  if ( res != Qgis::RasterFileWriterResult::Success )
   {
     logError( QStringLiteral( "writeRaster() returned error" ) );
     return false;
@@ -308,8 +308,8 @@ void TestQgsRasterFileWriter::testVrtCreation()
   QgsRasterPipe pipe;
   pipe.set( srcRasterLayer->dataProvider()->clone() );
   // Let's do it !
-  const QgsRasterFileWriter::WriterError res = rasterFileWriter->writeRaster( &pipe, srcRasterLayer->width(), srcRasterLayer->height(), srcRasterLayer->extent(), crs,  srcRasterLayer->transformContext() );
-  QCOMPARE( res, QgsRasterFileWriter::NoError );
+  const Qgis::RasterFileWriterResult res = rasterFileWriter->writeRaster( &pipe, srcRasterLayer->width(), srcRasterLayer->height(), srcRasterLayer->extent(), crs,  srcRasterLayer->transformContext() );
+  QCOMPARE( res, Qgis::RasterFileWriterResult::Success );
 
   // Now let's compare the georef of the original raster with the georef of the generated vrt file
   std::unique_ptr< QgsRasterLayer > vrtRasterLayer = std::make_unique< QgsRasterLayer >( dir.path() + '/' + rasterFileInfo.completeBaseName() + '/' + rasterFileInfo.completeBaseName() + QStringLiteral( ".vrt" ), rasterFileInfo.completeBaseName() );

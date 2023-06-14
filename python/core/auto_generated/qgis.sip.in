@@ -653,6 +653,23 @@ The development version
       Athematic
     };
 
+    enum class RasterExportType
+      {
+      Raw,
+      RenderedImage
+    };
+
+    enum class RasterFileWriterResult
+      {
+      Success,
+      SourceProviderError,
+      DestinationProviderError,
+      CreateDatasourceError,
+      WriteError,
+      NoDataConflict,
+      Canceled,
+    };
+
     enum class MeshEditingErrorType
     {
       NoError,

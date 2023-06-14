@@ -8115,18 +8115,18 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   } );
 
   // when an error occurs:
-  connect( writerTask, qOverload< int, const QString &>( &QgsRasterFileWriterTask::errorOccurred ), this, [ = ]( int error, const QString & errorMessage )
+  connect( writerTask, qOverload< Qgis::RasterFileWriterResult, const QString &>( &QgsRasterFileWriterTask::errorOccurred ), this, [ = ]( Qgis::RasterFileWriterResult error, const QString & errorMessage )
   {
-    if ( error != QgsRasterFileWriter::WriteCanceled )
+    if ( error != Qgis::RasterFileWriterResult::Canceled )
     {
       QString errorCodeStr;
-      if ( error == QgsRasterFileWriter::SourceProviderError )
+      if ( error == Qgis::RasterFileWriterResult::SourceProviderError )
         errorCodeStr = tr( "source provider" );
-      else if ( error == QgsRasterFileWriter::DestProviderError )
+      else if ( error == Qgis::RasterFileWriterResult::DestinationProviderError )
         errorCodeStr = tr( "destination provider" );
-      else if ( error == QgsRasterFileWriter::CreateDatasourceError )
+      else if ( error == Qgis::RasterFileWriterResult::CreateDatasourceError )
         errorCodeStr = tr( "data source creation" );
-      else if ( error == QgsRasterFileWriter::WriteError )
+      else if ( error == Qgis::RasterFileWriterResult::WriteError )
         errorCodeStr = tr( "write error" );
       QString fullErrorMsg( tr( "Cannot write raster. Error code: %1" ).arg( errorCodeStr ) );
       if ( !errorMessage.isEmpty() )

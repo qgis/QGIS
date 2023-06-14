@@ -23,8 +23,6 @@
 #include <QString>
 #include <QStringList>
 
-#include "qgsraster.h"
-
 class QgsRasterBlockFeedback;
 class QgsRasterIterator;
 class QgsRasterPipe;
@@ -39,21 +37,6 @@ class QgsRasterInterface;
 class CORE_EXPORT QgsRasterFileWriter
 {
   public:
-    enum Mode
-    {
-      Raw = 0, //!< Raw data
-      Image = 1 //!< Rendered image
-    };
-    enum WriterError
-    {
-      NoError = 0,
-      SourceProviderError = 1,
-      DestProviderError = 2,
-      CreateDatasourceError = 3,
-      WriteError = 4,
-      NoDataConflict = 5, //!< Internal error if a value used for 'no data' was found in input
-      WriteCanceled = 6, //!< Writing was manually canceled
-    };
 
     /**
      * Options for sorting and filtering raster formats.
@@ -105,7 +88,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * \param feedback optional feedback object for progress reports
      * \deprecated since QGIS 3.8, use version with transformContext instead
     */
-    Q_DECL_DEPRECATED WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
+    Q_DECL_DEPRECATED Qgis::RasterFileWriterResult writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
         const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = nullptr ) SIP_DEPRECATED;
 
     /**
@@ -119,10 +102,10 @@ class CORE_EXPORT QgsRasterFileWriter
      * \param feedback optional feedback object for progress reports
      * \since QGIS 3.8
     */
-    WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-                             const QgsCoordinateReferenceSystem &crs,
-                             const QgsCoordinateTransformContext &transformContext,
-                             QgsRasterBlockFeedback *feedback = nullptr );
+    Qgis::RasterFileWriterResult writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
+        const QgsCoordinateReferenceSystem &crs,
+        const QgsCoordinateTransformContext &transformContext,
+        QgsRasterBlockFeedback *feedback = nullptr );
 
 
     /**
@@ -251,25 +234,25 @@ class CORE_EXPORT QgsRasterFileWriter
 
   private:
     QgsRasterFileWriter(); //forbidden
-    WriterError writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-                                 const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext,
-                                 QgsRasterBlockFeedback *feedback = nullptr );
+    Qgis::RasterFileWriterResult writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
+        const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext,
+        QgsRasterBlockFeedback *feedback = nullptr );
 
     // Helper method used by previous one
-    WriterError writeDataRaster( const QgsRasterPipe *pipe,
-                                 QgsRasterIterator *iter,
-                                 int nCols, int nRows,
-                                 const QgsRectangle &outputExtent,
-                                 const QgsCoordinateReferenceSystem &crs,
-                                 Qgis::DataType destDataType,
-                                 const QList<bool> &destHasNoDataValueList,
-                                 const QList<double> &destNoDataValueList,
-                                 QgsRasterDataProvider *destProvider,
-                                 QgsRasterBlockFeedback *feedback = nullptr );
+    Qgis::RasterFileWriterResult writeDataRaster( const QgsRasterPipe *pipe,
+        QgsRasterIterator *iter,
+        int nCols, int nRows,
+        const QgsRectangle &outputExtent,
+        const QgsCoordinateReferenceSystem &crs,
+        Qgis::DataType destDataType,
+        const QList<bool> &destHasNoDataValueList,
+        const QList<double> &destNoDataValueList,
+        QgsRasterDataProvider *destProvider,
+        QgsRasterBlockFeedback *feedback = nullptr );
 
-    WriterError writeImageRaster( QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-                                  const QgsCoordinateReferenceSystem &crs,
-                                  QgsRasterBlockFeedback *feedback = nullptr );
+    Qgis::RasterFileWriterResult writeImageRaster( QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
+        const QgsCoordinateReferenceSystem &crs,
+        QgsRasterBlockFeedback *feedback = nullptr );
 
     /**
      * \brief Initialize vrt member variables
@@ -316,7 +299,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QString partFileName( int fileIndex );
     QString vrtFileName();
 
-    Mode mMode = Raw;
+    Qgis::RasterExportType mMode = Qgis::RasterExportType::Raw;
     QString mOutputUrl;
     QString mOutputProviderKey = QStringLiteral( "gdal" );
     QString mOutputFormat = QStringLiteral( "GTiff" );
