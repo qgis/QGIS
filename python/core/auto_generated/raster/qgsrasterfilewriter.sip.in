@@ -8,7 +8,6 @@
 
 
 
-
 class QgsRasterFileWriter
 {
 %Docstring(signature="appended")
@@ -19,21 +18,6 @@ The raster file writer which allows you to save a raster to a new file.
 #include "qgsrasterfilewriter.h"
 %End
   public:
-    enum Mode
-    {
-      Raw,
-      Image
-    };
-    enum WriterError
-    {
-      NoError,
-      SourceProviderError,
-      DestProviderError,
-      CreateDatasourceError,
-      WriteError,
-      NoDataConflict,
-      WriteCanceled,
-    };
 
     enum RasterFormatOption
     {
@@ -82,7 +66,7 @@ Ownership of the returned provider is passed to the caller.
 %End
 
 
- WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
+ Qgis::RasterFileWriterResult writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
         const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated/;
 %Docstring
 Write raster file
@@ -98,10 +82,10 @@ Write raster file
   use version with transformContext instead
 %End
 
-    WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-                             const QgsCoordinateReferenceSystem &crs,
-                             const QgsCoordinateTransformContext &transformContext,
-                             QgsRasterBlockFeedback *feedback = 0 );
+    Qgis::RasterFileWriterResult writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
+        const QgsCoordinateReferenceSystem &crs,
+        const QgsCoordinateTransformContext &transformContext,
+        QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
 Write raster file
 

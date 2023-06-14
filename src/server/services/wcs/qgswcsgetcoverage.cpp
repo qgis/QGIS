@@ -208,10 +208,10 @@ namespace QgsWcs
       }
     }
 
-    const QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( &pipe, width, height, rect, responseCRS, rLayer->transformContext() );
-    if ( err != QgsRasterFileWriter::NoError )
+    const Qgis::RasterFileWriterResult err = fileWriter.writeRaster( &pipe, width, height, rect, responseCRS, rLayer->transformContext() );
+    if ( err != Qgis::RasterFileWriterResult::Success )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot write raster error code: %1" ).arg( err ) );
+      throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot write raster error code: %1" ).arg( qgsEnumValueToKey( err ) ) );
     }
     return tempFile.readAll();
   }

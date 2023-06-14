@@ -1072,6 +1072,37 @@ class CORE_EXPORT Qgis
     Q_ENUM( RasterAttributeTableType )
 
     /**
+     * Raster file export types.
+     *
+     * Prior to QGIS 3.32 this was available as QgsRasterFileWriter::Mode
+     * \since QGIS 3.32
+     */
+    enum class RasterExportType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterFileWriter, Mode ) : int
+      {
+      Raw = 0, //!< Raw data
+      RenderedImage SIP_MONKEYPATCH_COMPAT_NAME( Image ) = 1 //!< Rendered image
+    };
+    Q_ENUM( RasterExportType )
+
+    /**
+     * Raster file export results.
+     *
+     * Prior to QGIS 3.32 this was available as QgsRasterFileWriter::WriterError
+     * \since QGIS 3.32
+     */
+    enum class RasterFileWriterResult SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterFileWriter, WriterError ) : int
+      {
+      Success SIP_MONKEYPATCH_COMPAT_NAME( NoError ) = 0, //!< Successful export
+      SourceProviderError = 1, //!< Source data provider error
+      DestinationProviderError SIP_MONKEYPATCH_COMPAT_NAME( DestProviderError ) = 2, //!< Destination data provider error
+      CreateDatasourceError = 3, //!< Data source creation error
+      WriteError = 4, //!< Write error
+      NoDataConflict = 5, //!< Internal error if a value used for 'no data' was found in input
+      Canceled SIP_MONKEYPATCH_COMPAT_NAME( WriteCanceled ) = 6, //!< Writing was manually canceled
+    };
+    Q_ENUM( RasterFileWriterResult )
+
+    /**
      * Type of error that can occur during mesh frame editing.
      *
      * \since QGIS 3.22
