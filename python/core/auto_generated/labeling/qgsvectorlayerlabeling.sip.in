@@ -84,7 +84,7 @@ or exported to a vector format.
 .. versionadded:: 3.0
 %End
 
-    virtual void multiplyOpacity( double opacityFactor ) = 0;
+    virtual void multiplyOpacity( double opacityFactor );
 %Docstring
 Multiply opacity by ``opacityFactor``.
 
@@ -93,7 +93,6 @@ by ``opacity`` effectively changing the opacity of the whole labeling elements.
 
 .. versionadded:: 3.32
 %End
-
 
 
     static QgsAbstractVectorLayerLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
