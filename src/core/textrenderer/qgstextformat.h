@@ -366,9 +366,6 @@ class CORE_EXPORT QgsTextFormat
      * This method multiplies the opacity of all the labeling elements (text, shadow, buffer etc.)
      * by \a opacityFactor effectively changing the opacity of the whole labeling.
      *
-     * It is currently used by the WMS server to apply the OPACITIES parameters to the layer rendering
-     * of a GetMap request.
-     *
      * \since QGIS 3.32
      */
     void multiplyOpacity( double opacityFactor );

@@ -314,6 +314,8 @@ double QgsTextFormat::opacity() const
 
 void QgsTextFormat::multiplyOpacity( double opacityFactor )
 {
+  if ( qgsDoubleNear( opacityFactor, 1.0 ) )
+    return;
   d->opacity *= opacityFactor;
   mBufferSettings.setOpacity( mBufferSettings.opacity() * opacityFactor );
   mShadowSettings.setOpacity( mShadowSettings.opacity() * opacityFactor );

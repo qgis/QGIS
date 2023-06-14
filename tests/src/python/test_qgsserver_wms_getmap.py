@@ -36,6 +36,12 @@ from qgis.core import (
     QgsVectorLayerSimpleLabeling,
     QgsFontUtils,
 )
+from qgis.server import (
+    QgsServer,
+    QgsBufferServerRequest,
+    QgsBufferServerResponse,
+)
+
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.PyQt.QtGui import QColor, QImage
 from qgis.testing import unittest
@@ -2179,14 +2185,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         response = QgsBufferServerResponse()
         server = QgsServer()
         server.handleRequest(request, response, project)
-        image = QImage.fromData(response.body(), "PNG")
-        image.save('/tmp/img.png')
-        # Text
-        self.assertEqual(image.pixelColor(105, 84).name(), '#5f5f5f')
-        # Buffer
-        self.assertEqual(image.pixelColor(92, 84).name(), '#bfbfbf')
-        # Shadow
-        self.assertEqual(image.pixelColor(169, 136).name(), '#f0f0f0')
+        self._img_diff_error(response.body(), response.headers(), "WMS_GetMap_LabelingOpacities128")
 
         # Test restorer
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -2207,14 +2206,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         response = QgsBufferServerResponse()
         server = QgsServer()
         server.handleRequest(request, response, project)
-        image = QImage.fromData(response.body(), "PNG")
-        image.save('/tmp/img2.png')
-        # Text
-        self.assertEqual(image.pixelColor(105, 84).name(), '#000000')
-        # Buffer
-        self.assertEqual(image.pixelColor(92, 84).name(), '#7f7f7f')
-        # Shadow
-        self.assertEqual(image.pixelColor(169, 136).name(), '#c1c1c1')
+        self._img_diff_error(response.body(), response.headers(), "WMS_GetMap_LabelingOpacities")
 
 
 if __name__ == '__main__':
