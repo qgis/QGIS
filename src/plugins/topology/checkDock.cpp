@@ -376,22 +376,20 @@ void checkDock::runTests( ValidateType type )
     for ( it = errors.begin(); it != errors.end(); ++it )
     {
       TopolError *te = *it;
-      te->conflict();
-
       const QgsSettings settings;
-      if ( te->conflict().type() == Qgis::GeometryType::Polygon )
+      const QgsGeometry geom = te->conflict();
+      QVector<QgsGeometry> geoms = ( geom.wkbType() == Qgis::WkbType::GeometryCollection ?
+                                     geom.asGeometryCollection() : QVector<QgsGeometry>() << geom );
+
+      for ( const QgsGeometry &g : std::as_const( geoms ) )
       {
-        rb = new QgsRubberBand( qgsInterface->mapCanvas(), Qgis::GeometryType::Polygon );
+        rb = new QgsRubberBand( qgsInterface->mapCanvas(), g.type() );
+        rb->setColor( "red" );
+        rb->setWidth( 4 );
+        rb->setToGeometry( g, layer1 );
+        rb->show();
+        mRbErrorMarkers << rb;
       }
-      else
-      {
-        rb = new QgsRubberBand( qgsInterface->mapCanvas(), te->conflict().type() );
-      }
-      rb->setColor( "red" );
-      rb->setWidth( 4 );
-      rb->setToGeometry( te->conflict(), layer1 );
-      rb->show();
-      mRbErrorMarkers << rb;
     }
     mErrorList << errors;
   }
