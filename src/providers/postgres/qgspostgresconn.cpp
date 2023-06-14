@@ -302,6 +302,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   : mRef( 1 )
   , mOpenCursors( 0 )
   , mConnInfo( conninfo )
+  , mUri( conninfo )
   , mGeosAvailable( false )
   , mProjAvailable( false )
   , mTopologyAvailable( false )
@@ -322,8 +323,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   QgsDebugMsgLevel( QStringLiteral( "New PostgreSQL connection for " ) + conninfo, 2 );
 
   // expand connectionInfo
-  QgsDataSourceUri uri( conninfo );
-  QString expandedConnectionInfo = uri.connectionInfo( true );
+  QString expandedConnectionInfo = mUri.connectionInfo( true );
 
   auto addDefaultTimeoutAndClientEncoding = []( QString & connectString )
   {
@@ -378,8 +378,8 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   // check the connection status
   if ( PQstatus() != CONNECTION_OK )
   {
-    QString username = uri.username();
-    QString password = uri.password();
+    QString username = mUri.username();
+    QString password = mUri.password();
 
     QgsCredentials::instance()->lock();
 
@@ -396,13 +396,13 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       PQfinish();
 
       if ( !username.isEmpty() )
-        uri.setUsername( username );
+        mUri.setUsername( username );
 
       if ( !password.isEmpty() )
-        uri.setPassword( password );
+        mUri.setPassword( password );
 
-      QgsDebugMsgLevel( "Connecting to " + uri.connectionInfo( false ), 2 );
-      QString connectString = uri.connectionInfo();
+      QgsDebugMsgLevel( "Connecting to " + mUri.connectionInfo( false ), 2 );
+      QString connectString = mUri.connectionInfo();
       addDefaultTimeoutAndClientEncoding( connectString );
       mConn = PQconnectdb( connectString.toUtf8() );
     }
