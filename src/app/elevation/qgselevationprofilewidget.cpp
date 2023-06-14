@@ -717,6 +717,7 @@ void QgsElevationProfileWidget::clear()
   mCanvas->clear();
   mNudgeLeftAction->setEnabled( false );
   mNudgeRightAction->setEnabled( false );
+  mProfileCurve = QgsGeometry();
 }
 
 void QgsElevationProfileWidget::exportAsPdf()
