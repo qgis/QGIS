@@ -94,7 +94,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
     // Then restore the previous style
     QgsLayerSettings &settings = it->second;
     layer->styleManager()->setCurrentStyle( settings.mNamedStyle );
-    layer->setName( it->second.name );
+    layer->setName( settings.name );
 
     switch ( layer->type() )
     {
