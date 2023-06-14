@@ -179,6 +179,12 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     return;
   }
 
+  // if credentials were updated during database connection, update the provider's uri accordingly
+  if ( !mUri.username().isEmpty() )
+    mUri.setUsername( mConnectionRO->uri().username() );
+  if ( !mUri.password().isEmpty() )
+    mUri.setPassword( mConnectionRO->uri().password() );
+
   if ( !hasSufficientPermsAndCapabilities() ) // check permissions and set capabilities
   {
     disconnectDb();

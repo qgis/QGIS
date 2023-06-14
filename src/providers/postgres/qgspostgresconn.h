@@ -255,6 +255,11 @@ class QgsPostgresConn : public QObject
     void ref();
     void unref();
 
+    /**
+     * Returns the URI associated with the connection.
+     */
+    const QgsDataSourceUri &uri() const { return mUri; }
+
     //! Gets postgis version string
     QString postgisVersion() const;
 
@@ -480,6 +485,7 @@ class QgsPostgresConn : public QObject
     int mOpenCursors;
     PGconn *mConn = nullptr;
     QString mConnInfo;
+    QgsDataSourceUri mUri;
 
     //! GEOS capability
     mutable bool mGeosAvailable;
