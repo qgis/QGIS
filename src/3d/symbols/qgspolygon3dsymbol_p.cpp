@@ -256,7 +256,7 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   Qt3DRender::QMaterial *mat = material( mSymbol.get(), selected, context );
 
   // extract vertex buffer data from tessellator
-  const QByteArray data( ( const char * )polyData.tessellator->data().constData(), ( int )( polyData.tessellator->data().count() * sizeof( float ) ) );
+  const QByteArray data( reinterpret_cast<const char *>( polyData.tessellator->data().constData() ), static_cast<int>( polyData.tessellator->data().count() * sizeof( float ) ) );
   const int nVerts = data.count() / polyData.tessellator->stride();
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->materialSettings() );

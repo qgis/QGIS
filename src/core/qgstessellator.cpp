@@ -520,7 +520,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
   const QVector3D upVector( 0, 0, 1 );
   const float pNormalUpVectorDotProduct = QVector3D::dotProduct( upVector, pNormal );
-  const float radsBetweenUpNormal = ( float ) qAcos( pNormalUpVectorDotProduct );
+  const float radsBetweenUpNormal = static_cast<float>( qAcos( pNormalUpVectorDotProduct ) );
 
   const float detectionDelta = qDegreesToRadians( 10.0f );
   int facade = 0;
@@ -545,7 +545,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     const double *zData = !mNoZ ? exterior->zData() : nullptr;
     for ( int i = 0; i < 3; i++ )
     {
-      const float baseHeight = !zData || mNoZ ? 0.0f : ( float ) * zData;
+      const float baseHeight = !zData || mNoZ ? 0.0f : static_cast<float>( * zData );
       const float z = mNoZ ? 0.0f : ( baseHeight + extrusionHeight );
       if ( baseHeight < zMin )
         zMin = baseHeight;
