@@ -784,6 +784,13 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
   int cp = 0;          // Pointer to the next character in the buffer
   int cpmax = buffer.size(); // End of string
 
+  const bool isSingleCharDelim = mDelimChars.size() == 1;
+  const QChar firstDelimChar = isSingleCharDelim ? mDelimChars.at( 0 ) : QChar();
+  const bool isSingleCharQuote = mQuoteChar.size() == 1;
+  const QChar firstQuoteChar = isSingleCharQuote ? mQuoteChar.at( 0 ) : QChar();
+  const bool isSingleCharEscape = mEscapeChar.size() == 1;
+  const QChar firstEscapeChar = isSingleCharEscape ? mEscapeChar.at( 0 ) : QChar();
+
   while ( true )
   {
     // If end of line then if escaped or buffered then try to get more...
@@ -827,13 +834,14 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
 
     bool isQuote = false;
     bool isEscape = false;
-    const bool isDelim = mDelimChars.contains( c );
+    const bool isDelim = isSingleCharDelim ? firstDelimChar == c : mDelimChars.contains( c );
     if ( ! isDelim )
     {
-      const bool isQuoteChar = mQuoteChar.contains( c );
+      const bool isQuoteChar = isSingleCharQuote ? firstQuoteChar == c : mQuoteChar.contains( c );
       isQuote = quoted ? c == quoteChar : isQuoteChar;
-      isEscape = mEscapeChar.contains( c );
-      if ( isQuoteChar && isEscape ) isEscape = isQuote;
+      isEscape = isSingleCharEscape ? firstEscapeChar == c : mEscapeChar.contains( c );
+      if ( isQuoteChar && isEscape )
+        isEscape = isQuote;
     }
 
     // Start or end of quote ...
