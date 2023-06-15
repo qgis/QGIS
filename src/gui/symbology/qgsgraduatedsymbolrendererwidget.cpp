@@ -568,6 +568,9 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   connect( cboGraduatedMode, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::updateMethodParameters );
 
+  // need to update widget according to current graduated mode
+  updateMethodParameters();
+
   connectUpdateHandlers();
 
   // initialize from previously set renderer
