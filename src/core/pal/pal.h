@@ -110,7 +110,7 @@ namespace pal
        * \param provider Provider associated with the layer
        * \param layerName layer's name
        * \param arrangement Howto place candidates
-       * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
+       * \param defaultPriority layer's priority (0 is the best, 1 the worst)
        * \param active is the layer is active (currently displayed)
        * \param toLabel the layer will be labeled only if toLablel is TRUE
        *
