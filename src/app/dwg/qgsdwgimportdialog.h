@@ -44,6 +44,8 @@ class APP_EXPORT QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBa
     void leLayerGroup_textChanged( const QString &text );
     void showHelp();
     void layersClicked( QTableWidgetItem *item );
+    void blockModeCurrentIndexChanged();
+    void useCurvesClicked();
 
   private:
 
@@ -52,6 +54,13 @@ class APP_EXPORT QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBa
       Name = 0,
       Visibility = 1
     };
+
+    enum BlockImportFlag
+    {
+      BlockImportExpandGeometry = 1 << 0,
+      BlockImportAddInsertPoints = 1 << 1
+    };
+    Q_DECLARE_FLAGS( BlockImportFlags, BlockImportFlag )
 
     QgsVectorLayer *createLayer( const QString &layer, const QString &table );
     QList<QgsVectorLayer *> createLayers( const QStringList &layerNames );

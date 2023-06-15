@@ -57,6 +57,17 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   mDatabaseFileWidget->setStorageMode( QgsFileWidget::SaveFile );
   mDatabaseFileWidget->setConfirmOverwrite( false );
 
+  mBlockModeComboBox->addItem( tr( "Expand block geometries" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) );
+  mBlockModeComboBox->addItem( tr( "Expand block geometries and add insert points" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) | static_cast<int>( BlockImportFlag::BlockImportAddInsertPoints ) );
+  mBlockModeComboBox->addItem( tr( "Add only insert points" ), static_cast<int>( BlockImportFlag::BlockImportAddInsertPoints ) );
+
+  const QgsSettings s;
+  int index = mBlockModeComboBox->findData( s.value( QStringLiteral( "/DwgImport/lastBlockImportFlags" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) ) );
+  mBlockModeComboBox->setCurrentIndex( index );
+  cbMergeLayers->setChecked( s.value( QStringLiteral( "/DwgImport/lastMergeLayers" ), false ).toBool() );
+  cbUseCurves->setChecked( s.value( QStringLiteral( "/DwgImport/lastUseCurves" ), true ).toBool() );
+  mDatabaseFileWidget->setDefaultRoot( s.value( QStringLiteral( "/DwgImport/lastDirDatabase" ), QDir::homePath() ).toString() );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDwgImportDialog::buttonBox_accepted );
   connect( mDatabaseFileWidget, &QgsFileWidget::fileChanged, this, &QgsDwgImportDialog::mDatabaseFileWidget_textChanged );
   connect( pbBrowseDrawing, &QPushButton::clicked, this, &QgsDwgImportDialog::pbBrowseDrawing_clicked );
@@ -67,12 +78,8 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( leLayerGroup, &QLineEdit::textChanged, this, &QgsDwgImportDialog::leLayerGroup_textChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDwgImportDialog::showHelp );
   connect( mLayers, &QTableWidget::itemClicked, this, &QgsDwgImportDialog::layersClicked );
-
-  const QgsSettings s;
-  cbExpandInserts->setChecked( s.value( QStringLiteral( "/DwgImport/lastExpandInserts" ), true ).toBool() );
-  cbMergeLayers->setChecked( s.value( QStringLiteral( "/DwgImport/lastMergeLayers" ), false ).toBool() );
-  cbUseCurves->setChecked( s.value( QStringLiteral( "/DwgImport/lastUseCurves" ), true ).toBool() );
-  mDatabaseFileWidget->setDefaultRoot( s.value( QStringLiteral( "/DwgImport/lastDirDatabase" ), QDir::homePath() ).toString() );
+  connect( mBlockModeComboBox, &QComboBox::currentTextChanged, this, &QgsDwgImportDialog::blockModeCurrentIndexChanged );
+  connect( cbUseCurves, &QCheckBox::clicked, this, &QgsDwgImportDialog::useCurvesClicked );
 
   leDrawing->setReadOnly( true );
   pbImportDrawing->setHidden( true );
@@ -108,7 +115,7 @@ QgsDwgImportDialog::~QgsDwgImportDialog()
   mPreviewLayers.clear();
 
   QgsSettings s;
-  s.setValue( QStringLiteral( "/DwgImport/lastExpandInserts" ), cbExpandInserts->isChecked() );
+  s.setValue( QStringLiteral( "/DwgImport/lastBlockImportFlags" ), mBlockModeComboBox->currentData() );
   s.setValue( QStringLiteral( "/DwgImport/lastMergeLayers" ), cbMergeLayers->isChecked() );
   s.setValue( QStringLiteral( "/DwgImport/lastUseCurves" ), cbUseCurves->isChecked() );
 }
@@ -266,8 +273,11 @@ void QgsDwgImportDialog::pbImportDrawing_clicked()
 
   lblMessage->setVisible( true );
 
+  const BlockImportFlags blockImportFlags = BlockImportFlags( mBlockModeComboBox->currentData().toInt() );
+  const bool expandInserts = blockImportFlags & BlockImportFlag::BlockImportExpandGeometry;
+
   QString error;
-  if ( importer.import( leDrawing->text(), error, cbExpandInserts->isChecked(), cbUseCurves->isChecked(), lblMessage ) )
+  if ( importer.import( leDrawing->text(), error, expandInserts, cbUseCurves->isChecked(), lblMessage ) )
   {
     bar->pushMessage( tr( "Drawing import completed." ), Qgis::MessageLevel::Info );
   }
@@ -463,7 +473,8 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     layers.append( l );
   }
 
-  if ( !cbExpandInserts->isChecked() )
+  const BlockImportFlags blockImportFlags = BlockImportFlags( mBlockModeComboBox->currentData().toInt() );
+  if ( blockImportFlags & BlockImportFlag::BlockImportAddInsertPoints )
   {
     l = createLayer( layerFilter, QStringLiteral( "inserts" ) );
     if ( l && l->renderer() )
@@ -584,9 +595,26 @@ void QgsDwgImportDialog::layersClicked( QTableWidgetItem *item )
   mPreviewLayers = createLayers( QStringList( layerName ) );
 
   QList<QgsMapLayer *> mapLayers;
-  for ( QgsVectorLayer *vectorLayer : mPreviewLayers )
+  const QList<QgsVectorLayer *> constPreviewLayers = mPreviewLayers;
+  for ( QgsVectorLayer *vectorLayer : constPreviewLayers )
     mapLayers.append( vectorLayer );
 
   mMapCanvas->setLayers( mapLayers );
   mMapCanvas->setExtent( mMapCanvas->fullExtent() );
+}
+
+void QgsDwgImportDialog::blockModeCurrentIndexChanged()
+{
+  if ( mDatabaseFileWidget->filePath().isEmpty() || leDrawing->text().isEmpty() )
+    return;
+
+  pbImportDrawing_clicked();
+}
+
+void QgsDwgImportDialog::useCurvesClicked()
+{
+  if ( mDatabaseFileWidget->filePath().isEmpty() || leDrawing->text().isEmpty() )
+    return;
+
+  pbImportDrawing_clicked();
 }

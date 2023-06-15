@@ -30,14 +30,18 @@ class TestQgsDwgImportDialog : public QObject
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void cleanup() {} // will be called after every testfunction.
+    void cleanupTestCase() {} // will be called after the last testfunction was executed.
+    void cleanup(); // will be called after every testfunction.
 
     void importDwgDocument();
+    void importDwgDocumentExpandBlockGeometries();
+    void importDwgDocumentBlockOnlyInsertPoints();
 
   private:
     QgisApp *mQgisApp = nullptr;
     QString mDataDir;
+
+    void checkGroupContent( QgsLayerTreeGroup *parentGroup, const QString &groupName, const QStringList &contentLayerNames );
 };
 
 
@@ -51,7 +55,7 @@ void TestQgsDwgImportDialog::initTestCase()
   mDataDir += "/dwg";
 }
 
-void TestQgsDwgImportDialog::cleanupTestCase()
+void TestQgsDwgImportDialog::cleanup()
 {
   QgsProject::instance()->removeAllMapLayers();
 }
@@ -64,13 +68,15 @@ void TestQgsDwgImportDialog::importDwgDocument()
   QTemporaryDir temporaryDir;
   dwgImportDialog.mDatabaseFileWidget->setFilePath( temporaryDir.filePath( "entities.gpkg" ) );
 
+  // Set Expand Blocks mode
+  const QgsDwgImportDialog::BlockImportFlags blockImportMode( QgsDwgImportDialog::BlockImportExpandGeometry | QgsDwgImportDialog::BlockImportAddInsertPoints );
+  const int index = dwgImportDialog.mBlockModeComboBox->findData( static_cast<int>( blockImportMode ) );
+  dwgImportDialog.mBlockModeComboBox->setCurrentIndex( index );
+
   // Set source drawing and import
   QString uri = QString( mDataDir + "/entities.dwg" );
   dwgImportDialog.leDrawing->setText( uri );
   dwgImportDialog.pbImportDrawing_clicked();
-
-  // Set Expand Inserts checkbox
-  dwgImportDialog.cbExpandInserts->setChecked( false );
 
   // Check that a default group name was assigned
   QCOMPARE( dwgImportDialog.leLayerGroup->text(), "entities" );
@@ -84,33 +90,113 @@ void TestQgsDwgImportDialog::importDwgDocument()
   QVERIFY( groupEntities );
 
   // Group 0
-  QgsLayerTreeGroup *group0 = groupEntities->findGroup( "0" );
-  QVERIFY( group0 );
-
-  QStringList layerNames = QStringList() << "hatches"
-                           << "lines"
-                           << "polylines"
-                           << "texts"
-                           << "points"
-                           << "inserts";
-  const auto layerTreeLayers0 = group0->findLayers();
-  for ( QgsLayerTreeLayer *layerTreeLayer : layerTreeLayers0 )
-    QVERIFY2( layerNames.removeOne( layerTreeLayer->name() ), QString( "Unexpected layer name: '%1'" ).arg( layerTreeLayer->name() ).toLatin1() );
-
-  QVERIFY2( layerNames.isEmpty(), QString( "Missing layers in group '0': '%1'" ).arg( layerNames.join( ", " ) ).toLatin1() );
+  checkGroupContent( groupEntities,
+                     "0",
+                     QStringList() << "hatches" << "lines" << "polylines" << "texts" << "points" << "inserts" );
 
   // Group grün
-  QgsLayerTreeGroup *groupGruen = groupEntities->findGroup( "grün" );
-  QVERIFY( groupGruen );
+  checkGroupContent( groupEntities,
+                     "grün",
+                     QStringList() << "hatches" << "lines" << "polylines" );
+}
 
-  layerNames = QStringList() << "hatches"
-               << "lines"
-               << "polylines";
-  const auto layerTreeLayersGruen = groupGruen->findLayers();
-  for ( QgsLayerTreeLayer *layerTreeLayer : layerTreeLayersGruen )
-    QVERIFY2( layerNames.removeOne( layerTreeLayer->name() ), QString( "Unexpected layer name: '%1'" ).arg( layerTreeLayer->name() ).toLatin1() );
+void TestQgsDwgImportDialog::importDwgDocumentExpandBlockGeometries()
+{
+  QgsDwgImportDialog dwgImportDialog( nullptr, Qt::WindowFlags() );
 
-  QVERIFY2( layerNames.isEmpty(), QString( "Missing layers in group 'grün': '%1'" ).arg( layerNames.join( ", " ) ).toLatin1() );
+  // Set target gpkg
+  QTemporaryDir temporaryDir;
+  dwgImportDialog.mDatabaseFileWidget->setFilePath( temporaryDir.filePath( "entitiesExpandBlockGeometries.gpkg" ) );
+
+  // Set Expand Blocks mode
+  const QgsDwgImportDialog::BlockImportFlags blockImportMode = QgsDwgImportDialog::BlockImportExpandGeometry;
+  const int index = dwgImportDialog.mBlockModeComboBox->findData( static_cast<int>( blockImportMode ) );
+  dwgImportDialog.mBlockModeComboBox->setCurrentIndex( index );
+
+  // Set source drawing and import
+  QString uri = QString( mDataDir + "/entities.dwg" );
+  dwgImportDialog.leDrawing->setText( uri );
+  dwgImportDialog.pbImportDrawing_clicked();
+
+  // Check that a default group name was assigned
+  QCOMPARE( dwgImportDialog.leLayerGroup->text(), "entities" );
+
+  dwgImportDialog.leLayerGroup->setText( "entitiesExpandBlockGeometries" );
+
+  dwgImportDialog.buttonBox_accepted();
+
+  QgsLayerTreeGroup *rootGroup = QgsLayerTree::toGroup( QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup() );
+  QVERIFY( rootGroup );
+
+  QgsLayerTreeGroup *groupEntities = rootGroup->findGroup( "entitiesExpandBlockGeometries" );
+  QVERIFY( groupEntities );
+
+  // Group 0
+  checkGroupContent( groupEntities,
+                     "0",
+                     QStringList() << "hatches" << "lines" << "polylines" << "texts" << "points" );
+
+  // Group grün
+  checkGroupContent( groupEntities,
+                     "grün",
+                     QStringList() << "hatches" << "lines" << "polylines" );
+}
+
+void TestQgsDwgImportDialog::importDwgDocumentBlockOnlyInsertPoints()
+{
+  QgsDwgImportDialog dwgImportDialog( nullptr, Qt::WindowFlags() );
+
+  // Set target gpkg
+  QTemporaryDir temporaryDir;
+  dwgImportDialog.mDatabaseFileWidget->setFilePath( temporaryDir.filePath( "entitiesBlockOnlyInsertPoints.gpkg" ) );
+
+  // Set Expand Blocks mode
+  const QgsDwgImportDialog::BlockImportFlags blockImportMode = QgsDwgImportDialog::BlockImportAddInsertPoints;
+  const int index = dwgImportDialog.mBlockModeComboBox->findData( static_cast<int>( blockImportMode ) );
+  dwgImportDialog.mBlockModeComboBox->setCurrentIndex( index );
+
+  // Set source drawing and import
+  QString uri = QString( mDataDir + "/entities.dwg" );
+  dwgImportDialog.leDrawing->setText( uri );
+  dwgImportDialog.pbImportDrawing_clicked();
+
+  // Check that a default group name was assigned
+  QCOMPARE( dwgImportDialog.leLayerGroup->text(), "entities" );
+
+  dwgImportDialog.leLayerGroup->setText( "entitiesBlockOnlyInsertPoints" );
+
+  dwgImportDialog.buttonBox_accepted();
+
+  QgsLayerTreeGroup *rootGroup = QgsLayerTree::toGroup( QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup() );
+  QVERIFY( rootGroup );
+
+  QgsLayerTreeGroup *groupEntities = rootGroup->findGroup( "entitiesBlockOnlyInsertPoints" );
+  QVERIFY( groupEntities );
+
+  // Group 0
+  checkGroupContent( groupEntities,
+                     "0",
+                     QStringList() << "hatches" << "lines" << "polylines" << "texts" << "points" << "inserts" );
+
+  // Group grün
+  checkGroupContent( groupEntities,
+                     "grün",
+                     QStringList() << "hatches" << "lines" << "polylines" );
+}
+
+void TestQgsDwgImportDialog::checkGroupContent( QgsLayerTreeGroup *parentGroup, const QString &groupName, const QStringList &contentLayerNames )
+{
+  // Group
+  QgsLayerTreeGroup *group = parentGroup->findGroup( groupName );
+  QVERIFY( group );
+
+  QStringList layerNames = contentLayerNames;
+
+  const auto layerTreeLayers = group->findLayers();
+  for ( QgsLayerTreeLayer *layerTreeLayer : layerTreeLayers )
+    QVERIFY2( layerNames.removeOne( layerTreeLayer->name() ), QString( "Unexpected layer '%1' in group '%2'" ).arg( layerTreeLayer->name(), groupName ).toLatin1() );
+
+  QVERIFY2( layerNames.isEmpty(), QString( "Missing layers in group '%1': '%2'" ).arg( groupName, layerNames.join( ", " ) ).toLatin1() );
 }
 
 QGSTEST_MAIN( TestQgsDwgImportDialog )
