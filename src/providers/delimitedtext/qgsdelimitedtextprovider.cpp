@@ -472,7 +472,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
     if ( mGeomRep == GeomAsWkt )
     {
-      if ( mWktFieldIndex >= parts.size() || parts[mWktFieldIndex].isEmpty() )
+      if ( mWktFieldIndex >= parts.size() || parts.value( mWktFieldIndex ).isEmpty() )
       {
         nEmptyGeometry++;
         mNumberFeatures++;
@@ -482,7 +482,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
         // Get the wkt - confirm it is valid, get the type, and
         // if compatible with the rest of file, add to the extents
 
-        QString sWkt = parts[mWktFieldIndex];
+        QString sWkt = parts.value( mWktFieldIndex );
         QgsGeometry geom;
         if ( !mWktHasPrefix && sWkt.indexOf( sWktPrefixRegexp ) >= 0 )
           mWktHasPrefix = true;
@@ -539,13 +539,13 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
       // Get the x and y values, first checking to make sure they
       // aren't null.
 
-      QString sX = mXFieldIndex < parts.size() ? parts[mXFieldIndex] : QString();
-      QString sY = mYFieldIndex < parts.size() ? parts[mYFieldIndex] : QString();
+      QString sX = parts.value( mXFieldIndex );
+      QString sY = parts.value( mYFieldIndex );
       QString sZ, sM;
       if ( mZFieldIndex > -1 )
-        sZ = mZFieldIndex < parts.size() ? parts[mZFieldIndex] : QString();
+        sZ = parts.value( mZFieldIndex );
       if ( mMFieldIndex > -1 )
-        sM = mMFieldIndex < parts.size() ? parts[mMFieldIndex] : QString();
+        sM = parts.value( mMFieldIndex );
       if ( sX.isEmpty() && sY.isEmpty() )
       {
         nEmptyGeometry++;
@@ -618,7 +618,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
     for ( int i = 0; i < parts.size(); i++ )
     {
 
-      QString &value = parts[i];
+      QString value = parts.value( i );
       // Ignore empty fields - spreadsheet generated CSV files often
       // have random empty fields at the end of a row
       if ( value.isEmpty() )
