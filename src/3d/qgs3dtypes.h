@@ -39,6 +39,18 @@ class _3D_EXPORT Qgs3DTypes
       Back,          //!< Will render only front faces of triangles (recommended when input data are consistent)
       FrontAndBack   //!< Will not render anything
     };
+
+    //! Qt property name to hold the 3D geometry renderer flag
+    static const char *PROP_NAME_3D_RENDERER_FLAG;
+
+    //! 3D geometry renderer flag
+    enum Flag3DRenderer
+    {
+      Main3DRenderer = 0,       //!< Renderer for normal entities
+      Selected3DRenderer,  //!< Renderer for selected entities
+    };
+
+
 };
 
 #endif // QGS3DTYPES_H

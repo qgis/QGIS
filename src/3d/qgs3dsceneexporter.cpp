@@ -235,21 +235,25 @@ void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3D
     QgsPhongMaterialSettings material = Qgs3DUtils::phongMaterialFromQt3DComponent( phongMaterial );
     object->setupMaterial( &material );
   }
-  Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = findTypedComponent<Qt3DExtras::QDiffuseSpecularMaterial>( entity );
 
+  Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = findTypedComponent<Qt3DExtras::QDiffuseSpecularMaterial>( entity );
   if ( diffuseMapMaterial != nullptr )
   {
-    const QVector<Qt3DRender::QAbstractTextureImage *> textureImages = diffuseMapMaterial->diffuse().value< Qt3DRender::QTexture2D * >()->textureImages();
-    QgsImageTexture *imageTexture = nullptr;
-    for ( Qt3DRender::QAbstractTextureImage *tex : textureImages )
+    const Qt3DRender::QTexture2D *diffuseTexture = diffuseMapMaterial->diffuse().value< Qt3DRender::QTexture2D * >();
+    if ( diffuseTexture != nullptr )
     {
-      imageTexture = dynamic_cast<QgsImageTexture *>( tex );
-      if ( imageTexture != nullptr ) break;
-    }
-    if ( imageTexture != nullptr )
-    {
-      const QImage image = imageTexture->getImage();
-      object->setTextureImage( image );
+      const QVector<Qt3DRender::QAbstractTextureImage *> textureImages = diffuseTexture->textureImages();
+      QgsImageTexture *imageTexture = nullptr;
+      for ( Qt3DRender::QAbstractTextureImage *tex : textureImages )
+      {
+        imageTexture = dynamic_cast<QgsImageTexture *>( tex );
+        if ( imageTexture != nullptr ) break;
+      }
+      if ( imageTexture != nullptr )
+      {
+        const QImage image = imageTexture->getImage();
+        object->setTextureImage( image );
+      }
     }
   }
 }
@@ -516,14 +520,14 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processSceneLoaderGeometries( Q
   return objects;
 }
 
-Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeometryRenderer *mesh, const QString &objectNamePrefix, float sceneScale, QVector3D sceneTranslation )
+Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeometryRenderer *geomRenderer, const QString &objectNamePrefix, float sceneScale, QVector3D sceneTranslation )
 {
   // We only export triangles for now
-  if ( mesh->primitiveType() != Qt3DRender::QGeometryRenderer::Triangles ) return nullptr;
+  if ( geomRenderer->primitiveType() != Qt3DRender::QGeometryRenderer::Triangles ) return nullptr;
 
   float scale = 1.0f;
   QVector3D translation( 0.0f, 0.0f, 0.0f );
-  QObject *parent = mesh->parent();
+  QObject *parent = geomRenderer->parent();
   while ( parent != nullptr )
   {
     Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( parent );
@@ -536,7 +540,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     parent = parent->parent();
   }
 
-  Qt3DQGeometry *geometry = mesh->geometry();
+  Qt3DQGeometry *geometry = geomRenderer->geometry();
 
   Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
   Qt3DQAttribute *indexAttribute = nullptr;
