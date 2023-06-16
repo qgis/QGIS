@@ -188,7 +188,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
         break;
       }
 
-      success = ( *orderedLayersIterator )->editBuffer()->commitChangesCheckGeometryTypeCompatibility( commitErrors );
+      success = ( *orderedLayersIterator )->editBuffer()->commitChangesGeometryCoerceToType( commitErrors );
       if ( ! success )
         break;
     }

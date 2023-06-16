@@ -382,7 +382,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   // Check geometry types
   // to fix https://github.com/qgis/QGIS/issues/23663
   if ( !mAddedFeatures.isEmpty() )
-    success &= commitChangesCheckGeometryTypeCompatibility( commitErrors );
+    success &= commitChangesGeometryCoerceToType( commitErrors );
 
   const QgsFields oldFields = L->fields();
 
@@ -600,7 +600,7 @@ void QgsVectorLayerEditBuffer::updateLayerFields()
   L->updateFields();
 }
 
-bool QgsVectorLayerEditBuffer::commitChangesCheckGeometryTypeCompatibility( QStringList &commitErrors )
+bool QgsVectorLayerEditBuffer::commitChangesGeometryCoerceToType( QStringList &commitErrors )
 {
   if ( mAddedFeatures.isEmpty() )
     return true;
@@ -609,17 +609,22 @@ bool QgsVectorLayerEditBuffer::commitChangesCheckGeometryTypeCompatibility( QStr
   {
     if ( L->dataProvider()->doesStrictFeatureTypeCheck() )
     {
-      for ( const QgsFeature &f : std::as_const( mAddedFeatures ) )
+      for ( int i = 0; i < mAddedFeatures.count(); i++ )
       {
-        if ( ( ! f.hasGeometry() ) ||
-             ( f.geometry().wkbType() == L->dataProvider()->wkbType() ) )
+        if ( ( ! mAddedFeatures[i].hasGeometry() ) ||
+             ( mAddedFeatures[i].geometry().wkbType() == L->dataProvider()->wkbType() ) )
           continue;
 
-        if ( L->dataProvider()->convertToProviderType( f.geometry() ).isNull() )
+        // coerce to type
+        QVector<QgsGeometry> geometries = mAddedFeatures[i].geometry().coerceToType( L->dataProvider()->wkbType(), 0, 0, Qgis::GeometryConversionOption::RespectGeometryType );
+
+        if ( geometries.count() != 1 )
         {
           commitErrors << tr( "ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.", "not added features count", mAddedFeatures.size() );
           return false;
         }
+
+        mAddedFeatures[i].setGeometry( geometries.at( 0 ) );
       }
     }
   }

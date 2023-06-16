@@ -343,7 +343,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * \param commitErrors will be extended in case of error
      * \returns TRUE if compatible
      */
-    bool commitChangesCheckGeometryTypeCompatibility( QStringList &commitErrors );
+    bool commitChangesGeometryCoerceToType( QStringList &commitErrors );
 
     /**
      * Delete attributes

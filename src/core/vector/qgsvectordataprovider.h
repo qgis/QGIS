@@ -681,8 +681,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Converts the geometry to the provider type if possible / necessary
      * \returns the converted geometry or NULLPTR if no conversion was necessary or possible
+     * \deprecated since QGIS 3.32 use QgsGeometry::coerceToType instead
      */
-    QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
+    Q_DECL_DEPRECATED QgsGeometry convertToProviderType( const QgsGeometry &geom ) const SIP_DEPRECATED;
 
     /**
      * Set the list of native types supported by this provider.

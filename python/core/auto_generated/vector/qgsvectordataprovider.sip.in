@@ -699,11 +699,14 @@ For general debug information use :py:func:`QgsMessageLog.logMessage()` instead.
 .. versionadded:: 3.0
 %End
 
-    QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
+ QgsGeometry convertToProviderType( const QgsGeometry &geom ) const /Deprecated/;
 %Docstring
 Converts the geometry to the provider type if possible / necessary
 
 :return: the converted geometry or ``None`` if no conversion was necessary or possible
+
+.. deprecated:: QGIS 3.32
+   use :py:class:`QgsGeometry`.coerceToType instead
 %End
 
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );
