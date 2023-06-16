@@ -6260,14 +6260,20 @@ class TestQgsGeometry(unittest.TestCase):
     def testCoerce(self):
         """Test coerce function"""
 
-        def coerce_to_wkt(wkt, type, defaultZ=None, defaultM=None):
+        def coerce_to_wkt(wkt, type, defaultZ=None, defaultM=None, options=Qgis.GeometryConversionOptions()):
             geom = QgsGeometry.fromWkt(wkt)
             if defaultZ is not None or defaultM is not None:
-                return [g.asWkt(2) for g in geom.coerceToType(type, defaultZ or 0, defaultM or 0)]
+                return [g.asWkt(2) for g in geom.coerceToType(type, defaultZ or 0, defaultM or 0, options)]
             else:
-                return [g.asWkt(2) for g in geom.coerceToType(type)]
+                return [g.asWkt(2) for g in geom.coerceToType(type, 0, 0, options)]
 
         self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Point), ['Point (1 1)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointZ), ['PointZ (1 1 0)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointZM), ['PointZM (1 1 0 0)'])
+        self.assertEqual(coerce_to_wkt('PointZ (1 1 1)', QgsWkbTypes.PointM), ['PointM (1 1 0)'])
+        # point -> multipoint
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.MultiPoint), ['MultiPoint ((1 1))'])
+
         self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.LineString),
                          ['LineString (1 1, 2 2, 3 3)'])
         self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 1 2, 1 1))', QgsWkbTypes.Polygon),
@@ -6355,6 +6361,16 @@ class TestQgsGeometry(unittest.TestCase):
                                        QgsWkbTypes.LineString),
                          ['LineString (1 1, 2 2, 3 3, 1 1)', 'LineString (10 1, 20 2, 30 3, 10 1)'])
 
+        # Circular string -> Compound curve
+        self.assertEqual(coerce_to_wkt('CircularString (4 1, 7 4, 4 7, 1 4)', QgsWkbTypes.CompoundCurve), ['CompoundCurve (CircularString (4 1, 7 4, 4 7, 1 4))'])
+        self.assertEqual(coerce_to_wkt('LineString (1 4, 0 0)', QgsWkbTypes.CompoundCurve), ['CompoundCurve ((1 4, 0 0))'])
+        # Compound curve -> Circular string
+        self.assertEqual(coerce_to_wkt('CompoundCurve ((1 4, 0 0))', QgsWkbTypes.LineString), ['LineString (1 4, 0 0)'])
+        self.assertEqual(coerce_to_wkt('CompoundCurve ((1 4, 0 0))', QgsWkbTypes.CircularString), [])
+        self.assertEqual(coerce_to_wkt('CompoundCurve (CircularString (4 1, 7 4, 4 7, 1 4))', QgsWkbTypes.CircularString), ['CircularString (4 1, 7 4, 4 7, 1 4)'])
+        self.assertEqual(coerce_to_wkt('CompoundCurve (CircularString (4 1, 7 4, 4 7, 1 4))', QgsWkbTypes.LineString), [])
+        self.assertEqual(coerce_to_wkt('CompoundCurve ((1 4, 0 0), (0 0, 2 5, 6 7))', QgsWkbTypes.CircularString), [])
+
         # line -> points
         self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Point),
                          ['Point (1 1)', 'Point (2 2)', 'Point (3 3)'])
@@ -6417,6 +6433,14 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
                                        QgsWkbTypes.MultiLineString),
                          ['MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4, 3 3))'])
+
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.LineString, None, None, Qgis.GeometryConversionOptions()), ['LineString (1 1, 1 2, 2 2, 1 1)'])
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.LineString, None, None, Qgis.GeometryConversionOption.RespectGeometryType), [])
+        self.assertEqual(coerce_to_wkt('Polygon ((0 0, 0 4, 4 4, 0 0), (1 1, 1 3, 3 3, 3 1, 1 1))', QgsWkbTypes.MultiLineString, None, None, Qgis.GeometryConversionOption.RespectGeometryType), [])
+        self.assertEqual(coerce_to_wkt('Polygon ((0 0, 0 4, 4 4, 0 0), (1 1, 1 3, 3 3, 3 1, 1 1))', QgsWkbTypes.MultiLineString, None, None, Qgis.GeometryConversionOptions()), ['MultiLineString ((0 0, 0 4, 4 4, 0 0),(1 1, 1 3, 3 3, 3 1, 1 1))'])
+        self.assertEqual(coerce_to_wkt('Polygon ((0 0, 0 4, 4 4, 0 0), (1 1, 1 3, 3 3, 3 1, 1 1))', QgsWkbTypes.LineString, None, None, Qgis.GeometryConversionOption.PolygonToLineTakeEnveloppeOnly), ['LineString (0 0, 0 4, 4 4, 0 0)'])
+        self.assertEqual(coerce_to_wkt('MultiPolygon (((0 0, 0 4, 4 4, 0 0), (1 1, 1 3, 3 3, 3 1, 1 1)),((10 10, 10 14, 14 14, 10 10), (11 11, 11 13, 13 13, 13 11, 11 11)))', QgsWkbTypes.LineString, None, None, Qgis.GeometryConversionOption.PolygonToLineTakeEnveloppeOnly), ['LineString (0 0, 0 4, 4 4, 0 0)', 'LineString (10 10, 10 14, 14 14, 10 10)'])
+        self.assertEqual(coerce_to_wkt('MultiPolygon (((0 0, 0 4, 4 4, 0 0), (1 1, 1 3, 3 3, 3 1, 1 1)),((10 10, 10 14, 14 14, 10 10), (11 11, 11 13, 13 13, 13 11, 11 11)))', QgsWkbTypes.MultiLineString, None, None, Qgis.GeometryConversionOption.PolygonToLineTakeEnveloppeOnly), ['MultiLineString ((0 0, 0 4, 4 4, 0 0),(10 10, 10 14, 14 14, 10 10))'])
 
         # Straight to curve
         self.assertEqual(coerce_to_wkt('LineString (0 0,1 1)',
