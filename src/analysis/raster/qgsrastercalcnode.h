@@ -152,7 +152,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * Calculates result of raster calculation when tFunct type is used
      * \since QGIS 3.22
      */
-    QgsRasterMatrix evaluateFunction( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
+    QgsRasterMatrix evaluateFunction( const std::vector< std::unique_ptr< QgsRasterMatrix > > &matrixVector, QgsRasterMatrix &result ) const;
 
     Type mType = tNumber;
     QgsRasterCalcNode *mLeft = nullptr;
