@@ -1471,7 +1471,7 @@ Qgis.GeometryValidationEngine.__doc__ = 'Available engines for validating geomet
 Qgis.GeometryValidationEngine.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.GeometryConversionOption.RespectGeometryType.__doc__ = "Respect the geometry type (line stays a line and is not converted to multipoint)"
-Qgis.GeometryConversionOption.PolygonToLineTakeEnveloppeOnly.__doc__ = "If the a polygon is converted to a single linestring, discard any donut to allow conversion"
+Qgis.GeometryConversionOption.PolygonToLineTakeEnveloppeOnly.__doc__ = "If the a polygon is converted to a single linestring, discard any hole to allow conversion"
 Qgis.GeometryConversionOption.__doc__ = 'Geometry conversion options\n\n.. versionadded:: 3.32\n\n' + '* ``RespectGeometryType``: ' + Qgis.GeometryConversionOption.RespectGeometryType.__doc__ + '\n' + '* ``PolygonToLineTakeEnveloppeOnly``: ' + Qgis.GeometryConversionOption.PolygonToLineTakeEnveloppeOnly.__doc__
 # --
 Qgis.GeometryConversionOption.baseClass = Qgis

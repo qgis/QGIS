@@ -1475,7 +1475,7 @@ class CORE_EXPORT Qgis
     enum class GeometryConversionOption : int
     {
       RespectGeometryType = 1 << 0, //!< Respect the geometry type (line stays a line and is not converted to multipoint)
-      PolygonToLineTakeEnveloppeOnly = 1 << 1, //!< If the a polygon is converted to a single linestring, discard any donut to allow conversion
+      PolygonToLineTakeEnveloppeOnly = 1 << 1, //!< If the a polygon is converted to a single linestring, discard any hole to allow conversion
     };
     //! Geometry conversion option flags
     Q_DECLARE_FLAGS( GeometryConversionOptions, GeometryConversionOption )

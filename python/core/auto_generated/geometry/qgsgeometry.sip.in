@@ -2088,11 +2088,6 @@ By default 0.0 is used for Z and M.
    to coerce geometries to the desired ``type``. It also correctly maintains curves and z/m values
    wherever appropriate.
 
-.. note::
-
-   In PyQGIS, the method is named coerceToType (for API compatibility)
-
-
 .. versionadded:: 3.14
 %End
 

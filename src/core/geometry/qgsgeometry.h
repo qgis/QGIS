@@ -2136,8 +2136,6 @@ class CORE_EXPORT QgsGeometry
      * to coerce geometries to the desired \a type. It also correctly maintains curves and z/m values
      * wherever appropriate.
      *
-     * \note In PyQGIS, the method is named coerceToType (for API compatibility)
-     *
      * \since QGIS 3.14
      */
     QVector<QgsGeometry> coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, Qgis::GeometryConversionOptions options = Qgis::GeometryConversionOptions() ) const;
