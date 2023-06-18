@@ -445,7 +445,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
     bool couldBeBool = false;
   };
 
-  QList<FieldTypeInformation> fieldTypeInformation;
+  QVector<FieldTypeInformation> fieldTypeInformation;
 
   bool foundFirstGeometry = false;
   QMap<int, QPair<QString, QString>> boolCandidates;
@@ -619,37 +619,36 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
 
     // If we are going to use this record, then assess the potential types of each column
+    const int partsSize = parts.size();
 
-    for ( int i = 0; i < parts.size(); i++ )
+    if ( fieldTypeInformation.size() < partsSize )
     {
+      fieldTypeInformation.resize( partsSize );
+    }
 
+    FieldTypeInformation *typeInformation = fieldTypeInformation.data();
+
+    for ( int i = 0; i < partsSize; i++, typeInformation++ )
+    {
       QString value = parts.value( i );
       // Ignore empty fields - spreadsheet generated CSV files often
       // have random empty fields at the end of a row
       if ( value.isEmpty() )
         continue;
 
-      // Expand the columns to include this non empty field if necessary
-
-      while ( fieldTypeInformation.size() <= i )
-      {
-        fieldTypeInformation.append( FieldTypeInformation() );
-      }
-
       // If this column has been empty so far then initialize it
       // for possible types
 
-      FieldTypeInformation &typeInformation = fieldTypeInformation[i];
-      if ( typeInformation.isEmpty )
+      if ( typeInformation->isEmpty )
       {
-        typeInformation.isEmpty = false;
-        typeInformation.couldBeInt = true;
-        typeInformation.couldBeLongLong = true;
-        typeInformation.couldBeDouble = true;
-        typeInformation.couldBeDateTime = true;
-        typeInformation.couldBeDate = true;
-        typeInformation.couldBeTime = true;
-        typeInformation.couldBeBool = true;
+        typeInformation->isEmpty = false;
+        typeInformation->couldBeInt = true;
+        typeInformation->couldBeLongLong = true;
+        typeInformation->couldBeDouble = true;
+        typeInformation->couldBeDateTime = true;
+        typeInformation->couldBeDate = true;
+        typeInformation->couldBeTime = true;
+        typeInformation->couldBeBool = true;
       }
 
       if ( ! mDetectTypes )
@@ -660,16 +659,16 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
       // Now test for still valid possible types for the field
       // Types are possible until first record which cannot be parsed
 
-      if ( typeInformation.couldBeBool )
+      if ( typeInformation->couldBeBool )
       {
-        typeInformation.couldBeBool = false;
+        typeInformation->couldBeBool = false;
         if ( ! boolCandidates.contains( i ) )
         {
           boolCandidates[ i ] = QPair<QString, QString>();
         }
         if ( ! boolCandidates[i].first.isEmpty() )
         {
-          typeInformation.couldBeBool = value.compare( boolCandidates[i].first, Qt::CaseSensitivity::CaseInsensitive ) == 0 || value.compare( boolCandidates[i].second, Qt::CaseSensitivity::CaseInsensitive ) == 0;
+          typeInformation->couldBeBool = value.compare( boolCandidates[i].first, Qt::CaseSensitivity::CaseInsensitive ) == 0 || value.compare( boolCandidates[i].second, Qt::CaseSensitivity::CaseInsensitive ) == 0;
         }
         else
         {
@@ -678,52 +677,52 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
             if ( value.compare( bc.first, Qt::CaseSensitivity::CaseInsensitive ) == 0 || value.compare( bc.second, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
             {
               boolCandidates[i] = bc;
-              typeInformation.couldBeBool = true;
+              typeInformation->couldBeBool = true;
               break;
             }
           }
         }
       }
 
-      if ( typeInformation.couldBeInt )
+      if ( typeInformation->couldBeInt )
       {
-        ( void )value.toInt( &typeInformation.couldBeInt );
+        ( void )value.toInt( &typeInformation->couldBeInt );
       }
 
-      if ( typeInformation.couldBeLongLong && !typeInformation.couldBeInt )
+      if ( typeInformation->couldBeLongLong && !typeInformation->couldBeInt )
       {
-        ( void )value.toLongLong( &typeInformation.couldBeLongLong );
+        ( void )value.toLongLong( &typeInformation->couldBeLongLong );
       }
 
-      if ( typeInformation.couldBeDouble && !typeInformation.couldBeLongLong )
+      if ( typeInformation->couldBeDouble && !typeInformation->couldBeLongLong )
       {
         if ( ! mDecimalPoint.isEmpty() )
         {
           value.replace( mDecimalPoint, QLatin1String( "." ) );
         }
-        ( void )value.toDouble( &typeInformation.couldBeDouble );
+        ( void )value.toDouble( &typeInformation->couldBeDouble );
       }
 
-      if ( typeInformation.couldBeDateTime )
+      if ( typeInformation->couldBeDateTime )
       {
         QDateTime dt;
         if ( value.length() > 10 )
         {
           dt = QDateTime::fromString( value, Qt::ISODate );
         }
-        typeInformation.couldBeDateTime = ( dt.isValid() );
+        typeInformation->couldBeDateTime = ( dt.isValid() );
       }
 
-      if ( typeInformation.couldBeDate && !typeInformation.couldBeDateTime )
+      if ( typeInformation->couldBeDate && !typeInformation->couldBeDateTime )
       {
         const QDate d = QDate::fromString( value, Qt::ISODate );
-        typeInformation.couldBeDate = d.isValid();
+        typeInformation->couldBeDate = d.isValid();
       }
 
-      if ( typeInformation.couldBeTime && !typeInformation.couldBeDateTime )
+      if ( typeInformation->couldBeTime && !typeInformation->couldBeDateTime )
       {
         const QTime t = QTime::fromString( value );
-        typeInformation.couldBeTime = t.isValid();
+        typeInformation->couldBeTime = t.isValid();
       }
     }
 
