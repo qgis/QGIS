@@ -48,6 +48,8 @@ Constructor for QgsDatabaseQueryLogEntry.
 
     bool canceled;
 
+    QString backendPID;
+
 };
 
 

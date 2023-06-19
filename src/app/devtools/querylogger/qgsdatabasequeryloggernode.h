@@ -118,6 +118,7 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
 
     QString mSql;
     int mQueryId = 0;
+    QString mBackendPID;
     QByteArray mData;
     Status mStatus = Status::Pending;
     qint64 mElapsed = -1;

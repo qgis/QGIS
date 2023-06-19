@@ -95,6 +95,11 @@ class CORE_EXPORT QgsDatabaseQueryLogEntry
      */
     bool canceled = false;
 
+    /**
+     * Server-side process ID.
+     */
+    QString backendPID;
+
   private:
 
     static QAtomicInt sQueryId;
@@ -256,6 +261,11 @@ class QgsDatabaseQueryLogWrapper
     void setCanceled( )
     {
       mEntry.canceled = true;
+    }
+
+    void setBackendPID( const QString &backendPID )
+    {
+      mEntry.backendPID = backendPID;
     }
 
   private:

@@ -317,6 +317,7 @@ class QgsPostgresConn : public QObject
     bool closeCursor( const QString &cursorName );
 
     QString uniqueCursorName();
+    QString backendPID();
 
 #if 0
     PGconn *pgConnection() { return mConn; }
@@ -546,6 +547,8 @@ class QgsPostgresConn : public QObject
      */
     bool mSwapEndian;
     void deduceEndian();
+
+    QString mConnBackendPID;
 
     static QAtomicInt sNextCursorId;
 

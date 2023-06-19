@@ -303,6 +303,8 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
         logWrapper.setError( error );
       }
 
+      logWrapper.setBackendPID( mConn->backendPID() );
+
       QgsPostgresResult queryResult;
       long long fetchedRows { 0 };
       for ( ;; )

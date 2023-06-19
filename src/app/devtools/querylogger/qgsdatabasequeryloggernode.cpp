@@ -64,6 +64,7 @@ QgsDatabaseQueryLoggerQueryGroup::QgsDatabaseQueryLoggerQueryGroup( const QgsDat
   : QgsDevToolsModelGroup( QString() )
   , mSql( query.query )
   , mQueryId( query.queryId )
+  , mBackendPID( query.backendPID )
 {
 #if 0
   std::unique_ptr< QgsNetworkLoggerRequestDetailsGroup > detailsGroup = std::make_unique< QgsNetworkLoggerRequestDetailsGroup >( request );
@@ -88,8 +89,18 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
   switch ( role )
   {
     case Qt::DisplayRole:
-      return QStringLiteral( "%1 %2" ).arg( QString::number( mQueryId ),
-                                            mSql );
+    {
+      if ( mBackendPID.isEmpty() )
+      {
+        return QStringLiteral( "%1 %2" ).arg( QString::number( mQueryId ), mSql );
+      }
+      else
+      {
+        return QStringLiteral( "%1 %2 %3" ).arg( QString::number( mQueryId ),
+               mBackendPID,
+               mSql );
+      }
+    }
 
     case QgsDevToolsModelNode::RoleSort:
       return mQueryId;
@@ -220,6 +231,11 @@ void QgsDatabaseQueryLoggerQueryGroup::setFinished( const QgsDatabaseQueryLogEnt
   }
   mElapsed = static_cast<qint64>( query.finishedTime - query.startedTime );
   addKeyValueNode( QObject::tr( "Total time (ms)" ), QLocale().toString( mElapsed ) );
+  if ( !query.backendPID.isEmpty() )
+  {
+    mBackendPID = query.backendPID;
+    addKeyValueNode( QObject::tr( "Backend PID" ), query.backendPID );
+  }
 }
 
 void QgsDatabaseQueryLoggerQueryGroup::setStatus( QgsDatabaseQueryLoggerQueryGroup::Status status )

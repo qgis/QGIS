@@ -339,8 +339,8 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     connectString += QLatin1String( " client_encoding='UTF-8'" );
   };
   addDefaultTimeoutAndClientEncoding( expandedConnectionInfo );
-
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "libpq::PQconnectdb()" ), expandedConnectionInfo.toUtf8(), QStringLiteral( "postgres" ), QStringLiteral( "QgsPostgresConn" ), QGS_QUERY_LOG_ORIGIN_PG_CON );
+  // use conninfo for log, expandedConnectionInfo - can contain clear text username & password
+  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "libpq::PQconnectdb()" ), conninfo, QStringLiteral( "postgres" ), QStringLiteral( "QgsPostgresConn" ), QGS_QUERY_LOG_ORIGIN_PG_CON );
   mConn = PQconnectdb( expandedConnectionInfo.toUtf8() );
 
   // remove temporary cert/key/CA if they exist
@@ -431,6 +431,8 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     return;
   }
 
+  backendPID();
+  logWrapper->setBackendPID( mConnBackendPID );
   logWrapper = nullptr;
   QgsDebugMsgLevel( QStringLiteral( "Connection to the database was successful" ), 2 );
 
@@ -1466,6 +1468,7 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
   QgsDebugMsgLevel( QStringLiteral( "Executing SQL: %1" ).arg( query ), 3 );
 
   std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( query, mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
+  logWrapper->setBackendPID( mConnBackendPID );
 
   PGresult *res = ::PQexec( mConn, query.toUtf8() );
 
@@ -1614,6 +1617,13 @@ QString QgsPostgresConn::uniqueCursorName()
   return QStringLiteral( "qgis_%1" ).arg( ++sNextCursorId );
 }
 
+QString QgsPostgresConn::backendPID()
+{
+  QMutexLocker locker( &mLock );
+  mConnBackendPID = QStringLiteral( "0x%1" ).arg( QString::number( ::PQbackendPID( mConn ), 16 ).toUpper() );
+  return mConnBackendPID;
+}
+
 bool QgsPostgresConn::PQexecNR( const QString &query, const QString &originatorClass, const QString &queryOrigin )
 {
   QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
@@ -1656,6 +1666,7 @@ PGresult *QgsPostgresConn::PQprepare( const QString &stmtName, const QString &qu
   QMutexLocker locker( &mLock );
 
   std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "PQprepare(%1): %2 " ).arg( stmtName, query ), mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
+  logWrapper->setBackendPID( mConnBackendPID );
 
   PGresult *res { ::PQprepare( mConn, stmtName.toUtf8(), query.toUtf8(), nParams, paramTypes ) };
 
@@ -1688,6 +1699,7 @@ PGresult *QgsPostgresConn::PQexecPrepared( const QString &stmtName, const QStrin
   }
 
   std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "PQexecPrepared(%1)" ).arg( stmtName ), mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
+  logWrapper->setBackendPID( mConnBackendPID );
 
   PGresult *res { ::PQexecPrepared( mConn, stmtName.toUtf8(), params.size(), param, nullptr, nullptr, 0 ) };
 
