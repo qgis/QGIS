@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <cstdint>
 
 #ifdef _WIN32
 #include <Windows.h>
