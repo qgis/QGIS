@@ -28,6 +28,7 @@
 //
 
 #include "qgschunkqueuejob_p.h"
+#include "qgsgeometry.h"
 
 #define SIP_NO_FILE
 
@@ -56,7 +57,7 @@ class QgsChunkLoader : public QgsChunkQueueJob
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) = 0;
 
     //! Common function for vector and rule based chunk loader to build a feature request
-    void buildVectorFeatureRequest( const QgsVectorLayer *layer, const QgsChunkNode *node, const Qgs3DMapSettings &mapSettings, const QSet<QString> &attributeNames, QgsFeatureRequest &request );
+    QgsGeometry buildVectorFeatureRequest( const QgsVectorLayer *layer, const QgsChunkNode *node, const Qgs3DMapSettings &mapSettings, const QSet<QString> &attributeNames, QgsFeatureRequest &request );
 
 };
 

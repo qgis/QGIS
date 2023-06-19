@@ -23,6 +23,7 @@
 #include "qgsraycastingutils_p.h"
 #include "qgschunknode_p.h"
 #include "qgseventtracing.h"
+#include "qgsgeos.h"
 
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
@@ -68,7 +69,7 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
 
   // build the feature request
   QgsFeatureRequest request;
-  buildVectorFeatureRequest( layer, node, map, attributeNames, request );
+  QgsGeometry extentGeom = buildVectorFeatureRequest( layer, node, map, attributeNames, request );
 
   //
   // this will be run in a background thread
@@ -76,9 +77,15 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [request, this]
+  const QFuture<void> future = QtConcurrent::run( [request, extentGeom, this]
   {
     const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "RB chunk load" ) );
+
+    // The request was made on the boundingbox of extentGeom
+    // It is necessary to ensure that the features intersect
+    // with extentGeom.
+    QgsGeos extentIntersectionGeos( extentGeom.constGet() );
+    extentIntersectionGeos.prepareGeometry();
 
     QgsFeature f;
     QgsFeatureIterator fi = mSource->getFeatures( request );
@@ -86,6 +93,10 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
     {
       if ( mCanceled )
         break;
+
+      if ( !extentIntersectionGeos.intersects( f.geometry().constGet() ) )
+        continue;
+
       mContext.expressionContext().setFeature( f );
       mRootRule->registerFeature( f, mContext, mHandlers );
     }
