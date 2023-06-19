@@ -88,13 +88,19 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         {
           mAnchorDetached = true;
           isCurvedOrLine = false;
-          mOffsetFromLineStartRubberBand->hide();
+          if ( mOffsetFromLineStartRubberBand )
+          {
+            mOffsetFromLineStartRubberBand->hide();
+          }
         }
         else
         {
           mAnchorDetached = false;
-          mOffsetFromLineStartRubberBand->setToGeometry( featureMapGeometry.nearestPoint( pointMapGeometry ) );
-          mOffsetFromLineStartRubberBand->show();
+          if ( mOffsetFromLineStartRubberBand )
+          {
+            mOffsetFromLineStartRubberBand->setToGeometry( featureMapGeometry.nearestPoint( pointMapGeometry ) );
+            mOffsetFromLineStartRubberBand->show();
+          }
         }
       }
     }
