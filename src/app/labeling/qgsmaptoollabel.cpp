@@ -1320,8 +1320,9 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     indexes[p] = index;
   }
 
-  // Anchor properties are for linestrings only:
-  if ( vlayer->geometryType() == Qgis::GeometryType::Line )
+  // Anchor properties are for linestrings and polygons only:
+  if ( vlayer->geometryType() == Qgis::GeometryType::Line ||
+       vlayer->geometryType() == Qgis::GeometryType::Polygon )
   {
     for ( const QgsPalLayerSettings::Property &p : std::as_const( mPalAnchorProperties ) )
     {
