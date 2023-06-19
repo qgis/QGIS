@@ -513,10 +513,10 @@ void QgsRasterLayerRenderer::drawElevationMap()
         // Depending of the CRS, if we can't we use GDAL transformation directly from the source and destination CRS
         QString coordinateOperation;
         const QgsCoordinateTransformContext &transformContext = renderContext()->transformContext();
-        if ( transformContext.mustReverseCoordinateOperation( mRasterViewPort->mDestCRS, mRasterViewPort->mSrcCRS ) )
-          coordinateOperation = transformContext.calculateCoordinateOperation( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS );
-        else
+        if ( transformContext.mustReverseCoordinateOperation( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS ) )
           coordinateOperation = transformContext.calculateCoordinateOperation( mRasterViewPort->mDestCRS, mRasterViewPort->mSrcCRS );
+        else
+          coordinateOperation = transformContext.calculateCoordinateOperation( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS );
 
         if ( coordinateOperation.isEmpty() )
           canRenderElevation = QgsGdalUtils::resampleSingleBandRaster( gdalDsInput.get(), gdalDsOutput.get(), alg,
