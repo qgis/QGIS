@@ -976,17 +976,16 @@ bool QgsGeos::topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPoin
 
       const GEOSCoordSequence *lineSequence = GEOSGeom_getCoordSeq_r( geosinit()->ctxt, currentIntersectGeom );
       unsigned int sequenceSize = 0;
-      double x, y;
+      double x, y, z;
       if ( GEOSCoordSeq_getSize_r( geosinit()->ctxt, lineSequence, &sequenceSize ) != 0 )
       {
         for ( unsigned int i = 0; i < sequenceSize; ++i )
         {
-          if ( GEOSCoordSeq_getX_r( geosinit()->ctxt, lineSequence, i, &x ) != 0 )
+          if ( GEOSCoordSeq_getX_r( geosinit()->ctxt, lineSequence, i, &x ) != 0
+               && GEOSCoordSeq_getY_r( geosinit()->ctxt, lineSequence, i, &y ) != 0
+               && GEOSCoordSeq_getZ_r( geosinit()->ctxt, lineSequence, i, &z ) != 0 )
           {
-            if ( GEOSCoordSeq_getY_r( geosinit()->ctxt, lineSequence, i, &y ) != 0 )
-            {
-              testPoints.push_back( QgsPoint( x, y ) );
-            }
+            testPoints.push_back( QgsPoint( x, y, z ) );
           }
         }
       }
