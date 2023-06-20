@@ -888,8 +888,9 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
   }
 
   //create an icon pixmap
-  QPixmap pixmap( currentIconSize );
+  QPixmap pixmap( currentIconSize * devicePixelRatioF() );
   pixmap.fill( Qt::transparent );
+  pixmap.setDevicePixelRatio( devicePixelRatioF() );
   QPainter p;
   p.begin( &pixmap );
   p.setRenderHint( QPainter::Antialiasing );
@@ -905,6 +906,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       context.setMapToPixel( newCoordXForm );
 
       context.setScaleFactor( mScreenHelper->screenDpi() / 25.4 );
+      context.setDevicePixelRatio( devicePixelRatioF() );
       context.setUseAdvancedEffects( true );
       context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
       context.setPainter( &p );
