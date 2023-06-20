@@ -22,6 +22,7 @@
 
 #include "qgsproviderregistry.h"
 #include "ogr/qgsogrhelperfunctions.h"
+#include "qgsgdalutils.h"
 
 #include <gdal.h>
 #include <cpl_minixml.h>
@@ -329,7 +330,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
     return;
 
   const QString firstDataSource = mDataSources.at( 0 );
-  const QString vsiPrefix = qgsVsiPrefix( firstDataSource );
+  const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( firstDataSource );
   const QString scheme = QUrl( firstDataSource ).scheme();
   const bool isRemoteNonVsiCurlUrl = vsiPrefix.isEmpty() && ( scheme.startsWith( QLatin1String( "http" ) ) || scheme == QLatin1String( "ftp" ) );
   if ( isRemoteNonVsiCurlUrl )

@@ -27,6 +27,7 @@
 #include <QDateTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
+#include "qgsgdalutils.h"
 #include "qgswkbtypes.h"
 
 #include <gdal.h>
@@ -191,27 +192,7 @@ bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs )
 
 QString qgsVsiPrefix( const QString &path )
 {
-  if ( path.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) )
-    return QStringLiteral( "/vsizip/" );
-  else if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) )
-  {
-    // GDAL 3.1 Shapefile driver directly handles .shp.zip files
-    if ( GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
-      return QString();
-    return QStringLiteral( "/vsizip/" );
-  }
-  else if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
-    return QStringLiteral( "/vsizip/" );
-  else if ( path.startsWith( QLatin1String( "/vsitar/" ), Qt::CaseInsensitive ) ||
-            path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
-            path.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
-            path.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )
-    return QStringLiteral( "/vsitar/" );
-  else if ( path.startsWith( QLatin1String( "/vsigzip/" ), Qt::CaseInsensitive ) ||
-            path.endsWith( QLatin1String( ".gz" ), Qt::CaseInsensitive ) )
-    return QStringLiteral( "/vsigzip/" );
-  else
-    return QString();
+  return QgsGdalUtils::vsiPrefixForPath( path );
 }
 
 uint qHash( const QVariant &variant )

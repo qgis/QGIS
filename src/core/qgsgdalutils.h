@@ -221,6 +221,14 @@ class CORE_EXPORT QgsGdalUtils
     static QStringList multiLayerFileExtensions();
 
     /**
+     * Returns a the vsi prefix which corresponds to a file \a path, or an empty
+     * string if the path is not associated with a vsi prefix.
+     *
+     * \since QGIS 3.32
+     */
+    static QString vsiPrefixForPath( const QString &path );
+
+    /**
      * Returns TRUE if the VRT file at the specified path is a VRT matching
      * the given layer \a type.
      *

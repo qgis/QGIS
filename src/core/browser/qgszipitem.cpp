@@ -20,6 +20,7 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgssettings.h"
+#include "qgsgdalutils.h"
 
 #include <QFileInfo>
 
@@ -80,6 +81,11 @@ QgsMimeDataUtils::UriList QgsZipItem::mimeUris() const
   u.uri = path();
   u.filePath = path();
   return { u };
+}
+
+QString QgsZipItem::vsiPrefix( const QString &uri )
+{
+  return QgsGdalUtils::vsiPrefixForPath( uri );
 }
 
 QVector<QgsDataItem *> QgsZipItem::createChildren()

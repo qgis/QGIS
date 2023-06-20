@@ -708,6 +708,47 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
 #endif
 }
 
+QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
+{
+  const QStringList vsiPrefixes = QgsGdalUtils::vsiArchivePrefixes();
+
+  for ( const QString &vsiPrefix : vsiPrefixes )
+  {
+    if ( path.startsWith( vsiPrefix, Qt::CaseInsensitive ) )
+      return vsiPrefix;
+  }
+
+  if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) )
+  {
+    // GDAL 3.1 Shapefile driver directly handles .shp.zip files
+    if ( GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
+      return QString();
+    return QStringLiteral( "/vsizip/" );
+  }
+  else if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsizip/" );
+  else if ( path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
+            path.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
+            path.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsitar/" );
+  else if ( path.endsWith( QLatin1String( ".gz" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsigzip/" );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  else if ( vsiPrefixes.contains( QStringLiteral( "/vsi7z/" ) ) &&
+            ( path.endsWith( QLatin1String( ".7z" ), Qt::CaseInsensitive ) ||
+              path.endsWith( QLatin1String( ".lpk" ), Qt::CaseInsensitive ) ||
+              path.endsWith( QLatin1String( ".lpkx" ), Qt::CaseInsensitive ) ||
+              path.endsWith( QLatin1String( ".mpk" ), Qt::CaseInsensitive ) ||
+              path.endsWith( QLatin1String( ".mpkx" ), Qt::CaseInsensitive ) ) )
+    return QStringLiteral( "/vsi7z/" );
+  else if ( vsiPrefixes.contains( QStringLiteral( "/vsirar/" ) ) &&
+            path.endsWith( QLatin1String( ".rar" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsirar/" );
+#endif
+
+  return QString();
+}
+
 bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType type )
 {
   CPLPushErrorHandler( CPLQuietErrorHandler );

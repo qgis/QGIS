@@ -2874,7 +2874,7 @@ bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QSt
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   // TODO suppress error messages and report in debug, like in OGR provider
-  QString vsiPrefix = qgsVsiPrefix( fileName );
+  const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( fileName );
   if ( !vsiPrefix.isEmpty() )
   {
     if ( !fileName.startsWith( vsiPrefix ) )
@@ -3216,7 +3216,7 @@ bool QgsGdalProvider::initIfNeeded()
   QString gdalUri = dataSourceUri( true );
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
-  QString vsiPrefix = qgsVsiPrefix( gdalUri );
+  const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( gdalUri );
   if ( !vsiPrefix.isEmpty() )
   {
     if ( !gdalUri.startsWith( vsiPrefix ) )
@@ -4228,7 +4228,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
   QVariantMap uriParts = decodeUri( gdalUri );
 
   // Try to open using VSIFileHandler
-  QString vsiPrefix = qgsVsiPrefix( gdalUri );
+  const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( gdalUri );
   if ( !vsiPrefix.isEmpty() )
   {
     if ( !gdalUri.startsWith( vsiPrefix ) )

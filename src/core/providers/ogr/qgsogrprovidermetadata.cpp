@@ -152,7 +152,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
     authcfg = match.captured( 1 );
   }
 
-  QString vsiPrefix = qgsVsiPrefix( path );
+  QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( path );
   QString vsiSuffix;
   if ( path.startsWith( vsiPrefix, Qt::CaseInsensitive ) )
   {
@@ -1185,7 +1185,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   QVariantMap uriParts = decodeUri( uri );
 
   // Try to open using VSIFileHandler
-  QString vsiPrefix = qgsVsiPrefix( uriParts.value( QStringLiteral( "path" ) ).toString() );
+  const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( uriParts.value( QStringLiteral( "path" ) ).toString() );
   if ( !vsiPrefix.isEmpty() && uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty() )
   {
     if ( !uri.startsWith( vsiPrefix ) )
