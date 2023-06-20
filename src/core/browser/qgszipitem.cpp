@@ -58,7 +58,7 @@ void QgsZipItem::init()
 {
   mType = Qgis::BrowserItemType::Collection; //Zip??
   mIconName = QStringLiteral( "/mIconZip.svg" );
-  mVsiPrefix = vsiPrefix( mFilePath );
+  mVsiPrefix = QgsGdalUtils::vsiPrefixForPath( mFilePath );
 
   setCapabilities( capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
 
@@ -165,7 +165,7 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
   const QgsSettings settings;
   const QString scanZipSetting = settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString();
   QStringList zipFileList;
-  const QString vsiPrefix = QgsZipItem::vsiPrefix( filePath );
+  const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( filePath );
   QgsZipItem *zipItem = nullptr;
   bool populated = false;
 
@@ -175,8 +175,8 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
   if ( scanZipSetting == QLatin1String( "no" ) )
     return nullptr;
 
-  // don't scan if this file is not a /vsizip/ or /vsitar/ item
-  if ( ( vsiPrefix != QLatin1String( "/vsizip/" ) && vsiPrefix != QLatin1String( "/vsitar/" ) ) )
+  // don't scan if this file is not a vsi container archive item
+  if ( !QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) )
     return nullptr;
 
   zipItem = new QgsZipItem( parent, name, filePath, path );

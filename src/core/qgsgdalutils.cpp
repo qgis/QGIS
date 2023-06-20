@@ -749,6 +749,50 @@ QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
   return QString();
 }
 
+QStringList QgsGdalUtils::vsiArchivePrefixes()
+{
+  QStringList res { QStringLiteral( "/vsizip/" ),
+                    QStringLiteral( "/vsitar/" ),
+                    QStringLiteral( "/vsigzip/" ),
+                  };
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  res.append( QStringLiteral( "/vsi7z/" ) );
+  res.append( QStringLiteral( "/vsirar/" ) );
+#endif
+  return res;
+}
+
+bool QgsGdalUtils::isVsiArchivePrefix( const QString &prefix )
+{
+  return vsiArchivePrefixes().contains( prefix );
+}
+
+QStringList QgsGdalUtils::vsiArchiveFileExtensions()
+{
+  QStringList res { QStringLiteral( ".zip" ),
+                    QStringLiteral( ".tar" ),
+                    QStringLiteral( ".tar.gz" ),
+                    QStringLiteral( ".tgz" ),
+                    QStringLiteral( ".gz" ),
+                  };
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  res.append( { QStringLiteral( ".7z" ),
+                QStringLiteral( ".lpk" ),
+                QStringLiteral( ".lpkx" ),
+                QStringLiteral( ".mpk" ),
+                QStringLiteral( ".mpkx" ),
+                QStringLiteral( ".rar" )
+              } );
+#endif
+  return res;
+}
+
+bool QgsGdalUtils::isVsiArchiveFileExtension( const QString &extension )
+{
+  const QString extWithDot = extension.startsWith( '.' ) ? extension : ( '.' + extension );
+  return vsiArchiveFileExtensions().contains( extWithDot.toLower() );
+}
+
 bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType type )
 {
   CPLPushErrorHandler( CPLQuietErrorHandler );
