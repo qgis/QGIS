@@ -315,7 +315,6 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   , mUseWkbHex( false )
   , mReadOnly( readOnly )
   , mSwapEndian( false )
-  , mNextCursorId( 0 )
   , mShared( shared )
   , mTransaction( transaction )
 {
@@ -462,6 +461,8 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
 
   PQsetNoticeProcessor( mConn, noticeProcessor, nullptr );
 }
+
+int QgsPostgresConn::mNextCursorId{ 0 };
 
 QgsPostgresConn::~QgsPostgresConn()
 {
