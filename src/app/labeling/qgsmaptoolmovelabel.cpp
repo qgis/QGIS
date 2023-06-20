@@ -69,7 +69,7 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     const QgsPointXY pointMapCoords = e->mapPoint();
 
-    bool isCurvedOrLine { mCurrentLabel.settings.placement == Qgis::LabelPlacement::Curved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::Line };
+    bool isCurvedOrLine = mCurrentLabel.settings.placement == Qgis::LabelPlacement::Curved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::PerimeterCurved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::Line;
     if ( isCurvedOrLine )
     {
       // Determine the closest point on the feature
@@ -81,7 +81,15 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
         // In map's CRS
         const QgsGeometry pointMapGeometry { QgsGeometry::fromPointXY( pointMapCoords ) };
-        QgsGeometry featureMapGeometry { feature.geometry() };
+        QgsGeometry featureMapGeometry;
+        if ( feature.geometry().type() == Qgis::GeometryType::Polygon )
+        {
+          featureMapGeometry = QgsGeometry( feature.geometry().constGet()->boundary() );
+        }
+        else
+        {
+          featureMapGeometry = feature.geometry();
+        }
         featureMapGeometry.transform( ms.layerTransform( mCurrentLabel.layer ) );
 
         if ( featureMapGeometry.distance( pointMapGeometry ) / mCanvas->mapUnitsPerPixel() > mLabelTearFromLineThreshold )
@@ -251,7 +259,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         mCurrentLabel.settings.placement = Qgis::LabelPlacement::Horizontal;
       }
 
-      const bool isCurvedOrLine { mCurrentLabel.settings.placement == Qgis::LabelPlacement::Curved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::Line };
+      const bool isCurvedOrLine = mCurrentLabel.settings.placement == Qgis::LabelPlacement::Curved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::PerimeterCurved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::Line;
 
       if ( isCurvedOrLine && !mCurrentLabel.pos.isDiagram && ! labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, lineAnchorPercentCol, lineAnchorClippingCol, lineAnchorTypeCol, lineAnchorTextPointCol ) )
       {
@@ -424,7 +432,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         bool lineAnchorTypeSuccess = false;
         bool lineAnchorTextPointSuccess = false;
 
-        bool isCurvedOrLine { ! mAnchorDetached &&( mCurrentLabel.settings.placement == Qgis::LabelPlacement::Curved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::Line ) };
+        bool isCurvedOrLine = !mAnchorDetached && ( mCurrentLabel.settings.placement == Qgis::LabelPlacement::Curved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::PerimeterCurved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::Line );
 
         if ( !isCalloutMove && isCurvedOrLine && !currentLabelDataDefinedLineAnchorPercent( lineAnchorPercentOrig, lineAnchorPercentSuccess, lineAnchorPercentCol,
              lineAnchorClippingOrig, lineAnchorClippingSuccess, lineAnchorClippingCol,
@@ -445,7 +453,6 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         // Handle curved offset
         if ( isCurvedOrLine )
         {
-
           const QgsFeature feature { mCurrentLabel.layer->getFeature( featureId ) };
           const QgsMapSettings &ms = mCanvas->mapSettings();
 
@@ -453,7 +460,17 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           const QgsPointXY releaseCoordsTransformed = ms.mapToLayerCoordinates( mCurrentLabel.layer, releaseCoords );
           const QgsGeometry releaseCoordsGeometry = QgsGeometry::fromPointXY( releaseCoordsTransformed );
 
-          const double lineAnchorPercent { feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / feature.geometry().length() };
+          double lineAnchorPercent = 0.0;
+          if ( feature.geometry().type() == Qgis::GeometryType::Polygon )
+          {
+            QgsGeometry boundary( feature.geometry().constGet()->boundary() );
+            lineAnchorPercent = boundary.lineLocatePoint( releaseCoordsGeometry ) / boundary.length();
+          }
+          else
+          {
+            lineAnchorPercent = feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / feature.geometry().length();
+          }
+
           vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
           bool success = false;
 
@@ -648,7 +665,7 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
         // delete the stored label/callout position
         mAnchorDetached = false;
         const bool isCalloutMove = !mCurrentCallout.layerID.isEmpty();
-        const bool isCurvedOrLine { mCurrentLabel.settings.placement == Qgis::LabelPlacement::Curved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::Line };
+        const bool isCurvedOrLine = mCurrentLabel.settings.placement == Qgis::LabelPlacement::Curved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::PerimeterCurved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::Line;
         QgsVectorLayer *vlayer = !isCalloutMove ? mCurrentLabel.layer : qobject_cast< QgsVectorLayer * >( QgsMapTool::layer( mCurrentCallout.layerID ) );
         const QgsFeatureId featureId = !isCalloutMove ? mCurrentLabel.pos.featureId : mCurrentCallout.featureId;
         if ( vlayer )
