@@ -1093,17 +1093,19 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   mMaskSettings.updateDataDefinedProperties( context, d->mDataDefinedProperties );
 }
 
-QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText, int padding )
+QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText, int padding, double devicePixelRatio )
 {
   QgsTextFormat tempFormat = format;
-  QPixmap pixmap( size );
+  QPixmap pixmap( size * devicePixelRatio );
   pixmap.fill( Qt::transparent );
+  pixmap.setDevicePixelRatio( devicePixelRatio );
+
   QPainter painter;
   painter.begin( &pixmap );
 
   painter.setRenderHint( QPainter::Antialiasing );
 
-  QRect rect( 0, 0, size.width(), size.height() );
+  const QRectF rect( 0, 0, size.width(), size.height() );
 
   // shameless eye candy - use a subtle gradient when drawing background
   painter.setPen( Qt::NoPen );
@@ -1140,8 +1142,9 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   context.setMapToPixel( newCoordXForm );
 
   QWidget *activeWindow = QApplication::activeWindow();
-  const double logicalDpiX = activeWindow && activeWindow->screen() ? activeWindow->screen()->logicalDotsPerInchX() : 96.0;
-  context.setScaleFactor( logicalDpiX / 25.4 );
+  const double physicalDpiX = ( activeWindow && activeWindow->screen() ? activeWindow->screen()->physicalDotsPerInch() : 96.0 );
+  context.setScaleFactor( physicalDpiX / 25.4 );
+  context.setDevicePixelRatio( devicePixelRatio );
 
   context.setUseAdvancedEffects( true );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );

@@ -641,9 +641,10 @@ class CORE_EXPORT QgsTextFormat
     * \param size target pixmap size
     * \param previewText text to render in preview, or empty for default text
     * \param padding space between icon edge and color ramp
+    * \param devicePixelRatio can be used to generate a pixmap using a specific device pixel ratio (since QGIS 3.32)
     * \since QGIS 3.10
     */
-    static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0 );
+    static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0, double devicePixelRatio = 1 );
 
   private:
 
