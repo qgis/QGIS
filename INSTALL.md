@@ -779,10 +779,10 @@ QGIS_DEPS_VERSION=0.9;\
 QT_VERSION=5.15.2;\
 PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH;\
 cmake \
-  -DCMAKE_INSTALL_PREFIX=~/Applications \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DQGIS_MAC_DEPS_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage \
-  -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
+  -D CMAKE_INSTALL_PREFIX=~/Applications \
+  -D CMAKE_BUILD_TYPE=Release \
+  -D QGIS_MAC_DEPS_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage \
+  -D CMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
   ../QGIS
 ```
 

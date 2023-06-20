@@ -4,7 +4,7 @@ QGIS unit tests
 # Building tests
 
 Make sure that you have enabled building of tests in CMake.
-`cmake -DENABLE_TESTS=ON ..`
+`cmake -D ENABLE_TESTS=ON ..`
 
 # Setting up the test environment
 
@@ -21,7 +21,7 @@ options.
 ## Postgres
 
 Make sure that you have enabled building of postgres test in CMake.
-`cmake -DENABLE_TESTS=ON -DENABLE_PGTEST=ON ..`
+`cmake -D ENABLE_TESTS=ON -D ENABLE_PGTEST=ON ..`
 
 To test the postgres provider you will need to setup a test database
 to which the postgres provider can connect.
