@@ -54,12 +54,14 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
 
   QgsSettings settings;
   mEncoding = settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString();
-  if ( mEncoding == "System" )
+
+  if ( ( mEncoding == "System" ) || ( ! QTextCodec::availableCodecs().contains( mEncoding.toLatin1() ) ) )
   {
     const QString systemCodec = QTextCodec::codecForLocale()->name();
     if ( ! systemCodec.isEmpty() )
     {
       mEncoding = systemCodec;
+      settings.setValue( QStringLiteral( "/Processing/encoding" ), mEncoding );
     }
   }
 
@@ -613,6 +615,15 @@ void QgsProcessingLayerOutputDestinationWidget::selectEncoding()
   if ( dialog.exec() )
   {
     mEncoding = dialog.encoding();
+    if ( ( mEncoding == "System" ) || ( ! QTextCodec::availableCodecs().contains( mEncoding.toLatin1() ) ) )
+    {
+      const QString systemCodec = QTextCodec::codecForLocale()->name();
+      if ( ! systemCodec.isEmpty() )
+      {
+        mEncoding = systemCodec;
+      }
+    }
+
     QgsSettings settings;
     settings.setValue( QStringLiteral( "/Processing/encoding" ), mEncoding );
     emit destinationChanged();
