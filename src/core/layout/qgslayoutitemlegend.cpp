@@ -1398,7 +1398,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
           }
         }
         else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-          name = symnode->evaluateLabel( expressionContext );
+          symnode->evaluateLabel( expressionContext );
       }
     }
     node->setCustomProperty( QStringLiteral( "cached_name" ), name );
