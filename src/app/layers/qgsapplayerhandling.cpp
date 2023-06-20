@@ -59,6 +59,7 @@
 #include "qgsfieldformatter.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsrasterlayerelevationproperties.h"
+#include "qgsgdalutils.h"
 
 #include <QObject>
 #include <QMessageBox>
@@ -283,7 +284,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
       baseName = QgsProviderUtils::suggestLayerNameFromFilePath( srcWithoutLayername );
 
       // if needed prompt for zipitem layers
-      QString vsiPrefix = qgsVsiPrefix( uri );
+      const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( uri );
       if ( ! uri.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) &&
            ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
       {
@@ -871,7 +872,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
   CPLPushErrorHandler( CPLQuietErrorHandler );
 
   // if needed prompt for zipitem layers
-  QString vsiPrefix = qgsVsiPrefix( fileName );
+  const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( fileName );
   if ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) )
   {
     if ( askUserForZipItemLayers( fileName, {} ) )
@@ -1055,7 +1056,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
     QString errMsg;
 
     // if needed prompt for zipitem layers
-    QString vsiPrefix = qgsVsiPrefix( uri );
+    const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( uri );
     if ( ( !uri.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) || uri.endsWith( QLatin1String( ".zip" ) ) || uri.endsWith( QLatin1String( ".tar" ) ) ) &&
          ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
     {

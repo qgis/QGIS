@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsgdalproviderbase.h"
+#include "qgsgdalutils.h"
 #include "qgssettings.h"
 
 #include <mutex>
@@ -401,7 +402,7 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
     authcfg = match.captured( 1 );
   }
 
-  QString vsiPrefix = qgsVsiPrefix( path );
+  QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( path );
   QString vsiSuffix;
   if ( path.startsWith( vsiPrefix, Qt::CaseInsensitive ) )
   {

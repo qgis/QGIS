@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsgdalutils.h"
 #include <QDir>
 #include <QFileInfo>
 #include <QUrl>
@@ -81,7 +82,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
   }
 
   // if this is a VSIFILE, remove the VSI prefix and append to final result
-  QString vsiPrefix = qgsVsiPrefix( src );
+  QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( src );
   if ( ! vsiPrefix.isEmpty() )
   {
     // unfortunately qgsVsiPrefix returns prefix also for files like "/x/y/z.gz"
@@ -298,7 +299,7 @@ QString QgsPathResolver::writePath( const QString &s ) const
     srcPath = srcFileInfo.canonicalFilePath();
 
   // if this is a VSIFILE, remove the VSI prefix and append to final result
-  const QString vsiPrefix = qgsVsiPrefix( src );
+  const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( src );
   if ( ! vsiPrefix.isEmpty() )
   {
     srcPath.remove( 0, vsiPrefix.size() );

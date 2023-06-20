@@ -27,9 +27,7 @@
 #include "qgsrelationshipsitem.h"
 #include "qgsproviderutils.h"
 #include "qgsprovidermetadata.h"
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,4,0)
 #include "qgsgdalutils.h"
-#endif
 #include <QUrlQuery>
 
 //
@@ -221,7 +219,7 @@ QgsFileDataCollectionItem::QgsFileDataCollectionItem( QgsDataItem *parent, const
   else
     setCapabilities( Qgis::BrowserItemCapability::Fast | Qgis::BrowserItemCapability::Fertile );
 
-  if ( !qgsVsiPrefix( path ).isEmpty() )
+  if ( !QgsGdalUtils::vsiPrefixForPath( path ).isEmpty() )
   {
     mIconName = QStringLiteral( "/mIconZip.svg" );
   }
