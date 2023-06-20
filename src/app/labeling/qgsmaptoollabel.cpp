@@ -247,7 +247,8 @@ void QgsMapToolLabel::createRubberBands()
           // instead, just use the boundary of the polygon for the rubber band
           geom = QgsGeometry( geom.constGet()->boundary() );
         }
-        else if ( geom.type() == Qgis::GeometryType::Line )
+
+        if ( geom.type() == Qgis::GeometryType::Line || geom.type() == Qgis::GeometryType::Polygon )
         {
           mOffsetFromLineStartRubberBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Point );
           mOffsetFromLineStartRubberBand->setColor( lineColor );

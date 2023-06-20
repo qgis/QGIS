@@ -1408,7 +1408,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementRepeatGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line || ( currentGeometryType == Qgis::GeometryType::Polygon &&
                                         ( currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved ) ) );
   mPlacementOverrunGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line && currentPlacement != Qgis::LabelPlacement::Horizontal );
-  mLineAnchorGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line );
+  mLineAnchorGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line || currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
 
   mMultiLinesFrame->setEnabled( enableMultiLinesFrame );
