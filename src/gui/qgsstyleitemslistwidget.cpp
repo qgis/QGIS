@@ -253,6 +253,8 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
   mModel->addDesiredIconSize( viewSymbols->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
 
+  mModel->addDesiredIconDevicePixelRatio( mSymbolTreeView->devicePixelRatioF() );
+
   viewSymbols->setTextElideMode( Qt::TextElideMode::ElideRight );
 
   viewSymbols->setModel( mModel );

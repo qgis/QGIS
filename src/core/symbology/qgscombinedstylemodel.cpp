@@ -76,6 +76,11 @@ void QgsCombinedStyleModel::addStyle( QgsStyle *style )
     styleModel->addDesiredIconSize( size );
   }
 
+  for ( double ratio : std::as_const( mDevicePixelRatios ) )
+  {
+    styleModel->addDesiredIconDevicePixelRatio( ratio );
+  }
+
   addSourceModel( styleModel );
   mOwnedStyleModels.insert( style, styleModel );
 }
@@ -130,6 +135,11 @@ void QgsCombinedStyleModel::addDefaultStyle()
     styleModel->addDesiredIconSize( size );
   }
 
+  for ( double ratio : std::as_const( mDevicePixelRatios ) )
+  {
+    styleModel->addDesiredIconDevicePixelRatio( ratio );
+  }
+
   addSourceModel( styleModel );
 }
 
@@ -151,5 +161,21 @@ void QgsCombinedStyleModel::addDesiredIconSize( QSize size )
   if ( mStyles.contains( QgsStyle::defaultStyle() ) )
   {
     QgsApplication::defaultStyleModel()->addDesiredIconSize( size );
+  }
+}
+
+void QgsCombinedStyleModel::addDesiredIconDevicePixelRatio( double ratio )
+{
+  if ( !mDevicePixelRatios.contains( ratio ) )
+    mDevicePixelRatios.append( ratio );
+
+  for ( auto it = mOwnedStyleModels.constBegin(); it != mOwnedStyleModels.constEnd(); ++it )
+  {
+    it.value()->addDesiredIconDevicePixelRatio( ratio );
+  }
+
+  if ( mStyles.contains( QgsStyle::defaultStyle() ) )
+  {
+    QgsApplication::defaultStyleModel()->addDesiredIconDevicePixelRatio( ratio );
   }
 }

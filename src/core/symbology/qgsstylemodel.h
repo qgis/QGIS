@@ -67,11 +67,27 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
     void setIconSizes( const QList< QSize > &sizes );
 
     /**
-     * Returns the list of icon \a sizes to generate.
+     * Returns the list of icon sizes to generate.
      *
      * \see setIconSizes()
      */
     QList< QSize > iconSizes() const;
+
+    /**
+     * Sets the list of icon device pixel \a ratios to generate.
+     *
+     * \see devicePixelRatios()
+     * \since QGIS 3.32
+     */
+    void setDevicePixelRatios( const QList< double > &ratios );
+
+    /**
+     * Returns the list of icon device pixel ratios to generate.
+     *
+     * \see setDevicePixelRatios()
+     * \since QGIS 3.32
+     */
+    QList< double > devicePixelRatios() const;
 
   signals:
 
@@ -84,6 +100,7 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
   private:
 
     QList< QSize > mIconSizes;
+    QList< double > mDevicePixelRatios;
 
 };
 
@@ -166,6 +183,16 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     void addDesiredIconSize( QSize size );
 
     /**
+     * Adds an additional icon device pixel \a ratio to generate for Qt::DecorationRole data.
+     *
+     * This allows style icons to be generated at an icon device pixel ratio which
+     * corresponds exactly to the view's icon size in which this model is used.
+     *
+     * \since QGIS 3.32
+     */
+    void addDesiredIconDevicePixelRatio( double ratio );
+
+    /**
      * Sets the icon \a generator to use for deferred style entity icon generation.
      *
      * Currently this is used for 3D symbol icons only.
@@ -191,6 +218,8 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     QgsStyle *mStyle = nullptr;
 
     QHash< QgsStyle::StyleEntity, QStringList > mEntityNames;
+
+    QList< double > mDevicePixelRatios;
 
     QList< QSize > mAdditionalSizes;
     mutable std::unique_ptr< QgsExpressionContext > mExpressionContext;
@@ -452,6 +481,16 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      * corresponds exactly to the view's icon size in which this model is used.
      */
     void addDesiredIconSize( QSize size );
+
+    /**
+     * Adds an additional icon device pixel \a ratio to generate for Qt::DecorationRole data.
+     *
+     * This allows style icons to be generated at an icon device pixel ratio which
+     * corresponds exactly to the view's icon size in which this model is used.
+     *
+     * \since QGIS 3.32
+     */
+    void addDesiredIconDevicePixelRatio( double ratio );
 
   public slots:
 

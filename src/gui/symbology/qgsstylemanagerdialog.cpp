@@ -502,6 +502,8 @@ void QgsStyleManagerDialog::setCurrentStyle( QgsStyle *style )
   }
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
   mModel->addDesiredIconSize( listItems->iconSize() );
+  mModel->addDesiredIconDevicePixelRatio( listItems->devicePixelRatioF() );
+
   mModel->setFilterString( searchBox->text() );
 
   listItems->setModel( mModel );

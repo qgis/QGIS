@@ -90,6 +90,16 @@ This allows style icons to be generated at an icon size which
 corresponds exactly to the view's icon size in which this model is used.
 %End
 
+    void addDesiredIconDevicePixelRatio( double ratio );
+%Docstring
+Adds an additional icon device pixel ``ratio`` to generate for Qt.DecorationRole data.
+
+This allows style icons to be generated at an icon device pixel ratio which
+corresponds exactly to the view's icon size in which this model is used.
+
+.. versionadded:: 3.32
+%End
+
 
 };
 
@@ -352,6 +362,16 @@ Adds an additional icon ``size`` to generate for Qt.DecorationRole data.
 
 This allows style icons to be generated at an icon size which
 corresponds exactly to the view's icon size in which this model is used.
+%End
+
+    void addDesiredIconDevicePixelRatio( double ratio );
+%Docstring
+Adds an additional icon device pixel ``ratio`` to generate for Qt.DecorationRole data.
+
+This allows style icons to be generated at an icon device pixel ratio which
+corresponds exactly to the view's icon size in which this model is used.
+
+.. versionadded:: 3.32
 %End
 
   public slots:
