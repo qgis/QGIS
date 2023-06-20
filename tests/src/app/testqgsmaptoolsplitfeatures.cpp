@@ -75,11 +75,11 @@ void TestQgsMapToolSplitFeatures::initTestCase()
   mMultiLineStringLayer->addFeature( lineF1 );
   mMultiLineStringLayer->addFeature( lineF2 );
 
-  mPolygonLayer = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:3946" ), QStringLiteral( "layer polygon" ), QStringLiteral( "memory" ) );
+  mPolygonLayer = new QgsVectorLayer( QStringLiteral( "PolygonZ?crs=EPSG:3946" ), QStringLiteral( "layer polygon" ), QStringLiteral( "memory" ) );
   QVERIFY( mPolygonLayer->isValid() );
   mPolygonLayer->startEditing();
-  polygonF1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 5, 0 10, 10 10, 10 5, 0 5))" ) ) );
-  polygonF2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 0, 0 5, 10 5, 10 0, 0 0))" ) ) );
+  polygonF1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PolygonZ ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10))" ) ) );
+  polygonF2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PolygonZ ((0 0 10, 0 5 20, 10 5 30, 10 0 20, 0 0 10))" ) ) );
   mPolygonLayer->addFeature( polygonF1 );
   mPolygonLayer->addFeature( polygonF2 );
 
@@ -188,8 +188,8 @@ void TestQgsMapToolSplitFeatures::testSplitPolygon()
 
   QVERIFY( mPolygonLayer->undoStack()->index() == 3 );
   QVERIFY( mPolygonLayer->featureCount() == 3 );
-  QCOMPARE( mPolygonLayer->getFeature( polygonF1.id() ).geometry().asWkt(), QStringLiteral( "Polygon ((4 10, 4 5, 0 5, 0 10, 4 10))" ) );
-  QCOMPARE( mPolygonLayer->getFeature( polygonF2.id() ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 0 5, 10 5, 10 0, 0 0))" ) );
+  QCOMPARE( mPolygonLayer->getFeature( polygonF1.id() ).geometry().asWkt(), QStringLiteral( "PolygonZ ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))" ) );
+  QCOMPARE( mPolygonLayer->getFeature( polygonF2.id() ).geometry().asWkt(), QStringLiteral( "PolygonZ ((0 0 10, 0 5 20, 10 5 30, 10 0 20, 0 0 10))" ) );
 
   // no change to other layers
   QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
@@ -232,8 +232,8 @@ void TestQgsMapToolSplitFeatures::testSplitPolygonTopologicalEditing()
 
   QVERIFY( mPolygonLayer->undoStack()->index() == 3 );
   QVERIFY( mPolygonLayer->featureCount() == 3 );
-  QCOMPARE( mPolygonLayer->getFeature( polygonF1.id() ).geometry().asWkt(), QStringLiteral( "Polygon ((4 10, 4 5, 0 5, 0 10, 4 10))" ) );
-  QCOMPARE( mPolygonLayer->getFeature( polygonF2.id() ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 0 5, 4 5, 10 5, 10 0, 0 0))" ) );
+  QCOMPARE( mPolygonLayer->getFeature( polygonF1.id() ).geometry().asWkt(), QStringLiteral( "PolygonZ ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))" ) );
+  QCOMPARE( mPolygonLayer->getFeature( polygonF2.id() ).geometry().asWkt(), QStringLiteral( "PolygonZ ((0 0 10, 0 5 20, 4 5 14, 10 5 30, 10 0 20, 0 0 10))" ) );
 
   QVERIFY( mMultiLineStringLayer->undoStack()->index() == 3 );
   QCOMPARE( mMultiLineStringLayer->getFeature( lineF2.id() ).geometry().asWkt(), QStringLiteral( "MultiLineString ((0 5, 4 5, 10 5),(10 5, 15 5))" ) );
