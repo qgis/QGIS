@@ -28,6 +28,8 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QCheckBox>
+#include <QLocale>
+#include <QTextCodec>
 #include <QUrl>
 
 ///@cond NOT_STABLE
@@ -52,6 +54,14 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
 
   QgsSettings settings;
   mEncoding = settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString();
+  if ( mEncoding == "System" )
+  {
+    const QString systemCodec = QTextCodec::codecForLocale()->name();
+    if ( ! systemCodec.isEmpty() )
+    {
+      mEncoding = systemCodec;
+    }
+  }
 
   if ( !mParameter->defaultValueForGui().isValid() )
   {
