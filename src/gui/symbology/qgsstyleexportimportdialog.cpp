@@ -128,6 +128,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   mModel = new QgsStyleProxyModel( dialogStyle, this );
 
   mModel->addDesiredIconSize( listItems->iconSize() );
+  mModel->addDesiredIconDevicePixelRatio( listItems->devicePixelRatioF() );
 
   listItems->setModel( mModel );
 

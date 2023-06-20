@@ -39,7 +39,13 @@ QgsAbstractStyleEntityIconGenerator *QgsStyleModel::sIconGenerator = nullptr;
 QgsAbstractStyleEntityIconGenerator::QgsAbstractStyleEntityIconGenerator( QObject *parent )
   : QObject( parent )
 {
-
+  // Default to generating icons using the application devicePixelRatio.
+  // Additional ratios may be added by individual views to this model (eg on
+  // different screens with different pixel ratios)
+  if ( QGuiApplication *guiApplication = qobject_cast< QGuiApplication * >( QApplication::instance() ) )
+    mDevicePixelRatios.append( guiApplication->devicePixelRatio() );
+  else
+    mDevicePixelRatios.append( 1.0 );
 }
 
 void QgsAbstractStyleEntityIconGenerator::setIconSizes( const QList<QSize> &sizes )
@@ -52,6 +58,16 @@ QList<QSize> QgsAbstractStyleEntityIconGenerator::iconSizes() const
   return mIconSizes;
 }
 
+void QgsAbstractStyleEntityIconGenerator::setDevicePixelRatios( const QList<double> &ratios )
+{
+  mDevicePixelRatios = ratios;
+}
+
+QList<double> QgsAbstractStyleEntityIconGenerator::devicePixelRatios() const
+{
+  return mDevicePixelRatios;
+}
+
 
 //
 // QgsStyleModel
@@ -62,6 +78,14 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   , mStyle( style )
 {
   Q_ASSERT( mStyle );
+
+  // Default to generating icons using the application devicePixelRatio.
+  // Additional ratios may be added by individual views to this model (eg on
+  // different screens with different pixel ratios)
+  if ( QGuiApplication *guiApplication = qobject_cast< QGuiApplication * >( QApplication::instance() ) )
+    mDevicePixelRatios.append( guiApplication->devicePixelRatio() );
+  else
+    mDevicePixelRatios.append( 1.0 );
 
   for ( QgsStyle::StyleEntity entity : ENTITIES )
   {
@@ -596,6 +620,19 @@ void QgsStyleModel::addDesiredIconSize( QSize size )
   mIconCache.clear();
 }
 
+void QgsStyleModel::addDesiredIconDevicePixelRatio( double ratio )
+{
+  if ( mDevicePixelRatios.contains( ratio ) )
+    return;
+
+  mDevicePixelRatios << ratio;
+
+  if ( sIconGenerator )
+    sIconGenerator->setDevicePixelRatios( mDevicePixelRatios );
+
+  mIconCache.clear();
+}
+
 void QgsStyleModel::setIconGenerator( QgsAbstractStyleEntityIconGenerator *generator )
 {
   sIconGenerator = generator;
@@ -948,6 +985,14 @@ void QgsStyleProxyModel::addDesiredIconSize( QSize size )
     mModel->addDesiredIconSize( size );
   if ( mCombinedModel )
     mCombinedModel->addDesiredIconSize( size );
+}
+
+void QgsStyleProxyModel::addDesiredIconDevicePixelRatio( double ratio )
+{
+  if ( mModel )
+    mModel->addDesiredIconDevicePixelRatio( ratio );
+  if ( mCombinedModel )
+    mCombinedModel->addDesiredIconDevicePixelRatio( ratio );
 }
 
 bool QgsStyleProxyModel::symbolTypeFilterEnabled() const

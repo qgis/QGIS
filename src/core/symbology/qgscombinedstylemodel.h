@@ -91,6 +91,16 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
      */
     void addDesiredIconSize( QSize size );
 
+    /**
+     * Adds an additional icon device pixel \a ratio to generate for Qt::DecorationRole data.
+     *
+     * This allows style icons to be generated at an icon device pixel ratio which
+     * corresponds exactly to the view's icon size in which this model is used.
+     *
+     * \since QGIS 3.32
+     */
+    void addDesiredIconDevicePixelRatio( double ratio );
+
   private:
 
     QList< QgsStyle * > mStyles;
@@ -98,6 +108,7 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
     QHash< QgsStyle *, QgsSingleItemModel * > mTitleModels;
 
     QList< QSize > mAdditionalSizes;
+    QList< double > mDevicePixelRatios;
 
 };
 
