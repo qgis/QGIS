@@ -302,11 +302,14 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 return icon;
 
               const QgsTextFormat format( mStyle->textFormat( name ) );
-              if ( mAdditionalSizes.isEmpty() )
-                icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, QSize( 24, 24 ), QString(),  1 ) );
-              for ( const QSize &s : mAdditionalSizes )
+              for ( const double pixelRatio : std::as_const( mDevicePixelRatios ) )
               {
-                icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
+                if ( mAdditionalSizes.isEmpty() )
+                  icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, QSize( 24, 24 ), QString(), 1, pixelRatio ) );
+                for ( const QSize &s : mAdditionalSizes )
+                {
+                  icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ), pixelRatio ) );
+                }
               }
               mIconCache[ entityType ].insert( name, icon );
               return icon;
@@ -320,11 +323,14 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 return icon;
 
               const QgsPalLayerSettings settings( mStyle->labelSettings( name ) );
-              if ( mAdditionalSizes.isEmpty() )
-                icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( 24, 24 ), QString(),  1 ) );
-              for ( const QSize &s : mAdditionalSizes )
+              for ( const double pixelRatio : std::as_const( mDevicePixelRatios ) )
               {
-                icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
+                if ( mAdditionalSizes.isEmpty() )
+                  icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( 24, 24 ), QString(),  1, pixelRatio ) );
+                for ( const QSize &s : mAdditionalSizes )
+                {
+                  icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ), pixelRatio ) );
+                }
               }
               mIconCache[ entityType ].insert( name, icon );
               return icon;
