@@ -303,9 +303,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
   {
     const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
     const QString vsiSuffix = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
-    if ( vsiSuffix.isEmpty() && ( vsiPrefix == QLatin1String( "/vsizip/" )
-                                  || vsiPrefix == QLatin1String( "/vsigzip/" )
-                                  || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
+    if ( vsiSuffix.isEmpty() && QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) )
     {
       // in the case that a direct path to a vsi supported archive was specified BUT
       // no file suffix was given, see if there's only one valid file we could read anyway and

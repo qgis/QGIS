@@ -24,6 +24,7 @@
 #include "qgszipitem.h"
 #include "qgsprojectitem.h"
 #include "qgsfileutils.h"
+#include "qgsgdalutils.h"
 #include <QFileSystemWatcher>
 #include <QDir>
 #include <QMouseEvent>
@@ -304,11 +305,9 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     const QString path = dir.absoluteFilePath( name );
     const QFileInfo fileInfo( path );
 
-    if ( fileInfo.suffix().compare( QLatin1String( "zip" ), Qt::CaseInsensitive ) == 0 ||
-         fileInfo.suffix().compare( QLatin1String( "tar" ), Qt::CaseInsensitive ) == 0 )
+    if ( QgsGdalUtils::isVsiArchiveFileExtension( fileInfo.suffix() ) )
     {
-      QgsDataItem *item = QgsZipItem::itemFromPath( this, path, name, path );
-      if ( item )
+      if ( QgsDataItem *item = QgsZipItem::itemFromPath( this, path, name, path ) )
       {
         children.append( item );
         continue;

@@ -286,7 +286,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
       // if needed prompt for zipitem layers
       const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( uri );
       if ( ! uri.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) &&
-           ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
+           QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) )
       {
         if ( askUserForZipItemLayers( uri, { Qgis::LayerType::Vector} ) )
           continue;
@@ -873,7 +873,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
 
   // if needed prompt for zipitem layers
   const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( fileName );
-  if ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) )
+  if ( QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) )
   {
     if ( askUserForZipItemLayers( fileName, {} ) )
     {
@@ -1057,8 +1057,10 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
 
     // if needed prompt for zipitem layers
     const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( uri );
-    if ( ( !uri.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) || uri.endsWith( QLatin1String( ".zip" ) ) || uri.endsWith( QLatin1String( ".tar" ) ) ) &&
-         ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
+    if ( ( !uri.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive )
+           || uri.endsWith( QLatin1String( ".zip" ) )
+           || uri.endsWith( QLatin1String( ".tar" ) ) ) &&
+         QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) )
     {
       if ( askUserForZipItemLayers( uri, { Qgis::LayerType::Raster } ) )
         continue;

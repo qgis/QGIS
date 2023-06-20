@@ -229,6 +229,34 @@ class CORE_EXPORT QgsGdalUtils
     static QString vsiPrefixForPath( const QString &path );
 
     /**
+     * Returns a list of vsi prefixes which correspond to archive style containers (eg vsizip).
+     *
+     * \since QGIS 3.32
+     */
+    static QStringList vsiArchivePrefixes();
+
+    /**
+     * Returns TRUE if \a prefix is a supported archive style container prefix (e.g. "/vsizip/").
+     *
+     * \since QGIS 3.32
+     */
+    static bool isVsiArchivePrefix( const QString &prefix );
+
+    /**
+     * Returns a list of file extensions which correspond to archive style containers supported by GDAL (e.g. "zip").
+     *
+     * \since QGIS 3.32
+     */
+    static QStringList vsiArchiveFileExtensions();
+
+    /**
+     * Returns TRUE if a file \a extension is a supported archive style container (e.g. ".zip").
+     *
+     * \since QGIS 3.32
+     */
+    static bool isVsiArchiveFileExtension( const QString &extension );
+
+    /**
      * Returns TRUE if the VRT file at the specified path is a VRT matching
      * the given layer \a type.
      *
