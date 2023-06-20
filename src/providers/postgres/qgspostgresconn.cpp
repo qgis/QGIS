@@ -298,6 +298,8 @@ static void noticeProcessor( void *arg, const char *message )
   QgsMessageLog::logMessage( QObject::tr( "NOTICE: %1" ).arg( msg ), QObject::tr( "PostGIS" ) );
 }
 
+QAtomicInt QgsPostgresConn::mNextCursorId = 0;
+
 QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction, bool allowRequestCredentials )
   : mRef( 1 )
   , mOpenCursors( 0 )
@@ -461,8 +463,6 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
 
   PQsetNoticeProcessor( mConn, noticeProcessor, nullptr );
 }
-
-int QgsPostgresConn::mNextCursorId{ 0 };
 
 QgsPostgresConn::~QgsPostgresConn()
 {
@@ -1602,7 +1602,6 @@ bool QgsPostgresConn::closeCursor( const QString &cursorName )
 
 QString QgsPostgresConn::uniqueCursorName()
 {
-  QMutexLocker locker( &mLock ); // to protect access to mNextCursorId
   return QStringLiteral( "qgis_%1" ).arg( ++mNextCursorId );
 }
 
