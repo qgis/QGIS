@@ -57,9 +57,9 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   mDatabaseFileWidget->setStorageMode( QgsFileWidget::SaveFile );
   mDatabaseFileWidget->setConfirmOverwrite( false );
 
-  mBlockModeComboBox->addItem( tr( "Expand block geometries" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) );
-  mBlockModeComboBox->addItem( tr( "Expand block geometries and add insert points" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) | static_cast<int>( BlockImportFlag::BlockImportAddInsertPoints ) );
-  mBlockModeComboBox->addItem( tr( "Add only insert points" ), static_cast<int>( BlockImportFlag::BlockImportAddInsertPoints ) );
+  mBlockModeComboBox->addItem( tr( "Expand Block Geometries" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) );
+  mBlockModeComboBox->addItem( tr( "Expand Block Geometries and Add Insert Points" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) | static_cast<int>( BlockImportFlag::BlockImportAddInsertPoints ) );
+  mBlockModeComboBox->addItem( tr( "Add Only Insert Points" ), static_cast<int>( BlockImportFlag::BlockImportAddInsertPoints ) );
 
   const QgsSettings s;
   int index = mBlockModeComboBox->findData( s.value( QStringLiteral( "/DwgImport/lastBlockImportFlags" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) ) );
