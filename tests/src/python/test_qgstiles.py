@@ -123,6 +123,9 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(matrix_set.scaleToZoomLevel(776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(1776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(76503144), 1)
+        # turn off zoom level clamping to minimum / maximum zoom values
+        self.assertEqual(matrix_set.scaleToZoomLevel(76503144, False), 3)
+        self.assertEqual(matrix_set.scaleToZoomLevel(1625786, False), 9)
 
         # add a second level
         matrix_set.addMatrix(

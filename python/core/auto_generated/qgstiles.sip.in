@@ -330,9 +330,11 @@ Calculates a fractional zoom level given a map ``scale`` denominator.
 The zoom level will be linearly interpolated between zoom levels present in the set.
 %End
 
-    int scaleToZoomLevel( double scale ) const;
+    int scaleToZoomLevel( double scale, bool clamp = true ) const;
 %Docstring
-Finds the best fitting (integer) zoom level given a map ``scale`` denominator.
+Finds the best fitting (integer) zoom level given a map ``scale`` denominator. An
+optional ``clamp`` parameter can be set to ``False`` to disable clamping zoom level
+to the tile matrix set's minimum and maximum zoom level.
 
 Values are constrained to the zoom levels between :py:func:`~QgsTileMatrixSet.minimumZoom` and :py:func:`~QgsTileMatrixSet.maximumZoom`.
 %End

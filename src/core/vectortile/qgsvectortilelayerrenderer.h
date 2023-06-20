@@ -74,8 +74,11 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
 
     //! Feedback object that may be used by the caller to cancel the rendering
     std::unique_ptr<QgsFeedback> mFeedback;
+    //! Zoom level used to fetch tiles
+    int mTileZoomToFetch = 0;
     //! Zoom level at which we will be rendering
-    int mTileZoom = 0;
+    int mTileZoomToRender = 0;
+
     //! Definition of the tile matrix for our zoom level
     QgsTileMatrix mTileMatrix;
     //!< Block of tiles we will be rendering in that zoom level
