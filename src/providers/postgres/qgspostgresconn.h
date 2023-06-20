@@ -546,7 +546,7 @@ class QgsPostgresConn : public QObject
     bool mSwapEndian;
     void deduceEndian();
 
-    int mNextCursorId;
+    static int mNextCursorId;
 
     bool mShared; //!< Whether the connection is shared by more providers (must not be if going to be used in worker threads)
 
