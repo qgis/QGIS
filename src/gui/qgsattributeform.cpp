@@ -1238,7 +1238,7 @@ void QgsAttributeForm::updateEditableState()
       {
         QWidget *w { it.key() };
         bool ok;
-        const bool isEditable { it->valueAsBool( context, true, &ok ) &&mLayer &&mLayer->isEditable() };
+        const bool isEditable { it->valueAsBool( context, true, &ok ) && mLayer && mLayer->isEditable() };  // *NOPAD*
         if ( ok )
         {
           QgsAttributeFormEditorWidget *editorWidget { qobject_cast<QgsAttributeFormEditorWidget *>( w ) };
