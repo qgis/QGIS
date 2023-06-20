@@ -4,7 +4,7 @@ QGIS unit tests
 # Building tests
 
 Make sure that you have enabled building of tests in CMake.
-`cmake -D E NABLE_TESTS=ON ..`
+`cmake -D ENABLE_TESTS=ON ..`
 
 # Setting up the test environment
 
