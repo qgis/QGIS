@@ -4386,12 +4386,16 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
         if ( feedback && feedback->isCanceled() )
           break;
 
-        // skip directories (files ending with /)
-        if ( file.right( 1 ) != QLatin1String( "/" ) )
-        {
-          uriParts.insert( QStringLiteral( "vsiSuffix" ), QStringLiteral( "/%1" ).arg( file ) );
-          res << querySublayers( encodeUri( uriParts ), flags, feedback );
-        }
+        // skip directories (files ending with /), unless they are .gdb directories
+        if ( file.right( 1 ) == QLatin1String( "/" ) && !file.endsWith( QStringLiteral( ".gdb/" ), Qt::CaseInsensitive ) )
+          continue;
+
+        // skip the child files from .gdb directories
+        if ( file.right( 1 ) != QLatin1String( "/" ) && file.contains( QStringLiteral( ".gdb" ), Qt::CaseInsensitive ) )
+          continue;
+
+        uriParts.insert( QStringLiteral( "vsiSuffix" ), QStringLiteral( "/%1" ).arg( file ) );
+        res << querySublayers( encodeUri( uriParts ), flags, feedback );
       }
       CSLDestroy( papszSiblingFiles );
       return res;
