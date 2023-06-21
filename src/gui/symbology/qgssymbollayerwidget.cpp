@@ -612,7 +612,7 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
 
   //create an icon pixmap
   const std::unique_ptr< QgsLineSymbol > previewSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << layerCopy.release() );
-  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize );
+  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize, 0, nullptr, screen() );
   mChangePatternButton->setIconSize( currentIconSize );
   mChangePatternButton->setIcon( icon );
 
@@ -621,7 +621,7 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
   const int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
   const int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
-  const QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20 );
+  const QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20, nullptr, false, nullptr, nullptr, screen() );
   QByteArray data;
   QBuffer buffer( &data );
   pm.save( &buffer, "PNG", 100 );

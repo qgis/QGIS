@@ -119,7 +119,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
 
         // either leaf.description or mCurrentDescription is defined
         QTreeWidgetItem *symbolItem = new QTreeWidgetItem( QStringList() << ( mCurrentDescription + leaf.description ) );
-        const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ) );
+        const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ), 0, nullptr, mScreen );
         symbolItem->setData( 0, Qt::UserRole, mCurrentIdentifier );
         symbolItem->setIcon( 0, icon );
         mLayerItem->addChild( symbolItem );

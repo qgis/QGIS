@@ -39,7 +39,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    QgsGraduatedSymbolRendererModel( QObject *parent = nullptr );
+    QgsGraduatedSymbolRendererModel( QObject *parent = nullptr, const QScreen *screen = nullptr );
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     Qt::DropActions supportedDropActions() const override;
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -70,6 +70,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
   private:
     QgsGraduatedSymbolRenderer *mRenderer = nullptr;
     QString mMimeFormat;
+    const QScreen *mScreen = nullptr;
 };
 
 // View style which shows drop indicator line between items

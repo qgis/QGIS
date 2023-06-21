@@ -287,7 +287,7 @@ void QgsLegendPatchShapeButton::updatePreview()
   }
 
   //create an icon pixmap
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mPreviewSymbol.get(), currentIconSize, currentIconSize.height() / 10, &mShape );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mPreviewSymbol.get(), currentIconSize, currentIconSize.height() / 10, &mShape, screen() );
   setIconSize( currentIconSize );
   setIcon( icon );
 

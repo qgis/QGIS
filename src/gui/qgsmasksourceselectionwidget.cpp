@@ -125,7 +125,7 @@ void QgsMaskSourceSelectionWidget::update()
           return true;
 
         std::unique_ptr< QTreeWidgetItem > symbolItem = std::make_unique< QTreeWidgetItem >( mLayerItem, QStringList() << ( mCurrentDescription + leaf.description ) );
-        const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ) );
+        const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ), 0, nullptr, mScreen );
         symbolItem->setIcon( 0, icon );
 
         if ( visitSymbol( symbolItem.get(), leaf.identifier, symbol, {} ) )
