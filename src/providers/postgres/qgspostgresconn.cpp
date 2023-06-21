@@ -1602,7 +1602,7 @@ bool QgsPostgresConn::closeCursor( const QString &cursorName )
 
 QString QgsPostgresConn::uniqueCursorName()
 {
-  return QStringLiteral( "qgis_%1" ).arg( ++mNextCursorId );
+  return QStringLiteral( "qgis_%1" ).arg( ++sNextCursorId );
 }
 
 bool QgsPostgresConn::PQexecNR( const QString &query, const QString &originatorClass, const QString &queryOrigin )
