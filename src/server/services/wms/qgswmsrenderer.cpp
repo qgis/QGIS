@@ -3193,6 +3193,12 @@ namespace QgsWms
         {
           QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
           vl->setOpacity( opacity / 255. );
+          // Labeling
+          if ( vl->labelsEnabled() && vl->labeling() )
+          {
+            QgsAbstractVectorLayerLabeling *labeling { vl->labeling() };
+            labeling->multiplyOpacity( opacity / 255. );
+          }
           break;
         }
 

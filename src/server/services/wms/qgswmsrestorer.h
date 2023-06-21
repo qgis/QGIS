@@ -26,6 +26,7 @@
 #include "qgswmsrendercontext.h"
 
 class QgsMapLayer;
+class QgsAbstractVectorLayerLabeling;
 
 /**
  * \ingroup server
@@ -56,12 +57,13 @@ class QgsLayerRestorer
     {
       QString name;
       double mOpacity;
+      std::unique_ptr<QgsAbstractVectorLayerLabeling> mLabeling;
       QString mNamedStyle;
       QString mFilter;
       QgsFeatureIds mSelectedFeatureIds;
     };
 
-    QMap<QgsMapLayer *, QgsLayerSettings> mLayerSettings;
+    std::map<QgsMapLayer *, QgsLayerSettings> mLayerSettings;
 };
 
 namespace QgsWms

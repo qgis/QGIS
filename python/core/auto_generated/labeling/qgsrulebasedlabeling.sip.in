@@ -317,8 +317,13 @@ Set pal settings for a specific provider (takes ownership).
 
     virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 
+    virtual void multiplyOpacity( double opacityFactor );
+
+
 
   protected:
+
+
 };
 
 

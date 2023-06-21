@@ -632,7 +632,13 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QVariantMap &p
     writeTextSymbolizer( ruleElement, *mSettings, props );
   }
 
+}
 
+void QgsVectorLayerSimpleLabeling::multiplyOpacity( double opacityFactor )
+{
+  QgsTextFormat format { mSettings->format() };
+  format.multiplyOpacity( opacityFactor );
+  mSettings->setFormat( format );
 }
 
 void QgsVectorLayerSimpleLabeling::setSettings( QgsPalLayerSettings *settings, const QString &providerId )

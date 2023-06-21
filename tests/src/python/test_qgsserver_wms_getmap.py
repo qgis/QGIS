@@ -31,7 +31,17 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
     QgsVectorLayerTemporalProperties,
+    QgsTextFormat,
+    QgsPalLayerSettings,
+    QgsVectorLayerSimpleLabeling,
+    QgsFontUtils,
 )
+from qgis.server import (
+    QgsServer,
+    QgsBufferServerRequest,
+    QgsBufferServerResponse,
+)
+
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.PyQt.QtGui import QColor, QImage
 from qgis.testing import unittest
@@ -2107,6 +2117,96 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         range_extent = t.xpath("//wms:Layer/wms:Name[text()='test_range']/../wms:Extent", namespaces=ns)[0]
         self.assertEqual(range_extent.attrib, {'name': 'TIME'})
         self.assertEqual(range_extent.text, '2003-03-03/2004-04-04')
+
+    def test_get_map_labeling_opacities(self):
+        """Test if OPACITIES is also applied to labels"""
+
+        layer = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=name:string&key=pk',
+            'test', 'memory')
+
+        provider = layer.dataProvider()
+
+        f1 = QgsFeature()
+        f1.setAttributes([1, 'Label1'])
+        f1.setGeometry(QgsGeometry.fromWkt('Point (2 2)'))
+        self.assertTrue(f1.isValid())
+
+        f2 = QgsFeature()
+        f2.setAttributes([1, 'Label2'])
+        f2.setGeometry(QgsGeometry.fromWkt('Point (1 1)'))
+        self.assertTrue(f2.isValid())
+
+        self.assertTrue(provider.addFeatures([f1, f2]))
+
+        project = QgsProject()
+        self.assertTrue(project.addMapLayers([layer]))
+
+        text_format = QgsTextFormat()
+        text_format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        text_format.setSize(20)
+        text_format.setNamedStyle("Bold")
+        text_format.setColor(QColor(0, 0, 0))
+
+        buffer_settings = text_format.buffer()
+        buffer_settings.setEnabled(True)
+        buffer_settings.setColor(QColor(0, 0, 0))
+        buffer_settings.setOpacity(0.5)
+        buffer_settings.setSize(10)
+
+        shadow_settings = text_format.shadow()
+        shadow_settings.setEnabled(True)
+        shadow_settings.setColor(QColor(0, 0, 0))
+        shadow_settings.setOpacity(0.5)
+        shadow_settings.setOffsetDistance(20)
+
+        settings = QgsPalLayerSettings()
+        settings.setFormat(text_format)
+        settings.fieldName = "name"
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        layer.setLabelsEnabled(True)
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "test",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "0,0,2,2",
+            "HEIGHT": "200",
+            "WIDTH": "200",
+            "CRS": "EPSG:4326",
+            "DPI": 96,
+            "OPACITIES": "128"
+        }.items())])
+
+        request = QgsBufferServerRequest(qs)
+        response = QgsBufferServerResponse()
+        server = QgsServer()
+        server.handleRequest(request, response, project)
+        self._img_diff_error(response.body(), response.headers(), "WMS_GetMap_LabelingOpacities128")
+
+        # Test restorer
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "test",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "0,0,2,2",
+            "HEIGHT": "200",
+            "WIDTH": "200",
+            "CRS": "EPSG:4326",
+            "DPI": 96,
+        }.items())])
+
+        request = QgsBufferServerRequest(qs)
+        response = QgsBufferServerResponse()
+        server = QgsServer()
+        server.handleRequest(request, response, project)
+        self._img_diff_error(response.body(), response.headers(), "WMS_GetMap_LabelingOpacities")
 
 
 if __name__ == '__main__':
