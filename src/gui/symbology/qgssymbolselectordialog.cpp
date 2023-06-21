@@ -34,6 +34,7 @@
 #include "qgsgui.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qscreen.h"
 
 #include <QColorDialog>
 #include <QPainter>
@@ -117,14 +118,16 @@ void DataDefinedRestorer::restore()
 class SymbolLayerItem : public QStandardItem
 {
   public:
-    explicit SymbolLayerItem( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QgsVectorLayer *vectorLayer )
+    explicit SymbolLayerItem( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QgsVectorLayer *vectorLayer, const QScreen *screen )
       : mVectorLayer( vectorLayer )
+      , mScreen( screen )
     {
       setLayer( layer, symbolType );
     }
 
-    explicit SymbolLayerItem( QgsSymbol *symbol, QgsVectorLayer *vectorLayer )
+    explicit SymbolLayerItem( QgsSymbol *symbol, QgsVectorLayer *vectorLayer, const QScreen *screen )
       : mVectorLayer( vectorLayer )
+      , mScreen( screen )
     {
       setSymbol( symbol );
     }
@@ -155,7 +158,7 @@ class SymbolLayerItem : public QStandardItem
       }
       QIcon icon;
       if ( mIsLayer )
-        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer ); //todo: make unit a parameter
+        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer, mScreen );
       else
       {
         QgsExpressionContext expContext;
@@ -238,6 +241,7 @@ class SymbolLayerItem : public QStandardItem
     bool mIsLayer = false;
     QSize mSize;
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Hybrid;
+    const QScreen *mScreen = nullptr;
 };
 
 ///@endcond
@@ -391,7 +395,7 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *pa
     parent = static_cast<SymbolLayerItem *>( mSymbolLayersModel->invisibleRootItem() );
   }
 
-  SymbolLayerItem *symbolItem = new SymbolLayerItem( symbol, mVectorLayer );
+  SymbolLayerItem *symbolItem = new SymbolLayerItem( symbol, mVectorLayer, screen() );
   QFont boldFont = symbolItem->font();
   boldFont.setBold( true );
   symbolItem->setFont( boldFont );
@@ -400,7 +404,7 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *pa
   const int count = symbol->symbolLayerCount();
   for ( int i = count - 1; i >= 0; i-- )
   {
-    SymbolLayerItem *layerItem = new SymbolLayerItem( symbol->symbolLayer( i ), symbol->type(), mVectorLayer );
+    SymbolLayerItem *layerItem = new SymbolLayerItem( symbol->symbolLayer( i ), symbol->type(), mVectorLayer, screen() );
     layerItem->setEditable( false );
     symbolItem->appendRow( layerItem );
     if ( symbol->symbolLayer( i )->subSymbol() )
@@ -627,7 +631,7 @@ void QgsSymbolSelectorWidget::addLayer()
   if ( ddWidth )
     static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth );
 
-  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type(), mVectorLayer );
+  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type(), mVectorLayer, screen() );
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   item->updatePreview();
 
@@ -727,7 +731,7 @@ void QgsSymbolSelectorWidget::duplicateLayer()
   else
     parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer );
 
-  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type(), mVectorLayer );
+  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type(), mVectorLayer, screen() );
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   if ( newLayer->subSymbol() )
   {

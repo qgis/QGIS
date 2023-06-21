@@ -111,7 +111,7 @@ void QgsSymbolLevelsWidget::populateTable()
       else
       {
         const QgsSymbolLayer *sl = sym->symbolLayer( layer );
-        const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), sym->type() );
+        const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), sym->type(), nullptr, screen() );
         item = new QTableWidgetItem( icon, QString::number( sl->renderingPass() ) );
       }
       tableLevels->setItem( row, layer + 1, item );

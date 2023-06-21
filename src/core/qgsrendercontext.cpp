@@ -148,7 +148,7 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   context.setPainter( painter );
   if ( painter && painter->device() )
   {
-    context.setScaleFactor( painter->device()->logicalDpiX() / 25.4 );
+    context.setScaleFactor( painter->device()->physicalDpiX() / 25.4 );
   }
   else
   {

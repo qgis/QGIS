@@ -338,7 +338,7 @@ Draws a symbol layer preview to a QPicture
 .. versionadded:: 2.9
 %End
 
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = 0 );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = 0, const QScreen *screen = 0 );
 %Docstring
 Draws a symbol layer preview to an icon.
 
@@ -348,6 +348,7 @@ Draws a symbol layer preview to an icon.
 :param scale: map unit scale for preview
 :param parentSymbolType: since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
 :param mapLayer: since QGIS 3.28, can be used to specify the associated map layer so that layer related expressions are correctly calculated
+:param screen: since QGIS 3.32, can be used to specify the destination screen for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen.
 
 :return: icon containing symbol layer preview
 
