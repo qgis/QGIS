@@ -165,6 +165,7 @@
 %Include auto_generated/qgsruntimeprofiler.sip
 %Include auto_generated/qgsscalecalculator.sip
 %Include auto_generated/qgsscaleutils.sip
+%Include auto_generated/qgsscreenproperties.sip
 %Include auto_generated/qgsselectioncontext.sip
 %Include auto_generated/qgssimplifymethod.sip
 %Include auto_generated/qgssingleitemmodel.sip
