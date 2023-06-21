@@ -43,7 +43,6 @@
 #include "qgssymbollayerreference.h"
 #include "qgsmarkersymbollayer.h"
 #include "qmath.h"
-#include "qgsmasksymbollayer.h"
 
 #include <QColor>
 #include <QFont>
@@ -981,16 +980,25 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   return picture;
 }
 
-QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType, QgsMapLayer *mapLayer )
+QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType, QgsMapLayer *mapLayer, const QScreen *screen )
 {
-  QPixmap pixmap( size );
+  const double devicePixelRatio = screen ? screen->devicePixelRatio() : 1;
+  QPixmap pixmap( size * devicePixelRatio );
+  pixmap.setDevicePixelRatio( devicePixelRatio );
   pixmap.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
+
+  if ( screen )
+  {
+    renderContext.setScaleFactor( screen->physicalDotsPerInch() / 25.4 );
+  }
+
   renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
   renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
+  renderContext.setDevicePixelRatio( devicePixelRatio );
   // build a minimal expression context
   QgsExpressionContext expContext;
   expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mapLayer ) );

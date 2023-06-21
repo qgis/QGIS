@@ -17,7 +17,6 @@
 #include <QVBoxLayout>
 
 #include "qgssymbollayerselectionwidget.h"
-#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "symbology/qgsrenderer.h"
 #include "qgsstyleentityvisitor.h"
@@ -49,8 +48,11 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
   class TreeFillVisitor : public QgsStyleEntityVisitorInterface
   {
     public:
-      TreeFillVisitor( QTreeWidgetItem *layerItem, const QgsVectorLayer *layer, QHash<QString, QTreeWidgetItem *> &items ):
-        mLayerItem( layerItem ), mLayer( layer ), mItems( items )
+      TreeFillVisitor( QTreeWidgetItem *layerItem, const QgsVectorLayer *layer, QHash<QString, QTreeWidgetItem *> &items, const QScreen *screen )
+        : mLayerItem( layerItem )
+        , mLayer( layer )
+        , mItems( items )
+        , mScreen( screen )
       {}
 
       bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
@@ -79,7 +81,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
           indexPath.append( idx );
 
           QTreeWidgetItem *slItem = new QTreeWidgetItem();
-          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), symbol->type() );
+          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), symbol->type(), nullptr, mScreen );
           slItem->setData( 0, Qt::UserRole, idx );
           slItem->setIcon( 0, slIcon );
           auto flags = slItem->flags();
@@ -134,6 +136,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
       QTreeWidgetItem *mLayerItem;
       const QgsVectorLayer *mLayer;
       QHash<QString, QTreeWidgetItem *> &mItems;
+      const QScreen *mScreen = nullptr;
   };
 
   // populate the tree
@@ -142,7 +145,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
   if ( ! mLayer->renderer() )
     return;
 
-  TreeFillVisitor visitor( mTree->invisibleRootItem(), mLayer, mItems );
+  TreeFillVisitor visitor( mTree->invisibleRootItem(), mLayer, mItems, screen() );
   mLayer->renderer()->accept( &visitor );
 }
 
