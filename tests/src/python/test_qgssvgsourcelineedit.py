@@ -14,14 +14,15 @@ import os
 import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import QgsSvgSourceLineEdit
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsSvgSourceLineEdit(unittest.TestCase):
+class TestQgsSvgSourceLineEdit(QgisTestCase):
 
     def testGettersSetters(self):
         """ test widget getters/setters """

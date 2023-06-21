@@ -28,13 +28,14 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 codec = QTextCodec.codecForName("System")
 
 
-class TestQgsJsonUtils(unittest.TestCase):
+class TestQgsJsonUtils(QgisTestCase):
 
     def testStringToFeatureList(self):
         """Test converting json string to features"""

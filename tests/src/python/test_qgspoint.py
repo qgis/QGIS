@@ -12,16 +12,17 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QPointF
 from qgis.core import QgsPoint, QgsPointXY, QgsWkbTypes
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsPointXY(unittest.TestCase):
+class TestQgsPointXY(QgisTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
 
     def setUp(self):
         self.mPoint = QgsPointXY(10.0, 10.0)
@@ -88,7 +89,7 @@ class TestQgsPointXY(unittest.TestCase):
         assert p.isEmpty()
 
 
-class TestQgsPoint(unittest.TestCase):
+class TestQgsPoint(QgisTestCase):
 
     def testInvalidConstructorArguments(self):
         """Test GH #34557"""

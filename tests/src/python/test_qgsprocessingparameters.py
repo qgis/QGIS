@@ -17,12 +17,13 @@ from qgis.core import (
     QgsSettings,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsProcessingParameters(unittest.TestCase):
+class TestQgsProcessingParameters(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

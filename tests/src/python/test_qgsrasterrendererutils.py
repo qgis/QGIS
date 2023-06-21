@@ -13,7 +13,8 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtGui import QColor
 from qgis.core import QgsColorRampShader, QgsRasterRendererUtils
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -21,7 +22,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsRasterRendererUtils(unittest.TestCase):
+class TestQgsRasterRendererUtils(QgisTestCase):
 
     def testSaveRestoreColorMap(self):
         items = [QgsColorRampShader.ColorRampItem(5.5, QColor(255, 100, 120, 60), 'my item'),

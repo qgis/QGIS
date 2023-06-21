@@ -16,12 +16,13 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateReferenceSystemUtils,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsCoordinateReferenceSystemUtils(unittest.TestCase):
+class TestQgsCoordinateReferenceSystemUtils(QgisTestCase):
 
     def test_axis_order(self):
         """

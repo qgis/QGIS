@@ -13,12 +13,13 @@ import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtWidgets import QDoubleSpinBox
 from qgis.core import QgsLayoutMeasurementConverter, QgsUnitTypes
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayoutUnitsComboBox(unittest.TestCase):
+class TestQgsLayoutUnitsComboBox(QgisTestCase):
 
     def testGettersSetters(self):
         """ test widget getters/setters """

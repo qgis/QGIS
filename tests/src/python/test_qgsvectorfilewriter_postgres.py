@@ -19,7 +19,8 @@ from qgis.core import (
     QgsVectorFileWriter,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -27,7 +28,7 @@ TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
-class TestQgsVectorFileWriterPG(unittest.TestCase):
+class TestQgsVectorFileWriterPG(QgisTestCase):
 
     def testWriteWithBoolField(self):
 

@@ -22,14 +22,15 @@ from qgis.core import (
     QgsProfileRequest,
     QgsProfileSnapContext,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsMeshLayerProfileGenerator(unittest.TestCase):
+class TestQgsMeshLayerProfileGenerator(QgisTestCase):
 
     def testGeneration(self):
         ml = QgsMeshLayer(os.path.join(unitTestDataPath(), '3d', 'elev_mesh.2dm'), 'mdal', 'mdal')

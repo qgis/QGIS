@@ -60,7 +60,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTestFont, svgSymbolsPath
 
@@ -73,7 +74,7 @@ def createEmptyLayer():
     return layer
 
 
-class PyQgsTextRenderer(unittest.TestCase):
+class PyQgsTextRenderer(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

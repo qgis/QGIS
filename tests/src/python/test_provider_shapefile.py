@@ -36,7 +36,8 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 from utilities import unitTestDataPath
@@ -58,7 +59,7 @@ class ErrorReceiver():
         self.msg = msg
 
 
-class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):

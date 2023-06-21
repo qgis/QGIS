@@ -56,7 +56,8 @@ from qgis.core import (
     QgsSingleBandGrayRenderer,
     QgsSingleBandPseudoColorRenderer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
@@ -66,7 +67,7 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsRasterLayer(unittest.TestCase):
+class TestQgsRasterLayer(QgisTestCase):
 
     def setUp(self):
         self.iface = get_iface()
@@ -1529,7 +1530,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(rl.renderer().opacity(), 0.6)
 
 
-class TestQgsRasterLayerTransformContext(unittest.TestCase):
+class TestQgsRasterLayerTransformContext(QgisTestCase):
 
     def setUp(self):
         """Prepare tc"""

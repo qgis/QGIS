@@ -14,14 +14,15 @@ import shutil
 import tempfile
 
 from qgis.core import QgsProviderSqlQueryBuilder
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsProviderSqlQueryBuilder(unittest.TestCase):
+class TestQgsProviderSqlQueryBuilder(QgisTestCase):
 
     def test_quoted_identifier(self):
         builder = QgsProviderSqlQueryBuilder()

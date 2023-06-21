@@ -23,14 +23,15 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 
 
-class TestQgsLayoutShape(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutShape(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):

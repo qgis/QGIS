@@ -32,7 +32,8 @@ from qgis.core import (
     QgsTextFormat,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -50,7 +51,7 @@ class TestColorRampLegend(QgsColorRampLegendNode):
             return super().data(role)
 
 
-class TestQgsColorRampLegendNode(unittest.TestCase):
+class TestQgsColorRampLegendNode(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

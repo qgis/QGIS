@@ -22,7 +22,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsRectangle,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -34,7 +35,7 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
     return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
-class PyQgsGdalProvider(unittest.TestCase):
+class PyQgsGdalProvider(QgisTestCase):
 
     def checkBlockContents(self, block, expected):
         res = []

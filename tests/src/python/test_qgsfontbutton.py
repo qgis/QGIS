@@ -14,14 +14,15 @@ from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsTextFormat
 from qgis.gui import QgsFontButton, QgsMapCanvas
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTestFont
 
 start_app()
 
 
-class TestQgsFontButton(unittest.TestCase):
+class TestQgsFontButton(QgisTestCase):
 
     def testGettersSetters(self):
         button = QgsFontButton()

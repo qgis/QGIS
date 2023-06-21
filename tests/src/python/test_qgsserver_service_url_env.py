@@ -12,13 +12,14 @@ os.environ['QT_HASH_SEED'] = '1'
 
 from qgis.core import QgsFontUtils
 from qgis.server import QgsServer
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsServerServiceUrlEnv(unittest.TestCase):
+class TestQgsServerServiceUrlEnv(QgisTestCase):
 
     def setUp(self):
         """Create the server instance"""

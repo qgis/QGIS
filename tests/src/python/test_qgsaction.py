@@ -23,12 +23,13 @@ from qgis.core import (
     QgsNetworkAccessManager,
     QgsNetworkRequestParameters,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsAction(unittest.TestCase):
+class TestQgsAction(QgisTestCase):
 
     def setUp(self):
         self.body = None

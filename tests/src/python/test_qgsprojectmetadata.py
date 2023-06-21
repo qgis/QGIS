@@ -21,12 +21,13 @@ from qgis.core import (
     QgsProject,
     QgsProjectMetadata,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsProjectMetadata(unittest.TestCase):
+class TestQgsProjectMetadata(QgisTestCase):
 
     def testGettersSetters(self):
         m = QgsProjectMetadata()

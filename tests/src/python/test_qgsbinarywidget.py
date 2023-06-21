@@ -13,12 +13,13 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import QByteArray
 from qgis.core import NULL, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer
 from qgis.gui import QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsBinaryWidget(unittest.TestCase):
+class TestQgsBinaryWidget(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

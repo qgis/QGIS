@@ -49,7 +49,8 @@ from qgis.core import (
     QgsWkbTypes,
     QgsFontUtils
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTempfilePath, getTestFont, unitTestDataPath
 
@@ -77,7 +78,7 @@ def renderMapToImageWithTime(mapsettings, parallel=False, cache=None):
     return (job.renderedImage(), job.renderingTime())
 
 
-class TestSelectiveMasking(unittest.TestCase):
+class TestSelectiveMasking(QgisTestCase):
 
     report = None
 

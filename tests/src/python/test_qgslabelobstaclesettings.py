@@ -20,12 +20,13 @@ from qgis.core import (
     QgsProperty,
     QgsPropertyCollection,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLabelObstacleSettings(unittest.TestCase):
+class TestQgsLabelObstacleSettings(QgisTestCase):
 
     def test_obstacle_settings(self):
         """

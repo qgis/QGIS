@@ -29,14 +29,15 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsNewVectorTableDialog
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsNewVectorTableDialog(unittest.TestCase):
+class TestPyQgsNewVectorTableDialog(QgisTestCase):
     """Test QgsNewVectorTableDialog"""
 
     @classmethod

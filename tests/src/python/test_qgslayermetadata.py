@@ -22,12 +22,13 @@ from qgis.core import (
     QgsNativeMetadataValidator,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayerMetadata(unittest.TestCase):
+class TestQgsLayerMetadata(QgisTestCase):
 
     def testGettersSetters(self):
         m = QgsLayerMetadata()

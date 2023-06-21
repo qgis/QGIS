@@ -20,7 +20,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsFieldComboBox
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -39,7 +40,7 @@ def create_model():
     return l, m
 
 
-class TestQgsFieldComboBox(unittest.TestCase):
+class TestQgsFieldComboBox(QgisTestCase):
 
     def testGettersSetters(self):
         """ test combobox getters/setters """

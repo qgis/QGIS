@@ -17,12 +17,13 @@ import qgis  # NOQA switch sip api
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import QgsField, QgsOgcUtils, QgsVectorLayer
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsOgcUtils(unittest.TestCase):
+class TestQgsOgcUtils(QgisTestCase):
 
     def test_expressionFromOgcFilterWithInt(self):
         """

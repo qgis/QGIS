@@ -34,7 +34,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import writeShape
 
@@ -79,7 +80,7 @@ def createLayer():
     return vl
 
 
-class TestQgsAuxiliaryStorage(unittest.TestCase):
+class TestQgsAuxiliaryStorage(QgisTestCase):
 
     def testCreateSaveOpenStorageWithString(self):
         # Empty string in copy mode. A new database is created in a temporary

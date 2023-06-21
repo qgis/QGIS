@@ -16,7 +16,8 @@ from functools import partial
 
 from qgis.PyQt.QtCore import QEventLoop, QUrl
 from qgis.core import QgsFileDownloader
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '08/11/2016'
@@ -25,7 +26,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 start_app()
 
 
-class TestQgsFileDownloader(unittest.TestCase):
+class TestQgsFileDownloader(QgisTestCase):
     """
     This class tests the QgsFileDownloader class
     """

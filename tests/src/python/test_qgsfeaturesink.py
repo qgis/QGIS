@@ -29,7 +29,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -58,7 +59,7 @@ def createLayerWithFivePoints():
     return layer
 
 
-class TestQgsFeatureSink(unittest.TestCase):
+class TestQgsFeatureSink(QgisTestCase):
 
     def testFromIterator(self):
         """

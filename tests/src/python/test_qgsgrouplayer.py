@@ -32,7 +32,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -41,7 +42,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsGroupLayer(unittest.TestCase):
+class TestQgsGroupLayer(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

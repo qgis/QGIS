@@ -23,12 +23,13 @@ from qgis.core import (
     QgsPropertyCollection,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLabelLineSettings(unittest.TestCase):
+class TestQgsLabelLineSettings(QgisTestCase):
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Python version too old for enum classes to work')

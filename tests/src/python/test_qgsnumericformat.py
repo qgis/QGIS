@@ -25,7 +25,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsScientificNumericFormat,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -51,7 +52,7 @@ class TestFormat(QgsNumericFormat):
         return {}
 
 
-class TestQgsNumericFormat(unittest.TestCase):
+class TestQgsNumericFormat(QgisTestCase):
 
     def testFallbackFormat(self):
         """ test fallback formatter """

@@ -20,7 +20,8 @@ from qgis.core import (
     QgsTemporalUtils,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -28,7 +29,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsTemporalUtils(unittest.TestCase):
+class TestQgsTemporalUtils(QgisTestCase):
 
     def testTemporalRangeForProject(self):
         p = QgsProject()

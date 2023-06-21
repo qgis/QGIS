@@ -40,7 +40,8 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -48,7 +49,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsSimpleFillSymbolLayer(unittest.TestCase):
+class TestQgsSimpleFillSymbolLayer(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

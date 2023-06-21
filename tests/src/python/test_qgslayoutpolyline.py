@@ -22,7 +22,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsLayoutChecker
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
@@ -31,7 +32,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutPolyline(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -40,7 +41,7 @@ class TestQgsLayoutPolyline(unittest.TestCase, LayoutItemTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
 
         # create composition
         self.layout = QgsLayout(QgsProject.instance())

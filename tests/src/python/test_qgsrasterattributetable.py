@@ -30,7 +30,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsSingleBandPseudoColorRenderer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
@@ -143,7 +144,7 @@ def createTestRasters(cls, path):
     dst_ds = None
 
 
-class TestQgsRasterAttributeTable(unittest.TestCase):
+class TestQgsRasterAttributeTable(QgisTestCase):
 
     def setUp(self):
 

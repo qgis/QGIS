@@ -22,7 +22,8 @@ from qgis.core import (
     QgsRasterLayer,
 )
 from qgis.gui import QgsRasterAttributeTableWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from test_qgsrasterattributetable import createTestRasters
@@ -32,7 +33,7 @@ from test_qgsrasterattributetable import createTestRasters
 start_app()
 
 
-class TestQgsRasterAttributeTableWidget(unittest.TestCase):
+class TestQgsRasterAttributeTableWidget(QgisTestCase):
 
     def setUp(self):
 

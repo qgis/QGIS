@@ -29,7 +29,8 @@ from qgis.gui import (
     QgsHistoryEntryGroup,
     QgsHistoryEntryModel
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -79,7 +80,7 @@ class TestGroup(QgsHistoryEntryGroup):
         return 'test'
 
 
-class TestQgsHistoryProviderRegistry(unittest.TestCase):
+class TestQgsHistoryProviderRegistry(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

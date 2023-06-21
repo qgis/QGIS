@@ -14,12 +14,13 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import Qgis, QgsCoordinateReferenceSystem
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsCoordinateReferenceSystem(unittest.TestCase):
+class TestQgsCoordinateReferenceSystem(QgisTestCase):
 
     def test_axis_order(self):
         """

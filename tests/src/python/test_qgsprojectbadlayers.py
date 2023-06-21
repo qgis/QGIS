@@ -27,7 +27,8 @@ from qgis.core import (
     QgsRectangle,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import renderMapToImage, unitTestDataPath
 
@@ -35,7 +36,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsProjectBadLayers(unittest.TestCase):
+class TestQgsProjectBadLayers(QgisTestCase):
 
     def setUp(self):
         p = QgsProject.instance()

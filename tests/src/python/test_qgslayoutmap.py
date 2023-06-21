@@ -53,7 +53,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
@@ -62,7 +63,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -79,7 +80,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
         myPath = os.path.join(TEST_DATA_DIR, 'rgb256x256.png')
         rasterFileInfo = QFileInfo(myPath)
         self.raster_layer = QgsRasterLayer(rasterFileInfo.filePath(),

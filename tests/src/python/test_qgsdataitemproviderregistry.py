@@ -17,7 +17,8 @@ from qgis.core import (
     QgsDataItemProviderRegistry,
     QgsDataProvider,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
@@ -38,7 +39,7 @@ class TestProvider(QgsDataItemProvider):
         return None
 
 
-class TestQgsDataItemProviderRegistry(unittest.TestCase):
+class TestQgsDataItemProviderRegistry(QgisTestCase):
 
     def testAppRegistry(self):
         # ensure there is an application instance

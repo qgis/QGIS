@@ -57,7 +57,8 @@ from qgis.server import (
     QgsServerParameterDefinition,
     QgsServerRequest,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from utilities import unitTestDataPath
 
 start_app()
@@ -69,7 +70,7 @@ RE_ELEMENT_CONTENT = br'<[^>\[]+>(.+)</[^>\[\s]+>'
 RE_ATTRIBUTES = rb'((?:(?!\s|=).)*)\s*?=\s*?["\']?((?:(?<=")(?:(?<=\\)"|[^"])*|(?<=\')(?:(?<=\\)\'|[^\'])*)|(?:(?!"|\')(?:(?!\/>|>|\s).)+))'
 
 
-class QgsServerTestBase(unittest.TestCase):
+class QgsServerTestBase(QgisTestCase):
 
     """Base class for QGIS server tests"""
 
@@ -359,7 +360,7 @@ class QgsServerTestBase(unittest.TestCase):
         self.assertEqual(color.blue(), 255)
 
 
-class TestQgsServerTestBase(unittest.TestCase):
+class TestQgsServerTestBase(QgisTestCase):
 
     def test_assert_xml_equal(self):
         engine = QgsServerTestBase()
@@ -575,7 +576,7 @@ class TestQgsServer(QgsServerTestBase):
             self.assertTrue(item_found)
 
 
-class TestQgsServerParameter(unittest.TestCase):
+class TestQgsServerParameter(QgisTestCase):
 
     def test_filter(self):
         # empty filter

@@ -70,7 +70,8 @@ from qgis.core import (
     QgsSettingsTree
 )
 from qgis.gui import QgsAttributeForm, QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 from utilities import compareWkt, unitTestDataPath
@@ -79,7 +80,7 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -3233,7 +3234,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             self.assertEqual(set(extracted_fids), {1, 2})  # Bug ?
 
 
-class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
+class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -3334,7 +3335,7 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.commitChanges())
 
 
-class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCase):
+class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -3907,7 +3908,7 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertEqual(vl.getFeature(8)['geom'].crs(), geom.crs())
 
 
-class TestPyQgsPostgresProviderAsyncCreation(unittest.TestCase):
+class TestPyQgsPostgresProviderAsyncCreation(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

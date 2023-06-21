@@ -22,12 +22,13 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsReport(unittest.TestCase):
+class TestQgsReport(QgisTestCase):
 
     def testGettersSetters(self):
         p = QgsProject()

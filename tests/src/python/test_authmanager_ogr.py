@@ -14,7 +14,8 @@ from qgis.core import (
     QgsAuthMethodConfig,
     QgsProviderRegistry,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '14/11/2017'
@@ -42,7 +43,7 @@ TEST_URIS = {
 }
 
 
-class TestAuthManager(unittest.TestCase):
+class TestAuthManager(QgisTestCase):
 
     @classmethod
     def setUpAuth(cls):

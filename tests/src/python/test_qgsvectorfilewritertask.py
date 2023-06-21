@@ -22,7 +22,8 @@ from qgis.core import (
     QgsVectorFileWriterTask,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -31,7 +32,7 @@ def create_temp_filename(base_file):
     return os.path.join(str(QDir.tempPath()), base_file)
 
 
-class TestQgsVectorFileWriterTask(unittest.TestCase):
+class TestQgsVectorFileWriterTask(QgisTestCase):
 
     def setUp(self):
         self.new_filename = ''

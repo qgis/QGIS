@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import qgis  # NOQA switch sip api
 
 from qgis.gui import QgsMultiEditToolButton
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsMultiEditToolButton(unittest.TestCase):
+class TestQgsMultiEditToolButton(QgisTestCase):
 
     def test_state_logic(self):
         """

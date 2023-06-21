@@ -30,12 +30,13 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsMapRenderer(unittest.TestCase):
+class TestQgsMapRenderer(QgisTestCase):
 
     def setUp(self):
         pass

@@ -39,12 +39,13 @@ from qgis.core import (
     QgsVectorLayer
 )
 from qgis.gui import QgsMapCanvas, QgsMapToolPan, QgsMapToolZoom, QgsMapToolEmitPoint
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsMapCanvas(unittest.TestCase):
+class TestQgsMapCanvas(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsMapCanvas Tests</h1>\n"

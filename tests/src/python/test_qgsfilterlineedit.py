@@ -19,12 +19,13 @@ try:
 except:
     use_signal_spy = False
 
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsFilterLineEdit(unittest.TestCase):
+class TestQgsFilterLineEdit(QgisTestCase):
 
     def testGettersSetters(self):
         """ test widget getters/setters """

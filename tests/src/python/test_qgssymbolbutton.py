@@ -14,12 +14,13 @@ from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsFillSymbol, QgsMarkerSymbol, QgsSymbol
 from qgis.gui import QgsMapCanvas, QgsSymbolButton
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsSymbolButton(unittest.TestCase):
+class TestQgsSymbolButton(QgisTestCase):
 
     def testGettersSetters(self):
         button = QgsSymbolButton()

@@ -19,7 +19,8 @@ from qgis.core import (
     QgsPointCloudLayer,
     QgsProviderRegistry,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -36,7 +37,7 @@ def create_attributes():
     return collection
 
 
-class TestQgsFieldModel(unittest.TestCase):
+class TestQgsFieldModel(QgisTestCase):
 
     def testGettersSetters(self):
         """ test model getters/setters """

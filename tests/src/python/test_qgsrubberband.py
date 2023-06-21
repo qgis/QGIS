@@ -9,13 +9,14 @@ the Free Software Foundation; either version 2 of the License, or
 import qgis  # NOQA
 
 from qgis.gui import QgsRubberBand
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 start_app()
 
 
-class TestQgsRubberBand(unittest.TestCase):
+class TestQgsRubberBand(QgisTestCase):
 
     def setUp(self):
         self.iface = get_iface()

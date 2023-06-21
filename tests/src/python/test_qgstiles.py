@@ -24,12 +24,13 @@ from qgis.core import (
     QgsTileXYZ,
     QgsVectorTileMatrixSet,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsTiles(unittest.TestCase):
+class TestQgsTiles(QgisTestCase):
 
     def testQgsTileXYZ(self):
         tile = QgsTileXYZ(1, 2, 3)

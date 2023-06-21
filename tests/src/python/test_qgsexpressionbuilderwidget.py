@@ -21,7 +21,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsExpressionBuilderWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -61,7 +62,7 @@ def createReferencedLayer():
     return layer
 
 
-class TestQgsExpressionBuilderWidget(unittest.TestCase):
+class TestQgsExpressionBuilderWidget(QgisTestCase):
 
     def setUp(self):
         self.referencedLayer = createReferencedLayer()

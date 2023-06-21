@@ -26,7 +26,8 @@ from qgis.core import (
     QgsProject,
     QgsSensorManager
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -57,7 +58,7 @@ class TestSensor(QgsIODeviceSensor):
         self.buffer.seek(0)
 
 
-class TestQgsSensorManager(unittest.TestCase):
+class TestQgsSensorManager(QgisTestCase):
 
     manager = None
     sensor = None

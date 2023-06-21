@@ -32,14 +32,15 @@ from qgis.core import (
     QgsFeature,
     QgsGeometry
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsProfileExporter(unittest.TestCase):
+class TestQgsProfileExporter(QgisTestCase):
 
     def testExport(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')

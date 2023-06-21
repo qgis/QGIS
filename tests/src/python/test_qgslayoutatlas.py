@@ -43,7 +43,8 @@ from qgis.core import (
     QgsSingleSymbolRenderer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
 from utilities import unitTestDataPath
@@ -51,7 +52,7 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsLayoutAtlas(unittest.TestCase):
+class TestQgsLayoutAtlas(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsLayoutAtlas Tests</h1>\n"

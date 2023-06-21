@@ -20,7 +20,8 @@ from qgis.core import (
     QgsAuthMethodConfig,
 )
 from qgis.gui import QgsAuthSettingsWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '27/09/2017'
@@ -33,7 +34,7 @@ os.environ['QGIS_AUTH_DB_DIR_PATH'] = QGIS_AUTH_DB_DIR_PATH
 qgis_app = start_app()
 
 
-class TestAuthenticationWidget(unittest.TestCase):
+class TestAuthenticationWidget(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

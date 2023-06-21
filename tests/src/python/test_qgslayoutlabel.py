@@ -20,7 +20,8 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
@@ -28,7 +29,7 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsLayoutItemLabel(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutItemLabel(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):

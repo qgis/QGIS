@@ -12,14 +12,15 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime
 from qgis.gui import QgsDateEdit, QgsDateTimeEdit, QgsTimeEdit
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 DATE = QDateTime.fromString('2018-01-01 01:02:03', Qt.ISODate)
 
 
-class TestQgsDateTimeEdit(unittest.TestCase):
+class TestQgsDateTimeEdit(QgisTestCase):
 
     def testSettersGetters(self):
         """ test widget handling of null values """
@@ -50,7 +51,7 @@ class TestQgsDateTimeEdit(unittest.TestCase):
         self.assertTrue(w.dateTime().isValid())
 
 
-class TestQgsDateEdit(unittest.TestCase):
+class TestQgsDateEdit(QgisTestCase):
 
     def testSettersGetters(self):
         """ test widget handling of null values """
@@ -81,7 +82,7 @@ class TestQgsDateEdit(unittest.TestCase):
         self.assertTrue(w.date().isValid())
 
 
-class TestQgsTimeEdit(unittest.TestCase):
+class TestQgsTimeEdit(QgisTestCase):
 
     def testSettersGetters(self):
         """ test widget handling of null values """

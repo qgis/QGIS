@@ -20,7 +20,8 @@ from qgis.core import (
     QgsValidityCheckResult,
     check,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
@@ -68,7 +69,7 @@ def my_check2(context, feedback):
     return [res]
 
 
-class TestQgsValidityChecks(unittest.TestCase):
+class TestQgsValidityChecks(QgisTestCase):
 
     def testAppRegistry(self):
         # ensure there is an application instance

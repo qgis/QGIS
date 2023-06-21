@@ -26,12 +26,13 @@ from qgis.core import (
     QgsFields,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsActionManager(unittest.TestCase):
+class TestQgsActionManager(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

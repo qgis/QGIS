@@ -13,7 +13,8 @@ import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsGeometry, QgsLegendPatchShape, QgsSymbol
 from qgis.gui import QgsLegendPatchShapeWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -21,7 +22,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLegendPatchShapeWidget(unittest.TestCase):
+class TestQgsLegendPatchShapeWidget(QgisTestCase):
 
     def testWidget(self):
         shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 1)'), False)

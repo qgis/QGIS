@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import qgis  # NOQA switch sip api
 
 from qgis.gui import QgsSearchWidgetToolButton, QgsSearchWidgetWrapper
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsSearchWidgetToolButton(unittest.TestCase):
+class TestQgsSearchWidgetToolButton(QgisTestCase):
 
     def testAvailableFlags(self):
         """

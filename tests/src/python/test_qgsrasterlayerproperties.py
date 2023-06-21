@@ -23,7 +23,8 @@ from qgis.gui import (
     QgsMapLayerConfigWidgetFactory,
     QgsRasterLayerProperties,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -32,7 +33,7 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsRasterLayerProperties(unittest.TestCase):
+class TestQgsRasterLayerProperties(QgisTestCase):
 
     def setUp(self):
         QgsProject.instance().removeAllMapLayers()

@@ -30,14 +30,15 @@ from qgis.core import (
     QgsTolerance,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
 
 # Convenience instances in case you may need them
 start_app()
 
 
-class TestLayerDependencies(unittest.TestCase):
+class TestLayerDependencies(QgisTestCase):
 
     def setUp(self):
         """Run before each test."""

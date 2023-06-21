@@ -22,14 +22,15 @@ from qgis.core import (
     QgsApplication,
     QgsFetchedContent,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 app = start_app()
 
 
-class TestQgsNetworkContentFetcherTask(unittest.TestCase):
+class TestQgsNetworkContentFetcherTask(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -47,7 +48,7 @@ class TestQgsNetworkContentFetcherTask(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
 
         self.loaded = False
         self.file_content = ''

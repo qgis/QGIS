@@ -25,14 +25,15 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsPointCloudExtentRenderer(unittest.TestCase):
+class TestQgsPointCloudExtentRenderer(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

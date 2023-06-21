@@ -18,12 +18,13 @@ from qgis.core import (
     QgsMeshLayerElevationProperties,
     QgsReadWriteContext,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsMeshLayerElevationProperties(unittest.TestCase):
+class TestQgsMeshLayerElevationProperties(QgisTestCase):
 
     def testBasic(self):
         props = QgsMeshLayerElevationProperties(None)

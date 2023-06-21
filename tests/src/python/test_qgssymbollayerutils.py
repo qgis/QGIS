@@ -35,12 +35,13 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class PyQgsSymbolLayerUtils(unittest.TestCase):
+class PyQgsSymbolLayerUtils(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

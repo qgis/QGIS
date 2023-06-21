@@ -18,12 +18,13 @@ from qgis.core import (
     QgsPropertyDefinition,
 )
 from qgis.gui import QgsColorButton, QgsPropertyOverrideButton
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsPropertyOverrideButton(unittest.TestCase):
+class TestQgsPropertyOverrideButton(QgisTestCase):
 
     def testProjectColor(self):
         scheme = [s for s in QgsApplication.colorSchemeRegistry().schemes() if isinstance(s, QgsProjectColorScheme)][0]

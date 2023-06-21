@@ -30,7 +30,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorSimplifyMethod,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 # Convenience instances in case you may need them
 # to find the srs.db
@@ -43,7 +44,7 @@ class TestFeatureHandler(QgsRenderedFeatureHandlerInterface):
         pass
 
 
-class TestQgsRenderContext(unittest.TestCase):
+class TestQgsRenderContext(QgisTestCase):
 
     def testGettersSetters(self):
         """

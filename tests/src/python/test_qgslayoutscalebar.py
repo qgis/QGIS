@@ -11,14 +11,15 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.core import QgsLayoutItemScaleBar
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 
 
-class TestQgsLayoutScaleBar(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutScaleBar(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):

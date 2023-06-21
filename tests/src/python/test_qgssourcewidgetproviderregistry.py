@@ -17,7 +17,8 @@ from qgis.gui import (
     QgsProviderSourceWidget,
     QgsProviderSourceWidgetProvider,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
@@ -51,7 +52,7 @@ class TestProvider(QgsProviderSourceWidgetProvider):
         return TestSourceWidget(parent)
 
 
-class TestQgsProviderSourceWidgetProviderRegistry(unittest.TestCase):
+class TestQgsProviderSourceWidgetProviderRegistry(QgisTestCase):
 
     def testGuiRegistry(self):
         # ensure there is an application instance

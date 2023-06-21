@@ -18,12 +18,13 @@ from qgis.gui import (
     QgsCodeEditorColorSchemeRegistry,
     QgsGui,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsCodeEditorColorScheme(unittest.TestCase):
+class TestQgsCodeEditorColorScheme(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

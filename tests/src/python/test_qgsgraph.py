@@ -13,12 +13,13 @@ import qgis  # NOQA
 
 from qgis.analysis import QgsGraph
 from qgis.core import QgsPointXY
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsGraph(unittest.TestCase):
+class TestQgsGraph(QgisTestCase):
 
     def test_empty_graph(self):
         graph = QgsGraph()

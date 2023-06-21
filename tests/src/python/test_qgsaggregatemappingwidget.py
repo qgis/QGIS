@@ -23,10 +23,11 @@ from qgis.PyQt.QtCore import (
 )
 from qgis.core import QgsField, QgsFields
 from qgis.gui import QgsAggregateMappingModel, QgsAggregateMappingWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestPyQgsAggregateMappingModel(unittest.TestCase):
+class TestPyQgsAggregateMappingModel(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
