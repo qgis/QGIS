@@ -173,11 +173,12 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
                 int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
                 const QgsTextFormat format = mStyle->textFormat( name );
-                QPixmap pm = QgsTextFormat::textFormatPreviewPixmap( format, QSize( width, height ), QString(), height / 20 );
+                const double maxDevicePixelRatio = *std::max_element( mDevicePixelRatios.constBegin(), mDevicePixelRatios.constEnd() );
+                QPixmap pm = QgsTextFormat::textFormatPreviewPixmap( format, QSize( width, height ), QString(), height / 20, maxDevicePixelRatio );
                 QByteArray data;
                 QBuffer buffer( &data );
                 pm.save( &buffer, "PNG", 100 );
-                tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) );
+                tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width );
                 break;
               }
 
@@ -185,12 +186,13 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               {
                 int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
                 int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+                const double maxDevicePixelRatio = *std::max_element( mDevicePixelRatios.constBegin(), mDevicePixelRatios.constEnd() );
                 const QgsPalLayerSettings settings = mStyle->labelSettings( name );
-                QPixmap pm = QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( width, height ), QString(), height / 20 );
+                QPixmap pm = QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( width, height ), QString(), height / 20, maxDevicePixelRatio );
                 QByteArray data;
                 QBuffer buffer( &data );
                 pm.save( &buffer, "PNG", 100 );
-                tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) );
+                tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width );
                 break;
               }
 
