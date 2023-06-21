@@ -33,9 +33,10 @@
 ///@cond PRIVATE
 
 
-QgsVectorTileBasicRendererListModel::QgsVectorTileBasicRendererListModel( QgsVectorTileBasicRenderer *r, QObject *parent )
+QgsVectorTileBasicRendererListModel::QgsVectorTileBasicRendererListModel( QgsVectorTileBasicRenderer *r, QObject *parent, const QScreen *screen )
   : QAbstractListModel( parent )
   , mRenderer( r )
+  , mScreen( screen )
 {
 }
 
@@ -100,7 +101,7 @@ QVariant QgsVectorTileBasicRendererListModel::data( const QModelIndex &index, in
       if ( index.column() == 0 && style.symbol() )
       {
         const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-        return QgsSymbolLayerUtils::symbolPreviewIcon( style.symbol(), QSize( iconSize, iconSize ) );
+        return QgsSymbolLayerUtils::symbolPreviewIcon( style.symbol(), QSize( iconSize, iconSize ), 0, nullptr, mScreen );
       }
       break;
     }
@@ -395,7 +396,7 @@ void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
     mRenderer.reset( new QgsVectorTileBasicRenderer() );
   }
 
-  mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles );
+  mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles, screen() );
   mProxyModel = new QgsVectorTileBasicRendererProxyModel( mModel, viewStyles );
   viewStyles->setModel( mProxyModel );
 

@@ -60,7 +60,7 @@ QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( const QgsLegendSymbolList &symbols
     QgsSymbol *sym = mLegendSymbols.at( i ).symbol();
 
     // set icons for the rows
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( sym, QSize( iconSize, iconSize ) );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( sym, QSize( iconSize, iconSize ), 0, nullptr, screen() );
     tableLevels->setVerticalHeaderItem( i, new QTableWidgetItem( icon, QString() ) );
 
     // find out max. number of layers per symbol

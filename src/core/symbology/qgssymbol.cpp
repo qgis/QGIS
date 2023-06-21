@@ -923,7 +923,7 @@ QColor QgsSymbol::color() const
   return QColor( 0, 0, 0 );
 }
 
-void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *patchShape )
+void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *patchShape, const QScreen *screen )
 {
   QgsRenderContext *context = customContext;
   std::unique_ptr< QgsRenderContext > tempContext;
@@ -932,6 +932,12 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     tempContext.reset( new QgsRenderContext( QgsRenderContext::fromQPainter( painter ) ) );
     context = tempContext.get();
     context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
+  }
+
+  if ( screen )
+  {
+    context->setScaleFactor( screen->physicalDotsPerInch() / 25.4 );
+    context->setDevicePixelRatio( screen->devicePixelRatio() );
   }
 
   const bool prevForceVector = context->forceVectorOutput();
@@ -1055,10 +1061,12 @@ QImage QgsSymbol::asImage( QSize size, QgsRenderContext *customContext )
 }
 
 
-QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext, Qgis::SymbolPreviewFlags flags )
+QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext, Qgis::SymbolPreviewFlags flags, const QScreen *screen )
 {
-  QImage preview( QSize( 100, 100 ), QImage::Format_ARGB32_Premultiplied );
+  const double devicePixelRatio = screen ? screen->devicePixelRatio() : 1;
+  QImage preview( QSize( 100, 100 ) * devicePixelRatio, QImage::Format_ARGB32_Premultiplied );
   preview.fill( 0 );
+  preview.setDevicePixelRatio( devicePixelRatio );
 
   QPainter p( &preview );
   p.setRenderHint( QPainter::Antialiasing );
@@ -1067,8 +1075,8 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   if ( mType == Qgis::SymbolType::Marker && flags & Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols )
   {
     p.setPen( QPen( Qt::gray ) );
-    p.drawLine( 0, 50, 100, 50 );
-    p.drawLine( 50, 0, 50, 100 );
+    p.drawLine( QLineF( 0, 50, 100, 50 ) );
+    p.drawLine( QLineF( 50, 0, 50, 100 ) );
   }
 
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
@@ -1076,6 +1084,13 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   context.setFlag( Qgis::RenderContextFlag::Antialiasing );
   context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
   context.setPainterFlagsUsingContext( &p );
+  context.setDevicePixelRatio( devicePixelRatio );
+
+  if ( screen )
+  {
+    context.setScaleFactor( screen->physicalDotsPerInch() / 25.4 );
+  }
+
   if ( expressionContext )
     context.setExpressionContext( *expressionContext );
 

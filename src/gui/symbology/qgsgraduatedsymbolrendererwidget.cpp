@@ -61,8 +61,9 @@
 
 ///@cond PRIVATE
 
-QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject *parent ) : QAbstractItemModel( parent )
+QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject *parent, const QScreen *screen ) : QAbstractItemModel( parent )
   , mMimeFormat( QStringLiteral( "application/x-qgsgraduatedsymbolrendererv2model" ) )
+  , mScreen( screen )
 {
 }
 
@@ -178,7 +179,7 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
   else if ( role == Qt::DecorationRole && index.column() == 0 && range.symbol() )
   {
     const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-    return QgsSymbolLayerUtils::symbolPreviewIcon( range.symbol(), QSize( iconSize, iconSize ) );
+    return QgsSymbolLayerUtils::symbolPreviewIcon( range.symbol(), QSize( iconSize, iconSize ), 0, nullptr, mScreen );
   }
   else if ( role == Qt::TextAlignmentRole )
   {
@@ -481,7 +482,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( methodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mModel = new QgsGraduatedSymbolRendererModel( this );
+  mModel = new QgsGraduatedSymbolRendererModel( this, screen() );
 
   mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric | QgsFieldProxyModel::Date );
   mExpressionWidget->setLayer( mLayer );

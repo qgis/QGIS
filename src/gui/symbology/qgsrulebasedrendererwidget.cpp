@@ -76,7 +76,7 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mModel = new QgsRuleBasedRendererModel( mRenderer.get(), viewRules );
+  mModel = new QgsRuleBasedRendererModel( mRenderer.get(), viewRules, screen() );
 #ifdef ENABLE_MODELTEST
   new ModelTest( mModel, this ); // for model validity checking
 #endif
@@ -914,9 +914,10 @@ void QgsRendererRulePropsWidget::setDockMode( bool dockMode )
 
 /////
 
-QgsRuleBasedRendererModel::QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent )
+QgsRuleBasedRendererModel::QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent, const QScreen *screen )
   : QAbstractItemModel( parent )
   , mR( renderer )
+  , mScreen( screen )
 {
 }
 
@@ -1002,7 +1003,7 @@ QVariant QgsRuleBasedRendererModel::data( const QModelIndex &index, int role ) c
   else if ( role == Qt::DecorationRole && index.column() == 0 && rule->symbol() )
   {
     const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-    return QgsSymbolLayerUtils::symbolPreviewIcon( rule->symbol(), QSize( iconSize, iconSize ) );
+    return QgsSymbolLayerUtils::symbolPreviewIcon( rule->symbol(), QSize( iconSize, iconSize ), 0, nullptr, mScreen );
   }
   else if ( role == Qt::TextAlignmentRole )
   {

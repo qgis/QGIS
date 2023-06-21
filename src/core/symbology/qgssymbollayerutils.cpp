@@ -868,15 +868,19 @@ QPainter::CompositionMode QgsSymbolLayerUtils::decodeBlendMode( const QString &s
   return QPainter::CompositionMode_SourceOver; // "Normal"
 }
 
-QIcon QgsSymbolLayerUtils::symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding, QgsLegendPatchShape *shape )
+QIcon QgsSymbolLayerUtils::symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding, QgsLegendPatchShape *shape, const QScreen *screen )
 {
-  return QIcon( symbolPreviewPixmap( symbol, size, padding, nullptr, false, nullptr, shape ) );
+  return QIcon( symbolPreviewPixmap( symbol, size, padding, nullptr, false, nullptr, shape, screen ) );
 }
 
-QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *shape )
+QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *shape, const QScreen *screen )
 {
   Q_ASSERT( symbol );
-  QPixmap pixmap( size );
+
+  const double devicePixelRatio = screen ? screen->devicePixelRatio() : 1;
+  QPixmap pixmap( size * devicePixelRatio );
+  pixmap.setDevicePixelRatio( devicePixelRatio );
+
   pixmap.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &pixmap );
@@ -919,12 +923,12 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize
           prop.setActive( false );
       }
     }
-    symbol_noDD->drawPreviewIcon( &painter, size, customContext, selected, expressionContext, shape );
+    symbol_noDD->drawPreviewIcon( &painter, size, customContext, selected, expressionContext, shape, screen );
   }
   else
   {
     std::unique_ptr<QgsSymbol> symbolClone( symbol->clone( ) );
-    symbolClone->drawPreviewIcon( &painter, size, customContext, selected, expressionContext, shape );
+    symbolClone->drawPreviewIcon( &painter, size, customContext, selected, expressionContext, shape, screen );
   }
 
   painter.end();

@@ -51,8 +51,9 @@
 
 ///@cond PRIVATE
 
-QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *parent ) : QAbstractItemModel( parent )
+QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *parent, const QScreen *screen ) : QAbstractItemModel( parent )
   , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
+  , mScreen( screen )
 {
 }
 
@@ -197,7 +198,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
       if ( index.column() == 0 && category.symbol() )
       {
         const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-        return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( iconSize, iconSize ) );
+        return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( iconSize, iconSize ), 0, nullptr, mScreen );
       }
       break;
     }
@@ -669,7 +670,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
     btnChangeCategorizedSymbol->setSymbol( mCategorizedSymbol->clone() );
   }
 
-  mModel = new QgsCategorizedSymbolRendererModel( this );
+  mModel = new QgsCategorizedSymbolRendererModel( this, screen() );
   mModel->setRenderer( mRenderer.get() );
 
   // update GUI from renderer

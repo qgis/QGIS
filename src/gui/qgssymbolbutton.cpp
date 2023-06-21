@@ -507,7 +507,7 @@ void QgsSymbolButton::prepareMenu()
   std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
   if ( tempSymbol && tempSymbol->type() == mType )
   {
-    pasteSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( tempSymbol.get(), QSize( iconSize, iconSize ), 1 ) );
+    pasteSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( tempSymbol.get(), QSize( iconSize, iconSize ), 1, nullptr, screen() ) );
   }
   else
   {
@@ -528,7 +528,7 @@ void QgsSymbolButton::prepareMenu()
   if ( mDefaultSymbol )
   {
     QAction *defaultSymbolAction = new QAction( tr( "Default Symbol" ), this );
-    defaultSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( mDefaultSymbol.get(), QSize( iconSize, iconSize ), 1 ) );
+    defaultSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( mDefaultSymbol.get(), QSize( iconSize, iconSize ), 1, nullptr, screen() ) );
     mMenu->addAction( defaultSymbolAction );
     connect( defaultSymbolAction, &QAction::triggered, this, &QgsSymbolButton::setToDefaultSymbol );
   }
@@ -703,7 +703,7 @@ void QgsSymbolButton::updatePreview( const QColor &color, QgsSymbol *tempSymbol 
     previewSymbol->setColor( color );
 
   //create an icon pixmap
-  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize );
+  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize, 0, nullptr, screen() );
   setIconSize( currentIconSize );
   setIcon( icon );
 

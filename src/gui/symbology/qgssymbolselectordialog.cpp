@@ -163,7 +163,7 @@ class SymbolLayerItem : public QStandardItem
       {
         QgsExpressionContext expContext;
         expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
-        icon = QIcon( QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol, mSize, 0, nullptr, false, &expContext, nullptr ) );
+        icon = QIcon( QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol, mSize, 0, nullptr, false, &expContext, nullptr, mScreen ) );
       }
       setIcon( icon );
 
@@ -461,7 +461,7 @@ void QgsSymbolSelectorWidget::updatePreview()
     return;
 
   std::unique_ptr< QgsSymbol > symbolClone( mSymbol->clone() );
-  const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols );
+  const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, screen() );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
   // Hope this is a appropriate place
   if ( !mBlockModified )
