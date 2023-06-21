@@ -15,12 +15,13 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import QgsAlignmentComboBox
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsAlignmentComboBox(unittest.TestCase):
+class TestQgsAlignmentComboBox(QgisTestCase):
 
     def testGettersSetters(self):
         """ test widget getters/setters """

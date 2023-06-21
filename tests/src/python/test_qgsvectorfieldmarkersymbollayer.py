@@ -34,7 +34,8 @@ from qgis.core import (
     QgsRenderContext,
     QgsVectorFieldSymbolLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -42,7 +43,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsVectorFieldMarkerSymbolLayer(unittest.TestCase):
+class TestQgsVectorFieldMarkerSymbolLayer(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsVectorFieldMarkerSymbolLayer Tests</h1>\n"

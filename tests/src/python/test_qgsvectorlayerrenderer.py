@@ -31,7 +31,8 @@ from qgis.core import (
     QgsSingleSymbolRenderer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -41,7 +42,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsVectorLayerRenderer(unittest.TestCase):
+class TestQgsVectorLayerRenderer(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsVectorLayerRenderer Tests</h1>\n"

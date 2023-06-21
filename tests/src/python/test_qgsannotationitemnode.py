@@ -13,7 +13,8 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.core import Qgis, QgsAnnotationItemNode, QgsPointXY, QgsVertexId
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -21,7 +22,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsAnnotationItemNode(unittest.TestCase):
+class TestQgsAnnotationItemNode(QgisTestCase):
 
     def test_basic(self):
         node = QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)

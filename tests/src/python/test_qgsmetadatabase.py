@@ -19,7 +19,8 @@ from qgis.core import (
     QgsAbstractMetadataBase,
     QgsNativeMetadataBaseValidator,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -28,7 +29,7 @@ class TestMetadata(QgsAbstractMetadataBase):
     pass
 
 
-class TestQgsMetadataBase(unittest.TestCase):
+class TestQgsMetadataBase(QgisTestCase):
 
     def testGettersSetters(self):
         m = TestMetadata()

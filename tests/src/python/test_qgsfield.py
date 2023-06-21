@@ -16,12 +16,13 @@ from qgis.core import (
     QgsField,
     QgsCoordinateReferenceSystem
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsField(unittest.TestCase):
+class TestQgsField(QgisTestCase):
 
     def test_metadata(self):
         field = QgsField()

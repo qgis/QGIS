@@ -34,14 +34,15 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVector3D,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
+class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -22,7 +22,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsRectangle,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -32,7 +33,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsRasterLayerRenderer(unittest.TestCase):
+class TestQgsRasterLayerRenderer(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsRasterLayerRenderer Tests</h1>\n"

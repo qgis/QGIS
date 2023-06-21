@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import QgsAttributeTableConfig, QgsVectorLayer
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsAttributeTableConfig(unittest.TestCase):
+class TestQgsAttributeTableConfig(QgisTestCase):
 
     def testLayerConfig(self):
         """ test retrieving attribute table config from a layer """

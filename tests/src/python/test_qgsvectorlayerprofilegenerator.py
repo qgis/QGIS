@@ -40,14 +40,15 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
+class TestQgsVectorLayerProfileGenerator(QgisTestCase):
 
     @classmethod
     def control_path_prefix(cls):

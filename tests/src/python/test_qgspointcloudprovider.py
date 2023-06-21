@@ -16,14 +16,15 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsStatisticalSummary,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsPointCloudDataProvider(unittest.TestCase):
+class TestQgsPointCloudDataProvider(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

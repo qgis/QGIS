@@ -22,12 +22,13 @@ from qgis.core import (
     QgsVectorLayerTemporalContext,
     QgsVectorLayerTemporalProperties,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
+class TestQgsVectorLayerTemporalProperties(QgisTestCase):
 
     def testReadWrite(self):
         props = QgsVectorLayerTemporalProperties()

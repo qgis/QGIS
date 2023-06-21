@@ -27,10 +27,11 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsQueryResultModel,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestPyQgsQgsQueryResultModel(unittest.TestCase):
+class TestPyQgsQgsQueryResultModel(QgisTestCase):
 
     NUM_RECORDS = 100050
 

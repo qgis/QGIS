@@ -24,12 +24,13 @@ from qgis.core import (
     QgsVectorFileWriter,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
+class TestQgsVectorLayerEditBufferGroup(QgisTestCase):
 
     def tearDown(self):
         """Run after each test."""

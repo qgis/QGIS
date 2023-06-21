@@ -22,7 +22,8 @@ from qgis.core import (
     QgsProject,
     QgsRenderContext,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -30,7 +31,7 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsLegendRenderer(unittest.TestCase):
+class TestPyQgsLegendRenderer(QgisTestCase):
 
     def test_json_export(self):
 

@@ -51,7 +51,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import compareWkt, unitTestDataPath, writeShape
 
@@ -88,7 +89,7 @@ class TestFieldValueConverter(QgsVectorFileWriter.FieldValueConverter):
         return 'unexpected_idx'
 
 
-class TestQgsVectorFileWriter(unittest.TestCase):
+class TestQgsVectorFileWriter(QgisTestCase):
     mMemoryLayer = None
 
     def testWrite(self):

@@ -21,12 +21,13 @@ from qgis.core import (
     QgsRectangle,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsMapRendererCache(unittest.TestCase):
+class TestQgsMapRendererCache(QgisTestCase):
 
     def testSetCacheImages(self):
         cache = QgsMapRendererCache()

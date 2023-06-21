@@ -26,12 +26,13 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayoutSnapper(unittest.TestCase):
+class TestQgsLayoutSnapper(QgisTestCase):
 
     def testGettersSetters(self):
         p = QgsProject()

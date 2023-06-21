@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtWidgets import QDialog, QWidget
 from qgis.gui import QgsPanelWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsPanelWidget(unittest.TestCase):
+class TestQgsPanelWidget(QgisTestCase):
 
     def testFindParentPanel(self):
         """ test QgsPanelWidget.findParentPanel """

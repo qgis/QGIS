@@ -30,14 +30,15 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 app = start_app()
 
 
-class TestQgsEditFormConfig(unittest.TestCase):
+class TestQgsEditFormConfig(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

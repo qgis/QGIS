@@ -22,7 +22,8 @@ from qgis.core import (
     QgsSettings,
     QgsTask,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -73,7 +74,7 @@ class CrashingProcessingAlgorithm(QgsProcessingAlgorithm):
         return {self.OUTPUT: 'an_id'}
 
 
-class TestQgsProcessingAlgRunner(unittest.TestCase):
+class TestQgsProcessingAlgRunner(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

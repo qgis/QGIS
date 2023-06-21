@@ -17,7 +17,8 @@ from qgis.gui import (
     QgsSourceSelectProvider,
     QgsSourceSelectProviderRegistry,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '01/09/2017'
@@ -72,7 +73,7 @@ class ConcreteSourceSelectProvider2(QgsSourceSelectProvider):
         return 2
 
 
-class TestQgsSourceSelectProvider(unittest.TestCase):
+class TestQgsSourceSelectProvider(QgisTestCase):
 
     def setUp(self):
         pass

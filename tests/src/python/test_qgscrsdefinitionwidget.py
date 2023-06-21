@@ -13,12 +13,13 @@ import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsCoordinateReferenceSystem
 from qgis.gui import QgsCrsDefinitionWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsCrsDefinitionWidget(unittest.TestCase):
+class TestQgsCrsDefinitionWidget(QgisTestCase):
 
     def testWidget(self):
         """

@@ -15,7 +15,8 @@ from pathlib import Path
 
 from qgis.PyQt.QtCore import QSettings, QVariant
 from qgis.core import Qgis, QgsMapLayerProxyModel, QgsSettings, QgsTolerance
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '02/02/2017'
@@ -25,7 +26,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 start_app()
 
 
-class TestQgsSettings(unittest.TestCase):
+class TestQgsSettings(QgisTestCase):
 
     cnt = 0
 

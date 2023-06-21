@@ -17,12 +17,13 @@ from qgis.core import (
     QgsCoordinateTransformContext,
     QgsPointXY,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsBearingUtils(unittest.TestCase):
+class TestQgsBearingUtils(QgisTestCase):
 
     def testTrueNorth(self):
         """ test calculating bearing to true north"""

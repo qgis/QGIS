@@ -18,12 +18,13 @@ from qgis.gui import (
     QgsProjectionSelectionTreeWidget,
     QgsProjectionSelectionWidget,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsProjectionSelectionWidgets(unittest.TestCase):
+class TestQgsProjectionSelectionWidgets(QgisTestCase):
 
     def testShowingHiding(self):
         """ test showing and hiding options """

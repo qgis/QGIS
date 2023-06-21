@@ -17,7 +17,8 @@ from qgis.core import (
     QgsRelation,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -45,7 +46,7 @@ def createReferencedLayer():
     return layer
 
 
-class TestQgsProjectRelationManager(unittest.TestCase):
+class TestQgsProjectRelationManager(QgisTestCase):
 
     def setUp(self):
         self.referencedLayer = createReferencedLayer()

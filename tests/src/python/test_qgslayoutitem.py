@@ -29,7 +29,8 @@ from qgis.core import (
     QgsProperty,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -58,7 +59,7 @@ class LayoutItemTestCase:
         self.assertTrue(item.requiresRasterization())
 
 
-class TestQgsLayoutItem(unittest.TestCase):
+class TestQgsLayoutItem(QgisTestCase):
 
     def testDataDefinedFrameColor(self):
         layout = QgsLayout(QgsProject.instance())

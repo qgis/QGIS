@@ -14,7 +14,8 @@ from qgis.core import (
     QgsSettingsEntryInteger,
     QgsSettingsRegistry,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 __author__ = 'Damiano Lombardi'
 __date__ = '18/04/2021'
@@ -24,7 +25,7 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 start_app()
 
 
-class PyQgsSettingsRegistry(unittest.TestCase):
+class PyQgsSettingsRegistry(QgisTestCase):
 
     def setUp(self):
         self.pluginName = "UnitTestSettingsRegistry"

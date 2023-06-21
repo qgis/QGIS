@@ -58,7 +58,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -66,7 +67,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsSymbol(unittest.TestCase):
+class TestQgsSymbol(QgisTestCase):
 
     def setUp(self):
         # Create some simple symbols
@@ -867,7 +868,7 @@ class TestQgsSymbol(unittest.TestCase):
         return result
 
 
-class TestQgsMarkerSymbol(unittest.TestCase):
+class TestQgsMarkerSymbol(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsMarkerSymbol Tests</h1>\n"
@@ -1147,7 +1148,7 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         return result
 
 
-class TestQgsLineSymbol(unittest.TestCase):
+class TestQgsLineSymbol(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsLineSymbol Tests</h1>\n"
@@ -1212,7 +1213,7 @@ class TestQgsLineSymbol(unittest.TestCase):
         self.assertAlmostEqual(line_symbol.width(context2), 45, 3)
 
 
-class TestQgsFillSymbol(unittest.TestCase):
+class TestQgsFillSymbol(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsFillSymbol Tests</h1>\n"

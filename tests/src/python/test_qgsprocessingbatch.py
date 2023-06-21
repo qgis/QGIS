@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import QgsProcessingBatchFeedback, QgsProcessingFeedback
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsProcessingBatch(unittest.TestCase):
+class TestQgsProcessingBatch(QgisTestCase):
 
     def testFeedback(self):
         """

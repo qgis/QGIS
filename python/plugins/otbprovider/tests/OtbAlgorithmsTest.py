@@ -34,7 +34,8 @@ from qgis.core import (QgsProcessingParameterNumber,
                        QgsProcessingFeedback,
                        QgsProcessingParameterDefinition,
                        QgsProcessingModelAlgorithm)
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
@@ -51,7 +52,7 @@ import processing
 OTB_INSTALL_DIR = os.environ.get('OTB_INSTALL_DIR')
 
 
-class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestOtbAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @staticmethod
     def __input_raster_layer():

@@ -23,7 +23,8 @@ from qgis.core import (
     QgsDataSourceUri,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_project_storage_base import TestPyQgsProjectStorageBase
 from utilities import unitTestDataPath
@@ -32,7 +33,7 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsProjectStoragePostgres(unittest.TestCase, TestPyQgsProjectStorageBase):
+class TestPyQgsProjectStoragePostgres(QgisTestCase, TestPyQgsProjectStorageBase):
 
     @classmethod
     def setUpClass(cls):

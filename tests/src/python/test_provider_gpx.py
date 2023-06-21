@@ -19,7 +19,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 from utilities import unitTestDataPath
@@ -28,7 +29,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsGpxProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def createLayer(cls):

@@ -18,7 +18,8 @@ from qgis.core import (
     QgsProviderSublayerDetails,
     QgsProviderUtils,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -53,7 +54,7 @@ class TestProviderTiledMeshMetadata(QgsProviderMetadata):
             return "Scene Layer Packages (*.slpk *.SLPK)"
 
 
-class TestQgsProviderRegistry(unittest.TestCase):
+class TestQgsProviderRegistry(QgisTestCase):
 
     def testProviderList(self):
         """

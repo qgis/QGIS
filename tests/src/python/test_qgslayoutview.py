@@ -29,12 +29,13 @@ from qgis.core import (
     QgsUnitTypes,
 )
 from qgis.gui import QgsLayoutView
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayoutView(unittest.TestCase):
+class TestQgsLayoutView(QgisTestCase):
 
     def testScaleSafe(self):
         """ test scaleSafe method """

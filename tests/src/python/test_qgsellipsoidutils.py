@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import QgsEllipsoidUtils, QgsProjUtils
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsEllipsoidUtils(unittest.TestCase):
+class TestQgsEllipsoidUtils(QgisTestCase):
 
     def testParams(self):
         """

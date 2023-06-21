@@ -23,14 +23,15 @@ from qgis.core import (
     QgsUnsetAttributeValue,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsFeature(unittest.TestCase):
+class TestQgsFeature(QgisTestCase):
 
     def test_CreateFeature(self):
         feat = QgsFeature(0)

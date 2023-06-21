@@ -20,12 +20,13 @@ from qgis.core import (
     QgsRectangle,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsGeocoderLocatorFilter(unittest.TestCase):
+class TestQgsGeocoderLocatorFilter(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

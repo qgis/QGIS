@@ -26,14 +26,15 @@ from qgis.core import (
     QgsUnitTypes,
 )
 from qgis.gui import QgsTextFormatDialog, QgsTextFormatWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTestFont
 
 start_app()
 
 
-class PyQgsTextFormatWidget(unittest.TestCase):
+class PyQgsTextFormatWidget(QgisTestCase):
 
     def createBufferSettings(self):
         s = QgsTextBufferSettings()

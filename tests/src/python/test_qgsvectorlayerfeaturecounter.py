@@ -18,12 +18,13 @@ from qgis.core import (
     QgsGeometry,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsVectorLayerFeatureCounter(unittest.TestCase):
+class TestQgsVectorLayerFeatureCounter(QgisTestCase):
 
     def setUp(self):
 

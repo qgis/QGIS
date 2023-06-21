@@ -21,14 +21,15 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRasterLayer
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsRasterLayerElevationProperties(unittest.TestCase):
+class TestQgsRasterLayerElevationProperties(QgisTestCase):
 
     def testBasic(self):
         props = QgsRasterLayerElevationProperties(None)

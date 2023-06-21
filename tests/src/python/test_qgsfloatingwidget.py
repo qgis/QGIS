@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtWidgets import QGridLayout, QWidget
 from qgis.gui import QgsFloatingWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsFloatingWidget(unittest.TestCase):
+class TestQgsFloatingWidget(QgisTestCase):
 
     def testAnchor(self):
         """ test setting anchor point for widget """

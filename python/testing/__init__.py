@@ -628,11 +628,17 @@ def _deprecatedAssertLayersEqual(*args, **kwargs):
     warn('unittest.TestCase.assertLayersEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
     return QgisTestCase.assertLayersEqual(*args, **kwargs)
 
+def _deprecatedCheckLayersEqual(*args, **kwargs):
+    warn('unittest.TestCase.checkLayersEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    return QgisTestCase.checkLayersEqual(*args, **kwargs)
 
 def _deprecatedAssertFilesEqual(*args, **kwargs):
     warn('unittest.TestCase.assertFilesEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
     return QgisTestCase.assertFilesEqual(*args, **kwargs)
 
+def _deprecatedCheckFilesEqual(*args, **kwargs):
+    warn('unittest.TestCase.checkFilesEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    return QgisTestCase.checkFilesEqual(*args, **kwargs)
 
 def _deprecatedAssertDirectoryEqual(*args, **kwargs):
     warn('unittest.TestCase.assertDirectoryEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
@@ -679,7 +685,9 @@ def _deprecated_render_layout_check(*args, **kwargs):
 
 TestCase = unittest.TestCase
 TestCase.assertLayersEqual = _deprecatedAssertLayersEqual
+TestCase.checkLayersEqual = _deprecatedCheckLayersEqual
 TestCase.assertFilesEqual = _deprecatedAssertFilesEqual
+TestCase.checkFilesEqual = _deprecatedCheckFilesEqual
 TestCase.assertDirectoryEqual = _deprecatedAssertDirectoryEqual
 TestCase.assertDirectoriesEqual = _deprecatedAssertDirectoriesEqual
 TestCase.assertGeometriesEqual = _deprecatedAssertGeometriesEqual

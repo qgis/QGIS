@@ -59,7 +59,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -68,7 +69,7 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsSymbolLayerCreateSld(unittest.TestCase):
+class TestQgsSymbolLayerCreateSld(QgisTestCase):
     """
      This class tests the creation of SLD from QGis layers
      """

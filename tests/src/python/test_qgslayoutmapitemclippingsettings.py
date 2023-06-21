@@ -24,7 +24,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -32,7 +33,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutItemMapItemClipPathSettings(unittest.TestCase):
+class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
 
     def testSettings(self):
         p = QgsProject()

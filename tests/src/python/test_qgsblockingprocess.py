@@ -25,7 +25,8 @@ import tempfile
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QProcess
 from qgis.core import QgsBlockingProcess, QgsFeedback
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -34,7 +35,7 @@ TEST_DATA_DIR = unitTestDataPath()
 app = start_app()
 
 
-class TestQgsBlockingProcess(unittest.TestCase):
+class TestQgsBlockingProcess(QgisTestCase):
 
     def test_process_ok(self):
         def std_out(ba):

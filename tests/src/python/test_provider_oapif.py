@@ -28,7 +28,8 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 
@@ -153,7 +154,7 @@ def create_landing_page_api_collection(endpoint,
         f.write("HEAD, GET".encode("UTF-8"))
 
 
-class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):

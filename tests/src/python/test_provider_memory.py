@@ -31,7 +31,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 from utilities import compareWkt, unitTestDataPath
@@ -40,7 +41,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def createLayer(cls):
@@ -1012,7 +1013,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(pr.fields()[13].typeName(), vl2.fields()[13].typeName())
 
 
-class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
+class TestPyQgsMemoryProviderIndexed(QgisTestCase, ProviderTestCase):
     """Runs the provider test suite against an indexed memory layer"""
 
     @classmethod

@@ -19,12 +19,13 @@ from qgis.core import (
     QgsTolerance,
     metaEnumFromValue,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestCoreAdditions(unittest.TestCase):
+class TestCoreAdditions(QgisTestCase):
 
     def testMetaEnum(self):
         me = metaEnumFromValue(Qgis.MapToolUnit.Pixels)

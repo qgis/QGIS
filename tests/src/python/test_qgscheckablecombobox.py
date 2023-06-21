@@ -13,12 +13,13 @@ import qgis  # NOQA
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsCheckableComboBox(unittest.TestCase):
+class TestQgsCheckableComboBox(QgisTestCase):
 
     def testGettersSetters(self):
         """ test widget getters/setters """

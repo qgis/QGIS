@@ -22,7 +22,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -34,7 +35,7 @@ def createLayer(name):
     return QgsVectorLayer("Point?field=x:string", name, "memory")
 
 
-class TestQgsMapLayerStore(unittest.TestCase):
+class TestQgsMapLayerStore(QgisTestCase):
 
     def setUp(self):
         pass

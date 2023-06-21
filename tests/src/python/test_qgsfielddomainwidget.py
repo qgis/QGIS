@@ -18,12 +18,13 @@ from qgis.core import (
     QgsRangeFieldDomain,
 )
 from qgis.gui import QgsFieldDomainWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestPyQgsFieldDomainWidget(unittest.TestCase):
+class TestPyQgsFieldDomainWidget(QgisTestCase):
 
     def testRangeDomainWidget(self):
         w = QgsFieldDomainWidget(Qgis.FieldDomainType.Range)

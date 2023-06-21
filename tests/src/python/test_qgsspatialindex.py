@@ -18,12 +18,13 @@ from qgis.core import (
     QgsRectangle,
     QgsSpatialIndex,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsSpatialIndex(unittest.TestCase):
+class TestQgsSpatialIndex(QgisTestCase):
 
     def testIndex(self):
         idx = QgsSpatialIndex()

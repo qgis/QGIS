@@ -22,12 +22,13 @@ from qgis.gui import (
     QgsValueMapSearchWidgetWrapper,
     QgsValueRelationSearchWidgetWrapper,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class PyQgsSearchWidgetWrapper(unittest.TestCase):
+class PyQgsSearchWidgetWrapper(QgisTestCase):
 
     def testFlagToString(self):
         # test converting QgsSearchWidgetWrapper.FilterFlag to string
@@ -56,7 +57,7 @@ class PyQgsSearchWidgetWrapper(unittest.TestCase):
             self.assertFalse(e in non_exclusive)
 
 
-class PyQgsDefaultSearchWidgetWrapper(unittest.TestCase):
+class PyQgsDefaultSearchWidgetWrapper(QgisTestCase):
 
     def testCreateExpression(self):
         """ Test creating an expression using the widget"""
@@ -122,7 +123,7 @@ class PyQgsDefaultSearchWidgetWrapper(unittest.TestCase):
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.LessThanOrEqualTo), '"flddate"<=\'2015-06-03\'')
 
 
-class PyQgsValueMapSearchWidgetWrapper(unittest.TestCase):
+class PyQgsValueMapSearchWidgetWrapper(QgisTestCase):
 
     def testCreateExpression(self):
         """ Test creating an expression using the widget"""
@@ -164,7 +165,7 @@ class PyQgsValueMapSearchWidgetWrapper(unittest.TestCase):
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldint"<>1')
 
 
-class PyQgsValueRelationSearchWidgetWrapper(unittest.TestCase):
+class PyQgsValueRelationSearchWidgetWrapper(QgisTestCase):
 
     def testCreateExpression(self):
         """ Test creating an expression using the widget"""
@@ -242,7 +243,7 @@ class PyQgsValueRelationSearchWidgetWrapper(unittest.TestCase):
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldint"<>2')
 
 
-class PyQgsCheckboxSearchWidgetWrapper(unittest.TestCase):
+class PyQgsCheckboxSearchWidgetWrapper(QgisTestCase):
 
     def testCreateExpression(self):
         """ Test creating an expression using the widget"""
@@ -288,7 +289,7 @@ class PyQgsCheckboxSearchWidgetWrapper(unittest.TestCase):
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fieldbool"=false')
 
 
-class PyQgsDateTimeSearchWidgetWrapper(unittest.TestCase):
+class PyQgsDateTimeSearchWidgetWrapper(QgisTestCase):
 
     def testCreateExpression(self):
         """ Test creating an expression using the widget"""
@@ -346,7 +347,7 @@ class PyQgsDateTimeSearchWidgetWrapper(unittest.TestCase):
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.LessThanOrEqualTo), '"datetime"<=\'2013-04-05 13:14:15\'')
 
 
-class PyQgsRelationReferenceSearchWidgetWrapper(unittest.TestCase):
+class PyQgsRelationReferenceSearchWidgetWrapper(QgisTestCase):
 
     def testCreateExpression(self):
         """ Test creating an expression using the widget"""

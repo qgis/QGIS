@@ -42,7 +42,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
@@ -87,7 +88,7 @@ def createLayerWithOnePolygon():
     return layer
 
 
-class TestQgsSymbolLayerReadSld(unittest.TestCase):
+class TestQgsSymbolLayerReadSld(QgisTestCase):
     """
     This class checks if SLD styles are properly applied
     """

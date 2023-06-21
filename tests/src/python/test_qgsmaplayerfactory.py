@@ -24,14 +24,15 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorTileLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsMapLayerFactory(unittest.TestCase):
+class TestQgsMapLayerFactory(QgisTestCase):
 
     def testTypeFromString(self):
         """

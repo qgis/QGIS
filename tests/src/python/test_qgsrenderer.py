@@ -19,7 +19,8 @@ from qgis.core import (
     QgsRendererAbstractMetadata,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -61,7 +62,7 @@ def clearRegistry():
         QgsApplication.rendererRegistry().removeRenderer(r)
 
 
-class TestQgsRendererV2Registry(unittest.TestCase):
+class TestQgsRendererV2Registry(QgisTestCase):
 
     def testInstance(self):
         """ test retrieving global instance """

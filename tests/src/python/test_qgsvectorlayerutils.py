@@ -29,7 +29,8 @@ from qgis.core import (
     QgsVectorLayerJoinInfo,
     QgsVectorLayerUtils,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -47,7 +48,7 @@ def createLayerWithOnePoint():
     return layer
 
 
-class TestQgsVectorLayerUtils(unittest.TestCase):
+class TestQgsVectorLayerUtils(QgisTestCase):
 
     def test_field_is_read_only(self):
         """

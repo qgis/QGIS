@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import QgsLabelThinningSettings, QgsPalLayerSettings
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLabelThinningSettings(unittest.TestCase):
+class TestQgsLabelThinningSettings(QgisTestCase):
 
     def test_thinning_settings(self):
         """

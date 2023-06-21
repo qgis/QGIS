@@ -25,7 +25,8 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -47,7 +48,7 @@ class ConsoleFeedBack(QgsProcessingFeedback):
         print(info)
 
 
-class TestPackageLayers(unittest.TestCase):
+class TestPackageLayers(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

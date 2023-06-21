@@ -19,7 +19,8 @@ from qgis.core import (
     QgsRenderedItemDetails,
     QgsRenderedItemResults,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -27,7 +28,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsRenderedItemResults(unittest.TestCase):
+class TestQgsRenderedItemResults(QgisTestCase):
 
     def test_basic(self):
         details = QgsRenderedItemDetails('layer_id')

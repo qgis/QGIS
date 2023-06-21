@@ -28,7 +28,8 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -70,7 +71,7 @@ host       all           all             ::1/32                 trust
 TEST_CONNECTION_NAME = 'test_connection'
 
 
-class TestPyQgsDBManagerPostgis(unittest.TestCase):
+class TestPyQgsDBManagerPostgis(QgisTestCase):
 
     @classmethod
     def setUpAuth(cls):

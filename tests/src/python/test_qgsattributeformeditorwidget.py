@@ -21,13 +21,14 @@ from qgis.gui import (
     QgsSearchWidgetWrapper,
     QgsAttributeFormWidget,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 QgsGui.editorWidgetRegistry().initEditors()
 
 
-class PyQgsAttributeFormEditorWidget(unittest.TestCase):
+class PyQgsAttributeFormEditorWidget(QgisTestCase):
 
     def testCurrentFilterExpression(self):
         """ Test creating an expression using the widget"""

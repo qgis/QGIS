@@ -31,12 +31,14 @@ from qgis.core import (
     QgsSettingsTree,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
+
 
 QGISAPP = start_app()
 
 
-class TestPyQgsPostgresProviderLatency(unittest.TestCase):
+class TestPyQgsPostgresProviderLatency(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

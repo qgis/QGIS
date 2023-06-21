@@ -22,7 +22,8 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -30,7 +31,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsProjectGpsSettings(unittest.TestCase):
+class TestQgsProjectGpsSettings(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

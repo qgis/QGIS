@@ -22,7 +22,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsExtentWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -30,7 +31,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsExtentWidget(unittest.TestCase):
+class TestQgsExtentWidget(QgisTestCase):
 
     def testGettersSetters(self):
         """ test widget getters/setters """

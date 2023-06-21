@@ -21,12 +21,13 @@ from qgis.core import (
     QgsProject,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayoutAligner(unittest.TestCase):
+class TestQgsLayoutAligner(QgisTestCase):
 
     def testAlign(self):
         p = QgsProject()

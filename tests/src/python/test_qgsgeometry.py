@@ -54,7 +54,8 @@ from qgis.core import (
     QgsVertexId,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import compareWkt, unitTestDataPath, writeShape
 
@@ -64,7 +65,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsGeometry(unittest.TestCase):
+class TestQgsGeometry(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsGeometry Tests</h1>\n"

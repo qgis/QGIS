@@ -43,7 +43,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -55,11 +56,11 @@ def createLayer(name):
     return QgsVectorLayer("Point?field=x:string", name, "memory")
 
 
-class TestQgsProject(unittest.TestCase):
+class TestQgsProject(QgisTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
         self.messageCaught = False
 
     def test_makeKeyTokens_(self):

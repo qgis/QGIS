@@ -20,14 +20,15 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsSimpleFillSymbolLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 
 
-class TestQgsLayoutPage(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutPage(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):

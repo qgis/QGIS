@@ -30,12 +30,13 @@ from qgis.core import (QgsApplication,
                        QgsProject)
 from qgis.PyQt import sip
 from qgis.analysis import (QgsNativeAlgorithms)
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 import processing
 from processing.tests.TestData import points
 
 
-class TestProcessingGeneral(unittest.TestCase):
+class TestProcessingGeneral(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

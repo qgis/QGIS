@@ -19,7 +19,8 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -69,7 +70,7 @@ def formatAttributes(attrs):
     return repr([str(a) for a in attrs])
 
 
-class TestQgsRelation(unittest.TestCase):
+class TestQgsRelation(QgisTestCase):
 
     def setUp(self):
         self.referencedLayer1 = createReferencedLayer('referencedlayer1')

@@ -14,7 +14,8 @@ import os
 import qgis  # NOQA
 from qgis.core import QgsVectorLayer
 from qgis.gui import QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
@@ -24,7 +25,7 @@ TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
-class TestQgsVectorLayerShapefile(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerShapefile(QgisTestCase, FeatureSourceTestCase):
     """
     Tests a vector layer against the feature source tests, using a real layer source (not a memory layer)
     """

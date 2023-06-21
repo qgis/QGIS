@@ -82,7 +82,8 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsAttributeTableModel, QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
@@ -207,7 +208,7 @@ def dumpEditBuffer(layer):
         print("%d | %s" % (f.id(), f.geometry().asWkt()))
 
 
-class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -3552,7 +3553,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer.displayField(), 'BETTER_NAME')
 
 
-class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceAddedFeaturesInBuffer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -3617,7 +3618,7 @@ class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSo
         pass
 
 
-class TestQgsVectorLayerSourceChangedGeometriesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceChangedGeometriesInBuffer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -3682,7 +3683,7 @@ class TestQgsVectorLayerSourceChangedGeometriesInBuffer(unittest.TestCase, Featu
         pass
 
 
-class TestQgsVectorLayerSourceChangedAttributesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceChangedAttributesInBuffer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -3799,7 +3800,7 @@ class TestQgsVectorLayerSourceChangedAttributesInBuffer(unittest.TestCase, Featu
         pass
 
 
-class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -3920,7 +3921,7 @@ class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(unittest.Te
         pass
 
 
-class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -4021,7 +4022,7 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, Feature
         pass
 
 
-class TestQgsVectorLayerTransformContext(unittest.TestCase):
+class TestQgsVectorLayerTransformContext(QgisTestCase):
 
     def setUp(self):
         """Prepare tc"""

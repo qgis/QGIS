@@ -57,7 +57,8 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
 
 from providertestbase import ProviderTestCase
@@ -74,7 +75,7 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 #########################################################################
 
 
-class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
+class TestPyQgsOGRProviderGpkgConformance(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -312,7 +313,7 @@ def count_opened_filedescriptors(filename_to_test):
 #########################################################################
 
 
-class TestPyQgsOGRProviderGpkg(unittest.TestCase):
+class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

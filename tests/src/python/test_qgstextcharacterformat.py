@@ -19,12 +19,13 @@ from qgis.core import (
     QgsRenderContext,
     QgsTextCharacterFormat,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsTextCharacterFormat(unittest.TestCase):
+class TestQgsTextCharacterFormat(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsTextRenderer Tests</h1>\n"

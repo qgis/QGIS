@@ -22,7 +22,8 @@ from qgis.core import (
     QgsVectorLayerGpsLogger,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -52,7 +53,7 @@ class GpsReplay(QgsNmeaConnection):
         spy.wait()
 
 
-class TestQgsGpsLogger(unittest.TestCase):
+class TestQgsGpsLogger(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

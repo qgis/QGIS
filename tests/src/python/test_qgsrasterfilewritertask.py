@@ -21,7 +21,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsRasterPipe,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -32,7 +33,7 @@ def create_temp_filename(base_file):
     return os.path.join(str(QDir.tempPath()), base_file)
 
 
-class TestQgsRasterFileWriterTask(unittest.TestCase):
+class TestQgsRasterFileWriterTask(QgisTestCase):
 
     def setUp(self):
         self.success = False

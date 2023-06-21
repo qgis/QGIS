@@ -45,7 +45,8 @@ from qgis.core import (
     QgsVectorTileLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from utilities import (
@@ -65,7 +66,7 @@ PALREPORTS = {}
 
 
 # noinspection PyPep8Naming,PyShadowingNames
-class TestQgsPalLabeling(unittest.TestCase):
+class TestQgsPalLabeling(QgisTestCase):
 
     _TestDataDir = unitTestDataPath()
     _PalDataDir = os.path.join(_TestDataDir, 'labeling')

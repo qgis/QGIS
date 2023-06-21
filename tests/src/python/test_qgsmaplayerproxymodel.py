@@ -18,7 +18,8 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -34,7 +35,7 @@ def create_mesh_layer(name):
     return layer
 
 
-class TestQgsMapLayerProxyModel(unittest.TestCase):
+class TestQgsMapLayerProxyModel(QgisTestCase):
 
     def testGettersSetters(self):
         """ test model getters/setters """

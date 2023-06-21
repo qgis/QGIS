@@ -34,7 +34,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsFormAnnotation
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -42,7 +43,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsAnnotation(unittest.TestCase):
+class TestQgsAnnotation(QgisTestCase):
 
     @classmethod
     def control_path_prefix(cls):

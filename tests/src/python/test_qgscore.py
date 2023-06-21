@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import qgsDoubleNear, qgsRound
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestCoreAdditions(unittest.TestCase):
+class TestCoreAdditions(QgisTestCase):
 
     def testQgsRound(self):
         qgsDoubleNear(qgsRound(1234.567, 2), 1234.57, 0.01)

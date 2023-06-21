@@ -19,7 +19,8 @@ from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 AUTHDBDIR = tempfile.mkdtemp()
 os.environ['QGIS_AUTH_DB_DIR_PATH'] = AUTHDBDIR
@@ -32,7 +33,7 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 qgis_app = start_app()
 
 
-class TestAuthManager(unittest.TestCase):
+class TestAuthManager(QgisTestCase):
 
     @classmethod
     def setUpAuth(cls, username, password):

@@ -23,10 +23,11 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestPyQgsDatabaseTableModel(unittest.TestCase):
+class TestPyQgsDatabaseTableModel(QgisTestCase):
     # Provider test cases must define the string URI for the test
     uri = ''
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")

@@ -36,7 +36,8 @@ from qgis.core import (
     QgsRenderContext,
     QgsSymbolLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -44,7 +45,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLineburstSymbolLayer(unittest.TestCase):
+class TestQgsLineburstSymbolLayer(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsLineburstSymbolLayer Tests</h1>\n"

@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.PyQt.QtWidgets import QDoubleSpinBox
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsRatioLockButton(unittest.TestCase):
+class TestQgsRatioLockButton(QgisTestCase):
 
     def testLinkedWidgets(self):
         """ test linking spin boxes to combobox"""

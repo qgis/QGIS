@@ -62,12 +62,13 @@ from qgis.core import (
     QgsVectorTileLayer,
     QgsVertexId,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestPython__repr__(unittest.TestCase):
+class TestPython__repr__(QgisTestCase):
 
     def testQgsGeometryRepr(self):
 

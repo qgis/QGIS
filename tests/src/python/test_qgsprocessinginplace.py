@@ -39,7 +39,8 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -80,7 +81,7 @@ def _all_false():
     return {t: False for t in _all_true().keys()}
 
 
-class TestQgsProcessingInPlace(unittest.TestCase):
+class TestQgsProcessingInPlace(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

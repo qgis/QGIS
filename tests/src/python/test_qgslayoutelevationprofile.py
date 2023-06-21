@@ -35,7 +35,8 @@ from qgis.core import (
     QgsLayoutChecker,
     QgsMarkerSymbol
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
@@ -44,7 +45,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutItemElevationProfile(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def control_path_prefix(cls):

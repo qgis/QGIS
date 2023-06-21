@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.gui import QgsMediaWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsMediaWidget(unittest.TestCase):
+class TestQgsMediaWidget(QgisTestCase):
 
     def testMediaPath(self):
         """

@@ -33,7 +33,8 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 from utilities import compareWkt, unitTestDataPath
@@ -42,7 +43,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -11,14 +11,15 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.core import QgsPointXY, QgsRectangle, QgsVector
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import compareWkt
 
 start_app()
 
 
-class TestQgsRectangle(unittest.TestCase):
+class TestQgsRectangle(QgisTestCase):
 
     def testCtor(self):
         rect = QgsRectangle(5.0, 5.0, 10.0, 10.0)
