@@ -1824,10 +1824,7 @@ void QgsLayoutDesignerDialog::updateStatusZoom()
   }
   else
   {
-    double dpi = mScreenHelper->screenDpi();
-    //monitor dpi is not always correct - so make sure the value is sane
-    if ( ( dpi < 60 ) || ( dpi > 1200 ) )
-      dpi = 72;
+    const double dpi = mScreenHelper->screenDpi();
 
     //pixel width for 1mm on screen
     double scale100 = dpi / 25.4;
