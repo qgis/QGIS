@@ -117,10 +117,10 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     // we need to drop Z value to properly split 3D feature in 2D. If not, generated vertices Z value
     // will be assigned with the mean value between the interpolated Z values of the intersecting point
     // and the default Z value, which is not what we want
-    QgsCompoundCurve *curve = captureCurve()->clone();
+    std::unique_ptr<QgsCompoundCurve> curve( captureCurve()->clone() );
     curve->dropZValue();
 
-    const Qgis::GeometryOperationResult returnCode = vlayer->splitFeatures( curve, topologyTestPoints, true, topologicalEditing );
+    const Qgis::GeometryOperationResult returnCode = vlayer->splitFeatures( curve.get(), topologyTestPoints, true, topologicalEditing );
     if ( returnCode == Qgis::GeometryOperationResult::Success )
     {
       vlayer->endEditCommand();
