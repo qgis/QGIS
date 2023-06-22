@@ -377,9 +377,7 @@ void checkDock::runTests( ValidateType type )
     {
       TopolError *te = *it;
       const QgsSettings settings;
-      const QgsGeometry geom = te->conflict();
-      QVector<QgsGeometry> geoms = ( geom.wkbType() == Qgis::WkbType::GeometryCollection ?
-                                     geom.asGeometryCollection() : QVector<QgsGeometry>() << geom );
+      const QVector<QgsGeometry> geoms = te->conflict().asGeometryCollection();
 
       for ( const QgsGeometry &g : std::as_const( geoms ) )
       {
