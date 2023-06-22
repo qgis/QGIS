@@ -30,6 +30,18 @@ QgsScreenProperties::QgsScreenProperties( const QScreen *screen )
   }
 }
 
+void QgsScreenProperties::setDevicePixelRatio( double ratio )
+{
+  mValid = true;
+  mDevicePixelRatio = ratio;
+}
+
+void QgsScreenProperties::setPhysicalDpi( double dpi )
+{
+  mValid = true;
+  mPhysicalDpi = dpi;
+}
+
 void QgsScreenProperties::updateRenderContextForScreen( QgsRenderContext &context ) const
 {
   if ( !mValid )
