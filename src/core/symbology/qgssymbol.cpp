@@ -1083,7 +1083,6 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   context.setFlag( Qgis::RenderContextFlag::Antialiasing );
   context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
   context.setPainterFlagsUsingContext( &p );
-  context.setDevicePixelRatio( devicePixelRatio );
 
   if ( screen.isValid() )
   {
