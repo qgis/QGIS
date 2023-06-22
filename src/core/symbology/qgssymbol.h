@@ -27,8 +27,6 @@ class QgsLegendPatchShape;
 class QgsSymbolRenderContext;
 class QgsLineSymbolLayer;
 
-class QScreen;
-
 typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 
 /**
