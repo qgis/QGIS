@@ -899,16 +899,16 @@
         <file>themes/default/mLayoutItemMarker.svg</file>
         <file>themes/default/algorithms/mAlgorithmConstantRaster.svg</file>
         <file>themes/default/mIconStopwatch.svg</file>
-        <file>themes/default/georeferencer/mGeorefRun.png</file>
-        <file>themes/default/georeferencer/mPushButtonPencil.png</file>
-        <file>themes/default/georeferencer/mActionGDALScript.png</file>
-        <file>themes/default/georeferencer/mActionLinkGeorefToQgis.png</file>
-        <file>themes/default/georeferencer/mActionLinkQGisToGeoref.png</file>
-        <file>themes/default/georeferencer/mActionLoadGCPpoints.png</file>
-        <file>themes/default/georeferencer/mActionAddGCPPoint.png</file>
-        <file>themes/default/georeferencer/mActionDeleteGCPPoint.png</file>
-        <file>themes/default/georeferencer/mActionMoveGCPPoint.png</file>
-        <file>themes/default/georeferencer/mActionSaveGCPpointsAs.png</file>
+        <file>themes/default/georeferencer/mGeorefRun.svg</file>
+        <file>themes/default/georeferencer/mPushButtonPencil.svg</file>
+        <file>themes/default/georeferencer/mActionGDALScript.svg</file>
+        <file>themes/default/georeferencer/mActionLinkGeorefToQgis.svg</file>
+        <file>themes/default/georeferencer/mActionLinkQGisToGeoref.svg</file>
+        <file>themes/default/georeferencer/mActionLoadGCPpoints.svg</file>
+        <file>themes/default/georeferencer/mActionAddGCPPoint.svg</file>
+        <file>themes/default/georeferencer/mActionDeleteGCPPoint.svg</file>
+        <file>themes/default/georeferencer/mActionMoveGCPPoint.svg</file>
+        <file>themes/default/georeferencer/mActionSaveGCPpointsAs.svg</file>
         <file>themes/default/mIconAlignBottom.svg</file>
         <file>themes/default/mIconAlignTop.svg</file>
         <file>themes/default/mIconAlignVCenter.svg</file>
