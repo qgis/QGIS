@@ -434,7 +434,21 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   logWrapper = nullptr;
   QgsDebugMsgLevel( QStringLiteral( "Connection to the database was successful" ), 2 );
 
-  deduceEndian();
+  mPostgresqlVersion = PQserverVersion( mConn );
+  if ( mPostgresqlVersion < 70400 )
+  {
+    deduceEndian();
+  }
+  else
+  {
+    // todo - std::endian
+    int testInt = 1;
+    //               mem addr: -->
+    // testInt(little-endian): 01 0...0 00
+    //    testInt(big-endian): 00 0...0 01
+    //                  *char: ^^
+    mSwapEndian = *( char * )&testInt == 1;
+  }
 
   /* Check to see if we have working PostGIS support */
   if ( !postgisVersion().isNull() )
