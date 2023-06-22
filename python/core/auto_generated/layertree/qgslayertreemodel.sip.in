@@ -334,6 +334,28 @@ Sets map of map layer style overrides (key: layer ID, value: style name) where a
 .. versionadded:: 2.10
 %End
 
+    void addTargetScreenProperties( const QgsScreenProperties &properties );
+%Docstring
+Adds additional target screen ``properties`` to use when generating icons for Qt.DecorationRole data.
+
+This allows icons to be generated at an icon device pixel ratio and DPI which
+corresponds exactly to the view's screen properties in which this model is used.
+
+.. versionadded:: 3.32
+%End
+
+    QSet< QgsScreenProperties > targetScreenProperties() const;
+%Docstring
+Returns the target screen properties to use when generating icons.
+
+This allows icons to be generated at an icon device pixel ratio and DPI which
+corresponds exactly to the view's screen properties in which this model is used.
+
+.. seealso:: :py:func:`addTargetScreenProperties`
+
+.. versionadded:: 3.32
+%End
+
     static int scaleIconSize( int standardSize );
 %Docstring
 Scales an layer tree model icon size to compensate for display pixel density, making the icon
@@ -476,6 +498,7 @@ Filter nodes from :py:class:`QgsMapLayerLegend` according to the current filteri
     void legendInvalidateMapBasedData();
 
   protected:
+
 
 
 

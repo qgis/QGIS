@@ -301,6 +301,27 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
     /**
+     * Adds additional target screen \a properties to use when generating icons for Qt::DecorationRole data.
+     *
+     * This allows icons to be generated at an icon device pixel ratio and DPI which
+     * corresponds exactly to the view's screen properties in which this model is used.
+     *
+     * \since QGIS 3.32
+     */
+    void addTargetScreenProperties( const QgsScreenProperties &properties );
+
+    /**
+     * Returns the target screen properties to use when generating icons.
+     *
+     * This allows icons to be generated at an icon device pixel ratio and DPI which
+     * corresponds exactly to the view's screen properties in which this model is used.
+     *
+     * \see addTargetScreenProperties()
+     * \since QGIS 3.32
+     */
+    QSet< QgsScreenProperties > targetScreenProperties() const;
+
+    /**
      * Scales an layer tree model icon size to compensate for display pixel density, making the icon
      * size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
      * displays.
@@ -534,6 +555,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     int mLegendMapViewDpi = 0;
     double mLegendMapViewScale = 0;
     QTimer mDeferLegendInvalidationTimer;
+
+    QSet< QgsScreenProperties > mTargetScreenProperties;
 
   private slots:
     void legendNodeSizeChanged();
