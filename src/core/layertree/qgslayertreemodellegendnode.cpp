@@ -546,7 +546,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
   }
   else if ( role == Qt::DecorationRole )
   {
-    if ( mPixmap.isNull() || mPixmap.size() != mIconSize )
+    if ( mPixmap.isNull() )
     {
       QPixmap pix;
       if ( mItem.symbol() )
@@ -634,8 +634,6 @@ bool QgsSymbolLegendNode::setData( const QVariant &value, int role )
 
   return true;
 }
-
-
 
 QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
@@ -881,6 +879,15 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
   }
 }
 
+void QgsSymbolLegendNode::setIconSize( QSize sz )
+{
+  if ( mIconSize == sz )
+    return;
+
+  mIconSize = sz;
+  mPixmap = QPixmap();
+  emit dataChanged();
+}
 
 void QgsSymbolLegendNode::updateLabel()
 {

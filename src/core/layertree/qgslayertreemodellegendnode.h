@@ -426,7 +426,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * Set the icon size
      * \since QGIS 2.10
      */
-    void setIconSize( QSize sz ) { mIconSize = sz; }
+    void setIconSize( QSize sz );
     //! \since QGIS 2.10
     QSize iconSize() const { return mIconSize; }
 
