@@ -1056,7 +1056,6 @@ void QgsGeoreferencerMainWindow::createActions()
   connect( mActionLinkQGisToGeoref, &QAction::toggled, this, &QgsGeoreferencerMainWindow::linkQGisToGeoref );
 
   // Settings actions
-  mActionSourceProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRasterProperties.png" ) ) );
   connect( mActionSourceProperties, &QAction::triggered, this, &QgsGeoreferencerMainWindow::showLayerPropertiesDialog );
 
   mActionGeorefConfig->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mGeorefRun.svg" ) ) );
