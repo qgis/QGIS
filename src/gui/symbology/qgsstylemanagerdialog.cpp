@@ -502,7 +502,7 @@ void QgsStyleManagerDialog::setCurrentStyle( QgsStyle *style )
   }
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
   mModel->addDesiredIconSize( listItems->iconSize() );
-  mModel->addDesiredIconDevicePixelRatio( listItems->devicePixelRatioF() );
+  mModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );
 
   mModel->setFilterString( searchBox->text() );
 

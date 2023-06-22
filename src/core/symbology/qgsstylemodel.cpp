@@ -39,13 +39,6 @@ QgsAbstractStyleEntityIconGenerator *QgsStyleModel::sIconGenerator = nullptr;
 QgsAbstractStyleEntityIconGenerator::QgsAbstractStyleEntityIconGenerator( QObject *parent )
   : QObject( parent )
 {
-  // Default to generating icons using the application devicePixelRatio.
-  // Additional ratios may be added by individual views to this model (eg on
-  // different screens with different pixel ratios)
-  if ( QGuiApplication *guiApplication = qobject_cast< QGuiApplication * >( QApplication::instance() ) )
-    mDevicePixelRatios.append( guiApplication->devicePixelRatio() );
-  else
-    mDevicePixelRatios.append( 1.0 );
 }
 
 void QgsAbstractStyleEntityIconGenerator::setIconSizes( const QList<QSize> &sizes )
@@ -58,14 +51,14 @@ QList<QSize> QgsAbstractStyleEntityIconGenerator::iconSizes() const
   return mIconSizes;
 }
 
-void QgsAbstractStyleEntityIconGenerator::setDevicePixelRatios( const QList<double> &ratios )
+void QgsAbstractStyleEntityIconGenerator::setTargetScreenProperties( const QSet<QgsScreenProperties> &properties )
 {
-  mDevicePixelRatios = ratios;
+  mTargetScreenProperties = properties;
 }
 
-QList<double> QgsAbstractStyleEntityIconGenerator::devicePixelRatios() const
+QSet<QgsScreenProperties> QgsAbstractStyleEntityIconGenerator::targetScreenProperties() const
 {
-  return mDevicePixelRatios;
+  return mTargetScreenProperties;
 }
 
 
@@ -79,18 +72,14 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
 {
   Q_ASSERT( mStyle );
 
-  // Default to generating icons using the application devicePixelRatio.
-  // Additional ratios may be added by individual views to this model (eg on
-  // different screens with different pixel ratios)
-  if ( QGuiApplication *guiApplication = qobject_cast< QGuiApplication * >( QApplication::instance() ) )
-    mDevicePixelRatios.append( guiApplication->devicePixelRatio() );
-  else
-    mDevicePixelRatios.append( 1.0 );
-
   for ( QgsStyle::StyleEntity entity : ENTITIES )
   {
     mEntityNames.insert( entity, mStyle->allNames( entity ) );
   }
+
+  // ensure we always generate icons using default screen properties
+  // in addition to actual target screen properties (ie device pixel ratio of 1, 96 dpi)
+  mTargetScreenProperties.insert( QgsScreenProperties() );
 
   connect( mStyle, &QgsStyle::entityAdded, this, &QgsStyleModel::onEntityAdded );
   connect( mStyle, &QgsStyle::entityRemoved, this, &QgsStyleModel::onEntityRemoved );
@@ -149,6 +138,14 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
             QString tooltip = QStringLiteral( "<h3>%1</h3><p><i>%2</i>" ).arg( name,
                               tags.count() > 0 ? tags.join( QLatin1String( ", " ) ) : tr( "Not tagged" ) );
 
+            // generate tooltips targeting the largest device pixel ratio for all attached screens
+            QgsScreenProperties maxDevicePixelRatioScreen;
+            for ( auto it = mTargetScreenProperties.constBegin(); it != mTargetScreenProperties.constEnd(); ++it )
+            {
+              if ( !maxDevicePixelRatioScreen.isValid() || it->devicePixelRatio() > maxDevicePixelRatioScreen.devicePixelRatio() )
+                maxDevicePixelRatioScreen = *it;
+            }
+
             switch ( entityType )
             {
               case QgsStyle::SymbolEntity:
@@ -159,11 +156,11 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 {
                   int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
                   int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
-                  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( width, height ), height / 20, nullptr, false, mExpressionContext.get() );
+                  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( width, height ), height / 20, nullptr, false, mExpressionContext.get(), nullptr, maxDevicePixelRatioScreen );
                   QByteArray data;
                   QBuffer buffer( &data );
                   pm.save( &buffer, "PNG", 100 );
-                  tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) );
+                  tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width );
                 }
                 break;
               }
@@ -173,8 +170,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
                 int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
                 const QgsTextFormat format = mStyle->textFormat( name );
-                const double maxDevicePixelRatio = *std::max_element( mDevicePixelRatios.constBegin(), mDevicePixelRatios.constEnd() );
-                QPixmap pm = QgsTextFormat::textFormatPreviewPixmap( format, QSize( width, height ), QString(), height / 20, maxDevicePixelRatio );
+                QPixmap pm = QgsTextFormat::textFormatPreviewPixmap( format, QSize( width, height ), QString(), height / 20, maxDevicePixelRatioScreen );
                 QByteArray data;
                 QBuffer buffer( &data );
                 pm.save( &buffer, "PNG", 100 );
@@ -186,9 +182,8 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               {
                 int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
                 int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
-                const double maxDevicePixelRatio = *std::max_element( mDevicePixelRatios.constBegin(), mDevicePixelRatios.constEnd() );
                 const QgsPalLayerSettings settings = mStyle->labelSettings( name );
-                QPixmap pm = QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( width, height ), QString(), height / 20, maxDevicePixelRatio );
+                QPixmap pm = QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( width, height ), QString(), height / 20, maxDevicePixelRatioScreen );
                 QByteArray data;
                 QBuffer buffer( &data );
                 pm.save( &buffer, "PNG", 100 );
@@ -204,11 +199,11 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 const QgsLegendPatchShape shape = mStyle->legendPatchShape( name );
                 if ( const QgsSymbol *symbol = mStyle->previewSymbolForPatchShape( shape ) )
                 {
-                  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( width, height ), height / 20, nullptr, false, nullptr, &shape );
+                  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( width, height ), height / 20, nullptr, false, nullptr, &shape, maxDevicePixelRatioScreen );
                   QByteArray data;
                   QBuffer buffer( &data );
                   pm.save( &buffer, "PNG", 100 );
-                  tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) );
+                  tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width );
                 }
                 break;
               }
@@ -262,12 +257,15 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
               if ( symbol )
               {
-                if ( mAdditionalSizes.isEmpty() )
-                  icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1, nullptr, false, mExpressionContext.get() ) );
-
-                for ( const QSize &s : mAdditionalSizes )
+                for ( auto it = mTargetScreenProperties.constBegin(); it != mTargetScreenProperties.constEnd(); ++it )
                 {
-                  icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ), nullptr, false, mExpressionContext.get() ) );
+                  if ( mAdditionalSizes.isEmpty() )
+                    icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1, nullptr, false, mExpressionContext.get(), nullptr, *it ) );
+
+                  for ( const QSize &s : mAdditionalSizes )
+                  {
+                    icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ), nullptr, false, mExpressionContext.get(), nullptr, *it ) );
+                  }
                 }
 
               }
@@ -304,13 +302,13 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 return icon;
 
               const QgsTextFormat format( mStyle->textFormat( name ) );
-              for ( const double pixelRatio : std::as_const( mDevicePixelRatios ) )
+              for ( auto it = mTargetScreenProperties.constBegin(); it != mTargetScreenProperties.constEnd(); ++it )
               {
                 if ( mAdditionalSizes.isEmpty() )
-                  icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, QSize( 24, 24 ), QString(), 1, pixelRatio ) );
+                  icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, QSize( 24, 24 ), QString(), 1, *it ) );
                 for ( const QSize &s : mAdditionalSizes )
                 {
-                  icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ), pixelRatio ) );
+                  icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ), *it ) );
                 }
               }
               mIconCache[ entityType ].insert( name, icon );
@@ -325,13 +323,13 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 return icon;
 
               const QgsPalLayerSettings settings( mStyle->labelSettings( name ) );
-              for ( const double pixelRatio : std::as_const( mDevicePixelRatios ) )
+              for ( auto it = mTargetScreenProperties.constBegin(); it != mTargetScreenProperties.constEnd(); ++it )
               {
                 if ( mAdditionalSizes.isEmpty() )
-                  icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( 24, 24 ), QString(),  1, pixelRatio ) );
+                  icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( 24, 24 ), QString(),  1, *it ) );
                 for ( const QSize &s : mAdditionalSizes )
                 {
-                  icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ), pixelRatio ) );
+                  icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ), *it ) );
                 }
               }
               mIconCache[ entityType ].insert( name, icon );
@@ -348,14 +346,17 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               const QgsLegendPatchShape shape = mStyle->legendPatchShape( name );
               if ( !shape.isNull() )
               {
-                if ( const QgsSymbol *symbol = mStyle->previewSymbolForPatchShape( shape ) )
+                for ( auto it = mTargetScreenProperties.constBegin(); it != mTargetScreenProperties.constEnd(); ++it )
                 {
-                  if ( mAdditionalSizes.isEmpty() )
-                    icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( 24, 24 ), 1, nullptr, false, mExpressionContext.get(), &shape ) );
-
-                  for ( const QSize &s : mAdditionalSizes )
+                  if ( const QgsSymbol *symbol = mStyle->previewSymbolForPatchShape( shape ) )
                   {
-                    icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ), nullptr, false, mExpressionContext.get(), &shape ) );
+                    if ( mAdditionalSizes.isEmpty() )
+                      icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( 24, 24 ), 1, nullptr, false, mExpressionContext.get(), &shape, *it ) );
+
+                    for ( const QSize &s : mAdditionalSizes )
+                    {
+                      icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ), nullptr, false, mExpressionContext.get(), &shape, *it ) );
+                    }
                   }
                 }
               }
@@ -628,15 +629,15 @@ void QgsStyleModel::addDesiredIconSize( QSize size )
   mIconCache.clear();
 }
 
-void QgsStyleModel::addDesiredIconDevicePixelRatio( double ratio )
+void QgsStyleModel::addTargetScreenProperties( const QgsScreenProperties &properties )
 {
-  if ( mDevicePixelRatios.contains( ratio ) )
+  if ( mTargetScreenProperties.contains( properties ) )
     return;
 
-  mDevicePixelRatios << ratio;
+  mTargetScreenProperties.insert( properties );
 
   if ( sIconGenerator )
-    sIconGenerator->setDevicePixelRatios( mDevicePixelRatios );
+    sIconGenerator->setTargetScreenProperties( mTargetScreenProperties );
 
   mIconCache.clear();
 }
@@ -995,12 +996,12 @@ void QgsStyleProxyModel::addDesiredIconSize( QSize size )
     mCombinedModel->addDesiredIconSize( size );
 }
 
-void QgsStyleProxyModel::addDesiredIconDevicePixelRatio( double ratio )
+void QgsStyleProxyModel::addTargetScreenProperties( const QgsScreenProperties &properties )
 {
   if ( mModel )
-    mModel->addDesiredIconDevicePixelRatio( ratio );
+    mModel->addTargetScreenProperties( properties );
   if ( mCombinedModel )
-    mCombinedModel->addDesiredIconDevicePixelRatio( ratio );
+    mCombinedModel->addTargetScreenProperties( properties );
 }
 
 bool QgsStyleProxyModel::symbolTypeFilterEnabled() const

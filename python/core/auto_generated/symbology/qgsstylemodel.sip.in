@@ -90,12 +90,12 @@ This allows style icons to be generated at an icon size which
 corresponds exactly to the view's icon size in which this model is used.
 %End
 
-    void addDesiredIconDevicePixelRatio( double ratio );
+    void addTargetScreenProperties( const QgsScreenProperties &properties );
 %Docstring
-Adds an additional icon device pixel ``ratio`` to generate for Qt.DecorationRole data.
+Adds additional target screen ``properties`` to use when generating icons for Qt.DecorationRole data.
 
-This allows style icons to be generated at an icon device pixel ratio which
-corresponds exactly to the view's icon size in which this model is used.
+This allows style icons to be generated at an icon device pixel ratio and DPI which
+corresponds exactly to the view's screen properties in which this model is used.
 
 .. versionadded:: 3.32
 %End
@@ -364,12 +364,12 @@ This allows style icons to be generated at an icon size which
 corresponds exactly to the view's icon size in which this model is used.
 %End
 
-    void addDesiredIconDevicePixelRatio( double ratio );
+    void addTargetScreenProperties( const QgsScreenProperties &properties );
 %Docstring
-Adds an additional icon device pixel ``ratio`` to generate for Qt.DecorationRole data.
+Adds additional target screen ``properties`` to use when generating icons for Qt.DecorationRole data.
 
-This allows style icons to be generated at an icon device pixel ratio which
-corresponds exactly to the view's icon size in which this model is used.
+This allows style icons to be generated at an icon device pixel ratio and DPI which
+corresponds exactly to the view's screen properties in which this model is used.
 
 .. versionadded:: 3.32
 %End

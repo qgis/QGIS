@@ -35,6 +35,10 @@ Constructor for QgsScreenProperties, copying
 properties from the specified ``screen``.
 %End
 
+    bool operator==( const QgsScreenProperties &other ) const;
+
+    bool operator!=( const QgsScreenProperties &other ) const;
+
     bool isValid() const;
 %Docstring
 Returns ``True`` if the properties are valid.
@@ -69,6 +73,7 @@ to match the screen settings.
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

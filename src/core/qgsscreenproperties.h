@@ -16,6 +16,8 @@
 #define QGSSCREENPROPERTIES_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 
 class QScreen;
 class QgsRenderContext;
@@ -45,6 +47,18 @@ class CORE_EXPORT QgsScreenProperties
      * properties from the specified \a screen.
      */
     explicit QgsScreenProperties( const QScreen *screen );
+
+    bool operator==( const QgsScreenProperties &other ) const
+    {
+      return mValid == other.mValid
+             && mDevicePixelRatio == other.mDevicePixelRatio
+             && mPhysicalDpi == other.mPhysicalDpi;
+    }
+
+    bool operator!=( const QgsScreenProperties &other ) const
+    {
+      return !( *this == other );
+    }
 
     /**
      * Returns TRUE if the properties are valid.
@@ -83,5 +97,15 @@ class CORE_EXPORT QgsScreenProperties
     double mDevicePixelRatio = 1;
     double mPhysicalDpi = 96;
 };
+
+/**
+ * Returns a hash for a screen \a properties.
+ *
+ * \since QGIS 3.32
+ */
+CORE_EXPORT inline uint qHash( const QgsScreenProperties &properties ) SIP_SKIP
+{
+  return qHash( properties.devicePixelRatio() ) + qHash( properties.physicalDpi() );
+}
 
 #endif // QGSSCREENPROPERTIES_H

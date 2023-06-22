@@ -76,9 +76,9 @@ void QgsCombinedStyleModel::addStyle( QgsStyle *style )
     styleModel->addDesiredIconSize( size );
   }
 
-  for ( double ratio : std::as_const( mDevicePixelRatios ) )
+  for ( auto it = mTargetScreenProperties.constBegin(); it != mTargetScreenProperties.constEnd(); ++it )
   {
-    styleModel->addDesiredIconDevicePixelRatio( ratio );
+    styleModel->addTargetScreenProperties( *it );
   }
 
   addSourceModel( styleModel );
@@ -135,9 +135,9 @@ void QgsCombinedStyleModel::addDefaultStyle()
     styleModel->addDesiredIconSize( size );
   }
 
-  for ( double ratio : std::as_const( mDevicePixelRatios ) )
+  for ( auto it = mTargetScreenProperties.constBegin(); it != mTargetScreenProperties.constEnd(); ++it )
   {
-    styleModel->addDesiredIconDevicePixelRatio( ratio );
+    styleModel->addTargetScreenProperties( *it );
   }
 
   addSourceModel( styleModel );
@@ -164,18 +164,18 @@ void QgsCombinedStyleModel::addDesiredIconSize( QSize size )
   }
 }
 
-void QgsCombinedStyleModel::addDesiredIconDevicePixelRatio( double ratio )
+void QgsCombinedStyleModel::addTargetScreenProperties( const QgsScreenProperties &properties )
 {
-  if ( !mDevicePixelRatios.contains( ratio ) )
-    mDevicePixelRatios.append( ratio );
+  if ( !mTargetScreenProperties.contains( properties ) )
+    mTargetScreenProperties.insert( properties );
 
   for ( auto it = mOwnedStyleModels.constBegin(); it != mOwnedStyleModels.constEnd(); ++it )
   {
-    it.value()->addDesiredIconDevicePixelRatio( ratio );
+    it.value()->addTargetScreenProperties( properties );
   }
 
   if ( mStyles.contains( QgsStyle::defaultStyle() ) )
   {
-    QgsApplication::defaultStyleModel()->addDesiredIconDevicePixelRatio( ratio );
+    QgsApplication::defaultStyleModel()->addTargetScreenProperties( properties );
   }
 }
