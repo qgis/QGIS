@@ -1361,6 +1361,8 @@ template <TYPE>
 %End
 };
 
+%If (!PYQT6)
+
 %MappedType QList<qint64>
         /TypeHintIn="Iterable[int]",
         TypeHintOut="List[int]", TypeHintValue="[]"/
@@ -1409,6 +1411,8 @@ template <TYPE>
   return sipGetState(sipTransferObj);
 %End
 };
+
+%End
 
 %MappedType QSet<qint64>
 {
