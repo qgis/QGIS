@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="24" version="1.1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -8)">
+  <g transform="translate(-27.5 6)">
+   <rect x="40.5" y="15" width="11" height="11" rx="2.0115" fill="#3c5a6e"/>
+   <g fill-rule="evenodd">
+    <path d="m41.5 21 9-0.009599s0 0 0-2c0-2.9904-1-2.9904-4.5-2.9904s-4.5 0-4.5 3c0 2 0 2 1e-6 2z" fill="#fcffff" opacity=".3"/>
+    <path d="m45.5 16v3h-4v3h4v3l5-4z" fill="#fff"/>
+   </g>
+  </g>
+ </g>
+ <g>
+  <g transform="matrix(.75001 0 0 .75001 .043827 .95901)" stroke="#555753" stroke-linejoin="bevel">
+   <g>
+    <g stroke="none">
+     <path d="m28.917 6.934-7.3228 0.59729 0.875 3.375 0.1875 3.0625 8.2215 0.03154-0.15898-3.344z" fill="#2f5074"/>
+     <path d="m15.941 20.377-5.3358 0.10677 0.94009 1.7734 1.0937 2.0729 3.302 2.8775z" fill="#6e97c4"/>
+     <path d="m9.5013 13.968 0.1875 3.6874 0.91665 2.8281 5.3358-0.0078v-3.0729c0-1.4858 1.1964-2.6822 2.6822-2.6822h3.9921l0.04166-0.69009z" fill="#2f5074"/>
+     <path d="m15.936 27.275-3.3847-0.29396-4.5078-1.812-3.8891-2.3865-1.37-1.7236 4.9939-0.53033 2.8284-0.04419 2.0329 3.8449z" fill="#2f5074"/>
+     <path d="m2.9482 21.067-1.7607-3.6598-0.40336-3.4065 8.7159-0.03095 0.1875 3.6875 0.9191 2.8273-2.8284 0.04419z" fill="#6e97c4"/>
+    </g>
+    <path d="m2.9482 6.934-1.7607 3.6598-0.40336 3.4065 8.7159 0.030954 0.1875-3.6875 0.9191-2.8273-2.8284-0.044194z" fill="#2f5074" stroke="#555753" stroke-linejoin="bevel"/>
+    <path d="m16.087 0.66633-3.5355 0.35355-4.5078 1.812-3.8891 2.3865-1.37 1.7236 4.9939 0.53033 2.8284 0.044194 2.0329-3.8449z" fill="#6e97c4" stroke="none"/>
+    <path d="m16.087 0.66633-3.4471 3.0052-2.0329 3.8449 5.5184 0.10857 5.4688-0.09375-1.7812-3.4688z" fill="#2f5074" stroke="#555753" stroke-linejoin="bevel"/>
+    <path d="m28.917 6.934-7.3228 0.59729-1.7812-3.4688-3.7258-3.3962 5.6569 0.97227 4.4857 2.2318z" fill="#6e97c4" stroke="none"/>
+    <path d="m10.607 7.5164 10.987 0.014822 0.875 3.375 0.1875 3.0625-13.156 0.0625 0.1875-3.6875z" fill="#6e97c4" stroke="#555753" stroke-linejoin="bevel"/>
+   </g>
+   <g fill="none" stroke-linejoin="bevel">
+    <g stroke="#2f5074">
+     <path d="m16 1.0775c-7.8822 3.4232-8.8941 18.735-0.5362 25.498 0.03682 0.02979 0.13211 0.25901 0.45206 0.27814" stroke-width="1.2"/>
+     <path d="m16 1.0775c4.8179 2.3913 6.8338 8.1291 6.5825 13.653" stroke-width="1.2"/>
+     <path d="m1.1223 14.067h29.755" stroke-width="1.3333"/>
+     <path d="m2.9482 6.934c7.5741 1.0095 18.394 1.0095 25.968 0" stroke-width="1.2"/>
+     <path d="m2.9482 21.067c3.7858-0.50457 8.3825-0.75694 12.98-0.75711" stroke-width="1.2"/>
+    </g>
+    <path transform="matrix(1.2562 0 0 1.0872 22.465 -1.0129)" d="m-5.1945 25.966c-6.6674-0.0259-12.064-5.4587-12.064-12.157 0-6.7139 5.4229-12.157 12.112-12.157 6.6894 0 12.112 5.4427 12.112 12.157 0.00554 0.2599 0.011461 0.42557 0.013355 0.66294" fill="none" stroke="#2b3b4d"/>
+   </g>
+  </g>
+  <ellipse transform="scale(-1,1)" cx="-9.5" cy="9.5" rx="3" ry="3" fill="#f00" stroke="#fffff9" stroke-linejoin="bevel" stroke-width="3" style="paint-order:markers fill stroke"/>
+  <g stroke="#6e0000">
+   <path d="m3.5 9.5h12" fill="none" stroke-linecap="square" stroke-width="1px"/>
+   <path d="m9.5 15.5v-12" fill="none" stroke-linecap="square" stroke-width="1px"/>
+   <ellipse transform="scale(-1,1)" cx="-9.5" cy="9.5" rx="3" ry="3" fill="#f00" stroke-linejoin="bevel" style="paint-order:markers fill stroke"/>
+  </g>
+ </g>
+</svg>
