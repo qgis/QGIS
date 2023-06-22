@@ -760,7 +760,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
 
       context->setPainter( &imagePainter );
       imagePainter.translate( maxBleed, maxBleed );
-      s->drawPreviewIcon( &imagePainter, symbolSize, context, false, nullptr, &patchShape );
+      s->drawPreviewIcon( &imagePainter, symbolSize, context, false, nullptr, &patchShape, ctx->screenProperties );
       imagePainter.translate( -maxBleed, -maxBleed );
       context->setPainter( ctx->painter );
       //reduce opacity of image
@@ -779,12 +779,12 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       const QSize maxSize( symbolSize.width() + maxBleed * 2, symbolSize.height() + maxBleed * 2 );
       p->save();
       p->setClipRect( -maxBleed, -maxBleed, maxSize.width(), maxSize.height(), Qt::IntersectClip );
-      s->drawPreviewIcon( p, symbolSize, context, false, nullptr, &patchShape );
+      s->drawPreviewIcon( p, symbolSize, context, false, nullptr, &patchShape, ctx->screenProperties );
       p->restore();
     }
     else
     {
-      s->drawPreviewIcon( p, QSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast< int >( std::round( height * dotsPerMM ) ) ), context, false, nullptr, &patchShape );
+      s->drawPreviewIcon( p, QSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast< int >( std::round( height * dotsPerMM ) ) ), context, false, nullptr, &patchShape, ctx->screenProperties );
     }
 
     if ( !mTextOnSymbolLabel.isEmpty() )

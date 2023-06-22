@@ -737,6 +737,19 @@ void QgsLayerTreeModel::setLayerStyleOverrides( const QMap<QString, QString> &ov
   mLayerStyleOverrides = overrides;
 }
 
+void QgsLayerTreeModel::addTargetScreenProperties( const QgsScreenProperties &properties )
+{
+  if ( mTargetScreenProperties.contains( properties ) )
+    return;
+
+  mTargetScreenProperties.insert( properties );
+}
+
+QSet<QgsScreenProperties> QgsLayerTreeModel::targetScreenProperties() const
+{
+  return mTargetScreenProperties;
+}
+
 int QgsLayerTreeModel::scaleIconSize( int standardSize )
 {
   return QgsApplication::scaleIconSize( standardSize, true );

@@ -250,6 +250,13 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
        */
       const QgsTextDocumentMetrics *textDocumentMetrics = nullptr;
 
+      /**
+       * Destination screen properties.
+       *
+       * \since QGIS 3.32
+       */
+      QgsScreenProperties screenProperties;
+
     };
 
     struct ItemMetrics
