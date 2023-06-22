@@ -548,7 +548,6 @@ QVariant QgsSymbolLegendNode::data( int role ) const
   {
     if ( mPixmap.isNull() )
     {
-      QPixmap pix;
       if ( mItem.symbol() )
       {
         std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
@@ -557,11 +556,11 @@ QVariant QgsSymbolLegendNode::data( int role ) const
         double width = 0.0;
         double height = 0.0;
         const std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context.get(), width, height ) );
-        pix = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), mIconSize, 0, context.get() );
+        mPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), mIconSize, 0, context.get() );
 
         if ( !mTextOnSymbolLabel.isEmpty() && context )
         {
-          QPainter painter( &pix );
+          QPainter painter( &mPixmap );
           painter.setRenderHint( QPainter::Antialiasing );
           context->setPainter( &painter );
           bool isNullSize = false;
@@ -576,11 +575,9 @@ QVariant QgsSymbolLegendNode::data( int role ) const
       }
       else
       {
-        pix = QPixmap( mIconSize );
-        pix.fill( Qt::transparent );
+        mPixmap = QPixmap( mIconSize );
+        mPixmap.fill( Qt::transparent );
       }
-
-      mPixmap = pix;
     }
     return mPixmap;
   }
