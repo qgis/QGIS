@@ -390,11 +390,14 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
     const QSize size( mItem.symbol()->type() == Qgis::SymbolType::Marker ? maxSize : minSz.width(),
                       maxSize );
 
+    QgsScreenProperties targetScreen = model() && !model()->targetScreenProperties().isEmpty()
+                                       ? *model()->targetScreenProperties().begin() : QgsScreenProperties();
+
     minSz = QgsImageOperation::nonTransparentImageRect(
               QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), size, 0,
-                  context ).toImage(),
+                  context, false, nullptr, nullptr, targetScreen ).toImage(),
               minSz,
-              true ).size();
+              true ).size() / targetScreen.devicePixelRatio();
   }
 
   if ( !mTextOnSymbolLabel.isEmpty() && context )
@@ -493,6 +496,11 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
   context->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
 
+  if ( model() && !model()->targetScreenProperties().isEmpty() )
+  {
+    model()->targetScreenProperties().begin()->updateRenderContextForScreen( *context );
+  }
+
   QgsExpressionContext expContext;
   expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayerNode ? mLayerNode->layer() : nullptr ) );
   context->setExpressionContext( expContext );
@@ -548,6 +556,9 @@ QVariant QgsSymbolLegendNode::data( int role ) const
   {
     if ( mPixmap.isNull() )
     {
+      QgsScreenProperties targetScreen = model() && !model()->targetScreenProperties().isEmpty()
+                                         ? *model()->targetScreenProperties().begin() : QgsScreenProperties();
+
       if ( mItem.symbol() )
       {
         std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
@@ -556,7 +567,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
         double width = 0.0;
         double height = 0.0;
         const std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context.get(), width, height ) );
-        mPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), mIconSize, 0, context.get() );
+        mPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), mIconSize, 0, context.get(), false, nullptr, nullptr, targetScreen );
 
         if ( !mTextOnSymbolLabel.isEmpty() && context )
         {
@@ -575,7 +586,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
       }
       else
       {
-        mPixmap = QPixmap( mIconSize );
+        mPixmap = QPixmap( mIconSize * targetScreen.devicePixelRatio() );
         mPixmap.fill( Qt::transparent );
       }
     }
