@@ -284,6 +284,8 @@ bool QgsPythonUtilsImpl::startServerPlugin( QString packageName )
 
 void QgsPythonUtilsImpl::exitPython()
 {
+  // don't try to gracefully cleanup faulthandler on windows -- see https://github.com/qgis/QGIS/issues/53473
+#ifndef Q_OS_WIN
   if ( !mFaultHandlerLogPath.isEmpty() )
   {
     runString( QStringLiteral( "faulthandler.disable()" ) );
@@ -304,6 +306,7 @@ void QgsPythonUtilsImpl::exitPython()
 
     mFaultHandlerLogPath.clear();
   }
+#endif
 
   if ( mErrorHookInstalled )
     uninstallErrorHook();
