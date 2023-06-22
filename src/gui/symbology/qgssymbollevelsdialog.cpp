@@ -60,7 +60,7 @@ QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( const QgsLegendSymbolList &symbols
     QgsSymbol *sym = mLegendSymbols.at( i ).symbol();
 
     // set icons for the rows
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( sym, QSize( iconSize, iconSize ), 0, nullptr, screen() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( sym, QSize( iconSize, iconSize ), 0, nullptr, QgsScreenProperties( screen() ) );
     tableLevels->setVerticalHeaderItem( i, new QTableWidgetItem( icon, QString() ) );
 
     // find out max. number of layers per symbol
@@ -111,7 +111,7 @@ void QgsSymbolLevelsWidget::populateTable()
       else
       {
         const QgsSymbolLayer *sl = sym->symbolLayer( layer );
-        const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), sym->type(), nullptr, screen() );
+        const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), sym->type(), nullptr, QgsScreenProperties( screen() ) );
         item = new QTableWidgetItem( icon, QString::number( sl->renderingPass() ) );
       }
       tableLevels->setItem( row, layer + 1, item );

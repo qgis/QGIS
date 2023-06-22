@@ -868,16 +868,16 @@ QPainter::CompositionMode QgsSymbolLayerUtils::decodeBlendMode( const QString &s
   return QPainter::CompositionMode_SourceOver; // "Normal"
 }
 
-QIcon QgsSymbolLayerUtils::symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding, QgsLegendPatchShape *shape, const QScreen *screen )
+QIcon QgsSymbolLayerUtils::symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding, QgsLegendPatchShape *shape, const QgsScreenProperties &screen )
 {
   return QIcon( symbolPreviewPixmap( symbol, size, padding, nullptr, false, nullptr, shape, screen ) );
 }
 
-QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *shape, const QScreen *screen )
+QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *shape, const QgsScreenProperties &screen )
 {
   Q_ASSERT( symbol );
 
-  const double devicePixelRatio = screen ? screen->devicePixelRatio() : 1;
+  const double devicePixelRatio = screen.isValid() ? screen.devicePixelRatio() : 1;
   QPixmap pixmap( size * devicePixelRatio );
   pixmap.setDevicePixelRatio( devicePixelRatio );
 
@@ -984,9 +984,9 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   return picture;
 }
 
-QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType, QgsMapLayer *mapLayer, const QScreen *screen )
+QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType, QgsMapLayer *mapLayer, const QgsScreenProperties &screen )
 {
-  const double devicePixelRatio = screen ? screen->devicePixelRatio() : 1;
+  const double devicePixelRatio = screen.isValid() ? screen.devicePixelRatio() : 1;
   QPixmap pixmap( size * devicePixelRatio );
   pixmap.setDevicePixelRatio( devicePixelRatio );
   pixmap.fill( Qt::transparent );
@@ -995,9 +995,9 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, 
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
 
-  if ( screen )
+  if ( screen.isValid() )
   {
-    renderContext.setScaleFactor( screen->physicalDotsPerInch() / 25.4 );
+    screen.updateRenderContextForScreen( renderContext );
   }
 
   renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );

@@ -923,7 +923,7 @@ QColor QgsSymbol::color() const
   return QColor( 0, 0, 0 );
 }
 
-void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *patchShape, const QScreen *screen )
+void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *patchShape, const QgsScreenProperties &screen )
 {
   QgsRenderContext *context = customContext;
   std::unique_ptr< QgsRenderContext > tempContext;
@@ -934,10 +934,9 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
   }
 
-  if ( screen )
+  if ( screen.isValid() )
   {
-    context->setScaleFactor( screen->physicalDotsPerInch() / 25.4 );
-    context->setDevicePixelRatio( screen->devicePixelRatio() );
+    screen.updateRenderContextForScreen( *context );
   }
 
   const bool prevForceVector = context->forceVectorOutput();
@@ -1061,9 +1060,9 @@ QImage QgsSymbol::asImage( QSize size, QgsRenderContext *customContext )
 }
 
 
-QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext, Qgis::SymbolPreviewFlags flags, const QScreen *screen )
+QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext, Qgis::SymbolPreviewFlags flags, const QgsScreenProperties &screen )
 {
-  const double devicePixelRatio = screen ? screen->devicePixelRatio() : 1;
+  const double devicePixelRatio = screen.isValid() ? screen.devicePixelRatio() : 1;
   QImage preview( QSize( 100, 100 ) * devicePixelRatio, QImage::Format_ARGB32_Premultiplied );
   preview.fill( 0 );
   preview.setDevicePixelRatio( devicePixelRatio );
@@ -1086,9 +1085,9 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   context.setPainterFlagsUsingContext( &p );
   context.setDevicePixelRatio( devicePixelRatio );
 
-  if ( screen )
+  if ( screen.isValid() )
   {
-    context.setScaleFactor( screen->physicalDotsPerInch() / 25.4 );
+    screen.updateRenderContextForScreen( context );
   }
 
   if ( expressionContext )

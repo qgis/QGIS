@@ -15,6 +15,8 @@
 
 #include <QTreeWidget>
 #include <QVBoxLayout>
+#include <QPointer>
+#include <QScreen>
 
 #include "qgssymbollayerselectionwidget.h"
 #include "qgsvectorlayer.h"
@@ -48,7 +50,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
   class TreeFillVisitor : public QgsStyleEntityVisitorInterface
   {
     public:
-      TreeFillVisitor( QTreeWidgetItem *layerItem, const QgsVectorLayer *layer, QHash<QString, QTreeWidgetItem *> &items, const QScreen *screen )
+      TreeFillVisitor( QTreeWidgetItem *layerItem, const QgsVectorLayer *layer, QHash<QString, QTreeWidgetItem *> &items, QScreen *screen )
         : mLayerItem( layerItem )
         , mLayer( layer )
         , mItems( items )
@@ -81,7 +83,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
           indexPath.append( idx );
 
           QTreeWidgetItem *slItem = new QTreeWidgetItem();
-          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), symbol->type(), nullptr, mScreen );
+          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), symbol->type(), nullptr, QgsScreenProperties( mScreen.data() ) );
           slItem->setData( 0, Qt::UserRole, idx );
           slItem->setIcon( 0, slIcon );
           auto flags = slItem->flags();
@@ -119,7 +121,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
 
         // either leaf.description or mCurrentDescription is defined
         QTreeWidgetItem *symbolItem = new QTreeWidgetItem( QStringList() << ( mCurrentDescription + leaf.description ) );
-        const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ), 0, nullptr, mScreen );
+        const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ), 0, nullptr, QgsScreenProperties( mScreen.data() ) );
         symbolItem->setData( 0, Qt::UserRole, mCurrentIdentifier );
         symbolItem->setIcon( 0, icon );
         mLayerItem->addChild( symbolItem );
@@ -136,7 +138,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
       QTreeWidgetItem *mLayerItem;
       const QgsVectorLayer *mLayer;
       QHash<QString, QTreeWidgetItem *> &mItems;
-      const QScreen *mScreen = nullptr;
+      QPointer< QScreen > mScreen;
   };
 
   // populate the tree

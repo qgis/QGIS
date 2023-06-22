@@ -27,7 +27,7 @@ Tree model for the rules:
 %End
   public:
 
-    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent, const QScreen *screen = 0 );
+    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent, QScreen *screen = 0 );
 %Docstring
 Constructor for QgsRuleBasedRendererModel, for the specified ``renderer``.
 %End

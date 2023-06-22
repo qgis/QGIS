@@ -53,7 +53,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     /**
      * Constructor for QgsRuleBasedRendererModel, for the specified \a renderer.
      */
-    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent, const QScreen *screen = nullptr );
+    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent, QScreen *screen = nullptr );
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
   protected:
     QgsRuleBasedRenderer *mR = nullptr;
     QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> mFeatureCountMap;
-    const QScreen *mScreen = nullptr;
+    QPointer< QScreen > mScreen;
 };
 
 

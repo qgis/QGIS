@@ -28,7 +28,6 @@
 #include "qgscolorramp.h"
 #include "qgsarrowsymbollayer.h"
 #include "qgssymbol.h"
-#include "qscreen.h"
 
 #include <QFile>
 
@@ -281,10 +280,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param size target pixmap size
      * \param padding space between icon edge and symbol
      * \param shape optional legend patch shape to use for rendering the preview icon
-     * \param screen can be used to specify the destination screen for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
+     * \param screen can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
      * \see symbolPreviewPixmap()
      */
-    static QIcon symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding = 0, QgsLegendPatchShape *shape = nullptr, const QScreen *screen = nullptr );
+    static QIcon symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding = 0, QgsLegendPatchShape *shape = nullptr, const QgsScreenProperties &screen = QgsScreenProperties() );
 
     /**
      * Returns a pixmap preview for a color ramp.
@@ -295,13 +294,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param selected set to TRUE to render the symbol in a selected state (since QGIS 3.10)
      * \param expressionContext optional custom expression context (since QGIS 3.10)
      * \param shape optional legend patch shape to use for rendering the preview icon (since QGIS 3.14)
-     * \param screen can be used to specify the destination screen for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
+     * \param screen can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
      * \see symbolPreviewIcon()
      */
     static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr, bool selected = false,
                                         const QgsExpressionContext *expressionContext = nullptr,
                                         const QgsLegendPatchShape *shape = nullptr,
-                                        const QScreen *screen = nullptr );
+                                        const QgsScreenProperties &screen = QgsScreenProperties() );
 
     /**
      * Draws a symbol layer preview to a QPicture
@@ -324,11 +323,11 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param scale map unit scale for preview
      * \param parentSymbolType since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
      * \param mapLayer since QGIS 3.28, can be used to specify the associated map layer so that layer related expressions are correctly calculated
-     * \param screen since QGIS 3.32, can be used to specify the destination screen for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen.
+     * \param screen since QGIS 3.32, can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen.
      * \returns icon containing symbol layer preview
      * \see symbolLayerPreviewPicture()
      */
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = nullptr, const QScreen *screen = nullptr );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = nullptr, const QgsScreenProperties &screen = QgsScreenProperties() );
 
     /**
      * Returns an icon preview for a color ramp.

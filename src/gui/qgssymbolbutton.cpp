@@ -507,7 +507,7 @@ void QgsSymbolButton::prepareMenu()
   std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
   if ( tempSymbol && tempSymbol->type() == mType )
   {
-    pasteSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( tempSymbol.get(), QSize( iconSize, iconSize ), 1, nullptr, screen() ) );
+    pasteSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( tempSymbol.get(), QSize( iconSize, iconSize ), 1, nullptr, QgsScreenProperties( screen() ) ) );
   }
   else
   {
@@ -528,7 +528,7 @@ void QgsSymbolButton::prepareMenu()
   if ( mDefaultSymbol )
   {
     QAction *defaultSymbolAction = new QAction( tr( "Default Symbol" ), this );
-    defaultSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( mDefaultSymbol.get(), QSize( iconSize, iconSize ), 1, nullptr, screen() ) );
+    defaultSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( mDefaultSymbol.get(), QSize( iconSize, iconSize ), 1, nullptr, QgsScreenProperties( screen() ) ) );
     mMenu->addAction( defaultSymbolAction );
     connect( defaultSymbolAction, &QAction::triggered, this, &QgsSymbolButton::setToDefaultSymbol );
   }
@@ -703,7 +703,7 @@ void QgsSymbolButton::updatePreview( const QColor &color, QgsSymbol *tempSymbol 
     previewSymbol->setColor( color );
 
   //create an icon pixmap
-  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize, 0, nullptr, screen() );
+  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize, 0, nullptr, QgsScreenProperties( screen() ) );
   setIconSize( currentIconSize );
   setIcon( icon );
 
@@ -712,7 +712,7 @@ void QgsSymbolButton::updatePreview( const QColor &color, QgsSymbol *tempSymbol 
   const int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
   const int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
-  const QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20, nullptr, false, nullptr, nullptr, screen() );
+  const QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20, nullptr, false, nullptr, nullptr, QgsScreenProperties( screen() ) );
   QByteArray data;
   QBuffer buffer( &data );
   pm.save( &buffer, "PNG", 100 );
