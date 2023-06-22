@@ -66,13 +66,26 @@ class CORE_EXPORT QgsScreenProperties
     bool isValid() const { return mValid; }
 
     /**
-     * This property holds the screen's ratio between physical pixels and device-independent pixels.
-     *
      * Returns the ratio between physical pixels and device-independent pixels for the screen.
      *
+     * This property holds the screen's ratio between physical pixels and device-independent pixels.
+     *
      * Common values are 1.0 on normal displays and 2.0 on "retina" displays. Higher values are also possible.
+     *
+     * \see setDevicePixelRatio()
      */
     double devicePixelRatio() const { return mDevicePixelRatio; }
+
+    /**
+     * Sets the \a ratio between physical pixels and device-independent pixels for the screen.
+     *
+     * This property holds the screen's ratio between physical pixels and device-independent pixels.
+     *
+     * Common values are 1.0 on normal displays and 2.0 on "retina" displays. Higher values are also possible.
+     *
+     * \see devicePixelRatio()
+     */
+    void setDevicePixelRatio( double ratio );
 
     /**
      * This property holds the number of physical dots or pixels per inch.
@@ -82,8 +95,23 @@ class CORE_EXPORT QgsScreenProperties
      *
      * \note Physical DPI is expressed in device-independent dots. Multiply by devicePixelRatio() to get
      * device-dependent density.
+     *
+     * \see setPhysicalDpi()
      */
     double physicalDpi() const { return mPhysicalDpi; }
+
+    /**
+     * Sets number of physical dots or pixels per inch.
+     *
+     * This value represents the pixel density on the screen's display.
+     * Depending on what information the underlying system provides the value might not be entirely accurate.
+     *
+     * \note Physical DPI is expressed in device-independent dots. Multiply by devicePixelRatio() to get
+     * device-dependent density.
+     *
+     * \see physicalDpi()
+     */
+    void setPhysicalDpi( double dpi );
 
     /**
      * Updates the settings in a render \a context
