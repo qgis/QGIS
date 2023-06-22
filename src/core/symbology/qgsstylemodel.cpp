@@ -138,7 +138,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
             QString tooltip = QStringLiteral( "<h3>%1</h3><p><i>%2</i>" ).arg( name,
                               tags.count() > 0 ? tags.join( QLatin1String( ", " ) ) : tr( "Not tagged" ) );
 
-            // generate tooltips targetting the largest device pixel ratio for all attached screens
+            // generate tooltips for the largest device pixel ratio for all attached screens
             QgsScreenProperties maxDevicePixelRatioScreen;
             for ( auto it = mTargetScreenProperties.constBegin(); it != mTargetScreenProperties.constEnd(); ++it )
             {
