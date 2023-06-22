@@ -1522,6 +1522,12 @@ QgsRenderContext *QgsLayerTreeModel::createTemporaryRenderContext() const
   // setup temporary render context
   std::unique_ptr<QgsRenderContext> context( new QgsRenderContext );
   context->setScaleFactor( dpi / 25.4 );
+
+  if ( !mTargetScreenProperties.isEmpty() )
+  {
+    mTargetScreenProperties.begin()->updateRenderContextForScreen( *context );
+  }
+
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
   context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
