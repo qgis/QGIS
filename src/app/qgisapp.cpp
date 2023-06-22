@@ -13139,16 +13139,35 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
 QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
 {
   const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren< QgsElevationProfileWidget * >();
-  const int existingProfileCount = elevationProfileWidgets.size();
 
+  // find first available unused title
   QString title;
-  if ( existingProfileCount == 0 )
+  int counter = 1;
+  while ( true )
   {
-    title = tr( "Elevation Profile" );
-  }
-  else
-  {
-    title = tr( "Elevation Profile (%1)" ).arg( existingProfileCount + 1 );
+    if ( counter == 1 )
+    {
+      title = tr( "Elevation Profile" );
+    }
+    else
+    {
+      title = tr( "Elevation Profile (%1)" ).arg( counter );
+    }
+
+    bool canvasExists = false;
+    for ( QgsElevationProfileWidget *existingWidget : elevationProfileWidgets )
+    {
+      if ( existingWidget->canvasName() == title )
+      {
+        canvasExists = true;
+        break;
+      }
+    }
+
+    if ( !canvasExists )
+      break;
+
+    counter++;
   }
 
   QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( title );
