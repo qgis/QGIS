@@ -981,9 +981,7 @@ bool QgsGeos::topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPoin
       {
         for ( unsigned int i = 0; i < sequenceSize; ++i )
         {
-          if ( GEOSCoordSeq_getX_r( geosinit()->ctxt, lineSequence, i, &x ) != 0
-               && GEOSCoordSeq_getY_r( geosinit()->ctxt, lineSequence, i, &y ) != 0
-               && GEOSCoordSeq_getZ_r( geosinit()->ctxt, lineSequence, i, &z ) != 0 )
+          if ( GEOSCoordSeq_getXYZ_r( geosinit()->ctxt, lineSequence, i, &x, &y, &z ) )
           {
             testPoints.push_back( QgsPoint( x, y, z ) );
           }
