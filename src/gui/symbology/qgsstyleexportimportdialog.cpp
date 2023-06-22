@@ -20,9 +20,6 @@
 #include "qgsapplication.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorramp.h"
-#include "qgslogger.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsstylegroupselectiondialog.h"
 #include "qgsguiutils.h"
@@ -128,7 +125,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   mModel = new QgsStyleProxyModel( dialogStyle, this );
 
   mModel->addDesiredIconSize( listItems->iconSize() );
-  mModel->addDesiredIconDevicePixelRatio( listItems->devicePixelRatioF() );
+  mModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );
 
   listItems->setModel( mModel );
 

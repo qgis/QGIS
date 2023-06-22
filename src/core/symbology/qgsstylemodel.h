@@ -74,20 +74,26 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
     QList< QSize > iconSizes() const;
 
     /**
-     * Sets the list of icon device pixel \a ratios to generate.
+     * Sets the target screen \a properties to use when generating icons.
      *
-     * \see devicePixelRatios()
+     * This allows style icons to be generated at an icon device pixel ratio and DPI which
+     * corresponds exactly to the view's screen properties in which this model is used.
+     *
+     * \see targetScreenProperties()
      * \since QGIS 3.32
      */
-    void setDevicePixelRatios( const QList< double > &ratios );
+    void setTargetScreenProperties( const QSet< QgsScreenProperties > &properties );
 
     /**
-     * Returns the list of icon device pixel ratios to generate.
+     * Returns the target screen properties to use when generating icons.
      *
-     * \see setDevicePixelRatios()
+     * This allows style icons to be generated at an icon device pixel ratio and DPI which
+     * corresponds exactly to the view's screen properties in which this model is used.
+     *
+     * \see setTargetScreenProperties()
      * \since QGIS 3.32
      */
-    QList< double > devicePixelRatios() const;
+    QSet< QgsScreenProperties > targetScreenProperties() const;
 
   signals:
 
@@ -100,7 +106,7 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
   private:
 
     QList< QSize > mIconSizes;
-    QList< double > mDevicePixelRatios;
+    QSet< QgsScreenProperties > mTargetScreenProperties;
 
 };
 
@@ -183,14 +189,14 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     void addDesiredIconSize( QSize size );
 
     /**
-     * Adds an additional icon device pixel \a ratio to generate for Qt::DecorationRole data.
+     * Adds additional target screen \a properties to use when generating icons for Qt::DecorationRole data.
      *
-     * This allows style icons to be generated at an icon device pixel ratio which
-     * corresponds exactly to the view's icon size in which this model is used.
+     * This allows style icons to be generated at an icon device pixel ratio and DPI which
+     * corresponds exactly to the view's screen properties in which this model is used.
      *
      * \since QGIS 3.32
      */
-    void addDesiredIconDevicePixelRatio( double ratio );
+    void addTargetScreenProperties( const QgsScreenProperties &properties );
 
     /**
      * Sets the icon \a generator to use for deferred style entity icon generation.
@@ -219,7 +225,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
 
     QHash< QgsStyle::StyleEntity, QStringList > mEntityNames;
 
-    QList< double > mDevicePixelRatios;
+    QSet< QgsScreenProperties > mTargetScreenProperties;
 
     QList< QSize > mAdditionalSizes;
     mutable std::unique_ptr< QgsExpressionContext > mExpressionContext;
@@ -483,14 +489,14 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     void addDesiredIconSize( QSize size );
 
     /**
-     * Adds an additional icon device pixel \a ratio to generate for Qt::DecorationRole data.
+     * Adds additional target screen \a properties to use when generating icons for Qt::DecorationRole data.
      *
-     * This allows style icons to be generated at an icon device pixel ratio which
-     * corresponds exactly to the view's icon size in which this model is used.
+     * This allows style icons to be generated at an icon device pixel ratio and DPI which
+     * corresponds exactly to the view's screen properties in which this model is used.
      *
      * \since QGIS 3.32
      */
-    void addDesiredIconDevicePixelRatio( double ratio );
+    void addTargetScreenProperties( const QgsScreenProperties &properties );
 
   public slots:
 

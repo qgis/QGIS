@@ -1357,8 +1357,10 @@ void QgsPalLayerSettings::setCallout( QgsCallout *callout )
   mCallout.reset( callout );
 }
 
-QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText, int padding, double devicePixelRatio )
+QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText, int padding, const QgsScreenProperties &screen )
 {
+  const double devicePixelRatio = screen.isValid() ? screen.devicePixelRatio() : 1;
+
   // for now, just use format
   QgsTextFormat tempFormat = settings.format();
   QPixmap pixmap( size * devicePixelRatio );
@@ -1406,10 +1408,24 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   context.setMapToPixel( newCoordXForm );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
-  QWidget *activeWindow = QApplication::activeWindow();
-  const double physicalDpiX = activeWindow && activeWindow->screen() ? activeWindow->screen()->physicalDotsPerInchX() : 96.0;
-  context.setScaleFactor( physicalDpiX / 25.4 );
-  context.setDevicePixelRatio( devicePixelRatio );
+  if ( screen.isValid() )
+  {
+    screen.updateRenderContextForScreen( context );
+  }
+  else
+  {
+    QWidget *activeWindow = QApplication::activeWindow();
+    if ( QScreen *screen = activeWindow ? activeWindow->screen() : nullptr )
+    {
+      context.setScaleFactor( screen->physicalDotsPerInch() / 25.4 );
+      context.setDevicePixelRatio( screen->devicePixelRatio() );
+    }
+    else
+    {
+      context.setScaleFactor( 96.0 / 25.4 );
+      context.setDevicePixelRatio( 1.0 );
+    }
+  }
 
   context.setUseAdvancedEffects( true );
   context.setPainter( &painter );
