@@ -908,7 +908,10 @@ void QgsSymbolLegendNode::updateLabel()
 
   const bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
-  mLabel = symbolLabel();
+  if ( !mLayerNode->labelExpression().isEmpty() )
+    mLabel = "[%" + mLayerNode->labelExpression() + "%]";
+  else
+    mLabel = symbolLabel();
 
   if ( showFeatureCount && vl )
   {
@@ -940,13 +943,11 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
 
     if ( label.isEmpty() )
     {
+      const QString symLabel = symbolLabel();
       if ( ! mLayerNode->labelExpression().isEmpty() )
         mLabel = QgsExpression::replaceExpressionText( "[%" + mLayerNode->labelExpression() + "%]", &contextCopy );
-      else if ( mLabel.contains( "[%" ) )
-      {
-        const QString symLabel = symbolLabel();
+      else if ( symLabel.contains( "[%" ) )
         mLabel = QgsExpression::replaceExpressionText( symLabel, &contextCopy );
-      }
       return mLabel;
     }
     else
