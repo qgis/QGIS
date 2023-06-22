@@ -22,6 +22,8 @@
 #include <QPainter>
 #include <QClipboard>
 #include <QCompleter>
+#include <QPointer>
+#include <QScreen>
 
 #include "qgsgraduatedsymbolrendererwidget.h"
 #include "qgspanelwidget.h"
@@ -36,7 +38,6 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbolselectordialog.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgslogger.h"
 #include "qgsludialog.h"
 #include "qgsproject.h"
@@ -61,7 +62,7 @@
 
 ///@cond PRIVATE
 
-QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject *parent, const QScreen *screen ) : QAbstractItemModel( parent )
+QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject *parent, QScreen *screen ) : QAbstractItemModel( parent )
   , mMimeFormat( QStringLiteral( "application/x-qgsgraduatedsymbolrendererv2model" ) )
   , mScreen( screen )
 {
@@ -179,7 +180,7 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
   else if ( role == Qt::DecorationRole && index.column() == 0 && range.symbol() )
   {
     const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-    return QgsSymbolLayerUtils::symbolPreviewIcon( range.symbol(), QSize( iconSize, iconSize ), 0, nullptr, mScreen );
+    return QgsSymbolLayerUtils::symbolPreviewIcon( range.symbol(), QSize( iconSize, iconSize ), 0, nullptr, QgsScreenProperties( mScreen.data() ) );
   }
   else if ( role == Qt::TextAlignmentRole )
   {

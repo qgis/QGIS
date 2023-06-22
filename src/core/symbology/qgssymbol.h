@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgspropertycollection.h"
 #include "qgsrendercontext.h"
+#include "qgsscreenproperties.h"
 
 class QgsSymbolLayer;
 class QgsLegendPatchShape;
@@ -376,14 +377,14 @@ class CORE_EXPORT QgsSymbol
      * \param selected set to TRUE to render the symbol in a selected state (since QGIS 3.10)
      * \param expressionContext optional custom expression context
      * \param patchShape optional patch shape to use for symbol preview. If not specified a default shape will be used instead.
-     * \param screen can be used to specify the destination screen for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
+     * \param screen can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
      *
      * \see exportImage()
      * \see asImage()
      * \since QGIS 2.6
      */
     void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr, bool selected = false, const QgsExpressionContext *expressionContext = nullptr,
-                          const QgsLegendPatchShape *patchShape = nullptr, const QScreen *screen = nullptr );
+                          const QgsLegendPatchShape *patchShape = nullptr, const QgsScreenProperties &screen = QgsScreenProperties() );
 
     /**
      * Export the symbol as an image format, to the specified \a path and with the given \a size.
@@ -413,12 +414,12 @@ class CORE_EXPORT QgsSymbol
      * \param expressionContext optional expression context, for evaluation of
      * data defined symbol properties
      * \param flags optional flags to control how preview image is generated
-     * \param screen can be used to specify the destination screen for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
+     * \param screen can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for a target screen (since QGIS 3.32)
      *
      * \see asImage()
      * \see drawPreviewIcon()
      */
-    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, const QScreen *screen = nullptr ) SIP_PYNAME( bigSymbolPreviewImageV2 );
+    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, const QgsScreenProperties &screen = QgsScreenProperties() ) SIP_PYNAME( bigSymbolPreviewImageV2 );
 
     /**
      * \deprecated use bigSymbolPreviewImageV2 instead.

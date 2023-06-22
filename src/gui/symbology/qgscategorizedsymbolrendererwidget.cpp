@@ -48,10 +48,13 @@
 #include <QPainter>
 #include <QFileDialog>
 #include <QClipboard>
+#include <QPointer>
+#include <QScreen>
 
 ///@cond PRIVATE
 
-QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *parent, const QScreen *screen ) : QAbstractItemModel( parent )
+QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *parent, QScreen *screen )
+  : QAbstractItemModel( parent )
   , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
   , mScreen( screen )
 {
@@ -198,7 +201,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
       if ( index.column() == 0 && category.symbol() )
       {
         const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-        return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( iconSize, iconSize ), 0, nullptr, mScreen );
+        return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( iconSize, iconSize ), 0, nullptr, QgsScreenProperties( mScreen.data() ) );
       }
       break;
     }

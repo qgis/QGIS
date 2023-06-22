@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgsscreenproperties.h"
+#include "qgsrendercontext.h"
+
 #include <QScreen>
 
 QgsScreenProperties::QgsScreenProperties() = default;
@@ -26,4 +28,13 @@ QgsScreenProperties::QgsScreenProperties( const QScreen *screen )
     mDevicePixelRatio = screen->devicePixelRatio();
     mPhysicalDpi = screen->physicalDotsPerInch();
   }
+}
+
+void QgsScreenProperties::updateRenderContextForScreen( QgsRenderContext &context ) const
+{
+  if ( !mValid )
+    return;
+
+  context.setScaleFactor( mPhysicalDpi / 25.4 );
+  context.setDevicePixelRatio( mDevicePixelRatio );
 }

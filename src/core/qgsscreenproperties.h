@@ -18,6 +18,7 @@
 #include "qgis_core.h"
 
 class QScreen;
+class QgsRenderContext;
 
 /**
  * \ingroup core
@@ -69,6 +70,12 @@ class CORE_EXPORT QgsScreenProperties
      * device-dependent density.
      */
     double physicalDpi() const { return mPhysicalDpi; }
+
+    /**
+     * Updates the settings in a render \a context
+     * to match the screen settings.
+     */
+    void updateRenderContextForScreen( QgsRenderContext &context ) const;
 
   private:
 

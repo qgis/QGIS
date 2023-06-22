@@ -62,6 +62,12 @@ Depending on what information the underlying system provides the value might not
    device-dependent density.
 %End
 
+    void updateRenderContextForScreen( QgsRenderContext &context ) const;
+%Docstring
+Updates the settings in a render ``context``
+to match the screen settings.
+%End
+
 };
 
 /************************************************************************

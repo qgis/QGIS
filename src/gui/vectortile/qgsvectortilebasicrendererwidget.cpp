@@ -28,12 +28,14 @@
 #include <QAbstractListModel>
 #include <QInputDialog>
 #include <QMenu>
+#include <QScreen>
+#include <QPointer>
 
 
 ///@cond PRIVATE
 
 
-QgsVectorTileBasicRendererListModel::QgsVectorTileBasicRendererListModel( QgsVectorTileBasicRenderer *r, QObject *parent, const QScreen *screen )
+QgsVectorTileBasicRendererListModel::QgsVectorTileBasicRendererListModel( QgsVectorTileBasicRenderer *r, QObject *parent, QScreen *screen )
   : QAbstractListModel( parent )
   , mRenderer( r )
   , mScreen( screen )
@@ -101,7 +103,7 @@ QVariant QgsVectorTileBasicRendererListModel::data( const QModelIndex &index, in
       if ( index.column() == 0 && style.symbol() )
       {
         const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-        return QgsSymbolLayerUtils::symbolPreviewIcon( style.symbol(), QSize( iconSize, iconSize ), 0, nullptr, mScreen );
+        return QgsSymbolLayerUtils::symbolPreviewIcon( style.symbol(), QSize( iconSize, iconSize ), 0, nullptr, QgsScreenProperties( mScreen.data() ) );
       }
       break;
     }

@@ -20,26 +20,20 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgssymbolslistwidget.h"
 #include "qgsexpressioncontextutils.h"
 
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
-#include "qgssymbolselectordialog.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
 #include "qgsfontutils.h"
-#include "qgsgradientcolorrampdialog.h"
 #include "qgsproperty.h"
-#include "qgsstyle.h" //for symbol selector dialog
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgssvgselectorwidget.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsauxiliarystorage.h"
@@ -612,7 +606,7 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
 
   //create an icon pixmap
   const std::unique_ptr< QgsLineSymbol > previewSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << layerCopy.release() );
-  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize, 0, nullptr, screen() );
+  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize, 0, nullptr, QgsScreenProperties( screen() ) );
   mChangePatternButton->setIconSize( currentIconSize );
   mChangePatternButton->setIcon( icon );
 
@@ -621,7 +615,7 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
   const int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
   const int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
-  const QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20, nullptr, false, nullptr, nullptr, screen() );
+  const QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20, nullptr, false, nullptr, nullptr, QgsScreenProperties( screen() ) );
   QByteArray data;
   QBuffer buffer( &data );
   pm.save( &buffer, "PNG", 100 );
@@ -698,7 +692,7 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
     lyr->setSizeUnit( Qgis::RenderUnit::Pixels );
     lyr->setColor( QColor( 200, 200, 200 ) );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
-    const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, Qgis::RenderUnit::Pixels, QSize( size, size ), QgsMapUnitScale(), Qgis::SymbolType::Hybrid, nullptr, screen() );
+    const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, Qgis::RenderUnit::Pixels, QSize( size, size ), QgsMapUnitScale(), Qgis::SymbolType::Hybrid, nullptr, QgsScreenProperties( screen() ) );
     QListWidgetItem *item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
@@ -1141,7 +1135,7 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
     lyr->setSizeUnit( Qgis::RenderUnit::Pixels );
     lyr->setColor( QColor( 200, 200, 200 ) );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
-    const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, Qgis::RenderUnit::Pixels, QSize( size, size ), QgsMapUnitScale(), Qgis::SymbolType::Hybrid, nullptr, screen() );
+    const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, Qgis::RenderUnit::Pixels, QSize( size, size ), QgsMapUnitScale(), Qgis::SymbolType::Hybrid, nullptr, QgsScreenProperties( screen() ) );
     QListWidgetItem *item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );

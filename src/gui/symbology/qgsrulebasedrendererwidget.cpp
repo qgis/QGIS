@@ -25,8 +25,6 @@
 #include "qgssymbolselectordialog.h"
 #include "qgslogger.h"
 #include "qgsreadwritecontext.h"
-#include "qstring.h"
-#include "qgssinglesymbolrenderer.h"
 #include "qgspanelwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
@@ -39,6 +37,8 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QClipboard>
+#include <QPointer>
+#include <QScreen>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -914,7 +914,7 @@ void QgsRendererRulePropsWidget::setDockMode( bool dockMode )
 
 /////
 
-QgsRuleBasedRendererModel::QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent, const QScreen *screen )
+QgsRuleBasedRendererModel::QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent, QScreen *screen )
   : QAbstractItemModel( parent )
   , mR( renderer )
   , mScreen( screen )
@@ -1003,7 +1003,7 @@ QVariant QgsRuleBasedRendererModel::data( const QModelIndex &index, int role ) c
   else if ( role == Qt::DecorationRole && index.column() == 0 && rule->symbol() )
   {
     const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-    return QgsSymbolLayerUtils::symbolPreviewIcon( rule->symbol(), QSize( iconSize, iconSize ), 0, nullptr, mScreen );
+    return QgsSymbolLayerUtils::symbolPreviewIcon( rule->symbol(), QSize( iconSize, iconSize ), 0, nullptr, QgsScreenProperties( mScreen.data() ) );
   }
   else if ( role == Qt::TextAlignmentRole )
   {

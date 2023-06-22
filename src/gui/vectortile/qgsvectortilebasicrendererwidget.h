@@ -88,7 +88,7 @@ class QgsVectorTileBasicRendererListModel : public QAbstractListModel
       Filter
     };
 
-    QgsVectorTileBasicRendererListModel( QgsVectorTileBasicRenderer *r, QObject *parent = nullptr, const QScreen *screen = nullptr );
+    QgsVectorTileBasicRendererListModel( QgsVectorTileBasicRenderer *r, QObject *parent = nullptr, QScreen *screen = nullptr );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -109,7 +109,7 @@ class QgsVectorTileBasicRendererListModel : public QAbstractListModel
 
   private:
     QgsVectorTileBasicRenderer *mRenderer = nullptr;
-    const QScreen *mScreen = nullptr;
+    QPointer< QScreen > mScreen;
 };
 
 class QgsVectorTileBasicRendererProxyModel : public QSortFilterProxyModel

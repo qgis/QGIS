@@ -118,14 +118,14 @@ void DataDefinedRestorer::restore()
 class SymbolLayerItem : public QStandardItem
 {
   public:
-    explicit SymbolLayerItem( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QgsVectorLayer *vectorLayer, const QScreen *screen )
+    explicit SymbolLayerItem( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QgsVectorLayer *vectorLayer, QScreen *screen )
       : mVectorLayer( vectorLayer )
       , mScreen( screen )
     {
       setLayer( layer, symbolType );
     }
 
-    explicit SymbolLayerItem( QgsSymbol *symbol, QgsVectorLayer *vectorLayer, const QScreen *screen )
+    explicit SymbolLayerItem( QgsSymbol *symbol, QgsVectorLayer *vectorLayer, QScreen *screen )
       : mVectorLayer( vectorLayer )
       , mScreen( screen )
     {
@@ -158,12 +158,12 @@ class SymbolLayerItem : public QStandardItem
       }
       QIcon icon;
       if ( mIsLayer )
-        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer, mScreen );
+        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer, QgsScreenProperties( mScreen.data() ) );
       else
       {
         QgsExpressionContext expContext;
         expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
-        icon = QIcon( QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol, mSize, 0, nullptr, false, &expContext, nullptr, mScreen ) );
+        icon = QIcon( QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol, mSize, 0, nullptr, false, &expContext, nullptr, QgsScreenProperties( mScreen.data() ) ) );
       }
       setIcon( icon );
 
@@ -241,7 +241,7 @@ class SymbolLayerItem : public QStandardItem
     bool mIsLayer = false;
     QSize mSize;
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Hybrid;
-    const QScreen *mScreen = nullptr;
+    QPointer< QScreen > mScreen;
 };
 
 ///@endcond
@@ -461,7 +461,7 @@ void QgsSymbolSelectorWidget::updatePreview()
     return;
 
   std::unique_ptr< QgsSymbol > symbolClone( mSymbol->clone() );
-  const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, screen() );
+  const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, QgsScreenProperties( screen() ) );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
   // Hope this is a appropriate place
   if ( !mBlockModified )
