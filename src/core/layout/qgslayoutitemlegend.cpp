@@ -1371,36 +1371,6 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         return name;
       }
     }
-
-    const bool evaluate = ( vlayer && !nodeLayer->labelExpression().isEmpty() ) || name.contains( "[%" );
-    if ( evaluate )
-    {
-      QgsExpressionContext expressionContext;
-      if ( vlayer )
-      {
-        connect( vlayer, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsLegendModel::forceRefresh, Qt::UniqueConnection );
-        // counting is done here to ensure that a valid vector layer needs to be evaluated, count is used to validate previous count or update the count if invalidated
-        vlayer->countSymbolFeatures();
-      }
-
-      if ( mLayoutLegend )
-        expressionContext = mLayoutLegend->createExpressionContext();
-
-      const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
-      if ( ! legendnodes.isEmpty() )
-      {
-        if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
-        {
-          for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
-          {
-            if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
-              symnode->evaluateLabel( expressionContext );
-          }
-        }
-        else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-          symnode->evaluateLabel( expressionContext );
-      }
-    }
     node->setCustomProperty( QStringLiteral( "cached_name" ), name );
     return name;
   }

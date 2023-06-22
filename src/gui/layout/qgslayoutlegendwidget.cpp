@@ -1165,28 +1165,16 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   QgsExpressionContext legendContext = mLegend->createExpressionContext();
   legendContext.appendScope( vl->createExpressionContextScope() );
 
-  QgsExpressionContextScope *symbolLegendScope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
-
-  QgsFeatureRenderer *r = vl->renderer();
-
   QStringList highlighted;
-  if ( r )
+  const QList<QgsLayerTreeModelLegendNode *> legendnodes = mLegend->model()->layerLegendNodes( layerNode, false );
+  if ( !legendnodes.isEmpty() )
   {
-    const QgsLegendSymbolList legendSymbols = r->legendSymbolItems();
-
-    if ( !legendSymbols.empty() )
+    if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
     {
-      QgsSymbolLegendNode legendNode( layerNode, legendSymbols.first() );
-
-      symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), legendNode.symbolLabel().remove( QStringLiteral( "[%" ) ).remove( QStringLiteral( "%]" ) ), true ) );
-      symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), legendSymbols.first().ruleKey(), true ) );
-      highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" );
-      symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( legendSymbols.first().ruleKey() ) ), true ) );
-      highlighted << QStringLiteral( "symbol_count" );
+      legendContext.appendScope( symnode->createSymbolScope() );
+      highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" ) << QStringLiteral( "symbol_count" );
     }
   }
-
-  legendContext.appendScope( symbolLegendScope );
 
   legendContext.setHighlightedVariables( highlighted );
 
@@ -1198,7 +1186,10 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
 
   QgsExpressionBuilderDialog expressiondialog( nullptr, currentExpression, nullptr, QStringLiteral( "generic" ), legendContext );
   if ( expressiondialog.exec() )
+  {
     layerNode->setLabelExpression( expressiondialog.expressionText() );
+    mItemTreeView->layerTreeModel()->refreshLayerLegend( layerNode );
+  }
 
   mLegend->beginCommand( tr( "Update Legend" ) );
   mLegend->refresh();

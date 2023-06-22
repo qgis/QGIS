@@ -890,7 +890,10 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
   ctx.maxSiblingSymbolWidth = maxSiblingSymbolWidth;
 
   if ( const QgsSymbolLegendNode *symbolNode = dynamic_cast< const QgsSymbolLegendNode * >( symbolItem ) )
+  {
+    context.expressionContext().appendScope( symbolNode->createSymbolScope() );
     ctx.patchShape = symbolNode->patchShape();
+  }
 
   ctx.patchSize = symbolItem->userPatchSize();
 
