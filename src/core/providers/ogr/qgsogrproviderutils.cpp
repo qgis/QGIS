@@ -51,6 +51,8 @@ email                : nyall dot dawson at gmail dot com
 
 Q_GLOBAL_STATIC( QRecursiveMutex, sGlobalMutex )
 
+static QAtomicInt sDeferDatasetClosingCounter = 0;
+
 //! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper, only for GPKG)
 typedef QMap< QString, int > OpenedDsCountMap;
 Q_GLOBAL_STATIC( OpenedDsCountMap, sMapCountOpenedDS )
@@ -2357,13 +2359,55 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getSqlLayer( QgsOgrLayer *baseLayer,
   return QgsOgrLayer::CreateForSql( ident, sql, baseLayer->ds, hSqlLayer );
 }
 
+void QgsOgrProviderUtils::incrementDeferDatasetClosingCounter()
+{
+  ++sDeferDatasetClosingCounter;
+}
+
+void QgsOgrProviderUtils::decrementDeferDatasetClosingCounter()
+{
+  if ( --sDeferDatasetClosingCounter == 0 )
+  {
+    QMutexLocker locker( sGlobalMutex() );
+    for ( auto iter = sMapSharedDS.begin(); iter != sMapSharedDS.end(); )
+    {
+      auto &datasetList = iter.value();
+      QList<QgsOgrProviderUtils::DatasetWithLayers *>::iterator itDsList = datasetList.begin();
+      while ( itDsList != datasetList.end() )
+      {
+        QgsOgrProviderUtils::DatasetWithLayers *ds = *itDsList;
+        if ( ds->refCount == 0 )
+        {
+          QgsOgrProviderUtils::GDALCloseWrapper( ds->hDS );
+          delete ds;
+          itDsList = datasetList.erase( itDsList );
+        }
+        else
+        {
+          ++itDsList;
+        }
+      }
+
+      if ( datasetList.isEmpty() )
+        iter = sMapSharedDS.erase( iter );
+      else
+        ++iter;
+    }
+  }
+}
+
+
+
 void QgsOgrProviderUtils::releaseInternal( const DatasetIdentification &ident,
     DatasetWithLayers *ds,
     bool removeFromDatasetList )
 {
 
   ds->refCount --;
-  if ( ds->refCount == 0 )
+  // Release if the ref count has dropped to 0, unless we were asked to defer
+  // closing (but defer only if the number of opened dataset is not too large)
+  if ( ds->refCount == 0 &&
+       ( sDeferDatasetClosingCounter == 0 || sMapSharedDS.size() > 100 ) )
   {
     Q_ASSERT( ds->setLayers.isEmpty() );
 

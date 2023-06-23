@@ -61,6 +61,7 @@
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsgdalutils.h"
 #include "qgstiledmeshlayer.h"
+#include "qgsogrproviderutils.h"
 
 #include <QObject>
 #include <QMessageBox>
@@ -742,6 +743,8 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
 
   QList< QgsMapLayer * > result;
   result.reserve( sortedLayers.size() );
+
+  QgsOgrProviderUtils::DeferDatasetClosing deferDatasetClosing;
 
   for ( const QgsProviderSublayerDetails &sublayer : std::as_const( sortedLayers ) )
   {
