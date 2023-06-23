@@ -1143,15 +1143,26 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     if ( mFeedback->isCanceled() )
       return;
 
-    const QgsRectangle bounds = clampedPolygon->boundingBox();
-    QgsTessellator t( bounds, false, false, false, false );
-    t.addPolygon( *clampedPolygon, 0 );
+    QgsGeometry tessellation;
+    if ( clampedPolygon->numInteriorRings() == 0 && clampedPolygon->exteriorRing() && clampedPolygon->exteriorRing()->numPoints() == 4 && clampedPolygon->exteriorRing()->isClosed() )
+    {
+      // special case -- polygon is already a triangle, so no need to tessellate
+      std::unique_ptr< QgsMultiPolygon > multiPolygon = std::make_unique< QgsMultiPolygon >();
+      multiPolygon->addGeometry( clampedPolygon.release() );
+      tessellation = QgsGeometry( std::move( multiPolygon ) );
+    }
+    else
+    {
+      const QgsRectangle bounds = clampedPolygon->boundingBox();
+      QgsTessellator t( bounds, false, false, false, false );
+      t.addPolygon( *clampedPolygon, 0 );
 
-    QgsGeometry tessellation( t.asMultiPolygon() );
-    if ( mFeedback->isCanceled() )
-      return;
+      tessellation = QgsGeometry( t.asMultiPolygon() );
+      if ( mFeedback->isCanceled() )
+        return;
 
-    tessellation.translate( bounds.xMinimum(), bounds.yMinimum() );
+      tessellation.translate( bounds.xMinimum(), bounds.yMinimum() );
+    }
 
     // iterate through the tessellation, finding triangles which intersect the line
     const int numTriangles = qgsgeometry_cast< const QgsMultiPolygon * >( tessellation.constGet() )->numGeometries();
