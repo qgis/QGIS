@@ -790,6 +790,16 @@ class CORE_EXPORT QgsGeometryUtils
     static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) SIP_HOLDGIL;
 
     /**
+     * Given the line (\a x1, \a y1) to (\a x2, \a y2) and a point (\a px, \a py) returns the percentage
+     * of the line length at which the point lies.
+     *
+     * \warning this method requires that the point definitely lies on the line!
+     *
+     * \since QGIS 3.32
+     */
+    static double pointFractionAlongLine( double x1, double y1, double x2, double y2, double px, double py );
+
+    /**
      * Returns a weighted point inside the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
      * (\a cX, \a cY).
      *
