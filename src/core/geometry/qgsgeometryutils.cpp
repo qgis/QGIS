@@ -1864,6 +1864,11 @@ void QgsGeometryUtils::weightedPointInTriangle( const double aX, const double aY
   pointY = rBy + rCy + aY;
 }
 
+bool QgsGeometryUtils::pointsAreCollinear( double x1, double y1, double x2, double y2, double x3, double y3, double epsilon )
+{
+  return qgsDoubleNear( x1 * ( y2 - y3 ) + x2 * ( y3 - y1 ) + x3 * ( y1 - y2 ), 0, epsilon );
+};
+
 bool QgsGeometryUtils::transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point )
 {
   bool rc = false;

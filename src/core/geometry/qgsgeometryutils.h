@@ -820,6 +820,14 @@ class CORE_EXPORT QgsGeometryUtils
                                          double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL;
 
     /**
+     * Given the points (\a x1, \a y1), (\a x2, \a y2) and (\a x3, \a y3) returns TRUE if these
+     * points can be considered collinear with a specified tolerance.
+     *
+     * \since QGIS 3.32
+     */
+    static bool pointsAreCollinear( double x1, double y1, double x2, double y2, double x3, double y3, double epsilon );
+
+    /**
      * A Z dimension is added to \a point if one of the point in the list
      * \a points is in 3D. Moreover, the Z value of \a point is updated
      * with the first Z value found in list \a points even if \a point
