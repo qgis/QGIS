@@ -1127,7 +1127,15 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     }
   };
 
-  auto processPolygon = [this, &processTriangleLineIntersect]( const QgsCurvePolygon * polygon, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts, double offset )
+  auto triangleIsCollinearInXYPlane = []( const QgsPolygon * polygon )-> bool
+  {
+    const QgsLineString *ring = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() );
+    return QgsGeometryUtils::pointsAreCollinear( ring->xAt( 0 ), ring->yAt( 0 ),
+        ring->xAt( 1 ), ring->yAt( 1 ),
+        ring->xAt( 2 ), ring->yAt( 2 ), 0.005 );
+  };
+
+  auto processPolygon = [this, &triangleIsCollinearInXYPlane, &processTriangleLineIntersect]( const QgsCurvePolygon * polygon, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts, double offset, bool & wasCollinear )
   {
     std::unique_ptr< QgsPolygon > clampedPolygon;
     if ( const QgsPolygon *p = qgsgeometry_cast< const QgsPolygon * >( polygon ) )
@@ -1172,15 +1180,70 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
         return;
 
       const QgsPolygon *triangle = qgsgeometry_cast< const QgsPolygon * >( qgsgeometry_cast< const QgsMultiPolygon * >( tessellation.constGet() )->geometryN( i ) );
-      if ( !mProfileCurveEngine->intersects( triangle ) )
-        continue;
 
-      QString error;
-      std::unique_ptr< QgsAbstractGeometry > intersection( mProfileCurveEngine->intersection( triangle, &error ) );
-      if ( !intersection )
-        continue;
+      if ( triangleIsCollinearInXYPlane( triangle ) )
+      {
+        wasCollinear = true;
+        const QgsLineString *ring = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() );
 
-      processTriangleLineIntersect( triangle, intersection.get(), transformedParts, crossSectionParts );
+        QString lastError;
+        if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( mProfileCurve.get() ) )
+        {
+          for ( int curveSegmentIndex = 0; curveSegmentIndex < mProfileCurve->numPoints() - 1; ++curveSegmentIndex )
+          {
+            const QgsPoint p1 = ls->pointN( curveSegmentIndex );
+            const QgsPoint p2 = ls->pointN( curveSegmentIndex + 1 );
+
+            QgsPoint intersectionPoint;
+            double minZ = std::numeric_limits< double >::max();
+            double maxZ = std::numeric_limits< double >::lowest();
+
+            for ( auto vertexPair : std::array<std::pair<int, int>, 3> {{ { 0, 1}, {1, 2}, {2, 0} }} )
+            {
+              bool isIntersection = false;
+              if ( QgsGeometryUtils::segmentIntersection( ring->pointN( vertexPair.first ), ring->pointN( vertexPair.second ), p1, p2, intersectionPoint, isIntersection ) )
+              {
+                const double fraction = QgsGeometryUtils::pointFractionAlongLine( ring->xAt( vertexPair.first ), ring->yAt( vertexPair.first ), ring->xAt( vertexPair.second ), ring->yAt( vertexPair.second ), intersectionPoint.x(), intersectionPoint.y() );
+                const double intersectionZ = ring->zAt( vertexPair.first ) + ( ring->zAt( vertexPair.second ) - ring->zAt( vertexPair.first ) ) * fraction;
+                minZ = std::min( minZ, intersectionZ );
+                maxZ = std::max( maxZ, intersectionZ );
+              }
+            }
+
+            if ( !intersectionPoint.isEmpty() )
+            {
+              // need z?
+              mResults->mRawPoints.append( intersectionPoint );
+              mResults->minZ = std::min( mResults->minZ, minZ );
+              mResults->maxZ = std::max( mResults->maxZ, maxZ );
+
+              const double distance = mProfileCurveEngine->lineLocatePoint( intersectionPoint, &lastError );
+
+              crossSectionParts.append( QgsGeometry( new QgsLineString( QVector< double > {distance, distance}, QVector< double > {minZ, maxZ} ) ) );
+
+              mResults->mDistanceToHeightMap.insert( distance, minZ );
+              mResults->mDistanceToHeightMap.insert( distance, maxZ );
+            }
+          }
+        }
+        else
+        {
+          // curved geometries, not supported yet, but not possible through the GUI anyway
+          QgsDebugError( QStringLiteral( "Collinear triangles with curved profile lines are not supported yet" ) );
+        }
+      }
+      else
+      {
+        if ( mProfileCurveEngine->intersects( triangle ) )
+        {
+          QString error;
+          std::unique_ptr< QgsAbstractGeometry > intersection( mProfileCurveEngine->intersection( triangle, &error ) );
+          if ( intersection && !intersection->isEmpty() )
+          {
+            processTriangleLineIntersect( triangle, intersection.get(), transformedParts, crossSectionParts );
+          }
+        }
+      }
     }
   };
 
@@ -1201,6 +1264,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     const QgsGeometry g = feature.geometry();
     QVector< QgsGeometry > transformedParts;
     QVector< QgsGeometry > crossSectionParts;
+    bool wasCollinear = false;
     if ( g.isMultipart() )
     {
       for ( auto it = g.const_parts_begin(); it != g.const_parts_end(); ++it )
@@ -1211,12 +1275,12 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
         if ( !mProfileCurveEngine->intersects( *it ) )
           continue;
 
-        processPolygon( qgsgeometry_cast< const QgsCurvePolygon * >( *it ), transformedParts, crossSectionParts, offset );
+        processPolygon( qgsgeometry_cast< const QgsCurvePolygon * >( *it ), transformedParts, crossSectionParts, offset, wasCollinear );
       }
     }
     else
     {
-      processPolygon( qgsgeometry_cast< const QgsCurvePolygon * >( g.constGet() ), transformedParts, crossSectionParts, offset );
+      processPolygon( qgsgeometry_cast< const QgsCurvePolygon * >( g.constGet() ), transformedParts, crossSectionParts, offset, wasCollinear );
     }
 
     if ( mFeedback->isCanceled() )
@@ -1227,10 +1291,17 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     resultFeature.geometry = transformedParts.size() > 1 ? QgsGeometry::collectGeometry( transformedParts ) : transformedParts.value( 0 );
     if ( !crossSectionParts.empty() )
     {
-      QgsGeometry unioned = QgsGeometry::unaryUnion( crossSectionParts );
-      if ( unioned.type() == Qgis::GeometryType::Line )
-        unioned = unioned.mergeLines();
-      resultFeature.crossSectionGeometry = unioned;
+      if ( !wasCollinear )
+      {
+        QgsGeometry unioned = QgsGeometry::unaryUnion( crossSectionParts );
+        if ( unioned.type() == Qgis::GeometryType::Line )
+          unioned = unioned.mergeLines();
+        resultFeature.crossSectionGeometry = unioned;
+      }
+      else
+      {
+        resultFeature.crossSectionGeometry = QgsGeometry::collectGeometry( crossSectionParts );
+      }
     }
     mResults->features[resultFeature.featureId].append( resultFeature );
   }

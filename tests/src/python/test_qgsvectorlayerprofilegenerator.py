@@ -768,6 +768,32 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
                                       'MultiPolygonZ (((-346387.6 6632223.9 67, -346384.8 6632219 67, -346384.8 6632219 74, -346387.6 6632223.9 74, -346387.6 6632223.9 67)),((-346384.8 6632219 67, -346383.5 6632216.9 67, -346383.5 6632216.9 74, -346384.8 6632219 74, -346384.8 6632219 67)))',
                                       'MultiPolygonZ (((-346582.6 6632371.7 62.3, -346579.7 6632370.7 62.3, -346579.7 6632370.7 69.3, -346582.6 6632371.7 69.3, -346582.6 6632371.7 62.3)),((-346579.7 6632370.7 62.3, -346577 6632369.7 62.3, -346570.8 6632367.9 62.3, -346570.8 6632367.9 69.3, -346577 6632369.7 69.3, -346579.7 6632370.7 69.3, -346579.7 6632370.7 62.3)))'])
 
+    def test25DPolygonGeneration(self):
+        vl = QgsVectorLayer('PolygonZ?crs=EPSG:2056', 'lines', 'memory')
+        self.assertTrue(vl.isValid())
+
+        for line in [
+                'MultiPolygonZ (((2607398.48000000044703484 1228694.19700000062584877 448.28800000000046566, 2607403.2760000005364418 1228696.4050000011920929 444.7440000000060536, 2607393.68600000068545341 1228691.98900000005960464 444.7440000000060536, 2607398.48000000044703484 1228694.19700000062584877 448.28800000000046566)))']:
+            f = QgsFeature()
+            f.setGeometry(QgsGeometry.fromWkt(line))
+            self.assertTrue(vl.dataProvider().addFeature(f))
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (2607400.97201532032340765 1228697.90654633427038789, 2607405.23384975455701351 1228690.52444026106968522)')
+        req = QgsProfileRequest(curve)
+        req.setCrs(QgsCoordinateReferenceSystem('EPSG:2056'))
+
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+        results = generator.takeResults()
+
+        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                         {2.3: 445.6})
+
+        self.assertAlmostEqual(results.zRange().lower(), 444.744, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 445.583, 2)
+
     def testDataDefinedExtrusionOffset(self):
         vl = QgsVectorLayer('PolygonZ?crs=EPSG:27700&field=extrusion:int&field=offset:int', 'lines', 'memory')
         vl.setCrs(QgsCoordinateReferenceSystem())
