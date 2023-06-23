@@ -331,7 +331,24 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layers() const
 
 void QgsLayoutItemMap::setLayers( const QList<QgsMapLayer *> &layers )
 {
-  mLayers = _qgis_listRawToRef( layers );
+
+  mGroupLayers.clear();
+
+  QList<QgsMapLayer *> layersCopy { layers };
+
+  // Group layers require special handling because they are just containers for child layers
+  // which are removed/added when group visibility changes,
+  // see issue https://github.com/qgis/QGIS/issues/53379
+  for ( auto it = layersCopy.begin(); it != layersCopy.end(); ++it )
+  {
+    if ( const QgsGroupLayer *groupLayer = qobject_cast<QgsGroupLayer *>( *it ) )
+    {
+      std::unique_ptr<QgsGroupLayer> groupLayerClone { groupLayer->clone() };
+      mGroupLayers[ groupLayer->id() ] = std::move( groupLayerClone );
+      *it = mGroupLayers[ groupLayer->id() ].get();
+    }
+  }
+  mLayers = _qgis_listRawToRef( layersCopy );
 }
 
 void QgsLayoutItemMap::setLayerStyleOverrides( const QMap<QString, QString> &overrides )
@@ -635,13 +652,40 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
     if ( !layerRef )
       continue;
     QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
-    QDomText layerIdText = doc.createTextNode( layerRef.layerId );
+    QString layerId;
+    const auto it = std::find_if( mGroupLayers.cbegin(), mGroupLayers.cend(), [ &layerRef ]( const std::pair<const QString, std::unique_ptr<QgsGroupLayer>> &groupLayer )  -> bool
+    {
+      return groupLayer.second.get() == layerRef.get();
+    } );
+
+    if ( it != mGroupLayers.end() )
+    {
+      layerId = it->first;
+    }
+    else
+    {
+      layerId = layerRef.layerId;
+    }
+
+    QDomText layerIdText = doc.createTextNode( layerId );
     layerElem.appendChild( layerIdText );
 
     layerElem.setAttribute( QStringLiteral( "name" ), layerRef.name );
     layerElem.setAttribute( QStringLiteral( "source" ), layerRef.source );
     layerElem.setAttribute( QStringLiteral( "provider" ), layerRef.provider );
 
+    if ( it != mGroupLayers.end() )
+    {
+      const auto childLayers { it->second->childLayers() };
+      QDomElement childLayersElement = doc.createElement( QStringLiteral( "childLayers" ) );
+      for ( const QgsMapLayer *childLayer : std::as_const( childLayers ) )
+      {
+        QDomElement childElement = doc.createElement( QStringLiteral( "child" ) );
+        childElement.setAttribute( QStringLiteral( "layerid" ), childLayer->id() );
+        childLayersElement.appendChild( childElement );
+      }
+      layerElem.appendChild( childLayersElement );
+    }
     layerSetElem.appendChild( layerElem );
   }
   mapElem.appendChild( layerSetElem );
@@ -768,14 +812,13 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
 
   mLayerStyleOverrides.clear();
 
-  //mLayers
-  mLayers.clear();
+  QList<QgsMapLayerRef> layerSet;
   QDomNodeList layerSetNodeList = itemElem.elementsByTagName( QStringLiteral( "LayerSet" ) );
   if ( !layerSetNodeList.isEmpty() )
   {
     QDomElement layerSetElem = layerSetNodeList.at( 0 ).toElement();
     QDomNodeList layerIdNodeList = layerSetElem.elementsByTagName( QStringLiteral( "Layer" ) );
-    mLayers.reserve( layerIdNodeList.size() );
+    layerSet.reserve( layerIdNodeList.size() );
     for ( int i = 0; i < layerIdNodeList.size(); ++i )
     {
       QDomElement layerElem = layerIdNodeList.at( i ).toElement();
@@ -785,10 +828,45 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
       QString layerProvider = layerElem.attribute( QStringLiteral( "provider" ) );
 
       QgsMapLayerRef ref( layerId, layerName, layerSource, layerProvider );
-      ref.resolveWeakly( mLayout->project() );
-      mLayers << ref;
+      if ( ref.resolveWeakly( mLayout->project() ) )
+      {
+        layerSet << ref;
+      }
     }
   }
+
+  setLayers( _qgis_listRefToRaw( layerSet ) );
+
+  // Restore group layers configuration
+  if ( !layerSetNodeList.isEmpty() )
+  {
+    QDomElement layerSetElem = layerSetNodeList.at( 0 ).toElement();
+    QDomNodeList layerIdNodeList = layerSetElem.elementsByTagName( QStringLiteral( "Layer" ) );
+    for ( int i = 0; i < layerIdNodeList.size(); ++i )
+    {
+      QDomElement layerElem = layerIdNodeList.at( i ).toElement();
+      const QString layerId = layerElem.text();
+      const auto it = mGroupLayers.find( layerId );
+      if ( it != mGroupLayers.cend() )
+      {
+        QList<QgsMapLayerRef> childSet;
+        const QDomNodeList childLayersElements = layerElem.elementsByTagName( QStringLiteral( "childLayers" ) );
+        const QDomNodeList children = childLayersElements.at( 0 ).childNodes();
+        for ( int i = 0; i < children.size(); ++i )
+        {
+          const QDomElement childElement = children.at( i ).toElement();
+          const QString id = childElement.attribute( QStringLiteral( "layerid" ) );
+          QgsMapLayerRef layerRef{ id };
+          if ( layerRef.resolveWeakly( mLayout->project() ) )
+          {
+            childSet.push_back( layerRef );
+          }
+        }
+        it->second->setChildLayers( _qgis_listRefToRaw( childSet ) );
+      }
+    }
+  }
+
 
   // override styles
   QDomNodeList layerStylesNodeList = itemElem.elementsByTagName( QStringLiteral( "LayerStyles" ) );
@@ -1978,6 +2056,7 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
 
 void QgsLayoutItemMap::layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers )
 {
+
   if ( !mLayers.isEmpty() || mLayerStyleOverrides.isEmpty() )
   {
     for ( QgsMapLayer *layer : layers )
@@ -1985,6 +2064,25 @@ void QgsLayoutItemMap::layersAboutToBeRemoved( const QList<QgsMapLayer *> &layer
       mLayerStyleOverrides.remove( layer->id() );
     }
     _qgis_removeLayers( mLayers, layers );
+  }
+
+  for ( QgsMapLayer *layer : std::as_const( layers ) )
+  {
+    // Remove groups
+    if ( mGroupLayers.erase( layer->id() ) == 0 )
+    {
+      // Remove group children
+      for ( auto it = mGroupLayers.begin(); it != mGroupLayers.end(); ++it )
+      {
+        QgsGroupLayer *groupLayer = it->second.get();
+        if ( groupLayer->childLayers().contains( layer ) )
+        {
+          QList<QgsMapLayer *> childLayers { groupLayer->childLayers() };
+          childLayers.removeAll( layer );
+          groupLayer->setChildLayers( childLayers );
+        }
+      }
+    }
   }
 }
 
