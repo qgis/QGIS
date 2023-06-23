@@ -1048,6 +1048,20 @@ QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
 void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
 {
   QgsPlotCanvas::resizeEvent( event );
+
+  if ( mLockAxisScales )
+  {
+    double xMinimum = mPlotItem->xMinimum();
+    double xMaximum = mPlotItem->xMaximum();
+    double yMinimum = mPlotItem->yMinimum();
+    double yMaximum = mPlotItem->yMaximum();
+    adjustRangeForAxisScaleLock( xMinimum, xMaximum, yMinimum, yMaximum );
+    mPlotItem->setXMinimum( xMinimum );
+    mPlotItem->setXMaximum( xMaximum );
+    mPlotItem->setYMinimum( yMinimum );
+    mPlotItem->setYMaximum( yMaximum );
+  }
+
   mPlotItem->updateRect();
   mCrossHairsItem->updateRect();
 }
