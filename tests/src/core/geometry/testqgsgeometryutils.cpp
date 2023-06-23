@@ -75,6 +75,7 @@ class TestQgsGeometryUtils: public QObject
     void testInterpolatePointOnLineByValue();
     void testPointOnLineWithDistance();
     void testPointFractionAlongLine();
+    void testPointsAreCollinear();
     void interpolatePointOnArc();
     void testSegmentizeArcHalfCircle();
     void testSegmentizeArcHalfCircleOtherDirection();
@@ -1384,6 +1385,20 @@ void TestQgsGeometryUtils::testPointFractionAlongLine()
   QGSCOMPARENEAR( QgsGeometryUtils::pointFractionAlongLine( 0, 10, 20, 30, 0, 10 ), 0, 0.00001 );
   QGSCOMPARENEAR( QgsGeometryUtils::pointFractionAlongLine( 0, 10, 20, 30, 20, 30 ), 1.0, 0.00001 );
   QGSCOMPARENEAR( QgsGeometryUtils::pointFractionAlongLine( 0, 10, 20, 10, 10, 10 ), 0.5, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testPointsAreCollinear()
+{
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( 0, 10, 10, 10, 20, 10, 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( 10, 10, 0, 10, 20, 10, 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( 20, 10, 10, 10, 0, 10, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( 20, 15, 10, 10, 0, 10, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( 20, 10, 10, 15, 0, 10, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( 20, 10, 10, 10, 0, 15, 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( 10, 0, 10, 10, 10, 20, 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( 10, 0, 10, 20, 10, 10, 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( 10, 20, 10, 0, 10, 10, 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( 15, 20, 10, 10, 10, 20, 0.00001 ) );
 }
 
 void TestQgsGeometryUtils::interpolatePointOnArc()
