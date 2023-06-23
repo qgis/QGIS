@@ -697,6 +697,10 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
   if ( mTerrainProvider )
     mTerrainProvider->prepare(); // must be done on main thread
 
+  // make sure profile curve is always 2d, or we may get unwanted z value averaging for intersections from GEOS
+  if ( mProfileCurve )
+    mProfileCurve->dropZValue();
+
   mSymbology = qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
   mElevationLimit = qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->elevationLimit();
 
@@ -927,6 +931,97 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
         {
           resultFeature.geometry = QgsGeometry( new QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) );
           resultFeature.crossSectionGeometry = QgsGeometry( new QgsPoint( distanceAlongProfileCurve, height ) );
+        }
+        mResults->features[resultFeature.featureId].append( resultFeature );
+      }
+      else if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( *it ) )
+      {
+        const int numPoints = ls->numPoints();
+        QVector< double > newX;
+        newX.resize( numPoints );
+        QVector< double > newY;
+        newY.resize( numPoints );
+        QVector< double > newZ;
+        newZ.resize( numPoints );
+        QVector< double > newDistance;
+        newDistance.resize( numPoints );
+
+        const double *inX = ls->xData();
+        const double *inY = ls->yData();
+        const double *inZ = ls->zData();
+        double *outX = newX.data();
+        double *outY = newY.data();
+        double *outZ = newZ.data();
+        double *outDistance = newDistance.data();
+
+        QVector< double > extrudedZ;
+        double *extZOut = nullptr;
+        double extrusion = 0;
+        if ( mExtrusionEnabled )
+        {
+          extrudedZ.resize( numPoints );
+          extZOut = extrudedZ.data();
+
+          extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
+        }
+
+        QString lastError;
+        for ( int i = 0 ; i < numPoints; ++i )
+        {
+          double x = *inX++;
+          double y = *inY++;
+
+          // find z value from original curve by interpolating to this point
+          const double distanceAlongOriginalGeometry = curveGeos.lineLocatePoint( QgsPoint( x, y ) );
+          std::unique_ptr< QgsPoint > closestOriginalPoint( curve->interpolatePoint( distanceAlongOriginalGeometry ) );
+
+          double z = *inZ++;
+
+          *outX++ = x;
+          *outY++ = y;
+          *outZ++ = closestOriginalPoint->z();
+          if ( extZOut )
+            *extZOut++ = z + extrusion;
+
+          mResults->mRawPoints.append( QgsPoint( x, y, z ) );
+          mResults->minZ = std::min( mResults->minZ, z );
+          mResults->maxZ = std::max( mResults->maxZ, z );
+          if ( mExtrusionEnabled )
+          {
+            mResults->minZ = std::min( mResults->minZ, z + extrusion );
+            mResults->maxZ = std::max( mResults->maxZ, z + extrusion );
+          }
+
+          const double distance = mProfileCurveEngine->lineLocatePoint( QgsPoint( x, y ), &lastError );
+          *outDistance++ = distance;
+
+          mResults->mDistanceToHeightMap.insert( distance, z );
+        }
+
+        QgsVectorLayerProfileResults::Feature resultFeature;
+        resultFeature.featureId = feature.id();
+
+        if ( mExtrusionEnabled )
+        {
+          std::unique_ptr< QgsLineString > ring = std::make_unique< QgsLineString >( newX, newY, newZ );
+          std::unique_ptr< QgsLineString > extrudedRing = std::make_unique< QgsLineString >( newX, newY, extrudedZ );
+          std::unique_ptr< QgsLineString > reversedExtrusion( extrudedRing->reversed() );
+          ring->append( reversedExtrusion.get() );
+          ring->close();
+          resultFeature.geometry = QgsGeometry( new QgsPolygon( ring.release() ) );
+
+
+          std::unique_ptr< QgsLineString > distanceVHeightRing = std::make_unique< QgsLineString >( newDistance, newZ );
+          std::unique_ptr< QgsLineString > extrudedDistanceVHeightRing = std::make_unique< QgsLineString >( newDistance, extrudedZ );
+          std::unique_ptr< QgsLineString > reversedDistanceVHeightExtrusion( extrudedDistanceVHeightRing->reversed() );
+          distanceVHeightRing->append( reversedDistanceVHeightExtrusion.get() );
+          distanceVHeightRing->close();
+          resultFeature.crossSectionGeometry = QgsGeometry( new QgsPolygon( distanceVHeightRing.release() ) );
+        }
+        else
+        {
+          resultFeature.geometry = QgsGeometry( new QgsLineString( newX, newY, newZ ) );
+          resultFeature.crossSectionGeometry = QgsGeometry( new QgsLineString( newDistance, newZ ) );
         }
         mResults->features[resultFeature.featureId].append( resultFeature );
       }
