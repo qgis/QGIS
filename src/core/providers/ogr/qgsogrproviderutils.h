@@ -276,8 +276,30 @@ class CORE_EXPORT QgsOgrProviderUtils
      * \param ogrDriverName the OGR/GDAL driver name (e.g. "GPKG")
      */
     static bool saveConnection( const QString &path, const QString &ogrDriverName );
-};
 
+    /**
+     * Prevent immediate dataset closing when it could be closed.
+     * This is useful when opening a dataset with many layers.
+     * Must be paired with decrementDeferDatasetClosingCounter.
+     * It is recommended to use the QgsOgrProviderUtils::DeferDatasetClosing
+     * class instead to guarantee that correct pairing.
+     */
+    static void incrementDeferDatasetClosingCounter();
+
+    //! End the action started by incrementDeferDatasetClosingCounter()
+    static void decrementDeferDatasetClosingCounter();
+
+    //! Helper class for  QgsOgrProviderUtils::incrementDeferDatasetClosingCounter();
+    class DeferDatasetClosing
+    {
+      public:
+        //! Constructor: increment counter
+        DeferDatasetClosing() { QgsOgrProviderUtils::incrementDeferDatasetClosingCounter(); }
+
+        //! Destructor: decrement counter
+        ~DeferDatasetClosing() { QgsOgrProviderUtils::decrementDeferDatasetClosingCounter(); }
+    };
+};
 
 /**
  * \class QgsOgrDataset
