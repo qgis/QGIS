@@ -211,6 +211,12 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      */
     void loadUserProfile( const QString &name );
 
+    /**
+     * Returns the settings for the profile manager.
+     * \since QGIS 3.32
+    */
+    QSettings *settings();
+
   signals:
 
     /**
