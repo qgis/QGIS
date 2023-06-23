@@ -110,11 +110,6 @@ fi
 
 trap cleanup EXIT
 
-branch=$(git name-rev --name-only HEAD)
-if [[ "$branch" =~ ^release-[0-9]+_[0-9]+$ ]]; then
-	TX_FLAGS="--branch '${branch}'"
-fi
-
 echo Saving translations
 files="$files $(find python -name "*.ts")"
 [ $action = push ] && files="$files i18n/qgis_*.ts"
@@ -124,7 +119,7 @@ if [ $action = push ]; then
 	echo Pulling source from transifex...
 	fail=1
 	for i in $(seq $retries); do
-		tx pull -s $TX_FLAGS && fail=0 && break
+		tx pull -s && fail=0 && break
 		echo Retry $i/$retries...
 		sleep 10
 	done
@@ -149,7 +144,7 @@ elif [ $action = pull ]; then
 
 	fail=1
 	for i in $(seq $retries); do
-		tx pull $o --minimum-perc=35 $TX_FLAGS && fail=0 && break
+		tx pull $o --minimum-perc=35 && fail=0 && break
 		echo Retry $i/$retries...
 		sleep 10
 	done
@@ -198,8 +193,15 @@ EOF
 	echo Updating appinfo files
 	python3 scripts/appinfo2ui.py >src/app/appinfo-i18n.ui
 
+	echo Excluding qtermwidget translation files
+	tar --remove-files -cf src/plugins/grass/qtermwidget/translations.tar src/plugins/grass/qtermwidget/translations/
+
 	echo Creating qmake project file
 	$QMAKE -project -o qgis_ts.pro -nopwd $SRCDIR/src $SRCDIR/python $SRCDIR/i18n $textcpp
+
+	echo Restoring qtermwidget translation files
+	tar xf src/plugins/grass/qtermwidget/translations.tar
+	rm src/plugins/grass/qtermwidget/translations.tar
 
 	QT_INSTALL_HEADERS=$(qmake -query QT_INSTALL_HEADERS)
 
@@ -216,7 +218,7 @@ if [ $action = push ]; then
 	echo Pushing translation...
 	fail=1
 	for i in $(seq $retries); do
-		tx push -s $TX_FLAGS && fail=0 && break
+		tx push -s && fail=0 && break
 		echo Retry $i/$retries...
 		sleep 10
 	done
