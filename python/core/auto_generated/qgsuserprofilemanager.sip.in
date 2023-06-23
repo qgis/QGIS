@@ -221,6 +221,13 @@ Starts a new instance of QGIS for the given profile.
 :param name: The profile to start QGIS with.
 %End
 
+    QSettings *settings();
+%Docstring
+Returns the settings for the profile manager.
+
+.. versionadded:: 3.32
+%End
+
   signals:
 
     void profilesChanged();

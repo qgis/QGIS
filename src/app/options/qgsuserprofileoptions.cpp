@@ -40,12 +40,11 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
   connect( mAskUser, &QRadioButton::toggled, mProfileSelectorGroupBox, &QGroupBox::setEnabled );
 
   // Connect icon size and allow profile creation
-  mIconSize->setCurrentText( QString::number( QSettings().value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt() ) );
-  connect( mIconSize, &QComboBox::currentTextChanged, this, []( const QString & text )
+  mIconSize->setCurrentText( QString::number( manager->settings()->value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt() ) );
+  connect( mIconSize, &QComboBox::currentTextChanged, this, [manager]( const QString & text )
   {
-    QSettings settings;
-    settings.setValue( QStringLiteral( "/selector/iconSize" ), text.toInt() );
-    settings.sync();
+    manager->settings()->setValue( QStringLiteral( "/selector/iconSize" ), text.toInt() );
+    manager->settings()->sync();
   } );
 
   // Connect change icon button
