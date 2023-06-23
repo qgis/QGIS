@@ -226,6 +226,11 @@ QString QgsUserProfileManager::settingsFile() const
   return  mRootProfilePath + QDir::separator() + "profiles.ini";
 }
 
+QSettings *QgsUserProfileManager::settings()
+{
+  return mSettings.get();
+}
+
 QgsUserProfile *QgsUserProfileManager::userProfile()
 {
   return mUserProfile.get();
