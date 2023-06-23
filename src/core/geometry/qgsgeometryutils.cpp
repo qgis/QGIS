@@ -1834,6 +1834,17 @@ double QgsGeometryUtils::triangleArea( double aX, double aY, double bX, double b
   return 0.5 * std::abs( ( aX - cX ) * ( bY - aY ) - ( aX - bX ) * ( cY - aY ) );
 }
 
+double QgsGeometryUtils::pointFractionAlongLine( double x1, double y1, double x2, double y2, double px, double py )
+{
+  const double dxp = px - x1;
+  const double dyp = py - y1;
+
+  const double dxl = x2 - x1;
+  const double dyl = y2 - y1;
+
+  return std::sqrt( ( dxp * dxp ) + ( dyp * dyp ) ) / std::sqrt( ( dxl * dxl ) + ( dyl * dyl ) );
+}
+
 void QgsGeometryUtils::weightedPointInTriangle( const double aX, const double aY, const double bX, const double bY, const double cX, const double cY,
     double weightB, double weightC, double &pointX, double &pointY )
 {
