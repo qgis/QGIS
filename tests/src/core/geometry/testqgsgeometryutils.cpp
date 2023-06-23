@@ -74,6 +74,7 @@ class TestQgsGeometryUtils: public QObject
     void testInterpolatePointOnLine();
     void testInterpolatePointOnLineByValue();
     void testPointOnLineWithDistance();
+    void testPointFractionAlongLine();
     void interpolatePointOnArc();
     void testSegmentizeArcHalfCircle();
     void testSegmentizeArcHalfCircleOtherDirection();
@@ -1376,7 +1377,13 @@ void TestQgsGeometryUtils::testPointOnLineWithDistance()
   QgsGeometryUtils::pointOnLineWithDistance( 0, 0, -10, -6, -10, x, y );
   QGSCOMPARENEAR( x, 8.57493, 0.0001 );
   QGSCOMPARENEAR( y, 5.14496, 0.0001 );
+}
 
+void TestQgsGeometryUtils::testPointFractionAlongLine()
+{
+  QGSCOMPARENEAR( QgsGeometryUtils::pointFractionAlongLine( 0, 10, 20, 30, 0, 10 ), 0, 0.00001 );
+  QGSCOMPARENEAR( QgsGeometryUtils::pointFractionAlongLine( 0, 10, 20, 30, 20, 30 ), 1.0, 0.00001 );
+  QGSCOMPARENEAR( QgsGeometryUtils::pointFractionAlongLine( 0, 10, 20, 10, 10, 10 ), 0.5, 0.00001 );
 }
 
 void TestQgsGeometryUtils::interpolatePointOnArc()

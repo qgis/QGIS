@@ -766,6 +766,18 @@ Returns the area of the triangle denoted by the points (``aX``, ``aY``), (``bX``
 .. versionadded:: 3.10
 %End
 
+    static double pointFractionAlongLine( double x1, double y1, double x2, double y2, double px, double py );
+%Docstring
+Given the line (``x1``, ``y1``) to (``x2``, ``y2``) and a point (``px``, ``py``) returns the percentage
+of the line length at which the point lies.
+
+.. warning::
+
+   this method requires that the point definitely lies on the line!
+
+.. versionadded:: 3.32
+%End
+
     static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
                                          double weightB, double weightC, double &pointX /Out/, double &pointY /Out/ ) /HoldGIL/;
 %Docstring
