@@ -184,6 +184,7 @@ Sets the ``port`` the socket connects to.
 
 };
 
+%If (HAVE_QTSERIALPORT)
 
 class QgsSerialPortSensor : QgsIODeviceSensor
 {
@@ -239,6 +240,7 @@ Sets the serial port the sensor connects to.
 
 
 };
+%End
 
 
 

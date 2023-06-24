@@ -50,10 +50,12 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
       {
         sipType = sipType_QgsUdpSocketSensor;
       }
+#if defined( HAVE_QTSERIALPORT )
       else if ( item->type() == QLatin1String( "serial_port" ) && dynamic_cast<QgsSerialPortSensor *>( item ) != NULL )
       {
         sipType = sipType_QgsSerialPortSensor;
       }
+#endif
       else
       {
         sipType = sipType_QgsAbstractSensor;
