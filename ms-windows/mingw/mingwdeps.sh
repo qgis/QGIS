@@ -5,8 +5,6 @@
 # just the "tsflags=nodocs" line
 printf '[main]\ngpgcheck=True\ninstallonly_limit=3\nclean_requirements_on_remove=True\nbest=False\nskip_if_unavailable=True\ntsflags=nodocs' > /etc/dnf/dnf.conf
 
-dnf install -y 'dnf-command(config-manager)' && \
-dnf config-manager --add-repo https://copr.fedorainfracloud.org/coprs/smani/mingw-extras/repo/fedora-rawhide/smani-mingw-extras-fedora-rawhide.repo && \
 dnf install -y --nogpgcheck \
   mingw64-dlfcn \
   mingw64-exiv2 \
