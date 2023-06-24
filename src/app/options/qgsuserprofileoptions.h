@@ -45,6 +45,8 @@ class APP_EXPORT QgsUserProfileOptionsWidget : public QgsOptionsPageWidget, priv
     //! Reset the profile icon to default
     void onResetIconClicked();
 
+    // Show or hide user selector dialog icon setting
+    void onAskUserChanged();
 };
 
 
