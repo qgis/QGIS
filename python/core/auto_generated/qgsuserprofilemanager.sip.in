@@ -145,7 +145,7 @@ Set the default profile name from the current active profile.
 
     QString lastProfileName() const;
 %Docstring
-Returns the name of the most recently closed profile. Empty if its the first time QGIS has been run.
+Returns the name of the most recently closed profile. Empty if it is the first time QGIS is run.
 
 .. versionadded:: 3.32
 %End
