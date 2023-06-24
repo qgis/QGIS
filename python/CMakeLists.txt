@@ -170,6 +170,10 @@ if(NOT WITH_GUI)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_GUI)
 endif()
 
+if(NOT WITH_QTSERIALPORT)
+  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QTSERIALPORT)
+endif()
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/core/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/core/project.py @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/core/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/core/pyproject.toml @ONLY)
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp_files)

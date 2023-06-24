@@ -220,6 +220,7 @@ class CORE_EXPORT QgsUdpSocketSensor : public QgsIODeviceSensor
 };
 
 #if defined( HAVE_QTSERIALPORT )
+SIP_IF_FEATURE( HAVE_QTSERIALPORT )
 
 /**
  * \ingroup core
@@ -279,6 +280,7 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
     QString mPortName;
 
 };
+SIP_END
 #endif
 
 #endif //QGSIODEVICESENSOR_H
