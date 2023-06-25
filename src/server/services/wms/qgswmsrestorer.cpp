@@ -71,6 +71,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         break;
     }
 
@@ -131,6 +132,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         break;
     }
   }

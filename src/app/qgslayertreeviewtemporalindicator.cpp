@@ -60,6 +60,7 @@ void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModel
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       break;
   }
 }

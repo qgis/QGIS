@@ -540,6 +540,7 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       break;
   }
 }

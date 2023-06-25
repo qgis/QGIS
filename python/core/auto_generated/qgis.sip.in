@@ -84,6 +84,7 @@ The development version
       Annotation,
       PointCloud,
       Group,
+      TiledMesh,
     };
 
     enum class WkbType
@@ -389,7 +390,8 @@ The development version
       Plugin,
       Mesh,
       VectorTile,
-      PointCloud
+      PointCloud,
+      TiledMesh,
     };
 
     enum class BrowserDirectoryMonitoring

@@ -537,6 +537,7 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       break;
   }
 }
@@ -2143,6 +2144,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
     case Qgis::LayerType::Mesh:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       return; // not supported
   }
 

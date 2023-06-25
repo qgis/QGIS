@@ -3222,6 +3222,7 @@ namespace QgsWms
         case Qgis::LayerType::Annotation:
         case Qgis::LayerType::PointCloud:
         case Qgis::LayerType::Group:
+        case Qgis::LayerType::TiledMesh:
           break;
       }
     }

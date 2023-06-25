@@ -1028,6 +1028,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
         case Qgis::LayerType::VectorTile:
         case Qgis::LayerType::PointCloud:
         case Qgis::LayerType::Group:
+        case Qgis::LayerType::TiledMesh:
           break;
       }
     } );

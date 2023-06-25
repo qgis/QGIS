@@ -394,6 +394,12 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         feedback->pushDebugInfo( QObject::tr( "Packaging group layers is not supported." ) );
         errored = true;
         break;
+
+      case Qgis::LayerType::TiledMesh:
+        //not supported
+        feedback->pushDebugInfo( QObject::tr( "Packaging tiled mesh layers is not supported." ) );
+        errored = true;
+        break;
     }
   }
 

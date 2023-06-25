@@ -258,6 +258,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
       case Qgis::LayerType::Mesh:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         break;
     }
 

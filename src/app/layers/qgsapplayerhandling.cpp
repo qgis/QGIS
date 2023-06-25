@@ -133,6 +133,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
     }
 
     case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::TiledMesh:
     {
       bool ok = false;
       QString error = layer->loadDefaultStyle( ok );
@@ -254,6 +255,7 @@ void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> &la
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         break;
     }
   }
@@ -843,6 +845,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
       case Qgis::LayerType::Plugin:
       case Qgis::LayerType::VectorTile:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         // not supported here yet!
         break;
 

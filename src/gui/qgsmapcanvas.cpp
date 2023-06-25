@@ -437,6 +437,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         break;
     }
   }
@@ -474,6 +475,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         break;
     }
   }
@@ -1770,6 +1772,7 @@ void QgsMapCanvas::zoomToSelected( QgsMapLayer *layer )
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       return;   // not supported
   }
 
@@ -1838,6 +1841,7 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         break;
     }
   }
@@ -2024,6 +2028,7 @@ void QgsMapCanvas::panToSelected( QgsMapLayer *layer )
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       return;
   }
 
@@ -2095,6 +2100,7 @@ void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         continue;
     }
 

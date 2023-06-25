@@ -162,6 +162,9 @@ Qgis::BrowserLayerType QgsProviderSublayerItem::layerTypeFromSublayer( const Qgs
     case Qgis::LayerType::PointCloud:
       return Qgis::BrowserLayerType::PointCloud;
 
+    case Qgis::LayerType::TiledMesh:
+      return Qgis::BrowserLayerType::TiledMesh;
+
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
       break;

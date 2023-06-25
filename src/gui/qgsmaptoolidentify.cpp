@@ -1396,6 +1396,7 @@ void QgsMapToolIdentify::fromElevationProfileLayerIdentificationToIdentifyResult
 
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::TiledMesh:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
       break;

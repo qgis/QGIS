@@ -34,7 +34,10 @@ QgsMapLayer.GroupLayer = Qgis.LayerType.Group
 QgsMapLayer.LayerType.GroupLayer = Qgis.LayerType.Group
 QgsMapLayer.GroupLayer.is_monkey_patched = True
 QgsMapLayer.GroupLayer.__doc__ = "Composite group layer. Added in QGIS 3.24"
-Qgis.LayerType.__doc__ = 'Types of layers that can be added to a map\n\n.. versionadded:: 3.30.\n\n' + '* ``VectorLayer``: ' + Qgis.LayerType.Vector.__doc__ + '\n' + '* ``RasterLayer``: ' + Qgis.LayerType.Raster.__doc__ + '\n' + '* ``PluginLayer``: ' + Qgis.LayerType.Plugin.__doc__ + '\n' + '* ``MeshLayer``: ' + Qgis.LayerType.Mesh.__doc__ + '\n' + '* ``VectorTileLayer``: ' + Qgis.LayerType.VectorTile.__doc__ + '\n' + '* ``AnnotationLayer``: ' + Qgis.LayerType.Annotation.__doc__ + '\n' + '* ``PointCloudLayer``: ' + Qgis.LayerType.PointCloud.__doc__ + '\n' + '* ``GroupLayer``: ' + Qgis.LayerType.Group.__doc__
+QgsMapLayer.TiledMesh = Qgis.LayerType.TiledMesh
+QgsMapLayer.TiledMesh.is_monkey_patched = True
+QgsMapLayer.TiledMesh.__doc__ = "Tiled mesh layer. Added in QGIS 3.34"
+Qgis.LayerType.__doc__ = 'Types of layers that can be added to a map\n\n.. versionadded:: 3.30.\n\n' + '* ``VectorLayer``: ' + Qgis.LayerType.Vector.__doc__ + '\n' + '* ``RasterLayer``: ' + Qgis.LayerType.Raster.__doc__ + '\n' + '* ``PluginLayer``: ' + Qgis.LayerType.Plugin.__doc__ + '\n' + '* ``MeshLayer``: ' + Qgis.LayerType.Mesh.__doc__ + '\n' + '* ``VectorTileLayer``: ' + Qgis.LayerType.VectorTile.__doc__ + '\n' + '* ``AnnotationLayer``: ' + Qgis.LayerType.Annotation.__doc__ + '\n' + '* ``PointCloudLayer``: ' + Qgis.LayerType.PointCloud.__doc__ + '\n' + '* ``GroupLayer``: ' + Qgis.LayerType.Group.__doc__ + '\n' + '* ``TiledMesh``: ' + Qgis.LayerType.TiledMesh.__doc__
 # --
 Qgis.LayerType.baseClass = Qgis
 QgsWkbTypes.Type = Qgis.WkbType
@@ -664,7 +667,10 @@ QgsLayerItem.VectorTile.__doc__ = "Vector tile layer"
 QgsLayerItem.PointCloud = Qgis.BrowserLayerType.PointCloud
 QgsLayerItem.PointCloud.is_monkey_patched = True
 QgsLayerItem.PointCloud.__doc__ = "Point cloud layer"
-Qgis.BrowserLayerType.__doc__ = 'Browser item layer types\n\n.. versionadded:: 3.20\n\n' + '* ``NoType``: ' + Qgis.BrowserLayerType.NoType.__doc__ + '\n' + '* ``Vector``: ' + Qgis.BrowserLayerType.Vector.__doc__ + '\n' + '* ``Raster``: ' + Qgis.BrowserLayerType.Raster.__doc__ + '\n' + '* ``Point``: ' + Qgis.BrowserLayerType.Point.__doc__ + '\n' + '* ``Line``: ' + Qgis.BrowserLayerType.Line.__doc__ + '\n' + '* ``Polygon``: ' + Qgis.BrowserLayerType.Polygon.__doc__ + '\n' + '* ``TableLayer``: ' + Qgis.BrowserLayerType.TableLayer.__doc__ + '\n' + '* ``Database``: ' + Qgis.BrowserLayerType.Database.__doc__ + '\n' + '* ``Table``: ' + Qgis.BrowserLayerType.Table.__doc__ + '\n' + '* ``Plugin``: ' + Qgis.BrowserLayerType.Plugin.__doc__ + '\n' + '* ``Mesh``: ' + Qgis.BrowserLayerType.Mesh.__doc__ + '\n' + '* ``VectorTile``: ' + Qgis.BrowserLayerType.VectorTile.__doc__ + '\n' + '* ``PointCloud``: ' + Qgis.BrowserLayerType.PointCloud.__doc__
+QgsLayerItem.TiledMesh = Qgis.BrowserLayerType.TiledMesh
+QgsLayerItem.TiledMesh.is_monkey_patched = True
+QgsLayerItem.TiledMesh.__doc__ = "Tiled mesh layer (since QGIS 3.34)"
+Qgis.BrowserLayerType.__doc__ = 'Browser item layer types\n\n.. versionadded:: 3.20\n\n' + '* ``NoType``: ' + Qgis.BrowserLayerType.NoType.__doc__ + '\n' + '* ``Vector``: ' + Qgis.BrowserLayerType.Vector.__doc__ + '\n' + '* ``Raster``: ' + Qgis.BrowserLayerType.Raster.__doc__ + '\n' + '* ``Point``: ' + Qgis.BrowserLayerType.Point.__doc__ + '\n' + '* ``Line``: ' + Qgis.BrowserLayerType.Line.__doc__ + '\n' + '* ``Polygon``: ' + Qgis.BrowserLayerType.Polygon.__doc__ + '\n' + '* ``TableLayer``: ' + Qgis.BrowserLayerType.TableLayer.__doc__ + '\n' + '* ``Database``: ' + Qgis.BrowserLayerType.Database.__doc__ + '\n' + '* ``Table``: ' + Qgis.BrowserLayerType.Table.__doc__ + '\n' + '* ``Plugin``: ' + Qgis.BrowserLayerType.Plugin.__doc__ + '\n' + '* ``Mesh``: ' + Qgis.BrowserLayerType.Mesh.__doc__ + '\n' + '* ``VectorTile``: ' + Qgis.BrowserLayerType.VectorTile.__doc__ + '\n' + '* ``PointCloud``: ' + Qgis.BrowserLayerType.PointCloud.__doc__ + '\n' + '* ``TiledMesh``: ' + Qgis.BrowserLayerType.TiledMesh.__doc__
 # --
 Qgis.BrowserLayerType.baseClass = Qgis
 # monkey patching scoped based enum

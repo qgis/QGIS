@@ -57,6 +57,9 @@ QgsMimeDataUtils::Uri QgsProviderSublayerDetails::toMimeUri() const
     case Qgis::LayerType::Annotation:
       u.layerType = QStringLiteral( "annotation" );
       break;
+    case Qgis::LayerType::TiledMesh:
+      u.layerType = QStringLiteral( "tiled-mesh" );
+      break;
   }
 
   u.providerKey = mProviderKey;

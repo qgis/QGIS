@@ -102,6 +102,7 @@ class CORE_EXPORT QgsMimeDataUtils
        * - "mesh": mesh layers
        * - "pointcloud": point cloud layers
        * - "vector-tile": vector tile layers
+       * - "tiled-mesh": tiled mesh layers
        * - "plugin": plugin layers
        * - "custom": custom types
        * - "project": QGS/QGZ project file

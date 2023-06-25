@@ -88,6 +88,7 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
         case Qgis::LayerType::Annotation:
         case Qgis::LayerType::PointCloud:
         case Qgis::LayerType::Group:
+        case Qgis::LayerType::TiledMesh:
           return true;
       }
     }
@@ -179,6 +180,7 @@ bool QgsMapToolLabel::calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, 
         case Qgis::LayerType::Annotation:
         case Qgis::LayerType::PointCloud:
         case Qgis::LayerType::Group:
+        case Qgis::LayerType::TiledMesh:
           return true;
       }
     }

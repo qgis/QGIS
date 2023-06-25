@@ -8195,6 +8195,7 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       return QString();
   }
   return QString();
@@ -9924,6 +9925,7 @@ void QgisApp::deselectActiveLayer()
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
     {
       visibleMessageBar()->pushMessage(
         tr( "No active vector layer" ),
@@ -10087,6 +10089,7 @@ void QgisApp::copySelectionToClipboard( QgsMapLayer *layerContainingSelection )
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       return; // not supported
   }
 }
@@ -10675,6 +10678,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       break;
   }
   return false;
@@ -11007,6 +11011,7 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       break;
   }
 }
@@ -11074,6 +11079,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       break;
   }
 }
@@ -11293,6 +11299,7 @@ void QgisApp::updateLayerModifiedActions()
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         break;
     }
   }
@@ -11768,6 +11775,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
       case Qgis::LayerType::VectorTile:
       case Qgis::LayerType::Mesh:
       case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::TiledMesh:
       {
         dupLayer = selectedLyr->clone();
         break;
@@ -14631,6 +14639,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         break;   // not supported
     }
   }
@@ -14764,6 +14773,7 @@ bool QgisApp::selectedLayersHaveSelection()
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         return false;
     }
   }
@@ -14795,6 +14805,7 @@ bool QgisApp::selectedLayersHaveSelection()
       case Qgis::LayerType::Mesh:
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::TiledMesh:
       case Qgis::LayerType::Group:
         break;
     }
@@ -15606,6 +15617,76 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mDigitizingTechniqueManager->enableDigitizingTechniqueActions( true );
       mActionToggleEditing->setEnabled( false );
       mActionToggleEditing->setChecked( true ); // always editable
+      mActionUndo->setEnabled( false );
+      mActionRedo->setEnabled( false );
+      updateUndoActions();
+      break;
+    }
+
+    case Qgis::LayerType::TiledMesh:
+    {
+      mActionLocalHistogramStretch->setEnabled( false );
+      mActionFullHistogramStretch->setEnabled( false );
+      mActionLocalCumulativeCutStretch->setEnabled( false );
+      mActionFullCumulativeCutStretch->setEnabled( false );
+      mActionIncreaseBrightness->setEnabled( false );
+      mActionDecreaseBrightness->setEnabled( false );
+      mActionIncreaseContrast->setEnabled( false );
+      mActionDecreaseContrast->setEnabled( false );
+      mActionIncreaseGamma->setEnabled( false );
+      mActionDecreaseGamma->setEnabled( false );
+      mActionLayerSubsetString->setEnabled( false );
+      mActionFeatureAction->setEnabled( false );
+      mActionSelectFeatures->setEnabled( false );
+      mActionSelectPolygon->setEnabled( false );
+      mActionSelectFreehand->setEnabled( false );
+      mActionSelectRadius->setEnabled( false );
+      mActionZoomActualSize->setEnabled( false );
+      mActionZoomToLayer->setEnabled( true );
+      mActionOpenTable->setEnabled( false );
+      mMenuFilterTable->setEnabled( false );
+      mActionOpenTableSelected->setEnabled( false );
+      mActionOpenTableVisible->setEnabled( false );
+      mActionOpenTableEdited->setEnabled( false );
+      mActionSelectAll->setEnabled( false );
+      mActionReselect->setEnabled( false );
+      mActionInvertSelection->setEnabled( false );
+      mActionSelectByExpression->setEnabled( false );
+      mActionSelectByForm->setEnabled( false );
+      mActionOpenFieldCalc->setEnabled( false );
+      mActionSaveLayerEdits->setEnabled( false );
+      mUndoDock->widget()->setEnabled( false );
+      mActionSaveLayerDefinition->setEnabled( false );
+      mActionLayerSaveAs->setEnabled( false );
+      mActionAddFeature->setEnabled( false );
+      mActionDeleteSelected->setEnabled( false );
+      mActionAddRing->setEnabled( false );
+      mActionFillRing->setEnabled( false );
+      mActionAddPart->setEnabled( false );
+      mActionVertexTool->setEnabled( false );
+      mActionVertexToolActiveLayer->setEnabled( false );
+      mActionMoveFeature->setEnabled( false );
+      mActionMoveFeatureCopy->setEnabled( false );
+      mActionRotateFeature->setEnabled( false );
+      mActionScaleFeature->setEnabled( false );
+      mActionOffsetCurve->setEnabled( false );
+      mActionCopyFeatures->setEnabled( false );
+      mActionCutFeatures->setEnabled( false );
+      mActionPasteFeatures->setEnabled( false );
+      mActionRotatePointSymbols->setEnabled( false );
+      mActionOffsetPointSymbol->setEnabled( false );
+      mActionDeletePart->setEnabled( false );
+      mActionDeleteRing->setEnabled( false );
+      mActionSimplifyFeature->setEnabled( false );
+      mActionReshapeFeatures->setEnabled( false );
+      mActionSplitFeatures->setEnabled( false );
+      mActionSplitParts->setEnabled( false );
+      mActionLabeling->setEnabled( false );
+      mActionDiagramProperties->setEnabled( false );
+      mActionIdentify->setEnabled( false );
+      mDigitizingTechniqueManager->enableDigitizingTechniqueActions( false );
+      mActionToggleEditing->setEnabled( false );
+      mActionToggleEditing->setChecked( false );
       mActionUndo->setEnabled( false );
       mActionRedo->setEnabled( false );
       updateUndoActions();

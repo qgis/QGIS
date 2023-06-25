@@ -120,6 +120,7 @@ class CORE_EXPORT Qgis
       Annotation SIP_MONKEYPATCH_COMPAT_NAME( AnnotationLayer ), //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
       PointCloud SIP_MONKEYPATCH_COMPAT_NAME( PointCloudLayer ), //!< Point cloud layer. Added in QGIS 3.18
       Group SIP_MONKEYPATCH_COMPAT_NAME( GroupLayer ), //!< Composite group layer. Added in QGIS 3.24
+      TiledMesh, //!< Tiled mesh layer. Added in QGIS 3.34
     };
     Q_ENUM( LayerType )
 
@@ -615,7 +616,8 @@ class CORE_EXPORT Qgis
       Plugin, //!< Plugin based layer
       Mesh, //!< Mesh layer
       VectorTile, //!< Vector tile layer
-      PointCloud //!< Point cloud layer
+      PointCloud, //!< Point cloud layer
+      TiledMesh, //!< Tiled mesh layer (since QGIS 3.34)
     };
     Q_ENUM( BrowserLayerType )
 
