@@ -42,8 +42,9 @@ class GUI_EXPORT QgsAbstract3DMapController : public QgsAbstractInputController
     Qgis::InputControllerType type() const override;
 
   signals:
+#if 0
 
-    // a bunch of signals relating to navigating a 3D map, eg
+    // TODO: add a bunch of signals relating to navigating a 3D map, eg
 
     /**
      * Emitted when the controller needs to change the 3d camera angle by the specified \a delta.
@@ -51,6 +52,7 @@ class GUI_EXPORT QgsAbstract3DMapController : public QgsAbstractInputController
     void changeCameraAngleByDelta( double delta );
 
     // etc
+#endif
 };
 
 

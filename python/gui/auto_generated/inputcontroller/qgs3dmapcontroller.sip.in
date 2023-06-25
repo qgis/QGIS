@@ -30,13 +30,6 @@ Constructor for QgsAbstract3DMapController, with the specified ``parent`` object
 
 
   signals:
-
-
-    void changeCameraAngleByDelta( double delta );
-%Docstring
-Emitted when the controller needs to change the 3d camera angle by the specified ``delta``.
-%End
-
 };
 
 

@@ -32,12 +32,6 @@ Constructor for QgsAbstract2DMapController, with the specified ``parent`` object
   signals:
 
 
-    void zoomMap( double factor );
-%Docstring
-Emitted when the controller should change the scale of a map by the given ``factor``.
-%End
-
-
 };
 
 
