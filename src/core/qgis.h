@@ -3487,7 +3487,7 @@ class CORE_EXPORT Qgis
     /**
      * Input controller types.
      *
-     * \since QGIS 3.32
+     * \since QGIS 3.34
      */
     enum class InputControllerType : int
     {
