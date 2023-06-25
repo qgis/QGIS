@@ -304,7 +304,7 @@ void QgsMapRendererCustomPainterJob::doRender()
   const QgsElevationShadingRenderer mapShadingRenderer = mSettings.elevationShadingRenderer();
   std::unique_ptr<QgsElevationMap> mainElevationMap;
   if ( mapShadingRenderer.isActive() )
-    mainElevationMap.reset( new QgsElevationMap( mSettings.outputSize() ) );
+    mainElevationMap.reset( new QgsElevationMap( mSettings.deviceOutputSize(), mSettings.devicePixelRatio() ) );
 
   for ( LayerRenderJob &job : mLayerJobs )
   {

@@ -47,7 +47,7 @@ class CORE_EXPORT QgsElevationMap
     QgsElevationMap() = default;
 
     //! Constructs an elevation map with the given width and height
-    explicit QgsElevationMap( const QSize &size );
+    explicit QgsElevationMap( const QSize &size, float devicePixelRatio = 1.0 );
 
     /**
      * Constructs an elevation map from an existing raw elevation \a image.

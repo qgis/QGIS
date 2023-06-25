@@ -424,8 +424,8 @@ void QgsRasterLayerRenderer::drawElevationMap()
     else
       dpiScalefactor = 1.0;
 
-    int outputWidth = static_cast<int>( static_cast<double>( mRasterViewPort->mWidth )  / dpiScalefactor ) ;
-    int outputHeight =  static_cast<int>( static_cast<double>( mRasterViewPort->mHeight ) / dpiScalefactor );
+    int outputWidth = static_cast<int>( static_cast<double>( mRasterViewPort->mWidth )  / dpiScalefactor * renderContext()->devicePixelRatio() );
+    int outputHeight =  static_cast<int>( static_cast<double>( mRasterViewPort->mHeight ) / dpiScalefactor * renderContext()->devicePixelRatio() );
 
     QSize viewSize = renderContext()->deviceOutputSize();
     int viewWidth =  static_cast<int>( viewSize.width() / dpiScalefactor );
@@ -576,7 +576,9 @@ void QgsRasterLayerRenderer::drawElevationMap()
           QgsGdalUtils::blockToSingleBandMemoryDataset( mRasterViewPort->mDrawnExtent, elevationBlock.get() );
 
         std::unique_ptr<QgsRasterBlock> rotatedElevationBlock =
-          std::make_unique<QgsRasterBlock>( elevationBlock->dataType(), right - left + 1, bottom - top + 1 );
+          std::make_unique<QgsRasterBlock>( elevationBlock->dataType(),
+                                            ( right - left ) * renderContext()->devicePixelRatio() + 1,
+                                            ( bottom - top ) * renderContext()->devicePixelRatio() + 1 );
 
         rotatedElevationBlock->setNoDataValue( elevationBlock->noDataValue() );
 
@@ -600,8 +602,8 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
       renderContext()->elevationMap()->fillWithRasterBlock(
         elevationBlock.get(),
-        topLeft.y(),
-        topLeft.x(),
+        topLeft.y() * renderContext()->devicePixelRatio(),
+        topLeft.x() * renderContext()->devicePixelRatio(),
         mElevationScale,
         mElevationOffset );
     }
