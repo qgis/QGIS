@@ -579,6 +579,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           case Qgis::LayerType::Mesh:
           case Qgis::LayerType::VectorTile:
           case Qgis::LayerType::PointCloud:
+          case Qgis::LayerType::TiledMesh:
           {
             bool enableSaveAs = ( pcLayer && pcLayer->isValid() && pcLayer->dataProvider()->hasValidIndex() ) ||
                                 ( rlayer && rlayer->isValid() );

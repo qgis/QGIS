@@ -107,6 +107,7 @@ QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
     {
       return QgsIconUtils::iconForLayerType( layer->type() );
     }

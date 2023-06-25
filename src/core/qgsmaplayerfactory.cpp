@@ -43,6 +43,8 @@ Qgis::LayerType QgsMapLayerFactory::typeFromString( const QString &string, bool 
     return Qgis::LayerType::Annotation;
   else if ( string.compare( QLatin1String( "group" ), Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::Group;
+  else if ( string.compare( QLatin1String( "tiled-mesh" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::LayerType::TiledMesh;
 
   ok = false;
   return Qgis::LayerType::Vector;
@@ -68,6 +70,8 @@ QString QgsMapLayerFactory::typeToString( Qgis::LayerType type )
       return QStringLiteral( "point-cloud" );
     case Qgis::LayerType::Group:
       return QStringLiteral( "group" );
+    case Qgis::LayerType::TiledMesh:
+      return QStringLiteral( "tiled-mesh" );
   }
   return QString();
 }

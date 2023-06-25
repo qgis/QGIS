@@ -108,6 +108,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::connectSignals( QgsMapLayer *layer
     case Qgis::LayerType::Mesh:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::TiledMesh:
       break;
   }
 }
@@ -144,6 +145,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::disconnectSignals( QgsMapLayer *la
     case Qgis::LayerType::Mesh:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::TiledMesh:
       break;
   }
 }
@@ -172,6 +174,7 @@ bool QgsLayerTreeViewFilterIndicatorProvider::acceptLayer( QgsMapLayer *layer )
     case Qgis::LayerType::Mesh:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::TiledMesh:
       break;
   }
   return false;

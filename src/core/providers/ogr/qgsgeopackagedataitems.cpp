@@ -152,6 +152,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledMesh:
         break;
     }
   }
