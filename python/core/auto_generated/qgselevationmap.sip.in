@@ -37,7 +37,7 @@ in meters.
 Default constructor
 %End
 
-    explicit QgsElevationMap( const QSize &size );
+    explicit QgsElevationMap( const QSize &size, float devicePixelRatio = 1.0 );
 %Docstring
 Constructs an elevation map with the given width and height
 %End
