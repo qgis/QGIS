@@ -470,7 +470,7 @@ QgsRasterMatrix QgsRasterCalcNode::evaluateFunction( const QVector<QgsRasterMatr
     int nCols = matrixVector.at( 0 )->nColumns();
     int nRows = matrixVector.at( 0 )->nRows();
     int nEntries = nCols * nRows;
-    std::unique_ptr< double > dataResult( new double[nEntries] );
+    std::unique_ptr< double[] > dataResult = std::make_unique< double[] >( nEntries );
     double *dataResultRawPtr =  dataResult.get();
 
     double *condition = matrixVector.at( 0 )->data();
