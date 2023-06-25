@@ -14,7 +14,7 @@ class QgsAbstractInputController : QObject
 %Docstring(signature="appended")
 Abstract base class for all input controllers.
 
-.. versionadded:: 3.32
+.. versionadded:: 3.34
 %End
 
 %TypeHeaderCode

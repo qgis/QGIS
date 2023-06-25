@@ -940,7 +940,7 @@ Sets the input controller device to use for controlling the canvas.
 
 Ownership of ``controller`` is transferred to the canvas.
 
-.. versionadded:: 3.32
+.. versionadded:: 3.34
 %End
 
   public slots:

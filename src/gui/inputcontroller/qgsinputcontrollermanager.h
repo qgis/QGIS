@@ -34,7 +34,7 @@ class QgsAbstract3DMapController;
  * QgsInputControllerManager is not usually directly created, but rather accessed through
  * QgsGui::inputControllerManager().
  *
- * \since QGIS 3.32
+ * \since QGIS 3.34
  */
 class GUI_EXPORT QgsInputControllerManager : public QObject
 {

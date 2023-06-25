@@ -24,7 +24,7 @@ class QgsGamepad3DMapController : QgsAbstract3DMapController
 %Docstring(signature="appended")
 Represents a gamepad device used for controlling a 3D map.
 
-.. versionadded:: 3.32
+.. versionadded:: 3.34
 %End
 
 %TypeHeaderCode
