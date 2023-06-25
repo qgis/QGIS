@@ -13,7 +13,7 @@ class QgsAbstract3DMapController : QgsAbstractInputController
 %Docstring(signature="appended")
 Abstract base class for all 3D map controllers.
 
-.. versionadded:: 3.32
+.. versionadded:: 3.34
 %End
 
 %TypeHeaderCode

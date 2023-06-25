@@ -44,7 +44,7 @@ class QGamepad;
  * \class QgsGamepad2DMapController
  * \brief Represents a gamepad device used for controlling a 2D map.
  *
- * \since QGIS 3.32
+ * \since QGIS 3.34
  */
 class GUI_EXPORT QgsGamepad2DMapController : public QgsAbstract2DMapController
 {

@@ -26,7 +26,7 @@
  * \class QgsAbstract2DMapController
  * \brief Abstract base class for all 2D map controllers.
  *
- * \since QGIS 3.32
+ * \since QGIS 3.34
  */
 class GUI_EXPORT QgsAbstract2DMapController : public QgsAbstractInputController
 {

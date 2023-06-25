@@ -26,7 +26,7 @@
  * \class QgsAbstract3DMapController
  * \brief Abstract base class for all 3D map controllers.
  *
- * \since QGIS 3.32
+ * \since QGIS 3.34
  */
 class GUI_EXPORT QgsAbstract3DMapController : public QgsAbstractInputController
 {

@@ -18,7 +18,7 @@ Manages input control devices.
 :py:class:`QgsInputControllerManager` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.inputControllerManager()`.
 
-.. versionadded:: 3.32
+.. versionadded:: 3.34
 %End
 
 %TypeHeaderCode

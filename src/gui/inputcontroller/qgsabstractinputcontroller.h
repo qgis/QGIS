@@ -27,7 +27,7 @@
  * \class QgsAbstractInputController
  * \brief Abstract base class for all input controllers.
  *
- * \since QGIS 3.32
+ * \since QGIS 3.34
  */
 class GUI_EXPORT QgsAbstractInputController : public QObject
 {

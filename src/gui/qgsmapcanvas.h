@@ -891,7 +891,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      *
      * Ownership of \a controller is transferred to the canvas.
      *
-     * \since QGIS 3.32
+     * \since QGIS 3.34
      */
     void setMapController( QgsAbstract2DMapController *controller SIP_TRANSFER );
 
