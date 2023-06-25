@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgs2dmapcontrollercontroller.h
+    qgs2dmapcontroller.h
     ---------------------
     begin                : March 2023
     copyright            : (C) 2023 by Nyall Dawson
@@ -43,7 +43,8 @@ class GUI_EXPORT QgsAbstract2DMapController : public QgsAbstractInputController
 
   signals:
 
-    // a bunch of signals relating to navigating a 2D map, eg
+#if 0
+    // TODO: add a bunch of signals relating to navigating a 2D map, eg
 
     /**
      * Emitted when the controller should change the scale of a map by the given \a factor.
@@ -51,6 +52,7 @@ class GUI_EXPORT QgsAbstract2DMapController : public QgsAbstractInputController
     void zoomMap( double factor );
 
     // etc
+#endif
 
 };
 

@@ -1332,8 +1332,10 @@ void QgsMapCanvas::setMapController( QgsAbstract2DMapController *controller )
   mMapController = controller;
   mMapController->setParent( this );
 
-  // connect high level signals to the canvas
+#if 0
+  // connect high level signals to the canvas, e.g.
   connect( mMapController, &QgsAbstract2DMapController::zoomMap, this, [ = ]( double factor ) { zoomByFactor( factor ); } );
+#endif
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
