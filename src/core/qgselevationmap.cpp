@@ -26,10 +26,11 @@ static const int ELEVATION_OFFSET = 7900;
 static const int ELEVATION_SCALE = 1000;
 
 
-QgsElevationMap::QgsElevationMap( const QSize &size )
+QgsElevationMap::QgsElevationMap( const QSize &size, float devicePixelRatio )
   : mElevationImage( size, QImage::Format_ARGB32 )
 {
   mElevationImage.fill( 0 );
+  mElevationImage.setDevicePixelRatio( devicePixelRatio );
 }
 
 QgsElevationMap::QgsElevationMap( const QImage &image )

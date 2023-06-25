@@ -416,7 +416,7 @@ QImage *QgsMapRendererJob::allocateImage( QString layerId )
 
 QgsElevationMap *QgsMapRendererJob::allocateElevationMap( QString layerId )
 {
-  std::unique_ptr<QgsElevationMap> elevationMap = std::make_unique<QgsElevationMap>( mSettings.deviceOutputSize() );
+  std::unique_ptr<QgsElevationMap> elevationMap = std::make_unique<QgsElevationMap>( mSettings.deviceOutputSize(), mSettings.devicePixelRatio() );
   if ( !elevationMap->isValid() )
   {
     mErrors.append( Error( layerId, tr( "Insufficient memory for elevation map %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
@@ -1142,7 +1142,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
   const QgsElevationShadingRenderer mapShadingRenderer = settings.elevationShadingRenderer();
   std::unique_ptr<QgsElevationMap> mainElevationMap;
   if ( mapShadingRenderer.isActive() )
-    mainElevationMap.reset( new QgsElevationMap( settings.outputSize() ) );
+    mainElevationMap.reset( new QgsElevationMap( settings.deviceOutputSize(), settings.devicePixelRatio() ) );
 
   QPainter painter( &image );
 
