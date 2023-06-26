@@ -49,6 +49,9 @@ void QgsMdalSourceSelect::addButtonClicked()
 
   for ( const QString &path : QgsFileWidget::splitFilePaths( mMeshPath ) )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     emit addMeshLayer( path, QFileInfo( path ).completeBaseName(), QStringLiteral( "mdal" ) );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::Mesh, path, QFileInfo( path ).completeBaseName(), QStringLiteral( "mdal" ) );
   }
 }

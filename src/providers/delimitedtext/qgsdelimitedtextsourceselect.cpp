@@ -168,7 +168,10 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
 
   // add the layer to the map
+  Q_NOWARN_DEPRECATED_PUSH
   emit addVectorLayer( datasourceUrl, txtLayerName->text() );
+  Q_NOWARN_DEPRECATED_POP
+  emit addLayer( Qgis::LayerType::Vector, datasourceUrl, txtLayerName->text(), QStringLiteral( "delimitedtext" ) );
 
   // clear the file and layer name show something has happened, ready for another file
 

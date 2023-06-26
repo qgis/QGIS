@@ -419,7 +419,10 @@ void QgsPgSourceSelect::addButtonClicked()
       for ( const auto &u : std::as_const( rasterTables ) )
       {
         // Use "gdal" to proxy rasters to GDAL provider, or "postgresraster" for native PostGIS raster provider
+        Q_NOWARN_DEPRECATED_PUSH
         emit addRasterLayer( u.second, u.first, QLatin1String( "postgresraster" ) );
+        Q_NOWARN_DEPRECATED_POP
+        emit addLayer( Qgis::LayerType::Raster, u.second, u.first, QLatin1String( "postgresraster" ) );
       }
     }
 

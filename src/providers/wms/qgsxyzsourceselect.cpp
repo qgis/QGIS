@@ -134,7 +134,10 @@ void QgsXyzSourceSelect::btnLoad_clicked()
 void QgsXyzSourceSelect::addButtonClicked()
 {
   const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  Q_NOWARN_DEPRECATED_PUSH
   emit addRasterLayer( mSourceWidget->sourceUri(), isCustom ? tr( "XYZ Layer" ) : cmbConnections->currentText(), QStringLiteral( "wms" ) );
+  Q_NOWARN_DEPRECATED_POP
+  emit addLayer( Qgis::LayerType::Raster, mSourceWidget->sourceUri(), isCustom ? tr( "XYZ Layer" ) : cmbConnections->currentText(), QStringLiteral( "wms" ) );
 }
 
 void QgsXyzSourceSelect::populateConnectionList()

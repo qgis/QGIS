@@ -93,9 +93,12 @@ This signal is normally forwarded the app and used to refresh browser items
 Emitted when a DB layer has been selected for addition
 %End
 
-    void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey );
+ void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey ) /Deprecated/;
 %Docstring
 Emitted when a raster layer has been selected for addition
+
+.. deprecated::
+   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
     void addRasterLayers( const QStringList &layersList );
@@ -107,33 +110,53 @@ Emitted when one or more GDAL supported layers are selected for addition
 .. versionadded:: 3.20
 %End
 
-    void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() );
+ void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() ) /Deprecated/;
 %Docstring
 Emitted when a vector layer has been selected for addition.
 
 If ``providerKey`` is not specified, the default provider key associated with the source
 will be used.
+
+.. deprecated::
+   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
-    void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
+ void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated/;
 %Docstring
 Emitted when a mesh layer has been selected for addition.
 
-.. versionadded:: 3.4
+.. deprecated::
+   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
-    void addVectorTileLayer( const QString &url, const QString &baseName );
+ void addVectorTileLayer( const QString &url, const QString &baseName ) /Deprecated/;
 %Docstring
 Emitted when a vector tile layer has been selected for addition.
 
-.. versionadded:: 3.14
+.. deprecated::
+   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
-    void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey );
+ void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated/;
 %Docstring
 Emitted when a point cloud layer has been selected for addition.
 
-.. versionadded:: 3.18
+.. deprecated::
+   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
+%End
+
+    void addLayer( Qgis::LayerType type, const QString &url, const QString &baseName, const QString &providerKey );
+%Docstring
+Emitted when a layer has been selected for addition.
+
+This is a generic method, intended for replacing the specific layer type signals implemented above.
+
+.. warning::
+
+   For QGIS versions < 4.x, the specific layer type added signals must be emitted for vector, raster,
+   mesh, vector tile and point cloud layers in addition to this signal.
+
+.. versionadded:: 3.34
 %End
 
     void addVectorLayers( const QStringList &layerList, const QString &encoding, const QString &dataSourceType );

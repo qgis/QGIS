@@ -337,11 +337,17 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
     switch ( serviceType )
     {
       case Qgis::ArcGisRestServiceType::FeatureServer:
+        Q_NOWARN_DEPRECATED_PUSH
         emit addVectorLayer( uri, layerName );
+        Q_NOWARN_DEPRECATED_POP
+        emit addLayer( Qgis::LayerType::Vector, uri, layerName, QStringLiteral( "arcgisfeatureserver" ) );
         break;
 
       case Qgis::ArcGisRestServiceType::MapServer:
+        Q_NOWARN_DEPRECATED_PUSH
         emit addRasterLayer( uri, layerName, QStringLiteral( "arcgismapserver" ) );
+        Q_NOWARN_DEPRECATED_POP
+        emit addLayer( Qgis::LayerType::Raster, uri, layerName, QStringLiteral( "arcgismapserver" ) );
         break;
 
       case Qgis::ArcGisRestServiceType::ImageServer:
@@ -469,7 +475,10 @@ void QgsArcGisRestSourceSelect::buildQueryButtonClicked()
   {
     const QString sql = w->expressionText();
     ds.setSql( sql );
+    Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( ds.uri( false ), layerName );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::Vector, ds.uri( false ), layerName, QStringLiteral( "arcgisfeatureserver" ) );
   }
 }
 

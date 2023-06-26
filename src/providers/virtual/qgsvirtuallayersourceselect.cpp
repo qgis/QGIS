@@ -87,7 +87,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   mQueryEdit->setLineNumbersVisible( true );
 
   connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::browseCRS );
-  connect( mAddLayerBtn, &QAbstractButton::clicked, this, [ = ] { addLayer( true ); } );
+  connect( mAddLayerBtn, &QAbstractButton::clicked, this, [ = ] { addLayerPrivate( true ); } );
   connect( mRemoveLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::removeLayer );
   connect( mImportLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::importLayer );
   connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::tableRowChanged );
@@ -307,7 +307,7 @@ void QgsVirtualLayerSourceSelect::testQuery()
   }
 }
 
-void QgsVirtualLayerSourceSelect::addLayer( bool browseForLayer )
+void QgsVirtualLayerSourceSelect::addLayerPrivate( bool browseForLayer )
 {
   mLayersTable->insertRow( mLayersTable->rowCount() );
 
@@ -418,7 +418,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
 void QgsVirtualLayerSourceSelect::addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source )
 {
   // insert a new row
-  addLayer();
+  addLayerPrivate();
   const int n = mLayersTable->rowCount() - 1;
   // local name
   mLayersTable->item( n, LayerColumn::Name )->setText( name );
@@ -488,7 +488,10 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
     }
     else
     {
+      Q_NOWARN_DEPRECATED_PUSH
       emit addVectorLayer( def.toString(), layerName, QStringLiteral( "virtual" ) );
+      Q_NOWARN_DEPRECATED_POP
+      emit addLayer( Qgis::LayerType::Vector, def.toString(), layerName, QStringLiteral( "virtual" ) );
     }
   }
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
