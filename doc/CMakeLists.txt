@@ -128,6 +128,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/settings
       ${CMAKE_SOURCE_DIR}/src/gui/symbology
       ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
+      ${CMAKE_SOURCE_DIR}/src/gui/tiledmesh
       ${CMAKE_SOURCE_DIR}/src/gui/vector
       ${CMAKE_SOURCE_DIR}/src/gui/vectortile
       ${CMAKE_SOURCE_DIR}/src/analysis

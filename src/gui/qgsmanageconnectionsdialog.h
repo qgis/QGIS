@@ -51,7 +51,8 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       XyzTiles,
       ArcgisMapServer, // TODO QGIS 4: remove
       ArcgisFeatureServer,
-      VectorTile
+      VectorTile,
+      TiledMesh, //!< Tiled mesh connection (since QGIS 3.34)
     };
 
     /**
@@ -77,6 +78,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     QDomDocument saveXyzTilesConnections( const QStringList &connections );
     QDomDocument saveArcgisConnections( const QStringList &connections );
     QDomDocument saveVectorTileConnections( const QStringList &connections );
+    QDomDocument saveTiledMeshConnections( const QStringList &connections );
 
     void loadOWSConnections( const QDomDocument &doc, const QStringList &items, const QString &service );
     void loadWfsConnections( const QDomDocument &doc, const QStringList &items );
@@ -87,6 +89,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     void loadXyzTilesConnections( const QDomDocument &doc, const QStringList &items );
     void loadArcgisConnections( const QDomDocument &doc, const QStringList &items, const QString &service );
     void loadVectorTileConnections( const QDomDocument &doc, const QStringList &items );
+    void loadTiledMeshConnections( const QDomDocument &doc, const QStringList &items );
 
     QString mFileName;
     Mode mDialogMode;
