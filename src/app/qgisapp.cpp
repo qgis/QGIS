@@ -390,6 +390,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgssubsetstringeditorinterface.h"
 #include "qgstaskmanager.h"
 #include "qgstaskmanagerwidget.h"
+#include "qgstiledmeshlayer.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsundowidget.h"
 #include "qgsuserinputwidget.h"
@@ -401,6 +402,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilelayerproperties.h"
 #include "qgspointcloudlayerproperties.h"
+#include "qgstiledmeshlayerproperties.h"
 #include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsmaplayeractionregistry.h"
@@ -8313,9 +8315,14 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
                                     visibleMessageBar() ).saveStyleToFile();
       break;
 
+    case Qgis::LayerType::TiledMesh:
+      QgsTiledMeshLayerProperties( qobject_cast<QgsTiledMeshLayer *>( layer ),
+                                   mMapCanvas,
+                                   visibleMessageBar() ).saveStyleToFile();
+      break;
+
     // Not available for these
     case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::TiledMesh:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
       break;
@@ -16486,6 +16493,30 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
+    case Qgis::LayerType::TiledMesh:
+    {
+      QgsTiledMeshLayerProperties tiledMeshLayerPropertiesDialog( qobject_cast<QgsTiledMeshLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
+
+      for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
+      {
+        tiledMeshLayerPropertiesDialog.addPropertiesPageFactory( factory );
+      }
+
+      if ( !page.isEmpty() )
+        tiledMeshLayerPropertiesDialog.setCurrentPage( page );
+      else
+        tiledMeshLayerPropertiesDialog.restoreLastPage();
+
+      mMapStyleWidget->blockUpdates( true );
+      if ( tiledMeshLayerPropertiesDialog.exec() )
+      {
+        activateDeactivateLayerRelatedActions( mapLayer );
+        mMapStyleWidget->updateCurrentWidgetLayer();
+      }
+      mMapStyleWidget->blockUpdates( false ); // delete since dialog cannot be reused without updating code
+      break;
+    }
+
     case Qgis::LayerType::Plugin:
     {
       QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( mapLayer );
@@ -16530,7 +16561,6 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     }
 
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
       break;
   }
 }
