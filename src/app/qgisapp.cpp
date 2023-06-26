@@ -123,6 +123,7 @@
 #include "vector/qgsvectorelevationpropertieswidget.h"
 #include "mesh/qgsmeshelevationpropertieswidget.h"
 #include "elevation/qgselevationprofilewidget.h"
+#include "qgstiledmeshlayer.h"
 
 #include "layers/qgsapplayerhandling.h"
 
@@ -2416,26 +2417,27 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
     }
     else if ( u.layerType == QLatin1String( "vector" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addVectorLayer( uri, u.name, u.providerKey, addToLegend );
-      if ( layer )
+      if ( QgsMapLayer *layer = QgsAppLayerHandling::addVectorLayer( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "raster" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addRasterLayer( uri, u.name, u.providerKey, addToLegend );
-      if ( layer )
+      if ( QgsMapLayer *layer = QgsAppLayerHandling::addRasterLayer( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "mesh" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addMeshLayer( uri, u.name, u.providerKey, addToLegend );
-      if ( layer )
+      if ( QgsMapLayer *layer = QgsAppLayerHandling::addMeshLayer( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "pointcloud" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsPointCloudLayer>( uri, u.name, u.providerKey, addToLegend );
-      if ( layer )
+      if ( QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsPointCloudLayer>( uri, u.name, u.providerKey, addToLegend ) )
+        addedLayers << layer;
+    }
+    else if ( u.layerType == QLatin1String( "tiled-mesh" ) )
+    {
+      if ( QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsTiledMeshLayer>( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
