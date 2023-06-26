@@ -1336,8 +1336,8 @@ void TestQgsVertexTool::testAvoidIntersectionsWithMultiPolygons()
   QCOMPARE( mLayerMultiPolygon->featureCount(), 2L );
 
   // check wkbType of all geometries
-  QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry().wkbType(), QgsWkbTypes::Type::MultiPolygon );
-  QCOMPARE( mLayerMultiPolygon->getFeature( multiPolygonF2.id() ).geometry().wkbType(), QgsWkbTypes::Type::MultiPolygon );
+  QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry().wkbType(), Qgis::WkbType::MultiPolygon );
+  QCOMPARE( mLayerMultiPolygon->getFeature( multiPolygonF2.id() ).geometry().wkbType(), Qgis::WkbType::MultiPolygon );
 
   // select 2 vertices
   mousePress( 4.5, 5.5, Qt::LeftButton );
@@ -1351,7 +1351,7 @@ void TestQgsVertexTool::testAvoidIntersectionsWithMultiPolygons()
   // The 2 polygons should keep the same wkbType
   QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
   QCOMPARE( mLayerMultiPolygon->getFeature( multiPolygonF2.id() ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((6 7, 6 6, 4 6, 4 6.5, 4 7, 6 7)))" ) );
-  QCOMPARE( mLayerMultiPolygon->wkbType(), QgsWkbTypes::Type::MultiPolygon );
+  QCOMPARE( mLayerMultiPolygon->wkbType(), Qgis::WkbType::MultiPolygon );
 
   QCOMPARE( mLayerMultiPolygon->featureCount(), 2L );
 
