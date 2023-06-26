@@ -38,6 +38,8 @@
 #include "qgsxyzvectortiledataprovider.h"
 #include "qgsvtpkvectortiledataprovider.h"
 
+#include "qgscesiumtilesdataprovider.h"
+
 #ifdef HAVE_EPT
 #include "providers/ept/qgseptprovider.h"
 #endif
@@ -225,6 +227,12 @@ void QgsProviderRegistry::init()
   }
 #endif
   registerUnusableUriHandler( new PdalUnusableUriHandlerInterface() );
+
+  {
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create tiled mesh providers" ) );
+    QgsProviderMetadata *metadata = new QgsCesiumTilesProviderMetadata();
+    mProviders[ metadata->key() ] = metadata;
+  }
 
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
