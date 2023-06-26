@@ -41,6 +41,10 @@ QgsTiledMeshLayer::QgsTiledMeshLayer( const QString &uri,
     setDataSource( uri, baseName, provider, providerOptions, providerFlags );
   }
 
+  // TODO: temporary, for removal
+  if ( provider == QLatin1String( "test_tiled_mesh_provider" ) )
+    mValid = true;
+
 #if 0
   setLegend( QgsMapLayerLegend::defaultTiledMeshLegend( this ) );
 #endif
