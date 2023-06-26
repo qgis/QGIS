@@ -16,6 +16,7 @@
 #include "qgstiledmeshprovidermetadata.h"
 #include "qgstiledmeshconnection.h"
 #include "qgsapplication.h"
+#include "qgstiledmeshdataitems.h"
 
 #include <QIcon>
 
@@ -36,7 +37,10 @@ QIcon QgsTiledMeshProviderMetadata::icon() const
 
 QList<QgsDataItemProvider *> QgsTiledMeshProviderMetadata::dataItemProviders() const
 {
-  return {}; // TODO;
+  return
+  {
+    new QgsTiledMeshDataItemProvider()
+  };
 }
 
 QMap<QString, QgsAbstractProviderConnection *> QgsTiledMeshProviderMetadata::connections( bool cached )

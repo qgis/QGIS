@@ -338,6 +338,7 @@ set(QGIS_CORE_SRCS
 
   tiledmesh/qgscesiumtilesdataprovider.cpp
   tiledmesh/qgstiledmeshconnection.cpp
+  tiledmesh/qgstiledmeshdataitems.cpp
   tiledmesh/qgstiledmeshdataprovider.cpp
   tiledmesh/qgstiledmeshlayer.cpp
   tiledmesh/qgstiledmeshlayerrenderer.cpp
@@ -1897,6 +1898,7 @@ set(QGIS_CORE_HDRS
   tiledmesh/qgscesiumtilesdataprovider.h
   tiledmesh/qgstiledmeshconnection.h
   tiledmesh/qgstiledmeshdataprovider.h
+  tiledmesh/qgstiledmeshdataitems.h
   tiledmesh/qgstiledmeshlayer.h
   tiledmesh/qgstiledmeshlayerrenderer.h
   tiledmesh/qgstiledmeshprovidermetadata.h
