@@ -21,5 +21,8 @@ QgsProcessingUtils.LayerHint.Annotation.__doc__ = "Annotation layer type, since 
 QgsProcessingUtils.VectorTile = QgsProcessingUtils.LayerHint.VectorTile
 QgsProcessingUtils.VectorTile.is_monkey_patched = True
 QgsProcessingUtils.LayerHint.VectorTile.__doc__ = "Vector tile layer type, since QGIS 3.32"
-QgsProcessingUtils.LayerHint.__doc__ = 'Layer type hints.\n\n.. versionadded:: 3.4\n\n' + '* ``UnknownType``: ' + QgsProcessingUtils.LayerHint.UnknownType.__doc__ + '\n' + '* ``Vector``: ' + QgsProcessingUtils.LayerHint.Vector.__doc__ + '\n' + '* ``Raster``: ' + QgsProcessingUtils.LayerHint.Raster.__doc__ + '\n' + '* ``Mesh``: ' + QgsProcessingUtils.LayerHint.Mesh.__doc__ + '\n' + '* ``PointCloud``: ' + QgsProcessingUtils.LayerHint.PointCloud.__doc__ + '\n' + '* ``Annotation``: ' + QgsProcessingUtils.LayerHint.Annotation.__doc__ + '\n' + '* ``VectorTile``: ' + QgsProcessingUtils.LayerHint.VectorTile.__doc__
+QgsProcessingUtils.TiledMesh = QgsProcessingUtils.LayerHint.TiledMesh
+QgsProcessingUtils.TiledMesh.is_monkey_patched = True
+QgsProcessingUtils.LayerHint.TiledMesh.__doc__ = "Tiled mesh layer type, since QGIS 3.34"
+QgsProcessingUtils.LayerHint.__doc__ = 'Layer type hints.\n\n.. versionadded:: 3.4\n\n' + '* ``UnknownType``: ' + QgsProcessingUtils.LayerHint.UnknownType.__doc__ + '\n' + '* ``Vector``: ' + QgsProcessingUtils.LayerHint.Vector.__doc__ + '\n' + '* ``Raster``: ' + QgsProcessingUtils.LayerHint.Raster.__doc__ + '\n' + '* ``Mesh``: ' + QgsProcessingUtils.LayerHint.Mesh.__doc__ + '\n' + '* ``PointCloud``: ' + QgsProcessingUtils.LayerHint.PointCloud.__doc__ + '\n' + '* ``Annotation``: ' + QgsProcessingUtils.LayerHint.Annotation.__doc__ + '\n' + '* ``VectorTile``: ' + QgsProcessingUtils.LayerHint.VectorTile.__doc__ + '\n' + '* ``TiledMesh``: ' + QgsProcessingUtils.LayerHint.TiledMesh.__doc__
 # --

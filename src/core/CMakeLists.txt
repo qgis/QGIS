@@ -2272,6 +2272,7 @@ target_include_directories(qgis_core PUBLIC
   sensor
   symbology
   textrenderer
+  tiledmesh
   validity
   vector
   vectortile
