@@ -945,6 +945,7 @@ class CORE_EXPORT Qgis
       MeshDataset SIP_MONKEYPATCH_COMPAT_NAME( FilterMeshDataset ), //!< Mesh datasets
       PointCloud SIP_MONKEYPATCH_COMPAT_NAME( FilterPointCloud ), //!< Point clouds (since QGIS 3.18)
       VectorTile, //!< Vector tile layers (since QGIS 3.32)
+      TiledMesh, //!< Tiled mesh layers (since QGIS 3.34)
     };
     Q_ENUM( FileFilterType )
 

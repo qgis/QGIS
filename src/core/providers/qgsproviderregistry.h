@@ -630,6 +630,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see fileMeshFilters()
      * \see filePointCloudFilters()
      * \see fileVectorTileFilters()
+     * \see fileTiledMeshFilters()
      */
     QString fileVectorFilters() const;
 
@@ -645,6 +646,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see fileMeshFilters()
      * \see filePointCloudFilters()
      * \see fileVectorTileFilters()
+     * \see fileTiledMeshFilters()
      */
     QString fileRasterFilters() const;
 
@@ -659,6 +661,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see fileVectorFilters()
      * \see filePointCloudFilters()
      * \see fileVectorTileFilters()
+     * \see fileTiledMeshFilters()
      *
      * \since QGIS 3.6
      */
@@ -686,6 +689,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see fileRasterFilters()
      * \see fileVectorFilters()
      * \see fileVectorTileFilters()
+     * \see fileTiledMeshFilters()
      *
      * \since QGIS 3.18
      */
@@ -701,10 +705,27 @@ class CORE_EXPORT QgsProviderRegistry
      * \see fileRasterFilters()
      * \see fileVectorFilters()
      * \see filePointCloudFilters()
+     * \see fileTiledMeshFilters()
      *
      * \since QGIS 3.32
      */
     QString fileVectorTileFilters() const;
+
+    /**
+     * Returns a file filter string for supported tiled mesh files.
+     *
+     * Returns a string suitable for a QFileDialog of tiled mesh file formats
+     * supported by all data providers.
+     *
+     * \see fileMeshFilters()
+     * \see fileRasterFilters()
+     * \see fileVectorFilters()
+     * \see filePointCloudFilters()
+     * \see fileVectorTileFilters()
+     *
+     * \since QGIS 3.34
+     */
+    QString fileTiledMeshFilters() const;
 
     //! Returns a string containing the available database drivers
     QString databaseDrivers() const;
@@ -781,6 +802,11 @@ class CORE_EXPORT QgsProviderRegistry
      * File filter string for vector tile files
      */
     QString mVectorTileFileFilters;
+
+    /**
+     * File filter string for tiled mesh files
+     */
+    QString mTiledMeshFileFilters;
 
     /**
      * Available database drivers string for vector databases

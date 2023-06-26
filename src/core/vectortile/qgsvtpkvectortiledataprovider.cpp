@@ -324,6 +324,7 @@ QString QgsVtpkVectorTileDataProviderMetadata::filters( Qgis::FileFilterType typ
     case Qgis::FileFilterType::Mesh:
     case Qgis::FileFilterType::MeshDataset:
     case Qgis::FileFilterType::PointCloud:
+    case Qgis::FileFilterType::TiledMesh:
       return QString();
 
     case Qgis::FileFilterType::VectorTile:

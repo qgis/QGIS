@@ -1152,6 +1152,7 @@ QString QgsOgrProviderMetadata::filters( Qgis::FileFilterType type )
     case Qgis::FileFilterType::MeshDataset:
     case Qgis::FileFilterType::PointCloud:
     case Qgis::FileFilterType::VectorTile:
+    case Qgis::FileFilterType::TiledMesh:
       return QString();
   }
   return QString();
