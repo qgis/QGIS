@@ -134,6 +134,8 @@ set(QGIS_APP_SRCS
 
   raster/qgsrasterelevationpropertieswidget.cpp
 
+  tiledmesh/qgstiledmeshlayerproperties.cpp
+
   vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexeditor.cpp
   vertextool/qgsvertextool.cpp
@@ -537,6 +539,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/options
   ${CMAKE_SOURCE_DIR}/src/app/pointcloud
   ${CMAKE_SOURCE_DIR}/src/app/settings
+  ${CMAKE_SOURCE_DIR}/src/app/tiledmesh
   ${CMAKE_SOURCE_DIR}/src/app/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/src/python
