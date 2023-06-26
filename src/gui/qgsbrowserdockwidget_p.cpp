@@ -53,6 +53,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgslayeritem.h"
 #include "qgsdirectoryitem.h"
+#include "qgstiledmeshlayer.h"
 
 /// @cond PRIVATE
 
@@ -229,6 +230,15 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       QgsPointCloudLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
       mLayer = std::make_unique< QgsPointCloudLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      break;
+    }
+
+    case Qgis::LayerType::TiledMesh:
+    {
+      QgsDebugMsgLevel( QStringLiteral( "creating tiled mesh layer" ), 2 );
+      QgsTiledMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      options.skipCrsValidation = true;
+      mLayer = std::make_unique< QgsTiledMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 

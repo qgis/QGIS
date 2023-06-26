@@ -23,6 +23,7 @@
 #include "qgsvectortilelayer.h"
 #include "qgsannotationlayer.h"
 #include "qgsgrouplayer.h"
+#include "qgstiledmeshlayer.h"
 
 Qgis::LayerType QgsMapLayerFactory::typeFromString( const QString &string, bool &ok )
 {
@@ -129,6 +130,14 @@ QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString 
       pointCloudOptions.loadDefaultStyle = options.loadDefaultStyle;
       pointCloudOptions.transformContext = options.transformContext;
       return new QgsPointCloudLayer( uri, name, provider, pointCloudOptions );
+    }
+
+    case Qgis::LayerType::TiledMesh:
+    {
+      QgsTiledMeshLayer::LayerOptions tiledMeshOptions;
+      tiledMeshOptions.loadDefaultStyle = options.loadDefaultStyle;
+      tiledMeshOptions.transformContext = options.transformContext;
+      return new QgsTiledMeshLayer( uri, name, provider, tiledMeshOptions );
     }
 
     case Qgis::LayerType::Plugin:

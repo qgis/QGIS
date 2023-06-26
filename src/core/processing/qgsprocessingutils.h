@@ -39,6 +39,7 @@ class QgsVectorTileLayer;
 class QgsPointCloudLayer;
 class QgsAnnotationLayer;
 class QgsVectorTileLayer;
+class QgsTiledMeshLayer;
 
 #include <QString>
 #include <QVariant>
@@ -65,6 +66,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
      * \see compatibleVectorTileLayers()
+     * \see compatibleTiledMeshLayers()
      * \see compatibleLayers()
      */
     static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
@@ -86,6 +88,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
      * \see compatibleVectorTileLayers()
+     * \see compatibleTiledMeshLayers()
      * \see compatibleLayers()
      */
     static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
@@ -105,6 +108,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
      * \see compatibleVectorTileLayers()
+     * \see compatibleTiledMeshLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.6
@@ -124,6 +128,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
      * \see compatibleVectorTileLayers()
+     * \see compatibleTiledMeshLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
@@ -143,6 +148,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatibleAnnotationLayers()
      * \see compatibleVectorTileLayers()
+     * \see compatibleTiledMeshLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
@@ -162,6 +168,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleVectorTileLayers()
+     * \see compatibleTiledMeshLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
@@ -181,11 +188,32 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleTiledMeshLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.32
      */
     static QList<QgsVectorTileLayer *> compatibleVectorTileLayers( QgsProject *project, bool sort = true );
+
+    /**
+     * Returns a list of tiled mesh layers from a \a project which are compatible with the processing
+     * framework.
+     *
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
+     * value.
+     *
+     * \see compatibleRasterLayers()
+     * \see compatibleVectorLayers()
+     * \see compatibleMeshLayers()
+     * \see compatiblePluginLayers()
+     * \see compatiblePointCloudLayers()
+     * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
+     * \see compatibleLayers()
+     *
+     * \since QGIS 3.34
+     */
+    static QList<QgsTiledMeshLayer *> compatibleTiledMeshLayers( QgsProject *project, bool sort = true );
 
     /**
      * Returns a list of map layers from a \a project which are compatible with the processing
@@ -232,6 +260,7 @@ class CORE_EXPORT QgsProcessingUtils
       PointCloud, //!< Point cloud layer type, since QGIS 3.22
       Annotation, //!< Annotation layer type, since QGIS 3.22
       VectorTile, //!< Vector tile layer type, since QGIS 3.32
+      TiledMesh, //!< Tiled mesh layer type, since QGIS 3.34
     };
 
     /**
@@ -567,6 +596,7 @@ class CORE_EXPORT QgsProcessingUtils
     static bool canUseLayer( const QgsVectorTileLayer *layer );
     static bool canUseLayer( const QgsPointCloudLayer *layer );
     static bool canUseLayer( const QgsAnnotationLayer *layer );
+    static bool canUseLayer( const QgsTiledMeshLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
                              const QList< int > &sourceTypes = QList< int >() );
 

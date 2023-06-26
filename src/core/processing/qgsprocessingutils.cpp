@@ -36,6 +36,7 @@
 #include "qgsvectortilelayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
+#include "qgstiledmeshlayer.h"
 #include <QRegularExpression>
 #include <QUuid>
 
@@ -105,6 +106,11 @@ QList<QgsVectorTileLayer *> QgsProcessingUtils::compatibleVectorTileLayers( QgsP
   return compatibleMapLayers< QgsVectorTileLayer >( project, sort );
 }
 
+QList<QgsTiledMeshLayer *> QgsProcessingUtils::compatibleTiledMeshLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsTiledMeshLayer >( project, sort );
+}
+
 template<typename T> QList<T *> QgsProcessingUtils::compatibleMapLayers( QgsProject *project, bool sort )
 {
   if ( !project )
@@ -159,6 +165,10 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   const auto vectorTileLayers = compatibleMapLayers< QgsVectorTileLayer >( project, false );
   for ( QgsVectorTileLayer *vtl : vectorTileLayers )
     layers << vtl;
+
+  const auto tiledMeshLayers = compatibleMapLayers< QgsTiledMeshLayer >( project, false );
+  for ( QgsTiledMeshLayer *tml : tiledMeshLayers )
+    layers << tml;
 
   const auto pluginLayers = compatibleMapLayers< QgsPluginLayer >( project, false );
   for ( QgsPluginLayer *pl : pluginLayers )
@@ -215,6 +225,8 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
         return !canUseLayer( qobject_cast< QgsMeshLayer * >( layer ) );
       case Qgis::LayerType::VectorTile:
         return !canUseLayer( qobject_cast< QgsVectorTileLayer * >( layer ) );
+      case Qgis::LayerType::TiledMesh:
+        return !canUseLayer( qobject_cast< QgsTiledMeshLayer * >( layer ) );
       case Qgis::LayerType::PointCloud:
         return !canUseLayer( qobject_cast< QgsPointCloudLayer * >( layer ) );
       case Qgis::LayerType::Annotation:
@@ -247,6 +259,9 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
       case LayerHint::VectorTile:
         return l->type() == Qgis::LayerType::VectorTile;
+
+      case LayerHint::TiledMesh:
+        return l->type() == Qgis::LayerType::TiledMesh;
     }
     return true;
   };
@@ -402,6 +417,29 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     if ( tileLayer->isValid() )
     {
       return tileLayer.release();
+    }
+  }
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::TiledMesh )
+  {
+    QgsTiledMeshLayer::LayerOptions tiledMeshOptions;
+    tiledMeshOptions.skipCrsValidation = true;
+
+    std::unique_ptr< QgsTiledMeshLayer > tiledMeshLayer;
+    if ( useProvider )
+    {
+      tiledMeshLayer = std::make_unique< QgsTiledMeshLayer >( uri, name, provider, tiledMeshOptions );
+    }
+    else
+    {
+      const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( uri );
+      if ( !preferredProviders.empty() )
+      {
+        tiledMeshLayer = std::make_unique< QgsTiledMeshLayer >( uri, name, preferredProviders.at( 0 ).metadata()->key(), tiledMeshOptions );
+      }
+    }
+    if ( tiledMeshLayer && tiledMeshLayer->isValid() )
+    {
+      return tiledMeshLayer.release();
     }
   }
   return nullptr;
@@ -609,6 +647,11 @@ bool QgsProcessingUtils::canUseLayer( const QgsPointCloudLayer *layer )
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsAnnotationLayer *layer )
+{
+  return layer && layer->isValid();
+}
+
+bool QgsProcessingUtils::canUseLayer( const QgsTiledMeshLayer *layer )
 {
   return layer && layer->isValid();
 }

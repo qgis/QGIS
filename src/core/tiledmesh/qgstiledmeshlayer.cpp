@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgstiledmeshlayer.h"
-#include "qgsmaplayerlegend.h"
 #include "qgsthreadingutils.h"
 #include "qgsmaplayerfactory.h"
 #include "qgspainting.h"

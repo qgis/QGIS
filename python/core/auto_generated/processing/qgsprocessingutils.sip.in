@@ -45,6 +45,8 @@ value.
 
 .. seealso:: :py:func:`compatibleVectorTileLayers`
 
+.. seealso:: :py:func:`compatibleTiledMeshLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 %End
 
@@ -75,6 +77,8 @@ value.
 
 .. seealso:: :py:func:`compatibleVectorTileLayers`
 
+.. seealso:: :py:func:`compatibleTiledMeshLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 %End
 
@@ -97,6 +101,8 @@ value.
 .. seealso:: :py:func:`compatibleAnnotationLayers`
 
 .. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledMeshLayers`
 
 .. seealso:: :py:func:`compatibleLayers`
 
@@ -123,6 +129,8 @@ value.
 
 .. seealso:: :py:func:`compatibleVectorTileLayers`
 
+.. seealso:: :py:func:`compatibleTiledMeshLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 
 .. versionadded:: 3.22
@@ -147,6 +155,8 @@ value.
 .. seealso:: :py:func:`compatibleAnnotationLayers`
 
 .. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledMeshLayers`
 
 .. seealso:: :py:func:`compatibleLayers`
 
@@ -173,6 +183,8 @@ value.
 
 .. seealso:: :py:func:`compatibleVectorTileLayers`
 
+.. seealso:: :py:func:`compatibleTiledMeshLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 
 .. versionadded:: 3.22
@@ -198,9 +210,38 @@ value.
 
 .. seealso:: :py:func:`compatibleAnnotationLayers`
 
+.. seealso:: :py:func:`compatibleTiledMeshLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 
 .. versionadded:: 3.32
+%End
+
+    static QList<QgsTiledMeshLayer *> compatibleTiledMeshLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of tiled mesh layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.34
 %End
 
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
@@ -247,6 +288,7 @@ Decodes a provider key and layer ``uri`` from an encoded string, for use with
       PointCloud,
       Annotation,
       VectorTile,
+      TiledMesh,
     };
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
