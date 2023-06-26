@@ -576,6 +576,7 @@ The development version
       MeshDataset,
       PointCloud,
       VectorTile,
+      TiledMesh,
     };
 
     enum class SublayerQueryFlag

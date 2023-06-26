@@ -1027,7 +1027,10 @@ QgsProviderMetadata.FilterPointCloud.__doc__ = "Point clouds (since QGIS 3.18)"
 QgsProviderMetadata.VectorTile = Qgis.FileFilterType.VectorTile
 QgsProviderMetadata.VectorTile.is_monkey_patched = True
 QgsProviderMetadata.VectorTile.__doc__ = "Vector tile layers (since QGIS 3.32)"
-Qgis.FileFilterType.__doc__ = 'Type of file filters\n\nPrior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterType\n\n.. versionadded:: 3.32\n\n' + '* ``FilterVector``: ' + Qgis.FileFilterType.Vector.__doc__ + '\n' + '* ``FilterRaster``: ' + Qgis.FileFilterType.Raster.__doc__ + '\n' + '* ``FilterMesh``: ' + Qgis.FileFilterType.Mesh.__doc__ + '\n' + '* ``FilterMeshDataset``: ' + Qgis.FileFilterType.MeshDataset.__doc__ + '\n' + '* ``FilterPointCloud``: ' + Qgis.FileFilterType.PointCloud.__doc__ + '\n' + '* ``VectorTile``: ' + Qgis.FileFilterType.VectorTile.__doc__
+QgsProviderMetadata.TiledMesh = Qgis.FileFilterType.TiledMesh
+QgsProviderMetadata.TiledMesh.is_monkey_patched = True
+QgsProviderMetadata.TiledMesh.__doc__ = "Tiled mesh layers (since QGIS 3.34)"
+Qgis.FileFilterType.__doc__ = 'Type of file filters\n\nPrior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterType\n\n.. versionadded:: 3.32\n\n' + '* ``FilterVector``: ' + Qgis.FileFilterType.Vector.__doc__ + '\n' + '* ``FilterRaster``: ' + Qgis.FileFilterType.Raster.__doc__ + '\n' + '* ``FilterMesh``: ' + Qgis.FileFilterType.Mesh.__doc__ + '\n' + '* ``FilterMeshDataset``: ' + Qgis.FileFilterType.MeshDataset.__doc__ + '\n' + '* ``FilterPointCloud``: ' + Qgis.FileFilterType.PointCloud.__doc__ + '\n' + '* ``VectorTile``: ' + Qgis.FileFilterType.VectorTile.__doc__ + '\n' + '* ``TiledMesh``: ' + Qgis.FileFilterType.TiledMesh.__doc__
 # --
 Qgis.FileFilterType.baseClass = Qgis
 # monkey patching scoped based enum

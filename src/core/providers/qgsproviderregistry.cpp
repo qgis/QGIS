@@ -360,6 +360,9 @@ void QgsProviderRegistry::init()
   QStringList vectorTileWildcards;
   QStringList vectorTileFilters;
 
+  QStringList tiledMeshWildcards;
+  QStringList tiledMeshFilters;
+
   // now initialize all providers
   for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
   {
@@ -438,6 +441,24 @@ void QgsProviderRegistry::init()
       }
     }
 
+    // now get tiled mesh file filters, if any
+    const QString fileTiledMeshFilters = meta->filters( Qgis::FileFilterType::TiledMesh );
+    if ( !fileTiledMeshFilters.isEmpty() )
+    {
+      QgsDebugMsgLevel( "tiled mesh filters: " + fileTiledMeshFilters, 2 );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+      const QStringList filters = fileTiledMeshFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
+#else
+      const QStringList filters = fileTiledMeshFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
+#endif
+      for ( const QString &filter : filters )
+      {
+        tiledMeshFilters.append( filter );
+        tiledMeshWildcards.append( QgsFileUtils::wildcardsFromFilter( filter ).split( ' ' ) );
+      }
+    }
+
     // call initProvider() - allows provider to register its services to QGIS
     meta->initProvider();
   }
@@ -454,6 +475,13 @@ void QgsProviderRegistry::init()
     vectorTileFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( vectorTileWildcards.join( ' ' ) ) );
     vectorTileFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
     mVectorTileFileFilters = vectorTileFilters.join( QLatin1String( ";;" ) );
+  }
+
+  if ( !tiledMeshFilters.empty() )
+  {
+    tiledMeshFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( tiledMeshWildcards.join( ' ' ) ) );
+    tiledMeshFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
+    mTiledMeshFileFilters = tiledMeshFilters.join( QLatin1String( ";;" ) );
   }
 
   // load database drivers (only OGR)
@@ -925,6 +953,11 @@ QString QgsProviderRegistry::filePointCloudFilters() const
 QString QgsProviderRegistry::fileVectorTileFilters() const
 {
   return mVectorTileFileFilters;
+}
+
+QString QgsProviderRegistry::fileTiledMeshFilters() const
+{
+  return mTiledMeshFileFilters;
 }
 
 QString QgsProviderRegistry::databaseDrivers() const

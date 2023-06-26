@@ -619,6 +619,8 @@ supported by all data providers.
 .. seealso:: :py:func:`filePointCloudFilters`
 
 .. seealso:: :py:func:`fileVectorTileFilters`
+
+.. seealso:: :py:func:`fileTiledMeshFilters`
 %End
 
     QString fileRasterFilters() const;
@@ -639,6 +641,8 @@ supported by all data providers.
 .. seealso:: :py:func:`filePointCloudFilters`
 
 .. seealso:: :py:func:`fileVectorTileFilters`
+
+.. seealso:: :py:func:`fileTiledMeshFilters`
 %End
 
     QString fileMeshFilters() const;
@@ -657,6 +661,8 @@ supported by all data providers.
 .. seealso:: :py:func:`filePointCloudFilters`
 
 .. seealso:: :py:func:`fileVectorTileFilters`
+
+.. seealso:: :py:func:`fileTiledMeshFilters`
 
 .. versionadded:: 3.6
 %End
@@ -688,6 +694,8 @@ supported by all data providers.
 
 .. seealso:: :py:func:`fileVectorTileFilters`
 
+.. seealso:: :py:func:`fileTiledMeshFilters`
+
 .. versionadded:: 3.18
 %End
 
@@ -706,7 +714,29 @@ supported by all data providers.
 
 .. seealso:: :py:func:`filePointCloudFilters`
 
+.. seealso:: :py:func:`fileTiledMeshFilters`
+
 .. versionadded:: 3.32
+%End
+
+    QString fileTiledMeshFilters() const;
+%Docstring
+Returns a file filter string for supported tiled mesh files.
+
+Returns a string suitable for a QFileDialog of tiled mesh file formats
+supported by all data providers.
+
+.. seealso:: :py:func:`fileMeshFilters`
+
+.. seealso:: :py:func:`fileRasterFilters`
+
+.. seealso:: :py:func:`fileVectorFilters`
+
+.. seealso:: :py:func:`filePointCloudFilters`
+
+.. seealso:: :py:func:`fileVectorTileFilters`
+
+.. versionadded:: 3.34
 %End
 
     QString databaseDrivers() const;
