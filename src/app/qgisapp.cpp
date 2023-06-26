@@ -2649,6 +2649,9 @@ void QgisApp::dataSourceManager( const QString &pageName )
           break;
 
         case Qgis::LayerType::TiledMesh:
+          QgsAppLayerHandling::addLayer< QgsTiledMeshLayer >( uri, baseName, providerKey );
+          break;
+
         case Qgis::LayerType::Plugin:
         case Qgis::LayerType::Annotation:
         case Qgis::LayerType::Group:
@@ -5632,6 +5635,7 @@ L *QgisApp::addLayer( const QString &uri, const QString &baseName, const QString
 }
 template QgsPointCloudLayer *QgisApp::addLayer<QgsPointCloudLayer>( const QString &uri, const QString &baseName, const QString &provider );
 template QgsVectorTileLayer *QgisApp::addLayer<QgsVectorTileLayer>( const QString &uri, const QString &baseName, const QString &provider );
+template QgsTiledMeshLayer *QgisApp::addLayer<QgsTiledMeshLayer>( const QString &uri, const QString &baseName, const QString &provider );
 template QgsPluginLayer *QgisApp::addLayer<QgsPluginLayer>( const QString &uri, const QString &baseName, const QString &provider );
 
 

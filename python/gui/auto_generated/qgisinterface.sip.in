@@ -970,6 +970,13 @@ Adds a point cloud layer to the current project.
 .. versionadded:: 3.18
 %End
 
+    virtual QgsTiledMeshLayer *addTiledMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
+%Docstring
+Adds a tiled mesh layer to the current project.
+
+.. versionadded:: 3.34
+%End
+
     virtual bool addProject( const QString &project ) = 0;
 %Docstring
 Adds (opens) a project
