@@ -208,6 +208,8 @@ QString QgsLayerItem::iconName( Qgis::BrowserLayerType layerType )
       return QStringLiteral( "/mIconPointCloudLayer.svg" );
     case Qgis::BrowserLayerType::VectorTile:
       return QStringLiteral( "/mIconVectorTileLayer.svg" );
+    case Qgis::BrowserLayerType::TiledMesh:
+      return QStringLiteral( "/mIconTiledMeshLayer.svg" );
 
     case Qgis::BrowserLayerType::NoType:
     case Qgis::BrowserLayerType::Database:

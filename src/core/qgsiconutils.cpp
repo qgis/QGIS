@@ -91,6 +91,11 @@ QIcon QgsIconUtils::iconPointCloud()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointCloudLayer.svg" ) );
 }
 
+QIcon QgsIconUtils::iconTiledMesh()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTiledMeshLayer.svg" ) );
+}
+
 QIcon QgsIconUtils::iconDefaultLayer()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
@@ -163,6 +168,9 @@ QIcon QgsIconUtils::iconForLayerType( Qgis::LayerType type )
 
     case Qgis::LayerType::PointCloud:
       return QgsIconUtils::iconPointCloud();
+
+    case Qgis::LayerType::TiledMesh:
+      return QgsIconUtils::iconTiledMesh();
 
     case Qgis::LayerType::Vector:
       return QgsIconUtils::iconGeometryCollection();

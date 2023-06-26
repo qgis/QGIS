@@ -3722,3 +3722,10 @@ Qgis.TileAvailability.UseLowerZoomLevelTile.__doc__ = "Tile is not available at 
 Qgis.TileAvailability.__doc__ = 'Possible availability states for a tile within a tile matrix.\n\n.. versionadded:: 3.32\n\n' + '* ``Available``: ' + Qgis.TileAvailability.Available.__doc__ + '\n' + '* ``NotAvailable``: ' + Qgis.TileAvailability.NotAvailable.__doc__ + '\n' + '* ``AvailableNoChildren``: ' + Qgis.TileAvailability.AvailableNoChildren.__doc__ + '\n' + '* ``UseLowerZoomLevelTile``: ' + Qgis.TileAvailability.UseLowerZoomLevelTile.__doc__
 # --
 Qgis.TileAvailability.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.TiledMeshProviderCapability.ReadLayerMetadata.__doc__ = "Provider can read layer metadata from data store. See QgsDataProvider.layerMetadata()"
+Qgis.TiledMeshProviderCapability.__doc__ = 'Tiled mesh data provider capabilities.\n\n.. versionadded:: 3.34\n\n' + '* ``ReadLayerMetadata``: ' + Qgis.TiledMeshProviderCapability.ReadLayerMetadata.__doc__
+# --
+Qgis.TiledMeshProviderCapability.baseClass = Qgis
+Qgis.TiledMeshProviderCapabilities.baseClass = Qgis
+TiledMeshProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module

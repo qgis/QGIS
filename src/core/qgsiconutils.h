@@ -99,6 +99,13 @@ class CORE_EXPORT QgsIconUtils
     static QIcon iconPointCloud();
 
     /**
+     * Returns an icon representing tiled mesh layers.
+     *
+     * \since QGIS 3.34
+     */
+    static QIcon iconTiledMesh();
+
+    /**
      * Returns the icon corresponding to a specified map \a layer.
      */
     static QIcon iconForLayer( const QgsMapLayer *layer );

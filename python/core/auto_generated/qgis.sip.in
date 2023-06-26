@@ -2121,6 +2121,14 @@ The development version
       UseLowerZoomLevelTile,
     };
 
+    enum class TiledMeshProviderCapability
+    {
+      ReadLayerMetadata,
+    };
+
+    typedef QFlags<Qgis::TiledMeshProviderCapability> TiledMeshProviderCapabilities;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -2278,6 +2286,8 @@ QFlags<Qgis::VectorFileWriterCapability> operator|(Qgis::VectorFileWriterCapabil
 QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
 
 QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCapability f1, QFlags<Qgis::VectorTileProviderCapability> f2);
+
+QFlags<Qgis::TiledMeshProviderCapability> operator|(Qgis::TiledMeshProviderCapability f1, QFlags<Qgis::TiledMeshProviderCapability> f2);
 
 
 

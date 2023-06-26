@@ -28,9 +28,9 @@ QgsTiledMeshDataProvider::QgsTiledMeshDataProvider(
 
 QgsTiledMeshDataProvider::~QgsTiledMeshDataProvider() = default;
 
-QgsTiledMeshDataProvider::Capabilities QgsTiledMeshDataProvider::capabilities() const
+Qgis::TiledMeshProviderCapabilities QgsTiledMeshDataProvider::capabilities() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QgsTiledMeshDataProvider::Capability::NoCapabilities;
+  return Qgis::TiledMeshProviderCapabilities();
 }
