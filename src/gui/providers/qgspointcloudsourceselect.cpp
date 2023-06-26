@@ -81,7 +81,11 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
       if ( preferredProviders.empty() )
         continue;
+
+      Q_NOWARN_DEPRECATED_PUSH
       emit addPointCloudLayer( path, QFileInfo( path ).baseName(), preferredProviders.at( 0 ).metadata()->key() ) ;
+      Q_NOWARN_DEPRECATED_POP
+      emit addLayer( Qgis::LayerType::PointCloud, path, QFileInfo( path ).baseName(), preferredProviders.at( 0 ).metadata()->key() );
     }
   }
   else if ( mDataSourceType == QLatin1String( "remote" ) )
@@ -121,7 +125,10 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       {
         baseName = QFileInfo( mPath ).baseName();
       }
+      Q_NOWARN_DEPRECATED_PUSH
       emit addPointCloudLayer( mPath, baseName, preferredProviders.at( 0 ).metadata()->key() ) ;
+      Q_NOWARN_DEPRECATED_POP
+      emit addLayer( Qgis::LayerType::PointCloud, mPath, baseName, preferredProviders.at( 0 ).metadata()->key() );
     }
   }
 }

@@ -2618,11 +2618,43 @@ void QgisApp::dataSourceManager( const QString &pageName )
     mDataSourceManagerDialog = new QgsDataSourceManagerDialog( mBrowserModel, this, mapCanvas() );
     connect( this, &QgisApp::connectionsChanged, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::refresh );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::connectionsChanged, this, &QgisApp::connectionsChanged );
-    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addRasterLayer,
-             this, [this]( const QString & uri, const QString & baseName, const QString & providerKey )
+
+
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addLayer,
+             this, [this]( Qgis::LayerType type, const QString & uri, const QString & baseName, const QString & providerKey )
     {
-      addRasterLayer( uri, baseName, providerKey );
+      switch ( type )
+      {
+        case Qgis::LayerType::Raster:
+          addRasterLayer( uri, baseName, providerKey );
+          break;
+
+        case Qgis::LayerType::Vector:
+        {
+          if ( QgsVectorLayer *layer = addVectorLayer( uri, baseName, providerKey ) )
+            QgsAppLayerHandling::postProcessAddedLayers( {layer} );
+          break;
+        }
+
+        case Qgis::LayerType::Mesh:
+          addMeshLayer( uri, baseName, providerKey );
+          break;
+
+        case Qgis::LayerType::VectorTile:
+          addVectorTileLayer( uri, baseName );
+          break;
+
+        case Qgis::LayerType::PointCloud:
+          addPointCloudLayer( uri, baseName, providerKey );
+          break;
+
+        case Qgis::LayerType::Plugin:
+        case Qgis::LayerType::Annotation:
+        case Qgis::LayerType::Group:
+          break;
+      }
     } );
+
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addRasterLayers, this, [ = ]( const QStringList & layersList )
     {
       bool ok = false;
@@ -2630,12 +2662,7 @@ void QgisApp::dataSourceManager( const QString &pageName )
       if ( ok )
         QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
     } );
-    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addVectorLayer, this, [this]( const QString & vectorLayerPath, const QString & baseName, const QString & providerKey )
-    {
-      QgsVectorLayer *layer = addVectorLayer( vectorLayerPath, baseName, providerKey );
-      if ( layer )
-        QgsAppLayerHandling::postProcessAddedLayers( {layer} );
-    } );
+
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addVectorLayers, this, []( const QStringList & layerList, const QString & encoding, const QString & dataSourceType )
     {
       bool ok = false;
@@ -2643,9 +2670,6 @@ void QgisApp::dataSourceManager( const QString &pageName )
       if ( ok )
         QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
     } );
-    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addMeshLayer, this, &QgisApp::addMeshLayer );
-    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addVectorTileLayer, this, &QgisApp::addVectorTileLayer );
-    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addPointCloudLayer, this, &QgisApp::addPointCloudLayer );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showStatusMessage, this, &QgisApp::showStatusMessage );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addDatabaseLayers, this, []( const QStringList & layerPathList, const QString & providerKey )
     {
@@ -5621,7 +5645,10 @@ void QgisApp::addVirtualLayer()
   }
   dts->setMapCanvas( mMapCanvas );
   dts->setBrowserModel( mBrowserModel );
+  Q_NOWARN_DEPRECATED_PUSH
+  // TODO QGIS 4.0 -- this should use the generic addLayer signal instead
   connect( dts, &QgsAbstractDataSourceWidget::addVectorLayer, this, &QgisApp::addVectorLayer );
+  Q_NOWARN_DEPRECATED_POP
   connect( dts, &QgsAbstractDataSourceWidget::replaceVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );
   dts->exec();
   delete dts;

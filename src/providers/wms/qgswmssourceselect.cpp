@@ -618,9 +618,14 @@ void QgsWMSSourceSelect::addButtonClicked()
       individualUri.setParam( QStringLiteral( "layers" ), layers.at( i ) );
       individualUri.setParam( QStringLiteral( "styles" ), styles.at( i ) );
 
+      Q_NOWARN_DEPRECATED_PUSH
       emit addRasterLayer( individualUri.encodedUri(),
                            titles.at( i ),
                            QStringLiteral( "wms" ) );
+      Q_NOWARN_DEPRECATED_POP
+      emit addLayer( Qgis::LayerType::Raster, individualUri.encodedUri(),
+                     titles.at( i ),
+                     QStringLiteral( "wms" ) );
     }
 
   }
@@ -629,9 +634,14 @@ void QgsWMSSourceSelect::addButtonClicked()
     uri.setParam( QStringLiteral( "layers" ), layers );
     uri.setParam( QStringLiteral( "styles" ), styles );
 
+    Q_NOWARN_DEPRECATED_PUSH
     emit addRasterLayer( uri.encodedUri(),
                          leLayerName->text().isEmpty() ? titles.join( QLatin1Char( '/' ) ) : leLayerName->text(),
                          QStringLiteral( "wms" ) );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(),
+                   leLayerName->text().isEmpty() ? titles.join( QLatin1Char( '/' ) ) : leLayerName->text(),
+                   QStringLiteral( "wms" ) );
   }
 }
 

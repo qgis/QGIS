@@ -61,14 +61,32 @@ void QgsGpxSourceSelect::addButtonClicked()
   }
 
   if ( cbGPXTracks->isChecked() )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( mGpxPath + "?type=track",
                          fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=track",
+                   fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    Q_NOWARN_DEPRECATED_POP
+  }
   if ( cbGPXRoutes->isChecked() )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( mGpxPath + "?type=route",
                          fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=route",
+                   fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+  }
   if ( cbGPXWaypoints->isChecked() )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( mGpxPath + "?type=waypoint",
                          fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=waypoint",
+                   fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+  }
 }
 
 void QgsGpxSourceSelect::enableRelevantControls()

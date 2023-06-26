@@ -216,11 +216,18 @@ void QgsOgrDbSourceSelect::addButtonClicked()
     // Use OGR
     for ( const LayerInfo &info : std::as_const( selectedVectors ) )
     {
+      Q_NOWARN_DEPRECATED_PUSH
       emit addVectorLayer( info.first, info.second );
+      Q_NOWARN_DEPRECATED_POP
+      emit addLayer( Qgis::LayerType::Vector, info.first, info.second, QStringLiteral( "ogr" ) );
+
     }
     for ( const LayerInfo &info : std::as_const( selectedRasters ) )
     {
+      Q_NOWARN_DEPRECATED_PUSH
       emit addRasterLayer( info.first, info.second, QStringLiteral( "gdal" ) );
+      Q_NOWARN_DEPRECATED_POP
+      emit addLayer( Qgis::LayerType::Raster, info.first, info.second, QStringLiteral( "gdal" ) );
     }
     if ( widgetMode() == QgsProviderRegistry::WidgetMode::None && ! mHoldDialogOpen->isChecked() )
     {

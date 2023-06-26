@@ -164,7 +164,10 @@ void QgsWCSSourceSelect::addButtonClicked()
   cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
   uri.setParam( QStringLiteral( "cache" ), cache );
 
+  Q_NOWARN_DEPRECATED_PUSH
   emit addRasterLayer( uri.encodedUri(), identifier, QStringLiteral( "wcs" ) );
+  Q_NOWARN_DEPRECATED_POP
+  emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), identifier, QStringLiteral( "wcs" ) );
 }
 
 

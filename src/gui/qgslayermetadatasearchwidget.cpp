@@ -207,17 +207,26 @@ void QgsLayerMetadataSearchWidget::addButtonClicked()
       {
         case Qgis::LayerType::Raster:
         {
+          Q_NOWARN_DEPRECATED_PUSH
           emit addRasterLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          Q_NOWARN_DEPRECATED_POP
+          emit addLayer( metadataResult.layerType(), metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
           break;
         }
         case Qgis::LayerType::Vector:
         {
+          Q_NOWARN_DEPRECATED_PUSH
           emit addVectorLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          Q_NOWARN_DEPRECATED_POP
+          emit addLayer( metadataResult.layerType(), metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
           break;
         }
         case Qgis::LayerType::Mesh:
         {
+          Q_NOWARN_DEPRECATED_PUSH
           emit addMeshLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          Q_NOWARN_DEPRECATED_POP
+          emit addLayer( metadataResult.layerType(), metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
           break;
         }
         default:  // unsupported
