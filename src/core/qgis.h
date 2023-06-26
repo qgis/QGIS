@@ -3706,6 +3706,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( TileAvailability )
 
     /**
+     * Tiled mesh data provider capabilities.
+     *
+     * \since QGIS 3.34
+     */
+    enum class TiledMeshProviderCapability : int
+    {
+      ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. See QgsDataProvider::layerMetadata()
+    };
+    Q_ENUM( TiledMeshProviderCapability )
+
+    /**
+     * Tiled mesh data provider capabilities.
+     *
+     * \since QGIS 3.34
+     */
+    Q_DECLARE_FLAGS( TiledMeshProviderCapabilities, TiledMeshProviderCapability )
+    Q_FLAG( TiledMeshProviderCapabilities )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -3867,6 +3886,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledMeshProviderCapabilities )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

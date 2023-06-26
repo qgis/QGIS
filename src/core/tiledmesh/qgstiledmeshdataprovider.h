@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgsdataprovider.h"
+#include "qgis.h"
 
 /**
  * \ingroup core
@@ -33,18 +34,6 @@ class CORE_EXPORT QgsTiledMeshDataProvider: public QgsDataProvider
     Q_OBJECT
   public:
 
-    /**
-     * Capabilities that providers may implement.
-     */
-    enum class Capability : int
-    {
-      NoCapabilities = 0,       //!< Provider has no capabilities
-      ReadLayerMetadata = 1 << 0, //!< Provider can read layer metadata from data store.
-    };
-
-    Q_ENUM( Capability )
-
-    Q_DECLARE_FLAGS( Capabilities, Capability )
 
     //! Constructor for QgsTiledMeshDataProvider
     QgsTiledMeshDataProvider( const QString &uri,
@@ -56,7 +45,7 @@ class CORE_EXPORT QgsTiledMeshDataProvider: public QgsDataProvider
     /**
      * Returns flags containing the supported capabilities for the data provider.
      */
-    virtual QgsTiledMeshDataProvider::Capabilities capabilities() const;
+    virtual Qgis::TiledMeshProviderCapabilities capabilities() const;
 
 };
 

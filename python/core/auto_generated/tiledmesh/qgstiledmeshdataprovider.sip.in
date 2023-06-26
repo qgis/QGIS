@@ -22,15 +22,6 @@ Base class for data providers for :py:class:`QgsTiledMeshLayer`
 %End
   public:
 
-    enum class Capability
-    {
-      NoCapabilities,
-      ReadLayerMetadata,
-    };
-
-
-    typedef QFlags<QgsTiledMeshDataProvider::Capability> Capabilities;
-
 
     QgsTiledMeshDataProvider( const QString &uri,
                               const QgsDataProvider::ProviderOptions &providerOptions,
@@ -41,7 +32,7 @@ Constructor for QgsTiledMeshDataProvider
 
     ~QgsTiledMeshDataProvider();
 
-    virtual QgsTiledMeshDataProvider::Capabilities capabilities() const;
+    virtual Qgis::TiledMeshProviderCapabilities capabilities() const;
 %Docstring
 Returns flags containing the supported capabilities for the data provider.
 %End
