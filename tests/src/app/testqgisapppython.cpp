@@ -58,7 +58,7 @@ TestQgisAppPython::TestQgisAppPython() = default;
 //runs before all tests
 void TestQgisAppPython::initTestCase()
 {
-  qputenv( "QGIS_PLUGINPATH", QByteArray( TEST_DATA_DIR ) + "/test_plugin_path" );
+  qputenv( "QGIS_PLUGINPATH", QByteArray( QByteArray( TEST_DATA_DIR ) + "/test_plugin_path" ) );
 
   // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
