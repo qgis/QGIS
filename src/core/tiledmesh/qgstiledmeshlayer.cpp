@@ -22,6 +22,8 @@
 #include "qgsproviderregistry.h"
 #include "qgslayermetadataformatter.h"
 #include "qgsxmlutils.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsapplication.h"
 
 QgsTiledMeshLayer::QgsTiledMeshLayer( const QString &uri,
                                       const QString &baseName,
@@ -274,7 +276,7 @@ void QgsTiledMeshLayer::setTransformContext( const QgsCoordinateTransformContext
 }
 
 void QgsTiledMeshLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-    const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags flags )
+    const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -282,19 +284,17 @@ void QgsTiledMeshLayer::setDataSourcePrivate( const QString &dataSource, const Q
   mProviderKey = provider;
   mDataSource = dataSource;
 
-#if 0
   if ( mPreloadedProvider )
   {
-    mDataProvider.reset( qobject_cast< QgsPointCloudDataProvider * >( mPreloadedProvider.release() ) );
+    mDataProvider.reset( qobject_cast< QgsTiledMeshDataProvider * >( mPreloadedProvider.release() ) );
   }
   else
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
       profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
-    mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
+    mDataProvider.reset( qobject_cast<QgsTiledMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
   }
-#endif
 
   if ( !mDataProvider )
   {
