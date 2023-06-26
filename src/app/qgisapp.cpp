@@ -16481,6 +16481,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     }
 
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledMesh:
       break;
   }
 }

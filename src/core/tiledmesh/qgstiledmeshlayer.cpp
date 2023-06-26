@@ -275,7 +275,7 @@ void QgsTiledMeshLayer::setTransformContext( const QgsCoordinateTransformContext
 }
 
 void QgsTiledMeshLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-    const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+    const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -320,12 +320,6 @@ void QgsTiledMeshLayer::setDataSourcePrivate( const QString &dataSource, const Q
   if ( !( flags & QgsDataProvider::SkipGetExtent ) )
   {
     setExtent( mDataProvider->extent() );
-  }
-
-  bool loadDefaultStyleFlag = false;
-  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
-  {
-    loadDefaultStyleFlag = true;
   }
 }
 
