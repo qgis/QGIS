@@ -461,6 +461,7 @@ set(QGIS_GUI_SRCS
   tableeditor/qgstableeditorwidget.cpp
 
   tiledmesh/qgstiledmeshconnectiondialog.cpp
+  tiledmesh/qgstiledmeshdataitemguiprovider.cpp
   tiledmesh/qgstiledmeshproviderguimetadata.cpp
   tiledmesh/qgstiledmeshsourceselect.cpp
 
@@ -1475,6 +1476,7 @@ set(QGIS_GUI_HDRS
   tableeditor/qgstableeditorwidget.h
 
   tiledmesh/qgstiledmeshconnectiondialog.h
+  tiledmesh/qgstiledmeshdataitemguiprovider.h
   tiledmesh/qgstiledmeshproviderguimetadata.h
   tiledmesh/qgstiledmeshsourceselect.h
 

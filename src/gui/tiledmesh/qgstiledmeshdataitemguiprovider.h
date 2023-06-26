@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgstiledmeshproviderguimetadata.h
+  qgstiledmeshdataitemguiprovider.h
   --------------------------------------
     begin                : June 2023
     copyright            : (C) 2023 by Nyall Dawson
@@ -13,26 +13,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTILEDMESHPROVIDERGUIMETADATA_H
-#define QGSTILEDMESHPROVIDERGUIMETADATA_H
+#ifndef QGSTILEDMESHDATAITEMGUIPROVIDER_H
+#define QGSTILEDMESHDATAITEMGUIPROVIDER_H
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include <QList>
-#include <QMainWindow>
+#include "qgsdataitemguiprovider.h"
 
-#include "qgsproviderguimetadata.h"
 
-class QgsTiledMeshProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsTiledMeshDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
+    Q_OBJECT
   public:
-    QgsTiledMeshProviderGuiMetadata();
 
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
+    QString name() override { return QStringLiteral( "Tiled Mesh" ); }
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+  private:
+    static void editConnection( QgsDataItem *item );
+    static void deleteConnection( QgsDataItem *item );
+    static void newConnection( QgsDataItem *item );
+    static void newArcGISConnection( QgsDataItem *item );
+    static void saveConnections();
+    static void loadConnections( QgsDataItem *item );
+
 };
 
 ///@endcond
 
-#endif // QGSTILEDMESHPROVIDERGUIMETADATA_H
+#endif // QGSTILEDMESHDATAITEMGUIPROVIDER_H
