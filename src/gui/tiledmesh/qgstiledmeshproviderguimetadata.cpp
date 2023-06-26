@@ -17,6 +17,7 @@
 #include "qgssourceselectprovider.h"
 #include "qgsapplication.h"
 #include "qgstiledmeshsourceselect.h"
+#include "qgstiledmeshdataitemguiprovider.h"
 
 ///@cond PRIVATE
 
@@ -37,6 +38,11 @@ class QgsTiledMeshSourceSelectProvider : public QgsSourceSelectProvider
 QgsTiledMeshProviderGuiMetadata::QgsTiledMeshProviderGuiMetadata()
   : QgsProviderGuiMetadata( QStringLiteral( "tiledmesh" ) )
 {
+}
+
+QList<QgsDataItemGuiProvider *> QgsTiledMeshProviderGuiMetadata::dataItemGuiProviders()
+{
+  return { new QgsTiledMeshDataItemGuiProvider() };
 }
 
 QList<QgsSourceSelectProvider *> QgsTiledMeshProviderGuiMetadata::sourceSelectProviders()
