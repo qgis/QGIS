@@ -39,6 +39,7 @@
 #include "qgsvtpkvectortiledataprovider.h"
 
 #include "qgscesiumtilesdataprovider.h"
+#include "qgstiledmeshprovidermetadata.h"
 
 #ifdef HAVE_EPT
 #include "providers/ept/qgseptprovider.h"
@@ -230,7 +231,10 @@ void QgsProviderRegistry::init()
 
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Create tiled mesh providers" ) );
-    QgsProviderMetadata *metadata = new QgsCesiumTilesProviderMetadata();
+    QgsProviderMetadata *metadata = new QgsTiledMeshProviderMetadata();
+    mProviders[ metadata->key() ] = metadata;
+
+    metadata = new QgsCesiumTilesProviderMetadata();
     mProviders[ metadata->key() ] = metadata;
   }
 
