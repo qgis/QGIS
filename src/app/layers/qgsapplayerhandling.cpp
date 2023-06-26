@@ -60,6 +60,7 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsgdalutils.h"
+#include "qgstiledmeshlayer.h"
 
 #include <QObject>
 #include <QMessageBox>
@@ -516,6 +517,7 @@ L *QgsAppLayerHandling::addLayer( const QString &uri, const QString &baseName, c
 }
 template QgsPointCloudLayer *QgsAppLayerHandling::addLayer<QgsPointCloudLayer>( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid );
 template QgsVectorTileLayer *QgsAppLayerHandling::addLayer<QgsVectorTileLayer>( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid );
+template QgsTiledMeshLayer *QgsAppLayerHandling::addLayer<QgsTiledMeshLayer>( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid );
 template QgsPluginLayer *QgsAppLayerHandling::addLayer<QgsPluginLayer>( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid );
 
 
