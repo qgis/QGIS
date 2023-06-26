@@ -1,0 +1,103 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshlayer.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsTiledMeshLayer : QgsMapLayer
+{
+%Docstring(signature="appended")
+
+Represents a map layer supporting display of tiled mesh objects.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledmeshlayer.h"
+%End
+  public:
+
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) );
+%Docstring
+Constructor for LayerOptions with optional ``transformContext``.
+%End
+
+      QgsCoordinateTransformContext transformContext;
+
+      bool loadDefaultStyle;
+
+      bool skipCrsValidation;
+    };
+
+    explicit QgsTiledMeshLayer( const QString &uri = QString(),
+                                const QString &baseName = QString(),
+                                const QString &provider = QString(),
+                                const QgsTiledMeshLayer::LayerOptions &options = QgsTiledMeshLayer::LayerOptions() );
+%Docstring
+Constructor for QgsTiledMeshLayer.
+%End
+
+    ~QgsTiledMeshLayer();
+
+
+    SIP_PYOBJECT __repr__();
+%Docstring
+QgsTiledMeshLayer cannot be copied.
+%End
+%MethodCode
+    QString str = QStringLiteral( "<QgsTiledMeshLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QgsTiledMeshLayer *clone() const /Factory/;
+
+    virtual QgsRectangle extent() const;
+
+    virtual QgsTiledMeshDataProvider *dataProvider();
+
+    virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context );
+
+    virtual bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) ${SIP_FINAL};
+
+     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                         StyleCategories categories = AllStyleCategories ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const ${SIP_FINAL};
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
+    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
+
+    virtual QString decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const;
+
+    virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
+
+    virtual QString htmlMetadata() const;
+
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
+
+  private:
+    QgsTiledMeshLayer( const QgsTiledMeshLayer &rhs );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshlayer.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

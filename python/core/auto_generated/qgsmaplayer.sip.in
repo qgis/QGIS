@@ -57,6 +57,9 @@ This is the base class for all map layer types (vector, raster).
         case Qgis::LayerType::Group:
           sipType = sipType_QgsGroupLayer;
           break;
+        case Qgis::LayerType::TiledMesh:
+          sipType = sipType_QgsTiledMeshLayer;
+          break;
         default:
           sipType = nullptr;
           break;
