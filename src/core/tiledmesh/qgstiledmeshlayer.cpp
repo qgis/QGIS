@@ -120,17 +120,13 @@ bool QgsTiledMeshLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext 
     setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
   }
 
-  if ( !isValid() )
-  {
-    return false;
-  }
-
   QString errorMsg;
   if ( !readSymbology( layerNode, errorMsg, context ) )
     return false;
 
   readStyleManager( layerNode );
-  return true;
+
+  return isValid();
 }
 
 bool QgsTiledMeshLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -140,7 +136,6 @@ bool QgsTiledMeshLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const 
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::TiledMesh ) );
 
-  if ( mDataProvider )
   {
     QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
     const QDomText providerText = doc.createTextNode( providerType() );
