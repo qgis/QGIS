@@ -328,3 +328,4 @@ ProcessingOtbAlgorithmsTest
 PyCoreAdditions
 PyPythonRepr
 TestQgsRandomMarkerSymbolLayer
+ProcessingToolsTest
