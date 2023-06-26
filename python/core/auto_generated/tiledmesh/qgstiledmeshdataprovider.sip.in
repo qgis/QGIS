@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshdataprovider.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsTiledMeshDataProvider: QgsDataProvider
+{
+%Docstring(signature="appended")
+Base class for data providers for :py:class:`QgsTiledMeshLayer`
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledmeshdataprovider.h"
+%End
+  public:
+
+    enum class Capability
+    {
+      NoCapabilities,
+      ReadLayerMetadata,
+    };
+
+
+    typedef QFlags<QgsTiledMeshDataProvider::Capability> Capabilities;
+
+
+    QgsTiledMeshDataProvider( const QString &uri,
+                              const QgsDataProvider::ProviderOptions &providerOptions,
+                              QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+%Docstring
+Constructor for QgsTiledMeshDataProvider
+%End
+
+    ~QgsTiledMeshDataProvider();
+
+    virtual QgsTiledMeshDataProvider::Capabilities capabilities() const;
+%Docstring
+Returns flags containing the supported capabilities for the data provider.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshdataprovider.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

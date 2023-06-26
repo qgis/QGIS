@@ -336,6 +336,9 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextrendererutils.cpp
   textrenderer/qgstextshadowsettings.cpp
 
+  tiledmesh/qgstiledmeshdataprovider.cpp
+  tiledmesh/qgstiledmeshlayer.cpp
+
   sensor/qgssensormodel.cpp
   sensor/qgssensormanager.cpp
   sensor/qgssensorregistry.cpp
@@ -1886,6 +1889,9 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextrenderer.h
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h
+
+  tiledmesh/qgstiledmeshdataprovider.h
+  tiledmesh/qgstiledmeshlayer.h
 
   sensor/qgssensormodel.h
   sensor/qgssensormanager.h
