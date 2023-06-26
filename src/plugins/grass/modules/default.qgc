@@ -4,7 +4,6 @@
 <modules>
 
 <section label="GRASS MODULES">
-    <grass name="shell"/>
     <section label="Create new GRASS location and transfer data into it">
         <section label="Create new GRASS location from metadata file">
             <grass name="g.proj.wkt"/>

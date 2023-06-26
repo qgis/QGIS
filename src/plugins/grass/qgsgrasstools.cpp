@@ -17,7 +17,6 @@
 #include "qgsgrasstools.h"
 #include "qgsgrassmodule.h"
 #include "qgsgrassregion.h"
-#include "qgsgrassshell.h"
 #include "qgsgrass.h"
 #include "qgsconfig.h"
 
@@ -164,55 +163,15 @@ void QgsGrassTools::runModule( QString name, bool direct )
     return;  // Section
   }
 
-#ifdef HAVE_POSIX_OPENPT
-  QgsGrassShell *sh = nullptr;
-#endif
-
-  QWidget *m = nullptr;
-  if ( name == QLatin1String( "shell" ) )
+  // set wait cursor because starting module may be slow because of getting temporal datasets (t.list)
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  QgsGrassModule *gmod = new QgsGrassModule( this, name, mIface, direct, mTabWidget );
+  QApplication::restoreOverrideCursor();
+  if ( !gmod->errors().isEmpty() )
   {
-#ifdef Q_OS_WIN
-    QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsGrassUtils::htmlBrowserPath() );
-    QStringList env;
-    QByteArray origPath = qgetenv( "PATH" );
-    QByteArray origPythonPath = qgetenv( "PYTHONPATH" );
-    QString path = QString( origPath ) + QgsGrass::pathSeparator() + QgsGrass::grassModulesPaths().join( QgsGrass::pathSeparator() );
-    QString pythonPath = QString( origPythonPath ) + QgsGrass::pathSeparator() + QgsGrass::getPythonPath();
-    QgsDebugMsgLevel( "path = " + path, 3 );
-    QgsDebugMsgLevel( "pythonPath = " + pythonPath, 3 );
-    qputenv( "PATH", path.toLocal8Bit() );
-    qputenv( "PYTHONPATH", pythonPath.toLocal8Bit() );
-    // QProcess does not support environment for startDetached() -> set/reset to orig
-    if ( !QProcess::startDetached( getenv( "COMSPEC" ) ) )
-    {
-      QMessageBox::warning( 0, "Warning", tr( "Cannot start command shell (%1)" ).arg( getenv( "COMSPEC" ) ) );
-    }
-    qputenv( "PATH", origPath );
-    qputenv( "PYTHONPATH", origPythonPath );
-    return;
-#else
-
-#ifdef HAVE_POSIX_OPENPT
-    sh = new QgsGrassShell( this, mTabWidget );
-    m = qobject_cast<QWidget *>( sh );
-#else
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "GRASS Shell is not compiled." ) );
-#endif
-
-#endif // Q_OS_WIN
+    QgsGrass::warning( gmod->errors().join( QLatin1Char( '\n' ) ) );
   }
-  else
-  {
-    // set wait cursor because starting module may be slow because of getting temporal datasets (t.list)
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-    QgsGrassModule *gmod = new QgsGrassModule( this, name, mIface, direct, mTabWidget );
-    QApplication::restoreOverrideCursor();
-    if ( !gmod->errors().isEmpty() )
-    {
-      QgsGrass::warning( gmod->errors().join( QLatin1Char( '\n' ) ) );
-    }
-    m = qobject_cast<QWidget *>( gmod );
-  }
+  QWidget *m = qobject_cast<QWidget *>( gmod );
 
   int height = mTabWidget->iconSize().height();
   QString path = QgsGrass::modulesConfigDirPath() + "/" + name;
@@ -239,20 +198,6 @@ void QgsGrassTools::runModule( QString name, bool direct )
 
 
   mTabWidget->setCurrentIndex( mTabWidget->count() - 1 );
-
-  // We must call resize to reset COLUMNS environment variable
-  // used by bash !!!
-#if 0
-  /* TODO: Implement something that resizes the terminal without
-   *       crashes.
-   */
-#ifdef HAVE_POSIX_OPENPT
-  if ( sh )
-  {
-    sh->resizeTerminal();
-  }
-#endif
-#endif
 }
 
 bool QgsGrassTools::loadConfig()
@@ -632,10 +577,6 @@ int QgsGrassTools::debug( QStandardItem *item )
   }
   else // module
   {
-    if ( name == QLatin1String( "shell" ) )
-    {
-      return 0;
-    }
     QgsGrassModule *module = new QgsGrassModule( this, name, mIface, false );
     QgsDebugMsgLevel( QString( "module: %1 errors: %2" ).arg( name ).arg( module->errors().size() ), 2 );
     for ( QString error : module->errors() )
