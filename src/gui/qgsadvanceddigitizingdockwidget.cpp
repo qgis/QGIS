@@ -1673,7 +1673,7 @@ void QgsAdvancedDigitizingDockWidget::disable()
   disconnect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsAdvancedDigitizingDockWidget::enable );
 
   mEnableAction->setEnabled( false );
-  mErrorLabel->setText( tr( "CAD tools are not enabled for the current map tool" ) );
+  mErrorLabel->setText( tr( "Advanced digitizing tools are not enabled for the current map tool" ) );
   mErrorLabel->show();
   mCadWidget->hide();
 
