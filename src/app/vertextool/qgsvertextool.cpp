@@ -2255,46 +2255,39 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   if ( QgsProject::instance()->topologicalEditing() )
   {
-    // layer we have to add topological point on
-    QSet<QgsVectorLayer *> targetLayers;
+    // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
+    // this requires that
 
+    // compute layers we have to add topological point on (modified ones + snapped one)
+    QSet<QgsVectorLayer *> targetLayers( edits.keyBegin(), edits.keyEnd() );
     if ( mapPointMatch->layer() )
-    {
       targetLayers << mapPointMatch->layer();
-    }
-    else
-    {
-      // Either we snap on intersection, and so we need to find back all the layers part of the intersection
-      // Either we snap on nothing but we avoid intersection so we need at least the current layer
-
-      // we add the current layer (the first edited one)
-      targetLayers << edits.constBegin().key();
-    }
-
-    // TODO Whatever we snap on a layer or not, we should add topo points on all the layers we can
-    // snap on according to snap config mode. IS it true ? check with Loic
 
     // add topological points on layer part of the avoid intersection
     if ( QgsProject::instance()->avoidIntersectionsMode() == Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers )
     {
-      // TODO we could filter with pointlocator has edges if it's snap on intersection to avoid adding topo points
-      // everywhere
       const QList<QgsVectorLayer *> layers = QgsProject::instance()->avoidIntersectionsLayers();
       targetLayers.unite( QSet<QgsVectorLayer *>( layers.constBegin(), layers.constEnd() ) );
     }
 
     for ( auto itLayerEdits = edits.begin(); itLayerEdits != edits.end(); ++itLayerEdits )
     {
-      for ( auto itFeatEdit = itLayerEdits->begin(); itFeatEdit != itLayerEdits->end(); ++itFeatEdit )
+      for ( QgsVectorLayer *targetLayer : targetLayers )
       {
-        for ( QgsPoint point : itFeatEdit->newPoints )
-          for ( QgsVectorLayer *targetLayer : targetLayers )
+        // layer's CRS need to be the the same (otherwise we would need to reproject the point and it will not be coincident)
+        if ( targetLayer->crs() != itLayerEdits.key()->crs() )
+          continue;
+
+        for ( auto itFeatEdit = itLayerEdits->begin(); itFeatEdit != itLayerEdits->end(); ++itFeatEdit )
+        {
+          for ( QgsPoint point : itFeatEdit->newPoints )
           {
             if ( !point.is3D() )
               point.addZValue( defaultZValue() );
 
             targetLayer->addTopologicalPoints( point );
           }
+        }
       }
     }
   }
