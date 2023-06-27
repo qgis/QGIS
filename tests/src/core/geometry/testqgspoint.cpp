@@ -944,12 +944,21 @@ void TestQgsPoint::boundingBox3D()
 
 void TestQgsPoint::boundingBoxIntersects()
 {
+  // 2d
   QVERIFY( QgsPoint( 1, 2 ).boundingBoxIntersects(
              QgsRectangle( 0, 0.5, 1.5, 3 ) ) );
   QVERIFY( !QgsPoint( 1, 2 ).boundingBoxIntersects(
              QgsRectangle( 3, 0.5, 3.5, 3 ) ) );
   QVERIFY( !QgsPoint().boundingBoxIntersects(
              QgsRectangle( 0, 0.5, 3.5, 3 ) ) );
+
+  // 3d
+  QVERIFY( QgsPoint( 1, 2, 3 ).boundingBoxIntersects(
+             QgsBox3D( 0, 0.5, 1.5, 3, 2.5, 4.2 ) ) );
+  QVERIFY( !QgsPoint( 1, 2, 3 ).boundingBoxIntersects(
+             QgsBox3D( 3, 0.5, 1.5, 3.5, 2.5, 4.5 ) ) );
+  QVERIFY( !QgsPoint().boundingBoxIntersects(
+             QgsBox3D( 0, 0.5, 1.5, 3.5, 2.5, 4.5 ) ) );
 }
 
 void TestQgsPoint::filterVertices()
