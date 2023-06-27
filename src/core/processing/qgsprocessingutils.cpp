@@ -1583,6 +1583,7 @@ QString QgsProcessingUtils::resolveDefaultEncoding( const QString &defaultEncodi
     {
       return systemCodec;
     }
+    return QString( "UTF-8" );
   }
 
   return defaultEncoding;
