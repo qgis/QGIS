@@ -400,8 +400,6 @@ void QgsProviderRegistry::rebuildFilterStrings()
 
   for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
   {
-    const QString &key = it->first;
-
     QgsProviderMetadata *meta = it->second;
 
     // now get vector file filters, if any
@@ -409,7 +407,7 @@ void QgsProviderRegistry::rebuildFilterStrings()
     if ( !fileVectorFilters.isEmpty() )
     {
       mVectorFileFilters += fileVectorFilters;
-      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( key ).arg( fileVectorFilters.split( ";;" ).count() ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( it->first ).arg( fileVectorFilters.split( ";;" ).count() ), 2 );
     }
 
     // now get raster file filters, if any
@@ -418,7 +416,7 @@ void QgsProviderRegistry::rebuildFilterStrings()
     {
       QgsDebugMsgLevel( "raster filters: " + fileRasterFilters, 2 );
       mRasterFileFilters += fileRasterFilters;
-      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( key ).arg( fileRasterFilters.split( ";;" ).count() ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( it->first ).arg( fileRasterFilters.split( ";;" ).count() ), 2 );
     }
 
     // now get mesh file filters, if any
@@ -426,7 +424,7 @@ void QgsProviderRegistry::rebuildFilterStrings()
     if ( !fileMeshFilters.isEmpty() )
     {
       mMeshFileFilters += fileMeshFilters;
-      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file mesh filters)" ).arg( key ).arg( mMeshFileFilters.split( ";;" ).count() ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file mesh filters)" ).arg( it->first ).arg( mMeshFileFilters.split( ";;" ).count() ), 2 );
 
     }
 
@@ -434,7 +432,7 @@ void QgsProviderRegistry::rebuildFilterStrings()
     if ( !fileMeshDatasetFilters.isEmpty() )
     {
       mMeshDatasetFileFilters += fileMeshDatasetFilters;
-      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file dataset filters)" ).arg( key ).arg( mMeshDatasetFileFilters.split( ";;" ).count() ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file dataset filters)" ).arg( it->first ).arg( mMeshDatasetFileFilters.split( ";;" ).count() ), 2 );
     }
 
     // now get point cloud file filters, if any
