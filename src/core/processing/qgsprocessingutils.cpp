@@ -37,6 +37,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
 #include <QRegularExpression>
+#include <QTextCodec>
 #include <QUuid>
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
@@ -1528,6 +1529,20 @@ QVariantMap QgsProcessingUtils::preprocessQgisProcessParameters( const QVariantM
     }
   }
   return output;
+}
+
+QString QgsProcessingUtils::resolveDefaultEncoding( const QString &defaultEncoding )
+{
+  if ( ! QTextCodec::availableCodecs().contains( defaultEncoding.toLatin1() ) )
+  {
+    const QString systemCodec = QTextCodec::codecForLocale()->name();
+    if ( ! systemCodec.isEmpty() )
+    {
+      return systemCodec;
+    }
+  }
+
+  return defaultEncoding;
 }
 
 //
