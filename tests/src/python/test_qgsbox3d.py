@@ -27,6 +27,24 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.yMaximum(), 11.0)
         self.assertEqual(box.zMaximum(), 12.0)
 
+        # this should normalize
+        box = QgsBox3d(7.0, 12.0, 11.0, 5.0, 10.0, 4.0)
+        self.assertEqual(box.xMinimum(), 5.0)
+        self.assertEqual(box.yMinimum(), 10.0)
+        self.assertEqual(box.zMinimum(), 4.0)
+        self.assertEqual(box.xMaximum(), 7.0)
+        self.assertEqual(box.yMaximum(), 12.0)
+        self.assertEqual(box.zMaximum(), 11.0)
+
+        # without normalization
+        box = QgsBox3d(7.0, 12.0, 11.0, 5.0, 10.0, 4.0, False)
+        self.assertEqual(box.xMinimum(), 7.0)
+        self.assertEqual(box.yMinimum(), 12.0)
+        self.assertEqual(box.zMinimum(), 11.0)
+        self.assertEqual(box.xMaximum(), 5.0)
+        self.assertEqual(box.yMaximum(), 10.0)
+        self.assertEqual(box.zMaximum(), 4.0)
+
         box = QgsBox3d(QgsPoint(5, 6, 7), QgsPoint(10, 11, 12))
         self.assertEqual(box.xMinimum(), 5.0)
         self.assertEqual(box.yMinimum(), 6.0)
@@ -35,7 +53,7 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.yMaximum(), 11.0)
         self.assertEqual(box.zMaximum(), 12.0)
 
-        # point constructor should normalize
+        # point constructor should normalize by default
         box = QgsBox3d(QgsPoint(10, 11, 12), QgsPoint(5, 6, 7))
         self.assertEqual(box.xMinimum(), 5.0)
         self.assertEqual(box.yMinimum(), 6.0)
@@ -43,6 +61,14 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.xMaximum(), 10.0)
         self.assertEqual(box.yMaximum(), 11.0)
         self.assertEqual(box.zMaximum(), 12.0)
+
+        box = QgsBox3d(QgsPoint(10, 11, 12), QgsPoint(5, 6, 7), False)
+        self.assertEqual(box.xMinimum(), 10.0)
+        self.assertEqual(box.yMinimum(), 11.0)
+        self.assertEqual(box.zMinimum(), 12.0)
+        self.assertEqual(box.xMaximum(), 5.0)
+        self.assertEqual(box.yMaximum(), 6.0)
+        self.assertEqual(box.zMaximum(), 7.0)
 
         box = QgsBox3d(QgsRectangle(5, 6, 11, 13))
         self.assertEqual(box.xMinimum(), 5.0)
@@ -59,6 +85,14 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.xMaximum(), 11.0)
         self.assertEqual(box.yMaximum(), 13.0)
         self.assertEqual(box.zMaximum(), 9.0)
+
+        box = QgsBox3d(QgsRectangle(5, 6, 11, 13), 12.0, 5.0, False)
+        self.assertEqual(box.xMinimum(), 5.0)
+        self.assertEqual(box.yMinimum(), 6.0)
+        self.assertEqual(box.zMinimum(), 12.0)
+        self.assertEqual(box.xMaximum(), 11.0)
+        self.assertEqual(box.yMaximum(), 13.0)
+        self.assertEqual(box.zMaximum(), 5.0)
 
     def testSetters(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 10.0, 11.0, 12.0)
@@ -171,6 +205,8 @@ class TestQgsBox3d(unittest.TestCase):
         box = QgsBox3d(5.0, 6.0, 0.0, 11.0, 13.0, 0.0)
         self.assertTrue(box.is2d())
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, -7.0)
+        self.assertFalse(box.is2d())
+        box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, -7.0, False)
         self.assertTrue(box.is2d())
 
     def testEquality(self):

@@ -18,25 +18,38 @@
 #include "qgsbox3d.h"
 #include "qgspoint.h"
 
-QgsBox3d::QgsBox3d( double xmin, double ymin, double zmin, double xmax, double ymax, double zmax )
-  : mBounds2d( xmin, ymin, xmax, ymax )
+QgsBox3d::QgsBox3d( double xmin, double ymin, double zmin, double xmax, double ymax, double zmax, bool normalize )
+  : mBounds2d( xmin, ymin, xmax, ymax, false )
   , mZmin( zmin )
   , mZmax( zmax )
-{}
-
-QgsBox3d::QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 )
-  : mBounds2d( p1.x(), p1.y(), p2.x(), p2.y() )
-  , mZmin( std::min( p1.z(), p2.z() ) )
-  , mZmax( std::max( p1.z(), p2.z() ) )
 {
-  mBounds2d.normalize();
+  if ( normalize )
+  {
+    QgsBox3d::normalize();
+  }
 }
 
-QgsBox3d::QgsBox3d( const QgsRectangle &rect, double zMin, double zMax )
+QgsBox3d::QgsBox3d( const QgsPoint &p1, const QgsPoint &p2, bool normalize )
+  : mBounds2d( p1.x(), p1.y(), p2.x(), p2.y(), false )
+  , mZmin( p1.z() )
+  , mZmax( p2.z() )
+{
+  if ( normalize )
+  {
+    QgsBox3d::normalize();
+  }
+}
+
+QgsBox3d::QgsBox3d( const QgsRectangle &rect, double zMin, double zMax, bool normalize )
   : mBounds2d( rect )
   , mZmin( zMin )
   , mZmax( zMax )
-{}
+{
+  if ( normalize )
+  {
+    QgsBox3d::normalize();
+  }
+}
 
 void QgsBox3d::setXMinimum( double x )
 {

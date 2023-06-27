@@ -40,21 +40,23 @@ class CORE_EXPORT QgsBox3d
   public:
 
     /**
-     * Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates.
+     * Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates. If \a normalize is FALSE then
+     * the normalization step will not be applied automatically.
      */
-    QgsBox3d( double xmin = 0, double ymin = 0, double zmin = 0, double xmax = 0, double ymax = 0, double zmax = 0 ) SIP_HOLDGIL;
+    QgsBox3d( double xmin = 0, double ymin = 0, double zmin = 0, double xmax = 0, double ymax = 0, double zmax = 0, bool normalize = true ) SIP_HOLDGIL;
 
     /**
      * Constructs a QgsBox3D from two points representing opposite corners of the box.
-     * The box is normalized after construction.
+     * The box is normalized after construction. If \a normalize is FALSE then
+     * the normalization step will not be applied automatically.
      */
-    QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 ) SIP_HOLDGIL;
+    QgsBox3d( const QgsPoint &p1, const QgsPoint &p2, bool normalize = true ) SIP_HOLDGIL;
 
     /**
      * Constructs a QgsBox3D from a rectangle.
-     * Z Minimum and Z Maximum are set to 0.0.
+     * If \a normalize is FALSE then the normalization step will not be applied automatically.
      */
-    QgsBox3d( const QgsRectangle &rect, double zMin = 0.0, double zMax = 0.0 ) SIP_HOLDGIL;
+    QgsBox3d( const QgsRectangle &rect, double zMin = 0.0, double zMax = 0.0, bool normalize = true ) SIP_HOLDGIL;
 
     /**
      * Sets the minimum \a x value.
