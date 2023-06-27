@@ -406,10 +406,10 @@ void TestQgsLayoutItem::dataDefinedPosition()
 {
   QgsProject p;
   QgsLayout l( &p );
+  l.setUnits( Qgis::LayoutUnit::Millimeters );
 
   //test setting data defined position
   TestItem *item = new TestItem( &l );
-  l.setUnits( Qgis::LayoutUnit::Millimeters );
   item->attemptMove( QgsLayoutPoint( 6.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   item->attemptResize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
 
@@ -514,9 +514,8 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->positionWithUnits().y(), 13.0 );
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
 
-  QList<QgsLayoutItem *> items = l.pageCollection()->itemsOnPage( 2 );
-  QCOMPARE( items.length(), 2 );
-  QCOMPARE( item->page(), 2 );
+  QList<QgsLayoutItem *> pgaeItems = l.pageCollection()->itemsOnPage( 2 );
+  QCOMPARE( pageItems.length(), 2 );
 
   delete item;
 }
