@@ -559,6 +559,16 @@ calculate and handles invalid geometries.
 .. versionadded:: 3.20
 %End
 
+    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if the bounding box of this geometry intersects with a ``box3d``.
+
+Since this test only considers the bounding box of the geometry, is is very fast to
+calculate and handles invalid geometries.
+
+.. versionadded:: 3.34
+%End
+
     virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 %Docstring
 Returns a version of the geometry without curves. Caller takes ownership of

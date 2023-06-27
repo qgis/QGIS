@@ -1468,7 +1468,7 @@ void TestQgsGeometryCollection::geometryCollection()
   TestFailTransformer failTransformer;
   QVERIFY( !transformCollect2.transform( &failTransformer ) );
 
-  // bounding box intersects test
+  // bounding box intersects 2d test
   QgsGeometryCollection b1;
   QVERIFY( !b1.boundingBoxIntersects( QgsRectangle( 0, 0, 0, 0 ) ) );
   transformLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
@@ -1482,9 +1482,27 @@ void TestQgsGeometryCollection::geometryCollection()
   QVERIFY( b1.boundingBox().isNull() );
   transformLine.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 17, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 12, 17, 1 ) <<  QgsPoint( Qgis::WkbType::PointZ, 12, 15, 1 ) <<  QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 ) );
   b1.addGeometry( transformLine.clone() );
-  QgsPolygon polygon;
-  QVERIFY( polygon.fromWkt( "Polygon( (5 10 0, 5 15 0, 10 15 0, 10 10 0, 5 10 0) )" ) );
-  QVERIFY( b1.boundingBoxIntersects( polygon.boundingBox() ) );
+  QgsPolygon polygon1;
+  QVERIFY( polygon1.fromWkt( "Polygon( (5 10 0, 5 15 0, 10 15 0, 10 10 0, 5 10 0) )" ) );
+  QVERIFY( b1.boundingBoxIntersects( polygon1.boundingBox() ) );
+
+  // bounding box intersects 3d test
+  QgsGeometryCollection b2;
+  QVERIFY( !b2.boundingBoxIntersects( QgsBox3D( 0, 0, 0, 0, 0, 0 ) ) );
+  transformLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  b2.addGeometry( transformLine.clone() );
+  QVERIFY( !b2.boundingBoxIntersects( QgsBox3D( -5, -2, 4, 0.5, 1.5, 5 ) ) );
+  QVERIFY( b2.boundingBoxIntersects( QgsBox3D( -5, -2, 2, 1.5, 2.5, 8 ) ) );
+  QVERIFY( b2.boundingBoxIntersects( QgsBox3D( 3, 7, 12, 5, 8, 26 ) ) );
+  QCOMPARE( b2.boundingBox3D(), QgsBox3D( 1, 2, 3, 111, 12, 23 ) );
+
+  b2.clear();
+  QVERIFY( b2.boundingBox().isNull() );
+  transformLine.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 17, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 12, 17, 1 ) <<  QgsPoint( Qgis::WkbType::PointZ, 12, 15, 1 ) <<  QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 ) );
+  b2.addGeometry( transformLine.clone() );
+  QgsPolygon polygon2;
+  QVERIFY( polygon2.fromWkt( "Polygon( (5 10 0, 5 15 5, 10 15 5, 10 10 5, 5 10 0) )" ) );
+  QVERIFY( b2.boundingBoxIntersects( polygon2.boundingBox3D() ) );
 }
 
 

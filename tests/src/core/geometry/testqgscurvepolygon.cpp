@@ -1278,16 +1278,29 @@ void TestQgsCurvePolygon::testBoundingBox3D()
 
 void TestQgsCurvePolygon::testBoundingBoxIntersects()
 {
-  QgsCurvePolygon poly;
-  QVERIFY( !poly.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  // 2d
+  QgsCurvePolygon poly1;
+  QVERIFY( !poly1.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
 
-  QgsCircularString *ext = new QgsCircularString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 10, 2 )
-                  << QgsPoint( 0, 18, 3 ) << QgsPoint( -1, 4, 4 ) << QgsPoint( 0, 0, 1 ) );
-  poly.setExteriorRing( ext );
+  std::unique_ptr< QgsCircularString > ext1( new QgsCircularString() );
+  ext1->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 10, 2 )
+                   << QgsPoint( 0, 18, 3 ) << QgsPoint( -1, 4, 4 ) << QgsPoint( 0, 0, 1 ) );
+  poly1.setExteriorRing( ext1.release() );
 
-  QVERIFY( poly.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
-  QVERIFY( !poly.boundingBoxIntersects( QgsRectangle( 1.1, -5, 6, -2 ) ) );
+  QVERIFY( poly1.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( !poly1.boundingBoxIntersects( QgsRectangle( 1.1, -5, 6, -2 ) ) );
+
+  // 3d
+  QgsCurvePolygon poly2;
+  QVERIFY( !poly2.boundingBoxIntersects( QgsBox3D( 1, 3, 1, 6, 9, 2 ) ) );
+
+  std::unique_ptr< QgsCircularString > ext2( new QgsCircularString() );
+  ext2->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 10, 2 )
+                   << QgsPoint( 0, 18, 3 ) << QgsPoint( -1, 4, 4 ) << QgsPoint( 0, 0, 1 ) );
+  poly2.setExteriorRing( ext2.release() );
+
+  QVERIFY( poly2.boundingBoxIntersects( QgsBox3D( 1, 3, 1, 6, 9, 2 ) ) );
+  QVERIFY( !poly2.boundingBoxIntersects( QgsBox3D( 1, 3, 4.1, 6, 9, 6 ) ) );
 }
 
 void TestQgsCurvePolygon::testRoundness()

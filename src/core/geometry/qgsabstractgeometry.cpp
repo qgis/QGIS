@@ -422,6 +422,11 @@ bool QgsAbstractGeometry::boundingBoxIntersects( const QgsRectangle &rectangle )
   return boundingBox().intersects( rectangle );
 }
 
+bool QgsAbstractGeometry::boundingBoxIntersects( const QgsBox3D &box3d ) const
+{
+  return boundingBox3D().intersects( box3d );
+}
+
 QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   Q_UNUSED( tolerance )

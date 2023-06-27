@@ -578,6 +578,16 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const SIP_HOLDGIL;
 
     /**
+     * Returns TRUE if the bounding box of this geometry intersects with a \a box3d.
+     *
+     * Since this test only considers the bounding box of the geometry, is is very fast to
+     * calculate and handles invalid geometries.
+     *
+     * \since QGIS 3.34
+     */
+    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const SIP_HOLDGIL;
+
+    /**
      * Returns a version of the geometry without curves. Caller takes ownership of
      * the returned geometry.
      * \param tolerance segmentation tolerance

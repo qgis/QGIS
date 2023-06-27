@@ -543,6 +543,11 @@ bool QgsPoint::boundingBoxIntersects( const QgsRectangle &rectangle ) const
   return rectangle.contains( mX, mY );
 }
 
+bool QgsPoint::boundingBoxIntersects( const QgsBox3D &box3d ) const
+{
+  return box3d.contains( mX, mY, mZ );
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
