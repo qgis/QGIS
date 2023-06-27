@@ -213,12 +213,16 @@ void TestQgsVectorTileLayer::test_labeling()
                      Qt::transparent, 0,
                      Qt::transparent, Qt::transparent, 0 ) );
   mLayer->setRenderer( rend );  // takes ownership
+  bool res1 = imageCheck( "render_test_labeling", mLayer, mLayer->extent() );
 
-  const bool res = imageCheck( "render_test_labeling", mLayer, mLayer->extent() );
+  // disable label rendering
+  mLayer->setLabelsEnabled( false );
+  bool res2 = imageCheck( "render_test_labeling_disabled", mLayer, mLayer->extent() );
 
   mLayer->setRenderer( oldRenderer );
 
-  QVERIFY( res );
+  QVERIFY( res1 );
+  QVERIFY( res2 );
 }
 
 void TestQgsVectorTileLayer::testMbtilesProviderMetadata()

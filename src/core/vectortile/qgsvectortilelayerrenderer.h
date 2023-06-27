@@ -70,6 +70,9 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     //! Whether to draw boundaries of tiles (useful for debugging)
     bool mDrawTileBoundaries = false;
 
+    //! True if labels are enabled
+    bool mLabelsEnabled = true;
+
     // temporary data used during rendering process
 
     //! Feedback object that may be used by the caller to cancel the rendering

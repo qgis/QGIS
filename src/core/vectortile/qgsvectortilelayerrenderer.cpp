@@ -36,6 +36,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   , mDataProvider( qgis::down_cast< const QgsVectorTileDataProvider* >( layer->dataProvider() )->clone() )
   , mRenderer( layer->renderer()->clone() )
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
+  , mLabelsEnabled( layer->labelsEnabled() )
   , mFeedback( new QgsFeedback )
   , mSelectedFeatures( layer->selectedFeatures() )
   , mLayerOpacity( layer->opacity() )
@@ -43,7 +44,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
 {
   if ( QgsLabelingEngine *engine = context.labelingEngine() )
   {
-    if ( layer->labeling() )
+    if ( layer->labelsEnabled() )
     {
       mLabelProvider = layer->labeling()->provider( layer );
       if ( mLabelProvider )

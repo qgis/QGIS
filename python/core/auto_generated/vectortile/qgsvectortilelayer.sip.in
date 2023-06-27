@@ -196,6 +196,33 @@ Sets labeling for the map layer.
 Returns currently assigned labeling
 %End
 
+    bool labelsEnabled() const;
+%Docstring
+Returns whether the layer contains labels which are enabled and should be drawn.
+
+:return: ``True`` if layer contains enabled labels
+
+.. seealso:: :py:func:`setLabelsEnabled`
+
+.. versionadded:: 3.34
+%End
+
+    void setLabelsEnabled( bool enabled );
+%Docstring
+Sets whether labels should be ``enabled`` for the layer.
+
+.. note::
+
+   Labels will only be rendered if :py:func:`~QgsVectorTileLayer.labelsEnabled` is ``True`` and a labeling
+   object is returned by :py:func:`~QgsVectorTileLayer.labeling`.
+
+.. seealso:: :py:func:`labelsEnabled`
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.34
+%End
+
     void setTileBorderRenderingEnabled( bool enabled );
 %Docstring
 Sets whether to render also borders of tiles (useful for debugging)
