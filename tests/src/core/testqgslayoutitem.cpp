@@ -514,7 +514,7 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->positionWithUnits().y(), 13.0 );
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
 
-  QList<QgsLayoutItem *> pgaeItems = l.pageCollection()->itemsOnPage( 2 );
+  QList<QgsLayoutItem *> pageItems = l.pageCollection()->itemsOnPage( 2 );
   QCOMPARE( pageItems.length(), 2 );
 
   delete item;
