@@ -40,7 +40,7 @@ Constructs a :py:class:`QgsBox3D` from two points representing opposite corners 
 The box is normalized after construction.
 %End
 
-    QgsBox3d( const QgsRectangle &rect ) /HoldGIL/;
+    QgsBox3d( const QgsRectangle &rect, double zMin = 0.0, double zMax = 0.0 ) /HoldGIL/;
 %Docstring
 Constructs a :py:class:`QgsBox3D` from a rectangle.
 Z Minimum and Z Maximum are set to 0.0.

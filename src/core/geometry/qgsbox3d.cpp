@@ -32,8 +32,10 @@ QgsBox3d::QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 )
   mBounds2d.normalize();
 }
 
-QgsBox3d::QgsBox3d( const QgsRectangle &rect )
+QgsBox3d::QgsBox3d( const QgsRectangle &rect, double zMin, double zMax )
   : mBounds2d( rect )
+  , mZmin( zMin )
+  , mZmax( zMax )
 {}
 
 void QgsBox3d::setXMinimum( double x )

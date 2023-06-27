@@ -54,7 +54,7 @@ class CORE_EXPORT QgsBox3d
      * Constructs a QgsBox3D from a rectangle.
      * Z Minimum and Z Maximum are set to 0.0.
      */
-    QgsBox3d( const QgsRectangle &rect ) SIP_HOLDGIL;
+    QgsBox3d( const QgsRectangle &rect, double zMin = 0.0, double zMax = 0.0 ) SIP_HOLDGIL;
 
     /**
      * Sets the minimum \a x value.
