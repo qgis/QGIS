@@ -29,12 +29,13 @@ from qgis.core import (QgsDataProvider,
                        QgsProject,
                        QgsSettings,
                        QgsProcessingContext,
+                       QgsProcessingUtils,
                        QgsFeatureRequest,
                        QgsExpressionContext,
                        QgsExpressionContextUtils,
                        QgsExpressionContextScope)
 from qgis.gui import QgsSublayersDialog
-from qgis.PyQt.QtCore import QCoreApplication, QTextCodec
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -70,11 +71,7 @@ def createContext(feedback=None):
     context.setInvalidGeometryCheck(invalid_features_method)
 
     settings = QgsSettings()
-    default_codec = "System"
-    system_codec = QTextCodec.codecForLocale()
-    if (system_codec):
-        default_codec = system_codec.name().data().decode()
-    context.setDefaultEncoding(settings.value("/Processing/encoding", default_codec))
+    context.setDefaultEncoding(settings.value("/Processing/encoding", QgsProcessingUtils.resolveDefaultEncoding()))
 
     context.setExpressionContext(createExpressionContext())
 
