@@ -1940,6 +1940,10 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs() const
       if ( mCrs.isValid() )
         return mCrs;
     }
+    else  // try to load as EPSG
+    {
+      mCrs = QgsCoordinateReferenceSystem::fromEpsgId( mSRId );
+    }
   }
   return mCrs;
 }
