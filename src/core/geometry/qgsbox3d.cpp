@@ -150,6 +150,23 @@ bool QgsBox3d::contains( const QgsPoint &p ) const
     return true;
 }
 
+bool QgsBox3d::contains( double x, double y, double z ) const
+{
+  if ( !mBounds2d.contains( x, y ) )
+  {
+    return false;
+  }
+
+  if ( std::isnan( z ) || is2d() )
+  {
+    return true;
+  }
+  else
+  {
+    return mZmin <= z && z <= mZmax;
+  }
+}
+
 double QgsBox3d::distanceTo( const  QVector3D &point ) const
 {
   const double dx = std::max( mBounds2d.xMinimum() - point.x(), std::max( 0., point.x() - mBounds2d.xMaximum() ) );

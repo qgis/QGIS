@@ -298,6 +298,17 @@ If the point is a 2D point (no z-coordinate), then the containment test
 will be performed on the x/y extent of the box only.
 %End
 
+    bool contains( double x, double y, double z ) const;
+%Docstring
+Returns ``True`` when box contains a point (``x``, ``y``, ``z``).
+A point on the border of the box will also return ``True``
+
+If the point is a 2D point (no z-coordinate), then the containment test
+will be performed on the x/y extent of the box only.
+
+.. versionadded:: 3.34
+%End
+
     QgsRectangle toRectangle() const;
 %Docstring
 Converts the box to a 2D rectangle.

@@ -299,6 +299,17 @@ class CORE_EXPORT QgsBox3d
     bool contains( const QgsPoint &point ) const;
 
     /**
+     * Returns TRUE when box contains a point (\a x, \a y, \a z).
+     * A point on the border of the box will also return TRUE
+     *
+     * If the point is a 2D point (no z-coordinate), then the containment test
+     * will be performed on the x/y extent of the box only.
+     *
+     * \since QGIS 3.34
+     */
+    bool contains( double x, double y, double z ) const;
+
+    /**
      * Converts the box to a 2D rectangle.
      */
     QgsRectangle toRectangle() const { return mBounds2d; }
