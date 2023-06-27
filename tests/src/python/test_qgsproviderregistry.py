@@ -43,6 +43,16 @@ class TestProviderMetadata(QgsProviderMetadata):
         return [res]
 
 
+class TestProviderTiledMeshMetadata(QgsProviderMetadata):
+
+    def __init__(self, key):
+        super().__init__(key, key)
+
+    def filters(self, _type: Qgis.FileFilterType):
+        if _type == Qgis.FileFilterType.TiledMesh:
+            return "Scene Layer Packages (*.slpk *.SLPK)"
+
+
 class TestQgsProviderRegistry(unittest.TestCase):
 
     def testProviderList(self):
@@ -180,6 +190,21 @@ class TestQgsProviderRegistry(unittest.TestCase):
 
         self.assertCountEqual([p.providerKey() for p in QgsProviderRegistry.instance().querySublayers('test_uri')],
                               ['p1', 'p2'])
+
+    def test_tiled_mesh_file_filters(self):
+        """
+        Test fileTiledMeshFilters()
+        """
+        registry = QgsProviderRegistry.instance()
+        self.assertFalse(registry.fileTiledMeshFilters())
+
+        registry.registerProvider(TestProviderTiledMeshMetadata('slpk'))
+        self.assertEqual(
+            registry.fileTiledMeshFilters(),
+            'All Supported Files (*.slpk *.SLPK);;'
+            'All Files (*.*);;'
+            'Scene Layer Packages (*.slpk *.SLPK)'
+        )
 
 
 if __name__ == '__main__':
