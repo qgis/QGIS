@@ -530,11 +530,11 @@ QString QgsGeometryCollection::asKml( int precision ) const
   return kml;
 }
 
-QgsRectangle QgsGeometryCollection::boundingBox() const
+QgsBox3D QgsGeometryCollection::boundingBox3D() const
 {
   if ( mBoundingBox.isNull() )
   {
-    mBoundingBox = calculateBoundingBox();
+    mBoundingBox = calculateBoundingBox3D();
   }
   return mBoundingBox;
 }
@@ -575,9 +575,28 @@ QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
   return bbox;
 }
 
+QgsBox3D QgsGeometryCollection::calculateBoundingBox3D() const
+{
+  if ( mGeometries.empty() )
+  {
+    return QgsBox3D();
+  }
+
+  QgsBox3D bbox = mGeometries.at( 0 )->boundingBox3D();
+  for ( int i = 1; i < mGeometries.size(); ++i )
+  {
+    if ( mGeometries.at( i )->isEmpty() )
+      continue;
+
+    QgsBox3D geomBox = mGeometries.at( i )->boundingBox3D();
+    bbox.combineWith( geomBox );
+  }
+  return bbox;
+}
+
 void QgsGeometryCollection::clearCache() const
 {
-  mBoundingBox = QgsRectangle();
+  mBoundingBox = QgsBox3D();
   mHasCachedValidity = false;
   mValidityFailureReason.clear();
   QgsAbstractGeometry::clearCache();

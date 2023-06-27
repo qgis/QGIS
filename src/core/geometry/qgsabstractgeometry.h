@@ -50,6 +50,7 @@ class QgsFeedback;
 class QgsCoordinateTransform;
 class QgsPoint;
 class QgsRectangle;
+class QgsBox3D;
 
 typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
@@ -181,7 +182,14 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Returns the minimal bounding box for the geometry
      */
-    virtual QgsRectangle boundingBox() const = 0;
+    virtual QgsRectangle boundingBox() const;
+
+    /**
+     * Returns the 3D bounding box for the geometry.
+     *
+     * \since QGIS 3.34
+     */
+    virtual QgsBox3D boundingBox3D() const = 0;
 
     //mm-sql interface
 
@@ -1129,6 +1137,14 @@ class CORE_EXPORT QgsAbstractGeometry
      * if a more efficient bounding box calculation is available.
      */
     virtual QgsRectangle calculateBoundingBox() const;
+
+    /**
+     * Calculates the minimal 3D bounding box for the geometry.
+     * \see calculateBoundingBox()
+     *
+     * \since QGIS 3.34
+     */
+    virtual QgsBox3D calculateBoundingBox3D() const;
 
     /**
      * Clears any cached parameters associated with the geometry, e.g., bounding boxes

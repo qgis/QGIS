@@ -377,6 +377,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QVector<QgsCurve *> mInteriorRings;
 
     QgsRectangle calculateBoundingBox() const override;
+    QgsBox3D calculateBoundingBox3D() const override;
 };
 
 // clazy:excludeall=qstring-allocations

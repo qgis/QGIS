@@ -588,7 +588,7 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
   return QgsRectangle( xmin, ymin, xmax, ymax, false );
 }
 
-QgsBox3D QgsLineString::calculateBoundingBox3d() const
+QgsBox3D QgsLineString::calculateBoundingBox3D() const
 {
 
   if ( mX.empty() )
@@ -614,6 +614,11 @@ QgsBox3D QgsLineString::calculateBoundingBox3d() const
     out = QgsBox3D( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), std::numeric_limits< double >::quiet_NaN(), mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), std::numeric_limits< double >::quiet_NaN() );
   }
   return out;
+}
+
+QgsBox3D QgsLineString::calculateBoundingBox3d() const
+{
+  return calculateBoundingBox3D();
 }
 
 void QgsLineString::scroll( int index )

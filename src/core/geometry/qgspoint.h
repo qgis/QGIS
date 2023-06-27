@@ -495,7 +495,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     //implementation of inherited methods
     void normalize() final SIP_HOLDGIL;
     bool isEmpty() const override SIP_HOLDGIL;
-    QgsRectangle boundingBox() const override SIP_HOLDGIL;
+    QgsBox3D boundingBox3D() const override SIP_HOLDGIL;
     QString geometryType() const override SIP_HOLDGIL;
     int dimension() const override SIP_HOLDGIL;
     QgsPoint *clone() const override SIP_FACTORY;

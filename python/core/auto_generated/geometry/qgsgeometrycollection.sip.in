@@ -181,7 +181,7 @@ Removes a geometry from the collection by index.
     virtual QString asKml( int precision = 17 ) const;
 
 
-    virtual QgsRectangle boundingBox() const;
+    virtual QgsBox3D boundingBox3D() const;
 
 
     virtual QgsCoordinateSequence coordinateSequence() const;
@@ -343,6 +343,8 @@ Reads a collection from a WKT string.
 %End
 
     virtual QgsRectangle calculateBoundingBox() const;
+
+    virtual QgsBox3D calculateBoundingBox3D() const;
 
     virtual void clearCache() const;
 

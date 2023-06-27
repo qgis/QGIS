@@ -204,6 +204,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsRectangle calculateBoundingBox() const override;
+    QgsBox3D calculateBoundingBox3D() const override;
 
   private:
     QVector<double> mX;
