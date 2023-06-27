@@ -158,7 +158,7 @@ class TEST_EXPORT QgsTest : public QObject
     QString mReport;
     QString mControlPathPrefix;
 
-    bool renderMapSettingsCheck( const QString &name, const QString &referenceImage, const QgsMapSettings &mapSettings )
+    bool renderMapSettingsCheck( const QString &name, const QString &referenceImage, const QgsMapSettings &mapSettings, int allowedMismatch = 0, int colorTolerance = 0 )
     {
       //use the QgsRenderChecker test utility class to
       //ensure the rendered output matches our control image
@@ -166,7 +166,8 @@ class TEST_EXPORT QgsTest : public QObject
       checker.setControlPathPrefix( mControlPathPrefix );
       checker.setControlName( "expected_" + referenceImage );
       checker.setMapSettings( mapSettings );
-      const bool result = checker.runTest( name );
+      checker.setColorTolerance( colorTolerance );
+      const bool result = checker.runTest( name, allowedMismatch );
       if ( !result )
       {
         appendToReport( name, checker.report() );
@@ -190,6 +191,20 @@ class TEST_EXPORT QgsTest : public QObject
       if ( !result )
       {
         appendToReport( name, checker.report() );
+      }
+      return result;
+    }
+
+    bool layoutCheck( const QString &name, QgsLayout *layout, int page = 0, int allowedMismatch = 0 )
+    {
+      QgsLayoutChecker checker( name, layout );
+      checker.setControlPathPrefix( mControlPathPrefix );
+
+      QString report;
+      const bool result = checker.testLayout( report, page, allowedMismatch );
+      if ( !result )
+      {
+        appendToReport( name, report );
       }
       return result;
     }

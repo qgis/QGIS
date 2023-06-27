@@ -20,7 +20,6 @@ Email                : sherman at mrcc dot com
 
 //header for class being tested
 #include <qgsapplication.h>
-#include "qgsrenderchecker.h"
 
 class TestQgsApplication: public QgsTest
 {
@@ -28,7 +27,10 @@ class TestQgsApplication: public QgsTest
 
   public:
 
-    TestQgsApplication() : QgsTest( QStringLiteral( "QgsApplication Tests" ) ) {}
+    TestQgsApplication()
+      : QgsTest( QStringLiteral( "QgsApplication Tests" ),
+                 QStringLiteral( "application" ) )
+    {}
 
   private slots:
     void checkPaths();
@@ -44,7 +46,6 @@ class TestQgsApplication: public QgsTest
 
   private:
     QString getQgisPath();
-    bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
 
 };
 
@@ -109,31 +110,17 @@ void TestQgsApplication::themeIcon()
   QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
   QVERIFY( !icon.isNull() );
   QImage im( icon.pixmap( 16, 16 ).toImage() );
-  QVERIFY( renderCheck( QStringLiteral( "theme_icon" ), im, 0 ) );
+  QVERIFY( imageCheck( QStringLiteral( "theme_icon" ), QStringLiteral( "theme_icon" ), im, QString(), 0 ) );
 
   // with colors
   icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 255, 100, 100 ), QColor( 255, 0, 0 ) );
   im = QImage( icon.pixmap( 16, 16 ).toImage() );
-  QVERIFY( renderCheck( QStringLiteral( "theme_icon_colors_1" ), im, 0 ) );
+  QVERIFY( imageCheck( QStringLiteral( "theme_icon_colors_1" ), QStringLiteral( "theme_icon_colors_1" ), im, QString(),  0 ) );
 
   // different colors
   icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 170, 255, 170 ), QColor( 0, 255, 0 ) );
   im = QImage( icon.pixmap( 16, 16 ).toImage() );
-  QVERIFY( renderCheck( QStringLiteral( "theme_icon_colors_2" ), im, 0 ) );
-}
-
-bool TestQgsApplication::renderCheck( const QString &testName, QImage &image, int mismatchCount )
-{
-  const QString myTmpDir = QDir::tempPath() + '/';
-  const QString myFileName = myTmpDir + testName + ".png";
-  image.save( myFileName, "PNG" );
-  QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( QStringLiteral( "application" ) );
-  myChecker.setControlName( "expected_" + testName );
-  myChecker.setRenderedImage( myFileName );
-  const bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
-  mReport += myChecker.report();
-  return myResultFlag;
+  QVERIFY( imageCheck( QStringLiteral( "theme_icon_colors_2" ), QStringLiteral( "theme_icon_colors_2" ), im, QString(), 0 ) );
 }
 
 void TestQgsApplication::checkPaths()

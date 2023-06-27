@@ -32,7 +32,6 @@
 #include <qgsapplication.h>
 #include "qgscompoundcurve.h"
 #include <qgsgeometry.h>
-#include "qgsgeometryutils.h"
 #include "qgspoint.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
@@ -46,12 +45,10 @@
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryfactory.h"
 #include "qgscurvepolygon.h"
-#include "qgsproject.h"
 #include "qgsgeos.h"
 #include "qgsreferencedgeometry.h"
 
 //qgs unit test utility class
-#include "qgsrenderchecker.h"
 
 #include "testtransformer.h"
 #include "testgeometryutils.h"
@@ -172,8 +169,6 @@ class TestQgsGeometry : public QgsTest
     //! Must be called before each render test
     void initPainterTest();
 
-    //! A helper method to do a render check to see if the geometry op is as expected
-    bool renderCheck( const QString &testName, const QString &comment = QString(), int mismatchCount = 0 );
     //! A helper method to dump to qdebug the geometry of a multipolygon
     void dumpMultiPolygon( QgsMultiPolygonXY &multiPolygon );
     void paintMultiPolygon( QgsMultiPolygonXY &multiPolygon );
@@ -1326,7 +1321,7 @@ void TestQgsGeometry::simplifyCheck1()
   QVERIFY( myLine.size() > 0 ); //check that the union created a feature
   dumpPolyline( myLine );
   delete mypSimplifyGeometry;
-  QVERIFY( renderCheck( "geometry_simplifyCheck1", "Checking simplify of line" ) );
+  QVERIFY( imageCheck( "Checking simplify of line", "geometry_simplifyCheck1", mImage, QString(), 0 ) );
 }
 #endif
 
@@ -1346,7 +1341,7 @@ void TestQgsGeometry::intersectionCheck1()
   QgsPolygonXY myPolygon = mypIntersectionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   paintPolygon( myPolygon );
-  QVERIFY( renderCheck( "geometry_intersectionCheck1", "Checking if A intersects B" ) );
+  QVERIFY( imageCheck( "Checking if A intersects B", "geometry_intersectionCheck1", mImage, QString(), 0 ) );
 }
 void TestQgsGeometry::intersectionCheck2()
 {
@@ -1437,7 +1432,7 @@ void TestQgsGeometry::unionCheck1()
   QgsMultiPolygonXY myMultiPolygon = mypUnionGeometry.asMultiPolygon();
   QVERIFY( myMultiPolygon.size() > 0 ); //check that the union did not fail
   paintMultiPolygon( myMultiPolygon );
-  QVERIFY( renderCheck( "geometry_unionCheck1", "Checking A union C produces 2 polys" ) );
+  QVERIFY( imageCheck( "Checking A union C produces 2 polys", "geometry_unionCheck1", mImage, QString(), 0 ) );
 }
 
 void TestQgsGeometry::unionCheck2()
@@ -1449,7 +1444,8 @@ void TestQgsGeometry::unionCheck2()
   QgsPolygonXY myPolygon = mypUnionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   paintPolygon( myPolygon );
-  QVERIFY( renderCheck( "geometry_unionCheck2", "Checking A union B produces single union poly" ) );
+  QVERIFY( imageCheck( "Checking A union B produces single union poly", "geometry_unionCheck2", mImage, QString(), 0 ) );
+
 }
 
 void TestQgsGeometry::differenceCheck1()
@@ -1461,7 +1457,7 @@ void TestQgsGeometry::differenceCheck1()
   QgsPolygonXY myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union did not fail
   paintPolygon( myPolygon );
-  QVERIFY( renderCheck( "geometry_differenceCheck1", "Checking (A - C) = A" ) );
+  QVERIFY( imageCheck( "Checking (A - C) = A", "geometry_differenceCheck1", mImage, QString(), 0 ) );
 }
 
 void TestQgsGeometry::differenceCheck2()
@@ -1473,7 +1469,7 @@ void TestQgsGeometry::differenceCheck2()
   QgsPolygonXY myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   paintPolygon( myPolygon );
-  QVERIFY( renderCheck( "geometry_differenceCheck2", "Checking (A - B) = subset of A" ) );
+  QVERIFY( imageCheck( "Checking (A - B) = subset of A", "geometry_differenceCheck2", mImage, QString(), 0 ) );
 }
 void TestQgsGeometry::bufferCheck()
 {
@@ -1484,7 +1480,7 @@ void TestQgsGeometry::bufferCheck()
   QgsPolygonXY myPolygon = mypBufferGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature
   paintPolygon( myPolygon );
-  QVERIFY( renderCheck( "geometry_bufferCheck", "Checking buffer(10,10) of B", 10 ) );
+  QVERIFY( imageCheck( "Checking buffer(10,10) of B", "geometry_bufferCheck", mImage, QString(), 0 ) );
 }
 
 void TestQgsGeometry::smoothCheck()
@@ -1740,19 +1736,6 @@ void TestQgsGeometry::exportToGeoJSON()
   obtained = nullGeom.asJson();
   geojson = QStringLiteral( "null" );
   QCOMPARE( obtained, geojson );
-}
-
-bool TestQgsGeometry::renderCheck( const QString &testName, const QString &, int mismatchCount )
-{
-  QString myTmpDir = QDir::tempPath() + '/';
-  QString myFileName = myTmpDir + testName + ".png";
-  mImage.save( myFileName, "PNG" );
-  QgsRenderChecker myChecker;
-  myChecker.setControlName( "expected_" + testName );
-  myChecker.setRenderedImage( myFileName );
-  bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
-  mReport += myChecker.report();
-  return myResultFlag;
 }
 
 void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygonXY &multiPolygon )
