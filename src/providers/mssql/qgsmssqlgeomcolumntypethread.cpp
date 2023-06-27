@@ -66,7 +66,7 @@ void QgsMssqlGeomColumnTypeThread::run()
                                             " [%1].HasM"
                                             " FROM %2"
                                             " WHERE [%1] IS NOT NULL %4"
-                                            " GROUP BY [%1].STGeometryType(), [%1].STSrid" )
+                                            " GROUP BY [%1].STGeometryType(), [%1].STSrid, [%1].HasZ, [%1].HasM" )
                             .arg( layerProperty.geometryColName,
                                   table,
                                   mUseEstimatedMetadata ? "TOP 1" : "",
