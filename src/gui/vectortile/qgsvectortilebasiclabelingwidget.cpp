@@ -15,9 +15,10 @@
 
 #include "qgsvectortilebasiclabelingwidget.h"
 
+#include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsvectortilelayer.h"
-
 #include "qgslabelinggui.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectortileutils.h"
@@ -332,6 +333,10 @@ QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTil
   connect( btnEditRule, &QPushButton::clicked, this, &QgsVectorTileBasicLabelingWidget::editStyle );
   connect( btnRemoveRule, &QAbstractButton::clicked, this, &QgsVectorTileBasicLabelingWidget::removeStyle );
 
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingNone.svg" ) ), tr( "No Labels" ) );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingRuleBased.svg" ) ), tr( "Rule-based Labeling" ) );
+  connect( mLabelModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorTileBasicLabelingWidget::labelModeChanged );
+
   connect( viewStyles, &QAbstractItemView::doubleClicked, this, &QgsVectorTileBasicLabelingWidget::editStyleAtIndex );
 
   if ( mMapCanvas )
@@ -374,16 +379,25 @@ QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTil
 
 void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
 {
+  if ( mVTLayer )
+  {
+    disconnect( mVTLayer );
+  }
+
   mVTLayer = layer;
+  connect( mVTLayer, &QgsMapLayer::styleChanged, this, [ = ]() { setLayer( mVTLayer ); } );
 
   if ( layer && layer->labeling() && layer->labeling()->type() == QLatin1String( "basic" ) )
   {
     mLabeling.reset( static_cast<QgsVectorTileBasicLabeling *>( layer->labeling()->clone() ) );
+    whileBlocking( mLabelModeComboBox )->setCurrentIndex( layer->labelsEnabled() ? 1 : 0 );
   }
   else
   {
     mLabeling.reset( new QgsVectorTileBasicLabeling() );
+    whileBlocking( mLabelModeComboBox )->setCurrentIndex( 1 );
   }
+  mOptionsStackedWidget->setCurrentIndex( mLabelModeComboBox->currentIndex() );
 
   mModel = new QgsVectorTileBasicLabelingListModel( mLabeling.get(), viewStyles );
   mProxyModel = new QgsVectorTileBasicLabelingProxyModel( mModel, viewStyles );
@@ -411,6 +425,13 @@ QgsVectorTileBasicLabelingWidget::~QgsVectorTileBasicLabelingWidget() = default;
 void QgsVectorTileBasicLabelingWidget::apply()
 {
   mVTLayer->setLabeling( mLabeling->clone() );
+  mVTLayer->setLabelsEnabled( mLabelModeComboBox->currentIndex() == 1 );
+}
+
+void QgsVectorTileBasicLabelingWidget::labelModeChanged()
+{
+  mOptionsStackedWidget->setCurrentIndex( mLabelModeComboBox->currentIndex() );
+  emit widgetChanged();
 }
 
 void QgsVectorTileBasicLabelingWidget::addStyle( Qgis::GeometryType geomType )
