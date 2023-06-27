@@ -125,6 +125,9 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
   if ( mHandler->featureCount() == 0 )
   {
     // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
+    // we just make sure first that its initial estimated vertical range does not affect its parents' bboxes calculation
+    mNode->setExactBbox( QgsAABB() );
+    mNode->updateParentBoundingBoxesRecursively();
     return nullptr;
   }
 
