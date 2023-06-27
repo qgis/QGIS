@@ -23,6 +23,7 @@
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 #include "qgsgeometrytransformer.h"
+#include "qgsbox3d.h"
 
 #include <cmath>
 #include <QPainter>
@@ -769,9 +770,9 @@ bool QgsPoint::isEmpty() const
   return std::isnan( mX ) || std::isnan( mY );
 }
 
-QgsRectangle QgsPoint::boundingBox() const
+QgsBox3D QgsPoint::boundingBox3D() const
 {
-  return QgsRectangle( mX, mY, mX, mY );
+  return QgsBox3D( mX, mY, mZ, mX, mY, mZ );
 }
 
 QString QgsPoint::geometryType() const

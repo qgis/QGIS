@@ -55,6 +55,7 @@ class TestQgsCurvePolygon: public QObject
     void testClosestSegment();
     void testBoundary();
     void testBoundingBox();
+    void testBoundingBox3D();
     void testBoundingBoxIntersects();
     void testRoundness();
     void testDropZValue();
@@ -1254,6 +1255,25 @@ void TestQgsCurvePolygon::testBoundingBox()
   QGSCOMPARENEAR( bBox.xMaximum(), 1.012344, 0.001 );
   QGSCOMPARENEAR( bBox.yMinimum(), 0.000000, 0.001 );
   QGSCOMPARENEAR( bBox.yMaximum(), 18, 0.001 );
+}
+
+void TestQgsCurvePolygon::testBoundingBox3D()
+{
+  QgsCurvePolygon poly;
+  QgsBox3D bBox = poly.boundingBox3D();
+
+  QgsCircularString *ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 10, 2 )
+                  << QgsPoint( 0, 18, 3 ) << QgsPoint( -1, 4, 4 ) << QgsPoint( 0, 0, 1 ) );
+  poly.setExteriorRing( ext );
+
+  bBox = poly.boundingBox3D();
+  QGSCOMPARENEAR( bBox.xMinimum(), -1.435273, 0.001 );
+  QGSCOMPARENEAR( bBox.xMaximum(), 1.012344, 0.001 );
+  QGSCOMPARENEAR( bBox.yMinimum(), 0.000000, 0.001 );
+  QGSCOMPARENEAR( bBox.yMaximum(), 18, 0.001 );
+  QGSCOMPARENEAR( bBox.zMinimum(), 1., 0.001 );
+  QGSCOMPARENEAR( bBox.zMaximum(), 4., 0.001 );
 }
 
 void TestQgsCurvePolygon::testBoundingBoxIntersects()

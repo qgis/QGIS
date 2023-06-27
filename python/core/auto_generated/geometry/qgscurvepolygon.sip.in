@@ -344,6 +344,8 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
 
     virtual QgsRectangle calculateBoundingBox() const;
 
+    virtual QgsBox3D calculateBoundingBox3D() const;
+
 };
 
 

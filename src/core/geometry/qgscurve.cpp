@@ -235,11 +235,11 @@ void QgsCurve::normalize()
   scroll( minCoordinateIndex );
 }
 
-QgsRectangle QgsCurve::boundingBox() const
+QgsBox3D QgsCurve::boundingBox3D() const
 {
   if ( mBoundingBox.isNull() )
   {
-    mBoundingBox = calculateBoundingBox();
+    mBoundingBox = calculateBoundingBox3D();
   }
   return mBoundingBox;
 }
@@ -292,7 +292,7 @@ Qgis::AngularDirection QgsCurve::orientation() const
 
 void QgsCurve::clearCache() const
 {
-  mBoundingBox = QgsRectangle();
+  mBoundingBox = QgsBox3D();
   mHasCachedValidity = false;
   mValidityFailureReason.clear();
   mHasCachedSummedUpArea = false;

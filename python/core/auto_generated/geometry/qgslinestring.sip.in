@@ -840,13 +840,26 @@ corresponds to the last point in the line.
 %End
 
 
-    QgsBox3D calculateBoundingBox3d() const;
+ QgsBox3D calculateBoundingBox3d() const /Deprecated/;
+%Docstring
+Calculates the minimal 3D bounding box for the geometry.
+Deprecated: use calculateBoundingBox3D instead
+
+.. seealso:: :py:func:`calculateBoundingBox`
+
+.. versionadded:: 3.26
+
+.. deprecated:: QGIS 3.34
+%End
+
+    virtual QgsBox3D calculateBoundingBox3D() const;
+
 %Docstring
 Calculates the minimal 3D bounding box for the geometry.
 
 .. seealso:: :py:func:`calculateBoundingBox`
 
-.. versionadded:: 3.26
+.. versionadded:: 3.34
 %End
 
   protected:

@@ -181,7 +181,7 @@ void TestQgsClipper::basic()
 
 bool TestQgsClipper::checkBoundingBox( const QgsLineString &polygon, const QgsBox3D &clipRect )
 {
-  return clipRect.contains( polygon.calculateBoundingBox3d() );
+  return clipRect.contains( polygon.calculateBoundingBox3D() );
 }
 
 bool TestQgsClipper::checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect )

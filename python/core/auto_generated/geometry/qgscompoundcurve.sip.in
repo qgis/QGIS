@@ -224,6 +224,8 @@ Appends first point if not already closed.
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;
 
+    virtual QgsBox3D calculateBoundingBox3D() const;
+
 
 };
 

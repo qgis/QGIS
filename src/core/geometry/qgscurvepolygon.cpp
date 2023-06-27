@@ -293,6 +293,15 @@ QgsRectangle QgsCurvePolygon::calculateBoundingBox() const
   return QgsRectangle();
 }
 
+QgsBox3D QgsCurvePolygon::calculateBoundingBox3D() const
+{
+  if ( mExteriorRing )
+  {
+    return mExteriorRing->boundingBox3D();
+  }
+  return QgsBox3D();
+}
+
 int QgsCurvePolygon::wkbSize( QgsAbstractGeometry::WkbFlags flags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );

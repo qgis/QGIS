@@ -17,10 +17,12 @@
 
 #include "qgscircularstring.h"
 #include "qgsapplication.h"
+#include "qgsbox3d.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
+#include "qgsrectangle.h"
 #include "qgswkbptr.h"
 #include "qgsgeometrytransformer.h"
 #include "qgsfeedback.h"
@@ -291,6 +293,41 @@ QgsRectangle QgsCircularString::calculateBoundingBox() const
       bbox.combineExtentWith( mX[ 0 ], mY[ 0 ] );
     }
     bbox.combineExtentWith( mX[ nPoints - 1 ], mY[ nPoints - 1 ] );
+  }
+  return bbox;
+}
+
+QgsBox3D QgsCircularString::calculateBoundingBox3D() const
+{
+  if ( !is3D() )
+  {
+    return QgsBox3D( calculateBoundingBox() );
+  }
+
+  QgsBox3D bbox;
+  int nPoints = numPoints();
+  for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
+  {
+    QgsRectangle box2d = segmentBoundingBox( QgsPoint( mX[i], mY[i] ), QgsPoint( mX[i + 1], mY[i + 1] ), QgsPoint( mX[i + 2], mY[i + 2] ) );
+    double zMin = *std::min_element( mZ.begin() + i, mZ.begin() + i + 3 );
+    double zMax = *std::max_element( mZ.begin() + i, mZ.begin() + i + 3 );
+    if ( i == 0 )
+    {
+      bbox = QgsBox3D( box2d, zMin, zMax );
+    }
+    else
+    {
+      bbox.combineWith( QgsBox3D( box2d, zMin, zMax ) );
+    }
+  }
+
+  if ( nPoints > 0 && nPoints % 2 == 0 )
+  {
+    if ( nPoints == 2 )
+    {
+      bbox.combineWith( mX[ 0 ], mY[ 0 ], mZ[ 0 ] );
+    }
+    bbox.combineWith( mX[ nPoints - 1 ], mY[ nPoints - 1 ], mZ[nPoints - 1] );
   }
   return bbox;
 }

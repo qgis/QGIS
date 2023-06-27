@@ -162,6 +162,22 @@ QgsRectangle QgsCompoundCurve::calculateBoundingBox() const
   return bbox;
 }
 
+QgsBox3D QgsCompoundCurve::calculateBoundingBox3D() const
+{
+  if ( mCurves.empty() )
+  {
+    return QgsBox3D();
+  }
+
+  QgsBox3D bbox = mCurves.at( 0 )->boundingBox3D();
+  for ( int i = 1; i < mCurves.size(); ++i )
+  {
+    QgsBox3D curveBox = mCurves.at( i )->boundingBox3D();
+    bbox.combineWith( curveBox );
+  }
+  return bbox;
+}
+
 void QgsCompoundCurve::scroll( int index )
 {
   const int size = numPoints();

@@ -556,6 +556,12 @@ void TestQgsGeometryCollection::geometryCollection()
   QGSCOMPARENEAR( extR->boundingBox().yMinimum(), -39.724, 0.001 );
   QGSCOMPARENEAR( extR->boundingBox().xMaximum(), 176.959, 0.001 );
   QGSCOMPARENEAR( extR->boundingBox().yMaximum(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().zMinimum(), std::numeric_limits<double>::quiet_NaN(), 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().yMaximum(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().zMaximum(), std::numeric_limits<double>::quiet_NaN(), 0.001 );
   const QgsLineString *intR = static_cast< const QgsLineString * >( pTransform.geometryN( 1 ) );
   QGSCOMPARENEAR( intR->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 0 ).y(), -39.724, 0.001 );
@@ -569,6 +575,12 @@ void TestQgsGeometryCollection::geometryCollection()
   QGSCOMPARENEAR( intR->boundingBox().yMinimum(), -39.724, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 176.959, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().yMaximum(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().zMinimum(), std::numeric_limits<double>::quiet_NaN(), 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().yMaximum(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().zMaximum(), std::numeric_limits<double>::quiet_NaN(), 0.001 );
 
   //3d CRS transform
   QgsLineString l22;
@@ -601,6 +613,12 @@ void TestQgsGeometryCollection::geometryCollection()
   QGSCOMPARENEAR( extR->boundingBox().yMinimum(), -39.724, 0.001 );
   QGSCOMPARENEAR( extR->boundingBox().xMaximum(), 176.959, 0.001 );
   QGSCOMPARENEAR( extR->boundingBox().yMaximum(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().zMinimum(), 1.0, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().yMaximum(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().zMaximum(), 5.0, 0.001 );
   intR = static_cast< const QgsLineString * >( pTransform.geometryN( 1 ) );
   QGSCOMPARENEAR( intR->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 0 ).y(), -39.724, 0.001 );
@@ -622,6 +640,12 @@ void TestQgsGeometryCollection::geometryCollection()
   QGSCOMPARENEAR( intR->boundingBox().yMinimum(), -39.724, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 176.959, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().yMaximum(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().zMinimum(), 1.0, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().yMaximum(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().zMaximum(), 5.0, 0.001 );
 
   //reverse transform
   pTransform.transform( tr, Qgis::TransformDirection::Reverse );
@@ -646,6 +670,12 @@ void TestQgsGeometryCollection::geometryCollection()
   QGSCOMPARENEAR( extR->boundingBox().yMinimum(), -3626584, 100 );
   QGSCOMPARENEAR( extR->boundingBox().xMaximum(), 6474984, 100 );
   QGSCOMPARENEAR( extR->boundingBox().yMaximum(), -3526584, 100 );
+  QGSCOMPARENEAR( extR->boundingBox3D().xMinimum(), 6274984, 100 );
+  QGSCOMPARENEAR( extR->boundingBox3D().yMinimum(), -3626584, 100 );
+  QGSCOMPARENEAR( extR->boundingBox3D().zMinimum(), 1.0, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().xMaximum(), 6474984, 100 );
+  QGSCOMPARENEAR( extR->boundingBox3D().yMaximum(), -3526584, 100 );
+  QGSCOMPARENEAR( extR->boundingBox3D().zMaximum(), 5.0, 0.001 );
   intR = static_cast< const QgsLineString * >( pTransform.geometryN( 1 ) );
   QGSCOMPARENEAR( intR->pointN( 0 ).x(), 6374984, 100 );
   QGSCOMPARENEAR( intR->pointN( 0 ).y(), -3626584, 100 );
@@ -667,6 +697,12 @@ void TestQgsGeometryCollection::geometryCollection()
   QGSCOMPARENEAR( intR->boundingBox().yMinimum(), -3626584, 100 );
   QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 6474984, 100 );
   QGSCOMPARENEAR( intR->boundingBox().yMaximum(), -3526584, 100 );
+  QGSCOMPARENEAR( intR->boundingBox3D().xMinimum(), 6274984, 100 );
+  QGSCOMPARENEAR( intR->boundingBox3D().yMinimum(), -3626584, 100 );
+  QGSCOMPARENEAR( intR->boundingBox3D().zMinimum(), 1.0, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().xMaximum(), 6474984, 100 );
+  QGSCOMPARENEAR( intR->boundingBox3D().yMaximum(), -3526584, 100 );
+  QGSCOMPARENEAR( intR->boundingBox3D().zMaximum(), 5.0, 0.001 );
 
 #if 0 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
@@ -727,6 +763,12 @@ void TestQgsGeometryCollection::geometryCollection()
   QGSCOMPARENEAR( extR->boundingBox().yMinimum(), 6, 0.001 );
   QGSCOMPARENEAR( extR->boundingBox().xMaximum(), 22, 0.001 );
   QGSCOMPARENEAR( extR->boundingBox().yMaximum(), 36, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().xMinimum(), 2, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().yMinimum(), 6, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().zMinimum(), 9, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().xMaximum(), 22, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().yMaximum(), 36, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox3D().zMaximum(), 49, 0.001 );
   intR = static_cast< const QgsLineString * >( pTransform2.geometryN( 1 ) );
   QGSCOMPARENEAR( intR->pointN( 0 ).x(), 2, 100 );
   QGSCOMPARENEAR( intR->pointN( 0 ).y(), 6, 100 );
@@ -748,6 +790,12 @@ void TestQgsGeometryCollection::geometryCollection()
   QGSCOMPARENEAR( intR->boundingBox().yMinimum(), 6, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 22, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().yMaximum(), 36, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().xMinimum(), 2, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().yMinimum(), 6, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().zMinimum(), 9, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().xMaximum(), 22, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().yMaximum(), 36, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox3D().zMaximum(), 49, 0.001 );
 
 
   // closestSegment

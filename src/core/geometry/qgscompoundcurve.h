@@ -200,6 +200,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsRectangle calculateBoundingBox() const override;
+    QgsBox3D calculateBoundingBox3D() const override;
 
   private:
     QVector< QgsCurve * > mCurves;

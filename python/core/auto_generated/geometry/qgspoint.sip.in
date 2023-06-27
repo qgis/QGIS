@@ -367,7 +367,7 @@ Example
     void normalize() final /HoldGIL/;
     virtual bool isEmpty() const /HoldGIL/;
 
-    virtual QgsRectangle boundingBox() const /HoldGIL/;
+    virtual QgsBox3D boundingBox3D() const /HoldGIL/;
 
     virtual QString geometryType() const /HoldGIL/;
 

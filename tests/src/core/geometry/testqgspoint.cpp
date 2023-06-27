@@ -63,6 +63,7 @@ class TestQgsPoint: public QObject
     void inclination();
     void boundary();
     void boundingBox();
+    void boundingBox3D();
     void boundingBoxIntersects();
     void filterVertices();
     void transformVertices();
@@ -907,6 +908,38 @@ void TestQgsPoint::boundingBox()
 
   pt = QgsPoint( 21.0, 23.0 );
   QCOMPARE( pt.boundingBox(), QgsRectangle( 21.0, 23.0, 21.0, 23.0 ) );
+}
+
+void TestQgsPoint::boundingBox3D()
+{
+  QgsPoint pt( 1.0, 2.0, 3.0 );
+
+  QCOMPARE( pt.boundingBox3D(), QgsBox3D( 1.0, 2.0, 3.0, 1.0, 2.0, 3.0 ) );
+
+  //modify points and test that bounding box is updated accordingly
+  pt.setX( 4.0 );
+  QCOMPARE( pt.boundingBox3D(), QgsBox3D( 4.0, 2.0, 3.0, 4.0, 2.0, 3.0 ) );
+
+  pt.setY( 6.0 );
+  QCOMPARE( pt.boundingBox3D(), QgsBox3D( 4.0, 6.0, 3.0, 4.0, 6.0, 3.0 ) );
+
+  pt.setZ( -2.0 );
+  QCOMPARE( pt.boundingBox3D(), QgsBox3D( 4.0, 6.0, -2.0, 4.0, 6.0, -2.0 ) );
+
+  pt.rx() = 4.0;
+  QCOMPARE( pt.boundingBox3D(), QgsBox3D( 4.0, 6.0, -2.0, 4.0, 6.0, -2.0 ) );
+
+  pt.ry() = 9.0;
+  QCOMPARE( pt.boundingBox3D(), QgsBox3D( 4.0, 9.0, -2.0, 4.0, 9.0, -2.0 ) );
+
+  pt.rz() = 7.0;
+  QCOMPARE( pt.boundingBox3D(), QgsBox3D( 4.0, 9.0, 7.0, 4.0, 9.0, 7.0 ) );
+
+  pt.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 11.0, 13.0, 15.0 ) );
+  QCOMPARE( pt.boundingBox3D(), QgsBox3D( 11.0, 13.0, 15.0, 11.0, 13.0, 15.0 ) );
+
+  pt = QgsPoint( 21.0, 23.0, 25.0 );
+  QCOMPARE( pt.boundingBox3D(), QgsBox3D( 21.0, 23.0, 25.0, 21.0, 23.0, 25.0 ) );
 }
 
 void TestQgsPoint::boundingBoxIntersects()

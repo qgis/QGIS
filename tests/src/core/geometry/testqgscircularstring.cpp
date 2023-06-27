@@ -74,6 +74,7 @@ class TestQgsCircularString: public QObject
     void closestSegment();
     void boundary();
     void boundingBox();
+    void boundingBox3D();
     void centroid();
     void segmentize();
     void interpolate();
@@ -1782,6 +1783,94 @@ void TestQgsCircularString::boundingBox()
   QGSCOMPARENEAR( r.xMaximum(), 6.125, 0.01 );
   QGSCOMPARENEAR( r.yMinimum(), 9, 0.01 );
   QGSCOMPARENEAR( r.yMaximum(), 10.25, 0.01 );
+}
+
+void TestQgsCircularString::boundingBox3D()
+{
+  // test that bounding box is updated after every modification to the circular string
+  QgsCircularString cs;
+  QVERIFY( cs.boundingBox().isNull() );
+
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10, -2 ) << QgsPoint( 10, 15, 3 ) << QgsPoint( 8, 2, 7 ) );
+  QgsBox3D box1 = cs.boundingBox3D();
+  QGSCOMPARENEAR( box1.xMinimum(), 5, 0.0001 );
+  QGSCOMPARENEAR( box1.xMaximum(), 19.1785, 0.0001 );
+  QGSCOMPARENEAR( box1.yMinimum(), 0.8215, 0.0001 );
+  QGSCOMPARENEAR( box1.yMaximum(), 15.2694, 0.0001 );
+  QGSCOMPARENEAR( box1.zMinimum(), -2, 0.0001 );
+  QGSCOMPARENEAR( box1.zMaximum(), 7, 0.0001 );
+
+  cs.setPoints( QgsPointSequence() << QgsPoint( -5, -10, -7.8 )
+                << QgsPoint( -6, -10, 3 ) << QgsPoint( -5.5, -9, 5.2 ) );
+  QgsBox3D box2 = cs.boundingBox3D();
+  QGSCOMPARENEAR( box2.xMinimum(), -6.125, 0.001 );
+  QGSCOMPARENEAR( box2.xMaximum(), -5, 0.001 );
+  QGSCOMPARENEAR( box2.yMinimum(), -10.25, 0.001 );
+  QGSCOMPARENEAR( box2.yMaximum(), -9., 0.001 );
+  QGSCOMPARENEAR( box2.zMinimum(), -7.8, 0.001 );
+  QGSCOMPARENEAR( box2.zMaximum(), 5.2, 0.001 );
+
+  QByteArray wkbToAppend = cs.asWkb();
+  cs.clear();
+  QVERIFY( cs.boundingBox().isNull() );
+
+  QgsConstWkbPtr wkbToAppendPtr( wkbToAppend );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10, -2 )
+                << QgsPoint( 10, 15, 3 ) << QgsPoint( 8, 2, 7 ) );
+  QgsBox3D box3 = cs.boundingBox3D();
+  QGSCOMPARENEAR( box3.xMinimum(), 5, 0.0001 );
+  QGSCOMPARENEAR( box3.xMaximum(), 19.1785, 0.0001 );
+  QGSCOMPARENEAR( box3.yMinimum(), 0.8215, 0.0001 );
+  QGSCOMPARENEAR( box3.yMaximum(), 15.2694, 0.0001 );
+  QGSCOMPARENEAR( box3.zMinimum(), -2, 0.0001 );
+  QGSCOMPARENEAR( box3.zMaximum(), 7, 0.0001 );
+
+  cs.fromWkb( wkbToAppendPtr );
+  QCOMPARE( cs.boundingBox3D(), QgsBox3D( -6.125, -10.25, -7.8, -5, -9, 5.2 ) );
+  QgsBox3D box4 = cs.boundingBox3D();
+  QGSCOMPARENEAR( box4.xMinimum(), -6.125, 0.0001 );
+  QGSCOMPARENEAR( box4.xMaximum(), -5, 0.0001 );
+  QGSCOMPARENEAR( box4.yMinimum(), -10.25, 0.0001 );
+  QGSCOMPARENEAR( box4.yMaximum(), -9, 0.0001 );
+  QGSCOMPARENEAR( box4.zMinimum(), -7.8, 0.0001 );
+  QGSCOMPARENEAR( box4.zMaximum(), 5.2, 0.0001 );
+
+  cs.fromWkt( QStringLiteral( "CircularString( 5 10 -2, 6 10 4, 5.5 9 10)" ) );
+  QCOMPARE( cs.boundingBox3D(), QgsBox3D( 5, 9, -2, 6.125, 10.25, 10 ) );
+  QgsBox3D box5 = cs.boundingBox3D();
+  QGSCOMPARENEAR( box5.xMinimum(), 5., 0.001 );
+  QGSCOMPARENEAR( box5.xMaximum(), 6.125, 0.001 );
+  QGSCOMPARENEAR( box5.yMinimum(), 9., 0.001 );
+  QGSCOMPARENEAR( box5.yMaximum(), 10.25, 0.001 );
+  QGSCOMPARENEAR( box5.zMinimum(), -2.0, 0.001 );
+  QGSCOMPARENEAR( box5.zMaximum(), 10.0, 0.001 );
+
+  cs.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( -1, 7, 3 ) );
+  QgsBox3D box6 = cs.boundingBox3D();
+  QGSCOMPARENEAR( box6.xMinimum(), -3.014, 0.001 );
+  QGSCOMPARENEAR( box6.xMaximum(), 14.014, 0.001 );
+  QGSCOMPARENEAR( box6.yMinimum(), -7.015, 0.001 );
+  QGSCOMPARENEAR( box6.yMaximum(), 12.499, 0.001 );
+  QGSCOMPARENEAR( box6.zMinimum(), -2.0, 0.001 );
+  QGSCOMPARENEAR( box6.zMaximum(), 10.0, 0.001 );
+
+  cs.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( -3, 10, 5. ) );
+  QgsBox3D box7 = cs.boundingBox3D();
+  QGSCOMPARENEAR( box7.xMinimum(), -10.294, 0.001 );
+  QGSCOMPARENEAR( box7.xMaximum(), 12.294, 0.001 );
+  QGSCOMPARENEAR( box7.yMinimum(), 9, 0.001 );
+  QGSCOMPARENEAR( box7.yMaximum(), 31.856, 0.001 );
+  QGSCOMPARENEAR( box7.zMinimum(), -2., 0.001 );
+  QGSCOMPARENEAR( box7.zMaximum(), 10., 0.001 );
+
+  cs.deleteVertex( QgsVertexId( 0, 0, 1 ) );
+  QgsBox3D box8 = cs.boundingBox3D();
+  QGSCOMPARENEAR( box8.xMinimum(), 5, 0.001 );
+  QGSCOMPARENEAR( box8.xMaximum(), 6.125, 0.001 );
+  QGSCOMPARENEAR( box8.yMinimum(), 9, 0.001 );
+  QGSCOMPARENEAR( box8.yMaximum(), 10.25, 0.001 );
+  QGSCOMPARENEAR( box8.zMinimum(), -2, 0.001 );
+  QGSCOMPARENEAR( box8.zMaximum(), 10., 0.001 );
 }
 
 void TestQgsCircularString::angle()
