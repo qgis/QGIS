@@ -309,6 +309,20 @@ will be performed on the x/y extent of the box only.
 .. versionadded:: 3.34
 %End
 
+    void combineWith( const QgsBox3d &box );
+%Docstring
+Expands the bbox so that it covers both the original rectangle and the given rectangle.
+
+.. versionadded:: 3.34
+%End
+
+    void combineWith( double x, double y, double z );
+%Docstring
+Expands the bbox so that it covers both the original rectangle and the given point.
+
+.. versionadded:: 3.34
+%End
+
     QgsRectangle toRectangle() const;
 %Docstring
 Converts the box to a 2D rectangle.

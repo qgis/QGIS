@@ -310,6 +310,20 @@ class CORE_EXPORT QgsBox3d
     bool contains( double x, double y, double z ) const;
 
     /**
+     * Expands the bbox so that it covers both the original rectangle and the given rectangle.
+     *
+     * \since QGIS 3.34
+     */
+    void combineWith( const QgsBox3d &box );
+
+    /**
+     * Expands the bbox so that it covers both the original rectangle and the given point.
+     *
+     * \since QGIS 3.34
+     */
+    void combineWith( double x, double y, double z );
+
+    /**
      * Converts the box to a 2D rectangle.
      */
     QgsRectangle toRectangle() const { return mBounds2d; }

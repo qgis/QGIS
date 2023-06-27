@@ -181,6 +181,26 @@ bool QgsBox3d::contains( double x, double y, double z ) const
   }
 }
 
+/**
+ * Expands the bbox so that it covers both the original rectangle and the given rectangle.
+ */
+void QgsBox3d::combineWith( const QgsBox3d &box )
+{
+  mBounds2d.combineExtentWith( box.mBounds2d );
+  mZmin = std::min( mZmin, box.zMinimum() );
+  mZmax = std::max( mZmax, box.zMaximum() );
+}
+
+/**
+ * Expands the bbox so that it covers both the original rectangle and the given point.
+ */
+void QgsBox3d::combineWith( double x, double y, double z )
+{
+  mBounds2d.combineExtentWith( x, y );
+  mZmin = std::min( mZmin, z );
+  mZmax = std::max( mZmax, z );
+}
+
 double QgsBox3d::distanceTo( const  QVector3D &point ) const
 {
   const double dx = std::max( mBounds2d.xMinimum() - point.x(), std::max( 0., point.x() - mBounds2d.xMaximum() ) );

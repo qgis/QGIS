@@ -200,6 +200,49 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertFalse(box.contains(QgsPoint(16, 7)))
         self.assertFalse(box.contains(QgsPoint(6, 17)))
 
+    def testCombineWith(self):
+        # box2 contains box1
+        box1 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        box2 = QgsBox3d(2.0, 3.0, 4.0, 12.0, 15.0, 17.0)
+        box1.combineWith(box2)
+        self.assertEqual(box1.xMinimum(), box2.xMinimum())
+        self.assertEqual(box1.yMinimum(), box2.yMinimum())
+        self.assertEqual(box1.zMinimum(), box2.zMinimum())
+        self.assertEqual(box1.xMaximum(), box2.xMaximum())
+        self.assertEqual(box1.yMaximum(), box2.yMaximum())
+        self.assertEqual(box1.zMaximum(), box2.zMaximum())
+
+        # box3 and box4 do not intersect
+        box3 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        box4 = QgsBox3d(26.0, 23.0, 24.0, 32.0, 35.0, 37.0)
+        box3.combineWith(box4)
+        self.assertEqual(box3.xMinimum(), 5.0)
+        self.assertEqual(box3.yMinimum(), 6.0)
+        self.assertEqual(box3.zMinimum(), 7.0)
+        self.assertEqual(box3.xMaximum(), box4.xMaximum())
+        self.assertEqual(box3.yMaximum(), box4.yMaximum())
+        self.assertEqual(box3.zMaximum(), box4.zMaximum())
+
+        # Point is inside the box
+        box5 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        box5.combineWith(7.0, 9.0, 9.0)
+        self.assertEqual(box5.xMinimum(), 5.0)
+        self.assertEqual(box5.yMinimum(), 6.0)
+        self.assertEqual(box5.zMinimum(), 7.0)
+        self.assertEqual(box5.xMaximum(), 11.0)
+        self.assertEqual(box5.yMaximum(), 13.0)
+        self.assertEqual(box5.zMaximum(), 15.0)
+
+        # Point is outside the box
+        box6 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        box6.combineWith(15.0, -2.0, 14.0)
+        self.assertEqual(box6.xMinimum(), 5.0)
+        self.assertEqual(box6.yMinimum(), -2.0)
+        self.assertEqual(box6.zMinimum(), 7.0)
+        self.assertEqual(box6.xMaximum(), 15.0)
+        self.assertEqual(box6.yMaximum(), 13.0)
+        self.assertEqual(box6.zMaximum(), 15.0)
+
     def testVolume(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
         self.assertEqual(box.volume(), 336.0)
