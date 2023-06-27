@@ -199,9 +199,9 @@ class SERVER_EXPORT QgsServerResponse
 
     /**
      * Returns the socket feedback if any
-     * \since 3.30.0
+     * \since 3.34.0
      */
-    virtual QgsFeedback *feedback() const SIP_SKIP;
+    virtual QgsFeedback *feedback() const;
 };
 
 #endif
