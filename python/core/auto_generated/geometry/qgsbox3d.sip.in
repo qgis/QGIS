@@ -336,6 +336,15 @@ An empty box may still be non-null if it contains valid information (e.g. boundi
 .. versionadded:: 3.34
 %End
 
+    QString toString( int precision = 16 ) const;
+%Docstring
+Returns a string representation of form xmin,ymin,zmin : xmax,ymax,zmax
+Coordinates will be truncated to the specified precision.
+If the specified precision is less than 0, a suitable minimum precision is used.
+
+.. versionadded:: 3.34
+%End
+
 };
 
 /************************************************************************

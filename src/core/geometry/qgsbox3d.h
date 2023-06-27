@@ -336,6 +336,15 @@ class CORE_EXPORT QgsBox3d
      */
     bool isEmpty() const;
 
+    /**
+     * Returns a string representation of form xmin,ymin,zmin : xmax,ymax,zmax
+     * Coordinates will be truncated to the specified precision.
+     * If the specified precision is less than 0, a suitable minimum precision is used.
+     *
+     * \since QGIS 3.34
+     */
+    QString toString( int precision = 16 ) const;
+
   private:
 
     QgsRectangle mBounds2d;

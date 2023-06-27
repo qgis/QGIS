@@ -17,6 +17,7 @@
 
 #include "qgsbox3d.h"
 #include "qgspoint.h"
+#include "qgslogger.h"
 
 QgsBox3d::QgsBox3d( double xmin, double ymin, double zmin, double xmax, double ymax, double zmax, bool normalize )
   : mBounds2d( xmin, ymin, xmax, ymax, false )
@@ -204,4 +205,38 @@ bool QgsBox3d::isNull() const
 bool QgsBox3d::isEmpty() const
 {
   return mZmax < mZmin  || qgsDoubleNear( mZmax, mZmin ) || mBounds2d.isEmpty();
+}
+
+QString QgsBox3d::toString( int precision ) const
+{
+  QString rep;
+
+  if ( precision < 0 )
+  {
+    precision = 0;
+    if ( ( width() < 10 || height() < 10 ) && ( width() > 0 && height() > 0 ) )
+    {
+      precision = static_cast<int>( std::ceil( -1.0 * std::log10( std::min( width(), height() ) ) ) ) + 1;
+      // sanity check
+      if ( precision > 20 )
+        precision = 20;
+    }
+  }
+
+  if ( isNull() )
+    rep = QStringLiteral( "Null" );
+  else if ( isEmpty() )
+    rep = QStringLiteral( "Empty" );
+  else
+    rep = QStringLiteral( "%1,%2,%3 : %4,%5,%6" )
+          .arg( mBounds2d.xMinimum(), 0, 'f', precision )
+          .arg( mBounds2d.yMinimum(), 0, 'f', precision )
+          .arg( mZmin, 0, 'f', precision )
+          .arg( mBounds2d.xMaximum(), 0, 'f', precision )
+          .arg( mBounds2d.yMaximum(), 0, 'f', precision )
+          .arg( mZmax, 0, 'f', precision );
+
+  QgsDebugMsgLevel( QStringLiteral( "Extents : %1" ).arg( rep ), 4 );
+
+  return rep;
 }
