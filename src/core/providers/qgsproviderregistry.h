@@ -767,6 +767,8 @@ class CORE_EXPORT QgsProviderRegistry
     //! Directory in which provider plugins are installed
     QDir mLibraryDirectory;
 
+    void rebuildFilterStrings();
+
     /**
      * File filter string for vector files
      *

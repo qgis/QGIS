@@ -354,6 +354,41 @@ void QgsProviderRegistry::init()
 #endif
   QgsDebugMsgLevel( QStringLiteral( "Loaded %1 providers (%2) " ).arg( mProviders.size() ).arg( providerList().join( ';' ) ), 1 );
 
+  // now initialize all providers
+  for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    const QString &key = it->first;
+
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Initialize %1" ).arg( key ) );
+
+    QgsProviderMetadata *meta = it->second;
+
+    // call initProvider() - allows provider to register its services to QGIS
+    meta->initProvider();
+  }
+
+  rebuildFilterStrings();
+
+  // load database drivers (only OGR)
+  mDatabaseDrivers = QgsOgrProviderUtils::databaseDrivers();
+
+  // load directory drivers (only OGR)
+  mDirectoryDrivers =  QgsOgrProviderUtils::directoryDrivers();
+
+  // load protocol drivers (only OGR)
+  mProtocolDrivers =  QgsOgrProviderUtils::protocolDrivers();
+}
+
+void QgsProviderRegistry::rebuildFilterStrings()
+{
+  mVectorFileFilters.clear();
+  mRasterFileFilters.clear();
+  mMeshFileFilters.clear();
+  mMeshDatasetFileFilters.clear();
+  mPointCloudFileFilters.clear();
+  mVectorTileFileFilters.clear();
+  mTiledMeshFileFilters.clear();
+
   QStringList pointCloudWildcards;
   QStringList pointCloudFilters;
 
@@ -363,12 +398,9 @@ void QgsProviderRegistry::init()
   QStringList tiledMeshWildcards;
   QStringList tiledMeshFilters;
 
-  // now initialize all providers
   for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
   {
     const QString &key = it->first;
-
-    const QgsScopedRuntimeProfile profile( QObject::tr( "Initialize %1" ).arg( key ) );
 
     QgsProviderMetadata *meta = it->second;
 
@@ -458,9 +490,6 @@ void QgsProviderRegistry::init()
         tiledMeshWildcards.append( QgsFileUtils::wildcardsFromFilter( filter ).split( ' ' ) );
       }
     }
-
-    // call initProvider() - allows provider to register its services to QGIS
-    meta->initProvider();
   }
 
   if ( !pointCloudFilters.empty() )
@@ -483,17 +512,7 @@ void QgsProviderRegistry::init()
     tiledMeshFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
     mTiledMeshFileFilters = tiledMeshFilters.join( QLatin1String( ";;" ) );
   }
-
-  // load database drivers (only OGR)
-  mDatabaseDrivers = QgsOgrProviderUtils::databaseDrivers();
-
-  // load directory drivers (only OGR)
-  mDirectoryDrivers =  QgsOgrProviderUtils::directoryDrivers();
-
-  // load protocol drivers (only OGR)
-  mProtocolDrivers =  QgsOgrProviderUtils::protocolDrivers();
-} // QgsProviderRegistry ctor
-
+}
 
 // typedef for the unload dataprovider function
 typedef void cleanupProviderFunction_t();
@@ -911,6 +930,8 @@ bool QgsProviderRegistry::registerProvider( QgsProviderMetadata *providerMetadat
     if ( mProviders.find( providerMetadata->key() ) == mProviders.end() )
     {
       mProviders[ providerMetadata->key() ] = providerMetadata;
+
+      rebuildFilterStrings();
       return true;
     }
     else
