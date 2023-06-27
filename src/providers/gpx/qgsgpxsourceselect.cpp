@@ -65,9 +65,9 @@ void QgsGpxSourceSelect::addButtonClicked()
     Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( mGpxPath + "?type=track",
                          fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    Q_NOWARN_DEPRECATED_POP
     emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=track",
                    fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
-    Q_NOWARN_DEPRECATED_POP
   }
   if ( cbGPXRoutes->isChecked() )
   {
