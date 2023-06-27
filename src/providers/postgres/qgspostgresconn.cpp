@@ -397,7 +397,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
         break;
       }
 
-      QString errorMsg = PQerrorMessage();
+      const QString errorMsg = PQerrorMessage();
       PQfinish();
       logWrapper->setError( errorMsg );
 
