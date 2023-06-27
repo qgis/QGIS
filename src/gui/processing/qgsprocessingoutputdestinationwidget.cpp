@@ -56,17 +56,8 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   mSelectButton->setPopupMode( QToolButton::InstantPopup );
 
   QgsSettings settings;
-  mEncoding = settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString();
-
-  if ( ( mEncoding == "System" ) || ( ! QTextCodec::availableCodecs().contains( mEncoding.toLatin1() ) ) )
-  {
-    const QString systemCodec = QTextCodec::codecForLocale()->name();
-    if ( ! systemCodec.isEmpty() )
-    {
-      mEncoding = systemCodec;
-      settings.setValue( QStringLiteral( "/Processing/encoding" ), mEncoding );
-    }
-  }
+  mEncoding = QgsProcessingUtils::resolveDefaultEncoding( settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString() );
+  settings.setValue( QStringLiteral( "/Processing/encoding" ), mEncoding );
 
   if ( !mParameter->defaultValueForGui().isValid() )
   {
@@ -612,18 +603,11 @@ void QgsProcessingLayerOutputDestinationWidget::selectEncoding()
   QgsEncodingSelectionDialog dialog( this, tr( "File encoding" ), mEncoding );
   if ( dialog.exec() )
   {
-    mEncoding = dialog.encoding();
-    if ( ( mEncoding == "System" ) || ( ! QTextCodec::availableCodecs().contains( mEncoding.toLatin1() ) ) )
-    {
-      const QString systemCodec = QTextCodec::codecForLocale()->name();
-      if ( ! systemCodec.isEmpty() )
-      {
-        mEncoding = systemCodec;
-      }
-    }
+    mEncoding = QgsProcessingUtils::resolveDefaultEncoding( dialog.encoding() );
 
     QgsSettings settings;
     settings.setValue( QStringLiteral( "/Processing/encoding" ), mEncoding );
+
     emit destinationChanged();
   }
 }
