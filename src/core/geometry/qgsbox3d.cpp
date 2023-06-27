@@ -96,10 +96,9 @@ void QgsBox3d::setMinimal()
 void QgsBox3d::normalize()
 {
   mBounds2d.normalize();
-  const double z1 = std::min( mZmin, mZmax );
-  const double z2 = std::max( mZmin, mZmax );
-  mZmin = z1;
-  mZmax = z2;
+  const double minTmp = std::min( mZmin, mZmax );
+  mZmax = std::max( mZmin, mZmax );
+  mZmin = minTmp;
 }
 
 QgsBox3d QgsBox3d::intersect( const QgsBox3d &other ) const
@@ -126,9 +125,16 @@ bool QgsBox3d::intersects( const QgsBox3d &other ) const
   if ( !mBounds2d.intersects( other.mBounds2d ) )
     return false;
 
-  const double z1 = ( mZmin > other.mZmin ? mZmin : other.mZmin );
-  const double z2 = ( mZmax < other.mZmax ? mZmax : other.mZmax );
-  return z1 <= z2;
+  if ( other.is2d() || is2d() )
+  {
+    return true;
+  }
+  else
+  {
+    const double z1 = ( mZmin > other.mZmin ? mZmin : other.mZmin );
+    const double z2 = ( mZmax < other.mZmax ? mZmax : other.mZmax );
+    return z1 <= z2;
+  }
 }
 
 bool QgsBox3d::contains( const QgsBox3d &other ) const
@@ -136,18 +142,26 @@ bool QgsBox3d::contains( const QgsBox3d &other ) const
   if ( !mBounds2d.contains( other.mBounds2d ) )
     return false;
 
-  return ( other.mZmin >= mZmin && other.mZmax <= mZmax );
+  if ( other.is2d() || is2d() )
+  {
+    return true;
+  }
+  else
+  {
+    return ( other.mZmin >= mZmin && other.mZmax <= mZmax );
+  }
 }
 
 bool QgsBox3d::contains( const QgsPoint &p ) const
 {
-  if ( !mBounds2d.contains( p.x(), p.y() ) )
-    return false;
-
-  if ( p.is3D() )
-    return mZmin <= p.z() && p.z() <= mZmax;
+  if ( is3D() )
+  {
+    return contains( p.x(), p.y(), p.z() );
+  }
   else
-    return true;
+  {
+    return mBounds2d.contains( p );
+  }
 }
 
 bool QgsBox3d::contains( double x, double y, double z ) const
@@ -171,10 +185,16 @@ double QgsBox3d::distanceTo( const  QVector3D &point ) const
 {
   const double dx = std::max( mBounds2d.xMinimum() - point.x(), std::max( 0., point.x() - mBounds2d.xMaximum() ) );
   const double dy = std::max( mBounds2d.yMinimum() - point.y(), std::max( 0., point.y() - mBounds2d.yMaximum() ) );
-  const double dz = std::max( mZmin - point.z(), std::max( 0., point.z() - mZmax ) );
-  return sqrt( dx * dx + dy * dy + dz * dz );
+  if ( is2d() || std::isnan( point.z() ) )
+  {
+    return std::hypot( dx, dy );
+  }
+  else
+  {
+    const double dz = std::max( mZmin - point.z(), std::max( 0., point.z() - mZmax ) );
+    return std::hypot( dx, dy, dz );
+  }
 }
-
 
 bool QgsBox3d::operator==( const QgsBox3d &other ) const
 {
