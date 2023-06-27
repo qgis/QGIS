@@ -575,7 +575,7 @@ In particular, this function upgrades encoded data defined values to :py:class:`
 .. versionadded:: 3.30
 %End
 
-    static QString resolveDefaultEncoding();
+    static QString resolveDefaultEncoding( const QString &defaultEncoding = "System" );
 %Docstring
 Returns the default encoding.
 

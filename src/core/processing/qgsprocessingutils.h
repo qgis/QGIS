@@ -568,7 +568,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \since QGIS 3.32
      */
-    static QString resolveDefaultEncoding(const QString &defaultEncoding = "System");
+    static QString resolveDefaultEncoding( const QString &defaultEncoding = "System" );
 
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
