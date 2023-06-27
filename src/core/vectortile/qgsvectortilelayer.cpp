@@ -247,6 +247,11 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
         errorMessage = tr( "Unknown labeling type: " ) + rendererType;
       }
 
+      if ( elemLabeling.hasAttribute( QStringLiteral( "labelsEnabled" ) ) )
+        mLabelsEnabled = elemLabeling.attribute( QStringLiteral( "labelsEnabled" ) ).toInt();
+      else
+        mLabelsEnabled = true;
+
       if ( labeling )
       {
         labeling->readXml( elemLabeling, context );
@@ -304,6 +309,7 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   {
     QDomElement elemLabeling = doc.createElement( QStringLiteral( "labeling" ) );
     elemLabeling.setAttribute( QStringLiteral( "type" ), mLabeling->type() );
+    elemLabeling.setAttribute( QStringLiteral( "labelsEnabled" ), mLabelsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
     mLabeling->writeXml( elemLabeling, context );
     elem.appendChild( elemLabeling );
   }
@@ -617,6 +623,21 @@ QgsVectorTileLabeling *QgsVectorTileLayer::labeling() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mLabeling.get();
+}
+
+bool QgsVectorTileLayer::labelsEnabled() const
+{
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mLabelsEnabled && static_cast< bool >( mLabeling );
+}
+
+void QgsVectorTileLayer::setLabelsEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mLabelsEnabled = enabled;
 }
 
 QList<QgsFeature> QgsVectorTileLayer::selectedFeatures() const
