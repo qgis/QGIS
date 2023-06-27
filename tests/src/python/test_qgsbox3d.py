@@ -208,6 +208,8 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertFalse(box.is2d())
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, -7.0, False)
         self.assertTrue(box.is2d())
+        box = QgsBox3d(5.0, 6.0, float('nan'), 11.0, 13.0, float('nan'))
+        self.assertTrue(box.is2d())
 
     def testEquality(self):
         box1 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
