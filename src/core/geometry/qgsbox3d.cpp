@@ -116,6 +116,11 @@ bool QgsBox3d::is2d() const
   return qgsDoubleNear( mZmin, mZmax ) || ( mZmin > mZmax ) || std::isnan( mZmin ) || std::isnan( mZmax ) ;
 }
 
+bool QgsBox3d::is3D() const
+{
+  return !is2d() && !isNull();
+}
+
 bool QgsBox3d::intersects( const QgsBox3d &other ) const
 {
   if ( !mBounds2d.intersects( other.mBounds2d ) )

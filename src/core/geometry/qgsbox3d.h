@@ -272,6 +272,15 @@ class CORE_EXPORT QgsBox3d
     bool is2d() const SIP_HOLDGIL;
 
     /**
+     * Returns TRUE if the box can be considered a 3-dimensional box, i.e.
+     * it has valid minimum and maximum z values.
+     * If the box is not normalized, this returns FALSE.
+     *
+     * \since QGIS 3.34
+     */
+    bool is3D() const SIP_HOLDGIL;
+
+    /**
      * Returns TRUE if box intersects with another box.
      */
     bool intersects( const QgsBox3d &other ) const;

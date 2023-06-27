@@ -271,6 +271,15 @@ Returns ``True`` if the box can be considered a 2-dimensional box, i.e.
 it has equal minimum and maximum z values.
 %End
 
+    bool is3D() const /HoldGIL/;
+%Docstring
+Returns ``True`` if the box can be considered a 3-dimensional box, i.e.
+it has valid minimum and maximum z values.
+If the box is not normalized, this returns ``False``.
+
+.. versionadded:: 3.34
+%End
+
     bool intersects( const QgsBox3d &other ) const;
 %Docstring
 Returns ``True`` if box intersects with another box.
