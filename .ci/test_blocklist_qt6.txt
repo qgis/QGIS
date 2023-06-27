@@ -329,3 +329,4 @@ PyCoreAdditions
 PyPythonRepr
 TestQgsRandomMarkerSymbolLayer
 ProcessingToolsTest
+test_app_qgisapppython
