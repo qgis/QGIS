@@ -8693,7 +8693,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   panel.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
@@ -8797,7 +8797,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   panel2.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel2.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel2.outputIsSkipped() );
   QCOMPARE( skipSpy2.count(), 0 );
@@ -8829,7 +8829,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   panel3.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel3.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel3.outputIsSkipped() );
   QCOMPARE( skipSpy3.count(), 1 );
@@ -8887,7 +8887,7 @@ void TestProcessingGui::testOutputDefinitionWidgetVectorOut()
   panel.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
@@ -8899,7 +8899,7 @@ void TestProcessingGui::testOutputDefinitionWidgetVectorOut()
   panel.setValue( QStringLiteral( "memory:" ) );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
@@ -8914,7 +8914,7 @@ void TestProcessingGui::testOutputDefinitionWidgetVectorOut()
   QCOMPARE( changedSpy.count(), 1 );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "ogr:dbname='/me/a.gpkg' table=\"d\" (geom) sql=''" ) );
   QVERIFY( !panel.outputIsSkipped() );
   panel.setValue( QStringLiteral( "ogr:dbname='/me/a.gpkg' table=\"d\" (geom) sql=''" ) );
@@ -8924,7 +8924,7 @@ void TestProcessingGui::testOutputDefinitionWidgetVectorOut()
   panel.setValue( QStringLiteral( "postgis:dbname='oraclesux' host=10.1.1.221 port=5432 user='qgis' password='qgis' table=\"stufff\".\"output\" (the_geom) sql=" ) );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "postgis:dbname='oraclesux' host=10.1.1.221 port=5432 user='qgis' password='qgis' table=\"stufff\".\"output\" (the_geom) sql=" ) );
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
@@ -8936,7 +8936,7 @@ void TestProcessingGui::testOutputDefinitionWidgetVectorOut()
   panel.setValue( QStringLiteral( "/home/me/test.shp" ) );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/home/me/test.shp" ) );
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
@@ -8953,7 +8953,7 @@ void TestProcessingGui::testOutputDefinitionWidgetVectorOut()
   panel.setValue( QStringLiteral( "test.shp" ) );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.shp" ) ) );
 
   // optional, test skipping
@@ -8972,7 +8972,7 @@ void TestProcessingGui::testOutputDefinitionWidgetVectorOut()
   panel2.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel2.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel2.outputIsSkipped() );
   QCOMPARE( skipSpy2.count(), 0 );
@@ -9004,7 +9004,7 @@ void TestProcessingGui::testOutputDefinitionWidgetVectorOut()
   panel3.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel3.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel3.outputIsSkipped() );
   QCOMPARE( skipSpy3.count(), 1 );
@@ -9040,7 +9040,7 @@ void TestProcessingGui::testOutputDefinitionWidgetRasterOut()
   panel.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
@@ -9054,7 +9054,7 @@ void TestProcessingGui::testOutputDefinitionWidgetRasterOut()
   QCOMPARE( changedSpy.count(), 1 );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/home/me/test.tif" ) );
   QVERIFY( !panel.outputIsSkipped() );
   panel.setValue( QStringLiteral( "/home/me/test.tif" ) );
@@ -9066,7 +9066,7 @@ void TestProcessingGui::testOutputDefinitionWidgetRasterOut()
   panel.setValue( QStringLiteral( "test.tif" ) );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.tif" ) ) );
 
   // optional, test skipping
@@ -9085,7 +9085,7 @@ void TestProcessingGui::testOutputDefinitionWidgetRasterOut()
   panel2.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel2.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel2.outputIsSkipped() );
   QCOMPARE( skipSpy2.count(), 0 );
@@ -9117,7 +9117,7 @@ void TestProcessingGui::testOutputDefinitionWidgetRasterOut()
   panel3.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel3.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel3.outputIsSkipped() );
   QCOMPARE( skipSpy3.count(), 1 );
@@ -9153,7 +9153,7 @@ void TestProcessingGui::testOutputDefinitionWidgetPointCloudOut()
   panel.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
@@ -9167,7 +9167,7 @@ void TestProcessingGui::testOutputDefinitionWidgetPointCloudOut()
   QCOMPARE( changedSpy.count(), 1 );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/home/me/test.las" ) );
   QVERIFY( !panel.outputIsSkipped() );
   panel.setValue( QStringLiteral( "/home/me/test.las" ) );
@@ -9179,7 +9179,7 @@ void TestProcessingGui::testOutputDefinitionWidgetPointCloudOut()
   panel.setValue( QStringLiteral( "test.las" ) );
   v = panel.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.las" ) ) );
 
   // optional, test skipping
@@ -9198,7 +9198,7 @@ void TestProcessingGui::testOutputDefinitionWidgetPointCloudOut()
   panel2.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel2.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel2.outputIsSkipped() );
   QCOMPARE( skipSpy2.count(), 0 );
@@ -9230,7 +9230,7 @@ void TestProcessingGui::testOutputDefinitionWidgetPointCloudOut()
   panel3.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   v = panel3.value();
   QCOMPARE( v.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "UTF-8" ) );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QVERIFY( !panel3.outputIsSkipped() );
   QCOMPARE( skipSpy3.count(), 1 );
