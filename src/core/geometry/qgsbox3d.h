@@ -328,6 +328,14 @@ class CORE_EXPORT QgsBox3d
      */
     bool isNull() const;
 
+    /**
+     * Returns TRUE if the box is empty.
+     * An empty box may still be non-null if it contains valid information (e.g. bounding box of a point).
+     *
+     * \since QGIS 3.34
+     */
+    bool isEmpty() const;
+
   private:
 
     QgsRectangle mBounds2d;

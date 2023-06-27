@@ -200,3 +200,8 @@ bool QgsBox3d::isNull() const
          ( mBounds2d.xMinimum() == std::numeric_limits<double>::max() && mBounds2d.yMinimum() == std::numeric_limits<double>::max() && mZmin == std::numeric_limits<double>::max()
            && mBounds2d.xMaximum() == -std::numeric_limits<double>::max() && mBounds2d.yMaximum() == -std::numeric_limits<double>::max() && mZmax == -std::numeric_limits<double>::max() );
 }
+
+bool QgsBox3d::isEmpty() const
+{
+  return mZmax < mZmin  || qgsDoubleNear( mZmax, mZmin ) || mBounds2d.isEmpty();
+}

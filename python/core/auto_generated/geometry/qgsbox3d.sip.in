@@ -328,6 +328,14 @@ A null box is also an empty box.
 .. versionadded:: 3.34
 %End
 
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the box is empty.
+An empty box may still be non-null if it contains valid information (e.g. bounding box of a point).
+
+.. versionadded:: 3.34
+%End
+
 };
 
 /************************************************************************

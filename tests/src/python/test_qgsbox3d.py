@@ -298,6 +298,35 @@ class TestQgsBox3d(unittest.TestCase):
             -sys.float_info.max, -sys.float_info.max, -sys.float_info.max, False)
         self.assertTrue(box11.isNull())
 
+    def testIsEmpty(self):
+        box1 = QgsBox3d()
+        self.assertTrue(box1.isEmpty())
+
+        box2 = QgsBox3d(0, 0, 0, 0, 0, 0)
+        self.assertTrue(box2.isEmpty())
+
+        box3 = QgsBox3d(1, 1, 1, 1, 1, 1)
+        self.assertTrue(box3.isEmpty())
+
+        box4 = QgsBox3d(5, 6, 7, 12, 13, 14, False)
+        self.assertFalse(box4.isEmpty())
+
+        # zMin > zMax
+        box5 = QgsBox3d(5, 6, 7, 12, 13, 2, False)
+        self.assertTrue(box5.isEmpty())
+
+        # zMin == zMax
+        box6 = QgsBox3d(5, 6, 7, 12, 13, 7, False)
+        self.assertTrue(box6.isEmpty())
+
+        # xMin > xMax
+        box7 = QgsBox3d(5, 6, 7, -20, 13, 14, False)
+        self.assertTrue(box7.isEmpty())
+
+        # yMin > yMax
+        box8 = QgsBox3d(5, 6, 7, 12, 2, 14, False)
+        self.assertTrue(box8.isEmpty())
+
 
 if __name__ == '__main__':
     unittest.main()
