@@ -320,6 +320,14 @@ class CORE_EXPORT QgsBox3d
      */
     void scale( double scaleFactor, double centerX, double centerY, double centerZ );
 
+    /**
+     * Test if the box is null (all coordinates NaN or after call to setMinimal()).
+     * A null box is also an empty box.
+     *
+     * \since QGIS 3.34
+     */
+    bool isNull() const;
+
   private:
 
     QgsRectangle mBounds2d;

@@ -320,6 +320,14 @@ Scale the rectangle around a center coordinates.
 .. versionadded:: 3.26
 %End
 
+    bool isNull() const;
+%Docstring
+Test if the box is null (all coordinates NaN or after call to :py:func:`~QgsBox3d.setMinimal`).
+A null box is also an empty box.
+
+.. versionadded:: 3.34
+%End
+
 };
 
 /************************************************************************

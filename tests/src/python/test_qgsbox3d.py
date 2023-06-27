@@ -262,6 +262,42 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box3.yMinimum(), -7.0)
         self.assertEqual(box3.zMinimum(), -3.0)
 
+    def testIsNull(self):
+        box1 = QgsBox3d()
+        self.assertTrue(box1.isNull())
+
+        box2 = QgsBox3d(0, 0, 0, 0, 0, 0)
+        self.assertFalse(box2.isNull())
+
+        box3 = QgsBox3d(1, 1, 1, 1, 1, 1)
+        self.assertFalse(box3.isNull())
+
+        box4 = QgsBox3d(5, 6, 7, 12, 13, 14)
+        self.assertFalse(box4.isNull())
+
+        box5 = QgsBox3d(5, 6, float('nan'), 12, 13, float('nan'))
+        self.assertFalse(box5.isNull())
+
+        box6 = QgsBox3d(0, 0, float('nan'), 0, 0, float('nan'))
+        self.assertFalse(box6.isNull())
+
+        box7 = QgsBox3d(0, 0, float('nan'), 0, 0, float('nan'))
+        self.assertFalse(box7.isNull())
+
+        box8 = QgsBox3d(0, 6, 8, 0, 13, 14)
+        self.assertFalse(box8.isNull())
+
+        box9 = QgsBox3d(5, 0, 7, 12, 0, 14)
+        self.assertFalse(box9.isNull())
+
+        box10 = QgsBox3d(5, 6, 0, 12, 13, 0)
+        self.assertFalse(box10.isNull())
+
+        box11 = QgsBox3d(
+            sys.float_info.max, sys.float_info.max, sys.float_info.max,
+            -sys.float_info.max, -sys.float_info.max, -sys.float_info.max, False)
+        self.assertTrue(box11.isNull())
+
 
 if __name__ == '__main__':
     unittest.main()

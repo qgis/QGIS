@@ -190,3 +190,13 @@ void QgsBox3d::scale( double scaleFactor, double centerX, double centerY, double
   setZMinimum( centerZ + ( zMinimum() - centerZ ) * scaleFactor );
   setZMaximum( centerZ + ( zMaximum() - centerZ ) * scaleFactor );
 }
+
+bool QgsBox3d::isNull() const
+{
+  return ( std::isnan( mBounds2d.xMinimum() ) && std::isnan( mBounds2d.xMaximum() )
+           && std::isnan( mBounds2d.yMinimum() ) && std::isnan( mBounds2d.xMaximum() )
+           && std::isnan( mZmin ) && std::isnan( mZmax ) )
+         ||
+         ( mBounds2d.xMinimum() == std::numeric_limits<double>::max() && mBounds2d.yMinimum() == std::numeric_limits<double>::max() && mZmin == std::numeric_limits<double>::max()
+           && mBounds2d.xMaximum() == -std::numeric_limits<double>::max() && mBounds2d.yMaximum() == -std::numeric_limits<double>::max() && mZmax == -std::numeric_limits<double>::max() );
+}
