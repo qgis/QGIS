@@ -143,6 +143,15 @@ class CORE_EXPORT QgsBox3d
     double zMaximum() const SIP_HOLDGIL { return mZmax; }
 
     /**
+     * Set a box so that min corner is at std::numeric_limits<double>::max()
+     * and max corner is at -std::numeric_limits<double>::max().
+     * It is NOT normalized.
+     *
+     * \since QGIS 3.34
+     */
+    void setMinimal() SIP_HOLDGIL;
+
+    /**
      * Normalize the box so it has non-negative width/height/depth.
      */
     void normalize();

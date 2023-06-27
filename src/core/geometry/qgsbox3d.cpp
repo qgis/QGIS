@@ -81,6 +81,17 @@ void QgsBox3d::setZMaximum( double z )
   mZmax = z;
 }
 
+/**
+ * Set a rectangle so that min corner is at max
+ * and max corner is at min. It is NOT normalized.
+ */
+void QgsBox3d::setMinimal()
+{
+  mBounds2d.setMinimal();
+  mZmin = std::numeric_limits<double>::max();
+  mZmax = -std::numeric_limits<double>::max();
+}
+
 void QgsBox3d::normalize()
 {
   mBounds2d.normalize();

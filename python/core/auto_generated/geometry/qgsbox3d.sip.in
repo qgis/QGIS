@@ -156,6 +156,15 @@ Returns the maximum z value.
 .. seealso:: :py:func:`zMinimum`
 %End
 
+    void setMinimal() /HoldGIL/;
+%Docstring
+Set a box so that min corner is at std.numeric_limits<double>.max()
+and max corner is at -std.numeric_limits<double>.max().
+It is NOT normalized.
+
+.. versionadded:: 3.34
+%End
+
     void normalize();
 %Docstring
 Normalize the box so it has non-negative width/height/depth.

@@ -9,6 +9,8 @@ __author__ = 'Nyall Dawson'
 __date__ = '11/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
+import sys
+
 import qgis  # NOQA
 
 from qgis.core import QgsBox3d, QgsPoint, QgsRectangle
@@ -109,6 +111,16 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.xMaximum(), 40.0)
         self.assertEqual(box.yMaximum(), 41.0)
         self.assertEqual(box.zMaximum(), 42.0)
+
+    def testSetMinimal(self):
+        box = QgsBox3d(5.0, 6.0, 7.0, 10.0, 11.0, 12.0)
+        box.setMinimal()
+        self.assertEqual(box.xMinimum(), sys.float_info.max)
+        self.assertEqual(box.yMinimum(), sys.float_info.max)
+        self.assertEqual(box.zMinimum(), sys.float_info.max)
+        self.assertEqual(box.xMaximum(), -sys.float_info.max)
+        self.assertEqual(box.yMaximum(), -sys.float_info.max)
+        self.assertEqual(box.zMaximum(), -sys.float_info.max)
 
     def testNormalize(self):
         box = QgsBox3d()
