@@ -340,6 +340,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   };
   addDefaultTimeoutAndClientEncoding( expandedConnectionInfo );
 
+  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "PQconnectdb()" ), expandedConnectionInfo.toUtf8(), QStringLiteral( "postgres" ), QStringLiteral( "QgsPostgresConn" ), QGS_QUERY_LOG_ORIGIN_PG_CON );
   mConn = PQconnectdb( expandedConnectionInfo.toUtf8() );
 
   // remove temporary cert/key/CA if they exist
@@ -361,6 +362,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       {
         QString errorMsg = tr( "Cannot set WriteOwner permission to cert: %0 to allow removing it" ).arg( file.fileName() );
         PQfinish();
+        logWrapper->setError( errorMsg );
         QgsMessageLog::logMessage( tr( "Client security failure" ) + '\n' + errorMsg, tr( "PostGIS" ) );
         mRef = 0;
         return;
@@ -369,6 +371,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       {
         QString errorMsg = tr( "Cannot remove cert: %0" ).arg( file.fileName() );
         PQfinish();
+        logWrapper->setError( errorMsg );
         QgsMessageLog::logMessage( tr( "Client security failure" ) + '\n' + errorMsg, tr( "PostGIS" ) );
         mRef = 0;
         return;
@@ -394,7 +397,9 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
         break;
       }
 
+      QString errorMsg = PQerrorMessage();
       PQfinish();
+      logWrapper->setError( errorMsg );
 
       if ( !username.isEmpty() )
         mUri.setUsername( username );
@@ -405,6 +410,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       QgsDebugMsgLevel( "Connecting to " + mUri.connectionInfo( false ), 2 );
       QString connectString = mUri.connectionInfo();
       addDefaultTimeoutAndClientEncoding( connectString );
+      logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "PQconnectdb()" ), connectString.toUtf8(), QStringLiteral( "postgres" ), QStringLiteral( "QgsPostgresConn" ), QGS_QUERY_LOG_ORIGIN_PG_CON );
       mConn = PQconnectdb( connectString.toUtf8() );
     }
 
@@ -418,11 +424,13 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   {
     QString errorMsg = PQerrorMessage();
     PQfinish();
+    logWrapper->setError( errorMsg );
     QgsMessageLog::logMessage( tr( "Connection to database failed" ) + '\n' + errorMsg, tr( "PostGIS" ) );
     mRef = 0;
     return;
   }
 
+  logWrapper = nullptr;
   QgsDebugMsgLevel( QStringLiteral( "Connection to the database was successful" ), 2 );
 
   deduceEndian();
