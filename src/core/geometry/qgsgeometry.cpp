@@ -171,6 +171,11 @@ QgsGeometry QgsGeometry::fromPointXY( const QgsPointXY &point )
   return QgsGeometry();
 }
 
+QgsGeometry QgsGeometry::fromPoint( const QgsPoint &point )
+{
+  return QgsGeometry( point.clone() );
+}
+
 QgsGeometry QgsGeometry::fromPolylineXY( const QgsPolylineXY &polyline )
 {
   std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolylineXY( polyline );

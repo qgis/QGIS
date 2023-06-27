@@ -90,6 +90,7 @@ class TestQgsGeometry : public QgsTest
     void splitCurve_data();
     void splitCurve();
 
+    void fromPoint();
     void fromQgsPointXY();
     void fromQPoint();
     void fromQPolygonF();
@@ -742,6 +743,15 @@ void TestQgsGeometry::splitCurve()
   auto [p1, p2] = qgsgeometry_cast< const QgsCurve * >( curve.constGet() )->splitCurveAtVertex( vertex );
   QCOMPARE( p1->asWkt(), curve1 );
   QCOMPARE( p2->asWkt(), curve2 );
+}
+
+void TestQgsGeometry::fromPoint()
+{
+  QgsPoint point( 1.0, 2.0, 3.0 );
+  QgsGeometry result( QgsGeometry::fromPoint( point ) );
+  QCOMPARE( result.wkbType(), Qgis::WkbType::PointZ );
+  QgsPoint resultPoint = result.vertexAt( 0 );
+  QCOMPARE( resultPoint, point );
 }
 
 void TestQgsGeometry::fromQgsPointXY()

@@ -230,9 +230,16 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.constGet().geometryN(1).x(), 21)
         self.assertEqual(geom.constGet().geometryN(1).y(), 31)
 
-    def testFromPoint(self):
+    def testFromPointXY(self):
         myPoint = QgsGeometry.fromPointXY(QgsPointXY(10, 10))
         self.assertEqual(myPoint.wkbType(), QgsWkbTypes.Point)
+
+    def testFromPoint(self):
+        myPoint = QgsGeometry.fromPoint(QgsPoint(10, 3, 5))
+        self.assertEqual(myPoint.wkbType(), QgsWkbTypes.PointZ)
+        self.assertEqual(myPoint.constGet().x(), 10)
+        self.assertEqual(myPoint.constGet().y(), 3)
+        self.assertEqual(myPoint.constGet().z(), 5)
 
     def testFromMultiPoint(self):
         myMultiPoint = QgsGeometry.fromMultiPointXY([

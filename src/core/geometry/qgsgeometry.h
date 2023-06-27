@@ -251,6 +251,14 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry fromWkt( const QString &wkt );
     //! Creates a new geometry from a QgsPointXY object
     static QgsGeometry fromPointXY( const QgsPointXY &point ) SIP_HOLDGIL;
+
+    /**
+     * Creates a new geometry from a QgsPoint object.
+     *
+     * \since QGIS 3.34
+     */
+    static QgsGeometry fromPoint( const QgsPoint &point ) SIP_HOLDGIL;
+
     //! Creates a new geometry from a QgsMultiPointXY object
     static QgsGeometry fromMultiPointXY( const QgsMultiPointXY &multipoint );
 

@@ -200,6 +200,14 @@ Creates a new geometry from a WKT string
 %Docstring
 Creates a new geometry from a :py:class:`QgsPointXY` object
 %End
+
+    static QgsGeometry fromPoint( const QgsPoint &point ) /HoldGIL/;
+%Docstring
+Creates a new geometry from a :py:class:`QgsPoint` object.
+
+.. versionadded:: 3.34
+%End
+
     static QgsGeometry fromMultiPointXY( const QgsMultiPointXY &multipoint );
 %Docstring
 Creates a new geometry from a :py:class:`QgsMultiPointXY` object
