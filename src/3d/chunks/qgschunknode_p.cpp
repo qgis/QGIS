@@ -265,9 +265,15 @@ void QgsChunkNode::updateParentBoundingBoxesRecursively() const
     float yMax = -std::numeric_limits< float >::max();
     float zMin = std::numeric_limits< float >::max();
     float zMax = -std::numeric_limits< float >::max();
+
     for ( int i = 0; i < currentNode->childCount(); ++i )
     {
       const QgsAABB childBBox = currentNodeChildren[i]->bbox();
+
+      // Nodes without data have and empty bbox and should be skipped
+      if ( childBBox.isEmpty() )
+        continue;
+
       if ( childBBox.xMin < xMin )
         xMin = childBBox.xMin;
       if ( childBBox.yMin < yMin )
@@ -281,7 +287,12 @@ void QgsChunkNode::updateParentBoundingBoxesRecursively() const
       if ( childBBox.zMax > zMax )
         zMax = childBBox.zMax;
     }
-    currentNode->setExactBbox( QgsAABB( xMin, yMin, zMin, xMax, yMax, zMax ) );
+
+    // QgsAABB is normalized in its constructor, so that min values are always smaller than max.
+    // If all child bboxes were empty, we can end up with min > max, so let's have an empty bbox instead.
+    const QgsAABB currentNodeBbox = xMin < xMax && yMin < yMax && zMin < zMax ? QgsAABB( xMin, yMin, zMin, xMax, yMax, zMax ) : QgsAABB();
+
+    currentNode->setExactBbox( currentNodeBbox );
     currentNode = currentNode->parent();
   }
 }
