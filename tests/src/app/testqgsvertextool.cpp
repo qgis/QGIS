@@ -1236,7 +1236,7 @@ void TestQgsVertexTool::testAvoidIntersections()
   mouseClick( 7, 1, Qt::LeftButton );
   mouseClick( 9, 2, Qt::LeftButton );
 
-  QCOMPARE( spy.count(), 1 ); // 1 for the moved vertex and 1 for the updated geometry
+  QCOMPARE( spy.count(), 1 ); // 1 for the moved vertex
 
   QCOMPARE( mLayerPolygon->featureCount(), ( long )2 );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((4 4, 7 4, 8 3, 8 2, 9 2, 4 1, 4 4))" ) );
