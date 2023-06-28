@@ -108,7 +108,7 @@ void QgsMeshLayerRenderer::calculateOutputSize()
   const QgsRenderContext &context = *renderContext();
   const QgsRectangle extent = context.mapExtent();
   const QgsMapToPixel mapToPixel = context.mapToPixel();
-  const QgsRectangle screenBBox = QgsMeshLayerUtils::boundingBoxToScreenRectangle( mapToPixel, extent );
+  const QgsRectangle screenBBox = QgsMeshLayerUtils::boundingBoxToScreenRectangle( mapToPixel, extent, context.devicePixelRatio() );
   const int width = int( screenBBox.width() );
   const int height = int( screenBBox.height() );
   mOutputSize = QSize( width, height );
@@ -569,7 +569,8 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnFaces( const QgsMeshRendererScal
   renderer.setOpacity( scalarSettings.opacity() );
 
   std::unique_ptr<QgsRasterBlock> bl( renderer.block( 0, context.mapExtent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() ) );
-  const QImage img = bl->image();
+  QImage img = bl->image();
+  img.setDevicePixelRatio( context.devicePixelRatio() );
 
   context.painter()->drawImage( 0, 0, img );
 }

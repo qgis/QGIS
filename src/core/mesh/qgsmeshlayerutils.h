@@ -127,7 +127,8 @@ class CORE_EXPORT QgsMeshLayerUtils
       int &leftLim,
       int &rightLim,
       int &bottomLim,
-      int &topLim );
+      int &topLim,
+      double devicePixelRatio = 1.0 );
 
     /**
      * Transformes the bounding box to rectangle in screen coordinates (in pixels)
@@ -136,7 +137,8 @@ class CORE_EXPORT QgsMeshLayerUtils
      */
     static QgsRectangle boundingBoxToScreenRectangle(
       const QgsMapToPixel &mtp,
-      const QgsRectangle &bbox
+      const QgsRectangle &bbox,
+      double devicePixelRatio = 1.0
     );
 
     /**

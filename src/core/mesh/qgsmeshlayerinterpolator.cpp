@@ -101,6 +101,8 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
   if ( mDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
     Q_ASSERT( mDatasetValues.count() == mTriangularMesh.vertices().count() );
 
+  double pixelRatio = mContext.devicePixelRatio();
+
   for ( int i = 0; i < indexCount; ++i )
   {
     if ( feedback && feedback->isCanceled() )
@@ -134,7 +136,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
 
     // Get the BBox of the element in pixels
     int topLim, bottomLim, leftLim, rightLim;
-    QgsMeshLayerUtils::boundingBoxToScreenRectangle( mContext.mapToPixel(), mOutputSize, bbox, leftLim, rightLim, topLim, bottomLim );
+    QgsMeshLayerUtils::boundingBoxToScreenRectangle( mContext.mapToPixel(), mOutputSize, bbox, leftLim, rightLim, topLim, bottomLim, pixelRatio );
 
     double value( 0 ), value1( 0 ), value2( 0 ), value3( 0 );
     const int faceIdx = mTriangularMesh.trianglesToNativeFaces()[triangleIndex];
@@ -155,7 +157,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
       for ( int k = leftLim; k <= rightLim; k++ )
       {
         double val;
-        const QgsPointXY p = mContext.mapToPixel().toMapCoordinates( k, j );
+        const QgsPointXY p = mContext.mapToPixel().toMapCoordinates( k / pixelRatio, j / pixelRatio );
         if ( mDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
           val = QgsMeshLayerUtils::interpolateFromVerticesData(
                   p1,
