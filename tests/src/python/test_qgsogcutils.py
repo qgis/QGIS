@@ -523,6 +523,85 @@ class TestQgsOgcUtils(unittest.TestCase):
         e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
         self.assertEqual(e.expression(), 'THEME LIKE \'%Phytoplancton total%\' AND (PROGRAMME ILIKE \'REPHY;%\' OR PROGRAMME ILIKE \'%;REPHY\' OR PROGRAMME ILIKE \'%;REPHY;%\' OR PROGRAMME ILIKE \'^REPHY$\')')
 
+    def test_expressionFromOgcFilterWithDateTime(self):
+        """
+        Test expressionFromOgcFilter with Date/Time type field
+        """
+        # test with datetime type
+        vl = QgsVectorLayer('Point', 'vl', 'memory')
+        vl.dataProvider().addAttributes([QgsField('datetime', QVariant.DateTime)])
+        vl.updateFields()
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:And>
+                <ogc:PropertyIsGreaterThan>
+                  <ogc:PropertyName>datetime</ogc:PropertyName>
+                  <ogc:Literal>1998-07-12</ogc:Literal>
+                </ogc:PropertyIsGreaterThan>
+                <ogc:PropertyIsLessThan>
+                  <ogc:PropertyName>datetime</ogc:PropertyName>
+                  <ogc:Literal>2018-07-15</ogc:Literal>
+                </ogc:PropertyIsLessThan>
+              </ogc:And>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), "datetime > '1998-07-12T00:00:00' AND datetime < '2018-07-15T00:00:00'")
+
+        # test with date type
+        vl = QgsVectorLayer('Point', 'vl', 'memory')
+        vl.dataProvider().addAttributes([QgsField('date', QVariant.Date)])
+        vl.updateFields()
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:And>
+                <ogc:PropertyIsGreaterThan>
+                  <ogc:PropertyName>date</ogc:PropertyName>
+                  <ogc:Literal>1998-07-12</ogc:Literal>
+                </ogc:PropertyIsGreaterThan>
+                <ogc:PropertyIsLessThan>
+                  <ogc:PropertyName>date</ogc:PropertyName>
+                  <ogc:Literal>2018-07-15</ogc:Literal>
+                </ogc:PropertyIsLessThan>
+              </ogc:And>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), "date > '1998-07-12' AND date < '2018-07-15'")
+
+        # test with time type
+        vl = QgsVectorLayer('Point', 'vl', 'memory')
+        vl.dataProvider().addAttributes([QgsField('time', QVariant.Time)])
+        vl.updateFields()
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:And>
+                <ogc:PropertyIsGreaterThan>
+                  <ogc:PropertyName>time</ogc:PropertyName>
+                  <ogc:Literal>11:01:02</ogc:Literal>
+                </ogc:PropertyIsGreaterThan>
+                <ogc:PropertyIsLessThan>
+                  <ogc:PropertyName>time</ogc:PropertyName>
+                  <ogc:Literal>12:03:04</ogc:Literal>
+                </ogc:PropertyIsLessThan>
+              </ogc:And>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), "time > '11:01:02' AND time < '12:03:04'")
+
 
 if __name__ == '__main__':
     unittest.main()
