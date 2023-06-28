@@ -232,6 +232,10 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
         // for compatibility with older API, we ignore these signals and rely on the older granular signals (eg "addVectorLayer").
         // otherwise we will be emitting double signals for the old/new signal for these layer types
         break;
+
+      case Qgis::LayerType::TiledMesh:
+        emit addLayer( type, url, baseName, providerKey );
+        break;
     }
   } );
 
