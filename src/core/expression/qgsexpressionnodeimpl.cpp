@@ -1372,6 +1372,12 @@ QString QgsExpressionNodeLiteral::valueAsString() const
       return QString::number( mValue.toLongLong() );
     case QVariant::String:
       return QgsExpression::quotedString( mValue.toString() );
+    case QVariant::Time:
+      return QgsExpression::quotedString( mValue.toTime().toString( Qt::ISODate ) );
+    case QVariant::Date:
+      return QgsExpression::quotedString( mValue.toDate().toString( Qt::ISODate ) );
+    case QVariant::DateTime:
+      return QgsExpression::quotedString( mValue.toDateTime().toString( Qt::ISODate ) );
     case QVariant::Bool:
       return mValue.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
     default:
