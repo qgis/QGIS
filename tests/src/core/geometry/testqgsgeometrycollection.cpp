@@ -1419,6 +1419,16 @@ void TestQgsGeometryCollection::geometryCollection()
 
   TestFailTransformer failTransformer;
   QVERIFY( !transformCollect2.transform( &failTransformer ) );
+
+  // bounding box intersects test
+  QgsGeometryCollection b1;
+  QVERIFY( !b1.boundingBoxIntersects( QgsRectangle( 0, 0, 0, 0 ) ) );
+  transformLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  b1.addGeometry( transformLine.clone() );
+  QVERIFY( !b1.boundingBoxIntersects( QgsRectangle( -5, -2, 0.5, 1.5 ) ) );
+  QVERIFY( b1.boundingBoxIntersects( QgsRectangle( -5, -2, 1.5, 2.5 ) ) );
+  QVERIFY( b1.boundingBoxIntersects( QgsRectangle( 3, 7, 5, 8 ) ) );
+  QCOMPARE( b1.boundingBox(), QgsRectangle( 1, 2, 111, 12 ) );
 }
 
 
