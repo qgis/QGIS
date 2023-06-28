@@ -199,13 +199,14 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudes( const QgsMeshDataBlock &
 
 QgsRectangle QgsMeshLayerUtils::boundingBoxToScreenRectangle(
   const QgsMapToPixel &mtp,
-  const QgsRectangle &bbox
+  const QgsRectangle &bbox,
+  double devicePixelRatio
 )
 {
-  const QgsPointXY topLeft = mtp.transform( bbox.xMinimum(), bbox.yMaximum() );
-  const QgsPointXY topRight = mtp.transform( bbox.xMaximum(), bbox.yMaximum() );
-  const QgsPointXY bottomLeft = mtp.transform( bbox.xMinimum(), bbox.yMinimum() );
-  const QgsPointXY bottomRight = mtp.transform( bbox.xMaximum(), bbox.yMinimum() );
+  const QgsPointXY topLeft = mtp.transform( bbox.xMinimum(), bbox.yMaximum() ) * devicePixelRatio;
+  const QgsPointXY topRight = mtp.transform( bbox.xMaximum(), bbox.yMaximum() ) * devicePixelRatio;
+  const QgsPointXY bottomLeft = mtp.transform( bbox.xMinimum(), bbox.yMinimum() ) * devicePixelRatio;
+  const QgsPointXY bottomRight = mtp.transform( bbox.xMaximum(), bbox.yMinimum() ) * devicePixelRatio;
 
   const double xMin = std::min( {topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x()} );
   const double xMax = std::max( {topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x()} );
@@ -223,9 +224,10 @@ void QgsMeshLayerUtils::boundingBoxToScreenRectangle(
   int &leftLim,
   int &rightLim,
   int &bottomLim,
-  int &topLim )
+  int &topLim,
+  double devicePixelRatio )
 {
-  const QgsRectangle screenBBox = boundingBoxToScreenRectangle( mtp, bbox );
+  const QgsRectangle screenBBox = boundingBoxToScreenRectangle( mtp, bbox, devicePixelRatio );
 
   bottomLim = std::max( int( screenBBox.yMinimum() ), 0 );
   topLim = std::min( int( screenBBox.yMaximum() ), outputSize.height() - 1 );
