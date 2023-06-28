@@ -1429,6 +1429,14 @@ void TestQgsGeometryCollection::geometryCollection()
   QVERIFY( b1.boundingBoxIntersects( QgsRectangle( -5, -2, 1.5, 2.5 ) ) );
   QVERIFY( b1.boundingBoxIntersects( QgsRectangle( 3, 7, 5, 8 ) ) );
   QCOMPARE( b1.boundingBox(), QgsRectangle( 1, 2, 111, 12 ) );
+
+  b1.clear();
+  QVERIFY( b1.boundingBox().isNull() );
+  transformLine.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 10, 17, 1 ) << QgsPoint( Qgis::WkbType::PointZ, 12, 17, 1 ) <<  QgsPoint( Qgis::WkbType::PointZ, 12, 15, 1 ) <<  QgsPoint( Qgis::WkbType::PointZ, 10, 15, 1 ) );
+  b1.addGeometry( transformLine.clone() );
+  QgsPolygon polygon;
+  QVERIFY( polygon.fromWkt( "Polygon( (5 10 0, 5 15 0, 10 15 0, 10 10 0, 5 10 0) )" ) );
+  QVERIFY( b1.boundingBoxIntersects( polygon.boundingBox() ) );
 }
 
 
