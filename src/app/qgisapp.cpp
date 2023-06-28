@@ -2648,6 +2648,7 @@ void QgisApp::dataSourceManager( const QString &pageName )
           addPointCloudLayer( uri, baseName, providerKey );
           break;
 
+        case Qgis::LayerType::TiledMesh:
         case Qgis::LayerType::Plugin:
         case Qgis::LayerType::Annotation:
         case Qgis::LayerType::Group:
