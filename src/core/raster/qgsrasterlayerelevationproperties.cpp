@@ -239,6 +239,8 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
   // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
   // but adding hardcoded localized variants of the strings is encouraged.
   static const QStringList sPartialCandidates{ QStringLiteral( "dem" ),
+      QStringLiteral( "dtm" ),
+      QStringLiteral( "dsm" ),
       QStringLiteral( "height" ),
       QStringLiteral( "elev" ),
       QStringLiteral( "srtm" ),
