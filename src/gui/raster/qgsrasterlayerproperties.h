@@ -24,13 +24,11 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgsguiutils.h"
-#include "qgshelp.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgsmaptoolemitpoint.h"
 #include "qgis_gui.h"
 #include "qgsresamplingutils.h"
 #include "qgsrasterpipe.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsmaplayerstyle.h"
 
 class QgsPointXY;
 class QgsMapLayer;
@@ -49,7 +47,7 @@ class QgsPropertyOverrideButton;
 class QgsRasterTransparencyWidget;
 class QgsRasterAttributeTableWidget;
 class QgsWebView;
-
+class QgsLayerPropertiesGuiUtils;
 
 /**
  * \ingroup gui
@@ -187,8 +185,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! Restore dialog modality and focus, usually after a pixel clicked to pick transparency color
     void restoreWindowModality();
 
-    //! Load a saved metadata file.
-    void loadMetadata();
     //! Save a metadata.
     void saveMetadataAs();
     //! Save the default metadata.
@@ -236,6 +232,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     //! A list of additional pages provided by plugins
     QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
+
+    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
 
     //! \brief  A constant that signals property not used
     const QString TRSTRING_NOT_SET;

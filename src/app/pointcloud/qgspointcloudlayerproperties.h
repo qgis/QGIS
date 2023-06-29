@@ -32,7 +32,7 @@ class QgsPointCloudLayer;
 class QgsMetadataWidget;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
-
+class QgsLayerPropertiesGuiUtils;
 
 class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
 {
@@ -130,7 +130,6 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void onCancel();
 
     void aboutToShowStyleMenu();
-    void loadMetadata();
     void saveMetadataAs();
     void saveDefaultMetadata();
     void loadDefaultMetadata();
@@ -147,6 +146,8 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
 
   private:
     QgsPointCloudLayer *mLayer = nullptr;
+
+    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
 
     QPushButton *mBtnStyle = nullptr;
     QPushButton *mBtnMetadata = nullptr;

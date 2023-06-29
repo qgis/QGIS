@@ -33,6 +33,7 @@ class QgsMeshLayer3DRendererWidget;
 class QgsMeshStaticDatasetWidget;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMetadataWidget;
+class QgsLayerPropertiesGuiUtils;
 
 /**
  * \ingroup gui
@@ -116,7 +117,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void onTimeReferenceChange();
 
     void urlClicked( const QUrl &url );
-    void loadMetadata();
     void saveMetadataAs();
 
   private:
@@ -127,6 +127,8 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
 
     //! Pointer to the mesh layer that this property dialog changes the behavior of.
     QgsMeshLayer *mMeshLayer = nullptr;
+
+    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
 
     //! Pointer to mesh 3d styling widget
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;

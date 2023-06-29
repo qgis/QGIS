@@ -589,6 +589,7 @@ set(QGIS_GUI_SRCS
   qgslayermetadataresultsmodel.cpp
   qgslayermetadatasourceselectprovider.cpp
   qgslayermetadataresultsproxymodel.cpp
+  qgslayerpropertiesguiutils.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslegendpatchshapebutton.cpp
@@ -862,6 +863,7 @@ set(QGIS_GUI_HDRS
   qgslayermetadataresultsmodel.h
   qgslayermetadataresultsproxymodel.h
   qgslayermetadatasourceselectprovider.h
+  qgslayerpropertiesguiutils.h
   qgslegendfilterbutton.h
   qgslegendpatchshapebutton.h
   qgslegendpatchshapewidget.h

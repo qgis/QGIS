@@ -28,6 +28,7 @@ class QgsVectorTileBasicRendererWidget;
 class QgsVectorTileLayer;
 class QgsMetadataWidget;
 class QgsProviderSourceWidget;
+class QgsLayerPropertiesGuiUtils;
 
 
 /**
@@ -76,7 +77,6 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsOptionsDialogBase, pri
     void onCancel();
 
     void aboutToShowStyleMenu();
-    void loadMetadata();
     void saveMetadataAs();
     void showHelp();
     void urlClicked( const QUrl &url );
@@ -90,6 +90,8 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsOptionsDialogBase, pri
 
   private:
     QgsVectorTileLayer *mLayer = nullptr;
+
+    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
 
     QgsVectorTileBasicRendererWidget *mRendererWidget = nullptr;
     QgsVectorTileBasicLabelingWidget *mLabelingWidget = nullptr;

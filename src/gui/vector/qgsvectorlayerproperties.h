@@ -50,6 +50,7 @@ class QgsMaskingWidget;
 class QgsVectorLayerTemporalPropertiesWidget;
 class QgsProviderSourceWidget;
 class QgsWebView;
+class QgsLayerPropertiesGuiUtils;
 
 /**
  * \ingroup gui
@@ -132,7 +133,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void pbnQueryBuilder_clicked();
     void pbnIndex_clicked();
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
-    void loadMetadata();
     void saveMetadataAs();
     void saveDefaultMetadata();
     void loadDefaultMetadata();
@@ -205,6 +205,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     QgsVectorLayer *mLayer = nullptr;
+
+    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
 
     bool mMetadataFilled = false;
 
