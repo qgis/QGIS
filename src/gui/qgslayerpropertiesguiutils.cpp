@@ -31,7 +31,7 @@ QgsLayerPropertiesGuiUtils::QgsLayerPropertiesGuiUtils( QWidget *parent, QgsMapL
 
 }
 
-void QgsLayerPropertiesGuiUtils::loadMetadata()
+void QgsLayerPropertiesGuiUtils::loadMetadataFromFile()
 {
   if ( !mLayer )
     return;
@@ -62,5 +62,43 @@ void QgsLayerPropertiesGuiUtils::loadMetadata()
 
   settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).path() );
 
+  refocusParent();
+}
+
+void QgsLayerPropertiesGuiUtils::saveMetadataToFile()
+{
+  if ( !mLayer )
+    return;
+
+  QgsSettings settings;  // where we keep last used filter in persistent state
+  const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+
+  QString outputFileName = QFileDialog::getSaveFileName( mParentWidget, tr( "Save Layer Metadata as QMD" ),
+                           lastUsedDir, tr( "QMD File" ) + " (*.qmd)" );
+  if ( outputFileName.isEmpty() )
+  {
+    return;
+  }
+
+  mMetadataWidget->acceptMetadata();
+
+  //ensure the user never omitted the extension from the file name
+  if ( !outputFileName.endsWith( QgsMapLayer::extensionPropertyType( QgsMapLayer::Metadata ), Qt::CaseInsensitive ) )
+  {
+    outputFileName += QgsMapLayer::extensionPropertyType( QgsMapLayer::Metadata );
+  }
+
+  bool defaultLoadedFlag = false;
+  const QString message = mLayer->saveNamedMetadata( outputFileName, defaultLoadedFlag );
+  if ( defaultLoadedFlag )
+    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
+  else
+    QMessageBox::information( mParentWidget, tr( "Save Metadata" ), message );
+
+  refocusParent();
+}
+
+void QgsLayerPropertiesGuiUtils::refocusParent()
+{
   mParentWidget->activateWindow(); // set focus back to properties dialog
 }

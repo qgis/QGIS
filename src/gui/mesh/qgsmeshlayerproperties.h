@@ -117,7 +117,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void onTimeReferenceChange();
 
     void urlClicked( const QUrl &url );
-    void saveMetadataAs();
 
   private:
     //! Pointer to the mesh styling widget

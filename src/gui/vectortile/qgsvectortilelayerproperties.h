@@ -77,7 +77,6 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsOptionsDialogBase, pri
     void onCancel();
 
     void aboutToShowStyleMenu();
-    void saveMetadataAs();
     void showHelp();
     void urlClicked( const QUrl &url );
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
