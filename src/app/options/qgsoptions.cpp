@@ -1949,7 +1949,6 @@ void QgsOptions::editGdalDriver( const QString &driverName )
 QStringList QgsOptions::i18nList()
 {
   QStringList myList;
-  myList << QStringLiteral( "en_US" ); //there is no qm file for this so we add it manually
   QString myI18nPath = QgsApplication::i18nPath();
   QDir myDir( myI18nPath, QStringLiteral( "qgis*.qm" ) );
   QStringList myFileList = myDir.entryList();
