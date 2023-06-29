@@ -51,11 +51,22 @@ class GUI_EXPORT QgsLayerPropertiesGuiUtils : public QObject
   public slots:
 
     /**
-     * Triggers the option to load layer metadata from a file.
+     * Allows the user to load layer metadata from a file.
+     *
+     * \see saveMetadataToFile()
      */
-    void loadMetadata();
+    void loadMetadataFromFile();
+
+    /**
+     * Allows the user to save the layer's metadata as a file.
+     *
+     * \see loadMetadataFromFile()
+     */
+    void saveMetadataToFile();
 
   private:
+    void refocusParent();
+
     QWidget *mParentWidget = nullptr;
 
     QPointer< QgsMapLayer> mLayer;

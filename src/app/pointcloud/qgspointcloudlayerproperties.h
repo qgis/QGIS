@@ -130,7 +130,6 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void onCancel();
 
     void aboutToShowStyleMenu();
-    void saveMetadataAs();
     void saveDefaultMetadata();
     void loadDefaultMetadata();
     void showHelp();
