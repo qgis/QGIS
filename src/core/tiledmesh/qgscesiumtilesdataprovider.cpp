@@ -26,7 +26,7 @@
 
 ///@cond PRIVATE
 
-#define PROVIDER_KEY QStringLiteral( "cesium" )
+#define PROVIDER_KEY QStringLiteral( "cesiumtiles" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Cesium 3D Tiles data provider" )
 
 QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )

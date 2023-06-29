@@ -36,18 +36,18 @@ class TestQgsTiledMeshLayer(unittest.TestCase):
         """
         Test data provider creation
         """
-        layer = QgsTiledMeshLayer('/home/me/test/tileset.json', 'my layer', 'cesium')
-        self.assertEqual(layer.providerType(), 'cesium')
+        layer = QgsTiledMeshLayer('/home/me/test/tileset.json', 'my layer', 'cesiumtiles')
+        self.assertEqual(layer.providerType(), 'cesiumtiles')
         self.assertIsInstance(layer.dataProvider(), QgsTiledMeshDataProvider)
-        self.assertEqual(layer.dataProvider().name(), 'cesium')
+        self.assertEqual(layer.dataProvider().name(), 'cesiumtiles')
         self.assertEqual(layer.dataProvider().dataSourceUri(), '/home/me/test/tileset.json')
 
     def test_read_write_xml(self):
         """
         Test saving and restoring layer from xml
         """
-        layer = QgsTiledMeshLayer('uri', 'my layer', 'cesium')
-        self.assertEqual(layer.providerType(), 'cesium')
+        layer = QgsTiledMeshLayer('uri', 'my layer', 'cesiumtiles')
+        self.assertEqual(layer.providerType(), 'cesiumtiles')
         layer.setOpacity(0.25)
         layer.setBlendMode(QPainter.CompositionMode_Darken)
 
@@ -57,7 +57,7 @@ class TestQgsTiledMeshLayer(unittest.TestCase):
 
         layer2 = QgsTiledMeshLayer('uri2', 'my layer 2', 'xtiled_meshx')
         layer2.readXml(elem, QgsReadWriteContext())
-        self.assertEqual(layer2.providerType(), 'cesium')
+        self.assertEqual(layer2.providerType(), 'cesiumtiles')
         self.assertEqual(layer2.opacity(), 0.25)
         self.assertEqual(layer2.blendMode(),
                          QPainter.CompositionMode_Darken)
@@ -66,14 +66,14 @@ class TestQgsTiledMeshLayer(unittest.TestCase):
         """
         Test cloning layers
         """
-        layer = QgsTiledMeshLayer('uri', 'my layer', 'cesium')
-        self.assertEqual(layer.providerType(), 'cesium')
+        layer = QgsTiledMeshLayer('uri', 'my layer', 'cesiumtiles')
+        self.assertEqual(layer.providerType(), 'cesiumtiles')
         layer.setOpacity(0.25)
         layer.setBlendMode(QPainter.CompositionMode_Darken)
 
         layer2 = layer.clone()
         self.assertEqual(layer2.source(), 'uri')
-        self.assertEqual(layer2.providerType(), 'cesium')
+        self.assertEqual(layer2.providerType(), 'cesiumtiles')
         self.assertEqual(layer2.opacity(), 0.25)
         self.assertEqual(layer2.blendMode(),
                          QPainter.CompositionMode_Darken)
@@ -150,11 +150,11 @@ class TestQgsTiledMeshLayer(unittest.TestCase):
         Test cesium provider metadata methods
         """
         self.assertIn(
-            'cesium',
+            'cesiumtiles',
             QgsProviderRegistry.instance().providersForLayerType(Qgis.LayerType.TiledMesh)
         )
 
-        metadata = QgsProviderRegistry.instance().providerMetadata('cesium')
+        metadata = QgsProviderRegistry.instance().providerMetadata('cesiumtiles')
         self.assertIsNotNone(metadata)
 
         self.assertEqual(metadata.decodeUri('/home/me/test/tileset.json'),
