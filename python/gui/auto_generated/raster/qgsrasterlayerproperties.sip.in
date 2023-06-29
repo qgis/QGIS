@@ -11,7 +11,6 @@
 
 
 
-
 class QgsRasterLayerProperties : QgsOptionsDialogBase
 {
 %Docstring(signature="appended")
