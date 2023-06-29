@@ -249,7 +249,11 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
       QStringLiteral( "mnt" ),
       QStringLiteral( "mns" ),
       QStringLiteral( "rge" ),
-      QStringLiteral( "alti" ) };
+      QStringLiteral( "alti" ),
+      // German hints
+      QStringLiteral( "dhm" ),
+      QStringLiteral( "dgm" ),
+      QStringLiteral( "dom" ) };
   const QString layerName = layer->name();
   for ( const QString &candidate : sPartialCandidates )
   {
