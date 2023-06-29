@@ -22,13 +22,14 @@
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgsapplication.h"
-#include "qgsmaplayerloadstyledialog.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgspainteffect.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
+#include "qgslayerpropertiesguiutils.h"
+
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -56,6 +57,9 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
 
   mOptsPage_Information->setContentsMargins( 0, 0, 0, 0 );
 
+  mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, nullptr );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsAnnotationLayerProperties::syncToLayer );
+
   // update based on layer's current state
   syncToLayer();
 
@@ -74,7 +78,7 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
   menuStyle->addAction( tr( "Save Style…" ), this, &QgsAnnotationLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), this, &QgsAnnotationLayerProperties::saveDefaultStyle );
-  menuStyle->addAction( tr( "Restore Default" ), this, &QgsAnnotationLayerProperties::loadDefaultStyle );
+  menuStyle->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultStyle );
   mBtnStyle->setMenu( menuStyle );
   connect( menuStyle, &QMenu::aboutToShow, this, &QgsAnnotationLayerProperties::aboutToShowStyleMenu );
 
@@ -185,26 +189,6 @@ void QgsAnnotationLayerProperties::syncToLayer()
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->syncToLayer( mLayer );
-}
-
-
-void QgsAnnotationLayerProperties::loadDefaultStyle()
-{
-  bool defaultLoadedFlag = false;
-  const QString myMessage = mLayer->loadDefaultStyle( defaultLoadedFlag );
-  // reset if the default style was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    syncToLayer();
-  }
-  else
-  {
-    // otherwise let the user know what went wrong
-    QMessageBox::information( this,
-                              tr( "Default Style" ),
-                              myMessage
-                            );
-  }
 }
 
 void QgsAnnotationLayerProperties::saveDefaultStyle()

@@ -120,6 +120,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mTemporalDateTimeReference->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
   mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mMeshLayer, mMetadataWidget );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsMeshLayerProperties::syncToLayer );
 
   // update based on lyr's current state
   syncToLayer();
@@ -147,7 +148,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   menuStyle->addAction( tr( "Save Style…" ), this, &QgsMeshLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), this, &QgsMeshLayerProperties::saveDefaultStyle );
-  menuStyle->addAction( tr( "Restore Default" ), this, &QgsMeshLayerProperties::loadDefaultStyle );
+  menuStyle->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultStyle );
   mBtnStyle->setMenu( menuStyle );
   connect( menuStyle, &QMenu::aboutToShow, this, &QgsMeshLayerProperties::aboutToShowStyleMenu );
 
@@ -255,22 +256,7 @@ void QgsMeshLayerProperties::syncToLayer()
 
 void QgsMeshLayerProperties::loadDefaultStyle()
 {
-  bool defaultLoadedFlag = false;
-  QString myMessage = mMeshLayer->loadDefaultStyle( defaultLoadedFlag );
-  // reset if the default style was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    syncToLayer();
-    apply();
-  }
-  else
-  {
-    // otherwise let the user know what went wrong
-    QMessageBox::information( this,
-                              tr( "Default Style" ),
-                              myMessage
-                            );
-  }
+  mLayerPropertiesUtils->loadDefaultStyle();
 }
 
 void QgsMeshLayerProperties::saveDefaultStyle()

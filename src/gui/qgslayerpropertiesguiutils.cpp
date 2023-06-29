@@ -33,7 +33,7 @@ QgsLayerPropertiesGuiUtils::QgsLayerPropertiesGuiUtils( QWidget *parent, QgsMapL
 
 void QgsLayerPropertiesGuiUtils::loadMetadataFromFile()
 {
-  if ( !mLayer )
+  if ( !mLayer || !mMetadataWidget )
     return;
 
   QgsSettings settings;  // where we keep last used filter in persistent state
@@ -67,7 +67,7 @@ void QgsLayerPropertiesGuiUtils::loadMetadataFromFile()
 
 void QgsLayerPropertiesGuiUtils::saveMetadataToFile()
 {
-  if ( !mLayer )
+  if ( !mLayer || !mMetadataWidget )
     return;
 
   QgsSettings settings;  // where we keep last used filter in persistent state
@@ -100,7 +100,7 @@ void QgsLayerPropertiesGuiUtils::saveMetadataToFile()
 
 void QgsLayerPropertiesGuiUtils::saveMetadataAsDefault()
 {
-  if ( !mLayer )
+  if ( !mLayer || !mMetadataWidget )
     return;
 
   mMetadataWidget->acceptMetadata();
@@ -116,7 +116,7 @@ void QgsLayerPropertiesGuiUtils::saveMetadataAsDefault()
 
 void QgsLayerPropertiesGuiUtils::loadDefaultMetadata()
 {
-  if ( !mLayer )
+  if ( !mLayer || !mMetadataWidget )
     return;
 
   bool defaultLoadedFlag = false;
@@ -130,6 +130,28 @@ void QgsLayerPropertiesGuiUtils::loadDefaultMetadata()
   {
     QMessageBox::information( mParentWidget, tr( "Default Metadata" ), message );
     refocusParent();
+  }
+}
+
+void QgsLayerPropertiesGuiUtils::loadDefaultStyle()
+{
+  if ( !mLayer )
+    return;
+
+  bool defaultLoadedFlag = false;
+  const QString message = mLayer->loadDefaultStyle( defaultLoadedFlag );
+  // reset if the default style was loaded OK only
+  if ( defaultLoadedFlag )
+  {
+    emit syncDialogToLayer();
+  }
+  else
+  {
+    // otherwise let the user know what went wrong
+    QMessageBox::information( mParentWidget,
+                              tr( "Default Style" ),
+                              message
+                            );
   }
 }
 

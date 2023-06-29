@@ -74,6 +74,7 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
 
   mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, mMetadataWidget );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsPointCloudLayerProperties::syncToLayer );
 
   // update based on lyr's current state
   syncToLayer();
@@ -93,7 +94,7 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   menuStyle->addAction( tr( "Save Style…" ), this, &QgsPointCloudLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), this, &QgsPointCloudLayerProperties::saveDefaultStyle );
-  menuStyle->addAction( tr( "Restore Default" ), this, &QgsPointCloudLayerProperties::loadDefaultStyle );
+  menuStyle->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultStyle );
   mBtnStyle->setMenu( menuStyle );
   connect( menuStyle, &QMenu::aboutToShow, this, &QgsPointCloudLayerProperties::aboutToShowStyleMenu );
 
@@ -230,26 +231,6 @@ void QgsPointCloudLayerProperties::syncToLayer()
     w->syncToLayer( mLayer );
 
   mStatisticsCalculationWarningLabel->setHidden( mLayer->statisticsCalculationState() != QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated );
-}
-
-
-void QgsPointCloudLayerProperties::loadDefaultStyle()
-{
-  bool defaultLoadedFlag = false;
-  const QString myMessage = mLayer->loadDefaultStyle( defaultLoadedFlag );
-  // reset if the default style was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    syncToLayer();
-  }
-  else
-  {
-    // otherwise let the user know what went wrong
-    QMessageBox::information( this,
-                              tr( "Default Style" ),
-                              myMessage
-                            );
-  }
 }
 
 void QgsPointCloudLayerProperties::saveDefaultStyle()
