@@ -790,7 +790,7 @@ class CORE_EXPORT QgsGeometryUtils
     static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) SIP_HOLDGIL;
 
     /**
-     * Given the line (\a x1, \a y1) to (\a x2, \a y2) and a point (\a px, \a py) returns the percentage
+     * Given the line (\a x1, \a y1) to (\a x2, \a y2) and a point (\a px, \a py) returns the fraction
      * of the line length at which the point lies.
      *
      * \warning this method requires that the point definitely lies on the line!
@@ -821,7 +821,7 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Given the points (\a x1, \a y1), (\a x2, \a y2) and (\a x3, \a y3) returns TRUE if these
-     * points can be considered collinear with a specified tolerance.
+     * points can be considered collinear with a specified tolerance \a epsilon.
      *
      * \since QGIS 3.32
      */
