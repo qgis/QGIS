@@ -337,6 +337,7 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextshadowsettings.cpp
 
   tiledmesh/qgscesiumtilesdataprovider.cpp
+  tiledmesh/qgstiledmeshconnection.cpp
   tiledmesh/qgstiledmeshdataprovider.cpp
   tiledmesh/qgstiledmeshlayer.cpp
 
@@ -1892,6 +1893,7 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextshadowsettings.h
 
   tiledmesh/qgscesiumtilesdataprovider.h
+  tiledmesh/qgstiledmeshconnection.h
   tiledmesh/qgstiledmeshdataprovider.h
   tiledmesh/qgstiledmeshlayer.h
 
