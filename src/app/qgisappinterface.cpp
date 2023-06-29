@@ -45,6 +45,7 @@
 #include "qgslocator.h"
 #include "qgsmessagebar.h"
 #include "qgsappmaptools.h"
+#include "qgspointcloudlayer.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
@@ -162,12 +163,12 @@ QgsMeshLayer *QgisAppInterface::addMeshLayer( const QString &url, const QString 
 
 QgsVectorTileLayer *QgisAppInterface::addVectorTileLayer( const QString &url, const QString &baseName )
 {
-  return qgis->addVectorTileLayer( url, baseName );
+  return qgis->addLayer<QgsVectorTileLayer>( url, baseName, QString() );
 }
 
 QgsPointCloudLayer *QgisAppInterface::addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey )
 {
-  return qgis->addPointCloudLayer( url, baseName, providerKey );
+  return qgis->addLayer<QgsPointCloudLayer>( url, baseName, providerKey );
 }
 
 bool QgisAppInterface::addProject( const QString &projectName )

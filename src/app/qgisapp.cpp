@@ -2434,7 +2434,7 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
     }
     else if ( u.layerType == QLatin1String( "pointcloud" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addPointCloudLayer( uri, u.name, u.providerKey, addToLegend );
+      QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsPointCloudLayer>( uri, u.name, u.providerKey, addToLegend );
       if ( layer )
         addedLayers << layer;
     }
@@ -2537,7 +2537,7 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addPluginLayer( uri, u.name, u.providerKey, addToLegend );
+      QgsMapLayer *layer = QgsAppLayerHandling::addLayer< QgsPluginLayer> ( uri, u.name, u.providerKey, addToLegend, false );
       if ( layer )
         addedLayers << layer;
     }
@@ -2641,11 +2641,11 @@ void QgisApp::dataSourceManager( const QString &pageName )
           break;
 
         case Qgis::LayerType::VectorTile:
-          addVectorTileLayer( uri, baseName );
+          QgsAppLayerHandling::addLayer< QgsVectorTileLayer> ( uri, baseName, providerKey );
           break;
 
         case Qgis::LayerType::PointCloud:
-          addPointCloudLayer( uri, baseName, providerKey );
+          QgsAppLayerHandling::addLayer< QgsPointCloudLayer >( uri, baseName, providerKey );
           break;
 
         case Qgis::LayerType::TiledMesh:
@@ -5625,15 +5625,15 @@ QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName
   return QgsAppLayerHandling::addMeshLayer( url, baseName, providerKey );
 }
 
-QgsVectorTileLayer *QgisApp::addVectorTileLayer( const QString &url, const QString &baseName )
+template<typename L>
+L *QgisApp::addLayer( const QString &uri, const QString &baseName, const QString &provider )
 {
-  return QgsAppLayerHandling::addVectorTileLayer( url, baseName );
+  return QgsAppLayerHandling::addLayer<L>( uri, baseName, provider );
 }
+template QgsPointCloudLayer *QgisApp::addLayer<QgsPointCloudLayer>( const QString &uri, const QString &baseName, const QString &provider );
+template QgsVectorTileLayer *QgisApp::addLayer<QgsVectorTileLayer>( const QString &uri, const QString &baseName, const QString &provider );
+template QgsPluginLayer *QgisApp::addLayer<QgsPluginLayer>( const QString &uri, const QString &baseName, const QString &provider );
 
-QgsPointCloudLayer *QgisApp::addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey )
-{
-  return QgsAppLayerHandling::addPointCloudLayer( url, baseName, providerKey );
-}
 
 void QgisApp::addVirtualLayer()
 {
@@ -15750,11 +15750,6 @@ void QgisApp::renameView()
 QgsRasterLayer *QgisApp::addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey )
 {
   return QgsAppLayerHandling::addRasterLayer( uri, baseName, providerKey );
-}
-
-QgsPluginLayer *QgisApp::addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey )
-{
-  return QgsAppLayerHandling::addPluginLayer( uri, baseName, providerKey );
 }
 
 #ifdef ANDROID
