@@ -1181,7 +1181,12 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
                                   QStringLiteral( "nom" ),
                                   QStringLiteral( "street" ),
                                   QStringLiteral( "road" ),
-                                  QStringLiteral( "label" ) };
+                                  QStringLiteral( "label" ),
+                                  // German candidates
+                                  QStringLiteral( "titel" ),
+                                  QStringLiteral( "beschreibung" ),
+                                  QStringLiteral( "strasse" ),
+                                  QStringLiteral( "beschriftung" ) };
 
   // anti-names
   // this list of strings indicates parts of field names which make the name "less interesting".
@@ -1190,7 +1195,11 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
   // best choice to default to
   static QStringList sAntiCandidates{ QStringLiteral( "type" ),
                                       QStringLiteral( "class" ),
-                                      QStringLiteral( "cat" )
+                                      QStringLiteral( "cat" ),
+                                      // German anti-candidates
+                                      QStringLiteral( "typ" ),
+                                      QStringLiteral( "klasse" ),
+                                      QStringLiteral( "kategorie" )
                                     };
 
   QString bestCandidateName;

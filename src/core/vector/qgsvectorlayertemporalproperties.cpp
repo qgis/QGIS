@@ -618,11 +618,18 @@ void QgsVectorLayerTemporalProperties::guessDefaultsFromFields( const QgsFields 
   // but adding hardcoded localized variants of the strings is encouraged.
   static const QStringList sStartCandidates{ QStringLiteral( "start" ),
       QStringLiteral( "begin" ),
-      QStringLiteral( "from" )};
+      QStringLiteral( "from" ),
+      // German candidates
+      QStringLiteral( "anfang" ),
+      QStringLiteral( "von" ) };
 
   static const QStringList sEndCandidates{ QStringLiteral( "end" ),
       QStringLiteral( "last" ),
-      QStringLiteral( "to" )};
+      QStringLiteral( "to" ),
+      // German candidates
+      QStringLiteral( "ende" ),
+      QStringLiteral( "bis" ) };
+
 
   static const QStringList sSingleFieldCandidates{ QStringLiteral( "event" ) };
 
