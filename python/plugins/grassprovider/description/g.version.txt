@@ -1,5 +1,5 @@
 g.version
-g.version - Display GRASS GIS version info
+g.version - Display GRASS GIS version info. <p>Prints only version if run with no options checked.
 General (g.*)
 QgsProcessingParameterBoolean|-c|Print copyright message|False
 QgsProcessingParameterBoolean|-x|Print citation options|False
