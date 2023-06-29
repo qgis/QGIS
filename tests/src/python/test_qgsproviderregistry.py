@@ -196,13 +196,17 @@ class TestQgsProviderRegistry(unittest.TestCase):
         Test fileTiledMeshFilters()
         """
         registry = QgsProviderRegistry.instance()
-        self.assertFalse(registry.fileTiledMeshFilters())
+        self.assertEqual(registry.fileTiledMeshFilters(),
+                         'All Supported Files (tileset.json TILESET.JSON);;'
+                         'All Files (*.*);;'
+                         'Cesium 3D Tiles (tileset.json TILESET.JSON)')
 
         registry.registerProvider(TestProviderTiledMeshMetadata('slpk'))
         self.assertEqual(
             registry.fileTiledMeshFilters(),
-            'All Supported Files (*.slpk *.SLPK);;'
+            'All Supported Files (tileset.json TILESET.JSON *.slpk *.SLPK);;'
             'All Files (*.*);;'
+            'Cesium 3D Tiles (tileset.json TILESET.JSON);;'
             'Scene Layer Packages (*.slpk *.SLPK)'
         )
 
