@@ -1385,6 +1385,7 @@ void TestQgsGeometryUtils::testPointFractionAlongLine()
   QGSCOMPARENEAR( QgsGeometryUtils::pointFractionAlongLine( 0, 10, 20, 30, 0, 10 ), 0, 0.00001 );
   QGSCOMPARENEAR( QgsGeometryUtils::pointFractionAlongLine( 0, 10, 20, 30, 20, 30 ), 1.0, 0.00001 );
   QGSCOMPARENEAR( QgsGeometryUtils::pointFractionAlongLine( 0, 10, 20, 10, 10, 10 ), 0.5, 0.00001 );
+  QGSCOMPARENEAR( QgsGeometryUtils::pointFractionAlongLine( 40000.0, 40000.00001, 40000.00002, 40000.00001, 40000.00001, 40000.00001 ), 0.5, 0.0000002 );
 }
 
 void TestQgsGeometryUtils::testPointsAreCollinear()
