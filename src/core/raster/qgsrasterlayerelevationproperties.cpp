@@ -245,6 +245,7 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
       QStringLiteral( "elev" ),
       QStringLiteral( "srtm" ),
       // French hints
+      QStringLiteral( "mne" ),
       QStringLiteral( "mnt" ),
       QStringLiteral( "mns" ),
       QStringLiteral( "rge" ),
