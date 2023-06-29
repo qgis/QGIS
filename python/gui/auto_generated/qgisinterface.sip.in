@@ -938,41 +938,55 @@ Zooms to extent of the active layer.
 
     virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
-Adds a vector layer to the current project.
+Adds a vector layer to the current project, using the specified data provider and source url.
+
+The ``baseName`` parameter will be used as the layer name (and shown in the map legend).
 %End
 
     virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
 %Docstring
 Adds a raster layer to the current project, given a raster layer file name.
+
+The ``baseName`` parameter will be used as the layer name (and shown in the map legend).
 %End
 
     virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
 %Docstring
-Adds a raster layer to the current project, from the specified raster data provider.
+Adds a raster layer to the current project, from the specified raster data provider and source ``url``.
+
+The ``layerName`` parameter will be used as the layer name (and shown in the map legend).
 %End
 
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
-Adds a mesh layer to the current project.
+Adds a mesh layer to the current project, using the specified data provider and source ``url``.
+
+The ``baseName`` parameter will be used as the layer name (and shown in the map legend).
 %End
 
     virtual QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) = 0;
 %Docstring
-Adds a vector tile layer to the current project.
+Adds a vector tile layer to the current project, using the specified source ``url``.
+
+The ``baseName`` parameter will be used as the layer name (and shown in the map legend).
 
 .. versionadded:: 3.14
 %End
 
     virtual QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
-Adds a point cloud layer to the current project.
+Adds a point cloud layer to the current project, using the specified data provider and source ``url``.
+
+The ``baseName`` parameter will be used as the layer name (and shown in the map legend).
 
 .. versionadded:: 3.18
 %End
 
     virtual QgsTiledMeshLayer *addTiledMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
-Adds a tiled mesh layer to the current project.
+Adds a tiled mesh layer to the current project, using the specified data provider and source ``url``.
+
+The ``baseName`` parameter will be used as the layer name (and shown in the map legend).
 
 .. versionadded:: 3.34
 %End
