@@ -84,7 +84,7 @@ class TestQgsMergeattributesDialog : public QObject
       // Merge the attributes together
       QgsMergeAttributesDialog dialog( QgsFeatureList() << f1 << f2, &layer, mQgisApp->mapCanvas() );
 
-      // At beginnning the first feature of the list is the target
+      // At beginning the first feature of the list is the target
       QCOMPARE( dialog.targetFeatureId(), FID_NULL );
       QCOMPARE( dialog.mergedAttributes()[0], "Autogenerate" );
 
