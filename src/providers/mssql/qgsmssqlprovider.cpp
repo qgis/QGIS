@@ -329,18 +329,8 @@ void QgsMssqlProvider::loadMetadata()
   {
     mGeometryColName = query.value( 0 ).toString();
     mSRId = query.value( 1 ).toInt();
-    QString detectedType = query.value( 2 ).toString();
-    const QString dim = query.value( 3 ).toString();
-    if ( dim == QLatin1String( "3" ) && !detectedType.endsWith( 'M' ) )
-      detectedType += QLatin1Char( 'Z' );
-    else if ( dim == QLatin1String( "4" ) )
-    {
-      if ( detectedType.endsWith( 'M' ) )
-      {
-        detectedType.chop( 1 );
-      }
-      detectedType += QLatin1String( "ZM" );
-    }
+    const int dimensions = query.value( 3 ).toInt();
+    const QString detectedType { QgsMssqlProvider::typeFromMetadata( query.value( 2 ).toString().toUpper(), dimensions ) };
     mWkbType = getWkbType( detectedType );
   }
 }
