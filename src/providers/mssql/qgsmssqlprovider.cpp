@@ -334,7 +334,13 @@ void QgsMssqlProvider::loadMetadata()
     if ( dim == QLatin1String( "3" ) && !detectedType.endsWith( 'M' ) )
       detectedType += QLatin1Char( 'Z' );
     else if ( dim == QLatin1String( "4" ) )
+    {
+      if ( detectedType.endsWith( 'M' ) )
+      {
+        detectedType.chop( 1 );
+      }
       detectedType += QLatin1String( "ZM" );
+    }
     mWkbType = getWkbType( detectedType );
   }
 }
@@ -3101,6 +3107,29 @@ QString QgsMssqlProviderMetadata::encodeUri( const QVariantMap &parts ) const
 QList<Qgis::LayerType> QgsMssqlProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::Vector };
+}
+
+QString QgsMssqlProvider::typeFromMetadata( const QString &typeName, int numCoords )
+{
+
+  QString type { typeName };
+  const bool hasM { typeName.endsWith( 'M', Qt::CaseInsensitive ) };
+  if ( numCoords == 4 )
+  {
+    if ( hasM )
+    {
+      type.chop( 1 );
+    }
+    type.append( QStringLiteral( "ZM" ) );
+  }
+  else if ( numCoords == 3 )
+  {
+    if ( ! hasM )
+    {
+      type.append( QStringLiteral( "Z" ) );
+    }
+  }
+  return type;
 }
 
 bool QgsMssqlProviderMetadata::execLogged( QSqlQuery &qry, const QString &sql, const QString &uri, const QString &queryOrigin ) const
