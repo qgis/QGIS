@@ -104,8 +104,8 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadMetadataFromFile );
   mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataToFile );
   menuMetadata->addSeparator();
-  menuMetadata->addAction( tr( "Save as Default" ), this, &QgsPointCloudLayerProperties::saveDefaultMetadata );
-  menuMetadata->addAction( tr( "Restore Default" ), this, &QgsPointCloudLayerProperties::loadDefaultMetadata );
+  menuMetadata->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataAsDefault );
+  menuMetadata->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultMetadata );
 
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
@@ -346,33 +346,6 @@ void QgsPointCloudLayerProperties::aboutToShowStyleMenu()
   // re-add style manager actions!
   m->addSeparator();
   QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( m, mLayer );
-}
-
-void QgsPointCloudLayerProperties::saveDefaultMetadata()
-{
-  mMetadataWidget->acceptMetadata();
-
-  bool defaultSavedFlag = false;
-  const QString errorMsg = mLayer->saveDefaultMetadata( defaultSavedFlag );
-  if ( !defaultSavedFlag )
-  {
-    QMessageBox::warning( this, tr( "Default Metadata" ), errorMsg );
-  }
-}
-
-void QgsPointCloudLayerProperties::loadDefaultMetadata()
-{
-  bool defaultLoadedFlag = false;
-  const QString myMessage = mLayer->loadNamedMetadata( mLayer->metadataUri(), defaultLoadedFlag );
-  //reset if the default metadata was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    mMetadataWidget->setMetadata( &mLayer->metadata() );
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Default Metadata" ), myMessage );
-  }
 }
 
 void QgsPointCloudLayerProperties::showHelp()

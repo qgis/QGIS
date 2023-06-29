@@ -64,6 +64,20 @@ class GUI_EXPORT QgsLayerPropertiesGuiUtils : public QObject
      */
     void saveMetadataToFile();
 
+    /**
+     * Saves the current layer metadata as the default for the layer.
+     *
+     * loadDefaultMetadata()
+     */
+    void saveMetadataAsDefault();
+
+    /**
+     * Reloads the default layer metadata for the layer.
+     *
+     * \see saveMetadataAsDefault()
+     */
+    void loadDefaultMetadata();
+
   private:
     void refocusParent();
 

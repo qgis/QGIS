@@ -542,8 +542,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadMetadataFromFile );
   mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataToFile );
   menuMetadata->addSeparator();
-  menuMetadata->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveDefaultMetadata );
-  menuMetadata->addAction( tr( "Restore Default" ), this, &QgsRasterLayerProperties::loadDefaultMetadata );
+  menuMetadata->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataAsDefault );
+  menuMetadata->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultMetadata );
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
@@ -1754,41 +1754,6 @@ void QgsRasterLayerProperties::restoreWindowModality()
   raise();
   activateWindow();
 }
-
-//
-//
-// Next four methods for saving and restoring QMD metadata
-//
-//
-
-
-void QgsRasterLayerProperties::saveDefaultMetadata()
-{
-  mMetadataWidget->acceptMetadata();
-
-  bool defaultSavedFlag = false;
-  QString errorMsg = mRasterLayer->saveDefaultMetadata( defaultSavedFlag );
-  if ( !defaultSavedFlag )
-  {
-    QMessageBox::warning( this, tr( "Default Metadata" ), errorMsg );
-  }
-}
-
-void QgsRasterLayerProperties::loadDefaultMetadata()
-{
-  bool defaultLoadedFlag = false;
-  QString myMessage = mRasterLayer->loadNamedMetadata( mRasterLayer->metadataUri(), defaultLoadedFlag );
-  //reset if the default metadata was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    mMetadataWidget->setMetadata( &mRasterLayer->metadata() );
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Default Metadata" ), myMessage );
-  }
-}
-
 
 void QgsRasterLayerProperties::toggleBuildPyramidsButton()
 {

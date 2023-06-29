@@ -245,8 +245,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadMetadataFromFile );
   mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataToFile );
   menuMetadata->addSeparator();
-  menuMetadata->addAction( tr( "Save as Default" ), this, &QgsVectorLayerProperties::saveDefaultMetadata );
-  menuMetadata->addAction( tr( "Restore Default" ), this, &QgsVectorLayerProperties::loadDefaultMetadata );
+  menuMetadata->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataAsDefault );
+  menuMetadata->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultMetadata );
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
@@ -1107,34 +1107,6 @@ void QgsVectorLayerProperties::saveDefaultStyle()
     QMessageBox::warning( this, tr( "Default Style" ), errorMsg );
   }
 }
-
-void QgsVectorLayerProperties::saveDefaultMetadata()
-{
-  mMetadataWidget->acceptMetadata();
-
-  bool defaultSavedFlag = false;
-  QString errorMsg = mLayer->saveDefaultMetadata( defaultSavedFlag );
-  if ( !defaultSavedFlag )
-  {
-    QMessageBox::warning( this, tr( "Default Metadata" ), errorMsg );
-  }
-}
-
-void QgsVectorLayerProperties::loadDefaultMetadata()
-{
-  bool defaultLoadedFlag = false;
-  QString myMessage = mLayer->loadNamedMetadata( mLayer->metadataUri(), defaultLoadedFlag );
-  //reset if the default metadata was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    mMetadataWidget->setMetadata( &mLayer->metadata() );
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Default Metadata" ), myMessage );
-  }
-}
-
 
 void QgsVectorLayerProperties::saveStyleAs()
 {
