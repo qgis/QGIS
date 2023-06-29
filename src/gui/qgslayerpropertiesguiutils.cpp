@@ -98,6 +98,41 @@ void QgsLayerPropertiesGuiUtils::saveMetadataToFile()
   refocusParent();
 }
 
+void QgsLayerPropertiesGuiUtils::saveMetadataAsDefault()
+{
+  if ( !mLayer )
+    return;
+
+  mMetadataWidget->acceptMetadata();
+
+  bool defaultSavedFlag = false;
+  const QString errorMsg = mLayer->saveDefaultMetadata( defaultSavedFlag );
+  if ( !defaultSavedFlag )
+  {
+    QMessageBox::warning( mParentWidget, tr( "Default Metadata" ), errorMsg );
+    refocusParent();
+  }
+}
+
+void QgsLayerPropertiesGuiUtils::loadDefaultMetadata()
+{
+  if ( !mLayer )
+    return;
+
+  bool defaultLoadedFlag = false;
+  const QString message = mLayer->loadNamedMetadata( mLayer->metadataUri(), defaultLoadedFlag );
+  //reset if the default metadata was loaded OK only
+  if ( defaultLoadedFlag )
+  {
+    mMetadataWidget->setMetadata( &mLayer->metadata() );
+  }
+  else
+  {
+    QMessageBox::information( mParentWidget, tr( "Default Metadata" ), message );
+    refocusParent();
+  }
+}
+
 void QgsLayerPropertiesGuiUtils::refocusParent()
 {
   mParentWidget->activateWindow(); // set focus back to properties dialog

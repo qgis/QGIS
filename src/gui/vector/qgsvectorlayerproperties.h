@@ -133,8 +133,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void pbnQueryBuilder_clicked();
     void pbnIndex_clicked();
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
-    void saveDefaultMetadata();
-    void loadDefaultMetadata();
     void pbnUpdateExtents_clicked();
 
     void mButtonAddJoin_clicked();

@@ -185,11 +185,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! Restore dialog modality and focus, usually after a pixel clicked to pick transparency color
     void restoreWindowModality();
 
-    //! Save the default metadata.
-    void saveDefaultMetadata();
-    //! Load the default metadata.
-    void loadDefaultMetadata();
-
     //! Help button
     void showHelp();
 
