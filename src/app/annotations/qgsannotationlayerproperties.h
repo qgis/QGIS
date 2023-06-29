@@ -20,9 +20,8 @@
 
 #include "ui_qgsannotationlayerpropertiesbase.h"
 
-#include "qgsmaplayerstylemanager.h"
-
 #include "qgsannotationlayer.h"
+#include "qgsmaplayerstyle.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -31,7 +30,7 @@ class QgsAnnotationLayer;
 class QgsMetadataWidget;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
-
+class QgsLayerPropertiesGuiUtils;
 
 class QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::QgsAnnotationLayerPropertiesBase
 {
@@ -46,7 +45,6 @@ class QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void apply();
     void onCancel();
 
-    void loadDefaultStyle();
     void saveDefaultStyle();
     void loadStyle();
     void saveStyleAs();
@@ -63,6 +61,8 @@ class QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
 
   private:
     QgsAnnotationLayer *mLayer = nullptr;
+
+    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
 
     QPushButton *mBtnStyle = nullptr;
 

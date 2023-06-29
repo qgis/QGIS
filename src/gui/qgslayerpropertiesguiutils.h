@@ -78,6 +78,18 @@ class GUI_EXPORT QgsLayerPropertiesGuiUtils : public QObject
      */
     void loadDefaultMetadata();
 
+    /**
+     * Reloads the default style for the layer.
+     */
+    void loadDefaultStyle();
+
+  signals:
+
+    /**
+     * Emitted when the dialog should be resynced to the layer.
+     */
+    void syncDialogToLayer();
+
   private:
     void refocusParent();
 

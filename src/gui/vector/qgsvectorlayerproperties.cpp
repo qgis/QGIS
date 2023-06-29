@@ -239,6 +239,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   temporalLayout->addWidget( mTemporalWidget );
 
   mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, mMetadataWidget );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsVectorLayerProperties::syncToLayer );
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );

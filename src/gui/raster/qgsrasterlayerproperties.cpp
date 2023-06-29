@@ -134,14 +134,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mSourceGroupBox->hide();
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
-  QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyle );
-  menuStyle->addAction( tr( "Save Style…" ), this, &QgsRasterLayerProperties::saveStyleAs );
-  menuStyle->addSeparator();
-  menuStyle->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveDefaultStyle );
-  menuStyle->addAction( tr( "Restore Default" ), this, &QgsRasterLayerProperties::loadDefaultStyle );
-  mBtnStyle->setMenu( menuStyle );
-  connect( menuStyle, &QMenu::aboutToShow, this, &QgsRasterLayerProperties::aboutToShowStyleMenu );
   buttonBox->addButton( mBtnStyle, QDialogButtonBox::ResetRole );
 
   connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsRasterLayerProperties::syncToLayer );
@@ -536,6 +528,16 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mRenderTypeComboBox_currentIndexChanged( widgetIndex );
 
   mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mRasterLayer, mMetadataWidget );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsRasterLayerProperties::syncToLayer );
+
+  QMenu *menuStyle = new QMenu( this );
+  menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyle );
+  menuStyle->addAction( tr( "Save Style…" ), this, &QgsRasterLayerProperties::saveStyleAs );
+  menuStyle->addSeparator();
+  menuStyle->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveDefaultStyle );
+  menuStyle->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultStyle );
+  mBtnStyle->setMenu( menuStyle );
+  connect( menuStyle, &QMenu::aboutToShow, this, &QgsRasterLayerProperties::aboutToShowStyleMenu );
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );
@@ -1616,21 +1618,7 @@ void QgsRasterLayerProperties::removeSelectedMetadataUrl()
 //
 void QgsRasterLayerProperties::loadDefaultStyle()
 {
-  bool defaultLoadedFlag = false;
-  QString myMessage = mRasterLayer->loadDefaultStyle( defaultLoadedFlag );
-  //reset if the default style was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    syncToLayer();
-  }
-  else
-  {
-    //otherwise let the user know what went wrong
-    QMessageBox::information( this,
-                              tr( "Default Style" ),
-                              myMessage
-                            );
-  }
+  mLayerPropertiesUtils->loadDefaultStyle();
 }
 
 void QgsRasterLayerProperties::saveDefaultStyle()
