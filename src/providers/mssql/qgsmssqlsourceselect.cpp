@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
+#include "qgsmssqlprovider.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -57,11 +58,29 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
     for ( const Qgis::WkbType type :
           {
             Qgis::WkbType::Point,
+            Qgis::WkbType::PointZ,
+            Qgis::WkbType::PointM,
+            Qgis::WkbType::PointZM,
             Qgis::WkbType::LineString,
+            Qgis::WkbType::LineStringZ,
+            Qgis::WkbType::LineStringM,
+            Qgis::WkbType::LineStringZM,
             Qgis::WkbType::Polygon,
+            Qgis::WkbType::PolygonZ,
+            Qgis::WkbType::PolygonM,
+            Qgis::WkbType::PolygonZM,
             Qgis::WkbType::MultiPoint,
+            Qgis::WkbType::MultiPointZ,
+            Qgis::WkbType::MultiPointM,
+            Qgis::WkbType::MultiPointZM,
             Qgis::WkbType::MultiLineString,
+            Qgis::WkbType::MultiLineStringZ,
+            Qgis::WkbType::MultiLineStringM,
+            Qgis::WkbType::MultiLineStringZM,
             Qgis::WkbType::MultiPolygon,
+            Qgis::WkbType::MultiPolygonZ,
+            Qgis::WkbType::MultiPolygonM,
+            Qgis::WkbType::MultiPolygonZM,
             Qgis::WkbType::NoGeometry
           } )
     {
@@ -427,20 +446,11 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
       layer.tableName = q.value( 1 ).toString();
       layer.geometryColName = q.value( 2 ).toString();
       layer.srid = q.value( 3 ).toString();
-      layer.type = q.value( 4 ).toString();
       layer.isView = q.value( 5 ).toBool();
       layer.pkCols = QStringList(); //TODO
       layer.isGeography = false;
       const int dimensions { q.value( 6 ).toInt( ) };
-
-      if ( dimensions >= 3 )
-      {
-        layer.type = layer.type.append( 'Z' );
-      }
-      if ( dimensions == 4 )
-      {
-        layer.type = layer.type.append( 'M' );
-      }
+      layer.type = QgsMssqlProvider::typeFromMetadata( q.value( 4 ).toString().toUpper(), dimensions );
 
       QString type = layer.type;
       QString srid = layer.srid;
