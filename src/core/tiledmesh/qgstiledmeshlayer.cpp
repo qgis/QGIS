@@ -359,6 +359,8 @@ QString QgsTiledMeshLayer::htmlMetadata() const
   // Extent
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
 
+  myMetadata += QLatin1String( "</table>\n<br><br>" );
+
   // CRS
   myMetadata += crsHtmlMetadata();
 
