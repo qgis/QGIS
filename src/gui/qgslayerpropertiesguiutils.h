@@ -79,6 +79,11 @@ class GUI_EXPORT QgsLayerPropertiesGuiUtils : public QObject
     void loadDefaultMetadata();
 
     /**
+     * Allows the user to load layer style from a file.
+     */
+    void loadStyleFromFile();
+
+    /**
      * Saves the current layer style as the default for the layer.
      *
      * loadDefaultStyle()
@@ -101,6 +106,12 @@ class GUI_EXPORT QgsLayerPropertiesGuiUtils : public QObject
      * Emitted when the current dialog state should be applied to the layer.
      */
     void applyDialogToLayer();
+
+    /**
+     * Emitted when the dialog should save the current layer style to a temporary
+     * location to allow for undo rollback operations.
+     */
+    void storeCurrentStyleForUndo();
 
   private:
     void refocusParent();

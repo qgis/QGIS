@@ -530,9 +530,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mRasterLayer, mMetadataWidget );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsRasterLayerProperties::syncToLayer );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsRasterLayerProperties::apply );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::storeCurrentStyleForUndo, this, [ = ]
+  {
+    mOldStyle = mRasterLayer->styleManager()->style( mRasterLayer->styleManager()->currentStyle() );
+  } );
 
   QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyle );
+  menuStyle->addAction( tr( "Load Style…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadStyleFromFile );
   menuStyle->addAction( tr( "Save Style…" ), this, &QgsRasterLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleAsDefault );
@@ -1629,36 +1633,8 @@ void QgsRasterLayerProperties::saveDefaultStyle()
 
 void QgsRasterLayerProperties::loadStyle()
 {
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  QString fileName = QFileDialog::getOpenFileName(
-                       this,
-                       tr( "Load layer properties from style file" ),
-                       lastUsedDir,
-                       tr( "QGIS Layer Style File" ) + " (*.qml)" );
-  if ( fileName.isEmpty() )
-    return;
-
-  // ensure the user never omits the extension from the file name
-  if ( !fileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
-    fileName += QLatin1String( ".qml" );
-
-  mOldStyle = mRasterLayer->styleManager()->style( mRasterLayer->styleManager()->currentStyle() );
-
-  bool defaultLoadedFlag = false;
-  QString message = mRasterLayer->loadNamedStyle( fileName, defaultLoadedFlag );
-  if ( defaultLoadedFlag )
-  {
-    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
-    syncToLayer();
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Save Style" ), message );
-  }
+  mLayerPropertiesUtils->loadStyleFromFile();
 }
-
 
 void QgsRasterLayerProperties::saveStyleAs()
 {

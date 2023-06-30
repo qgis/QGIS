@@ -122,6 +122,10 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mMeshLayer, mMetadataWidget );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsMeshLayerProperties::syncToLayer );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsMeshLayerProperties::apply );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::storeCurrentStyleForUndo, this, [ = ]
+  {
+    mOldStyle = mMeshLayer->styleManager()->style( mMeshLayer->styleManager()->currentStyle() );
+  } );
 
   // update based on lyr's current state
   syncToLayer();
@@ -145,7 +149,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style…" ), this, &QgsMeshLayerProperties::loadStyle );
+  menuStyle->addAction( tr( "Load Style…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadStyleFromFile );
   menuStyle->addAction( tr( "Save Style…" ), this, &QgsMeshLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleAsDefault );
@@ -267,35 +271,7 @@ void QgsMeshLayerProperties::saveDefaultStyle()
 
 void QgsMeshLayerProperties::loadStyle()
 {
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  QString fileName = QFileDialog::getOpenFileName(
-                       this,
-                       tr( "Load rendering setting from style file" ),
-                       lastUsedDir,
-                       tr( "QGIS Layer Style File" ) + " (*.qml)" );
-  if ( fileName.isEmpty() )
-    return;
-
-  // ensure the user never omits the extension from the file name
-  if ( !fileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
-    fileName += QLatin1String( ".qml" );
-
-  mOldStyle = mMeshLayer->styleManager()->style( mMeshLayer->styleManager()->currentStyle() );
-
-  bool defaultLoadedFlag = false;
-  QString message = mMeshLayer->loadNamedStyle( fileName, defaultLoadedFlag );
-  if ( defaultLoadedFlag )
-  {
-    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
-    syncToLayer();
-    apply();
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Load Style" ), message );
-  }
+  mLayerPropertiesUtils->loadStyleFromFile();
 }
 
 void QgsMeshLayerProperties::saveStyleAs()
