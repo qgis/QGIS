@@ -270,7 +270,7 @@ void QgsChunkNode::updateParentBoundingBoxesRecursively() const
     {
       const QgsAABB childBBox = currentNodeChildren[i]->bbox();
 
-      // Nodes without data have and empty bbox and should be skipped
+      // Nodes without data have an empty bbox and should be skipped
       if ( childBBox.isEmpty() )
         continue;
 
