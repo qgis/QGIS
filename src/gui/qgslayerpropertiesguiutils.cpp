@@ -17,6 +17,7 @@
 #include "qgssettings.h"
 #include "qgsmaplayer.h"
 #include "qgsmetadatawidget.h"
+#include "qgsfileutils.h"
 
 #include <QDir>
 #include <QFileDialog>
@@ -165,6 +166,42 @@ void QgsLayerPropertiesGuiUtils::loadStyleFromFile()
   else
   {
     QMessageBox::information( mParentWidget, tr( "Load Style" ), message );
+    refocusParent();
+  }
+}
+
+void QgsLayerPropertiesGuiUtils::saveStyleToFile()
+{
+  if ( !mLayer )
+    return;
+
+  QgsSettings settings;
+  const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+
+  QString outputFileName = QFileDialog::getSaveFileName(
+                             mParentWidget,
+                             tr( "Save layer properties as style file" ),
+                             lastUsedDir,
+                             tr( "QGIS Layer Style File" ) + " (*.qml)" );
+  if ( outputFileName.isEmpty() )
+    return;
+
+  // ensure the user never omits the extension from the file name
+  outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
+
+  emit applyDialogToLayer(); // make sure the style to save is up-to-date
+
+  // then export style
+  bool defaultLoadedFlag = false;
+  const QString message = mLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
+
+  if ( defaultLoadedFlag )
+  {
+    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
+  }
+  else
+  {
+    QMessageBox::information( mParentWidget, tr( "Save Style" ), message );
     refocusParent();
   }
 }

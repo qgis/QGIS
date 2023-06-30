@@ -80,8 +80,17 @@ class GUI_EXPORT QgsLayerPropertiesGuiUtils : public QObject
 
     /**
      * Allows the user to load layer style from a file.
+     *
+     * \see saveStyleToFile()
      */
     void loadStyleFromFile();
+
+    /**
+     * Allows the user to save the layer's style to a file.
+     *
+     * \see loadStyleFromFile()
+     */
+    void saveStyleToFile();
 
     /**
      * Saves the current layer style as the default for the layer.

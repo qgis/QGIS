@@ -14,8 +14,6 @@
  ***************************************************************************/
 
 #include "qgsvectortilelayerproperties.h"
-
-#include "qgsfileutils.h"
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaplayerstyleguiutils.h"
@@ -126,7 +124,7 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
   menuStyle->addAction( tr( "Load Style…" ), this, &QgsVectorTileLayerProperties::loadStyle );
-  menuStyle->addAction( tr( "Save Style…" ), this, &QgsVectorTileLayerProperties::saveStyleAs );
+  menuStyle->addAction( tr( "Save Style…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleToFile );
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleAsDefault );
   menuStyle->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultStyle );
@@ -336,33 +334,7 @@ void QgsVectorTileLayerProperties::loadStyle()
 
 void QgsVectorTileLayerProperties::saveStyleAs()
 {
-  QgsSettings settings;
-  const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  QString outputFileName = QFileDialog::getSaveFileName(
-                             this,
-                             tr( "Save layer properties as style file" ),
-                             lastUsedDir,
-                             tr( "QGIS Layer Style File" ) + " (*.qml)" );
-  if ( outputFileName.isEmpty() )
-    return;
-
-  // ensure the user never omits the extension from the file name
-  outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
-
-  apply(); // make sure the style to save is up-to-date
-
-  // then export style
-  bool defaultLoadedFlag = false;
-  QString message;
-  message = mLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
-
-  if ( defaultLoadedFlag )
-  {
-    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
-  }
-  else
-    QMessageBox::information( this, tr( "Save Style" ), message );
+  mLayerPropertiesUtils->saveStyleToFile();
 }
 
 void QgsVectorTileLayerProperties::aboutToShowStyleMenu()
