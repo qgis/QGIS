@@ -133,6 +133,33 @@ void QgsLayerPropertiesGuiUtils::loadDefaultMetadata()
   }
 }
 
+void QgsLayerPropertiesGuiUtils::saveStyleAsDefault()
+{
+  if ( !mLayer )
+    return;
+
+  emit applyDialogToLayer(); // make sure the style to save is up-to-date
+
+  // a flag passed by reference
+  bool defaultSavedFlag = false;
+  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
+  // remove the NOWARN_DEPRECATED tags
+  Q_NOWARN_DEPRECATED_PUSH
+  // after calling this the above flag will be set true for success
+  // or false if the save operation failed
+  const QString message = mLayer->saveDefaultStyle( defaultSavedFlag );
+  Q_NOWARN_DEPRECATED_POP
+  if ( !defaultSavedFlag )
+  {
+    // let the user know what went wrong
+    QMessageBox::information( mParentWidget,
+                              tr( "Default Style" ),
+                              message
+                            );
+    refocusParent();
+  }
+}
+
 void QgsLayerPropertiesGuiUtils::loadDefaultStyle()
 {
   if ( !mLayer )
@@ -152,6 +179,7 @@ void QgsLayerPropertiesGuiUtils::loadDefaultStyle()
                               tr( "Default Style" ),
                               message
                             );
+    refocusParent();
   }
 }
 

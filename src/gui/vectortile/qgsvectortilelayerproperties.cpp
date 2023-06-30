@@ -103,6 +103,7 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
 
   mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, mMetadataWidget );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsVectorTileLayerProperties::syncToLayer );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsVectorTileLayerProperties::apply );
 
   // update based on lyr's current state
   syncToLayer();
@@ -123,7 +124,7 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   menuStyle->addAction( tr( "Load Style…" ), this, &QgsVectorTileLayerProperties::loadStyle );
   menuStyle->addAction( tr( "Save Style…" ), this, &QgsVectorTileLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
-  menuStyle->addAction( tr( "Save as Default" ), this, &QgsVectorTileLayerProperties::saveDefaultStyle );
+  menuStyle->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleAsDefault );
   menuStyle->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultStyle );
   mBtnStyle->setMenu( menuStyle );
   connect( menuStyle, &QMenu::aboutToShow, this, &QgsVectorTileLayerProperties::aboutToShowStyleMenu );
@@ -245,25 +246,7 @@ void QgsVectorTileLayerProperties::loadDefaultStyle()
 
 void QgsVectorTileLayerProperties::saveDefaultStyle()
 {
-  apply(); // make sure the style to save is up-to-date
-
-  // a flag passed by reference
-  bool defaultSavedFlag = false;
-  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
-  // remove the NOWARN_DEPRECATED tags
-  Q_NOWARN_DEPRECATED_PUSH
-  // after calling this the above flag will be set true for success
-  // or false if the save operation failed
-  const QString myMessage = mLayer->saveDefaultStyle( defaultSavedFlag );
-  Q_NOWARN_DEPRECATED_POP
-  if ( !defaultSavedFlag )
-  {
-    // let the user know what went wrong
-    QMessageBox::information( this,
-                              tr( "Default Style" ),
-                              myMessage
-                            );
-  }
+  mLayerPropertiesUtils->saveStyleAsDefault();
 }
 
 void QgsVectorTileLayerProperties::loadStyle()

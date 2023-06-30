@@ -240,6 +240,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, mMetadataWidget );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsVectorLayerProperties::syncToLayer );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsVectorLayerProperties::apply );
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );
@@ -1048,7 +1049,6 @@ void QgsVectorLayerProperties::loadDefaultStyle()
 
 void QgsVectorLayerProperties::saveDefaultStyle()
 {
-  apply();
   QString errorMsg;
   const QgsVectorDataProvider *provider = mLayer->dataProvider();
   if ( !provider )
@@ -1068,6 +1068,7 @@ void QgsVectorLayerProperties::saveDefaultStyle()
         return;
       case 2:
       {
+        apply();
         QString errorMessage;
         if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), QString(), errorMessage ) )
         {
@@ -1097,16 +1098,7 @@ void QgsVectorLayerProperties::saveDefaultStyle()
     }
   }
 
-  bool defaultSavedFlag = false;
-  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
-  // remove the NOWARN_DEPRECATED tags
-  Q_NOWARN_DEPRECATED_PUSH
-  errorMsg = mLayer->saveDefaultStyle( defaultSavedFlag );
-  Q_NOWARN_DEPRECATED_POP
-  if ( !defaultSavedFlag )
-  {
-    QMessageBox::warning( this, tr( "Default Style" ), errorMsg );
-  }
+  mLayerPropertiesUtils->saveStyleAsDefault();
 }
 
 void QgsVectorLayerProperties::saveStyleAs()
