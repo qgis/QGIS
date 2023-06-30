@@ -98,13 +98,6 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
     /**
-     * Loads a saved style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadStyle();
-
-    /**
      * Saves a style when appriate button is pressed
      *
      * \since QGIS 3.30

@@ -241,6 +241,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, mMetadataWidget );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsVectorLayerProperties::syncToLayer );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsVectorLayerProperties::apply );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::storeCurrentStyleForUndo, this, [ = ]
+  {
+    mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
+  } );
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );

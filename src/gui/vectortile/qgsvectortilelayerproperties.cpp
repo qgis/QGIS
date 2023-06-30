@@ -104,6 +104,10 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, mMetadataWidget );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsVectorTileLayerProperties::syncToLayer );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsVectorTileLayerProperties::apply );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::storeCurrentStyleForUndo, this, [ = ]
+  {
+    mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
+  } );
 
   // update based on lyr's current state
   syncToLayer();

@@ -45,7 +45,6 @@ class QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void apply();
     void onCancel();
 
-    void loadStyle();
     void saveStyleAs();
     void aboutToShowStyleMenu();
     void showHelp();

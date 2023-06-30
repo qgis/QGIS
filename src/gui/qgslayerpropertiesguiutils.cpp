@@ -133,6 +133,42 @@ void QgsLayerPropertiesGuiUtils::loadDefaultMetadata()
   }
 }
 
+void QgsLayerPropertiesGuiUtils::loadStyleFromFile()
+{
+  if ( !mLayer )
+    return;
+
+  QgsSettings settings;
+  const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+
+  QString fileName = QFileDialog::getOpenFileName(
+                       mParentWidget,
+                       tr( "Load layer properties from style file" ),
+                       lastUsedDir,
+                       tr( "QGIS Layer Style File" ) + " (*.qml)" );
+  if ( fileName.isEmpty() )
+    return;
+
+  // ensure the user never omits the extension from the file name
+  if ( !fileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
+    fileName += QLatin1String( ".qml" );
+
+  emit storeCurrentStyleForUndo();
+
+  bool defaultLoadedFlag = false;
+  const QString message = mLayer->loadNamedStyle( fileName, defaultLoadedFlag );
+  if ( defaultLoadedFlag )
+  {
+    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
+    emit syncDialogToLayer();
+  }
+  else
+  {
+    QMessageBox::information( mParentWidget, tr( "Load Style" ), message );
+    refocusParent();
+  }
+}
+
 void QgsLayerPropertiesGuiUtils::saveStyleAsDefault()
 {
   if ( !mLayer )

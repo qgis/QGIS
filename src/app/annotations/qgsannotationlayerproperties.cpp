@@ -60,6 +60,10 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
   mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, nullptr );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsAnnotationLayerProperties::syncToLayer );
   connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsAnnotationLayerProperties::apply );
+  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::storeCurrentStyleForUndo, this, [ = ]
+  {
+    mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
+  } );
 
   // update based on layer's current state
   syncToLayer();
@@ -75,7 +79,7 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style…" ), this, &QgsAnnotationLayerProperties::loadStyle );
+  menuStyle->addAction( tr( "Load Style…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadStyleFromFile );
   menuStyle->addAction( tr( "Save Style…" ), this, &QgsAnnotationLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleAsDefault );
@@ -132,7 +136,7 @@ void QgsAnnotationLayerProperties::apply()
   if ( mPaintEffect )
     mLayer->setPaintEffect( mPaintEffect->clone() );
 
-  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+  for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->apply();
 
   mLayer->triggerRepaint();
@@ -188,40 +192,8 @@ void QgsAnnotationLayerProperties::syncToLayer()
     mEffectWidget->setPaintEffect( mPaintEffect.get() );
   }
 
-  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+  for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->syncToLayer( mLayer );
-}
-
-void QgsAnnotationLayerProperties::loadStyle()
-{
-  QgsSettings settings;
-  const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  QString fileName = QFileDialog::getOpenFileName(
-                       this,
-                       tr( "Load layer properties from style file" ),
-                       lastUsedDir,
-                       tr( "QGIS Layer Style File" ) + " (*.qml)" );
-  if ( fileName.isEmpty() )
-    return;
-
-  // ensure the user never omits the extension from the file name
-  if ( !fileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
-    fileName += QLatin1String( ".qml" );
-
-  mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
-
-  bool defaultLoadedFlag = false;
-  const QString message = mLayer->loadNamedStyle( fileName, defaultLoadedFlag );
-  if ( defaultLoadedFlag )
-  {
-    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
-    syncToLayer();
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Load Style" ), message );
-  }
 }
 
 void QgsAnnotationLayerProperties::saveStyleAs()
