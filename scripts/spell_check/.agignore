@@ -9,10 +9,7 @@ external/*
 ms-windows/osgeo4w/
 python/ext-libs/
 python/qsci_apis/
-src/app/gps/qwtpolar-1.0/
-src/app/gps/qwtpolar-1.1.1/
 src/core/pal
-src/plugins/grass/qtermwidget/
 tests/testdata/provider/postgresraster/
 
 #Extensions
