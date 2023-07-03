@@ -381,7 +381,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
   teMetadataViewer->setHtml( htmlMetadata() );
   teMetadataViewer->setOpenLinks( false );
-  connect( teMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsVectorLayerProperties::urlClicked );
+  connect( teMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsVectorLayerProperties::openUrl );
   mMetadataFilled = true;
 
   QgsSettings settings;
@@ -914,15 +914,6 @@ void QgsVectorLayerProperties::onCancel()
 
   if ( mBackupCrs != mLayer->crs() )
     mLayer->setCrs( mBackupCrs );
-}
-
-void QgsVectorLayerProperties::urlClicked( const QUrl &url )
-{
-  QFileInfo file( url.toLocalFile() );
-  if ( file.exists() && !file.isDir() )
-    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
-  else
-    QDesktopServices::openUrl( url );
 }
 
 void QgsVectorLayerProperties::pbnQueryBuilder_clicked()

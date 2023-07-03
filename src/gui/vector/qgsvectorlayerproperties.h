@@ -176,8 +176,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
     void onAuxiliaryLayerAddField();
 
-    void urlClicked( const QUrl &url );
-
     // Update the preview of the map tip
     void updateMapTipPreview();
     // Resize the map tip preview

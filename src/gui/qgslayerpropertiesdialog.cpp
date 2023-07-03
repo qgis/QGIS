@@ -15,6 +15,7 @@
 
 #include "qgslayerpropertiesdialog.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsnative.h"
 #include "qgssettings.h"
 #include "qgsmaplayer.h"
 #include "qgsmetadatawidget.h"
@@ -24,6 +25,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QDesktopServices>
 
 QgsLayerPropertiesDialog::QgsLayerPropertiesDialog( QgsMapLayer *layer, const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QgsOptionsDialogBase( settingsKey, parent, fl, settings )
@@ -285,4 +287,13 @@ void QgsLayerPropertiesDialog::optionsStackedWidget_CurrentChanged( int index )
     mBtnStyle->setVisible( ! isMetadataPanel );
     mBtnMetadata->setVisible( isMetadataPanel );
   }
+}
+
+void QgsLayerPropertiesDialog::openUrl( const QUrl &url )
+{
+  QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
 }

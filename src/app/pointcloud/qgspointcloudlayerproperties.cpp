@@ -19,7 +19,6 @@
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgspointcloudlayer.h"
 #include "qgsgui.h"
-#include "qgsnative.h"
 #include "qgsapplication.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
@@ -210,7 +209,7 @@ void QgsPointCloudLayerProperties::syncToLayer()
   mInformationTextBrowser->document()->setDefaultStyleSheet( myStyle );
   mInformationTextBrowser->setHtml( mLayer->htmlMetadata() );
   mInformationTextBrowser->setOpenLinks( false );
-  connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsPointCloudLayerProperties::urlClicked );
+  connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsPointCloudLayerProperties::openUrl );
 
   mCrsSelector->setCrs( mLayer->crs() );
 
@@ -250,15 +249,6 @@ void QgsPointCloudLayerProperties::showHelp()
   {
     QgsHelp::openHelp( QStringLiteral( "working_with_point_clouds/point_clouds.html" ) );
   }
-}
-
-void QgsPointCloudLayerProperties::urlClicked( const QUrl &url )
-{
-  const QFileInfo file( url.toLocalFile() );
-  if ( file.exists() && !file.isDir() )
-    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
-  else
-    QDesktopServices::openUrl( url );
 }
 
 void QgsPointCloudLayerProperties::pbnQueryBuilder_clicked()

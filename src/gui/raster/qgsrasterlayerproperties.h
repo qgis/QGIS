@@ -199,8 +199,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     //! Make GUI reflect the layer's state
     void syncToLayer() FINAL;
 
-    void urlClicked( const QUrl &url );
-
     // Update the preview of the map tip
     void updateMapTipPreview();
     // Resize the map tip preview

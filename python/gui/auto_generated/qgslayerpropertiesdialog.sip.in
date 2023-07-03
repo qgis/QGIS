@@ -123,6 +123,14 @@ Stores the current layer style so that undo operations can be performed.
     virtual void optionsStackedWidget_CurrentChanged( int index );
 
 
+    void openUrl( const QUrl &url );
+%Docstring
+Handles opening a ``url`` from the dialog.
+
+If the ``url`` refers to a local file then a file explorer will be opened pointing to the file.
+If it refers to a remote link then a web browser will be opened instead.
+%End
+
 };
 
 /************************************************************************

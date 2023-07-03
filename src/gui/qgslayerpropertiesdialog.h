@@ -151,6 +151,14 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
 
     void optionsStackedWidget_CurrentChanged( int index ) override;
 
+    /**
+     * Handles opening a \a url from the dialog.
+     *
+     * If the \a url refers to a local file then a file explorer will be opened pointing to the file.
+     * If it refers to a remote link then a web browser will be opened instead.
+     */
+    void openUrl( const QUrl &url );
+
   private:
 
     QPointer< QgsMapLayer> mLayer;

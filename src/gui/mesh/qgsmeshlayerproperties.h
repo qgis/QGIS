@@ -103,8 +103,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
 
     void onTimeReferenceChange();
 
-    void urlClicked( const QUrl &url );
-
   private:
     //! Pointer to the mesh styling widget
     QgsRendererMeshPropertiesWidget *mRendererMeshPropertiesWidget = nullptr;
