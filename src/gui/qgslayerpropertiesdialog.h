@@ -51,11 +51,11 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     QgsLayerPropertiesDialog( QgsMapLayer *layer, const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = nullptr );
 
     /**
-     * Sets the metadata \a widget associated with the dialog.
+     * Sets the metadata \a widget and \a page associated with the dialog.
      *
      * This must be called in order for the standard metadata loading/saving functionality to be avialable.
      */
-    void setMetadataWidget( QgsMetadataWidget *widget );
+    void setMetadataWidget( QgsMetadataWidget *widget, QWidget *page );
 
   public slots:
 
@@ -131,6 +131,12 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     */
     QgsMapLayerStyle mOldStyle;
 
+    //! Style button
+    QPushButton *mBtnStyle = nullptr;
+
+    //! Metadata button
+    QPushButton *mBtnMetadata = nullptr;
+
   protected slots:
 
     /**
@@ -143,11 +149,14 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
      */
     virtual void apply() SIP_SKIP = 0;
 
+    void optionsStackedWidget_CurrentChanged( int index ) override;
+
   private:
 
     QPointer< QgsMapLayer> mLayer;
 
     QgsMetadataWidget *mMetadataWidget = nullptr;
+    QWidget *mMetadataPage = nullptr;
 
 };
 

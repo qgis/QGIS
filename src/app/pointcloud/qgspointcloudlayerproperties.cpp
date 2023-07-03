@@ -70,7 +70,7 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   metadataFrame->setLayout( layout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
 
-  setMetadataWidget( mMetadataWidget );
+  setMetadataWidget( mMetadataWidget, mOptsPage_Metadata );
 
   // update based on lyr's current state
   syncToLayer();
@@ -276,15 +276,6 @@ void QgsPointCloudLayerProperties::crsChanged( const QgsCoordinateReferenceSyste
   QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select transformation for the layer" ) );
   mLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
-}
-
-void QgsPointCloudLayerProperties::optionsStackedWidget_CurrentChanged( int index )
-{
-  QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
-
-  const bool isMetadataPanel = ( index == mOptStackedWidget->indexOf( mOptsPage_Metadata ) );
-  mBtnStyle->setVisible( ! isMetadataPanel );
-  mBtnMetadata->setVisible( isMetadataPanel );
 }
 
 //

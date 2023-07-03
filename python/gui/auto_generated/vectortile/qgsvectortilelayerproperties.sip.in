@@ -48,8 +48,6 @@ Saves a style when appriate button is pressed
 .. versionadded:: 3.30
 %End
 
-  protected slots:
-
 };
 
 /************************************************************************

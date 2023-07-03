@@ -223,11 +223,3 @@ void QgsAnnotationLayerProperties::crsChanged( const QgsCoordinateReferenceSyste
   QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select transformation for the layer" ) );
   mLayer->setCrs( crs );
 }
-
-void QgsAnnotationLayerProperties::optionsStackedWidget_CurrentChanged( int index )
-{
-  QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
-
-  mBtnStyle->setVisible( true );
-}
-
