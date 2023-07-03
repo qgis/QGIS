@@ -23,6 +23,7 @@ __copyright__ = '(C) 2023, Alister Hood'
 def processInputs(alg, parameters, context, feedback):
     pass
 
+
 def convertToHtml(alg, fileName, outputs):
     # don't copy this for something that will have lots of data like r.stats
     # it will be very slow
