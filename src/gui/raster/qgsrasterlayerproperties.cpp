@@ -526,7 +526,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   mRenderTypeComboBox_currentIndexChanged( widgetIndex );
 
-  setMetadataWidget( mMetadataWidget );
+  setMetadataWidget( mMetadataWidget, mOptsPage_Metadata );
 
   QMenu *menuStyle = new QMenu( this );
   menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyleFromFile );
@@ -1455,11 +1455,7 @@ void QgsRasterLayerProperties::setTransparencyToEdited( int row )
 
 void QgsRasterLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 {
-  QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
-
-  bool isMetadataPanel = ( index == mOptStackedWidget->indexOf( mOptsPage_Metadata ) );
-  mBtnStyle->setVisible( ! isMetadataPanel );
-  mBtnMetadata->setVisible( isMetadataPanel );
+  QgsLayerPropertiesDialog::optionsStackedWidget_CurrentChanged( index );
 
   if ( !mHistogramWidget )
     return;

@@ -105,17 +105,12 @@ class QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog, private Ui
     void pbnQueryBuilder_clicked();
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
-  protected slots:
-    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
-
   private:
     void syncToLayer() FINAL;
 
   private:
     QgsPointCloudLayer *mLayer = nullptr;
 
-    QPushButton *mBtnStyle = nullptr;
-    QPushButton *mBtnMetadata = nullptr;
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 

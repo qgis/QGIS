@@ -48,9 +48,6 @@ class QgsAnnotationLayerProperties : public QgsLayerPropertiesDialog, private Ui
     void urlClicked( const QUrl &url );
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
-  protected slots:
-    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
-
   private:
     void syncToLayer() FINAL;
 

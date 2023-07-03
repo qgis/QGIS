@@ -19,21 +19,23 @@
 #include "qgsmaplayer.h"
 #include "qgsmetadatawidget.h"
 #include "qgsfileutils.h"
+#include "qstackedwidget.h"
 
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
 
-QgsLayerPropertiesDialog::QgsLayerPropertiesDialog( QgsMapLayer *layer , const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
-    : QgsOptionsDialogBase(settingsKey, parent, fl, settings )
+QgsLayerPropertiesDialog::QgsLayerPropertiesDialog( QgsMapLayer *layer, const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
+  : QgsOptionsDialogBase( settingsKey, parent, fl, settings )
   , mLayer( layer )
 {
 
 }
 
-void QgsLayerPropertiesDialog::setMetadataWidget(QgsMetadataWidget *widget)
+void QgsLayerPropertiesDialog::setMetadataWidget( QgsMetadataWidget *widget, QWidget *page )
 {
-    mMetadataWidget = widget;
+  mMetadataWidget = widget;
+  mMetadataPage = page;
 }
 
 void QgsLayerPropertiesDialog::loadMetadataFromFile()
@@ -271,4 +273,16 @@ void QgsLayerPropertiesDialog::storeCurrentStyleForUndo()
     return;
 
   mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
+}
+
+void QgsLayerPropertiesDialog::optionsStackedWidget_CurrentChanged( int index )
+{
+  QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
+
+  if ( mMetadataPage && mBtnStyle && mBtnMetadata )
+  {
+    const bool isMetadataPanel = ( index == mOptStackedWidget->indexOf( mMetadataPage ) );
+    mBtnStyle->setVisible( ! isMetadataPanel );
+    mBtnMetadata->setVisible( isMetadataPanel );
+  }
 }

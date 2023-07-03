@@ -203,8 +203,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
     QString mOriginalSubsetSQL;
 
-    QPushButton *mBtnStyle = nullptr;
-    QPushButton *mBtnMetadata = nullptr;
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 

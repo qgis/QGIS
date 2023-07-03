@@ -72,9 +72,6 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsLayerPropertiesDialog,
     void urlClicked( const QUrl &url );
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
-  protected slots:
-    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
-
   private:
     void syncToLayer() FINAL;
 

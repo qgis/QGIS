@@ -38,9 +38,9 @@ Constructor for QgsLayerPropertiesDialog.
 :param settings: custom :py:class:`QgsSettings` pointer
 %End
 
-    void setMetadataWidget( QgsMetadataWidget *widget );
+    void setMetadataWidget( QgsMetadataWidget *widget, QWidget *page );
 %Docstring
-Sets the metadata ``widget`` associated with the dialog.
+Sets the metadata ``widget`` and ``page`` associated with the dialog.
 
 This must be called in order for the standard metadata loading/saving functionality to be avialable.
 %End
@@ -114,8 +114,13 @@ Stores the current layer style so that undo operations can be performed.
 %End
 
 
+
+
   protected slots:
 
+
+
+    virtual void optionsStackedWidget_CurrentChanged( int index );
 
 
 };

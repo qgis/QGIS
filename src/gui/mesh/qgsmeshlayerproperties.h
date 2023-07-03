@@ -85,7 +85,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
     void saveStyleAs();
 
   protected slots:
-    void optionsStackedWidget_CurrentChanged( int index ) FINAL;
     void syncToLayer() FINAL;
     void apply() FINAL;
 
@@ -118,8 +117,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
     //! Pointer to mesh 3d styling widget
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
 
-    QPushButton *mBtnStyle = nullptr;
-    QPushButton *mBtnMetadata = nullptr;
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 
