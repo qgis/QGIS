@@ -1,4 +1,4 @@
-A short guide for creating and editing GRASS GIS 7 algorithms:
+A short guide for creating and editing GRASS GIS 7/8 algorithms:
 -----------------------------------------------------------------------
 
 Each GRASS command, to be executed from a processing framework element such as the toolbox
@@ -177,10 +177,10 @@ Then create methods using the respective names:
 - Command: processCommand
 - Outputs: processOutputs
 
-If there is a Python file with the algorithm name in the ext directory, methods will be imported from the file and run instead of the common methods (there are "standard" processCommand/processInputs/processOutputs methods in the code of the GRASS provider, in python/plugins/grassprovider/Grass7Algorithm.py).
+If there is a Python file with the algorithm name in the ext directory, these methods will be imported from the file. 
+In the case of processCommand, processInputs and processOutputs these will override the "standard" versions of these methods in the code of the GRASS provider. 
+You will need to read (and understand) the code for the standard methods in python/plugins/grassprovider/Grass7Algorithm.py.
 
 If we take the example of v.what.rast, there is an ext file: ext/v_what_rast.py.
 In this file there is a processCommand method. It just launches the standard processCommand but with the delOutputs option set to True (we do not want to have standard outputs).
 Then there is also a customized processOutputs which exports the input vector as an output for QGIS. We need to do this because v.what.rast modifies values directly in the input vector layer instead of generating a new output, so we have to build this output ourself. 
-
-If you want to do special things in the ext mechanism, you will need to read (and understand) the code for the standard methods in Grass7Algorithm.py.
