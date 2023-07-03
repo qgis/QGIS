@@ -62,6 +62,16 @@ QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFact
   mRootNode = loaderFactory->createRootNode();
   mChunkLoaderQueue = new QgsChunkList;
   mReplacementQueue = new QgsChunkList;
+
+  int memoryAvailableKB = Qgs3DUtils::estimateGpuMemoryAvailable();
+  if ( memoryAvailableKB == -1 )
+  {
+    mGpuMemoryLimit = 500.0;
+  }
+  else
+  {
+    mGpuMemoryLimit = 0.8 * static_cast<double>( memoryAvailableKB ) / 1024.0;
+  }
 }
 
 
