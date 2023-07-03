@@ -451,8 +451,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 else:
                     outputs[outName] = parameters[outName]
                 if isinstance(out, QgsProcessingOutputHtml):
-                    self.convertToHtml(self.fileOutputs[outName])
-
+                    if self.module and hasattr(self.module, 'convertToHtml'):
+                        func = getattr(self.module, 'convertToHtml')
+                        func(self, self.fileOutputs[outName], outputs)
+                    else:
+                        self.convertToHtml(self.fileOutputs[outName])
         return outputs
 
     def processInputs(self, parameters, context, feedback):

@@ -169,6 +169,7 @@ There are 4 different levels where you can add logic:
 - Processing inputs import: if you need to do more than importing input layers. 
 - Processing the command itself: if you need to chain more than one GRASS command for your algorithm. 
 - Processing the outputs: if you need to do special things before exporting layers or if you need special export methods. 
+- Customising html outputs: if you need to do special processing to an html output, or save the raw output to an output variable. 
 
 To add some logic on one or more of these levels you have to create a .py file named according to the algorithm name in python/plugins/grassprovider/ext, replacing '.' with '_'.
 Then create methods using the respective names:
@@ -176,9 +177,10 @@ Then create methods using the respective names:
 - Inputs import: processInputs
 - Command: processCommand
 - Outputs: processOutputs
+- Custom html outputs: convertToHtml
 
 If there is a Python file with the algorithm name in the ext directory, these methods will be imported from the file. 
-In the case of processCommand, processInputs and processOutputs these will override the "standard" versions of these methods in the code of the GRASS provider. 
+In the case of processCommand, processInputs, processOutputs and convertToHtml these will override the "standard" versions of these methods in the code of the GRASS provider. 
 You will need to read (and understand) the code for the standard methods in python/plugins/grassprovider/Grass7Algorithm.py.
 
 If we take the example of v.what.rast, there is an ext file: ext/v_what_rast.py.
