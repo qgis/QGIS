@@ -29,3 +29,4 @@ def convertToHtml(alg, fileName, outputs):
     outputs['MESSAGES'] = open(fileName, 'r').read()
     # this will read the file a second time, but calling it saves us duplicating the code here
     alg.convertToHtml(fileName)
+    
