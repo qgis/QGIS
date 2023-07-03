@@ -1,0 +1,74 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsalignrasterdata.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsAlignRasterData
+{
+%Docstring(signature="appended")
+*************************************************************************
+qgsalignrasterdata.h
+--------------------------------------
+  Date                 : June 2015
+  Copyright            : (C) 2015 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+  **************************************************************************
+
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+
+**************************************************************************
+%End
+
+%TypeHeaderCode
+#include "qgsalignrasterdata.h"
+%End
+  public:
+
+    enum GdalResampleAlg
+    {
+      RA_NearestNeighbour,
+      RA_Bilinear,
+      RA_Cubic,
+      RA_CubicSpline,
+      RA_Lanczos,
+      RA_Average,
+      RA_Mode,
+      RA_Max,
+      RA_Min,
+      RA_Median,
+      RA_Q1,
+      RA_Q3,
+    };
+
+    struct RasterItem
+    {
+      RasterItem( const QString &input, const QString &output );
+
+      virtual ~RasterItem();
+
+      QString inputFilename;
+      QString outputFilename;
+      GdalResampleAlg resampleMethod;
+      bool rescaleValues;
+
+
+      double srcCellSizeInDestCRS;
+    };
+    typedef QList<QgsAlignRasterData::RasterItem> RasterItemList;
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsalignrasterdata.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

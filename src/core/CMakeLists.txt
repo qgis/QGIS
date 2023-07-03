@@ -1045,6 +1045,7 @@ set(QGIS_CORE_HDRS
   qgsabstractcontentcache.h
   qgsabstractgeopdfexporter.h
   qgsaggregatecalculator.h
+  qgsalignrasterdata.h
   qgsanimatedicon.h
   qgsapplication.h
   qgsarchive.h

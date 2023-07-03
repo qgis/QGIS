@@ -399,18 +399,18 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
   cboLayers->setFilters( QgsMapLayerProxyModel::RasterLayer );
 
   cboResample = new QComboBox( this );
-  cboResample->addItem( tr( "Nearest Neighbour" ), QgsAlignRaster::RA_NearestNeighbour );
-  cboResample->addItem( tr( "Bilinear (2x2 Kernel)" ), QgsAlignRaster::RA_Bilinear );
-  cboResample->addItem( tr( "Cubic (4x4 Kernel)" ), QgsAlignRaster::RA_Cubic );
-  cboResample->addItem( tr( "Cubic B-Spline (4x4 Kernel)" ), QgsAlignRaster::RA_CubicSpline );
-  cboResample->addItem( tr( "Lanczos (6x6 Kernel)" ), QgsAlignRaster::RA_Lanczos );
-  cboResample->addItem( tr( "Average" ), QgsAlignRaster::RA_Average );
-  cboResample->addItem( tr( "Mode" ), QgsAlignRaster::RA_Mode );
-  cboResample->addItem( tr( "Maximum" ), QgsAlignRaster::RA_Max );
-  cboResample->addItem( tr( "Minimum" ), QgsAlignRaster::RA_Min );
-  cboResample->addItem( tr( "Median" ), QgsAlignRaster::RA_Median );
-  cboResample->addItem( tr( "First Quartile (Q1)" ), QgsAlignRaster::RA_Q1 );
-  cboResample->addItem( tr( "Third Quartile (Q3)" ), QgsAlignRaster::RA_Q3 );
+  cboResample->addItem( tr( "Nearest Neighbour" ), QgsAlignRaster::ResampleAlg::RA_NearestNeighbour );
+  cboResample->addItem( tr( "Bilinear (2x2 Kernel)" ), QgsAlignRaster::ResampleAlg::RA_Bilinear );
+  cboResample->addItem( tr( "Cubic (4x4 Kernel)" ), QgsAlignRaster::ResampleAlg::RA_Cubic );
+  cboResample->addItem( tr( "Cubic B-Spline (4x4 Kernel)" ), QgsAlignRaster::ResampleAlg::RA_CubicSpline );
+  cboResample->addItem( tr( "Lanczos (6x6 Kernel)" ), QgsAlignRaster::ResampleAlg::RA_Lanczos );
+  cboResample->addItem( tr( "Average" ), QgsAlignRaster::ResampleAlg::RA_Average );
+  cboResample->addItem( tr( "Mode" ), QgsAlignRaster::ResampleAlg::RA_Mode );
+  cboResample->addItem( tr( "Maximum" ), QgsAlignRaster::ResampleAlg::RA_Max );
+  cboResample->addItem( tr( "Minimum" ), QgsAlignRaster::ResampleAlg::RA_Min );
+  cboResample->addItem( tr( "Median" ), QgsAlignRaster::ResampleAlg::RA_Median );
+  cboResample->addItem( tr( "First Quartile (Q1)" ), QgsAlignRaster::ResampleAlg::RA_Q1 );
+  cboResample->addItem( tr( "Third Quartile (Q3)" ), QgsAlignRaster::ResampleAlg::RA_Q3 );
 
   editOutput = new QLineEdit( this );
   btnBrowse = new QPushButton( tr( "Browse…" ), this );
