@@ -23,7 +23,6 @@
 #include "qgsvectortilelayer.h"
 #include "qgsvectortileutils.h"
 #include "qgsgui.h"
-#include "qgsnative.h"
 #include "qgsapplication.h"
 #include "qgsjsonutils.h"
 #include "qgsmetadatawidget.h"
@@ -81,7 +80,7 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
     mMetadataViewer->setZoomFactor( mMetadataViewer->zoomFactor() * 0.9 );
   }
   mMetadataViewer->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
-  connect( mMetadataViewer->page(), &QWebPage::linkClicked, this, &QgsVectorTileLayerProperties::urlClicked );
+  connect( mMetadataViewer->page(), &QWebPage::linkClicked, this, &QgsVectorTileLayerProperties::openUrl );
   mMetadataViewer->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
   mMetadataViewer->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
 
@@ -346,15 +345,6 @@ void QgsVectorTileLayerProperties::showHelp()
   {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector_tiles/vector_tiles_properties.html" ) );
   }
-}
-
-void QgsVectorTileLayerProperties::urlClicked( const QUrl &url )
-{
-  const QFileInfo file( url.toLocalFile() );
-  if ( file.exists() && !file.isDir() )
-    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
-  else
-    QDesktopServices::openUrl( url );
 }
 
 void QgsVectorTileLayerProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )

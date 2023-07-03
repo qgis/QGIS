@@ -101,7 +101,6 @@ class QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog, private Ui
 
     void aboutToShowStyleMenu();
     void showHelp();
-    void urlClicked( const QUrl &url );
     void pbnQueryBuilder_clicked();
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 

@@ -33,8 +33,6 @@
 #include "qgssettings.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-#include "qgsgui.h"
-#include "qgsnative.h"
 #include "qgsmetadatawidget.h"
 
 #include <QDesktopServices>
@@ -199,7 +197,7 @@ void QgsMeshLayerProperties::syncToLayer()
   mInformationTextBrowser->document()->setDefaultStyleSheet( myStyle );
   mInformationTextBrowser->setHtml( mMeshLayer->htmlMetadata() );
   mInformationTextBrowser->setOpenLinks( false );
-  connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsMeshLayerProperties::urlClicked );
+  connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsMeshLayerProperties::openUrl );
 
   QgsDebugMsgLevel( QStringLiteral( "populate source tab" ), 4 );
   /*
@@ -398,15 +396,6 @@ void QgsMeshLayerProperties::onTimeReferenceChange()
   const QgsDateTimeRange &timeExtent = mMeshLayer->dataProvider()->temporalCapabilities()->timeExtent( mTemporalDateTimeReference->dateTime() );
   mTemporalDateTimeStart->setDateTime( timeExtent.begin() );
   mTemporalDateTimeEnd->setDateTime( timeExtent.end() );
-}
-
-void QgsMeshLayerProperties::urlClicked( const QUrl &url )
-{
-  QFileInfo file( url.toLocalFile() );
-  if ( file.exists() && !file.isDir() )
-    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
-  else
-    QDesktopServices::openUrl( url );
 }
 
 void QgsMeshLayerProperties::onCancel()

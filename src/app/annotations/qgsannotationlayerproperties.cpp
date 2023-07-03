@@ -18,7 +18,6 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsgui.h"
-#include "qgsnative.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerconfigwidget.h"
@@ -162,7 +161,7 @@ void QgsAnnotationLayerProperties::syncToLayer()
   mInformationTextBrowser->document()->setDefaultStyleSheet( myStyle );
   mInformationTextBrowser->setHtml( mLayer->htmlMetadata() );
   mInformationTextBrowser->setOpenLinks( false );
-  connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsAnnotationLayerProperties::urlClicked );
+  connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsAnnotationLayerProperties::openUrl );
 
   mCrsSelector->setCrs( mLayer->crs() );
 
@@ -207,15 +206,6 @@ void QgsAnnotationLayerProperties::showHelp()
   {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector_tiles/vector_tiles_properties.html" ) );
   }
-}
-
-void QgsAnnotationLayerProperties::urlClicked( const QUrl &url )
-{
-  const QFileInfo file( url.toLocalFile() );
-  if ( file.exists() && !file.isDir() )
-    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
-  else
-    QDesktopServices::openUrl( url );
 }
 
 void QgsAnnotationLayerProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
