@@ -274,6 +274,16 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.32
      */
     static float screenSpaceError( float epsilon, float distance, float screenSize, float fov );
+
+    /**
+     * This routine tries to estimate the GPU available memory in kb;
+     * It uses some vendor OpenGL extensions. It works for AMD and Nvidia
+     * but there is no available extension for an Intel card.
+     * It returns -1 in case of failure.
+     *
+     * \since QGIS 3.34
+     */
+    static int estimateGpuMemoryAvailable();
 };
 
 #endif // QGS3DUTILS_H
