@@ -650,17 +650,17 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
 
   mHttpHeaders.setFromUrlQuery( query );
 
-  const auto constQueryItems = query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded );
+  const auto constQueryItems = query.queryItems();
   for ( const QPair<QString, QString> &item : constQueryItems )
   {
     if ( !item.first.startsWith( QgsHttpHeaders::PARAM_PREFIX ) )
     {
       if ( item.first == QLatin1String( "username" ) )
-        mUsername = item.second;
+        mUsername = query.queryItemValue( QStringLiteral( "username" ), QUrl::ComponentFormattingOption::FullyDecoded );
       else if ( item.first == QLatin1String( "password" ) )
-        mPassword = item.second;
+        mPassword = query.queryItemValue( QStringLiteral( "password" ), QUrl::ComponentFormattingOption::FullyDecoded );
       else if ( item.first == QLatin1String( "authcfg" ) )
-        mAuthConfigId = item.second;
+        mAuthConfigId = query.queryItemValue( QStringLiteral( "authcfg" ), QUrl::ComponentFormattingOption::FullyDecoded );
       else
         mParams.insert( item.first, item.second );
     }
