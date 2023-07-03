@@ -619,13 +619,17 @@ void QgsVectorLayerTemporalProperties::guessDefaultsFromFields( const QgsFields 
   static const QStringList sStartCandidates{ QStringLiteral( "start" ),
       QStringLiteral( "begin" ),
       QStringLiteral( "from" ),
+      QStringLiteral( "since" ),
       // German candidates
       QStringLiteral( "anfang" ),
-      QStringLiteral( "von" ) };
+      QStringLiteral( "von" ),
+      QStringLiteral( "ab" ),
+      QStringLiteral( "seit" ) };
 
   static const QStringList sEndCandidates{ QStringLiteral( "end" ),
       QStringLiteral( "last" ),
       QStringLiteral( "to" ),
+      QStringLiteral( "stop" ),
       // German candidates
       QStringLiteral( "ende" ),
       QStringLiteral( "bis" ) };
