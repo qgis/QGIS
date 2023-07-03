@@ -16,11 +16,10 @@
 #ifndef QGSPOINTCLOUDLAYERPROPERTIES_H
 #define QGSPOINTCLOUDLAYERPROPERTIES_H
 
-#include "qgsoptionsdialogbase.h"
+#include "qgslayerpropertiesdialog.h"
 
 #include "ui_qgspointcloudlayerpropertiesbase.h"
 
-#include "qgsmaplayerstylemanager.h"
 #include <QAbstractTableModel>
 
 #include "qgspointcloudlayer.h"
@@ -88,7 +87,7 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     QList<int> mClassifications;
 };
 
-class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::QgsPointCloudLayerPropertiesBase
+class QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsPointCloudLayerPropertiesBase
 {
     Q_OBJECT
   public:
@@ -96,15 +95,8 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
 
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
-    /**
-     * Saves a style when appriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void saveStyleAs();
-
   private slots:
-    void apply();
+    void apply() FINAL;
     void onCancel();
 
     void aboutToShowStyleMenu();
@@ -117,12 +109,10 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
 
   private:
-    void syncToLayer();
+    void syncToLayer() FINAL;
 
   private:
     QgsPointCloudLayer *mLayer = nullptr;
-
-    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
 
     QPushButton *mBtnStyle = nullptr;
     QPushButton *mBtnMetadata = nullptr;
@@ -131,12 +121,6 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
-
-    /**
-     * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled.
-    */
-    QgsMapLayerStyle mOldStyle;
 
     QList<QgsMapLayerConfigWidget *> mConfigWidgets;
 

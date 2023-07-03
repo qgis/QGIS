@@ -26,7 +26,6 @@
 #include "qgspainteffect.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
-#include "qgslayerpropertiesguiutils.h"
 
 #include <QFileDialog>
 #include <QMenu>
@@ -35,7 +34,7 @@
 #include <QUrl>
 
 QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
-  : QgsOptionsDialogBase( QStringLiteral( "AnnotationLayerProperties" ), parent, flags )
+  : QgsLayerPropertiesDialog( layer, QStringLiteral( "AnnotationLayerProperties" ), parent, flags )
   , mLayer( layer )
   , mMapCanvas( canvas )
 {
@@ -55,14 +54,6 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
 
   mOptsPage_Information->setContentsMargins( 0, 0, 0, 0 );
 
-  mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, nullptr );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsAnnotationLayerProperties::syncToLayer );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsAnnotationLayerProperties::apply );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::storeCurrentStyleForUndo, this, [ = ]
-  {
-    mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
-  } );
-
   // update based on layer's current state
   syncToLayer();
 
@@ -77,11 +68,11 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadStyleFromFile );
-  menuStyle->addAction( tr( "Save Style…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleToFile );
+  menuStyle->addAction( tr( "Load Style…" ), this, &QgsAnnotationLayerProperties::loadStyleFromFile );
+  menuStyle->addAction( tr( "Save Style…" ), this, &QgsAnnotationLayerProperties::saveStyleToFile );
   menuStyle->addSeparator();
-  menuStyle->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleAsDefault );
-  menuStyle->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultStyle );
+  menuStyle->addAction( tr( "Save as Default" ), this, &QgsAnnotationLayerProperties::saveStyleAsDefault );
+  menuStyle->addAction( tr( "Restore Default" ), this, &QgsAnnotationLayerProperties::loadDefaultStyle );
   mBtnStyle->setMenu( menuStyle );
   connect( menuStyle, &QMenu::aboutToShow, this, &QgsAnnotationLayerProperties::aboutToShowStyleMenu );
 

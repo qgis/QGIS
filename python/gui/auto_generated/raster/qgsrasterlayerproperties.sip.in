@@ -11,7 +11,7 @@
 
 
 
-class QgsRasterLayerProperties : QgsOptionsDialogBase
+class QgsRasterLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")
 Property sheet for a raster map layer
@@ -47,13 +47,6 @@ Adds a properties page factory to the raster layer properties dialog.
 
     virtual bool eventFilter( QObject *obj, QEvent *ev );
 
-
-    void loadDefaultStyle();
-%Docstring
-Loads the default style when appropriate button is pressed
-
-.. versionadded:: 3.30
-%End
 
     void saveDefaultStyle();
 %Docstring

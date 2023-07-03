@@ -68,7 +68,6 @@
 #include "qgsnative.h"
 #include "qgssubsetstringeditorproviderregistry.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
-#include "qgslayerpropertiesguiutils.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #if WITH_QTWEBKIT
@@ -98,7 +97,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QWidget *parent,
   Qt::WindowFlags fl
 )
-  : QgsOptionsDialogBase( QStringLiteral( "VectorLayerProperties" ), parent, fl )
+  : QgsLayerPropertiesDialog( lyr, QStringLiteral( "VectorLayerProperties" ), parent, fl )
   , mCanvas( canvas )
   , mMessageBar( messageBar )
   , mLayer( lyr )
@@ -238,21 +237,15 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mTemporalWidget = new QgsVectorLayerTemporalPropertiesWidget( this, mLayer );
   temporalLayout->addWidget( mTemporalWidget );
 
-  mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, mMetadataWidget );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsVectorLayerProperties::syncToLayer );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsVectorLayerProperties::apply );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::storeCurrentStyleForUndo, this, [ = ]
-  {
-    mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
-  } );
+  setMetadataWidget( mMetadataWidget );
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );
-  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadMetadataFromFile );
-  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataToFile );
+  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, &QgsVectorLayerProperties::loadMetadataFromFile );
+  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, &QgsVectorLayerProperties::saveMetadataToFile );
   menuMetadata->addSeparator();
-  menuMetadata->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataAsDefault );
-  menuMetadata->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultMetadata );
+  menuMetadata->addAction( tr( "Save as Default" ), this, &QgsVectorLayerProperties::saveMetadataAsDefault );
+  menuMetadata->addAction( tr( "Restore Default" ), this, &QgsVectorLayerProperties::loadDefaultMetadata );
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
@@ -1102,7 +1095,7 @@ void QgsVectorLayerProperties::saveDefaultStyle()
     }
   }
 
-  mLayerPropertiesUtils->saveStyleAsDefault();
+  QgsLayerPropertiesDialog::saveStyleAsDefault();
 }
 
 void QgsVectorLayerProperties::saveStyleAs()
