@@ -1183,7 +1183,7 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
                                   QStringLiteral( "road" ),
                                   QStringLiteral( "label" ),
                                   // German candidates
-                                  QStringLiteral( "titel" ),
+                                  QStringLiteral( "titel" ),  //#spellok
                                   QStringLiteral( "beschreibung" ),
                                   QStringLiteral( "strasse" ),
                                   QStringLiteral( "beschriftung" ) };
