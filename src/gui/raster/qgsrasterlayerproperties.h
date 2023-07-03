@@ -21,7 +21,7 @@
 #ifndef QGSRASTERLAYERPROPERTIES_H
 #define QGSRASTERLAYERPROPERTIES_H
 
-#include "qgsoptionsdialogbase.h"
+#include "qgslayerpropertiesdialog.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
@@ -47,7 +47,6 @@ class QgsPropertyOverrideButton;
 class QgsRasterTransparencyWidget;
 class QgsRasterAttributeTableWidget;
 class QgsWebView;
-class QgsLayerPropertiesGuiUtils;
 
 /**
  * \ingroup gui
@@ -56,7 +55,7 @@ class QgsLayerPropertiesGuiUtils;
  * \since QGIS 3.12 (in the GUI API)
  */
 
-class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase, private QgsExpressionContextGenerator
+class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsRasterLayerPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -92,13 +91,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsExpressionContext createExpressionContext() const override;
 
     bool eventFilter( QObject *obj, QEvent *ev ) override;
-
-    /**
-     * Loads the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadDefaultStyle();
 
     /**
      * Saves the default style when appropriate button is pressed
@@ -156,8 +148,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void updateProperty();
 
-    //! \brief Applies the settings made in the dialog without closing the box
-    void apply();
+    void apply() FINAL;
     //! \brief Called when cancel button is pressed
     void onCancel();
     //! \brief this slot asks the rasterlayer to construct pyramids
@@ -206,7 +197,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void aboutToShowStyleMenu();
 
     //! Make GUI reflect the layer's state
-    void syncToLayer();
+    void syncToLayer() FINAL;
 
     void urlClicked( const QUrl &url );
 
@@ -225,8 +216,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     //! A list of additional pages provided by plugins
     QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
-
-    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
 
     //! \brief  A constant that signals property not used
     const QString TRSTRING_NOT_SET;
@@ -296,12 +285,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsRasterHistogramWidget *mHistogramWidget = nullptr;
 
     QVector<bool> mTransparencyToEdited;
-
-    /**
-     * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled.
-    */
-    QgsMapLayerStyle mOldStyle;
 
     bool mDisableRenderTypeComboBoxCurrentIndexChanged = false;
 

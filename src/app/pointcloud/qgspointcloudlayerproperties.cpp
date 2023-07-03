@@ -27,7 +27,6 @@
 #include "qgspointcloudattributemodel.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgspointcloudquerybuilder.h"
-#include "qgslayerpropertiesguiutils.h"
 
 #include <QFileDialog>
 #include <QMenu>
@@ -36,7 +35,7 @@
 #include <QUrl>
 
 QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
-  : QgsOptionsDialogBase( QStringLiteral( "PointCloudLayerProperties" ), parent, flags )
+  : QgsLayerPropertiesDialog( lyr, QStringLiteral( "PointCloudLayerProperties" ), parent, flags )
   , mLayer( lyr )
   , mMapCanvas( canvas )
 {
@@ -71,13 +70,7 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   metadataFrame->setLayout( layout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
 
-  mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, mMetadataWidget );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsPointCloudLayerProperties::syncToLayer );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsPointCloudLayerProperties::apply );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::storeCurrentStyleForUndo, this, [ = ]
-  {
-    mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
-  } );
+  setMetadataWidget( mMetadataWidget );
 
   // update based on lyr's current state
   syncToLayer();
@@ -92,11 +85,11 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   QString title = tr( "Layer Properties - %1" ).arg( mLayer->name() );
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadStyleFromFile );
-  menuStyle->addAction( tr( "Save Style…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleToFile );
+  menuStyle->addAction( tr( "Load Style…" ), this, &QgsPointCloudLayerProperties::loadStyleFromFile );
+  menuStyle->addAction( tr( "Save Style…" ), this, &QgsPointCloudLayerProperties::saveStyleToFile );
   menuStyle->addSeparator();
-  menuStyle->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleAsDefault );
-  menuStyle->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultStyle );
+  menuStyle->addAction( tr( "Save as Default" ), this, &QgsPointCloudLayerProperties::saveStyleAsDefault );
+  menuStyle->addAction( tr( "Restore Default" ), this, &QgsPointCloudLayerProperties::loadDefaultStyle );
   mBtnStyle->setMenu( menuStyle );
   connect( menuStyle, &QMenu::aboutToShow, this, &QgsPointCloudLayerProperties::aboutToShowStyleMenu );
 
@@ -104,11 +97,11 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );
-  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadMetadataFromFile );
-  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataToFile );
+  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, &QgsPointCloudLayerProperties::loadMetadataFromFile );
+  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, &QgsPointCloudLayerProperties::saveMetadataToFile );
   menuMetadata->addSeparator();
-  menuMetadata->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataAsDefault );
-  menuMetadata->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultMetadata );
+  menuMetadata->addAction( tr( "Save as Default" ), this, &QgsPointCloudLayerProperties::saveMetadataAsDefault );
+  menuMetadata->addAction( tr( "Restore Default" ), this, &QgsPointCloudLayerProperties::loadDefaultMetadata );
 
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
@@ -233,11 +226,6 @@ void QgsPointCloudLayerProperties::syncToLayer()
     w->syncToLayer( mLayer );
 
   mStatisticsCalculationWarningLabel->setHidden( mLayer->statisticsCalculationState() != QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated );
-}
-
-void QgsPointCloudLayerProperties::saveStyleAs()
-{
-  mLayerPropertiesUtils->saveStyleToFile();
 }
 
 void QgsPointCloudLayerProperties::aboutToShowStyleMenu()

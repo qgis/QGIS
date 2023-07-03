@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgslayerpropertiesguiutils.h
+  qgslayerpropertiesdialog.h
   --------------------------------------
   Date                 : June 2023
   Copyright            : (C) 2023 by Nyall Dawson
@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLAYERPROPERTIESGUIUTILS_H
-#define QGSLAYERPROPERTIESGUIUTILS_H
-
-#define SIP_NO_FILE
+#ifndef QGSLAYERPROPERTIESDIALOG_H
+#define QGSLAYERPROPERTIESDIALOG_H
 
 #include "qgsgui.h"
+#include "qgsoptionsdialogbase.h"
+#include "qgsmaplayerstyle.h"
 
 #include <QObject>
 #include <QPointer>
@@ -28,25 +28,34 @@ class QgsMetadataWidget;
 
 /**
  * \ingroup gui
- * \class QgsLayerPropertiesGuiUtils
- * \brief Contains common utilities for handling functionality in a layer properties dialog.
- * \note Not available in Python bindings
+ * \class QgsLayerPropertiesDialog
+ * \brief Base class for "layer properties" dialogs, containing common utilities for handling functionality in these dialog.
+ * \warning This is exposed to SIP bindings for legacy reasons only, and is NOT to be considered as stable API.
  * \since QGIS 3.34
  */
-class GUI_EXPORT QgsLayerPropertiesGuiUtils : public QObject
+class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABSTRACT
 {
     Q_OBJECT
 
   public:
 
     /**
-     * Constructor for QgsLayerPropertiesGuiUtils.
+     * Constructor for QgsLayerPropertiesDialog.
      *
-     * \param parent parent widget (usually the layer properties dialog)
      * \param layer associated map layer
-     * \param metadataWidget linked QgsMetadataWidget
+     * \param settingsKey QgsSettings subgroup key for saving/restore ui states, e.g. "VectorLayerProperties".
+     * \param parent parent object (owner)
+     * \param fl widget flags
+     * \param settings custom QgsSettings pointer
      */
-    QgsLayerPropertiesGuiUtils( QWidget *parent, QgsMapLayer *layer, QgsMetadataWidget *metadataWidget );
+    QgsLayerPropertiesDialog( QgsMapLayer *layer, const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = nullptr );
+
+    /**
+     * Sets the metadata \a widget associated with the dialog.
+     *
+     * This must be called in order for the standard metadata loading/saving functionality to be avialable.
+     */
+    void setMetadataWidget( QgsMetadataWidget *widget );
 
   public slots:
 
@@ -104,28 +113,37 @@ class GUI_EXPORT QgsLayerPropertiesGuiUtils : public QObject
      */
     void loadDefaultStyle();
 
-  signals:
+  protected:
 
     /**
-     * Emitted when the dialog should be resynced to the layer.
+     * Ensures the dialog is focused and activated.
      */
-    void syncDialogToLayer();
+    void refocusDialog();
 
     /**
-     * Emitted when the current dialog state should be applied to the layer.
-     */
-    void applyDialogToLayer();
-
-    /**
-     * Emitted when the dialog should save the current layer style to a temporary
-     * location to allow for undo rollback operations.
+     * Stores the current layer style so that undo operations can be performed.
      */
     void storeCurrentStyleForUndo();
 
-  private:
-    void refocusParent();
+    /**
+    * Previous layer style. Used to reset style to previous state if new style
+    * was loaded but dialog is canceled.
+    */
+    QgsMapLayerStyle mOldStyle;
 
-    QWidget *mParentWidget = nullptr;
+  protected slots:
+
+    /**
+     * Resets the dialog to the current layer state.
+      */
+    virtual void syncToLayer() SIP_SKIP = 0;
+
+    /**
+     * Applies the dialog settings to the layer.
+     */
+    virtual void apply() SIP_SKIP = 0;
+
+  private:
 
     QPointer< QgsMapLayer> mLayer;
 
@@ -133,4 +151,4 @@ class GUI_EXPORT QgsLayerPropertiesGuiUtils : public QObject
 
 };
 
-#endif // QGSLAYERPROPERTIESGUIUTILS_H
+#endif // QGSLAYERPROPERTIESDIALOG_H

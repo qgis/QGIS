@@ -12,7 +12,7 @@
 
 
 
-class QgsVectorLayerProperties : QgsOptionsDialogBase
+class QgsVectorLayerProperties : QgsLayerPropertiesDialog
 {
 
 %TypeHeaderCode

@@ -36,14 +36,13 @@
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgsmetadatawidget.h"
-#include "qgslayerpropertiesguiutils.h"
 
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 
 QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
-  : QgsOptionsDialogBase( QStringLiteral( "MeshLayerProperties" ), parent, fl )
+  : QgsLayerPropertiesDialog( lyr, QStringLiteral( "MeshLayerProperties" ), parent, fl )
   , mMeshLayer( qobject_cast<QgsMeshLayer *>( lyr ) )
   , mCanvas( canvas )
 {
@@ -118,13 +117,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mTemporalDateTimeEnd->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mTemporalDateTimeReference->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
-  mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mMeshLayer, mMetadataWidget );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsMeshLayerProperties::syncToLayer );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsMeshLayerProperties::apply );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::storeCurrentStyleForUndo, this, [ = ]
-  {
-    mOldStyle = mMeshLayer->styleManager()->style( mMeshLayer->styleManager()->currentStyle() );
-  } );
+  setMetadataWidget( mMetadataWidget );
 
   // update based on lyr's current state
   syncToLayer();
@@ -148,11 +141,11 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadStyleFromFile );
-  menuStyle->addAction( tr( "Save Style…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleToFile );
+  menuStyle->addAction( tr( "Load Style…" ), this, &QgsMeshLayerProperties::loadStyleFromFile );
+  menuStyle->addAction( tr( "Save Style…" ), this, &QgsMeshLayerProperties::saveStyleToFile );
   menuStyle->addSeparator();
-  menuStyle->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleAsDefault );
-  menuStyle->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultStyle );
+  menuStyle->addAction( tr( "Save as Default" ), this, &QgsMeshLayerProperties::saveStyleAsDefault );
+  menuStyle->addAction( tr( "Restore Default" ), this, &QgsMeshLayerProperties::loadDefaultStyle );
   mBtnStyle->setMenu( menuStyle );
   connect( menuStyle, &QMenu::aboutToShow, this, &QgsMeshLayerProperties::aboutToShowStyleMenu );
 
@@ -160,8 +153,8 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );
-  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadMetadataFromFile );
-  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataToFile );
+  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, &QgsMeshLayerProperties::loadMetadataFromFile );
+  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, &QgsMeshLayerProperties::saveMetadataToFile );
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
@@ -258,24 +251,19 @@ void QgsMeshLayerProperties::syncToLayer()
   mStaticDatasetGroupBox->setChecked( !mMeshLayer->temporalProperties()->isActive() );
 }
 
-void QgsMeshLayerProperties::loadDefaultStyle()
-{
-  mLayerPropertiesUtils->loadDefaultStyle();
-}
-
 void QgsMeshLayerProperties::saveDefaultStyle()
 {
-  mLayerPropertiesUtils->saveStyleAsDefault();
+  saveStyleAsDefault();
 }
 
 void QgsMeshLayerProperties::loadStyle()
 {
-  mLayerPropertiesUtils->loadStyleFromFile();
+  loadStyleFromFile();
 }
 
 void QgsMeshLayerProperties::saveStyleAs()
 {
-  mLayerPropertiesUtils->saveStyleToFile();
+  saveStyleToFile();
 }
 
 void QgsMeshLayerProperties::apply()

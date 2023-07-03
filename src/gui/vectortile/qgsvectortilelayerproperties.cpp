@@ -31,7 +31,6 @@
 #include "qgsmapboxglstyleconverter.h"
 #include "qgsprovidersourcewidget.h"
 #include "qgsdatumtransformdialog.h"
-#include "qgslayerpropertiesguiutils.h"
 
 #include <QFileDialog>
 #include <QMenu>
@@ -40,7 +39,7 @@
 #include <QTextStream>
 
 QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent, Qt::WindowFlags flags )
-  : QgsOptionsDialogBase( QStringLiteral( "VectorTileLayerProperties" ), parent, flags )
+  : QgsLayerPropertiesDialog( lyr, QStringLiteral( "VectorTileLayerProperties" ), parent, flags )
   , mLayer( lyr )
   , mMapCanvas( canvas )
 {
@@ -99,13 +98,7 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   metadataFrame->setLayout( layout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
 
-  mLayerPropertiesUtils = new QgsLayerPropertiesGuiUtils( this, mLayer, mMetadataWidget );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::syncDialogToLayer, this, &QgsVectorTileLayerProperties::syncToLayer );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::applyDialogToLayer, this, &QgsVectorTileLayerProperties::apply );
-  connect( mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::storeCurrentStyleForUndo, this, [ = ]
-  {
-    mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
-  } );
+  setMetadataWidget( mMetadataWidget );
 
   // update based on lyr's current state
   syncToLayer();
@@ -124,10 +117,10 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
   menuStyle->addAction( tr( "Load Style…" ), this, &QgsVectorTileLayerProperties::loadStyle );
-  menuStyle->addAction( tr( "Save Style…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleToFile );
+  menuStyle->addAction( tr( "Save Style…" ), this, &QgsVectorTileLayerProperties::saveStyleToFile );
   menuStyle->addSeparator();
-  menuStyle->addAction( tr( "Save as Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveStyleAsDefault );
-  menuStyle->addAction( tr( "Restore Default" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadDefaultStyle );
+  menuStyle->addAction( tr( "Save as Default" ), this, &QgsVectorTileLayerProperties::saveStyleAsDefault );
+  menuStyle->addAction( tr( "Restore Default" ), this, &QgsVectorTileLayerProperties::loadDefaultStyle );
   mBtnStyle->setMenu( menuStyle );
   connect( menuStyle, &QMenu::aboutToShow, this, &QgsVectorTileLayerProperties::aboutToShowStyleMenu );
 
@@ -135,8 +128,8 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );
-  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::loadMetadataFromFile );
-  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), mLayerPropertiesUtils, &QgsLayerPropertiesGuiUtils::saveMetadataToFile );
+  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, &QgsVectorTileLayerProperties::loadMetadataFromFile );
+  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, &QgsVectorTileLayerProperties::saveMetadataToFile );
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
@@ -240,15 +233,9 @@ void QgsVectorTileLayerProperties::syncToLayer()
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
 }
 
-
-void QgsVectorTileLayerProperties::loadDefaultStyle()
-{
-  mLayerPropertiesUtils->loadDefaultStyle();
-}
-
 void QgsVectorTileLayerProperties::saveDefaultStyle()
 {
-  mLayerPropertiesUtils->saveStyleAsDefault();
+  saveStyleAsDefault();
 }
 
 void QgsVectorTileLayerProperties::loadStyle()
@@ -334,7 +321,7 @@ void QgsVectorTileLayerProperties::loadStyle()
 
 void QgsVectorTileLayerProperties::saveStyleAs()
 {
-  mLayerPropertiesUtils->saveStyleToFile();
+  saveStyleToFile();
 }
 
 void QgsVectorTileLayerProperties::aboutToShowStyleMenu()

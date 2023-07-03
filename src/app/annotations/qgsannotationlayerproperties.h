@@ -16,12 +16,11 @@
 #ifndef QGSANNOTATIONLAYERPROPERTIES_H
 #define QGSANNOTATIONLAYERPROPERTIES_H
 
-#include "qgsoptionsdialogbase.h"
+#include "qgslayerpropertiesdialog.h"
 
 #include "ui_qgsannotationlayerpropertiesbase.h"
 
 #include "qgsannotationlayer.h"
-#include "qgsmaplayerstyle.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -30,9 +29,8 @@ class QgsAnnotationLayer;
 class QgsMetadataWidget;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
-class QgsLayerPropertiesGuiUtils;
 
-class QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::QgsAnnotationLayerPropertiesBase
+class QgsAnnotationLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsAnnotationLayerPropertiesBase
 {
     Q_OBJECT
   public:
@@ -42,7 +40,7 @@ class QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
   private slots:
-    void apply();
+    void apply() FINAL;
     void onCancel();
 
     void aboutToShowStyleMenu();
@@ -54,22 +52,14 @@ class QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
 
   private:
-    void syncToLayer();
+    void syncToLayer() FINAL;
 
   private:
     QgsAnnotationLayer *mLayer = nullptr;
 
-    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
-
     QPushButton *mBtnStyle = nullptr;
 
     QgsMapCanvas *mMapCanvas = nullptr;
-
-    /**
-     * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled.
-    */
-    QgsMapLayerStyle mOldStyle;
 
     std::unique_ptr< QgsPaintEffect > mPaintEffect;
 

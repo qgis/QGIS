@@ -21,13 +21,12 @@
 
 #include <QStandardItemModel>
 
-#include "qgsoptionsdialogbase.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgsguiutils.h"
 #include "qgsmaplayerserverproperties.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgslayertreefilterproxymodel.h"
-#include "qgsmaplayerstyle.h"
+#include "qgslayerpropertiesdialog.h"
 
 class QgsMapLayer;
 
@@ -50,13 +49,12 @@ class QgsMaskingWidget;
 class QgsVectorLayerTemporalPropertiesWidget;
 class QgsProviderSourceWidget;
 class QgsWebView;
-class QgsLayerPropertiesGuiUtils;
 
 /**
  * \ingroup gui
  * \class QgsVectorLayerProperties
  */
-class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
+class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -114,14 +112,12 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void insertFieldOrExpression();
 
-    //! Reset to original (vector layer) values
-    void syncToLayer();
+    void syncToLayer() FINAL;
 
     //! Gets metadata about the layer in nice formatted html
     QString htmlMetadata();
 
-    //! Called when apply button is pressed or dialog is accepted
-    void apply();
+    void apply() FINAL;
 
     //! Called when cancel button is pressed
     void onCancel();
@@ -203,8 +199,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsMessageBar *mMessageBar = nullptr;
     QgsVectorLayer *mLayer = nullptr;
 
-    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
-
     bool mMetadataFilled = false;
 
     QString mOriginalSubsetSQL;
@@ -238,12 +232,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     //! A list of additional pages provided by plugins
     QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
-
-    /**
-     * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled.
-    */
-    QgsMapLayerStyle mOldStyle;
 
     void initDiagramTab();
 

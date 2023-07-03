@@ -18,9 +18,7 @@
 #define QGSMESHLAYERPROPERTIES_H
 
 #include "ui_qgsmeshlayerpropertiesbase.h"
-
-#include "qgsmaplayerstylemanager.h"
-#include "qgsoptionsdialogbase.h"
+#include "qgslayerpropertiesdialog.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
 
@@ -33,7 +31,6 @@ class QgsMeshLayer3DRendererWidget;
 class QgsMeshStaticDatasetWidget;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMetadataWidget;
-class QgsLayerPropertiesGuiUtils;
 
 /**
  * \ingroup gui
@@ -44,7 +41,7 @@ class QgsLayerPropertiesGuiUtils;
  *
  * \since QGIS 3.16 in the GUI API
  */
-class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private Ui::QgsMeshLayerPropertiesBase
+class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsMeshLayerPropertiesBase
 {
     Q_OBJECT
 
@@ -65,13 +62,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
      * \since QGIS 3.16
      */
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-
-    /**
-     * Loads the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadDefaultStyle();
 
     /**
      * Saves the default style when appropriate button is pressed
@@ -95,14 +85,12 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void saveStyleAs();
 
   protected slots:
-    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
+    void optionsStackedWidget_CurrentChanged( int index ) FINAL;
+    void syncToLayer() FINAL;
+    void apply() FINAL;
 
   private slots:
-    //! Synchronizes widgets state with associated mesh layer
-    void syncToLayer();
 
-    //!Applies the settings made in the dialog without closing the box
-    void apply();
     //! Synchronizes GUI state with associated mesh layer and trigger repaint
     void syncAndRepaint();
     //! Changes layer coordinate reference system
@@ -127,16 +115,8 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     //! Pointer to the mesh layer that this property dialog changes the behavior of.
     QgsMeshLayer *mMeshLayer = nullptr;
 
-    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
-
     //! Pointer to mesh 3d styling widget
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
-
-    /**
-     * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled.
-    */
-    QgsMapLayerStyle mOldStyle;
 
     QPushButton *mBtnStyle = nullptr;
     QPushButton *mBtnMetadata = nullptr;

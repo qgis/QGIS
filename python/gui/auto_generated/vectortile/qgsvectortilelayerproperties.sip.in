@@ -10,7 +10,7 @@
 
 
 
-class QgsVectorTileLayerProperties : QgsOptionsDialogBase
+class QgsVectorTileLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")
 Vectortile layer properties dialog
@@ -25,13 +25,6 @@ Vectortile layer properties dialog
     QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor
-%End
-
-    void loadDefaultStyle();
-%Docstring
-Loads the default style when appropriate button is pressed
-
-.. versionadded:: 3.30
 %End
 
     void saveDefaultStyle();

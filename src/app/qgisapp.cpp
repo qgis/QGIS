@@ -125,6 +125,7 @@
 #include "elevation/qgselevationprofilewidget.h"
 
 #include "layers/qgsapplayerhandling.h"
+#include "qgsmaplayerstylemanager.h"
 
 #include "canvas/qgscanvasrefreshblocker.h"
 
@@ -8303,7 +8304,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
     case Qgis::LayerType::PointCloud:
       QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( layer ),
                                     mMapCanvas,
-                                    visibleMessageBar() ).saveStyleAs();
+                                    visibleMessageBar() ).saveStyleToFile();
       break;
 
     // Not available for these

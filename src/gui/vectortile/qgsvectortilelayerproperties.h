@@ -16,9 +16,8 @@
 #ifndef QGSVECTORTILELAYERPROPERTIES_H
 #define QGSVECTORTILELAYERPROPERTIES_H
 
-#include "qgsoptionsdialogbase.h"
 #include "ui_qgsvectortilelayerpropertiesbase.h"
-#include "qgsmaplayerstyle.h"
+#include "qgslayerpropertiesdialog.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -28,7 +27,6 @@ class QgsVectorTileBasicRendererWidget;
 class QgsVectorTileLayer;
 class QgsMetadataWidget;
 class QgsProviderSourceWidget;
-class QgsLayerPropertiesGuiUtils;
 
 
 /**
@@ -37,19 +35,12 @@ class QgsLayerPropertiesGuiUtils;
  * \brief Vectortile layer properties dialog
  * \since QGIS 3.28
  */
-class GUI_EXPORT QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorTileLayerPropertiesBase
+class GUI_EXPORT QgsVectorTileLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsVectorTileLayerPropertiesBase
 {
     Q_OBJECT
   public:
     //! Constructor
     QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
-
-    /**
-     * Loads the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadDefaultStyle();
 
     /**
      * Saves the default style when appropriate button is pressed
@@ -73,7 +64,7 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsOptionsDialogBase, pri
     void saveStyleAs();
 
   private slots:
-    void apply();
+    void apply() FINAL;
     void onCancel();
 
     void aboutToShowStyleMenu();
@@ -85,12 +76,10 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsOptionsDialogBase, pri
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
 
   private:
-    void syncToLayer();
+    void syncToLayer() FINAL;
 
   private:
     QgsVectorTileLayer *mLayer = nullptr;
-
-    QgsLayerPropertiesGuiUtils *mLayerPropertiesUtils = nullptr;
 
     QgsVectorTileBasicRendererWidget *mRendererWidget = nullptr;
     QgsVectorTileBasicLabelingWidget *mLabelingWidget = nullptr;
@@ -105,11 +94,6 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsOptionsDialogBase, pri
 
     QgsProviderSourceWidget *mSourceWidget = nullptr;
 
-    /**
-     * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled.
-    */
-    QgsMapLayerStyle mOldStyle;
 };
 
 #endif // QGSVECTORTILELAYERPROPERTIES_H

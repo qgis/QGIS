@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgslayerpropertiesguiutils.cpp
+  qgslayerpropertiesdialog.cpp
   --------------------------------------
   Date                 : June 2023
   Copyright            : (C) 2023 by Nyall Dawson
@@ -13,7 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayerpropertiesguiutils.h"
+#include "qgslayerpropertiesdialog.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgssettings.h"
 #include "qgsmaplayer.h"
 #include "qgsmetadatawidget.h"
@@ -23,16 +24,19 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-QgsLayerPropertiesGuiUtils::QgsLayerPropertiesGuiUtils( QWidget *parent, QgsMapLayer *layer, QgsMetadataWidget *metadataWidget )
-  : QObject( parent )
-  , mParentWidget( parent )
+QgsLayerPropertiesDialog::QgsLayerPropertiesDialog( QgsMapLayer *layer , const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
+    : QgsOptionsDialogBase(settingsKey, parent, fl, settings )
   , mLayer( layer )
-  , mMetadataWidget( metadataWidget )
 {
 
 }
 
-void QgsLayerPropertiesGuiUtils::loadMetadataFromFile()
+void QgsLayerPropertiesDialog::setMetadataWidget(QgsMetadataWidget *widget)
+{
+    mMetadataWidget = widget;
+}
+
+void QgsLayerPropertiesDialog::loadMetadataFromFile()
 {
   if ( !mLayer || !mMetadataWidget )
     return;
@@ -40,7 +44,7 @@ void QgsLayerPropertiesGuiUtils::loadMetadataFromFile()
   QgsSettings settings;  // where we keep last used filter in persistent state
   const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
-  const QString fileName = QFileDialog::getOpenFileName( mParentWidget, tr( "Load Layer Metadata" ), lastUsedDir,
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Layer Metadata" ), lastUsedDir,
                            tr( "QGIS Layer Metadata File" ) + " (*.qmd)" );
   if ( fileName.isNull() )
   {
@@ -58,15 +62,15 @@ void QgsLayerPropertiesGuiUtils::loadMetadataFromFile()
   else
   {
     //let the user know what went wrong
-    QMessageBox::warning( mParentWidget, tr( "Load Metadata" ), message );
+    QMessageBox::warning( this, tr( "Load Metadata" ), message );
   }
 
   settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).path() );
 
-  refocusParent();
+  refocusDialog();
 }
 
-void QgsLayerPropertiesGuiUtils::saveMetadataToFile()
+void QgsLayerPropertiesDialog::saveMetadataToFile()
 {
   if ( !mLayer || !mMetadataWidget )
     return;
@@ -74,7 +78,7 @@ void QgsLayerPropertiesGuiUtils::saveMetadataToFile()
   QgsSettings settings;  // where we keep last used filter in persistent state
   const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
-  QString outputFileName = QFileDialog::getSaveFileName( mParentWidget, tr( "Save Layer Metadata as QMD" ),
+  QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Layer Metadata as QMD" ),
                            lastUsedDir, tr( "QMD File" ) + " (*.qmd)" );
   if ( outputFileName.isEmpty() )
   {
@@ -94,12 +98,12 @@ void QgsLayerPropertiesGuiUtils::saveMetadataToFile()
   if ( defaultLoadedFlag )
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
   else
-    QMessageBox::information( mParentWidget, tr( "Save Metadata" ), message );
+    QMessageBox::information( this, tr( "Save Metadata" ), message );
 
-  refocusParent();
+  refocusDialog();
 }
 
-void QgsLayerPropertiesGuiUtils::saveMetadataAsDefault()
+void QgsLayerPropertiesDialog::saveMetadataAsDefault()
 {
   if ( !mLayer || !mMetadataWidget )
     return;
@@ -110,12 +114,12 @@ void QgsLayerPropertiesGuiUtils::saveMetadataAsDefault()
   const QString errorMsg = mLayer->saveDefaultMetadata( defaultSavedFlag );
   if ( !defaultSavedFlag )
   {
-    QMessageBox::warning( mParentWidget, tr( "Default Metadata" ), errorMsg );
-    refocusParent();
+    QMessageBox::warning( this, tr( "Default Metadata" ), errorMsg );
+    refocusDialog();
   }
 }
 
-void QgsLayerPropertiesGuiUtils::loadDefaultMetadata()
+void QgsLayerPropertiesDialog::loadDefaultMetadata()
 {
   if ( !mLayer || !mMetadataWidget )
     return;
@@ -129,12 +133,12 @@ void QgsLayerPropertiesGuiUtils::loadDefaultMetadata()
   }
   else
   {
-    QMessageBox::information( mParentWidget, tr( "Default Metadata" ), message );
-    refocusParent();
+    QMessageBox::information( this, tr( "Default Metadata" ), message );
+    refocusDialog();
   }
 }
 
-void QgsLayerPropertiesGuiUtils::loadStyleFromFile()
+void QgsLayerPropertiesDialog::loadStyleFromFile()
 {
   if ( !mLayer )
     return;
@@ -143,7 +147,7 @@ void QgsLayerPropertiesGuiUtils::loadStyleFromFile()
   const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName(
-                       mParentWidget,
+                       this,
                        tr( "Load layer properties from style file" ),
                        lastUsedDir,
                        tr( "QGIS Layer Style File" ) + " (*.qml)" );
@@ -161,16 +165,16 @@ void QgsLayerPropertiesGuiUtils::loadStyleFromFile()
   if ( defaultLoadedFlag )
   {
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
-    emit syncDialogToLayer();
+    syncToLayer();
   }
   else
   {
-    QMessageBox::information( mParentWidget, tr( "Load Style" ), message );
-    refocusParent();
+    QMessageBox::information( this, tr( "Load Style" ), message );
+    refocusDialog();
   }
 }
 
-void QgsLayerPropertiesGuiUtils::saveStyleToFile()
+void QgsLayerPropertiesDialog::saveStyleToFile()
 {
   if ( !mLayer )
     return;
@@ -179,7 +183,7 @@ void QgsLayerPropertiesGuiUtils::saveStyleToFile()
   const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString outputFileName = QFileDialog::getSaveFileName(
-                             mParentWidget,
+                             this,
                              tr( "Save layer properties as style file" ),
                              lastUsedDir,
                              tr( "QGIS Layer Style File" ) + " (*.qml)" );
@@ -189,7 +193,7 @@ void QgsLayerPropertiesGuiUtils::saveStyleToFile()
   // ensure the user never omits the extension from the file name
   outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
 
-  emit applyDialogToLayer(); // make sure the style to save is up-to-date
+  apply(); // make sure the style to save is up-to-date
 
   // then export style
   bool defaultLoadedFlag = false;
@@ -201,17 +205,17 @@ void QgsLayerPropertiesGuiUtils::saveStyleToFile()
   }
   else
   {
-    QMessageBox::information( mParentWidget, tr( "Save Style" ), message );
-    refocusParent();
+    QMessageBox::information( this, tr( "Save Style" ), message );
+    refocusDialog();
   }
 }
 
-void QgsLayerPropertiesGuiUtils::saveStyleAsDefault()
+void QgsLayerPropertiesDialog::saveStyleAsDefault()
 {
   if ( !mLayer )
     return;
 
-  emit applyDialogToLayer(); // make sure the style to save is up-to-date
+  apply(); // make sure the style to save is up-to-date
 
   // a flag passed by reference
   bool defaultSavedFlag = false;
@@ -225,15 +229,15 @@ void QgsLayerPropertiesGuiUtils::saveStyleAsDefault()
   if ( !defaultSavedFlag )
   {
     // let the user know what went wrong
-    QMessageBox::information( mParentWidget,
+    QMessageBox::information( this,
                               tr( "Default Style" ),
                               message
                             );
-    refocusParent();
+    refocusDialog();
   }
 }
 
-void QgsLayerPropertiesGuiUtils::loadDefaultStyle()
+void QgsLayerPropertiesDialog::loadDefaultStyle()
 {
   if ( !mLayer )
     return;
@@ -243,20 +247,28 @@ void QgsLayerPropertiesGuiUtils::loadDefaultStyle()
   // reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
-    emit syncDialogToLayer();
+    syncToLayer();
   }
   else
   {
     // otherwise let the user know what went wrong
-    QMessageBox::information( mParentWidget,
+    QMessageBox::information( this,
                               tr( "Default Style" ),
                               message
                             );
-    refocusParent();
+    refocusDialog();
   }
 }
 
-void QgsLayerPropertiesGuiUtils::refocusParent()
+void QgsLayerPropertiesDialog::refocusDialog()
 {
-  mParentWidget->activateWindow(); // set focus back to properties dialog
+  activateWindow(); // set focus back to properties dialog
+}
+
+void QgsLayerPropertiesDialog::storeCurrentStyleForUndo()
+{
+  if ( !mLayer )
+    return;
+
+  mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
 }
