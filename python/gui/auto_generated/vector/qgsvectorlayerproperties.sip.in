@@ -55,6 +55,12 @@ Saves a style when appriate button is pressed
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) final;
+    virtual void syncToLayer() ${SIP_FINAL};
+
+    virtual void apply() ${SIP_FINAL};
+
+    virtual void rollback() ${SIP_FINAL};
+
 
   signals:
 
