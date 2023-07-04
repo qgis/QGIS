@@ -441,7 +441,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   }
   else
   {
-    // todo - std::endian
+    // todo - use std::endian when we require C++20
     int testInt = 1;
     //               mem addr: -->
     // testInt(little-endian): 01 0...0 00
