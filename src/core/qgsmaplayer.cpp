@@ -21,6 +21,7 @@
 #include "qgsabstract3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatereferencesystemutils.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfileutils.h"
 #include "qgslogger.h"
@@ -2747,6 +2748,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
                 + ( c.isGeographic() ? tr( "Geographic (uses latitude and longitude for coordinates)" ) : QgsUnitTypes::toString( c.mapUnits() ) )
                 + QStringLiteral( "</td></tr>\n" );
 
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Type" ) + QStringLiteral( "</td><td>" ) + QgsCoordinateReferenceSystemUtils::crsTypeToString( c.type() ) + QStringLiteral( "</td></tr>\n" );
 
     // operation
     const QgsProjOperation operation = c.operation();

@@ -784,6 +784,13 @@ overridden with these.
 .. versionadded:: 3.10.3
 %End
 
+    Qgis::CrsType type() const;
+%Docstring
+Returns the type of the CRS.
+
+.. versionadded:: 3.34
+%End
+
     bool isGeographic() const;
 %Docstring
 Returns whether the CRS is a geographic CRS (using lat/lon coordinates)

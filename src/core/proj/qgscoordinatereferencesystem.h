@@ -724,6 +724,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QString toProj() const;
 
     /**
+     * Returns the type of the CRS.
+     *
+     * \since QGIS 3.34
+     */
+    Qgis::CrsType type() const;
+
+    /**
      * Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
      * \returns TRUE if CRS is geographic, or FALSE if it is a projected CRS
      */

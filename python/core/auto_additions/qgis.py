@@ -1562,6 +1562,23 @@ Qgis.DataProviderFlag.baseClass = Qgis
 Qgis.DataProviderFlags.baseClass = Qgis
 DataProviderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.CrsType.Unknown.__doc__ = "Unknown type"
+Qgis.CrsType.Geodetic.__doc__ = "Geodetic CRS"
+Qgis.CrsType.Geocentric.__doc__ = "Geocentric CRS"
+Qgis.CrsType.Geographic2d.__doc__ = "2D geographic CRS"
+Qgis.CrsType.Geographic3d.__doc__ = "3D geopraphic CRS"
+Qgis.CrsType.Vertical.__doc__ = "Vertical CRS"
+Qgis.CrsType.Projected.__doc__ = "Projected CRS"
+Qgis.CrsType.Compound.__doc__ = "Compound (horizontal + vertical) CRS"
+Qgis.CrsType.Temporal.__doc__ = "Temporal CRS"
+Qgis.CrsType.Engineering.__doc__ = "Engineering CRS"
+Qgis.CrsType.Bound.__doc__ = "Bound CRS"
+Qgis.CrsType.Other.__doc__ = "Other type"
+Qgis.CrsType.DerivedProjected.__doc__ = "Derived projected CRS"
+Qgis.CrsType.__doc__ = 'Coordinate reference system types.\n\nContains a subset of Proj's PJ_TYPE enum, specifically the types which relate to CRS types.\n\n.. versionadded:: 3.34\n\n' + '* ``Unknown``: ' + Qgis.CrsType.Unknown.__doc__ + '\n' + '* ``Geodetic``: ' + Qgis.CrsType.Geodetic.__doc__ + '\n' + '* ``Geocentric``: ' + Qgis.CrsType.Geocentric.__doc__ + '\n' + '* ``Geographic2d``: ' + Qgis.CrsType.Geographic2d.__doc__ + '\n' + '* ``Geographic3d``: ' + Qgis.CrsType.Geographic3d.__doc__ + '\n' + '* ``Vertical``: ' + Qgis.CrsType.Vertical.__doc__ + '\n' + '* ``Projected``: ' + Qgis.CrsType.Projected.__doc__ + '\n' + '* ``Compound``: ' + Qgis.CrsType.Compound.__doc__ + '\n' + '* ``Temporal``: ' + Qgis.CrsType.Temporal.__doc__ + '\n' + '* ``Engineering``: ' + Qgis.CrsType.Engineering.__doc__ + '\n' + '* ``Bound``: ' + Qgis.CrsType.Bound.__doc__ + '\n' + '* ``Other``: ' + Qgis.CrsType.Other.__doc__ + '\n' + '* ``DerivedProjected``: ' + Qgis.CrsType.DerivedProjected.__doc__
+# --
+Qgis.CrsType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.CrsAxisDirection.North.__doc__ = "North"
 Qgis.CrsAxisDirection.NorthNorthEast.__doc__ = "North North East"
 Qgis.CrsAxisDirection.NorthEast.__doc__ = "North East"
