@@ -497,6 +497,9 @@ void TestQgsDataSourceUri::checkAuthParams()
   uri5.setEncodedUri( QStringLiteral( "zmax=14&zmin=0&styleUrl=http://localhost:8000/&f=application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
   QCOMPARE( uri5.param( QStringLiteral( "f" ) ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
 
+  uri5.setEncodedUri( QStringLiteral( "zmax=14&zmin=0&styleUrl=http://localhost:8000/&f=application/vnd.geoserver.mbstyle+json" ) );
+  QCOMPARE( uri5.param( QStringLiteral( "f" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+
 }
 
 void TestQgsDataSourceUri::checkParameterKeys()
