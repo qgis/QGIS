@@ -63,6 +63,8 @@ Saves a style when appriate button is pressed
 
     virtual void apply() ${SIP_FINAL};
 
+    virtual void rollback() ${SIP_FINAL};
+
 
 };
 

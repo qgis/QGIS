@@ -78,6 +78,7 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
   protected slots:
     void syncToLayer() FINAL;
     void apply() FINAL;
+    void rollback() FINAL;
 
   private slots:
 
@@ -89,7 +90,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
     void aboutToShowStyleMenu();
     //! Reloads temporal properties from the provider
     void reloadTemporalProperties();
-    void rollback() FINAL;
 
     void onTimeReferenceChange();
 

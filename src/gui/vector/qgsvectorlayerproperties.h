@@ -104,19 +104,16 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) final;
+    void syncToLayer() FINAL;
+    void apply() FINAL;
+    void rollback() FINAL;
 
   private slots:
 
     void insertFieldOrExpression();
 
-    void syncToLayer() FINAL;
-
     //! Gets metadata about the layer in nice formatted html
     QString htmlMetadata();
-
-    void apply() FINAL;
-
-    void rollback() FINAL;
 
     //
     //methods reimplemented from qt designer base class
