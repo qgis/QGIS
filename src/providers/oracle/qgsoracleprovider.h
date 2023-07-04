@@ -203,6 +203,8 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
     void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
 
+    QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
+
   private:
 
     /**
@@ -242,6 +244,11 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      * Load the field list
      */
     bool loadFields();
+
+    /**
+     * Search all the layers using the given table.
+     */
+    static QList<QgsVectorLayer *> searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &owner, const QString &tableName );
 
     //! Convert a QgsField to work with Oracle
     static bool convertField( QgsField &field );
