@@ -65,7 +65,6 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsLayerPropertiesDialog,
 
   private slots:
     void apply() FINAL;
-    void onCancel();
 
     void aboutToShowStyleMenu();
     void showHelp();

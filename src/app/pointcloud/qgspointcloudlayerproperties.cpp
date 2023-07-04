@@ -41,7 +41,7 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   setupUi( this );
 
   connect( this, &QDialog::accepted, this, &QgsPointCloudLayerProperties::apply );
-  connect( this, &QDialog::rejected, this, &QgsPointCloudLayerProperties::onCancel );
+  connect( this, &QDialog::rejected, this, &QgsPointCloudLayerProperties::rollback );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsPointCloudLayerProperties::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPointCloudLayerProperties::showHelp );
   connect( pbnQueryBuilder, &QPushButton::clicked, this, &QgsPointCloudLayerProperties::pbnQueryBuilder_clicked );
@@ -178,21 +178,12 @@ void QgsPointCloudLayerProperties::apply()
   mLayer->triggerRepaint();
 }
 
-void QgsPointCloudLayerProperties::onCancel()
+void QgsPointCloudLayerProperties::rollback()
 {
   if ( mBackupCrs != mLayer->crs() )
     mLayer->setCrs( mBackupCrs );
 
-  if ( mOldStyle.xmlData() != mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() ).xmlData() )
-  {
-    // need to reset style to previous - style applied directly to the layer (not in apply())
-    QString myMessage;
-    QDomDocument doc( QStringLiteral( "qgis" ) );
-    int errorLine, errorColumn;
-    doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
-    mLayer->importNamedStyle( doc, myMessage );
-    syncToLayer();
-  }
+  QgsLayerPropertiesDialog::rollback();
 }
 
 void QgsPointCloudLayerProperties::syncToLayer()

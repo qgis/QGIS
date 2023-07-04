@@ -53,7 +53,7 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   mOptsPage_Labeling->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   connect( this, &QDialog::accepted, this, &QgsVectorTileLayerProperties::apply );
-  connect( this, &QDialog::rejected, this, &QgsVectorTileLayerProperties::onCancel );
+  connect( this, &QDialog::rejected, this, &QgsVectorTileLayerProperties::rollback );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsVectorTileLayerProperties::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorTileLayerProperties::showHelp );
 
@@ -158,20 +158,6 @@ void QgsVectorTileLayerProperties::apply()
   mLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
   mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
   mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
-}
-
-void QgsVectorTileLayerProperties::onCancel()
-{
-  if ( mOldStyle.xmlData() != mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() ).xmlData() )
-  {
-    // need to reset style to previous - style applied directly to the layer (not in apply())
-    QString myMessage;
-    QDomDocument doc( QStringLiteral( "qgis" ) );
-    int errorLine, errorColumn;
-    doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
-    mLayer->importNamedStyle( doc, myMessage );
-    syncToLayer();
-  }
 }
 
 void QgsVectorTileLayerProperties::syncToLayer()

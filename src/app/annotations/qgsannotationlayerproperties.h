@@ -41,7 +41,7 @@ class QgsAnnotationLayerProperties : public QgsLayerPropertiesDialog, private Ui
 
   private slots:
     void apply() FINAL;
-    void onCancel();
+    void rollback() FINAL;
 
     void aboutToShowStyleMenu();
     void showHelp();

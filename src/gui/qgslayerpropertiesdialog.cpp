@@ -162,7 +162,7 @@ void QgsLayerPropertiesDialog::loadStyleFromFile()
   if ( !fileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
     fileName += QLatin1String( ".qml" );
 
-  emit storeCurrentStyleForUndo();
+  storeCurrentStyleForUndo();
 
   bool defaultLoadedFlag = false;
   const QString message = mLayer->loadNamedStyle( fileName, defaultLoadedFlag );
@@ -275,6 +275,20 @@ void QgsLayerPropertiesDialog::storeCurrentStyleForUndo()
     return;
 
   mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
+}
+
+void QgsLayerPropertiesDialog::rollback()
+{
+  if ( mOldStyle.xmlData() != mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() ).xmlData() )
+  {
+    // need to reset style to previous - style applied directly to the layer (not in apply())
+    QString message;
+    QDomDocument doc( QStringLiteral( "qgis" ) );
+    int errorLine, errorColumn;
+    doc.setContent( mOldStyle.xmlData(), false, &message, &errorLine, &errorColumn );
+    mLayer->importNamedStyle( doc, message );
+    syncToLayer();
+  }
 }
 
 void QgsLayerPropertiesDialog::optionsStackedWidget_CurrentChanged( int index )

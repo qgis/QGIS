@@ -98,8 +98,7 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
     void aboutToShowStyleMenu();
     //! Reloads temporal properties from the provider
     void reloadTemporalProperties();
-    //! \brief Called when cancel button is pressed
-    void onCancel();
+    void rollback() FINAL;
 
     void onTimeReferenceChange();
 
