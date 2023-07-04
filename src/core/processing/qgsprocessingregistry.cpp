@@ -24,6 +24,7 @@
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparameteraggregate.h"
 #include "qgsprocessingparameterdxflayers.h"
+#include "qgsprocessingparameteralignrasterlayers.h"
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
@@ -78,6 +79,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypePointCloudDestination() );
   addParameterType( new QgsProcessingParameterTypePointCloudAttribute() );
   addParameterType( new QgsProcessingParameterTypeVectorTileDestination() );
+  addParameterType( new QgsProcessingParameterTypeAlignRasterLayers() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
