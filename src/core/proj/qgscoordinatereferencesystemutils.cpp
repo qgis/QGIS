@@ -167,3 +167,37 @@ QString QgsCoordinateReferenceSystemUtils::axisDirectionToAbbreviatedString( Qgi
 
   return QString();
 }
+
+QString QgsCoordinateReferenceSystemUtils::crsTypeToString( Qgis::CrsType type )
+{
+  switch ( type )
+  {
+    case Qgis::CrsType::Unknown:
+      return QObject::tr( "Unknown" );
+    case Qgis::CrsType::Other:
+      return QObject::tr( "Other" );
+    case Qgis::CrsType::Geodetic:
+      return QObject::tr( "Geodetic" );
+    case Qgis::CrsType::Geocentric:
+      return QObject::tr( "Geocentric" );
+    case Qgis::CrsType::Geographic2d:
+      return QObject::tr( "Geographic (2D)" );
+    case Qgis::CrsType::Geographic3d:
+      return QObject::tr( "Geographic (3D)" );
+    case Qgis::CrsType::Vertical:
+      return QObject::tr( "Vertical" );
+    case Qgis::CrsType::Projected:
+      return QObject::tr( "Projected" );
+    case Qgis::CrsType::Compound:
+      return QObject::tr( "Compound" );
+    case Qgis::CrsType::Temporal:
+      return QObject::tr( "Temporal" );
+    case Qgis::CrsType::Engineering:
+      return QObject::tr( "Engineering" );
+    case Qgis::CrsType::Bound:
+      return QObject::tr( "Bound" );
+    case Qgis::CrsType::DerivedProjected:
+      return QObject::tr( "Derived projected" );
+  }
+  return QString();
+}

@@ -1311,6 +1311,60 @@ QString QgsCoordinateReferenceSystem::toProj() const
   return d->mProj4.trimmed();
 }
 
+Qgis::CrsType QgsCoordinateReferenceSystem::type() const
+{
+  switch ( d->mProjType )
+  {
+    case PJ_TYPE_UNKNOWN:
+      return Qgis::CrsType::Unknown;
+
+    case PJ_TYPE_ELLIPSOID:
+    case PJ_TYPE_PRIME_MERIDIAN:
+    case PJ_TYPE_GEODETIC_REFERENCE_FRAME:
+    case PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME:
+    case PJ_TYPE_VERTICAL_REFERENCE_FRAME:
+    case PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME:
+    case PJ_TYPE_DATUM_ENSEMBLE:
+    case PJ_TYPE_CONVERSION:
+    case PJ_TYPE_TRANSFORMATION:
+    case PJ_TYPE_CONCATENATED_OPERATION:
+    case PJ_TYPE_OTHER_COORDINATE_OPERATION:
+    case PJ_TYPE_TEMPORAL_DATUM:
+    case PJ_TYPE_ENGINEERING_DATUM:
+    case PJ_TYPE_PARAMETRIC_DATUM:
+      return Qgis::CrsType::Other;
+
+    case PJ_TYPE_CRS:
+    case PJ_TYPE_GEOGRAPHIC_CRS:
+      //not possible
+      return Qgis::CrsType::Other;
+
+    case PJ_TYPE_GEODETIC_CRS:
+      return Qgis::CrsType::Geodetic;
+    case PJ_TYPE_GEOCENTRIC_CRS:
+      return Qgis::CrsType::Geocentric;
+    case PJ_TYPE_GEOGRAPHIC_2D_CRS:
+      return Qgis::CrsType::Geographic2d;
+    case PJ_TYPE_GEOGRAPHIC_3D_CRS:
+      return Qgis::CrsType::Geographic3d;
+    case PJ_TYPE_VERTICAL_CRS:
+      return Qgis::CrsType::Vertical;
+    case PJ_TYPE_PROJECTED_CRS:
+      return Qgis::CrsType::Projected;
+    case PJ_TYPE_COMPOUND_CRS:
+      return Qgis::CrsType::Compound;
+    case PJ_TYPE_TEMPORAL_CRS:
+      return Qgis::CrsType::Temporal;
+    case PJ_TYPE_ENGINEERING_CRS:
+      return Qgis::CrsType::Engineering;
+    case PJ_TYPE_BOUND_CRS:
+      return Qgis::CrsType::Bound;
+    case PJ_TYPE_OTHER_CRS:
+      return Qgis::CrsType::Other;
+  }
+  return Qgis::CrsType::Unknown;
+}
+
 bool QgsCoordinateReferenceSystem::isGeographic() const
 {
   return d->mIsGeographic;
