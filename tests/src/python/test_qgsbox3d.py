@@ -75,10 +75,10 @@ class TestQgsBox3d(unittest.TestCase):
         box = QgsBox3d(QgsRectangle(5, 6, 11, 13))
         self.assertEqual(box.xMinimum(), 5.0)
         self.assertEqual(box.yMinimum(), 6.0)
-        self.assertEqual(box.zMinimum(), 0.0)
+        self.assertTrue(box.zMinimum() != box.zMinimum())
         self.assertEqual(box.xMaximum(), 11.0)
         self.assertEqual(box.yMaximum(), 13.0)
-        self.assertEqual(box.zMaximum(), 0.0)
+        self.assertTrue(box.zMaximum() != box.zMaximum())
 
         box = QgsBox3d(QgsRectangle(5, 6, 11, 13), -7.0, 9.0)
         self.assertEqual(box.xMinimum(), 5.0)

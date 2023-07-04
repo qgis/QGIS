@@ -523,7 +523,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         assert spatialExtent.extentCrs.isValid()
         assert spatialExtent.extentCrs.isGeographic()
         assert not spatialExtent.extentCrs.hasAxisInverted()
-        assert spatialExtent.bounds == QgsBox3d(-71.123, 66.33, 0, -65.32, 78.3, 0)
+        assert spatialExtent.bounds == QgsBox3d(-71.123, 66.33, float("nan"), -65.32, 78.3, float("nan"))
         spatialExtent = extent.spatialExtents()[1]
         assert spatialExtent.bounds == QgsBox3d(2, 49, -100, 3, 50, 100)
 
