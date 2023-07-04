@@ -119,8 +119,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
     void apply() FINAL;
 
-    //! Called when cancel button is pressed
-    void onCancel();
+    void rollback() FINAL;
 
     //
     //methods reimplemented from qt designer base class

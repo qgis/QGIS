@@ -398,8 +398,10 @@ void QgsMeshLayerProperties::onTimeReferenceChange()
   mTemporalDateTimeEnd->setDateTime( timeExtent.end() );
 }
 
-void QgsMeshLayerProperties::onCancel()
+void QgsMeshLayerProperties::rollback()
 {
   if ( mBackupCrs != mMeshLayer->crs() )
     mMeshLayer->setCrs( mBackupCrs );
+
+  QgsLayerPropertiesDialog::rollback();
 }

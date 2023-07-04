@@ -149,8 +149,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     void updateProperty();
 
     void apply() FINAL;
-    //! \brief Called when cancel button is pressed
-    void onCancel();
+    void rollback() FINAL;
     //! \brief this slot asks the rasterlayer to construct pyramids
     void buttonBuildPyramids_clicked();
     //! \brief slot executed when user changes the layer's CRS

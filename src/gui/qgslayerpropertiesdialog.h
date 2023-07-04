@@ -149,6 +149,11 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
      */
     virtual void apply() SIP_SKIP = 0;
 
+    /**
+     * Rolls back changes made to the layer.
+     */
+    virtual void rollback();
+
     void optionsStackedWidget_CurrentChanged( int index ) override;
 
     /**

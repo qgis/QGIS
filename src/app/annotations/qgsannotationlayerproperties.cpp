@@ -130,21 +130,12 @@ void QgsAnnotationLayerProperties::apply()
   mLayer->triggerRepaint();
 }
 
-void QgsAnnotationLayerProperties::onCancel()
+void QgsAnnotationLayerProperties::rollback()
 {
+  QgsLayerPropertiesDialog::rollback();
+
   if ( mBackupCrs != mLayer->crs() )
     mLayer->setCrs( mBackupCrs );
-
-  if ( mOldStyle.xmlData() != mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() ).xmlData() )
-  {
-    // need to reset style to previous - style applied directly to the layer (not in apply())
-    QString myMessage;
-    QDomDocument doc( QStringLiteral( "qgis" ) );
-    int errorLine, errorColumn;
-    doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
-    mLayer->importNamedStyle( doc, myMessage );
-    syncToLayer();
-  }
 }
 
 void QgsAnnotationLayerProperties::syncToLayer()

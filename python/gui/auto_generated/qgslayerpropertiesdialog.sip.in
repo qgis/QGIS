@@ -120,6 +120,11 @@ Stores the current layer style so that undo operations can be performed.
 
 
 
+    virtual void rollback();
+%Docstring
+Rolls back changes made to the layer.
+%End
+
     virtual void optionsStackedWidget_CurrentChanged( int index );
 
 

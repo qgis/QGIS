@@ -1714,25 +1714,15 @@ void QgsRasterLayerProperties::updateInformationContent()
   mMetadataFilled = true;
 }
 
-void QgsRasterLayerProperties::onCancel()
+void QgsRasterLayerProperties::rollback()
 {
-
   // Give the user a chance to save the raster attribute table edits.
   if ( mRasterAttributeTableWidget && mRasterAttributeTableWidget->isDirty() )
   {
     mRasterAttributeTableWidget->setEditable( false, false );
   }
+  QgsLayerPropertiesDialog::rollback();
 
-  if ( mOldStyle.xmlData() != mRasterLayer->styleManager()->style( mRasterLayer->styleManager()->currentStyle() ).xmlData() )
-  {
-    // need to reset style to previous - style applied directly to the layer (not in apply())
-    QString myMessage;
-    QDomDocument doc( QStringLiteral( "qgis" ) );
-    int errorLine, errorColumn;
-    doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
-    mRasterLayer->importNamedStyle( doc, myMessage );
-    syncToLayer();
-  }
   if ( mBackupCrs != mRasterLayer->crs() )
     mRasterLayer->setCrs( mBackupCrs );
 }
