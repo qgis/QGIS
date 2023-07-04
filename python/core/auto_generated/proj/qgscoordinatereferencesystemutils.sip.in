@@ -36,6 +36,13 @@ Returns the default coordinate order to use for the specified ``crs``.
 %Docstring
 Returns a translated abbreviation representing an ``axis`` direction.
 %End
+
+    static QString crsTypeToString( Qgis::CrsType type );
+%Docstring
+Returns a translated string representing a CRS ``type``.
+
+.. versionadded:: 3.34
+%End
 };
 
 /************************************************************************
