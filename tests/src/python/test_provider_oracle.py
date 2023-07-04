@@ -248,6 +248,81 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(self.source.defaultValue(2), "'qgis'")
         self.assertEqual(self.source.defaultValue(3), "'qgis'")
 
+    def testValidLayerDiscoverRelationsSimple(self):
+        """
+        Test implicit relations that can be discovers between tables, based on declared foreign keys.
+        """
+        vl = QgsVectorLayer(f'{self.dbconn} table="QGIS"."REFERENCING_TABLE_SIMPLE" sql=', "test_referencing_table_simple", "oracle")
+        self.assertTrue(vl.isValid())
+        QgsProject.instance().addMapLayer(vl)
+        vls = [
+            QgsVectorLayer(f'{self.dbconn} table="QGIS"."REFERENCED_TABLE_1" sql=', "test_referenced_table_1", "oracle"),
+        ]
+        for lyr in vls:
+            self.assertTrue(lyr.isValid())
+            QgsProject.instance().addMapLayer(lyr)
+        relations = vl.dataProvider().discoverRelations(vl, vls)
+        self.assertEqual(len(relations), 1)
+        for i, r in enumerate(relations):
+            self.assertEqual(r.referencedLayer(), vls[i])
+
+    def testValidLayerDiscoverRelationsMulti(self):
+        """
+        Test implicit relations that can be discovers between tables, based on declared foreign keys.
+        The test also checks that three distinct relations can be discovered when three foreign keys are declared
+        - two fk referencing the same layer
+        - the third fk referencing another layer
+        """
+        vl = QgsVectorLayer(f'{self.dbconn} table="QGIS"."REFERENCING_TABLE_MULTI" sql=', "test_referencing_table_multi", "oracle")
+        QgsProject.instance().addMapLayer(vl)
+        self.assertTrue(vl.isValid())
+        vls = [
+            QgsVectorLayer(f'{self.dbconn} table="QGIS"."REFERENCED_TABLE_1" sql=', "test_referenced_table_1", "oracle"),
+            QgsVectorLayer(f'{self.dbconn} table="QGIS"."REFERENCED_TABLE_2" sql=', "test_referenced_table_2", "oracle"),
+            QgsVectorLayer(f'{self.dbconn} table="QGIS"."POINT_DATA" (GEOM) srid=4326 type=POINT sql=', "testpoints", "oracle")
+        ]
+        for lyr in vls:
+            self.assertTrue(lyr.isValid())
+            QgsProject.instance().addMapLayer(lyr)
+        relations = vl.dataProvider().discoverRelations(vl, vls)
+        self.assertEqual(len(relations), 3)
+
+    def testValidLayerDiscoverRelationsComposite(self):
+        """
+        Test implicit relations that can be discovers between tables, based on composite declared foreign keys.
+        """
+        vl = QgsVectorLayer(f'{self.dbconn} table="QGIS"."REFERENCING_TABLE_COMPOSITE" sql=', "test_referencing_table_composite", "oracle")
+        QgsProject.instance().addMapLayer(vl)
+        self.assertTrue(vl.isValid())
+        vls = [
+            QgsVectorLayer(f'{self.dbconn} table="QGIS"."REFERENCED_TABLE_COMPOSITE" sql=', "test_referenced_table_composite", "oracle"),
+            QgsVectorLayer(f'{self.dbconn} table="QGIS"."REFERENCED_TABLE_2" sql=', "test_referenced_table_2", "oracle"),
+            QgsVectorLayer(f'{self.dbconn} table="QGIS"."POINT_DATA" (GEOM) srid=4326 type=POINT sql=', "testpoints", "oracle")
+        ]
+        for lyr in vls:
+            self.assertTrue(lyr.isValid())
+            QgsProject.instance().addMapLayer(lyr)
+        relations = vl.dataProvider().discoverRelations(vl, vls)
+        self.assertEqual(len(relations), 1)
+        self.assertEqual(len(relations[0].fieldPairs()), 2)
+
+    def testInvalidLayerDiscoverRelations(self):
+        """
+        Test that discover relations feature can be used on invalid layer.
+        """
+        vl = QgsVectorLayer(f'{self.dbconn} table="QGIS"."invalid_layer"', "invalid_layer", "oracle")
+        self.assertFalse(vl.isValid())
+        self.assertEqual(vl.dataProvider().discoverRelations(vl, []), [])
+
+    def testValidLayerDiscoverRelationsNone(self):
+        """
+        Test checks that discover relation feature can be used on a layer that has no relation.
+        """
+        vl = QgsVectorLayer('%s table="QGIS"."POINT_DATA" (GEOM) srid=4326 type=POINT sql=' %
+                            (self.dbconn), "testpoints", "oracle")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().discoverRelations(vl, []), [])
+
     def testPoints(self):
         vl = QgsVectorLayer('%s table="QGIS"."POINT_DATA" (GEOM) srid=4326 type=POINT sql=' %
                             (self.dbconn), "testpoints", "oracle")

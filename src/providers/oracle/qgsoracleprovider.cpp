@@ -30,6 +30,7 @@
 #include "qgsdbquerylog.h"
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgsvectorlayer.h"
 
 #include "qgsoracleprovider.h"
 #include "qgsoracledataitems.h"
@@ -2503,6 +2504,118 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
   emit dataChanged();
 
   return true;
+}
+
+QList<QgsVectorLayer *> QgsOracleProvider::searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &owner, const QString &tableName )
+{
+  QList<QgsVectorLayer *> result;
+  for ( QgsVectorLayer *layer : layers )
+  {
+    const QgsOracleProvider *oracleProvider = qobject_cast<QgsOracleProvider *>( layer->dataProvider() );
+    if ( oracleProvider &&
+         oracleProvider->mUri.connectionInfo( false ) == connectionInfo && oracleProvider->mOwnerName == owner && oracleProvider->mTableName == tableName )
+    {
+      result.append( layer );
+    }
+  }
+  return result;
+}
+
+QList<QgsRelation> QgsOracleProvider::discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const
+{
+  QList<QgsRelation> result;
+
+  // Silently skip if this is a query layer or for some obscure reason there are no table and schema name
+  if ( mIsQuery || mTableName.isEmpty() || mOwnerName.isEmpty() )
+    return result;
+
+  // Skip less silently if layer is not valid
+  if ( !mValid )
+  {
+    QgsLogger::warning( tr( "Error discovering relations of %1: invalid layer" ).arg( mQuery ) );
+    return result;
+  }
+
+  QString sql(
+    "SELECT c.constraint_name, "
+    "     l.column_name, "
+    "     r.owner, "
+    "     r.table_name, "
+    "     r.column_name, "
+    "     r.position "
+    "FROM all_constraints c, "
+    "     all_cons_columns l, "
+    "     all_cons_columns r "
+    "WHERE l.table_name = c.table_name "
+    "  AND c.table_name = ?"
+    "  AND c.owner = ?"
+    "  AND c.constraint_type = 'R'"
+    "  AND c.r_constraint_name = r.constraint_name "
+    "  AND c.constraint_name = l.constraint_name "
+    "  AND l.position = r.position "
+  );
+  QgsOracleConn *conn = connectionRO();
+  QSqlQuery qry( *conn );
+  QList<QString> refTableFound;
+  if ( !LoggedExecStatic( qry, sql, QVariantList() << mTableName << mOwnerName, mUri.uri() ) )
+  {
+    const QString error { tr( "Unable to execute the query to get foreign keys of %1.\nThe error message from the database was:\n%1.\nSQL: %2" )
+                          .arg( mTableName )
+                          .arg( qry.lastError().text() )
+                          .arg( qry.lastQuery() ) };
+    QgsLogger::warning( error );
+    return result;
+  }
+
+  while ( qry.next() )
+  {
+    const QString name = qry.value( 0 ).toString();
+    const QString fkColumn = qry.value( 1 ).toString();
+    const QString refOwner = qry.value( 2 ).toString();
+    const QString refTable = qry.value( 3 ).toString();
+    const QString refColumn = qry.value( 4 ).toString();
+    const QString position = qry.value( 5 ).toString();
+
+    const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refOwner, refTable );
+    if ( ( position == QLatin1String( "1" ) ) || ( !refTableFound.contains( refTable ) ) )
+    {
+      // first reference field => try to find if we have layers for the referenced table
+      for ( const QgsVectorLayer *foundLayer : foundLayers )
+      {
+        QgsRelation relation;
+        relation.setName( name );
+        relation.setReferencingLayer( target->id() );
+        relation.setReferencedLayer( foundLayer->id() );
+        relation.addFieldPair( fkColumn, refColumn );
+        relation.generateId();
+        if ( relation.isValid() )
+        {
+          result.append( relation );
+          refTableFound.append( refTable );
+        }
+        else
+        {
+          QgsLogger::warning( "Invalid relation for " + name + ", validation error: " + relation.validationError() );
+        }
+      }
+    }
+    else
+    {
+      // multi reference field => add the field pair to all the referenced layers found
+      const int resultSize = result.size();
+      for ( int i = 0; i < resultSize; ++i )
+      {
+        for ( const QgsVectorLayer *foundLayer : foundLayers )
+        {
+          if ( result[resultSize - 1 - i].referencedLayerId() == foundLayer->id() )
+          {
+            result[resultSize - 1 - i].addFieldPair( fkColumn, refColumn );
+          }
+        }
+      }
+    }
+  }
+  return result;
 }
 
 /**
