@@ -1196,8 +1196,9 @@ while ($LINE_IDX < $LINE_COUNT){
             write_output("ENU4", "$LINE\n");
             if ($is_scope_based eq "1") {
                 $COMMENT =~ s/\n/\\n/g;
+                $COMMENT =~ s/\"/\\"/g;
                 if ( $ACTUAL_CLASS ne "" ){
-                    push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.__doc__ = '$COMMENT\\n\\n' + " . join(" + '\\n' + ", @enum_members_doc) . "\n# --\n";
+                    push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.__doc__ = \"$COMMENT\\n\\n\" + " . join(" + '\\n' + ", @enum_members_doc) . "\n# --\n";
                 } else {
                     push @OUTPUT_PYTHON, "$enum_qualname.__doc__ = '$COMMENT\\n\\n' + " . join(" + '\\n' + ", @enum_members_doc) . "\n# --\n";
                 }
