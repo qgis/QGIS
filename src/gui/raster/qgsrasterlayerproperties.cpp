@@ -92,7 +92,7 @@
 #include <QRegularExpression>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
-  : QgsLayerPropertiesDialog( lyr, QStringLiteral( "RasterLayerProperties" ), parent, fl )
+  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "RasterLayerProperties" ), parent, fl )
     // Constant that signals property not used.
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
   , mDefaultStandardDeviation( 0 )
@@ -102,7 +102,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
   , mGradientHeight( 0.0 )
   , mGradientWidth( 0.0 )
-  , mMapCanvas( canvas )
   , mMetadataFilled( false )
 {
   mGrayMinimumMaximumEstimated = true;
@@ -137,7 +136,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsRasterLayerProperties::syncToLayer );
 
   connect( this, &QDialog::accepted, this, &QgsRasterLayerProperties::apply );
-  connect( this, &QDialog::rejected, this, &QgsRasterLayerProperties::onCancel );
+  connect( this, &QDialog::rejected, this, &QgsRasterLayerProperties::rollback );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsRasterLayerProperties::apply );
 
@@ -181,7 +180,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
 
   // set up the scale based layer visibility stuff....
-  mScaleRangeWidget->setMapCanvas( mMapCanvas );
+  mScaleRangeWidget->setMapCanvas( mCanvas );
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
   mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
 
@@ -252,7 +251,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mBackupCrs = mRasterLayer->crs();
 
   // Handles window modality raising canvas
-  if ( mMapCanvas && mRasterTransparencyWidget->pixelSelectorTool() )
+  if ( mCanvas && mRasterTransparencyWidget->pixelSelectorTool() )
   {
 
     connect( mRasterTransparencyWidget->pixelSelectorTool(), &QgsMapToolEmitPoint::deactivated, this, [ = ]
@@ -270,9 +269,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
       setModal( false );
 
       // Transfer focus to the canvas to use the selector tool
-      mMapCanvas->window()->raise();
-      mMapCanvas->window()->activateWindow();
-      mMapCanvas->window()->setFocus();
+      mCanvas->window()->raise();
+      mCanvas->window()->activateWindow();
+      mCanvas->window()->setFocus();
     } );
   }
 
@@ -280,9 +279,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
            << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( mMapCanvas )
+  if ( mCanvas )
   {
-    mContext << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
+    mContext << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
     // Initialize with layer center
     mContext << QgsExpressionContextUtils::mapLayerPositionScope( mRasterLayer->extent().center() );
   }
@@ -360,7 +359,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   layout->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mRasterLayer );
   mMetadataWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mMetadataWidget->setMapCanvas( mMapCanvas );
+  mMetadataWidget->setMapCanvas( mCanvas );
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
 
@@ -602,7 +601,7 @@ void QgsRasterLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfig
   {
     case QgsMapLayerConfigWidgetFactory::ParentPage::NoParent:
     {
-      mLayerPropertiesPages << page;
+      mConfigWidgets << page;
 
       const QString beforePage = factory->layerPropertiesPagePositionHint();
       if ( beforePage.isEmpty() )
@@ -671,7 +670,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
     {
       QgsDebugMsgLevel( QStringLiteral( "renderer has widgetCreateFunction" ), 3 );
       // Current canvas extent (used to calc min/max) in layer CRS
-      QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
+      QgsRectangle myExtent = mCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mCanvas->extent() );
       if ( oldWidget && ( !oldRenderer || rendererName != oldRenderer->type() ) )
       {
         if ( rendererName == QLatin1String( "singlebandgray" ) )
@@ -689,7 +688,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
       mRasterLayer->renderer()->setOpacity( opacity );
       mRasterLayer->renderer()->setNodataColor( nodataColor );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
-      mRendererWidget->setMapCanvas( mMapCanvas );
+      mRendererWidget->setMapCanvas( mCanvas );
       mRendererStackedWidget->addWidget( mRendererWidget );
       if ( oldWidget )
       {
@@ -749,7 +748,7 @@ void QgsRasterLayerProperties::sync()
 
   if ( mSourceWidget )
   {
-    mSourceWidget->setMapCanvas( mMapCanvas );
+    mSourceWidget->setMapCanvas( mCanvas );
     mSourceWidget->setSourceUri( mRasterLayer->source() );
   }
 
@@ -899,7 +898,7 @@ void QgsRasterLayerProperties::sync()
   mPropertyCollection = mRasterLayer->pipe()->dataDefinedProperties();
   updateDataDefinedButtons();
 
-  for ( QgsMapLayerConfigWidget *page : std::as_const( mLayerPropertiesPages ) )
+  for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )
   {
     page->syncToLayer( mRasterLayer );
   }
@@ -922,7 +921,7 @@ void QgsRasterLayerProperties::apply()
     return;
 
   // apply all plugin dialogs
-  for ( QgsMapLayerConfigWidget *page : std::as_const( mLayerPropertiesPages ) )
+  for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )
   {
     page->apply();
   }
@@ -1268,7 +1267,7 @@ void QgsRasterLayerProperties::mRenderTypeComboBox_currentIndexChanged( int inde
 
 void QgsRasterLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select Transformation" ) );
+  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mCanvas, tr( "Select Transformation" ) );
   mRasterLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }
@@ -1795,7 +1794,7 @@ void QgsRasterLayerProperties::initMapTipPreview()
 void QgsRasterLayerProperties::updateMapTipPreview()
 {
   mMapTipPreview->setMaximumSize( mMapTipPreviewContainer->width(), mMapTipPreviewContainer->height() );
-  const QString htmlContent = QgsMapTip::rasterMapTipPreviewText( mRasterLayer, mMapCanvas, mMapTipWidget->text() );
+  const QString htmlContent = QgsMapTip::rasterMapTipPreviewText( mRasterLayer, mCanvas, mMapTipWidget->text() );
   mMapTipPreview->setHtml( htmlContent );
 }
 

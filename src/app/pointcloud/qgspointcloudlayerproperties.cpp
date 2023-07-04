@@ -34,9 +34,8 @@
 #include <QUrl>
 
 QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
-  : QgsLayerPropertiesDialog( lyr, QStringLiteral( "PointCloudLayerProperties" ), parent, flags )
+  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "PointCloudLayerProperties" ), parent, flags )
   , mLayer( lyr )
-  , mMapCanvas( canvas )
 {
   setupUi( this );
 
@@ -48,7 +47,7 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsPointCloudLayerProperties::crsChanged );
 
-  mScaleRangeWidget->setMapCanvas( mMapCanvas );
+  mScaleRangeWidget->setMapCanvas( mCanvas );
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
   mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
 
@@ -64,7 +63,7 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   metadataFrame->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mLayer );
   mMetadataWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mMetadataWidget->setMapCanvas( mMapCanvas );
+  mMetadataWidget->setMapCanvas( mCanvas );
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
@@ -139,25 +138,6 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
-}
-
-void QgsPointCloudLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
-{
-  if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
-  {
-    return;
-  }
-
-  QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, mMapCanvas, false, this );
-  mConfigWidgets << page;
-
-  const QString beforePage = factory->layerPropertiesPagePositionHint();
-  if ( beforePage.isEmpty() )
-    addPage( factory->title(), factory->title(), factory->icon(), page );
-  else
-    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
-
-  page->syncToLayer( mLayer );
 }
 
 void QgsPointCloudLayerProperties::apply()
@@ -254,7 +234,7 @@ void QgsPointCloudLayerProperties::pbnQueryBuilder_clicked()
 
 void QgsPointCloudLayerProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select transformation for the layer" ) );
+  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mCanvas, tr( "Select transformation for the layer" ) );
   mLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }

@@ -84,7 +84,6 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsLayerPropertiesDialog,
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 
-    QgsMapCanvas *mMapCanvas = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
     QgsProviderSourceWidget *mSourceWidget = nullptr;

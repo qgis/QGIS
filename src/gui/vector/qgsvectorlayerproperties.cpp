@@ -31,7 +31,6 @@
 #include "qgsattributesformproperties.h"
 #include "qgslabelingwidget.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmetadataurlitemdelegate.h"
@@ -97,8 +96,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QWidget *parent,
   Qt::WindowFlags fl
 )
-  : QgsLayerPropertiesDialog( lyr, QStringLiteral( "VectorLayerProperties" ), parent, fl )
-  , mCanvas( canvas )
+  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "VectorLayerProperties" ), parent, fl )
   , mMessageBar( messageBar )
   , mLayer( lyr )
   , mOriginalSubsetSQL( lyr->subsetString() )
@@ -147,7 +145,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsVectorLayerProperties::apply );
   connect( this, &QDialog::accepted, this, &QgsVectorLayerProperties::apply );
-  connect( this, &QDialog::rejected, this, &QgsVectorLayerProperties::onCancel );
+  connect( this, &QDialog::rejected, this, &QgsVectorLayerProperties::rollback );
 
   mContext << QgsExpressionContextUtils::globalScope()
            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
@@ -475,27 +473,6 @@ void QgsVectorLayerProperties::toggleEditing()
   setPbnQueryBuilderEnabled();
 }
 
-void QgsVectorLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
-{
-  if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
-  {
-    return;
-  }
-
-  QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, nullptr, false, this );
-
-  if ( page )
-  {
-    mLayerPropertiesPages << page;
-
-    const QString beforePage = factory->layerPropertiesPagePositionHint();
-    if ( beforePage.isEmpty() )
-      addPage( factory->title(), factory->title(), factory->icon(), page );
-    else
-      insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
-  }
-}
-
 void QgsVectorLayerProperties::insertFieldOrExpression()
 {
   // Convert the selected field to an expression and
@@ -654,8 +631,7 @@ void QgsVectorLayerProperties::syncToLayer()
     diagramPropertiesDialog->syncToLayer();
 
   // sync all plugin dialogs
-  const auto constMLayerPropertiesPages = mLayerPropertiesPages;
-  for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
+  for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )
   {
     page->syncToLayer( mLayer );
   }
@@ -769,8 +745,7 @@ void QgsVectorLayerProperties::apply()
   diagramPropertiesDialog->apply();
 
   // apply all plugin dialogs
-  const auto constMLayerPropertiesPages = mLayerPropertiesPages;
-  for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
+  for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )
   {
     page->apply();
   }

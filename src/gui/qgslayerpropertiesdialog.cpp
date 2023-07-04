@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgslayerpropertiesdialog.h"
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsnative.h"
 #include "qgssettings.h"
@@ -21,14 +23,16 @@
 #include "qgsmetadatawidget.h"
 #include "qgsfileutils.h"
 #include "qstackedwidget.h"
+#include "qgsmapcanvas.h"
 
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDesktopServices>
 
-QgsLayerPropertiesDialog::QgsLayerPropertiesDialog( QgsMapLayer *layer, const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
+QgsLayerPropertiesDialog::QgsLayerPropertiesDialog( QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QgsOptionsDialogBase( settingsKey, parent, fl, settings )
+  , mCanvas( canvas )
   , mLayer( layer )
 {
 
@@ -267,6 +271,25 @@ void QgsLayerPropertiesDialog::loadDefaultStyle()
 void QgsLayerPropertiesDialog::refocusDialog()
 {
   activateWindow(); // set focus back to properties dialog
+}
+
+void QgsLayerPropertiesDialog::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
+{
+  if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
+  {
+    return;
+  }
+
+  QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, mCanvas, false, this );
+  mConfigWidgets << page;
+
+  const QString beforePage = factory->layerPropertiesPagePositionHint();
+  if ( beforePage.isEmpty() )
+    addPage( factory->title(), factory->title(), factory->icon(), page );
+  else
+    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+
+  page->syncToLayer( mLayer );
 }
 
 void QgsLayerPropertiesDialog::storeCurrentStyleForUndo()

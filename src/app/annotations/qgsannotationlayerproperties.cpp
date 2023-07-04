@@ -19,7 +19,6 @@
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgspainteffect.h"
@@ -33,14 +32,13 @@
 #include <QUrl>
 
 QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
-  : QgsLayerPropertiesDialog( layer, QStringLiteral( "AnnotationLayerProperties" ), parent, flags )
+  : QgsLayerPropertiesDialog( layer, canvas, QStringLiteral( "AnnotationLayerProperties" ), parent, flags )
   , mLayer( layer )
-  , mMapCanvas( canvas )
 {
   setupUi( this );
 
   connect( this, &QDialog::accepted, this, &QgsAnnotationLayerProperties::apply );
-  connect( this, &QDialog::rejected, this, &QgsAnnotationLayerProperties::onCancel );
+  connect( this, &QDialog::rejected, this, &QgsAnnotationLayerProperties::rollback );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsAnnotationLayerProperties::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAnnotationLayerProperties::showHelp );
 
@@ -85,25 +83,6 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
 }
 
 QgsAnnotationLayerProperties::~QgsAnnotationLayerProperties() = default;
-
-void QgsAnnotationLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
-{
-  if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
-  {
-    return;
-  }
-
-  QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, mMapCanvas, false, this );
-  mConfigWidgets << page;
-
-  const QString beforePage = factory->layerPropertiesPagePositionHint();
-  if ( beforePage.isEmpty() )
-    addPage( factory->title(), factory->title(), factory->icon(), page );
-  else
-    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
-
-  page->syncToLayer( mLayer );
-}
 
 void QgsAnnotationLayerProperties::apply()
 {
@@ -159,7 +138,7 @@ void QgsAnnotationLayerProperties::syncToLayer()
   // scale based layer visibility
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
   mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
-  mScaleRangeWidget->setMapCanvas( mMapCanvas );
+  mScaleRangeWidget->setMapCanvas( mCanvas );
 
   // opacity and blend modes
   mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
@@ -201,6 +180,6 @@ void QgsAnnotationLayerProperties::showHelp()
 
 void QgsAnnotationLayerProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select transformation for the layer" ) );
+  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mCanvas, tr( "Select transformation for the layer" ) );
   mLayer->setCrs( crs );
 }

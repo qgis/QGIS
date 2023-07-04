@@ -27,11 +27,12 @@ Base class for "layer properties" dialogs, containing common utilities for handl
 %End
   public:
 
-    QgsLayerPropertiesDialog( QgsMapLayer *layer, const QString &settingsKey, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = 0 );
+    QgsLayerPropertiesDialog( QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = 0 );
 %Docstring
 Constructor for QgsLayerPropertiesDialog.
 
 :param layer: associated map layer
+:param canvas: associated map canvas
 :param settingsKey: :py:class:`QgsSettings` subgroup key for saving/restore ui states, e.g. "VectorLayerProperties".
 :param parent: parent object (owner)
 :param fl: widget flags
@@ -43,6 +44,11 @@ Constructor for QgsLayerPropertiesDialog.
 Sets the metadata ``widget`` and ``page`` associated with the dialog.
 
 This must be called in order for the standard metadata loading/saving functionality to be avialable.
+%End
+
+    virtual void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
+%Docstring
+Adds properties page from a ``factory``.
 %End
 
   public slots:
@@ -112,6 +118,8 @@ Ensures the dialog is focused and activated.
 %Docstring
 Stores the current layer style so that undo operations can be performed.
 %End
+
+
 
 
 

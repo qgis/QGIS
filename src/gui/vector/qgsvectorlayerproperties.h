@@ -72,9 +72,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
     QgsVectorLayerProperties( QgsMapCanvas *canvas, QgsMessageBar *messageBar, QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    //! Adds a properties page factory to the vector layer properties dialog.
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-
     bool eventFilter( QObject *obj, QEvent *ev ) override;
 
     /**
@@ -192,7 +189,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
     void setPbnQueryBuilderEnabled();
 
-    QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     QgsVectorLayer *mLayer = nullptr;
 
@@ -224,9 +220,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
     //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is canceled
     QList< QgsVectorLayerJoinInfo > mOldJoins;
-
-    //! A list of additional pages provided by plugins
-    QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
 
     void initDiagramTab();
 

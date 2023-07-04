@@ -26,10 +26,8 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsMeshLayer;
 class QgsRendererMeshPropertiesWidget;
-class QgsMapLayerConfigWidget;
 class QgsMeshLayer3DRendererWidget;
 class QgsMeshStaticDatasetWidget;
-class QgsMapLayerConfigWidgetFactory;
 class QgsMetadataWidget;
 
 /**
@@ -55,13 +53,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
      * \param fl Window flags
      */
     QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
-
-    /**
-     * Adds properties page from a factory
-     *
-     * \since QGIS 3.16
-     */
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
     /**
      * Saves the default style when appropriate button is pressed
@@ -106,8 +97,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
     //! Pointer to the mesh styling widget
     QgsRendererMeshPropertiesWidget *mRendererMeshPropertiesWidget = nullptr;
 
-    QList<QgsMapLayerConfigWidget *> mConfigWidgets;
-
     //! Pointer to the mesh layer that this property dialog changes the behavior of.
     QgsMeshLayer *mMeshLayer = nullptr;
 
@@ -117,7 +106,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 
-    QgsMapCanvas *mCanvas = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
     bool mIsMapSettingsTemporal = false;
