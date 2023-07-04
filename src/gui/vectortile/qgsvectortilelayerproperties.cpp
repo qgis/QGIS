@@ -38,9 +38,8 @@
 #include <QTextStream>
 
 QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent, Qt::WindowFlags flags )
-  : QgsLayerPropertiesDialog( lyr, QStringLiteral( "VectorTileLayerProperties" ), parent, flags )
+  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "VectorTileLayerProperties" ), parent, flags )
   , mLayer( lyr )
-  , mMapCanvas( canvas )
 {
   setupUi( this );
 
@@ -60,7 +59,7 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsVectorTileLayerProperties::crsChanged );
 
   // scale based layer visibility related widgets
-  mScaleRangeWidget->setMapCanvas( mMapCanvas );
+  mScaleRangeWidget->setMapCanvas( mCanvas );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -92,7 +91,7 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   metadataFrame->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mLayer );
   mMetadataWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mMetadataWidget->setMapCanvas( mMapCanvas );
+  mMetadataWidget->setMapCanvas( mCanvas );
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
@@ -197,7 +196,7 @@ void QgsVectorTileLayerProperties::syncToLayer()
 
   if ( mSourceWidget )
   {
-    mSourceWidget->setMapCanvas( mMapCanvas );
+    mSourceWidget->setMapCanvas( mCanvas );
     mSourceWidget->setSourceUri( mLayer->source() );
   }
 
@@ -335,7 +334,7 @@ void QgsVectorTileLayerProperties::showHelp()
 
 void QgsVectorTileLayerProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select Transformation" ) );
+  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mCanvas, tr( "Select Transformation" ) );
   mLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }

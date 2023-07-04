@@ -93,8 +93,6 @@ class QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog, private Ui
   public:
     QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-
   private slots:
     void apply() FINAL;
     void rollback() FINAL;
@@ -113,10 +111,7 @@ class QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog, private Ui
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 
-    QgsMapCanvas *mMapCanvas = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
-
-    QList<QgsMapLayerConfigWidget *> mConfigWidgets;
 
     QgsCoordinateReferenceSystem mBackupCrs;
 

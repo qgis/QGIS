@@ -28,7 +28,6 @@
 #include "qgsresamplingutils.h"
 #include "qgsrasterpipe.h"
 #include "qgsexpressioncontextgenerator.h"
-#include "qgsmaplayerstyle.h"
 
 class QgsPointXY;
 class QgsMapLayer;
@@ -82,11 +81,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-    /**
-     * Adds a properties page factory to the raster layer properties dialog.
-     * \since QGIS 3.18
-     */
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory ) FINAL;
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -210,9 +205,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
 
     QStandardItemModel *mMetadataUrlModel = nullptr;
 
-    //! A list of additional pages provided by plugins
-    QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
-
     //! \brief  A constant that signals property not used
     const QString TRSTRING_NOT_SET;
 
@@ -275,8 +267,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     QLinearGradient highlightGradient();
     qreal mGradientHeight;
     qreal mGradientWidth;
-
-    QgsMapCanvas *mMapCanvas = nullptr;
 
     QgsRasterHistogramWidget *mHistogramWidget = nullptr;
 

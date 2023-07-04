@@ -34,13 +34,6 @@ Constructor
 :param fl: Window flags
 %End
 
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-%Docstring
-Adds properties page from a factory
-
-.. versionadded:: 3.16
-%End
-
  void saveDefaultStyle() /Deprecated/;
 %Docstring
 Saves the default style when appropriate button is pressed

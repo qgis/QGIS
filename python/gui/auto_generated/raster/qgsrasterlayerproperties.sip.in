@@ -35,12 +35,8 @@ Constructor
 :param fl: windows flag
 %End
 
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-%Docstring
-Adds a properties page factory to the raster layer properties dialog.
+    virtual void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory ) ${SIP_FINAL};
 
-.. versionadded:: 3.18
-%End
 
     virtual QgsExpressionContext createExpressionContext() const;
 

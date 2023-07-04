@@ -25,6 +25,9 @@
 
 class QgsMapLayer;
 class QgsMetadataWidget;
+class QgsMapLayerConfigWidget;
+class QgsMapLayerConfigWidgetFactory;
+class QgsMapCanvas;
 
 /**
  * \ingroup gui
@@ -43,12 +46,13 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
      * Constructor for QgsLayerPropertiesDialog.
      *
      * \param layer associated map layer
+     * \param canvas associated map canvas
      * \param settingsKey QgsSettings subgroup key for saving/restore ui states, e.g. "VectorLayerProperties".
      * \param parent parent object (owner)
      * \param fl widget flags
      * \param settings custom QgsSettings pointer
      */
-    QgsLayerPropertiesDialog( QgsMapLayer *layer, const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = nullptr );
+    QgsLayerPropertiesDialog( QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = nullptr );
 
     /**
      * Sets the metadata \a widget and \a page associated with the dialog.
@@ -56,6 +60,11 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
      * This must be called in order for the standard metadata loading/saving functionality to be avialable.
      */
     void setMetadataWidget( QgsMetadataWidget *widget, QWidget *page );
+
+    /**
+     * Adds properties page from a \a factory.
+     */
+    virtual void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
   public slots:
 
@@ -136,6 +145,12 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
 
     //! Metadata button
     QPushButton *mBtnMetadata = nullptr;
+
+    //! Associated map canvas
+    QgsMapCanvas *mCanvas = nullptr;
+
+    //! Layer config widgets
+    QList<QgsMapLayerConfigWidget *> mConfigWidgets;
 
   protected slots:
 

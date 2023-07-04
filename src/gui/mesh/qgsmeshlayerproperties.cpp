@@ -32,7 +32,6 @@
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgssettings.h"
 #include "qgsdatumtransformdialog.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmetadatawidget.h"
 
 #include <QDesktopServices>
@@ -40,9 +39,8 @@
 #include <QMessageBox>
 
 QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
-  : QgsLayerPropertiesDialog( lyr, QStringLiteral( "MeshLayerProperties" ), parent, fl )
+  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "MeshLayerProperties" ), parent, fl )
   , mMeshLayer( qobject_cast<QgsMeshLayer *>( lyr ) )
-  , mCanvas( canvas )
 {
   Q_ASSERT( mMeshLayer );
 
@@ -73,7 +71,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMeshLayerProperties::syncAndRepaint );
 
   connect( this, &QDialog::accepted, this, &QgsMeshLayerProperties::apply );
-  connect( this, &QDialog::rejected, this, &QgsMeshLayerProperties::onCancel );
+  connect( this, &QDialog::rejected, this, &QgsMeshLayerProperties::rollback );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsMeshLayerProperties::apply );
 
   connect( mMeshLayer, &QgsMeshLayer::dataChanged, this, &QgsMeshLayerProperties::syncAndRepaint );
@@ -161,26 +159,6 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   if ( !mMeshLayer->styleManager()->isDefault( mMeshLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mMeshLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
-}
-
-void QgsMeshLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
-{
-  if ( !factory->supportsLayer( mMeshLayer ) || !factory->supportLayerPropertiesDialog() )
-  {
-    return;
-  }
-
-  QgsMapLayerConfigWidget *page = factory->createWidget( mMeshLayer, mCanvas, false, this );
-  mConfigWidgets << page;
-
-  const QString beforePage = factory->layerPropertiesPagePositionHint();
-  if ( beforePage.isEmpty() )
-    addPage( factory->title(), factory->title(), factory->icon(), page );
-  else
-    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
-
-  page->syncToLayer( mMeshLayer );
-
 }
 
 void QgsMeshLayerProperties::syncToLayer()

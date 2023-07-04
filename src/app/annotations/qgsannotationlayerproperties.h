@@ -37,8 +37,6 @@ class QgsAnnotationLayerProperties : public QgsLayerPropertiesDialog, private Ui
     QgsAnnotationLayerProperties( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
     ~QgsAnnotationLayerProperties() override;
 
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-
   private slots:
     void apply() FINAL;
     void rollback() FINAL;
@@ -55,11 +53,7 @@ class QgsAnnotationLayerProperties : public QgsLayerPropertiesDialog, private Ui
 
     QPushButton *mBtnStyle = nullptr;
 
-    QgsMapCanvas *mMapCanvas = nullptr;
-
     std::unique_ptr< QgsPaintEffect > mPaintEffect;
-
-    QList<QgsMapLayerConfigWidget *> mConfigWidgets;
 
     QgsCoordinateReferenceSystem mBackupCrs;
 
