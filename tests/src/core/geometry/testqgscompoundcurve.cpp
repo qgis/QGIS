@@ -71,6 +71,7 @@ class TestQgsCompoundCurve: public QObject
     void angle();
     void boundary();
     void boundingBox();
+    void boundingBoxIntersects();
     void interpolate();
     void swapXy();
     void reversed();
@@ -2412,6 +2413,62 @@ void TestQgsCompoundCurve::boundingBox()
   QGSCOMPARENEAR( r.xMaximum(), 6.125, 0.01 );
   QGSCOMPARENEAR( r.yMinimum(), 9, 0.01 );
   QGSCOMPARENEAR( r.yMaximum(), 10.25, 0.01 );
+}
+
+void TestQgsCompoundCurve::boundingBoxIntersects()
+{
+  QgsCompoundCurve cc;
+  QgsCircularString cs;
+
+  QVERIFY( cc.boundingBox().isNull() );
+  QVERIFY( !cc.boundingBoxIntersects( ( QgsRectangle( 0, 0, 0, 0 ) ) ) );
+  QVERIFY( !cc.boundingBoxIntersects( ( QgsRectangle( ) ) ) );
+
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 15 ) );
+  cc.addCurve( cs.clone() );
+
+  QVERIFY( cc.boundingBoxIntersects( QgsRectangle( 6, 7, 12, 17 ) ) );
+  QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( 2, 8, 4.9, 17 ) ) );
+
+  cc.clear();
+  QVERIFY( cc.boundingBox().isNull() );
+  cs.setPoints( QgsPointSequence() << QgsPoint( -5, -10 )
+                << QgsPoint( -6, -10 ) << QgsPoint( -5.5, -9 ) );
+  cc.addCurve( cs.clone() );
+
+  QVERIFY( cc.boundingBoxIntersects( QgsRectangle( -5, -9.5, -2, 2 ) ) );
+  QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( -4.5, -8.5, -3, -2 ) ) );
+
+  QByteArray wkbToAppend = cc.asWkb();
+  QgsConstWkbPtr wkbToAppendPtr( wkbToAppend );
+  cc.clear();
+  QVERIFY( cc.boundingBox().isNull() );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 15 ) );
+  cc.addCurve( cs.clone() );
+
+  QVERIFY( cc.boundingBoxIntersects( QgsRectangle( 6, 7, 12, 17 ) ) );
+  QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( 2, 8, 4.9, 17 ) ) );
+
+  cc.fromWkb( wkbToAppendPtr );
+  QVERIFY( cc.boundingBoxIntersects( QgsRectangle( -5, -9.5, -2, 2 ) ) );
+  QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( -4.5, -8.5, -3, -2 ) ) );
+
+  cc.fromWkt( QStringLiteral( "CompoundCurve(CircularString( 5 10, 6 10, 5.5 9 ))" ) );
+  QVERIFY( cc.boundingBoxIntersects( QgsRectangle( 5.1, -7.5, 7.2, 9.2 ) ) );
+  QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( 2, 10.3, 3, 10.4 ) ) );
+
+  cc.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( -1, 7 ) );
+  QVERIFY( cc.boundingBoxIntersects( QgsRectangle( 5.1, -7.5, 7.2, 9.2 ) ) );
+  QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( 0, 12.5, 3, 12.6 ) ) );
+  QVERIFY( cc.boundingBoxIntersects( QgsRectangle( -4, 10.3, -3, 12.3 ) ) );
+
+  cc.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( -3, 10 ) );
+  QVERIFY( cc.boundingBoxIntersects( QgsRectangle( 5.1, -7.5, 7.2, 9.2 ) ) );
+  QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( 0, 32.5, 3, 37.6 ) ) );
+
+  cc.deleteVertex( QgsVertexId( 0, 0, 1 ) );
+  QVERIFY( cc.boundingBoxIntersects( QgsRectangle( 5.1, -7.5, 7.2, 9.2 ) ) );
+  QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( 0, 10.3, 3, 37.6 ) ) );
 }
 
 void TestQgsCompoundCurve::interpolate()
