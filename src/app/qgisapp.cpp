@@ -8298,13 +8298,13 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
       break;
 
     case Qgis::LayerType::Mesh:
-      QgsMeshLayerProperties( layer, mMapCanvas ).saveStyleAs();
+      QgsMeshLayerProperties( layer, mMapCanvas ).saveStyleToFile();
       break;
 
     case Qgis::LayerType::VectorTile:
       QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( layer ),
                                     mMapCanvas,
-                                    visibleMessageBar() ).saveStyleAs();
+                                    visibleMessageBar() ).saveStyleToFile();
       break;
 
     case Qgis::LayerType::PointCloud:
@@ -8315,9 +8315,9 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
 
     // Not available for these
     case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::TiledMesh:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
-    default:
       break;
   }
 }
