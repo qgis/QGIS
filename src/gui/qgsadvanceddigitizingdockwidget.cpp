@@ -155,7 +155,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QActionGroup *snappingPriorityActionGroup = new QActionGroup( snappingPriorityMenu );
     QAction *featuresAction = new QAction( tr( "Prioritize Snapping to Features" ), snappingPriorityActionGroup );
     featuresAction->setCheckable( true );
-    QAction *anglesAction = new QAction( tr( "Prioritize Snapping to Angle" ), snappingPriorityActionGroup );
+    QAction *anglesAction = new QAction( tr( "Prioritize Snapping to Common Angles" ), snappingPriorityActionGroup );
     anglesAction->setCheckable( true );
     snappingPriorityActionGroup->addAction( featuresAction );
     snappingPriorityActionGroup->addAction( anglesAction );
