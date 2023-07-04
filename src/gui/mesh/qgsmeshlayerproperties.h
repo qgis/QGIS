@@ -66,23 +66,23 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
     /**
      * Saves the default style when appropriate button is pressed
      *
-     * \since QGIS 3.30
+     * \deprecated use saveStyleAsDefault() instead.
      */
-    void saveDefaultStyle();
+    Q_DECL_DEPRECATED void saveDefaultStyle() SIP_DEPRECATED;
 
     /**
      * Loads a saved style when appropriate button is pressed
      *
-     * \since QGIS 3.30
+     * \deprecated use loadStyleFromFile() instead.
      */
-    void loadStyle();
+    Q_DECL_DEPRECATED void loadStyle() SIP_DEPRECATED;
 
     /**
      * Saves a style when appriate button is pressed
      *
-     * \since QGIS 3.30
+     * \deprecated use saveStyleToFile() instead.
      */
-    void saveStyleAs();
+    Q_DECL_DEPRECATED void saveStyleAs() SIP_DEPRECATED;
 
   protected slots:
     void syncToLayer() FINAL;
