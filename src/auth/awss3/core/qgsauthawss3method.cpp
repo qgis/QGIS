@@ -39,8 +39,11 @@ QMap<QString, QgsAuthMethodConfig> QgsAuthAwsS3Method::sAuthConfigCache = QMap<Q
 QgsAuthAwsS3Method::QgsAuthAwsS3Method()
 {
   setVersion( 4 );
-  setExpansions( QgsAuthMethod::NetworkRequest );
-  setDataProviders( QStringList() << QStringLiteral( "awss3" ) );
+  setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
+  setDataProviders( QStringList()
+  << QStringLiteral( "awss3" )
+  << QStringLiteral( "ogr" )
+  << QStringLiteral( "gdal" ) );
 }
 
 QString QgsAuthAwsS3Method::key() const
@@ -131,6 +134,85 @@ bool QgsAuthAwsS3Method::updateNetworkRequest( QNetworkRequest &request, const Q
   request.setRawHeader( QByteArray( "Authorization" ),
                         encryptionMethod + "Credential=" + username + '/' + date + "/" + region + "/s3/aws4_request, SignedHeaders=" + headerList + ", Signature=" + signature );
 
+  return true;
+}
+
+bool QgsAuthAwsS3Method::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
+    const QString &dataprovider )
+{
+  Q_UNUSED( dataprovider )
+  const QMutexLocker locker( &mMutex );
+  const QgsAuthMethodConfig config = getMethodConfig( authcfg );
+  if ( !config.isValid() )
+  {
+    QgsDebugError( QStringLiteral( "Update URI items FAILED for authcfg: %1: basic config invalid" ).arg( authcfg ) );
+    return false;
+  }
+
+  if ( connectionItems.isEmpty() )
+  {
+    QgsDebugError( QStringLiteral( "Connection Items is empty!" ) );
+    return false;
+  }
+
+  const QByteArray username = config.config( QStringLiteral( "username" ) ).toLocal8Bit();
+  const QByteArray password = config.config( QStringLiteral( "password" ) ).toLocal8Bit();
+  const QByteArray region = config.config( QStringLiteral( "region" ) ).toLocal8Bit();
+
+  const QByteArray headerList = "host";
+  const QByteArray encryptionMethod = "AWS4-HMAC-SHA256";
+  const QDateTime currentDateTime = QDateTime::currentDateTime().toUTC();
+  const QByteArray date = currentDateTime.toString( "yyyyMMdd" ).toLocal8Bit();
+  const QByteArray dateTime = currentDateTime.toString( "yyyyMMddThhmmssZ" ).toLocal8Bit();
+  const QByteArray expires = "300";
+  const QByteArray method = "GET";
+
+  const QString fullUri( connectionItems.first() );
+  QString uri( fullUri );
+
+  QByteArray canonicalPath = QUrl::toPercentEncoding( QUrl(uri).path(), "/" );
+  if ( canonicalPath.isEmpty() )
+  {
+    canonicalPath = "/";
+  }
+
+  const QByteArray canonicalRequest = method + '\n' +
+                                      canonicalPath + '\n' +
+                                      "X-Amz-Algorithm=" + encryptionMethod + '&' +
+                                      "X-Amz-Credential=" + username + "%2F" + date + "%2F" + region + "%2Fs3%2Faws4_request" + '&' +
+                                      "X-Amz-Date=" + dateTime + '&' +
+                                      "X-Amz-Expires=" + expires + '&' +
+                                      "X-Amz-SignedHeaders=" + headerList + '\n' +
+                                      "host:" + QUrl(uri).host().toLocal8Bit() + '\n' +
+                                      '\n' +
+                                      headerList + '\n' +
+                                      "UNSIGNED-PAYLOAD";
+
+  const QByteArray canonicalRequestHash = QCryptographicHash::hash( canonicalRequest, QCryptographicHash::Sha256 ).toHex();
+  const QByteArray stringToSign = encryptionMethod + '\n' +
+                                  dateTime + '\n' +
+                                  date + "/" + region + "/s3/aws4_request" + '\n' +
+                                  canonicalRequestHash;
+
+  const QByteArray signingKey = QMessageAuthenticationCode::hash( "aws4_request",
+                                QMessageAuthenticationCode::hash( "s3",
+                                    QMessageAuthenticationCode::hash( region,
+                                        QMessageAuthenticationCode::hash( date, "AWS4" + password,
+                                            QCryptographicHash::Sha256 ),
+                                        QCryptographicHash::Sha256 ),
+                                    QCryptographicHash::Sha256 ),
+                                QCryptographicHash::Sha256 );
+
+  const QByteArray signature = QMessageAuthenticationCode::hash( stringToSign, signingKey, QCryptographicHash::Sha256 ).toHex();
+
+  uri += QStringLiteral( "?X-Amz-Algorithm=%1" ).arg(QString::fromLocal8Bit(encryptionMethod));
+  uri += QStringLiteral( "&X-Amz-Credential=%1" ).arg(QString::fromLocal8Bit(username + "%2F" + date + "%2F" + region + "%2Fs3%2Faws4_request"));
+  uri += QStringLiteral( "&X-Amz-Date=%1" ).arg(QString::fromLocal8Bit(dateTime));
+  uri += QStringLiteral( "&X-Amz-SignedHeaders=%1" ).arg(QString::fromLocal8Bit(headerList));
+  uri += QStringLiteral( "&X-Amz-Signature=%1" ).arg(QString::fromLocal8Bit(signature));
+  uri += QStringLiteral( "&X-Amz-Expires=%1" ).arg(QString::fromLocal8Bit(expires));
+
+  connectionItems.replace( 0, uri );
   return true;
 }
 
