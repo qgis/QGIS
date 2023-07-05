@@ -78,7 +78,6 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
                        mOptStackedWidget->indexOf( mOptsPage_Information ) );
   }
 
-  QString title = tr( "Layer Properties - %1" ).arg( mLayer->name() );
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
   menuStyle->addAction( tr( "Load Style…" ), this, &QgsPointCloudLayerProperties::loadStyleFromFile );
