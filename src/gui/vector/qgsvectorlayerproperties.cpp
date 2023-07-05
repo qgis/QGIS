@@ -391,11 +391,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  QString title = tr( "Layer Properties — %1" ).arg( mLayer->name() );
-  if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
-    title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
-  restoreOptionsBaseUi( title );
-
   QList<QgsMapLayer *> dependencySources;
   const QSet<QgsMapLayerDependency> constDependencies = mLayer->dependencies();
   for ( const QgsMapLayerDependency &dep : constDependencies )
@@ -461,6 +456,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
 
   optionsStackedWidget_CurrentChanged( mOptStackedWidget->currentIndex() );
+
+  initialize();
 }
 
 void QgsVectorLayerProperties::toggleEditing()

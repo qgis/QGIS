@@ -268,6 +268,11 @@ void QgsLayerPropertiesDialog::loadDefaultStyle()
   }
 }
 
+void QgsLayerPropertiesDialog::initialize()
+{
+  restoreOptionsBaseUi( generateDialogTitle() );
+}
+
 void QgsLayerPropertiesDialog::refocusDialog()
 {
   activateWindow(); // set focus back to properties dialog
@@ -298,6 +303,16 @@ void QgsLayerPropertiesDialog::storeCurrentStyleForUndo()
     return;
 
   mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
+}
+
+QString QgsLayerPropertiesDialog::generateDialogTitle() const
+{
+  QString title = tr( "Layer Properties - %1" ).arg( mLayer->name() );
+
+  if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
+    title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
+
+  return title;
 }
 
 void QgsLayerPropertiesDialog::rollback()

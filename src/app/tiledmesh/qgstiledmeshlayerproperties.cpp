@@ -15,7 +15,6 @@
 
 #include "qgstiledmeshlayerproperties.h"
 #include "qgsmaplayerconfigwidget.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgstiledmeshlayer.h"
 #include "qgsmetadatawidget.h"
 #include "qgsapplication.h"
@@ -76,8 +75,6 @@ QgsTiledMeshLayerProperties::QgsTiledMeshLayerProperties( QgsTiledMeshLayer *lay
                        mOptStackedWidget->indexOf( mOptsPage_Information ) );
   }
 
-  QString title = tr( "Layer Properties - %1" ).arg( mLayer->name() );
-
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
   menuStyle->addAction( tr( "Load Style…" ), this, &QgsTiledMeshLayerProperties::loadStyleFromFile );
@@ -111,9 +108,7 @@ QgsTiledMeshLayerProperties::QgsTiledMeshLayerProperties( QgsTiledMeshLayer *lay
 
   mBackupCrs = mLayer->crs();
 
-  if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
-    title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
-  restoreOptionsBaseUi( title );
+  initialize();
 }
 
 void QgsTiledMeshLayerProperties::apply()

@@ -154,11 +154,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
-  QString title = tr( "Layer Properties — %1" ).arg( lyr->name() );
-
-  if ( !mMeshLayer->styleManager()->isDefault( mMeshLayer->styleManager()->currentStyle() ) )
-    title += QStringLiteral( " (%1)" ).arg( mMeshLayer->styleManager()->currentStyle() );
-  restoreOptionsBaseUi( title );
+  initialize();
 }
 
 void QgsMeshLayerProperties::syncToLayer()

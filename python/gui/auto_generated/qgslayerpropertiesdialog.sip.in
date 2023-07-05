@@ -109,6 +109,12 @@ Reloads the default style for the layer.
 
   protected:
 
+    void initialize();
+%Docstring
+Initialize the dialog. Must be called in the subclass constructor
+as the final call.
+%End
+
     void refocusDialog();
 %Docstring
 Ensures the dialog is focused and activated.

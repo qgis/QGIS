@@ -125,6 +125,12 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
   protected:
 
     /**
+     * Initialize the dialog. Must be called in the subclass constructor
+     * as the final call.
+     */
+    void initialize();
+
+    /**
      * Ensures the dialog is focused and activated.
      */
     void refocusDialog();
@@ -180,6 +186,11 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     void openUrl( const QUrl &url );
 
   private:
+
+    /**
+     * Generates the window title for the dialog.
+     */
+    QString generateDialogTitle() const;
 
     QPointer< QgsMapLayer> mLayer;
 

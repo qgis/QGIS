@@ -109,8 +109,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     void saveStyleAs();
 
   protected slots:
-    //! \brief auto slot executed when the active page in the main widget stack is changed
-    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
+    void optionsStackedWidget_CurrentChanged( int index ) FINAL;
     void apply() FINAL;
     void rollback() FINAL;
 
