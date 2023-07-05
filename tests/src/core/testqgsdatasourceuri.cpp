@@ -500,6 +500,20 @@ void TestQgsDataSourceUri::checkAuthParams()
   uri5.setEncodedUri( QStringLiteral( "zmax=14&zmin=0&styleUrl=http://localhost:8000/&f=application/vnd.geoserver.mbstyle+json" ) );
   QCOMPARE( uri5.param( QStringLiteral( "f" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
 
+  // round trip through encodedUri/setEncodedUri should not lose "%2B" or "+"
+  QgsDataSourceUri uri6;
+  uri6.setParam( QStringLiteral( "percent" ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
+  uri6.setParam( QStringLiteral( "explicit" ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+  QCOMPARE( uri6.param( QStringLiteral( "percent" ) ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
+  QCOMPARE( uri6.param( QStringLiteral( "explicit" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+
+  const QByteArray encodedTwo = uri6.encodedUri();
+
+  QgsDataSourceUri uri7;
+  uri7.setEncodedUri( encodedTwo );
+  QCOMPARE( uri7.param( QStringLiteral( "percent" ) ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
+  QCOMPARE( uri7.param( QStringLiteral( "explicit" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+
 }
 
 void TestQgsDataSourceUri::checkParameterKeys()
