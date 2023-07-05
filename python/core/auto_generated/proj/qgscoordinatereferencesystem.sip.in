@@ -808,9 +808,14 @@ Attempts to retrieve datum ensemble details from the CRS.
 If the CRS does not use a datum ensemble then an invalid :py:class:`QgsDatumEnsemble` will
 be returned.
 
+.. note::
+
+   In the case of a compound crs, this method will always return the datum ensemble for the horizontal component.
+
 .. warning::
 
    This method requires PROJ 8.0 or later
+
 
 :raises QgsNotSupportedException: on QGIS builds based on PROJ 7 or earlier.
 
@@ -967,6 +972,10 @@ Returns an ordered list of the axis directions reflecting the native axis order 
     Qgis::DistanceUnit mapUnits() const;
 %Docstring
 Returns the units for the projection used by the CRS.
+
+.. note::
+
+   In the case of a compound CRS, this method will always return the units for the horizontal component.
 %End
 
     QgsRectangle bounds() const;
