@@ -28,7 +28,7 @@ QgsTiledMeshLayerRenderer::QgsTiledMeshLayerRenderer( QgsTiledMeshLayer *layer, 
 {
   // We must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
   // or use some locking to prevent read/write from multiple threads
-  if ( !layer || !layer->dataProvider() ) // || !layer->renderer() )
+  if ( !layer->dataProvider() ) // || !layer->renderer() )
     return;
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
