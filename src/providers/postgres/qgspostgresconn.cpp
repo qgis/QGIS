@@ -157,11 +157,13 @@ QgsPoolPostgresConn::~QgsPoolPostgresConn()
 
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRW;
+QRecursiveMutex QgsPostgresConn::sLock;
 
 const int QgsPostgresConn::GEOM_TYPE_SELECT_LIMIT = 100;
 
 QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool readonly, bool shared, bool transaction, bool allowRequestCredentials )
 {
+  QMutexLocker locker( &sLock );
   QMap<QString, QgsPostgresConn *> &connections =
     readonly ? QgsPostgresConn::sConnectionsRO : QgsPostgresConn::sConnectionsRW;
 
@@ -171,7 +173,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   {
     // sharing connection between threads is not safe
     // See https://github.com/qgis/QGIS/issues/21205
-    shared = false;
+    // shared = false;
   }
 
   QgsPostgresConn *conn;

@@ -173,7 +173,8 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     return;
   }
 
-  mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ) );
+  bool isAppThread = QApplication::instance()->thread() == QThread::currentThread();
+  mConnectionRO = QgsPostgresConn::connectDb( mUri, true, isAppThread, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ) );
   if ( !mConnectionRO )
   {
     return;
@@ -295,6 +296,11 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   {
     mUri.setKeyColumn( key );
     setDataSourceUri( mUri.uri( false ) );
+    if ( !isAppThread )
+    {
+      mConnectionRO->unref();
+      mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ) );
+    }
   }
   else
   {

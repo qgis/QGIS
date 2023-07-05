@@ -527,6 +527,7 @@ class QgsPostgresConn : public QObject
 
     static QMap<QString, QgsPostgresConn *> sConnectionsRW;
     static QMap<QString, QgsPostgresConn *> sConnectionsRO;
+    static QRecursiveMutex sLock;
 
     //! Count number of spatial columns in a given relation
     void addColumnInfo( QgsPostgresLayerProperty &layerProperty, const QString &schemaName, const QString &viewName, bool fetchPkCandidates );
