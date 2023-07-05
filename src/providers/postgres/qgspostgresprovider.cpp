@@ -174,6 +174,11 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   }
 
   bool isAppThread = QApplication::instance()->thread() == QThread::currentThread();
+  // if isAppThread is false: It might make sense to create a temporary connection
+  // here or take it from the connection pool. Something like this:
+  //   mConnectionRO = new QgsPostgresConn( .... );
+  //   mConnectionRO = QgsPostgresConnPool::instance()->acquireConnection( .... );
+  // this will avoid sLock in QgsPostgresConn::connectDb
   mConnectionRO = QgsPostgresConn::connectDb( mUri, true, isAppThread, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ) );
   if ( !mConnectionRO )
   {
