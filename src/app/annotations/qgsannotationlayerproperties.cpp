@@ -15,7 +15,6 @@
 
 #include "qgsannotationlayerproperties.h"
 #include "qgshelp.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
@@ -61,8 +60,6 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
                        mOptStackedWidget->indexOf( mOptsPage_Information ) );
   }
 
-  QString title = tr( "Layer Properties - %1" ).arg( mLayer->name() );
-
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
   menuStyle->addAction( tr( "Load Style…" ), this, &QgsAnnotationLayerProperties::loadStyleFromFile );
@@ -77,9 +74,7 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
 
   mBackupCrs = mLayer->crs();
 
-  if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
-    title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
-  restoreOptionsBaseUi( title );
+  initialize();
 }
 
 QgsAnnotationLayerProperties::~QgsAnnotationLayerProperties() = default;
