@@ -485,6 +485,16 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
     return d->mIsValid;
   }
 
+  // Try loading from Proj's db using authority and code
+  // While this CRS wasn't found in QGIS' srs db, it may be present in proj's
+  if ( !authority.isEmpty() && !code.isEmpty() && loadFromAuthCode( authority, code ) )
+  {
+    locker.changeMode( QgsReadWriteLocker::Write );
+    if ( !sDisableOgcCache )
+      sOgcCache()->insert( crs, *this );
+    return d->mIsValid;
+  }
+
   locker.changeMode( QgsReadWriteLocker::Write );
   if ( !sDisableOgcCache )
     sOgcCache()->insert( crs, QgsCoordinateReferenceSystem() );
@@ -2305,15 +2315,6 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   if ( !crs )
   {
     return false;
-  }
-
-  switch ( proj_get_type( crs.get() ) )
-  {
-    case PJ_TYPE_VERTICAL_CRS:
-      return false;
-
-    default:
-      break;
   }
 
   crs = QgsProjUtils::crsToSingleCrs( crs.get() );
