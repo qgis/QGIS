@@ -181,6 +181,8 @@ class CORE_EXPORT QgsProjUtils
     /**
      * Given a PROJ \a crs, attempt to retrieve the datum ensemble from it.
      *
+     * \note In the case of a compound \a crs, this method will always return the datum ensemble for the horizontal component.
+     *
      * \warning This method requires PROJ 8.0 or later
      *
      * \throws QgsNotSupportedException on QGIS builds based on PROJ 7 or earlier.

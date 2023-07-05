@@ -1652,7 +1652,17 @@ void QgsCoordinateReferenceSystem::setMapUnits()
   }
 
   PJ_CONTEXT *context = QgsProjContext::get();
-  QgsProjUtils::proj_pj_unique_ptr crs( QgsProjUtils::crsToSingleCrs( d->threadLocalProjObject() ) );
+  // prefer horizontal CRS units, if present
+  QgsProjUtils::proj_pj_unique_ptr crs( QgsProjUtils::crsToHorizontalCrs( d->threadLocalProjObject() ) );
+  if ( !crs )
+    crs = QgsProjUtils::crsToSingleCrs( d->threadLocalProjObject() );
+
+  if ( !crs )
+  {
+    d->mMapUnits = Qgis::DistanceUnit::Unknown;
+    return;
+  }
+
   QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( context, crs.get() ) );
   if ( !coordinateSystem )
   {

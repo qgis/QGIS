@@ -145,9 +145,12 @@ bool QgsProjUtils::isDynamic( const PJ *crs )
   bool isDynamic = false;
   PJ_CONTEXT *context = QgsProjContext::get();
 
-  proj_pj_unique_ptr horiz = crsToSingleCrs( crs );
+  // prefer horizontal crs if possible
+  proj_pj_unique_ptr candidate = crsToHorizontalCrs( crs );
+  if ( !crs )
+    candidate = crsToSingleCrs( crs );
 
-  proj_pj_unique_ptr datum( horiz ? proj_crs_get_datum( context, horiz.get() ) : nullptr );
+  proj_pj_unique_ptr datum( candidate ? proj_crs_get_datum( context, candidate.get() ) : nullptr );
   if ( datum )
   {
     const PJ_TYPE type = proj_get_type( datum.get() );
@@ -165,7 +168,7 @@ bool QgsProjUtils::isDynamic( const PJ *crs )
   }
   else
   {
-    proj_pj_unique_ptr ensemble( horiz ? proj_crs_get_datum_ensemble( context, horiz.get() ) : nullptr );
+    proj_pj_unique_ptr ensemble( candidate ? proj_crs_get_datum_ensemble( context, candidate.get() ) : nullptr );
     if ( ensemble )
     {
       proj_pj_unique_ptr member( proj_datum_ensemble_get_member( context, ensemble.get(), 0 ) );
@@ -243,7 +246,7 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs
 
 #if PROJ_VERSION_MAJOR>=8
   PJ_CONTEXT *context = QgsProjContext::get();
-  QgsProjUtils::proj_pj_unique_ptr singleCrs = crsToSingleCrs( crs );
+  QgsProjUtils::proj_pj_unique_ptr singleCrs = crsToHorizontalCrs( crs );
   if ( !singleCrs )
     return nullptr;
 

@@ -745,6 +745,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * If the CRS does not use a datum ensemble then an invalid QgsDatumEnsemble will
      * be returned.
      *
+     * \note In the case of a compound crs, this method will always return the datum ensemble for the horizontal component.
+     *
      * \warning This method requires PROJ 8.0 or later
      *
      * \throws QgsNotSupportedException on QGIS builds based on PROJ 7 or earlier.
@@ -891,6 +893,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Returns the units for the projection used by the CRS.
+     *
+     * \note In the case of a compound CRS, this method will always return the units for the horizontal component.
      */
     Qgis::DistanceUnit mapUnits() const;
 
