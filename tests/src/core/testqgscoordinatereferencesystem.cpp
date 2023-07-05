@@ -42,6 +42,8 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void idCtor();
     void copyCtor();
     void assignmentCtor();
+    void compoundCrs();
+    void verticalCrs();
     void coordinateEpoch();
     void saveAsUserCrs();
     void createFromId();
@@ -252,6 +254,26 @@ void TestQgsCoordinateReferenceSystem::assignmentCtor()
   myCrs3.setCoordinateEpoch( 2021.2 );
   QCOMPARE( myCrs.coordinateEpoch(), 2021.3 );
   QCOMPARE( myCrs3.coordinateEpoch(), 2021.2 );
+}
+
+void TestQgsCoordinateReferenceSystem::compoundCrs()
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( QStringLiteral( "EPSG:5500" ) );
+  QVERIFY( crs.isValid() );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5500" ) );
+  QVERIFY( crs.isValid() );
+}
+
+void TestQgsCoordinateReferenceSystem::verticalCrs()
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( QStringLiteral( "EPSG:5703" ) );
+  QVERIFY( crs.isValid() );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) );
+  QVERIFY( crs.isValid() );
 }
 
 void TestQgsCoordinateReferenceSystem::coordinateEpoch()
