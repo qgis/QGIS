@@ -35,6 +35,8 @@ class TestQgsProjUtils: public QObject
     void axisOrderIsSwapped();
     void searchPath();
     void gridsUsed();
+    void toHorizontalCrs();
+    void toSingleCrs();
 
 };
 
@@ -114,6 +116,46 @@ void TestQgsProjUtils::gridsUsed()
   QCOMPARE( grids.at( 0 ).shortName, QStringLiteral( "au_icsm_GDA94_GDA2020_conformal_and_distortion.tif" ) );
   QVERIFY( grids.at( 0 ).directDownload );
   QVERIFY( !grids.at( 0 ).url.isEmpty() );
+}
+
+void TestQgsProjUtils::toHorizontalCrs()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+
+  // compound crs
+  QgsProjUtils::proj_pj_unique_ptr crs( proj_create( context, "urn:ogc:def:crs:EPSG::5500" ) );
+  QgsProjUtils::proj_pj_unique_ptr horizontalCrs( QgsProjUtils::crsToHorizontalCrs( crs.get() ) );
+  QCOMPARE( QString( proj_get_id_code( horizontalCrs.get(), 0 ) ), QStringLiteral( "4759" ) );
+
+  // horizontal CRS
+  crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::4759" ) );
+  horizontalCrs = QgsProjUtils::crsToHorizontalCrs( crs.get() );
+  QCOMPARE( QString( proj_get_id_code( horizontalCrs.get(), 0 ) ), QStringLiteral( "4759" ) );
+
+  // vertical only CRS
+  crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::5703" ) );
+  horizontalCrs = QgsProjUtils::crsToHorizontalCrs( crs.get() );
+  QVERIFY( !horizontalCrs );
+}
+
+void TestQgsProjUtils::toSingleCrs()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+
+  // compound crs
+  QgsProjUtils::proj_pj_unique_ptr crs( proj_create( context, "urn:ogc:def:crs:EPSG::5500" ) );
+  QgsProjUtils::proj_pj_unique_ptr singleCrs( QgsProjUtils::crsToSingleCrs( crs.get() ) );
+  QCOMPARE( QString( proj_get_id_code( singleCrs.get(), 0 ) ), QStringLiteral( "5500" ) );
+
+  // horizontal CRS
+  crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::4759" ) );
+  singleCrs = QgsProjUtils::crsToSingleCrs( crs.get() );
+  QCOMPARE( QString( proj_get_id_code( singleCrs.get(), 0 ) ), QStringLiteral( "4759" ) );
+
+  // vertical only CRS
+  crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::5703" ) );
+  singleCrs = QgsProjUtils::crsToSingleCrs( crs.get() );
+  QCOMPARE( QString( proj_get_id_code( singleCrs.get(), 0 ) ), QStringLiteral( "5703" ) );
 }
 
 QGSTEST_MAIN( TestQgsProjUtils )
