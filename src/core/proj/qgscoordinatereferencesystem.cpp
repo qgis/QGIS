@@ -1313,6 +1313,7 @@ QString QgsCoordinateReferenceSystem::toProj() const
 
 Qgis::CrsType QgsCoordinateReferenceSystem::type() const
 {
+  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( d->mProjType )
   {
     case PJ_TYPE_UNKNOWN:
@@ -1363,6 +1364,7 @@ Qgis::CrsType QgsCoordinateReferenceSystem::type() const
       return Qgis::CrsType::Other;
   }
   return Qgis::CrsType::Unknown;
+  // NOLINTEND(bugprone-branch-clone)
 }
 
 bool QgsCoordinateReferenceSystem::isGeographic() const
