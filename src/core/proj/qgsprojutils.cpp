@@ -180,7 +180,7 @@ bool QgsProjUtils::isDynamic( const PJ *crs )
   return isDynamic;
 }
 
-QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
+QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToHorizontalCrs( const PJ *crs )
 {
   if ( !crs )
     return nullptr;
@@ -188,9 +188,6 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
   PJ_CONTEXT *context = QgsProjContext::get();
   switch ( proj_get_type( crs ) )
   {
-    case PJ_TYPE_BOUND_CRS:
-      return QgsProjUtils::proj_pj_unique_ptr( proj_get_source_crs( context, crs ) );
-
     case PJ_TYPE_COMPOUND_CRS:
     {
       int i = 0;
@@ -202,6 +199,31 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
       }
       return res;
     }
+
+    case PJ_TYPE_VERTICAL_CRS:
+      return nullptr;
+
+    // maybe other types to handle??
+
+    default:
+      return crsToSingleCrs( crs );
+  }
+
+#ifndef _MSC_VER  // unreachable
+  return nullptr;
+#endif
+}
+
+QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
+{
+  if ( !crs )
+    return nullptr;
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  switch ( proj_get_type( crs ) )
+  {
+    case PJ_TYPE_BOUND_CRS:
+      return QgsProjUtils::proj_pj_unique_ptr( proj_get_source_crs( context, crs ) );
 
     // maybe other types to handle??
 

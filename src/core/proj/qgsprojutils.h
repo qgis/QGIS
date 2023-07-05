@@ -165,6 +165,14 @@ class CORE_EXPORT QgsProjUtils
     static bool isDynamic( const PJ *crs );
 
     /**
+     * Given a PROJ crs (which may be a compound or bound crs, or some other type), extract the horizontal crs
+     * from it.
+     *
+     * If \a crs does not contain a horizontal CRS (i.e. it is a vertical CRS) NULLPTR will be returned.
+     */
+    static proj_pj_unique_ptr crsToHorizontalCrs( const PJ *crs );
+
+    /**
      * Given a PROJ crs (which may be a compound or bound crs, or some other type), extract a single crs
      * from it.
      */
