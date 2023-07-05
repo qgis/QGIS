@@ -1432,6 +1432,14 @@ void TestQgsCoordinateReferenceSystem::mapUnits()
   myCrs.createFromString( QStringLiteral( "EPSG:4619" ) );
   QCOMPARE( myCrs.mapUnits(), Qgis::DistanceUnit::Degrees );
 
+  // compound CRS
+  myCrs.createFromString( QStringLiteral( "EPSG:5500" ) );
+  QCOMPARE( myCrs.mapUnits(), Qgis::DistanceUnit::Degrees );
+
+  // vertical CRS
+  myCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:5703" ) );
+  QCOMPARE( myCrs.mapUnits(), Qgis::DistanceUnit::Meters );
+
   // custom CRS using "m" unit keyword
   myCrs.createFromWkt( QStringLiteral( R"""(PROJCS["MGI / Austria Lambert", GEOGCS["MGI", DATUM["Militar-Geographische Institut", SPHEROID["Bessel 1841", 6377397.155, 299.1528128, AUTHORITY["EPSG","7004"]], TOWGS84[601.705, 84.263, 485.227, 4.7354, -1.3145, -5.393, -2.3887], AUTHORITY["EPSG","6312"]], PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]], UNIT["degree", 0.017453292519943295], AXIS["Geodetic longitude", EAST], AXIS["Geodetic latitude", NORTH], AUTHORITY["EPSG","4312"]], PROJECTION["Lambert_Conformal_Conic_2SP", AUTHORITY["EPSG","9802"]], PARAMETER["central_meridian", 13.333333333333336], PARAMETER["latitude_of_origin", 47.5], PARAMETER["standard_parallel_1", 48.99999999999999], PARAMETER["false_easting", 400000.0], PARAMETER["false_northing", 400000.0], PARAMETER["scale_factor", 1.0], PARAMETER["standard_parallel_2", 46.0], UNIT["m", 1.0], AXIS["Easting", EAST], AXIS["Northing", NORTH], AUTHORITY["EPSG","31287"]])""" ) );
   QVERIFY( myCrs.isValid() );
