@@ -781,10 +781,21 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
 
 QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const
 {
+  QJsonObject json;
+  if ( mItem.scaleMaxDenom() > 0 )
+  {
+    json[ QStringLiteral( "scaleMaxDenom" ) ] = mItem.scaleMaxDenom();
+  }
+  if ( mItem.scaleMinDenom() > 0 )
+  {
+    json[ QStringLiteral( "scaleMinDenom" ) ] = mItem.scaleMinDenom();
+  }
+  mItem.scaleMaxDenom();
+
   const QgsSymbol *s = mCustomSymbol ? mCustomSymbol.get() : mItem.symbol();
   if ( !s )
   {
-    return QJsonObject();
+    return json;
   }
 
 
@@ -826,17 +837,7 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   img.save( &buffer, "PNG" );
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
-  QJsonObject json;
   json[ QStringLiteral( "icon" ) ] = base64;
-  if ( mItem.scaleMaxDenom() > 0 )
-  {
-    json[ QStringLiteral( "scaleMaxDenom" ) ] = mItem.scaleMaxDenom();
-  }
-  if ( mItem.scaleMinDenom() > 0 )
-  {
-    json[ QStringLiteral( "scaleMinDenom" ) ] = mItem.scaleMinDenom();
-  }
-  mItem.scaleMaxDenom();
   return json;
 }
 
