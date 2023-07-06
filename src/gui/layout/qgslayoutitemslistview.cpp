@@ -135,9 +135,13 @@ void QgsLayoutItemsListView::updateSelection()
 
   // Build the list of selected items
   QList<QgsLayoutItem *> selectedItems;
-  for ( QModelIndex index : selectionModel()->selectedIndexes() )
+  for ( const QModelIndex &index : selectionModel()->selectedIndexes() )
+  {
     if ( QgsLayoutItem *item = mModel->itemFromIndex( index ) )
+    {
       selectedItems << item;
+    }
+  }
 
 
   bool itemSelected = false;
@@ -199,18 +203,16 @@ void QgsLayoutItemsListView::onItemFocused( QgsLayoutItem *focusedItem )
   }
 
   // Select rows in the item list for every selected items in the graphics view
-  for ( QgsLayoutItem *item : mLayout->itemsModel()->zOrderList() )
+  const QList< QgsLayoutItem *> selectedItems = mLayout->selectedLayoutItems();
+  for ( QgsLayoutItem *item : selectedItems )
   {
-    if ( item->isSelected() )
+    const QModelIndex firstCol = mModel->indexForItem( item );
+    if ( firstCol.isValid() )
     {
-      QModelIndex firstCol = mModel->indexForItem( item );
-      if ( firstCol.isValid() )
-      {
-        // Select the whole row
-        QItemSelection selection;
-        selection.select( firstCol, firstCol.siblingAtColumn( mModel->columnCount( firstCol.parent() ) - 1 ) );
-        selectionModel()->select( selection, QItemSelectionModel::Select );
-      }
+      // Select the whole row
+      QItemSelection selection;
+      selection.select( firstCol, firstCol.siblingAtColumn( mModel->columnCount( firstCol.parent() ) - 1 ) );
+      selectionModel()->select( selection, QItemSelectionModel::Select );
     }
   }
   // Reset the updating flag
