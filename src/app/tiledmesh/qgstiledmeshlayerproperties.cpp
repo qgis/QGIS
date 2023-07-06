@@ -65,7 +65,7 @@ QgsTiledMeshLayerProperties::QgsTiledMeshLayerProperties( QgsTiledMeshLayer *lay
 
   setMetadataWidget( mMetadataWidget, mOptsPage_Metadata );
 
-  // update based on lyr's current state
+  // update based on layer's current state
   syncToLayer();
 
   QgsSettings settings;
@@ -142,9 +142,7 @@ void QgsTiledMeshLayerProperties::syncToLayer()
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
 
-  /*
-   * Information Tab
-   */
+  // information Tab
   QString myStyle = QgsApplication::reportStyleSheet();
   myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
   mInformationTextBrowser->clear();
