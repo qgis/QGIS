@@ -275,6 +275,15 @@ Creates a new geometry from a :py:class:`QgsMultiPolygonXY`.
 %Docstring
 Creates a new geometry from a :py:class:`QgsRectangle`
 %End
+
+    static QgsGeometry fromBox3D( const QgsBox3D &box ) /HoldGIL/;
+%Docstring
+Creates a new geometry from a :py:class:`QgsBox3D` object
+
+.. versionadded:: 3.34
+%End
+
+
     static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 %Docstring
 Creates a new multipart geometry from a list of QgsGeometry objects

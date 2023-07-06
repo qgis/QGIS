@@ -325,6 +325,15 @@ class CORE_EXPORT QgsGeometry
 
     //! Creates a new geometry from a QgsRectangle
     static QgsGeometry fromRect( const QgsRectangle &rect ) SIP_HOLDGIL;
+
+    /**
+     * Creates a new geometry from a QgsBox3D object
+     *
+     * \since QGIS 3.34
+     */
+    static QgsGeometry fromBox3D( const QgsBox3D &box ) SIP_HOLDGIL;
+
+
     //! Creates a new multipart geometry from a list of QgsGeometry objects
     static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 

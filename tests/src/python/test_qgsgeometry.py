@@ -27,6 +27,7 @@ from qgis.PyQt.QtGui import (
 from qgis.core import (
     Qgis,
     QgsAbstractGeometryTransformer,
+    QgsBox3D,
     QgsCircle,
     QgsCircularString,
     QgsCompoundCurve,
@@ -272,6 +273,10 @@ class TestQgsGeometry(QgisTestCase):
               QgsPointXY(2, 2)]]
         ])
         self.assertEqual(myMultiPolygon.wkbType(), QgsWkbTypes.MultiPolygon)
+
+    def testFromBox3D(self):
+        myBox3D = QgsGeometry.fromBox3D(QgsBox3D(1, 2, 3, 4, 5, 6))
+        self.assertEqual(myBox3D.asWkt(), "MultiPolygonZ (((1 2 3, 1 5 3, 4 5 3, 4 2 3, 1 2 3)),((1 2 3, 1 5 3, 1 5 6, 1 2 6, 1 2 3)),((1 2 3, 4 2 3, 4 2 6, 1 2 6, 1 2 3)),((4 5 6, 4 2 6, 1 2 6, 1 5 6, 4 5 6)),((4 5 6, 4 2 6, 4 2 3, 4 5 3, 4 5 6)),((4 5 6, 4 5 3, 1 5 3, 1 5 6, 4 5 6)))")
 
     def testLineStringPythonAdditions(self):
         """
