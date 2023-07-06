@@ -27,6 +27,8 @@
  *
  * Specific tiled mesh data provider classes will also implement their own
  * QgsProviderMetadata.
+ *
+ * \since QGIS 3.34
  */
 class QgsTiledMeshProviderMetadata : public QgsProviderMetadata
 {
