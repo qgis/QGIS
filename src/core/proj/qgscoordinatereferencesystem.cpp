@@ -2306,6 +2306,9 @@ void getOperationAndEllipsoidFromProjString( const QString &proj, QString &opera
 
 bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const QString &code )
 {
+  if ( !QgsApplication::coordinateReferenceSystemRegistry()->authorities().contains( auth.toLower() ) )
+    return false;
+
   d.detach();
   d->mIsValid = false;
   d->mWktPreferred.clear();
