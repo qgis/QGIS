@@ -494,7 +494,7 @@ class TestQgsProject(QgisTestCase):
 
     # fails on qt5 due to removeMapLayers list type conversion - needs a PyName alias
     # added to removeMapLayers for QGIS 3.0
-    @unittest.expectedFailure(QT_VERSION_STR[0] == '5')
+    @QgisTestCase.expectedFailure(QT_VERSION_STR[0] == '5')
     def test_removeMapLayersByLayer(self):
         """ test removing map layers by layer"""
         QgsProject.instance().removeAllMapLayers()

@@ -120,7 +120,7 @@ class TestQgsEditFormConfig(QgisTestCase):
 
     # Failing on Travis, seg fault in event loop, no idea why
     """
-    @unittest.expectedFailure
+    @QgisTestCase.expectedFailure
     def testFormPy(self):
         layer = self.createLayer()
         config = layer.editFormConfig()
