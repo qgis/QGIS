@@ -220,13 +220,13 @@ class QgisTestCase(unittest.TestCase):
             result_wkt = layer_result.dataProvider().crs().toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
 
             if use_asserts:
-                self.assertEqual(self, layer_expected.dataProvider().crs(), layer_result.dataProvider().crs())
+                self.assertEqual(layer_expected.dataProvider().crs(), layer_result.dataProvider().crs())
             elif layer_expected.dataProvider().crs() != layer_result.dataProvider().crs():
                 return False
 
         # Compare features
         if use_asserts:
-            self.assertEqual(self, layer_expected.featureCount(), layer_result.featureCount())
+            self.assertEqual(layer_expected.featureCount(), layer_result.featureCount())
         elif layer_expected.featureCount() != layer_result.featureCount():
             return False
 
