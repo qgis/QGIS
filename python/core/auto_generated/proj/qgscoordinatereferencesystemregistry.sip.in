@@ -136,6 +136,17 @@ Returns a list of all known celestial bodies.
 .. versionadded:: 3.20
 %End
 
+    QSet< QString > authorities() const;
+%Docstring
+Returns a list of all known authorities.
+
+.. note::
+
+   authority names will always be returned in lower case
+
+.. versionadded:: 3.34
+%End
+
   signals:
 
     void userCrsChanged( const QString &id );
