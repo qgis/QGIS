@@ -4076,4 +4076,3 @@ bool QgsGeometry::Error::hasWhere() const
 {
   return mHasLocation;
 }
-
