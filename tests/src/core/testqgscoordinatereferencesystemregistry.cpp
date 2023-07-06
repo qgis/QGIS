@@ -35,6 +35,7 @@ class TestQgsCoordinateReferenceSystemRegistry: public QObject
     void changeUserCrs();
     void removeUserCrs();
     void projOperations();
+    void authorities();
 
   private:
 
@@ -314,6 +315,15 @@ void TestQgsCoordinateReferenceSystemRegistry::projOperations()
   QCOMPARE( operations.value( QStringLiteral( "lcc" ) ).id(), QStringLiteral( "lcc" ) );
   QCOMPARE( operations.value( QStringLiteral( "lcc" ) ).description(), QStringLiteral( "Lambert Conformal Conic" ) );
   QVERIFY( operations.value( QStringLiteral( "lcc" ) ).details().contains( QStringLiteral( "Conic" ) ) );
+}
+
+void TestQgsCoordinateReferenceSystemRegistry::authorities()
+{
+  const QSet< QString > authorities = QgsApplication::coordinateReferenceSystemRegistry()->authorities();
+
+  QVERIFY( authorities.contains( QStringLiteral( "epsg" ) ) );
+  QVERIFY( authorities.contains( QStringLiteral( "proj" ) ) );
+  QVERIFY( authorities.contains( QStringLiteral( "esri" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystemRegistry )
