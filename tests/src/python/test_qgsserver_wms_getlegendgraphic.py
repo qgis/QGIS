@@ -33,6 +33,8 @@ import osgeo.gdal  # NOQA
 from test_qgsserver_wms import TestQgsServerWMSTestBase
 from qgis.core import (
     QgsProject,
+    QgsSymbol,
+    QgsWkbTypes,
     QgsMarkerSymbol,
     QgsRuleBasedRenderer,
     QgsVectorLayer,
@@ -42,7 +44,6 @@ from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
-    QgsServerRequest,
 )
 
 # Strip path and content length because path may vary
@@ -1285,6 +1286,61 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         node = j['nodes'][0]
         self.assertEqual(node['scaleMaxDenom'], 1000)
         self.assertEqual(node['scaleMinDenom'], 10000)
+
+    def test_json_rule_based_max_min_scale_without_symbol(self):
+        """ Test min/max scale in rule based json export when a rule doesn't have a symbol. """
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+
+        # Rule with symbol
+        high_scale_rule = QgsRuleBasedRenderer.Rule(
+            QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry),
+            minimumScale=25000, maximumScale=1000, label='high-scale')
+        root_rule.appendChild(high_scale_rule)
+
+        # Rule without symbol
+        low_scale_rule = QgsRuleBasedRenderer.Rule(None, minimumScale=100000, maximumScale=25000, label='low-scale')
+
+        # Sub-rule with a symbol
+        sub_rule = QgsRuleBasedRenderer.Rule(
+            QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry), label='low-scale-sub')
+
+        low_scale_rule.appendChild(sub_rule)
+        root_rule.appendChild(low_scale_rule)
+
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
+        layer.setRenderer(QgsRuleBasedRenderer(root_rule))
+
+        project = QgsProject()
+        project.addMapLayer(layer)
+
+        server = QgsServer()
+        request = QgsBufferServerRequest(
+            "/?"
+            "SERVICE=WMS&"
+            "VERSION=1.3.0&"
+            "REQUEST=GetLegendGraphic&"
+            "LAYERS=layer1&"
+            "FORMAT=application/json"
+        )
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        result = json.loads(bytes(response.body()))
+
+        node = result['nodes'][0]['symbols']
+
+        # With icon
+        first_rule = node[0]
+        self.assertEqual(first_rule['scaleMaxDenom'], 25000)
+        self.assertEqual(first_rule['scaleMinDenom'], 1000)
+        self.assertEqual(first_rule['title'], 'high-scale')
+        self.assertIn('icon', first_rule)
+
+        # Without icon
+        second_rule = node[1]
+        self.assertEqual(second_rule['scaleMaxDenom'], 100000)
+        self.assertEqual(second_rule['scaleMinDenom'], 25000)
+        self.assertEqual(second_rule['title'], 'low-scale')
+        self.assertNotIn('icon', second_rule)
 
     def testLegendPlaceholderIcon(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
