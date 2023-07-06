@@ -39,7 +39,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QVariant
 from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse
-from qgis.testing import unittest
+from qgis.testing import unittest, QgisTestCase
 from test_qgsserver_wms import TestQgsServerWMSTestBase
 
 
