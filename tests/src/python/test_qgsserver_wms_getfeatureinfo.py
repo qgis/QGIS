@@ -261,7 +261,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
 
     # TODO make GetFeatureInfo show what's in the display expression and
     # enable test
-    @unittest.expectedFailure
+    @QgisTestCase.expectedFailure
     def testGetFeatureInfoRelationReference(self):
         """Test GetFeatureInfo solves "relation reference" widget "display expression" values"""
         mypath = self.testdata_path + "test_project_values.qgz"

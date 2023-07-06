@@ -157,7 +157,7 @@ class TestQgsActionManager(QgisTestCase):
             output = result.read()
         return output
 
-    @unittest.expectedFailure(platform.system() != 'Linux')
+    @QgisTestCase.expectedFailure(platform.system() != 'Linux')
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test is flaky on Travis environment')
     def testDoAction(self):
         """ test running action """

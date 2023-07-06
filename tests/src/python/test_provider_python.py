@@ -275,7 +275,7 @@ class TestPyQgsPythonProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(myPyLayer.fields().field('size').length(), 12)
         self.assertEqual(myPyLayer.fields().field('size').precision(), 9)
 
-    @unittest.expectedFailure("Handled layers are hardcoded")
+    @QgisTestCase.expectedFailure("Handled layers are hardcoded")
     def testSaveFields(self):
         # Create a new py layerwith no fields
         myPyLayer = QgsVectorLayer(
