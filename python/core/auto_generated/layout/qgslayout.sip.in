@@ -241,16 +241,14 @@ Note that template UUIDs are only available while a layout is being restored fro
 %Docstring
 Returns the topmost layout item at a specified ``position``. Ignores paper items.
 If ``ignoreLocked`` is set to ``True`` any locked items will be ignored.
-
-.. versionadded:: 3.32
+Since QGIS 3.34 the ``searchTolerance`` parameter was added, which can be used to specify a search tolerance in layout units.
 %End
 
     QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, bool ignoreLocked = false, double searchTolerance = 0 ) const;
 %Docstring
 Returns the topmost layout item at a specified ``position`` which is below a specified ``item``. Ignores paper items.
 If ``ignoreLocked`` is set to ``True`` any locked items will be ignored.
-
-.. versionadded:: 3.32
+Since QGIS 3.34 the ``searchTolerance`` parameter was added, which can be used to specify a search tolerance in layout units.
 %End
 
     void setUnits( Qgis::LayoutUnit units );

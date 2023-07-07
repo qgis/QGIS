@@ -303,14 +303,14 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     /**
      * Returns the topmost layout item at a specified \a position. Ignores paper items.
      * If \a ignoreLocked is set to TRUE any locked items will be ignored.
-     * \since QGIS 3.32 searchTolerance parameter was added, which can be used to specify a search tolerance in layout units
+     * Since QGIS 3.34 the \a searchTolerance parameter was added, which can be used to specify a search tolerance in layout units.
      */
     QgsLayoutItem *layoutItemAt( QPointF position, bool ignoreLocked = false, double searchTolerance = 0 ) const;
 
     /**
      * Returns the topmost layout item at a specified \a position which is below a specified \a item. Ignores paper items.
      * If \a ignoreLocked is set to TRUE any locked items will be ignored.
-     * \since QGIS 3.32 searchTolerance parameter was added, which can be used to specify a search tolerance in layout units
+     * Since QGIS 3.34 the \a searchTolerance parameter was added, which can be used to specify a search tolerance in layout units.
      */
     QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, bool ignoreLocked = false, double searchTolerance = 0 ) const;
 
