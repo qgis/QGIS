@@ -3573,7 +3573,18 @@ void QgsOgrProvider::open( OpenMode mode )
   else if ( mode == OpenModeSameAsCurrent && !mWriteAccess )
     openReadOnly = true;
 
-  const bool bIsGpkg = QFileInfo( mFilePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
+  // Do not try to open FileGeodatabase in update mode if not possible (cf https://github.com/OSGeo/gdal/pull/8075)
+  const QString fileSuffix( QFileInfo( mFilePath ).suffix() );
+  if ( !openReadOnly && fileSuffix.compare( QLatin1String( "gdb" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QFileInfo fiCatalogTable( mFilePath, "a00000001.gdbtable" );
+    if ( fiCatalogTable.exists() && !fiCatalogTable.isWritable() )
+    {
+      openReadOnly = true;
+    }
+  }
+
+  const bool bIsGpkg = fileSuffix.compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
   bool forceWAL = false;
