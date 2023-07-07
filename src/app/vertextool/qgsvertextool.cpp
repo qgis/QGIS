@@ -18,6 +18,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgscurve.h"
 #include "qgslinestring.h"
+#include "qgsgeometryoptions.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryvalidator.h"
 #include "qgsguiutils.h"
@@ -2259,6 +2260,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     // this requires that the snapping match is to a segment and the segment layer's CRS
     // is the same (otherwise we would need to reproject the point and it will not be coincident)
     const auto editKeys = edits.keys();
+    const double dragLayerPrecision = dragLayer->geometryOptions()->geometryPrecision();
     for ( QgsVectorLayer *layer : editKeys )
     {
       const auto editGeom = edits[layer].values();
@@ -2268,7 +2270,9 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
         if ( ( ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() && layer->crs() == mapPointMatch->layer()->crs() )
              || ( mapPointMatch->hasVertex() && !mapPointMatch->layer() && layer->crs() == mCanvas->mapSettings().destinationCrs() ) ) // also add topological points when snapped on intersection
         {
-          if ( g.convertToType( Qgis::GeometryType::Point, true ).contains( p ) )
+          QgsGeometry gAsPoints = g.convertToType( Qgis::GeometryType::Point, true );
+          if ( gAsPoints.contains( p )
+               || ( dragLayerPrecision > 0.0 && gAsPoints.distance( p ) < ( dragLayerPrecision / std::sqrt( 2 ) ) ) ) // if geometry precision enabled the layer point coordinates don't match exactly
           {
             if ( !layerPoint.is3D() )
               layerPoint.addZValue( defaultZValue() );
