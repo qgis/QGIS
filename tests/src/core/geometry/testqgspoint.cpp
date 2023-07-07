@@ -1212,7 +1212,3 @@ void TestQgsPoint::exportImport()
 
 QGSTEST_MAIN( TestQgsPoint )
 #include "testqgspoint.moc"
-
-
-
-
