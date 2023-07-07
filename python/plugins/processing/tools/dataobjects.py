@@ -73,7 +73,7 @@ def createContext(feedback=None):
     context.setInvalidGeometryCheck(invalid_features_method)
 
     settings = QgsSettings()
-    context.setDefaultEncoding(settings.value("/Processing/encoding", QgsProcessingUtils.resolveDefaultEncoding()))
+    context.setDefaultEncoding(QgsProcessingUtils.resolveDefaultEncoding(settings.value("/Processing/encoding")))
 
     context.setExpressionContext(createExpressionContext())
 
