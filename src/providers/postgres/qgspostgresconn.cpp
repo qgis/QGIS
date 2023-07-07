@@ -161,7 +161,7 @@ QRecursiveMutex QgsPostgresConn::sLock;
 
 const int QgsPostgresConn::GEOM_TYPE_SELECT_LIMIT = 100;
 
-QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool readonly, bool shared, bool transaction, bool allowRequestCredentials )
+QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool readonly, bool shared, bool transaction, bool allowRequestCredentials, bool forseUseShared )
 {
   QMutexLocker locker( &sLock );
   QMap<QString, QgsPostgresConn *> &connections =
@@ -169,11 +169,11 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
 
   // This is called from may places where shared parameter cannot be forced to false (QgsVectorLayerExporter)
   // and which is run in a different thread (drag and drop in browser)
-  if ( QApplication::instance()->thread() != QThread::currentThread() )
+  if ( !forseUseShared && QApplication::instance()->thread() != QThread::currentThread() )
   {
     // sharing connection between threads is not safe
     // See https://github.com/qgis/QGIS/issues/21205
-    // shared = false;
+    shared = false;
   }
 
   QgsPostgresConn *conn;
@@ -256,9 +256,9 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   return conn;
 }
 
-QgsPostgresConn *QgsPostgresConn::connectDb( const QgsDataSourceUri &uri, bool readonly, bool shared, bool transaction, bool allowRequestCredentials )
+QgsPostgresConn *QgsPostgresConn::connectDb( const QgsDataSourceUri &uri, bool readonly, bool shared, bool transaction, bool allowRequestCredentials, bool forseUseShared )
 {
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), readonly, shared, transaction, allowRequestCredentials );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), readonly, shared, transaction, allowRequestCredentials, forseUseShared );
   if ( !conn )
   {
     return conn;

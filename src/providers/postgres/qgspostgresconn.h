@@ -231,10 +231,11 @@ class QgsPostgresConn : public QObject
      * \param readOnly is the connection read only ?
      * \param shared allow using a shared connection if called from the same thread as the main one.
      * \param allowRequestCredentials allow credentials request through current QgsCredentials instance if the provided ones are not valid
+     * \param forseUseShared allow creating/using a shared connection if called from non-main thread.
      *
      * \returns the PostgreSQL connection
      */
-    static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false, bool allowRequestCredentials = true );
+    static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false, bool allowRequestCredentials = true, bool forseUseShared = false );
 
     /**
      * Get a new PostgreSQL connection
@@ -244,10 +245,11 @@ class QgsPostgresConn : public QObject
      * \param shared allow using a shared connection if called from the same thread as the main one.
      * \param transaction is the connection a transaction ?
      * \param allowRequestCredentials allow credentials request through current QgsCredentials instance if the provided ones are not valid
+     * \param forseUseShared allow creating/using a shared connection if called from non-main thread.
      *
      * \returns the PostgreSQL connection
      */
-    static QgsPostgresConn *connectDb( const QgsDataSourceUri &uri, bool readOnly, bool shared = true, bool transaction = false, bool allowRequestCredentials = true );
+    static QgsPostgresConn *connectDb( const QgsDataSourceUri &uri, bool readOnly, bool shared = true, bool transaction = false, bool allowRequestCredentials = true, bool forseUseShared = false );
 
 
     QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction, bool allowRequestCredentials = true );
