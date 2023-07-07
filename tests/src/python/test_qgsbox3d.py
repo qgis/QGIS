@@ -318,6 +318,7 @@ class TestQgsBox3d(unittest.TestCase):
     def testIsNull(self):
         box1 = QgsBox3d()
         self.assertTrue(box1.isNull())
+        self.assertTrue(box1.toRectangle().isNull())
 
         box2 = QgsBox3d(0, 0, 0, 0, 0, 0)
         self.assertFalse(box2.isNull())
