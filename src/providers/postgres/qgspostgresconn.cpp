@@ -497,6 +497,7 @@ void QgsPostgresConn::unref()
 
   if ( mShared )
   {
+    QMutexLocker staticLocker( &sLock );
     QMap<QString, QgsPostgresConn *> &connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
 
     int removed = connections.remove( mConnInfo );
@@ -512,6 +513,8 @@ void QgsPostgresConn::unref()
       ,
       2
     );
+
+    staticLocker.unlock();
   }
 
   // to avoid destroying locked mutex
