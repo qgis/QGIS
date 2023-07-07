@@ -187,7 +187,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="5">
+          <item row="1" column="0" colspan="6">
            <widget class="QgsCompoundColorWidget" name="mColorWidget" native="true">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
