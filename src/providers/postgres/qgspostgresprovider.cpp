@@ -174,12 +174,14 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   }
 
   bool isAppThread = QApplication::instance()->thread() == QThread::currentThread();
-  // if isAppThread is false: It might make sense to create a temporary connection
-  // here or take it from the connection pool. Something like this:
-  //   mConnectionRO = new QgsPostgresConn( .... );
-  //   mConnectionRO = QgsPostgresConnPool::instance()->acquireConnection( .... );
-  // this will avoid sLock in QgsPostgresConn::connectDb
-  mConnectionRO = QgsPostgresConn::connectDb( mUri, true, isAppThread, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ) );
+  if ( isAppThread )
+    mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ), false );
+  else
+    mConnectionRO = QgsPostgresConnPool::instance()->acquireConnection( mUri.connectionInfo( false ) );
+
+  // todo make mConnectionRO compatible with mUri.param( "session_role" )
+  // ??? copy qgspostgresconn.cpp l:267..291 ???
+
   if ( !mConnectionRO )
   {
     return;
@@ -193,7 +195,10 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
   if ( !hasSufficientPermsAndCapabilities() ) // check permissions and set capabilities
   {
-    disconnectDb();
+    if ( isAppThread )
+      disconnectDb();
+    else
+      QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
     return;
   }
 
@@ -201,7 +206,10 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   {
     // the table is not a geometry table
     QgsMessageLog::logMessage( tr( "Invalid PostgreSQL layer" ), tr( "PostGIS" ) );
-    disconnectDb();
+    if ( isAppThread )
+      disconnectDb();
+    else
+      QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
     return;
   }
 
@@ -214,7 +222,10 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     {
       QgsMessageLog::logMessage( tr( "Invalid PostgreSQL topology layer" ), tr( "PostGIS" ) );
       mValid = false;
-      disconnectDb();
+      if ( isAppThread )
+        disconnectDb();
+      else
+        QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
       return;
     }
   }
@@ -258,7 +269,10 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   {
     QgsMessageLog::logMessage( tr( "PostgreSQL layer has no primary key." ), tr( "PostGIS" ) );
     mValid = false;
-    disconnectDb();
+    if ( isAppThread )
+      disconnectDb();
+    else
+      QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
     return;
   }
 
@@ -303,13 +317,16 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     setDataSourceUri( mUri.uri( false ) );
     if ( !isAppThread )
     {
-      mConnectionRO->unref();
+      QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
       mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ), true );
     }
   }
   else
   {
-    disconnectDb();
+    if ( isAppThread )
+      disconnectDb();
+    else
+      QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
   }
 
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );

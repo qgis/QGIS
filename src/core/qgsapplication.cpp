@@ -154,7 +154,7 @@ const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = ne
 #include <sys/sysinfo.h>
 #endif
 
-#define CONN_POOL_MAX_CONCURRENT_CONNS      4
+#define CONN_POOL_MAX_CONCURRENT_CONNS      8
 
 QObject *ABISYM( QgsApplication::mFileOpenEventReceiver ) = nullptr;
 bool ABISYM( QgsApplication::mInitialized ) = false;
