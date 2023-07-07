@@ -2527,7 +2527,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
     def testValidLayerDiscoverRelations(self):
         """
-        Test implicit relations that can be discovers between tables, based on declared foreign keys.
+        Test implicit relations that can be discovered between tables, based on declared foreign keys.
         The test also checks that two distinct relations can be discovered when two foreign keys are declared (see #41138).
         """
         vl = QgsVectorLayer(
@@ -2546,11 +2546,28 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             vl
         ]
 
+    def testValidLayerDiscoverRelationsComposite(self):
+        """
+        Test implicit relations that can be discovered between tables, based on declared composite foreign keys.
+        """
+        vl = QgsVectorLayer(
+            self.dbconn +
+            ' sslmode=disable key=\'pk\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referencing_layer_composite"',
+            'referencing_layer', 'postgres')
+        vls = [
+            QgsVectorLayer(
+                self.dbconn +
+                ' sslmode=disable key=\'pk_ref_1\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referenced_layer_composite"',
+                'referenced_layer_1', 'postgres'),
+            vl
+        ]
+
         for lyr in vls:
             self.assertTrue(lyr.isValid())
             QgsProject.instance().addMapLayer(lyr)
         relations = vl.dataProvider().discoverRelations(vl, vls)
-        self.assertEqual(len(relations), 2)
+        self.assertEqual(len(relations), 1)
+        self.assertEqual(len(relations[0].fieldPairs()), 2)
         for i, r in enumerate(relations):
             self.assertEqual(r.referencedLayer(), vls[i])
 
