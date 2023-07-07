@@ -18,6 +18,7 @@
 #include "qgscredentialdialog.h"
 
 #include "qgsauthmanager.h"
+#include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
@@ -92,7 +93,7 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   // Keep a cache of ignored connections, and ignore them for 10 seconds.
   connect( mIgnoreButton, &QPushButton::clicked, this, [ = ]( bool )
   {
-    const QString realm { labelRealm->text() };
+    const QString realm { mRealm };
     {
       const QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
       // Insert the realm in the cache of ignored connections
@@ -148,7 +149,8 @@ void QgsCredentialDialog::requestCredentials( const QString &realm, QString *use
   stackedWidget->setCurrentIndex( 0 );
   mIgnoreButton->show();
   chkbxPasswordHelperEnable->setChecked( QgsApplication::authManager()->passwordHelperEnabled() );
-  labelRealm->setText( realm );
+  labelRealm->setText( QgsDataSourceUri::removePassword( realm ) );
+  mRealm = realm;
   leUsername->setText( *username );
   lePassword->setText( *password );
   labelMessage->setText( message );
