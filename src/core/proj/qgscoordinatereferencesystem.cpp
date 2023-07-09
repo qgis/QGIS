@@ -669,7 +669,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 
       {
         QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_database( QgsProjContext::get(), auth.toLatin1(), code.toLatin1(), PJ_CATEGORY_CRS, false, nullptr ) );
-        d->setPj( QgsProjUtils::crsToSingleCrs( crs.get() ) );
+        d->setPj( QgsProjUtils::unboundCrs( crs.get() ) );
       }
 
       d->mIsValid = d->hasPj();
@@ -1665,7 +1665,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
   // prefer horizontal CRS units, if present
   QgsProjUtils::proj_pj_unique_ptr crs( QgsProjUtils::crsToHorizontalCrs( d->threadLocalProjObject() ) );
   if ( !crs )
-    crs = QgsProjUtils::crsToSingleCrs( d->threadLocalProjObject() );
+    crs = QgsProjUtils::unboundCrs( d->threadLocalProjObject() );
 
   if ( !crs )
   {
@@ -2320,7 +2320,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
     return false;
   }
 
-  crs = QgsProjUtils::crsToSingleCrs( crs.get() );
+  crs = QgsProjUtils::unboundCrs( crs.get() );
 
   QString proj4 = getFullProjString( crs.get() );
   proj4.replace( QLatin1String( "+type=crs" ), QString() );
@@ -2543,7 +2543,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
           break;
       }
 
-      crs = QgsProjUtils::crsToSingleCrs( crs.get() );
+      crs = QgsProjUtils::unboundCrs( crs.get() );
 
       QString proj4 = getFullProjString( crs.get() );
       proj4.replace( QLatin1String( "+type=crs" ), QString() );
@@ -2854,7 +2854,7 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
       return false;
   }
 
-  d->setPj( QgsProjUtils::crsToSingleCrs( object ) );
+  d->setPj( QgsProjUtils::unboundCrs( object ) );
 
   if ( !d->hasPj() )
   {

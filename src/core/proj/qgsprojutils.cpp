@@ -148,7 +148,7 @@ bool QgsProjUtils::isDynamic( const PJ *crs )
   // prefer horizontal crs if possible
   proj_pj_unique_ptr candidate = crsToHorizontalCrs( crs );
   if ( !crs )
-    candidate = crsToSingleCrs( crs );
+    candidate = unboundCrs( crs );
 
   proj_pj_unique_ptr datum( candidate ? proj_crs_get_datum( context, candidate.get() ) : nullptr );
   if ( datum )
@@ -209,7 +209,7 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToHorizontalCrs( const PJ *crs
     // maybe other types to handle??
 
     default:
-      return crsToSingleCrs( crs );
+      return unboundCrs( crs );
   }
 
 #ifndef _MSC_VER  // unreachable
@@ -217,7 +217,7 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToHorizontalCrs( const PJ *crs
 #endif
 }
 
-QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
+QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::unboundCrs( const PJ *crs )
 {
   if ( !crs )
     return nullptr;
@@ -246,11 +246,14 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs
 
 #if PROJ_VERSION_MAJOR>=8
   PJ_CONTEXT *context = QgsProjContext::get();
-  QgsProjUtils::proj_pj_unique_ptr singleCrs = crsToHorizontalCrs( crs );
-  if ( !singleCrs )
+  QgsProjUtils::proj_pj_unique_ptr candidate = crsToHorizontalCrs( crs );
+  if ( !candidate) // purely vertical CRS
+    candidate = unboundCrs( crs );
+
+  if ( !candidate)
     return nullptr;
 
-  return QgsProjUtils::proj_pj_unique_ptr( proj_crs_get_datum_ensemble( context, singleCrs.get() ) );
+  return QgsProjUtils::proj_pj_unique_ptr( proj_crs_get_datum_ensemble( context, candidate.get() ) );
 #else
   throw QgsNotSupportedException( QObject::tr( "Calculating datum ensembles requires a QGIS build based on PROJ 8.0 or later" ) );
 #endif
@@ -289,7 +292,7 @@ bool QgsProjUtils::identifyCrs( const PJ *crs, QString &authName, QString &authC
             break;
         }
 
-        candidateCrs = QgsProjUtils::crsToSingleCrs( candidateCrs.get() );
+        candidateCrs = QgsProjUtils::unboundCrs( candidateCrs.get() );
         const QString authName( proj_get_id_auth_name( candidateCrs.get(), 0 ) );
         // if a match is identical confidence, we prefer EPSG codes for compatibility with earlier qgis conversions
         if ( confidence[i] > bestConfidence || ( confidence[i] == bestConfidence && authName == QLatin1String( "EPSG" ) ) )

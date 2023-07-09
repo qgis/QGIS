@@ -173,10 +173,12 @@ class CORE_EXPORT QgsProjUtils
     static proj_pj_unique_ptr crsToHorizontalCrs( const PJ *crs );
 
     /**
-     * Given a PROJ crs (which may be a compound or bound crs, or some other type), extract a single crs
-     * from it.
+     * Given a PROJ crs (which may be a compound or bound crs, or some other type), ensure that it is not
+     * a bound CRS object.
+     *
+     * Bound CRS objects will be returned as their source CRS, other types will be returned as a direct clone.
      */
-    static proj_pj_unique_ptr crsToSingleCrs( const PJ *crs );
+    static proj_pj_unique_ptr unboundCrs( const PJ *crs );
 
     /**
      * Given a PROJ \a crs, attempt to retrieve the datum ensemble from it.
