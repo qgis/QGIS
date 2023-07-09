@@ -35,8 +35,7 @@ class QgsTiledMeshDataItemGuiProvider : public QObject, public QgsDataItemGuiPro
   private:
     static void editConnection( QgsDataItem *item );
     static void deleteConnection( QgsDataItem *item );
-    static void newConnection( QgsDataItem *item );
-    static void newArcGISConnection( QgsDataItem *item );
+    static void newCesium3dTilesConnection( QgsDataItem *item );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
 
