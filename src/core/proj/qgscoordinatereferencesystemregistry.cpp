@@ -425,6 +425,8 @@ QSet<QString> QgsCoordinateReferenceSystemRegistry::authorities() const
       const QString authority( *authIter );
       mKnownAuthorities.insert( authority.toLower() );
     }
+
+    proj_string_list_destroy( authorities );
   } );
 
   return mKnownAuthorities;
