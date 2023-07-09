@@ -247,10 +247,10 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs
 #if PROJ_VERSION_MAJOR>=8
   PJ_CONTEXT *context = QgsProjContext::get();
   QgsProjUtils::proj_pj_unique_ptr candidate = crsToHorizontalCrs( crs );
-  if ( !candidate) // purely vertical CRS
+  if ( !candidate ) // purely vertical CRS
     candidate = unboundCrs( crs );
 
-  if ( !candidate)
+  if ( !candidate )
     return nullptr;
 
   return QgsProjUtils::proj_pj_unique_ptr( proj_crs_get_datum_ensemble( context, candidate.get() ) );
