@@ -29,10 +29,35 @@
 #define PROVIDER_KEY QStringLiteral( "cesiumtiles" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Cesium 3D Tiles data provider" )
 
+//
+// QgsCesiumTilesDataProviderSharedData
+//
+
+QgsCesiumTilesDataProviderSharedData::QgsCesiumTilesDataProviderSharedData() = default;
+
+
+//
+// QgsCesiumTilesDataProvider
+//
+
 QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
   : QgsTiledMeshDataProvider( uri, providerOptions, flags )
+  , mShared( std::make_shared< QgsCesiumTilesDataProviderSharedData >() )
 {
+  mIsValid = true;
+}
 
+QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QgsCesiumTilesDataProvider &other )
+  : QgsTiledMeshDataProvider( other )
+  , mIsValid( other.mIsValid )
+  , mShared( other.mShared )
+{
+}
+
+QgsCesiumTilesDataProvider *QgsCesiumTilesDataProvider::clone() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  return new QgsCesiumTilesDataProvider( *this );
 }
 
 QgsCesiumTilesDataProvider::~QgsCesiumTilesDataProvider() = default;
@@ -41,16 +66,14 @@ QgsCoordinateReferenceSystem QgsCesiumTilesDataProvider::crs() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  // TODO
-  return QgsCoordinateReferenceSystem();
+  return mShared->mCrs;
 }
 
 QgsRectangle QgsCesiumTilesDataProvider::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  // TODO
-  return QgsRectangle();
+  return mShared->mExtent;
 }
 
 bool QgsCesiumTilesDataProvider::isValid() const
@@ -181,3 +204,4 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsCesiumTilesProviderMetadata
 }
 
 ///@endcond
+

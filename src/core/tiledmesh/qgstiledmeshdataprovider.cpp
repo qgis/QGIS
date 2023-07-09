@@ -26,6 +26,12 @@ QgsTiledMeshDataProvider::QgsTiledMeshDataProvider(
 {
 }
 
+QgsTiledMeshDataProvider::QgsTiledMeshDataProvider( const QgsTiledMeshDataProvider &other )
+  : QgsDataProvider( other.dataSourceUri( false ), ProviderOptions(), other.mReadFlags )
+{
+  setTransformContext( other.transformContext() );
+}
+
 QgsTiledMeshDataProvider::~QgsTiledMeshDataProvider() = default;
 
 Qgis::TiledMeshProviderCapabilities QgsTiledMeshDataProvider::capabilities() const
