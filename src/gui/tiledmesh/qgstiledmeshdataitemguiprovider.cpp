@@ -40,7 +40,7 @@ void QgsTiledMeshDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QM
   if ( QgsTiledMeshRootItem *rootItem = qobject_cast< QgsTiledMeshRootItem * >( item ) )
   {
     QAction *actionNewCesium = new QAction( tr( "New Cesium 3D Tiles Connection…" ), menu );
-    connect( actionNewCesium, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
+    connect( actionNewCesium, &QAction::triggered, this, [rootItem] { newCesium3dTilesConnection( rootItem ); } );
     menu->addAction( actionNewCesium );
 
     menu->addSeparator();
@@ -87,14 +87,14 @@ void QgsTiledMeshDataItemGuiProvider::deleteConnection( QgsDataItem *item )
   item->parent()->refreshConnections();
 }
 
-void QgsTiledMeshDataItemGuiProvider::newConnection( QgsDataItem *item )
+void QgsTiledMeshDataItemGuiProvider::newCesium3dTilesConnection( QgsDataItem *item )
 {
   QgsTiledMeshConnectionDialog dlg;
   if ( !dlg.exec() )
     return;
 
   QgsTiledMeshProviderConnection::Data conn = QgsTiledMeshProviderConnection::decodedUri( dlg.connectionUri() );
-  conn.provider = QStringLiteral( "cesium" );
+  conn.provider = QStringLiteral( "cesiumtiles" );
 
   QgsTiledMeshProviderConnection::addConnection( dlg.connectionName(), conn );
 
