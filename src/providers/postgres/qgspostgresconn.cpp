@@ -163,10 +163,6 @@ const int QgsPostgresConn::GEOM_TYPE_SELECT_LIMIT = 100;
 
 QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool readonly, bool shared, bool transaction, bool allowRequestCredentials, bool forseUseShared )
 {
-  QMutexLocker locker( &sLock );
-  QMap<QString, QgsPostgresConn *> &connections =
-    readonly ? QgsPostgresConn::sConnectionsRO : QgsPostgresConn::sConnectionsRW;
-
   // This is called from may places where shared parameter cannot be forced to false (QgsVectorLayerExporter)
   // and which is run in a different thread (drag and drop in browser)
   if ( !forseUseShared && QApplication::instance()->thread() != QThread::currentThread() )
@@ -178,8 +174,46 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
 
   QgsPostgresConn *conn;
 
+  auto createConn = [ & ]()
+  {
+    conn = new QgsPostgresConn( conninfo, readonly, shared, transaction, allowRequestCredentials );
+    QgsDebugMsgLevel(
+      QStringLiteral(
+        "Created new (%4) connection %2 for %1%3"
+      )
+      .arg( conninfo )
+      .arg( reinterpret_cast<std::uintptr_t>( conn ) )
+      .arg( shared ? " (shared)" : "" )
+      .arg( readonly ? "readonly" : "read-write" )
+      ,
+      2
+    );
+
+    // mRef will be set to 0 when the connection fails
+    if ( conn->mRef == 0 )
+    {
+      QgsDebugMsgLevel(
+        QStringLiteral(
+          "New (%3) connection %2 failed for conninfo %1"
+        )
+        .arg( conninfo )
+        .arg( reinterpret_cast<std::uintptr_t>( conn ) )
+        .arg( readonly ? "readonly" : "read-write" )
+        ,
+        2
+      );
+      delete conn;
+      return false;
+    }
+    return true;
+  };
+
   if ( shared )
   {
+    QMutexLocker locker( &sLock );
+    QMap<QString, QgsPostgresConn *> &connections =
+      readonly ? QgsPostgresConn::sConnectionsRO : QgsPostgresConn::sConnectionsRW;
+
     QMap<QString, QgsPostgresConn *>::iterator it = connections.find( conninfo );
     if ( it != connections.end() )
     {
@@ -206,40 +240,10 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
       ,
       2
     );
-  }
 
-  conn = new QgsPostgresConn( conninfo, readonly, shared, transaction, allowRequestCredentials );
-  QgsDebugMsgLevel(
-    QStringLiteral(
-      "Created new (%4) connection %2 for %1%3"
-    )
-    .arg( conninfo )
-    .arg( reinterpret_cast<std::uintptr_t>( conn ) )
-    .arg( shared ? " (shared)" : "" )
-    .arg( readonly ? "readonly" : "read-write" )
-    ,
-    2
-  );
+    if ( !createConn() )
+      return nullptr;
 
-  // mRef will be set to 0 when the connection fails
-  if ( conn->mRef == 0 )
-  {
-    QgsDebugMsgLevel(
-      QStringLiteral(
-        "New (%3) connection %2 failed for conninfo %1"
-      )
-      .arg( conninfo )
-      .arg( reinterpret_cast<std::uintptr_t>( conn ) )
-      .arg( readonly ? "readonly" : "read-write" )
-      ,
-      2
-    );
-    delete conn;
-    return nullptr;
-  }
-
-  if ( shared )
-  {
     connections.insert( conninfo, conn );
     QgsDebugMsgLevel(
       QStringLiteral(
@@ -251,6 +255,11 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
       ,
       2
     );
+  }
+  else
+  {
+    if ( !createConn() )
+      return nullptr;
   }
 
   return conn;

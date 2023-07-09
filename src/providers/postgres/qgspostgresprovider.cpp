@@ -187,6 +187,15 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     return;
   }
 
+  auto disconnectDbOrReleaseConnection = [ & ]()
+  {
+    if ( isAppThread )
+      disconnectDb();
+    else
+      QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
+    return;
+  };
+
   // if credentials were updated during database connection, update the provider's uri accordingly
   if ( !mUri.username().isEmpty() )
     mUri.setUsername( mConnectionRO->uri().username() );
@@ -195,10 +204,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
   if ( !hasSufficientPermsAndCapabilities() ) // check permissions and set capabilities
   {
-    if ( isAppThread )
-      disconnectDb();
-    else
-      QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
+    disconnectDbOrReleaseConnection();
     return;
   }
 
@@ -206,10 +212,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   {
     // the table is not a geometry table
     QgsMessageLog::logMessage( tr( "Invalid PostgreSQL layer" ), tr( "PostGIS" ) );
-    if ( isAppThread )
-      disconnectDb();
-    else
-      QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
+    disconnectDbOrReleaseConnection();
     return;
   }
 
@@ -222,10 +225,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     {
       QgsMessageLog::logMessage( tr( "Invalid PostgreSQL topology layer" ), tr( "PostGIS" ) );
       mValid = false;
-      if ( isAppThread )
-        disconnectDb();
-      else
-        QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
+      disconnectDbOrReleaseConnection();
       return;
     }
   }
@@ -269,10 +269,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   {
     QgsMessageLog::logMessage( tr( "PostgreSQL layer has no primary key." ), tr( "PostGIS" ) );
     mValid = false;
-    if ( isAppThread )
-      disconnectDb();
-    else
-      QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
+    disconnectDbOrReleaseConnection();
     return;
   }
 
@@ -323,10 +320,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   }
   else
   {
-    if ( isAppThread )
-      disconnectDb();
-    else
-      QgsPostgresConnPool::instance()->releaseConnection( mConnectionRO );
+    disconnectDbOrReleaseConnection();
   }
 
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
