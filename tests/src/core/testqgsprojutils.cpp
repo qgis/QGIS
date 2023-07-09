@@ -36,7 +36,7 @@ class TestQgsProjUtils: public QObject
     void searchPath();
     void gridsUsed();
     void toHorizontalCrs();
-    void toSingleCrs();
+    void toUnboundCrs();
 
 };
 
@@ -138,24 +138,24 @@ void TestQgsProjUtils::toHorizontalCrs()
   QVERIFY( !horizontalCrs );
 }
 
-void TestQgsProjUtils::toSingleCrs()
+void TestQgsProjUtils::toUnboundCrs()
 {
   PJ_CONTEXT *context = QgsProjContext::get();
 
   // compound crs
   QgsProjUtils::proj_pj_unique_ptr crs( proj_create( context, "urn:ogc:def:crs:EPSG::5500" ) );
-  QgsProjUtils::proj_pj_unique_ptr singleCrs( QgsProjUtils::crsToSingleCrs( crs.get() ) );
-  QCOMPARE( QString( proj_get_id_code( singleCrs.get(), 0 ) ), QStringLiteral( "5500" ) );
+  QgsProjUtils::proj_pj_unique_ptr unbound( QgsProjUtils::unboundCrs( crs.get() ) );
+  QCOMPARE( QString( proj_get_id_code( unbound.get(), 0 ) ), QStringLiteral( "5500" ) );
 
   // horizontal CRS
   crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::4759" ) );
-  singleCrs = QgsProjUtils::crsToSingleCrs( crs.get() );
-  QCOMPARE( QString( proj_get_id_code( singleCrs.get(), 0 ) ), QStringLiteral( "4759" ) );
+  unbound = QgsProjUtils::unboundCrs( crs.get() );
+  QCOMPARE( QString( proj_get_id_code( unbound.get(), 0 ) ), QStringLiteral( "4759" ) );
 
   // vertical only CRS
   crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::5703" ) );
-  singleCrs = QgsProjUtils::crsToSingleCrs( crs.get() );
-  QCOMPARE( QString( proj_get_id_code( singleCrs.get(), 0 ) ), QStringLiteral( "5703" ) );
+  unbound = QgsProjUtils::unboundCrs( crs.get() );
+  QCOMPARE( QString( proj_get_id_code( unbound.get(), 0 ) ), QStringLiteral( "5703" ) );
 }
 
 QGSTEST_MAIN( TestQgsProjUtils )
