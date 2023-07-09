@@ -2524,6 +2524,17 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   int result;
   char *errMsg = nullptr;
 
+  bool createdTypeColumn = false;
+  if ( sqlite3_exec( database.get(), "ALTER TABLE tbl_srs ADD COLUMN srs_type text", nullptr, nullptr, nullptr ) == SQLITE_OK )
+  {
+    createdTypeColumn = true;
+    if ( sqlite3_exec( database.get(), "CREATE INDEX srs_type ON tbl_srs(srs_type)", nullptr, nullptr, nullptr ) != SQLITE_OK )
+    {
+      QgsDebugError( QStringLiteral( "Could not create index for srs_type" ) );
+      return -1;
+    }
+  }
+
   if ( sqlite3_exec( database.get(), "create table tbl_info (proj_major INT, proj_minor INT, proj_patch INT)", nullptr, nullptr, nullptr ) == SQLITE_OK )
   {
     QString sql = QStringLiteral( "INSERT INTO tbl_info(proj_major, proj_minor, proj_patch) VALUES (%1, %2,%3)" )
@@ -2556,7 +2567,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       int major = statement.columnAsInt64( 0 );
       int minor = statement.columnAsInt64( 1 );
       int patch = statement.columnAsInt64( 2 );
-      if ( major == PROJ_VERSION_MAJOR && minor == PROJ_VERSION_MINOR && patch == PROJ_VERSION_PATCH )
+      if ( !createdTypeColumn && major == PROJ_VERSION_MAJOR && minor == PROJ_VERSION_MINOR && patch == PROJ_VERSION_PATCH )
         // yay, nothing to do!
         return 0;
     }
@@ -2595,12 +2606,71 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         continue;
       }
 
-      switch ( proj_get_type( crs.get() ) )
+      const PJ_TYPE pjType = proj_get_type( crs.get( ) );
+
+      QString srsTypeString;
+      switch ( pjType )
       {
         case PJ_TYPE_VERTICAL_CRS: // don't need these in the CRS db
+        case PJ_TYPE_ELLIPSOID:
+        case PJ_TYPE_PRIME_MERIDIAN:
+        case PJ_TYPE_GEODETIC_REFERENCE_FRAME:
+        case PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME:
+        case PJ_TYPE_VERTICAL_REFERENCE_FRAME:
+        case PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME:
+        case PJ_TYPE_DATUM_ENSEMBLE:
+        case PJ_TYPE_CONVERSION:
+        case PJ_TYPE_TRANSFORMATION:
+        case PJ_TYPE_CONCATENATED_OPERATION:
+        case PJ_TYPE_OTHER_COORDINATE_OPERATION:
+        case PJ_TYPE_TEMPORAL_DATUM:
+        case PJ_TYPE_ENGINEERING_DATUM:
+        case PJ_TYPE_PARAMETRIC_DATUM:
+        case PJ_TYPE_UNKNOWN:
           continue;
 
-        default:
+        case PJ_TYPE_CRS:
+        case PJ_TYPE_GEOGRAPHIC_CRS:
+          continue; // not possible
+
+        case PJ_TYPE_GEODETIC_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Geodetic );
+          break;
+
+        case PJ_TYPE_GEOCENTRIC_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Geocentric );
+          break;
+
+        case PJ_TYPE_GEOGRAPHIC_2D_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Geographic2d );
+          break;
+
+        case PJ_TYPE_GEOGRAPHIC_3D_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Geographic3d );
+          break;
+
+        case PJ_TYPE_PROJECTED_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Projected );
+          break;
+
+        case PJ_TYPE_COMPOUND_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Compound );
+          break;
+
+        case PJ_TYPE_TEMPORAL_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Temporal );
+          break;
+
+        case PJ_TYPE_ENGINEERING_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Engineering );
+          break;
+
+        case PJ_TYPE_BOUND_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Bound );
+          break;
+
+        case PJ_TYPE_OTHER_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Other );
           break;
       }
 
@@ -2632,7 +2702,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       const bool deprecated = proj_is_deprecated( crs.get() );
       const QString name( proj_get_name( crs.get() ) );
 
-      QString sql = QStringLiteral( "SELECT parameters,description,deprecated FROM tbl_srs WHERE auth_name='%1' AND auth_id='%2'" ).arg( authority, code );
+      QString sql = QStringLiteral( "SELECT parameters,description,deprecated,srs_type FROM tbl_srs WHERE auth_name='%1' AND auth_id='%2'" ).arg( authority, code );
       statement = database.prepare( sql, result );
       if ( result != SQLITE_OK )
       {
@@ -2642,24 +2712,27 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
       QString srsProj4;
       QString srsDesc;
+      QString dbSrsType;
       bool srsDeprecated = deprecated;
       if ( statement.step() == SQLITE_ROW )
       {
         srsProj4 = statement.columnAsText( 0 );
         srsDesc = statement.columnAsText( 1 );
         srsDeprecated = statement.columnAsText( 2 ).toInt() != 0;
+        dbSrsType = statement.columnAsText( 3 );
       }
 
       if ( !srsProj4.isEmpty() || !srsDesc.isEmpty() )
       {
-        if ( proj4 != srsProj4 || name != srsDesc || deprecated != srsDeprecated )
+        if ( proj4 != srsProj4 || name != srsDesc || deprecated != srsDeprecated || dbSrsType != srsTypeString )
         {
           errMsg = nullptr;
-          sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3 WHERE auth_name=%4 AND auth_id=%5" )
+          sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3, srs_type=%4 WHERE auth_name=%5 AND auth_id=%6" )
                 .arg( QgsSqliteUtils::quotedString( proj4 ) )
                 .arg( QgsSqliteUtils::quotedString( name ) )
                 .arg( deprecated ? 1 : 0 )
-                .arg( QgsSqliteUtils::quotedString( authority ), QgsSqliteUtils::quotedString( code ) );
+                .arg( QgsSqliteUtils::quotedString( srsTypeString ),
+                      QgsSqliteUtils::quotedString( authority ), QgsSqliteUtils::quotedString( code ) );
 
           if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
           {
@@ -2704,7 +2777,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
         if ( !srsId.isEmpty() )
         {
-          sql = QStringLiteral( "INSERT INTO tbl_srs(srs_id, description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1, %2,%3,%4,%5,%6,%7,%8,%9,%10)" )
+          sql = QStringLiteral( "INSERT INTO tbl_srs(srs_id, description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated,srs_type) VALUES (%1, %2,%3,%4,%5,%6,%7,%8,%9,%10,%11)" )
                 .arg( srsId )
                 .arg( QgsSqliteUtils::quotedString( name ),
                       QgsSqliteUtils::quotedString( operation ),
@@ -2714,11 +2787,12 @@ int QgsCoordinateReferenceSystem::syncDatabase()
                 .arg( QgsSqliteUtils::quotedString( authority ) )
                 .arg( QgsSqliteUtils::quotedString( code ) )
                 .arg( isGeographic ? 1 : 0 )
-                .arg( deprecated ? 1 : 0 );
+                .arg( deprecated ? 1 : 0 )
+                .arg( QgsSqliteUtils::quotedString( srsTypeString ) );
         }
         else
         {
-          sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%2,%3,%4,%5,%6,%7,%8,%9,%10)" )
+          sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated,srs_type) VALUES (%2,%3,%4,%5,%6,%7,%8,%9,%10,%11)" )
                 .arg( QgsSqliteUtils::quotedString( name ),
                       QgsSqliteUtils::quotedString( operation ),
                       QgsSqliteUtils::quotedString( ellps ),
@@ -2727,7 +2801,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
                 .arg( QgsSqliteUtils::quotedString( authority ) )
                 .arg( QgsSqliteUtils::quotedString( code ) )
                 .arg( isGeographic ? 1 : 0 )
-                .arg( deprecated ? 1 : 0 );
+                .arg( deprecated ? 1 : 0 )
+                .arg( QgsSqliteUtils::quotedString( srsTypeString ) );
         }
 
         errMsg = nullptr;
