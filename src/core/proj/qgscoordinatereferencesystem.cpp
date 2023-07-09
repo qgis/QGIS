@@ -2611,7 +2611,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       QString srsTypeString;
       switch ( pjType )
       {
-        case PJ_TYPE_VERTICAL_CRS: // don't need these in the CRS db
+        // don't need these in the CRS db
         case PJ_TYPE_ELLIPSOID:
         case PJ_TYPE_PRIME_MERIDIAN:
         case PJ_TYPE_GEODETIC_REFERENCE_FRAME:
@@ -2667,6 +2667,10 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
         case PJ_TYPE_BOUND_CRS:
           srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Bound );
+          break;
+
+        case PJ_TYPE_VERTICAL_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Vertical );
           break;
 
         case PJ_TYPE_OTHER_CRS:
