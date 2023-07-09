@@ -1362,6 +1362,10 @@ Qgis::CrsType QgsCoordinateReferenceSystem::type() const
       return Qgis::CrsType::Bound;
     case PJ_TYPE_OTHER_CRS:
       return Qgis::CrsType::Other;
+#if PROJ_VERSION_MAJOR>9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR>=2)
+    case PJ_TYPE_DERIVED_PROJECTED_CRS:
+      return Qgis::CrsType::DerivedProjected;
+#endif
   }
   return Qgis::CrsType::Unknown;
   // NOLINTEND(bugprone-branch-clone)
