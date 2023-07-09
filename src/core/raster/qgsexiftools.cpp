@@ -66,7 +66,11 @@ QVariant decodeXmpData( const QString &key, Exiv2::XmpData::const_iterator &it )
       case Exiv2::signedLong:
       case Exiv2::unsignedLongLong:
       case Exiv2::signedLongLong:
+#if EXIV2_TEST_VERSION (0, 28, 0)
+        val = QVariant::fromValue( it->toUint32() );
+#else
         val = QVariant::fromValue( it->toLong() );
+#endif
         break;
 
       case Exiv2::tiffDouble:
@@ -80,7 +84,11 @@ QVariant decodeXmpData( const QString &key, Exiv2::XmpData::const_iterator &it )
       case Exiv2::signedByte:
       case Exiv2::tiffIfd:
       case Exiv2::tiffIfd8:
+#if EXIV2_TEST_VERSION (0, 28, 0)
+        val = QVariant::fromValue( static_cast< int >( it->toUint32() ) );
+#else
         val = QVariant::fromValue( static_cast< int >( it->toLong() ) );
+#endif
         break;
 
       case Exiv2::date:
@@ -182,7 +190,11 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
       case Exiv2::signedLong:
       case Exiv2::unsignedLongLong:
       case Exiv2::signedLongLong:
+#if EXIV2_TEST_VERSION (0, 28, 0)
+        val = QVariant::fromValue( it->toUint32() );
+#else
         val = QVariant::fromValue( it->toLong() );
+#endif
         break;
 
       case Exiv2::tiffDouble:
@@ -196,7 +208,11 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
       case Exiv2::signedByte:
       case Exiv2::tiffIfd:
       case Exiv2::tiffIfd8:
+#if EXIV2_TEST_VERSION (0, 28, 0)
+        val = QVariant::fromValue( static_cast< int >( it->toUint32() ) );
+#else
         val = QVariant::fromValue( static_cast< int >( it->toLong() ) );
+#endif
         break;
 
       case Exiv2::date:
