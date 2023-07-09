@@ -2673,6 +2673,12 @@ int QgsCoordinateReferenceSystem::syncDatabase()
           srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Vertical );
           break;
 
+#if PROJ_VERSION_MAJOR>9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR>=2)
+        case PJ_TYPE_DERIVED_PROJECTED_CRS:
+          srsTypeString = qgsEnumValueToKey( Qgis::CrsType::DerivedProjected );
+          break;
+#endif
+
         case PJ_TYPE_OTHER_CRS:
           srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Other );
           break;
