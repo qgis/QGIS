@@ -118,8 +118,8 @@
        </item>
        <item>
         <widget class="QToolButton" name="mInvertSelectionButton">
-         <property name="text">
-          <string>Invert selection</string>
+         <property name="toolTip">
+          <string>Invert fields selection</string>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
@@ -198,7 +198,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
