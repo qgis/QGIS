@@ -20,9 +20,14 @@
 #include "qgsapplication.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsthreadingutils.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsblockingnetworkrequest.h"
+#include "qjsonobject.h"
 
 #include <QUrl>
 #include <QIcon>
+#include <QNetworkRequest>
+#include <QJsonDocument>
 
 ///@cond PRIVATE
 
@@ -35,6 +40,12 @@
 
 QgsCesiumTilesDataProviderSharedData::QgsCesiumTilesDataProviderSharedData() = default;
 
+void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QVariantMap &tileset )
+{
+  mTileset = tileset;
+  mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
+}
+
 
 //
 // QgsCesiumTilesDataProvider
@@ -44,15 +55,24 @@ QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QString &uri, cons
   : QgsTiledMeshDataProvider( uri, providerOptions, flags )
   , mShared( std::make_shared< QgsCesiumTilesDataProviderSharedData >() )
 {
-  mIsValid = true;
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+  mAuthCfg = dsUri.authConfigId();
+  mHeaders = dsUri.httpHeaders();
+
+  mIsValid = init();
 }
 
 QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QgsCesiumTilesDataProvider &other )
   : QgsTiledMeshDataProvider( other )
   , mIsValid( other.mIsValid )
+  , mAuthCfg( other.mAuthCfg )
+  , mHeaders( other.mHeaders )
   , mShared( other.mShared )
 {
 }
+
+QgsCesiumTilesDataProvider::~QgsCesiumTilesDataProvider() = default;
 
 QgsCesiumTilesDataProvider *QgsCesiumTilesDataProvider::clone() const
 {
@@ -60,7 +80,51 @@ QgsCesiumTilesDataProvider *QgsCesiumTilesDataProvider::clone() const
   return new QgsCesiumTilesDataProvider( *this );
 }
 
-QgsCesiumTilesDataProvider::~QgsCesiumTilesDataProvider() = default;
+bool QgsCesiumTilesDataProvider::init()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+
+  // TODO -- local tilesets!
+  const QString tileSetUri = dsUri.param( QStringLiteral( "url" ) );
+  const QUrl url( tileSetUri );
+
+  QNetworkRequest request = QNetworkRequest( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
+  mHeaders.updateNetworkRequest( request );
+
+  QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( mAuthCfg );
+
+  switch ( networkRequest.get( request ) )
+  {
+    case QgsBlockingNetworkRequest::NoError:
+      break;
+
+    case QgsBlockingNetworkRequest::NetworkError:
+    case QgsBlockingNetworkRequest::TimeoutError:
+    case QgsBlockingNetworkRequest::ServerExceptionError:
+      // TODO -- error reporting
+      return false;
+  }
+
+  const QgsNetworkReplyContent content = networkRequest.reply();
+  const QByteArray raw = content.content();
+
+  // Parse data
+  QJsonParseError err;
+  const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
+  if ( doc.isNull() )
+  {
+    return false;
+  }
+
+  mShared->setTilesetContent( doc.object().toVariantMap() );
+
+  return true;
+}
 
 QgsCoordinateReferenceSystem QgsCesiumTilesDataProvider::crs() const
 {
@@ -97,6 +161,31 @@ QString QgsCesiumTilesDataProvider::description() const
 
   return QObject::tr( "Cesium 3D Tiles" );
 }
+
+QString QgsCesiumTilesDataProvider::htmlMetadata() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QString metadata;
+
+  {
+    const QVariantMap asset = mShared->mTileset.value( QStringLiteral( "asset" ) ).toMap();
+    const QString version = asset.value( QStringLiteral( "version" ) ).toString();
+    if ( !version.isEmpty() )
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "3D Tiles Version" ) % QStringLiteral( "</td><td>%1</a>" ).arg( version ) % QStringLiteral( "</td></tr>\n" );
+
+    const QString tilesetVersion = asset.value( QStringLiteral( "tilesetVersion" ) ).toString();
+    if ( !tilesetVersion.isEmpty() )
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tileset Version" ) % QStringLiteral( "</td><td>%1</a>" ).arg( tilesetVersion ) % QStringLiteral( "</td></tr>\n" );
+
+    const QString generator = asset.value( QStringLiteral( "generator" ) ).toString();
+    if ( !generator.isEmpty() )
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tileset Generator" ) % QStringLiteral( "</td><td>%1</a>" ).arg( generator ) % QStringLiteral( "</td></tr>\n" );
+  }
+
+  return metadata;
+}
+
 
 //
 // QgsCesiumTilesProviderMetadata
@@ -204,4 +293,3 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsCesiumTilesProviderMetadata
 }
 
 ///@endcond
-

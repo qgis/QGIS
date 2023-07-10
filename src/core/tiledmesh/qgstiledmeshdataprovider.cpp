@@ -40,3 +40,10 @@ Qgis::TiledMeshProviderCapabilities QgsTiledMeshDataProvider::capabilities() con
 
   return Qgis::TiledMeshProviderCapabilities();
 }
+
+QString QgsTiledMeshDataProvider::htmlMetadata() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QString();
+}

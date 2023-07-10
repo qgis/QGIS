@@ -2760,7 +2760,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
       const QString celestialBody = c.celestialBodyName();
       if ( !celestialBody.isEmpty() )
       {
-        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Celestial body" ) + QStringLiteral( "</td><td>" ) + celestialBody + QStringLiteral( "</td></tr>\n" );
+        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Celestial Body" ) + QStringLiteral( "</td><td>" ) + celestialBody + QStringLiteral( "</td></tr>\n" );
       }
     }
     catch ( QgsNotSupportedException & )
@@ -2813,7 +2813,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
     // coordinate epoch
     if ( !std::isnan( c.coordinateEpoch() ) )
     {
-      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Coordinate epoch" ) + QStringLiteral( "</td><td>%1</td></tr>\n" ).arg( c.coordinateEpoch() );
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Coordinate Epoch" ) + QStringLiteral( "</td><td>%1</td></tr>\n" ).arg( c.coordinateEpoch() );
     }
   }
 

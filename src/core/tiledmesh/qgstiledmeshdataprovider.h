@@ -62,6 +62,11 @@ class CORE_EXPORT QgsTiledMeshDataProvider: public QgsDataProvider
      */
     virtual QgsTiledMeshDataProvider *clone() const = 0 SIP_FACTORY;
 
+    /**
+     * Returns metadata in a format suitable for feeding directly
+     * into a subset of the GUI properties "Metadata" tab.
+     */
+    virtual QString htmlMetadata() const;
 
 };
 
