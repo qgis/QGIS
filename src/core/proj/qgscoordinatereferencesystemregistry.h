@@ -41,7 +41,7 @@ class QgsProjOperation;
 struct CORE_EXPORT QgsCrsDbRecord
 {
   QString description;
-  QString name;
+  QString projectionAcronym;
   QString srsId;
   QString authName;
   QString authId;

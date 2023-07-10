@@ -38,6 +38,7 @@
 %Include auto_generated/qgsconfigureshortcutsdialog.sip
 %Include auto_generated/qgscoordinateboundspreviewmapwidget.sip
 %Include auto_generated/qgscoordinateoperationwidget.sip
+%Include auto_generated/qgscoordinatereferencesystemmodel.sip
 %Include auto_generated/qgscredentialdialog.sip
 %Include auto_generated/qgscrsdefinitionwidget.sip
 %Include auto_generated/qgscurveeditorwidget.sip
