@@ -23,7 +23,7 @@
 #include "qgstiledmeshdataprovider.h"
 #include "qgis.h"
 #include "qgsprovidermetadata.h"
-
+#include "qgsrange.h"
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
@@ -37,6 +37,7 @@ class QgsCesiumTilesDataProviderSharedData
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
     QVariantMap mTileset;
+    QgsDoubleRange mZRange;
 
     QReadWriteLock mMutex;
 
