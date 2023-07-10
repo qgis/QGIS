@@ -22,12 +22,13 @@
 #include "qgsthreadingutils.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsblockingnetworkrequest.h"
-#include "qjsonobject.h"
+#include "qgscesiumutils.h"
 
 #include <QUrl>
 #include <QIcon>
 #include <QNetworkRequest>
 #include <QJsonDocument>
+#include <QJsonObject>
 
 ///@cond PRIVATE
 
@@ -44,6 +45,34 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QVariantMap 
 {
   mTileset = tileset;
   mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
+
+  // parse root
+  {
+    const QVariantMap root = tileset.value( QStringLiteral( "root" ) ).toMap();
+    // parse root bounding volume
+    {
+      const QVariantMap rootBoundingVolume = root.value( QStringLiteral( "boundingVolume" ) ).toMap();
+      if ( rootBoundingVolume.contains( QStringLiteral( "region" ) ) )
+      {
+        const QgsBox3d rootRegion = QgsCesiumUtils::parseRegion( rootBoundingVolume.value( QStringLiteral( "region" ) ).toList() );
+        if ( !rootRegion.isNull() )
+        {
+          mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
+          // The latitude and longitude values are given in radians!
+
+          const double xMin = rootRegion.xMinimum() * 180 / M_PI;
+          const double xMax = rootRegion.xMaximum() * 180 / M_PI;
+          const double yMin = rootRegion.yMinimum() * 180 / M_PI;
+          const double yMax = rootRegion.yMaximum() * 180 / M_PI;
+          mExtent = QgsRectangle( xMin, yMin, xMax, yMax );
+        }
+      }
+      else
+      {
+        // TODO: handle box, sphere bounding volumes
+      }
+    }
+  }
 }
 
 
@@ -181,6 +210,11 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
     const QString generator = asset.value( QStringLiteral( "generator" ) ).toString();
     if ( !generator.isEmpty() )
       metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tileset Generator" ) % QStringLiteral( "</td><td>%1</a>" ).arg( generator ) % QStringLiteral( "</td></tr>\n" );
+  }
+
+  if ( !mShared->mZRange.isInfinite() )
+  {
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Z Range" ) % QStringLiteral( "</td><td>%1 - %2</a>" ).arg( QLocale().toString( mShared->mZRange.lower() ), QLocale().toString( mShared->mZRange.upper() ) ) % QStringLiteral( "</td></tr>\n" );
   }
 
   return metadata;
