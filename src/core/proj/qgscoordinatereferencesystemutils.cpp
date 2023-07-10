@@ -317,9 +317,9 @@ QString QgsCoordinateReferenceSystemUtils::translateProjection( const QString &p
   if ( projection == QLatin1String( "lask" ) )
     return QObject::tr( "Laskowski" );
   if ( projection == QLatin1String( "longlat" ) )
-    return QObject::tr( "Long/lat(Geodetic alias)" );
+    return QObject::tr( "Long/lat (Geodetic Alias)" );
   if ( projection == QLatin1String( "latlong" ) )
-    return QObject::tr( "Lat/long (Geodetic alias)" );
+    return QObject::tr( "Lat/long (Geodetic Alias)" );
   if ( projection == QLatin1String( "lcc" ) )
     return QObject::tr( "Lambert Conformal Conic" );
   if ( projection == QLatin1String( "lcca" ) )
