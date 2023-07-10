@@ -330,7 +330,7 @@ QString QgsCoordinateReferenceSystemUtils::translateProjection( const QString &p
     return QObject::tr( "Lee Oblated Stereographic" );
   if ( projection == QLatin1String( "loxim" ) )
     return QObject::tr( "Loximuthal" );
-  if ( projection == QLatin1String( "lsat" ) )
+  if ( projection == QLatin1String( "lsat" ) ) //#spellok
     return QObject::tr( "Space Oblique for LANDSAT" );
   if ( projection == QLatin1String( "mbt_s" ) )
     return QObject::tr( "McBryde-Thomas Flat-Polar Sine (No. 1)" );
