@@ -51,6 +51,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystemUtils
      * \since QGIS 3.34
      */
     static QString crsTypeToString( Qgis::CrsType type );
+
+    /**
+     * Returns a translated string for a \a projection method.
+     *
+     * Returns an empty string for unhandled methods.
+     *
+     * \since QGIS 3.34
+     */
+    static QString translateProjection( const QString &projection );
 };
 
 #endif // QGSCOORDINATEREFERENCESYSTEMUTILS_H

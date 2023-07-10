@@ -43,6 +43,7 @@
 #include "qgsogcutils.h"
 #include "qgsprojectionfactors.h"
 #include "qgsprojoperation.h"
+#include "qgscoordinatereferencesystemutils.h"
 
 #include <sqlite3.h>
 #include "qgsprojutils.h"
@@ -2616,6 +2617,18 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         proj4 = "";
       }
 
+      // there's a not-null contraint on these columns, so we must use empty strings instead
+      QString operation = "";
+      QString ellps = "";
+      getOperationAndEllipsoidFromProjString( proj4, operation, ellps );
+
+      const QString translatedOperation = QgsCoordinateReferenceSystemUtils::translateProjection( operation );
+      if ( translatedOperation.isEmpty() && !operation.isEmpty() )
+      {
+        std::cout << QStringLiteral( "Operation needs translation in QgsCoordinateReferenceSystemUtils::translateProjection: %1" ).arg( operation ).toLocal8Bit().constData() << std::endl;
+        qFatal( "aborted" );
+      }
+
       const bool deprecated = proj_is_deprecated( crs.get() );
       const QString name( proj_get_name( crs.get() ) );
 
@@ -2666,10 +2679,6 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       }
       else
       {
-        // there's a not-null contraint on these columns, so we must use empty strings instead
-        QString operation = "";
-        QString ellps = "";
-        getOperationAndEllipsoidFromProjString( proj4, operation, ellps );
         const bool isGeographic = testIsGeographic( crs.get() );
 
         // work out srid and srsid
