@@ -168,6 +168,38 @@ class TestPyQgsPostgresProviderLatency(unittest.TestCase):
         self.setDelay(0)
         self.assertTrue(duration > dmin and duration < dmax, error_string.format(dmin, dmax, duration))
 
+    def testParallelProjectOpenTime(self):
+        """ open project: parallel-loading = True, parallel-loading-max-count = 8"""
+
+        projectFile = QTemporaryFile(QDir.temp().absoluteFilePath("testParallelProjectOpenTime.qgz"))
+        projectFile.open()
+
+        project = QgsProject()
+        set_new_layer = ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql='
+        for i in range(1, 40, 1):
+            project.addMapLayer(QgsVectorLayer(self.dbconn + set_new_layer, 'test_vl_' + str(i), 'postgres'))
+        self.assertTrue(project.write(projectFile.fileName()))
+        project.clear()
+
+        settings = QgsSettingsTree.node('core').childSetting('provider-parallel-loading')
+        settings.setVariantValue(True)
+        settings = QgsSettingsTree.node('core').childSetting('provider-parallel-loading-max-count')
+        settings.setVariantValue(8)
+
+        davg = 42.0
+        dmin = round(davg * 0.9, 2)
+        dmax = round(davg * 1.1, 2)
+        error_string = 'expected from {0}s to {1}s, got {2}s\nHINT: set davg={2} to pass the test :)'
+
+        project = QgsProject()
+        self.setDelay(100)
+        start_time = time.time()
+        self.assertTrue(project.read(projectFile.fileName()))
+        duration = round(abs(time.time() - start_time), 2)
+        self.setDelay(0)
+        self.assertTrue(duration > dmin and duration < dmax, error_string.format(dmin, dmax, duration))
+        project.clear()
+
 
 if __name__ == '__main__':
     unittest.main()
