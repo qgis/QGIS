@@ -29,6 +29,7 @@
 #include <QNetworkRequest>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QFileInfo>
 
 ///@cond PRIVATE
 
@@ -116,41 +117,70 @@ bool QgsCesiumTilesDataProvider::init()
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
 
-  // TODO -- local tilesets!
   const QString tileSetUri = dsUri.param( QStringLiteral( "url" ) );
-  const QUrl url( tileSetUri );
-
-  QNetworkRequest request = QNetworkRequest( url );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
-  mHeaders.updateNetworkRequest( request );
-
-  QgsBlockingNetworkRequest networkRequest;
-  networkRequest.setAuthCfg( mAuthCfg );
-
-  switch ( networkRequest.get( request ) )
+  if ( !tileSetUri.isEmpty() )
   {
-    case QgsBlockingNetworkRequest::NoError:
-      break;
+    const QUrl url( tileSetUri );
 
-    case QgsBlockingNetworkRequest::NetworkError:
-    case QgsBlockingNetworkRequest::TimeoutError:
-    case QgsBlockingNetworkRequest::ServerExceptionError:
-      // TODO -- error reporting
+    QNetworkRequest request = QNetworkRequest( url );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
+    mHeaders.updateNetworkRequest( request );
+
+    QgsBlockingNetworkRequest networkRequest;
+    networkRequest.setAuthCfg( mAuthCfg );
+
+    switch ( networkRequest.get( request ) )
+    {
+      case QgsBlockingNetworkRequest::NoError:
+        break;
+
+      case QgsBlockingNetworkRequest::NetworkError:
+      case QgsBlockingNetworkRequest::TimeoutError:
+      case QgsBlockingNetworkRequest::ServerExceptionError:
+        // TODO -- error reporting
+        return false;
+    }
+
+    const QgsNetworkReplyContent content = networkRequest.reply();
+    const QByteArray raw = content.content();
+
+    // Parse data
+    QJsonParseError err;
+    const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
+    if ( doc.isNull() )
+    {
       return false;
+    }
+    mShared->setTilesetContent( doc.object().toVariantMap() );
   }
-
-  const QgsNetworkReplyContent content = networkRequest.reply();
-  const QByteArray raw = content.content();
-
-  // Parse data
-  QJsonParseError err;
-  const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
-  if ( doc.isNull() )
+  else
   {
-    return false;
+    // try uri as a local file
+    if ( QFileInfo::exists( dataSourceUri( ) ) )
+    {
+      QFile file( dataSourceUri( ) );
+      if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+      {
+        const QByteArray raw = file.readAll();
+        // Parse data
+        QJsonParseError err;
+        const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
+        if ( doc.isNull() )
+        {
+          return false;
+        }
+        mShared->setTilesetContent( doc.object().toVariantMap() );
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+    {
+      return false;
+    }
   }
-
-  mShared->setTilesetContent( doc.object().toVariantMap() );
 
   return true;
 }
