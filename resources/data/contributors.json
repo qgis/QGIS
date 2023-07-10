@@ -1213,6 +1213,23 @@
           44.08692
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Yoann Quenach de Quivillic",
+        "Committer": "No",
+        "First Commit Message": "Add a toggle comment action in the Python Console",
+        "First Commit Date": "29-12-2022",
+        "GIT Nickname": "YoannQDQ"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.6122,
+          48.2594
+        ]
+      }
     }
   ]
 }
