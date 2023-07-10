@@ -235,7 +235,7 @@ bool QgsCoordinateReferenceSystemRegistry::updateUserCrs( long id, const QgsCoor
 
   if ( res )
   {
-    emit userCrsChanged( crs.d->mAuthId );
+    emit userCrsChanged( QStringLiteral( "USER:%1" ).arg( id ) );
     emit crsDefinitionsChanged();
   }
 
@@ -446,7 +446,7 @@ QList<QgsCrsDbRecord> QgsCoordinateReferenceSystemRegistry::crsDbRecords() const
       int result = database.open_v2( srsDatabaseFileName, SQLITE_OPEN_READONLY, nullptr );
       if ( result == SQLITE_OK )
       {
-        const QString sql = QStringLiteral( "select description, srs_id, auth_name, auth_id, name, deprecated, srs_type from vw_srs" );
+        const QString sql = QStringLiteral( "select description, srs_id, auth_name, auth_id, projection_acronym, deprecated, srs_type from tbl_srs" );
         sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
         if ( result == SQLITE_OK )
         {
@@ -457,7 +457,7 @@ QList<QgsCrsDbRecord> QgsCoordinateReferenceSystemRegistry::crsDbRecords() const
             record.srsId = preparedStatement.columnAsText( 1 );
             record.authName = preparedStatement.columnAsText( 2 );
             record.authId = preparedStatement.columnAsText( 3 );
-            record.name = preparedStatement.columnAsText( 4 );
+            record.projectionAcronym = preparedStatement.columnAsText( 4 );
             record.deprecated = preparedStatement.columnAsText( 5 ).toInt();
             record.type = qgsEnumKeyToValue( preparedStatement.columnAsText( 6 ), Qgis::CrsType::Unknown );
             mCrsDbRecords.append( record );
