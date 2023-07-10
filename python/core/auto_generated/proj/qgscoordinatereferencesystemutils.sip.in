@@ -43,6 +43,15 @@ Returns a translated string representing a CRS ``type``.
 
 .. versionadded:: 3.34
 %End
+
+    static QString translateProjection( const QString &projection );
+%Docstring
+Returns a translated string for a ``projection`` method.
+
+Returns an empty string for unhandled methods.
+
+.. versionadded:: 3.34
+%End
 };
 
 /************************************************************************
