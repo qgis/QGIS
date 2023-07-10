@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsCoordinateReferenceSystemRegistry : QObject
 {
 %Docstring(signature="appended")
@@ -146,6 +148,7 @@ Returns a list of all known authorities.
 
 .. versionadded:: 3.34
 %End
+
 
   signals:
 
