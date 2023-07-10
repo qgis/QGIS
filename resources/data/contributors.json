@@ -912,7 +912,7 @@
       "type": "Feature",
       "properties": {
         "Name": "Loïc Bartoletti",
-        "Committer": "No",
+        "Committer": "Yes",
         "First Commit Message": "Oriented Minimum Bounding Box",
         "First Commit Date": "11-06-2015",
         "GIT Nickname": "lbartoletti"
