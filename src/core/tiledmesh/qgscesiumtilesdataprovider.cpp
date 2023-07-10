@@ -46,8 +46,6 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
 {
   mTileset = json::parse( tileset.toStdString() );
 
-  mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
-
   // parse root
   {
     const auto &root = mTileset[ "root" ];
@@ -61,7 +59,8 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
         {
           mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
           // The latitude and longitude values are given in radians!
-
+          // TODO -- is this ALWAYS the case? What if there's a region root bounding volume, but a transform object present? What if there's crs metadata specifying a different crs?
+          mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
           const double xMin = rootRegion.xMinimum() * 180 / M_PI;
           const double xMax = rootRegion.xMaximum() * 180 / M_PI;
           const double yMin = rootRegion.yMinimum() * 180 / M_PI;
@@ -69,12 +68,28 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
           mExtent = QgsRectangle( xMin, yMin, xMax, yMax );
         }
       }
+      else if ( rootBoundingVolume.contains( "box" ) )
+      {
+        const QgsOrientedBoundingBox bbox = QgsOrientedBoundingBox::fromJson( rootBoundingVolume["box"] );
+        if ( !bbox.isNull() )
+        {
+          const QgsBox3d rootRegion = bbox.extent();
+          mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
+          const double xMin = rootRegion.xMinimum();
+          const double xMax = rootRegion.xMaximum();
+          const double yMin = rootRegion.yMinimum();
+          const double yMax = rootRegion.yMaximum();
+          mExtent = QgsRectangle( xMin, yMin, xMax, yMax );
+        }
+      }
       else
       {
-        // TODO: handle box, sphere bounding volumes
+        // TODO: handle sphere bounding volumes
       }
     }
   }
+  // TODO -- read crs from metadata tags. Need to find real world examples of this. And can metadata crs override
+  // the EPSG:4979 requirement from a region bounding volume??
 }
 
 

@@ -10,6 +10,78 @@
 
 
 
+class QgsOrientedBoundingBox
+{
+%Docstring(signature="appended")
+Represents a oriented (rotated) bounding box in 3 dimensions.
+
+.. warning::
+
+   Non-stable API, exposed to Python for unit testing only.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgscesiumutils.h"
+%End
+  public:
+
+    QgsOrientedBoundingBox();
+%Docstring
+Constructor for a null bounding box.
+%End
+
+    QgsOrientedBoundingBox( const QList<double> &center, QList< double > &halfAxes );
+%Docstring
+Constructor for a oriented bounding box, with a specified center and half axes matrix.
+%End
+
+    bool isNull() const;
+%Docstring
+Returns ``True`` if the box is a null bounding box.
+%End
+
+    double centerX() const;
+%Docstring
+Returns the center x-coordinate.
+
+.. seealso:: :py:func:`centerY`
+
+.. seealso:: :py:func:`centerZ`
+%End
+
+    double centerY() const;
+%Docstring
+Returns the center y-coordinate.
+
+.. seealso:: :py:func:`centerX`
+
+.. seealso:: :py:func:`centerZ`
+%End
+
+    double centerZ() const;
+%Docstring
+Returns the center z-coordinate.
+
+.. seealso:: :py:func:`centerX`
+
+.. seealso:: :py:func:`centerY`
+%End
+
+
+    QList< double > halfAxesList() const /PyName=halfAxes/;
+%Docstring
+Returns the half axes matrix;
+%End
+
+    QgsBox3d extent() const;
+%Docstring
+Returns the overall bounding box of the object.
+%End
+
+};
+
 class QgsCesiumUtils
 {
 %Docstring(signature="appended")
@@ -29,6 +101,11 @@ Contains utilities for working with Cesium data.
 Parses a ``region`` object from a Cesium JSON document to a 3D box.
 %End
 
+
+    static QgsOrientedBoundingBox parseBox( const QVariantList &box );
+%Docstring
+Parses a ``box`` object from a Cesium JSON document to an oriented bounding box.
+%End
 
 };
 

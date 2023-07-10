@@ -30,7 +30,7 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
                                   'cesiumtiles')
         self.assertFalse(layer.dataProvider().isValid())
 
-    def test_valid_source(self):
+    def test_source_bounding_volume_region(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_file = os.path.join(temp_dir, 'tileset.json')
             with open(tmp_file, 'wt', encoding='utf-8') as f:
@@ -78,6 +78,46 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
             self.assertIn('1.1', layer.dataProvider().htmlMetadata())
             self.assertIn('e575c6f1', layer.dataProvider().htmlMetadata())
             self.assertIn('1.2 - 67.01', layer.dataProvider().htmlMetadata())
+
+    def test_source_bounding_volume_box(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmp_file = os.path.join(temp_dir, 'tileset.json')
+            with open(tmp_file, 'wt', encoding='utf-8') as f:
+                f.write("""
+{
+  "asset": {
+    "version": "1.1",
+    "tilesetVersion": "e575c6f1"
+  },
+  "geometricError": 100,
+  "root": {
+    "boundingVolume": {"box":[-0.2536985000000129,-0.9643609999999967,3.972842,182.20200849999998,0,0,0,86.937516,0,0,0,20.162945]},
+    "geometricError": 100,
+    "refine": "ADD",
+    "children": []
+  }
+}""")
+
+            layer = QgsTiledMeshLayer(tmp_file, 'my layer',
+                                      'cesiumtiles')
+            self.assertTrue(layer.dataProvider().isValid())
+
+            # crs is not specified for this source
+            self.assertFalse(layer.dataProvider().crs().isValid())
+
+            self.assertAlmostEqual(layer.dataProvider().extent().xMinimum(),
+                                   -182.455707, 3)
+            self.assertAlmostEqual(layer.dataProvider().extent().xMaximum(),
+                                   181.94830999999996, 3)
+            self.assertAlmostEqual(layer.dataProvider().extent().yMinimum(),
+                                   -87.901877, 3)
+            self.assertAlmostEqual(layer.dataProvider().extent().yMaximum(),
+                                   85.973155, 3)
+
+            # check that version, tileset version, and z range are in html metadata
+            self.assertIn('1.1', layer.dataProvider().htmlMetadata())
+            self.assertIn('e575c6f1', layer.dataProvider().htmlMetadata())
+            self.assertIn('-16.1901 - 24.1358', layer.dataProvider().htmlMetadata())
 
 
 if __name__ == '__main__':
