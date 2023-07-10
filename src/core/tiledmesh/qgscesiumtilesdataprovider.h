@@ -32,11 +32,14 @@ class QgsCesiumTilesDataProviderSharedData
 {
   public:
     QgsCesiumTilesDataProviderSharedData();
+    void setTilesetContent( const QVariantMap &tileset );
 
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
+    QVariantMap mTileset;
 
     QReadWriteLock mMutex;
+
 
 };
 
@@ -61,10 +64,15 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledMeshDataProvi
     bool isValid() const final;
     QString name() const final;
     QString description() const final;
-
+    QString htmlMetadata() const final;
   private:
 
+    bool init();
+
     bool mIsValid = false;
+
+    QString mAuthCfg;
+    QgsHttpHeaders mHeaders;
 
     std::shared_ptr<QgsCesiumTilesDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
 

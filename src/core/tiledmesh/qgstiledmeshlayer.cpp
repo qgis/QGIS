@@ -357,6 +357,9 @@ QString QgsTiledMeshLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
 
+  if ( mDataProvider )
+    myMetadata += mDataProvider->htmlMetadata();
+
   // Extent
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
 
