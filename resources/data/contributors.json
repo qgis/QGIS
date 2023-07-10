@@ -1196,6 +1196,23 @@
           60.6750
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Jacky Volpes",
+        "Committer": "No",
+        "First Commit Message": "Changed Python inspect.getargspec()",
+        "First Commit Date": "31-10-2019",
+        "GIT Nickname": "Djedouas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.20673,
+          44.08692
+        ]
+      }
     }
   ]
 }
