@@ -203,8 +203,7 @@ bool QgsCesiumTilesDataProvider::isValid() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  // TODO
-  return true;
+  return mIsValid;
 }
 
 QString QgsCesiumTilesDataProvider::name() const
