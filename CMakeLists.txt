@@ -363,7 +363,12 @@ if(WITH_CORE)
     message (SEND_ERROR "sqlite3 dependency was not found!")
   endif()
 
-  find_package(Protobuf REQUIRED)   # for decoding of vector tiles in MVT format
+  # workaround errors with older cmake -- see https://github.com/protocolbuffers/protobuf/issues/12292
+  find_package(Protobuf CONFIG)   # for decoding of vector tiles in MVT format
+  if (NOT Protobuf_FOUND)
+    FIND_PACKAGE(Protobuf REQUIRED)
+  endif()
+
   message(STATUS "Found Protobuf: ${Protobuf_LIBRARIES}")
   if (NOT Protobuf_PROTOC_EXECUTABLE)
     message (SEND_ERROR "Protobuf library's 'protoc' tool was not found!")
