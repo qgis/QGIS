@@ -28,6 +28,7 @@
 #include "qgsexception.h"
 #include "qgsprojoperation.h"
 
+#include <QFileInfo>
 #include <sqlite3.h>
 #include <mutex>
 #include <proj.h>
@@ -430,4 +431,41 @@ QSet<QString> QgsCoordinateReferenceSystemRegistry::authorities() const
   } );
 
   return mKnownAuthorities;
+}
+
+QList<QgsCrsDbRecord> QgsCoordinateReferenceSystemRegistry::crsDbRecords() const
+{
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
+  {
+    const QString srsDatabaseFileName = QgsApplication::srsDatabaseFilePath();
+    if ( QFileInfo::exists( srsDatabaseFileName ) )
+    {
+      // open the database containing the spatial reference data, and do a one-time read
+      sqlite3_database_unique_ptr database;
+      int result = database.open_v2( srsDatabaseFileName, SQLITE_OPEN_READONLY, nullptr );
+      if ( result == SQLITE_OK )
+      {
+        const QString sql = QStringLiteral( "select description, srs_id, auth_name, auth_id, name, deprecated, srs_type from vw_srs" );
+        sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
+        if ( result == SQLITE_OK )
+        {
+          while ( preparedStatement.step() == SQLITE_ROW )
+          {
+            QgsCrsDbRecord record;
+            record.description = preparedStatement.columnAsText( 0 );
+            record.srsId = preparedStatement.columnAsText( 1 );
+            record.authName = preparedStatement.columnAsText( 2 );
+            record.authId = preparedStatement.columnAsText( 3 );
+            record.name = preparedStatement.columnAsText( 4 );
+            record.deprecated = preparedStatement.columnAsText( 5 ).toInt();
+            record.type = qgsEnumKeyToValue( preparedStatement.columnAsText( 6 ), Qgis::CrsType::Unknown );
+            mCrsDbRecords.append( record );
+          }
+        }
+      }
+    }
+  } );
+
+  return mCrsDbRecords;
 }
