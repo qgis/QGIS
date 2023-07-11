@@ -19,9 +19,9 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatereferencesystemmodel.h"
 
 class QResizeEvent;
-class QgsCoordinateReferenceSystemProxyModel;
 
 /**
  * \class QgsProjectionSelectionTreeWidget
@@ -44,9 +44,14 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
   public:
 
     /**
-     * Constructor for QgsProjectionSelectionTreeWidget.
+     * Constructor for QgsProjectionSelectionTreeWidget, with the specified \a parent widget.
+     *
+     * Since QGIS 3.34, the optional \a filter argument can be used to specify filters on the systems
+     * shown in the widget. The default is to show all horizontal and compound CRS in order to match
+     * the behavior of older QGIS releases. The \a filter can be altered to also include vertical CRS if desired.
      */
-    QgsProjectionSelectionTreeWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProjectionSelectionTreeWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                      QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 
     ~QgsProjectionSelectionTreeWidget() override;
 
@@ -108,6 +113,22 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * \since QGIS 3.0
      */
     QgsRectangle previewRect() const;
+
+    /**
+     * Returns the filters set on the available CRS.
+     *
+     * \see setFilters()
+     * \since QGIS 3.34
+     */
+    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+
+    /**
+     * Sets \a filters for the available CRS.
+     *
+     * \see filters()
+     * \since QGIS 3.34
+     */
+    void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
 
   public slots:
 

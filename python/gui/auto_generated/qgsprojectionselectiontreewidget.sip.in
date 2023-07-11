@@ -32,9 +32,14 @@ suitable to use the compact :py:class:`QgsProjectionSelectionWidget` widget.
 %End
   public:
 
-    QgsProjectionSelectionTreeWidget( QWidget *parent /TransferThis/ = 0 );
+    QgsProjectionSelectionTreeWidget( QWidget *parent /TransferThis/ = 0,
+                                      QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
-Constructor for QgsProjectionSelectionTreeWidget.
+Constructor for QgsProjectionSelectionTreeWidget, with the specified ``parent`` widget.
+
+Since QGIS 3.34, the optional ``filter`` argument can be used to specify filters on the systems
+shown in the widget. The default is to show all horizontal and compound CRS in order to match
+the behavior of older QGIS releases. The ``filter`` can be altered to also include vertical CRS if desired.
 %End
 
     ~QgsProjectionSelectionTreeWidget();
@@ -109,6 +114,24 @@ The initial "preview" rectangle for the bounds overview map.
 .. seealso:: :py:func:`previewRect`
 
 .. versionadded:: 3.0
+%End
+
+    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+%Docstring
+Returns the filters set on the available CRS.
+
+.. seealso:: :py:func:`setFilters`
+
+.. versionadded:: 3.34
+%End
+
+    void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
+%Docstring
+Sets ``filters`` for the available CRS.
+
+.. seealso:: :py:func:`filters`
+
+.. versionadded:: 3.34
 %End
 
   public slots:
