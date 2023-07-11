@@ -230,6 +230,13 @@ QModelIndex QgsCoordinateReferenceSystemModel::parent( const QModelIndex &child 
   }
 }
 
+QModelIndex QgsCoordinateReferenceSystemModel::authIdToIndex( const QString &authid ) const
+{
+  const QModelIndex startIndex = index( 0, 0 );
+  const QModelIndexList hits = match( startIndex, RoleAuthId, authid, 1, Qt::MatchRecursive );
+  return hits.value( 0 );
+}
+
 void QgsCoordinateReferenceSystemModel::rebuild()
 {
   beginResetModel();
@@ -447,7 +454,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
   return crsNode.release();
 }
 
-void QgsCoordinateReferenceSystemModel::addCustomCrs( const QgsCoordinateReferenceSystem &crs )
+QModelIndex QgsCoordinateReferenceSystemModel::addCustomCrs( const QgsCoordinateReferenceSystem &crs )
 {
   QgsCrsDbRecord userRecord;
   userRecord.authName = QStringLiteral( "CUSTOM" );
@@ -468,13 +475,15 @@ void QgsCoordinateReferenceSystemModel::addCustomCrs( const QgsCoordinateReferen
 
   const QModelIndex parentGroupIndex = node2index( group );
 
-  beginInsertRows( parentGroupIndex, group->children().size(), group->children().size() );
+  const int newRow = group->children().size();
+  beginInsertRows( parentGroupIndex, newRow, newRow );
   QgsCoordinateReferenceSystemModelCrsNode *node = addRecord( userRecord );
   node->setWkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   node->setProj( crs.toProj() );
   endInsertRows();
-}
 
+  return index( newRow, 0, parentGroupIndex );
+}
 
 QgsCoordinateReferenceSystemModelNode *QgsCoordinateReferenceSystemModel::index2node( const QModelIndex &index ) const
 {
@@ -607,7 +616,7 @@ void QgsCoordinateReferenceSystemProxyModel::setFilterString( const QString &fil
   invalidateFilter();
 }
 
-void QgsCoordinateReferenceSystemProxyModel::setFilterAuthIds( const QStringList &filter )
+void QgsCoordinateReferenceSystemProxyModel::setFilterAuthIds( const QSet<QString> &filter )
 {
   if ( mFilterAuthIds == filter )
     return;

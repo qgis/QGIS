@@ -256,7 +256,9 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
      * This method can be used to add CRS which aren't present in either the standard PROJ SRS database or the
      * user's custom CRS database to the model.
      */
-    void addCustomCrs( const QgsCoordinateReferenceSystem &crs );
+    QModelIndex addCustomCrs( const QgsCoordinateReferenceSystem &crs );
+
+    QModelIndex authIdToIndex( const QString &authid ) const;
 
   private slots:
 
@@ -352,14 +354,14 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel: public QSortFilterProxy
      *
      * \see filterAuthIds()
     */
-    void setFilterAuthIds( const QStringList &filter );
+    void setFilterAuthIds( const QSet< QString > &filter );
 
     /**
      * Returns the current filter list of auth ID strings, if set.
      *
      * \see setFilterString()
      */
-    QStringList filterAuthIds() const { return mFilterAuthIds; }
+    QSet< QString > filterAuthIds() const { return mFilterAuthIds; }
 
     /**
      * Sets whether deprecated CRS should be filtered from the results.
@@ -382,7 +384,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel: public QSortFilterProxy
 
     QgsCoordinateReferenceSystemModel *mModel = nullptr;
     QString mFilterString;
-    QStringList mFilterAuthIds;
+    QSet< QString > mFilterAuthIds;
     bool mFilterDeprecated = false;
     Filters mFilters = Filters();
 };

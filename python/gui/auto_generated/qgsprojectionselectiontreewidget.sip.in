@@ -170,11 +170,12 @@ Clear the list of recent projections.
 Emitted when a projection is selected in the widget.
 %End
 
-    void initialized();
+ void initialized() /Deprecated/;
 %Docstring
 Notifies others that the widget is now fully initialized, including deferred selection of projection.
 
-.. versionadded:: 2.4
+.. deprecated::
+   no longer emitted
 %End
 
     void projectionDoubleClicked();
@@ -192,8 +193,6 @@ Emitted when the selection in the tree is changed from a valid selection to an i
 %End
 
   protected:
-    virtual void showEvent( QShowEvent *event );
-
 
     virtual void resizeEvent( QResizeEvent *event );
 

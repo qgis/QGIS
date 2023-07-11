@@ -21,6 +21,7 @@
 #include "qgscoordinatereferencesystem.h"
 
 class QResizeEvent;
+class QgsCoordinateReferenceSystemProxyModel;
 
 /**
  * \class QgsProjectionSelectionTreeWidget
@@ -162,9 +163,9 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Notifies others that the widget is now fully initialized, including deferred selection of projection.
-     * \since QGIS 2.4
+     * \deprecated no longer emitted
      */
-    void initialized();
+    Q_DECL_DEPRECATED void initialized() SIP_DEPRECATED;
 
     /**
      * Emitted when a projection is double clicked in the list.
@@ -180,8 +181,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void hasValidSelectionChanged( bool isValid );
 
   protected:
-    // Used to ensure the projection list view is actually populated
-    void showEvent( QShowEvent *event ) override;
 
     // Used to manage column sizes
     void resizeEvent( QResizeEvent *event ) override;
@@ -191,75 +190,9 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
   private:
 
-    /**
-     * \brief Populate the proj tree view with user defined projection names...
-     *
-     * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
-     *                  list of projections by.  This is useful in (e.g.) WMS situations
-     *                  where you just want to offer what the WMS server can support.
-     */
-    void loadUserCrsList( QSet<QString> *crsFilter = nullptr );
-
-    /**
-     * \brief Populate the proj tree view with system projection names...
-     *
-     * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
-     *                  list of projections by.  This is useful in (e.g.) WMS situations
-     *                  where you just want to offer what the WMS server can support.
-     */
-    void loadCrsList( QSet<QString> *crsFilter = nullptr );
-
-
     void loadUnknownCrs( const QgsCoordinateReferenceSystem &crs );
 
-    /**
-     * \brief Makes a \a string safe for use in SQL statements.
-     *  This involves escaping single quotes, double quotes, backslashes,
-     *  and optionally, percentage symbols.  Percentage symbols are used
-     *  as wildcards sometimes and so when using the string as part of the
-     *  LIKE phrase of a select statement, should be escaped.
-     * \returns The string made safe for SQL statements.
-     */
-    QString sqlSafeString( const QString &string ) const;
-
-    /**
-     * \brief converts the CRS group to a SQL expression fragment
-     *
-     * Converts the given Coordinate Reference Systems to a format suitable
-     * for use in SQL for querying against the QGIS CRS database.
-     *
-     * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
-     *                  list of projections by.  This is useful in (e.g.) WMS situations
-     *                  where you just want to offer what the WMS server can support.
-     *
-     */
-    QString ogcWmsCrsFilterAsSqlExpression( QSet<QString> *crsFilter );
-
-    /**
-     * \brief does the legwork of applying CRS Selection
-     *
-     * \warning This function does nothing unless getUserList() and getUserProjList()
-     *          Have already been called
-     *
-     * \warning This function only expands the parents of the selection and
-     *          does not scroll the list to the selection if the widget is not visible.
-     *          Therefore you will typically want to use this in a showEvent().
-     */
-    void applySelection( int column = QgsProjectionSelectionTreeWidget::None, QString value = QString() );
-
-    //! gets an arbitrary sqlite3 expression from the given item
-    QString expressionForItem( QTreeWidgetItem *item, const QString &expression ) const;
-
-    //! Returns the CRS of the given item
-    QgsCoordinateReferenceSystem crsForItem( QTreeWidgetItem *item ) const;
-
-    QString selectedName();
-
-    //! Gets the current QGIS projection identfier
-    long selectedCrsId();
-
-    //! Show the user a warning if the srs database could not be found
-    void showDBMissingWarning( const QString &fileName );
+    void selectCrsByAuthId( const QString &authid );
 
     enum Roles
     {
@@ -268,44 +201,12 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
       RoleProj
     };
 
-    // List view nodes for the tree view of projections
-    //! User defined projections node
-    QTreeWidgetItem *mUserProjList = nullptr;
-    //! GEOGCS node
-    QTreeWidgetItem *mGeoList = nullptr;
-    //! PROJCS node
-    QTreeWidgetItem *mProjList = nullptr;
-
-    QTreeWidgetItem *mUnknownList = nullptr;
-
-    //! Users custom coordinate system file
-    QString mCustomCsFile;
-    //! File name of the sqlite3 database
-    QString mSrsDatabaseFileName;
-
-    /**
-     * Utility method used in conjunction with name based searching tool
-     */
-    long getLargestCrsIdMatch( const QString &sql );
+    QgsCoordinateReferenceSystemProxyModel *mCrsModel = nullptr;
 
     //! add recently used CRS
     void insertRecent( const QgsCoordinateReferenceSystem &crs );
 
-    //! Has the Projection List been populated?
-    bool mProjListDone = false;
-
-    //! Has the User Projection List been populated?
-    bool mUserProjListDone = false;
-
-    //! Has the Recent Projection List been populated?
-    bool mRecentProjListDone = false;
-
-    enum Columns { NameColumn, AuthidColumn, QgisCrsIdColumn, ClearColumn, None };
-    int mSearchColumn = QgsProjectionSelectionTreeWidget::None;
-    QString mSearchValue;
-
-    //! The set of OGC WMS CRSs that want to be applied to this widget
-    QSet<QString> mCrsFilter;
+    enum Columns { NameColumn, AuthidColumn, QgisCrsIdColumn, ClearColumn };
 
     //! Most recently used projections
     QList< QgsCoordinateReferenceSystem > mRecentProjections;
@@ -315,21 +216,18 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     bool mShowMap = true;
 
-    bool mInitialized = false;
-    QgsCoordinateReferenceSystem mDeferredLoadCrs;
     bool mBlockSignals = false;
 
   private slots:
-    //! Gets list of authorities
+
     void updateBoundsPreview();
-    QStringList authorities();
 
     //! Apply projection on double-click
-    void lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
+    void lstCoordinateSystemsDoubleClicked( const QModelIndex &index );
     void lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
-    void lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void lstCoordinateSystemsSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void updateFilter();
+    void filterRecentCrsList();
 
     void removeRecentCrsItem( QTreeWidgetItem *item );
 };

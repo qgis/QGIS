@@ -53,13 +53,15 @@ A tree model for display of known coordinate reference systems.
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
 
-    void addCustomCrs( const QgsCoordinateReferenceSystem &crs );
+    QModelIndex addCustomCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Adds a custom ``crs`` to the model.
 
 This method can be used to add CRS which aren't present in either the standard PROJ SRS database or the
 user's custom CRS database to the model.
 %End
+
+    QModelIndex authIdToIndex( const QString &authid ) const;
 
 };
 
@@ -126,7 +128,7 @@ Returns the current filter string, if set.
 .. seealso:: :py:func:`setFilterString`
 %End
 
-    void setFilterAuthIds( const QStringList &filter );
+    void setFilterAuthIds( const QSet< QString > &filter );
 %Docstring
 Sets a ``filter`` list of CRS auth ID strings, such that only coordinate reference systems matching the
 specified auth IDs will be shown.
@@ -134,7 +136,7 @@ specified auth IDs will be shown.
 .. seealso:: :py:func:`filterAuthIds`
 %End
 
-    QStringList filterAuthIds() const;
+    QSet< QString > filterAuthIds() const;
 %Docstring
 Returns the current filter list of auth ID strings, if set.
 
