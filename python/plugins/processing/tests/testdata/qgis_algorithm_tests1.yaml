@@ -2547,7 +2547,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:delaunaytriangulation
+  - algorithm: native:delaunaytriangulation
     name: Delaunay triangulation (multipoint data)
     params:
       INPUT:
