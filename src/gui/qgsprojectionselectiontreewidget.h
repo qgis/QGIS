@@ -102,6 +102,13 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      */
     bool hasValidSelection() const;
 
+    /**
+     * The initial "preview" rectangle for the bounds overview map.
+     * \see previewRect()
+     * \since QGIS 3.0
+     */
+    QgsRectangle previewRect() const;
+
   public slots:
 
     /**
@@ -119,23 +126,13 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void setPreviewRect( const QgsRectangle &rect );
 
     /**
-     * The initial "preview" rectangle for the bounds overview map.
-     * \see previewRect()
-     * \since QGIS 3.0
-     */
-    QgsRectangle previewRect() const;
-
-    /**
-     * \brief filters this widget by the given CRSs
+     * \brief Filters this widget by the given CRSs.
      *
      * Sets this widget to filter the available projections to those listed
      * by the given Coordinate Reference Systems.
      *
-     * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
-     *                  list of projections by.  This is useful in (e.g.) WMS situations
-     *                  where you just want to offer what the WMS server can support.
-     *
-     * \warning This function's behavior is undefined if it is called after the widget is shown.
+     * \param crsFilter a list of the authority:id strings for Coordinate Reference Systems to include
+     * in the widget.
      */
     void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
 
@@ -145,7 +142,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * \deprecated Has no effect since QGIS 3.20
      */
     Q_DECL_DEPRECATED void pushProjectionToFront() SIP_DEPRECATED;
-
 
     /**
      * Clear the list of recent projections.
@@ -210,9 +206,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     //! Most recently used projections
     QList< QgsCoordinateReferenceSystem > mRecentProjections;
-
-    //! Hide deprecated CRSes
-    void hideDeprecated( QTreeWidgetItem *item );
 
     bool mShowMap = true;
 

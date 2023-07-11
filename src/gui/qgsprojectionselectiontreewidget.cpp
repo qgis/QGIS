@@ -93,12 +93,12 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
     QTreeWidgetItem *currentItem = lstRecent->itemAt( pos );
     if ( currentItem )
     {
-      QAction *clearSelected = menu.addAction( QgsApplication::getThemeIcon( "/mIconClearItem.svg" ),  tr( "Remove selected CRS from recently used CRS" ) );
+      QAction *clearSelected = menu.addAction( QgsApplication::getThemeIcon( "/mIconClearItem.svg" ),  tr( "Remove Selected CRS from Recently Used CRS" ) );
       connect( clearSelected, &QAction::triggered, this, [this, currentItem ] { removeRecentCrsItem( currentItem ); } );
       menu.addSeparator();
     }
     // Clear all
-    QAction *clearAll = menu.addAction( QgsApplication::getThemeIcon( "/console/iconClearConsole.svg" ), tr( "Clear all recently used CRS" ) );
+    QAction *clearAll = menu.addAction( QgsApplication::getThemeIcon( "/console/iconClearConsole.svg" ), tr( "Clear All Recently Used CRS" ) );
     connect( clearAll, &QAction::triggered, this, &QgsProjectionSelectionTreeWidget::clearRecentCrs );
     menu.exec( lstRecent->viewport()->mapToGlobal( pos ) );
   } );
