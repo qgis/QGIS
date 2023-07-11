@@ -67,6 +67,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmconvexhull.cpp
   processing/qgsalgorithmcreatedirectory.cpp
   processing/qgsalgorithmdbscanclustering.cpp
+  processing/qgsalgorithmdelaunaytriangulation.cpp
   processing/qgsalgorithmdeleteduplicategeometries.cpp
   processing/qgsalgorithmdensifygeometriesbycount.cpp
   processing/qgsalgorithmdensifygeometriesbyinterval.cpp

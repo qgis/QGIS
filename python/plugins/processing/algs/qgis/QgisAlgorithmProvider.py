@@ -34,7 +34,6 @@ from .CheckValidity import CheckValidity
 from .Climb import Climb
 from .ConcaveHull import ConcaveHull
 from .DefineProjection import DefineProjection
-from .Delaunay import Delaunay
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -97,7 +96,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Climb(),
                 ConcaveHull(),
                 DefineProjection(),
-                Delaunay(),
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),

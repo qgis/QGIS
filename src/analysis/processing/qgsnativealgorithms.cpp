@@ -48,6 +48,7 @@
 #include "qgsalgorithmconvexhull.h"
 #include "qgsalgorithmcreatedirectory.h"
 #include "qgsalgorithmdbscanclustering.h"
+#include "qgsalgorithmdelaunaytriangulation.h"
 #include "qgsalgorithmdeleteduplicategeometries.h"
 #include "qgsalgorithmdensifygeometriesbycount.h"
 #include "qgsalgorithmdensifygeometriesbyinterval.h"
@@ -312,6 +313,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsConvexHullAlgorithm() );
   addAlgorithm( new QgsCreateDirectoryAlgorithm() );
   addAlgorithm( new QgsDbscanClusteringAlgorithm() );
+  addAlgorithm( new QgsDelaunayTriangulationAlgorithm() );
   addAlgorithm( new QgsDeleteDuplicateGeometriesAlgorithm() );
   addAlgorithm( new QgsDetectVectorChangesAlgorithm() );
   addAlgorithm( new QgsDifferenceAlgorithm() );
