@@ -268,7 +268,7 @@ tests:
               cast: str
             fid: skip
 
-  - algorithm: qgis:concavehull
+  - algorithm: native:concavehull
     name: Concave Hull - Points (0.3)
     params:
       ALPHA: 0.3
@@ -285,7 +285,7 @@ tests:
           geometry:
             normalize: True
 
-  - algorithm: qgis:concavehull
+  - algorithm: native:concavehull
     name: Concave Hull - Points (0.7)
     params:
       ALPHA: 0.7

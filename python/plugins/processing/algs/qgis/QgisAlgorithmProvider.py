@@ -32,7 +32,6 @@ from .BasicStatistics import BasicStatisticsForField
 from .BoxPlot import BoxPlot
 from .CheckValidity import CheckValidity
 from .Climb import Climb
-from .ConcaveHull import ConcaveHull
 from .DefineProjection import DefineProjection
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
@@ -94,7 +93,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 BoxPlot(),
                 CheckValidity(),
                 Climb(),
-                ConcaveHull(),
                 DefineProjection(),
                 EliminateSelection(),
                 ExecuteSQL(),

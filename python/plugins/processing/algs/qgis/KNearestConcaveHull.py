@@ -37,6 +37,7 @@ from qgis.core import (QgsApplication,
                        QgsFields,
                        QgsGeometry,
                        QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
@@ -74,6 +75,9 @@ class KNearestConcaveHull(QgisAlgorithm):
 
     def groupId(self):
         return 'vectorgeometry'
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagDeprecated | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
 
     def __init__(self):
         super().__init__()
