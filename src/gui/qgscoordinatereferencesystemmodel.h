@@ -240,7 +240,10 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
       RoleProj = Qt::UserRole + 7, //!< The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
     };
 
-    QgsCoordinateReferenceSystemModel( QObject *parent = nullptr );
+    /**
+     * Constructor for QgsCoordinateReferenceSystemModel, with the specified \a parent object.
+     */
+    QgsCoordinateReferenceSystemModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -258,7 +261,12 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
      */
     QModelIndex addCustomCrs( const QgsCoordinateReferenceSystem &crs );
 
-    QModelIndex authIdToIndex( const QString &authid ) const;
+    /**
+     * Retrieves the model index corresponding to a CRS with the specified \a authId.
+     *
+     * Returns an invalid index if the CRS was not found.
+     */
+    QModelIndex authIdToIndex( const QString &authId ) const;
 
   private slots:
 

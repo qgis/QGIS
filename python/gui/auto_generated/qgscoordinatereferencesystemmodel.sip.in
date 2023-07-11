@@ -36,7 +36,10 @@ A tree model for display of known coordinate reference systems.
       RoleProj,
     };
 
-    QgsCoordinateReferenceSystemModel( QObject *parent = 0 );
+    QgsCoordinateReferenceSystemModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCoordinateReferenceSystemModel, with the specified ``parent`` object.
+%End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
@@ -61,7 +64,12 @@ This method can be used to add CRS which aren't present in either the standard P
 user's custom CRS database to the model.
 %End
 
-    QModelIndex authIdToIndex( const QString &authid ) const;
+    QModelIndex authIdToIndex( const QString &authId ) const;
+%Docstring
+Retrieves the model index corresponding to a CRS with the specified ``authId``.
+
+Returns an invalid index if the CRS was not found.
+%End
 
 };
 
