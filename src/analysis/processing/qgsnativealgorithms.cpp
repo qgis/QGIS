@@ -224,6 +224,7 @@
 #include "qgsalgorithmuniquevalueindex.h"
 #include "qgsalgorithmvectorize.h"
 #include "qgsalgorithmvirtualrastercalculator.h"
+#include "qgsalgorithmvoronoipolygons.h"
 #include "qgsalgorithmwedgebuffers.h"
 #include "qgsalgorithmwritevectortiles.h"
 #include "qgsalgorithmxyztiles.h"
@@ -529,6 +530,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsVirtualRasterCalculatorAlgorithm() );
   addAlgorithm( new QgsVirtualRasterCalculatorModelerAlgorithm() );
+  addAlgorithm( new QgsVoronoiPolygonsAlgorithm() );
   addAlgorithm( new QgsWedgeBuffersAlgorithm() );
   addAlgorithm( new QgsWriteVectorTilesXyzAlgorithm() );
   addAlgorithm( new QgsWriteVectorTilesMbtilesAlgorithm() );
