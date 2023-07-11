@@ -258,6 +258,3 @@ qgis:vectorlayerhistogram: >
 
 qgis:vectorlayerscatterplot: >
   This algorithm creates a simple X - Y scatter plot for a vector layer.
-
-qgis:voronoipolygons: >
-  This algorithm takes a points layer and generates a polygon layer containing the voronoi polygons corresponding to those input points.
