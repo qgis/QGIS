@@ -397,5 +397,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel: public QSortFilterProxy
     Filters mFilters = Filters();
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsCoordinateReferenceSystemProxyModel::Filters )
+
 
 #endif // QGSCOORDINATEREFERENCESYSTEMMODEL_H

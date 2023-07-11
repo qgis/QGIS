@@ -172,6 +172,9 @@ Returns whether deprecated CRS will be filtered from the results.
 
 };
 
+QFlags<QgsCoordinateReferenceSystemProxyModel::Filter> operator|(QgsCoordinateReferenceSystemProxyModel::Filter f1, QFlags<QgsCoordinateReferenceSystemProxyModel::Filter> f2);
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

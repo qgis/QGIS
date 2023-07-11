@@ -36,12 +36,14 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 
-QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *parent )
+QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *parent, QgsCoordinateReferenceSystemProxyModel::Filters filters )
   : QWidget( parent )
 {
   setupUi( this );
 
   mCrsModel = new QgsCoordinateReferenceSystemProxyModel( this );
+  mCrsModel->setFilters( filters );
+
   lstCoordinateSystems->setModel( mCrsModel );
   lstCoordinateSystems->setSelectionBehavior( QAbstractItemView::SelectRows );
 
@@ -251,6 +253,16 @@ void QgsProjectionSelectionTreeWidget::setPreviewRect( const QgsRectangle &rect 
 QgsRectangle QgsProjectionSelectionTreeWidget::previewRect() const
 {
   return mAreaCanvas->canvasRect();
+}
+
+QgsCoordinateReferenceSystemProxyModel::Filters QgsProjectionSelectionTreeWidget::filters() const
+{
+  return mCrsModel->filters();
+}
+
+void QgsProjectionSelectionTreeWidget::setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters )
+{
+  mCrsModel->setFilters( filters );
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
