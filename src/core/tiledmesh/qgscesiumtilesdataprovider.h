@@ -24,6 +24,8 @@
 #include "qgis.h"
 #include "qgsprovidermetadata.h"
 #include "qgsrange.h"
+#include "nlohmann/json.hpp"
+
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
@@ -32,11 +34,11 @@ class QgsCesiumTilesDataProviderSharedData
 {
   public:
     QgsCesiumTilesDataProviderSharedData();
-    void setTilesetContent( const QVariantMap &tileset );
+    void setTilesetContent( const QString &tileset );
 
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
-    QVariantMap mTileset;
+    nlohmann::json mTileset;
     QgsDoubleRange mZRange;
 
     QReadWriteLock mMutex;
