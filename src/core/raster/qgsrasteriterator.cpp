@@ -97,7 +97,11 @@ void QgsRasterIterator::startRasterRead( int bandNumber, qgssize nCols, qgssize 
 
 bool QgsRasterIterator::next( int bandNumber, int &columns, int &rows, int &topLeftColumn, int &topLeftRow, QgsRectangle &blockExtent )
 {
-  return readNextRasterPartInternal( bandNumber, columns, rows, nullptr, topLeftColumn, topLeftRow, &blockExtent );
+  int outTileColumns = 0;
+  int outTileRows = 0;
+  int outTileTopLeftColumn = 0;
+  int outTileTopLeftRow = 0;
+  return readNextRasterPartInternal( bandNumber, columns, rows, nullptr, topLeftColumn, topLeftRow, &blockExtent, outTileColumns, outTileRows, outTileTopLeftColumn, outTileTopLeftRow );
 }
 
 bool QgsRasterIterator::readNextRasterPart( int bandNumber,
@@ -113,12 +117,27 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
   return result;
 }
 
-bool QgsRasterIterator::readNextRasterPart( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> &block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent )
+bool QgsRasterIterator::readNextRasterPart( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> &block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int *tileColumns, int *tileRows, int *tileTopLeftColumn, int *tileTopLeftRow )
 {
-  return readNextRasterPartInternal( bandNumber, nCols, nRows, &block, topLeftCol, topLeftRow, blockExtent );
+  int outTileColumns = 0;
+  int outTileRows = 0;
+  int outTileTopLeftColumn = 0;
+  int outTileTopLeftRow = 0;
+  const bool res = readNextRasterPartInternal( bandNumber, nCols, nRows, &block, topLeftCol, topLeftRow, blockExtent, outTileColumns, outTileRows, outTileTopLeftColumn, outTileTopLeftRow );
+
+  if ( tileColumns )
+    *tileColumns = outTileColumns;
+  if ( tileRows )
+    *tileRows = outTileRows;
+  if ( tileTopLeftColumn )
+    *tileTopLeftColumn = outTileTopLeftColumn;
+  if ( tileTopLeftRow )
+    *tileTopLeftRow = outTileTopLeftRow;
+
+  return res;
 }
 
-bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent )
+bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int &tileColumns, int &tileRows, int &tileTopLeftColumn, int &tileTopLeftRow )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( block )
@@ -148,15 +167,15 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
 
   //read data block
 
-  const qgssize tileLeft = pInfo.currentCol;
-  const qgssize tileTop = pInfo.currentRow;
-  const int tileWidth = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileWidth ), pInfo.nCols - tileLeft ) );
-  const int tileHeight = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileHeight ), pInfo.nRows - tileTop ) );
-  const qgssize tileRight = tileLeft + tileWidth;
-  const qgssize tileBottom = tileTop + tileHeight;
+  tileTopLeftColumn = pInfo.currentCol;
+  tileTopLeftRow = pInfo.currentRow;
+  tileColumns = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileWidth ), pInfo.nCols - tileTopLeftColumn ) );
+  tileRows = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileHeight ), pInfo.nRows - tileTopLeftRow ) );
+  const qgssize tileRight = tileTopLeftColumn + tileColumns;
+  const qgssize tileBottom = tileTopLeftRow + tileRows;
 
-  const qgssize blockLeft = tileLeft >= static_cast< qgssize >( mTileOverlapPixels ) ? ( tileLeft - mTileOverlapPixels ) : 0;
-  const qgssize blockTop = tileTop >= static_cast< qgssize >( mTileOverlapPixels ) ? ( tileTop - mTileOverlapPixels ) : 0;
+  const qgssize blockLeft = tileTopLeftColumn >= mTileOverlapPixels ? ( tileTopLeftColumn - mTileOverlapPixels ) : 0;
+  const qgssize blockTop = tileTopLeftRow >= mTileOverlapPixels ? ( tileTopLeftRow - mTileOverlapPixels ) : 0;
   const qgssize blockRight = std::min< qgssize >( tileRight + mTileOverlapPixels, pInfo.nCols );
   const qgssize blockBottom = std::min< qgssize >( tileBottom + mTileOverlapPixels, pInfo.nRows );
 
