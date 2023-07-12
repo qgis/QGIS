@@ -330,6 +330,8 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         self.assertEqual(model.data(custom_crs_index,
                                     QgsCoordinateReferenceSystemModel.RoleName), 'Custom CRS')
         self.assertFalse(model.data(custom_crs_index,
+                                    QgsCoordinateReferenceSystemModel.RoleAuthId))
+        self.assertFalse(model.data(custom_crs_index,
                                     QgsCoordinateReferenceSystemModel.RoleDeprecated))
         # the proj and wkt roles are only available for non-standard CRS
         self.assertEqual(model.data(custom_crs_index,

@@ -227,7 +227,6 @@ void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSyste
   }
   else
   {
-    bool changed = false;
     mBlockSignals = true;
     mCheckBoxNoProjection->setChecked( false );
     mBlockSignals = false;
@@ -237,6 +236,7 @@ void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSyste
     else
       loadUnknownCrs( crs );
 
+    const bool changed = crs != QgsProjectionSelectionTreeWidget::crs();
     if ( changed )
     {
       emit crsSelected();
