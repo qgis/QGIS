@@ -364,6 +364,7 @@ if(WITH_CORE)
   endif()
 
   # workaround errors with older cmake -- see https://github.com/protocolbuffers/protobuf/issues/12292
+  set(protobuf_MODULE_COMPATIBLE ON CACHE BOOL "")
   find_package(Protobuf CONFIG)   # for decoding of vector tiles in MVT format
   if (NOT Protobuf_FOUND)
     FIND_PACKAGE(Protobuf REQUIRED)
