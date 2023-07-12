@@ -2609,6 +2609,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       const PJ_TYPE pjType = proj_get_type( crs.get( ) );
 
       QString srsTypeString;
+      // NOLINTBEGIN(bugprone-branch-clone)
       switch ( pjType )
       {
         // don't need these in the CRS db
@@ -2683,6 +2684,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
           srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Other );
           break;
       }
+      // NOLINTEND(bugprone-branch-clone)
 
       crs = QgsProjUtils::unboundCrs( crs.get() );
 
