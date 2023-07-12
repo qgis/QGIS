@@ -308,7 +308,7 @@ void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &
                 const double snappedDistance = point.distance() < partBounds.xMinimum() ? partBounds.xMinimum()
                                                : point.distance() > partBounds.xMaximum() ? partBounds.xMaximum() : point.distance();
 
-                const QgsGeometry cutLine( new QgsLineString( QgsPoint( snappedDistance, minZ ), QgsPoint( snappedDistance, maxZ ) ) );
+                const QgsGeometry cutLine( new QgsLineString( QgsPoint( snappedDistance, qgsDoubleNear( minZ, maxZ ) ? minZ - 1 : minZ ), QgsPoint( snappedDistance, maxZ ) ) );
                 QgsGeos cutLineGeos( cutLine.constGet() );
 
                 const QgsGeometry points( cutLineGeos.intersection( exterior ) );
@@ -1007,97 +1007,6 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
       {
         processIntersectionCurve( intersectionCurve, feature );
       }
-      else if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( *it ) )
-      {
-        const int numPoints = ls->numPoints();
-        QVector< double > newX;
-        newX.resize( numPoints );
-        QVector< double > newY;
-        newY.resize( numPoints );
-        QVector< double > newZ;
-        newZ.resize( numPoints );
-        QVector< double > newDistance;
-        newDistance.resize( numPoints );
-
-        const double *inX = ls->xData();
-        const double *inY = ls->yData();
-        const double *inZ = ls->is3D() ? ls->zData() : nullptr;
-        double *outX = newX.data();
-        double *outY = newY.data();
-        double *outZ = newZ.data();
-        double *outDistance = newDistance.data();
-
-        QVector< double > extrudedZ;
-        double *extZOut = nullptr;
-        double extrusion = 0;
-        if ( mExtrusionEnabled )
-        {
-          extrudedZ.resize( numPoints );
-          extZOut = extrudedZ.data();
-
-          extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
-        }
-
-        QString lastError;
-        for ( int i = 0 ; i < numPoints; ++i )
-        {
-          double x = *inX++;
-          double y = *inY++;
-
-          // find z value from original curve by interpolating to this point
-          const double distanceAlongOriginalGeometry = curveGeos.lineLocatePoint( QgsPoint( x, y ) );
-          std::unique_ptr< QgsPoint > closestOriginalPoint( curve->interpolatePoint( distanceAlongOriginalGeometry ) );
-
-          double z = inZ ? *inZ++ : 0;
-
-          *outX++ = x;
-          *outY++ = y;
-          *outZ++ = std::isnan( closestOriginalPoint->z() ) ? 0 : closestOriginalPoint->z();
-          if ( extZOut )
-            *extZOut++ = z + extrusion;
-
-          mResults->mRawPoints.append( QgsPoint( x, y, z ) );
-          mResults->minZ = std::min( mResults->minZ, z );
-          mResults->maxZ = std::max( mResults->maxZ, z );
-          if ( mExtrusionEnabled )
-          {
-            mResults->minZ = std::min( mResults->minZ, z + extrusion );
-            mResults->maxZ = std::max( mResults->maxZ, z + extrusion );
-          }
-
-          const double distance = mProfileCurveEngine->lineLocatePoint( QgsPoint( x, y ), &lastError );
-          *outDistance++ = distance;
-
-          mResults->mDistanceToHeightMap.insert( distance, z );
-        }
-
-        QgsVectorLayerProfileResults::Feature resultFeature;
-        resultFeature.featureId = feature.id();
-
-        if ( mExtrusionEnabled )
-        {
-          std::unique_ptr< QgsLineString > ring = std::make_unique< QgsLineString >( newX, newY, newZ );
-          std::unique_ptr< QgsLineString > extrudedRing = std::make_unique< QgsLineString >( newX, newY, extrudedZ );
-          std::unique_ptr< QgsLineString > reversedExtrusion( extrudedRing->reversed() );
-          ring->append( reversedExtrusion.get() );
-          ring->close();
-          resultFeature.geometry = QgsGeometry( new QgsPolygon( ring.release() ) );
-
-
-          std::unique_ptr< QgsLineString > distanceVHeightRing = std::make_unique< QgsLineString >( newDistance, newZ );
-          std::unique_ptr< QgsLineString > extrudedDistanceVHeightRing = std::make_unique< QgsLineString >( newDistance, extrudedZ );
-          std::unique_ptr< QgsLineString > reversedDistanceVHeightExtrusion( extrudedDistanceVHeightRing->reversed() );
-          distanceVHeightRing->append( reversedDistanceVHeightExtrusion.get() );
-          distanceVHeightRing->close();
-          resultFeature.crossSectionGeometry = QgsGeometry( new QgsPolygon( distanceVHeightRing.release() ) );
-        }
-        else
-        {
-          resultFeature.geometry = QgsGeometry( new QgsLineString( newX, newY, newZ ) );
-          resultFeature.crossSectionGeometry = QgsGeometry( new QgsLineString( newDistance, newZ ) );
-        }
-        mResults->features[resultFeature.featureId].append( resultFeature );
-      }
     }
   };
 
@@ -1120,166 +1029,182 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
   return true;
 }
 
+QgsPoint QgsVectorLayerProfileGenerator::interpolatePointOnTriangle( const QgsPolygon *triangle, double x, double y ) const
+{
+  QgsPoint p1, p2, p3;
+  Qgis::VertexType vt;
+  triangle->exteriorRing()->pointAt( 0, p1, vt );
+  triangle->exteriorRing()->pointAt( 1, p2, vt );
+  triangle->exteriorRing()->pointAt( 2, p3, vt );
+  const double z = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, p1.z(), p2.z(), p3.z(), QgsPointXY( x, y ) );
+  return QgsPoint( x, y, z );
+};
+
+void QgsVectorLayerProfileGenerator::processTriangleIntersectForPoint( const QgsPolygon *triangle, const QgsPoint *p, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts )
+{
+  const QgsPoint interpolatedPoint = interpolatePointOnTriangle( triangle, p->x(), p->y() );
+  mResults->mRawPoints.append( interpolatedPoint );
+  mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() );
+  mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() );
+
+  QString lastError;
+  const double distance = mProfileCurveEngine->lineLocatePoint( *p, &lastError );
+  mResults->mDistanceToHeightMap.insert( distance, interpolatedPoint.z() );
+
+  if ( mExtrusionEnabled )
+  {
+    const double extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
+
+    transformedParts.append( QgsGeometry( new QgsLineString( interpolatedPoint,
+                                          QgsPoint( interpolatedPoint.x(), interpolatedPoint.y(), interpolatedPoint.z() + extrusion ) ) ) );
+    crossSectionParts.append( QgsGeometry( new QgsLineString( QgsPoint( distance, interpolatedPoint.z() ),
+                                           QgsPoint( distance, interpolatedPoint.z() + extrusion ) ) ) );
+    mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() + extrusion );
+    mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() + extrusion );
+  }
+  else
+  {
+    transformedParts.append( QgsGeometry( new QgsPoint( interpolatedPoint ) ) );
+    crossSectionParts.append( QgsGeometry( new QgsPoint( distance, interpolatedPoint.z() ) ) );
+  }
+}
+
+void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine( const QgsPolygon *triangle, const QgsLineString *ls, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts )
+{
+  const int numPoints = ls->numPoints();
+  QVector< double > newX( numPoints );
+  QVector< double > newY( numPoints );
+  QVector< double > newZ( numPoints );
+  QVector< double > newDistance( numPoints );
+
+  const double *inX = ls->xData();
+  const double *inY = ls->yData();
+  const double *inZ = ls->is3D() ? ls->zData() : nullptr;
+  double *outX = newX.data();
+  double *outY = newY.data();
+  double *outZ = newZ.data();
+  double *outDistance = newDistance.data();
+
+  QVector< double > extrudedZ;
+  double *extZOut = nullptr;
+  double extrusion = 0;
+  if ( mExtrusionEnabled )
+  {
+    extrudedZ.resize( numPoints );
+    extZOut = extrudedZ.data();
+
+    extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
+  }
+
+  QString lastError;
+  for ( int i = 0 ; ! mFeedback->isCanceled() && i < numPoints; ++i )
+  {
+    double x = *inX++;
+    double y = *inY++;
+    double z = inZ ? *inZ++ : 0;
+
+    QgsPoint interpolatedPoint = interpolatePointOnTriangle( triangle, x, y );
+    *outX++ = x;
+    *outY++ = y;
+    *outZ++ = std::isnan( interpolatedPoint.z() ) ? 0.0 : interpolatedPoint.z();
+    if ( extZOut )
+      *extZOut++ = z + extrusion;
+
+    mResults->mRawPoints.append( interpolatedPoint );
+    mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() );
+    mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() );
+    if ( mExtrusionEnabled )
+    {
+      mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() + extrusion );
+      mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() + extrusion );
+    }
+
+    const double distance = mProfileCurveEngine->lineLocatePoint( interpolatedPoint, &lastError );
+    *outDistance++ = distance;
+
+    mResults->mDistanceToHeightMap.insert( distance, interpolatedPoint.z() );
+  }
+
+  if ( mFeedback->isCanceled() )
+    return;
+
+  if ( mExtrusionEnabled )
+  {
+    std::unique_ptr< QgsLineString > ring = std::make_unique< QgsLineString >( newX, newY, newZ );
+    std::unique_ptr< QgsLineString > extrudedRing = std::make_unique< QgsLineString >( newX, newY, extrudedZ );
+    std::unique_ptr< QgsLineString > reversedExtrusion( extrudedRing->reversed() );
+    ring->append( reversedExtrusion.get() );
+    ring->close();
+    transformedParts.append( QgsGeometry( new QgsPolygon( ring.release() ) ) );
+
+
+    std::unique_ptr< QgsLineString > distanceVHeightRing = std::make_unique< QgsLineString >( newDistance, newZ );
+    std::unique_ptr< QgsLineString > extrudedDistanceVHeightRing = std::make_unique< QgsLineString >( newDistance, extrudedZ );
+    std::unique_ptr< QgsLineString > reversedDistanceVHeightExtrusion( extrudedDistanceVHeightRing->reversed() );
+    distanceVHeightRing->append( reversedDistanceVHeightExtrusion.get() );
+    distanceVHeightRing->close();
+    crossSectionParts.append( QgsGeometry( new QgsPolygon( distanceVHeightRing.release() ) ) );
+  }
+  else
+  {
+    transformedParts.append( QgsGeometry( new QgsLineString( newX, newY, newZ ) ) );
+    crossSectionParts.append( QgsGeometry( new QgsLineString( newDistance, newZ ) ) );
+  }
+};
+
 bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
 {
   // get features from layer
   QgsFeatureRequest request;
   request.setDestinationCrs( mTargetCrs, mTransformContext );
-  request.setFilterRect( mProfileCurve->boundingBox() );
+  request.setFilterRect( mProfileBox->boundingBox() );
   request.setSubsetOfAttributes( mDataDefinedProperties.referencedFields( mExpressionContext ), mFields );
   request.setFeedback( mFeedback.get() );
 
-  auto interpolatePointOnTriangle = []( const QgsPolygon * triangle, double x, double y ) -> QgsPoint
-  {
-    QgsPoint p1, p2, p3;
-    Qgis::VertexType vt;
-    triangle->exteriorRing()->pointAt( 0, p1, vt );
-    triangle->exteriorRing()->pointAt( 1, p2, vt );
-    triangle->exteriorRing()->pointAt( 2, p3, vt );
-    const double z = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, p1.z(), p2.z(), p3.z(), QgsPointXY( x, y ) );
-    return QgsPoint( x, y, z );
-  };
-
   std::function< void( const QgsPolygon *triangle, const QgsAbstractGeometry *intersect, QVector< QgsGeometry > &, QVector< QgsGeometry > & ) > processTriangleLineIntersect;
-  processTriangleLineIntersect = [this, &interpolatePointOnTriangle, &processTriangleLineIntersect]( const QgsPolygon * triangle, const QgsAbstractGeometry * intersect, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts )
+  processTriangleLineIntersect = [this]( const QgsPolygon * triangle, const QgsAbstractGeometry * intersection, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts )
   {
-    // intersect may be a (multi)point or (multi)linestring
-    switch ( QgsWkbTypes::geometryType( intersect->wkbType() ) )
+    for ( auto it = intersection->const_parts_begin();
+          ! mFeedback->isCanceled() && it != intersection->const_parts_end();
+          ++it )
     {
-      case Qgis::GeometryType::Point:
-        if ( const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint * >( intersect ) )
-        {
-          const int numPoint = mp->numGeometries();
-          for ( int i = 0; i < numPoint; ++i )
+      // intersect may be a (multi)point or (multi)linestring
+      switch ( QgsWkbTypes::geometryType( ( *it )->wkbType() ) )
+      {
+        case Qgis::GeometryType::Point:
+          if ( const QgsPoint *p = qgsgeometry_cast< const QgsPoint * >( *it ) )
           {
-            processTriangleLineIntersect( triangle, mp->geometryN( i ), transformedParts, crossSectionParts );
+            processTriangleIntersectForPoint( triangle, p, transformedParts, crossSectionParts );
           }
-        }
-        else if ( const QgsPoint *p = qgsgeometry_cast< const QgsPoint * >( intersect ) )
-        {
-          const QgsPoint interpolatedPoint = interpolatePointOnTriangle( triangle, p->x(), p->y() );
-          mResults->mRawPoints.append( interpolatedPoint );
-          mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() );
-          mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() );
+          break;
 
-          QString lastError;
-          const double distance = mProfileCurveEngine->lineLocatePoint( *p, &lastError );
-          mResults->mDistanceToHeightMap.insert( distance, interpolatedPoint.z() );
-
-          if ( mExtrusionEnabled )
+        case Qgis::GeometryType::Line:
+          if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( *it ) )
           {
-            const double extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
-
-            transformedParts.append( QgsGeometry( new QgsLineString( interpolatedPoint,
-                                                  QgsPoint( interpolatedPoint.x(), interpolatedPoint.y(), interpolatedPoint.z() + extrusion ) ) ) );
-            crossSectionParts.append( QgsGeometry( new QgsLineString( QgsPoint( distance, interpolatedPoint.z() ),
-                                                   QgsPoint( distance, interpolatedPoint.z() + extrusion ) ) ) );
-            mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() + extrusion );
-            mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() + extrusion );
+            processTriangleIntersectForLine( triangle, ls, transformedParts, crossSectionParts );
           }
-          else
+          break;
+
+        case Qgis::GeometryType::Polygon:
+          if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( *it ) )
           {
-            transformedParts.append( QgsGeometry( new QgsPoint( interpolatedPoint ) ) );
-            crossSectionParts.append( QgsGeometry( new QgsPoint( distance, interpolatedPoint.z() ) ) );
-          }
-        }
-        break;
-      case Qgis::GeometryType::Line:
-        if ( const QgsMultiLineString *ml = qgsgeometry_cast< const QgsMultiLineString * >( intersect ) )
-        {
-          const int numLines = ml->numGeometries();
-          for ( int i = 0; i < numLines; ++i )
-          {
-            processTriangleLineIntersect( triangle, ml->geometryN( i ), transformedParts, crossSectionParts );
-          }
-        }
-        else if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( intersect ) )
-        {
-          const int numPoints = ls->numPoints();
-          QVector< double > newX;
-          newX.resize( numPoints );
-          QVector< double > newY;
-          newY.resize( numPoints );
-          QVector< double > newZ;
-          newZ.resize( numPoints );
-          QVector< double > newDistance;
-          newDistance.resize( numPoints );
-
-          const double *inX = ls->xData();
-          const double *inY = ls->yData();
-          double *outX = newX.data();
-          double *outY = newY.data();
-          double *outZ = newZ.data();
-          double *outDistance = newDistance.data();
-
-          QVector< double > extrudedZ;
-          double *extZOut = nullptr;
-          double extrusion = 0;
-          if ( mExtrusionEnabled )
-          {
-            extrudedZ.resize( numPoints );
-            extZOut = extrudedZ.data();
-
-            extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
-          }
-
-          QString lastError;
-          for ( int i = 0 ; i < numPoints; ++i )
-          {
-            double x = *inX++;
-            double y = *inY++;
-
-            QgsPoint interpolatedPoint = interpolatePointOnTriangle( triangle, x, y );
-            *outX++ = x;
-            *outY++ = y;
-            *outZ++ = interpolatedPoint.z();
-            if ( extZOut )
-              *extZOut++ = interpolatedPoint.z() + extrusion;
-
-            mResults->mRawPoints.append( interpolatedPoint );
-            mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() );
-            mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() );
-            if ( mExtrusionEnabled )
+            if ( const QgsCurve *exterior = poly->exteriorRing() )
             {
-              mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() + extrusion );
-              mResults->maxZ = std::max( mResults->maxZ, interpolatedPoint.z() + extrusion );
+              QgsLineString *ls = qgsgeometry_cast<QgsLineString *>( exterior );
+              processTriangleIntersectForLine( triangle, ls, transformedParts, crossSectionParts );
             }
-
-            const double distance = mProfileCurveEngine->lineLocatePoint( interpolatedPoint, &lastError );
-            *outDistance++ = distance;
-
-            mResults->mDistanceToHeightMap.insert( distance, interpolatedPoint.z() );
+            for ( int i = 0; i < poly->numInteriorRings(); ++i )
+            {
+              QgsLineString *ls = qgsgeometry_cast<QgsLineString *>( poly->interiorRing( i ) );
+              processTriangleIntersectForLine( triangle, ls, transformedParts, crossSectionParts );
+            }
           }
+          break;
 
-          if ( mExtrusionEnabled )
-          {
-            std::unique_ptr< QgsLineString > ring = std::make_unique< QgsLineString >( newX, newY, newZ );
-            std::unique_ptr< QgsLineString > extrudedRing = std::make_unique< QgsLineString >( newX, newY, extrudedZ );
-            std::unique_ptr< QgsLineString > reversedExtrusion( extrudedRing->reversed() );
-            ring->append( reversedExtrusion.get() );
-            ring->close();
-            transformedParts.append( QgsGeometry( new QgsPolygon( ring.release() ) ) );
-
-
-            std::unique_ptr< QgsLineString > distanceVHeightRing = std::make_unique< QgsLineString >( newDistance, newZ );
-            std::unique_ptr< QgsLineString > extrudedDistanceVHeightRing = std::make_unique< QgsLineString >( newDistance, extrudedZ );
-            std::unique_ptr< QgsLineString > reversedDistanceVHeightExtrusion( extrudedDistanceVHeightRing->reversed() );
-            distanceVHeightRing->append( reversedDistanceVHeightExtrusion.get() );
-            distanceVHeightRing->close();
-            crossSectionParts.append( QgsGeometry( new QgsPolygon( distanceVHeightRing.release() ) ) );
-          }
-          else
-          {
-            transformedParts.append( QgsGeometry( new QgsLineString( newX, newY, newZ ) ) );
-            crossSectionParts.append( QgsGeometry( new QgsLineString( newDistance, newZ ) ) );
-          }
-        }
-        break;
-
-      case Qgis::GeometryType::Polygon:
-      case Qgis::GeometryType::Unknown:
-      case Qgis::GeometryType::Null:
-        return;
+        case Qgis::GeometryType::Unknown:
+        case Qgis::GeometryType::Null:
+          return;
+      }
     }
   };
 
@@ -1291,7 +1216,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
         ring->xAt( 2 ), ring->yAt( 2 ), 0.005 );
   };
 
-  auto processPolygon = [this, &triangleIsCollinearInXYPlane, &processTriangleLineIntersect]( const QgsCurvePolygon * polygon, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts, double offset, bool & wasCollinear )
+  auto processPolygon = [this, &processTriangleLineIntersect, &triangleIsCollinearInXYPlane]( const QgsCurvePolygon * polygon, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts, double offset, bool & wasCollinear )
   {
     std::unique_ptr< QgsPolygon > clampedPolygon;
     if ( const QgsPolygon *p = qgsgeometry_cast< const QgsPolygon * >( polygon ) )
@@ -1330,11 +1255,8 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
 
     // iterate through the tessellation, finding triangles which intersect the line
     const int numTriangles = qgsgeometry_cast< const QgsMultiPolygon * >( tessellation.constGet() )->numGeometries();
-    for ( int i = 0; i < numTriangles; ++i )
+    for ( int i = 0; ! mFeedback->isCanceled() && i < numTriangles; ++i )
     {
-      if ( mFeedback->isCanceled() )
-        return;
-
       const QgsPolygon *triangle = qgsgeometry_cast< const QgsPolygon * >( qgsgeometry_cast< const QgsMultiPolygon * >( tessellation.constGet() )->geometryN( i ) );
 
       if ( triangleIsCollinearInXYPlane( triangle ) )
@@ -1390,14 +1312,11 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
       }
       else
       {
-        if ( mProfileCurveEngine->intersects( triangle ) )
+        QString error;
+        if ( mProfileBoxEngine->intersects( triangle, &error ) )
         {
-          QString error;
-          std::unique_ptr< QgsAbstractGeometry > intersection( mProfileCurveEngine->intersection( triangle, &error ) );
-          if ( intersection && !intersection->isEmpty() )
-          {
-            processTriangleLineIntersect( triangle, intersection.get(), transformedParts, crossSectionParts );
-          }
+          std::unique_ptr< QgsAbstractGeometry > intersection( mProfileBoxEngine->intersection( triangle, &error ) );
+          processTriangleLineIntersect( triangle, intersection.get(), transformedParts, crossSectionParts );
         }
       }
     }
@@ -1405,38 +1324,25 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
 
   QgsFeature feature;
   QgsFeatureIterator it = mSource->getFeatures( request );
-  while ( it.nextFeature( feature ) )
+  while ( ! mFeedback->isCanceled() && it.nextFeature( feature ) )
   {
-    if ( mFeedback->isCanceled() )
-      return false;
-
-    if ( !mProfileCurveEngine->intersects( feature.geometry().constGet() ) )
+    if ( !mProfileBoxEngine->intersects( feature.geometry().constGet() ) )
       continue;
 
     mExpressionContext.setFeature( feature );
 
     const double offset = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ZOffset, mExpressionContext, mOffset );
-
     const QgsGeometry g = feature.geometry();
     QVector< QgsGeometry > transformedParts;
     QVector< QgsGeometry > crossSectionParts;
     bool wasCollinear = false;
-    if ( g.isMultipart() )
+
+    for ( auto it = g.const_parts_begin(); ! mFeedback->isCanceled() && it != g.const_parts_end(); ++it )
     {
-      for ( auto it = g.const_parts_begin(); it != g.const_parts_end(); ++it )
+      if ( mProfileBoxEngine->intersects( *it ) )
       {
-        if ( mFeedback->isCanceled() )
-          break;
-
-        if ( !mProfileCurveEngine->intersects( *it ) )
-          continue;
-
         processPolygon( qgsgeometry_cast< const QgsCurvePolygon * >( *it ), transformedParts, crossSectionParts, offset, wasCollinear );
       }
-    }
-    else
-    {
-      processPolygon( qgsgeometry_cast< const QgsCurvePolygon * >( g.constGet() ), transformedParts, crossSectionParts, offset, wasCollinear );
     }
 
     if ( mFeedback->isCanceled() )
