@@ -4645,6 +4645,7 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString 
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), r.index );
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ), r.rect );
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileUrl ), r.url );
 
     QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( request );
     connect( reply, &QgsTileDownloadManagerReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
@@ -4719,6 +4720,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 #ifdef QGISDEBUG
   int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
 #endif
+  QUrl tileUrl = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileUrl ) ).value<QUrl>();
 
   QgsDebugMsgLevel( QStringLiteral( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) fromcache:%9 %10 url:%11" )
                     .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo ).arg( retry )
@@ -4743,6 +4745,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), tileNo );
       request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ), r );
       request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileUrl ), tileUrl );
 
       mReplies.removeOne( reply );
       reply->deleteLater();
@@ -4844,7 +4847,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
                     .arg( r.width() ).arg( r.height() ) );
 #endif
 
-        QgsTileCache::insertTile( reply->url(), myLocalImage );
+        QgsTileCache::insertTile( tileUrl, myLocalImage );
 
         if ( mFeedback )
           mFeedback->onNewData();
