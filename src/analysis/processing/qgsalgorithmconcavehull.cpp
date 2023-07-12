@@ -165,7 +165,7 @@ QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parame
       toDelete << edgesIt.key();
     }
 
-    edgesIt++;
+    ++edgesIt;
     i++;
     multiStepFeedback.setProgress( i * step );
   }
