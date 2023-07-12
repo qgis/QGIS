@@ -124,3 +124,79 @@ tests:
       OUTPUT:
         name: expected/buffer_keep_disjoint.gml
         type: vector
+
+  - algorithm: native:dtmslopebasedfilter
+    name: DTM slope based filter (1)
+    params:
+      BAND: 1
+      FILTER_MODIFICATION: 0
+      INPUT:
+        name: dem.tif
+        type: raster
+      RADIUS: 10
+      STANDARD_DEVIATION: 0.1
+      TERRAIN_SLOPE: 500.0
+    results:
+      OUTPUT_GROUND:
+        hash: 1d1c403ff54f95a291a3a979220fb60a69ae117df1023671759656a8
+        type: rasterhash
+      OUTPUT_NONGROUND:
+        hash: 450da40150fa94eca7d8b681c21ef62d41e746acbe0886797c6b9b2d
+        type: rasterhash
+
+  - algorithm: native:dtmslopebasedfilter
+    name: DTM slope based filter (2)
+    params:
+      BAND: 1
+      FILTER_MODIFICATION: 0
+      INPUT:
+        name: dem.tif
+        type: raster
+      RADIUS: 3
+      STANDARD_DEVIATION: 0.1
+      TERRAIN_SLOPE: 300.0
+    results:
+      OUTPUT_GROUND:
+        hash: 28051cc571bcad29de3c43b7495f7f035a6cf9bae31c9b3dff39a51d
+        type: rasterhash
+      OUTPUT_NONGROUND:
+        hash: cce2498eb5694accc3720089b1660f5db9a9146129120c0219fbbe3a
+        type: rasterhash
+
+  - algorithm: native:dtmslopebasedfilter
+    name: DTM slope based filter (relaxed)
+    params:
+      BAND: 1
+      FILTER_MODIFICATION: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      RADIUS: 10
+      STANDARD_DEVIATION: 0.1
+      TERRAIN_SLOPE: 500.0
+    results:
+      OUTPUT_GROUND:
+        hash: 3a2c92296870ce44d990ba2d19765327b2f48873d2a37d9f858bbb1b
+        type: rasterhash
+      OUTPUT_NONGROUND:
+        hash: f7593955a08c7f321f3cabed37e5acf586061b7deb9022ee32b22aae
+        type: rasterhash
+
+  - algorithm: native:dtmslopebasedfilter
+    name: DTM slope based filter (amplified)
+    params:
+      BAND: 1
+      FILTER_MODIFICATION: 2
+      INPUT:
+        name: dem.tif
+        type: raster
+      RADIUS: 10
+      STANDARD_DEVIATION: 0.1
+      TERRAIN_SLOPE: 500.0
+    results:
+      OUTPUT_GROUND:
+        hash: 8844e5fd0c8c26f815612fd1b6768799deee6b16bccb961ef03b05a0
+        type: rasterhash
+      OUTPUT_NONGROUND:
+        hash: cec23a44e0a5da2c9d0be68a13cdb1e851492061e64d81b564e5a269
+        type: rasterhash
