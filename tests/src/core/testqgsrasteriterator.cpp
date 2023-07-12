@@ -445,14 +445,23 @@ void TestQgsRasterIterator::testPixelOverlap()
   int nRows;
   int topLeftCol;
   int topLeftRow;
+  int tileCols;
+  int tileRows;
+  int tileTopLeftCol;
+  int tileTopLeftRow;
+
   QgsRectangle blockExtent;
   std::unique_ptr< QgsRasterBlock > block;
 
-  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QCOMPARE( nCols, 3020 );
   QCOMPARE( nRows, 2520 );
   QCOMPARE( topLeftCol, 0 );
   QCOMPARE( topLeftRow, 0 );
+  QCOMPARE( tileCols, 3000 );
+  QCOMPARE( tileRows, 2500 );
+  QCOMPARE( tileTopLeftCol, 0 );
+  QCOMPARE( tileTopLeftRow, 0 );
   QVERIFY( block.get() );
   QVERIFY( block->isValid() );
   QCOMPARE( block->value( 1, 1 ), 1.0 );
@@ -467,11 +476,15 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
-  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QCOMPARE( nCols, 3040 );
   QCOMPARE( nRows, 2520 );
   QCOMPARE( topLeftCol, 2980 );
   QCOMPARE( topLeftRow, 0 );
+  QCOMPARE( tileCols, 3000 );
+  QCOMPARE( tileRows, 2500 );
+  QCOMPARE( tileTopLeftCol, 3000 );
+  QCOMPARE( tileTopLeftRow, 0 );
   QVERIFY( block.get() );
   QVERIFY( block->isValid() );
   QCOMPARE( block->value( 1, 1 ), 1.0 );
@@ -482,11 +495,15 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
-  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QCOMPARE( nCols, 1220 );
   QCOMPARE( nRows, 2520 );
   QCOMPARE( topLeftCol, 5980 );
   QCOMPARE( topLeftRow, 0 );
+  QCOMPARE( tileCols, 1200 );
+  QCOMPARE( tileRows, 2500 );
+  QCOMPARE( tileTopLeftCol, 6000 );
+  QCOMPARE( tileTopLeftRow, 0 );
   QVERIFY( block.get() );
   QVERIFY( block->isValid() );
   QCOMPARE( block->value( 1, 1 ), 1.0 );
@@ -497,11 +514,15 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
-  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QCOMPARE( nCols, 3020 );
   QCOMPARE( nRows, 2540 );
   QCOMPARE( topLeftCol, 0 );
   QCOMPARE( topLeftRow, 2480 );
+  QCOMPARE( tileCols, 3000 );
+  QCOMPARE( tileRows, 2500 );
+  QCOMPARE( tileTopLeftCol, 0 );
+  QCOMPARE( tileTopLeftRow, 2500 );
   QVERIFY( block.get() );
   QVERIFY( block->isValid() );
   QCOMPARE( block->value( 1, 1 ), 1.0 );
@@ -512,11 +533,15 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
-  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QCOMPARE( nCols, 3040 );
   QCOMPARE( nRows, 2540 );
   QCOMPARE( topLeftCol, 2980 );
   QCOMPARE( topLeftRow, 2480 );
+  QCOMPARE( tileCols, 3000 );
+  QCOMPARE( tileRows, 2500 );
+  QCOMPARE( tileTopLeftCol, 3000 );
+  QCOMPARE( tileTopLeftRow, 2500 );
   QVERIFY( block.get() );
   QVERIFY( block->isValid() );
   QCOMPARE( block->value( 1, 1 ), 1.0 );
@@ -527,11 +552,15 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
-  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QCOMPARE( nCols, 1220 );
   QCOMPARE( nRows, 2540 );
   QCOMPARE( topLeftCol, 5980 );
   QCOMPARE( topLeftRow, 2480 );
+  QCOMPARE( tileCols, 1200 );
+  QCOMPARE( tileRows, 2500 );
+  QCOMPARE( tileTopLeftCol, 6000 );
+  QCOMPARE( tileTopLeftRow, 2500 );
   QVERIFY( block.get() );
   QCOMPARE( block->width(), 1220 );
   QCOMPARE( block->height(), 2540 );
@@ -540,11 +569,15 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
-  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QCOMPARE( nCols, 3020 );
   QCOMPARE( nRows, 470 );
   QCOMPARE( topLeftCol, 0 );
   QCOMPARE( topLeftRow, 4980 );
+  QCOMPARE( tileCols, 3000 );
+  QCOMPARE( tileRows, 450 );
+  QCOMPARE( tileTopLeftCol, 0 );
+  QCOMPARE( tileTopLeftRow, 5000 );
   QVERIFY( block.get() );
   QVERIFY( block->isValid() );
   QCOMPARE( block->value( 1, 1 ), 1.0 );
@@ -555,11 +588,15 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
-  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QCOMPARE( nCols, 3040 );
   QCOMPARE( nRows, 470 );
   QCOMPARE( topLeftCol, 2980 );
   QCOMPARE( topLeftRow, 4980 );
+  QCOMPARE( tileCols, 3000 );
+  QCOMPARE( tileRows, 450 );
+  QCOMPARE( tileTopLeftCol, 3000 );
+  QCOMPARE( tileTopLeftRow, 5000 );
   QVERIFY( block.get() );
   QCOMPARE( block->width(), 3040 );
   QCOMPARE( block->height(), 470 );
@@ -568,11 +605,15 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
-  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QCOMPARE( nCols, 1220 );
   QCOMPARE( nRows, 470 );
   QCOMPARE( topLeftCol, 5980 );
   QCOMPARE( topLeftRow, 4980 );
+  QCOMPARE( tileCols, 1200 );
+  QCOMPARE( tileRows, 450 );
+  QCOMPARE( tileTopLeftCol, 6000 );
+  QCOMPARE( tileTopLeftRow, 5000 );
   QVERIFY( block.get() );
   QVERIFY( block->isValid() );
   QCOMPARE( block->value( 1, 1 ), 1.0 );
@@ -583,7 +624,7 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
-  QVERIFY( !it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QVERIFY( !it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QVERIFY( !block.get() );
 }
 
