@@ -140,7 +140,10 @@ QVariant QgsCoordinateReferenceSystemModel::data( const QModelIndex &index, int 
           return crsNode->record().description;
 
         case RoleAuthId:
-          return QStringLiteral( "%1:%2" ).arg( crsNode->record().authName, crsNode->record().authId );
+          if ( !crsNode->record().authId.isEmpty() )
+            return QStringLiteral( "%1:%2" ).arg( crsNode->record().authName, crsNode->record().authId );
+          else
+            return QVariant();
 
         case RoleDeprecated:
           return crsNode->record().deprecated;
