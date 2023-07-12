@@ -53,6 +53,27 @@ Returns Y coordinate
 Returns Z coordinate
 %End
 
+    void setX( double x );
+%Docstring
+Sets X coordinate
+
+.. versionadded:: 3.34
+%End
+
+    void setY( double y );
+%Docstring
+Sets Y coordinate
+
+.. versionadded:: 3.34
+%End
+
+    void setZ( double z );
+%Docstring
+Sets Z coordinate
+
+.. versionadded:: 3.34
+%End
+
     void set( double x, double y, double z );
 %Docstring
 Sets vector coordinates

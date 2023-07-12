@@ -52,6 +52,24 @@ class CORE_EXPORT QgsVector3D
     //! Returns Z coordinate
     double z() const { return mZ; }
 
+    /**
+     * Sets X coordinate
+     * \since QGIS 3.34
+     */
+    void setX( double x ) { mX = x; }
+
+    /**
+     * Sets Y coordinate
+     * \since QGIS 3.34
+     */
+    void setY( double y ) { mY = y; }
+
+    /**
+     * Sets Z coordinate
+     * \since QGIS 3.34
+     */
+    void setZ( double z ) { mZ = z; }
+
     //! Sets vector coordinates
     void set( double x, double y, double z )
     {
