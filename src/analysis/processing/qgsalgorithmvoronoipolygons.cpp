@@ -34,7 +34,7 @@ QString QgsVoronoiPolygonsAlgorithm::displayName() const
 
 QStringList QgsVoronoiPolygonsAlgorithm::tags() const
 {
-  return QObject::tr( "voronoi,polygons,tesselation,diagram" ).split( ',' );
+  return QObject::tr( "voronoi,polygons,tessellation,diagram" ).split( ',' );
 }
 
 QString QgsVoronoiPolygonsAlgorithm::group() const

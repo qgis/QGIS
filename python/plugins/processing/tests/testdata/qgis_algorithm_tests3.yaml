@@ -307,10 +307,10 @@ tests:
       OUTPUT:
         name: expected/airportsvoronoidiagram.gml
         type: vector
+        pk: ID
         compare:
           geometry:
             precision: 2
-        pk: id
 
   - algorithm: native:explodelines
     name: Explode lines
