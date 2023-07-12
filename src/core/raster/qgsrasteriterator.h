@@ -37,8 +37,10 @@ class CORE_EXPORT QgsRasterIterator
 
     /**
      * Constructor for QgsRasterIterator, iterating over the specified \a input raster source.
+     *
+     * Since QGIS 3.34 the tileOverlapPixels can be used to specify a margin in pixels for retrieving pixels overlapping into neighbor cells.
      */
-    QgsRasterIterator( QgsRasterInterface *input );
+    QgsRasterIterator( QgsRasterInterface *input, int tileOverlapPixels = 0 );
 
     /**
      * Given an overall raster extent and width and height in pixels, calculates the sub region
@@ -184,6 +186,7 @@ class CORE_EXPORT QgsRasterIterator
     QgsRectangle mExtent;
     QgsRasterBlockFeedback *mFeedback = nullptr;
 
+    int mTileOverlapPixels = 0;
     int mMaximumTileWidth;
     int mMaximumTileHeight;
 

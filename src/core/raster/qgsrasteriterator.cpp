@@ -14,12 +14,11 @@
  ***************************************************************************/
 #include "qgsrasteriterator.h"
 #include "qgsrasterinterface.h"
-#include "qgsrasterprojector.h"
-#include "qgsrasterviewport.h"
 #include "qgsrasterdataprovider.h"
 
-QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input )
+QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input, int tileOverlapPixels )
   : mInput( input )
+  , mTileOverlapPixels( tileOverlapPixels )
   , mMaximumTileWidth( DEFAULT_MAXIMUM_TILE_WIDTH )
   , mMaximumTileHeight( DEFAULT_MAXIMUM_TILE_HEIGHT )
 {
@@ -28,8 +27,8 @@ QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input )
     QgsRasterDataProvider *rdp = dynamic_cast<QgsRasterDataProvider *>( ri );
     if ( rdp )
     {
-      mMaximumTileWidth = rdp->stepWidth();
-      mMaximumTileHeight = rdp->stepHeight();
+      mMaximumTileWidth = rdp->stepWidth() - 2 * mTileOverlapPixels;
+      mMaximumTileHeight = rdp->stepHeight() - 2 * mTileOverlapPixels;
       break;
     }
   }
@@ -148,18 +147,32 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
   }
 
   //read data block
-  nCols = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileWidth ), pInfo.nCols - pInfo.currentCol ) );
-  nRows = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileHeight ), pInfo.nRows - pInfo.currentRow ) );
+
+  const qgssize tileLeft = pInfo.currentCol;
+  const qgssize tileTop = pInfo.currentRow;
+  const int tileWidth = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileWidth ), pInfo.nCols - tileLeft ) );
+  const int tileHeight = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileHeight ), pInfo.nRows - tileTop ) );
+  const qgssize tileRight = tileLeft + tileWidth;
+  const qgssize tileBottom = tileTop + tileHeight;
+
+  const qgssize blockLeft = tileLeft >= static_cast< qgssize >( mTileOverlapPixels ) ? ( tileLeft - mTileOverlapPixels ) : 0;
+  const qgssize blockTop = tileTop >= static_cast< qgssize >( mTileOverlapPixels ) ? ( tileTop - mTileOverlapPixels ) : 0;
+  const qgssize blockRight = std::min< qgssize >( tileRight + mTileOverlapPixels, pInfo.nCols );
+  const qgssize blockBottom = std::min< qgssize >( tileBottom + mTileOverlapPixels, pInfo.nRows );
+
+  nCols = blockRight - blockLeft;
+  nRows = blockBottom - blockTop;
+
   QgsDebugMsgLevel( QStringLiteral( "nCols = %1 nRows = %2" ).arg( nCols ).arg( nRows ), 4 );
 
   //get subrectangle
   const QgsRectangle viewPortExtent = mExtent;
-  const double xmin = viewPortExtent.xMinimum() + pInfo.currentCol / static_cast< double >( pInfo.nCols ) * viewPortExtent.width();
-  const double xmax = pInfo.currentCol + nCols == pInfo.nCols ? viewPortExtent.xMaximum() :  // avoid extra FP math if not necessary
-                      viewPortExtent.xMinimum() + ( pInfo.currentCol + nCols ) / static_cast< double >( pInfo.nCols ) * viewPortExtent.width();
-  const double ymin = pInfo.currentRow + nRows == pInfo.nRows ? viewPortExtent.yMinimum() :  // avoid extra FP math if not necessary
-                      viewPortExtent.yMaximum() - ( pInfo.currentRow + nRows ) / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
-  const double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
+  const double xmin = viewPortExtent.xMinimum() + blockLeft / static_cast< double >( pInfo.nCols ) * viewPortExtent.width();
+  const double xmax = blockLeft + nCols == pInfo.nCols ? viewPortExtent.xMaximum() :  // avoid extra FP math if not necessary
+                      viewPortExtent.xMinimum() + ( blockLeft + nCols ) / static_cast< double >( pInfo.nCols ) * viewPortExtent.width();
+  const double ymin = blockTop + nRows == pInfo.nRows ? viewPortExtent.yMinimum() :  // avoid extra FP math if not necessary
+                      viewPortExtent.yMaximum() - ( blockTop + nRows ) / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
+  const double ymax = viewPortExtent.yMaximum() - blockTop / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
   const QgsRectangle blockRect( xmin, ymin, xmax, ymax );
 
   if ( blockExtent )
@@ -167,18 +180,18 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
 
   if ( block )
     block->reset( mInput->block( bandNumber, blockRect, nCols, nRows, mFeedback ) );
-  topLeftCol = pInfo.currentCol;
-  topLeftRow = pInfo.currentRow;
+  topLeftCol = blockLeft;
+  topLeftRow = blockTop;
 
-  pInfo.currentCol += nCols;
-  if ( pInfo.currentCol == pInfo.nCols && pInfo.currentRow + nRows == pInfo.nRows ) //end of raster
+  pInfo.currentCol = tileRight;
+  if ( pInfo.currentCol == pInfo.nCols && tileBottom == pInfo.nRows ) //end of raster
   {
     pInfo.currentRow = pInfo.nRows;
   }
   else if ( pInfo.currentCol == pInfo.nCols ) //start new row
   {
     pInfo.currentCol = 0;
-    pInfo.currentRow += nRows;
+    pInfo.currentRow = tileBottom;
   }
 
   return true;
