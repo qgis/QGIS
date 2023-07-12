@@ -74,7 +74,7 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
     minZoom = mMatrixSet.minimumZoom();
   if ( maxZoomOk )
   {
-    needNewMatrixSet || mMatrixSet.maximumZoom() < maxZoom;
+    needNewMatrixSet = needNewMatrixSet || mMatrixSet.maximumZoom() < maxZoom;
     mMatrixSet.dropMatricesOutsideZoomRange( 0, maxZoom );
   }
   else
