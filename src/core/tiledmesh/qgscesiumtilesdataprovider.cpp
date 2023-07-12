@@ -232,6 +232,30 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
       metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tileset Generator" ) % QStringLiteral( "</td><td>%1</a>" ).arg( generator ) % QStringLiteral( "</td></tr>\n" );
     }
   }
+  if ( mShared->mTileset.contains( "extensionsRequired" ) )
+  {
+    QStringList extensions;
+    for ( const auto &item : mShared->mTileset["extensionsRequired"] )
+    {
+      extensions << QString::fromStdString( item.get<std::string>() );
+    }
+    if ( !extensions.isEmpty() )
+    {
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Extensions Required" ) % QStringLiteral( "</td><td><ul><li>%1</li></ul></a>" ).arg( extensions.join( QStringLiteral( "</li><li>" ) ) ) % QStringLiteral( "</td></tr>\n" );
+    }
+  }
+  if ( mShared->mTileset.contains( "extensionsUsed" ) )
+  {
+    QStringList extensions;
+    for ( const auto &item : mShared->mTileset["extensionsUsed"] )
+    {
+      extensions << QString::fromStdString( item.get<std::string>() );
+    }
+    if ( !extensions.isEmpty() )
+    {
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Extensions Used" ) % QStringLiteral( "</td><td><ul><li>%1</li></ul></a>" ).arg( extensions.join( QStringLiteral( "</li><li>" ) ) ) % QStringLiteral( "</td></tr>\n" );
+    }
+  }
 
   if ( !mShared->mZRange.isInfinite() )
   {
