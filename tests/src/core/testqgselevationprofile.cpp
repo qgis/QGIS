@@ -56,6 +56,7 @@ class TestQgsElevationProfile : public QgsTest
 
     void testVectorLayerProfileForPoint();
     void testVectorLayerProfileForLine();
+    void testVectorLayerProfileForPolygon();
 };
 
 
@@ -288,6 +289,20 @@ void TestQgsElevationProfile::testVectorLayerProfileForLine()
     QVERIFY2( std::isnan( pair.value() ) || pair.value() == 5.0, QString( "Height must be %1 == 5.0" ).arg( pair.value() ).toStdString().c_str() );
   }
 
+}
+
+void TestQgsElevationProfile::testVectorLayerProfileForPolygon()
+{
+  QgsLineString *profileCurve = new QgsLineString ;
+  profileCurve->setPoints( mProfilePoints );
+
+  QgsProfileRequest request( profileCurve );
+  request.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 3857 ) );
+  request.setTerrainProvider( mDemTerrain->clone() );
+
+  doCheckLine( request, 1, mpPolygonsLayer, { 168, 206, 210, 284, 306, 321 }, { 1, 1, 1, 1, 1, 1 } );
+  doCheckLine( request, 10, mpPolygonsLayer, { 168, 172, 206, 210, 231, 267, 275, 282, 284, 306, 307, 319, 321 }, { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } );
+  doCheckLine( request, 11, mpPolygonsLayer, { 168, 172, 206, 210, 231, 255, 267, 275, 282, 283, 284, 306, 307, 319, 321 }, { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } );
 }
 
 
