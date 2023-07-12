@@ -35,6 +35,8 @@ message(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 
 set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps which are only relevant for releases to speed up compilation time for development")
 
+set(protobuf_MODULE_COMPATIBLE ON)
+
 #############################################################
 if (APPLE)
   # QGIS custom dependencies package from qgis/QGIS-Mac-Packager
@@ -364,7 +366,6 @@ if(WITH_CORE)
   endif()
 
   # workaround errors with older cmake -- see https://github.com/protocolbuffers/protobuf/issues/12292
-  set(protobuf_MODULE_COMPATIBLE ON CACHE BOOL "")
   find_package(Protobuf CONFIG)   # for decoding of vector tiles in MVT format
   if (NOT Protobuf_FOUND)
     FIND_PACKAGE(Protobuf REQUIRED)
