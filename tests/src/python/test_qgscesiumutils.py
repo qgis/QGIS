@@ -37,7 +37,7 @@ class TestQgsCesiumUtils(QgisTestCase):
             QgsCesiumUtils.parseRegion([1, 'a', 3, 4, 5, 6]).isNull())
 
         # valid
-        box = QgsCesiumUtils.parseRegion(['1.2', '2', 3, '4.6', 5.5, 6])
+        box = QgsCesiumUtils.parseRegion([1.2, 2, 3, 4.6, 5.5, 6])
         self.assertEqual(box.xMinimum(), 1.2)
         self.assertEqual(box.xMaximum(), 3.0)
         self.assertEqual(box.yMinimum(), 2.0)

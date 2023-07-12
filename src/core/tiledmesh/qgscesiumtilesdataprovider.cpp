@@ -42,20 +42,21 @@
 
 QgsCesiumTilesDataProviderSharedData::QgsCesiumTilesDataProviderSharedData() = default;
 
-void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QVariantMap &tileset )
+void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &tileset )
 {
-  mTileset = tileset;
+  mTileset = json::parse( tileset.toStdString() );
+
   mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
 
   // parse root
   {
-    const QVariantMap root = tileset.value( QStringLiteral( "root" ) ).toMap();
+    const auto &root = mTileset[ "root" ];
     // parse root bounding volume
     {
-      const QVariantMap rootBoundingVolume = root.value( QStringLiteral( "boundingVolume" ) ).toMap();
-      if ( rootBoundingVolume.contains( QStringLiteral( "region" ) ) )
+      const auto &rootBoundingVolume = root[ "boundingVolume" ];
+      if ( rootBoundingVolume.contains( "region" ) )
       {
-        const QgsBox3d rootRegion = QgsCesiumUtils::parseRegion( rootBoundingVolume.value( QStringLiteral( "region" ) ).toList() );
+        const QgsBox3d rootRegion = QgsCesiumUtils::parseRegion( rootBoundingVolume[ "region" ] );
         if ( !rootRegion.isNull() )
         {
           mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
@@ -142,16 +143,7 @@ bool QgsCesiumTilesDataProvider::init()
     }
 
     const QgsNetworkReplyContent content = networkRequest.reply();
-    const QByteArray raw = content.content();
-
-    // Parse data
-    QJsonParseError err;
-    const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
-    if ( doc.isNull() )
-    {
-      return false;
-    }
-    mShared->setTilesetContent( doc.object().toVariantMap() );
+    mShared->setTilesetContent( content.content() );
   }
   else
   {
@@ -162,14 +154,7 @@ bool QgsCesiumTilesDataProvider::init()
       if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
       {
         const QByteArray raw = file.readAll();
-        // Parse data
-        QJsonParseError err;
-        const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
-        if ( doc.isNull() )
-        {
-          return false;
-        }
-        mShared->setTilesetContent( doc.object().toVariantMap() );
+        mShared->setTilesetContent( raw );
       }
       else
       {
@@ -226,19 +211,26 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
 
   QString metadata;
 
+  if ( mShared->mTileset.contains( "asset" ) )
   {
-    const QVariantMap asset = mShared->mTileset.value( QStringLiteral( "asset" ) ).toMap();
-    const QString version = asset.value( QStringLiteral( "version" ) ).toString();
-    if ( !version.isEmpty() )
+    const auto &asset = mShared->mTileset[ "asset" ];
+    if ( asset.contains( "version" ) )
+    {
+      const QString version = QString::fromStdString( asset["version"].get<std::string>() );
       metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "3D Tiles Version" ) % QStringLiteral( "</td><td>%1</a>" ).arg( version ) % QStringLiteral( "</td></tr>\n" );
+    }
 
-    const QString tilesetVersion = asset.value( QStringLiteral( "tilesetVersion" ) ).toString();
-    if ( !tilesetVersion.isEmpty() )
+    if ( asset.contains( "tilesetVersion" ) )
+    {
+      const QString tilesetVersion = QString::fromStdString( asset["tilesetVersion"].get<std::string>() );
       metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tileset Version" ) % QStringLiteral( "</td><td>%1</a>" ).arg( tilesetVersion ) % QStringLiteral( "</td></tr>\n" );
+    }
 
-    const QString generator = asset.value( QStringLiteral( "generator" ) ).toString();
-    if ( !generator.isEmpty() )
+    if ( asset.contains( "generator" ) )
+    {
+      const QString generator = QString::fromStdString( asset["generator"].get<std::string>() );
       metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tileset Generator" ) % QStringLiteral( "</td><td>%1</a>" ).arg( generator ) % QStringLiteral( "</td></tr>\n" );
+    }
   }
 
   if ( !mShared->mZRange.isInfinite() )

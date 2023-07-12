@@ -9,6 +9,7 @@
 
 
 
+
 class QgsCesiumUtils
 {
 %Docstring(signature="appended")
@@ -21,6 +22,7 @@ Contains utilities for working with Cesium data.
 #include "qgscesiumutils.h"
 %End
   public:
+
 
     static QgsBox3d parseRegion( const QVariantList &region );
 %Docstring

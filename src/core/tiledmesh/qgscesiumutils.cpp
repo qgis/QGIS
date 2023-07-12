@@ -17,33 +17,31 @@
  ***************************************************************************/
 
 #include "qgscesiumutils.h"
+#include "nlohmann/json.hpp"
+#include "qgsjsonutils.h"
+
+QgsBox3d QgsCesiumUtils::parseRegion( const json &region )
+{
+  try
+  {
+    const double west = region[0].get<double>();
+    const double south = region[1].get<double>();
+    const double east = region[2].get<double>();
+    const double north = region[3].get<double>();
+    double minHeight = region[4].get<double>();
+    double maxHeight = region[5].get<double>();
+    return QgsBox3d( west, south, minHeight, east, north, maxHeight );
+  }
+  catch ( nlohmann::json::exception & )
+  {
+    return QgsBox3d();
+  }
+}
 
 QgsBox3d QgsCesiumUtils::parseRegion( const QVariantList &region )
 {
   if ( region.size() != 6 )
     return QgsBox3d();
 
-  // The region property is an array of six numbers that define the bounding geographic region with
-  // latitude, longitude, and height coordinates with the order [west, south, east, north, minimum height, maximum height].
-  bool ok = false;
-  const double west = region.at( 0 ).toDouble( &ok );
-  if ( !ok )
-    return QgsBox3d();
-  const double south = region.at( 1 ).toDouble( &ok );
-  if ( !ok )
-    return QgsBox3d();
-  const double east = region.at( 2 ).toDouble( &ok );
-  if ( !ok )
-    return QgsBox3d();
-  const double north = region.at( 3 ).toDouble( &ok );
-  if ( !ok )
-    return QgsBox3d();
-  const double minHeight = region.at( 4 ).toDouble( &ok );
-  if ( !ok )
-    return QgsBox3d();
-  const double maxHeight = region.at( 5 ).toDouble( &ok );
-  if ( !ok )
-    return QgsBox3d();
-
-  return QgsBox3d( west, south, minHeight, east, north, maxHeight );
+  return parseRegion( QgsJsonUtils::jsonFromVariant( region ) );
 }

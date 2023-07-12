@@ -21,6 +21,11 @@
 
 #include "qgis_core.h"
 #include "qgsbox3d.h"
+#include "nlohmann/json_fwd.hpp"
+
+#ifndef SIP_RUN
+using namespace nlohmann;
+#endif
 
 /**
  * \brief Contains utilities for working with Cesium data.
@@ -32,6 +37,16 @@
 class CORE_EXPORT QgsCesiumUtils
 {
   public:
+
+#ifndef SIP_RUN
+
+    /**
+    * Parses a \a region object from a Cesium JSON object to a 3D box.
+    *
+    * \note Not available in Python bindings.
+    */
+    static QgsBox3d parseRegion( const json &region );
+#endif
 
     /**
      * Parses a \a region object from a Cesium JSON document to a 3D box.
