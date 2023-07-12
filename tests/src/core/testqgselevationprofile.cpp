@@ -91,6 +91,7 @@ void TestQgsElevationProfile::initTestCase()
 
   // Create a line layer that will be used in all tests...
   mpLinesLayer = createVectorLayer( "lines.shp" );
+  dynamic_cast<QgsVectorLayerElevationProperties *>( mpLinesLayer->elevationProperties() )->setExtrusionEnabled( false );
 
   // Create a point layer that will be used in all tests...
   mpPointsLayer = createVectorLayer( "points_with_z.shp" );
@@ -132,6 +133,9 @@ void TestQgsElevationProfile::cleanupTestCase()
 void TestQgsElevationProfile::doCheckPoint( QgsProfileRequest &request, int tolerance, QgsVectorLayer *layer,
     const QList<QgsFeatureId> &expectedFeatures )
 {
+#if DEBUG
+  qDebug() << "===== checking =====";
+#endif
   request.setTolerance( tolerance );
 
   QgsAbstractProfileGenerator *profGen = layer->createProfileGenerator( request );
@@ -158,7 +162,7 @@ void TestQgsElevationProfile::doCheckPoint( QgsProfileRequest &request, int tole
     for ( const QgsVectorLayerProfileResults::Feature &feat : it.value() )
     {
 #if DEBUG
-      qDebug() << "feat:" << feat.featureId << "geom:" << feat.geometry.asWkt();
+      qDebug() << "feat point:" << feat.featureId << "geom:" << feat.geometry.asWkt();
 #endif
       if ( QgsWkbTypes::hasZ( feat.geometry.wkbType() ) )
       {
@@ -189,18 +193,15 @@ void TestQgsElevationProfile::doCheckLine( QgsProfileRequest &request, int toler
 
   // check in how many geometry the feature intersects the profile curve
   int i = 0;
+#if DEBUG
+  qDebug() << "distanceToHeightMap:" << mProfileResults->distanceToHeightMap();
+#endif
   QList<QgsFeatureId> actual = mProfileResults->features.keys();
   std::sort( actual.begin(), actual.end() );
 
   for ( auto it = actual.constBegin(); it != actual.constEnd(); ++it, ++i )
   {
     QVector< QgsVectorLayerProfileResults::Feature > feats = mProfileResults->features[*it];
-#if DEBUG
-    for ( const QgsVectorLayerProfileResults::Feature &feat : feats )
-    {
-      qDebug() << "feat:" << feat.featureId << "geom:" << feat.geometry.asWkt();
-    }
-#endif
     QCOMPARE( feats.size(), nbSubGeomPerFeature[i] );
   }
 }
@@ -228,9 +229,65 @@ void TestQgsElevationProfile::testVectorLayerProfileForLine()
   request.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 3857 ) );
   request.setTerrainProvider( mDemTerrain->clone() );
 
+  // check no tolerance
+  doCheckLine( request, 0, mpLinesLayer, { 0, 2 }, { 1, 5 } );
+
+  // check increased tolerance, terrain, no extrusion
   doCheckLine( request, 1, mpLinesLayer, { 0, 2 }, { 1, 5 } );
+
+  // check increased tolerance, terrain, no extrusion
   doCheckLine( request, 20, mpLinesLayer, { 0, 2 }, { 1, 3 } );
+
+  // check increased tolerance, terrain, no extrusion
   doCheckLine( request, 50, mpLinesLayer, { 1, 0, 2 }, { 1, 1, 1 } );
+  QList<QgsFeatureId> actual = mProfileResults->features.keys();
+  for ( auto it = actual.constBegin(); it != actual.constEnd(); ++it )
+  {
+    QVector< QgsVectorLayerProfileResults::Feature > feats = mProfileResults->features[*it];
+    QVERIFY2( feats[0].geometry.type() == Qgis::GeometryType::Line, "Geometry must be a line" );
+  }
+  QMap<double, double> distMap = mProfileResults->distanceToHeightMap();
+  for ( QMap<double, double>::iterator pair = distMap.begin(); pair != distMap.end(); pair++ )
+  {
+    QVERIFY2( std::isnan( pair.value() ) || pair.value() > 0.0, QString( "Height must be %1 > 0.0" ).arg( pair.value() ).toStdString().c_str() );
+  }
+
+  // check terrain + extrusion
+  dynamic_cast<QgsVectorLayerElevationProperties *>( mpLinesLayer->elevationProperties() )->setClamping( Qgis::AltitudeClamping::Terrain );
+  dynamic_cast<QgsVectorLayerElevationProperties *>( mpLinesLayer->elevationProperties() )->setExtrusionEnabled( true );
+  dynamic_cast<QgsVectorLayerElevationProperties *>( mpLinesLayer->elevationProperties() )->setExtrusionHeight( 17 );
+
+  doCheckLine( request, 50, mpLinesLayer, { 1, 0, 2 }, { 1, 1, 1 } );
+  actual = mProfileResults->features.keys();
+  for ( auto it = actual.constBegin(); it != actual.constEnd(); ++it )
+  {
+    QVector< QgsVectorLayerProfileResults::Feature > feats = mProfileResults->features[*it];
+    QVERIFY2( feats[0].geometry.type() == Qgis::GeometryType::Polygon, "Geometry must be a polygon" );
+  }
+  distMap = mProfileResults->distanceToHeightMap();
+  for ( QMap<double, double>::iterator pair = distMap.begin(); pair != distMap.end(); pair++ )
+  {
+    QVERIFY2( std::isnan( pair.value() ) || pair.value() > 0.0, QString( "Height must be %1 > 0.0" ).arg( pair.value() ).toStdString().c_str() );
+  }
+
+  // check no terrain, no extrusion
+  dynamic_cast<QgsVectorLayerElevationProperties *>( mpLinesLayer->elevationProperties() )->setClamping( Qgis::AltitudeClamping::Absolute );
+  dynamic_cast<QgsVectorLayerElevationProperties *>( mpLinesLayer->elevationProperties() )->setZOffset( 5.0 );
+  dynamic_cast<QgsVectorLayerElevationProperties *>( mpLinesLayer->elevationProperties() )->setExtrusionEnabled( false );
+
+  doCheckLine( request, 50, mpLinesLayer, { 1, 0, 2 }, { 1, 1, 1 } );
+  actual = mProfileResults->features.keys();
+  for ( auto it = actual.constBegin(); it != actual.constEnd(); ++it )
+  {
+    QVector< QgsVectorLayerProfileResults::Feature > feats = mProfileResults->features[*it];
+    QVERIFY2( feats[0].geometry.type() == Qgis::GeometryType::Line, "Geometry must be a line" );
+  }
+  distMap = mProfileResults->distanceToHeightMap();
+  for ( QMap<double, double>::iterator pair = distMap.begin(); pair != distMap.end(); pair++ )
+  {
+    QVERIFY2( std::isnan( pair.value() ) || pair.value() == 5.0, QString( "Height must be %1 == 5.0" ).arg( pair.value() ).toStdString().c_str() );
+  }
+
 }
 
 
