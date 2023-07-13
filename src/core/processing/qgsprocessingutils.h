@@ -738,6 +738,13 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
 
     QgsFeatureSource *mSource = nullptr;
     bool mOwnsSource = false;
+    QgsCoordinateReferenceSystem mSourceCrs;
+    QgsFields mSourceFields;
+    Qgis::WkbType mSourceWkbType = Qgis::WkbType::Unknown;
+    QString mSourceName;
+    QgsRectangle mSourceExtent;
+    QgsFeatureSource::SpatialIndexPresence mSourceSpatialIndexPresence = QgsFeatureSource::SpatialIndexPresence::SpatialIndexUnknown;
+
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
