@@ -142,7 +142,6 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 #ifndef __clang_analyzer__
   QActionGroup *angleButtonGroup = new QActionGroup( mCommonAngleActionsMenu ); // actions are exclusive for common angles NOLINT
 #endif
-  mCommonAngleActions = QMap<QAction *, double>();
   QList< QPair< double, QString > > commonAngles;
   const QList<double> anglesDouble( { 0.0, 0.1, 0.5, 1.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0} );
   for ( QList<double>::const_iterator it = anglesDouble.constBegin(); it != anglesDouble.constEnd(); ++it )
@@ -182,7 +181,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 #ifndef __clang_analyzer__
     angleButtonGroup->addAction( action );
 #endif
-    mCommonAngleActions.insert( action, it->first );
+    mCommonAngleActions.insert( it->first, action );
   }
 
   qobject_cast< QToolButton *>( mToolbar->widgetForAction( mSettingsAction ) )->setPopupMode( QToolButton::InstantPopup );
@@ -668,15 +667,17 @@ void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
 void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
 {
   // common angles
-  const QMap<QAction *, double>::const_iterator ica = mCommonAngleActions.constFind( action );
-  if ( ica != mCommonAngleActions.constEnd() )
+  for ( auto it = mCommonAngleActions.cbegin(); it != mCommonAngleActions.cend(); ++it )
   {
-    ica.key()->setChecked( true );
-    mCommonAngleConstraint = ica.value();
-    QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), ica.value() );
-    mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
-    emit valueCommonAngleSnappingChanged( mCommonAngleConstraint );
-    return;
+    if ( it.value() == action )
+    {
+      it.value()->setChecked( true );
+      mCommonAngleConstraint = it.key();
+      QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), it.key() );
+      mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
+      emit valueCommonAngleSnappingChanged( mCommonAngleConstraint );
+      return;
+    }
   }
 }
 
@@ -1813,9 +1814,9 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     {
       if ( type == QEvent::ShortcutOverride )
       {
-        const QList<double> constActionValues { mCommonAngleActions.values() };
-        const int currentAngleActionIndex { static_cast<int>( constActionValues.indexOf( mCommonAngleConstraint ) ) };
-        const QList<QAction *> constActions { mCommonAngleActions.keys( ) };
+        const QList<double> constActionKeys { mCommonAngleActions.keys() };
+        const int currentAngleActionIndex { static_cast<int>( constActionKeys .indexOf( mCommonAngleConstraint ) ) };
+        const QList<QAction *> constActions { mCommonAngleActions.values( ) };
         QAction *nextAngleAction;
         if ( e->modifiers() == Qt::ShiftModifier )
         {
