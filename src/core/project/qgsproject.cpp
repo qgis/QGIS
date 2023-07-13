@@ -1367,6 +1367,7 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
 
     // Requesting credential from worker thread could lead to deadlocks because the main thread is waiting for worker thread to fininsh
     layerToLoad.flags.setFlag( QgsDataProvider::SkipCredentialsRequest, true );
+    layerToLoad.flags.setFlag( QgsDataProvider::ParallelThreadLoading, true );
 
     layersToLoad.insert( layerToLoad.layerId, layerToLoad );
   }
@@ -1425,6 +1426,7 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
       const LayerToLoad &lay =  it.value();
       QgsDataProvider::ReadFlags providerFlags = lay.flags;
       providerFlags.setFlag( QgsDataProvider::SkipCredentialsRequest, false );
+      providerFlags.setFlag( QgsDataProvider::ParallelThreadLoading, false );
       QgsScopedRuntimeProfile profile( "Create data providers/" + lay.layerId, QStringLiteral( "projectload" ) );
       std::unique_ptr<QgsDataProvider> provider( QgsProviderRegistry::instance()->createProvider( lay.provider, lay.dataSource, lay.options, providerFlags ) );
       i++;

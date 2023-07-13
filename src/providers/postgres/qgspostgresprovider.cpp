@@ -303,6 +303,11 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
   mLayerMetadata.setCrs( crs() );
+
+  // Constructor is called in another thread than the thread where the provider will live,
+  // so we disconnect the DB, connection will be done later in the provider thread when needed
+  if ( flags.testFlag( QgsDataProvider::ParallelThreadLoading ) )
+    disconnectDb();
 }
 
 QgsPostgresProvider::~QgsPostgresProvider()
@@ -320,7 +325,13 @@ QgsAbstractFeatureSource *QgsPostgresProvider::featureSource() const
 
 QgsPostgresConn *QgsPostgresProvider::connectionRO() const
 {
-  return mTransaction ? mTransaction->connection() : mConnectionRO;
+  if ( mTransaction )
+    return mTransaction->connection();
+
+  if ( !mConnectionRO )
+    mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ) );
+
+  return mConnectionRO;
 }
 
 void QgsPostgresProvider::setListening( bool isListening )
@@ -3887,7 +3898,7 @@ QgsRectangle QgsPostgresProvider::extent() const
                         quotedValue( mSchemaName ),
                         quotedValue( mTableName ),
                         quotedValue( mGeometryColumn ) );
-            result = mConnectionRO->LoggedPQexec( "QgsPostgresProvider", sql );
+            result = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
             if ( result.PQresultStatus() == PGRES_TUPLES_OK && result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 ) )
             {
               ext = result.PQgetvalue( 0, 0 );

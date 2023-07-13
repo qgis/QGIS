@@ -128,6 +128,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       SkipFullScan = 1 << 4, //!< Skip expensive full scan on files (i.e. on delimited text) (since QGIS 3.24)
       ForceReadOnly = 1 << 5, //!< Open layer in a read-only mode (since QGIS 3.28)
       SkipCredentialsRequest =  1 << 6, //! Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread (since QGIS 3.32).
+      ParallelThreadLoading = 1 << 7, //! Provider is created in a parallel thread than the one where it will live (since QGIS 3.32.1).
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
