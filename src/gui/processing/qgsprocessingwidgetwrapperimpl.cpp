@@ -6142,9 +6142,18 @@ QString QgsProcessingMapLayerWidgetWrapper::modelerExpressionFormatString() cons
   return tr( "path to a map layer" );
 }
 
-QgsProcessingModelChildParameterSource::Source QgsProcessingMapLayerWidgetWrapper::defaultModelSource( const QgsProcessingParameterDefinition * ) const
+QgsProcessingModelChildParameterSource::Source QgsProcessingMapLayerWidgetWrapper::defaultModelSource( const QgsProcessingParameterDefinition *parameter ) const
 {
-  return QgsProcessingModelChildParameterSource::ModelParameter;
+  // non-optional layer sources default to a matching model input layer, but optional layer parameters
+  // should default to static values. We don't want all optional layer parameters to have values set by default!
+  if ( !( parameter->flags() & QgsProcessingParameterDefinition::Flag::FlagOptional ) )
+  {
+    return QgsProcessingModelChildParameterSource::ModelParameter;
+  }
+  else
+  {
+    return QgsProcessingModelChildParameterSource::StaticValue;
+  }
 }
 
 QString QgsProcessingMapLayerWidgetWrapper::parameterType() const
