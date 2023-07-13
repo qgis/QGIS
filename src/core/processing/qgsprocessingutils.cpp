@@ -1596,6 +1596,12 @@ QString QgsProcessingUtils::resolveDefaultEncoding( const QString &defaultEncodi
 QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource, long long featureLimit, const QString &filterExpression )
   : mSource( originalSource )
   , mOwnsSource( ownsOriginalSource )
+  , mSourceCrs( mSource->sourceCrs() )
+  , mSourceFields( mSource->fields() )
+  , mSourceWkbType( mSource->wkbType() )
+  , mSourceName( mSource->sourceName() )
+  , mSourceExtent( mSource->sourceExtent() )
+  , mSourceSpatialIndexPresence( mSource->hasSpatialIndex() )
   , mInvalidGeometryCheck( QgsWkbTypes::geometryType( mSource->wkbType() ) == Qgis::GeometryType::Point
                            ? QgsFeatureRequest::GeometryNoCheck // never run geometry validity checks for point layers!
                            : context.invalidGeometryCheck() )
@@ -1669,17 +1675,17 @@ QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequ
 
 QgsCoordinateReferenceSystem QgsProcessingFeatureSource::sourceCrs() const
 {
-  return mSource->sourceCrs();
+  return mSourceCrs;
 }
 
 QgsFields QgsProcessingFeatureSource::fields() const
 {
-  return mSource->fields();
+  return mSourceFields;
 }
 
 Qgis::WkbType QgsProcessingFeatureSource::wkbType() const
 {
-  return mSource->wkbType();
+  return mSourceWkbType;
 }
 
 long long QgsProcessingFeatureSource::featureCount() const
@@ -1695,7 +1701,7 @@ long long QgsProcessingFeatureSource::featureCount() const
 
 QString QgsProcessingFeatureSource::sourceName() const
 {
-  return mSource->sourceName();
+  return mSourceName;
 }
 
 QSet<QVariant> QgsProcessingFeatureSource::uniqueValues( int fieldIndex, int limit ) const
@@ -1783,7 +1789,7 @@ QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
 
 QgsRectangle QgsProcessingFeatureSource::sourceExtent() const
 {
-  return mSource->sourceExtent();
+  return mSourceExtent;
 }
 
 QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
@@ -1809,7 +1815,7 @@ QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
 
 QgsFeatureSource::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const
 {
-  return mSource->hasSpatialIndex();
+  return mSourceSpatialIndexPresence;
 }
 
 QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const
