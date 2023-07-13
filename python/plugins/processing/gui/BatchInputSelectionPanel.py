@@ -24,14 +24,7 @@ from pathlib import Path
 
 from qgis.PyQt.QtCore import pyqtSignal, QCoreApplication
 from qgis.PyQt.QtWidgets import QWidget, QHBoxLayout, QMenu, QPushButton, QLineEdit, QSizePolicy, QFileDialog
-from qgis.PyQt.QtGui import QCursor
-
-# TODO QGIS 4.0: Fix code if PyQt6
-from qgis.PyQt.QtCore import QT_VERSION
-if (QT_VERSION >= 0x060000):
-    from qgis.PyQt.QtGui import QAction
-else:
-    from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtGui import QCursor, QAction
 
 from qgis.core import (QgsMapLayer,
                        QgsRasterLayer,

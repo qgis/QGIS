@@ -30,15 +30,8 @@ from qgis.PyQt.QtWidgets import (
     QDialogButtonBox,
     QLabel
 )
-from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtGui import QCursor, QAction
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
-
-# TODO QGIS 4.0: Fix code if PyQt6
-from qgis.PyQt.QtCore import QT_VERSION
-if (QT_VERSION >= 0x060000):
-    from qgis.PyQt.QtGui import QAction
-else:
-    from qgis.PyQt.QtWidgets import QAction
 
 from qgis.gui import QgsMapLayerComboBox
 from qgis.utils import iface

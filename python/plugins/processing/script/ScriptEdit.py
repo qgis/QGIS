@@ -21,15 +21,8 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QKeySequence
+from qgis.PyQt.QtGui import QKeySequence, QShortcut
 from qgis.gui import QgsCodeEditorPython
-
-# TODO QGIS 4.0: Fix code if PyQt6
-from qgis.PyQt.QtCore import QT_VERSION
-if (QT_VERSION >= 0x060000):
-    from qgis.PyQt.QtGui import QShortcut
-else:
-    from qgis.PyQt.QtWidgets import QShortcut
 
 from qgis.PyQt.Qsci import QsciScintilla
 
