@@ -1110,7 +1110,8 @@ Click and drag to select vertices by rectangle.
 Alt+click to select vertices by polygon.
 Shift+click/drag to add vertices to selection.
 Ctrl+click/drag to remove vertices from selection.
-Shift+R to enable range selection.</string>
+Shift+R to enable range selection.
+Shift+O to turn segments into straight or curve lines.</string>
    </property>
   </action>
   <action name="mActionRotatePointSymbols">
