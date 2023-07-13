@@ -370,7 +370,15 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
   // Open the file and get number of rows, etc. We assume that the
   // file has a header row and process accordingly. Caller should make
-  // sure that the delimited file is properly formed.
+  // sure that the delimited file is properly formed.  const QUrl url { mFile->url() };
+
+  // Reset is required because the quick scan might already have read the whole file
+  if ( forceFullScan )
+  {
+    const QUrl url { mFile->url() };
+    mFile.reset( new QgsDelimitedTextFile( ) );
+    mFile->setFromUrl( url );
+  }
 
   if ( mGeomRep == GeomAsWkt )
   {
