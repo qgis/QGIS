@@ -64,7 +64,7 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
   bool needNewMatrixSet = false;
   int minZoom = reader.metadataValue( QStringLiteral( "minzoom" ) ).toInt( &minZoomOk );
   int maxZoom = reader.metadataValue( QStringLiteral( "maxzoom" ) ).toInt( &maxZoomOk );
-  
+
   if ( minZoomOk )
   {
     needNewMatrixSet = needNewMatrixSet || mMatrixSet.minimumZoom() > minZoom;
@@ -79,10 +79,10 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
   }
   else
     maxZoom = mMatrixSet.maximumZoom();
-  
+
   if ( needNewMatrixSet )
     mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator( minZoom, maxZoom );
-  
+
   QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mMatrixSet.minimumZoom() ).arg( mMatrixSet.maximumZoom() ), 2 );
 
   QgsRectangle r = reader.extent();
