@@ -18,14 +18,15 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerCache,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from featuresourcetestbase import FeatureSourceTestCase
 
 start_app()
 
 
-class TestQgsVectorLayerCache(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerCache(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):

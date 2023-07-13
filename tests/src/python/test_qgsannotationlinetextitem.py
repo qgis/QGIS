@@ -38,7 +38,8 @@ from qgis.core import (
     QgsLineString,
     QgsMapUnitScale,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTestFont, unitTestDataPath
 
@@ -46,7 +47,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsAnnotationLineTextItem(unittest.TestCase):
+class TestQgsAnnotationLineTextItem(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

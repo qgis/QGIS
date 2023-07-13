@@ -16,7 +16,8 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import Qgis, QgsLayerDefinition, QgsProject, QgsVectorLayer
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -24,7 +25,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayerDefinition(unittest.TestCase):
+class TestQgsLayerDefinition(QgisTestCase):
 
     def testDependency(self):
         inDoc = """

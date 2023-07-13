@@ -14,12 +14,13 @@ import math
 import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import QgsScaleWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsScaleWidget(unittest.TestCase):
+class TestQgsScaleWidget(QgisTestCase):
 
     def testBasic(self):
         w = QgsScaleWidget()

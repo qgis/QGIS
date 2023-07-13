@@ -912,7 +912,7 @@
       "type": "Feature",
       "properties": {
         "Name": "Loïc Bartoletti",
-        "Committer": "No",
+        "Committer": "Yes",
         "First Commit Message": "Oriented Minimum Bounding Box",
         "First Commit Date": "11-06-2015",
         "GIT Nickname": "lbartoletti"
@@ -1194,6 +1194,57 @@
         "coordinates": [
           17.1525,
           60.6750
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Jacky Volpes",
+        "Committer": "No",
+        "First Commit Message": "Changed Python inspect.getargspec()",
+        "First Commit Date": "31-10-2019",
+        "GIT Nickname": "Djedouas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.20673,
+          44.08692
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Yoann Quenach de Quivillic",
+        "Committer": "No",
+        "First Commit Message": "Add a toggle comment action in the Python Console",
+        "First Commit Date": "29-12-2022",
+        "GIT Nickname": "YoannQDQ"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.6122,
+          48.2594
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Benoit De Mezzo",
+        "Committer": "No",
+        "First Commit Message": "fix percent encoding in server query parameter",
+        "First Commit Date": "07-12-2021",
+        "GIT Nickname": "benoitdm-oslandia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.01,
+          46.13
         ]
       }
     }

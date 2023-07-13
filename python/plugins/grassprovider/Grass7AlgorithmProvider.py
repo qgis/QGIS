@@ -20,6 +20,7 @@ __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Victor Olaya'
 
 import os
+from pathlib import Path
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (Qgis,
                        QgsApplication,
@@ -35,7 +36,7 @@ from processing.tools.system import isWindows, isMac
 
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
-    descriptionFolder = Grass7Utils.grassDescriptionPath()
+    descriptionFolders = Grass7Utils.grassDescriptionFolders()
 
     def __init__(self):
         super().__init__()
@@ -85,18 +86,18 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
 
     def createAlgsList(self):
         algs = []
-        folder = self.descriptionFolder
-        for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith('txt'):
+        folders = self.descriptionFolders
+        for folder in folders:
+            for descriptionFile in folder.glob('*.txt'):
                 try:
-                    alg = Grass7Algorithm(os.path.join(folder, descriptionFile))
+                    alg = Grass7Algorithm(descriptionFile)
                     if alg.name().strip() != '':
                         algs.append(alg)
                     else:
                         QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), Qgis.Critical)
                 except Exception as e:
                     QgsMessageLog.logMessage(
-                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)), self.tr('Processing'), Qgis.Critical)
+                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, e), self.tr('Processing'), Qgis.Critical)
         return algs
 
     def loadAlgorithms(self):

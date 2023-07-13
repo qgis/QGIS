@@ -13,7 +13,8 @@ import os
 
 import qgis  # NOQA
 from qgis.core import QgsPointXY, QgsVectorLayer
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
 
 # Convenience instances in case you may need them
@@ -24,7 +25,7 @@ def die(error_message):
     raise Exception(error_message)
 
 
-class TestQgsSpatialiteProvider(unittest.TestCase):
+class TestQgsSpatialiteProvider(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

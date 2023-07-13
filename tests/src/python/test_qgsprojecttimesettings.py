@@ -19,7 +19,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -27,7 +28,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsProjectTimeSettings(unittest.TestCase):
+class TestQgsProjectTimeSettings(QgisTestCase):
 
     def testTemporalRange(self):
         p = QgsProjectTimeSettings()

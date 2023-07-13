@@ -42,7 +42,8 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
@@ -53,7 +54,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsArrowSymbolLayer(unittest.TestCase):
+class TestQgsArrowSymbolLayer(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsArrowSymbolLayer Tests</h1>\n"

@@ -15,12 +15,13 @@ import qgis  # NOQA
 from console import console
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsSettings
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestConsole(unittest.TestCase):
+class TestConsole(QgisTestCase):
 
     def setUp(self):
         QgsSettings().setValue('pythonConsole/contextHelpOnFirstLaunch', False)

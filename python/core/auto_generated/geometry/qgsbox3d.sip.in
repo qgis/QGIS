@@ -28,22 +28,82 @@ extent of a geometry or collection of geometries.
 #include "qgsbox3d.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
 
-    QgsBox3d( double xmin = 0, double ymin = 0, double zmin = 0, double xmax = 0, double ymax = 0, double zmax = 0 ) /HoldGIL/;
+  public:
+
+    QgsBox3d( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QgsRectangle, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[QgsPoint, float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT x2 /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT y2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT n /TypeHint="Optional[bool]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
 %Docstring
-Constructor for :py:class:`QgsBox3D` which accepts the ranges of x/y/z coordinates.
+Constructor for :py:class:`QgsBox3D` which accepts the ranges of x/y/z coordinates. If ``normalize`` is ``False`` then
+the normalization step will not be applied automatically.
 %End
+%MethodCode
+    if ( sipCanConvertToType( a0, sipType_QgsRectangle, SIP_NOT_NONE ) && a4 == Py_None && a5 == Py_None && a6 == Py_None )
+    {
+      int state;
+      sipIsErr = 0;
 
-    QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
-%Docstring
-Constructs a :py:class:`QgsBox3D` from two points representing opposite corners of the box.
-The box is normalized after construction.
-%End
+      QgsRectangle *p = reinterpret_cast<QgsRectangle *>( sipConvertToType( a0, sipType_QgsRectangle, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( p, sipType_QgsRectangle, state );
+      }
+      else
+      {
+        double z1 = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
+        double z2 = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
+        bool n = a3 == Py_None ? true : PyObject_IsTrue( a3 );
 
-    QgsBox3d( const QgsRectangle &rect ) /HoldGIL/;
-%Docstring
-Constructs a :py:class:`QgsBox3D` from a rectangle.
-Z Minimum and Z Maximum are set to 0.0.
+        sipCpp = new QgsBox3d( *p, z1, z2, n );
+      }
+    }
+    else if ( sipCanConvertToType( a0, sipType_QgsPoint, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QgsPoint, SIP_NOT_NONE ) && a3 == Py_None && a4 == Py_None && a5 == Py_None && a6 == Py_None )
+    {
+      int state;
+      sipIsErr = 0;
+
+      QgsPoint *pt1 = reinterpret_cast<QgsPoint *>( sipConvertToType( a0, sipType_QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( pt1, sipType_QgsPoint, state );
+      }
+      else
+      {
+        QgsPoint *pt2 = reinterpret_cast<QgsPoint *>( sipConvertToType( a1, sipType_QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+        if ( sipIsErr )
+        {
+          sipReleaseType( pt2, sipType_QgsPoint, state );
+        }
+        else
+        {
+          bool n = a2 == Py_None ? true : PyObject_IsTrue( a2 );
+          sipCpp = new QgsBox3d( *pt1, *pt2, n );
+        }
+      }
+    }
+    else if (
+      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a4 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a5 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a6 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
+    {
+      double x1 = a0 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a0 );
+      double y1 = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
+      double z1 = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
+      double x2 = a3 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a3 );
+      double y2 = a4 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a4 );
+      double z2 = a5 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a5 );
+      bool n = a6 == Py_None ? true : PyObject_IsTrue( a6 );
+      sipCpp = new QgsBox3d( x1, y1, z1, x2, y2, z2, n );
+    }
+    else // Invalid ctor arguments
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type in constructor arguments." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
 %End
 
     void setXMinimum( double x ) /HoldGIL/;
@@ -154,6 +214,15 @@ Returns the maximum z value.
 .. seealso:: :py:func:`zMinimum`
 %End
 
+    void setMinimal() /HoldGIL/;
+%Docstring
+Set a box so that min corner is at std.numeric_limits<double>.max()
+and max corner is at -std.numeric_limits<double>.max().
+It is NOT normalized.
+
+.. versionadded:: 3.34
+%End
+
     void normalize();
 %Docstring
 Normalize the box so it has non-negative width/height/depth.
@@ -202,6 +271,15 @@ Returns ``True`` if the box can be considered a 2-dimensional box, i.e.
 it has equal minimum and maximum z values.
 %End
 
+    bool is3D() const /HoldGIL/;
+%Docstring
+Returns ``True`` if the box can be considered a 3-dimensional box, i.e.
+it has valid minimum and maximum z values.
+If the box is not normalized, this returns ``False``.
+
+.. versionadded:: 3.34
+%End
+
     bool intersects( const QgsBox3d &other ) const;
 %Docstring
 Returns ``True`` if box intersects with another box.
@@ -218,6 +296,31 @@ Returns ``True`` when box contains a ``point``.
 
 If the point is a 2D point (no z-coordinate), then the containment test
 will be performed on the x/y extent of the box only.
+%End
+
+    bool contains( double x, double y, double z ) const;
+%Docstring
+Returns ``True`` when box contains a point (``x``, ``y``, ``z``).
+A point on the border of the box will also return ``True``
+
+If the point is a 2D point (no z-coordinate), then the containment test
+will be performed on the x/y extent of the box only.
+
+.. versionadded:: 3.34
+%End
+
+    void combineWith( const QgsBox3d &box );
+%Docstring
+Expands the bbox so that it covers both the original rectangle and the given rectangle.
+
+.. versionadded:: 3.34
+%End
+
+    void combineWith( double x, double y, double z );
+%Docstring
+Expands the bbox so that it covers both the original rectangle and the given point.
+
+.. versionadded:: 3.34
 %End
 
     QgsRectangle toRectangle() const;
@@ -249,6 +352,31 @@ If no ``center`` point is specified then the current center of the box will be u
 Scale the rectangle around a center coordinates.
 
 .. versionadded:: 3.26
+%End
+
+    bool isNull() const;
+%Docstring
+Test if the box is null (all coordinates NaN or after call to :py:func:`~QgsBox3d.setMinimal`).
+A null box is also an empty box.
+
+.. versionadded:: 3.34
+%End
+
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the box is empty.
+An empty box may still be non-null if it contains valid information (e.g. bounding box of a point).
+
+.. versionadded:: 3.34
+%End
+
+    QString toString( int precision = 16 ) const;
+%Docstring
+Returns a string representation of form xmin,ymin,zmin : xmax,ymax,zmax
+Coordinates will be truncated to the specified precision.
+If the specified precision is less than 0, a suitable minimum precision is used.
+
+.. versionadded:: 3.34
 %End
 
 };

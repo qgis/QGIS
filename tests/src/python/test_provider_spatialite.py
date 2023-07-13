@@ -40,7 +40,8 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
 
 from providertestbase import ProviderTestCase
@@ -66,7 +67,7 @@ def count_opened_filedescriptors(filename_to_test):
     return count
 
 
-class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
+class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):

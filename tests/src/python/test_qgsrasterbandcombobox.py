@@ -16,14 +16,15 @@ from qgis.PyQt.QtCore import QFileInfo
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsRasterLayer
 from qgis.gui import QgsRasterBandComboBox
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsRasterBandComboBox(unittest.TestCase):
+class TestQgsRasterBandComboBox(QgisTestCase):
 
     def testNoLayer(self):
         """

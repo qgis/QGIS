@@ -38,7 +38,8 @@ from qgis.core import (
     QgsRenderContext,
     QgsVertexId,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -46,7 +47,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsAnnotationLineItem(unittest.TestCase):
+class TestQgsAnnotationLineItem(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

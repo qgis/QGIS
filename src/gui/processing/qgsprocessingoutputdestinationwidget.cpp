@@ -28,6 +28,8 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QCheckBox>
+#include <QLocale>
+#include <QTextCodec>
 #include <QUrl>
 
 ///@cond NOT_STABLE
@@ -51,7 +53,8 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   mSelectButton->setPopupMode( QToolButton::InstantPopup );
 
   QgsSettings settings;
-  mEncoding = settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString();
+  mEncoding = QgsProcessingUtils::resolveDefaultEncoding( settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString() );
+  settings.setValue( QStringLiteral( "/Processing/encoding" ), mEncoding );
 
   if ( !mParameter->defaultValueForGui().isValid() )
   {
@@ -602,9 +605,11 @@ void QgsProcessingLayerOutputDestinationWidget::selectEncoding()
   QgsEncodingSelectionDialog dialog( this, tr( "File encoding" ), mEncoding );
   if ( dialog.exec() )
   {
-    mEncoding = dialog.encoding();
+    mEncoding = QgsProcessingUtils::resolveDefaultEncoding( dialog.encoding() );
+
     QgsSettings settings;
     settings.setValue( QStringLiteral( "/Processing/encoding" ), mEncoding );
+
     emit destinationChanged();
   }
 }

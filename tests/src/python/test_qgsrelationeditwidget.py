@@ -37,12 +37,13 @@ from qgis.gui import (
     QgsMapCanvas,
     QgsRelationWidgetWrapper,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsRelationEditWidget(unittest.TestCase):
+class TestQgsRelationEditWidget(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

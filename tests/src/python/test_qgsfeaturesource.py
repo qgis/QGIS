@@ -21,7 +21,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -50,7 +51,7 @@ def createLayerWithFivePoints():
     return layer
 
 
-class TestQgsFeatureSource(unittest.TestCase):
+class TestQgsFeatureSource(QgisTestCase):
 
     def testUniqueValues(self):
         """

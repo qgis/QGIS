@@ -724,6 +724,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QString toProj() const;
 
     /**
+     * Returns the type of the CRS.
+     *
+     * \since QGIS 3.34
+     */
+    Qgis::CrsType type() const;
+
+    /**
      * Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
      * \returns TRUE if CRS is geographic, or FALSE if it is a projected CRS
      */
@@ -744,6 +751,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * If the CRS does not use a datum ensemble then an invalid QgsDatumEnsemble will
      * be returned.
+     *
+     * \note In the case of a compound crs, this method will always return the datum ensemble for the horizontal component.
      *
      * \warning This method requires PROJ 8.0 or later
      *
@@ -891,6 +900,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Returns the units for the projection used by the CRS.
+     *
+     * \note In the case of a compound CRS, this method will always return the units for the horizontal component.
      */
     Qgis::DistanceUnit mapUnits() const;
 

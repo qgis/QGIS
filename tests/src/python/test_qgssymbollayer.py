@@ -82,7 +82,8 @@ from qgis.core import (
     QgsVectorFieldSymbolLayer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -95,7 +96,7 @@ TEST_DATA_DIR = unitTestDataPath()
 EXPECTED_TYPE = type(QObject)
 
 
-class TestQgsSymbolLayer(unittest.TestCase):
+class TestQgsSymbolLayer(QgisTestCase):
 
     """
      This class test the sip binding for QgsSymbolLayer descendants

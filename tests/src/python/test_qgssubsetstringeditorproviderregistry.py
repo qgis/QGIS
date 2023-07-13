@@ -18,7 +18,8 @@ from qgis.gui import (
     QgsSubsetStringEditorInterface,
     QgsSubsetStringEditorProvider,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
@@ -46,7 +47,7 @@ class TestProvider(QgsSubsetStringEditorProvider):
         return SubsetStringDialog(parent, fl)
 
 
-class TestQgsSubsetStringEditorProviderRegistry(unittest.TestCase):
+class TestQgsSubsetStringEditorProviderRegistry(QgisTestCase):
 
     def testGuiRegistry(self):
         # ensure there is an application instance

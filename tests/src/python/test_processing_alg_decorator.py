@@ -12,7 +12,8 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.processing import alg
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -86,7 +87,7 @@ def cleanup():
     alg.instances.clear()
 
 
-class AlgNoInputs(unittest.TestCase):
+class AlgNoInputs(QgisTestCase):
 
     def setUp(self):
         cleanup()
@@ -95,7 +96,7 @@ class AlgNoInputs(unittest.TestCase):
         define_new_no_inputs()
 
 
-class AlgNoOutputsButSinkInstead(unittest.TestCase):
+class AlgNoOutputsButSinkInstead(QgisTestCase):
 
     def setUp(self):
         cleanup()
@@ -104,7 +105,7 @@ class AlgNoOutputsButSinkInstead(unittest.TestCase):
         define_new_no_outputs_but_sink_instead()
 
 
-class AlgInstanceTests(unittest.TestCase):
+class AlgInstanceTests(QgisTestCase):
     """
     Tests to check the createInstance method will work as expected.
     """
@@ -147,7 +148,7 @@ class AlgInstanceTests(unittest.TestCase):
         self.assertEqual("unittest", self.current.groupId())
 
 
-class AlgHelpTests(unittest.TestCase):
+class AlgHelpTests(QgisTestCase):
 
     def test_has_help_from_help_decorator(self):
         cleanup()
@@ -177,7 +178,7 @@ class AlgHelpTests(unittest.TestCase):
             self.assertEqual(data[1], parmdef.help())
 
 
-class TestAlg(unittest.TestCase):
+class TestAlg(QgisTestCase):
 
     def setUp(self):
         cleanup()

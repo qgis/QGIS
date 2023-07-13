@@ -18,9 +18,7 @@
 #define QGSMESHLAYERPROPERTIES_H
 
 #include "ui_qgsmeshlayerpropertiesbase.h"
-
-#include "qgsmaplayerstylemanager.h"
-#include "qgsoptionsdialogbase.h"
+#include "qgslayerpropertiesdialog.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
 
@@ -28,10 +26,8 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsMeshLayer;
 class QgsRendererMeshPropertiesWidget;
-class QgsMapLayerConfigWidget;
 class QgsMeshLayer3DRendererWidget;
 class QgsMeshStaticDatasetWidget;
-class QgsMapLayerConfigWidgetFactory;
 class QgsMetadataWidget;
 
 /**
@@ -43,7 +39,7 @@ class QgsMetadataWidget;
  *
  * \since QGIS 3.16 in the GUI API
  */
-class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private Ui::QgsMeshLayerPropertiesBase
+class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsMeshLayerPropertiesBase
 {
     Q_OBJECT
 
@@ -59,49 +55,33 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
     /**
-     * Adds properties page from a factory
-     *
-     * \since QGIS 3.16
-     */
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-
-    /**
-     * Loads the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadDefaultStyle();
-
-    /**
      * Saves the default style when appropriate button is pressed
      *
-     * \since QGIS 3.30
+     * \deprecated use saveStyleAsDefault() instead.
      */
-    void saveDefaultStyle();
+    Q_DECL_DEPRECATED void saveDefaultStyle() SIP_DEPRECATED;
 
     /**
      * Loads a saved style when appropriate button is pressed
      *
-     * \since QGIS 3.30
+     * \deprecated use loadStyleFromFile() instead.
      */
-    void loadStyle();
+    Q_DECL_DEPRECATED void loadStyle() SIP_DEPRECATED;
 
     /**
      * Saves a style when appriate button is pressed
      *
-     * \since QGIS 3.30
+     * \deprecated use saveStyleToFile() instead.
      */
-    void saveStyleAs();
+    Q_DECL_DEPRECATED void saveStyleAs() SIP_DEPRECATED;
 
   protected slots:
-    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
+    void syncToLayer() FINAL;
+    void apply() FINAL;
+    void rollback() FINAL;
 
   private slots:
-    //! Synchronizes widgets state with associated mesh layer
-    void syncToLayer();
 
-    //!Applies the settings made in the dialog without closing the box
-    void apply();
     //! Synchronizes GUI state with associated mesh layer and trigger repaint
     void syncAndRepaint();
     //! Changes layer coordinate reference system
@@ -110,20 +90,12 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void aboutToShowStyleMenu();
     //! Reloads temporal properties from the provider
     void reloadTemporalProperties();
-    //! \brief Called when cancel button is pressed
-    void onCancel();
 
     void onTimeReferenceChange();
-
-    void urlClicked( const QUrl &url );
-    void loadMetadata();
-    void saveMetadataAs();
 
   private:
     //! Pointer to the mesh styling widget
     QgsRendererMeshPropertiesWidget *mRendererMeshPropertiesWidget = nullptr;
-
-    QList<QgsMapLayerConfigWidget *> mConfigWidgets;
 
     //! Pointer to the mesh layer that this property dialog changes the behavior of.
     QgsMeshLayer *mMeshLayer = nullptr;
@@ -131,18 +103,9 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     //! Pointer to mesh 3d styling widget
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
 
-    /**
-     * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled.
-    */
-    QgsMapLayerStyle mOldStyle;
-
-    QPushButton *mBtnStyle = nullptr;
-    QPushButton *mBtnMetadata = nullptr;
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 
-    QgsMapCanvas *mCanvas = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
     bool mIsMapSettingsTemporal = false;

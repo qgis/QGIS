@@ -13,12 +13,13 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.core import QgsSingleItemModel
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsSingleItemModel(unittest.TestCase):
+class TestQgsSingleItemModel(QgisTestCase):
 
     def testModel(self):
         model = QgsSingleItemModel(None, 'my item', {

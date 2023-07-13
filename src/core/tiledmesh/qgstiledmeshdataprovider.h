@@ -43,9 +43,30 @@ class CORE_EXPORT QgsTiledMeshDataProvider: public QgsDataProvider
     ~QgsTiledMeshDataProvider() override;
 
     /**
+     * Copy constructor.
+     */
+    QgsTiledMeshDataProvider( const QgsTiledMeshDataProvider &other );
+
+    /**
+     * QgsTiledMeshDataProvider cannot be assigned.
+     */
+    QgsTiledMeshDataProvider &operator=( const QgsTiledMeshDataProvider &other ) = delete;
+
+    /**
      * Returns flags containing the supported capabilities for the data provider.
      */
     virtual Qgis::TiledMeshProviderCapabilities capabilities() const;
+
+    /**
+     * Returns a clone of the data provider.
+     */
+    virtual QgsTiledMeshDataProvider *clone() const = 0 SIP_FACTORY;
+
+    /**
+     * Returns metadata in a format suitable for feeding directly
+     * into a subset of the GUI properties "Metadata" tab.
+     */
+    virtual QString htmlMetadata() const;
 
 };
 

@@ -193,15 +193,8 @@ EOF
 	echo Updating appinfo files
 	python3 scripts/appinfo2ui.py >src/app/appinfo-i18n.ui
 
-	echo Excluding qtermwidget translation files
-	tar --remove-files -cf src/plugins/grass/qtermwidget/translations.tar src/plugins/grass/qtermwidget/translations/
-
 	echo Creating qmake project file
 	$QMAKE -project -o qgis_ts.pro -nopwd $SRCDIR/src $SRCDIR/python $SRCDIR/i18n $textcpp
-
-	echo Restoring qtermwidget translation files
-	tar xf src/plugins/grass/qtermwidget/translations.tar
-	rm src/plugins/grass/qtermwidget/translations.tar
 
 	QT_INSTALL_HEADERS=$(qmake -query QT_INSTALL_HEADERS)
 

@@ -23,7 +23,8 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsGeocoderLocatorFilter, QgsMapCanvas
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -58,7 +59,7 @@ class TestGeocoder(QgsGeocoderInterface):
         return []
 
 
-class TestQgsGeocoderLocatorFilter(unittest.TestCase):
+class TestQgsGeocoderLocatorFilter(QgisTestCase):
 
     def test_geocode(self):
         geocoder = TestGeocoder()

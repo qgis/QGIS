@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>462</width>
-    <height>378</height>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,7 +42,7 @@
       <item row="2" column="0" colspan="2">
        <widget class="QRadioButton" name="mAskUser">
         <property name="text">
-         <string>Let user choose profile at start up</string>
+         <string>Choose profile at start up</string>
         </property>
        </widget>
       </item>
@@ -76,13 +76,13 @@
    <item>
     <widget class="QGroupBox" name="mProfileSelectorGroupBox">
      <property name="title">
-      <string>Profile Selector</string>
+      <string>Profile Display</string>
      </property>
-     <layout class="QFormLayout" name="formLayout">
+     <layout class="QGridLayout" name="gridLayout1">
       <item row="0" column="0">
        <widget class="QLabel" name="mIconSizeLabel">
         <property name="text">
-         <string>Icon size</string>
+         <string>Default icon size</string>
         </property>
        </widget>
       </item>
@@ -93,6 +93,9 @@
           <width>50</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="toolTip">
+         <string>Select size of icons in the user profile selector dialog</string>
         </property>
         <item>
          <property name="text">
@@ -121,28 +124,16 @@
         </item>
        </widget>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="mActiveProfileGroupBox">
-     <property name="title">
-      <string>Active Profile</string>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="mChangeIconLabel">
+      <item row="1" column="0">
+       <widget class="QLabel" name="mActiveProfileIconLabel">
         <property name="text">
-         <string>Change icon</string>
+         <string>Active profile icon</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QToolButton" name="mChangeIconButton">
+      <item row="1" column="1">
+       <widget class="QToolButton" name="mActiveProfileIconButton">
         <property name="toolTip">
-         <string/>
-        </property>
-        <property name="text">
          <string>Change profile icon</string>
         </property>
         <property name="icon">
@@ -157,7 +148,7 @@
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="2">
        <widget class="QToolButton" name="mResetIconButton">
         <property name="toolTip">
          <string>Reset icon</string>
@@ -168,7 +159,7 @@
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="3">
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -192,7 +183,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -204,7 +195,7 @@
   <tabstop>mDefaultProfile</tabstop>
   <tabstop>mDefaultProfileComboBox</tabstop>
   <tabstop>mAskUser</tabstop>
-  <tabstop>mChangeIconButton</tabstop>
+  <tabstop>mActiveProfileIconButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

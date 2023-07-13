@@ -24,12 +24,13 @@ from qgis.core import (
     QgsRenderContext,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsMapClippingUtils(unittest.TestCase):
+class TestQgsMapClippingUtils(QgisTestCase):
 
     def testClippingRegionsForLayer(self):
         layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",

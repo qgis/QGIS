@@ -26,12 +26,12 @@
 #include "qgsloadrasterattributetabledialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerstyleguiutils.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmetadataurlitemdelegate.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsmultibandcolorrendererwidget.h"
-#include "qgsnative.h"
 #include "qgspalettedrendererwidget.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsprovidersourcewidget.h"
@@ -68,6 +68,7 @@
 #if WITH_QTWEBKIT
 #include <QWebElement>
 #endif
+#include "qgshelp.h"
 
 #include <QDesktopServices>
 #include <QTableWidgetItem>
@@ -91,7 +92,7 @@
 #include <QRegularExpression>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
-  : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
+  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "RasterLayerProperties" ), parent, fl )
     // Constant that signals property not used.
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
   , mDefaultStandardDeviation( 0 )
@@ -101,7 +102,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
   , mGradientHeight( 0.0 )
   , mGradientWidth( 0.0 )
-  , mMapCanvas( canvas )
   , mMetadataFilled( false )
 {
   mGrayMinimumMaximumEstimated = true;
@@ -131,30 +131,12 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mSourceGroupBox->hide();
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
-  QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyle );
-  menuStyle->addAction( tr( "Save Style…" ), this, &QgsRasterLayerProperties::saveStyleAs );
-  menuStyle->addSeparator();
-  menuStyle->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveDefaultStyle );
-  menuStyle->addAction( tr( "Restore Default" ), this, &QgsRasterLayerProperties::loadDefaultStyle );
-  mBtnStyle->setMenu( menuStyle );
-  connect( menuStyle, &QMenu::aboutToShow, this, &QgsRasterLayerProperties::aboutToShowStyleMenu );
   buttonBox->addButton( mBtnStyle, QDialogButtonBox::ResetRole );
-
-  mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
-  QMenu *menuMetadata = new QMenu( this );
-  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, &QgsRasterLayerProperties::loadMetadata );
-  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, &QgsRasterLayerProperties::saveMetadataAs );
-  menuMetadata->addSeparator();
-  menuMetadata->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveDefaultMetadata );
-  menuMetadata->addAction( tr( "Restore Default" ), this, &QgsRasterLayerProperties::loadDefaultMetadata );
-  mBtnMetadata->setMenu( menuMetadata );
-  buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
   connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsRasterLayerProperties::syncToLayer );
 
   connect( this, &QDialog::accepted, this, &QgsRasterLayerProperties::apply );
-  connect( this, &QDialog::rejected, this, &QgsRasterLayerProperties::onCancel );
+  connect( this, &QDialog::rejected, this, &QgsRasterLayerProperties::rollback );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsRasterLayerProperties::apply );
 
@@ -198,7 +180,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
 
   // set up the scale based layer visibility stuff....
-  mScaleRangeWidget->setMapCanvas( mMapCanvas );
+  mScaleRangeWidget->setMapCanvas( mCanvas );
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
   mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
 
@@ -269,7 +251,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mBackupCrs = mRasterLayer->crs();
 
   // Handles window modality raising canvas
-  if ( mMapCanvas && mRasterTransparencyWidget->pixelSelectorTool() )
+  if ( mCanvas && mRasterTransparencyWidget->pixelSelectorTool() )
   {
 
     connect( mRasterTransparencyWidget->pixelSelectorTool(), &QgsMapToolEmitPoint::deactivated, this, [ = ]
@@ -287,9 +269,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
       setModal( false );
 
       // Transfer focus to the canvas to use the selector tool
-      mMapCanvas->window()->raise();
-      mMapCanvas->window()->activateWindow();
-      mMapCanvas->window()->setFocus();
+      mCanvas->window()->raise();
+      mCanvas->window()->activateWindow();
+      mCanvas->window()->setFocus();
     } );
   }
 
@@ -297,9 +279,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
            << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( mMapCanvas )
+  if ( mCanvas )
   {
-    mContext << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
+    mContext << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
     // Initialize with layer center
     mContext << QgsExpressionContextUtils::mapLayerPositionScope( mRasterLayer->extent().center() );
   }
@@ -377,7 +359,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   layout->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mRasterLayer );
   mMetadataWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mMetadataWidget->setMapCanvas( mMapCanvas );
+  mMetadataWidget->setMapCanvas( mCanvas );
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
 
@@ -532,7 +514,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     mMetadataViewer->setZoomFactor( mMetadataViewer->zoomFactor() * 0.9 );
   }
   mMetadataViewer->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
-  connect( mMetadataViewer->page(), &QWebPage::linkClicked, this, &QgsRasterLayerProperties::urlClicked );
+  connect( mMetadataViewer->page(), &QWebPage::linkClicked, this, &QgsRasterLayerProperties::openUrl );
   mMetadataViewer->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
   mMetadataViewer->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
 
@@ -541,6 +523,27 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   initializeDataDefinedButton( mRasterTransparencyWidget->mOpacityDDBtn, QgsRasterPipe::RendererOpacity );
 
   mRenderTypeComboBox_currentIndexChanged( widgetIndex );
+
+  setMetadataWidget( mMetadataWidget, mOptsPage_Metadata );
+
+  QMenu *menuStyle = new QMenu( this );
+  menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyleFromFile );
+  menuStyle->addAction( tr( "Save Style…" ), this, &QgsRasterLayerProperties::saveStyleAs );
+  menuStyle->addSeparator();
+  menuStyle->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveStyleAsDefault );
+  menuStyle->addAction( tr( "Restore Default" ), this, &QgsRasterLayerProperties::loadDefaultStyle );
+  mBtnStyle->setMenu( menuStyle );
+  connect( menuStyle, &QMenu::aboutToShow, this, &QgsRasterLayerProperties::aboutToShowStyleMenu );
+
+  mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
+  QMenu *menuMetadata = new QMenu( this );
+  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, &QgsRasterLayerProperties::loadMetadataFromFile );
+  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, &QgsRasterLayerProperties::saveMetadataToFile );
+  menuMetadata->addSeparator();
+  menuMetadata->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveMetadataAsDefault );
+  menuMetadata->addAction( tr( "Restore Default" ), this, &QgsRasterLayerProperties::loadDefaultMetadata );
+  mBtnMetadata->setMenu( menuMetadata );
+  buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
   // update based on lyr's current state
   sync();
@@ -556,11 +559,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
 
-  QString title = tr( "Layer Properties — %1" ).arg( lyr->name() );
-
-  if ( !mRasterLayer->styleManager()->isDefault( mRasterLayer->styleManager()->currentStyle() ) )
-    title += QStringLiteral( " (%1)" ).arg( mRasterLayer->styleManager()->currentStyle() );
-  restoreOptionsBaseUi( title );
   optionsStackedWidget_CurrentChanged( mOptionsStackedWidget->currentIndex() );
 
   //Add help page references
@@ -584,6 +582,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#metadata-properties" ) );
   mOptsPage_Legend->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#legend-properties" ) );
   mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#server-properties" ) );
+
+  initialize();
 }
 
 void QgsRasterLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
@@ -598,7 +598,7 @@ void QgsRasterLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfig
   {
     case QgsMapLayerConfigWidgetFactory::ParentPage::NoParent:
     {
-      mLayerPropertiesPages << page;
+      mConfigWidgets << page;
 
       const QString beforePage = factory->layerPropertiesPagePositionHint();
       if ( beforePage.isEmpty() )
@@ -667,7 +667,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
     {
       QgsDebugMsgLevel( QStringLiteral( "renderer has widgetCreateFunction" ), 3 );
       // Current canvas extent (used to calc min/max) in layer CRS
-      QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
+      QgsRectangle myExtent = mCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mCanvas->extent() );
       if ( oldWidget && ( !oldRenderer || rendererName != oldRenderer->type() ) )
       {
         if ( rendererName == QLatin1String( "singlebandgray" ) )
@@ -685,7 +685,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
       mRasterLayer->renderer()->setOpacity( opacity );
       mRasterLayer->renderer()->setNodataColor( nodataColor );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
-      mRendererWidget->setMapCanvas( mMapCanvas );
+      mRendererWidget->setMapCanvas( mCanvas );
       mRendererStackedWidget->addWidget( mRendererWidget );
       if ( oldWidget )
       {
@@ -745,7 +745,7 @@ void QgsRasterLayerProperties::sync()
 
   if ( mSourceWidget )
   {
-    mSourceWidget->setMapCanvas( mMapCanvas );
+    mSourceWidget->setMapCanvas( mCanvas );
     mSourceWidget->setSourceUri( mRasterLayer->source() );
   }
 
@@ -895,7 +895,7 @@ void QgsRasterLayerProperties::sync()
   mPropertyCollection = mRasterLayer->pipe()->dataDefinedProperties();
   updateDataDefinedButtons();
 
-  for ( QgsMapLayerConfigWidget *page : std::as_const( mLayerPropertiesPages ) )
+  for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )
   {
     page->syncToLayer( mRasterLayer );
   }
@@ -918,7 +918,7 @@ void QgsRasterLayerProperties::apply()
     return;
 
   // apply all plugin dialogs
-  for ( QgsMapLayerConfigWidget *page : std::as_const( mLayerPropertiesPages ) )
+  for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )
   {
     page->apply();
   }
@@ -1251,15 +1251,6 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   updateInformationContent();
 }
 
-void QgsRasterLayerProperties::urlClicked( const QUrl &url )
-{
-  QFileInfo file( url.toLocalFile() );
-  if ( file.exists() && !file.isDir() )
-    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
-  else
-    QDesktopServices::openUrl( url );
-}
-
 void QgsRasterLayerProperties::mRenderTypeComboBox_currentIndexChanged( int index )
 {
   if ( index < 0 || mDisableRenderTypeComboBoxCurrentIndexChanged || ! mRasterLayer->renderer() )
@@ -1273,7 +1264,7 @@ void QgsRasterLayerProperties::mRenderTypeComboBox_currentIndexChanged( int inde
 
 void QgsRasterLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mMapCanvas, tr( "Select Transformation" ) );
+  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mCanvas, tr( "Select Transformation" ) );
   mRasterLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }
@@ -1450,11 +1441,7 @@ void QgsRasterLayerProperties::setTransparencyToEdited( int row )
 
 void QgsRasterLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 {
-  QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
-
-  bool isMetadataPanel = ( index == mOptStackedWidget->indexOf( mOptsPage_Metadata ) );
-  mBtnStyle->setVisible( ! isMetadataPanel );
-  mBtnMetadata->setVisible( isMetadataPanel );
+  QgsLayerPropertiesDialog::optionsStackedWidget_CurrentChanged( index );
 
   if ( !mHistogramWidget )
     return;
@@ -1609,82 +1596,16 @@ void QgsRasterLayerProperties::removeSelectedMetadataUrl()
 // Next four methods for saving and restoring qml style state
 //
 //
-void QgsRasterLayerProperties::loadDefaultStyle()
-{
-  bool defaultLoadedFlag = false;
-  QString myMessage = mRasterLayer->loadDefaultStyle( defaultLoadedFlag );
-  //reset if the default style was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    syncToLayer();
-  }
-  else
-  {
-    //otherwise let the user know what went wrong
-    QMessageBox::information( this,
-                              tr( "Default Style" ),
-                              myMessage
-                            );
-  }
-}
 
 void QgsRasterLayerProperties::saveDefaultStyle()
 {
-
-  apply(); // make sure the style to save is up-to-date
-
-  // a flag passed by reference
-  bool defaultSavedFlag = false;
-  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
-  // remove the NOWARN_DEPRECATED tags
-  Q_NOWARN_DEPRECATED_PUSH
-  // after calling this the above flag will be set true for success
-  // or false if the save operation failed
-  QString myMessage = mRasterLayer->saveDefaultStyle( defaultSavedFlag );
-  Q_NOWARN_DEPRECATED_POP
-  if ( !defaultSavedFlag )
-  {
-    //let the user know what went wrong
-    QMessageBox::information( this,
-                              tr( "Default Style" ),
-                              myMessage
-                            );
-  }
+  saveStyleAsDefault();
 }
-
 
 void QgsRasterLayerProperties::loadStyle()
 {
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  QString fileName = QFileDialog::getOpenFileName(
-                       this,
-                       tr( "Load layer properties from style file" ),
-                       lastUsedDir,
-                       tr( "QGIS Layer Style File" ) + " (*.qml)" );
-  if ( fileName.isEmpty() )
-    return;
-
-  // ensure the user never omits the extension from the file name
-  if ( !fileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
-    fileName += QLatin1String( ".qml" );
-
-  mOldStyle = mRasterLayer->styleManager()->style( mRasterLayer->styleManager()->currentStyle() );
-
-  bool defaultLoadedFlag = false;
-  QString message = mRasterLayer->loadNamedStyle( fileName, defaultLoadedFlag );
-  if ( defaultLoadedFlag )
-  {
-    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
-    syncToLayer();
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Save Style" ), message );
-  }
+  loadStyleFromFile();
 }
-
 
 void QgsRasterLayerProperties::saveStyleAs()
 {
@@ -1750,102 +1671,6 @@ void QgsRasterLayerProperties::restoreWindowModality()
   activateWindow();
 }
 
-//
-//
-// Next four methods for saving and restoring QMD metadata
-//
-//
-
-void QgsRasterLayerProperties::loadMetadata()
-{
-  QgsSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer metadata from metadata file" ), myLastUsedDir,
-                       tr( "QGIS Layer Metadata File" ) + " (*.qmd)" );
-  if ( myFileName.isNull() )
-  {
-    return;
-  }
-
-  QString myMessage;
-  bool defaultLoadedFlag = false;
-  myMessage = mRasterLayer->loadNamedMetadata( myFileName, defaultLoadedFlag );
-
-  //reset if the default style was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    mMetadataWidget->setMetadata( &mRasterLayer->metadata() );
-  }
-  else
-  {
-    //let the user know what went wrong
-    QMessageBox::warning( this, tr( "Load Metadata" ), myMessage );
-  }
-
-  QFileInfo myFI( myFileName );
-  QString myPath = myFI.path();
-  myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
-
-  activateWindow(); // set focus back to properties dialog
-}
-
-void QgsRasterLayerProperties::saveMetadataAs()
-{
-  QgsSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save Layer Metadata as QMD" ),
-                             myLastUsedDir, tr( "QMD File" ) + " (*.qmd)" );
-  if ( myOutputFileName.isNull() ) //dialog canceled
-  {
-    return;
-  }
-
-  mMetadataWidget->acceptMetadata();
-
-  //ensure the user never omitted the extension from the file name
-  if ( !myOutputFileName.endsWith( QgsMapLayer::extensionPropertyType( QgsMapLayer::Metadata ), Qt::CaseInsensitive ) )
-  {
-    myOutputFileName += QgsMapLayer::extensionPropertyType( QgsMapLayer::Metadata );
-  }
-
-  bool defaultLoadedFlag = false;
-  QString message = mRasterLayer->saveNamedMetadata( myOutputFileName, defaultLoadedFlag );
-  if ( defaultLoadedFlag )
-    myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( myOutputFileName ).absolutePath() );
-  else
-    QMessageBox::information( this, tr( "Save Metadata" ), message );
-}
-
-void QgsRasterLayerProperties::saveDefaultMetadata()
-{
-  mMetadataWidget->acceptMetadata();
-
-  bool defaultSavedFlag = false;
-  QString errorMsg = mRasterLayer->saveDefaultMetadata( defaultSavedFlag );
-  if ( !defaultSavedFlag )
-  {
-    QMessageBox::warning( this, tr( "Default Metadata" ), errorMsg );
-  }
-}
-
-void QgsRasterLayerProperties::loadDefaultMetadata()
-{
-  bool defaultLoadedFlag = false;
-  QString myMessage = mRasterLayer->loadNamedMetadata( mRasterLayer->metadataUri(), defaultLoadedFlag );
-  //reset if the default metadata was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    mMetadataWidget->setMetadata( &mRasterLayer->metadata() );
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Default Metadata" ), myMessage );
-  }
-}
-
-
 void QgsRasterLayerProperties::toggleBuildPyramidsButton()
 {
   if ( lbxPyramidResolutions->selectedItems().empty() )
@@ -1885,25 +1710,15 @@ void QgsRasterLayerProperties::updateInformationContent()
   mMetadataFilled = true;
 }
 
-void QgsRasterLayerProperties::onCancel()
+void QgsRasterLayerProperties::rollback()
 {
-
   // Give the user a chance to save the raster attribute table edits.
   if ( mRasterAttributeTableWidget && mRasterAttributeTableWidget->isDirty() )
   {
     mRasterAttributeTableWidget->setEditable( false, false );
   }
+  QgsLayerPropertiesDialog::rollback();
 
-  if ( mOldStyle.xmlData() != mRasterLayer->styleManager()->style( mRasterLayer->styleManager()->currentStyle() ).xmlData() )
-  {
-    // need to reset style to previous - style applied directly to the layer (not in apply())
-    QString myMessage;
-    QDomDocument doc( QStringLiteral( "qgis" ) );
-    int errorLine, errorColumn;
-    doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
-    mRasterLayer->importNamedStyle( doc, myMessage );
-    syncToLayer();
-  }
   if ( mBackupCrs != mRasterLayer->crs() )
     mRasterLayer->setCrs( mBackupCrs );
 }
@@ -1976,7 +1791,7 @@ void QgsRasterLayerProperties::initMapTipPreview()
 void QgsRasterLayerProperties::updateMapTipPreview()
 {
   mMapTipPreview->setMaximumSize( mMapTipPreviewContainer->width(), mMapTipPreviewContainer->height() );
-  const QString htmlContent = QgsMapTip::rasterMapTipPreviewText( mRasterLayer, mMapCanvas, mMapTipWidget->text() );
+  const QString htmlContent = QgsMapTip::rasterMapTipPreviewText( mRasterLayer, mCanvas, mMapTipWidget->text() );
   mMapTipPreview->setHtml( htmlContent );
 }
 

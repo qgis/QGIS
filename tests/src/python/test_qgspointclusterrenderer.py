@@ -48,7 +48,8 @@ from qgis.core import (
     QgsCategorizedSymbolRenderer,
     QgsRendererCategory
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -58,7 +59,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsPointClusterRenderer(unittest.TestCase):
+class TestQgsPointClusterRenderer(QgisTestCase):
 
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')

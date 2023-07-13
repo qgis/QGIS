@@ -175,7 +175,6 @@
   <tabstop>btnAddRule</tabstop>
   <tabstop>btnRemoveRule</tabstop>
   <tabstop>btnEditRule</tabstop>
-  <tabstop>mCheckLabelsEnabled</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

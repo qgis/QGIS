@@ -140,6 +140,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
     ZOOM_MAX = 'ZOOM_MAX'
     DPI = 'DPI'
     BACKGROUND_COLOR = 'BACKGROUND_COLOR'
+    ANTIALIAS = 'ANTIALIAS'
     TILE_FORMAT = 'TILE_FORMAT'
     QUALITY = 'QUALITY'
     METATILESIZE = 'METATILESIZE'
@@ -165,6 +166,9 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                                                       self.tr('Background color'),
                                                       defaultValue=QColor(Qt.transparent),
                                                       optional=True))
+        self.addParameter(QgsProcessingParameterBoolean(self.ANTIALIAS,
+                                                        self.tr('Enable antialiasing'),
+                                                        defaultValue=True))
         self.formats = ['PNG', 'JPG']
         self.addParameter(QgsProcessingParameterEnum(self.TILE_FORMAT,
                                                      self.tr('Tile format'),
@@ -249,6 +253,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.max_zoom = self.parameterAsInt(parameters, self.ZOOM_MAX, context)
         dpi = self.parameterAsInt(parameters, self.DPI, context)
         self.color = self.parameterAsColor(parameters, self.BACKGROUND_COLOR, context)
+        self.antialias = self.parameterAsBoolean(parameters, self.ANTIALIAS, context)
         self.tile_format = self.formats[self.parameterAsEnum(parameters, self.TILE_FORMAT, context)]
         self.quality = self.parameterAsInt(parameters, self.QUALITY, context)
         self.metatilesize = self.parameterAsInt(parameters, self.METATILESIZE, context)
@@ -276,6 +281,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             self.settingsDictionary[thread].setOutputDpi(dpi)
             if self.tile_format == 'PNG':
                 self.settingsDictionary[thread].setBackgroundColor(self.color)
+            self.settingsDictionary[thread].setFlag(QgsMapSettings.Antialiasing, self.antialias)
 
             # disable partial labels (they would be cut at the edge of tiles)
             labeling_engine_settings = self.settingsDictionary[thread].labelingEngineSettings()

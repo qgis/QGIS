@@ -21,6 +21,7 @@
 #include "qgsabstract3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatereferencesystemutils.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfileutils.h"
 #include "qgslogger.h"
@@ -2747,6 +2748,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
                 + ( c.isGeographic() ? tr( "Geographic (uses latitude and longitude for coordinates)" ) : QgsUnitTypes::toString( c.mapUnits() ) )
                 + QStringLiteral( "</td></tr>\n" );
 
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Type" ) + QStringLiteral( "</td><td>" ) + QgsCoordinateReferenceSystemUtils::crsTypeToString( c.type() ) + QStringLiteral( "</td></tr>\n" );
 
     // operation
     const QgsProjOperation operation = c.operation();
@@ -2758,7 +2760,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
       const QString celestialBody = c.celestialBodyName();
       if ( !celestialBody.isEmpty() )
       {
-        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Celestial body" ) + QStringLiteral( "</td><td>" ) + celestialBody + QStringLiteral( "</td></tr>\n" );
+        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Celestial Body" ) + QStringLiteral( "</td><td>" ) + celestialBody + QStringLiteral( "</td></tr>\n" );
       }
     }
     catch ( QgsNotSupportedException & )
@@ -2811,7 +2813,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
     // coordinate epoch
     if ( !std::isnan( c.coordinateEpoch() ) )
     {
-      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Coordinate epoch" ) + QStringLiteral( "</td><td>%1</td></tr>\n" ).arg( c.coordinateEpoch() );
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Coordinate Epoch" ) + QStringLiteral( "</td><td>%1</td></tr>\n" ).arg( c.coordinateEpoch() );
     }
   }
 

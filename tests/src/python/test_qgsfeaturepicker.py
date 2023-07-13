@@ -20,7 +20,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsFeaturePickerWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -50,7 +51,7 @@ def createLayer(manyFeatures: bool = False):
     return layer
 
 
-class TestQgsRelationEditWidget(unittest.TestCase):
+class TestQgsRelationEditWidget(QgisTestCase):
 
     def testSetFeature(self):
         layer = createLayer()

@@ -22,7 +22,8 @@ from qgis.core import (
     QgsProject,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 # Convenience instances in case you may need them
 # not used in this test
@@ -30,7 +31,7 @@ from qgis.testing import start_app, unittest
 start_app()
 
 
-class TestQgsDistanceArea(unittest.TestCase):
+class TestQgsDistanceArea(QgisTestCase):
 
     def testCrs(self):
         # test setting/getting the source CRS

@@ -21,12 +21,13 @@ from qgis.core import (
 from qgis.gui import (
     QgsGeometryWidget
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsGeometryWidget(unittest.TestCase):
+class TestQgsGeometryWidget(QgisTestCase):
 
     def testGeometryValue(self):
         widget = QgsGeometryWidget()

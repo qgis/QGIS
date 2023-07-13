@@ -11,12 +11,13 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsEncodingSelectionDialog(unittest.TestCase):
+class TestQgsEncodingSelectionDialog(QgisTestCase):
 
     def testGettersSetters(self):
         """ test dialog getters/setters """

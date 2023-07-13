@@ -40,7 +40,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from provider_python import PyProvider
 from providertestbase import ProviderTestCase
@@ -50,7 +51,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsPythonProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def createLayer(cls):
@@ -274,7 +275,7 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(myPyLayer.fields().field('size').length(), 12)
         self.assertEqual(myPyLayer.fields().field('size').precision(), 9)
 
-    @unittest.expectedFailure("Handled layers are hardcoded")
+    @QgisTestCase.expectedFailure("Handled layers are hardcoded")
     def testSaveFields(self):
         # Create a new py layerwith no fields
         myPyLayer = QgsVectorLayer(

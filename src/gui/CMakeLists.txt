@@ -460,6 +460,11 @@ set(QGIS_GUI_SRCS
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
 
+  tiledmesh/qgstiledmeshconnectiondialog.cpp
+  tiledmesh/qgstiledmeshdataitemguiprovider.cpp
+  tiledmesh/qgstiledmeshproviderguimetadata.cpp
+  tiledmesh/qgstiledmeshsourceselect.cpp
+
   vectortile/qgsarcgisvectortileconnectiondialog.cpp
   vectortile/qgsvectortilebasiclabelingwidget.cpp
   vectortile/qgsvectortilebasicrendererwidget.cpp
@@ -589,6 +594,7 @@ set(QGIS_GUI_SRCS
   qgslayermetadataresultsmodel.cpp
   qgslayermetadatasourceselectprovider.cpp
   qgslayermetadataresultsproxymodel.cpp
+  qgslayerpropertiesdialog.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslegendpatchshapebutton.cpp
@@ -862,6 +868,7 @@ set(QGIS_GUI_HDRS
   qgslayermetadataresultsmodel.h
   qgslayermetadataresultsproxymodel.h
   qgslayermetadatasourceselectprovider.h
+  qgslayerpropertiesdialog.h
   qgslegendfilterbutton.h
   qgslegendpatchshapebutton.h
   qgslegendpatchshapewidget.h
@@ -1470,6 +1477,11 @@ set(QGIS_GUI_HDRS
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
 
+  tiledmesh/qgstiledmeshconnectiondialog.h
+  tiledmesh/qgstiledmeshdataitemguiprovider.h
+  tiledmesh/qgstiledmeshproviderguimetadata.h
+  tiledmesh/qgstiledmeshsourceselect.h
+
   vectortile/qgsarcgisvectortileconnectiondialog.h
   vectortile/qgsvectortilebasiclabelingwidget.h
   vectortile/qgsvectortilebasicrendererwidget.h
@@ -1616,6 +1628,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/sensor
   ${CMAKE_SOURCE_DIR}/src/gui/settings
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
+  ${CMAKE_SOURCE_DIR}/src/gui/tiledmesh
   ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
 

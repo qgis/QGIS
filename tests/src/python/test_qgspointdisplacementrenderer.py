@@ -53,7 +53,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -63,7 +64,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsPointDisplacementRenderer(unittest.TestCase):
+class TestQgsPointDisplacementRenderer(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsPointDisplacementRenderer Tests</h1>\n"

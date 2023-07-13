@@ -27,12 +27,13 @@ from qgis.core import (
     QgsWkbTypes,
     QgsXmlUtils,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsXmlUtils(unittest.TestCase):
+class TestQgsXmlUtils(QgisTestCase):
 
     def test_invalid(self):
         """

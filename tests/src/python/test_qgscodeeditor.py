@@ -16,14 +16,15 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor, QFont
 from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgsCodeEditor, QgsCodeEditorColorScheme
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTestFont
 
 start_app()
 
 
-class TestQgsCodeEditor(unittest.TestCase):
+class TestQgsCodeEditor(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

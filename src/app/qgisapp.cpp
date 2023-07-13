@@ -123,8 +123,10 @@
 #include "vector/qgsvectorelevationpropertieswidget.h"
 #include "mesh/qgsmeshelevationpropertieswidget.h"
 #include "elevation/qgselevationprofilewidget.h"
+#include "qgstiledmeshlayer.h"
 
 #include "layers/qgsapplayerhandling.h"
+#include "qgsmaplayerstylemanager.h"
 
 #include "canvas/qgscanvasrefreshblocker.h"
 
@@ -388,6 +390,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgssubsetstringeditorinterface.h"
 #include "qgstaskmanager.h"
 #include "qgstaskmanagerwidget.h"
+#include "qgstiledmeshlayer.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsundowidget.h"
 #include "qgsuserinputwidget.h"
@@ -399,6 +402,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilelayerproperties.h"
 #include "qgspointcloudlayerproperties.h"
+#include "qgstiledmeshlayerproperties.h"
 #include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsmaplayeractionregistry.h"
@@ -2416,26 +2420,27 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
     }
     else if ( u.layerType == QLatin1String( "vector" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addVectorLayer( uri, u.name, u.providerKey, addToLegend );
-      if ( layer )
+      if ( QgsMapLayer *layer = QgsAppLayerHandling::addVectorLayer( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "raster" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addRasterLayer( uri, u.name, u.providerKey, addToLegend );
-      if ( layer )
+      if ( QgsMapLayer *layer = QgsAppLayerHandling::addRasterLayer( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "mesh" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addMeshLayer( uri, u.name, u.providerKey, addToLegend );
-      if ( layer )
+      if ( QgsMapLayer *layer = QgsAppLayerHandling::addMeshLayer( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "pointcloud" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addPointCloudLayer( uri, u.name, u.providerKey, addToLegend );
-      if ( layer )
+      if ( QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsPointCloudLayer>( uri, u.name, u.providerKey, addToLegend ) )
+        addedLayers << layer;
+    }
+    else if ( u.layerType == QLatin1String( "tiled-mesh" ) )
+    {
+      if ( QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsTiledMeshLayer>( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
@@ -2537,7 +2542,7 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addPluginLayer( uri, u.name, u.providerKey, addToLegend );
+      QgsMapLayer *layer = QgsAppLayerHandling::addLayer< QgsPluginLayer> ( uri, u.name, u.providerKey, addToLegend, false );
       if ( layer )
         addedLayers << layer;
     }
@@ -2641,14 +2646,17 @@ void QgisApp::dataSourceManager( const QString &pageName )
           break;
 
         case Qgis::LayerType::VectorTile:
-          addVectorTileLayer( uri, baseName );
+          QgsAppLayerHandling::addLayer< QgsVectorTileLayer> ( uri, baseName, providerKey );
           break;
 
         case Qgis::LayerType::PointCloud:
-          addPointCloudLayer( uri, baseName, providerKey );
+          QgsAppLayerHandling::addLayer< QgsPointCloudLayer >( uri, baseName, providerKey );
           break;
 
         case Qgis::LayerType::TiledMesh:
+          QgsAppLayerHandling::addLayer< QgsTiledMeshLayer >( uri, baseName, providerKey );
+          break;
+
         case Qgis::LayerType::Plugin:
         case Qgis::LayerType::Annotation:
         case Qgis::LayerType::Group:
@@ -5625,15 +5633,16 @@ QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName
   return QgsAppLayerHandling::addMeshLayer( url, baseName, providerKey );
 }
 
-QgsVectorTileLayer *QgisApp::addVectorTileLayer( const QString &url, const QString &baseName )
+template<typename L>
+L *QgisApp::addLayer( const QString &uri, const QString &baseName, const QString &provider )
 {
-  return QgsAppLayerHandling::addVectorTileLayer( url, baseName );
+  return QgsAppLayerHandling::addLayer<L>( uri, baseName, provider );
 }
+template QgsPointCloudLayer *QgisApp::addLayer<QgsPointCloudLayer>( const QString &uri, const QString &baseName, const QString &provider );
+template QgsVectorTileLayer *QgisApp::addLayer<QgsVectorTileLayer>( const QString &uri, const QString &baseName, const QString &provider );
+template QgsTiledMeshLayer *QgisApp::addLayer<QgsTiledMeshLayer>( const QString &uri, const QString &baseName, const QString &provider );
+template QgsPluginLayer *QgisApp::addLayer<QgsPluginLayer>( const QString &uri, const QString &baseName, const QString &provider );
 
-QgsPointCloudLayer *QgisApp::addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey )
-{
-  return QgsAppLayerHandling::addPointCloudLayer( url, baseName, providerKey );
-}
 
 void QgisApp::addVirtualLayer()
 {
@@ -8291,26 +8300,31 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
       break;
 
     case Qgis::LayerType::Mesh:
-      QgsMeshLayerProperties( layer, mMapCanvas ).saveStyleAs();
+      QgsMeshLayerProperties( layer, mMapCanvas ).saveStyleToFile();
       break;
 
     case Qgis::LayerType::VectorTile:
       QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( layer ),
                                     mMapCanvas,
-                                    visibleMessageBar() ).saveStyleAs();
+                                    visibleMessageBar() ).saveStyleToFile();
       break;
 
     case Qgis::LayerType::PointCloud:
       QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( layer ),
                                     mMapCanvas,
-                                    visibleMessageBar() ).saveStyleAs();
+                                    visibleMessageBar() ).saveStyleToFile();
+      break;
+
+    case Qgis::LayerType::TiledMesh:
+      QgsTiledMeshLayerProperties( qobject_cast<QgsTiledMeshLayer *>( layer ),
+                                   mMapCanvas,
+                                   visibleMessageBar() ).saveStyleToFile();
       break;
 
     // Not available for these
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
-    default:
       break;
   }
 }
@@ -15752,11 +15766,6 @@ QgsRasterLayer *QgisApp::addRasterLayer( QString const &uri, QString const &base
   return QgsAppLayerHandling::addRasterLayer( uri, baseName, providerKey );
 }
 
-QgsPluginLayer *QgisApp::addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey )
-{
-  return QgsAppLayerHandling::addPluginLayer( uri, baseName, providerKey );
-}
-
 #ifdef ANDROID
 void QgisApp::keyReleaseEvent( QKeyEvent *event )
 {
@@ -16484,6 +16493,30 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
+    case Qgis::LayerType::TiledMesh:
+    {
+      QgsTiledMeshLayerProperties tiledMeshLayerPropertiesDialog( qobject_cast<QgsTiledMeshLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
+
+      for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
+      {
+        tiledMeshLayerPropertiesDialog.addPropertiesPageFactory( factory );
+      }
+
+      if ( !page.isEmpty() )
+        tiledMeshLayerPropertiesDialog.setCurrentPage( page );
+      else
+        tiledMeshLayerPropertiesDialog.restoreLastPage();
+
+      mMapStyleWidget->blockUpdates( true );
+      if ( tiledMeshLayerPropertiesDialog.exec() )
+      {
+        activateDeactivateLayerRelatedActions( mapLayer );
+        mMapStyleWidget->updateCurrentWidgetLayer();
+      }
+      mMapStyleWidget->blockUpdates( false ); // delete since dialog cannot be reused without updating code
+      break;
+    }
+
     case Qgis::LayerType::Plugin:
     {
       QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( mapLayer );
@@ -16528,7 +16561,6 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     }
 
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
       break;
   }
 }

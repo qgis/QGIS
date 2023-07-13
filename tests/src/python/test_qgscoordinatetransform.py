@@ -18,12 +18,13 @@ from qgis.core import (
     QgsProject,
     QgsRectangle,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsCoordinateTransform(unittest.TestCase):
+class TestQgsCoordinateTransform(QgisTestCase):
 
     def testTransformBoundingBox(self):
         """Test that we can transform a rectangular bbox from utm56s to LonLat"""

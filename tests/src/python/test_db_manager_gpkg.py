@@ -19,7 +19,8 @@ from plugins.db_manager.db_plugins import createDbPlugin, supportedDbTypes
 from plugins.db_manager.db_plugins.plugin import TableField
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsDataSourceUri, QgsSettings
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -28,7 +29,7 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
     return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
-class TestPyQgsDBManagerGpkg(unittest.TestCase):
+class TestPyQgsDBManagerGpkg(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

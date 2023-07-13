@@ -19,14 +19,15 @@ from qgis.core import (
     QgsProviderSublayerProxyModel,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 # Convenience instances in case you may need them
 # to find the srs.db
 start_app()
 
 
-class TestQgsProviderSublayerModel(unittest.TestCase):
+class TestQgsProviderSublayerModel(QgisTestCase):
 
     def test_model(self):
         model = QgsProviderSublayerModel()

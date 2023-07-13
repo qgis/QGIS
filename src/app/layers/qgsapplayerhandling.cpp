@@ -60,6 +60,7 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsgdalutils.h"
+#include "qgstiledmeshlayer.h"
 
 #include <QObject>
 #include <QMessageBox>
@@ -454,7 +455,30 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
   return addedLayers;
 }
 
-QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid )
+template<typename L>
+std::unique_ptr<L> createLayer( const QString &uri, const QString &name, const QString &provider )
+{
+  return  std::make_unique< L >( uri, name, provider );
+}
+template <>
+std::unique_ptr<QgsVectorTileLayer> createLayer( const QString &uri, const QString &name, const QString & )
+{
+  const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+  return std::make_unique< QgsVectorTileLayer >( uri, name, options );
+}
+template <>
+std::unique_ptr<QgsPluginLayer> createLayer( const QString &uri, const QString &name, const QString &provider )
+{
+  std::unique_ptr< QgsPluginLayer > layer( QgsApplication::pluginLayerRegistry()->createLayer( provider, uri ) );
+  if ( !layer )
+    return nullptr;
+
+  layer->setName( name );
+  return layer;
+}
+
+template<typename L>
+L *QgsAppLayerHandling::addLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
@@ -469,7 +493,7 @@ QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri,
   QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
 
   // create the layer
-  std::unique_ptr<QgsPointCloudLayer> layer( new QgsPointCloudLayer( uri, base, provider ) );
+  std::unique_ptr<L> layer = createLayer<L>( uri, base, provider );
 
   if ( !layer || !layer->isValid() )
   {
@@ -491,57 +515,11 @@ QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri,
 
   return layer.release();
 }
+template QgsPointCloudLayer *QgsAppLayerHandling::addLayer<QgsPointCloudLayer>( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid );
+template QgsVectorTileLayer *QgsAppLayerHandling::addLayer<QgsVectorTileLayer>( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid );
+template QgsTiledMeshLayer *QgsAppLayerHandling::addLayer<QgsTiledMeshLayer>( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid );
+template QgsPluginLayer *QgsAppLayerHandling::addLayer<QgsPluginLayer>( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend, bool showWarningOnInvalid );
 
-QgsPluginLayer *QgsAppLayerHandling::addPluginLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend )
-{
-  QgsPluginLayer *layer = QgsApplication::pluginLayerRegistry()->createLayer( provider, uri );
-  if ( !layer )
-    return nullptr;
-
-  layer->setName( baseName );
-
-  QgsProject::instance()->addMapLayer( layer, addToLegend );
-
-  return layer;
-}
-
-QgsVectorTileLayer *QgsAppLayerHandling::addVectorTileLayer( const QString &uri, const QString &baseName, bool showWarningOnInvalid, bool addToLegend )
-{
-  QgsCanvasRefreshBlocker refreshBlocker;
-  QgsSettings settings;
-
-  QString base( baseName );
-
-  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
-  {
-    base = QgsMapLayer::formatLayerName( base );
-  }
-
-  QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
-
-  // create the layer
-  const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
-  std::unique_ptr<QgsVectorTileLayer> layer( new QgsVectorTileLayer( uri, base, options ) );
-
-  if ( !layer || !layer->isValid() )
-  {
-    if ( showWarningOnInvalid )
-    {
-      QString msg = QObject::tr( "%1 is not a valid or recognized data source." ).arg( uri );
-      QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
-    }
-
-    // since the layer is bad, stomp on it
-    return nullptr;
-  }
-
-  QgsAppLayerHandling::postProcessAddedLayer( layer.get() );
-
-  QgsProject::instance()->addMapLayer( layer.get(), addToLegend );
-  QgisApp::instance()->activateDeactivateLayerRelatedActions( QgisApp::instance()->activeLayer() );
-
-  return layer.release();
-}
 
 bool QgsAppLayerHandling::askUserForZipItemLayers( const QString &path, const QList<Qgis::LayerType> &acceptableTypes )
 {
@@ -851,7 +829,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
 
       case Qgis::LayerType::PointCloud:
       {
-        if ( QgsPointCloudLayer *layer = addPointCloudLayer( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), addToLegend, true ) )
+        if ( QgsPointCloudLayer *layer = addLayer<QgsPointCloudLayer>( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), addToLegend, true ) )
         {
           ok = true;
           openedLayers << layer;
@@ -1679,3 +1657,4 @@ void QgsAppLayerHandling::onVectorLayerStyleLoaded( QgsVectorLayer *vl, QgsMapLa
     }
   }
 }
+

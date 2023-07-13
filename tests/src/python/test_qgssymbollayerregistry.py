@@ -18,7 +18,8 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsSymbolLayerAbstractMetadata,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -31,7 +32,7 @@ class MySuperMarkerMetadata(QgsSymbolLayerAbstractMetadata):
         return QgsSimpleMarkerSymbolLayer()
 
 
-class TestQgsSymbolLayerRegistry(unittest.TestCase):
+class TestQgsSymbolLayerRegistry(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

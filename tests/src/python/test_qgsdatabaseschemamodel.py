@@ -16,10 +16,11 @@ import os
 
 from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt
 from qgis.core import QgsDatabaseSchemaModel, QgsProviderRegistry
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestPyQgsDatabaseSchemaModel(unittest.TestCase):
+class TestPyQgsDatabaseSchemaModel(QgisTestCase):
 
     # Provider test cases must define the string URI for the test
     uri = ''

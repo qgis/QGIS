@@ -31,12 +31,14 @@ from qgis.core import (
     QgsSettingsTree,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
+
 
 QGISAPP = start_app()
 
 
-class TestPyQgsPostgresProviderLatency(unittest.TestCase):
+class TestPyQgsPostgresProviderLatency(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -155,16 +157,16 @@ class TestPyQgsPostgresProviderLatency(unittest.TestCase):
         settings = QgsSettingsTree.node('core').childSetting('provider-parallel-loading')
         settings.setVariantValue(False)
 
-        davg = 8.8
-        dmin = round(davg - 0.2, 1)
-        dmax = round(davg + 0.3, 1)
+        davg = 8.67
+        dmin = round(davg - 0.2, 2)
+        dmax = round(davg + 0.3, 2)
         error_string = 'expected from {0}s to {1}s, got {2}s\nHINT: set davg={2} to pass the test :)'
 
         project = QgsProject()
         self.setDelay(100)
         start_time = time.time()
         self.assertTrue(project.read(projectFile.fileName()))
-        duration = round(abs(time.time() - start_time), 1)
+        duration = round(abs(time.time() - start_time), 2)
         self.setDelay(0)
         self.assertTrue(duration > dmin and duration < dmax, error_string.format(dmin, dmax, duration))
 

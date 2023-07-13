@@ -26,17 +26,18 @@ from qgis.core import (
     QgsRasterProjector,
     QgsRectangle,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsRasterFileWriter(unittest.TestCase):
+class TestQgsRasterFileWriter(QgisTestCase):
 
     def __init__(self, methodName):
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
         self.testDataDir = unitTestDataPath()
         self.report = "<h1>Python Raster File Writer Tests</h1>\n"
 

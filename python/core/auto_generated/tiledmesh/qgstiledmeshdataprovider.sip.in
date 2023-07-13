@@ -32,9 +32,26 @@ Constructor for QgsTiledMeshDataProvider
 
     ~QgsTiledMeshDataProvider();
 
+    QgsTiledMeshDataProvider( const QgsTiledMeshDataProvider &other );
+%Docstring
+Copy constructor.
+%End
+
+
     virtual Qgis::TiledMeshProviderCapabilities capabilities() const;
 %Docstring
 Returns flags containing the supported capabilities for the data provider.
+%End
+
+    virtual QgsTiledMeshDataProvider *clone() const = 0 /Factory/;
+%Docstring
+Returns a clone of the data provider.
+%End
+
+    virtual QString htmlMetadata() const;
+%Docstring
+Returns metadata in a format suitable for feeding directly
+into a subset of the GUI properties "Metadata" tab.
 %End
 
 };

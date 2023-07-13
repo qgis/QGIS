@@ -17,7 +17,8 @@ from qgis.core import (
     QgsMessageLog,
     QgsMessageLogNotifyBlocker,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -25,7 +26,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsMessageLog(unittest.TestCase):
+class TestQgsMessageLog(QgisTestCase):
 
     def testSignals(self):
         app_log = QgsApplication.messageLog()

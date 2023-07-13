@@ -20,7 +20,8 @@ from qgis.core import (
     QgsPoint,
     QgsVertexId,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -28,7 +29,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsAnnotationItemEditOperation(unittest.TestCase):
+class TestQgsAnnotationItemEditOperation(QgisTestCase):
 
     def test_move_operation(self):
         operation = QgsAnnotationItemEditOperationMoveNode('item id', QgsVertexId(1, 2, 3), QgsPoint(4, 5), QgsPoint(6, 7))

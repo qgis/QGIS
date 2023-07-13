@@ -47,6 +47,8 @@ class GUI_EXPORT QgsLayoutItemsListViewModel : public QSortFilterProxyModel
 
     //! Returns the layout item listed at the specified index
     QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
+    //! Returns the model index matching the specified layout item
+    QModelIndex indexForItem( QgsLayoutItem *item, const int column = 0 ) const;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
   public slots:
@@ -85,11 +87,19 @@ class GUI_EXPORT QgsLayoutItemsListView : public QTreeView
 
     void showContextMenu( QPoint point );
 
+    //! Update LayoutView selection from the item list
+    void updateSelection();
+    //! Update item list selected from the layout view
+    void onItemFocused( QgsLayoutItem *focusedItem );
+
   private:
 
     QgsLayout *mLayout = nullptr;
     QgsLayoutItemsListViewModel *mModel = nullptr;
     QgsLayoutDesignerInterface *mDesigner = nullptr;
+
+    bool mUpdatingSelection = false;
+    bool mUpdatingFromView = false;
 };
 
 #endif // QGSLAYOUTITEMSLISTVIEW_H

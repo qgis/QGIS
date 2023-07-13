@@ -25,7 +25,8 @@ from qgis.core import (
     QgsTextFormat,
     QgsLayoutChecker
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTestFont, unitTestDataPath
 
@@ -33,7 +34,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutMapGrid(unittest.TestCase):
+class TestQgsLayoutMapGrid(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"

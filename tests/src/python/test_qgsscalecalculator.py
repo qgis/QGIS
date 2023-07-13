@@ -16,12 +16,13 @@ from qgis.core import (
     QgsRectangle,
     QgsScaleCalculator
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsScaleCalculator(unittest.TestCase):
+class TestQgsScaleCalculator(QgisTestCase):
 
     def testCalculate(self):
         calculator = QgsScaleCalculator()

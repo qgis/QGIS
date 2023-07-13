@@ -62,6 +62,7 @@ QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inP
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsBookmarkEditorDialog::showHelp );
 
   mName->setFocus();
+  mName->selectAll();
 }
 
 void QgsBookmarkEditorDialog::crsChanged( const QgsCoordinateReferenceSystem &crs )

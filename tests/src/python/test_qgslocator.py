@@ -24,7 +24,8 @@ from qgis.core import (
     QgsLocatorResult,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -81,7 +82,7 @@ class test_filter(QgsLocatorFilter):
             return QgsLocatorFilter.Medium
 
 
-class TestQgsLocator(unittest.TestCase):
+class TestQgsLocator(QgisTestCase):
 
     def testRegisteringFilters(self):
         l = QgsLocator()

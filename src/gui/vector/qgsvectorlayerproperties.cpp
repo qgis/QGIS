@@ -31,7 +31,6 @@
 #include "qgsattributesformproperties.h"
 #include "qgslabelingwidget.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmetadataurlitemdelegate.h"
@@ -97,8 +96,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QWidget *parent,
   Qt::WindowFlags fl
 )
-  : QgsOptionsDialogBase( QStringLiteral( "VectorLayerProperties" ), parent, fl )
-  , mCanvas( canvas )
+  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "VectorLayerProperties" ), parent, fl )
   , mMessageBar( messageBar )
   , mLayer( lyr )
   , mOriginalSubsetSQL( lyr->subsetString() )
@@ -143,21 +141,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( menuStyle, &QMenu::aboutToShow, this, &QgsVectorLayerProperties::aboutToShowStyleMenu );
   buttonBox->addButton( mBtnStyle, QDialogButtonBox::ResetRole );
 
-  mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
-  QMenu *menuMetadata = new QMenu( this );
-  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, &QgsVectorLayerProperties::loadMetadata );
-  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, &QgsVectorLayerProperties::saveMetadataAs );
-  menuMetadata->addSeparator();
-  menuMetadata->addAction( tr( "Save as Default" ), this, &QgsVectorLayerProperties::saveDefaultMetadata );
-  menuMetadata->addAction( tr( "Restore Default" ), this, &QgsVectorLayerProperties::loadDefaultMetadata );
-  mBtnMetadata->setMenu( menuMetadata );
-  buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
-
   connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsVectorLayerProperties::syncToLayer );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsVectorLayerProperties::apply );
   connect( this, &QDialog::accepted, this, &QgsVectorLayerProperties::apply );
-  connect( this, &QDialog::rejected, this, &QgsVectorLayerProperties::onCancel );
+  connect( this, &QDialog::rejected, this, &QgsVectorLayerProperties::rollback );
 
   mContext << QgsExpressionContextUtils::globalScope()
            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
@@ -246,6 +234,18 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   temporalLayout->setContentsMargins( 0, 0, 0, 0 );
   mTemporalWidget = new QgsVectorLayerTemporalPropertiesWidget( this, mLayer );
   temporalLayout->addWidget( mTemporalWidget );
+
+  setMetadataWidget( mMetadataWidget, mOptsPage_Metadata );
+
+  mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
+  QMenu *menuMetadata = new QMenu( this );
+  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, &QgsVectorLayerProperties::loadMetadataFromFile );
+  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, &QgsVectorLayerProperties::saveMetadataToFile );
+  menuMetadata->addSeparator();
+  menuMetadata->addAction( tr( "Save as Default" ), this, &QgsVectorLayerProperties::saveMetadataAsDefault );
+  menuMetadata->addAction( tr( "Restore Default" ), this, &QgsVectorLayerProperties::loadDefaultMetadata );
+  mBtnMetadata->setMenu( menuMetadata );
+  buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
   syncToLayer();
 
@@ -379,7 +379,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
   teMetadataViewer->setHtml( htmlMetadata() );
   teMetadataViewer->setOpenLinks( false );
-  connect( teMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsVectorLayerProperties::urlClicked );
+  connect( teMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsVectorLayerProperties::openUrl );
   mMetadataFilled = true;
 
   QgsSettings settings;
@@ -390,11 +390,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     settings.setValue( QStringLiteral( "Windows/VectorLayerProperties/tab" ),
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
-
-  QString title = tr( "Layer Properties — %1" ).arg( mLayer->name() );
-  if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
-    title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
-  restoreOptionsBaseUi( title );
 
   QList<QgsMapLayer *> dependencySources;
   const QSet<QgsMapLayerDependency> constDependencies = mLayer->dependencies();
@@ -461,6 +456,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
 
   optionsStackedWidget_CurrentChanged( mOptStackedWidget->currentIndex() );
+
+  initialize();
 }
 
 void QgsVectorLayerProperties::toggleEditing()
@@ -471,27 +468,6 @@ void QgsVectorLayerProperties::toggleEditing()
   emit toggleEditing( mLayer );
 
   setPbnQueryBuilderEnabled();
-}
-
-void QgsVectorLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
-{
-  if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
-  {
-    return;
-  }
-
-  QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, nullptr, false, this );
-
-  if ( page )
-  {
-    mLayerPropertiesPages << page;
-
-    const QString beforePage = factory->layerPropertiesPagePositionHint();
-    if ( beforePage.isEmpty() )
-      addPage( factory->title(), factory->title(), factory->icon(), page );
-    else
-      insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
-  }
 }
 
 void QgsVectorLayerProperties::insertFieldOrExpression()
@@ -652,8 +628,7 @@ void QgsVectorLayerProperties::syncToLayer()
     diagramPropertiesDialog->syncToLayer();
 
   // sync all plugin dialogs
-  const auto constMLayerPropertiesPages = mLayerPropertiesPages;
-  for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
+  for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )
   {
     page->syncToLayer( mLayer );
   }
@@ -767,8 +742,7 @@ void QgsVectorLayerProperties::apply()
   diagramPropertiesDialog->apply();
 
   // apply all plugin dialogs
-  const auto constMLayerPropertiesPages = mLayerPropertiesPages;
-  for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
+  for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )
   {
     page->apply();
   }
@@ -877,7 +851,7 @@ void QgsVectorLayerProperties::apply()
   QgsProject::instance()->setDirty( true );
 }
 
-void QgsVectorLayerProperties::onCancel()
+void QgsVectorLayerProperties::rollback()
 {
   if ( mOldJoins != mLayer->vectorJoins() )
   {
@@ -900,27 +874,10 @@ void QgsVectorLayerProperties::onCancel()
     mLayer->setSubsetString( mOriginalSubsetSQL );
   }
 
-  if ( mOldStyle.xmlData() != mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() ).xmlData() )
-  {
-    // need to reset style to previous - style applied directly to the layer (not in apply())
-    QString myMessage;
-    QDomDocument doc( QStringLiteral( "qgis" ) );
-    int errorLine, errorColumn;
-    doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
-    mLayer->importNamedStyle( doc, myMessage );
-  }
+  QgsLayerPropertiesDialog::rollback();
 
   if ( mBackupCrs != mLayer->crs() )
     mLayer->setCrs( mBackupCrs );
-}
-
-void QgsVectorLayerProperties::urlClicked( const QUrl &url )
-{
-  QFileInfo file( url.toLocalFile() );
-  if ( file.exists() && !file.isDir() )
-    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
-  else
-    QDesktopServices::openUrl( url );
 }
 
 void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
@@ -1044,7 +1001,6 @@ void QgsVectorLayerProperties::loadDefaultStyle()
 
 void QgsVectorLayerProperties::saveDefaultStyle()
 {
-  apply();
   QString errorMsg;
   const QgsVectorDataProvider *provider = mLayer->dataProvider();
   if ( !provider )
@@ -1064,6 +1020,7 @@ void QgsVectorLayerProperties::saveDefaultStyle()
         return;
       case 2:
       {
+        apply();
         QString errorMessage;
         if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), QString(), errorMessage ) )
         {
@@ -1093,120 +1050,8 @@ void QgsVectorLayerProperties::saveDefaultStyle()
     }
   }
 
-  bool defaultSavedFlag = false;
-  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
-  // remove the NOWARN_DEPRECATED tags
-  Q_NOWARN_DEPRECATED_PUSH
-  errorMsg = mLayer->saveDefaultStyle( defaultSavedFlag );
-  Q_NOWARN_DEPRECATED_POP
-  if ( !defaultSavedFlag )
-  {
-    QMessageBox::warning( this, tr( "Default Style" ), errorMsg );
-  }
+  QgsLayerPropertiesDialog::saveStyleAsDefault();
 }
-
-void QgsVectorLayerProperties::loadMetadata()
-{
-  QgsSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load Layer Metadata from Metadata File" ), myLastUsedDir,
-                       tr( "QGIS Layer Metadata File" ) + " (*.qmd)" );
-  if ( myFileName.isNull() )
-  {
-    return;
-  }
-
-  QString myMessage;
-  bool defaultLoadedFlag = false;
-  myMessage = mLayer->loadNamedMetadata( myFileName, defaultLoadedFlag );
-
-  //reset if the default style was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    mMetadataWidget->setMetadata( &mLayer->metadata() );
-  }
-  else
-  {
-    //let the user know what went wrong
-    QMessageBox::warning( this, tr( "Load Metadata" ), myMessage );
-  }
-
-  QFileInfo myFI( myFileName );
-  QString myPath = myFI.path();
-  myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
-
-  activateWindow(); // set focus back to properties dialog
-}
-
-void QgsVectorLayerProperties::saveMetadataAs()
-{
-  QgsSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save Layer Metadata as QMD" ),
-                             myLastUsedDir, tr( "QMD File" ) + " (*.qmd)" );
-  if ( myOutputFileName.isNull() ) //dialog canceled
-  {
-    return;
-  }
-
-  mMetadataWidget->acceptMetadata();
-
-  //ensure the user never omitted the extension from the file name
-  if ( !myOutputFileName.endsWith( QgsMapLayer::extensionPropertyType( QgsMapLayer::Metadata ), Qt::CaseInsensitive ) )
-  {
-    myOutputFileName += QgsMapLayer::extensionPropertyType( QgsMapLayer::Metadata );
-  }
-
-  QString myMessage;
-  bool defaultLoadedFlag = false;
-  myMessage = mLayer->saveNamedMetadata( myOutputFileName, defaultLoadedFlag );
-
-  //reset if the default style was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    syncToLayer();
-  }
-  else
-  {
-    //let the user know what went wrong
-    QMessageBox::information( this, tr( "Save Metadata" ), myMessage );
-  }
-
-  QFileInfo myFI( myOutputFileName );
-  QString myPath = myFI.path();
-  // Persist last used dir
-  myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
-}
-
-void QgsVectorLayerProperties::saveDefaultMetadata()
-{
-  mMetadataWidget->acceptMetadata();
-
-  bool defaultSavedFlag = false;
-  QString errorMsg = mLayer->saveDefaultMetadata( defaultSavedFlag );
-  if ( !defaultSavedFlag )
-  {
-    QMessageBox::warning( this, tr( "Default Metadata" ), errorMsg );
-  }
-}
-
-void QgsVectorLayerProperties::loadDefaultMetadata()
-{
-  bool defaultLoadedFlag = false;
-  QString myMessage = mLayer->loadNamedMetadata( mLayer->metadataUri(), defaultLoadedFlag );
-  //reset if the default metadata was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    mMetadataWidget->setMetadata( &mLayer->metadata() );
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Default Metadata" ), myMessage );
-  }
-}
-
 
 void QgsVectorLayerProperties::saveStyleAs()
 {
@@ -1999,11 +1844,7 @@ void QgsVectorLayerProperties::pbnUpdateExtents_clicked()
 
 void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 {
-  QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
-
-  bool isMetadataPanel = ( index == mOptStackedWidget->indexOf( mOptsPage_Metadata ) );
-  mBtnStyle->setVisible( ! isMetadataPanel );
-  mBtnMetadata->setVisible( isMetadataPanel );
+  QgsLayerPropertiesDialog::optionsStackedWidget_CurrentChanged( index );
 
   if ( index == mOptStackedWidget->indexOf( mOptsPage_Information ) && ! mMetadataFilled )
   {

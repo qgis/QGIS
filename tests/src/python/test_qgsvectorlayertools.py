@@ -18,7 +18,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerTools,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -41,7 +42,7 @@ class SubQgsVectorLayerTools(QgsVectorLayerTools):
         pass
 
 
-class TestQgsVectorLayerTools(unittest.TestCase):
+class TestQgsVectorLayerTools(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

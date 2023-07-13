@@ -15,7 +15,8 @@ from qgis.core import NULL
 from qgis.gui import QgsTreeWidgetItem, QgsTreeWidgetItemObject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTreeWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 try:
     from qgis.PyQt.QtTest import QSignalSpy
@@ -26,7 +27,7 @@ except:
 start_app()
 
 
-class TestQgsTreeWidgetItem(unittest.TestCase):
+class TestQgsTreeWidgetItem(QgisTestCase):
 
     def testGettersSetters(self):
         """ test getters and setters """
@@ -120,7 +121,7 @@ class TestQgsTreeWidgetItem(unittest.TestCase):
         self.assertEqual(i2 < i1, True)
 
 
-class TestQgsTreeWidgetItemObject(unittest.TestCase):
+class TestQgsTreeWidgetItemObject(QgisTestCase):
 
     @unittest.skipIf(not use_signal_spy, "No QSignalSpy available")
     def testItemEdited(self):

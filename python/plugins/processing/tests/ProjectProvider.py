@@ -19,7 +19,8 @@ __author__ = 'Nyall Dawson'
 __date__ = 'July 2018'
 __copyright__ = '(C) 2018, Nyall Dawson'
 
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.PyQt.QtCore import QTemporaryFile
 from qgis.core import (QgsApplication,
                        QgsProcessingModelAlgorithm,
@@ -30,7 +31,7 @@ from processing.modeler.ModelerDialog import ModelerDialog
 start_app()
 
 
-class ProjectProviderTest(unittest.TestCase):
+class ProjectProviderTest(QgisTestCase):
 
     def testSaveRestoreFromProject(self):
         p = QgsProject()

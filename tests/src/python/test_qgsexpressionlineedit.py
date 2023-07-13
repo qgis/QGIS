@@ -18,12 +18,13 @@ except:
     use_signal_spy = False
 
 from qgis.gui import QgsExpressionLineEdit
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsExpressionLineEdit(unittest.TestCase):
+class TestQgsExpressionLineEdit(QgisTestCase):
 
     def testDialog(self):
         """ test dialog related methods """

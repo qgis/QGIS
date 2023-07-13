@@ -16,14 +16,15 @@ from qgis.PyQt.QtCore import QUuid
 from qgis.PyQt.QtWidgets import QPushButton, QWidget
 from qgis.core import QgsAction, QgsVectorLayer
 from qgis.gui import QgsActionWidgetWrapper
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 from qgis.testing import QGISAPP
 
 
-class TestQgsActionWidgetWrapper(unittest.TestCase):
+class TestQgsActionWidgetWrapper(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

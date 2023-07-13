@@ -36,7 +36,8 @@ from qgis.core import (
     QgsRectangle,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -45,7 +46,7 @@ TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
-class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
+class TestQgsEmbeddedSymbolRenderer(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

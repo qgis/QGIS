@@ -21,14 +21,15 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsProjectUtils(unittest.TestCase):
+class TestQgsProjectUtils(QgisTestCase):
 
     def test_layersMatchingPath(self):
         """

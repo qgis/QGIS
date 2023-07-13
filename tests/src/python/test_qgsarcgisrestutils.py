@@ -24,7 +24,8 @@ from qgis.core import (
     QgsFields,
     QgsGeometry,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -32,7 +33,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsArcGisRestUtils(unittest.TestCase):
+class TestQgsArcGisRestUtils(QgisTestCase):
 
     def test_json_to_geometry(self):
         tests = [('esriGeometryPolyline',

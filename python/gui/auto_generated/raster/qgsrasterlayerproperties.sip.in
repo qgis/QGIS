@@ -11,8 +11,7 @@
 
 
 
-
-class QgsRasterLayerProperties : QgsOptionsDialogBase
+class QgsRasterLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")
 Property sheet for a raster map layer
@@ -36,12 +35,8 @@ Constructor
 :param fl: windows flag
 %End
 
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-%Docstring
-Adds a properties page factory to the raster layer properties dialog.
+    virtual void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory ) ${SIP_FINAL};
 
-.. versionadded:: 3.18
-%End
 
     virtual QgsExpressionContext createExpressionContext() const;
 
@@ -49,25 +44,20 @@ Adds a properties page factory to the raster layer properties dialog.
     virtual bool eventFilter( QObject *obj, QEvent *ev );
 
 
-    void loadDefaultStyle();
-%Docstring
-Loads the default style when appropriate button is pressed
-
-.. versionadded:: 3.30
-%End
-
-    void saveDefaultStyle();
+ void saveDefaultStyle() /Deprecated/;
 %Docstring
 Saves the default style when appropriate button is pressed
 
-.. versionadded:: 3.30
+.. deprecated::
+   use :py:func:`~QgsRasterLayerProperties.saveStyleAsDefault` instead
 %End
 
-    void loadStyle();
+ void loadStyle() /Deprecated/;
 %Docstring
 Loads a saved style when appropriate button is pressed
 
-.. versionadded:: 3.30
+.. deprecated::
+   use :py:func:`~QgsRasterLayerProperties.loadStyleFromFile` instead.
 %End
 
     void saveStyleAs();
@@ -78,6 +68,12 @@ Saves a style when appriate button is pressed
 %End
 
   protected slots:
+    virtual void optionsStackedWidget_CurrentChanged( int index ) ${SIP_FINAL};
+
+    virtual void apply() ${SIP_FINAL};
+
+    virtual void rollback() ${SIP_FINAL};
+
 
 };
 /************************************************************************

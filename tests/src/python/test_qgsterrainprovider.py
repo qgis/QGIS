@@ -24,14 +24,15 @@ from qgis.core import (
     QgsRasterLayer,
     QgsReadWriteContext,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsTerrainProviders(unittest.TestCase):
+class TestQgsTerrainProviders(QgisTestCase):
 
     def testFlatProvider(self):
         """

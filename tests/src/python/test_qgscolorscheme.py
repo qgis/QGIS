@@ -18,7 +18,8 @@ from qgis.core import (
     QgsSettings,
     QgsUserColorScheme,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
 # Make a dummy color scheme for testing
@@ -44,7 +45,7 @@ class DummyColorScheme(QgsColorScheme):
         return DummyColorScheme()
 
 
-class TestQgsColorScheme(unittest.TestCase):
+class TestQgsColorScheme(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

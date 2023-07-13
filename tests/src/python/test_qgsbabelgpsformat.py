@@ -19,10 +19,11 @@ from qgis.core import (
     QgsBabelSimpleImportFormat,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestQgsBabelGpsFormat(unittest.TestCase):
+class TestQgsBabelGpsFormat(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

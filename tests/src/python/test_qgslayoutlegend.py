@@ -52,7 +52,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsTextFormat
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
@@ -61,7 +62,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):

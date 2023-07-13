@@ -22,7 +22,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerJoinInfo,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -43,7 +44,7 @@ def create_model():
     return l, m
 
 
-class TestQgsFieldModel(unittest.TestCase):
+class TestQgsFieldModel(QgisTestCase):
 
     def testGettersSetters(self):
         """ test model getters/setters """

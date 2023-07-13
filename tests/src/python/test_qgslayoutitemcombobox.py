@@ -21,7 +21,8 @@ from qgis.core import (
     QgsProject,
 )
 from qgis.gui import QgsLayoutItemComboBox
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -29,7 +30,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutItemComboBox(unittest.TestCase):
+class TestQgsLayoutItemComboBox(QgisTestCase):
 
     def setUp(self):
         """Run before each test."""

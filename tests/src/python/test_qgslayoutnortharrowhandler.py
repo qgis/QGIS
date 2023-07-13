@@ -20,7 +20,8 @@ from qgis.core import (
     QgsProject,
     QgsRectangle,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -28,7 +29,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutNorthArrowHandler(unittest.TestCase):
+class TestQgsLayoutNorthArrowHandler(QgisTestCase):
 
     def testNorthArrowWithMapItemRotation(self):
         """Test arrow rotation when map item is also rotated"""

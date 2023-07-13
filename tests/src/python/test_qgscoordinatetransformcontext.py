@@ -20,12 +20,13 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsCoordinateTransformContext(unittest.TestCase):
+class TestQgsCoordinateTransformContext(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

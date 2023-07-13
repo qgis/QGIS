@@ -24,14 +24,15 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.core import QgsProject, QgsSettings, QgsWkbTypes
 from qgis.gui import QgsFileWidget, QgsNewGeoPackageLayerDialog
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
     return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
-class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
+class TestPyQgsNewGeoPackageLayerDialog(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

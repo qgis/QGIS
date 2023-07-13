@@ -23,11 +23,30 @@
 #include "qgstiledmeshdataprovider.h"
 #include "qgis.h"
 #include "qgsprovidermetadata.h"
+#include "qgsrange.h"
+#include "nlohmann/json.hpp"
 
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
-class CORE_EXPORT QgsCesiumTilesDataProvider: public QgsTiledMeshDataProvider
+
+class QgsCesiumTilesDataProviderSharedData
+{
+  public:
+    QgsCesiumTilesDataProviderSharedData();
+    void setTilesetContent( const QString &tileset );
+
+    QgsCoordinateReferenceSystem mCrs;
+    QgsRectangle mExtent;
+    nlohmann::json mTileset;
+    QgsDoubleRange mZRange;
+
+    QReadWriteLock mMutex;
+
+
+};
+
+class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledMeshDataProvider
 {
     Q_OBJECT
   public:
@@ -37,14 +56,28 @@ class CORE_EXPORT QgsCesiumTilesDataProvider: public QgsTiledMeshDataProvider
     QgsCesiumTilesDataProvider( const QString &uri,
                                 const QgsDataProvider::ProviderOptions &providerOptions,
                                 QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    QgsCesiumTilesDataProvider( const QgsCesiumTilesDataProvider &other );
+    QgsCesiumTilesDataProvider &operator=( const QgsCesiumTilesDataProvider &other ) = delete;
 
-    ~QgsCesiumTilesDataProvider() override;
+    ~QgsCesiumTilesDataProvider() final;
 
-    QgsCoordinateReferenceSystem crs() const override;
-    QgsRectangle extent() const override;
-    bool isValid() const override;
-    QString name() const override;
-    QString description() const override;
+    QgsCesiumTilesDataProvider *clone() const final;
+    QgsCoordinateReferenceSystem crs() const final;
+    QgsRectangle extent() const final;
+    bool isValid() const final;
+    QString name() const final;
+    QString description() const final;
+    QString htmlMetadata() const final;
+  private:
+
+    bool init();
+
+    bool mIsValid = false;
+
+    QString mAuthCfg;
+    QgsHttpHeaders mHeaders;
+
+    std::shared_ptr<QgsCesiumTilesDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
 
 };
 
@@ -66,6 +99,7 @@ class QgsCesiumTilesProviderMetadata : public QgsProviderMetadata
     QString filters( Qgis::FileFilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
+
 };
 
 ///@endcond

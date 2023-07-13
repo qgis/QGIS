@@ -21,12 +21,13 @@ from qgis.core import (
     QgsMeshTerrainProvider,
     QgsProfileRequest,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsProfileRequest(unittest.TestCase):
+class TestQgsProfileRequest(QgisTestCase):
 
     def testBasic(self):
         req = QgsProfileRequest(QgsLineString([[1, 2], [3, 4]]))

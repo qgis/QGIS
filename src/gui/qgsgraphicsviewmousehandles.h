@@ -95,6 +95,9 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
 
     bool shouldBlockEvent( QInputEvent *event ) const;
 
+    //! Initializes a drag operation \since QGIS 3.34
+    void startMove( QPointF sceneCoordPos );
+
   public slots:
 
     //! Redraws handles when selected item size changes
@@ -215,9 +218,6 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
 
     //! Start point of the last mouse move action (in scene coordinates)
     QPointF mMouseMoveStartPos;
-
-    //! Position of the last mouse move event (in scene coordinates)
-    QPointF mLastMouseEventPos;
 
     MouseAction mCurrentMouseMoveAction = NoAction;
 

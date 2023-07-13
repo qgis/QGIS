@@ -24,7 +24,8 @@ from qgis.core import (
     QgsRectangle,
     QgsSimplifyMethod,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -32,11 +33,11 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsFeatureRequest(unittest.TestCase):
+class TestQgsFeatureRequest(QgisTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
 
     def testConstructors(self):
         req = QgsFeatureRequest()

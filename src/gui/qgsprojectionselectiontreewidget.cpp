@@ -26,6 +26,7 @@
 #include "qgsprojoperation.h"
 #include "qgsstringutils.h"
 #include "qgsunittypes.h"
+#include "qgscoordinatereferencesystemutils.h"
 
 //qt includes
 #include <QAction>
@@ -622,7 +623,7 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
   // Set up the query to retrieve the projection information needed to populate the list
   //note I am giving the full field names for clarity here and in case someone
   //changes the underlying view TS
-  QString sql = QStringLiteral( "select description, srs_id, upper(auth_name||':'||auth_id), is_geo, name, parameters, deprecated from vw_srs where %1 order by name,description" )
+  QString sql = QStringLiteral( "select description, srs_id, upper(auth_name||':'||auth_id), is_geo, projection_acronym, deprecated from tbl_srs where %1 order by projection_acronym,description" )
                 .arg( sqlFilter );
 
   rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
@@ -632,8 +633,8 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
     QTreeWidgetItem *newItem = nullptr;
     // Cache some stuff to speed up creating of the list of projected
     // spatial reference systems
-    QString previousSrsType;
-    QTreeWidgetItem *previousSrsTypeNode = nullptr;
+    QString previousProjectionName;
+    QTreeWidgetItem *previousProjectionNode = nullptr;
 
     while ( sqlite3_step( stmt ) == SQLITE_ROW )
     {
@@ -655,25 +656,28 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
       {
         // This is a projected srs
         QTreeWidgetItem *node = nullptr;
-        QString srsType = QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 4 ) );
-        if ( srsType.isEmpty() )
-          srsType = tr( "Other" );
+        const QString projectionAcronym = QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 4 ) );
+        QString projectionName;
+        if ( projectionAcronym.isEmpty() )
+          projectionName = tr( "Other" );
+        else
+          projectionName = QgsCoordinateReferenceSystemUtils::translateProjection( projectionAcronym );
 
         // Find the node for this type and add the projection to it
         // If the node doesn't exist, create it
-        if ( srsType == previousSrsType )
+        if ( projectionName == previousProjectionName )
         {
-          node = previousSrsTypeNode;
+          node = previousProjectionNode;
         }
         else
         {
           // Different from last one, need to search
-          QList<QTreeWidgetItem *> nodes = lstCoordinateSystems->findItems( srsType, Qt::MatchExactly | Qt::MatchRecursive, NameColumn );
+          QList<QTreeWidgetItem *> nodes = lstCoordinateSystems->findItems( projectionName, Qt::MatchExactly | Qt::MatchRecursive, NameColumn );
           if ( nodes.isEmpty() )
           {
             // the node doesn't exist -- create it
             // Make in an italic font to distinguish them from real projections
-            node = new QTreeWidgetItem( mProjList, QStringList( srsType ) );
+            node = new QTreeWidgetItem( mProjList, QStringList( projectionName ) );
             node->setFlags( node->flags() & ~Qt::ItemIsSelectable );
 
             QFont fontTemp = node->font( 0 );
@@ -685,8 +689,8 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
             node = nodes.first();
           }
           // Update the cache.
-          previousSrsType = srsType;
-          previousSrsTypeNode = node;
+          previousProjectionName = projectionName;
+          previousProjectionNode = node;
         }
         // add the item, setting the projection name in the first column of the list view
         newItem = new QTreeWidgetItem( node, QStringList( QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 0 ) ) ) );

@@ -19,9 +19,11 @@ Iterator for sequentially processing raster cells.
 %End
   public:
 
-    QgsRasterIterator( QgsRasterInterface *input );
+    QgsRasterIterator( QgsRasterInterface *input, int tileOverlapPixels = 0 );
 %Docstring
 Constructor for QgsRasterIterator, iterating over the specified ``input`` raster source.
+
+Since QGIS 3.34 the tileOverlapPixels can be used to specify a margin in pixels for retrieving pixels overlapping into neighbor cells.
 %End
 
     static QgsRectangle subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth /Out/, int &subRegionHeight /Out/, int &subRegionLeft /Out/, int &subRegionTop /Out/ );

@@ -27,7 +27,7 @@
 #include "qgsvectortileconnection.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
-
+#include "qgstiledmeshconnection.h"
 
 
 QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
@@ -146,6 +146,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case VectorTile:
         doc = saveVectorTileConnections( items );
         break;
+      case TiledMesh:
+        doc = saveTiledMeshConnections( items );
+        break;
     }
 
     QFile file( mFileName );
@@ -223,6 +226,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case VectorTile:
         loadVectorTileConnections( doc, items );
         break;
+      case TiledMesh:
+        loadTiledMeshConnections( doc, items );
+        break;
     }
     // clear connections list and close window
     listConnections->clear();
@@ -275,6 +281,9 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case VectorTile:
         connections = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
+        break;
+      case TiledMesh:
+        connections = QgsTiledMeshProviderConnection::sTreeConnectionTiledMesh->items();
         break;
     }
     for ( const QString &connection : std::as_const( connections ) )
@@ -404,6 +413,14 @@ bool QgsManageConnectionsDialog::populateConnections()
         {
           QMessageBox::information( this, tr( "Loading Connections" ),
                                     tr( "The file is not a Vector Tile connections exchange file." ) );
+          return false;
+        }
+        break;
+      case TiledMesh:
+        if ( root.tagName() != QLatin1String( "qgsTiledMeshConnections" ) )
+        {
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a tiled mesh connections exchange file." ) );
           return false;
         }
         break;
@@ -741,6 +758,33 @@ QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStrin
     el.setAttribute( QStringLiteral( "styleUrl" ), QgsVectorTileProviderConnection::settingsStyleUrl->value( connections[ i ] ) );
 
     QgsHttpHeaders httpHeader( QgsVectorTileProviderConnection::settingsHeaders->value( connections[ i ] ) );
+    httpHeader.updateDomElement( el );
+
+    root.appendChild( el );
+  }
+
+  return doc;
+}
+
+QDomDocument QgsManageConnectionsDialog::saveTiledMeshConnections( const QStringList &connections )
+{
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsTiledMeshConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  doc.appendChild( root );
+
+  for ( int i = 0; i < connections.count(); ++i )
+  {
+    QDomElement el = doc.createElement( QStringLiteral( "tiledmesh" ) );
+
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "provider" ), QgsTiledMeshProviderConnection::settingsProvider->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "url" ), QgsTiledMeshProviderConnection::settingsUrl->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsTiledMeshProviderConnection::settingsAuthcfg->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsTiledMeshProviderConnection::settingsUsername->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsTiledMeshProviderConnection::settingsPassword->value( connections[ i ] ) );
+
+    QgsHttpHeaders httpHeader( QgsTiledMeshProviderConnection::settingsHeaders->value( connections[ i ] ) );
     httpHeader.updateDomElement( el );
 
     root.appendChild( el );
@@ -1555,6 +1599,90 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
 
     QgsHttpHeaders httpHeader( child );
     QgsVectorTileProviderConnection::settingsHeaders->setValue( httpHeader.headers(), connectionName );
+
+    child = child.nextSiblingElement();
+  }
+}
+
+void QgsManageConnectionsDialog::loadTiledMeshConnections( const QDomDocument &doc, const QStringList &items )
+{
+  const QDomElement root = doc.documentElement();
+  if ( root.tagName() != QLatin1String( "qgsTiledMeshConnections" ) )
+  {
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a tiled mesh connections exchange file." ) );
+    return;
+  }
+
+  QString connectionName;
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/qgis/connections-tiled-mesh" ) );
+  QStringList keys = settings.childGroups();
+  settings.endGroup();
+  QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
+  while ( !child.isNull() )
+  {
+    connectionName = child.attribute( QStringLiteral( "name" ) );
+    if ( !items.contains( connectionName ) )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // check for duplicates
+    if ( keys.contains( connectionName ) && prompt )
+    {
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+
+      switch ( res )
+      {
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
+          continue;
+        case QMessageBox::Yes:
+          overwrite = true;
+          break;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
+          overwrite = false;
+          break;
+      }
+    }
+
+    if ( keys.contains( connectionName ) )
+    {
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
+    }
+
+    QgsTiledMeshProviderConnection::settingsProvider->setValue( child.attribute( QStringLiteral( "provider" ) ), connectionName );
+    QgsTiledMeshProviderConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), connectionName );
+    QgsTiledMeshProviderConnection::settingsAuthcfg->setValue( child.attribute( QStringLiteral( "authcfg" ) ), connectionName );
+    QgsTiledMeshProviderConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), connectionName );
+    QgsTiledMeshProviderConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), connectionName );
+
+    QgsHttpHeaders httpHeader( child );
+    QgsTiledMeshProviderConnection::settingsHeaders->setValue( httpHeader.headers(), connectionName );
 
     child = child.nextSiblingElement();
   }

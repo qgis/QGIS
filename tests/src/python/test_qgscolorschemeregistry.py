@@ -17,12 +17,13 @@ from qgis.core import (
     QgsColorSchemeRegistry,
     QgsRecentColorScheme,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsColorSchemeRegistry(unittest.TestCase):
+class TestQgsColorSchemeRegistry(QgisTestCase):
 
     def testCreateInstance(self):
         """Test creating global color scheme registry instance"""

@@ -1,0 +1,41 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgscesiumutils.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsCesiumUtils
+{
+%Docstring(signature="appended")
+Contains utilities for working with Cesium data.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgscesiumutils.h"
+%End
+  public:
+
+
+    static QgsBox3d parseRegion( const QVariantList &region );
+%Docstring
+Parses a ``region`` object from a Cesium JSON document to a 3D box.
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgscesiumutils.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

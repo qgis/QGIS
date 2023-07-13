@@ -908,6 +908,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the application vertex editor
     QgsVertexEditor *vertexEditor() { return mVertexEditorDock; }
 
+    /**
+     * Adds a layer directly without prompting user for location
+     * The caller must provide information needed for layer construction
+     * using the \a url and \a baseName. The \a baseName parameter is used
+     * in the Map Legend so it should be formed in a meaningful way.
+     */
+    template< typename L> L *addLayer( const QString &uri,
+                                       const QString &baseName,
+                                       const QString &provider );
+
   public slots:
     //! save current vector layer
     QString saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false, bool defaultToAddToMap = true );
@@ -1230,27 +1240,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * way.
      */
     QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
-
-    /**
-     * Adds a vector tile layer directly without prompting user for location
-     * The caller must provide information needed for layer construction
-     * using the \a url and \a baseName. The \a baseName parameter is used
-     * in the Map Legend so it should be formed in a meaningful way.
-     * \since QGIS 3.14
-     */
-    QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName );
-
-    /**
-     * Adds a vector tile layer directly without prompting user for location
-     * The caller must provide information needed for layer construction
-     * using the \a url and \a baseName. The \a baseName parameter is used
-     * in the Map Legend so it should be formed in a meaningful way.
-     * \since QGIS 3.18
-     */
-    QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey );
-
-    //! Open a plugin layer using its provider
-    QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
 
     void versionReplyFinished();
 

@@ -589,6 +589,16 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QVariantMap preprocessQgisProcessParameters( const QVariantMap &parameters, bool &ok, QString &error );
 
+    /**
+     * Returns the default encoding.
+     *
+     * The default encoding could be the one from "/Processing/encoding" or when it's not an allowed encoding name
+     * like "System", the default encoding system (mostly UTF-8 on Unix-like, windows-1252 on Windows).
+     *
+     * \since QGIS 3.32
+     */
+    static QString resolveDefaultEncoding( const QString &defaultEncoding = "System" );
+
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );
@@ -728,6 +738,13 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
 
     QgsFeatureSource *mSource = nullptr;
     bool mOwnsSource = false;
+    QgsCoordinateReferenceSystem mSourceCrs;
+    QgsFields mSourceFields;
+    Qgis::WkbType mSourceWkbType = Qgis::WkbType::Unknown;
+    QString mSourceName;
+    QgsRectangle mSourceExtent;
+    QgsFeatureSource::SpatialIndexPresence mSourceSpatialIndexPresence = QgsFeatureSource::SpatialIndexPresence::SpatialIndexUnknown;
+
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;

@@ -37,8 +37,10 @@ class CORE_EXPORT QgsRasterIterator
 
     /**
      * Constructor for QgsRasterIterator, iterating over the specified \a input raster source.
+     *
+     * Since QGIS 3.34 the tileOverlapPixels can be used to specify a margin in pixels for retrieving pixels overlapping into neighbor cells.
      */
-    QgsRasterIterator( QgsRasterInterface *input );
+    QgsRasterIterator( QgsRasterInterface *input, int tileOverlapPixels = 0 );
 
     /**
      * Given an overall raster extent and width and height in pixels, calculates the sub region
@@ -115,6 +117,10 @@ class CORE_EXPORT QgsRasterIterator
      * \param topLeftCol top left column
      * \param topLeftRow top left row
      * \param blockExtent optional storage for exact extent of returned raster block
+     * \param tileColumns optional storage for number of columns in the iterated tile (excluding any tile overlap pixels)
+     * \param tileRows optional storage for number of rows in the iterated tile (excluding any tile overlap pixels)
+     * \param tileTopLeftColumn optional storage for the top left column in the iterated tile (excluding any tile overlap pixels)
+     * \param tileTopLeftRow optional storage for the top left row in the iterated tile (excluding any tile overlap pixels)
      * \returns FALSE if the last part was already returned
      * \note Not available in Python bindings
      * \since QGIS 3.2
@@ -123,7 +129,8 @@ class CORE_EXPORT QgsRasterIterator
                              int &nCols, int &nRows,
                              std::unique_ptr< QgsRasterBlock > &block,
                              int &topLeftCol, int &topLeftRow,
-                             QgsRectangle *blockExtent = nullptr ) SIP_SKIP;
+                             QgsRectangle *blockExtent = nullptr,
+                             int *tileColumns = nullptr, int *tileRows = nullptr, int *tileTopLeftColumn = nullptr, int *tileTopLeftRow = nullptr ) SIP_SKIP;
 
     /**
      * Cancels the raster iteration and resets the iterator.
@@ -184,12 +191,13 @@ class CORE_EXPORT QgsRasterIterator
     QgsRectangle mExtent;
     QgsRasterBlockFeedback *mFeedback = nullptr;
 
+    int mTileOverlapPixels = 0;
     int mMaximumTileWidth;
     int mMaximumTileHeight;
 
     //! Remove part into and release memory
     void removePartInfo( int bandNumber );
-    bool readNextRasterPartInternal( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent );
+    bool readNextRasterPartInternal( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int &tileColumns, int &tileRows, int &tileTopLeftColumn, int &tileTopLeftRow );
 };
 
 #endif // QGSRASTERITERATOR_H

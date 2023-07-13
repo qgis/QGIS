@@ -12,7 +12,7 @@
 
 
 
-class QgsVectorLayerProperties : QgsOptionsDialogBase
+class QgsVectorLayerProperties : QgsLayerPropertiesDialog
 {
 
 %TypeHeaderCode
@@ -21,11 +21,6 @@ class QgsVectorLayerProperties : QgsOptionsDialogBase
   public:
 
     QgsVectorLayerProperties( QgsMapCanvas *canvas, QgsMessageBar *messageBar, QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-%Docstring
-Adds a properties page factory to the vector layer properties dialog.
-%End
 
     virtual bool eventFilter( QObject *obj, QEvent *ev );
 
@@ -60,6 +55,12 @@ Saves a style when appriate button is pressed
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) final;
+    virtual void syncToLayer() ${SIP_FINAL};
+
+    virtual void apply() ${SIP_FINAL};
+
+    virtual void rollback() ${SIP_FINAL};
+
 
   signals:
 

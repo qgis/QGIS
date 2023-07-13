@@ -15,7 +15,8 @@ from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtTest import QTest
 from qgis.core import QgsSettings
 from qgis.gui import QgsCodeEditorPython
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
 COMPLETIONS_PAIRS = {
@@ -28,7 +29,7 @@ COMPLETIONS_PAIRS = {
 COMPLETIONS_SINGLE_CHARACTERS = ["`", "*"]
 
 
-class TestQgsCodeEditorPython(unittest.TestCase):
+class TestQgsCodeEditorPython(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

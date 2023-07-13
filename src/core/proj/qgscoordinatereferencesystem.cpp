@@ -43,6 +43,7 @@
 #include "qgsogcutils.h"
 #include "qgsprojectionfactors.h"
 #include "qgsprojoperation.h"
+#include "qgscoordinatereferencesystemutils.h"
 
 #include <sqlite3.h>
 #include "qgsprojutils.h"
@@ -485,6 +486,16 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
     return d->mIsValid;
   }
 
+  // Try loading from Proj's db using authority and code
+  // While this CRS wasn't found in QGIS' srs db, it may be present in proj's
+  if ( !authority.isEmpty() && !code.isEmpty() && loadFromAuthCode( authority, code ) )
+  {
+    locker.changeMode( QgsReadWriteLocker::Write );
+    if ( !sDisableOgcCache )
+      sOgcCache()->insert( crs, *this );
+    return d->mIsValid;
+  }
+
   locker.changeMode( QgsReadWriteLocker::Write );
   if ( !sDisableOgcCache )
     sOgcCache()->insert( crs, QgsCoordinateReferenceSystem() );
@@ -659,7 +670,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 
       {
         QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_database( QgsProjContext::get(), auth.toLatin1(), code.toLatin1(), PJ_CATEGORY_CRS, false, nullptr ) );
-        d->setPj( QgsProjUtils::crsToSingleCrs( crs.get() ) );
+        d->setPj( QgsProjUtils::unboundCrs( crs.get() ) );
       }
 
       d->mIsValid = d->hasPj();
@@ -1301,6 +1312,66 @@ QString QgsCoordinateReferenceSystem::toProj() const
   return d->mProj4.trimmed();
 }
 
+Qgis::CrsType QgsCoordinateReferenceSystem::type() const
+{
+  // NOLINTBEGIN(bugprone-branch-clone)
+  switch ( d->mProjType )
+  {
+    case PJ_TYPE_UNKNOWN:
+      return Qgis::CrsType::Unknown;
+
+    case PJ_TYPE_ELLIPSOID:
+    case PJ_TYPE_PRIME_MERIDIAN:
+    case PJ_TYPE_GEODETIC_REFERENCE_FRAME:
+    case PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME:
+    case PJ_TYPE_VERTICAL_REFERENCE_FRAME:
+    case PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME:
+    case PJ_TYPE_DATUM_ENSEMBLE:
+    case PJ_TYPE_CONVERSION:
+    case PJ_TYPE_TRANSFORMATION:
+    case PJ_TYPE_CONCATENATED_OPERATION:
+    case PJ_TYPE_OTHER_COORDINATE_OPERATION:
+    case PJ_TYPE_TEMPORAL_DATUM:
+    case PJ_TYPE_ENGINEERING_DATUM:
+    case PJ_TYPE_PARAMETRIC_DATUM:
+      return Qgis::CrsType::Other;
+
+    case PJ_TYPE_CRS:
+    case PJ_TYPE_GEOGRAPHIC_CRS:
+      //not possible
+      return Qgis::CrsType::Other;
+
+    case PJ_TYPE_GEODETIC_CRS:
+      return Qgis::CrsType::Geodetic;
+    case PJ_TYPE_GEOCENTRIC_CRS:
+      return Qgis::CrsType::Geocentric;
+    case PJ_TYPE_GEOGRAPHIC_2D_CRS:
+      return Qgis::CrsType::Geographic2d;
+    case PJ_TYPE_GEOGRAPHIC_3D_CRS:
+      return Qgis::CrsType::Geographic3d;
+    case PJ_TYPE_VERTICAL_CRS:
+      return Qgis::CrsType::Vertical;
+    case PJ_TYPE_PROJECTED_CRS:
+      return Qgis::CrsType::Projected;
+    case PJ_TYPE_COMPOUND_CRS:
+      return Qgis::CrsType::Compound;
+    case PJ_TYPE_TEMPORAL_CRS:
+      return Qgis::CrsType::Temporal;
+    case PJ_TYPE_ENGINEERING_CRS:
+      return Qgis::CrsType::Engineering;
+    case PJ_TYPE_BOUND_CRS:
+      return Qgis::CrsType::Bound;
+    case PJ_TYPE_OTHER_CRS:
+      return Qgis::CrsType::Other;
+#if PROJ_VERSION_MAJOR>9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR>=2)
+    case PJ_TYPE_DERIVED_PROJECTED_CRS:
+      return Qgis::CrsType::DerivedProjected;
+#endif
+  }
+  return Qgis::CrsType::Unknown;
+  // NOLINTEND(bugprone-branch-clone)
+}
+
 bool QgsCoordinateReferenceSystem::isGeographic() const
 {
   return d->mIsGeographic;
@@ -1652,7 +1723,17 @@ void QgsCoordinateReferenceSystem::setMapUnits()
   }
 
   PJ_CONTEXT *context = QgsProjContext::get();
-  QgsProjUtils::proj_pj_unique_ptr crs( QgsProjUtils::crsToSingleCrs( d->threadLocalProjObject() ) );
+  // prefer horizontal CRS units, if present
+  QgsProjUtils::proj_pj_unique_ptr crs( QgsProjUtils::crsToHorizontalCrs( d->threadLocalProjObject() ) );
+  if ( !crs )
+    crs = QgsProjUtils::unboundCrs( d->threadLocalProjObject() );
+
+  if ( !crs )
+  {
+    d->mMapUnits = Qgis::DistanceUnit::Unknown;
+    return;
+  }
+
   QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( context, crs.get() ) );
   if ( !coordinateSystem )
   {
@@ -2286,6 +2367,9 @@ void getOperationAndEllipsoidFromProjString( const QString &proj, QString &opera
 
 bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const QString &code )
 {
+  if ( !QgsApplication::coordinateReferenceSystemRegistry()->authorities().contains( auth.toLower() ) )
+    return false;
+
   d.detach();
   d->mIsValid = false;
   d->mWktPreferred.clear();
@@ -2297,16 +2381,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
     return false;
   }
 
-  switch ( proj_get_type( crs.get() ) )
-  {
-    case PJ_TYPE_VERTICAL_CRS:
-      return false;
-
-    default:
-      break;
-  }
-
-  crs = QgsProjUtils::crsToSingleCrs( crs.get() );
+  crs = QgsProjUtils::unboundCrs( crs.get() );
 
   QString proj4 = getFullProjString( crs.get() );
   proj4.replace( QLatin1String( "+type=crs" ), QString() );
@@ -2529,7 +2604,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
           break;
       }
 
-      crs = QgsProjUtils::crsToSingleCrs( crs.get() );
+      crs = QgsProjUtils::unboundCrs( crs.get() );
 
       QString proj4 = getFullProjString( crs.get() );
       proj4.replace( QLatin1String( "+type=crs" ), QString() );
@@ -2540,6 +2615,18 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         QgsDebugMsgLevel( QStringLiteral( "No proj4 for '%1:%2'" ).arg( authority, code ), 2 );
         // satisfy not null constraint
         proj4 = "";
+      }
+
+      // there's a not-null contraint on these columns, so we must use empty strings instead
+      QString operation = "";
+      QString ellps = "";
+      getOperationAndEllipsoidFromProjString( proj4, operation, ellps );
+
+      const QString translatedOperation = QgsCoordinateReferenceSystemUtils::translateProjection( operation );
+      if ( translatedOperation.isEmpty() && !operation.isEmpty() )
+      {
+        std::cout << QStringLiteral( "Operation needs translation in QgsCoordinateReferenceSystemUtils::translateProjection: %1" ).arg( operation ).toLocal8Bit().constData() << std::endl;
+        qFatal( "aborted" );
       }
 
       const bool deprecated = proj_is_deprecated( crs.get() );
@@ -2592,10 +2679,6 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       }
       else
       {
-        // there's a not-null contraint on these columns, so we must use empty strings instead
-        QString operation = "";
-        QString ellps = "";
-        getOperationAndEllipsoidFromProjString( proj4, operation, ellps );
         const bool isGeographic = testIsGeographic( crs.get() );
 
         // work out srid and srsid
@@ -2840,7 +2923,7 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
       return false;
   }
 
-  d->setPj( QgsProjUtils::crsToSingleCrs( object ) );
+  d->setPj( QgsProjUtils::unboundCrs( object ) );
 
   if ( !d->hasPj() )
   {

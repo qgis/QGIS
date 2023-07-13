@@ -26,7 +26,8 @@ from qgis.core import (
     QgsRendererRangeLabelFormat,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -149,7 +150,7 @@ def dumpGraduatedRenderer(r):
 # Tests
 
 
-class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
+class TestQgsGraduatedSymbolRenderer(QgisTestCase):
 
     def testQgsRendererRange_1(self):
         """Test QgsRendererRange getter/setter functions"""

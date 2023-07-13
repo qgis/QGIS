@@ -22,7 +22,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsMapCanvas, QgsMapCanvasAnnotationItem
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -30,7 +31,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
+class TestQgsMapCanvasAnnotationItem(QgisTestCase):
 
     def testPosition(self):
         """ test that map canvas annotation item syncs position correctly """

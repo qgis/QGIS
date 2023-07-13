@@ -9,8 +9,7 @@
 
 
 
-
-class QgsMeshLayerProperties : QgsOptionsDialogBase
+class QgsMeshLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")
 
@@ -35,42 +34,37 @@ Constructor
 :param fl: Window flags
 %End
 
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-%Docstring
-Adds properties page from a factory
-
-.. versionadded:: 3.16
-%End
-
-    void loadDefaultStyle();
-%Docstring
-Loads the default style when appropriate button is pressed
-
-.. versionadded:: 3.30
-%End
-
-    void saveDefaultStyle();
+ void saveDefaultStyle() /Deprecated/;
 %Docstring
 Saves the default style when appropriate button is pressed
 
-.. versionadded:: 3.30
+.. deprecated::
+   use :py:func:`~QgsMeshLayerProperties.saveStyleAsDefault` instead.
 %End
 
-    void loadStyle();
+ void loadStyle() /Deprecated/;
 %Docstring
 Loads a saved style when appropriate button is pressed
 
-.. versionadded:: 3.30
+.. deprecated::
+   use :py:func:`~QgsMeshLayerProperties.loadStyleFromFile` instead.
 %End
 
-    void saveStyleAs();
+ void saveStyleAs() /Deprecated/;
 %Docstring
 Saves a style when appriate button is pressed
 
-.. versionadded:: 3.30
+.. deprecated::
+   use :py:func:`~QgsMeshLayerProperties.saveStyleToFile` instead.
 %End
 
   protected slots:
+    virtual void syncToLayer() ${SIP_FINAL};
+
+    virtual void apply() ${SIP_FINAL};
+
+    virtual void rollback() ${SIP_FINAL};
+
 
 };
 

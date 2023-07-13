@@ -23,7 +23,8 @@ from qgis.core import (
     QgsPointXY,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -52,7 +53,7 @@ def createMemoryLayer(values):
     return ml
 
 
-class TestQgsClassificationMethods(unittest.TestCase):
+class TestQgsClassificationMethods(QgisTestCase):
 
     def testQgsClassificationLogarithmic(self):
         values = [2746.71,

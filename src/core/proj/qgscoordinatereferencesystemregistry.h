@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QSet>
 #include "qgscoordinatereferencesystem.h"
 
 class QgsCelestialBody;
@@ -145,6 +146,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      */
     QList< QgsCelestialBody > celestialBodies() const;
 
+    /**
+     * Returns a list of all known authorities.
+     *
+     * \note authority names will always be returned in lower case
+     *
+     * \since QGIS 3.34
+     */
+    QSet< QString > authorities() const;
+
   signals:
 
     /**
@@ -191,6 +201,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
 
     mutable QList< QgsCelestialBody > mCelestialBodies;
     mutable QMap< QString, QgsProjOperation > mProjOperations;
+    mutable QSet< QString > mKnownAuthorities;
 
 };
 

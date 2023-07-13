@@ -12,7 +12,8 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QEvent, Qt
 from qgis.core import QgsStyle, QgsStyleModel, QgsTextFormat
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -22,7 +23,7 @@ except ImportError:
     QgsCombinedStyleModel = None
 
 
-class TestQgsCombinedStyleModel(unittest.TestCase):
+class TestQgsCombinedStyleModel(QgisTestCase):
 
     @unittest.skipIf(QgsCombinedStyleModel is None, "QgsCombinedStyleModel not available")
     def test_model(self):

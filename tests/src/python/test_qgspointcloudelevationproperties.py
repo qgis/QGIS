@@ -22,14 +22,15 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsPointCloudElevationProperties(unittest.TestCase):
+class TestQgsPointCloudElevationProperties(QgisTestCase):
 
     def testBasic(self):
         props = QgsPointCloudLayerElevationProperties(None)

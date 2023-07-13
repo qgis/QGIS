@@ -21,7 +21,8 @@ from qgis.core import (
     QgsProject,
     QgsLayoutChecker
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
@@ -31,7 +32,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutHtml(unittest.TestCase):
+class TestQgsLayoutHtml(QgisTestCase):
 
     def setUp(self):
         """Run before each test."""

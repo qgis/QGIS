@@ -13,12 +13,13 @@ import os
 
 import qgis  # NOQA
 from qgis.core import QgsProject, QgsVectorLayer
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsRelationPostgresql(unittest.TestCase):
+class TestQgsRelationPostgresql(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

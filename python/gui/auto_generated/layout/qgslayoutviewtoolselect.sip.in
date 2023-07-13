@@ -48,6 +48,13 @@ Constructor for QgsLayoutViewToolSelect.
 Sets the a ``layout``.
 %End
 
+    double searchToleranceInLayoutUnits();
+%Docstring
+Compute the search tolerance in layout units from the view current scale
+
+.. versionadded:: 3.34
+%End
+
 };
 
 /************************************************************************

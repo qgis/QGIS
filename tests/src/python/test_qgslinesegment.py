@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import QgsLineSegment2D, QgsPointXY
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLineSegment2D(unittest.TestCase):
+class TestQgsLineSegment2D(QgisTestCase):
 
     def testConstruct(self):
         segment = QgsLineSegment2D(QgsPointXY(1, 2), QgsPointXY(3, 4))

@@ -32,6 +32,7 @@ class TestQgsVector : public QObject
 
     // vector3d
     void vector3d();
+    void setters();
 };
 
 void TestQgsVector::initTestCase()
@@ -83,6 +84,31 @@ void TestQgsVector::vector3d()
   QCOMPARE( QgsVector3D::perpendicularPoint( QgsVector3D( 0.0, 0.0, 0.0 ), QgsVector3D( 0.0, 5.0, 0.0 ), QgsVector3D( 1.0, 4.0, 0.0 ) ), QgsVector3D( 0.0, 4.0, 0.0 ) );
   QCOMPARE( QgsVector3D::perpendicularPoint( QgsVector3D( 0.0, 0.0, 5.0 ), QgsVector3D( 0.0, 0.0, 10.0 ), QgsVector3D( 2.0, 4.0, 7 ) ), QgsVector3D( 0.0, 0.0, 7.0 ) );
   QCOMPARE( QgsVector3D::perpendicularPoint( QgsVector3D( 0.0, 0.0, 5.0 ), QgsVector3D( 0.0, 5.0, 10.0 ), QgsVector3D( 1.0, 4.0, 5.0 ) ).toString( 2 ), QgsVector3D( 0.0, 2.0, 7.0 ).toString( 2 ) );
+}
+
+void TestQgsVector::setters()
+{
+  QgsVector3D p1( 1.0, 2.0, 3.0 );
+
+  p1.setX( 5.0 );
+  QCOMPARE( p1.x(), 5.0 );
+  QCOMPARE( p1.y(), 2.0 );
+  QCOMPARE( p1.z(), 3.0 );
+
+  p1.setY( 6.0 );
+  QCOMPARE( p1.x(), 5.0 );
+  QCOMPARE( p1.y(), 6.0 );
+  QCOMPARE( p1.z(), 3.0 );
+
+  p1.setZ( 7.0 );
+  QCOMPARE( p1.x(), 5.0 );
+  QCOMPARE( p1.y(), 6.0 );
+  QCOMPARE( p1.z(), 7.0 );
+
+  p1.set( 8.0, 9.0, 10.0 );
+  QCOMPARE( p1.x(), 8.0 );
+  QCOMPARE( p1.y(), 9.0 );
+  QCOMPARE( p1.z(), 10.0 );
 }
 
 QGSTEST_MAIN( TestQgsVector )

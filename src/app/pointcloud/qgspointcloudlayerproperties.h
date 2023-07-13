@@ -16,11 +16,10 @@
 #ifndef QGSPOINTCLOUDLAYERPROPERTIES_H
 #define QGSPOINTCLOUDLAYERPROPERTIES_H
 
-#include "qgsoptionsdialogbase.h"
+#include "qgslayerpropertiesdialog.h"
 
 #include "ui_qgspointcloudlayerpropertiesbase.h"
 
-#include "qgsmaplayerstylemanager.h"
 #include <QAbstractTableModel>
 
 #include "qgspointcloudlayer.h"
@@ -32,7 +31,7 @@ class QgsPointCloudLayer;
 class QgsMetadataWidget;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
-
+class QgsLayerPropertiesGuiUtils;
 
 class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
 {
@@ -88,81 +87,31 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     QList<int> mClassifications;
 };
 
-class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::QgsPointCloudLayerPropertiesBase
+class QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsPointCloudLayerPropertiesBase
 {
     Q_OBJECT
   public:
     QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-
-    /**
-     * Loads the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadDefaultStyle();
-
-    /**
-     * Saves the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void saveDefaultStyle();
-
-    /**
-     * Loads a saved style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadStyle();
-
-    /**
-     * Saves a style when appriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void saveStyleAs();
-
   private slots:
-    void apply();
-    void onCancel();
+    void apply() FINAL;
+    void rollback() FINAL;
 
     void aboutToShowStyleMenu();
-    void loadMetadata();
-    void saveMetadataAs();
-    void saveDefaultMetadata();
-    void loadDefaultMetadata();
     void showHelp();
-    void urlClicked( const QUrl &url );
     void pbnQueryBuilder_clicked();
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
-  protected slots:
-    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
-
   private:
-    void syncToLayer();
+    void syncToLayer() FINAL;
 
   private:
     QgsPointCloudLayer *mLayer = nullptr;
 
-    QPushButton *mBtnStyle = nullptr;
-    QPushButton *mBtnMetadata = nullptr;
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 
-    QgsMapCanvas *mMapCanvas = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
-
-    /**
-     * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled.
-    */
-    QgsMapLayerStyle mOldStyle;
-
-    QList<QgsMapLayerConfigWidget *> mConfigWidgets;
 
     QgsCoordinateReferenceSystem mBackupCrs;
 

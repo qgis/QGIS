@@ -31,7 +31,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsRectangle,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import compareWkt, unitTestDataPath
 
@@ -39,7 +40,7 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsPostgresRasterProvider(unittest.TestCase):
+class TestPyQgsPostgresRasterProvider(QgisTestCase):
 
     @classmethod
     def _load_test_table(cls, schemaname, tablename, basename=None):

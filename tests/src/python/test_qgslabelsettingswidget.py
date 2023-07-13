@@ -18,12 +18,13 @@ from qgis.core import (
     QgsPropertyCollection,
 )
 from qgis.gui import QgsLabelObstacleSettingsWidget, QgsLabelSettingsWidgetBase
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLabelSettingsWidget(unittest.TestCase):
+class TestQgsLabelSettingsWidget(QgisTestCase):
 
     def testBase(self):
         """ test base class """

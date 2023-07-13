@@ -26,7 +26,8 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -35,7 +36,7 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
     return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
-class TestPyQgsOGRProviderSqlite(unittest.TestCase):
+class TestPyQgsOGRProviderSqlite(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

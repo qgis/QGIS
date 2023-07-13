@@ -23,7 +23,8 @@ from qgis.core import (
     QgsMapLayerLegend
 )
 from qgis.gui import QgsLayerTreeView, QgsLayerTreeViewDefaultActions
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -31,12 +32,12 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayerTreeView(unittest.TestCase):
+class TestQgsLayerTreeView(QgisTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
 
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
 
         # setup a dummy project
         self.project = QgsProject()

@@ -409,3 +409,25 @@ QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies()
   throw QgsNotSupportedException( QObject::tr( "Retrieving celestial bodies requires a QGIS build based on PROJ 8.1 or later" ) );
 #endif
 }
+
+QSet<QString> QgsCoordinateReferenceSystemRegistry::authorities() const
+{
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
+  {
+    QgsScopedRuntimeProfile profile( QObject::tr( "Initialize authorities" ) );
+
+    PJ_CONTEXT *pjContext = QgsProjContext::get();
+    PROJ_STRING_LIST authorities = proj_get_authorities_from_database( pjContext );
+
+    for ( auto authIter = authorities; authIter && *authIter; ++authIter )
+    {
+      const QString authority( *authIter );
+      mKnownAuthorities.insert( authority.toLower() );
+    }
+
+    proj_string_list_destroy( authorities );
+  } );
+
+  return mKnownAuthorities;
+}

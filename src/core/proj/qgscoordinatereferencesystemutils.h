@@ -45,6 +45,21 @@ class CORE_EXPORT QgsCoordinateReferenceSystemUtils
      * Returns a translated abbreviation representing an \a axis direction.
      */
     static QString axisDirectionToAbbreviatedString( Qgis::CrsAxisDirection axis );
+
+    /**
+     * Returns a translated string representing a CRS \a type.
+     * \since QGIS 3.34
+     */
+    static QString crsTypeToString( Qgis::CrsType type );
+
+    /**
+     * Returns a translated string for a \a projection method.
+     *
+     * Returns an empty string for unhandled methods.
+     *
+     * \since QGIS 3.34
+     */
+    static QString translateProjection( const QString &projection );
 };
 
 #endif // QGSCOORDINATEREFERENCESYSTEMUTILS_H

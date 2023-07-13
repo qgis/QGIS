@@ -1579,6 +1579,31 @@ class CORE_EXPORT Qgis
     Q_FLAG( DataProviderFlags )
 
     /**
+     * Coordinate reference system types.
+     *
+     * Contains a subset of Proj's PJ_TYPE enum, specifically the types which relate to CRS types.
+     *
+     * \since QGIS 3.34
+     */
+    enum class CrsType : int
+    {
+      Unknown, //!< Unknown type
+      Geodetic, //!< Geodetic CRS
+      Geocentric, //!< Geocentric CRS
+      Geographic2d, //!< 2D geographic CRS
+      Geographic3d, //!< 3D geopraphic CRS
+      Vertical, //!< Vertical CRS
+      Projected, //!< Projected CRS
+      Compound, //!< Compound (horizontal + vertical) CRS
+      Temporal, //!< Temporal CRS
+      Engineering, //!< Engineering CRS
+      Bound, //!< Bound CRS
+      Other, //!< Other type
+      DerivedProjected, //!< Derived projected CRS
+    };
+    Q_ENUM( CrsType )
+
+    /**
      * Coordinate reference system axis directions.
      *
      * From "Geographic information — Well-known text representation of coordinate reference systems", section 7.5.1.

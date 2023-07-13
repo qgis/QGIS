@@ -35,12 +35,12 @@ class APP_EXPORT QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBa
 
   private slots:
     void buttonBox_accepted();
-    void pbBrowseDrawing_clicked();
     void pbImportDrawing_clicked();
     void pbLoadDatabase_clicked();
     void pbSelectAll_clicked();
     void pbDeselectAll_clicked();
     void mDatabaseFileWidget_textChanged( const QString &filename );
+    void drawingFileWidgetFileChanged( const QString &filename );
     void leLayerGroup_textChanged( const QString &text );
     void showHelp();
     void layersClicked( QTableWidgetItem *item );

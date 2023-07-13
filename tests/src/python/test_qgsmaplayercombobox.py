@@ -19,7 +19,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsMapLayerComboBox
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -35,7 +36,7 @@ def create_mesh_layer(name):
     return layer
 
 
-class TestQgsMapLayerComboBox(unittest.TestCase):
+class TestQgsMapLayerComboBox(QgisTestCase):
 
     def testGettersSetters(self):
         """ test combo getters/setters """

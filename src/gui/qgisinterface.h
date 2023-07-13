@@ -60,6 +60,7 @@ class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsVectorTileLayer;
 class QgsPointCloudLayer;
+class QgsTiledMeshLayer;
 class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
 class QgsStatusBar;
@@ -829,36 +830,61 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void zoomToActiveLayer() = 0;
 
     /**
-     * Adds a vector layer to the current project.
+     * Adds a vector layer to the current project, using the specified data provider and source url.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     *
      */
     virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
 
     /**
      * Adds a raster layer to the current project, given a raster layer file name.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     *
      */
     virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
 
     /**
-     * Adds a raster layer to the current project, from the specified raster data provider.
+     * Adds a raster layer to the current project, from the specified raster data provider and source \a url.
+     *
+     * The \a layerName parameter will be used as the layer name (and shown in the map legend).
      */
     virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
 
     /**
-     * Adds a mesh layer to the current project.
+     * Adds a mesh layer to the current project, using the specified data provider and source \a url.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
      */
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 
     /**
-     * Adds a vector tile layer to the current project.
+     * Adds a vector tile layer to the current project, using the specified source \a url.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     *
      * \since QGIS 3.14
      */
     virtual QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) = 0;
 
     /**
-     * Adds a point cloud layer to the current project.
+     * Adds a point cloud layer to the current project, using the specified data provider and source \a url.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     *
      * \since QGIS 3.18
      */
     virtual QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
+
+    /**
+     * Adds a tiled mesh layer to the current project, using the specified data provider and source \a url.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     *
+     * \since QGIS 3.34
+     */
+    virtual QgsTiledMeshLayer *addTiledMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 
     //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;

@@ -11,14 +11,15 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.core import QgsLayoutFrame, QgsLayoutItemHtml
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 
 
-class TestQgsLayoutFrame(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutFrame(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):

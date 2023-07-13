@@ -165,13 +165,25 @@ class CORE_EXPORT QgsProjUtils
     static bool isDynamic( const PJ *crs );
 
     /**
-     * Given a PROJ crs (which may be a compound or bound crs, or some other type), extract a single crs
+     * Given a PROJ crs (which may be a compound or bound crs, or some other type), extract the horizontal crs
      * from it.
+     *
+     * If \a crs does not contain a horizontal CRS (i.e. it is a vertical CRS) NULLPTR will be returned.
      */
-    static proj_pj_unique_ptr crsToSingleCrs( const PJ *crs );
+    static proj_pj_unique_ptr crsToHorizontalCrs( const PJ *crs );
+
+    /**
+     * Given a PROJ crs (which may be a compound or bound crs, or some other type), ensure that it is not
+     * a bound CRS object.
+     *
+     * Bound CRS objects will be returned as their source CRS, other types will be returned as a direct clone.
+     */
+    static proj_pj_unique_ptr unboundCrs( const PJ *crs );
 
     /**
      * Given a PROJ \a crs, attempt to retrieve the datum ensemble from it.
+     *
+     * \note In the case of a compound \a crs, this method will always return the datum ensemble for the horizontal component.
      *
      * \warning This method requires PROJ 8.0 or later
      *

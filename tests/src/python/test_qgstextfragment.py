@@ -14,12 +14,13 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtGui import QColor
 from qgis.core import QgsStringUtils, QgsTextCharacterFormat, QgsTextFragment
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsTextFragment(unittest.TestCase):
+class TestQgsTextFragment(QgisTestCase):
 
     def testConstructors(self):
         # empty

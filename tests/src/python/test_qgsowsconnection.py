@@ -12,10 +12,11 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsDataSourceUri, QgsOwsConnection, QgsSettings
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestQgsOwsConnection(unittest.TestCase):
+class TestQgsOwsConnection(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

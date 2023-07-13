@@ -24,14 +24,15 @@ from qgis.core import (
     QgsSettings,
     QgsTextFormat,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTestFont, unitTestDataPath
 
 start_app()
 
 
-class TestQgsFontManager(unittest.TestCase):
+class TestQgsFontManager(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

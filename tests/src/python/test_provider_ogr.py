@@ -57,7 +57,8 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
 
 import mockedwebserver
@@ -89,7 +90,7 @@ def count_opened_filedescriptors(filename_to_test):
     return count
 
 
-class PyQgsOGRProvider(unittest.TestCase):
+class PyQgsOGRProvider(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

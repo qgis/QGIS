@@ -31,7 +31,8 @@ from qgis.core import (
     QgsRenderChecker,
     QgsRenderContext,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -39,7 +40,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsRasterLineSymbolLayer(unittest.TestCase):
+class TestQgsRasterLineSymbolLayer(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsRasterLineSymbolLayer Tests</h1>\n"

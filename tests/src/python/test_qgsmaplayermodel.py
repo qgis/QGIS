@@ -17,7 +17,8 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -28,7 +29,7 @@ def create_layer(name):
     return layer
 
 
-class TestQgsMapLayerModel(unittest.TestCase):
+class TestQgsMapLayerModel(QgisTestCase):
 
     def testGettersSetters(self):
         """ test model getters/setters """

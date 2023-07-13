@@ -24,12 +24,13 @@ from qgis.gui import (
     QgsRelationEditorConfigWidget,
     QgsRelationEditorWidget,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsRelationEditorWidgetRegistry(unittest.TestCase):
+class TestQgsRelationEditorWidgetRegistry(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

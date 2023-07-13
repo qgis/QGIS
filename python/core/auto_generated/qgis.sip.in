@@ -947,6 +947,23 @@ The development version
     typedef QFlags<Qgis::DataProviderFlag> DataProviderFlags;
 
 
+    enum class CrsType
+    {
+      Unknown,
+      Geodetic,
+      Geocentric,
+      Geographic2d,
+      Geographic3d,
+      Vertical,
+      Projected,
+      Compound,
+      Temporal,
+      Engineering,
+      Bound,
+      Other,
+      DerivedProjected,
+    };
+
     enum class CrsAxisDirection
     {
       North,

@@ -31,7 +31,8 @@ from qgis.core import (
     QgsVectorTileLayer,
     QgsVectorTileWriter,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -40,7 +41,7 @@ TEST_DATA_PATH = Path(unitTestDataPath())
 start_app()
 
 
-class TestVectorTile(unittest.TestCase):
+class TestVectorTile(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -21,12 +21,13 @@ from qgis.core import (
     QgsTextDocument,
     QgsTextFragment,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsTextDocument(unittest.TestCase):
+class TestQgsTextDocument(QgisTestCase):
 
     def testConstructors(self):
         # empty

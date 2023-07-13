@@ -22,10 +22,11 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtGui import QColor
 from qgis.core import QgsField, QgsFieldConstraints, QgsFields, QgsProperty
 from qgis.gui import QgsFieldMappingModel, QgsFieldMappingWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestPyQgsFieldMappingModel(unittest.TestCase):
+class TestPyQgsFieldMappingModel(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

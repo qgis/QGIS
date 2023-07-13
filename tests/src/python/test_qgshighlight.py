@@ -29,7 +29,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsHighlight, QgsMapCanvas
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
@@ -38,7 +39,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsHighlight(unittest.TestCase):
+class TestQgsHighlight(QgisTestCase):
 
     def setUp(self):
         self.iface = get_iface()

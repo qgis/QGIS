@@ -48,7 +48,8 @@ from qgis.PyQt.QtCore import (
     QObject,
     Qt,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from utilities import compareWkt, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -89,7 +90,7 @@ class MessageLogger(QObject):
         return self.log
 
 
-class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
 
     def treat_date_as_datetime(self):
         return True

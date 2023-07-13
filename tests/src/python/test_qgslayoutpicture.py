@@ -28,7 +28,8 @@ from qgis.core import (
     QgsRectangle,
     QgsLayoutChecker
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
@@ -37,7 +38,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -57,7 +58,7 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
 
         TEST_DATA_DIR = unitTestDataPath()
         self.pngImage = TEST_DATA_DIR + "/sample_image.png"

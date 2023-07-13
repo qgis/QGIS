@@ -25,6 +25,7 @@ import shlex
 import subprocess
 import os
 import sys
+from pathlib import Path
 
 from qgis.core import (Qgis,
                        QgsApplication,
@@ -254,8 +255,23 @@ class Grass7Utils:
         return folder or ''
 
     @staticmethod
-    def grassDescriptionPath():
-        return os.path.join(os.path.dirname(__file__), 'description')
+    def userDescriptionFolder():
+        """
+        Creates and returns a directory for users to create additional algorithm descriptions.
+        Or modified versions of stock algorithm descriptions shipped with QGIS.
+        """
+        folder = Path(userFolder(), 'grassaddons', 'description')
+        folder.mkdir(parents=True, exist_ok=True)
+        return folder
+
+    @staticmethod
+    def grassDescriptionFolders():
+        """
+        Returns the directories to search for algorithm descriptions.
+        Note that the provider will load from these in sequence, so we put the userDescriptionFolder first
+        to allow users to create modified versions of stock algorithms shipped with QGIS.
+        """
+        return [Grass7Utils.userDescriptionFolder(), Path(__file__).parent.joinpath('description')]
 
     @staticmethod
     def getWindowsCodePage():

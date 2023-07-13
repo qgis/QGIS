@@ -337,8 +337,13 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextshadowsettings.cpp
 
   tiledmesh/qgscesiumtilesdataprovider.cpp
+  tiledmesh/qgscesiumutils.cpp
+  tiledmesh/qgstiledmeshconnection.cpp
+  tiledmesh/qgstiledmeshdataitems.cpp
   tiledmesh/qgstiledmeshdataprovider.cpp
   tiledmesh/qgstiledmeshlayer.cpp
+  tiledmesh/qgstiledmeshlayerrenderer.cpp
+  tiledmesh/qgstiledmeshprovidermetadata.cpp
 
   sensor/qgssensormodel.cpp
   sensor/qgssensormanager.cpp
@@ -1892,8 +1897,13 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextshadowsettings.h
 
   tiledmesh/qgscesiumtilesdataprovider.h
+  tiledmesh/qgscesiumutils.h
+  tiledmesh/qgstiledmeshconnection.h
   tiledmesh/qgstiledmeshdataprovider.h
+  tiledmesh/qgstiledmeshdataitems.h
   tiledmesh/qgstiledmeshlayer.h
+  tiledmesh/qgstiledmeshlayerrenderer.h
+  tiledmesh/qgstiledmeshprovidermetadata.h
 
   sensor/qgssensormodel.h
   sensor/qgssensormanager.h

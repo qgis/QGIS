@@ -19,12 +19,13 @@ from qgis.core import (
     QgsProject,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayoutItemPropertiesDialog(unittest.TestCase):
+class TestQgsLayoutItemPropertiesDialog(QgisTestCase):
 
     def testGettersSetters(self):
         """ test dialog getters/setters """

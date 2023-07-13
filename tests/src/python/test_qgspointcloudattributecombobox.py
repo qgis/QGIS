@@ -19,7 +19,8 @@ from qgis.core import (
     QgsProviderRegistry,
 )
 from qgis.gui import QgsPointCloudAttributeComboBox
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -36,7 +37,7 @@ def create_attributes():
     return collection
 
 
-class TestQgsPointCloudAttributeComboBox(unittest.TestCase):
+class TestQgsPointCloudAttributeComboBox(QgisTestCase):
 
     def testGettersSetters(self):
         """ test combobox getters/setters """

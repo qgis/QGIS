@@ -22,12 +22,13 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsTextEditWidget(unittest.TestCase):
+class TestQgsTextEditWidget(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -116,7 +117,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         self.assertFalse(editwidget.widget().toPlainText())
 
 
-class TestQgsValueRelationWidget(unittest.TestCase):
+class TestQgsValueRelationWidget(QgisTestCase):
 
     def test_enableDisable(self):
         reg = QgsGui.editorWidgetRegistry()
@@ -209,7 +210,7 @@ class TestQgsValueRelationWidget(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
 
-class TestQgsValueMapEditWidget(unittest.TestCase):
+class TestQgsValueMapEditWidget(QgisTestCase):
     VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
 
     def test_ValueMap_set_get(self):
@@ -292,7 +293,7 @@ class TestQgsValueMapEditWidget(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
 
-class TestQgsUuidWidget(unittest.TestCase):
+class TestQgsUuidWidget(QgisTestCase):
 
     def test_create_uuid(self):
         layer = QgsVectorLayer("none?field=text_no_limit:text(0)&field=text_limit:text(10)&field=text_38:text(38)", "layer", "memory")

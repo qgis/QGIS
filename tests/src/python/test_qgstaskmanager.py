@@ -16,7 +16,8 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsApplication, QgsTask
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -67,7 +68,7 @@ def run_multiple_val_result(task):
     return 5, 'whoo'
 
 
-class TestQgsTaskManager(unittest.TestCase):
+class TestQgsTaskManager(QgisTestCase):
 
     def testTaskFromFunction(self):
         """ test creating task from function """

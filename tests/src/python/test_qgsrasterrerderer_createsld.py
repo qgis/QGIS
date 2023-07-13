@@ -41,7 +41,8 @@ from qgis.core import (
     QgsSingleBandGrayRenderer,
     QgsSingleBandPseudoColorRenderer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -51,7 +52,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsRasterRendererCreateSld(unittest.TestCase):
+class TestQgsRasterRendererCreateSld(QgisTestCase):
     """
      This class tests the creation of SLD from QGis raster layers
     """
@@ -64,7 +65,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
         myPath = os.path.join(TEST_DATA_DIR, 'landsat.tif')
         rasterFileInfo = QFileInfo(myPath)
         self.raster_layer = QgsRasterLayer(rasterFileInfo.filePath(),

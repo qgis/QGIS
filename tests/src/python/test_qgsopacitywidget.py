@@ -12,12 +12,13 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsOpacityWidget(unittest.TestCase):
+class TestQgsOpacityWidget(QgisTestCase):
 
     def testGettersSetters(self):
         """ test widget getters/setters """

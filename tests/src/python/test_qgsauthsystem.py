@@ -27,7 +27,8 @@ from qgis.core import (
     QgsPkiBundle,
 )
 from qgis.gui import QgsAuthEditorWidgets
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -39,7 +40,7 @@ TESTDATA = os.path.join(unitTestDataPath(), 'auth_system')
 PKIDATA = os.path.join(TESTDATA, 'certs_keys')
 
 
-class TestQgsAuthManager(unittest.TestCase):
+class TestQgsAuthManager(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

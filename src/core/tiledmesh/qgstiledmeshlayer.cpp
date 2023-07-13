@@ -24,6 +24,7 @@
 #include "qgsxmlutils.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
+#include "qgstiledmeshlayerrenderer.h"
 
 QgsTiledMeshLayer::QgsTiledMeshLayer( const QString &uri,
                                       const QString &baseName,
@@ -76,11 +77,11 @@ QgsRectangle QgsTiledMeshLayer::extent() const
   return mDataProvider->extent();
 }
 
-QgsMapLayerRenderer *QgsTiledMeshLayer::createMapRenderer( QgsRenderContext & )
+QgsMapLayerRenderer *QgsTiledMeshLayer::createMapRenderer( QgsRenderContext &context )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return nullptr;
+  return new QgsTiledMeshLayerRenderer( this, context );
 }
 
 QgsTiledMeshDataProvider *QgsTiledMeshLayer::dataProvider()
@@ -356,8 +357,13 @@ QString QgsTiledMeshLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
 
+  if ( mDataProvider )
+    myMetadata += mDataProvider->htmlMetadata();
+
   // Extent
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
+
+  myMetadata += QLatin1String( "</table>\n<br><br>" );
 
   // CRS
   myMetadata += crsHtmlMetadata();

@@ -31,12 +31,13 @@ from qgis.core import (
     QgsSimpleFillSymbolLayer,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayoutPageCollection(unittest.TestCase):
+class TestQgsLayoutPageCollection(QgisTestCase):
 
     def testLayout(self):
         # test that layouts have a collection

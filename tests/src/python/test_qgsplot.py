@@ -28,12 +28,13 @@ from qgis.core import (
     QgsTextFormat,
     Qgis
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsPlot(unittest.TestCase):
+class TestQgsPlot(QgisTestCase):
 
     @classmethod
     def control_path_prefix(cls):

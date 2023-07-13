@@ -24,14 +24,15 @@ from qgis.core import (
     QgsInterval,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import compareWkt
 
 start_app()
 
 
-class TestQgsAggregateCalculator(unittest.TestCase):
+class TestQgsAggregateCalculator(QgisTestCase):
 
     def testLayer(self):
         """ Test setting/retrieving layer """

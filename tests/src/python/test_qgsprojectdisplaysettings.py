@@ -23,7 +23,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -31,7 +32,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsProjectDisplaySettings(unittest.TestCase):
+class TestQgsProjectDisplaySettings(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

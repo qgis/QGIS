@@ -32,7 +32,8 @@ from qgis.core import (
     QgsRectangle,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -116,7 +117,7 @@ class PythonLayerMetadataProvider(QgsAbstractLayerMetadataProvider):
 QGIS_APP = start_app()
 
 
-class TestPythonLayerMetadataProvider(unittest.TestCase):
+class TestPythonLayerMetadataProvider(QgisTestCase):
 
     def setUp(self):
 
