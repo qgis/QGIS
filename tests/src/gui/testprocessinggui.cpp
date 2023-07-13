@@ -740,6 +740,8 @@ void TestProcessingGui::testModelerWrapper()
   model.addModelParameter( new QgsProcessingParameterFileDestination( "test_dest", "p3" ), testDestParam );
   QgsProcessingModelParameter testLayerParam( "p4" );
   model.addModelParameter( new QgsProcessingParameterMapLayer( "p4", "test_layer" ), testLayerParam );
+  QgsProcessingModelParameter testOptionalLayerParam( "p5" );
+  model.addModelParameter( new QgsProcessingParameterMapLayer( "p5", "test_layer2", QVariant(), true ), testLayerParam );
 
   // try to create a parameter widget, no factories registered
   QgsProcessingGuiRegistry registry;
@@ -763,6 +765,11 @@ void TestProcessingGui::testModelerWrapper()
   QVERIFY( w );
   // a layer parameter should default to "model input" type
   QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  delete w;
+  // but an optionl layer parameter should NOT -- we don't want to autofill values for optional layers by default
+  w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p5" ), context );
+  QVERIFY( w );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::StaticValue );
   delete w;
 
   // widget tests
