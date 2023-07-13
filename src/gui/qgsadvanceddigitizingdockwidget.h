@@ -1064,7 +1064,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr<QgsMessageBarItem> mErrorMessage;
 
     // UI
-    QMap< QAction *, double > mCommonAngleActions; // map the common angle actions with their angle values
+    QMap< double, QAction *> mCommonAngleActions; // map the common angle actions with their angle values
     QAction *mLineExtensionAction;
     QAction *mXyVertexAction;
 
