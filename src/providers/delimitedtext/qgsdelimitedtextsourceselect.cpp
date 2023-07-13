@@ -85,6 +85,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   connect( cbxDelimTab, &QCheckBox::stateChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
   connect( cbxDelimSemicolon, &QCheckBox::stateChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
   connect( cbxDelimColon, &QCheckBox::stateChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
+  connect( cbxDetectTypes, &QCheckBox::stateChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
   connect( txtDelimiterOther, &QLineEdit::textChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
   connect( txtQuoteChars, &QLineEdit::textChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
@@ -328,6 +329,7 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool sav
 void QgsDelimitedTextSourceSelect::loadSettingsForFile( const QString &filename )
 {
   if ( filename.isEmpty() ) return;
+  mOverriddenFields.clear();
   const QFileInfo fi( filename );
   const QString filetype = fi.suffix();
   // Don't expect to change settings if not changing file type
@@ -522,7 +524,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     typeCombo->addItem( QgsFields::iconForFieldType( QVariant::DateTime ), QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), "datetime" );
     connect( typeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
     {
-      mOverriddenFields.insert( column );
+      mOverriddenFields.insert( column, typeCombo->currentData().toString() );
     } );
     tblSample->setCellWidget( 0, column, typeCombo );
   }
@@ -820,21 +822,29 @@ void QgsDelimitedTextSourceSelect::updateFieldTypes( const QgsFields &fields )
 
   for ( int column = 0; column < tblSample->columnCount(); column++ )
   {
-    if ( ! mOverriddenFields.contains( column ) )
+
+
+    const QString fieldName { tblSample->horizontalHeaderItem( column )->text() };
+    const int fieldIdx { mFields.lookupField( fieldName ) };
+    if ( fieldIdx >= 0 )
     {
-      const QString fieldName { tblSample->horizontalHeaderItem( column )->text() };
-      const int fieldIdx { mFields.lookupField( fieldName ) };
-      if ( fieldIdx >= 0 )
+      QComboBox *typeCombo { qobject_cast<QComboBox *>( tblSample->cellWidget( 0, column ) ) };
+      QString fieldTypeName;
+      if ( mOverriddenFields.contains( column ) )
       {
-        QComboBox *typeCombo { qobject_cast<QComboBox *>( tblSample->cellWidget( 0, column ) ) };
-        const QString fieldTypeName { mFields.field( fieldIdx ).typeName() };
-        if ( typeCombo && typeCombo->currentData( ) != fieldTypeName && typeCombo->findData( fieldTypeName ) >= 0 )
-        {
-          QgsDebugMsgLevel( QStringLiteral( "Setting field type %1 from %2 to %3" ).arg( fieldName, typeCombo->currentData().toString(), fieldTypeName ), 2 );
-          QgsSignalBlocker( typeCombo )->setCurrentIndex( typeCombo->findData( fieldTypeName ) );
-        }
+        fieldTypeName = mOverriddenFields[ column ];
+      }
+      else
+      {
+        fieldTypeName = mFields.field( fieldIdx ).typeName();
+      }
+      if ( typeCombo && typeCombo->currentData( ) != fieldTypeName && typeCombo->findData( fieldTypeName ) >= 0 )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Setting field type %1 from %2 to %3" ).arg( fieldName, typeCombo->currentData().toString(), fieldTypeName ), 2 );
+        QgsSignalBlocker( typeCombo )->setCurrentIndex( typeCombo->findData( fieldTypeName ) );
       }
     }
+
   }
 }
 
