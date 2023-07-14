@@ -18,6 +18,7 @@ email                : david dot marteau at 3liz dot com
 #include "qgsdxfwriter.h"
 #include "qgsdxfexport.h"
 #include "qgswmsrenderer.h"
+#include "qgswmsrestorer.h"
 
 namespace QgsWms
 {
@@ -35,6 +36,11 @@ namespace QgsWms
 
     // Write output
     QgsRenderer renderer( context );
+
+    //Layer settings need to be kept until QgsDxfExport::writeToFile has finished
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( context ) );
+
     std::unique_ptr<QgsDxfExport> dxf = renderer.getDxf();
     response.setHeader( "Content-Type", "application/dxf" );
     dxf->writeToFile( response.io(), request.wmsParameters().dxfCodec() );

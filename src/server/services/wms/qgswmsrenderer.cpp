@@ -1026,10 +1026,6 @@ namespace QgsWms
 
   std::unique_ptr<QgsDxfExport> QgsRenderer::getDxf()
   {
-    // init layer restorer before doing anything
-    std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
-
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers );
