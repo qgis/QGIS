@@ -100,7 +100,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
       }
       else
       {
-        QgsDebugError( QStringLiteral( "unsupported boundingRegion format" ) );
+        QgsDebugError( QStringLiteral( "unsupported boundingVolume format" ) );
       }
     }
   }
