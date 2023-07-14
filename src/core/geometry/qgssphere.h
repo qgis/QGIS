@@ -26,6 +26,7 @@
 class QgsPoint;
 class QgsCircle;
 class QgsBox3d;
+class QgsVector3D;
 
 /**
  * \ingroup core
@@ -76,6 +77,16 @@ class CORE_EXPORT QgsSphere
      * \see setCenter()
      */
     QgsPoint center() const SIP_HOLDGIL;
+
+    /**
+     * Returns the vector to the center of the sphere.
+     *
+     * \see centerX()
+     * \see centerY()
+     * \see centerZ()
+     * \see setCenter()
+     */
+    QgsVector3D centerVector() const SIP_HOLDGIL;
 
     /**
      * Returns the x-coordinate of the center of the sphere.

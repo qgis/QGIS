@@ -19,6 +19,7 @@
 #include "qgspoint.h"
 #include "qgscircle.h"
 #include "qgsbox3d.h"
+#include "qgsvector3d.h"
 
 QgsSphere::QgsSphere( double x, double y, double z, double radius )
   : mCenterX( x )
@@ -42,6 +43,11 @@ bool QgsSphere::isEmpty() const
 QgsPoint QgsSphere::center() const
 {
   return QgsPoint( mCenterX, mCenterY, mCenterZ );
+}
+
+QgsVector3D QgsSphere::centerVector() const
+{
+  return QgsVector3D( mCenterX, mCenterY, mCenterZ );
 }
 
 void QgsSphere::setCenter( const QgsPoint &center )
