@@ -17,7 +17,7 @@ from qgis.core import (
     QgsSphere,
     QgsPoint,
     QgsCircle,
-    QgsBox3d
+    QgsVector3D
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -44,6 +44,7 @@ class TestQgsSphere(QgisTestCase):
         self.assertEqual(sphere.centerY(), 2)
         self.assertEqual(sphere.centerZ(), 3)
         self.assertEqual(sphere.center(), QgsPoint(1, 2, 3))
+        self.assertEqual(sphere.centerVector(), QgsVector3D(1, 2, 3))
         self.assertEqual(sphere.radius(), 4)
         self.assertEqual(str(sphere), '<QgsSphere: (1, 2, 3) radius 4>')
 

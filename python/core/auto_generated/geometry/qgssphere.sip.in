@@ -61,6 +61,19 @@ Returns the center point of the sphere.
 .. seealso:: :py:func:`setCenter`
 %End
 
+    QgsVector3D centerVector() const /HoldGIL/;
+%Docstring
+Returns the vector to the center of the sphere.
+
+.. seealso:: :py:func:`centerX`
+
+.. seealso:: :py:func:`centerY`
+
+.. seealso:: :py:func:`centerZ`
+
+.. seealso:: :py:func:`setCenter`
+%End
+
     double centerX() const;
 %Docstring
 Returns the x-coordinate of the center of the sphere.
