@@ -119,6 +119,46 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
             self.assertIn('e575c6f1', layer.dataProvider().htmlMetadata())
             self.assertIn('-16.1901 - 24.1358', layer.dataProvider().htmlMetadata())
 
+    def test_source_bounding_sphere(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmp_file = os.path.join(temp_dir, 'tileset.json')
+            with open(tmp_file, 'wt', encoding='utf-8') as f:
+                f.write("""
+{
+  "asset": {
+    "version": "1.1",
+    "tilesetVersion": "e575c6f1"
+  },
+  "geometricError": 100,
+  "root": {
+    "boundingVolume": {"sphere":[-4595750.5786738498136401,2698725.1282528499141335,-349,1983.5772900785000274]},
+    "geometricError": 100,
+    "refine": "ADD",
+    "children": []
+  }
+}""")
+
+            layer = QgsTiledMeshLayer(tmp_file, 'my layer',
+                                      'cesiumtiles')
+            self.assertTrue(layer.dataProvider().isValid())
+
+            # crs is not specified for this source
+            self.assertFalse(layer.dataProvider().crs().isValid())
+
+            self.assertAlmostEqual(layer.dataProvider().extent().xMinimum(),
+                                   -4597734.155963928, 3)
+            self.assertAlmostEqual(layer.dataProvider().extent().xMaximum(),
+                                   -4593767.001383771, 3)
+            self.assertAlmostEqual(layer.dataProvider().extent().yMinimum(),
+                                   2696741.5509627713, 3)
+            self.assertAlmostEqual(layer.dataProvider().extent().yMaximum(),
+                                   2700708.7055429285, 3)
+
+            # check that version, tileset version, and z range are in html metadata
+            self.assertIn('1.1', layer.dataProvider().htmlMetadata())
+            self.assertIn('e575c6f1', layer.dataProvider().htmlMetadata())
+            self.assertIn('-2,332.58 - 1,634.58', layer.dataProvider().htmlMetadata())
+
 
 if __name__ == '__main__':
     unittest.main()

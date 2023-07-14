@@ -10,6 +10,7 @@
 
 
 
+
 class QgsOrientedBoundingBox
 {
 %Docstring(signature="appended")
@@ -107,6 +108,11 @@ Parses a ``region`` object from a Cesium JSON document to a 3D box.
 Parses a ``box`` object from a Cesium JSON document to an oriented bounding box.
 %End
 
+
+    static QgsSphere parseSphere( const QVariantList &sphere );
+%Docstring
+Parses a ``sphere`` object from a Cesium JSON document.
+%End
 };
 
 /************************************************************************

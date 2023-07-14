@@ -23,6 +23,8 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscesiumutils.h"
+#include "qgssphere.h"
+#include "qgslogger.h"
 
 #include <QUrl>
 #include <QIcon>
@@ -82,9 +84,23 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
           mExtent = QgsRectangle( xMin, yMin, xMax, yMax );
         }
       }
+      else if ( rootBoundingVolume.contains( "sphere" ) )
+      {
+        const QgsSphere sphere = QgsCesiumUtils::parseSphere( rootBoundingVolume["sphere"] );
+        if ( !sphere.isNull() )
+        {
+          const QgsBox3d rootRegion = sphere.boundingBox();
+          mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
+          const double xMin = rootRegion.xMinimum();
+          const double xMax = rootRegion.xMaximum();
+          const double yMin = rootRegion.yMinimum();
+          const double yMax = rootRegion.yMaximum();
+          mExtent = QgsRectangle( xMin, yMin, xMax, yMax );
+        }
+      }
       else
       {
-        // TODO: handle sphere bounding volumes
+        QgsDebugError( QStringLiteral( "unsupported boundingRegion format" ) );
       }
     }
   }

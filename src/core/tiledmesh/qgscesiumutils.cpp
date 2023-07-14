@@ -19,6 +19,7 @@
 #include "qgscesiumutils.h"
 #include "nlohmann/json.hpp"
 #include "qgsjsonutils.h"
+#include "qgssphere.h"
 
 QgsBox3d QgsCesiumUtils::parseRegion( const json &region )
 {
@@ -61,6 +62,37 @@ QgsOrientedBoundingBox QgsCesiumUtils::parseBox( const QVariantList &box )
 
   return QgsOrientedBoundingBox::fromJson( QgsJsonUtils::jsonFromVariant( box ) );
 }
+
+QgsSphere QgsCesiumUtils::parseSphere( const json &sphere )
+{
+  if ( sphere.size() != 4 )
+    return QgsSphere();
+
+  try
+  {
+    const double centerX = sphere[0].get<double>();
+    const double centerY = sphere[1].get<double>();
+    const double centerZ = sphere[2].get<double>();
+    const double radius = sphere[3].get<double>();
+    return QgsSphere( centerX, centerY, centerZ, radius );
+  }
+  catch ( nlohmann::json::exception & )
+  {
+    return QgsSphere();
+  }
+}
+
+QgsSphere QgsCesiumUtils::parseSphere( const QVariantList &sphere )
+{
+  if ( sphere.size() != 4 )
+    return QgsSphere();
+
+  return parseSphere( QgsJsonUtils::jsonFromVariant( sphere ) );
+}
+
+//
+// QgsOrientedBoundingBox
+//
 
 QgsOrientedBoundingBox QgsOrientedBoundingBox::fromJson( const json &json )
 {

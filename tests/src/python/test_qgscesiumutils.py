@@ -111,6 +111,23 @@ class TestQgsCesiumUtils(QgisTestCase):
         self.assertAlmostEqual(bounds.zMinimum(), 3 - math.sqrt(2), 5)
         self.assertAlmostEqual(bounds.zMaximum(), 3 + math.sqrt(2), 5)
 
+    def test_parse_sphere(self):
+        sphere = QgsCesiumUtils.parseSphere([])
+        self.assertTrue(sphere.isNull())
+
+        # invalid length (needs 4 elements)
+        self.assertTrue(QgsCesiumUtils.parseSphere([1, 2, 3]).isNull())
+        self.assertTrue(QgsCesiumUtils.parseSphere([1, 2, 3, 4, 5, 6, 7]).isNull())
+        # not doubles
+        self.assertTrue(QgsCesiumUtils.parseSphere([1, 2, 'a', 4]).isNull())
+
+        # valid
+        sphere = QgsCesiumUtils.parseSphere([1, 2, 3, 10])
+        self.assertEqual(sphere.centerX(), 1)
+        self.assertEqual(sphere.centerY(), 2)
+        self.assertEqual(sphere.centerZ(), 3)
+        self.assertEqual(sphere.radius(), 10)
+
 
 if __name__ == '__main__':
     unittest.main()
