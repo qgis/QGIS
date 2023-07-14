@@ -166,5 +166,7 @@ QString QgsRasterBandComboBox::displayBandName( QgsRasterDataProvider *provider,
   if ( !provider )
     return QString();
 
-  return provider->displayBandName( band );
+  QString name {  provider->displayBandName( band ) };
+  const QString description { provider->bandDescription( band ) };
+  return description.isEmpty() ? name : QStringLiteral( "%1 - %2" ).arg( name, description );
 }

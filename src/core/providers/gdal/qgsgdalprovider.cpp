@@ -626,6 +626,39 @@ QString QgsGdalProvider::htmlMetadata()
   return myMetadata;
 }
 
+QString QgsGdalProvider::bandDescription( int bandNumber )
+{
+  QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return QString();
+
+  GDALDriverH hDriver = GDALGetDriverByName( mDriverName.toLocal8Bit().constData() );
+  if ( !hDriver )
+    return QString();
+
+  if ( GDALGetRasterCount( mGdalDataset ) > 0 )
+  {
+    GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, bandNumber );
+    if ( gdalBand )
+    {
+      char **GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
+      if ( GDALmetadata )
+      {
+        const QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
+        const auto description = std::find_if( metadata.constBegin(), metadata.constEnd(), []( const QString & md )
+        {
+          return md.startsWith( QStringLiteral( "DESCRIPTION=" ) );
+        } );
+        if ( description != metadata.constEnd() )
+        {
+          return description->mid( 12 );
+        }
+      }
+    }
+  }
+  return QString();
+}
+
 QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );

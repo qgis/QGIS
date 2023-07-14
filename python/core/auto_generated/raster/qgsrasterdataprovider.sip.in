@@ -786,6 +786,8 @@ Data providers that have NativeRasterAttributeTable provider capability will try
 .. versionadded:: 3.30
 %End
 
+    virtual QString bandDescription( int bandNumber );   // Note: not const because GDAL init on demand
+
 
   signals:
 

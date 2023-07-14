@@ -763,6 +763,12 @@ bool QgsRasterDataProvider::readNativeAttributeTable( QString *errorMessage )
   return false;
 }
 
+QString QgsRasterDataProvider::bandDescription( int bandNumber )
+{
+  Q_UNUSED( bandNumber )
+  return QString();
+}
+
 bool QgsRasterDataProvider::readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

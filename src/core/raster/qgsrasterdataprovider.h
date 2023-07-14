@@ -831,6 +831,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual bool readNativeAttributeTable( QString *errorMessage SIP_OUT  = nullptr );
 
+    /**
+     * Returns the description for band \a bandNumber, or an empty string if the band is not valid or has not description.
+     * The default implementation returns an empty string.
+     * \since QGIS 3.34
+     */
+    virtual QString bandDescription( int bandNumber );   // Note: not const because GDAL init on demand
+
 
   signals:
 
