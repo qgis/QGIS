@@ -34,6 +34,8 @@ class TestQgsSphere(QgisTestCase):
         sphere = QgsSphere()
         self.assertTrue(sphere.isNull())
         self.assertEqual(str(sphere), '<QgsSphere: null>')
+        # a null sphere should also be considered empty
+        self.assertTrue(sphere.isEmpty())
 
     def test_sphere(self):
         sphere = QgsSphere(1, 2, 3, 4)
