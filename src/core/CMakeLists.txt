@@ -853,6 +853,7 @@ set(QGIS_CORE_SRCS
   geometry/qgsrectangle.cpp
   geometry/qgsreferencedgeometry.cpp
   geometry/qgsregularpolygon.cpp
+  geometry/qgssphere.cpp
   geometry/qgssurface.cpp
   geometry/qgstriangle.cpp
   geometry/qgsvertexid.cpp
@@ -1436,6 +1437,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsrectangle.h
   geometry/qgsreferencedgeometry.h
   geometry/qgsregularpolygon.h
+  geometry/qgssphere.h
   geometry/qgssurface.h
   geometry/qgstriangle.h
   geometry/qgsvertexid.h
