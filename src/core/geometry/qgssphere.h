@@ -181,7 +181,7 @@ class CORE_EXPORT QgsSphere
     double mCenterX = std::numeric_limits< double >::quiet_NaN();
     double mCenterY = std::numeric_limits< double >::quiet_NaN();
     double mCenterZ = std::numeric_limits< double >::quiet_NaN();
-    double mRadius = 1;
+    double mRadius = 0;
 
 };
 
