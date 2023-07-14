@@ -28,6 +28,8 @@
 using namespace nlohmann;
 #endif
 
+class QgsSphere;
+
 /**
  * \brief Represents a oriented (rotated) bounding box in 3 dimensions.
  *
@@ -150,6 +152,20 @@ class CORE_EXPORT QgsCesiumUtils
     */
     static QgsOrientedBoundingBox parseBox( const QVariantList &box );
 
+#ifndef SIP_RUN
+
+    /**
+    * Parses a \a sphere object from a Cesium JSON document.
+    *
+    * \note Not available in Python bindings.
+    */
+    static QgsSphere parseSphere( const json &sphere );
+#endif
+
+    /**
+    * Parses a \a sphere object from a Cesium JSON document.
+    */
+    static QgsSphere parseSphere( const QVariantList &sphere );
 };
 
 #endif // QGSCESIUMUTILS_H
