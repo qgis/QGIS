@@ -614,7 +614,7 @@ QString QgsExpression::helpText( QString name )
             helpContents += delim;
             helpContents += QStringLiteral( "<span class=\"argument\">%2%3</span>" ).arg(
                               a.mArg,
-                              a.mDefaultVal.isEmpty() ? QString() : '=' + a.mDefaultVal
+                              a.mDefaultVal.isEmpty() ? QString() : ":=" + a.mDefaultVal
                             );
 
             if ( a.mOptional )
