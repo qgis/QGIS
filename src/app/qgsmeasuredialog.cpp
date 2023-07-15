@@ -750,8 +750,8 @@ void QgsMeasureDialog::copyMeasurements()
   auto replaceDecimalSeparator = [ alwaysUseDecimalPoint ]( const QString & value ) -> QString
   {
     QString result = value;
-    if ( alwaysUseDecimalPoint && QLocale().decimalPoint() != QLatin1Char( '.' ) )
-      result.replace( QLocale().decimalPoint(), QLatin1Char( '.' ) );
+    if ( alwaysUseDecimalPoint && QLocale().decimalPoint() != QStringLiteral( "." ) )
+      result.replace( QLocale().decimalPoint(), QStringLiteral( "." ) );
     return result;
   };
 

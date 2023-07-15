@@ -2602,7 +2602,7 @@ void QgsOptions::alwaysUseDecimalPointChanged( bool checked )
   // In the Measure Tool copy feature,
   // comma is only allowed as field separator if the locale do not use it as decimal separator
   // or if the user has overridden the decimal separator to always be a point
-  mSeparatorComma->setEnabled( checked || QLocale().decimalPoint() != QLatin1Char( ',' ) );
+  mSeparatorComma->setEnabled( checked || QLocale().decimalPoint() != QStringLiteral( "," ) );
 
   // If comma was checked and is now disabled, switch to semicolon
   if ( mSeparatorComma->isChecked() && !mSeparatorComma->isEnabled() )
