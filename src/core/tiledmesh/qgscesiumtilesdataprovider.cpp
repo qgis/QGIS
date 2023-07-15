@@ -25,6 +25,7 @@
 #include "qgscesiumutils.h"
 #include "qgssphere.h"
 #include "qgslogger.h"
+#include "qgsorientedboundingbox.h"
 
 #include <QUrl>
 #include <QIcon>
@@ -72,7 +73,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
       }
       else if ( rootBoundingVolume.contains( "box" ) )
       {
-        const QgsOrientedBoundingBox bbox = QgsOrientedBoundingBox::fromJson( rootBoundingVolume["box"] );
+        const QgsOrientedBoundingBox bbox = QgsCesiumUtils::parseBox( rootBoundingVolume["box"] );
         if ( !bbox.isNull() )
         {
           const QgsBox3d rootRegion = bbox.extent();

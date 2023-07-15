@@ -20,6 +20,7 @@
 #include "nlohmann/json.hpp"
 #include "qgsjsonutils.h"
 #include "qgssphere.h"
+#include "qgsorientedboundingbox.h"
 
 QgsBox3d QgsCesiumUtils::parseRegion( const json &region )
 {
@@ -52,7 +53,23 @@ QgsOrientedBoundingBox QgsCesiumUtils::parseBox( const json &box )
   if ( box.size() != 12 )
     return QgsOrientedBoundingBox();
 
-  return QgsOrientedBoundingBox::fromJson( box );
+  try
+  {
+    QgsOrientedBoundingBox res;
+    for ( int i = 0; i < 3; ++i )
+    {
+      res.mCenter[i] = box[i].get<double>();
+    }
+    for ( int i = 0; i < 9; ++i )
+    {
+      res.mHalfAxes[i] = box[i + 3].get<double>();
+    }
+    return res;
+  }
+  catch ( nlohmann::json::exception & )
+  {
+    return QgsOrientedBoundingBox();
+  }
 }
 
 QgsOrientedBoundingBox QgsCesiumUtils::parseBox( const QVariantList &box )
@@ -60,7 +77,7 @@ QgsOrientedBoundingBox QgsCesiumUtils::parseBox( const QVariantList &box )
   if ( box.size() != 12 )
     return QgsOrientedBoundingBox();
 
-  return QgsOrientedBoundingBox::fromJson( QgsJsonUtils::jsonFromVariant( box ) );
+  return parseBox( QgsJsonUtils::jsonFromVariant( box ) );
 }
 
 QgsSphere QgsCesiumUtils::parseSphere( const json &sphere )
@@ -88,83 +105,4 @@ QgsSphere QgsCesiumUtils::parseSphere( const QVariantList &sphere )
     return QgsSphere();
 
   return parseSphere( QgsJsonUtils::jsonFromVariant( sphere ) );
-}
-
-//
-// QgsOrientedBoundingBox
-//
-
-QgsOrientedBoundingBox QgsOrientedBoundingBox::fromJson( const json &json )
-{
-  try
-  {
-    QgsOrientedBoundingBox res;
-    for ( int i = 0; i < 3; ++i )
-    {
-      res.mCenter[i] = json[i].get<double>();
-    }
-    for ( int i = 0; i < 9; ++i )
-    {
-      res.mHalfAxes[i] = json[i + 3].get<double>();
-    }
-    return res;
-  }
-  catch ( nlohmann::json::exception & )
-  {
-    return QgsOrientedBoundingBox();
-  }
-}
-
-QgsOrientedBoundingBox::QgsOrientedBoundingBox() = default;
-
-QgsOrientedBoundingBox::QgsOrientedBoundingBox( const QList<double> &center, QList<double> &halfAxes )
-{
-  if ( center.size() == 3 )
-  {
-    mCenter[0] = center.at( 0 );
-    mCenter[1] = center.at( 1 );
-    mCenter[2] = center.at( 2 );
-  }
-  if ( halfAxes.size() == 9 )
-  {
-    for ( int i = 0; i < 9; ++i )
-    {
-      mHalfAxes[i] = halfAxes.at( i );
-    }
-  }
-}
-
-bool QgsOrientedBoundingBox::isNull() const
-{
-  return std::isnan( mCenter[0] ) || std::isnan( mCenter[1] ) || std::isnan( mCenter[2] );
-}
-
-QList< double > QgsOrientedBoundingBox::halfAxesList() const
-{
-  QList< double > res;
-  res.reserve( 9 );
-  for ( int i = 0; i < 9; ++i )
-  {
-    res.append( mHalfAxes[i] );
-  }
-  return res;
-}
-
-QgsBox3d QgsOrientedBoundingBox::extent() const
-{
-  const double extent[3]
-  {
-    std::fabs( mHalfAxes[0] ) + std::fabs( mHalfAxes[3] ) + std::fabs( mHalfAxes[6] ),
-    std::fabs( mHalfAxes[1] ) + std::fabs( mHalfAxes[4] ) + std::fabs( mHalfAxes[7] ),
-    std::fabs( mHalfAxes[2] ) + std::fabs( mHalfAxes[5] ) + std::fabs( mHalfAxes[8] ),
-  };
-
-  const double minX = mCenter[0] - extent[0];
-  const double maxX = mCenter[0] + extent[0];
-  const double minY = mCenter[1] - extent[1];
-  const double maxY = mCenter[1] + extent[1];
-  const double minZ = mCenter[2] - extent[2];
-  const double maxZ = mCenter[2] + extent[2];
-
-  return QgsBox3d( minX, minY, minZ, maxX, maxY, maxZ );
 }

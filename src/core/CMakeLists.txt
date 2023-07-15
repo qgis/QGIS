@@ -847,6 +847,7 @@ set(QGIS_CORE_SRCS
   geometry/qgsmultipoint.cpp
   geometry/qgsmultipolygon.cpp
   geometry/qgsmultisurface.cpp
+  geometry/qgsorientedboundingbox.cpp
   geometry/qgspoint.cpp
   geometry/qgspolygon.cpp
   geometry/qgsquadrilateral.cpp
@@ -1431,6 +1432,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsmultipoint.h
   geometry/qgsmultipolygon.h
   geometry/qgsmultisurface.h
+  geometry/qgsorientedboundingbox.h
   geometry/qgspoint.h
   geometry/qgspolygon.h
   geometry/qgsquadrilateral.h
