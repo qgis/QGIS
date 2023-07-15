@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsorientedboundingbox.h
+                         qgsorientedbox3d.h
                          --------------------
     begin                : July 2023
     copyright            : (C) 2023 by Nyall Dawson
@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSORIENTEDBOUNDINGBOX_H
-#define QGSORIENTEDBOUNDINGBOX_H
+#ifndef QGSORIENTEDBOX3D_H
+#define QGSORIENTEDBOX3D_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -28,7 +28,7 @@
 class QgsBox3d;
 
 /**
- * \brief Represents a oriented (rotated) bounding box in 3 dimensions.
+ * \brief Represents a oriented (rotated) box in 3 dimensions.
  *
  * \ingroup core
  *
@@ -36,22 +36,22 @@ class QgsBox3d;
  *
  * \since QGIS 3.34
  */
-class CORE_EXPORT QgsOrientedBoundingBox
+class CORE_EXPORT QgsOrientedBox3D
 {
   public:
 
     /**
-     * Constructor for a null bounding box.
+     * Constructor for a null oriented box.
      */
-    QgsOrientedBoundingBox();
+    QgsOrientedBox3D();
 
     /**
-     * Constructor for a oriented bounding box, with a specified center and half axes matrix.
+     * Constructor for a oriented box, with a specified center and half axes matrix.
      */
-    QgsOrientedBoundingBox( const QList<double> &center, QList< double > &halfAxes );
+    QgsOrientedBox3D( const QList<double> &center, QList< double > &halfAxes );
 
     /**
-     * Returns TRUE if the box is a null bounding box.
+     * Returns TRUE if the box is a null box.
      */
     bool isNull() const;
 
@@ -104,4 +104,4 @@ class CORE_EXPORT QgsOrientedBoundingBox
 };
 
 
-#endif // QGSORIENTEDBOUNDINGBOX_H
+#endif // QGSORIENTEDBOX3D_H

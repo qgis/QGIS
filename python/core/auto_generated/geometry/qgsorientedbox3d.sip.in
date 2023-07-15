@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/geometry/qgsorientedboundingbox.h                           *
+ * src/core/geometry/qgsorientedbox3d.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -11,10 +11,10 @@
 
 
 
-class QgsOrientedBoundingBox
+class QgsOrientedBox3D
 {
 %Docstring(signature="appended")
-Represents a oriented (rotated) bounding box in 3 dimensions.
+Represents a oriented (rotated) box in 3 dimensions.
 
 .. warning::
 
@@ -24,23 +24,23 @@ Represents a oriented (rotated) bounding box in 3 dimensions.
 %End
 
 %TypeHeaderCode
-#include "qgsorientedboundingbox.h"
+#include "qgsorientedbox3d.h"
 %End
   public:
 
-    QgsOrientedBoundingBox();
+    QgsOrientedBox3D();
 %Docstring
-Constructor for a null bounding box.
+Constructor for a null oriented box.
 %End
 
-    QgsOrientedBoundingBox( const QList<double> &center, QList< double > &halfAxes );
+    QgsOrientedBox3D( const QList<double> &center, QList< double > &halfAxes );
 %Docstring
-Constructor for a oriented bounding box, with a specified center and half axes matrix.
+Constructor for a oriented box, with a specified center and half axes matrix.
 %End
 
     bool isNull() const;
 %Docstring
-Returns ``True`` if the box is a null bounding box.
+Returns ``True`` if the box is a null box.
 %End
 
     double centerX() const;
@@ -87,7 +87,7 @@ Returns the overall bounding box of the object.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/geometry/qgsorientedboundingbox.h                           *
+ * src/core/geometry/qgsorientedbox3d.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
