@@ -101,6 +101,9 @@
 #include "qgspluginlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
+#include "qgsprocessingparameteralignrasterlayers.h"
+#include "qgsprocessingalignrasterlayerswidgetwrapper.h"
+
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -315,6 +318,7 @@ class TestProcessingGui : public QObject
     void testFolderOutWrapper();
     void testTinInputLayerWrapper();
     void testDxfLayersWrapper();
+    void testAlignRasterLayersWrapper();
     void testMeshDatasetWrapperLayerInProject();
     void testMeshDatasetWrapperLayerOutsideProject();
     void testModelGraphicsView();
@@ -9944,6 +9948,41 @@ void TestProcessingGui::testDxfLayersWrapper()
   QVERIFY( definition.checkValueIsAcceptable( value, &context ) );
   QString valueAsPythonString = definition.valueAsPythonString( value, context );
   QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1}]" ).arg( vectorLayer->source() ) );
+}
+
+void TestProcessingGui::testAlignRasterLayersWrapper()
+{
+  QgsProcessingParameterAlignRasterLayers definition( QStringLiteral( "Raster layers" ) ) ;
+  QgsProcessingAlignRasterLayersWidgetWrapper wrapper;
+
+  std::unique_ptr<QWidget> w( wrapper.createWidget() );
+  QVERIFY( w );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingTinInputLayersWidgetWrapper::widgetValueHasChanged );
+
+  QgsProcessingContext context;
+  QgsProject project;
+  context.setProject( &project );
+  QgsRasterLayer *rasterLayer = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif", QStringLiteral( "raster" ) );
+  project.addMapLayer( rasterLayer );
+
+  QVariantList layerList;
+  QVariantMap layerMap;
+  layerMap["inputFile"] = rasterLayer->source();
+  layerMap["outputFile"] = "";
+  layerMap["resampleMethod"] = 1;
+  layerMap["rescale"] = false;
+  layerList.append( layerMap );
+
+  QVERIFY( definition.checkValueIsAcceptable( layerList, &context ) );
+  wrapper.setWidgetValue( layerList, context );
+  QCOMPARE( spy.count(), 1 );
+
+  QVariant value = wrapper.widgetValue();
+
+  QVERIFY( definition.checkValueIsAcceptable( value, &context ) );
+  QString valueAsPythonString = definition.valueAsPythonString( value, context );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'inputFile': '%1','outputFile': '%2','resampleMethod': 1,'rescale': False}]" ).arg( rasterLayer->source() ).arg( layerMap["outputFile"].toString() ) );
 }
 
 void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
