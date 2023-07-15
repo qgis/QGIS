@@ -1,6 +1,6 @@
-"""QGIS Unit tests for QgsOrientedBoundingBox
+"""QGIS Unit tests for QgsOrientedBox3D
 
-From build dir, run: ctest -R QgsOrientedBoundingBox -V
+From build dir, run: ctest -R QgsOrientedBox3D -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 import math
 import qgis  # NOQA
 from qgis.core import (
-    QgsOrientedBoundingBox
+    QgsOrientedBox3D
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -25,27 +25,27 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsOrientedBoundingBox(QgisTestCase):
+class TestQgsOrientedBox3D(QgisTestCase):
 
     def test_oriented_bounding_box(self):
-        box = QgsOrientedBoundingBox()
+        box = QgsOrientedBox3D()
         self.assertTrue(box.isNull())
 
         # valid
-        box = QgsOrientedBoundingBox([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        box = QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
         self.assertEqual(box.centerX(), 1)
         self.assertEqual(box.centerY(), 2)
         self.assertEqual(box.centerZ(), 3)
         self.assertEqual(box.halfAxes(), [10.0, 0.0, 0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 30.0])
 
-        box = QgsOrientedBoundingBox([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])
+        box = QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])
         self.assertEqual(box.centerX(), 1)
         self.assertEqual(box.centerY(), 2)
         self.assertEqual(box.centerZ(), 3)
         self.assertEqual(box.halfAxes(), [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0])
 
         # 45 degree y axis rotation
-        box = QgsOrientedBoundingBox([1, 2, 3],
+        box = QgsOrientedBox3D([1, 2, 3],
                                      [math.cos(math.pi / 4), 0, math.sin(math.pi / 4),
                                       0, 1, 0,
                                       -math.sin(math.pi / 4), 0, math.cos(math.pi / 4)])
@@ -55,7 +55,7 @@ class TestQgsOrientedBoundingBox(QgisTestCase):
         self.assertEqual(box.halfAxes(), [0.7071067811865476, 0.0, 0.7071067811865475, 0.0, 1.0, 0.0, -0.7071067811865475, 0.0, 0.7071067811865476])
 
     def test_box_extent(self):
-        box = QgsOrientedBoundingBox([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        box = QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
         bounds = box.extent()
         self.assertEqual(bounds.xMinimum(), -9)
         self.assertEqual(bounds.xMaximum(), 11)
@@ -64,7 +64,7 @@ class TestQgsOrientedBoundingBox(QgisTestCase):
         self.assertEqual(bounds.zMinimum(), -27)
         self.assertEqual(bounds.zMaximum(), 33)
 
-        box = QgsOrientedBoundingBox([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])
+        box = QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])
         bounds = box.extent()
         self.assertEqual(bounds.xMinimum(), 0)
         self.assertEqual(bounds.xMaximum(), 2)
@@ -74,7 +74,7 @@ class TestQgsOrientedBoundingBox(QgisTestCase):
         self.assertEqual(bounds.zMaximum(), 4)
 
         # 45 degree y axis rotation
-        box = QgsOrientedBoundingBox([1, 2, 3],
+        box = QgsOrientedBox3D([1, 2, 3],
                                      [math.cos(math.pi / 4), 0, math.sin(math.pi / 4),
                                       0, 1, 0,
                                       -math.sin(math.pi / 4), 0, math.cos(math.pi / 4)])

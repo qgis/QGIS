@@ -20,7 +20,7 @@
 #include "nlohmann/json.hpp"
 #include "qgsjsonutils.h"
 #include "qgssphere.h"
-#include "qgsorientedboundingbox.h"
+#include "qgsorientedbox3d.h"
 
 QgsBox3d QgsCesiumUtils::parseRegion( const json &region )
 {
@@ -48,14 +48,14 @@ QgsBox3d QgsCesiumUtils::parseRegion( const QVariantList &region )
   return parseRegion( QgsJsonUtils::jsonFromVariant( region ) );
 }
 
-QgsOrientedBoundingBox QgsCesiumUtils::parseBox( const json &box )
+QgsOrientedBox3D QgsCesiumUtils::parseBox( const json &box )
 {
   if ( box.size() != 12 )
-    return QgsOrientedBoundingBox();
+    return QgsOrientedBox3D();
 
   try
   {
-    QgsOrientedBoundingBox res;
+    QgsOrientedBox3D res;
     for ( int i = 0; i < 3; ++i )
     {
       res.mCenter[i] = box[i].get<double>();
@@ -68,14 +68,14 @@ QgsOrientedBoundingBox QgsCesiumUtils::parseBox( const json &box )
   }
   catch ( nlohmann::json::exception & )
   {
-    return QgsOrientedBoundingBox();
+    return QgsOrientedBox3D();
   }
 }
 
-QgsOrientedBoundingBox QgsCesiumUtils::parseBox( const QVariantList &box )
+QgsOrientedBox3D QgsCesiumUtils::parseBox( const QVariantList &box )
 {
   if ( box.size() != 12 )
-    return QgsOrientedBoundingBox();
+    return QgsOrientedBox3D();
 
   return parseBox( QgsJsonUtils::jsonFromVariant( box ) );
 }

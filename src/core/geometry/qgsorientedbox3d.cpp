@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsorientedboundingbox.cpp
+                         qgsorientedbox3d.cpp
                          --------------------
     begin                : July 2023
     copyright            : (C) 2023 by Nyall Dawson
@@ -16,12 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsorientedboundingbox.h"
+#include "qgsorientedbox3d.h"
 #include "qgsbox3d.h"
 
-QgsOrientedBoundingBox::QgsOrientedBoundingBox() = default;
+QgsOrientedBox3D::QgsOrientedBox3D() = default;
 
-QgsOrientedBoundingBox::QgsOrientedBoundingBox( const QList<double> &center, QList<double> &halfAxes )
+QgsOrientedBox3D::QgsOrientedBox3D( const QList<double> &center, QList<double> &halfAxes )
 {
   if ( center.size() == 3 )
   {
@@ -38,12 +38,12 @@ QgsOrientedBoundingBox::QgsOrientedBoundingBox( const QList<double> &center, QLi
   }
 }
 
-bool QgsOrientedBoundingBox::isNull() const
+bool QgsOrientedBox3D::isNull() const
 {
   return std::isnan( mCenter[0] ) || std::isnan( mCenter[1] ) || std::isnan( mCenter[2] );
 }
 
-QList< double > QgsOrientedBoundingBox::halfAxesList() const
+QList< double > QgsOrientedBox3D::halfAxesList() const
 {
   QList< double > res;
   res.reserve( 9 );
@@ -54,7 +54,7 @@ QList< double > QgsOrientedBoundingBox::halfAxesList() const
   return res;
 }
 
-QgsBox3d QgsOrientedBoundingBox::extent() const
+QgsBox3d QgsOrientedBox3D::extent() const
 {
   const double extent[3]
   {

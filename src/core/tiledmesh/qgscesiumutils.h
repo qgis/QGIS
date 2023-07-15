@@ -29,7 +29,7 @@ using namespace nlohmann;
 #endif
 
 class QgsSphere;
-class QgsOrientedBoundingBox;
+class QgsOrientedBox3D;
 
 /**
  * \brief Contains utilities for working with Cesium data.
@@ -64,13 +64,13 @@ class CORE_EXPORT QgsCesiumUtils
     *
     * \note Not available in Python bindings.
     */
-    static QgsOrientedBoundingBox parseBox( const json &box );
+    static QgsOrientedBox3D parseBox( const json &box );
 #endif
 
     /**
     * Parses a \a box object from a Cesium JSON document to an oriented bounding box.
     */
-    static QgsOrientedBoundingBox parseBox( const QVariantList &box );
+    static QgsOrientedBox3D parseBox( const QVariantList &box );
 
 #ifndef SIP_RUN
 
