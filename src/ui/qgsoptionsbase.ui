@@ -3062,32 +3062,32 @@
                  <property name="title">
                   <string>Measure Tool Copy Settings</string>
                  </property>
-                 <layout class="QFormLayout" name="formLayout">
+                 <layout class="QGridLayout" name="gridLayout_20">
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_22">
-                    <property name="toolTip">
-                     <string>C</string>
-                    </property>
                     <property name="text">
                      <string>Include header</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QCheckBox" name="mIncludeHeader">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_23">
+                    <property name="text">
+                     <string>Separator</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QCheckBox" name="mAlwaysUseDecimalPoint">
                     <property name="text">
                      <string/>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_23">
-                    <property name="text">
-                     <string>Separator</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
+                  <item row="2" column="1">
                    <layout class="QGridLayout" name="gridLayout_6">
                     <item row="0" column="0">
                      <widget class="QRadioButton" name="mSeparatorComma">
@@ -3155,6 +3155,23 @@
                      </layout>
                     </item>
                    </layout>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QCheckBox" name="mIncludeHeader">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_24">
+                    <property name="toolTip">
+                     <string>Use a dot as the decimal separator, even if the current locale uses a different character</string>
+                    </property>
+                    <property name="text">
+                     <string>Always use decimal point</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -5249,20 +5266,15 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsAuthSettingsWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsauthsettingswidget.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
@@ -5276,6 +5288,17 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsAuthSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsauthsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -5285,12 +5308,6 @@ p, li { white-space: pre-wrap; }
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
