@@ -46,9 +46,9 @@ class TestQgsOrientedBox3D(QgisTestCase):
 
         # 45 degree y axis rotation
         box = QgsOrientedBox3D([1, 2, 3],
-                                     [math.cos(math.pi / 4), 0, math.sin(math.pi / 4),
-                                      0, 1, 0,
-                                      -math.sin(math.pi / 4), 0, math.cos(math.pi / 4)])
+                               [math.cos(math.pi / 4), 0, math.sin(math.pi / 4),
+                                0, 1, 0,
+                                -math.sin(math.pi / 4), 0, math.cos(math.pi / 4)])
         self.assertEqual(box.centerX(), 1)
         self.assertEqual(box.centerY(), 2)
         self.assertEqual(box.centerZ(), 3)
@@ -75,9 +75,9 @@ class TestQgsOrientedBox3D(QgisTestCase):
 
         # 45 degree y axis rotation
         box = QgsOrientedBox3D([1, 2, 3],
-                                     [math.cos(math.pi / 4), 0, math.sin(math.pi / 4),
-                                      0, 1, 0,
-                                      -math.sin(math.pi / 4), 0, math.cos(math.pi / 4)])
+                               [math.cos(math.pi / 4), 0, math.sin(math.pi / 4),
+                                0, 1, 0,
+                                -math.sin(math.pi / 4), 0, math.cos(math.pi / 4)])
         bounds = box.extent()
         self.assertAlmostEqual(bounds.xMinimum(), 1 - math.sqrt(2), 5)
         self.assertAlmostEqual(bounds.xMaximum(), 1 + math.sqrt(2), 5)
