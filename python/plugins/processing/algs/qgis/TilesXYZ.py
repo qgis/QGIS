@@ -22,6 +22,7 @@ __copyright__ = '(C) 2019 by Lutra Consulting Limited'
 import os
 import math
 import re
+from typing import List, Tuple
 import urllib.parse
 from uuid import uuid4
 
@@ -57,14 +58,14 @@ from processing.core.ProcessingConfig import ProcessingConfig
 
 
 # TMS functions taken from https://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/ #spellok
-def tms(ytile, zoom):
+def tms(ytile: float, zoom: int) -> int:
     n = 2.0 ** zoom
     ytile = n - ytile - 1
     return int(ytile)
 
 
 # Math functions taken from https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames #spellok
-def deg2num(lat_deg, lon_deg, zoom):
+def deg2num(lat_deg: float, lon_deg: float, zoom: int) -> Tuple[int, int]:
     lat_rad = math.radians(lat_deg)
     n = 2.0 ** zoom
     xtile = int((lon_deg + 180.0) / 360.0 * n)
@@ -73,7 +74,7 @@ def deg2num(lat_deg, lon_deg, zoom):
 
 
 # Math functions taken from https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames #spellok
-def num2deg(xtile, ytile, zoom):
+def num2deg(xtile: int, ytile: int, zoom: int) -> Tuple[float, float]:
     n = 2.0 ** zoom
     lon_deg = xtile / n * 360.0 - 180.0
     lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
@@ -83,7 +84,7 @@ def num2deg(xtile, ytile, zoom):
 
 class Tile:
 
-    def __init__(self, x, y, z):
+    def __init__(self, x: int, y: int, z: int):
         self.x = x
         self.y = y
         self.z = z
@@ -98,15 +99,15 @@ class MetaTile:
 
     def __init__(self):
         # list of tuple(row index, column index, Tile)
-        self.tiles = []
+        self.tiles: List[Tuple[int, int, Tile]] = []
 
-    def add_tile(self, row, column, tile):
+    def add_tile(self, row: int, column: int, tile: Tile):
         self.tiles.append((row, column, tile))
 
-    def rows(self):
+    def rows(self) -> int:
         return max([r for r, _, _ in self.tiles]) + 1
 
-    def columns(self):
+    def columns(self) -> int:
         return max([c for _, c, _ in self.tiles]) + 1
 
     def extent(self):
@@ -116,23 +117,34 @@ class MetaTile:
         lat2, lon2 = num2deg(last.x + 1, last.y + 1, first.z)
         return [lon1, lat2, lon2, lat1]
 
-
-def get_metatiles(extent, zoom, size=4):
+def get_tile_based_extent(extent: Tuple[float, float, float, float], zoom: int) -> Tuple[int, int, int, int]:
     west_edge, south_edge, east_edge, north_edge = extent
     left_tile, top_tile = deg2num(north_edge, west_edge, zoom)
     right_tile, bottom_tile = deg2num(south_edge, east_edge, zoom)
+    return left_tile, top_tile, right_tile, bottom_tile
 
-    metatiles = {}
-    for i, x in enumerate(range(left_tile, right_tile + 1)):
-        for j, y in enumerate(range(top_tile, bottom_tile + 1)):
-            meta_key = f'{int(i / size)}:{int(j / size)}'
-            if meta_key not in metatiles:
-                metatiles[meta_key] = MetaTile()
-            metatile = metatiles[meta_key]
-            metatile.add_tile(i % size, j % size, Tile(x, y, zoom))
+def get_metatiles(extent: Tuple[float, float, float, float], zoom: int, size=4):
+    left_tile, top_tile, right_tile, bottom_tile = get_tile_based_extent(extent, zoom)
+    
+    meta_row_max = int((bottom_tile - top_tile) / size) + 1
+    meta_col_max = int((right_tile - left_tile) / size) + 1
+    for meta_col in range(meta_col_max):
+        for meta_row in range(meta_row_max):
+            metatile = MetaTile()
+            for i in range(size):
+                for j in range(size):
+                    x = left_tile + meta_col * size + i
+                    y = top_tile + meta_row * size + j
+                    if x <= right_tile and y <= bottom_tile:
+                        metatile.add_tile(i, j, Tile(x, y, zoom))
+            yield metatile
 
-    return list(metatiles.values())
-
+def get_metatiles_count(extent: Tuple[float, float, float, float], zoom: int, size=4) -> int:
+    left_tile, top_tile, right_tile, bottom_tile = get_tile_based_extent(extent, zoom)
+    
+    meta_row_max = int((bottom_tile - top_tile) / size) + 1
+    meta_col_max = int((right_tile - left_tile) / size) + 1
+    return meta_row_max * meta_col_max
 
 class TilesXYZAlgorithmBase(QgisAlgorithm):
     EXTENT = 'EXTENT'
@@ -192,7 +204,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.layers = [l for l in project.layerTreeRoot().layerOrder() if l in visible_layers]
         return True
 
-    def renderSingleMetatile(self, metatile):
+    def renderSingleMetatile(self, metatile: MetaTile):
         if self.feedback.isCanceled():
             return
             # Haven't found a better way to break than to make all the new threads return instantly
@@ -236,6 +248,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         with self.progressThreadLock:
             self.progress += 1
             self.feedback.setProgress(100 * (self.progress / self.totalMetatiles))
+            self.feedback.setProgressText(self.tr('Generated: {progress}/{total} metatiles').format(progress=self.progress, total=self.totalMetatiles))
 
     def generate(self, writer, parameters, context, feedback):
         self.feedback = feedback
@@ -297,14 +310,11 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
 
         metatiles_by_zoom = {}
         self.totalMetatiles = 0
-        allMetatiles = []
         for zoom in range(self.min_zoom, self.max_zoom + 1):
             metatiles = get_metatiles(self.wgs_extent, zoom, self.metatilesize)
             metatiles_by_zoom[zoom] = metatiles
-            allMetatiles += metatiles
-            self.totalMetatiles += len(metatiles)
+            self.totalMetatiles += get_metatiles_count(self.wgs_extent, zoom, self.metatilesize)
 
-        lab_buffer_px = 100
         self.progress = 0
 
         tile_params = {
