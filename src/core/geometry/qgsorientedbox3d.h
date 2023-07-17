@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 #include <QList>
 #include <limits>
@@ -50,6 +51,27 @@ class CORE_EXPORT QgsOrientedBox3D
      * Constructor for a oriented box, with a specified center and half axes matrix.
      */
     QgsOrientedBox3D( const QList<double> &center, QList< double > &halfAxes );
+
+    bool operator==( const QgsOrientedBox3D &other ) const
+    {
+      return qgsDoubleNear( mCenter[0], other.mCenter[0] )
+             && qgsDoubleNear( mCenter[1], other.mCenter[1] )
+             && qgsDoubleNear( mCenter[2], other.mCenter[2] )
+             && qgsDoubleNear( mHalfAxes[0], other.mHalfAxes[0] )
+             && qgsDoubleNear( mHalfAxes[1], other.mHalfAxes[1] )
+             && qgsDoubleNear( mHalfAxes[2], other.mHalfAxes[2] )
+             && qgsDoubleNear( mHalfAxes[3], other.mHalfAxes[3] )
+             && qgsDoubleNear( mHalfAxes[4], other.mHalfAxes[4] )
+             && qgsDoubleNear( mHalfAxes[5], other.mHalfAxes[5] )
+             && qgsDoubleNear( mHalfAxes[6], other.mHalfAxes[6] )
+             && qgsDoubleNear( mHalfAxes[7], other.mHalfAxes[7] )
+             && qgsDoubleNear( mHalfAxes[8], other.mHalfAxes[8] );
+    }
+
+    bool operator!=( const QgsOrientedBox3D &other ) const
+    {
+      return !( *this == other );
+    }
 
     /**
      * Returns TRUE if the box is a null box.

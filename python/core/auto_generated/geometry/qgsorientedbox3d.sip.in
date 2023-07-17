@@ -38,6 +38,10 @@ Constructor for a null oriented box.
 Constructor for a oriented box, with a specified center and half axes matrix.
 %End
 
+    bool operator==( const QgsOrientedBox3D &other ) const;
+
+    bool operator!=( const QgsOrientedBox3D &other ) const;
+
     bool isNull() const;
 %Docstring
 Returns ``True`` if the box is a null box.
