@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgsmaplayerrenderer.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <memory>
 #include <QElapsedTimer>
@@ -29,6 +30,8 @@
 class QgsTiledMeshLayer;
 class QgsFeedback;
 class QgsMapClippingRegion;
+class QgsAbstractTiledMeshNodeBoundingVolume;
+
 
 /**
  * \ingroup core
@@ -59,6 +62,9 @@ class CORE_EXPORT QgsTiledMeshLayerRenderer: public QgsMapLayerRenderer
     int mRenderTimeHint = 0;
     bool mBlockRenderUpdates = false;
     QElapsedTimer mElapsedTimer;
+
+    QgsCoordinateReferenceSystem mMeshCrs;
+    std::unique_ptr< QgsAbstractTiledMeshNodeBoundingVolume > mLayerBoundingVolume;
 
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 };

@@ -17,10 +17,14 @@
 
 
 #include "qgstiledmeshlayerrenderer.h"
+#include "qgscurve.h"
+#include "qgstiledmeshboundingvolume.h"
 #include "qgstiledmeshlayer.h"
 #include "qgsfeedback.h"
 #include "qgsmapclippingutils.h"
 #include "qgsrendercontext.h"
+#include "qgscurvepolygon.h"
+#include "qgslinesymbol.h"
 
 QgsTiledMeshLayerRenderer::QgsTiledMeshLayerRenderer( QgsTiledMeshLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -31,7 +35,11 @@ QgsTiledMeshLayerRenderer::QgsTiledMeshLayerRenderer( QgsTiledMeshLayer *layer, 
   if ( !layer->dataProvider() ) // || !layer->renderer() )
     return;
 
+  mMeshCrs = layer->dataProvider()->meshCrs();
+
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
+  if ( const QgsAbstractTiledMeshNodeBoundingVolume *layerBoundingVolume = layer->dataProvider()->boundingVolume() )
+    mLayerBoundingVolume.reset( layerBoundingVolume->clone() );
 
   mReadyToCompose = false;
 }
@@ -60,6 +68,41 @@ bool QgsTiledMeshLayerRenderer::render()
   {
     mBlockRenderUpdates = true;
     mElapsedTimer.start();
+  }
+
+  if ( mLayerBoundingVolume )
+  {
+    const QgsCoordinateTransform transform = QgsCoordinateTransform( mMeshCrs, renderContext()->coordinateTransform().destinationCrs(), renderContext()->transformContext() );
+    try
+    {
+      std::unique_ptr< QgsAbstractGeometry > rootBoundsGeometry( mLayerBoundingVolume->as2DGeometry( transform ) );
+      if ( QgsCurvePolygon *polygon = qgsgeometry_cast< QgsCurvePolygon * >( rootBoundsGeometry.get() ) )
+      {
+        QPolygonF rootBoundsPoly = polygon->exteriorRing()->asQPolygonF();
+
+        // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
+        rootBoundsPoly.erase( std::remove_if( rootBoundsPoly.begin(), rootBoundsPoly.end(),
+                                              []( const QPointF point )
+        {
+          return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
+        } ), rootBoundsPoly.end() );
+
+        QPointF *ptr = rootBoundsPoly.data();
+        for ( int i = 0; i < rootBoundsPoly.size(); ++i, ++ptr )
+        {
+          renderContext()->mapToPixel().transformInPlace( ptr->rx(), ptr->ry() );
+        }
+
+        QgsLineSymbol symbol;
+        symbol.startRender( *renderContext() );
+        symbol.renderPolyline( rootBoundsPoly, nullptr, *renderContext() );
+        symbol.stopRender( *renderContext() );
+      }
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugError( QStringLiteral( "Error transforming root bounding volume" ) );
+    }
   }
 
   mReadyToCompose = true;
