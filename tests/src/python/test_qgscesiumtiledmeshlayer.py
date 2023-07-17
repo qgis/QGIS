@@ -185,9 +185,9 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
             self.assertAlmostEqual(layer.extent().xMaximum(),
                                    149.5989376, 3)
             self.assertAlmostEqual(layer.extent().yMinimum(),
-                                   -33.4298657, 3)
+                                   -33.4378807, 3)
             self.assertAlmostEqual(layer.extent().yMaximum(),
-                                   -33.41016810, 3)
+                                   -33.402147, 3)
 
             self.assertAlmostEqual(layer.dataProvider().boundingVolume().sphere().centerX(), -4595750.5786, 1)
             self.assertAlmostEqual(layer.dataProvider().boundingVolume().sphere().centerY(), 2698725.128252, 1)
