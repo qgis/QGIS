@@ -3750,6 +3750,19 @@ class CORE_EXPORT Qgis
     Q_FLAG( TiledMeshProviderCapabilities )
 
     /**
+     * Tiled mesh bounding volume types.
+     *
+     * \since QGIS 3.34
+     */
+    enum class TiledMeshBoundingVolumeType
+    {
+      Region, //!< Region type
+      OrientedBox, //!< Oriented bounding box (rotated box)
+      Sphere, //!< Sphere
+    };
+    Q_ENUM( TiledMeshBoundingVolumeType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

@@ -3755,3 +3755,10 @@ Qgis.TiledMeshProviderCapability.__doc__ = "Tiled mesh data provider capabilitie
 Qgis.TiledMeshProviderCapability.baseClass = Qgis
 Qgis.TiledMeshProviderCapabilities.baseClass = Qgis
 TiledMeshProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.TiledMeshBoundingVolumeType.Region.__doc__ = "Region type"
+Qgis.TiledMeshBoundingVolumeType.OrientedBox.__doc__ = "Oriented bounding box (rotated box)"
+Qgis.TiledMeshBoundingVolumeType.Sphere.__doc__ = "Sphere"
+Qgis.TiledMeshBoundingVolumeType.__doc__ = "Tiled mesh bounding volume types.\n\n.. versionadded:: 3.34\n\n" + '* ``Region``: ' + Qgis.TiledMeshBoundingVolumeType.Region.__doc__ + '\n' + '* ``OrientedBox``: ' + Qgis.TiledMeshBoundingVolumeType.OrientedBox.__doc__ + '\n' + '* ``Sphere``: ' + Qgis.TiledMeshBoundingVolumeType.Sphere.__doc__
+# --
+Qgis.TiledMeshBoundingVolumeType.baseClass = Qgis
