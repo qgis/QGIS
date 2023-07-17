@@ -641,18 +641,14 @@ QString QgsGdalProvider::bandDescription( int bandNumber )
     GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, bandNumber );
     if ( gdalBand )
     {
-      char **GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
-      if ( GDALmetadata )
+      const QString description { GDALGetMetadataItem( gdalBand, "DESCRIPTION", nullptr ) };
+      if ( description.isEmpty() )
       {
-        const QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
-        const auto description = std::find_if( metadata.constBegin(), metadata.constEnd(), []( const QString & md )
-        {
-          return md.startsWith( QStringLiteral( "DESCRIPTION=" ) );
-        } );
-        if ( description != metadata.constEnd() )
-        {
-          return description->mid( 12 );
-        }
+        return GDALGetDescription( gdalBand );
+      }
+      else
+      {
+        return description;
       }
     }
   }

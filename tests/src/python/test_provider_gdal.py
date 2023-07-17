@@ -321,6 +321,30 @@ class PyQgsGdalProvider(QgisTestCase):
         self.assertEqual(rl.metadata().type(), 'dataset')
         self.assertEqual(rl.metadata().abstract(), 'My description (abstract)\n\nmy raster summary')
 
+    def testBandDescription(self):
+        """Test band description getter"""
+
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), 'testInt8.tif')
+        ds = gdal.GetDriverByName('GTiff').Create(tmpfile, 2, 2, 1, gdal.GDT_Byte)
+        ds.WriteRaster(0, 0, 2, 2, struct.pack('b' * 4, 1, 127, 0, -128))
+        band = ds.GetRasterBand(1)
+        band.SetDescription('my description')
+        ds.FlushCache()
+        ds = None
+
+        rl = QgsRasterLayer(tmpfile)
+        self.assertEqual(rl.dataProvider().bandDescription(1), 'my description')
+
+        ds = gdal.OpenEx(tmpfile)
+        band = ds.GetRasterBand(1)
+        band.SetMetadataItem('DESCRIPTION', 'my metadata description')
+        ds.FlushCache()
+        ds = None
+
+        rl = QgsRasterLayer(tmpfile)
+        self.assertEqual(rl.dataProvider().bandDescription(1), 'my metadata description')
+
 
 if __name__ == '__main__':
     unittest.main()
