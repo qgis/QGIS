@@ -55,6 +55,60 @@ class TestQgsOrientedBox3D(QgisTestCase):
         self.assertEqual(box.centerZ(), 3)
         self.assertEqual(box.halfAxes(), [0.7071067811865476, 0.0, 0.7071067811865475, 0.0, 1.0, 0.0, -0.7071067811865475, 0.0, 0.7071067811865476])
 
+    def test_equality(self):
+        self.assertEqual(
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([11, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([1, 12, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([1, 2, 13], [10, 0, 0, 0, 20, 0, 0, 0, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([1, 2, 3], [110, 0, 0, 0, 20, 0, 0, 0, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([1, 2, 3], [10, 10, 0, 0, 20, 0, 0, 0, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 10, 0, 20, 0, 0, 0, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 10, 20, 0, 0, 0, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 120, 0, 0, 0, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 10, 0, 0, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 10, 0, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 10, 30]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+        self.assertNotEqual(
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 310]),
+            QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        )
+
     def test_box_extent(self):
         box = QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
         bounds = box.extent()
