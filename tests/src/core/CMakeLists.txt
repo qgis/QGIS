@@ -123,6 +123,7 @@ set(TESTS
  testqgsmaptopixel.cpp
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmarkerlinesymbol.cpp
+ testqgsmatrix4x4.cpp
  testqgsmesh3daveraging.cpp
  testqgsmesheditor.cpp
  testqgsmeshlayer.cpp

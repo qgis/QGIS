@@ -470,6 +470,7 @@ set(QGIS_CORE_SRCS
   qgsmapunitscale.cpp
   qgsmargins.cpp
   qgsmaskidprovider.cpp
+  qgsmatrix4x4.cpp
   qgsmbtiles.cpp
   qgsmaskpaintdevice.cpp
   qgsmessagelog.cpp
@@ -1161,6 +1162,7 @@ set(QGIS_CORE_HDRS
   qgsmargins.h
   qgsmaskidprovider.h
   qgsmaskpaintdevice.h
+  qgsmatrix4x4.h
   qgsmbtiles.h
   qgsmessagelog.h
   qgsmessageoutput.h
