@@ -9,6 +9,7 @@
 
 
 
+
 class QgsTiledMeshDataProvider: QgsDataProvider
 {
 %Docstring(signature="appended")
@@ -52,6 +53,30 @@ Returns a clone of the data provider.
 %Docstring
 Returns metadata in a format suitable for feeding directly
 into a subset of the GUI properties "Metadata" tab.
+%End
+
+    virtual const QgsCoordinateReferenceSystem meshCrs() const = 0;
+%Docstring
+Returns the original coordinate reference system for the tiled mesh data.
+
+This may differ from the :py:func:`QgsDataProvider.crs()`, which is the best CRS representation
+for the data provider for 2D use.
+
+.. warning::
+
+   Care must be taken to ensure that :py:func:`~QgsTiledMeshDataProvider.meshCrs` is used instead of :py:func:`~QgsTiledMeshDataProvider.crs` whenever
+   transforming bounding volumes or geometries associated with the provider.
+%End
+
+    virtual const QgsAbstractTiledMeshNodeBoundingVolume *boundingVolume() const = 0;
+%Docstring
+Returns the bounding volume for the data provider.
+
+This corresponds to the root node bounding volume.
+
+.. warning::
+
+   Coordinates in the returned volume are in the :py:func:`~QgsTiledMeshDataProvider.meshCrs` reference system, not the :py:func:`QgsDataProvider.crs()` system.
 %End
 
 };

@@ -28,15 +28,21 @@
 
 #define SIP_NO_FILE
 
+class QgsAbstractTiledMeshNodeBoundingVolume;
+class QgsCoordinateTransformContext;
+
 ///@cond PRIVATE
 
 class QgsCesiumTilesDataProviderSharedData
 {
   public:
     QgsCesiumTilesDataProviderSharedData();
-    void setTilesetContent( const QString &tileset );
+    void setTilesetContent( const QString &tileset, const QgsCoordinateTransformContext &transformContext );
 
-    QgsCoordinateReferenceSystem mCrs;
+    QgsCoordinateReferenceSystem mLayerCrs;
+    QgsCoordinateReferenceSystem mMeshCrs;
+    std::unique_ptr< QgsAbstractTiledMeshNodeBoundingVolume > mBoundingVolume;
+
     QgsRectangle mExtent;
     nlohmann::json mTileset;
     QgsDoubleRange mZRange;
@@ -68,6 +74,9 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledMeshDataProvi
     QString name() const final;
     QString description() const final;
     QString htmlMetadata() const final;
+    const QgsCoordinateReferenceSystem meshCrs() const final;
+    const QgsAbstractTiledMeshNodeBoundingVolume *boundingVolume() const override;
+
   private:
 
     bool init();
