@@ -73,8 +73,11 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
 {
   QgsDebugMsgLevel( QStringLiteral( "New Oracle connection for " ) + uri.connectionInfo( false ), 2 );
 
-  mConnInfo = uri.connectionInfo( true );
-  uri = QgsDataSourceUri( mConnInfo );
+  // will be used for logging and access connection from connection pool by name,
+  // so we don't want login/password here
+  mConnInfo = uri.connectionInfo( false );
+
+  uri = QgsDataSourceUri( uri.connectionInfo( true ) );
 
   QString database = databaseName( uri.database(), uri.host(), uri.port() );
   QgsDebugMsgLevel( QStringLiteral( "New Oracle database " ) + database, 2 );
