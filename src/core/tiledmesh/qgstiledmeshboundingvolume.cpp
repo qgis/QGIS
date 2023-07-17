@@ -233,20 +233,42 @@ QgsTiledMeshNodeBoundingVolumeSphere *QgsTiledMeshNodeBoundingVolumeSphere::clon
 
 QgsAbstractGeometry *QgsTiledMeshNodeBoundingVolumeSphere::as2DGeometry( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
-  std::unique_ptr< QgsCircularString > exterior( mSphere.toCircle().toCircularString() );
-  std::unique_ptr< QgsCurvePolygon > polygon = std::make_unique< QgsCurvePolygon >();
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
-    exterior->addZValue( mSphere.centerZ() );
-    // have to segmentize prior to transforming
-    std::unique_ptr< QgsCurve > segmentized( exterior->segmentize( ) );
-    segmentized->transform( transform, direction, true );
-    segmentized->dropZValue();
-    polygon->setExteriorRing( segmentized.release() );
+    QgsVector3D normal = mSphere.centerVector();
+    normal.normalize();
+
+    QgsVector3D axis1 = QgsVector3D::crossProduct( normal, QgsVector3D( 1, 0, 0 ) );
+    if ( axis1.length() == 0 )
+    {
+      axis1 = QgsVector3D::crossProduct( normal, QgsVector3D( 0, 1, 0 ) );
+    }
+    axis1.normalize();
+    const QgsVector3D axis2 = QgsVector3D::crossProduct( normal, axis1 );
+    QVector< double > circleXInPlane;
+    QVector< double > circleYInPlane;
+    QVector< double > circleZInPlane;
+
+    for ( int i = 0; i < 48; ++i )
+    {
+      const double alpha = 2 * i / 48.0 * M_PI;
+      circleXInPlane.append( mSphere.centerX() + mSphere.radius() * ( axis1.x() * std::cos( alpha ) + axis2.x()* std::sin( alpha ) ) );
+      circleYInPlane.append( mSphere.centerY() + mSphere.radius() * ( axis1.y() * std::cos( alpha ) + axis2.y()* std::sin( alpha ) ) );
+      circleZInPlane.append( mSphere.centerZ() + mSphere.radius() * ( axis1.z() * std::cos( alpha ) + axis2.z()* std::sin( alpha ) ) );
+    }
+    transform.transformInPlace( circleXInPlane, circleYInPlane, circleZInPlane, direction );
+
+    std::unique_ptr< QgsLineString > exterior = std::make_unique< QgsLineString>( circleXInPlane, circleYInPlane );
+    exterior->close();
+    std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+    polygon->setExteriorRing( exterior.release() );
+    return polygon.release();
   }
   else
   {
+    std::unique_ptr< QgsCurvePolygon > polygon = std::make_unique< QgsCurvePolygon >();
+    std::unique_ptr< QgsCircularString > exterior( mSphere.toCircle().toCircularString() );
     polygon->setExteriorRing( exterior.release() );
+    return polygon.release();
   }
-  return polygon.release();
 }
