@@ -79,7 +79,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
         if ( !bbox.isNull() )
         {
           // layer must advertise as EPSG:4979, as the various QgsMapLayer
-          // methods which utilise QgsMapLayer::crs() (such as layer extent transformation)
+          // methods which utilize QgsMapLayer::crs() (such as layer extent transformation)
           // are all purely 2D and can't handle the cesium data source z value
           // range in EPSG:4978 !
           mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
@@ -108,7 +108,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
         if ( !sphere.isNull() )
         {
           // layer must advertise as EPSG:4979, as the various QgsMapLayer
-          // methods which utilise QgsMapLayer::crs() (such as layer extent transformation)
+          // methods which utilize QgsMapLayer::crs() (such as layer extent transformation)
           // are all purely 2D and can't handle the cesium data source z value
           // range in EPSG:4978 !
           mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
