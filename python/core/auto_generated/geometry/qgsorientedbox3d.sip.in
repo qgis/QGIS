@@ -81,6 +81,11 @@ Returns the half axes matrix;
 Returns the overall bounding box of the object.
 %End
 
+    QVector< QgsVector3D > corners() const;
+%Docstring
+Returns an array of all corners as 3D vectors.
+%End
+
 };
 
 

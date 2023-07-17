@@ -26,6 +26,7 @@
 #include <limits>
 
 class QgsBox3d;
+class QgsVector3D;
 
 /**
  * \brief Represents a oriented (rotated) box in 3 dimensions.
@@ -93,6 +94,11 @@ class CORE_EXPORT QgsOrientedBox3D
      * Returns the overall bounding box of the object.
      */
     QgsBox3d extent() const;
+
+    /**
+     * Returns an array of all corners as 3D vectors.
+     */
+    QVector< QgsVector3D > corners() const;
 
   private:
 

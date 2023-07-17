@@ -14,7 +14,8 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 import math
 import qgis  # NOQA
 from qgis.core import (
-    QgsOrientedBox3D
+    QgsOrientedBox3D,
+    QgsVector3D
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -85,6 +86,46 @@ class TestQgsOrientedBox3D(QgisTestCase):
         self.assertAlmostEqual(bounds.yMaximum(), 3, 5)
         self.assertAlmostEqual(bounds.zMinimum(), 3 - math.sqrt(2), 5)
         self.assertAlmostEqual(bounds.zMaximum(), 3 + math.sqrt(2), 5)
+
+    def test_corners(self):
+        box = QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])
+        self.assertEqual(box.corners(),
+                         [QgsVector3D(2, 3, 4),
+                          QgsVector3D(0, 3, 4),
+                          QgsVector3D(2, 1, 4),
+                          QgsVector3D(0, 1, 4),
+                          QgsVector3D(2, 3, 2),
+                          QgsVector3D(0, 3, 2),
+                          QgsVector3D(2, 1, 2),
+                          QgsVector3D(0, 1, 2)])
+
+        box = QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        self.assertEqual(box.corners(),
+                         [QgsVector3D(11, 22, 33),
+                          QgsVector3D(-9, 22, 33),
+                          QgsVector3D(11, -18, 33),
+                          QgsVector3D(-9, -18, 33),
+                          QgsVector3D(11, 22, -27),
+                          QgsVector3D(-9, 22, -27),
+                          QgsVector3D(11, -18, -27),
+                          QgsVector3D(-9, -18, -27)])
+
+        # 45 degree y axis rotation
+        box = QgsOrientedBox3D([1, 2, 3],
+                               [math.cos(math.pi / 4), 0,
+                                math.sin(math.pi / 4),
+                                0, 1, 0,
+                                -math.sin(math.pi / 4), 0,
+                                math.cos(math.pi / 4)])
+        self.assertEqual(box.corners(),
+                         [QgsVector3D(1, 3, 4.41421356237309492),
+                          QgsVector3D(-0.41421356237309492, 3, 3),
+                          QgsVector3D(1, 1, 4.41421356237309492),
+                          QgsVector3D(-0.41421356237309492, 1, 3),
+                          QgsVector3D(2.41421356237309492, 3, 3),
+                          QgsVector3D(0.99999999999999989, 3, 1.58578643762690508),
+                          QgsVector3D(2.41421356237309492, 1, 3),
+                          QgsVector3D(0.99999999999999989, 1, 1.58578643762690508)])
 
 
 if __name__ == '__main__':

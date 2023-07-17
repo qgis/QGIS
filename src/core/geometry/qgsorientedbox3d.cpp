@@ -18,6 +18,7 @@
 
 #include "qgsorientedbox3d.h"
 #include "qgsbox3d.h"
+#include "qgsvector3d.h"
 
 QgsOrientedBox3D::QgsOrientedBox3D() = default;
 
@@ -71,4 +72,24 @@ QgsBox3d QgsOrientedBox3D::extent() const
   const double maxZ = mCenter[2] + extent[2];
 
   return QgsBox3d( minX, minY, minZ, maxX, maxY, maxZ );
+}
+
+QVector<QgsVector3D> QgsOrientedBox3D::corners() const
+{
+  const QgsVector3D center( mCenter[0], mCenter[1], mCenter[2] );
+  const QgsVector3D a1( mHalfAxes[0], mHalfAxes[1], mHalfAxes[2] ), a0( -mHalfAxes[0], -mHalfAxes[1], -mHalfAxes[2] );
+  const QgsVector3D b1( mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] ), b0( -mHalfAxes[3], -mHalfAxes[4], -mHalfAxes[5] );
+  const QgsVector3D c1( mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] ), c0( -mHalfAxes[6], -mHalfAxes[7], -mHalfAxes[8] );
+
+  QVector<QgsVector3D> cor( 8 );
+  QgsVector3D *corData = cor.data();
+  for ( int i = 0; i < 8; ++i, ++corData )
+  {
+    const QgsVector3D aa = ( i % 2 == 0 ? a1 : a0 );
+    const QgsVector3D bb = ( ( i / 2 ) % 2 == 0 ? b1 : b0 );
+    const QgsVector3D cc = ( i / 4 == 0 ? c1 : c0 );
+    const QgsVector3D q = aa + bb + cc;
+    *corData = center + q;
+  }
+  return cor;
 }
