@@ -2153,6 +2153,13 @@ The development version
     typedef QFlags<Qgis::TiledMeshProviderCapability> TiledMeshProviderCapabilities;
 
 
+    enum class TiledMeshBoundingVolumeType
+    {
+      Region,
+      OrientedBox,
+      Sphere,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

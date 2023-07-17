@@ -1,0 +1,184 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshboundingvolume.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAbstractTiledMeshNodeBoundingVolume
+{
+%Docstring(signature="appended")
+Abstract base class for bounding volumes for tiled mesh nodes.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledmeshboundingvolume.h"
+%End
+  public:
+
+%ConvertToSubClassCode
+    switch ( sipCpp->type() )
+    {
+      case Qgis::TiledMeshBoundingVolumeType::Region:
+        sipType = sipType_QgsTiledMeshNodeBoundingVolumeRegion;
+        break;
+      case Qgis::TiledMeshBoundingVolumeType::OrientedBox:
+        sipType = sipType_QgsTiledMeshNodeBoundingVolumeBox;
+        break;
+      case Qgis::TiledMeshBoundingVolumeType::Sphere:
+        sipType = sipType_QgsTiledMeshNodeBoundingVolumeSphere;
+        break;
+      default:
+        sipType = 0;
+        break;
+    };
+%End
+
+    virtual ~QgsAbstractTiledMeshNodeBoundingVolume();
+
+    virtual Qgis::TiledMeshBoundingVolumeType type() const = 0;
+%Docstring
+Returns the type of the volume;
+%End
+
+    virtual QgsBox3d bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const = 0;
+%Docstring
+Returns the axis aligned bounding box of the volume.
+
+The optional ``transform`` and ``direction`` arguments should be used whenever the volume needs
+to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
+%End
+
+    virtual QgsAbstractTiledMeshNodeBoundingVolume *clone() const = 0 /Factory/;
+%Docstring
+Returns a clone of the volume.
+%End
+
+    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const = 0 /Factory/;
+%Docstring
+Return a new geometry representing the 2-dimensional X/Y center slice of the volume.
+
+Caller takes ownership of the returned geometry.
+
+The optional ``transform`` and ``direction`` arguments should be used whenever the volume needs
+to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
+%End
+
+};
+
+class QgsTiledMeshNodeBoundingVolumeRegion : QgsAbstractTiledMeshNodeBoundingVolume
+{
+%Docstring(signature="appended")
+A region bounding volume for tiled mesh nodes.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledmeshboundingvolume.h"
+%End
+  public:
+
+    QgsTiledMeshNodeBoundingVolumeRegion( const QgsBox3d &region );
+%Docstring
+Constructor for QgsTiledMeshNodeBoundingVolumeRegion, with the specified ``region``.
+%End
+
+    virtual Qgis::TiledMeshBoundingVolumeType type() const ${SIP_FINAL};
+
+    virtual QgsBox3d bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
+
+    virtual QgsTiledMeshNodeBoundingVolumeRegion *clone() const ${SIP_FINAL} /Factory/;
+
+    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
+
+
+    QgsBox3d region() const;
+%Docstring
+Returns the volume's region.
+%End
+
+};
+
+class QgsTiledMeshNodeBoundingVolumeBox : QgsAbstractTiledMeshNodeBoundingVolume
+{
+%Docstring(signature="appended")
+A oriented box bounding volume for tiled mesh nodes.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledmeshboundingvolume.h"
+%End
+  public:
+
+    QgsTiledMeshNodeBoundingVolumeBox( const QgsOrientedBox3D &box );
+%Docstring
+Constructor for QgsTiledMeshNodeBoundingVolumeBox, with the specified oriented ``box``.
+%End
+
+    virtual Qgis::TiledMeshBoundingVolumeType type() const ${SIP_FINAL};
+
+    virtual QgsBox3d bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
+
+    virtual QgsTiledMeshNodeBoundingVolumeBox *clone() const ${SIP_FINAL} /Factory/;
+
+    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
+
+
+    QgsOrientedBox3D box() const;
+%Docstring
+Returns the volume's oriented box.
+%End
+
+};
+
+class QgsTiledMeshNodeBoundingVolumeSphere: QgsAbstractTiledMeshNodeBoundingVolume
+{
+%Docstring(signature="appended")
+A spherical bounding volume for tiled mesh nodes.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledmeshboundingvolume.h"
+%End
+  public:
+
+    QgsTiledMeshNodeBoundingVolumeSphere( const QgsSphere &sphere );
+%Docstring
+Constructor for :py:class:`QgsTiledMeshNodeBoundingVolumeBox`, with the specified ``sphere``.
+%End
+
+    virtual Qgis::TiledMeshBoundingVolumeType type() const ${SIP_FINAL};
+
+    virtual QgsBox3d bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
+
+    virtual QgsTiledMeshNodeBoundingVolumeSphere *clone() const ${SIP_FINAL} /Factory/;
+
+    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
+
+
+    QgsSphere sphere() const;
+%Docstring
+Returns the volume's sphere.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshboundingvolume.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

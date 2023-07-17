@@ -711,6 +711,7 @@
 %Include auto_generated/textrenderer/qgstextrendererutils.sip
 %Include auto_generated/textrenderer/qgstextshadowsettings.sip
 %Include auto_generated/tiledmesh/qgscesiumutils.sip
+%Include auto_generated/tiledmesh/qgstiledmeshboundingvolume.sip
 %Include auto_generated/tiledmesh/qgstiledmeshdataprovider.sip
 %Include auto_generated/tiledmesh/qgstiledmeshlayer.sip
 %Include auto_generated/sensor/qgssensormodel.sip
