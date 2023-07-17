@@ -117,15 +117,17 @@ class MetaTile:
         lat2, lon2 = num2deg(last.x + 1, last.y + 1, first.z)
         return [lon1, lat2, lon2, lat1]
 
+
 def get_tile_based_extent(extent: Tuple[float, float, float, float], zoom: int) -> Tuple[int, int, int, int]:
     west_edge, south_edge, east_edge, north_edge = extent
     left_tile, top_tile = deg2num(north_edge, west_edge, zoom)
     right_tile, bottom_tile = deg2num(south_edge, east_edge, zoom)
     return left_tile, top_tile, right_tile, bottom_tile
 
+
 def get_metatiles(extent: Tuple[float, float, float, float], zoom: int, size=4):
     left_tile, top_tile, right_tile, bottom_tile = get_tile_based_extent(extent, zoom)
-    
+
     meta_row_max = int((bottom_tile - top_tile) / size) + 1
     meta_col_max = int((right_tile - left_tile) / size) + 1
     for meta_col in range(meta_col_max):
@@ -139,12 +141,14 @@ def get_metatiles(extent: Tuple[float, float, float, float], zoom: int, size=4):
                         metatile.add_tile(i, j, Tile(x, y, zoom))
             yield metatile
 
+
 def get_metatiles_count(extent: Tuple[float, float, float, float], zoom: int, size=4) -> int:
     left_tile, top_tile, right_tile, bottom_tile = get_tile_based_extent(extent, zoom)
-    
+
     meta_row_max = int((bottom_tile - top_tile) / size) + 1
     meta_col_max = int((right_tile - left_tile) / size) + 1
     return meta_row_max * meta_col_max
+
 
 class TilesXYZAlgorithmBase(QgisAlgorithm):
     EXTENT = 'EXTENT'
