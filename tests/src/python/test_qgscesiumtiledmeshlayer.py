@@ -62,17 +62,34 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
                                       'cesiumtiles')
             self.assertTrue(layer.dataProvider().isValid())
 
-            self.assertEqual(layer.dataProvider().crs(),
+            self.assertEqual(layer.crs(),
                              QgsCoordinateReferenceSystem('EPSG:4979'))
+            self.assertEqual(layer.dataProvider().meshCrs().authid(),
+                             'EPSG:4979')
 
-            self.assertAlmostEqual(layer.dataProvider().extent().xMinimum(),
+            self.assertAlmostEqual(layer.extent().xMinimum(),
                                    -75.61444109, 3)
-            self.assertAlmostEqual(layer.dataProvider().extent().xMaximum(),
+            self.assertAlmostEqual(layer.extent().xMaximum(),
                                    -75.60974751, 3)
-            self.assertAlmostEqual(layer.dataProvider().extent().yMinimum(),
+            self.assertAlmostEqual(layer.extent().yMinimum(),
                                    40.04072131, 3)
-            self.assertAlmostEqual(layer.dataProvider().extent().yMaximum(),
+            self.assertAlmostEqual(layer.extent().yMaximum(),
                                    40.044339909, 3)
+
+            self.assertAlmostEqual(layer.dataProvider().boundingVolume().region().xMinimum(), -75.6144410, 3)
+            self.assertAlmostEqual(layer.dataProvider().boundingVolume().region().xMaximum(), -75.6097475, 3)
+            self.assertAlmostEqual(
+                layer.dataProvider().boundingVolume().region().yMinimum(),
+                40.0407213, 3)
+            self.assertAlmostEqual(
+                layer.dataProvider().boundingVolume().region().yMaximum(),
+                40.044339909, 3)
+            self.assertAlmostEqual(
+                layer.dataProvider().boundingVolume().region().zMinimum(),
+                1.2, 3)
+            self.assertAlmostEqual(
+                layer.dataProvider().boundingVolume().region().zMaximum(),
+                67.00999, 3)
 
             # check that version, tileset version, and z range are in html metadata
             self.assertIn('1.1', layer.dataProvider().htmlMetadata())
@@ -91,7 +108,7 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
   },
   "geometricError": 100,
   "root": {
-    "boundingVolume": {"box":[-0.2536985000000129,-0.9643609999999967,3.972842,182.20200849999998,0,0,0,86.937516,0,0,0,20.162945]},
+    "boundingVolume": {"box":[-4595750,2698725,-3493318,182,0,0,0,86,0,0,0,20]},
     "geometricError": 100,
     "refine": "ADD",
     "children": []
@@ -102,22 +119,35 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
                                       'cesiumtiles')
             self.assertTrue(layer.dataProvider().isValid())
 
-            # crs is not specified for this source
-            self.assertFalse(layer.dataProvider().crs().isValid())
+            self.assertEqual(layer.dataProvider().meshCrs().authid(), 'EPSG:4978')
+            # layer must advertise as EPSG:4979, as the various QgsMapLayer
+            # methods which utilise crs (such as layer extent transformation)
+            # are all purely 2D and can't handle the cesium data source z value
+            # range in EPSG:4978
+            self.assertEqual(layer.dataProvider().crs().authid(), 'EPSG:4979')
 
             self.assertAlmostEqual(layer.dataProvider().extent().xMinimum(),
-                                   -182.455707, 3)
+                                   149.575823489, 3)
             self.assertAlmostEqual(layer.dataProvider().extent().xMaximum(),
-                                   181.94830999999996, 3)
+                                   149.57939956, 3)
             self.assertAlmostEqual(layer.dataProvider().extent().yMinimum(),
-                                   -87.901877, 3)
+                                   -33.42101266, 3)
             self.assertAlmostEqual(layer.dataProvider().extent().yMaximum(),
-                                   85.973155, 3)
+                                   -33.41902168, 3)
+
+            self.assertAlmostEqual(layer.dataProvider().boundingVolume().box().centerX(), -4595750, 1)
+            self.assertAlmostEqual(layer.dataProvider().boundingVolume().box().centerY(), 2698725, 1)
+            self.assertEqual(
+                layer.dataProvider().boundingVolume().box().centerZ(),
+                -3493318.0)
+            self.assertEqual(
+                layer.dataProvider().boundingVolume().box().halfAxes(),
+                [182.0, 0.0, 0.0, 0.0, 86.0, 0.0, 0.0, 0.0, 20.0])
 
             # check that version, tileset version, and z range are in html metadata
             self.assertIn('1.1', layer.dataProvider().htmlMetadata())
             self.assertIn('e575c6f1', layer.dataProvider().htmlMetadata())
-            self.assertIn('-16.1901 - 24.1358', layer.dataProvider().htmlMetadata())
+            self.assertIn('519.977 - 876.687', layer.dataProvider().htmlMetadata())
 
     def test_source_bounding_sphere(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -131,7 +161,7 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
   },
   "geometricError": 100,
   "root": {
-    "boundingVolume": {"sphere":[-4595750.5786738498136401,2698725.1282528499141335,-349,1983.5772900785000274]},
+    "boundingVolume": {"sphere":[-4595750.5786738498136401,2698725.1282528499141335,-3493318,1983]},
     "geometricError": 100,
     "refine": "ADD",
     "children": []
@@ -142,22 +172,36 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
                                       'cesiumtiles')
             self.assertTrue(layer.dataProvider().isValid())
 
-            # crs is not specified for this source
-            self.assertFalse(layer.dataProvider().crs().isValid())
+            self.assertEqual(layer.dataProvider().meshCrs().authid(), 'EPSG:4978')
+            # layer must advertise as EPSG:4979, as the various QgsMapLayer
+            # methods which utilise crs (such as layer extent transformation)
+            # are all purely 2D and can't handle the cesium data source z value
+            # range in EPSG:4978
+            self.assertEqual(layer.dataProvider().crs().authid(), 'EPSG:4979')
 
-            self.assertAlmostEqual(layer.dataProvider().extent().xMinimum(),
-                                   -4597734.155963928, 3)
-            self.assertAlmostEqual(layer.dataProvider().extent().xMaximum(),
-                                   -4593767.001383771, 3)
-            self.assertAlmostEqual(layer.dataProvider().extent().yMinimum(),
-                                   2696741.5509627713, 3)
-            self.assertAlmostEqual(layer.dataProvider().extent().yMaximum(),
-                                   2700708.7055429285, 3)
+            # extent must be in EPSG:4979 to match the layer crs()
+            self.assertAlmostEqual(layer.extent().xMinimum(),
+                                   149.5562895, 3)
+            self.assertAlmostEqual(layer.extent().xMaximum(),
+                                   149.5989376, 3)
+            self.assertAlmostEqual(layer.extent().yMinimum(),
+                                   -33.4298657, 3)
+            self.assertAlmostEqual(layer.extent().yMaximum(),
+                                   -33.41016810, 3)
+
+            self.assertAlmostEqual(layer.dataProvider().boundingVolume().sphere().centerX(), -4595750.5786, 1)
+            self.assertAlmostEqual(layer.dataProvider().boundingVolume().sphere().centerY(), 2698725.128252, 1)
+            self.assertEqual(
+                layer.dataProvider().boundingVolume().sphere().centerZ(),
+                -3493318.0)
+            self.assertEqual(
+                layer.dataProvider().boundingVolume().sphere().radius(),
+                1983.0)
 
             # check that version, tileset version, and z range are in html metadata
             self.assertIn('1.1', layer.dataProvider().htmlMetadata())
             self.assertIn('e575c6f1', layer.dataProvider().htmlMetadata())
-            self.assertIn('-2,332.58 - 1,634.58', layer.dataProvider().htmlMetadata())
+            self.assertIn('-393.164 - 1,791.2', layer.dataProvider().htmlMetadata())
 
 
 if __name__ == '__main__':

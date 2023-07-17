@@ -26,6 +26,8 @@
 #include "qgssphere.h"
 #include "qgslogger.h"
 #include "qgsorientedbox3d.h"
+#include "qgstiledmeshboundingvolume.h"
+#include "qgscoordinatetransform.h"
 
 #include <QUrl>
 #include <QIcon>
@@ -45,7 +47,7 @@
 
 QgsCesiumTilesDataProviderSharedData::QgsCesiumTilesDataProviderSharedData() = default;
 
-void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &tileset )
+void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &tileset, const QgsCoordinateTransformContext &transformContext )
 {
   mTileset = json::parse( tileset.toStdString() );
 
@@ -53,6 +55,10 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
   {
     const auto &root = mTileset[ "root" ];
     // parse root bounding volume
+
+    // TODO -- read crs from metadata tags. Need to find real world examples of this. And can metadata crs override
+    // the EPSG:4979 requirement from a region bounding volume??
+
     {
       const auto &rootBoundingVolume = root[ "boundingVolume" ];
       if ( rootBoundingVolume.contains( "region" ) )
@@ -60,15 +66,11 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
         const QgsBox3d rootRegion = QgsCesiumUtils::parseRegion( rootBoundingVolume[ "region" ] );
         if ( !rootRegion.isNull() )
         {
+          mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeRegion >( rootRegion );
           mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
-          // The latitude and longitude values are given in radians!
-          // TODO -- is this ALWAYS the case? What if there's a region root bounding volume, but a transform object present? What if there's crs metadata specifying a different crs?
-          mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
-          const double xMin = rootRegion.xMinimum() * 180 / M_PI;
-          const double xMax = rootRegion.xMaximum() * 180 / M_PI;
-          const double yMin = rootRegion.yMinimum() * 180 / M_PI;
-          const double yMax = rootRegion.yMaximum() * 180 / M_PI;
-          mExtent = QgsRectangle( xMin, yMin, xMax, yMax );
+          mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
+          mMeshCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
+          mExtent = rootRegion.toRectangle();
         }
       }
       else if ( rootBoundingVolume.contains( "box" ) )
@@ -76,13 +78,28 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
         const QgsOrientedBox3D bbox = QgsCesiumUtils::parseBox( rootBoundingVolume["box"] );
         if ( !bbox.isNull() )
         {
-          const QgsBox3d rootRegion = bbox.extent();
-          mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
-          const double xMin = rootRegion.xMinimum();
-          const double xMax = rootRegion.xMaximum();
-          const double yMin = rootRegion.yMinimum();
-          const double yMax = rootRegion.yMaximum();
-          mExtent = QgsRectangle( xMin, yMin, xMax, yMax );
+          // layer must advertise as EPSG:4979, as the various QgsMapLayer
+          // methods which utilise QgsMapLayer::crs() (such as layer extent transformation)
+          // are all purely 2D and can't handle the cesium data source z value
+          // range in EPSG:4978 !
+          mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
+          mMeshCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
+
+          const QgsCoordinateTransform transform( mMeshCrs, mLayerCrs, transformContext );
+
+          mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeBox >( bbox );
+          try
+          {
+            const QgsBox3d rootRegion = mBoundingVolume->bounds( transform );
+            mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
+
+            std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume->as2DGeometry( transform ) );
+            mExtent = extent2D->boundingBox();
+          }
+          catch ( QgsCsException & )
+          {
+            QgsDebugError( QStringLiteral( "Caught transform exception when transforming boundingVolume" ) );
+          }
         }
       }
       else if ( rootBoundingVolume.contains( "sphere" ) )
@@ -90,13 +107,28 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
         const QgsSphere sphere = QgsCesiumUtils::parseSphere( rootBoundingVolume["sphere"] );
         if ( !sphere.isNull() )
         {
-          const QgsBox3d rootRegion = sphere.boundingBox();
-          mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
-          const double xMin = rootRegion.xMinimum();
-          const double xMax = rootRegion.xMaximum();
-          const double yMin = rootRegion.yMinimum();
-          const double yMax = rootRegion.yMaximum();
-          mExtent = QgsRectangle( xMin, yMin, xMax, yMax );
+          // layer must advertise as EPSG:4979, as the various QgsMapLayer
+          // methods which utilise QgsMapLayer::crs() (such as layer extent transformation)
+          // are all purely 2D and can't handle the cesium data source z value
+          // range in EPSG:4978 !
+          mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
+          mMeshCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
+
+          const QgsCoordinateTransform transform( mMeshCrs, mLayerCrs, transformContext );
+
+          mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeSphere >( sphere );
+          try
+          {
+            const QgsBox3d rootRegion = mBoundingVolume->bounds( transform );
+            mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
+
+            std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume->as2DGeometry( transform ) );
+            mExtent = extent2D->boundingBox();
+          }
+          catch ( QgsCsException & )
+          {
+            QgsDebugError( QStringLiteral( "Caught transform exception when transforming boundingVolume" ) );
+          }
         }
       }
       else
@@ -105,8 +137,6 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
       }
     }
   }
-  // TODO -- read crs from metadata tags. Need to find real world examples of this. And can metadata crs override
-  // the EPSG:4979 requirement from a region bounding volume??
 }
 
 
@@ -175,7 +205,7 @@ bool QgsCesiumTilesDataProvider::init()
     }
 
     const QgsNetworkReplyContent content = networkRequest.reply();
-    mShared->setTilesetContent( content.content() );
+    mShared->setTilesetContent( content.content(), transformContext() );
   }
   else
   {
@@ -186,7 +216,7 @@ bool QgsCesiumTilesDataProvider::init()
       if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
       {
         const QByteArray raw = file.readAll();
-        mShared->setTilesetContent( raw );
+        mShared->setTilesetContent( raw, transformContext() );
       }
       else
       {
@@ -206,7 +236,7 @@ QgsCoordinateReferenceSystem QgsCesiumTilesDataProvider::crs() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mShared->mCrs;
+  return mShared->mLayerCrs;
 }
 
 QgsRectangle QgsCesiumTilesDataProvider::extent() const
@@ -295,6 +325,20 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
   }
 
   return metadata;
+}
+
+const QgsCoordinateReferenceSystem QgsCesiumTilesDataProvider::meshCrs() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShared ? mShared->mMeshCrs : QgsCoordinateReferenceSystem();
+}
+
+const QgsAbstractTiledMeshNodeBoundingVolume *QgsCesiumTilesDataProvider::boundingVolume() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShared ? mShared->mBoundingVolume.get() : nullptr;
 }
 
 

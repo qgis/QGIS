@@ -26,12 +26,16 @@ QgsBox3d QgsCesiumUtils::parseRegion( const json &region )
 {
   try
   {
-    const double west = region[0].get<double>();
-    const double south = region[1].get<double>();
-    const double east = region[2].get<double>();
-    const double north = region[3].get<double>();
+    // The latitude and longitude values are given in radians!
+    // TODO -- is this ALWAYS the case? What if there's a region root bounding volume, but a transform object present? What if there's crs metadata specifying a different crs?
+
+    const double west = region[0].get<double>() * 180 / M_PI;
+    const double south = region[1].get<double>() * 180 / M_PI;
+    const double east = region[2].get<double>() * 180 / M_PI;
+    const double north = region[3].get<double>() * 180 / M_PI;
     double minHeight = region[4].get<double>();
     double maxHeight = region[5].get<double>();
+
     return QgsBox3d( west, south, minHeight, east, north, maxHeight );
   }
   catch ( nlohmann::json::exception & )

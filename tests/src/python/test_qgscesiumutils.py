@@ -38,10 +38,10 @@ class TestQgsCesiumUtils(QgisTestCase):
 
         # valid
         box = QgsCesiumUtils.parseRegion([1.2, 2, 3, 4.6, 5.5, 6])
-        self.assertEqual(box.xMinimum(), 1.2)
-        self.assertEqual(box.xMaximum(), 3.0)
-        self.assertEqual(box.yMinimum(), 2.0)
-        self.assertEqual(box.yMaximum(), 4.6)
+        self.assertAlmostEqual(box.xMinimum(), 68.75493, 2)
+        self.assertAlmostEqual(box.xMaximum(), 171.887338, 2)
+        self.assertAlmostEqual(box.yMinimum(), 114.591559, 2)
+        self.assertAlmostEqual(box.yMaximum(), 263.56058, 2)
         self.assertEqual(box.zMinimum(), 5.5)
         self.assertEqual(box.zMaximum(), 6.0)
 
