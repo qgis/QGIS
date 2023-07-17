@@ -121,7 +121,7 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
 
             self.assertEqual(layer.dataProvider().meshCrs().authid(), 'EPSG:4978')
             # layer must advertise as EPSG:4979, as the various QgsMapLayer
-            # methods which utilise crs (such as layer extent transformation)
+            # methods which utilize crs (such as layer extent transformation)
             # are all purely 2D and can't handle the cesium data source z value
             # range in EPSG:4978
             self.assertEqual(layer.dataProvider().crs().authid(), 'EPSG:4979')
@@ -174,7 +174,7 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
 
             self.assertEqual(layer.dataProvider().meshCrs().authid(), 'EPSG:4978')
             # layer must advertise as EPSG:4979, as the various QgsMapLayer
-            # methods which utilise crs (such as layer extent transformation)
+            # methods which utilize crs (such as layer extent transformation)
             # are all purely 2D and can't handle the cesium data source z value
             # range in EPSG:4978
             self.assertEqual(layer.dataProvider().crs().authid(), 'EPSG:4979')
