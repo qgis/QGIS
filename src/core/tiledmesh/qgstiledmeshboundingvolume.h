@@ -78,7 +78,7 @@ class CORE_EXPORT QgsAbstractTiledMeshNodeBoundingVolume
     virtual QgsAbstractTiledMeshNodeBoundingVolume *clone() const = 0 SIP_FACTORY;
 
     /**
-     * Return a new geometry representing the 2-dimensional X/Y center slice of the volume.
+     * Returns a new geometry representing the 2-dimensional X/Y center slice of the volume.
      *
      * Caller takes ownership of the returned geometry.
      *
