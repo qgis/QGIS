@@ -498,6 +498,16 @@ appropriate string values where possible.
 .. versionadded:: 3.26
 %End
 
+    static QString resolveDefaultEncoding( const QString &defaultEncoding = "System" );
+%Docstring
+Returns the default encoding.
+
+The default encoding could be the one from "/Processing/encoding" or when it's not an allowed encoding name
+like "System", the default encoding system (mostly UTF-8 on Unix-like, windows-1252 on Windows).
+
+.. versionadded:: 3.28
+%End
+
 };
 
 class QgsProcessingFeatureSource : QgsFeatureSource

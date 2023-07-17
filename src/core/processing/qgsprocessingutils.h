@@ -502,6 +502,16 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QVariantMap removePointerValuesFromMap( const QVariantMap &map );
 
+    /**
+     * Returns the default encoding.
+     *
+     * The default encoding could be the one from "/Processing/encoding" or when it's not an allowed encoding name
+     * like "System", the default encoding system (mostly UTF-8 on Unix-like, windows-1252 on Windows).
+     *
+     * \since QGIS 3.28
+     */
+    static QString resolveDefaultEncoding( const QString &defaultEncoding = "System" );
+
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );
