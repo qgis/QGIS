@@ -451,6 +451,7 @@ namespace QgsWms
     //wms:GetMap
     elem = doc.createElement( QStringLiteral( "GetMap" )/*wms:GetMap*/ );
     appendFormat( elem, QStringLiteral( "image/jpeg" ) );
+    appendFormat( elem, QStringLiteral( "image/webp" ) );
     appendFormat( elem, QStringLiteral( "image/png" ) );
     appendFormat( elem, QStringLiteral( "image/png; mode=16bit" ) );
     appendFormat( elem, QStringLiteral( "image/png; mode=8bit" ) );
