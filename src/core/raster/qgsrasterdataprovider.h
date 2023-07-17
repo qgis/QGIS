@@ -836,7 +836,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * The default implementation returns an empty string.
      * \since QGIS 3.34
      */
-    virtual QString bandDescription( int bandNumber );   // Note: not const because GDAL init on demand
+    // Note: This method is not const because GDAL init on demand
+    virtual QString bandDescription( int bandNumber );
 
 
   signals:
