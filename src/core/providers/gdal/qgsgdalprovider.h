@@ -160,6 +160,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     double bandOffset( int bandNo ) const override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
     QString htmlMetadata() override;
+    QString bandDescription( int bandNumber ) override;
     QStringList subLayers() const override;
 
     static QList< QgsProviderSublayerDetails > sublayerDetails( GDALDatasetH dataset, const QString &baseUri );
