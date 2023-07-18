@@ -721,15 +721,14 @@ double QgsMeasureDialog::convertArea( double area, Qgis::AreaUnit toUnit ) const
 
 void QgsMeasureDialog::copyMeasurements()
 {
-  bool includeHeader = settingClipboardHeader->value();
-  bool alwaysUseDecimalPoint = settingClipboardAlwaysUseDecimalPoint->value();
-
+  const bool includeHeader = settingClipboardHeader->value();
+  const bool alwaysUseDecimalPoint = settingClipboardAlwaysUseDecimalPoint->value();
 
   // Get the separator
   QString separator = settingClipboardSeparator->value();
 
   // If the field separator is a comma and the locale uses a comma as decimal separator, change to a semicolon
-  if ( separator == QStringLiteral( "," ) && !alwaysUseDecimalPoint && QLocale().decimalPoint() == QLatin1Char( ',' ) )
+  if ( separator == QStringLiteral( "," ) && !alwaysUseDecimalPoint && QLocale().decimalPoint() == QStringLiteral( "," ) )
     separator = QStringLiteral( ";" );
 
   if ( separator.isEmpty() )
