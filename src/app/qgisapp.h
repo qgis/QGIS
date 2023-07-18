@@ -1930,7 +1930,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addTextAnnotation();
     void addHtmlAnnotation();
     void addSvgAnnotation();
-    void modifyAnnotation();
     void reprojectAnnotations();
 
     //! Alerts user when commit errors occurred

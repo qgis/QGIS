@@ -1524,18 +1524,6 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>Form Annotation</string>
    </property>
   </action>
-  <action name="mActionAnnotation">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAnnotation.svg</normaloff>:/images/themes/default/mActionAnnotation.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Move Annotation</string>
-   </property>
-  </action>
   <action name="mActionLabeling">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
