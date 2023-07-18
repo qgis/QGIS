@@ -69,7 +69,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
           mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeRegion >( rootRegion );
           mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
           mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
-          mMeshCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
+          mMeshCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
           mExtent = rootRegion.toRectangle();
         }
       }

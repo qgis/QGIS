@@ -65,7 +65,7 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
             self.assertEqual(layer.crs(),
                              QgsCoordinateReferenceSystem('EPSG:4979'))
             self.assertEqual(layer.dataProvider().meshCrs().authid(),
-                             'EPSG:4979')
+                             'EPSG:4978')
 
             self.assertAlmostEqual(layer.extent().xMinimum(),
                                    -75.61444109, 3)
