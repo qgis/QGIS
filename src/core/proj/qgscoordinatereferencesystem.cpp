@@ -2804,7 +2804,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         }
         else
         {
-          sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated,srs_type) VALUES (%2,%3,%4,%5,%6,%7,%8,%9,%10,%11)" )
+          sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated,srs_type) VALUES (%1,%2,%3,%4,%5,%6,%7,%8,%9,%10)" )
                 .arg( QgsSqliteUtils::quotedString( name ),
                       QgsSqliteUtils::quotedString( operation ),
                       QgsSqliteUtils::quotedString( ellps ),
