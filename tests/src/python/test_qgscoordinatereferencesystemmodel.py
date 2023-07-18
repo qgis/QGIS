@@ -52,8 +52,8 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         self.assertNotIn('Cassini', top_level_items)
 
         # user and custom groups should not be created until required
-        self.assertNotIn("User Defined Coordinate Systems", top_level_items)
-        self.assertNotIn("Custom Coordinate Systems", top_level_items)
+        self.assertNotIn("User-defined", top_level_items)
+        self.assertNotIn("Custom", top_level_items)
 
         # check group ids
         top_level_item_group_ids = [
@@ -226,8 +226,8 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         top_level_items = [
             model.data(model.index(row, 0, QModelIndex()), Qt.DisplayRole) for row in range(model.rowCount(QModelIndex()))
         ]
-        self.assertIn('User Defined Coordinate Systems', top_level_items)
-        self.assertNotIn("Custom Coordinate Systems", top_level_items)
+        self.assertIn('User-defined', top_level_items)
+        self.assertNotIn("Custom", top_level_items)
 
         # check group ids
         top_level_item_group_ids = [
@@ -306,7 +306,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         top_level_items = [
             model.data(model.index(row, 0, QModelIndex()), Qt.DisplayRole) for row in range(model.rowCount(QModelIndex()))
         ]
-        self.assertIn("Custom Coordinate Systems", top_level_items)
+        self.assertIn("Custom", top_level_items)
 
         # check group ids
         top_level_item_group_ids = [

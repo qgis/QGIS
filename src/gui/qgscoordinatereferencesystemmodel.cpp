@@ -281,7 +281,7 @@ void QgsCoordinateReferenceSystemModel::userCrsAdded( const QString &id )
       if ( !group )
       {
         std::unique_ptr< QgsCoordinateReferenceSystemModelGroupNode > newGroup = std::make_unique< QgsCoordinateReferenceSystemModelGroupNode >(
-              tr( "User Defined Coordinate Systems" ),
+              tr( "User-defined" ),
               QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ),  QStringLiteral( "USER" ) );
         beginInsertRows( QModelIndex(), mRootNode->children().length(), mRootNode->children().length() );
         mRootNode->addChildNode( newGroup.get() );
@@ -358,7 +358,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
   QIcon groupIcon;
   if ( record.authName == QLatin1String( "USER" ) )
   {
-    groupName = tr( "User Defined Coordinate Systems" );
+    groupName = tr( "User-defined" );
     groupId = QStringLiteral( "USER" );
     groupIcon = QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) );
   }
@@ -468,7 +468,7 @@ QModelIndex QgsCoordinateReferenceSystemModel::addCustomCrs( const QgsCoordinate
   if ( !group )
   {
     std::unique_ptr< QgsCoordinateReferenceSystemModelGroupNode > newGroup = std::make_unique< QgsCoordinateReferenceSystemModelGroupNode >(
-          tr( "Custom Coordinate Systems" ),
+          tr( "Custom" ),
           QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ),  QStringLiteral( "CUSTOM" ) );
     beginInsertRows( QModelIndex(), mRootNode->children().length(), mRootNode->children().length() );
     mRootNode->addChildNode( newGroup.get() );
