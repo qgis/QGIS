@@ -446,7 +446,7 @@ QList<QgsCrsDbRecord> QgsCoordinateReferenceSystemRegistry::crsDbRecords() const
       int result = database.open_v2( srsDatabaseFileName, SQLITE_OPEN_READONLY, nullptr );
       if ( result == SQLITE_OK )
       {
-        const QString sql = QStringLiteral( "select description, srs_id, auth_name, auth_id, projection_acronym, deprecated, srs_type from tbl_srs" );
+        const QString sql = QStringLiteral( "SELECT description, srs_id, auth_name, auth_id, projection_acronym, deprecated, srs_type FROM tbl_srs" );
         sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
         if ( result == SQLITE_OK )
         {
