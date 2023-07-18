@@ -1,0 +1,79 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmatrix4x4.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMatrix4x4
+{
+%Docstring(signature="appended")
+A simple 4x4 matrix implementation useful for transformation in 3D space.
+
+It is similar to QMatrix4x4, but working with double precision values.
+Most of the time, doing transform using QMatrix4x4 is fine, however :py:class:`QgsMatrix4x4`
+is useful in situations where single precision floats are not enough.
+For example, when using transform matrix where translation component has
+values in order of millions.
+
+.. warning::
+
+   Non-stable API, exposed to Python for unit testing only.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgsmatrix4x4.h"
+%End
+  public:
+    QgsMatrix4x4();
+%Docstring
+Initializes identity matrix
+%End
+    QgsMatrix4x4( double m11, double m12, double m13, double m14,
+                  double m21, double m22, double m23, double m24,
+                  double m31, double m32, double m33, double m34,
+                  double m41, double m42, double m43, double m44 );
+%Docstring
+Initializes matrix by setting all values in row-major order
+%End
+
+    QList< double > dataList() const /PyName=data/;
+%Docstring
+Returns matrix data (in column-major order)
+%End
+
+    QgsVector3D map( const QgsVector3D &vector ) const;
+%Docstring
+Matrix-vector multiplication (vector is converted to homogenous coordinates [X,Y,Z,1] and back)
+%End
+
+    bool isIdentity() const;
+%Docstring
+Returns whether this matrix is an identity matrix
+%End
+    void setToIdentity();
+%Docstring
+Sets matrix to be identity matrix
+%End
+
+
+};
+
+QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector );
+QgsMatrix4x4 operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 );
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmatrix4x4.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

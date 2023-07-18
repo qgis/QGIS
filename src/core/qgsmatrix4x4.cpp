@@ -30,6 +30,17 @@ QgsMatrix4x4::QgsMatrix4x4( double m11, double m12, double m13, double m14,
 }
 
 
+QList< double > QgsMatrix4x4::dataList() const
+{
+  QList< double > res;
+  res.reserve( 9 );
+  for ( int i = 0; i < 16; ++i )
+  {
+    res.append( m[i / 4][i % 4] );
+  }
+  return res;
+}
+
 QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector )
 {
   double x, y, z, w;
