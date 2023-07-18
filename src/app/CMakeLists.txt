@@ -11,7 +11,6 @@ set(QGIS_APP_SRCS
   qgisappinterface.cpp
   qgisappstylesheet.cpp
   qgsabout.cpp
-  qgsalignrasterdialog.cpp
   qgsappauthrequesthandler.cpp
   qgsappbrowserproviders.cpp
   qgsappcoordinateoperationhandlers.cpp

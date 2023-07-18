@@ -100,6 +100,7 @@ def initMenusAndToolbars():
                                'native:createspatialindex': managementToolsMenu})
 
     rasterMenu = iface.rasterMenu().title()
+    defaultMenuEntries.update({'native:alignrasters': rasterMenu})
     projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
     defaultMenuEntries.update({'gdal:warpreproject': projectionsMenu,
                                'gdal:extractprojection': projectionsMenu,
@@ -188,7 +189,8 @@ def createMenus():
             icon = None
         if menuPath:
             paths = menuPath.split("/")
-            addAlgorithmEntry(alg, paths[0], paths[-1], addButton=addButton, icon=icon)
+            subMenuName = paths[-1] if len(paths) > 1 else ""
+            addAlgorithmEntry(alg, paths[0], subMenuName, addButton=addButton, icon=icon)
 
 
 def removeMenus():
@@ -215,8 +217,11 @@ def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, ad
 
     if menuName:
         menu = getMenu(menuName, iface.mainWindow().menuBar())
-        submenu = getMenu(submenuName, menu)
-        submenu.addAction(action)
+        if submenuName:
+            submenu = getMenu(submenuName, menu)
+            submenu.addAction(action)
+        else:
+            menu.addAction(action)
 
     if addButton:
         global algorithmsToolbar

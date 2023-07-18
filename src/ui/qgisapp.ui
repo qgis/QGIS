@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1277</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -304,7 +304,6 @@
      <string>&amp;Raster</string>
     </property>
     <addaction name="mActionShowRasterCalculator"/>
-    <addaction name="mActionShowAlignRasterTool"/>
    </widget>
    <widget class="QMenu" name="mVectorMenu">
     <property name="title">
@@ -2841,11 +2840,6 @@ Shift+click to snap rotation to 45 degree steps.</string>
    </property>
    <property name="toolTip">
     <string>Show Statistical Summary</string>
-   </property>
-  </action>
-  <action name="mActionShowAlignRasterTool">
-   <property name="text">
-    <string>Align Rasters…</string>
    </property>
   </action>
   <action name="mActionReportaBug">
