@@ -362,27 +362,22 @@ QString QgsPGLayerItem::comments() const
 
 QString QgsPGLayerItem::createUri()
 {
-  QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( parent() ? parent()->parent() : nullptr );
+  QgsPGConnectionItem *connectionItem = qobject_cast<QgsPGConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
-  if ( !connItem )
+  if ( !connectionItem )
   {
     QgsDebugError( QStringLiteral( "connection item not found." ) );
     return QString();
   }
 
-  const QString &connName = connItem->name();
+  const QString &connectionName = connectionItem->name();
 
-  QgsDataSourceUri uri( QgsPostgresConn::connUri( connName ).connectionInfo( false ) );
+  QgsDataSourceUri uri( QgsPostgresConn::connUri( connectionName ).connectionInfo( false ) );
 
-  const QgsSettings &settings = QgsSettings();
-  QString basekey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( connName );
+  QStringList defPk( QgsPostgreSqlConnectionSettings::sKeys->valueWithDefaultOverride(
+                       !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList(), { connectionName, mLayerProperty.schemaName, mLayerProperty.tableName } ) );
 
-  QStringList defPk( settings.value(
-                       QStringLiteral( "%1/keys/%2/%3" ).arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
-                       QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
-                     ).toStringList() );
-
-  const bool useEstimatedMetadata = QgsPostgresConn::useEstimatedMetadata( connName );
+  const bool useEstimatedMetadata = QgsPostgresConn::useEstimatedMetadata( connectionName );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
 
   QStringList cols;

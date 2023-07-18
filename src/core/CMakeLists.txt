@@ -529,6 +529,7 @@ set(QGIS_CORE_SRCS
   qgsspatialindex.cpp
   qgsspatialindexkdbush.cpp
   qgsspatialindexutils.cpp
+  qgssqlconnectionconfigurator.cpp
   qgssqlexpressioncompiler.cpp
   qgssqliteexpressioncompiler.cpp
   qgssqlstatement.cpp

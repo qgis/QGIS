@@ -22,6 +22,7 @@
 #include "qgsexception.h"
 #include "qgsapplication.h"
 #include "qgsfeedback.h"
+#include "qgssettingsentry.h"
 #include "qgsvectorlayer.h"
 #include <QRegularExpression>
 #include <QIcon>
@@ -34,47 +35,38 @@ extern "C"
 }
 
 // From configuration
-const QStringList QgsPostgresProviderConnection::CONFIGURATION_PARAMETERS =
+const QList<std::pair<QString, const QgsSettingsEntryBool *>> QgsPostgresProviderConnection::CONFIGURATION_BOOL_PARAMETERS =
+      std::initializer_list<std::pair<QString, const QgsSettingsEntryBool *>>
 {
-  QStringLiteral( "publicOnly" ),
-  QStringLiteral( "geometryColumnsOnly" ),
-  QStringLiteral( "dontResolveType" ),
-  QStringLiteral( "allowGeometrylessTables" ),
-  QStringLiteral( "saveUsername" ),
-  QStringLiteral( "savePassword" ),
-  QStringLiteral( "estimatedMetadata" ),
-  QStringLiteral( "projectsInDatabase" ),
-  QStringLiteral( "metadataInDatabase" ),
+  {QStringLiteral( "publicOnly" ), QgsPostgreSqlConnectionSettings::sEstimatedMetadata},
+  {QStringLiteral( "geometryColumnsOnly" ), QgsPostgreSqlConnectionSettings::sGeometryColumnsOnly},
+  {QStringLiteral( "dontResolveType" ), QgsPostgreSqlConnectionSettings::sDontResolveType},
+  {QStringLiteral( "allowGeometrylessTables" ), QgsPostgreSqlConnectionSettings::sAllowGeometrylessTables},
+  {QStringLiteral( "saveUsername" ), QgsPostgreSqlConnectionSettings::sSaveUsername},
+  {QStringLiteral( "savePassword" ), QgsPostgreSqlConnectionSettings::sSavePassword},
+  {QStringLiteral( "estimatedMetadata" ), QgsPostgreSqlConnectionSettings::sEstimatedMetadata},
+  {QStringLiteral( "projectsInDatabase" ), QgsPostgreSqlConnectionSettings::sProjectsInDatabase},
+  {QStringLiteral( "metadataInDatabase" ), QgsPostgreSqlConnectionSettings::sMetadataInDatabase}
 };
 
-const QString QgsPostgresProviderConnection::SETTINGS_BASE_KEY = QStringLiteral( "/PostgreSQL/connections/" );
 
-
-QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name )
-  : QgsAbstractDatabaseProviderConnection( name )
+QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &connectionName )
+  : QgsAbstractDatabaseProviderConnection( connectionName )
 {
   mProviderKey = QStringLiteral( "postgres" );
   // Remove the sql and table empty parts
   const thread_local QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
-  setUri( QgsPostgresConn::connUri( name ).uri( false ).replace( removePartsRe, QString() ) );
-
-  QgsSettings settings;
-  settings.beginGroup( SETTINGS_BASE_KEY );
-  settings.beginGroup( name );
+  setUri( QgsPostgresConn::connUri( connectionName ).uri( false ).replace( removePartsRe, QString() ) );
 
   QVariantMap config;
 
-  for ( const QString &p : std::as_const( CONFIGURATION_PARAMETERS ) )
+  for ( auto& [settingName, setting] : std::as_const( CONFIGURATION_BOOL_PARAMETERS ) )
   {
-    const QVariant val = settings.value( p );
-    if ( val.isValid() )
+    if ( setting->exists( connectionName ) )
     {
-      config.insert( p, val );
+      config.insert( settingName, setting->value( connectionName ) );
     }
   }
-
-  settings.endGroup();
-  settings.endGroup();
 
   setConfiguration( config );
   setDefaultCapabilities();
@@ -763,36 +755,30 @@ QStringList QgsPostgresProviderConnection::schemas( ) const
 }
 
 
-void QgsPostgresProviderConnection::store( const QString &name ) const
+void QgsPostgresProviderConnection::store( const QString &connectionName ) const
 {
   // TODO: move this to class configuration?
   // delete the original entry first
-  remove( name );
-
-  QgsSettings settings;
-  settings.beginGroup( SETTINGS_BASE_KEY );
-  settings.beginGroup( name );
+  remove( connectionName );
 
   // From URI
   const QgsDataSourceUri dsUri { uri() };
-  settings.setValue( "service", dsUri.service() );
-  settings.setValue( "host",  dsUri.host() );
-  settings.setValue( "port", dsUri.port() );
-  settings.setValue( "database", dsUri.database() );
-  settings.setValue( "username", dsUri.username() );
-  settings.setValue( "password", dsUri.password() );
-  settings.setValue( "authcfg", dsUri.authConfigId() );
-  settings.setEnumValue( "sslmode", dsUri.sslMode() );
+  QgsPostgreSqlConnectionSettings::sService->setValue( dsUri.service(), connectionName );
+  QgsPostgreSqlConnectionSettings::sHost->setValue( dsUri.host(), connectionName );
+  QgsPostgreSqlConnectionSettings::sPort->setValue( dsUri.port(), connectionName );
+  QgsPostgreSqlConnectionSettings::sDatabase->setValue( dsUri.database(), connectionName );
+  QgsPostgreSqlConnectionSettings::sUsername->setValue( dsUri.username(), connectionName );
+  QgsPostgreSqlConnectionSettings::sPassword->setValue( dsUri.password(), connectionName );
+  QgsPostgreSqlConnectionSettings::sAuthCfg->setValue( dsUri.authConfigId(), connectionName );
+  QgsPostgreSqlConnectionSettings::sSslMode->setValue( dsUri.sslMode(), connectionName );
 
-  for ( const auto &p : std::as_const( CONFIGURATION_PARAMETERS ) )
+  for ( auto& [settingName, setting] : std::as_const( CONFIGURATION_BOOL_PARAMETERS ) )
   {
-    if ( configuration().contains( p ) )
+    if ( configuration().contains( settingName ) )
     {
-      settings.setValue( p, configuration().value( p ) );
+      setting->setValue( configuration().value( settingName ).toBool(), connectionName );
     }
   }
-  settings.endGroup();
-  settings.endGroup();
 }
 
 void QgsPostgresProviderConnection::remove( const QString &name ) const

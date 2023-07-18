@@ -24,6 +24,7 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgshttpheaders.h"
 #include "qgsowsconnection.h"
+#include "qgssqlconnectionconfigurator.h"
 #include "qgsvectortileconnection.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
@@ -257,8 +258,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wcs" )} );
         break;
       case PostGIS:
-        settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
-        connections = settings.childGroups();
+        connections = QgsPostgreSqlConnectionSettings::sTreeConnections->items();
         break;
       case MSSQL:
         settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
@@ -506,37 +506,35 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  const QgsSettings settings;
-  QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "/PostgreSQL/connections/" + connections[ i ];
+    const QString connectionName = connections[i];
     QDomElement el = doc.createElement( QStringLiteral( "postgis" ) );
-    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
-    el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host" ).toString() );
-    el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port" ).toString() );
-    el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database" ).toString() );
-    el.setAttribute( QStringLiteral( "service" ), settings.value( path + "/service" ).toString() );
-    el.setAttribute( QStringLiteral( "sslmode" ), settings.value( path + "/sslmode", "1" ).toString() );
-    el.setAttribute( QStringLiteral( "estimatedMetadata" ), settings.value( path + "/estimatedMetadata", "0" ).toString() );
-    el.setAttribute( QStringLiteral( "projectsInDatabase" ), settings.value( path + "/projectsInDatabase", "0" ).toString() );
-    el.setAttribute( QStringLiteral( "dontResolveType" ), settings.value( path + "/dontResolveType", "0" ).toString() );
-    el.setAttribute( QStringLiteral( "allowGeometrylessTables" ), settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
-    el.setAttribute( QStringLiteral( "geometryColumnsOnly" ), settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
-    el.setAttribute( QStringLiteral( "publicOnly" ), settings.value( path + "/publicOnly", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "name" ), connectionName );
+    el.setAttribute( QStringLiteral( "host" ), QgsPostgreSqlConnectionSettings::sHost->value( connectionName ) );
+    el.setAttribute( QStringLiteral( "port" ), QgsPostgreSqlConnectionSettings::sPort->value( connectionName ) );
+    el.setAttribute( QStringLiteral( "database" ), QgsPostgreSqlConnectionSettings::sDatabase->value( connectionName ) );
+    el.setAttribute( QStringLiteral( "service" ), QgsPostgreSqlConnectionSettings::sService->value( connectionName ) );
+    el.setAttribute( QStringLiteral( "sslmode" ), QgsPostgreSqlConnectionSettings::sSslMode->valueWithDefaultOverride( QgsDataSourceUri::SslMode::SslDisable, connectionName ) );
+    el.setAttribute( QStringLiteral( "estimatedMetadata" ), QgsPostgreSqlConnectionSettings::sEstimatedMetadata->valueWithDefaultOverride( "0", connectionName ) );
+    el.setAttribute( QStringLiteral( "projectsInDatabase" ), QgsPostgreSqlConnectionSettings::sProjectsInDatabase->valueWithDefaultOverride( "0", connectionName ) );
+    el.setAttribute( QStringLiteral( "dontResolveType" ), QgsPostgreSqlConnectionSettings::sDontResolveType->valueWithDefaultOverride( "0", connectionName ) );
+    el.setAttribute( QStringLiteral( "allowGeometrylessTables" ), QgsPostgreSqlConnectionSettings::sAllowGeometrylessTables->valueWithDefaultOverride( "0", connectionName ) );
+    el.setAttribute( QStringLiteral( "geometryColumnsOnly" ), QgsPostgreSqlConnectionSettings::sGeometryColumnsOnly->valueWithDefaultOverride( "0", connectionName ) );
+    el.setAttribute( QStringLiteral( "publicOnly" ), QgsPostgreSqlConnectionSettings::sPublicOnly->valueWithDefaultOverride( "0", connectionName ) );
 
-    el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "saveUsername" ), QgsPostgreSqlConnectionSettings::sSaveUsername->valueWithDefaultOverride( false, connectionName ) );
 
-    if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
+    if ( QgsPostgreSqlConnectionSettings::sSaveUsername->valueWithDefaultOverride( false, connectionName ) )
     {
-      el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username" ).toString() );
+      el.setAttribute( QStringLiteral( "username" ), QgsPostgreSqlConnectionSettings::sUsername->value( connectionName ) );
     }
 
-    el.setAttribute( QStringLiteral( "savePassword" ), settings.value( path + "/savePassword", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "savePassword" ), QgsPostgreSqlConnectionSettings::sSavePassword->valueWithDefaultOverride( "false", connectionName ) );
 
-    if ( settings.value( path + "/savePassword", "false" ).toString() == QLatin1String( "true" ) )
+    if ( QgsPostgreSqlConnectionSettings::sSavePassword->valueWithDefaultOverride( false, connectionName ) )
     {
-      el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password" ).toString() );
+      el.setAttribute( QStringLiteral( "password" ), QgsPostgreSqlConnectionSettings::sPassword->value( connectionName ) );
     }
 
     root.appendChild( el );
@@ -976,9 +974,7 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
 
   QString connectionName;
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
-  QStringList keys = settings.childGroups();
-  settings.endGroup();
+  QStringList keys = QgsPostgreSqlConnectionSettings::sTreeConnections->items();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1034,32 +1030,28 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
       keys << connectionName;
     }
 
-    //no dups detected or overwrite is allowed
-    settings.beginGroup( "/PostgreSQL/connections/" + connectionName );
-
-    settings.setValue( QStringLiteral( "/host" ), child.attribute( QStringLiteral( "host" ) ) );
-    settings.setValue( QStringLiteral( "/port" ), child.attribute( QStringLiteral( "port" ) ) );
-    settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
+    QgsPostgreSqlConnectionSettings::sHost->setValue( child.attribute( QStringLiteral( "host" ) ), connectionName );
+    QgsPostgreSqlConnectionSettings::sPort->setValue( child.attribute( QStringLiteral( "port" ) ), connectionName );
+    QgsPostgreSqlConnectionSettings::sDatabase->setValue( child.attribute( QStringLiteral( "database" ) ), connectionName );
     if ( child.hasAttribute( QStringLiteral( "service" ) ) )
     {
-      settings.setValue( QStringLiteral( "/service" ), child.attribute( QStringLiteral( "service" ) ) );
+      QgsPostgreSqlConnectionSettings::sService->setValue( child.attribute( QStringLiteral( "service" ) ), connectionName );
     }
     else
     {
-      settings.setValue( QStringLiteral( "/service" ), "" );
+      QgsPostgreSqlConnectionSettings::sService->setValue( "", connectionName );
     }
-    settings.setValue( QStringLiteral( "/sslmode" ), child.attribute( QStringLiteral( "sslmode" ) ) );
-    settings.setValue( QStringLiteral( "/estimatedMetadata" ), child.attribute( QStringLiteral( "estimatedMetadata" ) ) );
-    settings.setValue( QStringLiteral( "/projectsInDatabase" ), child.attribute( QStringLiteral( "projectsInDatabase" ), 0 ) );
-    settings.setValue( QStringLiteral( "/dontResolveType" ), child.attribute( QStringLiteral( "dontResolveType" ), 0 ) );
-    settings.setValue( QStringLiteral( "/allowGeometrylessTables" ), child.attribute( QStringLiteral( "allowGeometrylessTables" ), 0 ) );
-    settings.setValue( QStringLiteral( "/geometryColumnsOnly" ), child.attribute( QStringLiteral( "geometryColumnsOnly" ), 0 ) );
-    settings.setValue( QStringLiteral( "/publicOnly" ), child.attribute( QStringLiteral( "publicOnly" ), 0 ) );
-    settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
-    settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
-    settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
-    settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
-    settings.endGroup();
+    QgsPostgreSqlConnectionSettings::sSslMode->setValue( QgsDataSourceUri::decodeSslMode( child.attribute( QStringLiteral( "sslmode" ) ) ), connectionName );
+    QgsPostgreSqlConnectionSettings::sEstimatedMetadata->setValue( child.attribute( QStringLiteral( "estimatedMetadata" ) ) == "0", connectionName );
+    QgsPostgreSqlConnectionSettings::sProjectsInDatabase->setValue( child.attribute( QStringLiteral( "projectsInDatabase" ), "0" ) == "0", connectionName );
+    QgsPostgreSqlConnectionSettings::sDontResolveType->setValue( child.attribute( QStringLiteral( "dontResolveType" ), "0" ) == "0", connectionName );
+    QgsPostgreSqlConnectionSettings::sAllowGeometrylessTables->setValue( child.attribute( QStringLiteral( "allowGeometrylessTables" ), "0" ) == "0", connectionName );
+    QgsPostgreSqlConnectionSettings::sGeometryColumnsOnly->setValue( child.attribute( QStringLiteral( "geometryColumnsOnly" ), "0" ) == "0", connectionName );
+    QgsPostgreSqlConnectionSettings::sPublicOnly->setValue( child.attribute( QStringLiteral( "publicOnly" ), "0" ) == "0", connectionName );
+    QgsPostgreSqlConnectionSettings::sSaveUsername->setValue( child.attribute( QStringLiteral( "saveUsername" ) ) == "true", connectionName );
+    QgsPostgreSqlConnectionSettings::sUsername->setValue( child.attribute( QStringLiteral( "username" ) ), connectionName );
+    QgsPostgreSqlConnectionSettings::sSavePassword->setValue( child.attribute( QStringLiteral( "savePassword" ) ) == "false", connectionName );
+    QgsPostgreSqlConnectionSettings::sPassword->setValue( child.attribute( QStringLiteral( "password" ) ), connectionName );
 
     child = child.nextSiblingElement();
   }

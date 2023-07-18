@@ -82,8 +82,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
     QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const override;
 
-    static const QStringList CONFIGURATION_PARAMETERS;
-    static const QString SETTINGS_BASE_KEY;
+    static const QList<std::pair<QString, const QgsSettingsEntryBool *>> CONFIGURATION_BOOL_PARAMETERS;
 
   private:
 

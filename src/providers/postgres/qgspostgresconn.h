@@ -25,6 +25,7 @@
 #include <QMutex>
 
 #include "qgis.h"
+#include "qgssqlconnectionconfigurator.h"
 #include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
 #include "qgsconfig.h"
@@ -171,7 +172,7 @@ constexpr int sPostgresConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CM
 #define LoggedPQexec(_class, query) PQexec( query, true, true, _class, QGS_QUERY_LOG_ORIGIN_PG_CON )
 #define LoggedPQexecNoLogError(_class, query ) PQexec( query, false, true, _class, QGS_QUERY_LOG_ORIGIN_PG_CON )
 
-class QgsPostgresConn : public QObject
+class QgsPostgresConn : public QObject, public QgsSqlConnectionConfigurator<QgsPostgreSqlConnectionSettings>
 {
     Q_OBJECT
 
@@ -411,19 +412,6 @@ class QgsPostgresConn : public QObject
 
     static Qgis::WkbType wkbTypeFromGeomType( Qgis::GeometryType geomType );
     static Qgis::WkbType wkbTypeFromOgcWkbType( unsigned int ogcWkbType );
-
-    static QStringList connectionList();
-    static QString selectedConnection();
-    static void setSelectedConnection( const QString &connName );
-    static QgsDataSourceUri connUri( const QString &connName );
-    static bool publicSchemaOnly( const QString &connName );
-    static bool geometryColumnsOnly( const QString &connName );
-    static bool dontResolveType( const QString &connName );
-    static bool useEstimatedMetadata( const QString &connName );
-    static bool allowGeometrylessTables( const QString &connName );
-    static bool allowProjectsInDatabase( const QString &connName );
-    static void deleteConnection( const QString &connName );
-    static bool allowMetadataInDatabase( const QString &connName );
 
     //! A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback}
     void lock() { mLock.lock(); }

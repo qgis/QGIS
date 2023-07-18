@@ -29,6 +29,7 @@
 #include "qgspostgresconn.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgssqlconnectionconfigurator.h"
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -65,55 +66,54 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     // populate the fields with the stored setting parameters
     QgsSettings settings;
 
-    QString key = "/PostgreSQL/connections/" + connName;
-    txtService->setText( settings.value( key + "/service" ).toString() );
-    txtHost->setText( settings.value( key + "/host" ).toString() );
-    QString port = settings.value( key + "/port" ).toString();
+    txtService->setText( QgsPostgreSqlConnectionSettings::sService->value( connName ) );
+    txtHost->setText( QgsPostgreSqlConnectionSettings::sHost->value( connName ) );
+    QString port = QgsPostgreSqlConnectionSettings::sPort->value( connName );
     if ( port.length() == 0 )
     {
-      port = QStringLiteral( "5432" );
+      port = QgsPostgreSqlConnectionSettings::mConnectionTypePort;
     }
     txtPort->setText( port );
-    txtDatabase->setText( settings.value( key + "/database" ).toString() );
-    txtSessionRole->setText( settings.value( key + "/session_role" ).toString() );
-    cb_publicSchemaOnly->setChecked( settings.value( key + "/publicOnly", false ).toBool() );
-    cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometryColumnsOnly", true ).toBool() );
-    cb_dontResolveType->setChecked( settings.value( key + "/dontResolveType", false ).toBool() );
-    cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
+    txtDatabase->setText( QgsPostgreSqlConnectionSettings::sDatabase->value( connName ) );
+    txtSessionRole->setText( QgsPostgreSqlConnectionSettings::sSessionRole->value( connName ) );
+    cb_publicSchemaOnly->setChecked( QgsPostgreSqlConnectionSettings::sPublicOnly->value( connName ) );
+    cb_geometryColumnsOnly->setChecked( QgsPostgreSqlConnectionSettings::sGeometryColumnsOnly->value( connName ) );
+    cb_dontResolveType->setChecked( QgsPostgreSqlConnectionSettings::sDontResolveType->value( connName ) );
+    cb_allowGeometrylessTables->setChecked( QgsPostgreSqlConnectionSettings::sAllowGeometrylessTables->value( connName ) );
     // Ensure that cb_publicSchemaOnly is set correctly
     cb_geometryColumnsOnly_clicked();
 
-    cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
-    cb_projectsInDatabase->setChecked( settings.value( key + "/projectsInDatabase", false ).toBool() );
-    cb_metadataInDatabase->setChecked( settings.value( key + "/metadataInDatabase", false ).toBool() );
+    cb_useEstimatedMetadata->setChecked( QgsPostgreSqlConnectionSettings::sEstimatedMetadata->value( connName ) );
+    cb_projectsInDatabase->setChecked( QgsPostgreSqlConnectionSettings::sProjectsInDatabase->value( connName ) );
+    cb_metadataInDatabase->setChecked( QgsPostgreSqlConnectionSettings::sMetadataInDatabase->value( connName ) );
 
-    cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer ) ) );
+    cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( QgsPostgreSqlConnectionSettings::sSslMode->value( connName ) ) );
 
-    if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
+    if ( QgsPostgreSqlConnectionSettings::sOldSave->value( connName ) )
     {
-      mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
+      mAuthSettings->setUsername( QgsPostgreSqlConnectionSettings::sUsername->value( connName ) );
       mAuthSettings->setStoreUsernameChecked( true );
     }
 
-    if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
+    if ( QgsPostgreSqlConnectionSettings::sOldSave->value( connName ) )
     {
-      mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
+      mAuthSettings->setPassword( QgsPostgreSqlConnectionSettings::sPassword->value( connName ) );
       mAuthSettings->setStorePasswordChecked( true );
     }
 
     // Old save setting
-    if ( settings.contains( key + "/save" ) )
+    if ( QgsPostgreSqlConnectionSettings::sOldSave->value( connName ) )
     {
-      mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
+      mAuthSettings->setUsername( QgsPostgreSqlConnectionSettings::sUsername->value( connName ) );
       mAuthSettings->setStoreUsernameChecked( !mAuthSettings->username().isEmpty() );
 
-      if ( settings.value( key + "/save" ).toString() == QLatin1String( "true" ) )
-        mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
+      if ( QgsPostgreSqlConnectionSettings::sOldSave->value( connName ) )
+        mAuthSettings->setPassword( QgsPostgreSqlConnectionSettings::sPassword->value( connName ) );
 
       mAuthSettings->setStorePasswordChecked( true );
     }
 
-    QString authcfg = settings.value( key + "/authcfg" ).toString();
+    const QString authcfg = QgsPostgreSqlConnectionSettings::sAuthCfg->value( connName );
     mAuthSettings->setConfigId( authcfg );
 
     txtName->setText( connName );
@@ -124,9 +124,8 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 //! Autoconnected SLOTS
 void QgsPgNewConnection::accept()
 {
-  QgsSettings settings;
-  QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
-  settings.setValue( baseKey + "selected", txtName->text() );
+  const QString currentConnection = txtName->text();
+  QgsPostgresConn::setSelectedConnection( currentConnection );
   bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
   testConnection();
 
@@ -140,46 +139,44 @@ void QgsPgNewConnection::accept()
   }
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
-         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( currentConnection, Qt::CaseInsensitive ) != 0 ) &&
+       ( QgsPostgreSqlConnectionSettings::sService->exists( currentConnection ) ||
+         QgsPostgreSqlConnectionSettings::sHost->exists( currentConnection ) ) &&
        QMessageBox::question( this,
                               tr( "Save Connection" ),
-                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( currentConnection ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
 
   // on rename delete the original entry first
-  if ( !mOriginalConnName.isNull() && mOriginalConnName != txtName->text() )
+  if ( !mOriginalConnName.isNull() && mOriginalConnName != currentConnection )
   {
-    settings.remove( baseKey + mOriginalConnName );
-    settings.sync();
+    QgsPostgresConn::deleteConnection( mOriginalConnName );
   }
 
-  baseKey += txtName->text();
-  settings.setValue( baseKey + "/service", txtService->text() );
-  settings.setValue( baseKey + "/host", txtHost->text() );
-  settings.setValue( baseKey + "/port", txtPort->text() );
-  settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/session_role", txtSessionRole->text() );
-  settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username() : QString() );
-  settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password() : QString() );
-  settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );
-  settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
-  settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
-  settings.setValue( baseKey + "/dontResolveType", cb_dontResolveType->isChecked() );
-  settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
-  settings.setValue( baseKey + "/sslmode", cbxSSLmode->currentData().toInt() );
-  settings.setValue( baseKey + "/saveUsername", mAuthSettings->storeUsernameIsChecked( ) ? "true" : "false" );
-  settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
-  settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
-  settings.setValue( baseKey + "/projectsInDatabase", cb_projectsInDatabase->isChecked() );
-  settings.setValue( baseKey + "/metadataInDatabase", cb_metadataInDatabase->isChecked() );
+  QgsPostgreSqlConnectionSettings::sService->setValue( txtService->text(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sHost->setValue( txtHost->text(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sPort->setValue( txtPort->text(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sDatabase->setValue( txtDatabase->text(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sSessionRole->setValue( txtSessionRole->text(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sUsername->setValue( mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username() : QString(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sPassword->setValue( mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password() : QString(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sAuthCfg->setValue( mAuthSettings->configId(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sPublicOnly->setValue( cb_publicSchemaOnly->isChecked(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sGeometryColumnsOnly->setValue( cb_geometryColumnsOnly->isChecked(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sDontResolveType->setValue( cb_dontResolveType->isChecked(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sAllowGeometrylessTables->setValue( cb_allowGeometrylessTables->isChecked(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sSslMode->setValue( ( QgsDataSourceUri::SslMode )cbxSSLmode->currentData().toInt(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sSaveUsername->setValue( mAuthSettings->storeUsernameIsChecked( ), currentConnection );
+  QgsPostgreSqlConnectionSettings::sSavePassword->setValue( mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? true : false, currentConnection );
+  QgsPostgreSqlConnectionSettings::sEstimatedMetadata->setValue( cb_useEstimatedMetadata->isChecked(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sProjectsInDatabase->setValue( cb_projectsInDatabase->isChecked(), currentConnection );
+  QgsPostgreSqlConnectionSettings::sMetadataInDatabase->setValue( cb_metadataInDatabase->isChecked(), currentConnection );
 
   // remove old save setting
-  settings.remove( baseKey + "/save" );
+  QgsPostgreSqlConnectionSettings::sOldSave->remove( currentConnection );
 
   QVariantMap configuration;
   configuration.insert( "publicOnly", cb_publicSchemaOnly->isChecked() );
@@ -195,7 +192,7 @@ void QgsPgNewConnection::accept()
 
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
-  std::unique_ptr< QgsPostgresProviderConnection > providerConnection( qgis::down_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) ) );
+  std::unique_ptr< QgsPostgresProviderConnection > providerConnection( qgis::down_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( currentConnection ) ) );
   providerConnection->setUri( QgsPostgresConn::connUri( txtName->text() ).uri( false ) );
   providerConnection->setConfiguration( configuration );
   providerMetadata->saveConnection( providerConnection.get(), txtName->text() );
