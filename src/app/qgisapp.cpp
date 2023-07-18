@@ -2946,7 +2946,6 @@ void QgisApp::createActions()
   connect( mActionFormAnnotation, &QAction::triggered, this, &QgisApp::addFormAnnotation );
   connect( mActionHtmlAnnotation, &QAction::triggered, this, &QgisApp::addHtmlAnnotation );
   connect( mActionSvgAnnotation, &QAction::triggered, this, &QgisApp::addSvgAnnotation );
-  connect( mActionAnnotation, &QAction::triggered, this, &QgisApp::modifyAnnotation );
   connect( mActionLabeling, &QAction::triggered, this, &QgisApp::labeling );
   mStatisticalSummaryDockWidget->setToggleVisibilityAction( mActionStatisticalSummary );
   connect( mActionManage3DMapViews, &QAction::triggered, this, &QgisApp::show3DMapViewsManager );
@@ -3890,7 +3889,6 @@ void QgisApp::createToolBars()
   bt->addAction( mActionFormAnnotation );
   bt->addAction( mActionHtmlAnnotation );
   bt->addAction( mActionSvgAnnotation );
-  bt->addAction( mActionAnnotation );
 
   QAction *defAnnotationAction = mActionTextAnnotation;
   switch ( settings.value( QStringLiteral( "UI/annotationTool" ), 0 ).toInt() )
@@ -3906,9 +3904,6 @@ void QgisApp::createToolBars()
       break;
     case 3:
       defAnnotationAction = mActionSvgAnnotation;
-      break;
-    case 4:
-      defAnnotationAction = mActionAnnotation;
       break;
   }
   bt->setDefaultAction( defAnnotationAction );
@@ -4285,7 +4280,6 @@ void QgisApp::setTheme( const QString &themeName )
 #endif
   mActionAddAfsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ) );
   mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInOverview.svg" ) ) );
-  mActionAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAnnotation.svg" ) ) );
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormAnnotation.svg" ) ) );
   mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHtmlAnnotation.svg" ) ) );
   mActionSvgAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSvgAnnotation.svg" ) ) );
@@ -4509,7 +4503,6 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::FormAnnotation )->setAction( mActionFormAnnotation );
   mMapTools->mapTool( QgsAppMapTools::HtmlAnnotation )->setAction( mActionHtmlAnnotation );
   mMapTools->mapTool( QgsAppMapTools::SvgAnnotation )->setAction( mActionSvgAnnotation );
-  mMapTools->mapTool( QgsAppMapTools::Annotation )->setAction( mActionAnnotation );
   mMapTools->mapTool( QgsAppMapTools::AddFeature )->setAction( mActionAddFeature );
   mMapTools->mapTool( QgsAppMapTools::MoveFeature )->setAction( mActionMoveFeature );
   mMapTools->mapTool( QgsAppMapTools::MoveFeatureCopy )->setAction( mActionMoveFeatureCopy );
@@ -7827,11 +7820,6 @@ void QgisApp::addTextAnnotation()
 void QgisApp::addSvgAnnotation()
 {
   mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::SvgAnnotation ) );
-}
-
-void QgisApp::modifyAnnotation()
-{
-  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::Annotation ) );
 }
 
 void QgisApp::reprojectAnnotations()
@@ -16750,8 +16738,6 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "UI/annotationTool" ), 2 );
   else if ( action == mActionSvgAnnotation )
     settings.setValue( QStringLiteral( "UI/annotationTool" ), 3 );
-  else if ( action == mActionAnnotation )
-    settings.setValue( QStringLiteral( "UI/annotationTool" ), 4 );
   else if ( action == mActionNewSpatiaLiteLayer )
     settings.setValue( QStringLiteral( "UI/defaultNewLayer" ), 0 );
   else if ( action == mActionNewVectorLayer )
