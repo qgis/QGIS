@@ -2722,21 +2722,21 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         continue;
       }
 
-      QString srsProj4;
-      QString srsDesc;
+      QString dbSrsProj4;
+      QString dbSrsDesc;
       QString dbSrsType;
-      bool srsDeprecated = deprecated;
+      bool dbSrsDeprecated = deprecated;
       if ( statement.step() == SQLITE_ROW )
       {
-        srsProj4 = statement.columnAsText( 0 );
-        srsDesc = statement.columnAsText( 1 );
-        srsDeprecated = statement.columnAsText( 2 ).toInt() != 0;
+        dbSrsProj4 = statement.columnAsText( 0 );
+        dbSrsDesc = statement.columnAsText( 1 );
+        dbSrsDeprecated = statement.columnAsText( 2 ).toInt() != 0;
         dbSrsType = statement.columnAsText( 3 );
       }
 
-      if ( !srsProj4.isEmpty() || !srsDesc.isEmpty() )
+      if ( !dbSrsProj4.isEmpty() || !dbSrsDesc.isEmpty() )
       {
-        if ( proj4 != srsProj4 || name != srsDesc || deprecated != srsDeprecated || dbSrsType != srsTypeString )
+        if ( proj4 != dbSrsProj4 || name != dbSrsDesc || deprecated != dbSrsDeprecated || dbSrsType != srsTypeString )
         {
           errMsg = nullptr;
           sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3, srs_type=%4 WHERE auth_name=%5 AND auth_id=%6" )
