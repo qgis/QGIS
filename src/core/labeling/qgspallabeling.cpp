@@ -2071,7 +2071,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         numberFormat.append( '+' );
       }
       numberFormat.append( "%1" );
-      labelText = numberFormat.arg( d, 0, 'f', decimalPlaces );
+      labelText = numberFormat.arg( QLocale().toString( d, 'f', decimalPlaces ) );
     }
   }
 
