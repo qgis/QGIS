@@ -17,10 +17,10 @@
 #define QGSMATRIX4X4_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 #include "qgsvector3d.h"
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup core
@@ -32,9 +32,8 @@
  * For example, when using transform matrix where translation component has
  * values in order of millions.
  *
- * \warning Only for internal use
+ * \warning Non-stable API, exposed to Python for unit testing only.
  *
- * \note Not available in Python bindings
  * \since QGIS 3.34
  */
 class CORE_EXPORT QgsMatrix4x4
@@ -49,9 +48,11 @@ class CORE_EXPORT QgsMatrix4x4
                   double m41, double m42, double m43, double m44 );
 
     //! Returns pointer to the matrix data (stored in column-major order)
-    const double *constData() const { return *m; }
+    const double *constData() const SIP_SKIP { return *m; }
     //! Returns pointer to the matrix data (stored in column-major order)
-    double *data() { return *m; }
+    double *data() SIP_SKIP { return *m; }
+    //! Returns matrix data (in column-major order)
+    QList< double > dataList() const SIP_PYNAME( data );
 
     //! Matrix-vector multiplication (vector is converted to homogenous coordinates [X,Y,Z,1] and back)
     QgsVector3D map( const QgsVector3D &vector ) const
@@ -64,8 +65,10 @@ class CORE_EXPORT QgsMatrix4x4
     //! Sets matrix to be identity matrix
     void setToIdentity();
 
+#ifndef SIP_RUN
     friend QgsMatrix4x4 operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 );
     friend QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector );
+#endif
 
   private:
     // Matrix data - in column-major order
