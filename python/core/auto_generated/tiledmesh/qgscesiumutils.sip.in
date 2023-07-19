@@ -25,7 +25,7 @@ Contains utilities for working with Cesium data.
   public:
 
 
-    static QgsBox3d parseRegion( const QVariantList &region );
+    static QgsBox3D parseRegion( const QVariantList &region );
 %Docstring
 Parses a ``region`` object from a Cesium JSON document to a 3D box.
 %End

@@ -197,7 +197,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
     mne = mnl.toElement();
     QgsLayerMetadata::SpatialExtent se = QgsLayerMetadata::SpatialExtent();
     se.extentCrs = QgsCoordinateReferenceSystem( mne.attribute( QStringLiteral( "crs" ) ) );
-    se.bounds = QgsBox3d();
+    se.bounds = QgsBox3D();
     se.bounds.setXMinimum( mne.attribute( QStringLiteral( "minx" ) ).toDouble() );
     se.bounds.setYMinimum( mne.attribute( QStringLiteral( "miny" ) ).toDouble() );
     se.bounds.setZMinimum( mne.attribute( QStringLiteral( "minz" ) ).toDouble() );

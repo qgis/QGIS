@@ -749,7 +749,7 @@ void QgsMetadataWidget::saveMetadata( QgsAbstractMetadataBase *metadata )
 
       // Extent
       QgsLayerMetadata::SpatialExtent spatialExtent;
-      spatialExtent.bounds = QgsBox3d( spatialExtentSelector->outputExtent() );
+      spatialExtent.bounds = QgsBox3D( spatialExtentSelector->outputExtent() );
       spatialExtent.bounds.setZMinimum( spinBoxZMinimum->value() );
       spatialExtent.bounds.setZMaximum( spinBoxZMaximum->value() );
       spatialExtent.extentCrs = spatialExtentSelector->outputCrs();

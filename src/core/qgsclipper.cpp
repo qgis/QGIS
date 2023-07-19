@@ -37,7 +37,7 @@ const double QgsClipper::MIN_Y = -16000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
-void QgsClipper::clipped3dLine( const QVector< double > &xIn, const QVector< double > &yIn, const QVector<double> &zIn, QVector<double> &x, QVector<double> &y, QVector<double> &z, const QgsBox3d &clipExtent )
+void QgsClipper::clipped3dLine( const QVector< double > &xIn, const QVector< double > &yIn, const QVector<double> &zIn, QVector<double> &x, QVector<double> &y, QVector<double> &z, const QgsBox3D &clipExtent )
 {
   double p0x, p0y, p0z, p1x = 0.0, p1y = 0.0, p1z = 0.0; //original coordinates
   double p1x_c, p1y_c, p1z_c; //clipped end coordinates
@@ -267,7 +267,7 @@ void QgsClipper::connectSeparatedLines( double x0, double y0, double x1, double 
 }
 
 void QgsClipper::connectSeparatedLines( double x0, double y0, double z0, double x1, double y1, double z1,
-                                        const QgsBox3d &clipRect, QVector< double > &ptsX, QVector< double > &ptsY, QVector<double> &ptsZ )
+                                        const QgsBox3D &clipRect, QVector< double > &ptsX, QVector< double > &ptsY, QVector<double> &ptsZ )
 {
   // TODO: really relevant and sufficient?
   double meanZ = ( z0 + z1 ) / 2.0;

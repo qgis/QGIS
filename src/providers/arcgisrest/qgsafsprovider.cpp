@@ -129,7 +129,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     if ( xminOk && yminOk && xmaxOk && ymaxOk )
     {
       QgsLayerMetadata::SpatialExtent spatialExtent;
-      spatialExtent.bounds = QgsBox3d( originalExtent );
+      spatialExtent.bounds = QgsBox3D( originalExtent );
       spatialExtent.extentCrs = extentCrs;
       QgsLayerMetadata::Extent metadataExtent;
       metadataExtent.setSpatialExtents( QList<  QgsLayerMetadata::SpatialExtent >() << spatialExtent );

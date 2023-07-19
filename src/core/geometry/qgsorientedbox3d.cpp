@@ -55,7 +55,7 @@ QList< double > QgsOrientedBox3D::halfAxesList() const
   return res;
 }
 
-QgsBox3d QgsOrientedBox3D::extent() const
+QgsBox3D QgsOrientedBox3D::extent() const
 {
   const double extent[3]
   {
@@ -71,7 +71,7 @@ QgsBox3d QgsOrientedBox3D::extent() const
   const double minZ = mCenter[2] - extent[2];
   const double maxZ = mCenter[2] + extent[2];
 
-  return QgsBox3d( minX, minY, minZ, maxX, maxY, maxZ );
+  return QgsBox3D( minX, minY, minZ, maxX, maxY, maxZ );
 }
 
 QVector<QgsVector3D> QgsOrientedBox3D::corners() const

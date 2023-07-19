@@ -28,7 +28,7 @@ QgsAbstractTiledMeshNodeBoundingVolume::~QgsAbstractTiledMeshNodeBoundingVolume(
 // QgsTiledMeshNodeBoundingVolumeRegion
 //
 
-QgsTiledMeshNodeBoundingVolumeRegion::QgsTiledMeshNodeBoundingVolumeRegion( const QgsBox3d &region )
+QgsTiledMeshNodeBoundingVolumeRegion::QgsTiledMeshNodeBoundingVolumeRegion( const QgsBox3D &region )
   : mRegion( region )
 {
 
@@ -39,7 +39,7 @@ Qgis::TiledMeshBoundingVolumeType QgsTiledMeshNodeBoundingVolumeRegion::type() c
   return Qgis::TiledMeshBoundingVolumeType::Region;
 }
 
-QgsBox3d QgsTiledMeshNodeBoundingVolumeRegion::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
+QgsBox3D QgsTiledMeshNodeBoundingVolumeRegion::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
   if ( !transform.isValid() || transform.isShortCircuited() )
   {
@@ -56,7 +56,7 @@ QgsBox3d QgsTiledMeshNodeBoundingVolumeRegion::bounds( const QgsCoordinateTransf
     const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
     const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
     const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
-    return QgsBox3d( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second );
+    return QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second );
   }
 }
 
@@ -113,7 +113,7 @@ Qgis::TiledMeshBoundingVolumeType QgsTiledMeshNodeBoundingVolumeBox::type() cons
   return Qgis::TiledMeshBoundingVolumeType::OrientedBox;
 }
 
-QgsBox3d QgsTiledMeshNodeBoundingVolumeBox::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
+QgsBox3D QgsTiledMeshNodeBoundingVolumeBox::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
@@ -135,7 +135,7 @@ QgsBox3d QgsTiledMeshNodeBoundingVolumeBox::bounds( const QgsCoordinateTransform
     const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
     const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
     const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
-    return QgsBox3d( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second );
+    return QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second );
   }
   else
   {
@@ -191,7 +191,7 @@ Qgis::TiledMeshBoundingVolumeType QgsTiledMeshNodeBoundingVolumeSphere::type() c
   return Qgis::TiledMeshBoundingVolumeType::Sphere;
 }
 
-QgsBox3d QgsTiledMeshNodeBoundingVolumeSphere::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
+QgsBox3D QgsTiledMeshNodeBoundingVolumeSphere::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
@@ -204,7 +204,7 @@ QgsBox3d QgsTiledMeshNodeBoundingVolumeSphere::bounds( const QgsCoordinateTransf
     transform.transformInPlace( x, y, z, direction );
 
     const QgsRectangle bounds2d( centerSlice->boundingBox() );
-    return QgsBox3d( bounds2d.xMinimum(), bounds2d.yMinimum(), std::min( z[0], z[1] ), bounds2d.xMaximum(), bounds2d.yMaximum(), std::max( z[0], z[1] ) );
+    return QgsBox3D( bounds2d.xMinimum(), bounds2d.yMinimum(), std::min( z[0], z[1] ), bounds2d.xMaximum(), bounds2d.yMaximum(), std::max( z[0], z[1] ) );
   }
   else
   {

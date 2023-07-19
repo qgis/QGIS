@@ -11,13 +11,18 @@
 
 
 
-class QgsBox3d
+class QgsBox3D
 {
 %Docstring(signature="appended")
 A 3-dimensional box composed of x, y, z coordinates.
 
 A box composed of x/y/z minimum and maximum values. It is often used to return the 3D
 extent of a geometry or collection of geometries.
+
+.. note::
+
+   In QGIS 3.34 this class was renamed from :py:class:`QgsBox3d` to :py:class:`QgsBox3D`. The old :py:class:`QgsBox3d` name
+   remains available in PyQGIS for compatibility.
 
 .. seealso:: :py:class:`QgsRectangle`
 
@@ -32,9 +37,9 @@ extent of a geometry or collection of geometries.
 
   public:
 
-    QgsBox3d( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QgsRectangle, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[QgsPoint, float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT x2 /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT y2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT n /TypeHint="Optional[bool]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
+    QgsBox3D( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QgsRectangle, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[QgsPoint, float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT x2 /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT y2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT n /TypeHint="Optional[bool]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
 %Docstring
-Constructor for :py:class:`QgsBox3D` which accepts the ranges of x/y/z coordinates. If ``normalize`` is ``False`` then
+Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates. If ``normalize`` is ``False`` then
 the normalization step will not be applied automatically.
 %End
 %MethodCode
@@ -54,7 +59,7 @@ the normalization step will not be applied automatically.
         double z2 = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
         bool n = a3 == Py_None ? true : PyObject_IsTrue( a3 );
 
-        sipCpp = new QgsBox3d( *p, z1, z2, n );
+        sipCpp = new QgsBox3D( *p, z1, z2, n );
       }
     }
     else if ( sipCanConvertToType( a0, sipType_QgsPoint, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QgsPoint, SIP_NOT_NONE ) && a3 == Py_None && a4 == Py_None && a5 == Py_None && a6 == Py_None )
@@ -77,7 +82,7 @@ the normalization step will not be applied automatically.
         else
         {
           bool n = a2 == Py_None ? true : PyObject_IsTrue( a2 );
-          sipCpp = new QgsBox3d( *pt1, *pt2, n );
+          sipCpp = new QgsBox3D( *pt1, *pt2, n );
         }
       }
     }
@@ -97,7 +102,7 @@ the normalization step will not be applied automatically.
       double y2 = a4 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a4 );
       double z2 = a5 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a5 );
       bool n = a6 == Py_None ? true : PyObject_IsTrue( a6 );
-      sipCpp = new QgsBox3d( x1, y1, z1, x2, y2, z2, n );
+      sipCpp = new QgsBox3D( x1, y1, z1, x2, y2, z2, n );
     }
     else // Invalid ctor arguments
     {
@@ -260,7 +265,7 @@ Returns the depth of the box.
 Returns the volume of the box.
 %End
 
-    QgsBox3d intersect( const QgsBox3d &other ) const;
+    QgsBox3D intersect( const QgsBox3D &other ) const;
 %Docstring
 Returns the intersection of this box and another 3D box.
 %End
@@ -280,12 +285,12 @@ If the box is not normalized, this returns ``False``.
 .. versionadded:: 3.34
 %End
 
-    bool intersects( const QgsBox3d &other ) const;
+    bool intersects( const QgsBox3D &other ) const;
 %Docstring
 Returns ``True`` if box intersects with another box.
 %End
 
-    bool contains( const QgsBox3d &other ) const;
+    bool contains( const QgsBox3D &other ) const;
 %Docstring
 Returns ``True`` when box contains other box.
 %End
@@ -309,7 +314,7 @@ will be performed on the x/y extent of the box only.
 .. versionadded:: 3.34
 %End
 
-    void combineWith( const QgsBox3d &box );
+    void combineWith( const QgsBox3D &box );
 %Docstring
 Expands the bbox so that it covers both the original rectangle and the given rectangle.
 
@@ -336,7 +341,7 @@ Returns the smallest distance between the box and the point ``point``
 .. versionadded:: 3.18
 %End
 
-    bool operator==( const QgsBox3d &other ) const;
+    bool operator==( const QgsBox3D &other ) const;
 
     void scale( double scaleFactor, const QgsPoint &center = QgsPoint() );
 %Docstring
@@ -356,7 +361,7 @@ Scale the rectangle around a center coordinates.
 
     bool isNull() const;
 %Docstring
-Test if the box is null (all coordinates NaN or after call to :py:func:`~QgsBox3d.setMinimal`).
+Test if the box is null (all coordinates NaN or after call to :py:func:`~QgsBox3D.setMinimal`).
 A null box is also an empty box.
 
 .. versionadded:: 3.34

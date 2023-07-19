@@ -150,7 +150,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
                   mBboxCrs = crs;
                   mBbox.set( values[0], values[1], values[2], values[3] );
                 }
-                spatialExtent.bounds = QgsBox3d( mBbox );
+                spatialExtent.bounds = QgsBox3D( mBbox );
               }
               else if ( values.size() == 6 ) // with zmin at [2] and zmax at [5]
               {
@@ -159,7 +159,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
                   mBboxCrs = crs;
                   mBbox.set( values[0], values[1], values[3], values[4] );
                 }
-                spatialExtent.bounds = QgsBox3d( values[0], values[1], values[2],
+                spatialExtent.bounds = QgsBox3D( values[0], values[1], values[2],
                                                  values[3], values[4], values[5] );
               }
               if ( values.size() == 4 || values.size() == 6 )

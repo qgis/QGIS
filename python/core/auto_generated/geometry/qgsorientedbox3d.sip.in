@@ -80,7 +80,7 @@ Returns the center z-coordinate.
 Returns the half axes matrix;
 %End
 
-    QgsBox3d extent() const;
+    QgsBox3D extent() const;
 %Docstring
 Returns the overall bounding box of the object.
 %End

@@ -19,7 +19,7 @@ A rectangle specified with double values.
 :py:class:`QgsRectangle` is used to store a rectangle when double values are required.
 Examples are storing a layer extent or the current view extent of a map
 
-.. seealso:: :py:class:`QgsBox3d`
+.. seealso:: :py:class:`QgsBox3D`
 %End
 
 %TypeHeaderCode
@@ -345,7 +345,7 @@ return ``False`` if any of the rectangle boundaries are NaN or Inf.
 Swap x/y coordinates in the rectangle.
 %End
 
-    QgsBox3d toBox3d( double zMin, double zMax ) const;
+    QgsBox3D toBox3d( double zMin, double zMax ) const;
 %Docstring
 Converts the rectangle to a 3D box, with the specified
 ``zMin`` and ``zMax`` z values.

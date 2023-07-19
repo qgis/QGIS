@@ -32,10 +32,13 @@
  * A box composed of x/y/z minimum and maximum values. It is often used to return the 3D
  * extent of a geometry or collection of geometries.
  *
+ * \note In QGIS 3.34 this class was renamed from QgsBox3d to QgsBox3D. The old QgsBox3d name
+ * remains available in PyQGIS for compatibility.
+ *
  * \see QgsRectangle
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsBox3d
+class CORE_EXPORT QgsBox3D
 {
     Q_GADGET
 
@@ -46,7 +49,7 @@ class CORE_EXPORT QgsBox3d
     * the normalization step will not be applied automatically.
     */
 #ifndef SIP_RUN
-    QgsBox3d( double xmin = std::numeric_limits<double>::quiet_NaN(), double ymin = std::numeric_limits<double>::quiet_NaN(), double zmin = std::numeric_limits<double>::quiet_NaN(),
+    QgsBox3D( double xmin = std::numeric_limits<double>::quiet_NaN(), double ymin = std::numeric_limits<double>::quiet_NaN(), double zmin = std::numeric_limits<double>::quiet_NaN(),
               double xmax = std::numeric_limits<double>::quiet_NaN(), double ymax = std::numeric_limits<double>::quiet_NaN(), double zmax = std::numeric_limits<double>::quiet_NaN(),
               bool normalize = true );
 
@@ -55,17 +58,17 @@ class CORE_EXPORT QgsBox3d
      * The box is normalized after construction. If \a normalize is FALSE then
      * the normalization step will not be applied automatically.
      */
-    QgsBox3d( const QgsPoint &p1, const QgsPoint &p2, bool normalize = true );
+    QgsBox3D( const QgsPoint &p1, const QgsPoint &p2, bool normalize = true );
 
     /**
      * Constructs a QgsBox3D from a rectangle.
      * If \a normalize is FALSE then the normalization step will not be applied automatically.
      */
-    QgsBox3d( const QgsRectangle &rect,
+    QgsBox3D( const QgsRectangle &rect,
               double zMin = std::numeric_limits<double>::quiet_NaN(), double zMax = std::numeric_limits<double>::quiet_NaN(),
               bool normalize = true );
 #else
-    QgsBox3d( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QgsRectangle, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[QgsPoint, float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT x2 SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT y2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT n SIP_TYPEHINT( Optional[bool] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
+    QgsBox3D( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QgsRectangle, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[QgsPoint, float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT x2 SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT y2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT n SIP_TYPEHINT( Optional[bool] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
     % MethodCode
     if ( sipCanConvertToType( a0, sipType_QgsRectangle, SIP_NOT_NONE ) && a4 == Py_None && a5 == Py_None && a6 == Py_None )
     {
@@ -83,7 +86,7 @@ class CORE_EXPORT QgsBox3d
         double z2 = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
         bool n = a3 == Py_None ? true : PyObject_IsTrue( a3 );
 
-        sipCpp = new QgsBox3d( *p, z1, z2, n );
+        sipCpp = new QgsBox3D( *p, z1, z2, n );
       }
     }
     else if ( sipCanConvertToType( a0, sipType_QgsPoint, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QgsPoint, SIP_NOT_NONE ) && a3 == Py_None && a4 == Py_None && a5 == Py_None && a6 == Py_None )
@@ -106,7 +109,7 @@ class CORE_EXPORT QgsBox3d
         else
         {
           bool n = a2 == Py_None ? true : PyObject_IsTrue( a2 );
-          sipCpp = new QgsBox3d( *pt1, *pt2, n );
+          sipCpp = new QgsBox3D( *pt1, *pt2, n );
         }
       }
     }
@@ -126,7 +129,7 @@ class CORE_EXPORT QgsBox3d
       double y2 = a4 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a4 );
       double z2 = a5 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a5 );
       bool n = a6 == Py_None ? true : PyObject_IsTrue( a6 );
-      sipCpp = new QgsBox3d( x1, y1, z1, x2, y2, z2, n );
+      sipCpp = new QgsBox3D( x1, y1, z1, x2, y2, z2, n );
     }
     else // Invalid ctor arguments
     {
@@ -263,7 +266,7 @@ class CORE_EXPORT QgsBox3d
     /**
      * Returns the intersection of this box and another 3D box.
      */
-    QgsBox3d intersect( const QgsBox3d &other ) const;
+    QgsBox3D intersect( const QgsBox3D &other ) const;
 
     /**
      * Returns TRUE if the box can be considered a 2-dimensional box, i.e.
@@ -283,12 +286,12 @@ class CORE_EXPORT QgsBox3d
     /**
      * Returns TRUE if box intersects with another box.
      */
-    bool intersects( const QgsBox3d &other ) const;
+    bool intersects( const QgsBox3D &other ) const;
 
     /**
      * Returns TRUE when box contains other box.
      */
-    bool contains( const QgsBox3d &other ) const;
+    bool contains( const QgsBox3D &other ) const;
 
     /**
      * Returns TRUE when box contains a \a point.
@@ -314,7 +317,7 @@ class CORE_EXPORT QgsBox3d
      *
      * \since QGIS 3.34
      */
-    void combineWith( const QgsBox3d &box );
+    void combineWith( const QgsBox3D &box );
 
     /**
      * Expands the bbox so that it covers both the original rectangle and the given point.
@@ -336,7 +339,7 @@ class CORE_EXPORT QgsBox3d
      */
     double distanceTo( const  QVector3D &point ) const;
 
-    bool operator==( const QgsBox3d &other ) const;
+    bool operator==( const QgsBox3D &other ) const;
 
     /**
      * Scale the rectangle around a \a center QgsPoint.

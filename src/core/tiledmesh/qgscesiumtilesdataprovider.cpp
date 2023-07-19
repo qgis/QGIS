@@ -63,7 +63,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
       const auto &rootBoundingVolume = root[ "boundingVolume" ];
       if ( rootBoundingVolume.contains( "region" ) )
       {
-        const QgsBox3d rootRegion = QgsCesiumUtils::parseRegion( rootBoundingVolume[ "region" ] );
+        const QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( rootBoundingVolume[ "region" ] );
         if ( !rootRegion.isNull() )
         {
           mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeRegion >( rootRegion );
@@ -90,7 +90,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
           mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeBox >( bbox );
           try
           {
-            const QgsBox3d rootRegion = mBoundingVolume->bounds( transform );
+            const QgsBox3D rootRegion = mBoundingVolume->bounds( transform );
             mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
 
             std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume->as2DGeometry( transform ) );
@@ -119,7 +119,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
           mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeSphere >( sphere );
           try
           {
-            const QgsBox3d rootRegion = mBoundingVolume->bounds( transform );
+            const QgsBox3D rootRegion = mBoundingVolume->bounds( transform );
             mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
 
             std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume->as2DGeometry( transform ) );

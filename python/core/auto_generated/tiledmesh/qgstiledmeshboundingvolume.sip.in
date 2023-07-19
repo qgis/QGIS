@@ -47,7 +47,7 @@ Abstract base class for bounding volumes for tiled mesh nodes.
 Returns the type of the volume;
 %End
 
-    virtual QgsBox3d bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const = 0;
+    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const = 0;
 %Docstring
 Returns the axis aligned bounding box of the volume.
 
@@ -85,21 +85,21 @@ A region bounding volume for tiled mesh nodes.
 %End
   public:
 
-    QgsTiledMeshNodeBoundingVolumeRegion( const QgsBox3d &region );
+    QgsTiledMeshNodeBoundingVolumeRegion( const QgsBox3D &region );
 %Docstring
 Constructor for QgsTiledMeshNodeBoundingVolumeRegion, with the specified ``region``.
 %End
 
     virtual Qgis::TiledMeshBoundingVolumeType type() const ${SIP_FINAL};
 
-    virtual QgsBox3d bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
+    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
 
     virtual QgsTiledMeshNodeBoundingVolumeRegion *clone() const ${SIP_FINAL} /Factory/;
 
     virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
 
 
-    QgsBox3d region() const;
+    QgsBox3D region() const;
 %Docstring
 Returns the volume's region.
 %End
@@ -126,7 +126,7 @@ Constructor for QgsTiledMeshNodeBoundingVolumeBox, with the specified oriented `
 
     virtual Qgis::TiledMeshBoundingVolumeType type() const ${SIP_FINAL};
 
-    virtual QgsBox3d bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
+    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
 
     virtual QgsTiledMeshNodeBoundingVolumeBox *clone() const ${SIP_FINAL} /Factory/;
 
@@ -160,7 +160,7 @@ Constructor for :py:class:`QgsTiledMeshNodeBoundingVolumeBox`, with the specifie
 
     virtual Qgis::TiledMeshBoundingVolumeType type() const ${SIP_FINAL};
 
-    virtual QgsBox3d bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
+    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
 
     virtual QgsTiledMeshNodeBoundingVolumeSphere *clone() const ${SIP_FINAL} /Factory/;
 

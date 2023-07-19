@@ -840,7 +840,7 @@ corresponds to the last point in the line.
 %End
 
 
-    QgsBox3d calculateBoundingBox3d() const;
+    QgsBox3D calculateBoundingBox3d() const;
 %Docstring
 Calculates the minimal 3D bounding box for the geometry.
 

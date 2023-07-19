@@ -47,7 +47,7 @@ using :py:class:`QgsNativeMetadataValidator`.
 
       QgsCoordinateReferenceSystem extentCrs;
 
-      QgsBox3d bounds;
+      QgsBox3D bounds;
 
       bool operator==( const QgsLayerMetadata::SpatialExtent &other ) const;
     };

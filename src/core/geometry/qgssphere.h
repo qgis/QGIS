@@ -25,7 +25,7 @@
 
 class QgsPoint;
 class QgsCircle;
-class QgsBox3d;
+class QgsBox3D;
 class QgsVector3D;
 
 /**
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsSphere
     /**
      * Returns the 3-dimensional bounding box containing the sphere.
      */
-    QgsBox3d boundingBox() const SIP_HOLDGIL;
+    QgsBox3D boundingBox() const SIP_HOLDGIL;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
