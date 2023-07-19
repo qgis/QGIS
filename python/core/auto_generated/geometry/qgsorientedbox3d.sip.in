@@ -90,6 +90,22 @@ Returns the overall bounding box of the object.
 Returns an array of all corners as 3D vectors.
 %End
 
+    QgsVector3D size() const;
+%Docstring
+Returns size of sides of the box.
+%End
+
+    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const;
+%Docstring
+Reprojects corners of this box using the given coordinate transform
+and returns axis-aligned box containing reprojected corners.
+%End
+
+    QgsOrientedBox3D transformed( const QgsMatrix4x4 &tr ) const;
+%Docstring
+Returns box transformed by a 4x4 matrix.
+%End
+
 };
 
 

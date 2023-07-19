@@ -18,6 +18,7 @@
 #include "qgsbox3d.h"
 #include "qgspoint.h"
 #include "qgslogger.h"
+#include "qgsvector3d.h"
 
 QgsBox3D::QgsBox3D( double xmin, double ymin, double zmin, double xmax, double ymax, double zmax, bool normalize )
   : mBounds2d( xmin, ymin, xmax, ymax, false )
@@ -301,4 +302,34 @@ QString QgsBox3D::toString( int precision ) const
   QgsDebugMsgLevel( QStringLiteral( "Extents : %1" ).arg( rep ), 4 );
 
   return rep;
+}
+
+QgsBox3d QgsBox3d::operator-( const QgsVector3D &v ) const
+{
+  return QgsBox3d( mBounds2d.xMinimum() - v.x(), mBounds2d.yMinimum() - v.y(), mZmin - v.z(),
+                   mBounds2d.xMaximum() - v.x(), mBounds2d.yMaximum() - v.y(), mZmax - v.z() );
+}
+
+QgsBox3d QgsBox3d::operator+( const QgsVector3D &v ) const
+{
+  return QgsBox3d( mBounds2d.xMinimum() + v.x(), mBounds2d.yMinimum() + v.y(), mZmin + v.z(),
+                   mBounds2d.xMaximum() + v.x(), mBounds2d.yMaximum() + v.y(), mZmax + v.z() );
+}
+
+QgsBox3d &QgsBox3d::operator-=( const QgsVector3D &v )
+{
+  mBounds2d.set( mBounds2d.xMinimum() - v.x(), mBounds2d.yMinimum() - v.y(),
+                 mBounds2d.xMaximum() - v.x(), mBounds2d.yMaximum() - v.y() );
+  mZmin -= v.z();
+  mZmax -= v.z();
+  return *this;
+}
+
+QgsBox3d &QgsBox3d::operator+=( const QgsVector3D &v )
+{
+  mBounds2d.set( mBounds2d.xMinimum() + v.x(), mBounds2d.yMinimum() + v.y(),
+                 mBounds2d.xMaximum() + v.x(), mBounds2d.yMaximum() + v.y() );
+  mZmin += v.z();
+  mZmax += v.z();
+  return *this;
 }

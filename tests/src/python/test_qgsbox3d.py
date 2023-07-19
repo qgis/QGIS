@@ -13,7 +13,7 @@ import sys
 
 import qgis  # NOQA
 
-from qgis.core import QgsBox3d, QgsPoint, QgsRectangle
+from qgis.core import QgsBox3d, QgsPoint, QgsRectangle, QgsVector3D
 from qgis.testing import unittest
 
 
@@ -401,6 +401,41 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(
             box3.toString(3),
             "1.452,2.854,3.349 : 4.655,5.548,6.457")
+
+    def testMove(self):
+        box1 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+
+        box1a = box1 + QgsVector3D(1, 2, 3)
+        self.assertEqual(box1a.xMinimum(), 6.0)
+        self.assertEqual(box1a.yMinimum(), 8.0)
+        self.assertEqual(box1a.zMinimum(), 10.0)
+        self.assertEqual(box1a.xMaximum(), 12.0)
+        self.assertEqual(box1a.yMaximum(), 15.0)
+        self.assertEqual(box1a.zMaximum(), 18.0)
+
+        box1b = box1 - QgsVector3D(1, 2, 3)
+        self.assertEqual(box1b.xMinimum(), 4.0)
+        self.assertEqual(box1b.yMinimum(), 4.0)
+        self.assertEqual(box1b.zMinimum(), 4.0)
+        self.assertEqual(box1b.xMaximum(), 10.0)
+        self.assertEqual(box1b.yMaximum(), 11.0)
+        self.assertEqual(box1b.zMaximum(), 12.0)
+
+        box1a += QgsVector3D(10., 20., 30.)
+        self.assertEqual(box1a.xMinimum(), 16.0)
+        self.assertEqual(box1a.yMinimum(), 28.0)
+        self.assertEqual(box1a.zMinimum(), 40.0)
+        self.assertEqual(box1a.xMaximum(), 22.0)
+        self.assertEqual(box1a.yMaximum(), 35.0)
+        self.assertEqual(box1a.zMaximum(), 48.0)
+
+        box1a -= QgsVector3D(10., 20., 30.)
+        self.assertEqual(box1a.xMinimum(), 6.0)
+        self.assertEqual(box1a.yMinimum(), 8.0)
+        self.assertEqual(box1a.zMinimum(), 10.0)
+        self.assertEqual(box1a.xMaximum(), 12.0)
+        self.assertEqual(box1a.yMaximum(), 15.0)
+        self.assertEqual(box1a.zMaximum(), 18.0)
 
 
 if __name__ == '__main__':

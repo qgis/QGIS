@@ -25,6 +25,8 @@
 
 #include "qgspoint.h"
 
+class QgsVector3D;
+
 /**
  * \ingroup core
  * \brief A 3-dimensional box composed of x, y, z coordinates.
@@ -381,6 +383,30 @@ class CORE_EXPORT QgsBox3D
      * \since QGIS 3.34
      */
     QString toString( int precision = 16 ) const;
+
+    /**
+     * Returns a box offset from this one in the direction of the reversed vector.
+     * \since QGIS 3.34
+     */
+    QgsBox3d operator-( const QgsVector3D &v ) const;
+
+    /**
+     * Returns a box offset from this one in the direction of the vector.
+     * \since QGIS 3.34
+     */
+    QgsBox3d operator+( const QgsVector3D &v ) const;
+
+    /**
+     * Moves this box in the direction of the reversed vector.
+     * \since QGIS 3.34
+     */
+    QgsBox3d &operator-=( const QgsVector3D &v );
+
+    /**
+     * Moves this box in the direction of the vector.
+     * \since QGIS 3.34
+     */
+    QgsBox3d &operator+=( const QgsVector3D &v );
 
   private:
 
