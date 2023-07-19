@@ -14,6 +14,10 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 import math
 import qgis  # NOQA
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
+    QgsMatrix4x4,
     QgsOrientedBox3D,
     QgsVector3D
 )
@@ -180,6 +184,51 @@ class TestQgsOrientedBox3D(QgisTestCase):
                           QgsVector3D(0.99999999999999989, 3, 1.58578643762690508),
                           QgsVector3D(2.41421356237309492, 1, 3),
                           QgsVector3D(0.99999999999999989, 1, 1.58578643762690508)])
+
+    def test_size(self):
+        box = QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])
+        self.assertEqual(box.size(), QgsVector3D(2, 2, 2))
+
+        box = QgsOrientedBox3D([10, 10, 10], [1, 0, 0, 0, 2, 0, 0, 0, 3])
+        self.assertEqual(box.size(), QgsVector3D(2, 4, 6))
+
+        box = QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        self.assertEqual(box.size(), QgsVector3D(20, 40, 60))
+
+    def test_reprojectedExtent(self):
+        box = QgsOrientedBox3D([-2694341., -4296866., 3854579.], [-8.867, -14.142, 12.771, 104.740, -65.681, 0., 50.287, 80.192, 123.717])
+
+        # from ECEF (XYZ) to lon,lat,alt (deg,deg,m)
+        ct = QgsCoordinateTransform(QgsCoordinateReferenceSystem("EPSG:4978"), QgsCoordinateReferenceSystem("EPSG:4979"), QgsCoordinateTransformContext())
+        aabb = box.reprojectedExtent(ct)
+
+        # a box roughly around 37.42 N / 122.09 E
+        self.assertEqual(aabb.xMinimum(), -122.09108059552956)
+        self.assertEqual(aabb.yMinimum(), 37.41940987216044)
+        self.assertEqual(aabb.zMinimum(), -35.7030292628333)
+        self.assertEqual(aabb.xMaximum(), -122.088287207839)
+        self.assertEqual(aabb.yMaximum(), 37.42221702328144)
+        self.assertEqual(aabb.zMaximum(), 6.344767062924802)
+
+    def test_transformed(self):
+        box = QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])
+
+        # translate by (10, 20, 30)
+        m_move = QgsMatrix4x4(1, 0, 0, 10,
+                              0, 1, 0, 20,
+                              0, 0, 1, 30,
+                              0, 0, 0, 1)
+        # scale (4*X, 5*Y, 6*Z)
+        m_scale = QgsMatrix4x4(4, 0, 0, 0,
+                               0, 5, 0, 0,
+                               0, 0, 6, 0,
+                               0, 0, 0, 1)
+
+        box_moved = box.transformed(m_move)
+        self.assertEqual(box_moved, QgsOrientedBox3D([11, 22, 33], [1, 0, 0, 0, 1, 0, 0, 0, 1]))
+
+        box_scaled = box.transformed(m_scale)
+        self.assertEqual(box_scaled, QgsOrientedBox3D([4, 10, 18], [4, 0, 0, 0, 5, 0, 0, 0, 6]))
 
 
 if __name__ == '__main__':

@@ -18,6 +18,8 @@
 
 #include "qgsorientedbox3d.h"
 #include "qgsbox3d.h"
+#include "qgscoordinatetransform.h"
+#include "qgsmatrix4x4.h"
 #include "qgsvector3d.h"
 
 QgsOrientedBox3D::QgsOrientedBox3D() = default;
@@ -92,4 +94,57 @@ QVector<QgsVector3D> QgsOrientedBox3D::corners() const
     *corData = center + q;
   }
   return cor;
+}
+
+
+QgsVector3D QgsOrientedBox3D::size() const
+{
+  QgsVector3D axis1( mHalfAxes[0], mHalfAxes[1], mHalfAxes[2] );
+  QgsVector3D axis2( mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] );
+  QgsVector3D axis3( mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] );
+  return QgsVector3D( 2 * axis1.length(), 2 * axis2.length(), 2 * axis3.length() );
+}
+
+
+QgsBox3D QgsOrientedBox3D::reprojectedExtent( const QgsCoordinateTransform &ct ) const
+{
+  // reproject corners from ECEF to planar CRS
+  QVector<QgsVector3D> c = corners();
+  for ( int i = 0; i < c.count(); ++i )
+  {
+    c[i] = ct.transform( c[i] );
+  }
+
+  // find AABB for the 8 transformed points
+  QgsVector3D v0 = c[0], v1 = c[0];
+  for ( const QgsVector3D &v : c )
+  {
+    if ( v.x() < v0.x() ) v0.setX( v.x() );
+    if ( v.y() < v0.y() ) v0.setY( v.y() );
+    if ( v.z() < v0.z() ) v0.setZ( v.z() );
+    if ( v.x() > v1.x() ) v1.setX( v.x() );
+    if ( v.y() > v1.y() ) v1.setY( v.y() );
+    if ( v.z() > v1.z() ) v1.setZ( v.z() );
+  }
+  return QgsBox3D( v0.x(), v0.y(), v0.z(), v1.x(), v1.y(), v1.z() );
+}
+
+QgsOrientedBox3D QgsOrientedBox3D::transformed( const QgsMatrix4x4 &tr ) const
+{
+  const double *ptr = tr.constData();
+  QgsMatrix4x4 mm( ptr[0], ptr[4], ptr[8], 0,
+                   ptr[1], ptr[5], ptr[9], 0,
+                   ptr[2], ptr[6], ptr[10], 0,
+                   0, 0, 0, 1 );
+
+  QgsVector3D trCenter = tr.map( QgsVector3D( mCenter[0], mCenter[1], mCenter[2] ) );
+
+  QgsVector3D col1 = mm.map( QgsVector3D( mHalfAxes[0], mHalfAxes[1], mHalfAxes[2] ) );
+  QgsVector3D col2 = mm.map( QgsVector3D( mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] ) );
+  QgsVector3D col3 = mm.map( QgsVector3D( mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] ) );
+
+  return QgsOrientedBox3D( QList<double>() << trCenter.x() << trCenter.y() << trCenter.z(),
+                           QList<double>() << col1.x() << col1.y() << col1.z()
+                           << col2.x() << col2.y() << col2.z()
+                           << col3.x() << col3.y() << col3.z() );
 }

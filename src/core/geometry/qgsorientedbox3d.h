@@ -27,6 +27,8 @@
 #include <limits>
 
 class QgsBox3D;
+class QgsCoordinateTransform;
+class QgsMatrix4x4;
 class QgsVector3D;
 
 /**
@@ -121,6 +123,22 @@ class CORE_EXPORT QgsOrientedBox3D
      * Returns an array of all corners as 3D vectors.
      */
     QVector< QgsVector3D > corners() const;
+
+    /**
+     * Returns size of sides of the box.
+     */
+    QgsVector3D size() const;
+
+    /**
+     * Reprojects corners of this box using the given coordinate transform
+     * and returns axis-aligned box containing reprojected corners.
+     */
+    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const;
+
+    /**
+     * Returns box transformed by a 4x4 matrix.
+     */
+    QgsOrientedBox3D transformed( const QgsMatrix4x4 &tr ) const;
 
   private:
 
