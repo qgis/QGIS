@@ -55,13 +55,13 @@ QMenuBar::item
 
 QMenuBar::item:selected
 {
-    background: @background;
+    background: @selection;
     color: @text;
 }
 
 QMenuBar::item:pressed
 {
-    background: @background;
+    background: @selection;
     color: @text;
 }
 
@@ -351,17 +351,6 @@ QComboBox::icon {
     padding-left:0.3em;
 }
 
-QComboBox:editable {
-    background-color: @darkgradient;
-}
-QComboBox:editable QLineEdit {
-    background-color: transparent;
-    color:@text;
-    selection-background-color: @selection;
-    selection-color: @text;
-    border: 0;
-}
-
 QComboBox QAbstractItemView, QComboBox QListView {
     border: none;
     border-radius: 0px;
@@ -377,7 +366,18 @@ QComboBox::drop-down {
      width: 0.8em;
      border: 0px;
 }
-
+QComboBox::drop-down:editable {
+     subcontrol-origin: padding;
+     subcontrol-position: top right;
+     width: 0.8em;
+     background-color: @darkgradient;
+     color:@itembackground;
+     border: 1px solid #888;
+}
+QComboBox::drop-down:editable:disabled {
+     background-color: transparent !important;
+     border-color: transparent !important;
+}
 QComboBox::down-arrow
 {
     image: url(@theme_path/icons/arrow-down.svg);
@@ -404,6 +404,15 @@ QComboBox::indicator {
     selection-background-color:transparent;
     color:transparent;
     selection-color:transparent;
+}
+
+QComboBox:editable {
+    padding: 0.12em;
+    border: 1px solid #111;
+    background-color: #888;
+    selection-background-color: @selection;
+    selection-color: @text;
+    color: #111;
 }
 
 /* ==================================================================================== */
