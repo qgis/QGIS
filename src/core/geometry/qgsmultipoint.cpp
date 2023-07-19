@@ -49,6 +49,25 @@ QgsMultiPoint::QgsMultiPoint( const QVector<QgsPoint> &points )
   }
 }
 
+QgsMultiPoint::QgsMultiPoint( const QVector<QgsPoint *> &points )
+{
+  if ( points.isEmpty() )
+  {
+    mWkbType = Qgis::WkbType::MultiPoint;
+    return;
+  }
+
+  const Qgis::WkbType ptType = points.at( 0 )->wkbType();
+  mWkbType = QgsWkbTypes::zmType( Qgis::WkbType::MultiPoint, QgsWkbTypes::hasZ( ptType ), QgsWkbTypes::hasM( ptType ) );
+  const int pointCount = points.size();
+  mGeometries.resize( pointCount );
+
+  for ( int i = 0; i < pointCount; ++i )
+  {
+    mGeometries[ i ] = points[i];
+  }
+}
+
 QgsMultiPoint::QgsMultiPoint( const QVector<QgsPointXY> &points )
 {
   mWkbType = Qgis::WkbType::MultiPoint;
