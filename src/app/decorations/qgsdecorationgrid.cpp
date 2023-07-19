@@ -421,10 +421,10 @@ int QgsDecorationGrid::xGridLines( const QgsMapSettings &mapSettings, QList< QPa
 
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
 
-  // draw nothing if the distance between grid lines would be less than 1px
+  // draw nothing if the distance between grid lines would be less than 5px
   // otherwise the grid lines would completely cover the whole map
   //if ( mapBoundingRect.height() / mGridIntervalY >= p->device()->height() )
-  if ( mGridIntervalY / mapSettings.mapUnitsPerPixel() < 1 )
+  if ( mGridIntervalY / mapSettings.mapUnitsPerPixel() < 5 )
     return 1;
 
   const QPolygonF canvasPoly = mapSettings.visiblePolygon();
@@ -466,10 +466,10 @@ int QgsDecorationGrid::yGridLines( const QgsMapSettings &mapSettings, QList< QPa
 
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
 
-  // draw nothing if the distance between grid lines would be less than 1px
-  // otherwise the grid lines would completely cover the whole map
+  // draw nothing if the distance between grid lines would be less than 5px
+  // otherwise the grid lines would render the whole map illegible
   //if ( mapBoundingRect.height() / mGridIntervalY >= p->device()->height() )
-  if ( mGridIntervalX / mapSettings.mapUnitsPerPixel() < 1 )
+  if ( mGridIntervalX / mapSettings.mapUnitsPerPixel() < 5 )
     return 1;
 
   const QPolygonF canvasPoly = mapSettings.visiblePolygon();
