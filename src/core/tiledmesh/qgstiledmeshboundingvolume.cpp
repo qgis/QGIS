@@ -19,6 +19,8 @@
 #include "qgscircle.h"
 #include "qgscoordinatetransform.h"
 #include "qgsvector3d.h"
+#include "qgsmultipoint.h"
+#include "qgsgeos.h"
 
 QgsAbstractTiledMeshNodeBoundingVolume::~QgsAbstractTiledMeshNodeBoundingVolume() = default;
 
@@ -163,31 +165,15 @@ QgsAbstractGeometry *QgsTiledMeshNodeBoundingVolumeBox::as2DGeometry( const QgsC
     y.append( corners[i].y() );
     z.append( corners[i].z() );
   }
+
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
     transform.transformInPlace( x, y, z, direction );
   }
 
-  const QVector<double> x2DCenter
-  {
-    0.5 * ( x[0] + x[4] ),
-    0.5 * ( x[1] + x[5] ),
-    0.5 * ( x[2] + x[6] ),
-    0.5 * ( x[3] + x[7] ),
-    0.5 * ( x[0] + x[4] ),
-  };
-  const QVector<double> y2DCenter
-  {
-    0.5 * ( y[0] + y[4] ),
-    0.5 * ( y[1] + y[5] ),
-    0.5 * ( y[2] + y[6] ),
-    0.5 * ( y[3] + y[7] ),
-    0.5 * ( y[0] + y[4] ),
-  };
-
-  std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >( x2DCenter, y2DCenter );
-  polygon->setExteriorRing( ext.release() );
-  return polygon.release();
+  std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >( x, y );
+  QgsGeos geosMp( mp.get() );
+  return geosMp.convexHull();
 }
 
 //
