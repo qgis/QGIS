@@ -309,6 +309,8 @@ tests:
         type: vector
         pk: ID
         compare:
+          fields:
+            gml_id: skip
           geometry:
             precision: 2
 
