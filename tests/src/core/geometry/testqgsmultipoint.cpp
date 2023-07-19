@@ -86,6 +86,179 @@ void TestQgsMultiPoint::constructor()
   QCOMPARE( mp.vertexCount( 0, 0 ), 0 );
   QCOMPARE( mp.vertexCount( 0, 1 ), 0 );
   QCOMPARE( mp.vertexCount( 1, 0 ), 0 );
+
+  // constructor using vector of QgsPoint
+  QgsMultiPoint mp2( QVector<QgsPoint> {} );
+  QVERIFY( mp2.isEmpty() );
+  QCOMPARE( mp2.nCoordinates(), 0 );
+  QVERIFY( !mp2.is3D() );
+  QVERIFY( !mp2.isMeasure() );
+  QCOMPARE( mp2.wkbType(), Qgis::WkbType::MultiPoint );
+  // vector of 2d points
+  QgsMultiPoint mp3( QVector<QgsPoint> { QgsPoint( 1, 2 ), QgsPoint( 3, 4 )} );
+  QVERIFY( !mp3.isEmpty() );
+  QCOMPARE( mp3.nCoordinates(), 2 );
+  QVERIFY( !mp3.is3D() );
+  QVERIFY( !mp3.isMeasure() );
+  QCOMPARE( mp3.wkbType(), Qgis::WkbType::MultiPoint );
+  QCOMPARE( mp3.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp3.pointN( 0 )->y(), 2 );
+  QCOMPARE( mp3.pointN( 1 )->x(), 3 );
+  QCOMPARE( mp3.pointN( 1 )->y(), 4 );
+  // vector of 3d points
+  QgsMultiPoint mp4( QVector<QgsPoint> { QgsPoint( 1, 2, 11 ), QgsPoint( 3, 4, 12 )} );
+  QVERIFY( !mp4.isEmpty() );
+  QCOMPARE( mp4.nCoordinates(), 2 );
+  QVERIFY( mp4.is3D() );
+  QVERIFY( !mp4.isMeasure() );
+  QCOMPARE( mp4.wkbType(), Qgis::WkbType::MultiPointZ );
+  QCOMPARE( mp4.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp4.pointN( 0 )->y(), 2 );
+  QCOMPARE( mp4.pointN( 0 )->z(), 11 );
+  QCOMPARE( mp4.pointN( 1 )->x(), 3 );
+  QCOMPARE( mp4.pointN( 1 )->y(), 4 );
+  QCOMPARE( mp4.pointN( 1 )->z(), 12 );
+  // vector of 4d points
+  QgsMultiPoint mp5( QVector<QgsPoint> { QgsPoint( 1, 2, 11, 21 ), QgsPoint( 3, 4, 12, 22 )} );
+  QVERIFY( !mp5.isEmpty() );
+  QCOMPARE( mp5.nCoordinates(), 2 );
+  QVERIFY( mp5.is3D() );
+  QVERIFY( mp5.isMeasure() );
+  QCOMPARE( mp5.wkbType(), Qgis::WkbType::MultiPointZM );
+  QCOMPARE( mp5.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp5.pointN( 0 )->y(), 2 );
+  QCOMPARE( mp5.pointN( 0 )->z(), 11 );
+  QCOMPARE( mp5.pointN( 0 )->m(), 21 );
+  QCOMPARE( mp5.pointN( 1 )->x(), 3 );
+  QCOMPARE( mp5.pointN( 1 )->y(), 4 );
+  QCOMPARE( mp5.pointN( 1 )->z(), 12 );
+  QCOMPARE( mp5.pointN( 1 )->m(), 22 );
+  // vector of pointm
+  QgsMultiPoint mp6( QVector<QgsPoint> { QgsPoint( 1, 2, std::numeric_limits< double >::quiet_NaN(), 21 ), QgsPoint( 3, 4, std::numeric_limits< double >::quiet_NaN(), 22 )} );
+  QVERIFY( !mp6.isEmpty() );
+  QCOMPARE( mp6.nCoordinates(), 2 );
+  QVERIFY( !mp6.is3D() );
+  QVERIFY( mp6.isMeasure() );
+  QCOMPARE( mp6.wkbType(), Qgis::WkbType::MultiPointM );
+  QCOMPARE( mp6.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp6.pointN( 0 )->y(), 2 );
+  QCOMPARE( mp6.pointN( 0 )->m(), 21 );
+  QCOMPARE( mp6.pointN( 1 )->x(), 3 );
+  QCOMPARE( mp6.pointN( 1 )->y(), 4 );
+  QCOMPARE( mp6.pointN( 1 )->m(), 22 );
+  // vector of points with mismatched dimensions
+  QgsMultiPoint mp7( QVector<QgsPoint> { QgsPoint( 1, 2 ), QgsPoint( 3, 4, std::numeric_limits< double >::quiet_NaN(), 22 )} );
+  QVERIFY( !mp7.isEmpty() );
+  QCOMPARE( mp7.nCoordinates(), 2 );
+  QVERIFY( !mp7.is3D() );
+  QVERIFY( !mp7.isMeasure() );
+  QCOMPARE( mp7.wkbType(), Qgis::WkbType::MultiPoint );
+  QCOMPARE( mp7.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp7.pointN( 0 )->y(), 2 );
+  QCOMPARE( mp7.pointN( 1 )->x(), 3 );
+  QCOMPARE( mp7.pointN( 1 )->y(), 4 );
+
+  // constructor using vector of QgsPointXY
+  QgsMultiPoint mp8( QVector<QgsPointXY> {} );
+  QVERIFY( mp8.isEmpty() );
+  QCOMPARE( mp8.nCoordinates(), 0 );
+  QVERIFY( !mp8.is3D() );
+  QVERIFY( !mp8.isMeasure() );
+  QCOMPARE( mp8.wkbType(), Qgis::WkbType::MultiPoint );
+  // vector of 2d points
+  QgsMultiPoint mp9( QVector<QgsPointXY> { QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 )} );
+  QVERIFY( !mp9.isEmpty() );
+  QCOMPARE( mp9.nCoordinates(), 2 );
+  QVERIFY( !mp9.is3D() );
+  QVERIFY( !mp9.isMeasure() );
+  QCOMPARE( mp9.wkbType(), Qgis::WkbType::MultiPoint );
+  QCOMPARE( mp9.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp9.pointN( 0 )->y(), 2 );
+  QCOMPARE( mp9.pointN( 1 )->x(), 3 );
+  QCOMPARE( mp9.pointN( 1 )->y(), 4 );
+
+  // using seperate vectors of coordinates
+  QgsMultiPoint mp10( QVector< double > {}, QVector< double > {} );
+  QVERIFY( mp10.isEmpty() );
+  QCOMPARE( mp10.nCoordinates(), 0 );
+  QVERIFY( !mp10.is3D() );
+  QVERIFY( !mp10.isMeasure() );
+  QCOMPARE( mp10.wkbType(), Qgis::WkbType::MultiPoint );
+
+  QgsMultiPoint mp11( QVector< double > {1, 2}, QVector< double > {3, 4} );
+  QVERIFY( !mp11.isEmpty() );
+  QCOMPARE( mp11.nCoordinates(), 2 );
+  QVERIFY( !mp11.is3D() );
+  QVERIFY( !mp11.isMeasure() );
+  QCOMPARE( mp11.wkbType(), Qgis::WkbType::MultiPoint );
+  QCOMPARE( mp11.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp11.pointN( 0 )->y(), 3 );
+  QCOMPARE( mp11.pointN( 1 )->x(), 2 );
+  QCOMPARE( mp11.pointN( 1 )->y(), 4 );
+
+  QgsMultiPoint mp12( QVector< double > {1, 2}, QVector< double > {3, 4}, QVector< double > {13, 14} );
+  QVERIFY( !mp12.isEmpty() );
+  QCOMPARE( mp12.nCoordinates(), 2 );
+  QVERIFY( mp12.is3D() );
+  QVERIFY( !mp12.isMeasure() );
+  QCOMPARE( mp12.wkbType(), Qgis::WkbType::MultiPointZ );
+  QCOMPARE( mp12.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp12.pointN( 0 )->y(), 3 );
+  QCOMPARE( mp12.pointN( 0 )->z(), 13 );
+  QCOMPARE( mp12.pointN( 1 )->x(), 2 );
+  QCOMPARE( mp12.pointN( 1 )->y(), 4 );
+  QCOMPARE( mp12.pointN( 1 )->z(), 14 );
+
+  QgsMultiPoint mp13( QVector< double > {1, 2}, QVector< double > {3, 4}, QVector< double > {13, 14}, QVector< double > {15, 16} );
+  QVERIFY( !mp13.isEmpty() );
+  QCOMPARE( mp13.nCoordinates(), 2 );
+  QVERIFY( mp13.is3D() );
+  QVERIFY( mp13.isMeasure() );
+  QCOMPARE( mp13.wkbType(), Qgis::WkbType::MultiPointZM );
+  QCOMPARE( mp13.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp13.pointN( 0 )->y(), 3 );
+  QCOMPARE( mp13.pointN( 0 )->z(), 13 );
+  QCOMPARE( mp13.pointN( 0 )->m(), 15 );
+  QCOMPARE( mp13.pointN( 1 )->x(), 2 );
+  QCOMPARE( mp13.pointN( 1 )->y(), 4 );
+  QCOMPARE( mp13.pointN( 1 )->z(), 14 );
+  QCOMPARE( mp13.pointN( 1 )->m(), 16 );
+
+  QgsMultiPoint mp14( QVector< double > {1, 2}, QVector< double > {3, 4}, QVector< double > {}, QVector< double > {15, 16} );
+  QVERIFY( !mp14.isEmpty() );
+  QCOMPARE( mp14.nCoordinates(), 2 );
+  QVERIFY( !mp14.is3D() );
+  QVERIFY( mp14.isMeasure() );
+  QCOMPARE( mp14.wkbType(), Qgis::WkbType::MultiPointM );
+  QCOMPARE( mp14.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp14.pointN( 0 )->y(), 3 );
+  QCOMPARE( mp14.pointN( 0 )->m(), 15 );
+  QCOMPARE( mp14.pointN( 1 )->x(), 2 );
+  QCOMPARE( mp14.pointN( 1 )->y(), 4 );
+  QCOMPARE( mp14.pointN( 1 )->m(), 16 );
+
+  // mismatched sizes
+  QgsMultiPoint mp15( QVector< double > {1, 2, 5}, QVector< double > {3, 4} );
+  QVERIFY( !mp15.isEmpty() );
+  QCOMPARE( mp15.nCoordinates(), 2 );
+  QVERIFY( !mp15.is3D() );
+  QVERIFY( !mp15.isMeasure() );
+  QCOMPARE( mp15.wkbType(), Qgis::WkbType::MultiPoint );
+  QCOMPARE( mp15.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp15.pointN( 0 )->y(), 3 );
+  QCOMPARE( mp15.pointN( 1 )->x(), 2 );
+  QCOMPARE( mp15.pointN( 1 )->y(), 4 );
+  QgsMultiPoint mp16( QVector< double > {1, 2}, QVector< double > {3, 4, 5} );
+  QVERIFY( !mp16.isEmpty() );
+  QCOMPARE( mp16.nCoordinates(), 2 );
+  QVERIFY( !mp16.is3D() );
+  QVERIFY( !mp16.isMeasure() );
+  QCOMPARE( mp16.wkbType(), Qgis::WkbType::MultiPoint );
+  QCOMPARE( mp16.pointN( 0 )->x(), 1 );
+  QCOMPARE( mp16.pointN( 0 )->y(), 3 );
+  QCOMPARE( mp16.pointN( 1 )->x(), 2 );
+  QCOMPARE( mp16.pointN( 1 )->y(), 4 );
+
 }
 
 void TestQgsMultiPoint::copyConstructor()
