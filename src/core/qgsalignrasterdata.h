@@ -16,6 +16,12 @@
 #ifndef QGSALIGNRASTERDATA_H
 #define QGSALIGNRASTERDATA_H
 
+/**
+ * \ingroup core
+ * \brief The QgsAlignRasterData class provides data structures and enums for align raster tool.
+ *
+ * \since QGIS 3.34
+ */
 class CORE_EXPORT QgsAlignRasterData
 {
   public:
