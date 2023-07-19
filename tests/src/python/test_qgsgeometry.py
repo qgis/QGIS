@@ -538,6 +538,100 @@ class TestQgsGeometry(QgisTestCase):
         line = QgsLineString([QgsPoint(1, 2), QgsPointXY(3, 4), [5, 6], (7, 8)])
         self.assertEqual(line.asWkt(), 'LineString (1 2, 3 4, 5 6, 7 8)')
 
+    def testQgsMultiPointPythonConstructors(self):
+        """
+        Test various constructors for QgsMultiPoint in Python
+        """
+        point = QgsMultiPoint()
+        self.assertEqual(point.asWkt(), 'MultiPoint EMPTY')
+
+        # empty array
+        point = QgsMultiPoint([])
+        self.assertEqual(point.asWkt(), 'MultiPoint EMPTY')
+
+        # invalid array
+        with self.assertRaises(TypeError):
+            point = QgsMultiPoint([1, 2, 3])
+
+        # array of QgsPoint
+        point = QgsMultiPoint([QgsPoint(1, 2), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(point.asWkt(), 'MultiPoint ((1 2),(3 4),(11 12))')
+
+        # array of QgsPoint with Z
+        point = QgsMultiPoint([QgsPoint(1, 2, 11), QgsPoint(3, 4, 13), QgsPoint(11, 12, 14)])
+        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4 13),(11 12 14))')
+
+        # array of QgsPoint with Z, only first has z
+        point = QgsMultiPoint([QgsPoint(1, 2, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4),(11 12))')
+
+        # array of QgsPoint with M
+        point = QgsMultiPoint([QgsPoint(1, 2, None, 11), QgsPoint(3, 4, None, 13), QgsPoint(11, 12, None, 14)])
+        self.assertEqual(point.asWkt(), 'MultiPointM ((1 2 11),(3 4 13),(11 12 14))')
+
+        # array of QgsPoint with M, only first has M
+        point = QgsMultiPoint([QgsPoint(1, 2, None, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(point.asWkt(), 'MultiPointM ((1 2 11),(3 4),(11 12))')
+
+        # array of QgsPoint with ZM
+        point = QgsMultiPoint([QgsPoint(1, 2, 22, 11), QgsPoint(3, 4, 23, 13), QgsPoint(11, 12, 24, 14)])
+        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 22 11),(3 4 23 13),(11 12 24 14))')
+
+        # array of QgsPoint with ZM, only first has ZM
+        point = QgsMultiPoint([QgsPoint(1, 2, 33, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 33 11),(3 4),(11 12))')
+
+        # array of QgsPointXY
+        point = QgsMultiPoint([QgsPointXY(1, 2), QgsPointXY(3, 4), QgsPointXY(11, 12)])
+        self.assertEqual(point.asWkt(), 'MultiPoint ((1 2),(3 4),(11 12))')
+
+        # array of array of bad values
+        with self.assertRaises(TypeError):
+            point = QgsMultiPoint([[QgsPolygon(), QgsPoint()]])
+
+        with self.assertRaises(TypeError):
+            point = QgsMultiPoint([[1, 2], [QgsPolygon(), QgsPoint()]])
+
+        # array of array of 1d floats
+        with self.assertRaises(TypeError):
+            point = QgsMultiPoint([[1], [3], [5]])
+
+        # array of array of floats
+        point = QgsMultiPoint([[1, 2], [3, 4], [5, 6]])
+        self.assertEqual(point.asWkt(), 'MultiPoint ((1 2),(3 4),(5 6))')
+
+        # tuple of tuple of floats
+        point = QgsMultiPoint(((1, 2), (3, 4), (5, 6)))
+        self.assertEqual(point.asWkt(), 'MultiPoint ((1 2),(3 4),(5 6))')
+
+        # sequence
+        point = QgsMultiPoint([[c + 10, c + 11] for c in range(5)])
+        self.assertEqual(point.asWkt(), 'MultiPoint ((10 11),(11 12),(12 13),(13 14),(14 15))')
+
+        # array of array of 3d floats
+        point = QgsMultiPoint([[1, 2, 11], [3, 4, 12], [5, 6, 13]])
+        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4 12),(5 6 13))')
+
+        # array of array of inconsistent 3d floats
+        point = QgsMultiPoint([[1, 2, 11], [3, 4], [5, 6]])
+        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4),(5 6))')
+
+        # array of array of 4d floats
+        point = QgsMultiPoint([[1, 2, 11, 21], [3, 4, 12, 22], [5, 6, 13, 23]])
+        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 11 21),(3 4 12 22),(5 6 13 23))')
+
+        # array of array of inconsistent 4d floats
+        point = QgsMultiPoint([[1, 2, 11, 21], [3, 4, 12], [5, 6]])
+        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 11 21),(3 4 12),(5 6))')
+
+        # array of array of 5 floats
+        with self.assertRaises(TypeError):
+            point = QgsMultiPoint([[1, 2, 11, 21, 22], [3, 4, 12, 22, 23], [5, 6, 13, 23, 24]])
+
+        # mixed array, because hey, why not?? :D
+        point = QgsMultiPoint([QgsPoint(1, 2), QgsPointXY(3, 4), [5, 6], (7, 8)])
+        self.assertEqual(point.asWkt(), 'MultiPoint ((1 2),(3 4),(5 6),(7 8))')
+
     def testGeometryCollectionPythonAdditions(self):
         """
         Tests Python specific additions to the QgsGeometryCollection API
