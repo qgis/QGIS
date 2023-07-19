@@ -18,12 +18,6 @@ QDockWidget, QDockWidgetGroupWindow {
   padding: 0.2em;
 }
 
-QWidget:item:hover
-{
-    background-color: @hover;
-    color: @text;
-}
-
 QWidget:item:selected
 {
     background-color: @selection;
@@ -853,12 +847,7 @@ QTreeView::item:disabled {
     color: @itemalternativebackground;
 }
 
-QTreeView::item:hover, QTreeView::branch:hover {
-    background-color: transparent;
-    color: @text;
-}
-
-QTreeView::item:selected, QTreeView::item:selected:hover, QTreeView::branch:selected, QTreeView::branch:selected:hover {
+QTreeView::item:selected, QTreeView::branch:selected {
     background-color: @selection;
     color: @text;
 }
