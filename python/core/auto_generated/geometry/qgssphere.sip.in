@@ -165,7 +165,7 @@ Returns the surface area of the sphere.
 Converts the sphere to a 2-dimensional circle.
 %End
 
-    QgsBox3d boundingBox() const /HoldGIL/;
+    QgsBox3D boundingBox() const /HoldGIL/;
 %Docstring
 Returns the 3-dimensional bounding box containing the sphere.
 %End

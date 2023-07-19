@@ -49,13 +49,13 @@ class CORE_EXPORT QgsCesiumUtils
     *
     * \note Not available in Python bindings.
     */
-    static QgsBox3d parseRegion( const json &region );
+    static QgsBox3D parseRegion( const json &region );
 #endif
 
     /**
      * Parses a \a region object from a Cesium JSON document to a 3D box.
      */
-    static QgsBox3d parseRegion( const QVariantList &region );
+    static QgsBox3D parseRegion( const QVariantList &region );
 
 #ifndef SIP_RUN
 

@@ -22,7 +22,7 @@
 #include "qgssphere.h"
 #include "qgsorientedbox3d.h"
 
-QgsBox3d QgsCesiumUtils::parseRegion( const json &region )
+QgsBox3D QgsCesiumUtils::parseRegion( const json &region )
 {
   try
   {
@@ -36,18 +36,18 @@ QgsBox3d QgsCesiumUtils::parseRegion( const json &region )
     double minHeight = region[4].get<double>();
     double maxHeight = region[5].get<double>();
 
-    return QgsBox3d( west, south, minHeight, east, north, maxHeight );
+    return QgsBox3D( west, south, minHeight, east, north, maxHeight );
   }
   catch ( nlohmann::json::exception & )
   {
-    return QgsBox3d();
+    return QgsBox3D();
   }
 }
 
-QgsBox3d QgsCesiumUtils::parseRegion( const QVariantList &region )
+QgsBox3D QgsCesiumUtils::parseRegion( const QVariantList &region )
 {
   if ( region.size() != 6 )
-    return QgsBox3d();
+    return QgsBox3D();
 
   return parseRegion( QgsJsonUtils::jsonFromVariant( region ) );
 }

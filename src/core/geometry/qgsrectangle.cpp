@@ -177,9 +177,9 @@ QString QgsRectangle::asPolygon() const
 
 }
 
-QgsBox3d QgsRectangle::toBox3d( double zMin, double zMax ) const
+QgsBox3D QgsRectangle::toBox3d( double zMin, double zMax ) const
 {
-  return QgsBox3d( mXmin, mYmin, zMin, mXmax, mYmax, zMax );
+  return QgsBox3D( mXmin, mYmin, zMin, mXmax, mYmax, zMax );
 }
 
 QgsRectangle QgsRectangle::snappedToGrid( double spacing ) const

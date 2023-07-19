@@ -234,7 +234,7 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   }
 
   QgsLayerMetadata::SpatialExtent spatialExtent;
-  spatialExtent.bounds = QgsBox3d( mExtent );
+  spatialExtent.bounds = QgsBox3D( mExtent );
   spatialExtent.extentCrs = mCrs;
   QgsLayerMetadata::Extent metadataExtent;
   metadataExtent.setSpatialExtents( QList<  QgsLayerMetadata::SpatialExtent >() << spatialExtent );

@@ -27,7 +27,7 @@
 #include "qgscompoundcurve.h"
 
 class QgsLineSegment2D;
-class QgsBox3d;
+class QgsBox3D;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -1055,7 +1055,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see calculateBoundingBox()
      * \since QGIS 3.26
      */
-    QgsBox3d calculateBoundingBox3d() const;
+    QgsBox3D calculateBoundingBox3d() const;
 
   protected:
 

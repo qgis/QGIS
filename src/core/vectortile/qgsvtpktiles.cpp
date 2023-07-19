@@ -317,7 +317,7 @@ QgsLayerMetadata QgsVtpkTiles::layerMetadata() const
       QgsCoordinateReferenceSystem crs = matrixSet().crs();
 
       QgsLayerMetadata::SpatialExtent spatialExtent;
-      spatialExtent.bounds = QgsBox3d( QgsRectangle( xMin, yMin, xMax, yMax ) );
+      spatialExtent.bounds = QgsBox3D( QgsRectangle( xMin, yMin, xMax, yMax ) );
       spatialExtent.extentCrs = QgsCoordinateReferenceSystem( "EPSG:4326" );
       QgsLayerMetadata::Extent extent;
       extent.setSpatialExtents( { spatialExtent } );

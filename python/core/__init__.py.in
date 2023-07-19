@@ -142,6 +142,9 @@ QgsDxfExport.NoSymbology = Qgis.FeatureSymbologyExport.NoSymbology
 QgsDxfExport.FeatureSymbology = Qgis.FeatureSymbologyExport.PerFeature
 QgsDxfExport.SymbolLayerSymbology = Qgis.FeatureSymbologyExport.PerSymbolLayer
 
+# Maintain class name API
+QgsBox3d = QgsBox3D
+
 GEOWKT = geoWkt()
 PROJECT_SCALES = Qgis.defaultProjectScales()
 GEOPROJ4 = geoProj4()

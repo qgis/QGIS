@@ -75,12 +75,12 @@ QgsCircle QgsSphere::toCircle() const
   return QgsCircle( QgsPoint( mCenterX, mCenterY ), mRadius );
 }
 
-QgsBox3d QgsSphere::boundingBox() const
+QgsBox3D QgsSphere::boundingBox() const
 {
   if ( isNull() )
-    return QgsBox3d();
+    return QgsBox3D();
 
-  return QgsBox3d( mCenterX - mRadius, mCenterY - mRadius, mCenterZ - mRadius,
+  return QgsBox3D( mCenterX - mRadius, mCenterY - mRadius, mCenterZ - mRadius,
                    mCenterX + mRadius, mCenterY + mRadius, mCenterZ + mRadius );
 }
 

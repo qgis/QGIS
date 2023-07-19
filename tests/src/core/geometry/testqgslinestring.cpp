@@ -2331,16 +2331,16 @@ void TestQgsLineString::boundingBox3D()
                   << QgsPoint( -2.0, -1.0, -1.0 )
                   << QgsPoint( 1.0, 2.0, -1.0 )
                   << QgsPoint( 1.0, 2.0, 2.0 ) );
-  QCOMPARE( bb3d.calculateBoundingBox3d(), QgsBox3d( QgsPoint( -2.0, -1.0, -1.0 ), QgsPoint( 1.0, 2.0, 2.0 ) ) );
+  QCOMPARE( bb3d.calculateBoundingBox3d(), QgsBox3D( QgsPoint( -2.0, -1.0, -1.0 ), QgsPoint( 1.0, 2.0, 2.0 ) ) );
   // retrieve again, should use cached values
-  QCOMPARE( bb3d.calculateBoundingBox3d(), QgsBox3d( QgsPoint( -2.0, -1.0, -1.0 ), QgsPoint( 1.0, 2.0, 2.0 ) ) );
+  QCOMPARE( bb3d.calculateBoundingBox3d(), QgsBox3D( QgsPoint( -2.0, -1.0, -1.0 ), QgsPoint( 1.0, 2.0, 2.0 ) ) );
 
   // linestring with z
   bb3d.setPoints( QgsPointSequence() << QgsPoint( -1.0, -1.0 )
                   << QgsPoint( -2.0, -1.0 )
                   << QgsPoint( 1.0, 2.0 )
                   << QgsPoint( 1.0, 2.0 ) );
-  QCOMPARE( bb3d.calculateBoundingBox3d(), QgsBox3d( QgsPoint( -2.0, -1, std::numeric_limits< double >::quiet_NaN() ), QgsPoint( 1.0, 2.0, std::numeric_limits< double >::quiet_NaN() ) ) );
+  QCOMPARE( bb3d.calculateBoundingBox3d(), QgsBox3D( QgsPoint( -2.0, -1, std::numeric_limits< double >::quiet_NaN() ), QgsPoint( 1.0, 2.0, std::numeric_limits< double >::quiet_NaN() ) ) );
 }
 
 void TestQgsLineString::angle()

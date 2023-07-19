@@ -588,12 +588,12 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
   return QgsRectangle( xmin, ymin, xmax, ymax, false );
 }
 
-QgsBox3d QgsLineString::calculateBoundingBox3d() const
+QgsBox3D QgsLineString::calculateBoundingBox3d() const
 {
 
   if ( mX.empty() )
   {
-    return QgsBox3d();
+    return QgsBox3D();
   }
 
   if ( mBoundingBox.isNull() )
@@ -601,17 +601,17 @@ QgsBox3d QgsLineString::calculateBoundingBox3d() const
     mBoundingBox = calculateBoundingBox();
   }
 
-  QgsBox3d out;
+  QgsBox3D out;
   if ( is3D() )
   {
     auto result = std::minmax_element( mZ.begin(), mZ.end() );
     const double zmin = *result.first;
     const double zmax = *result.second;
-    out = QgsBox3d( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), zmin, mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), zmax );
+    out = QgsBox3D( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), zmin, mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), zmax );
   }
   else
   {
-    out = QgsBox3d( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), std::numeric_limits< double >::quiet_NaN(), mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), std::numeric_limits< double >::quiet_NaN() );
+    out = QgsBox3D( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), std::numeric_limits< double >::quiet_NaN(), mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), std::numeric_limits< double >::quiet_NaN() );
   }
   return out;
 }

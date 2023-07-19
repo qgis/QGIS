@@ -47,7 +47,7 @@ class TestQgsClipper: public QgsTest
   private:
 
     bool checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect );
-    bool checkBoundingBox( const QgsLineString &polygon, const QgsBox3d &clipRect );
+    bool checkBoundingBox( const QgsLineString &polygon, const QgsBox3D &clipRect );
     bool render2dCheck( const QString &testName, QgsVectorLayer *layer, QgsRectangle extent );
 };
 
@@ -65,7 +65,7 @@ void TestQgsClipper::cleanupTestCase()
 void TestQgsClipper::basicWithZ()
 {
   // QgsClipper is static only
-  QgsBox3d clipRect( 10, 10, 11, 25, 30, 19 );
+  QgsBox3D clipRect( 10, 10, 11, 25, 30, 19 );
 
   QVector< double > x;
   QVector< double > y;
@@ -81,7 +81,7 @@ void TestQgsClipper::basicWithZ()
   // Check nothing sticks out.
   QVERIFY( checkBoundingBox( QgsLineString( x, y, z ), clipRect ) );
   // Check that it didn't clip too much
-  QgsBox3d clipRectInner( clipRect );
+  QgsBox3D clipRectInner( clipRect );
   clipRectInner.scale( 0.999 );
   QVERIFY( ! checkBoundingBox( QgsLineString( x, y, z ), clipRectInner ) );
 
@@ -89,7 +89,7 @@ void TestQgsClipper::basicWithZ()
   x = { 1.0, 11.0, 9.0 };
   y = { 9.0, 11.0, 1.0 };
   z = { 1.0, 11.0, 9.0 };
-  clipRect = QgsBox3d( 0.0, 0.0, 0.0, 10.0, 10.0, 10.0 );
+  clipRect = QgsBox3D( 0.0, 0.0, 0.0, 10.0, 10.0, 10.0 );
 
   QgsClipper::trimPolygon( x, y, z, clipRect );
 
@@ -113,14 +113,14 @@ void TestQgsClipper::basicWithZInf()
   QVector< double > y { 20.5, 30.2 };
   QVector< double > z { 10.0, 20.0 };
 
-  QgsBox3d clipRect( 10, 10, -HUGE_VAL, 25, 30, HUGE_VAL );
+  QgsBox3D clipRect( 10, 10, -HUGE_VAL, 25, 30, HUGE_VAL );
 
   QgsClipper::trimPolygon( x, y, z, clipRect );
 
   // Check nothing sticks out.
   QVERIFY( checkBoundingBox( QgsLineString( x, y, z ), clipRect ) );
   // Check that it didn't clip too much
-  QgsBox3d clipRectInner( clipRect );
+  QgsBox3D clipRectInner( clipRect );
   clipRectInner.scale( 0.999 );
   QVERIFY( ! checkBoundingBox( QgsLineString( x, y, z ), clipRectInner ) );
 
@@ -128,7 +128,7 @@ void TestQgsClipper::basicWithZInf()
   x = { 1.0, 11.0, 9.0 };
   y = { 9.0, 11.0, 1.0 };
   z = { 1.0, 11.0, 9.0 };
-  clipRect = QgsBox3d( 0.0, 0.0, 0.0, 10.0, 10.0, 10.0 );
+  clipRect = QgsBox3D( 0.0, 0.0, 0.0, 10.0, 10.0, 10.0 );
 
   QgsClipper::trimPolygon( x, y, z, clipRect );
 
@@ -179,7 +179,7 @@ void TestQgsClipper::basic()
   QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
 }
 
-bool TestQgsClipper::checkBoundingBox( const QgsLineString &polygon, const QgsBox3d &clipRect )
+bool TestQgsClipper::checkBoundingBox( const QgsLineString &polygon, const QgsBox3D &clipRect )
 {
   return clipRect.contains( polygon.calculateBoundingBox3d() );
 }
@@ -236,7 +236,7 @@ void TestQgsClipper::clipGeometryWithNaNZValues()
   pointsX = exteriorRing->xVector();
   pointsY = exteriorRing->yVector();
   pointsZ = exteriorRing->zVector();
-  QgsBox3d clipRect3D( 704430.30, 7060007.72, 0, 704456.51, 7060029.03, 100 );
+  QgsBox3D clipRect3D( 704430.30, 7060007.72, 0, 704456.51, 7060029.03, 100 );
   QgsClipper::trimPolygon( pointsX, pointsY, pointsZ, clipRect3D );
   // still only one vertex should be clipped, the nan z values must remain
   QCOMPARE( pointsX.size(), 8 );

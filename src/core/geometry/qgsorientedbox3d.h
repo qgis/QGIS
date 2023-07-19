@@ -26,7 +26,7 @@
 #include <QList>
 #include <limits>
 
-class QgsBox3d;
+class QgsBox3D;
 class QgsVector3D;
 
 /**
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsOrientedBox3D
     /**
      * Returns the overall bounding box of the object.
      */
-    QgsBox3d extent() const;
+    QgsBox3D extent() const;
 
     /**
      * Returns an array of all corners as 3D vectors.
