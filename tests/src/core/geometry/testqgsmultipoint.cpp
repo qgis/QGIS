@@ -248,7 +248,7 @@ void TestQgsMultiPoint::constructor()
   QCOMPARE( mp9.pointN( 1 )->x(), 3 );
   QCOMPARE( mp9.pointN( 1 )->y(), 4 );
 
-  // using seperate vectors of coordinates
+  // using separate vectors of coordinates
   QgsMultiPoint mp10( QVector< double > {}, QVector< double > {} );
   QVERIFY( mp10.isEmpty() );
   QCOMPARE( mp10.nCoordinates(), 0 );
