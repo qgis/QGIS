@@ -92,7 +92,7 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
   const QgsCoordinateTransform coordTrans( meshLayer->crs(), map.crs(), map.transformContext() );
   meshLayer->updateTriangularMesh( coordTrans );
   const QgsTriangularMesh triangularMesh = *meshLayer->triangularMeshByLodIndex( mSymbol->levelOfDetailIndex() );
-  QgsMeshDataset3dEntity *meshEntity = new QgsMeshDataset3dEntity( map, triangularMesh, meshLayer, mSymbol.get() );
+  QgsMeshDataset3DEntity *meshEntity = new QgsMeshDataset3DEntity( map, triangularMesh, meshLayer, mSymbol.get() );
   meshEntity->build();
   entity = meshEntity;
 

@@ -423,7 +423,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
-           <widget class="QgsMeshRenderer3dAveragingWidget" name="m3dAveragingSettingsWidget" native="true"/>
+           <widget class="QgsMeshRenderer3DAveragingWidget" name="m3dAveragingSettingsWidget" native="true"/>
           </item>
          </layout>
         </widget>
@@ -490,7 +490,7 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsMeshRenderer3dAveragingWidget</class>
+   <class>QgsMeshRenderer3DAveragingWidget</class>
    <extends>QWidget</extends>
    <header>qgsmeshrenderer3daveragingwidget.h</header>
    <container>1</container>

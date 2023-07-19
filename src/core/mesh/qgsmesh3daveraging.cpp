@@ -25,29 +25,29 @@
 // threshold for length intervals, to avoid division by 0
 static const double eps = 1e-6;
 
-QgsMesh3dAveragingMethod::QgsMesh3dAveragingMethod( Method method )
+QgsMesh3DAveragingMethod::QgsMesh3DAveragingMethod( Method method )
   : mMethod( method )
 {
 }
 
-QgsMesh3dAveragingMethod *QgsMesh3dAveragingMethod::createFromXml( const QDomElement &elem )
+QgsMesh3DAveragingMethod *QgsMesh3DAveragingMethod::createFromXml( const QDomElement &elem )
 {
-  std::unique_ptr<QgsMesh3dAveragingMethod> ret;
+  std::unique_ptr<QgsMesh3DAveragingMethod> ret;
 
-  const QgsMesh3dAveragingMethod::Method method = static_cast<QgsMesh3dAveragingMethod::Method>(
+  const QgsMesh3DAveragingMethod::Method method = static_cast<QgsMesh3DAveragingMethod::Method>(
         elem.attribute( QStringLiteral( "method" ) ).toInt() );
   switch ( method )
   {
-    case QgsMesh3dAveragingMethod::MultiLevelsAveragingMethod:
+    case QgsMesh3DAveragingMethod::MultiLevelsAveragingMethod:
       ret.reset( new QgsMeshMultiLevelsAveragingMethod() );
       break;
-    case QgsMesh3dAveragingMethod::SigmaAveragingMethod:
+    case QgsMesh3DAveragingMethod::SigmaAveragingMethod:
       ret.reset( new QgsMeshSigmaAveragingMethod() );
       break;
-    case QgsMesh3dAveragingMethod::RelativeHeightAveragingMethod:
+    case QgsMesh3DAveragingMethod::RelativeHeightAveragingMethod:
       ret.reset( new QgsMeshRelativeHeightAveragingMethod() );
       break;
-    case QgsMesh3dAveragingMethod::ElevationAveragingMethod:
+    case QgsMesh3DAveragingMethod::ElevationAveragingMethod:
       ret.reset( new QgsMeshElevationAveragingMethod() );
       break;
   }
@@ -55,7 +55,7 @@ QgsMesh3dAveragingMethod *QgsMesh3dAveragingMethod::createFromXml( const QDomEle
   return ret.release();
 }
 
-QgsMeshDataBlock QgsMesh3dAveragingMethod::calculate( const QgsMesh3dDataBlock &block3d, QgsFeedback *feedback ) const
+QgsMeshDataBlock QgsMesh3DAveragingMethod::calculate( const QgsMesh3DDataBlock &block3d, QgsFeedback *feedback ) const
 {
   if ( !block3d.isValid() )
     return QgsMeshDataBlock();
@@ -149,12 +149,12 @@ QgsMeshDataBlock QgsMesh3dAveragingMethod::calculate( const QgsMesh3dDataBlock &
   return result;
 }
 
-QgsMesh3dAveragingMethod::Method QgsMesh3dAveragingMethod::method() const
+QgsMesh3DAveragingMethod::Method QgsMesh3DAveragingMethod::method() const
 {
   return mMethod;
 }
 
-void QgsMesh3dAveragingMethod::averageVolumeValuesForFace(
+void QgsMesh3DAveragingMethod::averageVolumeValuesForFace(
   int faceIndex,
   int volumesBelowFaceCount,
   int startVolumeIndex,
@@ -227,7 +227,7 @@ void QgsMesh3dAveragingMethod::averageVolumeValuesForFace(
   }
 }
 
-bool QgsMesh3dAveragingMethod::equals( const QgsMesh3dAveragingMethod *a, const QgsMesh3dAveragingMethod *b )
+bool QgsMesh3DAveragingMethod::equals( const QgsMesh3DAveragingMethod *a, const QgsMesh3DAveragingMethod *b )
 {
   if ( a )
     return a->equals( b );
@@ -236,7 +236,7 @@ bool QgsMesh3dAveragingMethod::equals( const QgsMesh3dAveragingMethod *a, const 
 }
 
 QgsMeshMultiLevelsAveragingMethod::QgsMeshMultiLevelsAveragingMethod( int startLevel, int endLevel, bool countedFromTop )
-  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::MultiLevelsAveragingMethod )
+  : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::MultiLevelsAveragingMethod )
   , mStartVerticalLevel( startLevel )
   , mEndVerticalLevel( endLevel )
   , mCountedFromTop( countedFromTop )
@@ -248,12 +248,12 @@ QgsMeshMultiLevelsAveragingMethod::QgsMeshMultiLevelsAveragingMethod( int startL
 }
 
 QgsMeshMultiLevelsAveragingMethod::QgsMeshMultiLevelsAveragingMethod()
-  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::MultiLevelsAveragingMethod )
+  : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::MultiLevelsAveragingMethod )
 {
 }
 
 QgsMeshMultiLevelsAveragingMethod::QgsMeshMultiLevelsAveragingMethod( int verticalLevel, bool countedFromTop )
-  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::MultiLevelsAveragingMethod )
+  : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::MultiLevelsAveragingMethod )
   , mStartVerticalLevel( verticalLevel )
   , mEndVerticalLevel( verticalLevel )
   , mCountedFromTop( countedFromTop )
@@ -284,7 +284,7 @@ void QgsMeshMultiLevelsAveragingMethod::readXml( const QDomElement &elem )
   }
 }
 
-bool QgsMeshMultiLevelsAveragingMethod::equals( const QgsMesh3dAveragingMethod *other ) const
+bool QgsMeshMultiLevelsAveragingMethod::equals( const QgsMesh3DAveragingMethod *other ) const
 {
   if ( !other || other->method() != method() )
     return false;
@@ -296,7 +296,7 @@ bool QgsMeshMultiLevelsAveragingMethod::equals( const QgsMesh3dAveragingMethod *
          ( otherMethod->countedFromTop() == countedFromTop() );
 }
 
-QgsMesh3dAveragingMethod *QgsMeshMultiLevelsAveragingMethod::clone() const
+QgsMesh3DAveragingMethod *QgsMeshMultiLevelsAveragingMethod::clone() const
 {
   return new QgsMeshMultiLevelsAveragingMethod( startVerticalLevel(), endVerticalLevel(), countedFromTop() );
 }
@@ -379,12 +379,12 @@ void QgsMeshMultiLevelsAveragingMethod::volumeRangeForFace( double &startVertica
 }
 
 QgsMeshSigmaAveragingMethod::QgsMeshSigmaAveragingMethod()
-  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::SigmaAveragingMethod )
+  : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::SigmaAveragingMethod )
 {
 }
 
 QgsMeshSigmaAveragingMethod::QgsMeshSigmaAveragingMethod( double startFraction, double endFraction )
-  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::SigmaAveragingMethod )
+  : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::SigmaAveragingMethod )
   , mStartFraction( startFraction )
   , mEndFraction( endFraction )
 {
@@ -418,7 +418,7 @@ void QgsMeshSigmaAveragingMethod::readXml( const QDomElement &elem )
   }
 }
 
-bool QgsMeshSigmaAveragingMethod::equals( const QgsMesh3dAveragingMethod *other ) const
+bool QgsMeshSigmaAveragingMethod::equals( const QgsMesh3DAveragingMethod *other ) const
 {
   if ( !other || other->method() != method() )
     return false;
@@ -428,7 +428,7 @@ bool QgsMeshSigmaAveragingMethod::equals( const QgsMesh3dAveragingMethod *other 
   return qgsDoubleNear( otherMethod->startFraction(), startFraction() ) && qgsDoubleNear( otherMethod->endFraction(), endFraction() ) ;
 }
 
-QgsMesh3dAveragingMethod *QgsMeshSigmaAveragingMethod::clone() const
+QgsMesh3DAveragingMethod *QgsMeshSigmaAveragingMethod::clone() const
 {
   return new QgsMeshSigmaAveragingMethod( startFraction(), endFraction() );
 }
@@ -480,12 +480,12 @@ bool QgsMeshMultiLevelsAveragingMethod::isSingleLevel() const
 
 
 QgsMeshRelativeHeightAveragingMethod::QgsMeshRelativeHeightAveragingMethod()
-  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::RelativeHeightAveragingMethod )
+  : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::RelativeHeightAveragingMethod )
 {
 }
 
 QgsMeshRelativeHeightAveragingMethod::QgsMeshRelativeHeightAveragingMethod( double startDepth, double endDepth, bool countedFromTop )
-  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::RelativeHeightAveragingMethod )
+  : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::RelativeHeightAveragingMethod )
   , mStartHeight( startDepth )
   , mEndHeight( endDepth )
   , mCountedFromTop( countedFromTop )
@@ -520,7 +520,7 @@ void QgsMeshRelativeHeightAveragingMethod::readXml( const QDomElement &elem )
   }
 }
 
-bool QgsMeshRelativeHeightAveragingMethod::equals( const QgsMesh3dAveragingMethod *other ) const
+bool QgsMeshRelativeHeightAveragingMethod::equals( const QgsMesh3DAveragingMethod *other ) const
 {
   if ( !other || other->method() != method() )
     return false;
@@ -532,7 +532,7 @@ bool QgsMeshRelativeHeightAveragingMethod::equals( const QgsMesh3dAveragingMetho
          otherMethod->countedFromTop() == countedFromTop();
 }
 
-QgsMesh3dAveragingMethod *QgsMeshRelativeHeightAveragingMethod::clone() const
+QgsMesh3DAveragingMethod *QgsMeshRelativeHeightAveragingMethod::clone() const
 {
   return new QgsMeshRelativeHeightAveragingMethod( startHeight(), endHeight(), countedFromTop() );
 }
@@ -577,12 +577,12 @@ bool QgsMeshRelativeHeightAveragingMethod::countedFromTop() const
 }
 
 QgsMeshElevationAveragingMethod::QgsMeshElevationAveragingMethod()
-  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::ElevationAveragingMethod )
+  : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::ElevationAveragingMethod )
 {
 }
 
 QgsMeshElevationAveragingMethod::QgsMeshElevationAveragingMethod( double startElevation, double endElevation )
-  : QgsMesh3dAveragingMethod( QgsMesh3dAveragingMethod::ElevationAveragingMethod )
+  : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::ElevationAveragingMethod )
   , mStartElevation( startElevation )
   , mEndElevation( endElevation )
 {
@@ -616,7 +616,7 @@ void QgsMeshElevationAveragingMethod::readXml( const QDomElement &elem )
   }
 }
 
-bool QgsMeshElevationAveragingMethod::equals( const QgsMesh3dAveragingMethod *other ) const
+bool QgsMeshElevationAveragingMethod::equals( const QgsMesh3DAveragingMethod *other ) const
 {
   if ( !other || other->method() != method() )
     return false;
@@ -626,7 +626,7 @@ bool QgsMeshElevationAveragingMethod::equals( const QgsMesh3dAveragingMethod *ot
   return qgsDoubleNear( otherMethod->startElevation(), startElevation() ) && qgsDoubleNear( otherMethod->endElevation(), endElevation() ) ;
 }
 
-QgsMesh3dAveragingMethod *QgsMeshElevationAveragingMethod::clone() const
+QgsMesh3DAveragingMethod *QgsMeshElevationAveragingMethod::clone() const
 {
   return new QgsMeshElevationAveragingMethod( startElevation(), endElevation() );
 }

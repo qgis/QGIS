@@ -108,7 +108,7 @@ class ArrowsTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 
 
 
-QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer,
+QgsMesh3DMaterial::QgsMesh3DMaterial( QgsMeshLayer *layer,
                                       const QgsDateTimeRange &timeRange,
                                       const QgsVector3D &origin,
                                       const QgsMesh3DSymbol *symbol,
@@ -129,7 +129,7 @@ QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer,
   setEffect( eff );
 }
 
-void QgsMesh3dMaterial::configure()
+void QgsMesh3DMaterial::configure()
 {
   // Create the texture to pass the color ramp
   Qt3DRender::QTexture1D *colorRampTexture = nullptr;
@@ -138,11 +138,11 @@ void QgsMesh3dMaterial::configure()
     colorRampTexture = new Qt3DRender::QTexture1D( this );
     switch ( mMagnitudeType )
     {
-      case QgsMesh3dMaterial::ZValue:
+      case QgsMesh3DMaterial::ZValue:
         // if the color shading is done with the Z value of vertices, the color ramp has to be adapted with vertical scale
         colorRampTexture->addTextureImage( new QgsColorRampTexture( mSymbol->colorRampShader(), mSymbol->verticalScale() ) );
         break;
-      case QgsMesh3dMaterial::ScalarDataSet:
+      case QgsMesh3DMaterial::ScalarDataSet:
         // if the color shading is done with scalar dataset, no vertical scale to use
         colorRampTexture->addTextureImage( new QgsColorRampTexture( mSymbol->colorRampShader(), 1 ) );
         break;
@@ -191,10 +191,10 @@ void QgsMesh3dMaterial::configure()
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampType", colorRampType ) );
   const QColor meshColor = mSymbol->singleMeshColor();
   mTechnique->addParameter( new Qt3DRender::QParameter( "meshColor", QVector4D( meshColor.redF(), meshColor.greenF(), meshColor.blueF(), 1.0f ) ) );
-  mTechnique->addParameter( new Qt3DRender::QParameter( "isScalarMagnitude", ( mMagnitudeType == QgsMesh3dMaterial::ScalarDataSet ) ) );
+  mTechnique->addParameter( new Qt3DRender::QParameter( "isScalarMagnitude", ( mMagnitudeType == QgsMesh3DMaterial::ScalarDataSet ) ) );
 }
 
-void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange )
+void QgsMesh3DMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange )
 {
   QgsMeshDatasetIndex datasetIndex;
   QColor arrowsColor;

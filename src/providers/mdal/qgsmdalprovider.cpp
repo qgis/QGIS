@@ -853,22 +853,22 @@ QgsMeshDataBlock QgsMdalProvider::datasetValues( QgsMeshDatasetIndex index, int 
   return ret;
 }
 
-QgsMesh3dDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const
+QgsMesh3DDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const
 {
   MDAL_DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
   if ( !group )
-    return QgsMesh3dDataBlock();
+    return QgsMesh3DDataBlock();
 
   MDAL_DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
   if ( !dataset )
-    return QgsMesh3dDataBlock();
+    return QgsMesh3DDataBlock();
 
   if ( count < 1 )
-    return QgsMesh3dDataBlock();
+    return QgsMesh3DDataBlock();
 
   bool isScalar = MDAL_G_hasScalarData( group );
 
-  QgsMesh3dDataBlock ret( count, !isScalar );
+  QgsMesh3DDataBlock ret( count, !isScalar );
   {
     QVector<int> faceToVolumeIndexBuffer( count );
     int valRead = MDAL_D_data( dataset,
@@ -877,7 +877,7 @@ QgsMesh3dDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, 
                                MDAL_DataType::FACE_INDEX_TO_VOLUME_INDEX_INTEGER,
                                faceToVolumeIndexBuffer.data() );
     if ( valRead != count )
-      return QgsMesh3dDataBlock();
+      return QgsMesh3DDataBlock();
     ret.setFaceToVolumeIndex( faceToVolumeIndexBuffer );
   }
 
@@ -889,7 +889,7 @@ QgsMesh3dDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, 
                                MDAL_DataType::VERTICAL_LEVEL_COUNT_INTEGER,
                                verticalLevelCountBuffer.data() );
     if ( valRead != count )
-      return QgsMesh3dDataBlock();
+      return QgsMesh3DDataBlock();
 
     ret.setVerticalLevelsCount( verticalLevelCountBuffer );
   }
@@ -898,7 +898,7 @@ QgsMesh3dDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, 
   const int lastVolumeIndex = ret.lastVolumeIndex();
   const int nVolumes = lastVolumeIndex - firstVolumeIndex;
   if ( firstVolumeIndex < 0 || lastVolumeIndex < 0 || nVolumes < 1 )
-    return QgsMesh3dDataBlock();
+    return QgsMesh3DDataBlock();
 
   const int nVerticalLevelFaces = nVolumes + count; // all volumes top face + bottom face
   const int startIndexVerticalFaces = firstVolumeIndex + faceIndex;
@@ -911,7 +911,7 @@ QgsMesh3dDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, 
                                MDAL_DataType::VERTICAL_LEVEL_DOUBLE,
                                verticalLevels.data() );
     if ( valRead != nVerticalLevelFaces )
-      return QgsMesh3dDataBlock();
+      return QgsMesh3DDataBlock();
     ret.setVerticalLevels( verticalLevels );
   }
 
@@ -923,7 +923,7 @@ QgsMesh3dDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, 
                                isScalar ? MDAL_DataType::SCALAR_VOLUMES_DOUBLE : MDAL_DataType::VECTOR_2D_VOLUMES_DOUBLE,
                                values.data() );
     if ( valRead != nVolumes )
-      return QgsMesh3dDataBlock();
+      return QgsMesh3DDataBlock();
     ret.setValues( values );
   }
 

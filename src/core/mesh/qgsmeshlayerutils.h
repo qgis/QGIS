@@ -34,7 +34,7 @@
 class QgsMeshTimeSettings;
 class QgsTriangularMesh;
 class QgsMeshDataBlock;
-class QgsMesh3dAveragingMethod;
+class QgsMesh3DAveragingMethod;
 class QgsMeshDatasetValue;
 class QgsMeshLayer;
 
