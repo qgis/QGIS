@@ -11,10 +11,15 @@
 
 
 
-class QgsMesh3dAveragingMethod /Abstract/
+class QgsMesh3DAveragingMethod /Abstract/
 {
 %Docstring(signature="appended")
 Abstract class to interpolate 3d stacked mesh data to 2d data
+
+.. note::
+
+   In QGIS 3.34 this class was renamed from :py:class:`QgsMesh3dAveragingMethod` to :py:class:`QgsMesh3DAveragingMethod`. The old :py:class:`QgsMesh3dAveragingMethod` name
+   remains available in PyQGIS for compatibility.
 
 .. versionadded:: 3.12
 %End
@@ -23,7 +28,7 @@ Abstract class to interpolate 3d stacked mesh data to 2d data
 #include "qgsmesh3daveraging.h"
 %End
 %ConvertToSubClassCode
-    QgsMesh3dAveragingMethod *averagingMethod = dynamic_cast<QgsMesh3dAveragingMethod *>( sipCpp );
+    QgsMesh3DAveragingMethod *averagingMethod = dynamic_cast<QgsMesh3DAveragingMethod *>( sipCpp );
 
     sipType = 0;
 
@@ -31,16 +36,16 @@ Abstract class to interpolate 3d stacked mesh data to 2d data
     {
       switch ( averagingMethod->method() )
       {
-        case QgsMesh3dAveragingMethod::MultiLevelsAveragingMethod:
+        case QgsMesh3DAveragingMethod::MultiLevelsAveragingMethod:
           sipType = sipType_QgsMeshMultiLevelsAveragingMethod;
           break;
-        case QgsMesh3dAveragingMethod::SigmaAveragingMethod:
+        case QgsMesh3DAveragingMethod::SigmaAveragingMethod:
           sipType = sipType_QgsMeshSigmaAveragingMethod;
           break;
-        case QgsMesh3dAveragingMethod::RelativeHeightAveragingMethod:
+        case QgsMesh3DAveragingMethod::RelativeHeightAveragingMethod:
           sipType = sipType_QgsMeshRelativeHeightAveragingMethod;
           break;
-        case QgsMesh3dAveragingMethod::ElevationAveragingMethod:
+        case QgsMesh3DAveragingMethod::ElevationAveragingMethod:
           sipType = sipType_QgsMeshElevationAveragingMethod;
           break;
         default:
@@ -62,14 +67,14 @@ Abstract class to interpolate 3d stacked mesh data to 2d data
       ElevationAveragingMethod
     };
 
-    QgsMesh3dAveragingMethod( Method method );
+    QgsMesh3DAveragingMethod( Method method );
 %Docstring
 Ctor
 %End
 
-    virtual ~QgsMesh3dAveragingMethod();
+    virtual ~QgsMesh3DAveragingMethod();
 
-    QgsMeshDataBlock calculate( const QgsMesh3dDataBlock &block3d, QgsFeedback *feedback = 0 ) const;
+    QgsMeshDataBlock calculate( const QgsMesh3DDataBlock &block3d, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Calculated 2d block values from 3d stacked mesh values
 %End
@@ -79,7 +84,7 @@ Calculated 2d block values from 3d stacked mesh values
 Writes configuration to a new DOM element
 %End
 
-    static QgsMesh3dAveragingMethod *createFromXml( const QDomElement &elem ) /Factory/;
+    static QgsMesh3DAveragingMethod *createFromXml( const QDomElement &elem ) /Factory/;
 %Docstring
 Creates the instance from XML by calling readXml of derived classes
 %End
@@ -89,17 +94,17 @@ Creates the instance from XML by calling readXml of derived classes
 Reads configuration from the given DOM element
 %End
 
-    static bool equals( const QgsMesh3dAveragingMethod *a, const QgsMesh3dAveragingMethod *b );
+    static bool equals( const QgsMesh3DAveragingMethod *a, const QgsMesh3DAveragingMethod *b );
 %Docstring
 Returns whether two methods equal
 %End
 
-    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const = 0;
+    virtual bool equals( const QgsMesh3DAveragingMethod *other ) const = 0;
 %Docstring
 Returns whether method equals to other
 %End
 
-    virtual QgsMesh3dAveragingMethod *clone() const = 0 /Factory/;
+    virtual QgsMesh3DAveragingMethod *clone() const = 0 /Factory/;
 %Docstring
 Clone the instance
 %End
@@ -111,7 +116,7 @@ Returns type of averaging method
 
 };
 
-class QgsMeshMultiLevelsAveragingMethod: QgsMesh3dAveragingMethod
+class QgsMeshMultiLevelsAveragingMethod: QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
 
@@ -156,9 +161,9 @@ Constructs single level averaging method
 
     virtual void readXml( const QDomElement &elem );
 
-    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const;
+    virtual bool equals( const QgsMesh3DAveragingMethod *other ) const;
 
-    virtual QgsMesh3dAveragingMethod *clone() const /Factory/;
+    virtual QgsMesh3DAveragingMethod *clone() const /Factory/;
 
 
     int startVerticalLevel() const;
@@ -193,7 +198,7 @@ Returns whether the averaging method selects only a single vertical level
 
 };
 
-class QgsMeshSigmaAveragingMethod: QgsMesh3dAveragingMethod
+class QgsMeshSigmaAveragingMethod: QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
 
@@ -227,9 +232,9 @@ Constructs the sigma method
 
     virtual void readXml( const QDomElement &elem );
 
-    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const;
+    virtual bool equals( const QgsMesh3DAveragingMethod *other ) const;
 
-    virtual QgsMesh3dAveragingMethod *clone() const /Factory/;
+    virtual QgsMesh3DAveragingMethod *clone() const /Factory/;
 
 
     double startFraction() const;
@@ -250,7 +255,7 @@ Always higher or equal than :py:func:`~QgsMeshSigmaAveragingMethod.startFraction
 
 };
 
-class QgsMeshRelativeHeightAveragingMethod: QgsMesh3dAveragingMethod
+class QgsMeshRelativeHeightAveragingMethod: QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
 
@@ -293,9 +298,9 @@ Constructs the depth/height averaging method
 
     virtual void readXml( const QDomElement &elem );
 
-    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const;
+    virtual bool equals( const QgsMesh3DAveragingMethod *other ) const;
 
-    virtual QgsMesh3dAveragingMethod *clone() const /Factory/;
+    virtual QgsMesh3DAveragingMethod *clone() const /Factory/;
 
 
     double startHeight() const;
@@ -319,7 +324,7 @@ Returns whether the start and end vertical levels are relative to top (surface) 
 
 };
 
-class QgsMeshElevationAveragingMethod: QgsMesh3dAveragingMethod
+class QgsMeshElevationAveragingMethod: QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
 
@@ -355,9 +360,9 @@ Constructs elevation averaging method
 
     virtual void readXml( const QDomElement &elem );
 
-    virtual bool equals( const QgsMesh3dAveragingMethod *other ) const;
+    virtual bool equals( const QgsMesh3DAveragingMethod *other ) const;
 
-    virtual QgsMesh3dAveragingMethod *clone() const /Factory/;
+    virtual QgsMesh3DAveragingMethod *clone() const /Factory/;
 
 
     double startElevation() const;

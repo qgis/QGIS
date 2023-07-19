@@ -563,10 +563,10 @@ QgsMeshDataBlock QgsMeshMemoryDataProvider::datasetValues( QgsMeshDatasetIndex i
   }
 }
 
-QgsMesh3dDataBlock QgsMeshMemoryDataProvider::dataset3dValues( QgsMeshDatasetIndex, int, int ) const
+QgsMesh3DDataBlock QgsMeshMemoryDataProvider::dataset3dValues( QgsMeshDatasetIndex, int, int ) const
 {
   // 3d stacked meshes are not supported by memory provider
-  return QgsMesh3dDataBlock();
+  return QgsMesh3DDataBlock();
 }
 
 

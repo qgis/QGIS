@@ -242,11 +242,11 @@ Sets block validity
 
 };
 
-class QgsMesh3dDataBlock
+class QgsMesh3DDataBlock
 {
 %Docstring(signature="appended")
 
-:py:class:`QgsMesh3dDataBlock` is a block of 3d stacked mesh data related N
+:py:class:`QgsMesh3DDataBlock` is a block of 3d stacked mesh data related N
 faces defined on base mesh frame.
 
 Data are implicitly shared, so the class can be quickly copied
@@ -256,6 +256,12 @@ std.numeric_limits<double>.quiet_NaN() represents NODATA value
 
    The API is considered EXPERIMENTAL and can be changed without a notice
 
+.. note::
+
+   In QGIS 3.34 this class was renamed from :py:class:`QgsMesh3dDataBlock` to :py:class:`QgsMesh3DDataBlock`. The old :py:class:`QgsMesh3dDataBlock` name
+   remains available in PyQGIS for compatibility.
+
+
 .. versionadded:: 3.12
 %End
 
@@ -263,14 +269,14 @@ std.numeric_limits<double>.quiet_NaN() represents NODATA value
 #include "qgsmeshdataset.h"
 %End
   public:
-    QgsMesh3dDataBlock();
+    QgsMesh3DDataBlock();
 %Docstring
 Constructs an invalid block
 %End
 
-    ~QgsMesh3dDataBlock();
+    ~QgsMesh3DDataBlock();
 
-    QgsMesh3dDataBlock( int count, bool isVector );
+    QgsMesh3DDataBlock( int count, bool isVector );
 %Docstring
 Constructs a new block for count faces
 %End
@@ -351,7 +357,7 @@ For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
 %Docstring
 Returns the value at volume centers
 
-:param volumeIndex: volume index relative to :py:func:`~QgsMesh3dDataBlock.firstVolumeIndex`
+:param volumeIndex: volume index relative to :py:func:`~QgsMesh3DDataBlock.firstVolumeIndex`
 
 :return: value (scalar or vector)
 %End

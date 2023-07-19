@@ -26,11 +26,11 @@ class QgsMesh3DSymbol;
 class QgsMeshLayer;
 
 //! A widget for configuration of 3D symbol for meshes
-class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
+class QgsMesh3DSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
 {
     Q_OBJECT
   public:
-    explicit QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *parent = nullptr );
+    explicit QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *parent = nullptr );
 
     std::unique_ptr< QgsMesh3DSymbol > symbol() const;
 

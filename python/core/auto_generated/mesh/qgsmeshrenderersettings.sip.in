@@ -725,14 +725,14 @@ Removes vector settings for ``groupIndex``
 .. versionadded:: 3.30.2
 %End
 
-    QgsMesh3dAveragingMethod *averagingMethod() const;
+    QgsMesh3DAveragingMethod *averagingMethod() const;
 %Docstring
 Returns averaging method for conversion of 3d stacked mesh data to 2d data
 
 Caller does not own the resulting pointer
 %End
 
-    void setAveragingMethod( QgsMesh3dAveragingMethod *method );
+    void setAveragingMethod( QgsMesh3DAveragingMethod *method );
 %Docstring
 Sets averaging method for conversion of 3d stacked mesh data to 2d data
 

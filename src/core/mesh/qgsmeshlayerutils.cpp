@@ -84,11 +84,11 @@ QgsMeshDataBlock QgsMeshLayerUtils::datasetValues(
   }
   else
   {
-    const QgsMesh3dAveragingMethod *averagingMethod = meshLayer->rendererSettings().averagingMethod();
+    const QgsMesh3DAveragingMethod *averagingMethod = meshLayer->rendererSettings().averagingMethod();
     if ( !averagingMethod )
       return block;
 
-    const QgsMesh3dDataBlock block3d = meshLayer->dataset3dValues( index, valueIndex, count );
+    const QgsMesh3DDataBlock block3d = meshLayer->dataset3dValues( index, valueIndex, count );
     if ( !block3d.isValid() )
       return block;
 

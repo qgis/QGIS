@@ -387,7 +387,7 @@ need block for any type of data type
 .. versionadded:: 3.16
 %End
 
-    QgsMesh3dDataBlock dataset3dValues( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const;
+    QgsMesh3DDataBlock dataset3dValues( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const;
 %Docstring
 Returns N vector/scalar values from the face index from the dataset for 3d stacked meshes
 
@@ -466,7 +466,7 @@ For 1D datasets, it uses :py:func:`~QgsMeshLayer.dataset1dValue` with ``searchRa
 .. versionadded:: 3.4
 %End
 
-    QgsMesh3dDataBlock dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+    QgsMesh3DDataBlock dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
 %Docstring
 Returns the 3d values of stacked 3d mesh defined by the given point
 

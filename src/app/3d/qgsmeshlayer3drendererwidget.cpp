@@ -47,12 +47,12 @@ QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer,
   mChkEnabled = new QCheckBox( tr( "Enable 3D Renderer" ), this );
   layout->addWidget( mChkEnabled );
 
-  mWidgetMesh = new QgsMesh3dSymbolWidget( layer, this );
+  mWidgetMesh = new QgsMesh3DSymbolWidget( layer, this );
   mWidgetMesh->configureForDataset();
   layout->addWidget( mWidgetMesh );
 
   connect( mChkEnabled, &QCheckBox::clicked, this, &QgsMeshLayer3DRendererWidget::onEnabledClicked );
-  connect( mWidgetMesh, &QgsMesh3dSymbolWidget::changed, this, &QgsMeshLayer3DRendererWidget::widgetChanged );
+  connect( mWidgetMesh, &QgsMesh3DSymbolWidget::changed, this, &QgsMeshLayer3DRendererWidget::widgetChanged );
 
   setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#d-view-properties" ) );
 }

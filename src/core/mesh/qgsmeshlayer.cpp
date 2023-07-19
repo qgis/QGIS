@@ -490,7 +490,7 @@ QgsMeshDataBlock QgsMeshLayer::datasetValues( const QgsMeshDatasetIndex &index, 
   return mDatasetGroupStore->datasetValues( index, valueIndex, count );
 }
 
-QgsMesh3dDataBlock QgsMeshLayer::dataset3dValues( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const
+QgsMesh3DDataBlock QgsMeshLayer::dataset3dValues( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -560,10 +560,10 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
 
           case QgsMeshDatasetGroupMetadata::DataOnVolumes:
           {
-            const QgsMesh3dAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
+            const QgsMesh3DAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
             if ( avgMethod )
             {
-              const QgsMesh3dDataBlock block3d = dataset3dValues( index, nativeFaceIndex, 1 );
+              const QgsMesh3DDataBlock block3d = dataset3dValues( index, nativeFaceIndex, 1 );
               const QgsMeshDataBlock block2d = avgMethod->calculate( block3d );
               if ( block2d.isValid() )
               {
@@ -583,11 +583,11 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
   return value;
 }
 
-QgsMesh3dDataBlock QgsMeshLayer::dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
+QgsMesh3DDataBlock QgsMeshLayer::dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsMesh3dDataBlock block3d;
+  QgsMesh3DDataBlock block3d;
 
   const QgsTriangularMesh *baseTriangularMesh = triangularMesh();
 

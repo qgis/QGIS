@@ -64,7 +64,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
   double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
   QgsMeshRendererScalarSettings::DataResamplingMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::None;
-  std::unique_ptr<QgsMesh3dAveragingMethod> mScalarAveragingMethod;
+  std::unique_ptr<QgsMesh3DAveragingMethod> mScalarAveragingMethod;
 
   // vector dataset
   QgsMeshDatasetIndex mActiveVectorDatasetIndex;
@@ -76,7 +76,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   double mVectorDatasetGroupMagMinimum = std::numeric_limits<double>::quiet_NaN();
   double mVectorDatasetGroupMagMaximum = std::numeric_limits<double>::quiet_NaN();
   QgsMeshDatasetGroupMetadata::DataType mVectorDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
-  std::unique_ptr<QgsMesh3dAveragingMethod> mVectorAveragingMethod;
+  std::unique_ptr<QgsMesh3DAveragingMethod> mVectorAveragingMethod;
 };
 
 

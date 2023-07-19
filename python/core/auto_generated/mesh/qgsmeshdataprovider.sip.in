@@ -265,7 +265,7 @@ need block for any type of data type
 .. versionadded:: 3.6
 %End
 
-    virtual QgsMesh3dDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
+    virtual QgsMesh3DDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
 %Docstring
 Returns N vector/scalar values from the face index from the dataset for 3d stacked meshes
 

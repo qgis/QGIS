@@ -108,20 +108,20 @@ class QgsMesh3DGeometryBuilder: public QObject
 * Base class for creating attributes and vertex/index buffers for a mesh layer
 */
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-class QgsMesh3dGeometry: public Qt3DRender::QGeometry
+class QgsMesh3DGeometry: public Qt3DRender::QGeometry
 #else
-class QgsMesh3dGeometry: public Qt3DCore::QGeometry
+class QgsMesh3DGeometry: public Qt3DCore::QGeometry
 #endif
 {
     Q_OBJECT
   protected:
     //! Constructor
-    explicit QgsMesh3dGeometry( const QgsTriangularMesh &triangularMesh,
+    explicit QgsMesh3DGeometry( const QgsTriangularMesh &triangularMesh,
                                 const QgsVector3D &origin,
                                 double verticalScale,
                                 QNode *parent );
 
-    ~QgsMesh3dGeometry() = default;
+    ~QgsMesh3DGeometry() = default;
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void prepareVerticesPositionAttribute( Qt3DRender::QBuffer *buffer, int stride, int offset );
@@ -170,12 +170,12 @@ class QgsMeshDataset3DGeometryBuilder;
  *
  *  When this job is finished, the mesh datset 3D geometry node is updated and can be rendered in the 3D scene.
  */
-class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
+class QgsMeshDataset3DGeometry: public QgsMesh3DGeometry
 {
     Q_OBJECT
   public:
     //! Constructs a mesh layer geometry from triangular mesh.
-    explicit QgsMeshDataset3dGeometry( const QgsTriangularMesh &triangularMesh,
+    explicit QgsMeshDataset3DGeometry( const QgsTriangularMesh &triangularMesh,
                                        QgsMeshLayer *layer,
                                        const QgsDateTimeRange &timeRange,
                                        const QgsVector3D &origin,
@@ -231,13 +231,13 @@ class QgsMeshDataset3DGeometryBuilder: public QgsMesh3DGeometryBuilder
                                      const QgsMesh &nativeMesh,
                                      const QgsVector3D &origin,
                                      float vertScale,
-                                     const QgsMeshDataset3dGeometry::VertexData &vertexData,
+                                     const QgsMeshDataset3DGeometry::VertexData &vertexData,
                                      QObject *parent );
     void start() override;
 
   private:
     QgsMesh mNativeMesh;
-    QgsMeshDataset3dGeometry::VertexData mVertexData;
+    QgsMeshDataset3DGeometry::VertexData mVertexData;
 };
 
 /**
@@ -246,12 +246,12 @@ class QgsMeshDataset3DGeometryBuilder: public QgsMesh3DGeometryBuilder
  *  On creation, the instance launches immediately another thread that constructs 3D vertices, faces of the mesh based on the mesh vertices z value.
  *  When this job is finished, the mesh terrain 3D geometry node is updated and can be rendered in the 3D scene.
  */
-class QgsMeshTerrain3dGeometry: public  QgsMesh3dGeometry
+class QgsMeshTerrain3DGeometry: public  QgsMesh3DGeometry
 {
     Q_OBJECT
   public:
     //! Constructs a mesh layer geometry from triangular mesh.
-    explicit QgsMeshTerrain3dGeometry( const QgsTriangularMesh &triangularMesh,
+    explicit QgsMeshTerrain3DGeometry( const QgsTriangularMesh &triangularMesh,
                                        const QgsVector3D &origin,
                                        double verticalSacle,
                                        QNode *parent );

@@ -193,13 +193,13 @@ QgsMeshDataBlock QgsMeshDatasetGroupStore::datasetValues( const QgsMeshDatasetIn
     return QgsMeshDataBlock();
 }
 
-QgsMesh3dDataBlock QgsMeshDatasetGroupStore::dataset3dValues( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const
+QgsMesh3DDataBlock QgsMeshDatasetGroupStore::dataset3dValues( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const
 {
   QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( index.group() );
   if ( group.first )
     return group.first->dataset3dValues( QgsMeshDatasetIndex( group.second, index.dataset() ), faceIndex, count );
   else
-    return QgsMesh3dDataBlock();
+    return QgsMesh3DDataBlock();
 }
 
 QgsMeshDataBlock QgsMeshDatasetGroupStore::areFacesActive( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const
@@ -802,13 +802,13 @@ QgsMeshDataBlock QgsMeshExtraDatasetStore::datasetValues( QgsMeshDatasetIndex in
   return QgsMeshDataBlock();
 }
 
-QgsMesh3dDataBlock QgsMeshExtraDatasetStore::dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const
+QgsMesh3DDataBlock QgsMeshExtraDatasetStore::dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const
 {
   // Not supported for now
   Q_UNUSED( index )
   Q_UNUSED( faceIndex )
   Q_UNUSED( count )
-  return QgsMesh3dDataBlock();
+  return QgsMesh3DDataBlock();
 }
 
 bool QgsMeshExtraDatasetStore::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const
