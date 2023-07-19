@@ -22,6 +22,7 @@
 #include "qgsalgorithmaddxyfields.h"
 #include "qgsalgorithmaffinetransform.h"
 #include "qgsalgorithmaggregate.h"
+#include "qgsalgorithmalignrasters.h"
 #include "qgsalgorithmangletonearest.h"
 #include "qgsalgorithmannotations.h"
 #include "qgsalgorithmapplylayerstyle.h"
@@ -271,6 +272,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAddUniqueValueIndexAlgorithm() );
   addAlgorithm( new QgsAffineTransformationAlgorithm() );
   addAlgorithm( new QgsAggregateAlgorithm() );
+  addAlgorithm( new QgsAlignRastersAlgorithm() );
   addAlgorithm( new QgsAngleToNearestAlgorithm() );
   addAlgorithm( new QgsApplyLayerStyleAlgorithm() );
   addAlgorithm( new QgsArrayTranslatedFeaturesAlgorithm() );
