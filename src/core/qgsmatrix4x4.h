@@ -66,8 +66,8 @@ class CORE_EXPORT QgsMatrix4x4
     void setToIdentity();
 
 #ifndef SIP_RUN
-    friend QgsMatrix4x4 operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 );
-    friend QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector );
+    friend CORE_EXPORT QgsMatrix4x4 operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 );
+    friend CORE_EXPORT QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector );
 #endif
 
   private:
