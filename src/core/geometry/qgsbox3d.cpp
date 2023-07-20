@@ -304,19 +304,19 @@ QString QgsBox3D::toString( int precision ) const
   return rep;
 }
 
-QgsBox3d QgsBox3d::operator-( const QgsVector3D &v ) const
+QgsBox3D QgsBox3D::operator-( const QgsVector3D &v ) const
 {
-  return QgsBox3d( mBounds2d.xMinimum() - v.x(), mBounds2d.yMinimum() - v.y(), mZmin - v.z(),
+  return QgsBox3D( mBounds2d.xMinimum() - v.x(), mBounds2d.yMinimum() - v.y(), mZmin - v.z(),
                    mBounds2d.xMaximum() - v.x(), mBounds2d.yMaximum() - v.y(), mZmax - v.z() );
 }
 
-QgsBox3d QgsBox3d::operator+( const QgsVector3D &v ) const
+QgsBox3D QgsBox3D::operator+( const QgsVector3D &v ) const
 {
-  return QgsBox3d( mBounds2d.xMinimum() + v.x(), mBounds2d.yMinimum() + v.y(), mZmin + v.z(),
+  return QgsBox3D( mBounds2d.xMinimum() + v.x(), mBounds2d.yMinimum() + v.y(), mZmin + v.z(),
                    mBounds2d.xMaximum() + v.x(), mBounds2d.yMaximum() + v.y(), mZmax + v.z() );
 }
 
-QgsBox3d &QgsBox3d::operator-=( const QgsVector3D &v )
+QgsBox3D &QgsBox3D::operator-=( const QgsVector3D &v )
 {
   mBounds2d.set( mBounds2d.xMinimum() - v.x(), mBounds2d.yMinimum() - v.y(),
                  mBounds2d.xMaximum() - v.x(), mBounds2d.yMaximum() - v.y() );
@@ -325,7 +325,7 @@ QgsBox3d &QgsBox3d::operator-=( const QgsVector3D &v )
   return *this;
 }
 
-QgsBox3d &QgsBox3d::operator+=( const QgsVector3D &v )
+QgsBox3D &QgsBox3D::operator+=( const QgsVector3D &v )
 {
   mBounds2d.set( mBounds2d.xMinimum() + v.x(), mBounds2d.yMinimum() + v.y(),
                  mBounds2d.xMaximum() + v.x(), mBounds2d.yMaximum() + v.y() );
