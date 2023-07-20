@@ -29,7 +29,7 @@ class QgsScreenHelper;
 
 /**
  * \ingroup gui
- * \class QgsMeshRenderer3dAveragingWidget
+ * \class QgsMeshRenderer3DAveragingWidget
  *
  * \brief A widget for setup of the averaging method from 3d to 2d datasets on 3d stacked mesh.
  * The mesh layer must be connected
