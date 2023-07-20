@@ -244,6 +244,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsdecorationscalebar.h"
 #include "qgsdecorationgrid.h"
 #include "qgsdecorationlayoutextent.h"
+#include "qgsdecorationoverlay.h"
 #include "qgserror.h"
 #include "qgseventtracing.h"
 #include "qgsexception.h"
@@ -5123,6 +5124,10 @@ void QgisApp::createDecorations()
   addDecorationItem( decorationNorthArrow );
   addDecorationItem( decorationScaleBar );
   addDecorationItem( decorationLayoutExtent );
+
+  // Add buffer on which decorations are rendered
+  QgsDecorationOverlay *bufferWidget = new QgsDecorationOverlay( mMapCanvas->viewport() );
+
   connect( mMapCanvas, &QgsMapCanvas::renderComplete, this, &QgisApp::renderDecorationItems );
   connect( this, &QgisApp::newProject, this, &QgisApp::projectReadDecorationItems );
   connect( this, &QgisApp::projectRead, this, &QgisApp::projectReadDecorationItems );
@@ -5136,8 +5141,14 @@ void QgisApp::renderDecorationItems( QPainter *p )
   const auto constMDecorationItems = mDecorationItems;
   for ( QgsDecorationItem *item : constMDecorationItems )
   {
+    // Items with fixed map position are rendered on the overlay
+    if ( item->hasFixedMapPosition() )
+      continue;
     item->render( mMapCanvas->mapSettings(), context );
   }
+
+  // Update the decoration overlay
+  findChild<QgsDecorationOverlay *>()->update();
 }
 
 void QgisApp::projectReadDecorationItems()
