@@ -5095,6 +5095,9 @@ void QgisApp::setMapTipsDelay( int timerInterval )
 
 void QgisApp::createDecorations()
 {
+  // Add buffer on which decorations are rendered
+  mDecorationOverlay = new QgsDecorationOverlay( mMapCanvas->viewport() );
+
   QgsDecorationTitle *decorationTitle = new QgsDecorationTitle( this );
   connect( mActionDecorationTitle, &QAction::triggered, decorationTitle, &QgsDecorationTitle::run );
 
@@ -5125,9 +5128,6 @@ void QgisApp::createDecorations()
   addDecorationItem( decorationScaleBar );
   addDecorationItem( decorationLayoutExtent );
 
-  // Add buffer on which decorations are rendered
-  QgsDecorationOverlay *bufferWidget = new QgsDecorationOverlay( mMapCanvas->viewport() );
-
   connect( mMapCanvas, &QgsMapCanvas::renderComplete, this, &QgisApp::renderDecorationItems );
   connect( this, &QgisApp::newProject, this, &QgisApp::projectReadDecorationItems );
   connect( this, &QgisApp::projectRead, this, &QgisApp::projectReadDecorationItems );
@@ -5148,7 +5148,7 @@ void QgisApp::renderDecorationItems( QPainter *p )
   }
 
   // Update the decoration overlay
-  findChild<QgsDecorationOverlay *>()->update();
+  mDecorationOverlay->update();
 }
 
 void QgisApp::projectReadDecorationItems()

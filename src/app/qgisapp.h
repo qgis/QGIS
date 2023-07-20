@@ -130,6 +130,7 @@ class QgsTemporalControllerDockWidget;
 
 class QgsMapDecoration;
 class QgsDecorationItem;
+class QgsDecorationOverlay;
 class QgsMessageLogViewer;
 class QgsMessageBar;
 class QgsMessageBarItem;
@@ -2593,6 +2594,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;
 
     QList<QgsDecorationItem *> mDecorationItems;
+    QgsDecorationOverlay *mDecorationOverlay = nullptr;
 
     //! Persistent GPS toolbox
     QgsAppGpsConnection *mGpsConnection = nullptr;
