@@ -385,13 +385,13 @@ If the specified precision is less than 0, a suitable minimum precision is used.
 .. versionadded:: 3.34
 %End
 
-    QgsBox3d operator-( const QgsVector3D &v ) const;
+    QgsBox3D operator-( const QgsVector3D &v ) const;
 
-    QgsBox3d operator+( const QgsVector3D &v ) const;
+    QgsBox3D operator+( const QgsVector3D &v ) const;
 
-    QgsBox3d &operator-=( const QgsVector3D &v );
+    QgsBox3D &operator-=( const QgsVector3D &v );
 
-    QgsBox3d &operator+=( const QgsVector3D &v );
+    QgsBox3D &operator+=( const QgsVector3D &v );
 
 };
 

@@ -388,25 +388,25 @@ class CORE_EXPORT QgsBox3D
      * Returns a box offset from this one in the direction of the reversed vector.
      * \since QGIS 3.34
      */
-    QgsBox3d operator-( const QgsVector3D &v ) const;
+    QgsBox3D operator-( const QgsVector3D &v ) const;
 
     /**
      * Returns a box offset from this one in the direction of the vector.
      * \since QGIS 3.34
      */
-    QgsBox3d operator+( const QgsVector3D &v ) const;
+    QgsBox3D operator+( const QgsVector3D &v ) const;
 
     /**
      * Moves this box in the direction of the reversed vector.
      * \since QGIS 3.34
      */
-    QgsBox3d &operator-=( const QgsVector3D &v );
+    QgsBox3D &operator-=( const QgsVector3D &v );
 
     /**
      * Moves this box in the direction of the vector.
      * \since QGIS 3.34
      */
-    QgsBox3d &operator+=( const QgsVector3D &v );
+    QgsBox3D &operator+=( const QgsVector3D &v );
 
   private:
 
