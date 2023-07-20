@@ -134,9 +134,9 @@ QgsOrientedBox3D QgsOrientedBox3D::transformed( const QgsMatrix4x4 &transform ) 
 {
   const double *ptr = transform.constData();
   const QgsMatrix4x4 mm( ptr[0], ptr[4], ptr[8], 0,
-                   ptr[1], ptr[5], ptr[9], 0,
-                   ptr[2], ptr[6], ptr[10], 0,
-                   0, 0, 0, 1 );
+                         ptr[1], ptr[5], ptr[9], 0,
+                         ptr[2], ptr[6], ptr[10], 0,
+                         0, 0, 0, 1 );
 
   const QgsVector3D trCenter = transform.map( QgsVector3D( mCenter[0], mCenter[1], mCenter[2] ) );
 
