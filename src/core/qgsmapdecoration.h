@@ -54,6 +54,13 @@ class CORE_EXPORT QgsMapDecoration
      */
     const QString displayName() const { return mDisplayName; }
 
+    /**
+     * Returns TRUE if the decoration is attached to a fixed map position (e.g title, north arrow), or
+     * FALSE if the annotation uses a position relative to the current map extent (e.g. grid, layout extent)
+     * \since QGIS 3.34
+     */
+    virtual bool hasFixedMapPosition() const { return true; }
+
   protected:
 
     /**
