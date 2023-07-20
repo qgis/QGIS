@@ -108,9 +108,10 @@ QgsVector3D QgsOrientedBox3D::size() const
 
 QgsBox3D QgsOrientedBox3D::reprojectedExtent( const QgsCoordinateTransform &ct ) const
 {
-  // reproject corners from ECEF to planar CRS
+  // reproject corners to destination CRS
   QVector<QgsVector3D> c = corners();
-  for ( int i = 0; i < c.count(); ++i )
+  Q_ASSERT( c.count() == 8 );
+  for ( int i = 0; i < 8; ++i )
   {
     c[i] = ct.transform( c[i] );
   }
@@ -129,19 +130,19 @@ QgsBox3D QgsOrientedBox3D::reprojectedExtent( const QgsCoordinateTransform &ct )
   return QgsBox3D( v0.x(), v0.y(), v0.z(), v1.x(), v1.y(), v1.z() );
 }
 
-QgsOrientedBox3D QgsOrientedBox3D::transformed( const QgsMatrix4x4 &tr ) const
+QgsOrientedBox3D QgsOrientedBox3D::transformed( const QgsMatrix4x4 &transform ) const
 {
-  const double *ptr = tr.constData();
-  QgsMatrix4x4 mm( ptr[0], ptr[4], ptr[8], 0,
+  const double *ptr = transform.constData();
+  const QgsMatrix4x4 mm( ptr[0], ptr[4], ptr[8], 0,
                    ptr[1], ptr[5], ptr[9], 0,
                    ptr[2], ptr[6], ptr[10], 0,
                    0, 0, 0, 1 );
 
-  QgsVector3D trCenter = tr.map( QgsVector3D( mCenter[0], mCenter[1], mCenter[2] ) );
+  const QgsVector3D trCenter = transform.map( QgsVector3D( mCenter[0], mCenter[1], mCenter[2] ) );
 
-  QgsVector3D col1 = mm.map( QgsVector3D( mHalfAxes[0], mHalfAxes[1], mHalfAxes[2] ) );
-  QgsVector3D col2 = mm.map( QgsVector3D( mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] ) );
-  QgsVector3D col3 = mm.map( QgsVector3D( mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] ) );
+  const QgsVector3D col1 = mm.map( QgsVector3D( mHalfAxes[0], mHalfAxes[1], mHalfAxes[2] ) );
+  const QgsVector3D col2 = mm.map( QgsVector3D( mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] ) );
+  const QgsVector3D col3 = mm.map( QgsVector3D( mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] ) );
 
   return QgsOrientedBox3D( QList<double>() << trCenter.x() << trCenter.y() << trCenter.z(),
                            QList<double>() << col1.x() << col1.y() << col1.z()
