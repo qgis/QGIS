@@ -95,13 +95,15 @@ Returns an array of all corners as 3D vectors.
 Returns size of sides of the box.
 %End
 
-    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const;
+    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const throw( QgsCsException );
 %Docstring
-Reprojects corners of this box using the given coordinate transform
+Reprojects corners of this box using the given coordinate ``transform``
 and returns axis-aligned box containing reprojected corners.
+
+:raises QgsCsException: 
 %End
 
-    QgsOrientedBox3D transformed( const QgsMatrix4x4 &tr ) const;
+    QgsOrientedBox3D transformed( const QgsMatrix4x4 &transform ) const;
 %Docstring
 Returns box transformed by a 4x4 matrix.
 %End
