@@ -130,15 +130,16 @@ class CORE_EXPORT QgsOrientedBox3D
     QgsVector3D size() const;
 
     /**
-     * Reprojects corners of this box using the given coordinate transform
+     * Reprojects corners of this box using the given coordinate \a transform
      * and returns axis-aligned box containing reprojected corners.
+     * \throws QgsCsException
      */
-    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const;
+    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const SIP_THROW( QgsCsException );
 
     /**
      * Returns box transformed by a 4x4 matrix.
      */
-    QgsOrientedBox3D transformed( const QgsMatrix4x4 &tr ) const;
+    QgsOrientedBox3D transformed( const QgsMatrix4x4 &transform ) const;
 
   private:
 
