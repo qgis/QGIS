@@ -137,6 +137,8 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     //! Computes interval from current raster layer
     bool getIntervalFromCurrentLayer( double *values ) const;
 
+    bool hasFixedMapPosition() const override { return false; }
+
   public slots:
     //! Sets values on the gui when a project is read or the gui first loaded
     void projectRead() override;

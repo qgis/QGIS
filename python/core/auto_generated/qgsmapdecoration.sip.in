@@ -42,6 +42,14 @@ Returns the map decoration display name.
 .. versionadded:: 3.14
 %End
 
+    virtual bool hasFixedMapPosition() const;
+%Docstring
+Returns ``True`` if the decoration is attached to a fixed map position (e.g title, north arrow), or
+``False`` if the annotation uses a position relative to the current map extent (e.g. grid, layout extent)
+
+.. versionadded:: 3.34
+%End
+
   protected:
 
     void setDisplayName( const QString &name );
