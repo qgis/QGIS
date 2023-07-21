@@ -5135,7 +5135,7 @@ void QgisApp::renderDecorationItems( QPainter *p )
   for ( QgsDecorationItem *item : constMDecorationItems )
   {
     // Items with fixed map position are rendered on the overlay
-    if ( item->hasFixedMapPosition() )
+    if ( !item->hasFixedMapPosition() )
       continue;
     item->render( mMapCanvas->mapSettings(), context );
   }
