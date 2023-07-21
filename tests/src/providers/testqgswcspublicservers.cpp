@@ -34,7 +34,7 @@
 #include "qgsrasterlayer.h"
 #include "qgswcscapabilities.h"
 #include "testqgswcspublicservers.h"
-#include "qgssettings.h"
+#include "qgsnetworkaccessmanager.h"
 
 #ifdef Q_OS_WIN
 #include <fcntl.h> /*  _O_BINARY */
@@ -57,8 +57,7 @@ TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString &cacheDirPath, i
 
 TestQgsWcsPublicServers::~TestQgsWcsPublicServers()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), mOrigTimeout );
+  QgsNetworkAccessManager::settingsNetworkTimeout->setValue( mOrigTimeout );
 }
 
 //runs before all tests
@@ -68,9 +67,8 @@ void TestQgsWcsPublicServers::init()
 
   // Unfortunately this seems to be the only way to set timeout, we try to reset it
   // at the end but it can be canceled before ...
-  QgsSettings settings;
-  mOrigTimeout = settings.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt();
-  settings.setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), mTimeout );
+  mOrigTimeout = QgsNetworkAccessManager::settingsNetworkTimeout->value();
+  QgsNetworkAccessManager::settingsNetworkTimeout->setValue( mTimeout );
 
   //mCacheDir = QDir( "./wcstestcache" );
   mCacheDir = QDir( mCacheDirPath );
