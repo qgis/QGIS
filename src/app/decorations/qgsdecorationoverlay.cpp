@@ -46,9 +46,8 @@ void QgsDecorationOverlay::paintEvent( QPaintEvent * )
 
   for ( QgsMapDecoration *item : QgisApp::instance()->activeDecorations() )
   {
-    // Render only decorations with fixed map position
-    // other items are rendered directly on the map canvas
-    if ( !item->hasFixedMapPosition() )
+    // Do not render decorations with fixed map positionn they are rendered directly on the map canvas
+    if ( item->hasFixedMapPosition() )
       continue;
     item->render( QgisApp::instance()->mapCanvas()->mapSettings(), context );
   }
