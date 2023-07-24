@@ -59,8 +59,23 @@ with warnings.catch_warnings():
 class ScriptEditorDialog(BASE, WIDGET):
     hasChanged = False
 
+    DIALOG_STORE = []
+
     def __init__(self, filePath=None, parent=None):
         super().__init__(parent)
+        # SIP is totally messed up here -- the dialog wrapper or something
+        # is always prematurely cleaned which results in broken QObject
+        # connections throughout.
+        # Hack around this by storing dialog instances in a global list to
+        # prevent too early wrapper garbage collection
+        ScriptEditorDialog.DIALOG_STORE.append(self)
+
+        def clean_up_store():
+            ScriptEditorDialog.DIALOG_STORE =\
+                [d for d in ScriptEditorDialog.DIALOG_STORE if d != self]
+
+        self.destroyed.connect(clean_up_store)
+
         self.setupUi(self)
         self.setAttribute(Qt.WA_DeleteOnClose)
 
