@@ -33,7 +33,12 @@ Represents a oriented (rotated) box in 3 dimensions.
 Constructor for a null oriented box.
 %End
 
-    QgsOrientedBox3D( const QList<double> &center, QList< double > &halfAxes );
+    QgsOrientedBox3D( const QList<double> &center, const QList< double > &halfAxes );
+%Docstring
+Constructor for a oriented box, with a specified center and half axes matrix.
+%End
+
+    QgsOrientedBox3D( const QgsVector3D &center, const QList< QgsVector3D > &halfAxes );
 %Docstring
 Constructor for a oriented box, with a specified center and half axes matrix.
 %End
@@ -72,6 +77,11 @@ Returns the center z-coordinate.
 .. seealso:: :py:func:`centerX`
 
 .. seealso:: :py:func:`centerY`
+%End
+
+    QgsVector3D center() const;
+%Docstring
+Returns the vector to the center of the box.
 %End
 
 
