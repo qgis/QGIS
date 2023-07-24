@@ -2146,11 +2146,11 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
 std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( Pal *pal )
 {
   std::vector< std::unique_ptr< LabelPosition > > lPos;
-  double angle = mLF->hasFixedAngle() ? mLF->fixedAngle() : 0.0;
+  double angleInRadians = mLF->hasFixedAngle() ? mLF->fixedAngle() : 0.0;
 
   if ( mLF->hasFixedPosition() )
   {
-    lPos.emplace_back( std::make_unique< LabelPosition> ( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth( angle ), getLabelHeight( angle ), angle, 0.0, this, false, LabelPosition::Quadrant::QuadrantOver ) );
+    lPos.emplace_back( std::make_unique< LabelPosition> ( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth( angleInRadians ), getLabelHeight( angleInRadians ), angleInRadians, 0.0, this, false, LabelPosition::Quadrant::QuadrantOver ) );
   }
   else
   {
@@ -2158,11 +2158,11 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
     {
       case GEOS_POINT:
         if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::OrderedPositionsAroundPoint )
-          createCandidatesAtOrderedPositionsOverPoint( x[0], y[0], lPos, angle );
+          createCandidatesAtOrderedPositionsOverPoint( x[0], y[0], lPos, angleInRadians );
         else if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::OverPoint || mLF->hasFixedQuadrant() )
-          createCandidatesOverPoint( x[0], y[0], lPos, angle );
+          createCandidatesOverPoint( x[0], y[0], lPos, angleInRadians );
         else
-          createCandidatesAroundPoint( x[0], y[0], lPos, angle );
+          createCandidatesAroundPoint( x[0], y[0], lPos, angleInRadians );
         break;
 
       case GEOS_LINESTRING:
@@ -2206,15 +2206,15 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
                 double cx, cy;
                 getCentroid( cx, cy, mLF->layer()->centroidInside() );
                 if ( qgsDoubleNear( mLF->distLabel(), 0.0 ) )
-                  created += createCandidateCenteredOverPoint( cx, cy, lPos, angle );
-                created += createCandidatesAroundPoint( cx, cy, lPos, angle );
+                  created += createCandidateCenteredOverPoint( cx, cy, lPos, angleInRadians );
+                created += createCandidatesAroundPoint( cx, cy, lPos, angleInRadians );
                 break;
               }
               case Qgis::LabelPlacement::OverPoint:
               {
                 double cx, cy;
                 getCentroid( cx, cy, mLF->layer()->centroidInside() );
-                created += createCandidatesOverPoint( cx, cy, lPos, angle );
+                created += createCandidatesOverPoint( cx, cy, lPos, angleInRadians );
                 break;
               }
               case Qgis::LabelPlacement::Line:

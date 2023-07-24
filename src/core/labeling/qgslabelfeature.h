@@ -107,7 +107,11 @@ class CORE_EXPORT QgsLabelFeature
     //TODO - remove when QgsGeometry caches GEOS preparedness
     const GEOSPreparedGeometry *permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared.get(); }
 
-    //! Size of the label (in map units)
+    /**
+     * Size of the label (in map units).
+     *
+     * An optional \a angle (in radians) can be specified to return the size taking into account the rotation.
+     */
     QSizeF size( double angle = 0.0 ) const;
 
     /**
@@ -227,9 +231,17 @@ class CORE_EXPORT QgsLabelFeature
     bool hasFixedAngle() const { return mHasFixedAngle; }
     //! Sets whether the label should use a fixed angle instead of using angle from automatic placement
     void setHasFixedAngle( bool enabled ) { mHasFixedAngle = enabled; }
-    //! Angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns TRUE)
+
+    /**
+     * Angle in radians of the fixed angle (relevant only if hasFixedAngle() returns TRUE)
+     * \see setFixedAngle()
+     */
     double fixedAngle() const { return mFixedAngle; }
-    //! Sets angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns TRUE)
+
+    /**
+     * Sets the \a angle in radians of the fixed angle (relevant only if hasFixedAngle() returns TRUE).
+     * \see fixedAngle()
+     */
     void setFixedAngle( double angle ) { mFixedAngle = angle; }
 
     /**
