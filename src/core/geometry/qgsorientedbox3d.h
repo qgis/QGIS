@@ -140,6 +140,11 @@ class CORE_EXPORT QgsOrientedBox3D
     QgsVector3D size() const;
 
     /**
+     * Calculates the projection of the box onto a \a vector.
+     */
+    QgsVector3D projectOnto( const QgsVector3D &vector ) const;
+
+    /**
      * Reprojects corners of this box using the given coordinate \a transform
      * and returns axis-aligned box containing reprojected corners.
      * \throws QgsCsException
@@ -150,6 +155,11 @@ class CORE_EXPORT QgsOrientedBox3D
      * Returns box transformed by a 4x4 matrix.
      */
     QgsOrientedBox3D transformed( const QgsMatrix4x4 &transform ) const;
+
+    /**
+     * Returns TRUE if the box intersects the \a other box.
+     */
+    bool intersects( const QgsOrientedBox3D &other ) const;
 
   private:
 

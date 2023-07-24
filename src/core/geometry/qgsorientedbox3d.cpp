@@ -121,6 +121,19 @@ QgsVector3D QgsOrientedBox3D::size() const
   return QgsVector3D( 2 * axis1.length(), 2 * axis2.length(), 2 * axis3.length() );
 }
 
+QgsVector3D QgsOrientedBox3D::projectOnto( const QgsVector3D &vector ) const
+{
+  QgsVector3D projection( 0.0, 0.0, 0.0 );
+  for ( int i = 0; i < 3; ++i )
+  {
+    const QgsVector3D projectedAxis = QgsVector3D( mHalfAxes[i * 3], mHalfAxes[i * 3 + 1], mHalfAxes[i * 3 + 2] ).projectOnto( vector );
+    if ( projectedAxis.length() > projection.length() )
+    {
+      projection = projectedAxis;
+    }
+  }
+  return projection;
+}
 
 QgsBox3D QgsOrientedBox3D::reprojectedExtent( const QgsCoordinateTransform &ct ) const
 {
@@ -134,7 +147,7 @@ QgsBox3D QgsOrientedBox3D::reprojectedExtent( const QgsCoordinateTransform &ct )
 
   // find AABB for the 8 transformed points
   QgsVector3D v0 = c[0], v1 = c[0];
-  for ( const QgsVector3D &v : c )
+  for ( const QgsVector3D &v : std::as_const( c ) )
   {
     if ( v.x() < v0.x() ) v0.setX( v.x() );
     if ( v.y() < v0.y() ) v0.setY( v.y() );
@@ -164,4 +177,53 @@ QgsOrientedBox3D QgsOrientedBox3D::transformed( const QgsMatrix4x4 &transform ) 
                            QList<double>() << col1.x() << col1.y() << col1.z()
                            << col2.x() << col2.y() << col2.z()
                            << col3.x() << col3.y() << col3.z() );
+}
+
+bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
+{
+  // translate so that the center of the first box is at the origin
+  const QgsVector3D t = other.center() - center();
+
+  for ( int i = 0; i < 3; ++i )
+  {
+    const QgsVector3D a( mHalfAxes[i * 3 + 0], mHalfAxes[i * 3 + 1], mHalfAxes[i * 3 + 2] );
+    const double ra = a.length();
+    for ( int j = 0; j < 3; ++j )
+    {
+      const double rb = QgsVector3D( other.mHalfAxes[j * 3 + 0], other.mHalfAxes[j * 3 + 1], other.mHalfAxes[j * 3 + 2] ).length();
+      const double tDotA = QgsVector3D::dotProduct( t, a );
+      const double rSum = ra + rb;
+
+      if ( std::abs( tDotA ) > rSum )
+        return false;
+    }
+  }
+
+  for ( int i = 0; i < 3; ++i )
+  {
+    const QgsVector3D a( mHalfAxes[i * 3 + 0], mHalfAxes[i * 3 + 1], mHalfAxes[i * 3 + 2] );
+    const double ra = a.length();
+    const double rb = other.projectOnto( a ).length();
+
+    const double tDotA = QgsVector3D::dotProduct( t, a );
+    const double rSum = ra + rb;
+
+    if ( std::abs( tDotA ) > rSum )
+      return false;
+  }
+
+  for ( int i = 0; i < 3; ++i )
+  {
+    const QgsVector3D b( other.mHalfAxes[i * 3 + 0], other.mHalfAxes[i * 3 + 1], other.mHalfAxes[i * 3 + 2] );
+
+    const double ra = projectOnto( b ).length();
+    const double rb = b.length();
+    const double tDotA = QgsVector3D::dotProduct( t, b );
+    const double rSum = ra + rb;
+
+    if ( std::abs( tDotA ) > rSum )
+      return false;
+  }
+
+  return true;
 }

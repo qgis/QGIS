@@ -105,6 +105,11 @@ Returns an array of all corners as 3D vectors.
 Returns size of sides of the box.
 %End
 
+    QgsVector3D projectOnto( const QgsVector3D &vector ) const;
+%Docstring
+Calculates the projection of the box onto a ``vector``.
+%End
+
     QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const throw( QgsCsException );
 %Docstring
 Reprojects corners of this box using the given coordinate ``transform``
@@ -116,6 +121,11 @@ and returns axis-aligned box containing reprojected corners.
     QgsOrientedBox3D transformed( const QgsMatrix4x4 &transform ) const;
 %Docstring
 Returns box transformed by a 4x4 matrix.
+%End
+
+    bool intersects( const QgsOrientedBox3D &other ) const;
+%Docstring
+Returns ``True`` if the box intersects the ``other`` box.
 %End
 
 };
