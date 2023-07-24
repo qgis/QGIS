@@ -444,9 +444,9 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
           results = childAlg->runPrepared( childParams, context, &modelFeedback );
         }
       }
-      catch ( QgsProcessingException & )
+      catch ( QgsProcessingException &e )
       {
-        const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
+        const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? e.what() : QObject::tr( "Error encountered while running %1: %2" ).arg( child.description(), e.what() );
         throw QgsProcessingException( error );
       }
 
