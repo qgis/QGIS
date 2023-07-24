@@ -102,6 +102,7 @@
 #include "qgsalgorithmimportphotos.h"
 #include "qgsalgorithminterpolatepoint.h"
 #include "qgsalgorithmintersection.h"
+#include "qgsalgorithmkeepnbiggestparts.h"
 #include "qgsalgorithmkmeansclustering.h"
 #ifndef QT_NO_PRINTER
 #include "qgsalgorithmlayoutatlastoimage.h"
@@ -367,6 +368,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsJoinByLocationAlgorithm() );
   addAlgorithm( new QgsJoinByNearestAlgorithm() );
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
+  addAlgorithm( new QgsKeepNBiggestPartsAlgorithm() );
   addAlgorithm( new QgsKMeansClusteringAlgorithm() );
   addAlgorithm( new QgsLayerToBookmarksAlgorithm() );
   addAlgorithm( new QgsLayoutMapExtentToLayerAlgorithm() );
