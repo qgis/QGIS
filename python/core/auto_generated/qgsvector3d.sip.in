@@ -100,6 +100,13 @@ Returns the dot product of two vectors
 Returns the cross product of two vectors
 %End
 
+    QgsVector3D projectOnto( const QgsVector3D &other );
+%Docstring
+Projects this vector onto an ``other`` vector.
+
+.. versionadded:: 3.34
+%End
+
     double length() const;
 %Docstring
 Returns the length of the vector

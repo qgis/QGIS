@@ -33,6 +33,7 @@ class TestQgsVector : public QObject
     // vector3d
     void vector3d();
     void setters();
+    void projectOnto();
 };
 
 void TestQgsVector::initTestCase()
@@ -109,6 +110,25 @@ void TestQgsVector::setters()
   QCOMPARE( p1.x(), 8.0 );
   QCOMPARE( p1.y(), 9.0 );
   QCOMPARE( p1.z(), 10.0 );
+}
+
+void TestQgsVector::projectOnto()
+{
+  QgsVector3D p1( 1.0, 0.0, 0.0 );
+  QgsVector3D p2 = p1.projectOnto( QgsVector3D( 0.0, 2.0, 0.0 ) );
+  QCOMPARE( p2.x(), 0 );
+  QCOMPARE( p2.y(), 0 );
+  QCOMPARE( p2.z(), 0 );
+
+  p2 = p1.projectOnto( QgsVector3D( 5.0, 0.0, 0.0 ) );
+  QCOMPARE( p2.x(), 1 );
+  QCOMPARE( p2.y(), 0 );
+  QCOMPARE( p2.z(), 0 );
+
+  p2 = QgsVector3D( 2, 3, 1 ).projectOnto( QgsVector3D( 1, 2, -6 ) );
+  QCOMPARE( p2.x(), 2.0 / 41 );
+  QCOMPARE( p2.y(), 4.0 / 41 );
+  QCOMPARE( p2.z(), -12.0 / 41 );
 }
 
 QGSTEST_MAIN( TestQgsVector )
