@@ -22,7 +22,7 @@
 #include <QVector3D>
 
 /**
- * \ingroup 3d
+ * \ingroup core
  * \brief Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
  * instead of single precision floating point numbers.
  *
@@ -125,6 +125,18 @@ class CORE_EXPORT QgsVector3D
       return QgsVector3D( v1.y() * v2.z() - v1.z() * v2.y(),
                           v1.z() * v2.x() - v1.x() * v2.z(),
                           v1.x() * v2.y() - v1.y() * v2.x() );
+    }
+
+    /**
+     * Projects this vector onto an \a other vector.
+     *
+     * \since QGIS 3.34
+     */
+    QgsVector3D projectOnto( const QgsVector3D &other )
+    {
+      const double bbDotProduct = other.mX * other.mX + other.mY * other.mY + other.mZ * other.mZ;
+      const double abDotProduct = QgsVector3D::dotProduct( *this, other );
+      return other * ( abDotProduct / bbDotProduct );
     }
 
     //! Returns the length of the vector
