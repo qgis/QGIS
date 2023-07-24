@@ -122,7 +122,6 @@ QVector<QgsVector3D> QgsOrientedBox3D::corners() const
   return cor;
 }
 
-
 QgsVector3D QgsOrientedBox3D::size() const
 {
   QgsVector3D axis1( mHalfAxes[0], mHalfAxes[1], mHalfAxes[2] );
@@ -130,7 +129,6 @@ QgsVector3D QgsOrientedBox3D::size() const
   QgsVector3D axis3( mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] );
   return QgsVector3D( 2 * axis1.length(), 2 * axis2.length(), 2 * axis3.length() );
 }
-
 
 QgsBox3D QgsOrientedBox3D::reprojectedExtent( const QgsCoordinateTransform &ct ) const
 {
@@ -174,4 +172,73 @@ QgsOrientedBox3D QgsOrientedBox3D::transformed( const QgsMatrix4x4 &transform ) 
                            QList<double>() << col1.x() << col1.y() << col1.z()
                            << col2.x() << col2.y() << col2.z()
                            << col3.x() << col3.y() << col3.z() );
+}
+
+bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
+{
+  // use the Separating Axis Theorem (SAT) for OBB (Oriented Bounding Box) collision detection.
+
+  const QgsVector3D thisCenter = center();
+  const QgsVector3D thisHalfAxis[3]
+  {
+    { mHalfAxes[0], mHalfAxes[1], mHalfAxes[2] },
+    { mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] },
+    { mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] }
+  };
+  const QgsVector3D otherCenter = other.center();
+  const QgsVector3D otherHalfAxis[3]
+  {
+    { other.mHalfAxes[0], other.mHalfAxes[1], other.mHalfAxes[2] },
+    { other.mHalfAxes[3], other.mHalfAxes[4], other.mHalfAxes[5] },
+    { other.mHalfAxes[6], other.mHalfAxes[7], other.mHalfAxes[8] }
+  };
+
+  for ( int a = 0; a < 3; ++a )
+  {
+    const QgsVector3D *aAxis = thisHalfAxis + a;
+    for ( int b = 0; b < 3; ++b )
+    {
+      const QgsVector3D *bAxis = otherHalfAxis + b;
+      QgsVector3D lAxis = QgsVector3D::crossProduct( *aAxis, *bAxis );
+      if ( lAxis.isNull() )
+        continue;
+
+      lAxis.normalize();
+
+      const double tl = std::abs( QgsVector3D::dotProduct( lAxis, otherCenter ) - QgsVector3D::dotProduct( lAxis, thisCenter ) );
+      const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
+      const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
+      const double penetration = ( ra + rb ) - tl;
+      if ( penetration <= 0 )
+        return false;
+    }
+  }
+
+  for ( int a = 0; a < 3; ++a )
+  {
+    QgsVector3D lAxis = *( thisHalfAxis + a );
+    lAxis.normalize();
+
+    const double tl = std::abs( QgsVector3D::dotProduct( lAxis, otherCenter ) - QgsVector3D::dotProduct( lAxis, thisCenter ) );
+    const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
+    const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
+    const double penetration = ( ra + rb ) - tl;
+    if ( penetration <= 0 )
+      return false;
+  }
+
+  for ( int b = 0; b < 3; ++b )
+  {
+    QgsVector3D lAxis = *( otherHalfAxis + b );
+    lAxis.normalize();
+
+    const double tl = std::abs( QgsVector3D::dotProduct( lAxis, otherCenter ) - QgsVector3D::dotProduct( lAxis, thisCenter ) );
+    const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
+    const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
+    const double penetration = ( ra + rb ) - tl;
+    if ( penetration <= 0 )
+      return false;
+  }
+
+  return true;
 }

@@ -156,6 +156,11 @@ class CORE_EXPORT QgsOrientedBox3D
      */
     QgsOrientedBox3D transformed( const QgsMatrix4x4 &transform ) const SIP_HOLDGIL;
 
+    /**
+     * Returns TRUE if the box intersects the \a other box.
+     */
+    bool intersects( const QgsOrientedBox3D &other ) const SIP_HOLDGIL;
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
