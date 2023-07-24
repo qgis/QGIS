@@ -578,7 +578,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
             int rCol;
             if ( currentLabelDataDefinedRotation( defRot, rSuccess, rCol ) )
             {
-              const double labelRot = mCurrentLabel.pos.rotation * 180 / M_PI;
+              const double labelRot = mCurrentLabel.pos.rotation;
               vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rCol, labelRot );
             }
           }
