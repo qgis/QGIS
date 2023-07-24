@@ -41,6 +41,14 @@ class TestQgsOrientedBox3D(QgisTestCase):
         self.assertEqual(box.centerX(), 1)
         self.assertEqual(box.centerY(), 2)
         self.assertEqual(box.centerZ(), 3)
+        self.assertEqual(box.center(), QgsVector3D(1, 2, 3))
+        self.assertEqual(box.halfAxes(), [10.0, 0.0, 0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 30.0])
+
+        box = QgsOrientedBox3D(QgsVector3D(1, 2, 3), [QgsVector3D(10, 0, 0), QgsVector3D(0, 20, 0), QgsVector3D(0, 0, 30)])
+        self.assertEqual(box.centerX(), 1)
+        self.assertEqual(box.centerY(), 2)
+        self.assertEqual(box.centerZ(), 3)
+        self.assertEqual(box.center(), QgsVector3D(1, 2, 3))
         self.assertEqual(box.halfAxes(), [10.0, 0.0, 0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 30.0])
 
         box = QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])

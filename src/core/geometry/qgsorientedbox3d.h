@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
+#include "qgsvector3d.h"
 
 #include <QList>
 #include <limits>
@@ -29,7 +30,6 @@
 class QgsBox3D;
 class QgsCoordinateTransform;
 class QgsMatrix4x4;
-class QgsVector3D;
 
 /**
  * \brief Represents a oriented (rotated) box in 3 dimensions.
@@ -52,7 +52,12 @@ class CORE_EXPORT QgsOrientedBox3D
     /**
      * Constructor for a oriented box, with a specified center and half axes matrix.
      */
-    QgsOrientedBox3D( const QList<double> &center, QList< double > &halfAxes );
+    QgsOrientedBox3D( const QList<double> &center, const QList< double > &halfAxes );
+
+    /**
+     * Constructor for a oriented box, with a specified center and half axes matrix.
+     */
+    QgsOrientedBox3D( const QgsVector3D &center, const QList< QgsVector3D > &halfAxes );
 
     bool operator==( const QgsOrientedBox3D &other ) const
     {
@@ -103,6 +108,11 @@ class CORE_EXPORT QgsOrientedBox3D
      * \see centerY()
      */
     double centerZ() const { return mCenter[2]; }
+
+    /**
+     * Returns the vector to the center of the box.
+     */
+    QgsVector3D center() const { return QgsVector3D( mCenter[0], mCenter[1], mCenter[2] ); }
 
     /**
      * Returns the half axes matrix;

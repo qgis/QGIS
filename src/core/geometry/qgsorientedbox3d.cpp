@@ -24,7 +24,7 @@
 
 QgsOrientedBox3D::QgsOrientedBox3D() = default;
 
-QgsOrientedBox3D::QgsOrientedBox3D( const QList<double> &center, QList<double> &halfAxes )
+QgsOrientedBox3D::QgsOrientedBox3D( const QList<double> &center, const QList<double> &halfAxes )
 {
   if ( center.size() == 3 )
   {
@@ -37,6 +37,22 @@ QgsOrientedBox3D::QgsOrientedBox3D( const QList<double> &center, QList<double> &
     for ( int i = 0; i < 9; ++i )
     {
       mHalfAxes[i] = halfAxes.at( i );
+    }
+  }
+}
+
+QgsOrientedBox3D::QgsOrientedBox3D( const QgsVector3D &center, const QList<QgsVector3D> &halfAxes )
+{
+  mCenter[0] = center.x();
+  mCenter[1] = center.y();
+  mCenter[2] = center.z();
+  if ( halfAxes.size() == 3 )
+  {
+    for ( int i = 0; i < 3; ++i )
+    {
+      mHalfAxes[i * 3] = halfAxes.at( i ).x();
+      mHalfAxes[i * 3 + 1] = halfAxes.at( i ).y();
+      mHalfAxes[i * 3 + 2] = halfAxes.at( i ).z();
     }
   }
 }
