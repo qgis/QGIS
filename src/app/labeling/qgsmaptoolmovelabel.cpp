@@ -245,9 +245,22 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         mCurrentLabel.settings.placement = Qgis::LabelPlacement::Horizontal;
       }
 
-      const bool isCurvedOrLine { mCurrentLabel.settings.placement == Qgis::LabelPlacement::Curved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::Line };
+      const bool isCurvedOrLine = mCurrentLabel.settings.placement == Qgis::LabelPlacement::Curved || mCurrentLabel.settings.placement == Qgis::LabelPlacement::Line;
+      const bool isMovableUsingPoint = labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol );
+      const bool isMovableUsingLineAnchor = labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, lineAnchorPercentCol, lineAnchorClippingCol, lineAnchorTypeCol, lineAnchorTextPointCol );
 
-      if ( isCurvedOrLine && !mCurrentLabel.pos.isDiagram && ! labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, lineAnchorPercentCol, lineAnchorClippingCol, lineAnchorTypeCol, lineAnchorTextPointCol ) )
+      bool useLineAnchor = false;
+      if ( isCurvedOrLine )
+      {
+        if ( isMovableUsingLineAnchor )
+          useLineAnchor = true;
+        else if ( isMovableUsingPoint )
+          useLineAnchor = false;
+        else
+          useLineAnchor = true;
+      }
+
+      if ( useLineAnchor && !mCurrentLabel.pos.isDiagram && !isMovableUsingLineAnchor )
       {
         QgsPalIndexes indexes;
         if ( createAuxiliaryFields( indexes ) )
@@ -289,7 +302,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         //lineAnchorTextPointCol = indexes[ QgsPalLayerSettings::LineAnchorTextPoint];
 
       }
-      else if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
+      else if ( !mCurrentLabel.pos.isDiagram && !isMovableUsingPoint )
       {
         if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
         {
