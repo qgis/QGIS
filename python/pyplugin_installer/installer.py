@@ -564,14 +564,17 @@ class QgsPluginInstaller(QObject):
 
         if not plugin_id or not vote:
             return False
-        url = "http://plugins.qgis.org/plugins/RPC2/"
+        url = "https://plugins.qgis.org/plugins/RPC2/"
         params = {"id": "djangorpc", "method": "plugin.vote", "params": [str(plugin_id), str(vote)]}
         req = QNetworkRequest(QUrl(url))
         req.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "QgsPluginInstaller")
         req.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorRequestId), "sendVote")
         req.setRawHeader(b"Content-Type", b"application/json")
-        QgsNetworkAccessManager.instance().post(req, bytes(json.dumps(params), "utf-8"))
-        return True
+        reply = QgsNetworkAccessManager.instance().blockingPost(req, bytes(json.dumps(params), "utf-8"))
+        if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 200:
+            return True
+        else:
+            return False
 
     def installFromZipFile(self, filePath):
         if not os.path.isfile(filePath):
