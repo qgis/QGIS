@@ -111,9 +111,6 @@ qgis:joinbylocationsummary: >
 
   The algorithm calculates a statistical summary for the values from matching features in the second layer (e.g. maximum value, mean value, etc).
 
-qgis:keepnbiggestparts: >
-  This algorithm takes a polygon layer and creates a new polygon layer in which multipart geometries have been removed, leaving only the n largest (in terms of area) parts.
-
 qgis:knearestconcavehull: >
   This algorithm generates a concave hull polygon from a set of points. If the input layer is a line or polygon layer, it will use the nodes.
 
@@ -170,7 +167,7 @@ qgis:randompointsinlayerbounds: >
 
 qgis:randompointsinsidepolygons: >
   This algorithm creates a new point layer with random points inside the polygons of a given layer.
-  
+
   The number of points in each polygon can be defined as a fixed count or as a density value. The count/density value could also be taken from an attribute or an expression specified using the "Data defined override" functionality, so it can be different for each polygon in the input layer.
 
   A minimum distance can be specified, to avoid points being too close to each other.
