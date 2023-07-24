@@ -2344,7 +2344,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   //data defined position / alignment / rotation?
   bool layerDefinedRotation = false;
   bool dataDefinedRotation = false;
-  double xPos = 0.0, yPos = 0.0, angle = 0.0;
+  double xPos = 0.0, yPos = 0.0;
+  double angleInRadians = 0.0;
   double quadOffsetX = 0.0, quadOffsetY = 0.0;
   double offsetX = 0.0, offsetY = 0.0;
   QgsPointXY anchorPosition;
@@ -2461,7 +2462,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   if ( !qgsDoubleNear( angleOffset, 0.0 ) )
   {
     layerDefinedRotation = true;
-    angle = ( 360 - angleOffset ) * M_PI / 180; // convert to radians counterclockwise
+    angleInRadians = ( 360 - angleOffset ) * M_PI / 180; // convert to radians counterclockwise
   }
 
   const QgsMapToPixel &m2p = context.mapToPixel();
@@ -2484,7 +2485,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         // TODO: add setting to disable having data defined rotation follow
         //       map rotation ?
         rotationDegrees += m2p.mapRotation();
-        angle = ( 360 - rotationDegrees ) * M_PI / 180.0;
+        angleInRadians = ( 360 - rotationDegrees ) * M_PI / 180.0;
       }
     }
   }
@@ -2550,7 +2551,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         // layer rotation set, but don't rotate pinned labels unless data defined
         if ( layerDefinedRotation && !dataDefinedRotation )
         {
-          angle = 0.0;
+          angleInRadians = 0.0;
         }
 
         //horizontal alignment
@@ -2608,8 +2609,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         if ( dataDefinedRotation )
         {
           //adjust xdiff and ydiff because the hali/vali point needs to be the rotation center
-          double xd = xdiff * std::cos( angle ) - ydiff * std::sin( angle );
-          double yd = xdiff * std::sin( angle ) + ydiff * std::cos( angle );
+          double xd = xdiff * std::cos( angleInRadians ) - ydiff * std::sin( angleInRadians );
+          double yd = xdiff * std::sin( angleInRadians ) + ydiff * std::cos( angleInRadians );
           xdiff = xd;
           ydiff = yd;
         }
@@ -2725,8 +2726,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   labelFeature->setHasFixedPosition( hasDataDefinedPosition );
   labelFeature->setFixedPosition( QgsPointXY( xPos, yPos ) );
   // use layer-level defined rotation, but not if position fixed
-  labelFeature->setHasFixedAngle( dataDefinedRotation || ( !hasDataDefinedPosition && !qgsDoubleNear( angle, 0.0 ) ) );
-  labelFeature->setFixedAngle( angle );
+  labelFeature->setHasFixedAngle( dataDefinedRotation || ( !hasDataDefinedPosition && !qgsDoubleNear( angleInRadians, 0.0 ) ) );
+  labelFeature->setFixedAngle( angleInRadians );
   labelFeature->setQuadOffset( QPointF( quadOffsetX, quadOffsetY ) );
   labelFeature->setPositionOffset( QgsPointXY( offsetX, offsetY ) );
   labelFeature->setOffsetType( offsetType );
