@@ -39,12 +39,16 @@ QgsDecorationOverlay::QgsDecorationOverlay( QWidget *parent )
 
 void QgsDecorationOverlay::paintEvent( QPaintEvent * )
 {
+  const QList< QgsMapDecoration * > decorations = QgisApp::instance()->activeDecorations();
+  if ( decorations.empty() )
+    return;
+
   QPainter p( this );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
   context.setPainter( &p );
 
-  for ( QgsMapDecoration *item : QgisApp::instance()->activeDecorations() )
+  for ( QgsMapDecoration *item : decorations )
   {
     // Do not render decorations with fixed map positionn they are rendered directly on the map canvas
     if ( item->hasFixedMapPosition() )
