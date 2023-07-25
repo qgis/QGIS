@@ -261,6 +261,13 @@ class CORE_EXPORT QgsBox3D
     double depth() const SIP_HOLDGIL { return mZmax - mZmin; }
 
     /**
+     * Returns the center of the box as a vector.
+     *
+     * \since QGIS 3.34
+     */
+    QgsVector3D center() const SIP_HOLDGIL;
+
+    /**
      * Returns the volume of the box.
      */
     double volume() const SIP_HOLDGIL { return mBounds2d.area() * ( mZmax - mZmin ); }
