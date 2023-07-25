@@ -19,7 +19,8 @@ from qgis.core import (
     QgsCoordinateTransformContext,
     QgsMatrix4x4,
     QgsOrientedBox3D,
-    QgsVector3D
+    QgsVector3D,
+    QgsBox3D
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -120,6 +121,14 @@ class TestQgsOrientedBox3D(QgisTestCase):
             QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 310]),
             QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
         )
+
+    def test_from_box3d(self):
+        box = QgsOrientedBox3D.fromBox3D(
+            QgsBox3D(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        )
+        self.assertEqual(box,
+                         QgsOrientedBox3D([8, 9.5, 11],
+                                          [3, 0, 0, 0, 3.5, 0, 0, 0, 4]))
 
     def test_box_extent(self):
         box = QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])

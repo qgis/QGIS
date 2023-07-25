@@ -261,6 +261,13 @@ Returns the depth of the box.
 .. seealso:: :py:func:`height`
 %End
 
+    QgsVector3D center() const /HoldGIL/;
+%Docstring
+Returns the center of the box as a vector.
+
+.. versionadded:: 3.34
+%End
+
     double volume() const /HoldGIL/;
 %Docstring
 Returns the volume of the box.

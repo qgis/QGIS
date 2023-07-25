@@ -102,6 +102,13 @@ void QgsBox3D::normalize()
   mZmin = minTmp;
 }
 
+QgsVector3D QgsBox3D::center() const
+{
+  return QgsVector3D( 0.5 * ( mBounds2d.xMinimum() + mBounds2d.xMaximum() ),
+                      0.5 * ( mBounds2d.yMinimum() + mBounds2d.yMaximum() ),
+                      0.5 * ( mZmin + mZmax ) );
+}
+
 QgsBox3D QgsBox3D::intersect( const QgsBox3D &other ) const
 {
   const QgsRectangle intersect2d = mBounds2d.intersect( other.mBounds2d );

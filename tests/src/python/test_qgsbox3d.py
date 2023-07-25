@@ -200,6 +200,10 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertFalse(box.contains(QgsPoint(16, 7)))
         self.assertFalse(box.contains(QgsPoint(6, 17)))
 
+    def testCenter(self):
+        box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        self.assertEqual(box.center(), QgsVector3D(8, 9.5, 11))
+
     def testCombineWith(self):
         # box2 contains box1
         box1 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)

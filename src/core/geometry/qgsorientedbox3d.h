@@ -59,6 +59,11 @@ class CORE_EXPORT QgsOrientedBox3D
      */
     QgsOrientedBox3D( const QgsVector3D &center, const QList< QgsVector3D > &halfAxes );
 
+    /**
+     * Constructs an oriented box from an axis-aligned bounding box.
+     */
+    static QgsOrientedBox3D fromBox3D( const QgsBox3D &box );
+
     bool operator==( const QgsOrientedBox3D &other ) const
     {
       return qgsDoubleNear( mCenter[0], other.mCenter[0] )
