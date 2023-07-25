@@ -50,9 +50,9 @@ QgsOrientedBox3D::QgsOrientedBox3D( const QgsVector3D &center, const QList<QgsVe
   {
     for ( int i = 0; i < 3; ++i )
     {
-      mHalfAxes[i * 3] = halfAxes.at( i ).x();
-      mHalfAxes[i * 3 + 1] = halfAxes.at( i ).y();
-      mHalfAxes[i * 3 + 2] = halfAxes.at( i ).z();
+      mHalfAxes[static_cast< int >( i * 3 )] = halfAxes.at( i ).x();
+      mHalfAxes[static_cast< int >( i * 3 + 1 )] = halfAxes.at( i ).y();
+      mHalfAxes[static_cast< int >( i * 3 + 2 )] = halfAxes.at( i ).z();
     }
   }
 }
@@ -134,7 +134,7 @@ QgsBox3D QgsOrientedBox3D::reprojectedExtent( const QgsCoordinateTransform &ct )
 
   // find AABB for the 8 transformed points
   QgsVector3D v0 = c[0], v1 = c[0];
-  for ( const QgsVector3D &v : c )
+  for ( const QgsVector3D &v : std::as_const( c ) )
   {
     if ( v.x() < v0.x() ) v0.setX( v.x() );
     if ( v.y() < v0.y() ) v0.setY( v.y() );
