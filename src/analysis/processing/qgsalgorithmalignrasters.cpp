@@ -95,22 +95,11 @@ QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &param
 
   const QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "LAYERS" ) )->name() );
   const QList<QgsAlignRasterData::RasterItem> items = QgsProcessingParameterAlignRasterLayers::parameterAsItems( layersVariant, context );
-  bool hasReference = false;
   QStringList outputLayers;
   outputLayers.reserve( items.size() );
   for ( const QgsAlignRasterData::RasterItem &item : items )
   {
-    if ( !hasReference && item.inputFilename == rasterLayer->source() )
-    {
-      hasReference = true;
-    }
-
     outputLayers << item.outputFilename;
-  }
-
-  if ( !hasReference )
-  {
-    throw QgsProcessingException( QObject::tr( "Reference layer should be included in the input layers list." ) );
   }
 
   QgsAlignRaster rasterAlign;
@@ -152,7 +141,6 @@ QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &param
     customGridOffset = QPointF( xSize, ySize );
   }
 
-  // clipping extent
   if ( parameters.value( QStringLiteral( "EXTENT" ) ).isValid() )
   {
     QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
@@ -161,7 +149,6 @@ QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &param
 
   rasterAlign.setProgressHandler( new QgsAlignRasterProgress( feedback ) );
 
-  // set reference
   bool result = rasterAlign.setParametersFromRaster( rasterLayer->source(), customCRSWkt, customCellSize, customGridOffset );
   if ( !result )
   {
