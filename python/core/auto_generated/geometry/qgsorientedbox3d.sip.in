@@ -43,6 +43,11 @@ Constructor for a oriented box, with a specified center and half axes matrix.
 Constructor for a oriented box, with a specified center and half axes matrix.
 %End
 
+    static QgsOrientedBox3D fromBox3D( const QgsBox3D &box );
+%Docstring
+Constructs an oriented box from an axis-aligned bounding box.
+%End
+
     bool operator==( const QgsOrientedBox3D &other ) const;
 
     bool operator!=( const QgsOrientedBox3D &other ) const;
