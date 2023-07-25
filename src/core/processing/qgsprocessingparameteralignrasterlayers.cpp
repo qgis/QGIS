@@ -231,7 +231,8 @@ QgsAlignRasterData::RasterItem QgsProcessingParameterAlignRasterLayers::variantM
   }
   else
   {
-    // bad
+    QgsAlignRasterData::RasterItem item( "", "" );
+    return item;
   }
 
   QgsAlignRasterData::RasterItem item( inputLayer->source(), layerVariantMap[ QStringLiteral( "outputFile" ) ].toString() );
