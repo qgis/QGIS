@@ -27,6 +27,7 @@
 #include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameteralignrasterlayers.h"
 #include "qgsrasterfilewriter.h"
+#include "qgis.h"
 
 /// @cond private
 
@@ -49,25 +50,25 @@ QgsProcessingAlignRasterLayerDetailsWidget::QgsProcessingAlignRasterLayerDetails
   }
   mOutputFileWidget->setFilter( filters.join( QLatin1String( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" ) );
 
-  cmbResamplingMethod->addItem( tr( "Nearest Neighbour" ), QgsAlignRasterData::GdalResampleAlg::RA_NearestNeighbour );
-  cmbResamplingMethod->addItem( tr( "Bilinear (2x2 Kernel)" ), QgsAlignRasterData::GdalResampleAlg::RA_Bilinear );
-  cmbResamplingMethod->addItem( tr( "Cubic (4x4 Kernel)" ), QgsAlignRasterData::GdalResampleAlg::RA_Cubic );
-  cmbResamplingMethod->addItem( tr( "Cubic B-Spline (4x4 Kernel)" ), QgsAlignRasterData::GdalResampleAlg::RA_CubicSpline );
-  cmbResamplingMethod->addItem( tr( "Lanczos (6x6 Kernel)" ), QgsAlignRasterData::GdalResampleAlg::RA_Lanczos );
-  cmbResamplingMethod->addItem( tr( "Average" ), QgsAlignRasterData::GdalResampleAlg::RA_Average );
-  cmbResamplingMethod->addItem( tr( "Mode" ), QgsAlignRasterData::GdalResampleAlg::RA_Mode );
-  cmbResamplingMethod->addItem( tr( "Maximum" ), QgsAlignRasterData::GdalResampleAlg::RA_Max );
-  cmbResamplingMethod->addItem( tr( "Minimum" ), QgsAlignRasterData::GdalResampleAlg::RA_Min );
-  cmbResamplingMethod->addItem( tr( "Median" ), QgsAlignRasterData::GdalResampleAlg::RA_Median );
-  cmbResamplingMethod->addItem( tr( "First Quartile (Q1)" ), QgsAlignRasterData::GdalResampleAlg::RA_Q1 );
-  cmbResamplingMethod->addItem( tr( "Third Quartile (Q3)" ), QgsAlignRasterData::GdalResampleAlg::RA_Q3 );
+  cmbResamplingMethod->addItem( tr( "Nearest Neighbour" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_NearestNeighbour ) );
+  cmbResamplingMethod->addItem( tr( "Bilinear (2x2 Kernel)" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Bilinear ) );
+  cmbResamplingMethod->addItem( tr( "Cubic (4x4 Kernel)" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Cubic ) );
+  cmbResamplingMethod->addItem( tr( "Cubic B-Spline (4x4 Kernel)" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_CubicSpline ) );
+  cmbResamplingMethod->addItem( tr( "Lanczos (6x6 Kernel)" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Lanczos ) );
+  cmbResamplingMethod->addItem( tr( "Average" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Average ) );
+  cmbResamplingMethod->addItem( tr( "Mode" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Mode ) );
+  cmbResamplingMethod->addItem( tr( "Maximum" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Max ) );
+  cmbResamplingMethod->addItem( tr( "Minimum" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Min ) );
+  cmbResamplingMethod->addItem( tr( "Median" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Median ) );
+  cmbResamplingMethod->addItem( tr( "First Quartile (Q1)" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Q1 ) );
+  cmbResamplingMethod->addItem( tr( "Third Quartile (Q3)" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Q3 ) );
 
   mContext.setProject( project );
 
   const QgsAlignRasterData::RasterItem item = QgsProcessingParameterAlignRasterLayers::variantMapAsItem( value.toMap(), mContext );
   mInputPath = item.inputFilename;
   mOutputFileWidget->setFilePath( item.outputFilename );
-  cmbResamplingMethod->setCurrentIndex( cmbResamplingMethod->findData( item.resampleMethod ) );
+  cmbResamplingMethod->setCurrentIndex( cmbResamplingMethod->findData( static_cast<int>( item.resampleMethod ) ) );
   chkRescaleValues->setChecked( item.rescaleValues );
 
   connect( mOutputFileWidget, &QgsFileWidget::fileChanged, this, &QgsPanelWidget::widgetChanged );
@@ -78,7 +79,7 @@ QgsProcessingAlignRasterLayerDetailsWidget::QgsProcessingAlignRasterLayerDetails
 QVariant QgsProcessingAlignRasterLayerDetailsWidget::value() const
 {
   QgsAlignRasterData::RasterItem item( mInputPath, mOutputFileWidget->filePath() );
-  item.resampleMethod = static_cast<QgsAlignRasterData::GdalResampleAlg>( cmbResamplingMethod->currentData().toInt() );
+  item.resampleMethod = static_cast<Qgis::GdalResampleAlgorithm>( cmbResamplingMethod->currentData().toInt() );
   item.rescaleValues = chkRescaleValues->isChecked();
   return QgsProcessingParameterAlignRasterLayers::itemAsVariantMap( item );
 }
@@ -122,7 +123,7 @@ QgsProcessingAlignRasterLayersPanelWidget::QgsProcessingAlignRasterLayersPanelWi
     QVariantMap vm;
     vm["inputFile"] = layer->source();
     vm["outputFile"] = QString();
-    vm["resampleMethod"] = QgsAlignRasterData::GdalResampleAlg::RA_NearestNeighbour;
+    vm["resampleMethod"] = static_cast<int>( Qgis::GdalResampleAlgorithm::RA_NearestNeighbour );
     vm["v"] = false;
 
     const QString title = layer->source();

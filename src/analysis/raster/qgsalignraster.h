@@ -107,7 +107,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
         friend class QgsAlignRaster;
     };
 
-    typedef QgsAlignRasterData::GdalResampleAlg ResampleAlg;
+    typedef Qgis::GdalResampleAlgorithm ResampleAlg;
     typedef QgsAlignRasterData::RasterItem Item;
     typedef QList<QgsAlignRasterData::RasterItem> List;
 

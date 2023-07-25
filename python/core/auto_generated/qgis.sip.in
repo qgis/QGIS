@@ -2214,6 +2214,21 @@ The development version
     typedef QFlags<Qgis::TiledSceneRendererFlag> TiledSceneRendererFlags;
 
 
+    enum class GdalResampleAlgorithm
+    {
+      RA_NearestNeighbour,
+      RA_Bilinear,
+      RA_Cubic,
+      RA_CubicSpline,
+      RA_Lanczos,
+      RA_Average,
+      RA_Mode,
+      RA_Max,
+      RA_Min,
+      RA_Median,
+      RA_Q1,
+      RA_Q3,
+    };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
 

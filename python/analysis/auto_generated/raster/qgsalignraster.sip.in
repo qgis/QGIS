@@ -90,7 +90,7 @@ Gets raster value at the given coordinates (from the first band)
         RasterInfo( const QgsAlignRaster::RasterInfo &rh );
     };
 
-    typedef QgsAlignRasterData::GdalResampleAlg ResampleAlg;
+    typedef Qgis::GdalResampleAlgorithm ResampleAlg;
     typedef QgsAlignRasterData::RasterItem Item;
     typedef QList<QgsAlignRasterData::RasterItem> List;
 

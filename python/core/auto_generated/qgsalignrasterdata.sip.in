@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsAlignRasterData
 {
 %Docstring(signature="appended")
@@ -20,22 +21,6 @@ The :py:class:`QgsAlignRasterData` class provides data structures and enums for 
 %End
   public:
 
-    enum GdalResampleAlg
-    {
-      RA_NearestNeighbour,
-      RA_Bilinear,
-      RA_Cubic,
-      RA_CubicSpline,
-      RA_Lanczos,
-      RA_Average,
-      RA_Mode,
-      RA_Max,
-      RA_Min,
-      RA_Median,
-      RA_Q1,
-      RA_Q3,
-    };
-
     struct RasterItem
     {
       RasterItem( const QString &input, const QString &output );
@@ -44,7 +29,7 @@ The :py:class:`QgsAlignRasterData` class provides data structures and enums for 
 
       QString inputFilename;
       QString outputFilename;
-      GdalResampleAlg resampleMethod;
+      Qgis::GdalResampleAlgorithm resampleMethod;
       bool rescaleValues;
 
 

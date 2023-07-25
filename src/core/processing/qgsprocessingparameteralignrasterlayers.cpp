@@ -15,6 +15,7 @@
 
 #include "qgsprocessingparameteralignrasterlayers.h"
 #include "qgsrasterlayer.h"
+#include "qgis.h"
 
 
 QgsProcessingParameterAlignRasterLayers::QgsProcessingParameterAlignRasterLayers( const QString &name, const QString &description )
@@ -128,7 +129,7 @@ QString QgsProcessingParameterAlignRasterLayers::valueAsPythonString( const QVar
     QStringList layerDefParts;
     layerDefParts << QStringLiteral( "'inputFile': " ) + QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( item.inputFilename ) );
     layerDefParts << QStringLiteral( "'outputFile': " ) + QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( item.outputFilename ) );
-    layerDefParts << QStringLiteral( "'resampleMethod': " ) + QgsProcessingUtils::variantToPythonLiteral( item.resampleMethod );
+    layerDefParts << QStringLiteral( "'resampleMethod': " ) + QgsProcessingUtils::variantToPythonLiteral( static_cast<int>( item.resampleMethod ) );
     layerDefParts << QStringLiteral( "'rescale': " ) + QgsProcessingUtils::variantToPythonLiteral( item.rescaleValues );
 
     const QString layerDef = QStringLiteral( "{%1}" ).arg( layerDefParts.join( ',' ) );
@@ -234,7 +235,7 @@ QgsAlignRasterData::RasterItem QgsProcessingParameterAlignRasterLayers::variantM
   }
 
   QgsAlignRasterData::RasterItem item( inputLayer->source(), layerVariantMap[ QStringLiteral( "outputFile" ) ].toString() );
-  item.resampleMethod = static_cast<QgsAlignRasterData::GdalResampleAlg>( layerVariantMap.value( QStringLiteral( "resampleMethod" ), 0 ).toInt() );
+  item.resampleMethod = static_cast<Qgis::GdalResampleAlgorithm>( layerVariantMap.value( QStringLiteral( "resampleMethod" ), 0 ).toInt() );
   item.rescaleValues = layerVariantMap.value( QStringLiteral( "rescale" ), false ).toBool();
   return item;
 }
@@ -244,7 +245,7 @@ QVariantMap QgsProcessingParameterAlignRasterLayers::itemAsVariantMap( const Qgs
   QVariantMap vm;
   vm[ QStringLiteral( "inputFile" )] = item.inputFilename;
   vm[ QStringLiteral( "outputFile" ) ] = item.outputFilename;
-  vm[ QStringLiteral( "resampleMethod" ) ] = item.resampleMethod;
+  vm[ QStringLiteral( "resampleMethod" ) ] = static_cast<int>( item.resampleMethod );
   vm[ QStringLiteral( "rescale" ) ] = item.rescaleValues;
   return vm;
 }

@@ -19,6 +19,7 @@
 #include "qgsprocessingparameteralignrasterlayers.h"
 #include "qgsalignraster.h"
 #include "qgsalignrasterdata.h"
+#include "qgis.h"
 
 ///@cond PRIVATE
 
@@ -119,44 +120,44 @@ QVariantMap QgsAlignSingleRasterAlgorithm::processAlgorithm( const QVariantMap &
   const bool rescale = parameterAsBoolean( parameters, QStringLiteral( "RESCALE" ), context );
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
 
-  QgsAlignRasterData::GdalResampleAlg resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_NearestNeighbour;
+  Qgis::GdalResampleAlgorithm resampleAlg = Qgis::GdalResampleAlgorithm::RA_NearestNeighbour;
   switch ( method )
   {
     case 0:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_NearestNeighbour;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_NearestNeighbour;
       break;
     case 1:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Bilinear;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_Bilinear;
       break;
     case 2:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Cubic;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_Cubic;
       break;
     case 3:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_CubicSpline;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_CubicSpline;
       break;
     case 4:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Lanczos;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_Lanczos;
       break;
     case 5:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Average;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_Average;
       break;
     case 6:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Mode;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_Mode;
       break;
     case 7:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Max;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_Max;
       break;
     case 8:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Min;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_Min;
       break;
     case 9:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Median;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_Median;
       break;
     case 10:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Q1;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_Q1;
       break;
     case 11:
-      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Q3;
+      resampleAlg = Qgis::GdalResampleAlgorithm::RA_Q3;
       break;
     default:
       break;
