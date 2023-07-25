@@ -61,7 +61,7 @@ QgsConcaveHullAlgorithm *QgsConcaveHullAlgorithm::createInstance() const
 void QgsConcaveHullAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPoint ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ALPHA" ), QObject::tr( "Threshold" ), QgsProcessingParameterNumber::Double, 0.3, false, 0, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ALPHA" ), QObject::tr( "Threshold (0-1, where 1 is equivalent with Convex Hull)" ), QgsProcessingParameterNumber::Double, 0.3, false, 0, 1 ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "HOLES" ), QObject::tr( "Allow holes" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NO_MULTIGEOMETRY" ), QObject::tr( "Split multipart geometry into singleparts" ), false ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Concave hull" ), QgsProcessing::TypeVectorPolygon ) );
