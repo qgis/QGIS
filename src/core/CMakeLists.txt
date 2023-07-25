@@ -345,6 +345,7 @@ set(QGIS_CORE_SRCS
   tiledmesh/qgstiledmeshlayer.cpp
   tiledmesh/qgstiledmeshlayerrenderer.cpp
   tiledmesh/qgstiledmeshprovidermetadata.cpp
+  tiledmesh/qgstiledmeshtile.cpp
 
   sensor/qgssensormodel.cpp
   sensor/qgssensormanager.cpp
@@ -1915,6 +1916,7 @@ set(QGIS_CORE_HDRS
   tiledmesh/qgstiledmeshlayer.h
   tiledmesh/qgstiledmeshlayerrenderer.h
   tiledmesh/qgstiledmeshprovidermetadata.h
+  tiledmesh/qgstiledmeshtile.h
 
   sensor/qgssensormodel.h
   sensor/qgssensormanager.h
