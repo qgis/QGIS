@@ -23,9 +23,12 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsbox3d.h"
+#include "qgsmatrix4x4.h"
 #include "qgssphere.h"
 #include "qgsorientedbox3d.h"
 #include "qgscoordinatetransform.h"
+
+class QgsMatrix4x4;
 
 /**
  * \ingroup core
@@ -86,6 +89,27 @@ class CORE_EXPORT QgsAbstractTiledMeshNodeBoundingVolume
      * to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
      */
     virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const = 0 SIP_FACTORY;
+
+    /**
+     * Sets the bounding volume's \a transform.
+     *
+     * \see transform()
+     */
+    void setTransform( const QgsMatrix4x4 &transform ) { mTransform = transform; }
+
+    /**
+     * Returns the bounding volume's transform.
+     *
+     * This represents the transformation which must be applied to all geometries from the tile
+     * in order to transform them to the dataset's coordinate reference system.
+     *
+     * \see transform()
+     */
+    const QgsMatrix4x4 &transform() const { return mTransform; }
+
+  protected:
+
+    QgsMatrix4x4 mTransform;
 
 };
 

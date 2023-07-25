@@ -9,6 +9,7 @@
 
 
 
+
 class QgsAbstractTiledMeshNodeBoundingVolume
 {
 %Docstring(signature="appended")
@@ -69,6 +70,26 @@ Caller takes ownership of the returned geometry.
 The optional ``transform`` and ``direction`` arguments should be used whenever the volume needs
 to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
 %End
+
+    void setTransform( const QgsMatrix4x4 &transform );
+%Docstring
+Sets the bounding volume's ``transform``.
+
+.. seealso:: :py:func:`transform`
+%End
+
+    const QgsMatrix4x4 &transform() const;
+%Docstring
+Returns the bounding volume's transform.
+
+This represents the transformation which must be applied to all geometries from the tile
+in order to transform them to the dataset's coordinate reference system.
+
+.. seealso:: :py:func:`transform`
+%End
+
+  protected:
+
 
 };
 

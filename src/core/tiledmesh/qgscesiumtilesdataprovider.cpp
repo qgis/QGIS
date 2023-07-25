@@ -60,13 +60,27 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
     // the EPSG:4979 requirement from a region bounding volume??
 
     {
+      // TODO -- on some datasets there is a "boundingVolume" present on the tileset itself, i.e. not the root node.
+      // what does this mean? Should we use it instead of the root node bounding volume if it's present?
+
       const auto &rootBoundingVolume = root[ "boundingVolume" ];
+
+      QgsMatrix4x4 rootTransform;
+      if ( root.contains( "transform" ) && !root["transform"].is_null() )
+      {
+        const auto &transformJson = root["transform"];
+        double *ptr = rootTransform.data();
+        for ( int i = 0; i < 16; ++i )
+          ptr[i] = transformJson[i].get<double>();
+      }
+
       if ( rootBoundingVolume.contains( "region" ) )
       {
         const QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( rootBoundingVolume[ "region" ] );
         if ( !rootRegion.isNull() )
         {
           mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeRegion >( rootRegion );
+          mBoundingVolume->setTransform( rootTransform );
           mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
           mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
           mMeshCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
@@ -88,6 +102,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
           const QgsCoordinateTransform transform( mMeshCrs, mLayerCrs, transformContext );
 
           mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeBox >( bbox );
+          mBoundingVolume->setTransform( rootTransform );
           try
           {
             const QgsBox3D rootRegion = mBoundingVolume->bounds( transform );
@@ -117,6 +132,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
           const QgsCoordinateTransform transform( mMeshCrs, mLayerCrs, transformContext );
 
           mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeSphere >( sphere );
+          mBoundingVolume->setTransform( rootTransform );
           try
           {
             const QgsBox3D rootRegion = mBoundingVolume->bounds( transform );

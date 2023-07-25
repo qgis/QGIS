@@ -15,7 +15,8 @@ import tempfile
 import qgis  # NOQA
 from qgis.core import (
     QgsTiledMeshLayer,
-    QgsCoordinateReferenceSystem
+    QgsCoordinateReferenceSystem,
+    QgsMatrix4x4
 )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -95,6 +96,43 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
             self.assertIn('1.1', layer.dataProvider().htmlMetadata())
             self.assertIn('e575c6f1', layer.dataProvider().htmlMetadata())
             self.assertIn('1.2 - 67.01', layer.dataProvider().htmlMetadata())
+
+    def test_source_bounding_volume_region_with_transform(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmp_file = os.path.join(temp_dir, 'tileset.json')
+            with open(tmp_file, 'wt', encoding='utf-8') as f:
+                f.write("""
+{
+  "asset": {
+    "version": "1.1",
+    "tilesetVersion": "e575c6f1"
+  },
+  "geometricError": 100,
+  "root": {
+    "boundingVolume": {
+      "region": [
+        -1.3197209591796106,
+        0.6988424218,
+        -1.3196390408203893,
+        0.6989055782,
+        1.2,
+        67.00999999999999
+      ]
+    },
+    "geometricError": 100,
+    "refine": "ADD",
+    "children": [],
+    "transform":[1, 0, 0, 200, 0, 1, 0, 500, 0, 0, 1, 1000, 0, 0, 0, 1]
+  }
+}""")
+
+            layer = QgsTiledMeshLayer(tmp_file, 'my layer',
+                                      'cesiumtiles')
+            self.assertTrue(layer.dataProvider().isValid())
+
+            self.assertEqual(
+                layer.dataProvider().boundingVolume().transform(),
+                QgsMatrix4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 200, 500, 1000, 1))
 
     def test_source_bounding_volume_box(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -201,7 +239,7 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
             # check that version, tileset version, and z range are in html metadata
             self.assertIn('1.1', layer.dataProvider().htmlMetadata())
             self.assertIn('e575c6f1', layer.dataProvider().htmlMetadata())
-            self.assertIn('-393.164 - 1,791.2', layer.dataProvider().htmlMetadata())
+            self.assertIn('-2,658.68 - 4,056.37', layer.dataProvider().htmlMetadata())
 
 
 if __name__ == '__main__':
