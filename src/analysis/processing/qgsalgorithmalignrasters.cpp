@@ -62,11 +62,11 @@ void QgsAlignRastersAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterAlignRasterLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REFERENCE_LAYER" ), QStringLiteral( "Reference layer" ) ) );
 
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "CRS" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE_X" ), QObject::tr( "Cell size X" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE_Y" ), QObject::tr( "Cell size Y" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRID_OFFSET_X" ), QObject::tr( "Grid offset X" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRID_OFFSET_Y" ), QObject::tr( "Grid offset Y" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Override reference CRS" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE_X" ), QObject::tr( "Override reference cell size X" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE_Y" ), QObject::tr( "Override reference cell size Y" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRID_OFFSET_X" ), QObject::tr( "Override reference grid offset X" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRID_OFFSET_Y" ), QObject::tr( "Override reference grid offset Y" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Clip to extent" ), QVariant(), true ) );
 
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Aligned rasters" ) ) );
