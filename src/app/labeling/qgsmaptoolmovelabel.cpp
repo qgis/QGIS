@@ -264,6 +264,8 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       const bool isMovableUsingLineAnchor = labelAnchorPercentMovable( vlayer, mCurrentLabel.settings, lineAnchorPercentCol, lineAnchorClippingCol, lineAnchorTypeCol, lineAnchorTextPointCol );
 
       bool useLineAnchor = false;
+      // cloned branches are intentional here for improved readability
+      // NOLINTBEGIN(bugprone-branch-clone)
       if ( isCurvedOrLine )
       {
         if ( isMovableUsingLineAnchor )
@@ -273,6 +275,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         else
           useLineAnchor = true;
       }
+      // NOLINTEND(bugprone-branch-clone)
 
       if ( useLineAnchor && !mCurrentLabel.pos.isDiagram && !isMovableUsingLineAnchor )
       {
