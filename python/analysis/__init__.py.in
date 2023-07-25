@@ -27,3 +27,6 @@ from qgis._analysis import *
 
 # preserve API compatibility following QgsExifTools moved to core
 from qgis.core import QgsExifTools
+
+from qgis.core import Qgis
+QgsAlignRaster.ResampleAlg = Qgis.GdalResampleAlgorithm
