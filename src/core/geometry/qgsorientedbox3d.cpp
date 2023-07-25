@@ -50,9 +50,9 @@ QgsOrientedBox3D::QgsOrientedBox3D( const QgsVector3D &center, const QList<QgsVe
   {
     for ( int i = 0; i < 3; ++i )
     {
-      mHalfAxes[i * 3] = halfAxes.at( i ).x();
-      mHalfAxes[i * 3 + 1] = halfAxes.at( i ).y();
-      mHalfAxes[i * 3 + 2] = halfAxes.at( i ).z();
+      mHalfAxes[static_cast< int >( i * 3 )] = halfAxes.at( i ).x();
+      mHalfAxes[static_cast< int >( i * 3 + 1 )] = halfAxes.at( i ).y();
+      mHalfAxes[static_cast< int >( i * 3 + 2 )] = halfAxes.at( i ).z();
     }
   }
 }
@@ -126,7 +126,7 @@ QgsVector3D QgsOrientedBox3D::projectOnto( const QgsVector3D &vector ) const
   QgsVector3D projection( 0.0, 0.0, 0.0 );
   for ( int i = 0; i < 3; ++i )
   {
-    const QgsVector3D projectedAxis = QgsVector3D( mHalfAxes[i * 3], mHalfAxes[i * 3 + 1], mHalfAxes[i * 3 + 2] ).projectOnto( vector );
+    const QgsVector3D projectedAxis = QgsVector3D( mHalfAxes[static_cast< int >( i * 3 )], mHalfAxes[static_cast< int>( i * 3 + 1 )], mHalfAxes[static_cast<int>( i * 3 + 2 )] ).projectOnto( vector );
     if ( projectedAxis.length() > projection.length() )
     {
       projection = projectedAxis;
