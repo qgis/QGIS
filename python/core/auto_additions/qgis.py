@@ -3762,3 +3762,9 @@ Qgis.TiledMeshBoundingVolumeType.Sphere.__doc__ = "Sphere"
 Qgis.TiledMeshBoundingVolumeType.__doc__ = "Tiled mesh bounding volume types.\n\n.. versionadded:: 3.34\n\n" + '* ``Region``: ' + Qgis.TiledMeshBoundingVolumeType.Region.__doc__ + '\n' + '* ``OrientedBox``: ' + Qgis.TiledMeshBoundingVolumeType.OrientedBox.__doc__ + '\n' + '* ``Sphere``: ' + Qgis.TiledMeshBoundingVolumeType.Sphere.__doc__
 # --
 Qgis.TiledMeshBoundingVolumeType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.TileRefinementProcess.Replacement.__doc__ = "When tile is refined then its children should be used in place of itself."
+Qgis.TileRefinementProcess.Additive.__doc__ = "When tile is refined its content should be used alongside its children simultaneously."
+Qgis.TileRefinementProcess.__doc__ = "Tiled mesh tile refinement processes.\n\nRefinement determines the process by which a lower resolution parent tile\nrenders when its higher resolution children are selected to be rendered.\n\n.. versionadded:: 3.34\n\n" + '* ``Replacement``: ' + Qgis.TileRefinementProcess.Replacement.__doc__ + '\n' + '* ``Additive``: ' + Qgis.TileRefinementProcess.Additive.__doc__
+# --
+Qgis.TileRefinementProcess.baseClass = Qgis

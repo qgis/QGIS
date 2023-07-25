@@ -715,6 +715,7 @@
 %Include auto_generated/tiledmesh/qgstiledmeshboundingvolume.sip
 %Include auto_generated/tiledmesh/qgstiledmeshdataprovider.sip
 %Include auto_generated/tiledmesh/qgstiledmeshlayer.sip
+%Include auto_generated/tiledmesh/qgstiledmeshnode.sip
 %Include auto_generated/sensor/qgssensormodel.sip
 %Include auto_generated/sensor/qgssensormanager.sip
 %Include auto_generated/sensor/qgssensorregistry.sip

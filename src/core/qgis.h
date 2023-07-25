@@ -3763,6 +3763,21 @@ class CORE_EXPORT Qgis
     Q_ENUM( TiledMeshBoundingVolumeType )
 
     /**
+     * Tiled mesh tile refinement processes.
+     *
+     * Refinement determines the process by which a lower resolution parent tile
+     * renders when its higher resolution children are selected to be rendered.
+     *
+     * \since QGIS 3.34
+     */
+    enum class TileRefinementProcess
+    {
+      Replacement, //!< When tile is refined then its children should be used in place of itself.
+      Additive, //!< When tile is refined its content should be used alongside its children simultaneously.
+    };
+    Q_ENUM( TileRefinementProcess )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

@@ -1,0 +1,159 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshnode.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTiledMeshNode
+{
+%Docstring(signature="appended")
+Represents an individual tile node from a tiled mesh data source.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledmeshnode.h"
+%End
+  public:
+
+    QgsTiledMeshNode();
+%Docstring
+Constructor for an invalid node.
+
+.. seealso:: :py:func:`isValid`
+%End
+
+    ~QgsTiledMeshNode();
+
+    QgsTiledMeshNode( const QgsTiledMeshNode &other );
+%Docstring
+Copy constructor. Does not copy children or parent!
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the node is a valid node (i.e. not default constructed).
+%End
+
+    void addChild( QgsTiledMeshNode *child /Transfer/ );
+%Docstring
+Adds a ``child`` to this node.
+
+Ownership of ``child`` is transferred to this node, and the parent for ``child`` will
+automatically be set to this node.
+%End
+
+    QgsTiledMeshNode *parentNode() const;
+%Docstring
+Returns the parent of the node.
+%End
+
+    QList< QgsTiledMeshNode * > children() const;
+%Docstring
+Returns the child nodes.
+%End
+
+    Qgis::TileRefinementProcess refinementProcess() const;
+%Docstring
+Returns the node's refinement process.
+
+Refinement determines the process by which a lower resolution parent tile's
+content is handled when its higher resolution children are also included.
+
+.. seealso:: :py:func:`setRefinementProcess`
+%End
+
+    void setRefinementProcess( Qgis::TileRefinementProcess process );
+%Docstring
+Sets the node's refinement ``process``.
+
+Refinement determines the process by which a lower resolution parent tile's
+content is handled when its higher resolution children are also included.
+
+.. seealso:: :py:func:`refinementProcess`
+%End
+
+    void setBoundingVolume( QgsAbstractTiledMeshNodeBoundingVolume *volume /Transfer/ );
+%Docstring
+Sets the bounding ``volume`` for the node.
+
+Ownership of ``volume`` is transferred to the node.
+
+.. seealso:: :py:func:`boundingVolume`
+%End
+
+    const QgsAbstractTiledMeshNodeBoundingVolume *boundingVolume() const;
+%Docstring
+Returns the bounding volume for the node.
+
+.. seealso:: :py:func:`setBoundingVolume`
+%End
+
+    void setTransform( const QgsMatrix4x4 &transform );
+%Docstring
+Sets the node's ``transform``.
+
+.. note::
+
+   if the node has a :py:func:`~QgsTiledMeshNode.boundingVolume`, the bounding volume's transform will also
+   be set to ``transform``.
+
+.. seealso:: :py:func:`transform`
+%End
+
+    const QgsMatrix4x4 &transform() const;
+%Docstring
+Returns the node's transform.
+
+This represents the transformation which must be applied to all geometries from the tile
+in order to transform them to the dataset's coordinate reference system.
+
+.. seealso:: :py:func:`transform`
+%End
+
+    QString contentUri() const;
+%Docstring
+Returns the content URI for the node.
+
+.. seealso:: :py:func:`setContentUri`
+%End
+
+    void setContentUri( const QString &uri );
+%Docstring
+Sets the content ``uri`` for the node.
+
+.. seealso:: :py:func:`contentUri`
+%End
+
+    double geometricError() const;
+%Docstring
+Returns the node's geometric error, which is the error, in mesh CRS units, of the tile's
+simplified representation of its source geometry.
+
+.. seealso:: :py:func:`setGeometricError`
+%End
+
+    void setGeometricError( double error );
+%Docstring
+Sets the node's geometric ``error``, which is the error, in mesh CRS units, of the tile's
+simplified representation of its source geometry.
+
+.. seealso:: :py:func:`geometricError`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshnode.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
