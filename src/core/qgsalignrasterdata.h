@@ -1,9 +1,9 @@
 /***************************************************************************
   qgsalignrasterdata.h
   --------------------------------------
-  Date                 : June 2015
-  Copyright            : (C) 2015 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
+  Date                 : July 2023
+  Copyright            : (C) 2023 by Alexander Bruy
+  Email                : alexander dot bruy at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

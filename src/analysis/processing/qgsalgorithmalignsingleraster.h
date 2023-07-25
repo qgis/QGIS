@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmalignrasters.h
+                         qgsalgorithmalignsingleraster.h
                          ------------------------------
     begin                : July 2023
     copyright            : (C) 2023 by Alexander Bruy
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMALIGNRASTERS_H
-#define QGSALGORITHMALIGNRASTERS_H
+#ifndef QGSALGORITHMALIGNSINGLERASTER_H
+#define QGSALGORITHMALIGNSINGLERASTER_H
 
 #define SIP_NO_FILE
 
@@ -27,14 +27,14 @@
 ///@cond PRIVATE
 
 /**
- * Native align rasters algorithm.
+ * Native align single raster algorithm for use in the modeler.
  */
-class QgsAlignRastersAlgorithm : public QgsProcessingAlgorithm
+class QgsAlignSingleRasterAlgorithm : public QgsProcessingAlgorithm
 {
 
   public:
 
-    QgsAlignRastersAlgorithm() = default;
+    QgsAlignSingleRasterAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     Flags flags() const override;
     QString name() const override;
@@ -43,7 +43,7 @@ class QgsAlignRastersAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QgsAlignRastersAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsAlignSingleRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
@@ -53,4 +53,4 @@ class QgsAlignRastersAlgorithm : public QgsProcessingAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMALIGNRASTERS_H
+#endif // QGSALGORITHMALIGNSINGLERASTER_H

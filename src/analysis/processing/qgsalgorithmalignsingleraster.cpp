@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmalignrasters.cpp
+                         qgsalgorithmalignsingleraster.cpp
                          ---------------------
     begin                : July 2023
     copyright            : (C) 2023 by Alexander Bruy
@@ -15,66 +15,80 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmalignrasters.h"
+#include "qgsalgorithmalignsingleraster.h"
 #include "qgsprocessingparameteralignrasterlayers.h"
 #include "qgsalignraster.h"
 #include "qgsalignrasterdata.h"
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsAlignRastersAlgorithm::flags() const
+QgsProcessingAlgorithm::Flags QgsAlignSingleRasterAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagHideFromModeler;
+  return QgsProcessingAlgorithm::flags() | FlagHideFromToolbox;
 }
 
-QString QgsAlignRastersAlgorithm::name() const
+QString QgsAlignSingleRasterAlgorithm::name() const
 {
-  return QStringLiteral( "alignrasters" );
+  return QStringLiteral( "alignsingleraster" );
 }
 
-QString QgsAlignRastersAlgorithm::displayName() const
+QString QgsAlignSingleRasterAlgorithm::displayName() const
 {
-  return QObject::tr( "Align rasters" );
+  return QObject::tr( "Align raster" );
 }
 
-QStringList QgsAlignRastersAlgorithm::tags() const
+QStringList QgsAlignSingleRasterAlgorithm::tags() const
 {
   return QObject::tr( "raster,align,resample,rescale" ).split( ',' );
 }
 
-QString QgsAlignRastersAlgorithm::group() const
+QString QgsAlignSingleRasterAlgorithm::group() const
 {
   return QObject::tr( "Raster tools" );
 }
 
-QString QgsAlignRastersAlgorithm::groupId() const
+QString QgsAlignSingleRasterAlgorithm::groupId() const
 {
   return QStringLiteral( "rastertools" );
 }
 
-QString QgsAlignRastersAlgorithm::shortHelpString() const
+QString QgsAlignSingleRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Aligns rasters by resampling them to the same cell size and reprojecting to the same CRS." );
+  return QObject::tr( "Aligns raster by resampling it to the same cell size and reprojecting to the same CRS as a reference raster." );
 }
 
-QgsAlignRastersAlgorithm *QgsAlignRastersAlgorithm::createInstance() const
+QgsAlignSingleRasterAlgorithm *QgsAlignSingleRasterAlgorithm::createInstance() const
 {
-  return new QgsAlignRastersAlgorithm();
+  return new QgsAlignSingleRasterAlgorithm();
 }
 
-void QgsAlignRastersAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsAlignSingleRasterAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterAlignRasterLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+
+  QStringList resamplingMethods;
+  resamplingMethods << QObject::tr( "Nearest neighbour" )
+                    << QObject::tr( "Bilinear" )
+                    << QObject::tr( "Cubic" )
+                    << QObject::tr( "Cubic spline" )
+                    << QObject::tr( "Lanczos" )
+                    << QObject::tr( "Average" )
+                    << QObject::tr( "Mode" )
+                    << QObject::tr( "Maximum" )
+                    << QObject::tr( "Minimum" )
+                    << QObject::tr( "Median" )
+                    << QObject::tr( "First quartile" )
+                    << QObject::tr( "Third quartile" );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "RESAMPLING_METHOD" ), QObject::tr( "Resampling method" ), resamplingMethods, false, 0, false ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "RESCALE" ), QObject::tr( "Rescale values according to the cell size" ), false ) );
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) ) );
-
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Override reference CRS" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE_X" ), QObject::tr( "Override reference cell size X" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE_Y" ), QObject::tr( "Override reference cell size Y" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRID_OFFSET_X" ), QObject::tr( "Override reference grid offset X" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRID_OFFSET_Y" ), QObject::tr( "Override reference grid offset Y" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1e-9 ) );
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Clip to extent" ), QVariant(), true ) );
-
-  addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Aligned rasters" ) ) );
+  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Aligned raster" ) ) );
 }
 
 struct QgsAlignRasterProgress : public QgsAlignRaster::ProgressHandler
@@ -91,20 +105,69 @@ struct QgsAlignRasterProgress : public QgsAlignRaster::ProgressHandler
 };
 
 
-QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsAlignSingleRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QgsRasterLayer *inputLayer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
+  if ( !inputLayer )
+    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+
   QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, QStringLiteral( "REFERENCE_LAYER" ), context );
   if ( !referenceLayer )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "REFERENCE_LAYER" ) ) );
 
-  const QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "LAYERS" ) )->name() );
-  const QList<QgsAlignRasterData::RasterItem> items = QgsProcessingParameterAlignRasterLayers::parameterAsItems( layersVariant, context );
-  QStringList outputLayers;
-  outputLayers.reserve( items.size() );
-  for ( const QgsAlignRasterData::RasterItem &item : items )
+  const int method = parameterAsInt( parameters, QStringLiteral( "RESAMPLING_METHOD" ), context );
+  const bool rescale = parameterAsBoolean( parameters, QStringLiteral( "RESCALE" ), context );
+  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+
+  QgsAlignRasterData::GdalResampleAlg resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_NearestNeighbour;
+  switch ( method )
   {
-    outputLayers << item.outputFilename;
+    case 0:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_NearestNeighbour;
+      break;
+    case 1:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Bilinear;
+      break;
+    case 2:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Cubic;
+      break;
+    case 3:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_CubicSpline;
+      break;
+    case 4:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Lanczos;
+      break;
+    case 5:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Average;
+      break;
+    case 6:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Mode;
+      break;
+    case 7:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Max;
+      break;
+    case 8:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Min;
+      break;
+    case 9:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Median;
+      break;
+    case 10:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Q1;
+      break;
+    case 11:
+      resampleAlg = QgsAlignRasterData::GdalResampleAlg::RA_Q3;
+      break;
+    default:
+      break;
   }
+
+  QgsAlignRasterData::RasterItem item( inputLayer->source(), outputFile );
+  item.resampleMethod = resampleAlg;
+  item.rescaleValues = rescale;
+
+  QgsAlignRaster::List items;
+  items << item;
 
   QgsAlignRaster rasterAlign;
   rasterAlign.setRasters( items );
@@ -166,7 +229,7 @@ QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT_LAYERS" ), outputLayers );
+  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
   return outputs;
 }
 
