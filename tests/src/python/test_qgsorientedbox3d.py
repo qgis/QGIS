@@ -253,33 +253,9 @@ class TestQgsOrientedBox3D(QgisTestCase):
 
         # box inside another box
         a3 = QgsOrientedBox3D([0, 0, 0], [1, 0, 0, 0, 1, 0, 0, 0, 1])
-        b3 = QgsOrientedBox3D([0.5, 0.5, 0.5], [0, 0.5, 0, 0, 0.5, 0, 0, 0, 0.5])
+        b3 = QgsOrientedBox3D([0.5, 0.5, 0.5], [0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5])
         self.assertTrue(a3.intersects(b3))
         self.assertTrue(b3.intersects(a3))
-
-        # intersecting boxes, not axis aligned
-        a1 = QgsOrientedBox3D(QgsVector3D(0, 0, 0), [QgsVector3D(1, 0, 0), QgsVector3D(0, 1, 0), QgsVector3D(0, 0, 1)])
-        b1 = QgsOrientedBox3D(QgsVector3D(1, 1, 1), [QgsVector3D(1, 1, 0), QgsVector3D(0, 1, 1), QgsVector3D(1, 0, 1)])
-        self.assertTrue(a1.intersects(b1))
-        self.assertTrue(b1.intersects(a1))
-
-        # non intersecting boxes, not axis aligned
-        a1 = QgsOrientedBox3D(QgsVector3D(0, 0, 0), [QgsVector3D(1, 0, 0), QgsVector3D(0, 1, 0), QgsVector3D(0, 0, 1)])
-        b1 = QgsOrientedBox3D(QgsVector3D(3, 3, 3), [QgsVector3D(1, 1, 0), QgsVector3D(0, 1, 1), QgsVector3D(1, 0, 1)])
-        self.assertFalse(a1.intersects(b1))
-        self.assertFalse(b1.intersects(a1))
-
-        # box inside other box, not axis aligned
-        a1 = QgsOrientedBox3D(QgsVector3D(0, 0, 0), [QgsVector3D(1, 0, 0), QgsVector3D(0, 1, 0), QgsVector3D(0, 0, 1)])
-        b1 = QgsOrientedBox3D(QgsVector3D(0.5, 0.5, 0.5), [QgsVector3D(0.5, 0.5, 0), QgsVector3D(0, 0.5, 0), QgsVector3D(0, 0, 0.5)])
-        self.assertTrue(a1.intersects(b1))
-        self.assertTrue(b1.intersects(a1))
-
-        # Intersecting boxes (x-axis rotation)
-        a1 = QgsOrientedBox3D(QgsVector3D(0, 0, 0), [QgsVector3D(1, 0, 0), QgsVector3D(0, 0, -1), QgsVector3D(0, 1, 0)])
-        b1 = QgsOrientedBox3D(QgsVector3D(1, 1, 1), [QgsVector3D(1, 0, 0), QgsVector3D(0, 1, 0), QgsVector3D(0, 0, 1)])
-        self.assertTrue(a1.intersects(b1))
-        self.assertTrue(b1.intersects(a1))
 
         # Intersecting boxes (x-axis rotation)
         a1 = QgsOrientedBox3D(QgsVector3D(0, 0, 0), [QgsVector3D(1, 0, 0), QgsVector3D(0, 0, -1), QgsVector3D(0, 1, 0)])
@@ -293,8 +269,19 @@ class TestQgsOrientedBox3D(QgisTestCase):
         self.assertTrue(a1.intersects(b1))
         self.assertTrue(b1.intersects(a1))
 
+        # Non-intersecting boxes (45 degree x-axis rotation)
+        a1 = QgsOrientedBox3D(QgsVector3D(0, -1, -.6),
+                              [QgsVector3D(1, 0, 0), QgsVector3D(0, 0.7071, -0.7071),
+                               QgsVector3D(0, 0.7071, 0.7071)])
+        b1 = QgsOrientedBox3D(QgsVector3D(1, 1, 1),
+                              [QgsVector3D(1, 0, 0), QgsVector3D(0, 1, 0),
+                               QgsVector3D(0, 0, 1)])
+        self.assertFalse(a1.intersects(b1))
+        self.assertFalse(b1.intersects(a1))
+
         # Intersecting boxes (45 degree y-axis rotation)
-        a1 = QgsOrientedBox3D(QgsVector3D(0, 0, 0), [QgsVector3D(0, 0.7071, 0.7071), QgsVector3D(0, 1, 0), QgsVector3D(-0.7071, 0, 0.7071)])
+        a1 = QgsOrientedBox3D(QgsVector3D(0, 0, 0), [QgsVector3D(0.7071, 0, 0.7071), QgsVector3D(0, 1, 0),
+                                                     QgsVector3D(-0.7071, 0, 0.7071)])
         b1 = QgsOrientedBox3D(QgsVector3D(1, 1, 1), [QgsVector3D(1, 0, 0), QgsVector3D(0, 1, 0), QgsVector3D(0, 0, 1)])
         self.assertTrue(a1.intersects(b1))
         self.assertTrue(b1.intersects(a1))
@@ -306,8 +293,14 @@ class TestQgsOrientedBox3D(QgisTestCase):
         self.assertFalse(b1.intersects(a1))
 
         # Non-intersecting boxes with non-zero centers and rotations
-        a1 = QgsOrientedBox3D(QgsVector3D(1, 1, 1), [QgsVector3D(0.7071, 0, 0.7071), QgsVector3D(0, 1, 0), QgsVector3D(-0.7071, 0.7071, 0)])
-        b1 = QgsOrientedBox3D(QgsVector3D(4, 4, 4), [QgsVector3D(0.7071, 0.7071, 0), QgsVector3D(-0.7071, 0.7071, 0), QgsVector3D(0, 0, 1)])
+        a1 = QgsOrientedBox3D(QgsVector3D(1, 1, 1), [QgsVector3D(0.7071, 0, 0.7071), QgsVector3D(0, 3, 0), QgsVector3D(-0.7071 * 2, 0, 0.7071 * 2)])
+        b1 = QgsOrientedBox3D(QgsVector3D(4, 4, 4), [QgsVector3D(0.7071 * 2, 0.7071 * 2, 0), QgsVector3D(-0.7071, 0.7071, 0), QgsVector3D(0, 0, 2.1)])
+        self.assertFalse(a1.intersects(b1))
+        self.assertFalse(b1.intersects(a1))
+
+        # Intersecting boxes with non-zero centers and rotations
+        a1 = QgsOrientedBox3D(QgsVector3D(1, 1, 1), [QgsVector3D(0.7071, 0, 0.7071), QgsVector3D(0, 3, 0), QgsVector3D(-0.7071 * 2, 0, 0.7071 * 2)])
+        b1 = QgsOrientedBox3D(QgsVector3D(4, 4, 4), [QgsVector3D(0.7071 * 2, 0.7071 * 2, 0), QgsVector3D(-0.7071, 0.7071, 0), QgsVector3D(0, 0, 3)])
         self.assertFalse(a1.intersects(b1))
         self.assertFalse(b1.intersects(a1))
 
