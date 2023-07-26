@@ -311,6 +311,22 @@ QString QgsBox3D::toString( int precision ) const
   return rep;
 }
 
+QVector<QgsVector3D> QgsBox3D::corners() const
+{
+  return
+  {
+    QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMinimum(), mZmin ),
+    QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMaximum(), mZmin ),
+    QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMinimum(), mZmin ),
+    QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMaximum(), mZmin ),
+
+    QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMinimum(), mZmax ),
+    QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMaximum(), mZmax ),
+    QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMinimum(), mZmax ),
+    QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMaximum(), mZmax )
+  };
+}
+
 QgsBox3D QgsBox3D::operator-( const QgsVector3D &v ) const
 {
   return QgsBox3D( mBounds2d.xMinimum() - v.x(), mBounds2d.yMinimum() - v.y(), mZmin - v.z(),

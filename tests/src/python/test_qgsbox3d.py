@@ -441,6 +441,19 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box1a.yMaximum(), 15.0)
         self.assertEqual(box1a.zMaximum(), 18.0)
 
+    def test_corners(self):
+        box1 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+
+        self.assertEqual(box1.corners(),
+                         [QgsVector3D(5, 6, 7),
+                          QgsVector3D(5, 13, 7),
+                          QgsVector3D(11, 6, 7),
+                          QgsVector3D(11, 13, 7),
+                          QgsVector3D(5, 6, 15),
+                          QgsVector3D(5, 13, 15),
+                          QgsVector3D(11, 6, 15),
+                          QgsVector3D(11, 13, 15)])
+
 
 if __name__ == '__main__':
     unittest.main()

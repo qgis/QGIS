@@ -392,6 +392,11 @@ class CORE_EXPORT QgsBox3D
     QString toString( int precision = 16 ) const;
 
     /**
+     * Returns an array of all box corners as 3D vectors.
+     */
+    QVector< QgsVector3D > corners() const;
+
+    /**
      * Returns a box offset from this one in the direction of the reversed vector.
      * \since QGIS 3.34
      */
