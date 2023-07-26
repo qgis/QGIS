@@ -35,105 +35,105 @@ Constructs a vector from given coordinates
 %Docstring
 Constructs a vector from single-precision QVector3D
 %End
-    bool isNull() const;
+    bool isNull() const /HoldGIL/;
 %Docstring
 Returns ``True`` if all three coordinates are zero
 %End
 
-    double x() const;
+    double x() const /HoldGIL/;
 %Docstring
 Returns X coordinate
 %End
-    double y() const;
+    double y() const /HoldGIL/;
 %Docstring
 Returns Y coordinate
 %End
-    double z() const;
+    double z() const /HoldGIL/;
 %Docstring
 Returns Z coordinate
 %End
 
-    void setX( double x );
+    void setX( double x ) /HoldGIL/;
 %Docstring
 Sets X coordinate
 
 .. versionadded:: 3.34
 %End
 
-    void setY( double y );
+    void setY( double y ) /HoldGIL/;
 %Docstring
 Sets Y coordinate
 
 .. versionadded:: 3.34
 %End
 
-    void setZ( double z );
+    void setZ( double z ) /HoldGIL/;
 %Docstring
 Sets Z coordinate
 
 .. versionadded:: 3.34
 %End
 
-    void set( double x, double y, double z );
+    void set( double x, double y, double z ) /HoldGIL/;
 %Docstring
 Sets vector coordinates
 %End
 
-    bool operator==( const QgsVector3D &other ) const;
-    bool operator!=( const QgsVector3D &other ) const;
+    bool operator==( const QgsVector3D &other ) const /HoldGIL/;
+    bool operator!=( const QgsVector3D &other ) const /HoldGIL/;
 
-    QgsVector3D operator+( const QgsVector3D &other ) const;
+    QgsVector3D operator+( const QgsVector3D &other ) const /HoldGIL/;
 
-    QgsVector3D operator-( const QgsVector3D &other ) const;
+    QgsVector3D operator-( const QgsVector3D &other ) const /HoldGIL/;
 
-    QgsVector3D operator *( const double factor ) const;
+    QgsVector3D operator *( const double factor ) const /HoldGIL/;
 
-    QgsVector3D operator /( const double factor ) const;
+    QgsVector3D operator /( const double factor ) const /HoldGIL/;
 
-    static double dotProduct( const QgsVector3D &v1, const QgsVector3D &v2 );
+    static double dotProduct( const QgsVector3D &v1, const QgsVector3D &v2 ) /HoldGIL/;
 %Docstring
 Returns the dot product of two vectors
 %End
 
-    static QgsVector3D crossProduct( const QgsVector3D &v1, const QgsVector3D &v2 );
+    static QgsVector3D crossProduct( const QgsVector3D &v1, const QgsVector3D &v2 ) /HoldGIL/;
 %Docstring
 Returns the cross product of two vectors
 %End
 
-    QgsVector3D projectOnto( const QgsVector3D &other );
+    QgsVector3D projectOnto( const QgsVector3D &other ) /HoldGIL/;
 %Docstring
 Projects this vector onto an ``other`` vector.
 
 .. versionadded:: 3.34
 %End
 
-    double length() const;
+    double length() const /HoldGIL/;
 %Docstring
 Returns the length of the vector
 %End
 
-    void normalize();
+    void normalize() /HoldGIL/;
 %Docstring
 Normalizes the current vector in place.
 %End
 
-    double distance( const QgsVector3D &other ) const;
+    double distance( const QgsVector3D &other ) const /HoldGIL/;
 %Docstring
-Returns the distance with the ``other`` :py:class:`QgsVector3`
+Returns the distance with the ``other`` QgsVector3D
 %End
 
-    static QgsVector3D perpendicularPoint( const QgsVector3D &v1, const QgsVector3D &v2, const QgsVector3D &vp );
+    static QgsVector3D perpendicularPoint( const QgsVector3D &v1, const QgsVector3D &v2, const QgsVector3D &vp ) /HoldGIL/;
 %Docstring
 Returns the perpendicular point of vector ``vp`` from [``v1`` - ``v2``]
 %End
 
-    QString toString( int precision = 17 ) const;
+    QString toString( int precision = 17 ) const /HoldGIL/;
 %Docstring
 Returns a string representation of the 3D vector.
 Members will be truncated to the specified ``precision``.
 %End
 
-    QVector3D toVector3D() const;
+    QVector3D toVector3D() const /HoldGIL/;
 %Docstring
 Converts the current object to QVector3D
 
