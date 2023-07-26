@@ -166,6 +166,27 @@ class CORE_EXPORT QgsOrientedBox3D
      */
     bool intersects( const QgsOrientedBox3D &other ) const SIP_HOLDGIL;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsOrientedBox3D([%1, %2, %3], [%4, %5, %6, %7, %8, %9, %10, %11, %12])>" )
+                  .arg( sipCpp->centerX() )
+                  .arg( sipCpp->centerY() )
+                  .arg( sipCpp->centerZ() )
+                  .arg( sipCpp->halfAxes()[0] )
+                  .arg( sipCpp->halfAxes()[1] )
+                  .arg( sipCpp->halfAxes()[2] )
+                  .arg( sipCpp->halfAxes()[3] )
+                  .arg( sipCpp->halfAxes()[4] )
+                  .arg( sipCpp->halfAxes()[5] )
+                  .arg( sipCpp->halfAxes()[6] )
+                  .arg( sipCpp->halfAxes()[7] )
+                  .arg( sipCpp->halfAxes()[8] );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
+
   private:
 
     double mCenter[ 3 ] { std::numeric_limits< double >::quiet_NaN(), std::numeric_limits< double >::quiet_NaN(), std::numeric_limits< double >::quiet_NaN() };

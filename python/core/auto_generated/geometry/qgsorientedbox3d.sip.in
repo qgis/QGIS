@@ -133,6 +133,25 @@ Returns box transformed by a 4x4 matrix.
 Returns ``True`` if the box intersects the ``other`` box.
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsOrientedBox3D([%1, %2, %3], [%4, %5, %6, %7, %8, %9, %10, %11, %12])>" )
+                  .arg( sipCpp->centerX() )
+                  .arg( sipCpp->centerY() )
+                  .arg( sipCpp->centerZ() )
+                  .arg( sipCpp->halfAxes()[0] )
+                  .arg( sipCpp->halfAxes()[1] )
+                  .arg( sipCpp->halfAxes()[2] )
+                  .arg( sipCpp->halfAxes()[3] )
+                  .arg( sipCpp->halfAxes()[4] )
+                  .arg( sipCpp->halfAxes()[5] )
+                  .arg( sipCpp->halfAxes()[6] )
+                  .arg( sipCpp->halfAxes()[7] )
+                  .arg( sipCpp->halfAxes()[8] );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+
 };
 
 
