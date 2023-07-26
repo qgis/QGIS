@@ -39,6 +39,8 @@ class CORE_EXPORT QgsSnappingConfig
     Q_GADGET
 
     Q_PROPERTY( QgsProject *project READ project WRITE setProject )
+    Q_PROPERTY( bool enabled READ enabled WRITE setEnabled )
+    Q_PROPERTY( Qgis::SnappingMode mode READ mode WRITE setMode )
 
   public:
 
