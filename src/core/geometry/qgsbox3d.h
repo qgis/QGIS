@@ -420,6 +420,21 @@ class CORE_EXPORT QgsBox3D
      */
     QgsBox3D &operator+=( const QgsVector3D &v ) SIP_HOLDGIL;
 
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsBox3D(%1, %2, %3, %4, %5, %6)>" )
+                  .arg( sipCpp->xMinimum() )
+                  .arg( sipCpp->yMinimum() )
+                  .arg( sipCpp->zMinimum() )
+                  .arg( sipCpp->xMaximum() )
+                  .arg( sipCpp->yMaximum() )
+                  .arg( sipCpp->zMaximum() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
 
     QgsRectangle mBounds2d;

@@ -96,6 +96,10 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.yMaximum(), 13.0)
         self.assertEqual(box.zMaximum(), 5.0)
 
+    def test_repr(self):
+        box = QgsBox3d(5.0, 6.0, 7.0, 10.0, 11.0, 12.0)
+        self.assertEqual(str(box), '<QgsBox3D(5, 6, 7, 10, 11, 12)>')
+
     def testSetters(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 10.0, 11.0, 12.0)
 

@@ -68,6 +68,10 @@ class TestQgsOrientedBox3D(QgisTestCase):
         self.assertEqual(box.centerZ(), 3)
         self.assertEqual(box.halfAxes(), [0.7071067811865476, 0.0, 0.7071067811865475, 0.0, 1.0, 0.0, -0.7071067811865475, 0.0, 0.7071067811865476])
 
+    def test_repr(self):
+        box = QgsOrientedBox3D([1, 2, 3], [10, 11, 12, 21, 20, 22, 31, 32, 30])
+        self.assertEqual(str(box), '<QgsOrientedBox3D([1, 2, 3], [10, 11, 12, 21, 20, 22, 31, 32, 30])>')
+
     def test_equality(self):
         self.assertEqual(
             QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30]),
