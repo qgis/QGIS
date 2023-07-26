@@ -171,6 +171,11 @@ QgsGeometry QgsGeometry::fromPointXY( const QgsPointXY &point )
   return QgsGeometry();
 }
 
+QgsGeometry QgsGeometry::fromPoint( const QgsPoint &point )
+{
+  return QgsGeometry( point.clone() );
+}
+
 QgsGeometry QgsGeometry::fromPolylineXY( const QgsPolylineXY &polyline )
 {
   std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolylineXY( polyline );
@@ -242,6 +247,132 @@ QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
   std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
   polygon->setExteriorRing( ext.release() );
   return QgsGeometry( std::move( polygon ) );
+}
+
+QgsGeometry QgsGeometry::fromBox3D( const QgsBox3D &box )
+{
+  if ( box.is2d() )
+  {
+    return fromRect( box.toRectangle() );
+  }
+
+  std::unique_ptr< QgsMultiPolygon > multiPolygon = std::make_unique< QgsMultiPolygon >();
+
+  std::unique_ptr< QgsLineString > ext1 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMinimum()
+      << box.xMinimum()
+      << box.xMaximum()
+      << box.xMaximum()
+      << box.xMinimum(),
+      QVector< double >() << box.yMinimum()
+      << box.yMaximum()
+      << box.yMaximum()
+      << box.yMinimum()
+      << box.yMinimum(),
+      QVector< double >() << box.zMinimum()
+      << box.zMinimum()
+      << box.zMinimum()
+      << box.zMinimum()
+      << box.zMinimum() );
+  std::unique_ptr< QgsPolygon > polygon1 = std::make_unique< QgsPolygon >( ext1.release() );
+  multiPolygon->addGeometry( polygon1.release() );
+
+  std::unique_ptr< QgsLineString > ext2 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMinimum()
+      << box.xMinimum()
+      << box.xMinimum()
+      << box.xMinimum()
+      << box.xMinimum(),
+      QVector< double >() << box.yMinimum()
+      << box.yMaximum()
+      << box.yMaximum()
+      << box.yMinimum()
+      << box.yMinimum(),
+      QVector< double >() << box.zMinimum()
+      << box.zMinimum()
+      << box.zMaximum()
+      << box.zMaximum()
+      << box.zMinimum() );
+  std::unique_ptr< QgsPolygon > polygon2 = std::make_unique< QgsPolygon >( ext2.release() );
+  multiPolygon->addGeometry( polygon2.release() );
+
+  std::unique_ptr< QgsLineString > ext3 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMinimum()
+      << box.xMaximum()
+      << box.xMaximum()
+      << box.xMinimum()
+      << box.xMinimum(),
+      QVector< double >() << box.yMinimum()
+      << box.yMinimum()
+      << box.yMinimum()
+      << box.yMinimum()
+      << box.yMinimum(),
+      QVector< double >() << box.zMinimum()
+      << box.zMinimum()
+      << box.zMaximum()
+      << box.zMaximum()
+      << box.zMinimum() );
+  std::unique_ptr< QgsPolygon > polygon3 = std::make_unique< QgsPolygon >( ext3.release() );
+  multiPolygon->addGeometry( polygon3.release() );
+
+  std::unique_ptr< QgsLineString > ext4 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMaximum()
+      << box.xMaximum()
+      << box.xMinimum()
+      << box.xMinimum()
+      << box.xMaximum(),
+      QVector< double >() << box.yMaximum()
+      << box.yMinimum()
+      << box.yMinimum()
+      << box.yMaximum()
+      << box.yMaximum(),
+      QVector< double >() << box.zMaximum()
+      << box.zMaximum()
+      << box.zMaximum()
+      << box.zMaximum()
+      << box.zMaximum() );
+  std::unique_ptr< QgsPolygon > polygon4 = std::make_unique< QgsPolygon >( ext4.release() );
+  multiPolygon->addGeometry( polygon4.release() );
+
+  std::unique_ptr< QgsLineString > ext5 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMaximum()
+      << box.xMaximum()
+      << box.xMaximum()
+      << box.xMaximum()
+      << box.xMaximum(),
+      QVector< double >() << box.yMaximum()
+      << box.yMinimum()
+      << box.yMinimum()
+      << box.yMaximum()
+      << box.yMaximum(),
+      QVector< double >() << box.zMaximum()
+      << box.zMaximum()
+      << box.zMinimum()
+      << box.zMinimum()
+      << box.zMaximum() );
+  std::unique_ptr< QgsPolygon > polygon5 = std::make_unique< QgsPolygon >( ext5.release() );
+  multiPolygon->addGeometry( polygon5.release() );
+
+  std::unique_ptr< QgsLineString > ext6 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMaximum()
+      << box.xMaximum()
+      << box.xMinimum()
+      << box.xMinimum()
+      << box.xMaximum(),
+      QVector< double >() << box.yMaximum()
+      << box.yMaximum()
+      << box.yMaximum()
+      << box.yMaximum()
+      << box.yMaximum(),
+      QVector< double >() << box.zMaximum()
+      << box.zMinimum()
+      << box.zMinimum()
+      << box.zMaximum()
+      << box.zMaximum() );
+  std::unique_ptr< QgsPolygon > polygon6 = std::make_unique< QgsPolygon >( ext6.release() );
+  multiPolygon->addGeometry( polygon6.release() );
+
+  return QgsGeometry( std::move( multiPolygon ) );
 }
 
 QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometries )
@@ -4076,4 +4207,3 @@ bool QgsGeometry::Error::hasWhere() const
 {
   return mHasLocation;
 }
-

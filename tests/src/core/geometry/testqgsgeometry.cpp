@@ -90,6 +90,8 @@ class TestQgsGeometry : public QgsTest
     void splitCurve_data();
     void splitCurve();
 
+    void fromBox3d();
+    void fromPoint();
     void fromQgsPointXY();
     void fromQPoint();
     void fromQPolygonF();
@@ -742,6 +744,22 @@ void TestQgsGeometry::splitCurve()
   auto [p1, p2] = qgsgeometry_cast< const QgsCurve * >( curve.constGet() )->splitCurveAtVertex( vertex );
   QCOMPARE( p1->asWkt(), curve1 );
   QCOMPARE( p2->asWkt(), curve2 );
+}
+
+void TestQgsGeometry::fromBox3d()
+{
+  QgsBox3D box3d( 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 );
+  QgsGeometry result( QgsGeometry::fromBox3D( box3d ) );
+  QCOMPARE( result.asWkt(), "MultiPolygonZ (((1 2 3, 1 5 3, 4 5 3, 4 2 3, 1 2 3)),((1 2 3, 1 5 3, 1 5 6, 1 2 6, 1 2 3)),((1 2 3, 4 2 3, 4 2 6, 1 2 6, 1 2 3)),((4 5 6, 4 2 6, 1 2 6, 1 5 6, 4 5 6)),((4 5 6, 4 2 6, 4 2 3, 4 5 3, 4 5 6)),((4 5 6, 4 5 3, 1 5 3, 1 5 6, 4 5 6)))" );
+}
+
+void TestQgsGeometry::fromPoint()
+{
+  QgsPoint point( 1.0, 2.0, 3.0 );
+  QgsGeometry result( QgsGeometry::fromPoint( point ) );
+  QCOMPARE( result.wkbType(), Qgis::WkbType::PointZ );
+  QgsPoint resultPoint = result.vertexAt( 0 );
+  QCOMPARE( resultPoint, point );
 }
 
 void TestQgsGeometry::fromQgsPointXY()
