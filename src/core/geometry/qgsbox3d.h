@@ -237,7 +237,7 @@ class CORE_EXPORT QgsBox3D
     /**
      * Normalize the box so it has non-negative width/height/depth.
      */
-    void normalize();
+    void normalize() SIP_HOLDGIL;
 
     /**
      * Returns the width of the box.
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsBox3D
     /**
      * Returns the intersection of this box and another 3D box.
      */
-    QgsBox3D intersect( const QgsBox3D &other ) const;
+    QgsBox3D intersect( const QgsBox3D &other ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the box can be considered a 2-dimensional box, i.e.
@@ -295,12 +295,12 @@ class CORE_EXPORT QgsBox3D
     /**
      * Returns TRUE if box intersects with another box.
      */
-    bool intersects( const QgsBox3D &other ) const;
+    bool intersects( const QgsBox3D &other ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE when box contains other box.
      */
-    bool contains( const QgsBox3D &other ) const;
+    bool contains( const QgsBox3D &other ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE when box contains a \a point.
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsBox3D
      * If the point is a 2D point (no z-coordinate), then the containment test
      * will be performed on the x/y extent of the box only.
      */
-    bool contains( const QgsPoint &point ) const;
+    bool contains( const QgsPoint &point ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE when box contains a point (\a x, \a y, \a z).
@@ -319,26 +319,26 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.34
      */
-    bool contains( double x, double y, double z ) const;
+    bool contains( double x, double y, double z ) const SIP_HOLDGIL;
 
     /**
      * Expands the bbox so that it covers both the original rectangle and the given rectangle.
      *
      * \since QGIS 3.34
      */
-    void combineWith( const QgsBox3D &box );
+    void combineWith( const QgsBox3D &box ) SIP_HOLDGIL;
 
     /**
      * Expands the bbox so that it covers both the original rectangle and the given point.
      *
      * \since QGIS 3.34
      */
-    void combineWith( double x, double y, double z );
+    void combineWith( double x, double y, double z ) SIP_HOLDGIL;
 
     /**
      * Converts the box to a 2D rectangle.
      */
-    QgsRectangle toRectangle() const { return mBounds2d; }
+    QgsRectangle toRectangle() const SIP_HOLDGIL { return mBounds2d; }
 
     /**
      * Returns the smallest distance between the box and the point \a point
@@ -346,9 +346,9 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.18
      */
-    double distanceTo( const  QVector3D &point ) const;
+    double distanceTo( const  QVector3D &point ) const SIP_HOLDGIL;
 
-    bool operator==( const QgsBox3D &other ) const;
+    bool operator==( const QgsBox3D &other ) const SIP_HOLDGIL;
 
     /**
      * Scale the rectangle around a \a center QgsPoint.
@@ -357,14 +357,14 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.26
      */
-    void scale( double scaleFactor, const QgsPoint &center = QgsPoint() );
+    void scale( double scaleFactor, const QgsPoint &center = QgsPoint() ) SIP_HOLDGIL;
 
     /**
      * Scale the rectangle around a center coordinates.
      *
      * \since QGIS 3.26
      */
-    void scale( double scaleFactor, double centerX, double centerY, double centerZ );
+    void scale( double scaleFactor, double centerX, double centerY, double centerZ ) SIP_HOLDGIL;
 
     /**
      * Test if the box is null (all coordinates NaN or after call to setMinimal()).
@@ -372,7 +372,7 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.34
      */
-    bool isNull() const;
+    bool isNull() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the box is empty.
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.34
      */
-    bool isEmpty() const;
+    bool isEmpty() const SIP_HOLDGIL;
 
     /**
      * Returns a string representation of form xmin,ymin,zmin : xmax,ymax,zmax
@@ -389,36 +389,36 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.34
      */
-    QString toString( int precision = 16 ) const;
+    QString toString( int precision = 16 ) const SIP_HOLDGIL;
 
     /**
      * Returns an array of all box corners as 3D vectors.
      */
-    QVector< QgsVector3D > corners() const;
+    QVector< QgsVector3D > corners() const SIP_HOLDGIL;
 
     /**
      * Returns a box offset from this one in the direction of the reversed vector.
      * \since QGIS 3.34
      */
-    QgsBox3D operator-( const QgsVector3D &v ) const;
+    QgsBox3D operator-( const QgsVector3D &v ) const SIP_HOLDGIL;
 
     /**
      * Returns a box offset from this one in the direction of the vector.
      * \since QGIS 3.34
      */
-    QgsBox3D operator+( const QgsVector3D &v ) const;
+    QgsBox3D operator+( const QgsVector3D &v ) const SIP_HOLDGIL;
 
     /**
      * Moves this box in the direction of the reversed vector.
      * \since QGIS 3.34
      */
-    QgsBox3D &operator-=( const QgsVector3D &v );
+    QgsBox3D &operator-=( const QgsVector3D &v ) SIP_HOLDGIL;
 
     /**
      * Moves this box in the direction of the vector.
      * \since QGIS 3.34
      */
-    QgsBox3D &operator+=( const QgsVector3D &v );
+    QgsBox3D &operator+=( const QgsVector3D &v ) SIP_HOLDGIL;
 
   private:
 
