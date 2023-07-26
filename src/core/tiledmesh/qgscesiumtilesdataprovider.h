@@ -23,34 +23,14 @@
 #include "qgstiledmeshdataprovider.h"
 #include "qgis.h"
 #include "qgsprovidermetadata.h"
-#include "qgsrange.h"
-#include "nlohmann/json.hpp"
 
 #define SIP_NO_FILE
 
 class QgsAbstractTiledMeshNodeBoundingVolume;
 class QgsCoordinateTransformContext;
+class QgsCesiumTilesDataProviderSharedData;
 
 ///@cond PRIVATE
-
-class QgsCesiumTilesDataProviderSharedData
-{
-  public:
-    QgsCesiumTilesDataProviderSharedData();
-    void setTilesetContent( const QString &tileset, const QgsCoordinateTransformContext &transformContext );
-
-    QgsCoordinateReferenceSystem mLayerCrs;
-    QgsCoordinateReferenceSystem mMeshCrs;
-    std::unique_ptr< QgsAbstractTiledMeshNodeBoundingVolume > mBoundingVolume;
-
-    QgsRectangle mExtent;
-    nlohmann::json mTileset;
-    QgsDoubleRange mZRange;
-
-    QReadWriteLock mMutex;
-
-
-};
 
 class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledMeshDataProvider
 {
@@ -75,7 +55,8 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledMeshDataProvi
     QString description() const final;
     QString htmlMetadata() const final;
     const QgsCoordinateReferenceSystem meshCrs() const final;
-    const QgsAbstractTiledMeshNodeBoundingVolume *boundingVolume() const override;
+    const QgsAbstractTiledMeshNodeBoundingVolume *boundingVolume() const final;
+    QgsTiledMeshIndex index() const final;
 
   private:
 
@@ -114,3 +95,4 @@ class QgsCesiumTilesProviderMetadata : public QgsProviderMetadata
 ///@endcond
 
 #endif // QGSCESIUMTILESDATAPROVIDER_H
+

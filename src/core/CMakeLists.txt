@@ -342,6 +342,7 @@ set(QGIS_CORE_SRCS
   tiledmesh/qgstiledmeshconnection.cpp
   tiledmesh/qgstiledmeshdataitems.cpp
   tiledmesh/qgstiledmeshdataprovider.cpp
+  tiledmesh/qgstiledmeshindex.cpp
   tiledmesh/qgstiledmeshlayer.cpp
   tiledmesh/qgstiledmeshlayerrenderer.cpp
   tiledmesh/qgstiledmeshnode.cpp
@@ -1915,6 +1916,7 @@ set(QGIS_CORE_HDRS
   tiledmesh/qgstiledmeshconnection.h
   tiledmesh/qgstiledmeshdataprovider.h
   tiledmesh/qgstiledmeshdataitems.h
+  tiledmesh/qgstiledmeshindex.h
   tiledmesh/qgstiledmeshlayer.h
   tiledmesh/qgstiledmeshlayerrenderer.h
   tiledmesh/qgstiledmeshnode.h

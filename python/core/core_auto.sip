@@ -715,6 +715,7 @@
 %Include auto_generated/tiledmesh/qgscesiumutils.sip
 %Include auto_generated/tiledmesh/qgstiledmeshboundingvolume.sip
 %Include auto_generated/tiledmesh/qgstiledmeshdataprovider.sip
+%Include auto_generated/tiledmesh/qgstiledmeshindex.sip
 %Include auto_generated/tiledmesh/qgstiledmeshlayer.sip
 %Include auto_generated/tiledmesh/qgstiledmeshnode.sip
 %Include auto_generated/tiledmesh/qgstiledmeshrequest.sip
