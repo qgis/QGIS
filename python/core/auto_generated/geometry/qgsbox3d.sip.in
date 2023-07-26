@@ -392,6 +392,11 @@ If the specified precision is less than 0, a suitable minimum precision is used.
 .. versionadded:: 3.34
 %End
 
+    QVector< QgsVector3D > corners() const;
+%Docstring
+Returns an array of all box corners as 3D vectors.
+%End
+
     QgsBox3D operator-( const QgsVector3D &v ) const;
 
     QgsBox3D operator+( const QgsVector3D &v ) const;
