@@ -702,9 +702,11 @@ QgsProject *QgsSnappingConfig::project() const
 
 void QgsSnappingConfig::setProject( QgsProject *project )
 {
-  if ( mProject != project )
-    mProject = project;
-
+  if ( mProject == project )
+  {
+    return;
+  }
+  mProject = project;
   reset();
 }
 
