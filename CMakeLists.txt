@@ -10,6 +10,11 @@ cmake_policy(SET CMP0048 NEW)
 cmake_policy(SET CMP0053 NEW)
 cmake_policy(SET CMP0071 NEW)
 cmake_policy(SET CMP0094 NEW)
+if(NOT "${CMAKE_VERSION}" VERSION_LESS "3.27")
+  cmake_policy(SET CMP0144 NEW)
+  # include(Dart) still used, as is the "Experimental" target
+  cmake_policy(SET CMP0145 OLD)
+endif()
 
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
