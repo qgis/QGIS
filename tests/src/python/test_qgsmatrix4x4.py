@@ -46,6 +46,38 @@ class TestQgsMatrix4x4(QgisTestCase):
         m3 = m1 * m2
         self.assertEqual(m3.data(), [2, 10, 18, 0, 4, 12, 20, 0, 6, 14, 22, 0, 4, 8, 12, 1])
 
+    def test_repr(self):
+        self.assertEqual(
+            str(QgsMatrix4x4(1, 2, 3, 4,
+                             5, 6, 7, 8,
+                             9, 10, 11, 12,
+                             13, 14, 15, 16)),
+            '<QgsMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)>'
+        )
+
+    def test_equality(self):
+        self.assertEqual(
+            QgsMatrix4x4(1, 2, 3, 4,
+                         5, 6, 7, 8,
+                         9, 10, 11, 12,
+                         13, 14, 15, 16),
+            QgsMatrix4x4(1, 2, 3, 4,
+                         5, 6, 7, 8,
+                         9, 10, 11, 12,
+                         13, 14, 15, 16)
+        )
+        for i in range(16):
+            self.assertNotEqual(
+                QgsMatrix4x4(1, 2, 3, 4,
+                             5, 6, 7, 8,
+                             9, 10, 11, 12,
+                             13, 14, 15, 16),
+                QgsMatrix4x4(*[j if k != i else 0 for k, j in enumerate([1, 2, 3, 4,
+                             5, 6, 7, 8,
+                             9, 10, 11, 12,
+                             13, 14, 15, 16])])
+            )
+
 
 if __name__ == '__main__':
     unittest.main()
