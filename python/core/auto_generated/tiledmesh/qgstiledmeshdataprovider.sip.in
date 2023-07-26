@@ -79,6 +79,17 @@ This corresponds to the root node bounding volume.
    Coordinates in the returned volume are in the :py:func:`~QgsTiledMeshDataProvider.meshCrs` reference system, not the :py:func:`QgsDataProvider.crs()` system.
 %End
 
+    virtual QgsTiledMeshIndex index() const = 0;
+%Docstring
+Returns the provider's tile index.
+
+This is a shallow copy, implicitly shared container for an underlying :py:class:`QgsAbstractTiledMeshIndex`
+implementation.
+
+The index is thread safe and can be used safely across multiple threads or transferred between
+threads.
+%End
+
 };
 
 /************************************************************************

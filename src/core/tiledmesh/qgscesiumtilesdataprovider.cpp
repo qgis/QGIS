@@ -28,6 +28,9 @@
 #include "qgsorientedbox3d.h"
 #include "qgstiledmeshboundingvolume.h"
 #include "qgscoordinatetransform.h"
+#include "qgstiledmeshnode.h"
+#include "qgstiledmeshindex.h"
+#include "qgstiledmeshrequest.h"
 
 #include <QUrl>
 #include <QIcon>
@@ -35,19 +38,246 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFileInfo>
+#include <nlohmann/json.hpp>
 
 ///@cond PRIVATE
 
 #define PROVIDER_KEY QStringLiteral( "cesiumtiles" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Cesium 3D Tiles data provider" )
 
+
+class QgsCesiumTiledMeshIndex final : public QgsAbstractTiledMeshIndex
+{
+  public:
+
+    QgsCesiumTiledMeshIndex(
+      const json &tileset,
+      const QString &rootPath,
+      const QString &authCfg,
+      const QgsHttpHeaders &headers );
+
+    std::unique_ptr< QgsTiledMeshNode > nodeFromJson( const json &node, const QgsMatrix4x4 *parentTransform );
+
+    const QgsTiledMeshNode *rootNode() const final;
+    QgsTiledMeshNode *getNodes( const QgsTiledMeshRequest &request ) final;
+
+  protected:
+
+    QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) final;
+
+  private:
+    json mTileset;
+    QString mRootPath;
+    std::unique_ptr< QgsTiledMeshNode > mRootNode;
+    QString mAuthCfg;
+    QgsHttpHeaders mHeaders;
+
+};
+
+class QgsCesiumTilesDataProviderSharedData
+{
+  public:
+    QgsCesiumTilesDataProviderSharedData();
+    void initialize( const QString &tileset,
+                     const QString &rootPath,
+                     const QgsCoordinateTransformContext &transformContext,
+                     const QString &authCfg,
+                     const QgsHttpHeaders &headers );
+
+    QgsCoordinateReferenceSystem mLayerCrs;
+    QgsCoordinateReferenceSystem mMeshCrs;
+    std::unique_ptr< QgsAbstractTiledMeshNodeBoundingVolume > mBoundingVolume;
+
+    QgsRectangle mExtent;
+    nlohmann::json mTileset;
+    QgsDoubleRange mZRange;
+
+    QgsTiledMeshIndex mIndex;
+
+    QReadWriteLock mMutex;
+
+
+};
+
+
+//
+// QgsCesiumTiledMeshIndex
+//
+
+QgsCesiumTiledMeshIndex::QgsCesiumTiledMeshIndex( const json &tileset, const QString &rootPath, const QString &authCfg, const QgsHttpHeaders &headers )
+  : mTileset( tileset )
+  , mRootPath( rootPath )
+  , mAuthCfg( authCfg )
+  , mHeaders( headers )
+{
+  mRootNode = nodeFromJson( tileset[ "root" ], nullptr );
+}
+
+std::unique_ptr< QgsTiledMeshNode > QgsCesiumTiledMeshIndex::nodeFromJson( const json &json, const QgsMatrix4x4 *parentTransform )
+{
+  std::unique_ptr< QgsTiledMeshNode > node = std::make_unique< QgsTiledMeshNode >();
+
+  const auto &boundingVolume = json[ "boundingVolume" ];
+  if ( boundingVolume.contains( "region" ) )
+  {
+    const QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( boundingVolume[ "region" ] );
+    if ( !rootRegion.isNull() )
+    {
+      node->setBoundingVolume( new QgsTiledMeshNodeBoundingVolumeRegion( rootRegion ) );
+    }
+  }
+  else if ( boundingVolume.contains( "box" ) )
+  {
+    const QgsOrientedBox3D bbox = QgsCesiumUtils::parseBox( boundingVolume["box"] );
+    if ( !bbox.isNull() )
+    {
+      node->setBoundingVolume( new QgsTiledMeshNodeBoundingVolumeBox( bbox ) );
+    }
+  }
+  else if ( boundingVolume.contains( "sphere" ) )
+  {
+    const QgsSphere sphere = QgsCesiumUtils::parseSphere( boundingVolume["sphere"] );
+    if ( !sphere.isNull() )
+    {
+      node->setBoundingVolume( new QgsTiledMeshNodeBoundingVolumeSphere( sphere ) );
+    }
+  }
+  else
+  {
+    QgsDebugError( QStringLiteral( "unsupported boundingVolume format" ) );
+  }
+
+  node->setGeometricError( json["geometricError"].get< double >() );
+  if ( json["refine"] == "ADD" )
+    node->setRefinementProcess( Qgis::TileRefinementProcess::Additive );
+  else if ( json["refine"] == "REPLACE" )
+    node->setRefinementProcess( Qgis::TileRefinementProcess::Replacement );
+
+
+  if ( json.contains( "content" ) && !json["content"].is_null() )
+  {
+    const auto &contentJson = json["content"];
+
+    // sometimes URI, sometimes URL...
+    if ( contentJson.contains( "uri" ) && !contentJson["uri"].is_null() )
+    {
+      node->setContentUri( mRootPath + '/' + QString::fromStdString( contentJson["uri"].get<std::string>() ) );
+    }
+    else if ( contentJson.contains( "url" ) && !contentJson["url"].is_null() )
+    {
+      node->setContentUri( mRootPath + '/' + QString::fromStdString( contentJson["url"].get<std::string>() ) );
+    }
+  }
+
+  if ( json.contains( "transform" ) && !json["transform"].is_null() )
+  {
+    const auto &transformJson = json["transform"];
+    QgsMatrix4x4 transform;
+    double *ptr = transform.data();
+    for ( int i = 0; i < 16; ++i )
+      ptr[i] = transformJson[i].get<double>();
+
+    if ( parentTransform )
+    {
+      node->setTransform( *parentTransform * transform );
+    }
+    else
+    {
+      node->setTransform( transform );
+    }
+  }
+  else if ( parentTransform )
+  {
+    node->setTransform( *parentTransform );
+  }
+
+  return node;
+}
+
+const QgsTiledMeshNode *QgsCesiumTiledMeshIndex::rootNode() const
+{
+  return mRootNode.get();
+}
+
+QgsTiledMeshNode *QgsCesiumTiledMeshIndex::getNodes( const QgsTiledMeshRequest &request )
+{
+  if ( !mRootNode )
+    return nullptr;
+
+  std::function< QgsTiledMeshNode * ( const json &nodeJson, QgsTiledMeshNode * )> traverseNode;
+  traverseNode = [&request, &traverseNode, this]( const json & nodeJson, QgsTiledMeshNode * parent ) -> QgsTiledMeshNode *
+  {
+    std::unique_ptr< QgsTiledMeshNode > newNode;
+    if ( parent )
+    {
+      const QgsMatrix4x4 parentTransform = parent->transform();
+      newNode = nodeFromJson( nodeJson, &parentTransform );
+    }
+    else
+    {
+      newNode = nodeFromJson( nodeJson, nullptr );
+    }
+
+    if ( parent )
+      parent->addChild( newNode.get() );
+
+    // TODO -- if node has content json, fetch it now and parse
+
+    if ( request.requiredGeometricError() <= 0 || newNode->geometricError() <= 0 || newNode->geometricError() > request.requiredGeometricError() )
+    {
+      // haven't traversed deep enough down this node, we need to explore children
+      if ( nodeJson.contains( "children" ) )
+      {
+        for ( const auto &childJson : nodeJson["children"] )
+        {
+          if ( request.feedback() && request.feedback()->isCanceled() )
+            break;
+
+          traverseNode( childJson, newNode.get() );
+        }
+      }
+    }
+
+    return newNode.release();
+  };
+
+  return traverseNode( mTileset[ "root" ], nullptr );
+}
+
+QByteArray QgsCesiumTiledMeshIndex::fetchContent( const QString &uri, QgsFeedback *feedback )
+{
+  // TODO -- error reporting?
+  if ( uri.startsWith( "http" ) )
+  {
+    QNetworkRequest networkRequest = QNetworkRequest( QUrl( uri ) );
+    mHeaders.updateNetworkRequest( networkRequest );
+    const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet(
+                                           networkRequest, mAuthCfg, false, feedback );
+    return reply.content();
+  }
+  else if ( QFile::exists( uri ) )
+  {
+    QFile file( uri );
+    if ( file.open( QIODevice::ReadOnly ) )
+    {
+      return file.readAll();
+    }
+  }
+  return QByteArray();
+}
+
+
 //
 // QgsCesiumTilesDataProviderSharedData
 //
 
-QgsCesiumTilesDataProviderSharedData::QgsCesiumTilesDataProviderSharedData() = default;
+QgsCesiumTilesDataProviderSharedData::QgsCesiumTilesDataProviderSharedData()
+  : mIndex( QgsTiledMeshIndex( nullptr ) )
+{
 
-void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &tileset, const QgsCoordinateTransformContext &transformContext )
+}
+
+void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, const QString &rootPath, const QgsCoordinateTransformContext &transformContext, const QString &authCfg, const QgsHttpHeaders &headers )
 {
   mTileset = json::parse( tileset.toStdString() );
 
@@ -152,6 +382,15 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
         QgsDebugError( QStringLiteral( "unsupported boundingVolume format" ) );
       }
     }
+
+    mIndex = QgsTiledMeshIndex(
+               new QgsCesiumTiledMeshIndex(
+                 mTileset,
+                 rootPath,
+                 authCfg,
+                 headers
+               )
+             );
   }
 }
 
@@ -221,18 +460,21 @@ bool QgsCesiumTilesDataProvider::init()
     }
 
     const QgsNetworkReplyContent content = networkRequest.reply();
-    mShared->setTilesetContent( content.content(), transformContext() );
+
+    const QString base = tileSetUri.left( tileSetUri.lastIndexOf( '/' ) );
+    mShared->initialize( content.content(), base, transformContext(), mAuthCfg, mHeaders );
   }
   else
   {
     // try uri as a local file
-    if ( QFileInfo::exists( dataSourceUri( ) ) )
+    const QFileInfo fi( dataSourceUri() );
+    if ( fi.exists() )
     {
       QFile file( dataSourceUri( ) );
       if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
       {
         const QByteArray raw = file.readAll();
-        mShared->setTilesetContent( raw, transformContext() );
+        mShared->initialize( raw, fi.path(), transformContext(), mAuthCfg, mHeaders );
       }
       else
       {
@@ -355,6 +597,13 @@ const QgsAbstractTiledMeshNodeBoundingVolume *QgsCesiumTilesDataProvider::boundi
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mShared ? mShared->mBoundingVolume.get() : nullptr;
+}
+
+QgsTiledMeshIndex QgsCesiumTilesDataProvider::index() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShared ? mShared->mIndex : QgsTiledMeshIndex( nullptr );
 }
 
 

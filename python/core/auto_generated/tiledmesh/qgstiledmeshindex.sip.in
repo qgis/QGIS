@@ -1,0 +1,79 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshindex.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsTiledMeshIndex
+{
+%Docstring(signature="appended")
+An index for tiled mesh data providers.
+
+This is a shallow copy, implicitly shared container for an underlying :py:class:`QgsAbstractTiledMeshIndex`
+implementation.
+
+The class is thread safe and can be used safely across multiple threads or transferred between
+threads.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledmeshindex.h"
+%End
+  public:
+
+
+    ~QgsTiledMeshIndex();
+
+    QgsTiledMeshIndex( const QgsTiledMeshIndex &other );
+%Docstring
+Copy constructor
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the index is valid.
+%End
+
+    QgsTiledMeshNode rootNode() const;
+%Docstring
+Returns the root node for the index.
+%End
+
+    QgsTiledMeshNode *getNodes( const QgsTiledMeshRequest &request ) /Factory/;
+%Docstring
+Returns a node tree containing all nodes matching the given ``request``.
+
+Caller takes ownership of the returned node.
+
+May return ``None`` if no data satisfies the request.
+%End
+
+    QByteArray retrieveContent( const QString &uri, QgsFeedback *feedback = 0 );
+%Docstring
+Retrieves index content for the specified ``uri``.
+
+The content is cached within the index, so multiple calls are potentially cost-free.
+
+The optional ``feedback`` argument can be used the cancel the request early.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshindex.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

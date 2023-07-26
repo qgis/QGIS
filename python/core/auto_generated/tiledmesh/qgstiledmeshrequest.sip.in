@@ -1,0 +1,77 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshrequest.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTiledMeshRequest
+{
+%Docstring(signature="appended")
+
+Tiled mesh data request.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledmeshrequest.h"
+%End
+  public:
+
+    QgsTiledMeshRequest();
+
+    double requiredGeometricError() const;
+%Docstring
+Returns the required geometric error treshold for the returned nodes, in
+mesh CRS units.
+
+If the error is 0 then no geometric error filtering will be applied.
+
+.. seealso:: :py:func:`setRequiredGeometricError`
+%End
+
+    void setRequiredGeometricError( double error );
+%Docstring
+Sets the required geometric ``error`` treshold for the returned nodes, in
+mesh CRS units.
+
+If the ``error`` is 0 then no geometric error filtering will be applied.
+
+.. seealso:: :py:func:`requiredGeometricError`
+%End
+
+    void setFeedback( QgsFeedback *feedback );
+%Docstring
+Attach a ``feedback`` object that can be queried regularly by the request to check
+if it should be canceled.
+
+Ownership of ``feedback`` is NOT transferred, and the caller must take care that it exists
+for the lifetime of the request.
+
+.. seealso:: :py:func:`feedback`
+%End
+
+    QgsFeedback *feedback() const;
+%Docstring
+Returns the feedback object that can be queried regularly by the request to check
+if it should be canceled, if set.
+
+.. seealso:: :py:func:`setFeedback`
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshrequest.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
