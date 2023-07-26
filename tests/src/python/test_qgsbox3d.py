@@ -243,6 +243,25 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box6.yMaximum(), 13.0)
         self.assertEqual(box6.zMaximum(), 15.0)
 
+        box7 = QgsBox3d(0, 0, 0, 0, 0, 0)
+        box8 = QgsBox3d(1, 2, 3, 4, 5, 6)
+        box7.combineWith(box8)
+        self.assertEqual(box7.xMinimum(), 0)
+        self.assertEqual(box7.yMinimum(), 0)
+        self.assertEqual(box7.zMinimum(), 0)
+        self.assertEqual(box7.xMaximum(), 4)
+        self.assertEqual(box7.yMaximum(), 5)
+        self.assertEqual(box7.zMaximum(), 6)
+
+        box9 = QgsBox3d(0, 0, 0, 0, 0, 0)
+        box9.combineWith(11, 12, 13)
+        self.assertEqual(box9.xMinimum(), 0)
+        self.assertEqual(box9.yMinimum(), 0)
+        self.assertEqual(box9.zMinimum(), 0)
+        self.assertEqual(box9.xMaximum(), 11.0)
+        self.assertEqual(box9.yMaximum(), 12.0)
+        self.assertEqual(box9.zMaximum(), 13.0)
+
     def testVolume(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
         self.assertEqual(box.volume(), 336.0)
