@@ -64,7 +64,7 @@ class CORE_EXPORT QgsOrientedBox3D
      */
     static QgsOrientedBox3D fromBox3D( const QgsBox3D &box );
 
-    bool operator==( const QgsOrientedBox3D &other ) const
+    bool operator==( const QgsOrientedBox3D &other ) const SIP_HOLDGIL
     {
       return qgsDoubleNear( mCenter[0], other.mCenter[0] )
              && qgsDoubleNear( mCenter[1], other.mCenter[1] )
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsOrientedBox3D
              && qgsDoubleNear( mHalfAxes[8], other.mHalfAxes[8] );
     }
 
-    bool operator!=( const QgsOrientedBox3D &other ) const
+    bool operator!=( const QgsOrientedBox3D &other ) const SIP_HOLDGIL
     {
       return !( *this == other );
     }
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsOrientedBox3D
     /**
      * Returns TRUE if the box is a null box.
      */
-    bool isNull() const;
+    bool isNull() const SIP_HOLDGIL;
 
     /**
      * Returns the center x-coordinate.
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsOrientedBox3D
      * \see centerY()
      * \see centerZ()
      */
-    double centerX() const { return mCenter[0]; }
+    double centerX() const SIP_HOLDGIL { return mCenter[0]; }
 
     /**
      * Returns the center y-coordinate.
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsOrientedBox3D
      * \see centerX()
      * \see centerZ()
      */
-    double centerY() const { return mCenter[1]; }
+    double centerY() const SIP_HOLDGIL { return mCenter[1]; }
 
     /**
      * Returns the center z-coordinate.
@@ -112,12 +112,12 @@ class CORE_EXPORT QgsOrientedBox3D
      * \see centerX()
      * \see centerY()
      */
-    double centerZ() const { return mCenter[2]; }
+    double centerZ() const SIP_HOLDGIL { return mCenter[2]; }
 
     /**
      * Returns the vector to the center of the box.
      */
-    QgsVector3D center() const { return QgsVector3D( mCenter[0], mCenter[1], mCenter[2] ); }
+    QgsVector3D center() const SIP_HOLDGIL { return QgsVector3D( mCenter[0], mCenter[1], mCenter[2] ); }
 
     /**
      * Returns the half axes matrix;
@@ -127,44 +127,44 @@ class CORE_EXPORT QgsOrientedBox3D
     /**
      * Returns the half axes matrix;
      */
-    QList< double > halfAxesList() const SIP_PYNAME( halfAxes );
+    QList< double > halfAxesList() const SIP_HOLDGIL SIP_PYNAME( halfAxes );
 
     /**
      * Returns the overall bounding box of the object.
      */
-    QgsBox3D extent() const;
+    QgsBox3D extent() const SIP_HOLDGIL;
 
     /**
      * Returns an array of all corners as 3D vectors.
      */
-    QVector< QgsVector3D > corners() const;
+    QVector< QgsVector3D > corners() const SIP_HOLDGIL;
 
     /**
      * Returns size of sides of the box.
      */
-    QgsVector3D size() const;
+    QgsVector3D size() const SIP_HOLDGIL;
 
     /**
      * Calculates the projection of the box onto a \a vector.
      */
-    QgsVector3D projectOnto( const QgsVector3D &vector ) const;
+    QgsVector3D projectOnto( const QgsVector3D &vector ) const SIP_HOLDGIL;
 
     /**
      * Reprojects corners of this box using the given coordinate \a transform
      * and returns axis-aligned box containing reprojected corners.
      * \throws QgsCsException
      */
-    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const SIP_THROW( QgsCsException );
+    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const SIP_THROW( QgsCsException ) SIP_HOLDGIL;
 
     /**
      * Returns box transformed by a 4x4 matrix.
      */
-    QgsOrientedBox3D transformed( const QgsMatrix4x4 &transform ) const;
+    QgsOrientedBox3D transformed( const QgsMatrix4x4 &transform ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the box intersects the \a other box.
      */
-    bool intersects( const QgsOrientedBox3D &other ) const;
+    bool intersects( const QgsOrientedBox3D &other ) const SIP_HOLDGIL;
 
   private:
 

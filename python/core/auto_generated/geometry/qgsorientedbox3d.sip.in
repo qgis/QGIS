@@ -48,16 +48,16 @@ Constructor for a oriented box, with a specified center and half axes matrix.
 Constructs an oriented box from an axis-aligned bounding box.
 %End
 
-    bool operator==( const QgsOrientedBox3D &other ) const;
+    bool operator==( const QgsOrientedBox3D &other ) const /HoldGIL/;
 
-    bool operator!=( const QgsOrientedBox3D &other ) const;
+    bool operator!=( const QgsOrientedBox3D &other ) const /HoldGIL/;
 
-    bool isNull() const;
+    bool isNull() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the box is a null box.
 %End
 
-    double centerX() const;
+    double centerX() const /HoldGIL/;
 %Docstring
 Returns the center x-coordinate.
 
@@ -66,7 +66,7 @@ Returns the center x-coordinate.
 .. seealso:: :py:func:`centerZ`
 %End
 
-    double centerY() const;
+    double centerY() const /HoldGIL/;
 %Docstring
 Returns the center y-coordinate.
 
@@ -75,7 +75,7 @@ Returns the center y-coordinate.
 .. seealso:: :py:func:`centerZ`
 %End
 
-    double centerZ() const;
+    double centerZ() const /HoldGIL/;
 %Docstring
 Returns the center z-coordinate.
 
@@ -84,38 +84,38 @@ Returns the center z-coordinate.
 .. seealso:: :py:func:`centerY`
 %End
 
-    QgsVector3D center() const;
+    QgsVector3D center() const /HoldGIL/;
 %Docstring
 Returns the vector to the center of the box.
 %End
 
 
-    QList< double > halfAxesList() const /PyName=halfAxes/;
+    QList< double > halfAxesList() const /HoldGIL,PyName=halfAxes/;
 %Docstring
 Returns the half axes matrix;
 %End
 
-    QgsBox3D extent() const;
+    QgsBox3D extent() const /HoldGIL/;
 %Docstring
 Returns the overall bounding box of the object.
 %End
 
-    QVector< QgsVector3D > corners() const;
+    QVector< QgsVector3D > corners() const /HoldGIL/;
 %Docstring
 Returns an array of all corners as 3D vectors.
 %End
 
-    QgsVector3D size() const;
+    QgsVector3D size() const /HoldGIL/;
 %Docstring
 Returns size of sides of the box.
 %End
 
-    QgsVector3D projectOnto( const QgsVector3D &vector ) const;
+    QgsVector3D projectOnto( const QgsVector3D &vector ) const /HoldGIL/;
 %Docstring
 Calculates the projection of the box onto a ``vector``.
 %End
 
-    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const throw( QgsCsException );
+    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const throw( QgsCsException ) /HoldGIL/;
 %Docstring
 Reprojects corners of this box using the given coordinate ``transform``
 and returns axis-aligned box containing reprojected corners.
@@ -123,12 +123,12 @@ and returns axis-aligned box containing reprojected corners.
 :raises QgsCsException: 
 %End
 
-    QgsOrientedBox3D transformed( const QgsMatrix4x4 &transform ) const;
+    QgsOrientedBox3D transformed( const QgsMatrix4x4 &transform ) const /HoldGIL/;
 %Docstring
 Returns box transformed by a 4x4 matrix.
 %End
 
-    bool intersects( const QgsOrientedBox3D &other ) const;
+    bool intersects( const QgsOrientedBox3D &other ) const /HoldGIL/;
 %Docstring
 Returns ``True`` if the box intersects the ``other`` box.
 %End

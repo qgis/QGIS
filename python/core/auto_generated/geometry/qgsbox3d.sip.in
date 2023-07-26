@@ -229,7 +229,7 @@ It is NOT normalized.
 .. versionadded:: 3.34
 %End
 
-    void normalize();
+    void normalize() /HoldGIL/;
 %Docstring
 Normalize the box so it has non-negative width/height/depth.
 %End
@@ -273,7 +273,7 @@ Returns the center of the box as a vector.
 Returns the volume of the box.
 %End
 
-    QgsBox3D intersect( const QgsBox3D &other ) const;
+    QgsBox3D intersect( const QgsBox3D &other ) const /HoldGIL/;
 %Docstring
 Returns the intersection of this box and another 3D box.
 %End
@@ -293,17 +293,17 @@ If the box is not normalized, this returns ``False``.
 .. versionadded:: 3.34
 %End
 
-    bool intersects( const QgsBox3D &other ) const;
+    bool intersects( const QgsBox3D &other ) const /HoldGIL/;
 %Docstring
 Returns ``True`` if box intersects with another box.
 %End
 
-    bool contains( const QgsBox3D &other ) const;
+    bool contains( const QgsBox3D &other ) const /HoldGIL/;
 %Docstring
 Returns ``True`` when box contains other box.
 %End
 
-    bool contains( const QgsPoint &point ) const;
+    bool contains( const QgsPoint &point ) const /HoldGIL/;
 %Docstring
 Returns ``True`` when box contains a ``point``.
 
@@ -311,7 +311,7 @@ If the point is a 2D point (no z-coordinate), then the containment test
 will be performed on the x/y extent of the box only.
 %End
 
-    bool contains( double x, double y, double z ) const;
+    bool contains( double x, double y, double z ) const /HoldGIL/;
 %Docstring
 Returns ``True`` when box contains a point (``x``, ``y``, ``z``).
 A point on the border of the box will also return ``True``
@@ -322,26 +322,26 @@ will be performed on the x/y extent of the box only.
 .. versionadded:: 3.34
 %End
 
-    void combineWith( const QgsBox3D &box );
+    void combineWith( const QgsBox3D &box ) /HoldGIL/;
 %Docstring
 Expands the bbox so that it covers both the original rectangle and the given rectangle.
 
 .. versionadded:: 3.34
 %End
 
-    void combineWith( double x, double y, double z );
+    void combineWith( double x, double y, double z ) /HoldGIL/;
 %Docstring
 Expands the bbox so that it covers both the original rectangle and the given point.
 
 .. versionadded:: 3.34
 %End
 
-    QgsRectangle toRectangle() const;
+    QgsRectangle toRectangle() const /HoldGIL/;
 %Docstring
 Converts the box to a 2D rectangle.
 %End
 
-    double distanceTo( const  QVector3D &point ) const;
+    double distanceTo( const  QVector3D &point ) const /HoldGIL/;
 %Docstring
 Returns the smallest distance between the box and the point ``point``
 (returns 0 if the point is inside the box)
@@ -349,9 +349,9 @@ Returns the smallest distance between the box and the point ``point``
 .. versionadded:: 3.18
 %End
 
-    bool operator==( const QgsBox3D &other ) const;
+    bool operator==( const QgsBox3D &other ) const /HoldGIL/;
 
-    void scale( double scaleFactor, const QgsPoint &center = QgsPoint() );
+    void scale( double scaleFactor, const QgsPoint &center = QgsPoint() ) /HoldGIL/;
 %Docstring
 Scale the rectangle around a ``center`` :py:class:`QgsPoint`.
 
@@ -360,14 +360,14 @@ If no ``center`` point is specified then the current center of the box will be u
 .. versionadded:: 3.26
 %End
 
-    void scale( double scaleFactor, double centerX, double centerY, double centerZ );
+    void scale( double scaleFactor, double centerX, double centerY, double centerZ ) /HoldGIL/;
 %Docstring
 Scale the rectangle around a center coordinates.
 
 .. versionadded:: 3.26
 %End
 
-    bool isNull() const;
+    bool isNull() const /HoldGIL/;
 %Docstring
 Test if the box is null (all coordinates NaN or after call to :py:func:`~QgsBox3D.setMinimal`).
 A null box is also an empty box.
@@ -375,7 +375,7 @@ A null box is also an empty box.
 .. versionadded:: 3.34
 %End
 
-    bool isEmpty() const;
+    bool isEmpty() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the box is empty.
 An empty box may still be non-null if it contains valid information (e.g. bounding box of a point).
@@ -383,7 +383,7 @@ An empty box may still be non-null if it contains valid information (e.g. boundi
 .. versionadded:: 3.34
 %End
 
-    QString toString( int precision = 16 ) const;
+    QString toString( int precision = 16 ) const /HoldGIL/;
 %Docstring
 Returns a string representation of form xmin,ymin,zmin : xmax,ymax,zmax
 Coordinates will be truncated to the specified precision.
@@ -392,18 +392,18 @@ If the specified precision is less than 0, a suitable minimum precision is used.
 .. versionadded:: 3.34
 %End
 
-    QVector< QgsVector3D > corners() const;
+    QVector< QgsVector3D > corners() const /HoldGIL/;
 %Docstring
 Returns an array of all box corners as 3D vectors.
 %End
 
-    QgsBox3D operator-( const QgsVector3D &v ) const;
+    QgsBox3D operator-( const QgsVector3D &v ) const /HoldGIL/;
 
-    QgsBox3D operator+( const QgsVector3D &v ) const;
+    QgsBox3D operator+( const QgsVector3D &v ) const /HoldGIL/;
 
-    QgsBox3D &operator-=( const QgsVector3D &v );
+    QgsBox3D &operator-=( const QgsVector3D &v ) /HoldGIL/;
 
-    QgsBox3D &operator+=( const QgsVector3D &v );
+    QgsBox3D &operator+=( const QgsVector3D &v ) /HoldGIL/;
 
 };
 
