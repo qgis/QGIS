@@ -1425,12 +1425,12 @@ void TestQgsCompoundCurve::moveVertex()
 
 void TestQgsCompoundCurve::deleteVertex()
 {
-  //empty line
+  // empty line
   QgsCompoundCurve cc;
   QVERIFY( !cc.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QVERIFY( cc.isEmpty() );
 
-  //valid line
+  // valid line
   QgsCircularString cs;
   cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
                 << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
@@ -1438,13 +1438,13 @@ void TestQgsCompoundCurve::deleteVertex()
                 << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 ) );
   cc.addCurve( cs.clone() );
 
-  //out of range vertices
+  // out of range vertices
   QVERIFY( !cc.deleteVertex( QgsVertexId( 0, 0, -1 ) ) );
   QVERIFY( !cc.deleteVertex( QgsVertexId( 0, 0, 100 ) ) );
 
-  //valid vertices
+  // valid vertices
   QVERIFY( cc.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
-  QCOMPARE( cc.numPoints(), 2 );
+  QCOMPARE( cc.numPoints(), 3 );
 
   QgsPoint pt;
   Qgis::VertexType v;
@@ -1452,14 +1452,32 @@ void TestQgsCompoundCurve::deleteVertex()
   QCOMPARE( pt, QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) );
 
   cc.pointAt( 1, pt, v );
-  QCOMPARE( pt, QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 ) );
+  QCOMPARE( pt, QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) );
 
-  //removing the next vertex removes all remaining vertices
-  QVERIFY( cc.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  // removing a middle vertex from a 3 point CircularString should create a LineString
+  cc.clear();
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
+                << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  cc.addCurve( cs.clone() );
+
+  QCOMPARE( cc.numPoints(), 3 );
+
+  cc.deleteVertex( QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( cc.numPoints(), 2 );
+  QCOMPARE( cc.curveAt( 0 )->asWkt(), QStringLiteral( "LineString (0 0, 0 2)" ) );
+
+  // removing a start vertex from a 3 point CircularString should remove the whole curve
+  cc.clear();
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
+                << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  cc.addCurve( cs.clone() );
+
+  QCOMPARE( cc.numPoints(), 3 );
+
+  cc.deleteVertex( QgsVertexId( 0, 0, 0 ) );
   QCOMPARE( cc.numPoints(), 0 );
-  QVERIFY( cc.isEmpty() );
 
-  //removing a vertex from a 3 point comound curveshould remove the whole line - Duplicated ?
+  // removing an end vertex from a 3 point CircularString should remove the whole curve
   cc.clear();
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
                 << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
@@ -2409,10 +2427,10 @@ void TestQgsCompoundCurve::boundingBox()
   cc.deleteVertex( QgsVertexId( 0, 0, 1 ) );
   r = cc.boundingBox();
 
-  QGSCOMPARENEAR( r.xMinimum(), 5, 0.01 );
-  QGSCOMPARENEAR( r.xMaximum(), 6.125, 0.01 );
+  QGSCOMPARENEAR( r.xMinimum(), 1.847, 0.01 );
+  QGSCOMPARENEAR( r.xMaximum(), 6.039, 0.01 );
   QGSCOMPARENEAR( r.yMinimum(), 9, 0.01 );
-  QGSCOMPARENEAR( r.yMaximum(), 10.25, 0.01 );
+  QGSCOMPARENEAR( r.yMaximum(), 12.498, 0.01 );
 }
 
 void TestQgsCompoundCurve::boundingBoxIntersects()
@@ -2468,7 +2486,7 @@ void TestQgsCompoundCurve::boundingBoxIntersects()
 
   cc.deleteVertex( QgsVertexId( 0, 0, 1 ) );
   QVERIFY( cc.boundingBoxIntersects( QgsRectangle( 5.1, -7.5, 7.2, 9.2 ) ) );
-  QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( 0, 10.3, 3, 37.6 ) ) );
+  QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( -3, 10.3, 0, 37.6 ) ) );
 }
 
 void TestQgsCompoundCurve::interpolate()

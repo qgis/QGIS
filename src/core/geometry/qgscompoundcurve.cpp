@@ -794,16 +794,52 @@ bool QgsCompoundCurve::moveVertex( QgsVertexId position, const QgsPoint &newPos 
 bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
 {
   QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
+  if ( curveIds.isEmpty() )
+    return false;
+
+  int curveId = curveIds.at( 0 ).first;
+  QgsCurve *curve = mCurves.at( curveId );
+  QgsVertexId subVertexId = curveIds.at( 0 ).second;
+
+  // We are on a vertex that belongs to one curve only
   if ( curveIds.size() == 1 )
   {
-    if ( !mCurves.at( curveIds.at( 0 ).first )->deleteVertex( curveIds.at( 0 ).second ) )
+    const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( curve );
+    // If the vertex to delete is the middle vertex of a CircularString, we transform
+    // this CircularString into a LineString without the middle vertex
+    if ( circularString && subVertexId.vertex % 2 == 1 )
+    {
+      {
+        QgsPointSequence points;
+        circularString->points( points );
+        const QgsPointSequence partA = points.mid( 0, subVertexId.vertex );
+        const QgsPointSequence partB = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex + 1];
+        const QgsPointSequence partC = points.mid( subVertexId.vertex + 1 );
+
+        std::unique_ptr<QgsCircularString> curveA = std::make_unique<QgsCircularString>();
+        curveA->setPoints( partA );
+        std::unique_ptr<QgsLineString> curveB = std::make_unique<QgsLineString>();
+        curveB->setPoints( partB );
+        std::unique_ptr<QgsCircularString> curveC = std::make_unique<QgsCircularString>();
+        curveC->setPoints( partC );
+
+        removeCurve( curveId );
+        if ( subVertexId.vertex < points.length() - 2 )
+          mCurves.insert( curveId, curveC.release() );
+        mCurves.insert( curveId, curveB.release() );
+        curve = mCurves.at( curveId );
+        if ( subVertexId.vertex > 1 )
+          mCurves.insert( curveId, curveA.release() );
+      }
+    }
+    else if ( !curve->deleteVertex( subVertexId ) )
     {
       clearCache(); //bbox may have changed
       return false;
     }
-    if ( mCurves.at( curveIds.at( 0 ).first )->numPoints() == 0 )
+    if ( curve->numPoints() == 0 )
     {
-      removeCurve( curveIds.at( 0 ).first );
+      removeCurve( curveId );
     }
   }
   else if ( curveIds.size() == 2 )
