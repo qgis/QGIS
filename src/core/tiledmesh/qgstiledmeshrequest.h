@@ -38,7 +38,7 @@ class CORE_EXPORT QgsTiledMeshRequest
     QgsTiledMeshRequest();
 
     /**
-     * Returns the required geometric error treshold for the returned nodes, in
+     * Returns the required geometric error threshold for the returned nodes, in
      * mesh CRS units.
      *
      * If the error is 0 then no geometric error filtering will be applied.
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsTiledMeshRequest
     double requiredGeometricError() const { return mRequiredGeometricError; }
 
     /**
-     * Sets the required geometric \a error treshold for the returned nodes, in
+     * Sets the required geometric \a error threshold for the returned nodes, in
      * mesh CRS units.
      *
      * If the \a error is 0 then no geometric error filtering will be applied.

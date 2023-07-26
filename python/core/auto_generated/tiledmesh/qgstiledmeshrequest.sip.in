@@ -28,7 +28,7 @@ Tiled mesh data request.
 
     double requiredGeometricError() const;
 %Docstring
-Returns the required geometric error treshold for the returned nodes, in
+Returns the required geometric error threshold for the returned nodes, in
 mesh CRS units.
 
 If the error is 0 then no geometric error filtering will be applied.
@@ -38,7 +38,7 @@ If the error is 0 then no geometric error filtering will be applied.
 
     void setRequiredGeometricError( double error );
 %Docstring
-Sets the required geometric ``error`` treshold for the returned nodes, in
+Sets the required geometric ``error`` threshold for the returned nodes, in
 mesh CRS units.
 
 If the ``error`` is 0 then no geometric error filtering will be applied.

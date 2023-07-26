@@ -44,7 +44,9 @@ class CORE_EXPORT QgsAbstractTiledMeshIndex
     QgsAbstractTiledMeshIndex();
     virtual ~QgsAbstractTiledMeshIndex();
 
+    //! QgsAbstractTiledMeshIndex cannot be copied
     QgsAbstractTiledMeshIndex( const QgsAbstractTiledMeshIndex &other ) = delete;
+    //! QgsAbstractTiledMeshIndex cannot be copied
     QgsAbstractTiledMeshIndex &operator=( const QgsAbstractTiledMeshIndex &other ) = delete;
 
     /**
