@@ -196,7 +196,7 @@ class CORE_EXPORT QgsVector3D
      * \warning the conversion may decrease the accuracy (double to float values conversion)
      * \since QGIS 3.24
      */
-    QVector3D toVector3D() const SIP_HOLDGIL { return QVector3D( mX, mY, mZ ); }
+    QVector3D toVector3D() const SIP_HOLDGIL { return QVector3D( static_cast< float >( mX ), static_cast< float >( mY ), static_cast< float >( mZ ) ); }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
