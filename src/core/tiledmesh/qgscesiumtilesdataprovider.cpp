@@ -28,6 +28,11 @@
 #include "qgsorientedbox3d.h"
 #include "qgstiledmeshboundingvolume.h"
 #include "qgscoordinatetransform.h"
+#include "qgstiledmeshnode.h"
+#include "qgstiledmeshindex.h"
+#include "qgstiledmeshrequest.h"
+#include "qgstiledmeshtile.h"
+#include "qgsreadwritelocker.h"
 
 #include <QUrl>
 #include <QIcon>
@@ -35,19 +40,418 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFileInfo>
+#include <nlohmann/json.hpp>
 
 ///@cond PRIVATE
 
 #define PROVIDER_KEY QStringLiteral( "cesiumtiles" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Cesium 3D Tiles data provider" )
 
+
+class QgsCesiumTiledMeshIndex final : public QgsAbstractTiledMeshIndex
+{
+  public:
+
+    QgsCesiumTiledMeshIndex(
+      const json &tileset,
+      const QString &rootPath,
+      const QString &authCfg,
+      const QgsHttpHeaders &headers );
+
+    std::unique_ptr< QgsTiledMeshTile > tileFromJson( const json &node, const QgsTiledMeshTile *parent );
+    QgsTiledMeshNode *nodeFromJson( const json &node, QgsTiledMeshNode *parent );
+    void refineNodeFromJson( QgsTiledMeshNode *node, const json &json );
+
+    QgsTiledMeshTile rootTile() const final;
+    QgsTiledMeshTile getTile( const QString &id ) final;
+    QString parentTileId( const QString &id ) const final;
+    QStringList childTileIds( const QString &id ) const final;
+    QStringList getTiles( const QgsTiledMeshRequest &request, const QString &parentId = QString() ) final;
+    bool tileCanRefine( const QString &id ) const final;
+    bool refineAsync( const QString &id, QgsFeedback *feedback = nullptr ) final;
+
+  protected:
+
+    QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) final;
+
+  private:
+    mutable QReadWriteLock mLock;
+    QString mRootPath;
+    std::unique_ptr< QgsTiledMeshNode > mRootNode;
+    QMap< QString, QgsTiledMeshNode * > mNodeMap;
+    QString mAuthCfg;
+    QgsHttpHeaders mHeaders;
+
+};
+
+class QgsCesiumTilesDataProviderSharedData
+{
+  public:
+    QgsCesiumTilesDataProviderSharedData();
+    void initialize( const QString &tileset,
+                     const QString &rootPath,
+                     const QgsCoordinateTransformContext &transformContext,
+                     const QString &authCfg,
+                     const QgsHttpHeaders &headers );
+
+    QgsCoordinateReferenceSystem mLayerCrs;
+    QgsCoordinateReferenceSystem mMeshCrs;
+    std::unique_ptr< QgsAbstractTiledMeshNodeBoundingVolume > mBoundingVolume;
+
+    QgsRectangle mExtent;
+    nlohmann::json mTileset;
+    QgsDoubleRange mZRange;
+
+    QgsTiledMeshIndex mIndex;
+
+    QReadWriteLock mMutex;
+
+
+};
+
+
+//
+// QgsCesiumTiledMeshIndex
+//
+
+QgsCesiumTiledMeshIndex::QgsCesiumTiledMeshIndex( const json &tileset, const QString &rootPath, const QString &authCfg, const QgsHttpHeaders &headers )
+  : mRootPath( rootPath )
+  , mAuthCfg( authCfg )
+  , mHeaders( headers )
+{
+  mRootNode.reset( nodeFromJson( tileset[ "root" ], nullptr ) );
+}
+
+std::unique_ptr< QgsTiledMeshTile > QgsCesiumTiledMeshIndex::tileFromJson( const json &json, const QgsTiledMeshTile *parent )
+{
+  std::unique_ptr< QgsTiledMeshTile > tile = std::make_unique< QgsTiledMeshTile >( QUuid::createUuid().toString() );
+
+  QgsMatrix4x4 transform;
+  if ( json.contains( "transform" ) && !json["transform"].is_null() )
+  {
+    const auto &transformJson = json["transform"];
+    double *ptr = transform.data();
+    for ( int i = 0; i < 16; ++i )
+      ptr[i] = transformJson[i].get<double>();
+
+    if ( parent && parent->transform() )
+    {
+      transform = *parent->transform() * transform;
+    }
+  }
+  else if ( parent && parent->transform() )
+  {
+    transform = *parent->transform();
+  }
+  if ( !transform.isIdentity() )
+    tile->setTransform( transform );
+
+  const auto &boundingVolume = json[ "boundingVolume" ];
+  std::unique_ptr< QgsAbstractTiledMeshNodeBoundingVolume > volume;
+  if ( boundingVolume.contains( "region" ) )
+  {
+    const QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( boundingVolume[ "region" ] );
+    if ( !rootRegion.isNull() )
+    {
+      volume = std::make_unique< QgsTiledMeshNodeBoundingVolumeRegion >( rootRegion );
+    }
+  }
+  else if ( boundingVolume.contains( "box" ) )
+  {
+    const QgsOrientedBox3D bbox = QgsCesiumUtils::parseBox( boundingVolume["box"] );
+    if ( !bbox.isNull() )
+    {
+      volume = std::make_unique< QgsTiledMeshNodeBoundingVolumeBox >( bbox );
+    }
+  }
+  else if ( boundingVolume.contains( "sphere" ) )
+  {
+    const QgsSphere sphere = QgsCesiumUtils::parseSphere( boundingVolume["sphere"] );
+    if ( !sphere.isNull() )
+    {
+      volume = std::make_unique< QgsTiledMeshNodeBoundingVolumeSphere >( sphere );
+    }
+  }
+  else
+  {
+    QgsDebugError( QStringLiteral( "unsupported boundingVolume format" ) );
+  }
+
+  if ( volume )
+  {
+    if ( !transform.isIdentity() )
+      volume->transform( transform );
+    tile->setBoundingVolume( volume.release() );
+  }
+
+  if ( json.contains( "geometricError" ) )
+    tile->setGeometricError( json["geometricError"].get< double >() );
+  if ( json.contains( "refine" ) )
+  {
+    if ( json["refine"] == "ADD" )
+      tile->setRefinementProcess( Qgis::TileRefinementProcess::Additive );
+    else if ( json["refine"] == "REPLACE" )
+      tile->setRefinementProcess( Qgis::TileRefinementProcess::Replacement );
+  }
+  else if ( parent )
+  {
+    // children inherit the parent refinement if not explicitly set -- see https://github.com/CesiumGS/cesium-native/blob/172ac5ddcce602c8b268ad342639554dea2f6004/Cesium3DTilesSelection/src/TilesetJsonLoader.cpp#L440C5-L440C40
+    tile->setRefinementProcess( parent->refinementProcess() );
+  }
+
+  if ( json.contains( "content" ) && !json["content"].is_null() )
+  {
+    const auto &contentJson = json["content"];
+
+    // sometimes URI, sometimes URL...
+    QString contentUri;
+    if ( contentJson.contains( "uri" ) && !contentJson["uri"].is_null() )
+    {
+      contentUri = mRootPath + '/' + QString::fromStdString( contentJson["uri"].get<std::string>() );
+    }
+    else if ( contentJson.contains( "url" ) && !contentJson["url"].is_null() )
+    {
+      contentUri = mRootPath + '/' + QString::fromStdString( contentJson["url"].get<std::string>() );
+    }
+    if ( !contentUri.isEmpty() )
+    {
+      tile->setResources( {{ QStringLiteral( "content" ), contentUri } } );
+    }
+  }
+
+  return tile;
+}
+
+QgsTiledMeshNode *QgsCesiumTiledMeshIndex::nodeFromJson( const json &json, QgsTiledMeshNode *parent )
+{
+  std::unique_ptr< QgsTiledMeshTile > tile = tileFromJson( json, parent ? parent->tile() : nullptr );
+  std::unique_ptr< QgsTiledMeshNode > newNode = std::make_unique< QgsTiledMeshNode >( tile.release() );
+  mNodeMap.insert( newNode->tile()->id(), newNode.get() );
+
+  if ( parent )
+    parent->addChild( newNode.get() );
+
+  if ( json.contains( "children" ) )
+  {
+    for ( const auto &childJson : json["children"] )
+    {
+      nodeFromJson( childJson, newNode.get() );
+    }
+  }
+
+  return newNode.release();
+}
+
+void QgsCesiumTiledMeshIndex::refineNodeFromJson( QgsTiledMeshNode *node, const json &json )
+{
+  std::unique_ptr< QgsTiledMeshTile > newTile = tileFromJson( json, node->parentNode() ? node->parentNode()->tile() : nullptr );
+  // copy just the resources from the retrieved tileset to the refined node. We assume all the rest of the tile content
+  // should be the same between the node being refined and the root node of the fetched sub dataset!
+  // (Ie the bounding volume, geometric error, etc).
+  node->tile()->setResources( newTile->resources() );
+
+  if ( json.contains( "children" ) )
+  {
+    for ( const auto &childJson : json["children"] )
+    {
+      nodeFromJson( childJson, node );
+    }
+  }
+}
+
+QgsTiledMeshTile QgsCesiumTiledMeshIndex::rootTile() const
+{
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  return mRootNode ? *mRootNode->tile() : QgsTiledMeshTile();
+}
+
+QgsTiledMeshTile QgsCesiumTiledMeshIndex::getTile( const QString &id )
+{
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  auto it = mNodeMap.constFind( id );
+  if ( it != mNodeMap.constEnd() )
+  {
+    return *( it.value()->tile() );
+  }
+
+  return QgsTiledMeshTile();
+}
+
+QString QgsCesiumTiledMeshIndex::parentTileId( const QString &id ) const
+{
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  auto it = mNodeMap.constFind( id );
+  if ( it != mNodeMap.constEnd() )
+  {
+    if ( QgsTiledMeshNode *parent = it.value()->parentNode() )
+    {
+      return parent->tile()->id();
+    }
+  }
+
+  return QString();
+}
+
+QStringList QgsCesiumTiledMeshIndex::childTileIds( const QString &id ) const
+{
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  auto it = mNodeMap.constFind( id );
+  if ( it != mNodeMap.constEnd() )
+  {
+    QStringList childIds;
+    const QList< QgsTiledMeshNode * > children = it.value()->children();
+    childIds.reserve( children.size() );
+    for ( QgsTiledMeshNode *child : children )
+    {
+      childIds << child->tile()->id();
+    }
+    return childIds;
+  }
+
+  return QStringList();
+}
+
+QStringList QgsCesiumTiledMeshIndex::getTiles( const QgsTiledMeshRequest &request, const QString &parentId )
+{
+  QStringList results;
+
+  std::function< void( QgsTiledMeshNode * )> traverseNode;
+  traverseNode = [&request, &traverseNode, &results]( QgsTiledMeshNode * node )
+  {
+    QgsTiledMeshTile *tile = node->tile();
+    // check filter box first -- if the node doesn't intersect, then don't include the node and don't traverse
+    // to its children
+
+    // TODO -- test intersection with request filterBox()
+
+    // TODO -- option to filter out nodes without content
+
+    if ( request.requiredGeometricError() <= 0 || tile->geometricError() <= 0 || tile->geometricError() > request.requiredGeometricError() )
+    {
+      // haven't traversed deep enough down this node, we need to explore children
+      const QList< QgsTiledMeshNode * > children = node->children();
+      for ( QgsTiledMeshNode *child : children )
+      {
+        if ( request.feedback() && request.feedback()->isCanceled() )
+          break;
+
+        traverseNode( child );
+      }
+
+      switch ( tile->refinementProcess() )
+      {
+        case Qgis::TileRefinementProcess::Additive:
+          // child add to parent content, so we must also include the parent
+          results << tile->id();
+          break;
+
+        case Qgis::TileRefinementProcess::Replacement:
+          // children replace the parent, so we skip the parent if we found children
+          if ( children.empty() )
+            results << tile->id();
+          break;
+      }
+    }
+    else
+    {
+      results << tile->id();
+    }
+
+  };
+
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  if ( parentId.isEmpty() )
+  {
+    if ( mRootNode )
+      traverseNode( mRootNode.get() );
+  }
+  else
+  {
+    auto it = mNodeMap.constFind( parentId );
+    if ( it != mNodeMap.constEnd() )
+    {
+      traverseNode( it.value() );
+    }
+  }
+
+  return results;
+}
+
+bool QgsCesiumTiledMeshIndex::tileCanRefine( const QString &id ) const
+{
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  auto it = mNodeMap.constFind( id );
+  if ( it == mNodeMap.constEnd() )
+    return false;
+
+  if ( !it.value()->children().isEmpty() )
+    return false; // already refined
+
+  const QString contentUri = it.value()->tile()->resources().value( QStringLiteral( "content" ) ).toString();
+  locker.unlock();
+
+  return contentUri.endsWith( QLatin1String( ".json" ), Qt::CaseInsensitive );
+}
+
+bool QgsCesiumTiledMeshIndex::refineAsync( const QString &id, QgsFeedback *feedback )
+{
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  auto it = mNodeMap.constFind( id );
+  if ( it == mNodeMap.constEnd() )
+    return false;
+
+  const QString contentUri = it.value()->tile()->resources().value( QStringLiteral( "content" ) ).toString();
+  locker.unlock();
+
+  if ( contentUri.endsWith( QLatin1String( ".json" ), Qt::CaseInsensitive ) )
+  {
+    // if node has content json, fetch it now and parse
+    const QByteArray subTile = retrieveContent( contentUri, feedback );
+    if ( !subTile.isEmpty() )
+    {
+      const auto subTileJson = json::parse( subTile.toStdString() );
+      locker.changeMode( QgsReadWriteLocker::Write );
+      refineNodeFromJson( it.value(), subTileJson["root"] );
+      return true;
+    }
+  }
+  return false;
+}
+
+QByteArray QgsCesiumTiledMeshIndex::fetchContent( const QString &uri, QgsFeedback *feedback )
+{
+  // TODO -- error reporting?
+  if ( uri.startsWith( "http" ) )
+  {
+    QNetworkRequest networkRequest = QNetworkRequest( QUrl( uri ) );
+    mHeaders.updateNetworkRequest( networkRequest );
+    const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet(
+                                           networkRequest, mAuthCfg, false, feedback );
+    return reply.content();
+  }
+  else if ( QFile::exists( uri ) )
+  {
+    QFile file( uri );
+    if ( file.open( QIODevice::ReadOnly ) )
+    {
+      return file.readAll();
+    }
+  }
+  return QByteArray();
+}
+
+
 //
 // QgsCesiumTilesDataProviderSharedData
 //
 
-QgsCesiumTilesDataProviderSharedData::QgsCesiumTilesDataProviderSharedData() = default;
+QgsCesiumTilesDataProviderSharedData::QgsCesiumTilesDataProviderSharedData()
+  : mIndex( QgsTiledMeshIndex( nullptr ) )
+{
 
-void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &tileset, const QgsCoordinateTransformContext &transformContext )
+}
+
+void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, const QString &rootPath, const QgsCoordinateTransformContext &transformContext, const QString &authCfg, const QgsHttpHeaders &headers )
 {
   mTileset = json::parse( tileset.toStdString() );
 
@@ -60,7 +464,20 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
     // the EPSG:4979 requirement from a region bounding volume??
 
     {
+      // TODO -- on some datasets there is a "boundingVolume" present on the tileset itself, i.e. not the root node.
+      // what does this mean? Should we use it instead of the root node bounding volume if it's present?
+
       const auto &rootBoundingVolume = root[ "boundingVolume" ];
+
+      QgsMatrix4x4 rootTransform;
+      if ( root.contains( "transform" ) && !root["transform"].is_null() )
+      {
+        const auto &transformJson = root["transform"];
+        double *ptr = rootTransform.data();
+        for ( int i = 0; i < 16; ++i )
+          ptr[i] = transformJson[i].get<double>();
+      }
+
       if ( rootBoundingVolume.contains( "region" ) )
       {
         const QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( rootBoundingVolume[ "region" ] );
@@ -88,6 +505,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
           const QgsCoordinateTransform transform( mMeshCrs, mLayerCrs, transformContext );
 
           mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeBox >( bbox );
+          mBoundingVolume->transform( rootTransform );
           try
           {
             const QgsBox3D rootRegion = mBoundingVolume->bounds( transform );
@@ -117,6 +535,7 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
           const QgsCoordinateTransform transform( mMeshCrs, mLayerCrs, transformContext );
 
           mBoundingVolume = std::make_unique< QgsTiledMeshNodeBoundingVolumeSphere >( sphere );
+          mBoundingVolume->transform( rootTransform );
           try
           {
             const QgsBox3D rootRegion = mBoundingVolume->bounds( transform );
@@ -136,6 +555,15 @@ void QgsCesiumTilesDataProviderSharedData::setTilesetContent( const QString &til
         QgsDebugError( QStringLiteral( "unsupported boundingVolume format" ) );
       }
     }
+
+    mIndex = QgsTiledMeshIndex(
+               new QgsCesiumTiledMeshIndex(
+                 mTileset,
+                 rootPath,
+                 authCfg,
+                 headers
+               )
+             );
   }
 }
 
@@ -205,18 +633,21 @@ bool QgsCesiumTilesDataProvider::init()
     }
 
     const QgsNetworkReplyContent content = networkRequest.reply();
-    mShared->setTilesetContent( content.content(), transformContext() );
+
+    const QString base = tileSetUri.left( tileSetUri.lastIndexOf( '/' ) );
+    mShared->initialize( content.content(), base, transformContext(), mAuthCfg, mHeaders );
   }
   else
   {
     // try uri as a local file
-    if ( QFileInfo::exists( dataSourceUri( ) ) )
+    const QFileInfo fi( dataSourceUri() );
+    if ( fi.exists() )
     {
       QFile file( dataSourceUri( ) );
       if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
       {
         const QByteArray raw = file.readAll();
-        mShared->setTilesetContent( raw, transformContext() );
+        mShared->initialize( raw, fi.path(), transformContext(), mAuthCfg, mHeaders );
       }
       else
       {
@@ -339,6 +770,13 @@ const QgsAbstractTiledMeshNodeBoundingVolume *QgsCesiumTilesDataProvider::boundi
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mShared ? mShared->mBoundingVolume.get() : nullptr;
+}
+
+QgsTiledMeshIndex QgsCesiumTilesDataProvider::index() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShared ? mShared->mIndex : QgsTiledMeshIndex( nullptr );
 }
 
 

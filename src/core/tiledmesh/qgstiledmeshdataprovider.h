@@ -24,6 +24,7 @@
 #include "qgis.h"
 
 class QgsAbstractTiledMeshNodeBoundingVolume;
+class QgsTiledMeshIndex;
 
 /**
  * \ingroup core
@@ -89,6 +90,17 @@ class CORE_EXPORT QgsTiledMeshDataProvider: public QgsDataProvider
      * \warning Coordinates in the returned volume are in the meshCrs() reference system, not the QgsDataProvider::crs() system.
      */
     virtual const QgsAbstractTiledMeshNodeBoundingVolume *boundingVolume() const = 0;
+
+    /**
+     * Returns the provider's tile index.
+     *
+     * This is a shallow copy, implicitly shared container for an underlying QgsAbstractTiledMeshIndex
+     * implementation.
+     *
+     * The index is thread safe and can be used safely across multiple threads or transferred between
+     * threads.
+     */
+    virtual QgsTiledMeshIndex index() const = 0;
 
 };
 

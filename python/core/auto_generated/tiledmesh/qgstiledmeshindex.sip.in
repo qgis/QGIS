@@ -1,0 +1,117 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshindex.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsTiledMeshIndex
+{
+%Docstring(signature="appended")
+An index for tiled mesh data providers.
+
+This is a shallow copy, implicitly shared container for an underlying :py:class:`QgsAbstractTiledMeshIndex`
+implementation.
+
+The class is thread safe and can be used safely across multiple threads or transferred between
+threads.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledmeshindex.h"
+%End
+  public:
+
+
+    ~QgsTiledMeshIndex();
+
+    QgsTiledMeshIndex( const QgsTiledMeshIndex &other );
+%Docstring
+Copy constructor
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the index is valid.
+%End
+
+    QgsTiledMeshTile rootTile() const;
+%Docstring
+Returns the root tile for the index.
+%End
+
+    QgsTiledMeshTile getTile( const QString &id );
+%Docstring
+Returns the tile with matching ``id``, or an invalid tile if the matching tile is not available.
+%End
+
+    QString parentTileId( const QString &id ) const;
+%Docstring
+Returns the tile ID of the parent tile of the tile with matching ``id``, or an empty string
+if the tile has no parent.
+
+.. seealso:: :py:func:`childTileIds`
+%End
+
+    QStringList childTileIds( const QString &id ) const;
+%Docstring
+Returns a list of the tile IDs of any children for the tile with matching ``id``.
+
+.. seealso:: :py:func:`parentTileId`
+%End
+
+    QStringList getTiles( const QgsTiledMeshRequest &request, const QString &parentId = QString() );
+%Docstring
+Returns the list of tile IDs which match the given ``request``.
+
+An optional ``parentID`` can be used to limit the results to children of a specific tile.
+
+May return an empty list if no data satisfies the request.
+%End
+
+    bool tileCanRefine( const QString &id ) const;
+%Docstring
+Returns ``True`` if the tile with the given ``id`` can be further refined.
+
+.. seealso:: :py:func:`refineAsync`
+%End
+
+    bool refineAsync( const QString &id, QgsFeedback *feedback = 0 );
+%Docstring
+Refines the tile with the given ``id`` by fetching any sub datasets attached to the tile.
+
+Blocks while the tile refinement is in progress.
+
+Returns ``True`` if the refinement was successful.
+
+.. seealso:: :py:func:`tileCanRefine`
+%End
+
+    QByteArray retrieveContent( const QString &uri, QgsFeedback *feedback = 0 );
+%Docstring
+Retrieves index content for the specified ``uri``.
+
+The content is cached within the index, so multiple calls are potentially cost-free.
+
+The optional ``feedback`` argument can be used the cancel the request early.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledmesh/qgstiledmeshindex.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
