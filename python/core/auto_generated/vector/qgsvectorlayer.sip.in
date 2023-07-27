@@ -516,6 +516,8 @@ Uses :py:class:`QgsExpression`
 
     virtual QgsVectorDataProvider *dataProvider() ${SIP_FINAL};
 
+    virtual QgsMapLayerSelectionProperties *selectionProperties();
+
     virtual QgsMapLayerTemporalProperties *temporalProperties();
 
     virtual QgsMapLayerElevationProperties *elevationProperties();

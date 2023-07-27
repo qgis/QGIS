@@ -62,6 +62,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayerfeaturecounter.h"
+#include "qgsvectorlayerselectionproperties.h"
 #include "qgspoint.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayer.h"
@@ -163,6 +164,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &providerKey,
                                 const QgsVectorLayer::LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::Vector, baseName, vectorLayerPath )
+  , mSelectionProperties( new QgsVectorLayerSelectionProperties( this ) )
   , mTemporalProperties( new QgsVectorLayerTemporalProperties( this ) )
   , mElevationProperties( new QgsVectorLayerElevationProperties( this ) )
   , mAuxiliaryLayer( nullptr )
@@ -374,6 +376,9 @@ QgsVectorLayer *QgsVectorLayer::clone() const
 
   layer->mElevationProperties = mElevationProperties->clone();
   layer->mElevationProperties->setParent( layer );
+
+  layer->mSelectionProperties = mSelectionProperties->clone();
+  layer->mSelectionProperties->setParent( layer );
 
   return layer;
 }
@@ -745,6 +750,13 @@ const QgsVectorDataProvider *QgsVectorLayer::dataProvider() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mDataProvider;
+}
+
+QgsMapLayerSelectionProperties *QgsVectorLayer::selectionProperties()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSelectionProperties;
 }
 
 QgsMapLayerTemporalProperties *QgsVectorLayer::temporalProperties()
@@ -2616,6 +2628,9 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       {
         setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
       }
+
+      if ( mSelectionProperties )
+        mSelectionProperties->readXml( node.toElement(), context );
     }
 
     // read labeling definition
@@ -3026,6 +3041,11 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       {
         QDomElement rendererElement = mRenderer->save( doc, context );
         node.appendChild( rendererElement );
+      }
+      if ( mSelectionProperties )
+      {
+        QDomElement rendererElement = mRenderer->save( doc, context );
+        mSelectionProperties->writeXml( mapLayerNode, doc, context );
       }
     }
 

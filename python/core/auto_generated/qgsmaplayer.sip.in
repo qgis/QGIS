@@ -1501,6 +1501,13 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    virtual QgsMapLayerSelectionProperties *selectionProperties();
+%Docstring
+Returns the layer's selection properties. This may be ``None``, depending on the layer type.
+
+.. versionadded:: 3.34
+%End
+
     virtual QgsMapLayerTemporalProperties *temporalProperties();
 %Docstring
 Returns the layer's temporal properties. This may be ``None``, depending on the layer type.

@@ -1,0 +1,46 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vector/qgsvectorlayerselectionproperties.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsVectorLayerSelectionProperties : QgsMapLayerSelectionProperties
+{
+%Docstring(signature="appended")
+Implementation of layer selection properties for vector layers.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerselectionproperties.h"
+%End
+  public:
+
+    QgsVectorLayerSelectionProperties( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsVectorLayerSelectionProperties, with the specified ``parent`` object.
+%End
+
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QgsVectorLayerSelectionProperties *clone() const /Factory/;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vector/qgsvectorlayerselectionproperties.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
