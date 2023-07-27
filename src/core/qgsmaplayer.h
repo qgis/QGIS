@@ -51,6 +51,7 @@ class QgsProject;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
 class QgsMapLayerElevationProperties;
+class QgsMapLayerSelectionProperties;
 class QgsSldExportContext;
 
 class QDomDocument;
@@ -1520,6 +1521,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.10
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    /**
+     * Returns the layer's selection properties. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.34
+     */
+    virtual QgsMapLayerSelectionProperties *selectionProperties() { return nullptr; }
 
     /**
      * Returns the layer's temporal properties. This may be NULLPTR, depending on the layer type.

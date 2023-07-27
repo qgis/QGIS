@@ -458,6 +458,7 @@ set(QGIS_CORE_SRCS
   qgsmaplayermodel.cpp
   qgsmaplayerproxymodel.cpp
   qgsmaplayerrenderer.cpp
+  qgsmaplayerselectionproperties.cpp
   qgsmaplayerserverproperties.cpp
   qgsmaplayerstore.cpp
   qgsmaplayerstyle.cpp
@@ -911,6 +912,7 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayerjoininfo.cpp
   vector/qgsvectorlayerprofilegenerator.cpp
   vector/qgsvectorlayerrenderer.cpp
+  vector/qgsvectorlayerselectionproperties.cpp
   vector/qgsvectorlayertemporalproperties.cpp
   vector/qgsvectorlayertools.cpp
   vector/qgsvectorlayerundocommand.cpp
@@ -1152,6 +1154,7 @@ set(QGIS_CORE_HDRS
   qgsmaplayerstyle.h
   qgsmaplayerstylemanager.h
   qgsmaplayerelevationproperties.h
+  qgsmaplayerselectionproperties.h
   qgsmaplayertemporalproperties.h
   qgsmaplayerutils.h
   qgsmapsettings.h
@@ -1952,6 +1955,7 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayerjoininfo.h
   vector/qgsvectorlayerprofilegenerator.h
   vector/qgsvectorlayerrenderer.h
+  vector/qgsvectorlayerselectionproperties.h
   vector/qgsvectorlayertemporalproperties.h
   vector/qgsvectorlayertools.h
   vector/qgsvectorlayerundocommand.h

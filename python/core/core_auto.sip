@@ -109,6 +109,7 @@
 %Include auto_generated/qgsmaplayerstyle.sip
 %Include auto_generated/qgsmaplayerstylemanager.sip
 %Include auto_generated/qgsmaplayerelevationproperties.sip
+%Include auto_generated/qgsmaplayerselectionproperties.sip
 %Include auto_generated/qgsmaplayertemporalproperties.sip
 %Include auto_generated/qgsmaplayerutils.sip
 %Include auto_generated/qgsmapsettings.sip
@@ -746,6 +747,7 @@
 %Include auto_generated/vector/qgsvectorlayerfeatureiterator.sip
 %Include auto_generated/vector/qgsvectorlayerjoinbuffer.sip
 %Include auto_generated/vector/qgsvectorlayerjoininfo.sip
+%Include auto_generated/vector/qgsvectorlayerselectionproperties.sip
 %Include auto_generated/vector/qgsvectorlayertemporalproperties.sip
 %Include auto_generated/vector/qgsvectorlayertools.sip
 %Include auto_generated/vector/qgsvectorlayerundocommand.sip
