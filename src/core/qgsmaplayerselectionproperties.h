@@ -44,9 +44,9 @@ class CORE_EXPORT QgsMapLayerSelectionProperties : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( qobject_cast<QgsVectorLayerTemporalProperties *>( sipCpp ) )
+    if ( qobject_cast<QgsVectorLayerSelectionProperties *>( sipCpp ) )
     {
-      sipType = sipType_QgsVectorLayerTemporalProperties;
+      sipType = sipType_QgsVectorLayerSelectionProperties;
     }
     else
     {

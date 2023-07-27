@@ -26,9 +26,9 @@ how an individual :py:class:`QgsMapLayer` behaves with respect to feature select
 #include "qgsvectorlayerselectionproperties.h"
 %End
 %ConvertToSubClassCode
-    if ( qobject_cast<QgsVectorLayerTemporalProperties *>( sipCpp ) )
+    if ( qobject_cast<QgsVectorLayerSelectionProperties *>( sipCpp ) )
     {
-      sipType = sipType_QgsVectorLayerTemporalProperties;
+      sipType = sipType_QgsVectorLayerSelectionProperties;
     }
     else
     {

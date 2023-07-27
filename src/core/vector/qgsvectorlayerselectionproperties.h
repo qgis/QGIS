@@ -24,6 +24,8 @@
 #include "qgis_sip.h"
 #include "qgsmaplayerselectionproperties.h"
 
+#include <QColor>
+
 /**
  * \class QgsVectorLayerSelectionProperties
  * \ingroup core
@@ -46,7 +48,29 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsVectorLayerSelectionProperties *clone() const override SIP_FACTORY;
 
+    /**
+     * Returns the color to use for rendering selected features in the layer.
+     *
+     * An invalid color indicates that the default (i.e. project level) selection
+     * color should be used instead.
+     *
+     * \see setSelectionColor()
+     */
+    QColor selectionColor() const;
+
+    /**
+     * Sets the \a color to use for rendering selected features in the layer.
+     *
+     * An invalid \a color indicates that the default (i.e. project level) selection
+     * color should be used instead.
+     *
+     * \see selectionColor()
+     */
+    void setSelectionColor( const QColor &color );
+
   private:
+
+    QColor mSelectionColor;
 
 };
 

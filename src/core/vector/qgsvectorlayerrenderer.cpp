@@ -15,7 +15,6 @@
 
 #include "qgsvectorlayerrenderer.h"
 
-
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsrenderer.h"
@@ -36,6 +35,7 @@
 #include "qgssettingsregistrycore.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsvectorlayerselectionproperties.h"
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgsmapclippingutils.h"
 #include "qgsfeaturerenderergenerator.h"
@@ -53,6 +53,11 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   , mNoSetLayerExpressionContext( layer->customProperty( QStringLiteral( "_noset_layer_expression_context" ) ).toBool() )
 {
   std::unique_ptr< QgsFeatureRenderer > mainRenderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
+
+  // overwrite default selection color if layer has a specific selection color set
+  const QColor layerSelectionColor = qobject_cast< QgsVectorLayerSelectionProperties * >( layer->selectionProperties() )->selectionColor();
+  if ( layerSelectionColor.isValid() )
+    context.setSelectionColor( layerSelectionColor );
 
   if ( !mainRenderer )
     return;

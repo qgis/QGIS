@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerselectionproperties.h"
+#include "qgscolorutils.h"
 
 QgsVectorLayerSelectionProperties::QgsVectorLayerSelectionProperties( QObject *parent )
   :  QgsMapLayerSelectionProperties( parent )
@@ -27,6 +28,8 @@ QDomElement QgsVectorLayerSelectionProperties::writeXml( QDomElement &parentElem
 {
   QDomElement element = document.createElement( QStringLiteral( "selection" ) );
 
+  QgsColorUtils::writeXml( mSelectionColor, QStringLiteral( "selectionColor" ), document, element, context );
+
   parentElement.appendChild( element );
   return element;
 }
@@ -37,11 +40,23 @@ bool QgsVectorLayerSelectionProperties::readXml( const QDomElement &element, con
   if ( selectionElement.isNull() )
     return false;
 
+  mSelectionColor = QgsColorUtils::readXml( selectionElement, QStringLiteral( "selectionColor" ), context );
   return true;
 }
 
 QgsVectorLayerSelectionProperties *QgsVectorLayerSelectionProperties::clone() const
 {
   std::unique_ptr< QgsVectorLayerSelectionProperties > res = std::make_unique< QgsVectorLayerSelectionProperties >( nullptr );
+  res->mSelectionColor = mSelectionColor;
   return res.release();
+}
+
+QColor QgsVectorLayerSelectionProperties::selectionColor() const
+{
+  return mSelectionColor;
+}
+
+void QgsVectorLayerSelectionProperties::setSelectionColor( const QColor &color )
+{
+  mSelectionColor = color;
 }

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsVectorLayerSelectionProperties : QgsMapLayerSelectionProperties
 {
 %Docstring(signature="appended")
@@ -34,6 +35,26 @@ Constructor for QgsVectorLayerSelectionProperties, with the specified ``parent``
 
     virtual QgsVectorLayerSelectionProperties *clone() const /Factory/;
 
+
+    QColor selectionColor() const;
+%Docstring
+Returns the color to use for rendering selected features in the layer.
+
+An invalid color indicates that the default (i.e. project level) selection
+color should be used instead.
+
+.. seealso:: :py:func:`setSelectionColor`
+%End
+
+    void setSelectionColor( const QColor &color );
+%Docstring
+Sets the ``color`` to use for rendering selected features in the layer.
+
+An invalid ``color`` indicates that the default (i.e. project level) selection
+color should be used instead.
+
+.. seealso:: :py:func:`selectionColor`
+%End
 
 };
 
