@@ -3044,7 +3044,6 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       }
       if ( mSelectionProperties )
       {
-        QDomElement rendererElement = mRenderer->save( doc, context );
         mSelectionProperties->writeXml( mapLayerNode, doc, context );
       }
     }
