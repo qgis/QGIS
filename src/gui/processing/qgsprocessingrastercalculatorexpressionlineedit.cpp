@@ -20,7 +20,6 @@
 #include "qgsapplication.h"
 #include "qgsfilterlineedit.h"
 #include "qgsmaplayer.h"
-//#include "qgsrastercalculator.h"
 
 #include <QHBoxLayout>
 #include <QToolButton>
@@ -54,14 +53,9 @@ QgsProcessingRasterCalculatorExpressionLineEdit::QgsProcessingRasterCalculatorEx
 
 QgsProcessingRasterCalculatorExpressionLineEdit::~QgsProcessingRasterCalculatorExpressionLineEdit() = default;
 
-void QgsProcessingRasterCalculatorExpressionLineEdit::setLayers( QList<QgsMapLayer *> layers )
+void QgsProcessingRasterCalculatorExpressionLineEdit::setLayers( QVariantList layers )
 {
   mLayers = layers;
-}
-
-QList<QgsMapLayer *> QgsProcessingRasterCalculatorExpressionLineEdit::layers() const
-{
-  return mLayers;
 }
 
 QString QgsProcessingRasterCalculatorExpressionLineEdit::expression() const
@@ -102,7 +96,7 @@ void QgsProcessingRasterCalculatorExpressionLineEdit::expressionEdited( const QS
 }
 
 
-QgsProcessingRasterCalculatorExpressionDialog::QgsProcessingRasterCalculatorExpressionDialog( QList<QgsMapLayer *> layers, const QString &startExpression, QWidget *parent )
+QgsProcessingRasterCalculatorExpressionDialog::QgsProcessingRasterCalculatorExpressionDialog( QVariantList layers, const QString &startExpression, QWidget *parent )
   : QDialog( parent )
   , mLayers( layers )
   , mInitialText( startExpression )
@@ -113,7 +107,6 @@ QgsProcessingRasterCalculatorExpressionDialog::QgsProcessingRasterCalculatorExpr
   populateLayers();
 
   connect( mLayersList, &QListWidget::itemDoubleClicked, this, &QgsProcessingRasterCalculatorExpressionDialog::mLayersList_itemDoubleClicked );
-  //connect( mExpressionTextEdit, &QTextEdit::textChanged, this, &QgsProcessingRasterCalculatorExpressionDialog::mExpressionTextEdit_textChanged );
 
   connect( mBtnPlus, &QPushButton::clicked, this, &QgsProcessingRasterCalculatorExpressionDialog::mBtnPlus_clicked );
   connect( mBtnMinus, &QPushButton::clicked, this, &QgsProcessingRasterCalculatorExpressionDialog::mBtnMinus_clicked );
@@ -164,26 +157,13 @@ void QgsProcessingRasterCalculatorExpressionDialog::populateLayers()
     return;
   }
 
-  for ( const QgsMapLayer *layer : mLayers )
+  for ( const QVariant &layer : mLayers )
   {
-    QListWidgetItem *item = new QListWidgetItem( layer->name(), mLayersList );
-    item->setData( Qt::ToolTipRole, layer->source() );
+    QListWidgetItem *item = new QListWidgetItem( layer.toString(), mLayersList );
     mLayersList->addItem( item );
   }
 }
-/*
-bool QgsProcessingRasterCalculatorExpressionDialog::expressionValid() const
-{
-  QString errorString;
-  QgsRasterCalcNode *testNode = QgsRasterCalcNode::parseRasterCalcString( mExpressionTextEdit->toPlainText(), errorString );
-  if ( testNode )
-  {
-    delete testNode;
-    return true;
-  }
-  return false;
-}
-*/
+
 QString QgsProcessingRasterCalculatorExpressionDialog::quoteBandEntry( const QString &layerName )
 {
   // '"' -> '\\"'
@@ -198,19 +178,7 @@ void QgsProcessingRasterCalculatorExpressionDialog::mLayersList_itemDoubleClicke
 {
   mExpressionTextEdit->insertPlainText( quoteBandEntry( item->text() ) );
 }
-/*
-void QgsProcessingRasterCalculatorExpressionDialog::mExpressionTextEdit_textChanged()
-{
-  if ( expressionValid() )
-  {
-    mExpressionValidLabel->setText( tr( "Expression valid" ) );
-  }
-  else
-  {
-    mExpressionValidLabel->setText( tr( "Expression invalid" ) );
-  }
-}
-*/
+
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnPlus_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " + " ) );

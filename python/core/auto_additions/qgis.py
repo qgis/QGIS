@@ -3759,7 +3759,8 @@ Qgis.AttributeFormPythonInitCodeSource.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ExpressionType.Qgis.__doc__ = "Native QGIS expression"
 Qgis.ExpressionType.PointCloud.__doc__ = "Point cloud expression"
-Qgis.ExpressionType.__doc__ = "Expression types\n\n.. versionadded:: 3.32\n\n" + '* ``Qgis``: ' + Qgis.ExpressionType.Qgis.__doc__ + '\n' + '* ``PointCloud``: ' + Qgis.ExpressionType.PointCloud.__doc__
+Qgis.ExpressionType.RasterCalculator.__doc__ = "Raster calculator expression"
+Qgis.ExpressionType.__doc__ = "Expression types\n\n.. versionadded:: 3.32\n\n" + '* ``Qgis``: ' + Qgis.ExpressionType.Qgis.__doc__ + '\n' + '* ``PointCloud``: ' + Qgis.ExpressionType.PointCloud.__doc__ + '\n' + '* ``RasterCalculator``: ' + Qgis.ExpressionType.RasterCalculator.__doc__
 # --
 Qgis.ExpressionType.baseClass = Qgis
 QgsVectorFileWriter.SymbologyExport = Qgis.FeatureSymbologyExport

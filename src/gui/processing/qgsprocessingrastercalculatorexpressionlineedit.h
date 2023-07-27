@@ -57,13 +57,7 @@ class GUI_EXPORT QgsProcessingRasterCalculatorExpressionLineEdit : public QWidge
     /**
      * Sets a layers associated with the widget.
      */
-    void setLayers( QList<QgsMapLayer *> layers );
-
-    /**
-     * Returns the layers currently associated with the widget.
-     * \see setLayers()
-     */
-    QList<QgsMapLayer *> layers() const;
+    void setLayers( QVariantList layers );
 
     /**
      * Returns the current expression shown in the widget.
@@ -99,7 +93,7 @@ class GUI_EXPORT QgsProcessingRasterCalculatorExpressionLineEdit : public QWidge
   private:
     QgsFilterLineEdit *mLineEdit = nullptr;
     QToolButton *mButton = nullptr;
-    QList<QgsMapLayer *> mLayers;
+    QVariantList mLayers;
 };
 
 /**
@@ -117,7 +111,7 @@ class GUI_EXPORT QgsProcessingRasterCalculatorExpressionDialog : public QDialog,
     /**
      * Constructor for QgsProcessingRasterCalculatorExpressionDialog.
      */
-    QgsProcessingRasterCalculatorExpressionDialog( QList<QgsMapLayer *> layers, const QString &startExpression = QString(), QWidget *parent = nullptr );
+    QgsProcessingRasterCalculatorExpressionDialog( QVariantList layers, const QString &startExpression = QString(), QWidget *parent = nullptr );
 
     /**
      * Sets the current expression to show in the widget.
@@ -134,7 +128,6 @@ class GUI_EXPORT QgsProcessingRasterCalculatorExpressionDialog : public QDialog,
 
   private slots:
     void mLayersList_itemDoubleClicked( QListWidgetItem *item );
-    //void mExpressionTextEdit_textChanged();
 
     //calculator buttons
     void mBtnPlus_clicked();
@@ -167,15 +160,12 @@ class GUI_EXPORT QgsProcessingRasterCalculatorExpressionDialog : public QDialog,
     void mBtnLn_clicked();
 
   private:
-    //! Returns true if raster calculator expression has valid syntax
-    //bool expressionValid() const;
-
     //! Populate the layer list
     void populateLayers();
 
     static QString quoteBandEntry( const QString &layerName );
 
-    QList<QgsMapLayer *> mLayers;
+    QVariantList mLayers;
     const QString mInitialText;
 };
 

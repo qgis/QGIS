@@ -3765,6 +3765,7 @@ class CORE_EXPORT Qgis
     {
       Qgis, //!< Native QGIS expression
       PointCloud, //!< Point cloud expression
+      RasterCalculator, //!< Raster calculator expression
     };
     Q_ENUM( ExpressionType )
 

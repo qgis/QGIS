@@ -2162,6 +2162,7 @@ The development version
     {
       Qgis,
       PointCloud,
+      RasterCalculator,
     };
 
     enum class FeatureSymbologyExport
