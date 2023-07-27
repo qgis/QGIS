@@ -770,7 +770,6 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
   if ( mMainView->view() == QgsDualView::AttributeTable )
   {
     const QList<QgsFeatureId> featureIds = mMainView->tableView()->selectedFeaturesIds();
-    QgsFeatureStore featureStore;
     QgsFields fields = QgsFields( mLayer->fields() );
     QStringList fieldNames;
 
@@ -785,25 +784,33 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
       }
       fieldNames << columnConfig.name;
     }
-    featureStore.setFields( fields );
-
-    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( qgis::listToSet( featureIds ) )
-                            .setSubsetOfAttributes( fieldNames, mLayer->fields() ) );
-    QgsFeatureMap featureMap;
-    QgsFeature feature;
-    while ( it.nextFeature( feature ) )
+    if ( fields != mLayer->fields() )
     {
-      QgsVectorLayerUtils::matchAttributesToFields( feature, fields );
-      featureMap[feature.id()] = feature;
+      QgsFeatureStore featureStore;
+      featureStore.setFields( fields );
+
+      QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( qgis::listToSet( featureIds ) )
+                              .setSubsetOfAttributes( fieldNames, mLayer->fields() ) );
+      QgsFeatureMap featureMap;
+      QgsFeature feature;
+      while ( it.nextFeature( feature ) )
+      {
+        QgsVectorLayerUtils::matchAttributesToFields( feature, fields );
+        featureMap[feature.id()] = feature;
+      }
+      for ( const QgsFeatureId &id : featureIds )
+      {
+        featureStore.addFeature( featureMap[id] );
+      }
+
+      featureStore.setCrs( mLayer->crs() );
+
+      QgisApp::instance()->clipboard()->replaceWithCopyOf( featureStore );
     }
-    for ( const QgsFeatureId &id : featureIds )
+    else
     {
-      featureStore.addFeature( featureMap[id] );
+      QgisApp::instance()->copySelectionToClipboard( mLayer );
     }
-
-    featureStore.setCrs( mLayer->crs() );
-
-    QgisApp::instance()->clipboard()->replaceWithCopyOf( featureStore );
   }
   else
   {
