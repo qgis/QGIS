@@ -19,13 +19,14 @@
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsproject.h"
 
 
 QgsVectorLayerTools::QgsVectorLayerTools()
   : QObject( nullptr )
 {}
 
-bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer ) const
+bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer, QString *childrenInfoMsg ) const
 {
   bool res = false;
   if ( !layer || !layer->isEditable() )
@@ -41,12 +42,27 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   int noGeometryCount = 0;
 
   QgsFeatureIds fidList;
-
+  QString childrenInfo;
   while ( fi.nextFeature( f ) )
   {
     browsedFeatureCount++;
 
-    QgsFeature newFeature = QgsVectorLayerUtils::createFeature( layer, f.geometry(), f.attributes().toMap() );
+    QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicateFeatureContext;
+    QgsFeature newFeature;
+    if ( mProject )
+    {
+      newFeature = QgsVectorLayerUtils::duplicateFeature( layer, f, mProject, duplicateFeatureContext );
+    }
+    else
+    {
+      newFeature = QgsVectorLayerUtils::createFeature( layer, f.geometry(), f.attributes().toMap() );
+    }
+
+    const auto duplicatedFeatureContextLayers = duplicateFeatureContext.layers();
+    for ( QgsVectorLayer *chl : duplicatedFeatureContextLayers )
+    {
+      childrenInfo += ( tr( "%1 children on layer %2 duplicated" ).arg( QLocale().toString( duplicateFeatureContext.duplicatedFeatures( chl ).size() ), chl->name() ) );
+    }
 
     // translate
     if ( newFeature.hasGeometry() )
@@ -84,6 +100,11 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
 
   request = QgsFeatureRequest();
   request.setFilterFids( fidList );
+
+  if ( childrenInfoMsg && !childrenInfo.isEmpty() )
+  {
+    childrenInfoMsg->append( childrenInfo );
+  }
 
   if ( !couldNotWriteCount && !noGeometryCount )
   {

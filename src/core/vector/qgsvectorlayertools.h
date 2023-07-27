@@ -25,6 +25,7 @@
 
 class QgsFeatureRequest;
 class QgsVectorLayer;
+class QgsProject;
 
 /**
  * \ingroup core
@@ -111,10 +112,11 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param topologicalEditing If TRUE, the function will perform topological
      * editing of the vertices of \a layer on \a layer and \a topologicalLayer
      * \param topologicalLayer The layer where vertices from the moved features of \a layer will be added
+     * \param childrenInfoMsg If given, it will contain messages related to the creation of child features
      * \returns TRUE if all features could be copied.
      *
      */
-    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr ) const;
+    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr, QString *childrenInfoMsg SIP_OUT = nullptr ) const;
 
     /**
      * Returns force suppress form popup status.
@@ -134,8 +136,23 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      */
     void setForceSuppressFormPopup( bool forceSuppressFormPopup );
 
+    /**
+     * Sets the project to be used by operations when needed.
+     *
+     * \since QGIS 3.34
+     */
+    void setProject( QgsProject *project ) { mProject = project; }
+
+    /**
+     * Returns the project to be used by operations when needed.
+     *
+     * \since QGIS 3.34
+     */
+    QgsProject *project() const { return mProject; }
+
   private:
 
+    QgsProject *mProject = nullptr;
     bool mForceSuppressFormPopup { false };
 
 
