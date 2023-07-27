@@ -97,9 +97,10 @@ void QgsBox3D::setMinimal()
 void QgsBox3D::normalize()
 {
   mBounds2d.normalize();
-  const double minTmp = std::min( mZmin, mZmax );
-  mZmax = std::max( mZmin, mZmax );
-  mZmin = minTmp;
+  if ( mZmin > mZmax )
+  {
+    std::swap( mZmin, mZmax );
+  }
 }
 
 QgsBox3D QgsBox3D::intersect( const QgsBox3D &other ) const
