@@ -187,16 +187,21 @@ bool QgsBox3D::contains( double x, double y, double z ) const
  */
 void QgsBox3D::combineWith( const QgsBox3D &box )
 {
-  // FIXME:  mBounds2d.combineExtentWith( box.mBounds2d ); cannot be used at the moment
-  // because QgsRectangle(0, 0, 0, 0) is considered as null.
-  // Thus, combining QgsBox3D(0, 0, 0, 0, 0, 0) with another box will ignore the
-  // 0 2d coordinates.
-  mBounds2d.setXMinimum( std::min( mBounds2d.xMinimum(), box.xMinimum() ) );
-  mBounds2d.setXMaximum( std::max( mBounds2d.xMaximum(), box.xMaximum() ) );
-  mBounds2d.setYMinimum( std::min( mBounds2d.yMinimum(), box.yMinimum() ) );
-  mBounds2d.setYMaximum( std::max( mBounds2d.yMaximum(), box.yMaximum() ) );
-  mZmin = std::min( mZmin, box.zMinimum() );
-  mZmax = std::max( mZmax, box.zMaximum() );
+  if ( isNull() )
+    *this = box;
+  else if ( !box.isNull() )
+  {
+    // FIXME:  mBounds2d.combineExtentWith( box.mBounds2d ); cannot be used at the moment
+    // because QgsRectangle(0, 0, 0, 0) is considered as null.
+    // Thus, combining QgsBox3D(0, 0, 0, 0, 0, 0) with another box will ignore the
+    // 0 2d coordinates.
+    mBounds2d.setXMinimum( ( mBounds2d.xMinimum() < box.xMinimum() ) ? mBounds2d.xMinimum() : box.xMinimum() );
+    mBounds2d.setXMaximum( ( mBounds2d.xMaximum() > box.xMaximum() ) ? mBounds2d.xMaximum() : box.xMaximum() );
+    mBounds2d.setYMinimum( ( mBounds2d.yMinimum() < box.yMinimum() ) ? mBounds2d.yMinimum() : box.yMinimum() );
+    mBounds2d.setYMaximum( ( mBounds2d.yMaximum() > box.yMaximum() ) ? mBounds2d.yMaximum() : box.yMaximum() );
+    mZmin = ( mZmin < box.zMinimum() ) ? mZmin : box.zMinimum();
+    mZmax = ( mZmax > box.zMaximum() ) ? mZmax : box.zMaximum();
+  }
 }
 
 /**
@@ -204,15 +209,20 @@ void QgsBox3D::combineWith( const QgsBox3D &box )
  */
 void QgsBox3D::combineWith( double x, double y, double z )
 {
-  // FIXME:  mBounds2d.combineExtentWith( box.mBounds2d ); cannot be used at the moment
-  // because QgsRectangle(0, 0, 0, 0) is considered as null.
-  // Thus, combining QgsBox3D(0, 0, 0, 0, 0, 0) will ignore the 0 2d coordinates.
-  mBounds2d.setXMinimum( std::min( mBounds2d.xMinimum(), x ) );
-  mBounds2d.setXMaximum( std::max( mBounds2d.xMaximum(), x ) );
-  mBounds2d.setYMinimum( std::min( mBounds2d.yMinimum(), y ) );
-  mBounds2d.setYMaximum( std::max( mBounds2d.yMaximum(), y ) );
-  mZmin = std::min( mZmin, z );
-  mZmax = std::max( mZmax, z );
+  if ( isNull() )
+    *this = QgsBox3D( x, y, z, x, y, z );
+  else
+  {
+    // FIXME:  mBounds2d.combineExtentWith( box.mBounds2d ); cannot be used at the moment
+    // because QgsRectangle(0, 0, 0, 0) is considered as null.
+    // Thus, combining QgsBox3D(0, 0, 0, 0, 0, 0) will ignore the 0 2d coordinates.
+    mBounds2d.setXMinimum( ( mBounds2d.xMinimum() ) < x ? mBounds2d.xMinimum() : x );
+    mBounds2d.setXMaximum( ( mBounds2d.xMaximum() ) > x ? mBounds2d.xMaximum() : x );
+    mBounds2d.setYMinimum( ( mBounds2d.yMinimum() ) < y ? mBounds2d.yMinimum() : y );
+    mBounds2d.setYMaximum( ( mBounds2d.yMaximum() ) > y ? mBounds2d.yMaximum() : y );
+    mZmin = ( mZmin < z ) ? mZmin : z;
+    mZmax = ( mZmax > z ) ? mZmax : z;
+  }
 }
 
 double QgsBox3D::distanceTo( const  QVector3D &point ) const
