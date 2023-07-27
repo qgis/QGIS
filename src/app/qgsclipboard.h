@@ -26,6 +26,7 @@
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsmaplayer.h"
 #include "qgis_app.h"
 
 class QgsVectorLayer;
@@ -140,6 +141,8 @@ class APP_EXPORT QgsClipboard : public QObject
      */
     QgsFields fields() const;
 
+    QgsMapLayer *layer() const;
+
   private slots:
 
     void systemClipboardChanged();
@@ -184,6 +187,7 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsFeatureList mFeatureClipboard;
     QgsFields mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
+    QPointer<QgsMapLayer> mFeatureLayer;
 
     //! True if next system clipboard change should be ignored
     bool mIgnoreNextSystemClipboardChange = false;

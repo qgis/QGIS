@@ -59,6 +59,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   mFeatureFields = src->fields();
   mFeatureClipboard = src->selectedFeatures();
   mCRS = src->crs();
+  mFeatureLayer = src;
   QgsDebugMsgLevel( QStringLiteral( "replaced QGIS clipboard." ), 2 );
 
   setSystemClipboard();
@@ -99,6 +100,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorTileLayer *src )
   }
 
   mCRS = src->crs();
+  mFeatureLayer = src;
   QgsDebugMsgLevel( QStringLiteral( "replaced QGIS clipboard." ), 2 );
 
   setSystemClipboard();
@@ -112,6 +114,7 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
   mFeatureFields = featureStore.fields();
   mFeatureClipboard = featureStore.features();
   mCRS = featureStore.crs();
+  mFeatureLayer.clear();
   setSystemClipboard();
   mUseSystemClipboard = false;
   emit changed();
@@ -526,6 +529,14 @@ QgsFields QgsClipboard::fields() const
     return mFeatureFields;
   else
     return retrieveFields();
+}
+
+QgsMapLayer *QgsClipboard::layer() const
+{
+  if ( !mUseSystemClipboard )
+    return mFeatureLayer.data();
+  else
+    return nullptr;
 }
 
 void QgsClipboard::systemClipboardChanged()
