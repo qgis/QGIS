@@ -108,13 +108,13 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorTileLayer *src )
   emit changed();
 }
 
-void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
+void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore, QgsVectorLayer *src )
 {
   QgsDebugMsgLevel( QStringLiteral( "features count = %1" ).arg( featureStore.features().size() ), 2 );
   mFeatureFields = featureStore.fields();
   mFeatureClipboard = featureStore.features();
   mCRS = featureStore.crs();
-  mFeatureLayer.clear();
+  mFeatureLayer = src;
   setSystemClipboard();
   mUseSystemClipboard = false;
   emit changed();

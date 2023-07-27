@@ -42,26 +42,33 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   int noGeometryCount = 0;
 
   QgsFeatureIds fidList;
-  QString childrenInfo;
+  QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicateFeatureContext;
+  QMap<QString, int> duplicateFeatureCount;
   while ( fi.nextFeature( f ) )
   {
     browsedFeatureCount++;
 
-    QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicateFeatureContext;
     QgsFeature newFeature;
     if ( mProject )
     {
       newFeature = QgsVectorLayerUtils::duplicateFeature( layer, f, mProject, duplicateFeatureContext );
+
+      const auto duplicateFeatureContextLayers = duplicateFeatureContext.layers();
+      for ( QgsVectorLayer *chl : duplicateFeatureContextLayers )
+      {
+        if ( duplicateFeatureCount.contains( chl->name() ) )
+        {
+          duplicateFeatureCount[chl->name()] += duplicateFeatureContext.duplicatedFeatures( chl ).size();
+        }
+        else
+        {
+          duplicateFeatureCount[chl->name()] = duplicateFeatureContext.duplicatedFeatures( chl ).size();
+        }
+      }
     }
     else
     {
       newFeature = QgsVectorLayerUtils::createFeature( layer, f.geometry(), f.attributes().toMap() );
-    }
-
-    const auto duplicatedFeatureContextLayers = duplicateFeatureContext.layers();
-    for ( QgsVectorLayer *chl : duplicatedFeatureContextLayers )
-    {
-      childrenInfo += ( tr( "%1 children on layer %2 duplicated" ).arg( QLocale().toString( duplicateFeatureContext.duplicatedFeatures( chl ).size() ), chl->name() ) );
     }
 
     // translate
@@ -96,6 +103,12 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
     {
       noGeometryCount++;
     }
+  }
+
+  QString childrenInfo;
+  for ( auto it = duplicateFeatureCount.constBegin(); it != duplicateFeatureCount.constEnd(); ++it )
+  {
+    childrenInfo += ( tr( "\n%n children on layer %1 duplicated", nullptr, it.value() ).arg( it.key() ) );
   }
 
   request = QgsFeatureRequest();

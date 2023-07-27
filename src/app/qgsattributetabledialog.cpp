@@ -784,33 +784,26 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
       }
       fieldNames << columnConfig.name;
     }
-    if ( fields != mLayer->fields() )
+
+    QgsFeatureStore featureStore;
+    featureStore.setFields( fields );
+    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( qgis::listToSet( featureIds ) )
+                            .setSubsetOfAttributes( fieldNames, mLayer->fields() ) );
+    QgsFeatureMap featureMap;
+    QgsFeature feature;
+    while ( it.nextFeature( feature ) )
     {
-      QgsFeatureStore featureStore;
-      featureStore.setFields( fields );
-
-      QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( qgis::listToSet( featureIds ) )
-                              .setSubsetOfAttributes( fieldNames, mLayer->fields() ) );
-      QgsFeatureMap featureMap;
-      QgsFeature feature;
-      while ( it.nextFeature( feature ) )
-      {
-        QgsVectorLayerUtils::matchAttributesToFields( feature, fields );
-        featureMap[feature.id()] = feature;
-      }
-      for ( const QgsFeatureId &id : featureIds )
-      {
-        featureStore.addFeature( featureMap[id] );
-      }
-
-      featureStore.setCrs( mLayer->crs() );
-
-      QgisApp::instance()->clipboard()->replaceWithCopyOf( featureStore );
+      QgsVectorLayerUtils::matchAttributesToFields( feature, fields );
+      featureMap[feature.id()] = feature;
     }
-    else
+    for ( const QgsFeatureId &id : featureIds )
     {
-      QgisApp::instance()->copySelectionToClipboard( mLayer );
+      featureStore.addFeature( featureMap[id] );
     }
+
+    featureStore.setCrs( mLayer->crs() );
+
+    QgisApp::instance()->clipboard()->replaceWithCopyOf( featureStore, fields == mLayer->fields() ? mLayer : nullptr );
   }
   else
   {

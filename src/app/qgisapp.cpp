@@ -10128,7 +10128,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     return;
   }
 
-  const bool duplicateFeature = clipboard()->layer() && clipboard()->layer() == pasteVectorLayer;
+  const bool duplicateFeature = clipboard()->layer() == pasteVectorLayer;
 
   pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
   QgsFeatureList features = clipboard()->transformedCopyOf( pasteVectorLayer->crs(), pasteVectorLayer->fields() );
@@ -10262,22 +10262,35 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
 void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &features, bool duplicateFeature )
 {
   int nCopiedFeatures = features.count();
-  QString childrenInfo;
   QgsFeatureIds newIds;
   newIds.reserve( features.size() );
+  QString childrenInfo;
   if ( duplicateFeature )
   {
+    QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicateFeatureContext;
+    QMap<QString, int> duplicateFeatureCount;
     for ( const QgsFeature &f : std::as_const( features ) )
     {
-      QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicateFeatureContext;
       QgsFeature duplicatedFeature = QgsVectorLayerUtils::duplicateFeature( pasteVectorLayer, f, QgsProject::instance(), duplicateFeatureContext );
       newIds << duplicatedFeature.id();
 
       const auto duplicateFeatureContextLayers = duplicateFeatureContext.layers();
       for ( QgsVectorLayer *chl : duplicateFeatureContextLayers )
       {
-        childrenInfo += ( tr( "\n%n children on layer %1 duplicated", nullptr, duplicateFeatureContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
+        if ( duplicateFeatureCount.contains( chl->name() ) )
+        {
+          duplicateFeatureCount[chl->name()] += duplicateFeatureContext.duplicatedFeatures( chl ).size();
+        }
+        else
+        {
+          duplicateFeatureCount[chl->name()] = duplicateFeatureContext.duplicatedFeatures( chl ).size();
+        }
       }
+    }
+
+    for ( auto it = duplicateFeatureCount.constBegin(); it != duplicateFeatureCount.constEnd(); ++it )
+    {
+      childrenInfo += ( tr( "\n%n children on layer %1 duplicated", nullptr, it.value() ).arg( it.key() ) );
     }
   }
   else

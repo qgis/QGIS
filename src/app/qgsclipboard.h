@@ -81,7 +81,7 @@ class APP_EXPORT QgsClipboard : public QObject
      * Place a copy of features on the internal clipboard,
      * destroying the previous contents.
      */
-    void replaceWithCopyOf( QgsFeatureStore &featureStore );
+    void replaceWithCopyOf( QgsFeatureStore &featureStore, QgsVectorLayer *src = nullptr );
 
     /**
      * Returns a copy of features on the internal clipboard.

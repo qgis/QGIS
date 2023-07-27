@@ -78,7 +78,7 @@ Should be called, when the features should be committed but the editing session 
 %End
 
 
-    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request /In,Out/, double dx = 0, double dy = 0, QString *errorMsg /Out/ = 0, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = 0, QString *childrenInfoMsg /Out/ = 0 ) const;
+    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request /In,Out/, double dx = 0, double dy = 0, QString *errorMsg /Out/ = 0, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = 0, QString *childrenInfoMsg = 0 ) const;
 %Docstring
 Copy and move features with defined translation.
 
@@ -89,10 +89,10 @@ Copy and move features with defined translation.
 :param topologicalEditing: If ``True``, the function will perform topological
                            editing of the vertices of ``layer`` on ``layer`` and ``topologicalLayer``
 :param topologicalLayer: The layer where vertices from the moved features of ``layer`` will be added
+:param childrenInfoMsg: If given, it will contain messages related to the creation of child features
 
 :return: - ``True`` if all features could be copied.
          - errorMsg: If given, it will contain the error message
-         - childrenInfoMsg: If given, it will contain messages related to the creation of child features
 %End
 
     bool forceSuppressFormPopup() const;
