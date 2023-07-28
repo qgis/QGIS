@@ -11,6 +11,7 @@
 
 
 
+
 class QgsVectorLayerSelectionProperties : QgsMapLayerSelectionProperties
 {
 %Docstring(signature="appended")
@@ -28,6 +29,7 @@ Implementation of layer selection properties for vector layers.
 %Docstring
 Constructor for QgsVectorLayerSelectionProperties, with the specified ``parent`` object.
 %End
+    ~QgsVectorLayerSelectionProperties();
 
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
 
@@ -54,6 +56,25 @@ An invalid ``color`` indicates that the default (i.e. project level) selection
 color should be used instead.
 
 .. seealso:: :py:func:`selectionColor`
+%End
+
+    QgsSymbol *selectionSymbol() const;
+%Docstring
+Returns the symbol used to render selected features in the layer.
+
+May be ``None`` if the default symbol should be used instead.
+
+.. seealso:: :py:func:`setSelectionSymbol`
+%End
+
+    void setSelectionSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render selected features in the layer.
+
+Ownership of ``symbol`` is transferred to the plot. If ``symbol`` is ``None`` then
+the default symbol will be used instead.
+
+.. seealso:: :py:func:`selectionSymbol`
 %End
 
 };

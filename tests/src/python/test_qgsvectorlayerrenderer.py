@@ -742,6 +742,47 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
             )
         )
 
+    def testRenderWithSelectedFeatureSymbol(self):
+        poly_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys.shp'))
+        self.assertTrue(poly_layer.isValid())
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': '#000000', 'outline_width': '1'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+        poly_layer.setRenderer(renderer)
+
+        poly_layer.selectAll()
+
+        poly_layer.selectionProperties().setSelectionSymbol(
+            QgsFillSymbol.createSimple({'style': 'no', 'outline_color': '#6666ff', 'outline_width': '3'})
+        )
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapsettings.setExtent(QgsRectangle(-13875783.2, 2266009.4, -8690110.7, 6673344.5))
+        mapsettings.setLayers([poly_layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                'selection_symbol',
+                'selection_symbol',
+                mapsettings
+            )
+        )
+
+        # also try with symbol levels
+        renderer.setUsingSymbolLevels(True)
+        poly_layer.setRenderer(renderer)
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                'selection_symbol',
+                'selection_symbol',
+                mapsettings
+            )
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

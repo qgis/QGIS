@@ -159,6 +159,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     bool mNoSetLayerExpressionContext = false;
 
+    std::unique_ptr< QgsSymbol > mSelectionSymbol;
+
 };
 
 

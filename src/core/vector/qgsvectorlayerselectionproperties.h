@@ -26,6 +26,8 @@
 
 #include <QColor>
 
+class QgsSymbol;
+
 /**
  * \class QgsVectorLayerSelectionProperties
  * \ingroup core
@@ -43,6 +45,7 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
      * Constructor for QgsVectorLayerSelectionProperties, with the specified \a parent object.
      */
     QgsVectorLayerSelectionProperties( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsVectorLayerSelectionProperties() override;
 
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
@@ -68,10 +71,29 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
      */
     void setSelectionColor( const QColor &color );
 
+    /**
+     * Returns the symbol used to render selected features in the layer.
+     *
+     * May be NULLPTR if the default symbol should be used instead.
+     *
+     * \see setSelectionSymbol()
+     */
+    QgsSymbol *selectionSymbol() const;
+
+    /**
+     * Sets the \a symbol used to render selected features in the layer.
+     *
+     * Ownership of \a symbol is transferred to the plot. If \a symbol is NULLPTR then
+     * the default symbol will be used instead.
+     *
+     * \see selectionSymbol()
+     */
+    void setSelectionSymbol( QgsSymbol *symbol SIP_TRANSFER );
+
   private:
 
     QColor mSelectionColor;
-
+    std::unique_ptr< QgsSymbol > mSelectionSymbol;
 };
 
 #endif // QGSVECTORLAYERSELECTIONPROPERTIES_H
