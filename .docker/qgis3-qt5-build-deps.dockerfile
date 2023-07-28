@@ -170,7 +170,9 @@ ENV OTB_INSTALL_DIR=/opt/otb
 
 FROM binary-only
 
-RUN  apt-get update \
+RUN echo "deb http://archive.ubuntu.com/ubuntu jammy main universe" >> /etc/apt/sources.list \
+  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 089EBE08314DF160 \
+  && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     bison \
     ccache \
