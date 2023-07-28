@@ -1070,7 +1070,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
   protected:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
-    QgsRectangle calculateBoundingBox() const override;
 
   private:
     QVector<double> mX;

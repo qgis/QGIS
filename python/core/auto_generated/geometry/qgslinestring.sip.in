@@ -867,8 +867,6 @@ Calculates the minimal 3D bounding box for the geometry.
   protected:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
-    virtual QgsRectangle calculateBoundingBox() const;
-
 
 };
 
