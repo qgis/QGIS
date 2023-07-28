@@ -984,6 +984,7 @@ namespace
   inline void testCreateEmptyWithSameType()
   {
     std::unique_ptr<QgsAbstractGeometry> geom { new T() };
+    std::unique_ptr<QgsAbstractGeometry> geomResult { new T() };
     std::unique_ptr<QgsAbstractGeometry> created { TestQgsGeometry::createEmpty( geom.get() ) };
     QVERIFY( created->isEmpty() );
 #if defined(__clang__) || defined(__GNUG__)
@@ -997,7 +998,7 @@ namespace
 // remove Qgs prefix
     type = type.right( type.count() - 3 );
     QStringList extensionZM;
-    extensionZM << QString() << QString( "Z" ) << QString( "M" ) << QString( "ZM" );
+    extensionZM << QString() << QString( "Z" ) << QString( "M" ) << QString( "ZM" ) << QString( " Z" ) << QString( " M" ) << QString( " ZM" ) << QString( "Z M" ) << QString( " Z M" );
     for ( const QString &ext : extensionZM )
     {
       QString wkt = type + ext;
@@ -1015,10 +1016,10 @@ namespace
           QString generatedWkt = spacesBefore + wkt + spacesMiddle + emptyStringList.at( j ) + spacesAfter;
 
           QgsGeometry gWkt = QgsGeometry::fromWkt( generatedWkt );
-          QVERIFY( gWkt.asWkt().compare( result, Qt::CaseInsensitive ) == 0 );
 
           QVERIFY( geom->fromWkt( generatedWkt ) );
-          QVERIFY( geom->asWkt().compare( result, Qt::CaseInsensitive ) == 0 );
+          QVERIFY( geomResult->fromWkt( result ) );
+          QCOMPARE( geom->asWkt(), geomResult->asWkt() );
         }
       }
     }
