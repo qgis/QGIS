@@ -37,7 +37,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '22.04'
+          - distro-version: '23.04'
             qt-version: 5
             run-tests: true
             docker-tag-suffix: ''
@@ -304,7 +304,7 @@ jobs:
 
         include:
           - qt-version: 5
-            distro-version: 22.04
+            distro-version: 23.04
             docker-target: binary-only
 
           - qt-version: 6
@@ -312,7 +312,7 @@ jobs:
             docker-target: single
 
           - qt-version: 5
-            distro-version: 22.04
+            distro-version: 23.04
             test-batch: ORACLE
             docker-target: binary-for-oracle
 
@@ -427,7 +427,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '22.04'
+          - distro-version: '23.04'
             qt-version: 5
 
     steps:
