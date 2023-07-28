@@ -2935,15 +2935,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void clearEditBuffer();
 
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
-
-    //! Pointer to data provider derived from the abastract base class QgsDataProvider
     QgsVectorDataProvider *mDataProvider = nullptr;
-
     QgsVectorLayerSelectionProperties *mSelectionProperties = nullptr;
-
-    //! Pointer to temporal properties
     QgsVectorLayerTemporalProperties *mTemporalProperties = nullptr;
-
     QgsVectorLayerElevationProperties *mElevationProperties = nullptr;
 
     //! The preview expression used to generate a human readable preview string for features
