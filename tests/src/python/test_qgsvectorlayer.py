@@ -4537,6 +4537,7 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         self.assertTrue(vl.isValid())
 
         self.assertFalse(vl.selectionProperties().selectionColor().isValid())
+        self.assertFalse(vl.selectionProperties().selectionSymbol())
         vl.selectionProperties().setSelectionColor(
             QColor(255, 0, 0)
         )
@@ -4546,7 +4547,7 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         p = QgsProject()
         p.addMapLayer(vl)
 
-        # test saving and restoring split policies
+        # test saving and restoring
         with tempfile.TemporaryDirectory() as temp:
             self.assertTrue(p.write(temp + '/test.qgs'))
 
@@ -4558,6 +4559,25 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
 
             self.assertEqual(vl2.selectionProperties().selectionColor(),
                              QColor(255, 0, 0))
+
+        selected_symbol = QgsMarkerSymbol()
+        selected_symbol.setColor(QColor(25, 26, 27))
+        vl.selectionProperties().setSelectionSymbol(
+            selected_symbol
+        )
+
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertTrue(p.write(temp + '/test.qgs'))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(temp + '/test.qgs'))
+
+            vl2 = list(p2.mapLayers().values())[0]
+            self.assertEqual(vl2.name(), vl.name())
+
+            self.assertEqual(vl2.selectionProperties().selectionSymbol().color(),
+                             QColor(25, 26, 27))
+
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

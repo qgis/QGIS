@@ -17,11 +17,14 @@
 
 #include "qgsvectorlayerselectionproperties.h"
 #include "qgscolorutils.h"
+#include "qgssymbollayerutils.h"
 
 QgsVectorLayerSelectionProperties::QgsVectorLayerSelectionProperties( QObject *parent )
   :  QgsMapLayerSelectionProperties( parent )
 {
 }
+
+QgsVectorLayerSelectionProperties::~QgsVectorLayerSelectionProperties() = default;
 
 
 QDomElement QgsVectorLayerSelectionProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
@@ -29,6 +32,13 @@ QDomElement QgsVectorLayerSelectionProperties::writeXml( QDomElement &parentElem
   QDomElement element = document.createElement( QStringLiteral( "selection" ) );
 
   QgsColorUtils::writeXml( mSelectionColor, QStringLiteral( "selectionColor" ), document, element, context );
+
+  if ( mSelectionSymbol )
+  {
+    QDomElement selectionSymbolElement = document.createElement( QStringLiteral( "selectionSymbol" ) );
+    selectionSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mSelectionSymbol.get(), document, context ) );
+    element.appendChild( selectionSymbolElement );
+  }
 
   parentElement.appendChild( element );
   return element;
@@ -41,6 +51,11 @@ bool QgsVectorLayerSelectionProperties::readXml( const QDomElement &element, con
     return false;
 
   mSelectionColor = QgsColorUtils::readXml( selectionElement, QStringLiteral( "selectionColor" ), context );
+
+  {
+    const QDomElement selectionSymbolElement = selectionElement.firstChildElement( QStringLiteral( "selectionSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+    mSelectionSymbol.reset( QgsSymbolLayerUtils::loadSymbol( selectionSymbolElement, context ) );
+  }
   return true;
 }
 
@@ -48,6 +63,7 @@ QgsVectorLayerSelectionProperties *QgsVectorLayerSelectionProperties::clone() co
 {
   std::unique_ptr< QgsVectorLayerSelectionProperties > res = std::make_unique< QgsVectorLayerSelectionProperties >( nullptr );
   res->mSelectionColor = mSelectionColor;
+  res->mSelectionSymbol.reset( mSelectionSymbol ? mSelectionSymbol->clone() : nullptr );
   return res.release();
 }
 
@@ -59,4 +75,14 @@ QColor QgsVectorLayerSelectionProperties::selectionColor() const
 void QgsVectorLayerSelectionProperties::setSelectionColor( const QColor &color )
 {
   mSelectionColor = color;
+}
+
+QgsSymbol *QgsVectorLayerSelectionProperties::selectionSymbol() const
+{
+  return mSelectionSymbol.get();
+}
+
+void QgsVectorLayerSelectionProperties::setSelectionSymbol( QgsSymbol *symbol )
+{
+  mSelectionSymbol.reset( symbol );
 }
