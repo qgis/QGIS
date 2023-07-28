@@ -31,7 +31,7 @@ RUN  apt-get update \
     libexiv2-27 \
     libfcgi0ldbl \
     libgsl27 \
-    'libprotobuf-lite17|libprotobuf-lite23' \
+    'libprotobuf-lite17|libprotobuf-lite23|libprotobuf-lite32' \
     libqca-qt5-2-plugins \
     libqt53dextras5 \
     libqt53drender5 \
