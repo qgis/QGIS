@@ -94,21 +94,21 @@ RUN  apt-get update \
     xfonts-scalable \
     xvfb \
     ocl-icd-libopencl1 \
-  && pip3 install \
-    numpy \
-    nose2 \
+    python3-numpy \
+    python3-nose2 \
+    python3-mock \
+    python3-future \
+    python3-termcolor \
+    python3-oauthlib \
+    python3-pep8 \
+    python3-pexpect \
+    python3-sphinx \
+    python3-requests \
+    python3-six \
+  && pip3 install --break-system-packages \
     pyyaml \
-    mock \
-    future \
-    termcolor \
-    oauthlib \
     pyopenssl \
-    pep8 \
-    pexpect \
     capturer \
-    sphinx \
-    requests \
-    six \
     hdbcli \
   && apt-get clean
 
@@ -144,8 +144,7 @@ RUN  apt-get update \
     iproute2 \
     postgresql-client \
     spawn-fcgi \
-  && pip3 install \
-    psycopg2 \
+    python3-psycopg2 \
   && apt-get clean
 
 # HANA: client side
