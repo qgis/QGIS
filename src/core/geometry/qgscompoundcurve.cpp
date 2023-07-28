@@ -146,22 +146,6 @@ void QgsCompoundCurve::clear()
   clearCache();
 }
 
-QgsRectangle QgsCompoundCurve::calculateBoundingBox() const
-{
-  if ( mCurves.empty() )
-  {
-    return QgsRectangle();
-  }
-
-  QgsRectangle bbox = mCurves.at( 0 )->boundingBox();
-  for ( int i = 1; i < mCurves.size(); ++i )
-  {
-    QgsRectangle curveBox = mCurves.at( i )->boundingBox();
-    bbox.combineExtentWith( curveBox );
-  }
-  return bbox;
-}
-
 QgsBox3D QgsCompoundCurve::calculateBoundingBox3D() const
 {
   if ( mCurves.empty() )
@@ -548,35 +532,6 @@ bool QgsCompoundCurve::removeDuplicateNodes( double epsilon, bool useZValues )
     i++;
   }
   return result;
-}
-
-bool QgsCompoundCurve::boundingBoxIntersects( const QgsRectangle &rectangle ) const
-{
-  if ( mCurves.empty() )
-    return false;
-
-  // if we already have the bounding box calculated, then this check is trivial!
-  if ( !mBoundingBox.isNull() )
-  {
-    return mBoundingBox.intersects( rectangle );
-  }
-
-  // otherwise loop through each member curve and test the bounding box intersection.
-  // This gives us a chance to use optimisations which may be present on the individual
-  // curve subclasses, and at worst it will cause a calculation of the bounding box
-  // of each individual member curve which we would have to do anyway... (and these
-  // bounding boxes are cached, so would be reused without additional expense)
-  for ( const QgsCurve *curve : mCurves )
-  {
-    if ( curve->boundingBoxIntersects( rectangle ) )
-      return true;
-  }
-
-  // even if we don't intersect the bounding box of any member curves, we may still intersect the
-  // bounding box of the overall compound curve.
-  // so here we fall back to the non-optimised base class check which has to first calculate
-  // the overall bounding box of the compound curve..
-  return QgsAbstractGeometry::boundingBoxIntersects( rectangle );
 }
 
 bool QgsCompoundCurve::boundingBoxIntersects( const QgsBox3D &box3d ) const

@@ -664,21 +664,6 @@ bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
   return true;
 }
 
-// duplicated code from calculateBoundingBox3d to avoid useless z computation
-QgsRectangle QgsLineString::calculateBoundingBox() const
-{
-  if ( mX.empty() )
-    return QgsRectangle();
-
-  auto result = std::minmax_element( mX.begin(), mX.end() );
-  const double xmin = *result.first;
-  const double xmax = *result.second;
-  result = std::minmax_element( mY.begin(), mY.end() );
-  const double ymin = *result.first;
-  const double ymax = *result.second;
-  return QgsRectangle( xmin, ymin, xmax, ymax, false );
-}
-
 QgsBox3D QgsLineString::calculateBoundingBox3D() const
 {
   if ( mX.empty() )
@@ -686,24 +671,24 @@ QgsBox3D QgsLineString::calculateBoundingBox3D() const
     return QgsBox3D();
   }
 
-  if ( mBoundingBox.isNull() )
-  {
-    mBoundingBox = calculateBoundingBox();
-  }
+  auto result2D = std::minmax_element( mX.begin(), mX.end() );
+  const double xmin = *result2D.first;
+  const double xmax = *result2D.second;
+  result2D = std::minmax_element( mY.begin(), mY.end() );
+  const double ymin = *result2D.first;
+  const double ymax = *result2D.second;
 
-  QgsBox3D out;
+  double zmin = std::numeric_limits< double >::quiet_NaN();
+  double zmax = std::numeric_limits< double >::quiet_NaN();
+
   if ( is3D() )
   {
-    auto result = std::minmax_element( mZ.begin(), mZ.end() );
-    const double zmin = *result.first;
-    const double zmax = *result.second;
-    out = QgsBox3D( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), zmin, mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), zmax );
+    auto resultZ = std::minmax_element( mZ.begin(), mZ.end() );
+    zmin = *resultZ.first;
+    zmax = *resultZ.second;
   }
-  else
-  {
-    out = QgsBox3D( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), std::numeric_limits< double >::quiet_NaN(), mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), std::numeric_limits< double >::quiet_NaN() );
-  }
-  return out;
+
+  return QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
 }
 
 QgsBox3D QgsLineString::calculateBoundingBox3d() const

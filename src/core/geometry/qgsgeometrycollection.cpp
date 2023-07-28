@@ -201,35 +201,6 @@ int QgsGeometryCollection::vertexNumberFromVertexId( QgsVertexId id ) const
   return -1; // should not happen
 }
 
-bool QgsGeometryCollection::boundingBoxIntersects( const QgsRectangle &rectangle ) const
-{
-  if ( mGeometries.empty() )
-    return false;
-
-  // if we already have the bounding box calculated, then this check is trivial!
-  if ( !mBoundingBox.isNull() )
-  {
-    return mBoundingBox.intersects( rectangle );
-  }
-
-  // otherwise loop through each member geometry and test the bounding box intersection.
-  // This gives us a chance to use optimisations which may be present on the individual
-  // geometry subclasses, and at worst it will cause a calculation of the bounding box
-  // of each individual member geometry which we would have to do anyway... (and these
-  // bounding boxes are cached, so would be reused without additional expense)
-  for ( const QgsAbstractGeometry *geometry : mGeometries )
-  {
-    if ( geometry->boundingBoxIntersects( rectangle ) )
-      return true;
-  }
-
-  // even if we don't intersect the bounding box of any member geometries, we may still intersect the
-  // bounding box of the overall collection.
-  // so here we fall back to the non-optimised base class check which has to first calculate
-  // the overall bounding box of the collection..
-  return QgsAbstractGeometry::boundingBoxIntersects( rectangle );
-}
-
 bool QgsGeometryCollection::boundingBoxIntersects( const QgsBox3D &box3d ) const
 {
   if ( mGeometries.empty() )
@@ -567,42 +538,6 @@ QgsBox3D QgsGeometryCollection::boundingBox3D() const
     mBoundingBox = calculateBoundingBox3D();
   }
   return mBoundingBox;
-}
-
-QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
-{
-  if ( mGeometries.empty() )
-  {
-    return QgsRectangle();
-  }
-
-  QgsRectangle bbox = mGeometries.at( 0 )->boundingBox();
-  for ( int i = 1; i < mGeometries.size(); ++i )
-  {
-    if ( mGeometries.at( i )->isEmpty() )
-      continue;
-
-    QgsRectangle geomBox = mGeometries.at( i )->boundingBox();
-    if ( bbox.isNull() )
-    {
-      // workaround treatment of a QgsRectangle(0,0,0,0) as a "null"/invalid rectangle
-      // if bbox is null, then the first geometry must have returned a bounding box of (0,0,0,0)
-      // so just manually include that as a point... ew.
-      geomBox.combineExtentWith( QPointF( 0, 0 ) );
-      bbox = geomBox;
-    }
-    else if ( geomBox.isNull() )
-    {
-      // ...as above... this part must have a bounding box of (0,0,0,0).
-      // if we try to combine the extent with this "null" box it will just be ignored.
-      bbox.combineExtentWith( QPointF( 0, 0 ) );
-    }
-    else
-    {
-      bbox.combineExtentWith( geomBox );
-    }
-  }
-  return bbox;
 }
 
 QgsBox3D QgsGeometryCollection::calculateBoundingBox3D() const
