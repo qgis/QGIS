@@ -19,13 +19,14 @@
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsproject.h"
 
 
 QgsVectorLayerTools::QgsVectorLayerTools()
   : QObject( nullptr )
 {}
 
-bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer ) const
+bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer, QString *childrenInfoMsg ) const
 {
   bool res = false;
   if ( !layer || !layer->isEditable() )
@@ -41,12 +42,34 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   int noGeometryCount = 0;
 
   QgsFeatureIds fidList;
-
+  QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicateFeatureContext;
+  QMap<QString, int> duplicateFeatureCount;
   while ( fi.nextFeature( f ) )
   {
     browsedFeatureCount++;
 
-    QgsFeature newFeature = QgsVectorLayerUtils::createFeature( layer, f.geometry(), f.attributes().toMap() );
+    QgsFeature newFeature;
+    if ( mProject )
+    {
+      newFeature = QgsVectorLayerUtils::duplicateFeature( layer, f, mProject, duplicateFeatureContext );
+
+      const auto duplicateFeatureContextLayers = duplicateFeatureContext.layers();
+      for ( QgsVectorLayer *chl : duplicateFeatureContextLayers )
+      {
+        if ( duplicateFeatureCount.contains( chl->name() ) )
+        {
+          duplicateFeatureCount[chl->name()] += duplicateFeatureContext.duplicatedFeatures( chl ).size();
+        }
+        else
+        {
+          duplicateFeatureCount[chl->name()] = duplicateFeatureContext.duplicatedFeatures( chl ).size();
+        }
+      }
+    }
+    else
+    {
+      newFeature = QgsVectorLayerUtils::createFeature( layer, f.geometry(), f.attributes().toMap() );
+    }
 
     // translate
     if ( newFeature.hasGeometry() )
@@ -82,8 +105,19 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
     }
   }
 
+  QString childrenInfo;
+  for ( auto it = duplicateFeatureCount.constBegin(); it != duplicateFeatureCount.constEnd(); ++it )
+  {
+    childrenInfo += ( tr( "\n%n children on layer %1 duplicated", nullptr, it.value() ).arg( it.key() ) );
+  }
+
   request = QgsFeatureRequest();
   request.setFilterFids( fidList );
+
+  if ( childrenInfoMsg && !childrenInfo.isEmpty() )
+  {
+    childrenInfoMsg->append( childrenInfo );
+  }
 
   if ( !couldNotWriteCount && !noGeometryCount )
   {

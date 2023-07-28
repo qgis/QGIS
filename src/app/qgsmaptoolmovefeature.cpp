@@ -245,12 +245,17 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       case CopyMove:
         QgsFeatureRequest request;
         request.setFilterFids( mMovedFeatures );
-        QString *errorMsg = new QString();
-        if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy, errorMsg, QgsProject::instance()->topologicalEditing(), mSnapIndicator->match().layer() ) )
+        QString errorMsg;
+        QString childrenInfoMsg;
+        if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy, &errorMsg, QgsProject::instance()->topologicalEditing(), mSnapIndicator->match().layer(), &childrenInfoMsg ) )
         {
-          emit messageEmitted( *errorMsg, Qgis::MessageLevel::Critical );
+          emit messageEmitted( errorMsg, Qgis::MessageLevel::Critical );
           deleteRubberband();
           mSnapIndicator->setMatch( QgsPointLocator::Match() );
+        }
+        if ( !childrenInfoMsg.isEmpty() )
+        {
+          emit messageEmitted( childrenInfoMsg, Qgis::MessageLevel::Info );
         }
         break;
     }
