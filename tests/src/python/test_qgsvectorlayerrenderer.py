@@ -16,6 +16,7 @@ from qgis.PyQt.QtCore import QDir, QSize
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (
+    Qgis,
     QgsCategorizedSymbolRenderer,
     QgsCentroidFillSymbolLayer,
     QgsCoordinateReferenceSystem,
@@ -726,6 +727,9 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
         poly_layer.selectionProperties().setSelectionColor(
             QColor(255, 0, 0)
         )
+        poly_layer.selectionProperties().setSelectionRenderingMode(
+            Qgis.SelectionRenderingMode.CustomColor
+        )
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -754,6 +758,9 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
 
         poly_layer.selectionProperties().setSelectionSymbol(
             QgsFillSymbol.createSimple({'style': 'no', 'outline_color': '#6666ff', 'outline_width': '3'})
+        )
+        poly_layer.selectionProperties().setSelectionRenderingMode(
+            Qgis.SelectionRenderingMode.CustomSymbol
         )
 
         mapsettings = QgsMapSettings()

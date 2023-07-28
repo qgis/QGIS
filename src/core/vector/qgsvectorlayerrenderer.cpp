@@ -54,13 +54,28 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
 {
   std::unique_ptr< QgsFeatureRenderer > mainRenderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
 
-  // overwrite default selection color if layer has a specific selection color set
-  const QColor layerSelectionColor = qobject_cast< QgsVectorLayerSelectionProperties * >( layer->selectionProperties() )->selectionColor();
-  if ( layerSelectionColor.isValid() )
-    context.setSelectionColor( layerSelectionColor );
+  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast< QgsVectorLayerSelectionProperties * >( layer->selectionProperties() );
+  switch ( selectionProperties->selectionRenderingMode() )
+  {
+    case Qgis::SelectionRenderingMode::Default:
+      break;
 
-  if ( QgsSymbol *selectionSymbol =  qobject_cast< QgsVectorLayerSelectionProperties * >( layer->selectionProperties() )->selectionSymbol() )
-    mSelectionSymbol.reset( selectionSymbol->clone() );
+    case Qgis::SelectionRenderingMode::CustomColor:
+    {
+      // overwrite default selection color if layer has a specific selection color set
+      const QColor layerSelectionColor = selectionProperties->selectionColor();
+      if ( layerSelectionColor.isValid() )
+        context.setSelectionColor( layerSelectionColor );
+      break;
+    }
+
+    case Qgis::SelectionRenderingMode::CustomSymbol:
+    {
+      if ( QgsSymbol *selectionSymbol =  qobject_cast< QgsVectorLayerSelectionProperties * >( layer->selectionProperties() )->selectionSymbol() )
+        mSelectionSymbol.reset( selectionSymbol->clone() );
+      break;
+    }
+  }
 
   if ( !mainRenderer )
     return;

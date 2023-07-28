@@ -1213,6 +1213,13 @@ Qgis.FieldMetadataProperty.CustomProperty.__doc__ = "Starting point for custom u
 Qgis.FieldMetadataProperty.__doc__ = "Standard field metadata values.\n\n.. versionadded:: 3.30\n\n" + '* ``GeometryCrs``: ' + Qgis.FieldMetadataProperty.GeometryCrs.__doc__ + '\n' + '* ``GeometryWkbType``: ' + Qgis.FieldMetadataProperty.GeometryWkbType.__doc__ + '\n' + '* ``CustomProperty``: ' + Qgis.FieldMetadataProperty.CustomProperty.__doc__
 # --
 Qgis.FieldMetadataProperty.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SelectionRenderingMode.Default.__doc__ = "Use default symbol and selection colors"
+Qgis.SelectionRenderingMode.CustomColor.__doc__ = "Use default symbol with a custom selection color"
+Qgis.SelectionRenderingMode.CustomSymbol.__doc__ = "Use a custom symbol"
+Qgis.SelectionRenderingMode.__doc__ = "Specifies how a selection should be rendered.\n\n.. versionadded:: 3.34\n\n" + '* ``Default``: ' + Qgis.SelectionRenderingMode.Default.__doc__ + '\n' + '* ``CustomColor``: ' + Qgis.SelectionRenderingMode.CustomColor.__doc__ + '\n' + '* ``CustomSymbol``: ' + Qgis.SelectionRenderingMode.CustomSymbol.__doc__
+# --
+Qgis.SelectionRenderingMode.baseClass = Qgis
 QgsVectorLayer.SelectBehavior = Qgis.SelectBehavior
 # monkey patching scoped based enum
 QgsVectorLayer.SetSelection = Qgis.SelectBehavior.SetSelection

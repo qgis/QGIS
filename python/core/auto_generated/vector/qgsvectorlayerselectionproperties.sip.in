@@ -38,6 +38,20 @@ Constructor for QgsVectorLayerSelectionProperties, with the specified ``parent``
     virtual QgsVectorLayerSelectionProperties *clone() const /Factory/;
 
 
+    Qgis::SelectionRenderingMode selectionRenderingMode() const;
+%Docstring
+Returns the selection rendering mode to use for selected features in the layer.
+
+.. seealso:: :py:func:`setSelectionRenderingMode`
+%End
+
+    void setSelectionRenderingMode( Qgis::SelectionRenderingMode mode );
+%Docstring
+Sets the selection rendering ``mode`` to use for selected features in the layer.
+
+.. seealso:: :py:func:`selectionRenderingMode`
+%End
+
     QColor selectionColor() const;
 %Docstring
 Returns the color to use for rendering selected features in the layer.
