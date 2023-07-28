@@ -152,6 +152,7 @@
 #include "qgsalgorithmrandompointsinpolygons.h"
 #include "qgsalgorithmrandompointsonlines.h"
 #include "qgsalgorithmrandomraster.h"
+#include "qgsalgorithmrastercalculator.h"
 #include "qgsalgorithmrasterdtmslopebasedfilter.h"
 #include "qgsalgorithmrasterfrequencybycomparisonoperator.h"
 #include "qgsalgorithmrasterlayerproperties.h"
@@ -440,6 +441,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRandomPointsOnLinesAlgorithm() );
   addAlgorithm( new QgsRandomPoissonRasterAlgorithm() );
   addAlgorithm( new QgsRandomUniformRasterAlgorithm() );
+  addAlgorithm( new QgsRasterCalculatorAlgorithm() );
   addAlgorithm( new QgsRasterDtmSlopeBasedFilterAlgorithm() );
   addAlgorithm( new QgsRasterFrequencyByEqualOperatorAlgorithm() );
   addAlgorithm( new QgsRasterFrequencyByGreaterThanOperatorAlgorithm() );
