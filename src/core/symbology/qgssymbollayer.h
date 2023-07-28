@@ -251,6 +251,22 @@ class CORE_EXPORT QgsSymbolLayer
     void setEnabled( bool enabled ) { mEnabled = enabled; }
 
     /**
+     * Returns user-controlled flags which control the symbol layer's behavior.
+     *
+     * \see setUserFlags()
+     * \since QGIS 3.34
+     */
+    Qgis::SymbolLayerUserFlags userFlags() const;
+
+    /**
+     * Sets user-controlled \a flags which control the symbol layer's behavior.
+     *
+     * \see userFlags()
+     * \since QGIS 3.34
+     */
+    void setUserFlags( Qgis::SymbolLayerUserFlags flags );
+
+    /**
      * Returns the "representative" color of the symbol layer.
      *
      * Depending on the symbol layer type, this will have different meaning. For instance, a line
@@ -663,6 +679,9 @@ class CORE_EXPORT QgsSymbolLayer
     //! True if layer is enabled and should be drawn
     bool mEnabled = true;
 
+    //! User controlled flags
+    Qgis::SymbolLayerUserFlags mUserFlags;
+
     bool mLocked = false;
     QColor mColor;
     int mRenderingPass = 0;
@@ -719,6 +738,14 @@ class CORE_EXPORT QgsSymbolLayer
      * \since QGIS 3.30
      */
     void removeMasks( QgsRenderContext &context, bool recursive );
+
+    /**
+     * Returns TRUE if the symbol layer should be rendered using the selection color
+     * from the render context.
+     *
+     * \since QGIS 3.34
+     */
+    bool shouldRenderUsingSelectionColor( const QgsSymbolRenderContext &context ) const;
 
   private:
     static void initPropertyDefinitions();

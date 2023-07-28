@@ -325,12 +325,14 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
     p->translate( offset );
   }
 
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+
 #ifndef QT_NO_PRINTER
   if ( mBrush.style() == Qt::SolidPattern || mBrush.style() == Qt::NoBrush || !dynamic_cast<QPrinter *>( p->device() ) )
 #endif
   {
-    p->setPen( context.selected() ? mSelPen : mPen );
-    p->setBrush( context.selected() ? mSelBrush : mBrush );
+    p->setPen( useSelectedColor ? mSelPen : mPen );
+    p->setBrush( useSelectedColor ? mSelBrush : mBrush );
     _renderPolygon( p, points, rings, context );
   }
 #ifndef QT_NO_PRINTER
@@ -339,11 +341,11 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
     // workaround upstream issue https://github.com/qgis/QGIS/issues/36580
     // when a non-solid brush is set with opacity, the opacity incorrectly applies to the pen
     // when exporting to PDF/print devices
-    p->setBrush( context.selected() ? mSelBrush : mBrush );
+    p->setBrush( useSelectedColor ? mSelBrush : mBrush );
     p->setPen( Qt::NoPen );
     _renderPolygon( p, points, rings, context );
 
-    p->setPen( context.selected() ? mSelPen : mPen );
+    p->setPen( useSelectedColor ? mSelPen : mPen );
     p->setBrush( Qt::NoBrush );
     _renderPolygon( p, points, rings, context );
   }
@@ -988,7 +990,8 @@ void QgsGradientFillSymbolLayer::renderPolygon( const QPolygonF &points, const Q
 
   applyDataDefinedSymbology( context, points );
 
-  p->setBrush( context.selected() ? mSelBrush : mBrush );
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  p->setBrush( useSelectedColor ? mSelBrush : mBrush );
   p->setPen( Qt::NoPen );
 
   QPointF offset = mOffset;
@@ -1297,7 +1300,8 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
     return;
   }
 
-  if ( context.selected() )
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  if ( useSelectedColor )
   {
     //feature is selected, draw using selection style
     p->setBrush( mSelBrush );
@@ -1805,7 +1809,8 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVec
     mBrush.setTransform( t );
   }
 
-  if ( context.selected() )
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  if ( useSelectedColor )
   {
     QColor selColor = context.renderContext().selectionColor();
     p->setBrush( QBrush( selColor ) );
@@ -2174,12 +2179,13 @@ void QgsSVGFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVecto
 
   if ( mStroke )
   {
-    mStroke->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
+    const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+    mStroke->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && useSelectedColor );
     if ( rings )
     {
       for ( auto ringIt = rings->constBegin(); ringIt != rings->constEnd(); ++ringIt )
       {
-        mStroke->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
+        mStroke->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && useSelectedColor );
       }
     }
   }
@@ -3107,9 +3113,10 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
     polygons.append( QPolygonF() << p5 << p6 );
   }
 
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
   for ( const QPolygonF &polygon : std::as_const( polygons ) )
   {
-    fillLineSymbol->renderPolyline( polygon, context.feature(), lineRenderContext, -1, context.selected() );
+    fillLineSymbol->renderPolyline( polygon, context.feature(), lineRenderContext, -1, useSelectedColor );
   }
 
   fillLineSymbol->stopRender( lineRenderContext );
@@ -3205,7 +3212,8 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
 
   p->setPen( QPen( Qt::NoPen ) );
 
-  if ( context.selected() )
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  if ( useSelectedColor )
   {
     QColor selColor = context.renderContext().selectionColor();
     p->setBrush( QBrush( selColor ) );
@@ -4042,7 +4050,8 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
 
   p->setPen( QPen( Qt::NoPen ) );
 
-  if ( context.selected() )
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  if ( useSelectedColor )
   {
     QColor selColor = context.renderContext().selectionColor();
     p->setBrush( QBrush( selColor ) );
@@ -4788,7 +4797,8 @@ void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, const Q
     // not rendering a feature, so we can just render the polygon immediately
     const double prevOpacity = mMarker->opacity();
     mMarker->setOpacity( mMarker->opacity() * context.opacity() );
-    render( context.renderContext(), QVector<Part>() << part, context.feature() ? *context.feature() : QgsFeature(), context.selected() );
+    const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+    render( context.renderContext(), QVector<Part>() << part, context.feature() ? *context.feature() : QgsFeature(), useSelectedColor );
     mMarker->setOpacity( prevOpacity );
   }
 }
@@ -5471,7 +5481,8 @@ void QgsRandomMarkerFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     // not rendering a feature, so we can just render the polygon immediately
     const double prevOpacity = mMarker->opacity();
     mMarker->setOpacity( mMarker->opacity() * context.opacity() );
-    render( context.renderContext(), QVector< Part>() << part, context.feature() ? *context.feature() : QgsFeature(), context.selected() );
+    const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+    render( context.renderContext(), QVector< Part>() << part, context.feature() ? *context.feature() : QgsFeature(), useSelectedColor );
     mMarker->setOpacity( prevOpacity );
   }
 }

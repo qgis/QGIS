@@ -503,7 +503,8 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
   const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
   context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
 
-  mSymbol->renderFeature( f, context.renderContext(), -1, context.selected() );
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  mSymbol->renderFeature( f, context.renderContext(), -1, useSelectedColor );
 
   context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 

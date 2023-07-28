@@ -206,6 +206,24 @@ when desired.
 .. versionadded:: 3.0
 %End
 
+    Qgis::SymbolLayerUserFlags userFlags() const;
+%Docstring
+Returns user-controlled flags which control the symbol layer's behavior.
+
+.. seealso:: :py:func:`setUserFlags`
+
+.. versionadded:: 3.34
+%End
+
+    void setUserFlags( Qgis::SymbolLayerUserFlags flags );
+%Docstring
+Sets user-controlled ``flags`` which control the symbol layer's behavior.
+
+.. seealso:: :py:func:`userFlags`
+
+.. versionadded:: 3.34
+%End
+
     virtual QColor color() const;
 %Docstring
 Returns the "representative" color of the symbol layer.
@@ -689,6 +707,7 @@ Constructor for QgsSymbolLayer.
 
 
 
+
     void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 %Docstring
 Restores older data defined properties from string map.
@@ -734,6 +753,14 @@ if ``recursive`` is ``True`` masks are removed recursively for all children symb
 .. seealso:: :py:func:`installMasks`
 
 .. versionadded:: 3.30
+%End
+
+    bool shouldRenderUsingSelectionColor( const QgsSymbolRenderContext &context ) const;
+%Docstring
+Returns ``True`` if the symbol layer should be rendered using the selection color
+from the render context.
+
+.. versionadded:: 3.34
 %End
 
   private:

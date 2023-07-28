@@ -341,6 +341,14 @@ The development version
     typedef QFlags<Qgis::SymbolLayerFlag> SymbolLayerFlags;
 
 
+    enum class SymbolLayerUserFlag
+    {
+      DisableSelectionRecoloring,
+    };
+
+    typedef QFlags<Qgis::SymbolLayerUserFlag> SymbolLayerUserFlags;
+
+
     enum class BrowserItemType
       {
       Collection,
@@ -2240,6 +2248,8 @@ QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag>
 QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
 
 QFlags<Qgis::SymbolLayerFlag> operator|(Qgis::SymbolLayerFlag f1, QFlags<Qgis::SymbolLayerFlag> f2);
+
+QFlags<Qgis::SymbolLayerUserFlag> operator|(Qgis::SymbolLayerUserFlag f1, QFlags<Qgis::SymbolLayerUserFlag> f2);
 
 QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 

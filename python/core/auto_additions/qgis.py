@@ -540,11 +540,18 @@ Qgis.SymbolPreviewFlags.baseClass = Qgis
 SymbolPreviewFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__ = "If present, indicates that features should never be clipped to the map extent during rendering"
-Qgis.SymbolLayerFlag.__doc__ = "Flags controlling behavior of symbol layers\n\n.. versionadded:: 3.22\n\n" + '* ``DisableFeatureClipping``: ' + Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__
+Qgis.SymbolLayerFlag.__doc__ = "Flags controlling behavior of symbol layers\n\n.. note::\n\n   These differ from Qgis.SymbolLayerUserFlag in that Qgis.SymbolLayerFlag flags are used to reflect the inbuilt properties\n   of a symbol layer type, whereas Qgis.SymbolLayerUserFlag are optional, user controlled flags which can be toggled\n   for a symbol layer.\n\n.. versionadded:: 3.22\n\n" + '* ``DisableFeatureClipping``: ' + Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__
 # --
 Qgis.SymbolLayerFlag.baseClass = Qgis
 Qgis.SymbolLayerFlags.baseClass = Qgis
 SymbolLayerFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring.__doc__ = "If present, indicates that the symbol layer should not be recolored when rendering selected features"
+Qgis.SymbolLayerUserFlag.__doc__ = "User-specified flags controlling behavior of symbol layers.\n\n.. note::\n\n   These differ from Qgis.SymbolLayerFlag in that Qgis.SymbolLayerFlag flags are used to reflect the inbuilt properties\n   of a symbol layer type, whereas Qgis.SymbolLayerUserFlag are optional, user controlled flags which can be toggled\n   for a symbol layer.\n\n.. versionadded:: 3.34\n\n" + '* ``DisableSelectionRecoloring``: ' + Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring.__doc__
+# --
+Qgis.SymbolLayerUserFlag.baseClass = Qgis
+Qgis.SymbolLayerUserFlags.baseClass = Qgis
+SymbolLayerUserFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsDataItem.Type = Qgis.BrowserItemType
 # monkey patching scoped based enum
 QgsDataItem.Collection = Qgis.BrowserItemType.Collection

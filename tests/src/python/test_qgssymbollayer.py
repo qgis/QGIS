@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Massimo Endrighi'
 import os
 
 import qgis  # NOQA
+import qgis.core
 from osgeo import ogr
 from qgis.PyQt.QtCore import (
     QDir,
@@ -39,6 +40,7 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
+    Qgis,
     QgsArrowSymbolLayer,
     QgsCategorizedSymbolRenderer,
     QgsCentroidFillSymbolLayer,
@@ -58,14 +60,12 @@ from qgis.core import (
     QgsMarkerLineSymbolLayer,
     QgsMarkerSymbol,
     QgsMarkerSymbolLayer,
-    QgsMultiRenderChecker,
     QgsPointPatternFillSymbolLayer,
     QgsProject,
     QgsProperty,
     QgsRasterFillSymbolLayer,
     QgsReadWriteContext,
     QgsRectangle,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsRendererCategory,
     QgsShapeburstFillSymbolLayer,
@@ -81,6 +81,7 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorFieldSymbolLayer,
     QgsVectorLayer,
+    QgsSymbolRenderContext
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -110,13 +111,9 @@ class TestQgsSymbolLayer(QgisTestCase):
          returns NULL
      """
 
-    def setUp(self):
-        self.report = "<h1>Python QgsSymbolLayer Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return 'symbol_layer'
 
     def testBinding(self):
         """Test python bindings existence."""
@@ -309,6 +306,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         layer.setEnabled(False)
         layer.setLocked(True)
         layer.setRenderingPass(5)
+        layer.setUserFlags(Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring)
 
         symbol = QgsFillSymbol()
         symbol.changeSymbolLayer(0, layer)
@@ -321,6 +319,8 @@ class TestQgsSymbolLayer(QgisTestCase):
         self.assertFalse(restored_layer.enabled())
         self.assertTrue(restored_layer.isLocked())
         self.assertEqual(restored_layer.renderingPass(), 5)
+        self.assertEqual(restored_layer.userFlags(),
+                         Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring)
 
     def testClone(self):
         """ test that base symbol layer properties are cloned with layer """
@@ -329,6 +329,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         layer.setEnabled(False)
         layer.setLocked(True)
         layer.setRenderingPass(5)
+        layer.setUserFlags(Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring)
 
         symbol = QgsFillSymbol()
         symbol.changeSymbolLayer(0, layer)
@@ -338,21 +339,8 @@ class TestQgsSymbolLayer(QgisTestCase):
         self.assertFalse(cloned_layer.enabled())
         self.assertTrue(cloned_layer.isLocked())
         self.assertEqual(cloned_layer.renderingPass(), 5)
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbollayer_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol_layer")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
+        self.assertEqual(cloned_layer.userFlags(),
+                         Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring)
 
     def testRenderFillLayerDisabled(self):
         """ test that rendering a fill symbol with disabled layer works"""
@@ -388,10 +376,15 @@ class TestQgsSymbolLayer(QgisTestCase):
         symbol.stopRender(context)
         painter.end()
 
-        self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
+        self.assertTrue(
+            self.image_check('symbollayer_disabled',
+                             'symbollayer_disabled', image)
+        )
 
     def testRenderFillLayerDataDefined(self):
-        """ test that rendering a fill symbol with data defined enabled layer works"""
+        """
+        Test that rendering a fill symbol with data defined enabled layer works
+        """
 
         polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
         polys_layer = QgsVectorLayer(polys_shp, 'Polygons', 'ogr')
@@ -423,16 +416,20 @@ class TestQgsSymbolLayer(QgisTestCase):
         self.assertCountEqual(polys_layer.renderer().usedAttributes(ctx), {'Name'})
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_layer')
-        renderchecker.setControlName('expected_filllayer_ddenabled')
-        self.assertTrue(renderchecker.runTest('filllayer_ddenabled'))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'filllayer_ddenabled',
+                'filllayer_ddenabled',
+                ms
+            )
+        )
 
         QgsProject.instance().removeMapLayer(polys_layer)
 
     def testRenderLineLayerDisabled(self):
-        """ test that rendering a line symbol with disabled layer works"""
+        """
+        Test that rendering a line symbol with disabled layer works
+        """
         layer = QgsSimpleLineSymbolLayer()
         layer.setEnabled(False)
 
@@ -465,10 +462,18 @@ class TestQgsSymbolLayer(QgisTestCase):
         symbol.stopRender(context)
         painter.end()
 
-        self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
+        self.assertTrue(
+            self.image_check(
+                'symbollayer_disabled',
+                'symbollayer_disabled',
+                image
+            )
+        )
 
     def testRenderLineLayerDataDefined(self):
-        """ test that rendering a line symbol with data defined enabled layer works"""
+        """
+        Test that rendering a line symbol with data defined enabled layer works
+        """
 
         lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
         lines_layer = QgsVectorLayer(lines_shp, 'Lines', 'ogr')
@@ -500,16 +505,20 @@ class TestQgsSymbolLayer(QgisTestCase):
         self.assertCountEqual(lines_layer.renderer().usedAttributes(ctx), {'Name'})
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_layer')
-        renderchecker.setControlName('expected_linelayer_ddenabled')
-        self.assertTrue(renderchecker.runTest('linelayer_ddenabled'))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'linelayer_ddenabled',
+                'linelayer_ddenabled',
+                ms
+            )
+        )
 
         QgsProject.instance().removeMapLayer(lines_layer)
 
     def testRenderMarkerLayerDisabled(self):
-        """ test that rendering a marker symbol with disabled layer works"""
+        """
+        Test that rendering a marker symbol with disabled layer works
+        """
         layer = QgsSimpleMarkerSymbolLayer()
         layer.setEnabled(False)
 
@@ -540,10 +549,19 @@ class TestQgsSymbolLayer(QgisTestCase):
         symbol.stopRender(context)
         painter.end()
 
-        self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
+        self.assertTrue(
+            self.image_check(
+                'symbollayer_disabled',
+                'symbollayer_disabled',
+                image
+            )
+        )
 
     def testRenderMarkerLayerDataDefined(self):
-        """ test that rendering a marker symbol with data defined enabled layer works"""
+        """
+        Test that rendering a marker symbol with data defined enabled
+        layer works
+        """
 
         points_shp = os.path.join(TEST_DATA_DIR, 'points.shp')
         points_layer = QgsVectorLayer(points_shp, 'Points', 'ogr')
@@ -576,16 +594,18 @@ class TestQgsSymbolLayer(QgisTestCase):
         self.assertCountEqual(points_layer.renderer().usedAttributes(ctx), {'Class'})
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_layer')
-        renderchecker.setControlName('expected_markerlayer_ddenabled')
-        self.assertTrue(renderchecker.runTest('markerlayer_ddenabled'))
-
+        self.assertTrue(
+            self.render_map_settings_check(
+                'markerlayer_ddenabled',
+                'markerlayer_ddenabled',
+                ms
+            )
+        )
         QgsProject.instance().removeMapLayer(points_layer)
 
     def testQgsSimpleFillSymbolLayer(self):
-        """Create a new style from a .sld file and match test.
+        """
+        Create a new style from a .sld file and match test.
         """
         mTestName = 'QgsSimpleFillSymbolLayer'
         mFilePath = QDir.toNativeSeparators(f'{unitTestDataPath()}/symbol_layer/{mTestName}.sld')
@@ -627,7 +647,8 @@ class TestQgsSymbolLayer(QgisTestCase):
         self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
 
     def testQgsGradientFillSymbolLayer(self):
-        """Test setting and getting QgsGradientFillSymbolLayer properties.
+        """
+        Test setting and getting QgsGradientFillSymbolLayer properties.
         """
         mGradientLayer = QgsGradientFillSymbolLayer()
 
@@ -1241,6 +1262,38 @@ class TestQgsSymbolLayer(QgisTestCase):
         mSymbolLayer.subSymbol().setColor(QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
+
+    def test_should_render_selection_color(self):
+        layer = QgsSimpleFillSymbolLayer.create(
+            {'color': '#00ff00', 'outline_color': '#0000ff'}
+        )
+        render_context = QgsRenderContext()
+        context = QgsSymbolRenderContext(render_context,
+                                         Qgis.RenderUnit.Millimeters,
+                                         selected=False)
+        self.assertFalse(
+            layer.shouldRenderUsingSelectionColor(context)
+        )
+        layer.setUserFlags(
+            Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring
+        )
+        self.assertFalse(
+            layer.shouldRenderUsingSelectionColor(context)
+        )
+
+        layer.setUserFlags(Qgis.SymbolLayerUserFlags())
+        context = QgsSymbolRenderContext(render_context,
+                                         Qgis.RenderUnit.Millimeters,
+                                         selected=True)
+        self.assertTrue(
+            layer.shouldRenderUsingSelectionColor(context)
+        )
+        layer.setUserFlags(
+            Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring
+        )
+        self.assertFalse(
+            layer.shouldRenderUsingSelectionColor(context)
+        )
 
 
 if __name__ == '__main__':
