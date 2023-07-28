@@ -830,30 +830,7 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValu
 
   double value = qgsPermissiveToDouble( cleanedInputValue, ok );
 
-  if ( ok )
-  {
-    // Note: only distance is formatted for now, but it would be nice to
-    //       handle other constraints in the future, this is the reason
-    //       for the switch.
-    switch ( type )
-    {
-      case Qgis::CadConstraintType::Distance:
-      {
-        // Convert distance to meters
-        const double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( distanceUnit, Qgis::DistanceUnit::Meters );
-        value *= factorUnits;
-        break;
-      }
-      case Qgis::CadConstraintType::Generic:
-      case Qgis::CadConstraintType::Angle:
-      case Qgis::CadConstraintType::ZValue:
-      case Qgis::CadConstraintType::MValue:
-      case Qgis::CadConstraintType::XCoordinate:
-      case Qgis::CadConstraintType::YCoordinate:
-        break;
-    }
-  }
-  else
+  if ( ! ok )
   {
     // try to evaluate expression
     QgsExpression expr( inputValue );
@@ -2033,11 +2010,8 @@ QString QgsAdvancedDigitizingDockWidget::CadConstraint::displayValue() const
     }
     case Qgis::CadConstraintType::Distance:
     {
-      // Value is always in meters (cartesian) #spellok
       const Qgis::DistanceUnit units { QgsProject::instance()->distanceUnits() };
-      const double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, units );
-      const double convertedValue { mValue * factorUnits };
-      return QgsDistanceArea::formatDistance( convertedValue, mPrecision, units, true );
+      return QgsDistanceArea::formatDistance( mValue, mPrecision, units, true );
     }
     case Qgis::CadConstraintType::Generic:
     case Qgis::CadConstraintType::ZValue:
