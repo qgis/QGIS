@@ -52,6 +52,20 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
     QgsVectorLayerSelectionProperties *clone() const override SIP_FACTORY;
 
     /**
+     * Returns the selection rendering mode to use for selected features in the layer.
+     *
+     * \see setSelectionRenderingMode()
+     */
+    Qgis::SelectionRenderingMode selectionRenderingMode() const;
+
+    /**
+     * Sets the selection rendering \a mode to use for selected features in the layer.
+     *
+     * \see selectionRenderingMode()
+     */
+    void setSelectionRenderingMode( Qgis::SelectionRenderingMode mode );
+
+    /**
      * Returns the color to use for rendering selected features in the layer.
      *
      * An invalid color indicates that the default (i.e. project level) selection
@@ -92,6 +106,7 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
 
   private:
 
+    Qgis::SelectionRenderingMode mSelectionRenderingMode = Qgis::SelectionRenderingMode::Default;
     QColor mSelectionColor;
     std::unique_ptr< QgsSymbol > mSelectionSymbol;
 };

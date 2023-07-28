@@ -1162,6 +1162,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( FieldMetadataProperty )
 
     /**
+     * Specifies how a selection should be rendered.
+     *
+     * \since QGIS 3.34
+     */
+    enum class SelectionRenderingMode : int
+    {
+      Default, //!< Use default symbol and selection colors
+      CustomColor, //!< Use default symbol with a custom selection color
+      CustomSymbol, //!< Use a custom symbol
+    };
+    Q_ENUM( SelectionRenderingMode )
+
+    /**
      * Specifies how a selection should be applied.
      *
      * \since QGIS 3.22

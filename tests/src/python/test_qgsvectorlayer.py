@@ -4543,6 +4543,8 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         )
         self.assertEqual(vl.selectionProperties().selectionColor(),
                          QColor(255, 0, 0))
+        vl.selectionProperties().setSelectionRenderingMode(
+            Qgis.SelectionRenderingMode.CustomColor)
 
         p = QgsProject()
         p.addMapLayer(vl)
@@ -4556,6 +4558,9 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
 
             vl2 = list(p2.mapLayers().values())[0]
             self.assertEqual(vl2.name(), vl.name())
+
+            self.assertEqual(vl2.selectionProperties().selectionRenderingMode(),
+                             Qgis.SelectionRenderingMode.CustomColor)
 
             self.assertEqual(vl2.selectionProperties().selectionColor(),
                              QColor(255, 0, 0))
@@ -4577,7 +4582,8 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
 
             self.assertEqual(vl2.selectionProperties().selectionSymbol().color(),
                              QColor(25, 26, 27))
-
+            self.assertEqual(vl2.selectionProperties().selectionColor(),
+                             QColor(255, 0, 0))
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

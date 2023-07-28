@@ -705,6 +705,13 @@ The development version
       CustomProperty,
     };
 
+    enum class SelectionRenderingMode
+    {
+      Default,
+      CustomColor,
+      CustomSymbol,
+    };
+
     enum class SelectBehavior
       {
       SetSelection,
