@@ -20,7 +20,6 @@
 #include "qgis.h"
 #include "qgsmapunitscale.h"
 #include "qgsfields.h"
-#include "qgswkbtypes.h"
 
 class QgsRenderContext;
 class QgsFeature;

@@ -424,7 +424,8 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   double offset = mOffset;
   applyDataDefinedSymbology( context, mPen, mSelPen, offset );
 
-  const QPen pen = context.selected() ? mSelPen : mPen;
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  const QPen pen = useSelectedColor ? mSelPen : mPen;
 
   if ( !pen.dashPattern().isEmpty() )
   {
@@ -1266,12 +1267,13 @@ QgsTemplatedLineSymbolLayerBase::~QgsTemplatedLineSymbolLayerBase() = default;
 
 void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
   if ( mRenderingFeature )
   {
     // in the middle of rendering a possibly multi-part feature, so we collect all the parts and defer the actual rendering
     // until after we've received the final part
     mFeatureSymbolOpacity = context.opacity();
-    mCurrentFeatureIsSelected = context.selected();
+    mCurrentFeatureIsSelected = useSelectedColor;
   }
 
   double offset = mOffset;
@@ -1653,6 +1655,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
   if ( points.isEmpty() )
     return;
 
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
   double lengthLeft = 0; // how much is left until next marker
 
   QgsRenderContext &rc = context.renderContext();
@@ -1794,7 +1797,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
       }
 
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
-      renderSymbol( pt, context.feature(), rc, -1, context.selected() );
+      renderSymbol( pt, context.feature(), rc, -1, useSelectedColor );
     }
   }
   else
@@ -1835,7 +1838,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
         lastPt += c * diff;
         lengthLeft -= painterUnitInterval;
         scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
-        renderSymbol( lastPt, context.feature(), rc, -1, context.selected() );
+        renderSymbol( lastPt, context.feature(), rc, -1, useSelectedColor );
         c = 1; // reset c (if wasn't 1 already)
       }
 
@@ -1914,6 +1917,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     }
   }
 
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
   if ( qgsDoubleNear( offsetAlongLine, 0.0 ) && context.renderContext().geometry()
        && context.renderContext().geometry()->hasCurvedSegments() && ( placement == Qgis::MarkerLinePlacement::Vertex
            || placement == Qgis::MarkerLinePlacement::InnerVertices
@@ -1960,7 +1964,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
           double angle = context.renderContext().geometry()->vertexAngle( vId );
           setSymbolLineAngle( angle * 180 / M_PI );
         }
-        renderSymbol( mapPoint, context.feature(), rc, -1, context.selected() );
+        renderSymbol( mapPoint, context.feature(), rc, -1, useSelectedColor );
       }
     }
 
@@ -2061,7 +2065,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
 
     mFinalVertex = symbolPoint;
     if ( i != points.count() - 1 || placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature )
-      renderSymbol( symbolPoint, context.feature(), rc, -1, context.selected() );
+      renderSymbol( symbolPoint, context.feature(), rc, -1, useSelectedColor );
   }
 }
 
@@ -2146,6 +2150,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
     return;
 
   QgsRenderContext &rc = context.renderContext();
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
   if ( qgsDoubleNear( distance, 0.0 ) )
   {
     // rotate marker (if desired)
@@ -2159,7 +2164,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
     }
     mFinalVertex = points[vertex];
     if ( placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature )
-      renderSymbol( points[vertex], context.feature(), rc, -1, context.selected() );
+      renderSymbol( points[vertex], context.feature(), rc, -1, useSelectedColor );
     return;
   }
 
@@ -2190,7 +2195,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
       }
       mFinalVertex = markerPoint;
       if ( placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature )
-        renderSymbol( markerPoint, context.feature(), rc, -1, context.selected() );
+        renderSymbol( markerPoint, context.feature(), rc, -1, useSelectedColor );
       return;
     }
 
@@ -2378,8 +2383,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
       setSymbolLineAngle( thisSymbolAngle * 180 / M_PI );
     }
 
-    renderSymbol( pt, context.feature(), context.renderContext(), -1, context.selected() );
-
+    const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+    renderSymbol( pt, context.feature(), context.renderContext(), -1, useSelectedColor );
   }
 }
 
@@ -3476,7 +3481,8 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
                   true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
   }
 
-  if ( context.selected() )
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  if ( useSelectedColor )
   {
     QgsImageOperation::overlayColor( sourceImage, context.renderContext().selectionColor() );
   }
@@ -3693,7 +3699,8 @@ void QgsLineburstSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbol
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
     color1 = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mColor );
   }
-  if ( context.selected() )
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  if ( useSelectedColor )
   {
     color1 = context.renderContext().selectionColor();
   }

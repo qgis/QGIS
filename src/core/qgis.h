@@ -532,6 +532,10 @@ class CORE_EXPORT Qgis
     /**
      * \brief Flags controlling behavior of symbol layers
      *
+     * \note These differ from Qgis::SymbolLayerUserFlag in that Qgis::SymbolLayerFlag flags are used to reflect the inbuilt properties
+     * of a symbol layer type, whereas Qgis::SymbolLayerUserFlag are optional, user controlled flags which can be toggled
+     * for a symbol layer.
+     *
      * \since QGIS 3.22
      */
     enum class SymbolLayerFlag : int
@@ -542,6 +546,29 @@ class CORE_EXPORT Qgis
     //! Symbol layer flags
     Q_DECLARE_FLAGS( SymbolLayerFlags, SymbolLayerFlag )
     Q_FLAG( SymbolLayerFlags )
+
+    /**
+     * \brief User-specified flags controlling behavior of symbol layers.
+     *
+     * \note These differ from Qgis::SymbolLayerFlag in that Qgis::SymbolLayerFlag flags are used to reflect the inbuilt properties
+     * of a symbol layer type, whereas Qgis::SymbolLayerUserFlag are optional, user controlled flags which can be toggled
+     * for a symbol layer.
+     *
+     * \since QGIS 3.34
+     */
+    enum class SymbolLayerUserFlag : int
+    {
+      DisableSelectionRecoloring = 1 << 0, //!< If present, indicates that the symbol layer should not be recolored when rendering selected features
+    };
+    Q_ENUM( SymbolLayerUserFlag )
+
+    /**
+     * Symbol layer user flags.
+     *
+     * \since QGIS 3.34
+     */
+    Q_DECLARE_FLAGS( SymbolLayerUserFlags, SymbolLayerUserFlag )
+    Q_FLAG( SymbolLayerUserFlags )
 
     /**
      * Browser item types.
@@ -3895,6 +3922,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerUserFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerFlags )

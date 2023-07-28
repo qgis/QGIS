@@ -279,14 +279,15 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
     transform.rotate( angle );
   }
 
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
   if ( shapeIsFilled( shape ) )
   {
-    p->setPen( context.selected() ? mSelPen : mPen );
-    p->setBrush( context.selected() ? mSelBrush : mBrush );
+    p->setPen( useSelectedColor ? mSelPen : mPen );
+    p->setBrush( useSelectedColor ? mSelBrush : mBrush );
   }
   else
   {
-    p->setPen( context.selected() ? mSelPen : mPen );
+    p->setPen( useSelectedColor ? mSelPen : mPen );
     p->setBrush( QBrush() );
   }
   p->drawPath( transform.map( mPainterPath ) );

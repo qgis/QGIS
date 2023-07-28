@@ -240,6 +240,16 @@ Qgis::SymbolLayerFlags QgsSymbolLayer::flags() const
   return Qgis::SymbolLayerFlags();
 }
 
+Qgis::SymbolLayerUserFlags QgsSymbolLayer::userFlags() const
+{
+  return mUserFlags;
+}
+
+void QgsSymbolLayer::setUserFlags( Qgis::SymbolLayerUserFlags flags )
+{
+  mUserFlags = flags;
+}
+
 QColor QgsSymbolLayer::color() const
 {
   return mColor;
@@ -952,7 +962,7 @@ void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
   {
     QPainterPath mergedPaths;
     mergedPaths.setFillRule( Qt::WindingFill );
-    for ( QPainterPath path : clipPaths )
+    for ( const QPainterPath &path : clipPaths )
     {
       mergedPaths.addPath( path );
     }
@@ -976,7 +986,8 @@ void QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive )
 
   if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )
   {
-    for ( QgsSymbolLayer *sl : lSubSymbol->symbolLayers() )
+    const QList<QgsSymbolLayer *> layers = lSubSymbol->symbolLayers();
+    for ( QgsSymbolLayer *sl : layers )
       sl->installMasks( context, true );
   }
 }
@@ -990,11 +1001,16 @@ void QgsSymbolLayer::removeMasks( QgsRenderContext &context, bool recursive )
 
   if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )
   {
-    for ( QgsSymbolLayer *sl : lSubSymbol->symbolLayers() )
+    const QList<QgsSymbolLayer *> layers = lSubSymbol->symbolLayers();
+    for ( QgsSymbolLayer *sl : layers )
       sl->removeMasks( context, true );
   }
 }
 
+bool QgsSymbolLayer::shouldRenderUsingSelectionColor( const QgsSymbolRenderContext &context ) const
+{
+  return context.selected() && !( mUserFlags & Qgis::SymbolLayerUserFlag::DisableSelectionRecoloring );
+}
 
 void QgsSymbolLayer::setId( const QString &id )
 {

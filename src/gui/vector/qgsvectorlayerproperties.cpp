@@ -619,7 +619,7 @@ void QgsVectorLayerProperties::syncToLayer()
     }
 
     case Qgis::SelectionRenderingMode::CustomSymbol:
-      if ( QgsSymbol *symbol = selectionProperties->selectionSymbol() )
+      if ( selectionProperties->selectionSymbol() )
       {
         mRadioOverrideSelectionSymbol->setChecked( true );
       }
