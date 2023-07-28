@@ -1788,6 +1788,68 @@
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+                 <property name="title">
+                  <string>Selections</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_9">
+                  <item row="3" column="0">
+                   <widget class="QRadioButton" name="mRadioOverrideSelectionSymbol">
+                    <property name="text">
+                     <string>Override symbol for selected features</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QRadioButton" name="mRadioDefaultSelectionColor">
+                    <property name="text">
+                     <string>Use default selection color</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QRadioButton" name="mRadioOverrideSelectionColor">
+                    <property name="text">
+                     <string>Override color for selected features</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QgsColorButton" name="mSelectionColorButton">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QgsSymbolButton" name="mSelectionSymbolButton">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Change…</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QCheckBox" name="mForceRasterCheckBox">
                  <property name="text">
                   <string>Force layer to render as a raster (may result in smaller export file sizes)</string>
@@ -2675,6 +2737,17 @@
    <class>QgsScaleWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

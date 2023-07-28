@@ -22,6 +22,7 @@
 #include "qgsactionmanager.h"
 #include "qgsjoindialog.h"
 #include "qgssldexportcontext.h"
+#include "qgsvectorlayerselectionproperties.h"
 #include "qgswmsdimensiondialog.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
@@ -246,6 +247,36 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   menuMetadata->addAction( tr( "Restore Default" ), this, &QgsVectorLayerProperties::loadDefaultMetadata );
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
+
+  mSelectionColorButton->setAllowOpacity( true );
+  mSelectionColorButton->setColorDialogTitle( tr( "Override Selection Color" ) );
+  if ( mCanvas )
+  {
+    mSelectionColorButton->setColor( mCanvas->selectionColor() );
+    mSelectionColorButton->setDefaultColor( mCanvas->selectionColor() );
+  }
+  connect( mRadioOverrideSelectionColor, &QRadioButton::toggled, mSelectionColorButton, &QWidget::setEnabled );
+  mSelectionColorButton->setEnabled( false );
+  connect( mRadioOverrideSelectionSymbol, &QRadioButton::toggled, mSelectionSymbolButton, &QWidget::setEnabled );
+  switch ( mLayer->geometryType() )
+  {
+
+    case Qgis::GeometryType::Point:
+      mSelectionSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
+      break;
+    case Qgis::GeometryType::Line:
+      mSelectionSymbolButton->setSymbolType( Qgis::SymbolType::Line );
+      break;
+    case Qgis::GeometryType::Polygon:
+      mSelectionSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
+      break;
+
+    case Qgis::GeometryType::Unknown:
+    case Qgis::GeometryType::Null:
+      break;
+  }
+  mSelectionSymbolButton->setEnabled( false );
+  mRadioDefaultSelectionColor->setChecked( true );
 
   syncToLayer();
 
@@ -497,7 +528,6 @@ void QgsVectorLayerProperties::removeSelectedMetadataUrl()
   mMetadataUrlModel->removeRow( selectedRows[0].row() );
 }
 
-// in raster props, this method is called sync()
 void QgsVectorLayerProperties::syncToLayer()
 {
   if ( !mSourceWidget )
@@ -559,6 +589,22 @@ void QgsVectorLayerProperties::syncToLayer()
   mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
   mSimplifyDrawingSpinBox->setClearValue( 1.0 );
+
+  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast< QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
+  if ( QgsSymbol *symbol = selectionProperties->selectionSymbol() )
+  {
+    mRadioOverrideSelectionSymbol->setChecked( true );
+    mSelectionSymbolButton->setSymbol( symbol->clone() );
+  }
+  else if ( selectionProperties->selectionColor().isValid() )
+  {
+    mSelectionColorButton->setColor( selectionProperties->selectionColor() );
+    mRadioOverrideSelectionColor->setChecked( true );
+  }
+  else
+  {
+    mRadioDefaultSelectionColor->setChecked( true );
+  }
 
   QString remark = QStringLiteral( " (%1)" ).arg( tr( "Not supported" ) );
   const QgsVectorDataProvider *provider = mLayer->dataProvider();
@@ -822,6 +868,24 @@ void QgsVectorLayerProperties::apply()
   {
     mLayer->renderer()->setForceRasterRender( mForceRasterCheckBox->isChecked() );
     mLayer->renderer()->setReferenceScale( mUseReferenceScaleGroupBox->isChecked() ? mReferenceScaleWidget->scale() : -1 );
+  }
+
+
+  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast< QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
+  if ( mRadioOverrideSelectionSymbol->isChecked() )
+  {
+    selectionProperties->setSelectionColor( QColor() );
+    selectionProperties->setSelectionSymbol( mSelectionSymbolButton->symbol()->clone() );
+  }
+  else if ( mRadioOverrideSelectionColor->isChecked() )
+  {
+    selectionProperties->setSelectionColor( mSelectionColorButton->color() );
+    selectionProperties->setSelectionSymbol( nullptr );
+  }
+  else
+  {
+    selectionProperties->setSelectionColor( QColor() );
+    selectionProperties->setSelectionSymbol( nullptr );
   }
 
   mLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
