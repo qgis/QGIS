@@ -754,7 +754,8 @@ const QgsVectorDataProvider *QgsVectorLayer::dataProvider() const
 
 QgsMapLayerSelectionProperties *QgsVectorLayer::selectionProperties()
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mSelectionProperties;
 }
