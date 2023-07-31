@@ -26,7 +26,6 @@ from qgis.core import (
     QgsGeometry,
     QgsGeometryGeneratorSymbolLayer,
     QgsLayout,
-    QgsLayoutChecker,
     QgsLayoutItem,
     QgsLayoutItemLegend,
     QgsLayoutItemMap,
@@ -70,11 +69,13 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         cls.item_class = QgsLayoutItemLegend
 
     @classmethod
-    def tearDownClass(cls):
-        super(TestQgsLayoutItemLegend, cls).tearDownClass()
+    def control_path_prefix(cls):
+        return "composer_legend"
 
     def testInitialSizeSymbolMapUnits(self):
-        """Test initial size of legend with a symbol size in map units"""
+        """
+        Test initial size of legend with a symbol size in map units
+        """
         QgsProject.instance().removeAllMapLayers()
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
@@ -109,12 +110,11 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map)
 
-        checker = QgsLayoutChecker(
-            'composer_legend_mapunits', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_mapunits', layout
+            )
+        )
 
         # resize with non-top-left reference point
         legend.setResizeToContents(False)
@@ -137,7 +137,9 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testResizeWithMapContent(self):
-        """Test test legend resizes to match map content"""
+        """
+        Test legend resizes to match map content
+        """
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         QgsProject.instance().addMapLayers([point_layer])
@@ -173,17 +175,18 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
 
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
 
-        checker = QgsLayoutChecker(
-            'composer_legend_size_content', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_size_content', layout
+            )
+        )
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testResizeWithMapContentNoDoublePaint(self):
-        """Test test legend resizes to match map content"""
+        """
+        Test legend resizes to match map content
+        """
         poly_path = os.path.join(TEST_DATA_DIR, 'polys.shp')
         poly_layer = QgsVectorLayer(poly_path, 'polys', 'ogr')
         p = QgsProject()
@@ -216,15 +219,16 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
 
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
 
-        checker = QgsLayoutChecker(
-            'composer_legend_size_content_no_double_paint', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_size_content_no_double_paint', layout
+            )
+        )
 
     def testResizeDisabled(self):
-        """Test that test legend does not resize if auto size is disabled"""
+        """
+        Test that test legend does not resize if auto size is disabled
+        """
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         QgsProject.instance().addMapLayers([point_layer])
@@ -264,17 +268,19 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
 
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
 
-        checker = QgsLayoutChecker(
-            'composer_legend_noresize', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_noresize', layout
+            )
+        )
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testResizeDisabledCrop(self):
-        """Test that if legend resizing is disabled, and legend is too small, then content is cropped"""
+        """
+        Test that if legend resizing is disabled, and legend is too small,
+        then content is cropped
+        """
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         QgsProject.instance().addMapLayers([point_layer])
@@ -314,12 +320,11 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
 
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
 
-        checker = QgsLayoutChecker(
-            'composer_legend_noresize_crop', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_noresize_crop', layout
+            )
+        )
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
@@ -392,7 +397,9 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         self.assertAlmostEqual(exp6.evaluate(expc2), 15000, 2)
 
     def testExpressionInText(self):
-        """Test expressions embedded in legend node text"""
+        """
+        Test expressions embedded in legend node text
+        """
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         layout = QgsPrintLayout(QgsProject.instance())
@@ -440,17 +447,18 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
 
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
 
-        checker = QgsLayoutChecker(
-            'composer_legend_expressions', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_expressions', layout
+            )
+        )
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testSymbolExpressions(self):
-        "Test expressions embedded in legend node text"
+        """
+        Test expressions embedded in legend node text
+        """
         QgsProject.instance().clear()
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
@@ -495,7 +503,9 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         QgsProject.instance().clear()
 
     def testSymbolExpressionRender(self):
-        """Test expressions embedded in legend node text"""
+        """
+        Test expressions embedded in legend node text
+        """
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         layout = QgsPrintLayout(QgsProject.instance())
@@ -544,14 +554,13 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map)
         legend.updateLegend()
-        print(layer_tree_layer.labelExpression())
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
-        checker = QgsLayoutChecker(
-            'composer_legend_symbol_expression', layout)
-        checker.setControlPathPrefix("composer_legend")
-        sleep(4)
-        result, message = checker.testLayout()
-        self.assertTrue(result, message)
+
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_symbol_expression', layout
+            )
+        )
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
@@ -590,7 +599,9 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         self.assertFalse(legend.themeName())
 
     def testLegendRenderWithMapTheme(self):
-        """Test rendering legends linked to map themes"""
+        """
+        Test rendering legends linked to map themes
+        """
         QgsProject.instance().removeAllMapLayers()
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
@@ -698,17 +709,18 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         legend2.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
         legend2.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
 
-        checker = QgsLayoutChecker(
-            'composer_legend_theme', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_theme', layout
+            )
+        )
 
         QgsProject.instance().clear()
 
     def testLegendRenderLinkedMapScale(self):
-        """Test rendering legends linked to maps follow scale correctly"""
+        """
+        Test rendering legends linked to maps follow scale correctly
+        """
         QgsProject.instance().removeAllMapLayers()
 
         line_path = os.path.join(TEST_DATA_DIR, 'lines.shp')
@@ -770,17 +782,18 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         legend2.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
         legend2.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
 
-        checker = QgsLayoutChecker(
-            'composer_legend_scale_map', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_scale_map', layout
+            )
+        )
 
         QgsProject.instance().clear()
 
     def testReferencePoint(self):
-        """Test reference point parameter when resizeToContent is enabled"""
+        """
+        Test reference point parameter when resizeToContent is enabled
+        """
         QgsProject.instance().removeAllMapLayers()
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
@@ -819,12 +832,11 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map)
 
-        checker = QgsLayoutChecker(
-            'composer_legend_reference_point', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_reference_point', layout
+            )
+        )
 
         QgsProject.instance().clear()
 
@@ -895,12 +907,11 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
 
         map.setExtent(QgsRectangle(-119.778, 18.158, -82.444, 51.514))
 
-        checker = QgsLayoutChecker(
-            'composer_legend_elseChild', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_elseChild', layout
+            )
+        )
 
     def test_filter_by_map_items(self):
         p = QgsProject()
@@ -1020,12 +1031,11 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         legend.setStyleFont(QgsLegendStyle.SymbolLabel,
                             QgsFontUtils.getStandardTestFont('Bold', 16))
 
-        checker = QgsLayoutChecker(
-            'legend_multiple_filter_maps', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'legend_multiple_filter_maps', layout
+            )
+        )
 
     def test_filter_by_map_content_rendering_different_layers(self):
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
@@ -1115,12 +1125,11 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         legend.setStyleFont(QgsLegendStyle.SymbolLabel,
                             QgsFontUtils.getStandardTestFont('Bold', 16))
 
-        checker = QgsLayoutChecker(
-            'legend_multiple_filter_maps_different_layers', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'legend_multiple_filter_maps_different_layers', layout
+            )
+        )
 
     def test_filter_by_map_content_rendering_different_layers_in_atlas(self):
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
@@ -1212,15 +1221,16 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         layout.reportContext().setFeature(f)
         legend.refresh()
 
-        checker = QgsLayoutChecker(
-            'legend_multiple_filter_maps_different_layers_atlas', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'legend_multiple_filter_maps_different_layers_atlas', layout
+            )
+        )
 
     def testGeomGeneratorPoints(self):
-        """Test legend behavior when geometry generator on points is involved"""
+        """
+        Test legend behavior when geometry generator on points is involved
+        """
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         QgsProject.instance().addMapLayers([point_layer])
@@ -1274,16 +1284,17 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
 
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
 
-        checker = QgsLayoutChecker(
-            'composer_legend_geomgenerator_point', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_geomgenerator_point', layout
+            )
+        )
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testGeomGeneratorLines(self):
-        """Test legend behavior when geometry generator on lines is involved"""
+        """
+        Test legend behavior when geometry generator on lines is involved
+        """
         line_path = os.path.join(TEST_DATA_DIR, 'lines.shp')
         line_layer = QgsVectorLayer(line_path, 'lines', 'ogr')
         QgsProject.instance().addMapLayers([line_layer])
@@ -1338,12 +1349,11 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
 
         map.setExtent(QgsRectangle(-100.3127, 35.7607, -98.5259, 36.5145))
 
-        checker = QgsLayoutChecker(
-            'composer_legend_geomgenerator_line', layout)
-        checker.setControlPathPrefix("composer_legend")
-        result, message = checker.testLayout()
-        TestQgsLayoutItemLegend.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_geomgenerator_line', layout
+            )
+        )
 
         QgsProject.instance().removeMapLayers([line_layer.id()])
 
