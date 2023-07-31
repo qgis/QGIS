@@ -3,7 +3,7 @@ set -e
 
 if [ "$1" = "triggered" ] || [ "$1" = "configure" ]; then
 	if [ -w /usr/share/qgis/resources/srs.db ] && [ -x /usr/lib/qgis/crssync ]; then
-		/usr/lib/qgis/crssync
+		HOME=/tmp XDG_DATA_HOME="" XDG_CONFIG_HOME="" XDG_STATE_HOME="" XDG_CACHE_HOME="" /usr/lib/qgis/crssync
 	fi
 fi
 
