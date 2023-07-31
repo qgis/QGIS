@@ -1367,14 +1367,14 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
 {
   QString wktParsed = wkt;
   QString contents;
-  const QString empty { "EMPTY" };
+  const QLatin1String empty { "EMPTY" };
   if ( wkt.contains( empty, Qt::CaseInsensitive ) )
   {
     const thread_local QRegularExpression whiteSpaces( "\\s" );
     wktParsed.remove( whiteSpaces );
     const int index = wktParsed.indexOf( empty, 0, Qt::CaseInsensitive );
 
-    if ( /*index != -1 && */index == wktParsed.length() - empty.length() )
+    if ( index == wktParsed.length() - empty.size() )
     {
       // "EMPTY" found at the end of the QString
       // Extract the part of the QString to the left of "EMPTY"
