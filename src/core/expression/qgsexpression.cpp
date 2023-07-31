@@ -36,6 +36,8 @@ Q_GLOBAL_STATIC( QgsStringMap, sVariableHelpTexts )
 Q_GLOBAL_STATIC( QgsStringMap, sGroups )
 
 HelpTextHash QgsExpression::sFunctionHelpTexts;
+QRecursiveMutex QgsExpression::sFunctionsMutex;
+QMap< QString, int> QgsExpression::sFunctionIndexMap;
 
 ///@cond PRIVATE
 HelpTextHash &QgsExpression::functionHelpTexts()
@@ -130,17 +132,31 @@ bool QgsExpression::isFunctionName( const QString &name )
 
 int QgsExpression::functionIndex( const QString &name )
 {
-  int count = functionCount();
-  for ( int i = 0; i < count; i++ )
+  QMutexLocker locker( &sFunctionsMutex );
+
+  auto it = sFunctionIndexMap.constFind( name );
+  if ( it != sFunctionIndexMap.constEnd() )
+    return *it;
+
+  const QList<QgsExpressionFunction *> &functions = QgsExpression::Functions();
+  int i = 0;
+  for ( const QgsExpressionFunction *function : functions )
   {
-    if ( QString::compare( name, QgsExpression::Functions()[i]->name(), Qt::CaseInsensitive ) == 0 )
+    if ( QString::compare( name, function->name(), Qt::CaseInsensitive ) == 0 )
+    {
+      sFunctionIndexMap.insert( name, i );
       return i;
-    const QStringList aliases = QgsExpression::Functions()[i]->aliases();
+    }
+    const QStringList aliases = function->aliases();
     for ( const QString &alias : aliases )
     {
       if ( QString::compare( name, alias, Qt::CaseInsensitive ) == 0 )
+      {
+        sFunctionIndexMap.insert( name, i );
         return i;
+      }
     }
+    i++;
   }
   return -1;
 }
