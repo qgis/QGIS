@@ -114,6 +114,13 @@ Adds a named node. Takes ownership of the provided node.
 Returns the number of nodes in the list.
 %End
 
+        void reserve( int size );
+%Docstring
+Reserves size for the node list.
+
+.. versionadded:: 3.34
+%End
+
         bool hasNamedNodes() const;
 %Docstring
 Returns ``True`` if list contains any named nodes
