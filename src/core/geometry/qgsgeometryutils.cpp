@@ -1366,14 +1366,19 @@ QPair<Qgis::WkbType, QString> QgsGeometryUtils::wktReadBlock( const QString &wkt
 {
   QString wktParsed = wkt;
   QString contents;
-  if ( wkt.contains( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) )
+  const QLatin1String empty { "EMPTY" };
+  if ( wkt.contains( empty, Qt::CaseInsensitive ) )
   {
-    const thread_local QRegularExpression sWktRegEx( QStringLiteral( "^\\s*(\\w+)\\s+(\\w+)\\s*$" ), QRegularExpression::DotMatchesEverythingOption );
-    const QRegularExpressionMatch match = sWktRegEx.match( wkt );
-    if ( match.hasMatch() )
+    const thread_local QRegularExpression whiteSpaces( "\\s" );
+    wktParsed.remove( whiteSpaces );
+    const int index = wktParsed.indexOf( empty, 0, Qt::CaseInsensitive );
+
+    if ( index == wktParsed.length() - empty.size() )
     {
-      wktParsed = match.captured( 1 );
-      contents = match.captured( 2 ).toUpper();
+      // "EMPTY" found at the end of the QString
+      // Extract the part of the QString to the left of "EMPTY"
+      wktParsed = wktParsed.left( index );
+      contents = empty;
     }
   }
   else
