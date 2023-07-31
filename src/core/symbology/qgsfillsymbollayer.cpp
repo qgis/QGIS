@@ -2844,19 +2844,19 @@ QString QgsLinePatternFillSymbolLayer::layerType() const
   return QStringLiteral( "LinePatternFill" );
 }
 
-void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double lineAngle, double distance )
+bool QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double lineAngle, double distance )
 {
   mBrush.setTextureImage( QImage() ); // set empty in case we have to return
 
   if ( !mFillLineSymbol )
   {
-    return;
+    return true;
   }
   // We have to make a copy because marker intervals will have to be adjusted
   std::unique_ptr< QgsLineSymbol > fillLineSymbol( mFillLineSymbol->clone() );
   if ( !fillLineSymbol )
   {
-    return;
+    return true;
   }
 
   const QgsRenderContext &ctx = context.renderContext();
@@ -2975,9 +2975,9 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   height += 2 * yBuffer;
 
   //protect from zero width/height image and symbol layer from eating too much memory
-  if ( width > 10000 || height > 10000 || width == 0 || height == 0 )
+  if ( width > 2000 || height > 2000 || width == 0 || height == 0 )
   {
-    return;
+    return false;
   }
 
   QImage patternImage( width, height, QImage::Format_ARGB32 );
@@ -3132,6 +3132,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
 
   QTransform brushTransform;
   brush.setTransform( brushTransform );
+
+  return true;
 }
 
 void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
@@ -3143,15 +3145,17 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context
                       || mClipMode != Qgis::LineClipMode::ClipPainterOnly
                       || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineClipping );
 
+  if ( !mRenderUsingLines )
+  {
+    // optimised render for screen only, use image based brush
+    // (fallback to line rendering when pattern image will result in too large a memory footprint)
+    mRenderUsingLines = !applyPattern( context, mBrush, mLineAngle, mDistance );
+  }
+
   if ( mRenderUsingLines )
   {
     if ( mFillLineSymbol )
       mFillLineSymbol->startRender( context.renderContext(), context.fields() );
-  }
-  else
-  {
-    // optimised render for screen only, use image based brush
-    applyPattern( context, mBrush, mLineAngle, mDistance );
   }
 }
 
@@ -3808,7 +3812,7 @@ QString QgsPointPatternFillSymbolLayer::layerType() const
   return QStringLiteral( "PointPatternFill" );
 }
 
-void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double distanceX, double distanceY,
+bool QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double distanceX, double distanceY,
     double displacementX, double displacementY, double offsetX, double offsetY )
 {
   //render 3 rows and columns in one go to easily incorporate displacement
@@ -3823,11 +3827,10 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
                           mOffsetYUnit == Qgis::RenderUnit::Percentage ? ( height * offsetY / 200 ) : ctx.convertToPainterUnits( offsetY, mOffsetYUnit, mOffsetYMapUnitScale ),
                           height );
 
-  if ( width > 10000 || height > 10000 ) //protect symbol layer from eating too much memory
+  if ( width > 2000 || height > 2000 ) //protect symbol layer from eating too much memory
   {
-    QImage img;
-    brush.setTextureImage( img );
-    return;
+    brush.setTextureImage( QImage() );
+    return false;
   }
 
   QImage patternImage( width, height, QImage::Format_ARGB32 );
@@ -3835,7 +3838,7 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
   if ( patternImage.isNull() )
   {
     brush.setTextureImage( QImage() );
-    return;
+    return false;
   }
   if ( mMarkerSymbol )
   {
@@ -3903,6 +3906,8 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
   }
   QTransform brushTransform;
   brush.setTransform( brushTransform );
+
+  return true;
 }
 
 void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
@@ -3920,14 +3925,16 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &contex
                         || !qgsDoubleNear( mAngle, 0 )
                         || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle );
 
+  if ( !mRenderUsingMarkers )
+  {
+    // optimised render for screen only, use image based brush
+    // (fallback to line rendering when pattern image will result in too large a memory footprint)
+    mRenderUsingMarkers = !applyPattern( context, mBrush, mDistanceX, mDistanceY, mDisplacementX, mDisplacementY, mOffsetX, mOffsetY );
+  }
+
   if ( mRenderUsingMarkers )
   {
     mMarkerSymbol->startRender( context.renderContext() );
-  }
-  else
-  {
-    // optimised render for screen only, use image based brush
-    applyPattern( context, mBrush, mDistanceX, mDistanceY, mDisplacementX, mDisplacementY, mOffsetX, mOffsetY );
   }
 }
 
