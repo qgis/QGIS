@@ -1047,25 +1047,10 @@ void QgsLayoutItemLegend::mapThemeChanged( const QString &theme )
   mThemeName = theme;
 
   // map's theme has been changed, so make sure to update the legend here
-  if ( mLegendFilterByMap )
-  {
-    // legend is being filtered by map, so we need to re run the hit test too
-    // as the style overrides may also have affected the visible symbols
-    updateFilterByMap( false );
-  }
-  else
-  {
-    if ( mThemeName.isEmpty() )
-    {
-      setModelStyleOverrides( QMap<QString, QString>() );
-    }
-    else
-    {
-      // get style overrides for theme
-      const QMap<QString, QString> overrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( mThemeName );
-      setModelStyleOverrides( overrides );
-    }
-  }
+
+  // legend is being filtered by map, so we need to re run the hit test too
+  // as the style overrides may also have affected the visible symbols
+  updateFilterByMap( false );
 
   adjustBoxSize();
 
@@ -1085,22 +1070,28 @@ void QgsLayoutItemLegend::updateFilterByMap( bool redraw )
 
 void QgsLayoutItemLegend::doUpdateFilterByMap()
 {
-  if ( mMap )
+  // There's an incompatibility here between legend handling of linked map themes and layer style overrides vs
+  // how expression evaluation is made in legend content text. The logic below is hacked together to get
+  // all the existing unit tests passing, but these two features are incompatible with each other and fixing
+  // this is extremely non-trivial. Let's just hope no-one tries to use those features together!
+  // Ideally, all the branches below would be consistently using either "setModelStyleOverrides" (which forces
+  // a rebuild of each layer's legend, and breaks legend text expression evaluation) OR
+  // "mLegendModel->setLayerStyleOverrides" which just handles the expression updates but which doesn't correctly
+  // generate the legend content from the associated theme settings.
+  if ( mMap && !mThemeName.isEmpty() )
   {
-    if ( !mThemeName.isEmpty() )
-    {
-      // get style overrides for theme
-      const QMap<QString, QString> overrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( mThemeName );
-      mLegendModel->setLayerStyleOverrides( overrides );
-    }
-    else
-    {
-      mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
-    }
+    // get style overrides for theme
+    const QMap<QString, QString> overrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( mThemeName );
+    setModelStyleOverrides( overrides );
+  }
+  else if ( mMap )
+  {
+    mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
   }
   else
+  {
     mLegendModel->setLayerStyleOverrides( QMap<QString, QString>() );
-
+  }
 
   const bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mLayout->project()->layerTreeRoot() ) );
 
