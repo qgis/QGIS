@@ -6396,6 +6396,7 @@ void QgisApp::enableProjectMacros()
 bool QgisApp::addProject( const QString &projectFile )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
+  QWidgetUpdateBlocker layerTreeViewUpdateBlocker( mLayerTreeView );
 
   bool returnCode = false;
   std::unique_ptr< QgsProjectDirtyBlocker > dirtyBlocker = std::make_unique< QgsProjectDirtyBlocker >( QgsProject::instance() );

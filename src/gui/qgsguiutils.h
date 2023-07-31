@@ -209,6 +209,42 @@ namespace QgsGuiUtils
 }
 
 /**
+ * Temporarily disables updates for a QWidget for the lifetime of the object.
+ *
+ * When the object is deleted, the updates are re-enabled.
+ *
+ * \ingroup gui
+ * \since QGIS 3.34
+ */
+class GUI_EXPORT QWidgetUpdateBlocker
+{
+  public:
+
+    /**
+     * Constructor for QWidgetUpdateBlocker. Blocks updates for the specified \a widget.
+     *
+     * The caller must ensure that \a widget exists for the lifetime of this object.
+     */
+    QWidgetUpdateBlocker( QWidget *widget );
+
+    //! QWidgetUpdateBlocker cannot be copied
+    QWidgetUpdateBlocker( const QWidgetUpdateBlocker &other ) = delete;
+    //! QWidgetUpdateBlocker cannot be copied
+    QWidgetUpdateBlocker &operator=( const QWidgetUpdateBlocker &other ) = delete;
+
+    ~QWidgetUpdateBlocker();
+
+    /**
+     * Releases the update block early (i.e. before this object is destroyed).
+     */
+    void release();
+
+  private:
+
+    QWidget *mWidget = nullptr;
+};
+
+/**
  * Temporarily sets a cursor override for the QApplication for the lifetime of the object.
  *
  * When the object is deleted, the cursor override is removed.
