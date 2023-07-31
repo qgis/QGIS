@@ -382,3 +382,27 @@ void QgsTemporaryCursorRestoreOverride::restore()
   }
   mCursors.clear();
 }
+
+//
+// QWidgetUpdateBlocker
+//
+
+QWidgetUpdateBlocker::QWidgetUpdateBlocker( QWidget *widget )
+  : mWidget( widget )
+{
+  mWidget->setUpdatesEnabled( false );
+}
+
+void QWidgetUpdateBlocker::release()
+{
+  if ( !mWidget )
+    return;
+
+  mWidget->setUpdatesEnabled( true );
+  mWidget = nullptr;
+}
+
+QWidgetUpdateBlocker::~QWidgetUpdateBlocker()
+{
+  release();
+}
