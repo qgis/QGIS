@@ -1445,7 +1445,8 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
     layerEl.setAttribute( QStringLiteral( "locked" ), layer->isLocked() );
     layerEl.setAttribute( QStringLiteral( "pass" ), layer->renderingPass() );
     layerEl.setAttribute( QStringLiteral( "id" ), layer->id() );
-    layerEl.setAttribute( QStringLiteral( "userFlags" ), qgsFlagValueToKeys( layer->userFlags() ) );
+    if ( layer->userFlags() != Qgis::SymbolLayerUserFlags() )
+      layerEl.setAttribute( QStringLiteral( "userFlags" ), qgsFlagValueToKeys( layer->userFlags() ) );
 
     QVariantMap props = layer->properties();
 
