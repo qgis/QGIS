@@ -1212,6 +1212,9 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
 
 QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const QgsReadWriteContext &context )
 {
+  if ( element.isNull() )
+    return nullptr;
+
   QgsSymbolLayerList layers;
   QDomNode layerNode = element.firstChild();
 
