@@ -2179,13 +2179,13 @@ void QgsSVGFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVecto
 
   if ( mStroke )
   {
-    const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
-    mStroke->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && useSelectedColor );
+    const bool useSelectedColor = SELECT_FILL_BORDER && shouldRenderUsingSelectionColor( context );
+    mStroke->renderPolyline( points, context.feature(), context.renderContext(), -1, useSelectedColor );
     if ( rings )
     {
       for ( auto ringIt = rings->constBegin(); ringIt != rings->constEnd(); ++ringIt )
       {
-        mStroke->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && useSelectedColor );
+        mStroke->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, useSelectedColor );
       }
     }
   }
