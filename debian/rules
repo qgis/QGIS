@@ -10,6 +10,8 @@ export DH_OPTIONS
 # Enable hardening build flags
 export DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
+export DEB_PYTHON_INSTALL_LAYOUT=deb_system
+
 include /usr/share/dpkg/pkg-info.mk
 
 # These are used for cross-compiling and for saving the configure script
