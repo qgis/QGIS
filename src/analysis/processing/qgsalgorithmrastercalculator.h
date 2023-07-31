@@ -48,8 +48,13 @@ class QgsRasterCalculatorAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    QList< QgsMapLayer * > mLayers;
 };
 
 ///@endcond PRIVATE
