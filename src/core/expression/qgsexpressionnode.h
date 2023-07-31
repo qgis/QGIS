@@ -137,6 +137,13 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         int count() const { return mList.count(); }
 
         /**
+         * Reserves size for the node list.
+         *
+         * \since QGIS 3.34
+         */
+        void reserve( int size ) { mList.reserve( size ); }
+
+        /**
          * Returns TRUE if list contains any named nodes
          * \since QGIS 2.16
          */
