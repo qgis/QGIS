@@ -345,11 +345,10 @@ QComboBox {
     background-color: @darkgradient;
     color:@text;
     border-style: solid;
-    border: 1px solid #1e1e1e; 
+    border: 1px solid #111;
     border-radius: 0px;
     padding: 0.12em 1.2em 0.12em 0.2em;
 }
-
 
 QComboBox:hover {
     background-color: @darkalternativegradient;
@@ -1096,6 +1095,7 @@ QVideoWidget QWidget {
 QgsColorButton, QgsColorRampButton, QgsSymbolButton, QgsFontButton {
     background-color: @darkgradient;
     color:@text;
+    border: 1px solid #111;
 }
 
 QgsColorButton:hover, QgsColorRampButton:hover, QgsSymbolButton:hover, QgsFontButton:hover {
