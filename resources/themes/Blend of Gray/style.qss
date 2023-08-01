@@ -274,8 +274,7 @@ QToolButton[popupMode="1"]
 }
 QToolButton::menu-button {
     width: 0.8em;
-    border-width: 1px;
-    border-color: none;
+    border: 1px solid rgba(0,0,0,0);
     border-radius: 0.2em;
     background:@itemdarkbackground;
 }
