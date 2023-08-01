@@ -23,7 +23,8 @@ from qgis.core import (
     QgsBox3d,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
-    QgsCoordinateTransformContext
+    QgsCoordinateTransformContext,
+    QgsMatrix4x4
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -39,6 +40,10 @@ class TestQgsTiledMeshNodeBoundingVolume(QgisTestCase):
     def test_region(self):
         volume = QgsTiledMeshNodeBoundingVolumeRegion(QgsBox3d(1, 2, 3, 10, 11, 12))
         self.assertEqual(volume.type(), Qgis.TiledMeshBoundingVolumeType.Region)
+        volume.transform(QgsMatrix4x4(1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0))
+        # should be no change when transforming regions!
+        self.assertEqual(volume.region(),
+                         QgsBox3d(1, 2, 3, 10, 11, 12))
 
         cloned = volume.clone()
         self.assertIsInstance(cloned, QgsTiledMeshNodeBoundingVolumeRegion)
@@ -56,7 +61,7 @@ class TestQgsTiledMeshNodeBoundingVolume(QgisTestCase):
         geometry_2d = volume.as2DGeometry()
         self.assertEqual(geometry_2d.asWkt(), 'Polygon ((1 2, 10 2, 10 11, 1 11, 1 2))')
 
-        # with transform
+        # with coordinate transform
         volume = QgsTiledMeshNodeBoundingVolumeRegion(QgsBox3d(-4595750, 2698725, -3493318,
                                                                -4595750 + 1000, 2698725 + 1500, -3493318 + 2000))
         transform = QgsCoordinateTransform(
@@ -74,29 +79,32 @@ class TestQgsTiledMeshNodeBoundingVolume(QgisTestCase):
 
         geometry_2d = volume.as2DGeometry(transform)
         self.assertEqual(geometry_2d.asWkt(3),
-                         'Polygon ((149.578 -33.412, 149.572 -33.417, 149.558 -33.413, 149.564 -33.409, 149.578 -33.412))')
+                         'Polygon ((149.572 -33.424, 149.558 -33.421, 149.558 -33.405, 149.564 -33.401, 149.578 -33.405, 149.578 -33.42, 149.572 -33.424))')
 
     def test_box(self):
         volume = QgsTiledMeshNodeBoundingVolumeBox(QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30]))
         self.assertEqual(volume.type(), Qgis.TiledMeshBoundingVolumeType.OrientedBox)
+        volume.transform(QgsMatrix4x4(1.5, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1))
+        self.assertEqual(volume.box(),
+                         QgsOrientedBox3D([1.5, 4, 9], [15, 0, 0, 0, 40, 0, 0, 0, 90]))
 
         cloned = volume.clone()
         self.assertIsInstance(cloned, QgsTiledMeshNodeBoundingVolumeBox)
-        self.assertEqual(cloned.box(), QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30]))
+        self.assertEqual(cloned.box(), QgsOrientedBox3D([1.5, 4, 9], [15, 0, 0, 0, 40, 0, 0, 0, 90]))
 
         # bounds
         bounds = volume.bounds()
-        self.assertEqual(bounds.xMinimum(), -9)
-        self.assertEqual(bounds.xMaximum(), 11)
-        self.assertEqual(bounds.yMinimum(), -18)
-        self.assertEqual(bounds.yMaximum(), 22)
-        self.assertEqual(bounds.zMinimum(), -27)
-        self.assertEqual(bounds.zMaximum(), 33)
+        self.assertEqual(bounds.xMinimum(), -13.5)
+        self.assertEqual(bounds.xMaximum(), 16.5)
+        self.assertEqual(bounds.yMinimum(), -36)
+        self.assertEqual(bounds.yMaximum(), 44)
+        self.assertEqual(bounds.zMinimum(), -81)
+        self.assertEqual(bounds.zMaximum(), 99)
 
         geometry_2d = volume.as2DGeometry()
-        self.assertEqual(geometry_2d.asWkt(), 'Polygon ((-9 -18, -9 22, 11 22, 11 -18, -9 -18))')
+        self.assertEqual(geometry_2d.asWkt(), 'Polygon ((-13.5 -36, -13.5 44, 16.5 44, 16.5 -36, -13.5 -36))')
 
-        # with transform
+        # with coordinate transform
         volume = QgsTiledMeshNodeBoundingVolumeBox(QgsOrientedBox3D([-4595750, 2698725, -3493318],
                                                                     [1000, 0, 0, 0, 1500, 0, 0, 0, 2000]))
         transform = QgsCoordinateTransform(
@@ -119,24 +127,27 @@ class TestQgsTiledMeshNodeBoundingVolume(QgisTestCase):
     def test_sphere(self):
         volume = QgsTiledMeshNodeBoundingVolumeSphere(QgsSphere(1, 2, 3, 10))
         self.assertEqual(volume.type(), Qgis.TiledMeshBoundingVolumeType.Sphere)
+        volume.transform(QgsMatrix4x4(1.5, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1))
+        self.assertEqual(volume.sphere(),
+                         QgsSphere(1.5, 4, 9, 30))
 
         cloned = volume.clone()
         self.assertIsInstance(cloned, QgsTiledMeshNodeBoundingVolumeSphere)
-        self.assertEqual(cloned.sphere(), QgsSphere(1, 2, 3, 10))
+        self.assertEqual(cloned.sphere(), QgsSphere(1.5, 4, 9, 30))
 
         # bounds
         bounds = volume.bounds()
-        self.assertEqual(bounds.xMinimum(), -9)
-        self.assertEqual(bounds.xMaximum(), 11)
-        self.assertEqual(bounds.yMinimum(), -8)
-        self.assertEqual(bounds.yMaximum(), 12)
-        self.assertEqual(bounds.zMinimum(), -7)
-        self.assertEqual(bounds.zMaximum(), 13)
+        self.assertEqual(bounds.xMinimum(), -28.5)
+        self.assertEqual(bounds.xMaximum(), 31.5)
+        self.assertEqual(bounds.yMinimum(), -26.0)
+        self.assertEqual(bounds.yMaximum(), 34.0)
+        self.assertEqual(bounds.zMinimum(), -21.0)
+        self.assertEqual(bounds.zMaximum(), 39)
 
         geometry_2d = volume.as2DGeometry()
-        self.assertEqual(geometry_2d.asWkt(), 'CurvePolygon (CircularString (1 12, 11 2, 1 -8, -9 2, 1 12))')
+        self.assertEqual(geometry_2d.asWkt(), 'CurvePolygon (CircularString (1.5 34, 31.5 4, 1.5 -26, -28.5 4, 1.5 34))')
 
-        # with transform
+        # with coordinate transform
         volume = QgsTiledMeshNodeBoundingVolumeSphere(QgsSphere(-4595750, 2698725, -3493318, 1983))
         transform = QgsCoordinateTransform(
             QgsCoordinateReferenceSystem('EPSG:4978'),
@@ -144,12 +155,12 @@ class TestQgsTiledMeshNodeBoundingVolume(QgisTestCase):
             QgsCoordinateTransformContext()
         )
         bounds = volume.bounds(transform)
-        self.assertAlmostEqual(bounds.xMinimum(), 149.5562, 3)
-        self.assertAlmostEqual(bounds.xMaximum(), 149.5989, 3)
-        self.assertAlmostEqual(bounds.yMinimum(), -33.4378835, 3)
-        self.assertAlmostEqual(bounds.yMaximum(), -33.40215, 3)
-        self.assertAlmostEqual(bounds.zMinimum(), -393.63504, 3)
-        self.assertAlmostEqual(bounds.zMaximum(), 1790.72811, 3)
+        self.assertAlmostEqual(bounds.xMinimum(), 149.5484294320, 3)
+        self.assertAlmostEqual(bounds.xMaximum(), 149.606785943, 3)
+        self.assertAlmostEqual(bounds.yMinimum(), -33.448419, 3)
+        self.assertAlmostEqual(bounds.yMaximum(), -33.39162, 3)
+        self.assertAlmostEqual(bounds.zMinimum(), -2659.1526749, 3)
+        self.assertAlmostEqual(bounds.zMaximum(), 4055.8967716, 3)
 
         geometry_2d = volume.as2DGeometry(transform)
         self.assertEqual(geometry_2d.asWkt(3),
