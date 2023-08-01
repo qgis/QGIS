@@ -94,7 +94,8 @@ void QgsO2::initOAuthConfig()
       setGrantFlow( O2::GrantFlowPkce );
       setRequestUrl( mOAuth2Config->requestUrl() );
       setClientId( mOAuth2Config->clientId() );
-      setClientSecret( mOAuth2Config->clientSecret() );
+      // No client secret with PKCE
+      //setClientSecret( mOAuth2Config->clientSecret() );
 
       break;
     case QgsAuthOAuth2Config::AuthCode:
@@ -331,7 +332,11 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     QMap<QString, QString> parameters;
     parameters.insert( O2_OAUTH2_GRANT_TYPE_CODE, code() );
     parameters.insert( O2_OAUTH2_CLIENT_ID, clientId_ );
-    parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
+    //No client secret with PKCE
+    if ( grantFlow_ != GrantFlowPkce )
+    {
+      parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
+    }
     parameters.insert( O2_OAUTH2_REDIRECT_URI, redirectUri_ );
     parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_AUTHORIZATION_CODE );
     if ( grantFlow() == GrantFlowPkce )
@@ -428,7 +433,11 @@ void QgsO2::refreshSynchronous()
   refreshRequest.setHeader( QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM );
   QMap<QString, QString> parameters;
   parameters.insert( O2_OAUTH2_CLIENT_ID, clientId_ );
-  parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
+  // No secret with PKCE
+  if ( grantFlow_ != GrantFlowPkce )
+  {
+    parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
+  }
   parameters.insert( O2_OAUTH2_REFRESH_TOKEN, refreshToken() );
   parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_OAUTH2_REFRESH_TOKEN );
 
