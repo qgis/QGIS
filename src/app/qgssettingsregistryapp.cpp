@@ -19,11 +19,17 @@
 #include "qgsidentifyresultsdialog.h"
 #include "qgspluginmanager.h"
 #include "qgssettingsentryimpl.h"
-
+#include "qgsgui.h"
+#include "qgssettingseditorwidgetregistry.h"
+#include "qgssettingsenumflageditorwidgetwrapper.h"
+#include "qgsimagewarper.h"
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
 {
+  QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>() );
+
+
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 

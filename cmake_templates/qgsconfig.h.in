@@ -61,6 +61,8 @@
 
 #cmakedefine HAVE_GUI
 
+#cmakedefine HAVE_ANALYSIS
+
 #cmakedefine HAVE_SPATIALITE
 
 #cmakedefine HAVE_POSTGRESQL

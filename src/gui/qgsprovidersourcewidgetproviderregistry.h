@@ -21,7 +21,6 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsguiutils.h"
 
 class QgsMapLayer;
 class QgsProviderSourceWidget;

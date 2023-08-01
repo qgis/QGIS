@@ -163,6 +163,11 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
       return Qgis::SettingsType::EnumFlag;
     }
 
+    virtual QString typeId() const override
+    {
+      return QStringLiteral( "%1-%2" ).arg( this->QgsSettingsEntryBase::typeId(), QMetaEnum::fromType<T>().name() );
+    }
+
   private:
     T mDefaultValue;
     QMetaEnum mMetaEnum;

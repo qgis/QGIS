@@ -231,12 +231,17 @@ if(WITH_CORE)
     set (HAVE_GUI TRUE)     # used in qgsconfig.h
   endif()
 
-  if ( WITH_DESKTOP AND NOT WITH_ANALYSIS )
-    message(FATAL_ERROR "Desktop cannot be built without analysis")
-  endif()
+  if ( WITH_ANALYSIS )
+    set (HAVE_ANALYSIS TRUE)    # used in qgsconfig.h
+  else()
+    set (HAVE_ANALYSIS FALSE)    # used in qgsconfig.h
 
-  if ( WITH_QGIS_PROCESS AND NOT WITH_ANALYSIS )
-    message(FATAL_ERROR "Process tool cannot be built without analysis")
+    if ( WITH_DESKTOP )
+      message(FATAL_ERROR "Desktop cannot be built without analysis")
+    endif()
+    if ( WITH_QGIS_PROCES )
+      message(FATAL_ERROR "Process tool cannot be built without analysis")
+    endif()
   endif()
 
   if ( WITH_DESKTOP )

@@ -1470,6 +1470,7 @@ set(QGIS_GUI_HDRS
 
   settings/qgssettingseditorwidgetwrapper.h
   settings/qgssettingseditorwidgetwrapperimpl.h
+  settings/qgssettingsenumflageditorwidgetwrapper.h
   settings/qgssettingseditorwidgetregistry.h
   settings/qgssettingsregistrygui.h
   settings/qgssettingstreemodel.h
@@ -1712,6 +1713,10 @@ target_link_libraries(qgis_gui
   ${QT_VERSION_BASE}::Multimedia
   ${QT_VERSION_BASE}::MultimediaWidgets
 )
+
+if (HAVE_ANALYSIS)
+  target_link_libraries(qgis_gui qgis_analysis)
+endif()
 
 if (BUILD_WITH_QT6)
   find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
