@@ -63,11 +63,11 @@ QMenuBar::item:pressed
 
 QAbstractSpinBox {
     padding: 0.12em;
-    border: 1px solid #111;
-    background-color: #888;
+    border: 1px solid @itemdarkbackground;
+    background-color: @itembackground;
     selection-background-color: @selection;
     selection-color: @text;
-    color: #111;
+    color: @textlight;
 }
 
 QAbstractSpinBox::up-button {
@@ -220,8 +220,8 @@ QWidget:disabled, QWidget:editable:disabled
 QLineEdit
 {
     padding: 0.12em;
-    border: 1px solid #111;
-    background-color: #888;
+    border: 1px solid @itemdarkbackground;
+    background-color: @itembackground;
     selection-background-color: @selection;
     selection-color: @text;
 }
@@ -343,7 +343,7 @@ QComboBox {
     background-color: @darkgradient;
     color:@text;
     border-style: solid;
-    border: 1px solid #111;
+    border: 1px solid #111; 
     border-radius: 0px;
     padding: 0.12em 1.2em 0.12em 0.2em;
 }
@@ -394,7 +394,7 @@ QComboBox::drop-down:editable {
      width: 0.8em;
      background-color: @darkgradient;
      color:@itembackground;
-     border: 1px solid #888;
+     border: 1px solid @itembackground;
 }
 QComboBox::drop-down:editable:hover {
     background-color: @darkalternativegradient;
@@ -433,11 +433,11 @@ QComboBox::indicator {
 
 QComboBox:editable {
     padding: 0.12em;
-    border: 1px solid #111;
-    background-color: #888;
+    border: 1px solid @itemdarkbackground;
+    background-color: @itembackground;
     selection-background-color: @selection;
     selection-color: @text;
-    color: #111;
+    color: @textlight;
 }
 
 /* ==================================================================================== */
