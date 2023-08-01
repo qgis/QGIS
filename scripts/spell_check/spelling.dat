@@ -162,7 +162,7 @@ acknowleges:acknowledges
 acknowleging:acknowledging
 ackowledge:acknowledge
 ackowledged:acknowledged
-ackward:awkward*
+ackward:awkward:*
 acommodate:accommodate
 acommodated:accommodated
 acommodates:accommodates
@@ -230,7 +230,7 @@ addjusted:adjusted
 addjusting:adjusting
 addjusts:adjusts
 addmission:admission
-addopt:adopt*
+addopt:adopt:*
 addopted:adopted
 addoptive:adoptive
 addres:address
@@ -566,7 +566,7 @@ apperances:appearances
 appereance:appearance
 appereances:appearances
 appered:appeared
-appers:appears*
+appers:appears:*
 applicaiton:application
 applicaitons:applications
 appliction:application
@@ -856,7 +856,7 @@ authrorities:authorities
 autochtonous:autochthonous
 autoctonous:autochthonous
 autoincrememnt:autoincrement
-automaticall:automatically*
+automaticall:automatically:*
 automaticaly:automatically
 automaticly:automatically
 automatize:automate
@@ -1828,7 +1828,7 @@ coorperation:corporation
 coorperations:corporations
 copmetitors:competitors
 coputer:computer
-copyed:copied*
+copyed:copied:*
 copyrigth:copyright
 copyrigthed:copyrighted
 copyrigths:copyrights
@@ -3037,7 +3037,7 @@ fatc:fact
 fatser:faster
 fature:feature
 faught:fought
-favourite:favorite*
+favourite:favorite:*
 favoutrable:favourable
 feasable:feasible
 featre:feature
@@ -3090,7 +3090,7 @@ fisrt:first
 fitering:filtering
 fitler:filter
 fitlers:filters
-flaged:flagged
+flaged:flagged:*
 flakyness:flakiness
 flamable:flammable
 flavour:flavor
