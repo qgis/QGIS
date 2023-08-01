@@ -8338,7 +8338,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
 class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
 {
   public:
-    QgisAppFieldValueConverter( QgsVectorLayer *vl, const QgsAttributeList &attributesAsDisplayedValues );
+    QgisAppFieldValueConverter( QgsVectorLayer *vl, const QgsAttributeList &attributesAsDisplayedValues, const QStringList &attributesExportNames );
 
     QgsField fieldDefinition( const QgsField &field ) override;
 
@@ -8349,11 +8349,14 @@ class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConvert
   private:
     QPointer< QgsVectorLayer > mLayer;
     QgsAttributeList mAttributesAsDisplayedValues;
+    QStringList mAttributesExportNames;
 };
 
-QgisAppFieldValueConverter::QgisAppFieldValueConverter( QgsVectorLayer *vl, const QgsAttributeList &attributesAsDisplayedValues )
+QgisAppFieldValueConverter::QgisAppFieldValueConverter( QgsVectorLayer *vl, const QgsAttributeList &attributesAsDisplayedValues, const QStringList &attributesExportNames )
   : mLayer( vl )
   , mAttributesAsDisplayedValues( attributesAsDisplayedValues )
+  , mAttributesExportNames( attributesExportNames )
+
 {
 }
 
@@ -8363,6 +8366,12 @@ QgsField QgisAppFieldValueConverter::fieldDefinition( const QgsField &field )
     return field;
 
   int idx = mLayer->fields().indexFromName( field.name() );
+  // If not found in the original field name, it might be in the export names
+  if ( idx == -1 )
+  {
+    idx = mAttributesExportNames.indexOf( field.name() );
+  }
+
   if ( mAttributesAsDisplayedValues.contains( idx ) )
   {
     return QgsField( field.name(), QVariant::String );
@@ -8476,7 +8485,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     }
 
     QgsRectangle filterExtent = dialog->filterExtent();
-    QgisAppFieldValueConverter converter( vlayer, dialog->attributesAsDisplayedValues() );
+    QgisAppFieldValueConverter converter( vlayer, dialog->attributesAsDisplayedValues(), dialog->attributesExportNames() );
     QgisAppFieldValueConverter *converterPtr = nullptr;
     // No need to use the converter if there is nothing to convert
     if ( !dialog->attributesAsDisplayedValues().isEmpty() )
