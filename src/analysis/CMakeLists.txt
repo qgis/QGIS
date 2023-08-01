@@ -238,6 +238,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
   processing/qgsalgorithmvectorize.cpp
+  processing/qgsalgorithmvirtualrastercalculator.cpp
   processing/qgsalgorithmwedgebuffers.cpp
   processing/qgsalgorithmwritevectortiles.cpp
   processing/qgsalgorithmxyztiles.cpp
