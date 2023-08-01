@@ -440,7 +440,7 @@ QComboBox::indicator {
 QComboBox:editable {
     padding: 0.12em;
     border-width: 1px;
-    border-color: @itemdarkbackground;
+    border-color: #1e1e1e;
     border-style: solid;
     border-radius: 0.2em;
     background-color:@itembackground;
@@ -1088,6 +1088,7 @@ QVideoWidget QWidget {
 QgsColorButton, QgsColorRampButton, QgsSymbolButton, QgsFontButton {
     background-color: @darkgradient;
     color:@itembackground;
+    border: 1px solid #1e1e1e;
 }
 
 QgsColorButton:hover, QgsColorRampButton:hover, QgsSymbolButton:hover, QgsFontButton:hover {
