@@ -18,6 +18,7 @@
 #include "qgstiledmeshboundingvolume.h"
 #include "qgscircle.h"
 #include "qgscoordinatetransform.h"
+#include "qgsmatrix4x4.h"
 #include "qgsvector3d.h"
 #include "qgsmultipoint.h"
 #include "qgsgeos.h"
@@ -39,24 +40,41 @@ Qgis::TiledMeshBoundingVolumeType QgsTiledMeshNodeBoundingVolumeRegion::type() c
   return Qgis::TiledMeshBoundingVolumeType::Region;
 }
 
+void QgsTiledMeshNodeBoundingVolumeRegion::transform( const QgsMatrix4x4 &transform )
+{
+  // Regions are not transformed. See https://github.com/CesiumGS/cesium-native/blob/fd20f5e272850dde6b58c74059e6de767fe25df6/Cesium3DTilesSelection/src/BoundingVolume.cpp#L28C6-L28C38
+  ( void ) transform;
+}
+
 QgsBox3D QgsTiledMeshNodeBoundingVolumeRegion::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
-  if ( !transform.isValid() || transform.isShortCircuited() )
-  {
-    return mRegion;
-  }
-  else
+  if ( transform.isValid() && !transform.isShortCircuited() )
   {
     // transform each corner of the box, then collect the min/max x/y/z values of the result
-    QVector< double > x{ mRegion.xMinimum(), mRegion.xMinimum(), mRegion.xMaximum(), mRegion.xMaximum(), mRegion.xMinimum(), mRegion.xMinimum(), mRegion.xMaximum(), mRegion.xMaximum() };
-    QVector< double > y{ mRegion.yMinimum(), mRegion.yMaximum(), mRegion.yMinimum(), mRegion.yMaximum(), mRegion.yMinimum(), mRegion.yMaximum(), mRegion.yMinimum(), mRegion.yMaximum() };
-    QVector< double > z{ mRegion.zMinimum(), mRegion.zMinimum(), mRegion.zMinimum(), mRegion.zMinimum(), mRegion.zMaximum(), mRegion.zMaximum(), mRegion.zMaximum(), mRegion.zMaximum() };
+    QVector<QgsVector3D > corners = mRegion.corners();
+    QVector< double > x;
+    x.reserve( 8 );
+    QVector< double > y;
+    y.reserve( 8 );
+    QVector< double > z;
+    z.reserve( 8 );
+    for ( int i = 0; i < 8; ++i )
+    {
+      const QgsVector3D corner = corners[i];
+      x.append( corner.x() );
+      y.append( corner.y() );
+      z.append( corner.z() );
+    }
     transform.transformInPlace( x, y, z, direction );
 
     const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
     const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
     const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
     return QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second );
+  }
+  else
+  {
+    return mRegion;
   }
 }
 
@@ -67,35 +85,50 @@ QgsTiledMeshNodeBoundingVolumeRegion *QgsTiledMeshNodeBoundingVolumeRegion::clon
 
 QgsAbstractGeometry *QgsTiledMeshNodeBoundingVolumeRegion::as2DGeometry( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
-  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
-
-  // transform using the region center point z
-  const double centerZ = 0.5 * ( mRegion.zMaximum() + mRegion.zMinimum() );
-  std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >(
-      QVector< double >() << mRegion.xMinimum()
-      << mRegion.xMaximum()
-      << mRegion.xMaximum()
-      << mRegion.xMinimum()
-      << mRegion.xMinimum(),
-      QVector< double >() << mRegion.yMinimum()
-      << mRegion.yMinimum()
-      << mRegion.yMaximum()
-      << mRegion.yMaximum()
-      << mRegion.yMinimum(),
-      QVector< double >() << centerZ
-      << centerZ
-      << centerZ
-      << centerZ
-      << centerZ );
-
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
-    ext->transform( transform, direction, true );
-  }
-  ext->dropZValue();
-  polygon->setExteriorRing( ext.release() );
+    const QVector< QgsVector3D > corners = mRegion.corners();
+    QVector< double > x;
+    x.reserve( 8 );
+    QVector< double > y;
+    y.reserve( 8 );
+    QVector< double > z;
+    z.reserve( 8 );
+    for ( int i = 0; i < 8; ++i )
+    {
+      const QgsVector3D &corner = corners[i];
+      x.append( corner.x() );
+      y.append( corner.y() );
+      z.append( corner.z() );
+    }
 
-  return polygon.release();
+    if ( transform.isValid() && !transform.isShortCircuited() )
+    {
+      transform.transformInPlace( x, y, z, direction );
+    }
+
+    std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >( x, y );
+    QgsGeos geosMp( mp.get() );
+    return geosMp.convexHull();
+  }
+  else
+  {
+    std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+    std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >(
+        QVector< double >() << mRegion.xMinimum()
+        << mRegion.xMaximum()
+        << mRegion.xMaximum()
+        << mRegion.xMinimum()
+        << mRegion.xMinimum(),
+        QVector< double >() << mRegion.yMinimum()
+        << mRegion.yMinimum()
+        << mRegion.yMaximum()
+        << mRegion.yMaximum()
+        << mRegion.yMinimum() );
+
+    polygon->setExteriorRing( ext.release() );
+    return polygon.release();
+  }
 }
 
 
@@ -113,6 +146,11 @@ Qgis::TiledMeshBoundingVolumeType QgsTiledMeshNodeBoundingVolumeBox::type() cons
   return Qgis::TiledMeshBoundingVolumeType::OrientedBox;
 }
 
+void QgsTiledMeshNodeBoundingVolumeBox::transform( const QgsMatrix4x4 &transform )
+{
+  mBox = mBox.transformed( transform );
+}
+
 QgsBox3D QgsTiledMeshNodeBoundingVolumeBox::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
   if ( transform.isValid() && !transform.isShortCircuited() )
@@ -126,9 +164,10 @@ QgsBox3D QgsTiledMeshNodeBoundingVolumeBox::bounds( const QgsCoordinateTransform
     z.reserve( 8 );
     for ( int i = 0; i < 8; ++i )
     {
-      x.append( corners[i].x() );
-      y.append( corners[i].y() );
-      z.append( corners[i].z() );
+      const QgsVector3D &corner = corners[i];
+      x.append( corner.x() );
+      y.append( corner.y() );
+      z.append( corner.z() );
     }
     transform.transformInPlace( x, y, z, direction );
 
@@ -161,9 +200,10 @@ QgsAbstractGeometry *QgsTiledMeshNodeBoundingVolumeBox::as2DGeometry( const QgsC
   z.reserve( 8 );
   for ( int i = 0; i < 8; ++i )
   {
-    x.append( corners[i].x() );
-    y.append( corners[i].y() );
-    z.append( corners[i].z() );
+    const QgsVector3D &corner = corners[i];
+    x.append( corner.x() );
+    y.append( corner.y() );
+    z.append( corner.z() );
   }
 
   if ( transform.isValid() && !transform.isShortCircuited() )
@@ -191,20 +231,56 @@ Qgis::TiledMeshBoundingVolumeType QgsTiledMeshNodeBoundingVolumeSphere::type() c
   return Qgis::TiledMeshBoundingVolumeType::Sphere;
 }
 
+void QgsTiledMeshNodeBoundingVolumeSphere::transform( const QgsMatrix4x4 &transform )
+{
+  // center is transformed, radius is scaled by maximum scalar from transform
+  // see https://github.com/CesiumGS/cesium-native/blob/fd20f5e272850dde6b58c74059e6de767fe25df6/Cesium3DTilesSelection/src/BoundingVolume.cpp#L33
+  const QgsVector3D center = transform.map( mSphere.centerVector() );
+  const double uniformScale = std::max(
+                                std::max(
+                                  std::sqrt(
+                                    transform.constData()[0] * transform.constData()[0] +
+                                    transform.constData()[1] * transform.constData()[1] +
+                                    transform.constData()[2] * transform.constData()[2] +
+                                    transform.constData()[3] * transform.constData()[3] ),
+                                  std::sqrt(
+                                    transform.constData()[4] * transform.constData()[4] +
+                                    transform.constData()[5] * transform.constData()[5] +
+                                    transform.constData()[6] * transform.constData()[6] +
+                                    transform.constData()[7] * transform.constData()[7] ) ),
+                                std::sqrt(
+                                  transform.constData()[8] * transform.constData()[8] +
+                                  transform.constData()[9] * transform.constData()[9] +
+                                  transform.constData()[10] * transform.constData()[10] +
+                                  transform.constData()[11] * transform.constData()[11] ) );
+
+  mSphere = QgsSphere( center.x(), center.y(), center.z(), mSphere.radius() * uniformScale );
+}
+
 QgsBox3D QgsTiledMeshNodeBoundingVolumeSphere::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
-    std::unique_ptr< QgsAbstractGeometry > centerSlice( as2DGeometry( transform, direction ) );
-
-    // a line through the z range of sphere, passing through center
-    QVector< double > x { mSphere.centerX(), mSphere.centerX() };
-    QVector< double > y { mSphere.centerY(), mSphere.centerY() };
-    QVector< double > z { mSphere.centerZ() - mSphere.radius(), mSphere.centerZ() + mSphere.radius() };
+    const QVector< QgsVector3D > corners = mSphere.boundingBox().corners();
+    QVector< double > x;
+    x.reserve( 8 );
+    QVector< double > y;
+    y.reserve( 8 );
+    QVector< double > z;
+    z.reserve( 8 );
+    for ( int i = 0; i < 8; ++i )
+    {
+      const QgsVector3D &corner = corners[i];
+      x.append( corner.x() );
+      y.append( corner.y() );
+      z.append( corner.z() );
+    }
     transform.transformInPlace( x, y, z, direction );
 
-    const QgsRectangle bounds2d( centerSlice->boundingBox() );
-    return QgsBox3D( bounds2d.xMinimum(), bounds2d.yMinimum(), std::min( z[0], z[1] ), bounds2d.xMaximum(), bounds2d.yMaximum(), std::max( z[0], z[1] ) );
+    const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
+    const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
+    const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
+    return QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second );
   }
   else
   {
@@ -221,7 +297,8 @@ QgsAbstractGeometry *QgsTiledMeshNodeBoundingVolumeSphere::as2DGeometry( const Q
 {
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
-    QgsVector3D normal = mSphere.centerVector();
+    const QgsVector3D sphereCenter = mSphere.centerVector();
+    QgsVector3D normal = sphereCenter;
     normal.normalize();
 
     QgsVector3D axis1 = QgsVector3D::crossProduct( normal, QgsVector3D( 1, 0, 0 ) );

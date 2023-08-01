@@ -23,9 +23,12 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsbox3d.h"
+#include "qgsmatrix4x4.h"
 #include "qgssphere.h"
 #include "qgsorientedbox3d.h"
 #include "qgscoordinatetransform.h"
+
+class QgsMatrix4x4;
 
 /**
  * \ingroup core
@@ -87,6 +90,16 @@ class CORE_EXPORT QgsAbstractTiledMeshNodeBoundingVolume
      */
     virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const = 0 SIP_FACTORY;
 
+    /**
+     * Applies a \a transform to the bounding volume.
+     *
+     * The actual result of transforming a bounding volume depends on subclass specific logic. For instance:
+     *
+     * - transforming a QgsTiledMeshNodeBoundingVolumeRegion results in no change to the region
+     * - transforming a QgsTiledMeshNodeBoundingVolumeSphere causes the radius to be multiplied by the maximum length of the transform scales
+     */
+    virtual void transform( const QgsMatrix4x4 &transform ) = 0;
+
 };
 
 /**
@@ -105,6 +118,7 @@ class CORE_EXPORT QgsTiledMeshNodeBoundingVolumeRegion : public QgsAbstractTiled
     QgsTiledMeshNodeBoundingVolumeRegion( const QgsBox3D &region );
 
     Qgis::TiledMeshBoundingVolumeType type() const FINAL;
+    void transform( const QgsMatrix4x4 &transform ) FINAL;
     QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException );
     QgsTiledMeshNodeBoundingVolumeRegion *clone() const FINAL SIP_FACTORY;
     QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException ) SIP_FACTORY;
@@ -134,6 +148,7 @@ class CORE_EXPORT QgsTiledMeshNodeBoundingVolumeBox : public QgsAbstractTiledMes
     QgsTiledMeshNodeBoundingVolumeBox( const QgsOrientedBox3D &box );
 
     Qgis::TiledMeshBoundingVolumeType type() const FINAL;
+    void transform( const QgsMatrix4x4 &transform ) FINAL;
     QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException );
     QgsTiledMeshNodeBoundingVolumeBox *clone() const FINAL SIP_FACTORY;
     QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException ) SIP_FACTORY;
@@ -165,6 +180,7 @@ class CORE_EXPORT QgsTiledMeshNodeBoundingVolumeSphere: public QgsAbstractTiledM
     QgsTiledMeshNodeBoundingVolumeSphere( const QgsSphere &sphere );
 
     Qgis::TiledMeshBoundingVolumeType type() const FINAL;
+    void transform( const QgsMatrix4x4 &transform ) FINAL;
     QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException );
     QgsTiledMeshNodeBoundingVolumeSphere *clone() const FINAL SIP_FACTORY;
     QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException ) SIP_FACTORY;
