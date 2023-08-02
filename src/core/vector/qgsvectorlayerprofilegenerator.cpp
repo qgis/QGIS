@@ -750,7 +750,15 @@ bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   mProfileCurveEngine.reset( new QgsGeos( mProfileCurve.get() ) );
   mProfileCurveEngine->prepareGeometry();
 
-  mProfileBox = std::unique_ptr<QgsAbstractGeometry>( mProfileCurveEngine->buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  if ( mTolerance == 0.0 ) // geos does not handle very well buffer with 0 size
+  {
+    mProfileBox = std::unique_ptr<QgsAbstractGeometry>( mProfileCurve->clone() );
+  }
+  else
+  {
+    mProfileBox = std::unique_ptr<QgsAbstractGeometry>( mProfileCurveEngine->buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  }
+
   mProfileBoxEngine.reset( new QgsGeos( mProfileBox.get() ) );
   mProfileBoxEngine->prepareGeometry();
 
