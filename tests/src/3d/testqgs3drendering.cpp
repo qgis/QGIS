@@ -52,6 +52,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsgoochmaterialsettings.h"
+#include "qgs3dsceneexporter.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -97,9 +98,13 @@ class TestQgs3DRendering : public QgsTest
     void testDepthBuffer();
     void testAmbientOcclusion();
     void testDebugMap();
+    void test3DSceneExporter();
 
   private:
     QImage convertDepthImageToGray16Image( const QImage &depthImage );
+
+    void do3DSceneExport( int zoomLevelsCount, int expectedObjectCount, int maxFaceCount, Qgs3DMapScene *scene, QgsPolygon3DSymbol *symbol3d,
+                          QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine );
 
     std::unique_ptr<QgsProject> mProject;
     QgsRasterLayer *mLayerDtm = nullptr;
@@ -168,7 +173,7 @@ QImage TestQgs3DRendering::convertDepthImageToGray16Image( const QImage &depthIm
   return grayImage;
 }
 
-//runs before all tests
+// runs before all tests
 void TestQgs3DRendering::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
@@ -1717,6 +1722,94 @@ void TestQgs3DRendering::testDebugMap()
   delete scene;
   mapSettings.setLayers( {} );
   demTerrain->deleteLater();
+}
+
+void TestQgs3DRendering::do3DSceneExport( int zoomLevelsCount, int expectedObjectCount, int maxFaceCount, Qgs3DMapScene *scene, QgsPolygon3DSymbol *symbol3d, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine )
+{
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d->clone() );
+  QgsVectorLayer3DTilingSettings tilingSettings;
+  tilingSettings.setZoomLevelsCount( zoomLevelsCount );
+  tilingSettings.setShowBoundingBoxes( true );
+  renderer3d->setTilingSettings( tilingSettings );
+  layerPoly->setRenderer3D( renderer3d );
+
+  Qgs3DUtils::captureSceneImage( *engine, scene );
+
+  Qgs3DSceneExporter exporter;
+  exporter.setTerrainResolution( 128 );
+  exporter.setSmoothEdges( false );
+  exporter.setExportNormals( true );
+  exporter.setExportTextures( false );
+  exporter.setTerrainTextureResolution( 512 );
+  exporter.setScale( 1.0 );
+
+  QVERIFY( exporter.parseVectorLayerEntity( scene->layerEntity( layerPoly ), layerPoly ) );
+  int sum = 0;
+  for ( auto o : exporter.mObjects )
+  {
+    QVERIFY( o->indexes().size() * 3 <= o->vertexPosition().size() );
+    sum += o->indexes().size();
+  }
+  QCOMPARE( maxFaceCount, sum );
+  exporter.save( QString( "test3DSceneExporter-%1" ).arg( zoomLevelsCount ), "/tmp/" );
+
+  QCOMPARE( exporter.mExportedFeatureIds.size(), 3 );
+  QCOMPARE( exporter.mObjects.size(), expectedObjectCount );
+}
+
+void TestQgs3DRendering::test3DSceneExporter()
+{
+  // =============================================
+  // =========== creating Qgs3DMapSettings
+  const QString dataDir( TEST_DATA_DIR );
+  QgsVectorLayer *layerPoly = new QgsVectorLayer( dataDir + "/3d/polygons.gpkg.gz", "polygons", "ogr" );
+  QVERIFY( layerPoly->isValid() );
+
+  const QgsRectangle fullExtent = layerPoly->extent();
+
+  // =========== create polygon 3D renderer
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setExtrusionHeight( 10.f );
+
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+
+  QgsProject project;
+  project.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 3857 ) );
+  project.addMapLayer( layerPoly );
+
+  // =========== create scene 3D settings
+  Qgs3DMapSettings mapSettings;
+  mapSettings.setCrs( project.crs() );
+  mapSettings.setExtent( fullExtent );
+  mapSettings.setLayers( {layerPoly} );
+  mapSettings.setTerrainGenerator( new QgsFlatTerrainGenerator );
+
+  mapSettings.setTransformContext( project.transformContext() );
+  mapSettings.setPathResolver( project.pathResolver() );
+  mapSettings.setMapThemeCollection( project.mapThemeCollection() );
+  mapSettings.setOutputDpi( 92 );
+
+  // =========== creating Qgs3DMapScene
+  QPoint winSize = QPoint( 640, 480 ); // default window size
+
+  QgsOffscreen3DEngine engine;
+  engine.setSize( QSize( winSize.x(), winSize.y() ) );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 7000, 20.0, -10.0 );
+  engine.setRootEntity( scene );
+
+  // =========== check with 1 big tile ==> 1 exported object
+  do3DSceneExport( 1, 1, 165, scene, symbol3d, layerPoly, &engine );
+  // =========== check with 9 tiles ==> 3 exported objects
+  do3DSceneExport( 3, 3, 165, scene, symbol3d, layerPoly, &engine );
+  // =========== check with 25 tiles ==> 3 exported objects
+  do3DSceneExport( 5, 3, 165, scene, symbol3d, layerPoly, &engine );
+
+  delete scene;
+  mapSettings.setLayers( {} );
 }
 
 
