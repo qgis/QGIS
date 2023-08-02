@@ -48,6 +48,7 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget *parent, QgsMapCanvas *mapCa
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapOverviewCanvas::drawExtentRect );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapOverviewCanvas::destinationCrsChanged );
   connect( mMapCanvas, &QgsMapCanvas::transformContextChanged, this, &QgsMapOverviewCanvas::transformContextChanged );
+  connect( mMapCanvas, &QgsMapCanvas::canvasColorChanged, this, &QgsMapOverviewCanvas::refresh );
 
   connect( QgsProject::instance()->viewSettings(), &QgsProjectViewSettings::presetFullExtentChanged, this, &QgsMapOverviewCanvas::refresh );
 }
@@ -73,10 +74,14 @@ void QgsMapOverviewCanvas::showEvent( QShowEvent *e )
 
 void QgsMapOverviewCanvas::paintEvent( QPaintEvent *pe )
 {
+  QPainter paint( this );
   if ( !mPixmap.isNull() )
   {
-    QPainter paint( this );
     paint.drawPixmap( pe->rect().topLeft(), mPixmap, pe->rect() );
+  }
+  else
+  {
+    paint.fillRect( pe->rect(), QBrush( mSettings.backgroundColor() ) );
   }
 }
 
