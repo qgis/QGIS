@@ -23,11 +23,13 @@
 #include "qgssettingseditorwidgetregistry.h"
 #include "qgssettingsenumflageditorwidgetwrapper.h"
 #include "qgsimagewarper.h"
+#include "qgsgcptransformer.h"
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
 {
   QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>() );
+  QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>() );
 
 
   // copy values from old keys to new keys and delete the old ones

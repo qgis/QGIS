@@ -28,9 +28,6 @@
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>
 #endif
-#if defined( HAVE_ANALYSIS )
-#include "qgsgcptransformer.h"
-#endif
 
 
 QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
@@ -61,11 +58,6 @@ QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::SnappingMode>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::SnappingType>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::TilePixelRatio>() );
-
-#if defined( HAVE_ANALYSIS )
-  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>() );
-#endif
-
 
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsVectorSimplifyMethod::SimplifyAlgorithm>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsVectorSimplifyMethod::SimplifyHints>() );

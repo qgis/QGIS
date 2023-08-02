@@ -1714,10 +1714,6 @@ target_link_libraries(qgis_gui
   ${QT_VERSION_BASE}::MultimediaWidgets
 )
 
-if (HAVE_ANALYSIS)
-  target_link_libraries(qgis_gui qgis_analysis)
-endif()
-
 if (BUILD_WITH_QT6)
   find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
   target_link_libraries(qgis_gui
