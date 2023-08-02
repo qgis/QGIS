@@ -43,6 +43,7 @@ import warnings
 import codecs
 import time
 import functools
+import itertools
 
 import builtins
 builtins.__dict__['unicode'] = str
@@ -241,6 +242,26 @@ available_plugins = []
 plugins_metadata_parser = {}
 
 
+def parseMetadata(metadataFile:str="metadata.txt", allow_no_value=False)->configparser.ConfigParser:
+    cp = configparser.ConfigParser(default_section="general", allow_no_value=allow_no_value)
+    with codecs.open(metadataFile, "r", "utf8") as f:
+        cp.read_file(f)
+    # case-insensitive check
+    if cp.default_section.lower() not in [s.lower() for s in cp.sections()]:
+        raise IOError(f"No '{cp.default_section}' section in '{metadataFile}'")
+    # case-sensitive lookup
+    cp.default_section = next(
+            s
+            for s in map(
+                "".join,
+                itertools.product(
+                    *zip(cp.default_section.upper(), cp.default_section.lower())
+                ),
+            )
+            if s in cp.sections()
+        )
+    return cp
+
 def findPlugins(path):
     """ for internal use: return list of plugins in given path """
     for plugin in glob.glob(path + "/*"):
@@ -253,11 +274,8 @@ def findPlugins(path):
         if not os.path.exists(metadataFile):
             continue
 
-        cp = configparser.ConfigParser()
-
         try:
-            with codecs.open(metadataFile, "r", "utf8") as f:
-                cp.read_file(f)
+            cp = parseMetadata(metadataFile)
         except:
             cp = None
 
@@ -283,7 +301,7 @@ def updateAvailablePlugins(sort_by_dependencies=False):
             if plugin_id not in plugins:
                 plugins.append(plugin_id)
                 metadata_parser[plugin_id] = parser
-                plugin_name_map[parser.get('general', 'name')] = plugin_id
+                plugin_name_map[parser.get(parser.default_section, 'name')] = plugin_id
 
     global plugins_metadata_parser
     plugins_metadata_parser = metadata_parser
@@ -362,12 +380,14 @@ def get_plugin_deps(plugin_id: str) -> Dict[str, Optional[str]]:
     result = {}
     try:
         parser = plugins_metadata_parser[plugin_id]
-        plugin_deps = parser.get('general', 'plugin_dependencies')
+        plugin_deps = parser.get(parser.default_section, 'plugin_dependencies')
     except (configparser.NoOptionError, configparser.NoSectionError, KeyError):
         return result
 
     for dep in plugin_deps.split(','):
-        if dep.find('==') > 0:
+        if not dep:
+            continue
+        elif dep.find('==') > 0:
             name, version_required = dep.split('==')
         else:
             name = dep
@@ -379,7 +399,8 @@ def get_plugin_deps(plugin_id: str) -> Dict[str, Optional[str]]:
 def pluginMetadata(packageName: str, fct: str) -> str:
     """ fetch metadata from a plugin - use values from metadata.txt """
     try:
-        return plugins_metadata_parser[packageName].get('general', fct)
+        parser = plugins_metadata_parser[packageName]
+        return parser.get(parser.default_section, fct)
     except Exception:
         return "__error__"
 

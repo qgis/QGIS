@@ -42,7 +42,7 @@ import configparser
 import qgis.utils
 from qgis.core import QgsNetworkAccessManager, QgsApplication
 from qgis.gui import QgsGui
-from qgis.utils import iface, plugin_paths
+from qgis.utils import iface, plugin_paths, parseMetadata
 from .version_compare import pyQgisVersion, compareVersions, normalizeVersion, isCompatible
 
 
@@ -538,11 +538,10 @@ class Plugins(QObject):
                 for better control of which module is examined
                 in case there is an installed plugin masking a core one """
             global errorDetails
-            cp = configparser.ConfigParser()
+            
             try:
-                with codecs.open(metadataFile, "r", "utf8") as f:
-                    cp.read_file(f)
-                return cp.get('general', fct)
+                cp = parseMetadata(metadataFile)
+                return cp.get(cp.default_section, fct)
             except Exception as e:
                 if not errorDetails:
                     errorDetails = e.args[0]  # set to the first problem

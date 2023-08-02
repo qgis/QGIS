@@ -52,8 +52,13 @@ def find_dependencies(plugin_id, plugin_data=None, plugin_deps=None, installed_p
 
     if installed_plugins is None:
         metadata_parser = metadataParser()
-        installed_plugins = {metadata_parser[k].get('general', 'name'): metadata_parser[k].get('general', 'version') for k, v in metadata_parser.items()}
-
+        installed_plugins = {
+            metadata_parser[k]
+            .get(metadata_parser[k].default_section, "name"): metadata_parser[k]
+            .get(metadata_parser[k].default_section, "version")
+            for k, v in metadata_parser.items()
+        }
+        
     if plugin_data is None:
         plugin_data = plugin_installer.plugins.all()
 
