@@ -73,6 +73,7 @@ class TestQgsGeometry(QgisTestCase):
         self.geos309 = 30900
         self.geos310_4 = 31040
         self.geos311 = 31100
+        self.geos312 = 31200
 
     def testBool(self):
         """ Test boolean evaluation of QgsGeometry """
@@ -1290,7 +1291,10 @@ class TestQgsGeometry(QgisTestCase):
                 # print 'Difference: %s' % myDifferenceGeometry.asWkt()
                 print(f'Symmetrical: {mySymmetricalGeometry.asWkt()}')
 
-                if Qgis.geosVersionInt() >= self.geos309:
+                if Qgis.geosVersionInt() >= self.geos312:
+                    # See: https://github.com/libgeos/geos/pull/788
+                    myExpectedWkt = 'Polygon ((30 30, 30 20, 20 20, 20 30, 30 30))'
+                elif Qgis.geosVersionInt() >= self.geos309:
                     myExpectedWkt = 'Polygon ((20 30, 30 30, 30 20, 20 20, 20 30))'
                 else:
                     myExpectedWkt = 'Polygon ((20 20, 20 30, 30 30, 30 20, 20 20))'
