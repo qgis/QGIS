@@ -25,7 +25,6 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgssettings.h"
 #ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"
 #endif
@@ -189,11 +188,9 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     connect( o2, &QgsO2::refreshFinished, this, &QgsAuthOAuth2Method::onRefreshFinished, Qt::UniqueConnection );
 
 
-    QgsSettings settings;
-    const QString timeoutkey = QStringLiteral( "qgis/networkAndProxy/networkTimeout" );
-    const int prevtimeout = settings.value( timeoutkey, QStringLiteral( "-1" ) ).toInt();
+    const int prevtimeout = QgsNetworkAccessManager::settingsNetworkTimeout->value();
     const int reqtimeout = o2->oauth2config()->requestTimeout() * 1000;
-    settings.setValue( timeoutkey, reqtimeout );
+    QgsNetworkAccessManager::settingsNetworkTimeout->setValue( reqtimeout );
 
     // go into local event loop and wait for a fired linking-related slot
     QEventLoop loop( nullptr );
@@ -220,13 +217,13 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     }
 
     // don't re-apply a setting that wasn't already set
-    if ( prevtimeout == -1 )
+    if ( !prevtimeout )
     {
-      settings.remove( timeoutkey );
+      QgsNetworkAccessManager::settingsNetworkTimeout->remove();
     }
     else
     {
-      settings.setValue( timeoutkey, prevtimeout );
+      QgsNetworkAccessManager::settingsNetworkTimeout->setValue( prevtimeout );
     }
 
     if ( !o2->linked() )
