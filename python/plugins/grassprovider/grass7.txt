@@ -2,7 +2,7 @@ A short guide for creating and editing GRASS GIS 7 algorithms:
 -----------------------------------------------------------------------
 
 Each GRASS command, to be executed from a processing framework element such as the toolbox
-or the graphical modeler, needs to be described to let it know the inputs
+or the model designer, needs to be described to let it know the inputs
 required by the commands, the output it generates and the parameters that are
 used to configure it. Each command is described in a separate text file, although
 some commands might be split in several algorithms, thus needing several files

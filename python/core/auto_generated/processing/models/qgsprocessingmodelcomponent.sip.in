@@ -42,21 +42,21 @@ Sets the friendly ``description`` text for the component.
 
     QPointF position() const;
 %Docstring
-Returns the position of the model component within the graphical modeler.
+Returns the position of the model component within the model designer.
 
 .. seealso:: :py:func:`setPosition`
 %End
 
     void setPosition( QPointF position );
 %Docstring
-Sets the ``position`` of the model component within the graphical modeler.
+Sets the ``position`` of the model component within the model designer.
 
 .. seealso:: :py:func:`position`
 %End
 
     QSizeF size() const;
 %Docstring
-Returns the size of the model component within the graphical modeler.
+Returns the size of the model component within the model designer.
 
 .. seealso:: :py:func:`setSize`
 
@@ -65,7 +65,7 @@ Returns the size of the model component within the graphical modeler.
 
     void setSize( QSizeF size );
 %Docstring
-Sets the ``size`` of the model component within the graphical modeler.
+Sets the ``size`` of the model component within the model designer.
 
 .. seealso:: :py:func:`size`
 
@@ -74,7 +74,7 @@ Sets the ``size`` of the model component within the graphical modeler.
 
     QColor color() const;
 %Docstring
-Returns the color of the model component within the graphical modeler.
+Returns the color of the model component within the model designer.
 
 An invalid color indicates that the default color for the component should be used.
 
@@ -85,7 +85,7 @@ An invalid color indicates that the default color for the component should be us
 
     void setColor( const QColor &color );
 %Docstring
-Sets the ``color`` of the model component within the graphical modeler. An invalid ``color``
+Sets the ``color`` of the model component within the model designer. An invalid ``color``
 indicates that the default color for the component should be used.
 
 .. seealso:: :py:func:`color`

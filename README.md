@@ -10,23 +10,23 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
 
 <!-- TOC generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
-  * [Features](#features)
-       * [1. Flexible and powerful spatial data management](#1-flexible-and-powerful-spatial-data-management)
-       * [2. Beautiful cartography](#2-beautiful-cartography)
-       * [3. Advanced and robust geospatial analysis](#3-advanced-and-robust-geospatial-analysis)
-       * [4. Powerful customization and extensibility](#4-powerful-customization-and-extensibility)
-       * [5. QGIS Server](#5-qgis-server)
-   * [Under the hood](#under-the-hood)
-       * [Versions and release cycle](#versions-and-release-cycle)
-       * [Free and Open Source](#free-and-open-source)
-   * [Installing and using QGIS](#installing-and-using-qgis)
-       * [Documentation](#documentation)
-       * [Help and support channels](#help-and-support-channels)
-   * [Get involved with the community](#get-involved-with-the-community)
-       * [Bug reporting and bug fixing](#bug-reporting-and-bug-fixing)
-       * [New features and enhancements](#new-features-and-enhancements)
-       * [Translations](#translations)
-       * [Other ways to contribute](#other-ways-to-contribute)
+- [Features](#features)
+  - [1. Flexible and powerful spatial data management](#1-flexible-and-powerful-spatial-data-management)
+  - [2. Beautiful cartography](#2-beautiful-cartography)
+  - [3. Advanced and robust geospatial analysis](#3-advanced-and-robust-geospatial-analysis)
+  - [4. Powerful customization and extensibility](#4-powerful-customization-and-extensibility)
+  - [5. QGIS Server](#5-qgis-server)
+- [Under the hood](#under-the-hood)
+  - [Versions and release cycle](#versions-and-release-cycle)
+  - [Free and Open Source](#free-and-open-source)
+- [Installing and using QGIS](#installing-and-using-qgis)
+  - [Documentation](#documentation)
+  - [Help and support channels](#help-and-support-channels)
+- [Get involved with the community](#get-involved-with-the-community)
+  - [Bug reporting and bug fixing](#bug-reporting-and-bug-fixing)
+  - [New features and enhancements](#new-features-and-enhancements)
+  - [Translations](#translations)
+  - [Other ways to contribute](#other-ways-to-contribute)
 
 ## Features 
 
@@ -78,15 +78,15 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 - Access to 1000+ processing algorithms via providers such as GDAL, SAGA, GRASS, OrfeoToolbox, as well as custom models and processing scripts
 - Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as possible 
 - Immediate visualization of geospatial query and geoprocessing results
-- Graphical modeler and batch processing
+- Model designer and batch processing
 
 *Example: Travel isochrones*
 
 ![Example: Travel isochrones](images/README-md/network_analysis_2.png "Travel isochrones")
 
-*Example: Graphical model*
+*Example: Model designer*
 
-![Example: graphical model](https://docs.qgis.org/latest/en/_images/models_model.png "Graphical model")
+![Example: model designer](https://docs.qgis.org/latest/en/_images/models_model.png "Model designer")
 
 ### 4. Powerful customization and extensibility
 
