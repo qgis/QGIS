@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsdatasourceuri.h"
 #include "qgsprojectbadlayerhandler.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -27,7 +28,7 @@ void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 
   for ( const QDomNode &layer : layers )
   {
-    QgsMessageLog::logMessage( QObject::tr( " * %1" ).arg( dataSource( layer ) ) );
+    QgsMessageLog::logMessage( QObject::tr( " * %1" ).arg( QgsDataSourceUri::removePassword( dataSource( layer ) ) ) );
   }
 }
 
