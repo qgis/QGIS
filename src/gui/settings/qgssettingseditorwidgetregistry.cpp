@@ -76,7 +76,10 @@ QgsSettingsEditorWidgetRegistry::~QgsSettingsEditorWidgetRegistry()
 bool QgsSettingsEditorWidgetRegistry::addWrapper( QgsSettingsEditorWidgetWrapper *wrapper )
 {
   if ( mWrappers.contains( wrapper->id() ) )
+  {
     return false;
+    delete wrapper;
+  }
 
   mWrappers.insert( wrapper->id(), wrapper );
   return true;
