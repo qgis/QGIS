@@ -940,7 +940,8 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
       QString lastError;
       QgsVectorLayerProfileResults::Feature resultFeature;
       resultFeature.featureId = feature.id();
-      double lastDistanceAlongProfileCurve = 0.0;
+      double lastDistanceAlongProfileCurve = std::numeric_limits<double>::lowest();
+      double lastHeight = std::numeric_limits<double>::lowest();
 
       for ( auto it = intersectionCurve.vertices_begin(); it != intersectionCurve.vertices_end(); ++it )
       {
@@ -954,14 +955,19 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
         const QgsPoint *interpolatedPoint = &intersectionPoint;
 
         const double offset = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ZOffset, mExpressionContext, mOffset );
-
         const double height = featureZToHeight( interpolatedPoint->x(), interpolatedPoint->y(), interpolatedPoint->z(), offset );
+        const double distanceAlongProfileCurve = mProfileCurveEngine->lineLocatePoint( *interpolatedPoint, &error );
+
+        if ( qgsDoubleNear( lastHeight, height ) && qgsDoubleNear( lastDistanceAlongProfileCurve, distanceAlongProfileCurve ) )
+          continue; // useless point
+
+        lastHeight = height;
+        lastDistanceAlongProfileCurve = distanceAlongProfileCurve;
+
         mResults->mRawPoints.append( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) );
         mResults->minZ = std::min( mResults->minZ, height );
         mResults->maxZ = std::max( mResults->maxZ, height );
 
-        const double distanceAlongProfileCurve = mProfileCurveEngine->lineLocatePoint( *interpolatedPoint, &error );
-        lastDistanceAlongProfileCurve = distanceAlongProfileCurve;
         mResults->mDistanceToHeightMap.insert( distanceAlongProfileCurve, height );
 
         if ( mExtrusionEnabled )
@@ -981,6 +987,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
           crossSectionParts.append( QgsGeometry( new QgsPoint( distanceAlongProfileCurve, height ) ) );
         }
       }
+
+      if ( mResults->mDistanceToHeightMap.empty() )
+        return; // no usefull point found
 
       mResults->mDistanceToHeightMap.insert( lastDistanceAlongProfileCurve + 0.001, qQNaN() );
 
