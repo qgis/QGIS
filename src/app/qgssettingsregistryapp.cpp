@@ -23,12 +23,18 @@
 #include "qgssettingseditorwidgetregistry.h"
 #include "qgssettingsenumflageditorwidgetwrapper.h"
 #include "qgsimagewarper.h"
+#ifdef HAVE_GEOREFERENCER
 #include "qgsgcptransformer.h"
+#endif
+
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
 {
+
+#ifdef HAVE_GEOREFERENCER
   QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>() );
+#endif
   QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>() );
 
 

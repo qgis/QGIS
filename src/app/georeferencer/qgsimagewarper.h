@@ -20,7 +20,6 @@
 
 #include <gdalwarper.h>
 #include <vector>
-#include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsogrutils.h"
 #include "qgstaskmanager.h"
