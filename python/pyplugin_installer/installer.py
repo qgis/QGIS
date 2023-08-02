@@ -43,7 +43,7 @@ from qgis.PyQt.QtWidgets import (
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
-from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
+from qgis.core import Qgis, QgsApplication, QgsMessageLog, QgsNetworkAccessManager, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
 from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin, OverrideCursor,
                         reloadPlugin, updateAvailablePlugins, plugins_metadata_parser)
@@ -155,30 +155,30 @@ class QgsPluginInstaller(QObject):
         plugins.rebuild()
         # look for news in the repositories
         plugins.markNews()
-        status = None
         # then check for updates (and eventually overwrite status)
-        updatable_count = 0
-        updatable_plugin_name = None
+        updatable_plugin_names = []
         for _, properties in plugins.all().items():
             if properties["status"] == "upgradeable":
-                updatable_count += 1
-                updatable_plugin_name = properties["name"]
+                updatable_plugin_names.append(properties["name"])
 
-        if updatable_count:
-            if updatable_count > 1:
-                status = self.tr("Multiple plugin updates are available")
-            else:
-                status = self.tr("An update to the {} plugin is available").format(updatable_plugin_name)
-            tabIndex = 3  # PLUGMAN_TAB_UPGRADEABLE
+        if not updatable_plugin_names:
+            return
 
-        # finally set the notify label
-        if status:
-            bar = iface.messageBar()
-            self.message_bar_widget = bar.createMessage('', status)
-            update_button = QPushButton("Install Updates…")
-            update_button.pressed.connect(partial(self.showPluginManagerWhenReady, tabIndex))
-            self.message_bar_widget.layout().addWidget(update_button)
-            bar.pushWidget(self.message_bar_widget, Qgis.Info)
+        if len(updatable_plugin_names) >= 2:
+            status = self.tr("Multiple plugin updates are available")
+        else:
+            status = self.tr("An update to the {} plugin is available").format(updatable_plugin_names[0])
+
+        QgsMessageLog.logMessage(
+            "Plugin update(s) available : {}".format(','.join(updatable_plugin_names)), self.tr("Plugins"))
+
+        bar = iface.messageBar()
+        self.message_bar_widget = bar.createMessage('', status)
+        update_button = QPushButton(self.tr("Install Updates…"))
+        tab_index = 3  # PLUGMAN_TAB_UPGRADEABLE
+        update_button.pressed.connect(partial(self.showPluginManagerWhenReady, tab_index))
+        self.message_bar_widget.layout().addWidget(update_button)
+        bar.pushWidget(self.message_bar_widget, Qgis.Info)
 
     # ----------------------------------------- #
     def exportRepositoriesToManager(self):
