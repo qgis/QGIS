@@ -991,7 +991,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
       if ( mResults->mDistanceToHeightMap.empty() )
         return; // no usefull point found
 
-      mResults->mDistanceToHeightMap.insert( lastDistanceAlongProfileCurve + 0.001, qQNaN() );
+      mResults->mDistanceToHeightMap.insert( lastDistanceAlongProfileCurve + 0.000001, qQNaN() );
 
       resultFeature.geometry = transformedParts.size() > 1 ? QgsGeometry::unaryUnion( transformedParts ) : transformedParts.value( 0 );
       if ( !crossSectionParts.empty() )
