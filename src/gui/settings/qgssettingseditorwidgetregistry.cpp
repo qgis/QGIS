@@ -77,8 +77,8 @@ bool QgsSettingsEditorWidgetRegistry::addWrapper( QgsSettingsEditorWidgetWrapper
 {
   if ( mWrappers.contains( wrapper->id() ) )
   {
-    return false;
     delete wrapper;
+    return false;
   }
 
   mWrappers.insert( wrapper->id(), wrapper );
