@@ -71,6 +71,7 @@ class TestQgsGeometry(QgisTestCase):
     def setUp(self):
         self.report = "<h1>Python QgsGeometry Tests</h1>\n"
         self.geos309 = 30900
+        self.geos310_4 = 31040
 
     def testBool(self):
         """ Test boolean evaluation of QgsGeometry """
@@ -5469,7 +5470,11 @@ class TestQgsGeometry(QgisTestCase):
         input = QgsGeometry.fromWkt(
             "MULTIPOINT((-118.3964065 56.0557),(-118.396406 56.0475),(-118.396407 56.04),(-118.3968 56))")
         o = input.delaunayTriangulation(0.001, True)
-        exp = "MULTILINESTRING ((-118.3964065 56.0557, -118.396406 56.0475), (-118.396407 56.04, -118.396406 56.0475), (-118.3968 56, -118.396407 56.04))"
+        # Delaunay Triangulation computation change. See: https://github.com/libgeos/geos/pull/728
+        if Qgis.geosVersionInt() >= self.geos310_4:
+            exp = "MultiLineString ((-118.39679999999999893 56, -118.39640649999999766 56.05570000000000164),(-118.39679999999999893 56, -118.3964069999999964 56.03999999999999915),(-118.3964069999999964 56.03999999999999915, -118.39640599999999893 56.04749999999999943),(-118.39640649999999766 56.05570000000000164, -118.39640599999999893 56.04749999999999943),(-118.39679999999999893 56, -118.39640599999999893 56.04749999999999943))"
+        else:
+            exp = "MULTILINESTRING ((-118.3964065 56.0557, -118.396406 56.0475), (-118.396407 56.04, -118.396406 56.0475), (-118.3968 56, -118.396407 56.04))"
 
         result = o.asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
