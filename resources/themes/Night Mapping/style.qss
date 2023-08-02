@@ -57,41 +57,46 @@ QMenuBar::item:pressed
     color: @text;
 }
 
+/* ==================================================================================== */
+/* SPIN BOX                                                                            */
+/* ==================================================================================== */
+
 QAbstractSpinBox {
-    padding: 0.12em 0em 0.12em 0.12em;
-    border: 1px solid #222;
-    border-radius:0px;
-    background-color: @darkgradient;
-    color:@text;
+    padding: 0.12em;
+    border: 1px solid @itemdarkbackground;
+    background-color: @itembackground;
     selection-background-color: @selection;
     selection-color: @text;
+    color: @textlight;
 }
 
 QAbstractSpinBox::up-button {
     subcontrol-origin: border;
     subcontrol-position: top right;
-    padding-top:0em;
-    padding-right:0.05em;
+    margin-top:2px;
+    margin-right:2px;
+    margin-bottom:-1px;
     width: 0.8em;
-    height: 0.8em;
-    image: url(@theme_path/icons/arrow-up.svg);
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #565656, stop: 0.1 #525252, stop: 0.5 #4e4e4e, stop: 1 #4e4e4e);
+    border: 0;
 }
 
 QAbstractSpinBox::down-button {
     subcontrol-origin: border;
     subcontrol-position: bottom right;
-    padding-top:0.2em;
-    padding-right:0.05em;
+    margin-bottom:2px;
+    margin-right:2px;
+    margin-top:-1px;
     width: 0.8em;
-    height: 0.8em;
-    image: url(@theme_path/icons/arrow-down.svg);
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #4e4e4e, stop: 0.9 #4a4a4a, stop: 1 #464646);
+    border: 0;
 }
 
-QAbstractSpinBox::drop-down {
-     subcontrol-origin: border;
-     subcontrol-position: top right;
-     width: 0.8em;
-     border: 0px;
+QAbstractSpinBox::up-arrow
+{
+    image: url(@theme_path/icons/arrow-up.svg);
+    width: 0.8em;
+    height: 1.2em;
 }
 
 QAbstractSpinBox::down-arrow
@@ -101,6 +106,30 @@ QAbstractSpinBox::down-arrow
     height: 1.2em;
 }
 
+QAbstractSpinBox::up-button:hover, QAbstractSpinBox::down-button:hover {
+    background-color: @darkalternativegradient;
+}
+QAbstractSpinBox::up-button:disabled, QAbstractSpinBox::down-button:disabled {
+     background-color: transparent !important;
+}
+
+QAbstractSpinBox::drop-down {
+     subcontrol-origin: border;
+     subcontrol-position: top right;
+     margin-top:1px;
+     margin-right:1px;
+     margin-bottom:1px;
+     width: 0.8em;
+     background-color: @darkgradient;
+     color:@itembackground;
+     border: 1px solid #888;
+}
+QAbstractSpinBox::drop-down:hover {
+    background-color: @darkalternativegradient;
+}
+QAbstractSpinBox::drop-down:disabled {
+    background-color: transparent !important;
+}
 /* ==================================================================================== */
 /* CALENDAR
 /* ==================================================================================== */
@@ -191,8 +220,8 @@ QWidget:disabled, QWidget:editable:disabled
 QLineEdit
 {
     padding: 0.12em;
-    border: 1px solid #111;
-    background-color: #888;
+    border: 1px solid @itemdarkbackground;
+    background-color: @itembackground;
     selection-background-color: @selection;
     selection-color: @text;
 }
@@ -243,9 +272,7 @@ QToolButton[popupMode="1"]
 }
 QToolButton::menu-button {
     width: 0.8em;
-    border-width: 1px;
-    border-color: none;
-    border-radius: 0px;
+    border: 1px solid rgba(0,0,0,0);
     background:@itemdarkbackground;
 }
 QToolButton::hover, QToolButton::menu-button::hover
@@ -316,13 +343,12 @@ QComboBox {
     background-color: @darkgradient;
     color:@text;
     border-style: solid;
-    border: 1px solid #1e1e1e; 
+    border: 1px solid #111; 
     border-radius: 0px;
     padding: 0.12em 1.2em 0.12em 0.2em;
 }
 
-
-QComboBox:hover,QAbstractSpinBox:hover {
+QComboBox:hover {
     background-color: @darkalternativegradient;
 }
 
@@ -353,18 +379,25 @@ QComboBox QAbstractItemView, QComboBox QListView {
     selection-color: @text;
 }
 QComboBox::drop-down {
-     subcontrol-origin: padding;
+     subcontrol-origin: border;
      subcontrol-position: top right;
+     margin-right: 2px;
      width: 0.8em;
      border: 0px;
 }
 QComboBox::drop-down:editable {
-     subcontrol-origin: padding;
+     subcontrol-origin: border;
      subcontrol-position: top right;
+     margin-top:1px;
+     margin-right:1px;
+     margin-bottom:1px;
      width: 0.8em;
      background-color: @darkgradient;
      color:@itembackground;
-     border: 1px solid #888;
+     border: 1px solid @itembackground;
+}
+QComboBox::drop-down:editable:hover {
+    background-color: @darkalternativegradient;
 }
 QComboBox::drop-down:editable:disabled {
      background-color: transparent !important;
@@ -400,11 +433,11 @@ QComboBox::indicator {
 
 QComboBox:editable {
     padding: 0.12em;
-    border: 1px solid #111;
-    background-color: #888;
+    border: 1px solid @itemdarkbackground;
+    background-color: @itembackground;
     selection-background-color: @selection;
     selection-color: @text;
-    color: #111;
+    color: @textlight;
 }
 
 /* ==================================================================================== */
@@ -1060,6 +1093,7 @@ QVideoWidget QWidget {
 QgsColorButton, QgsColorRampButton, QgsSymbolButton, QgsFontButton {
     background-color: @darkgradient;
     color:@text;
+    border: 1px solid #111;
 }
 
 QgsColorButton:hover, QgsColorRampButton:hover, QgsSymbolButton:hover, QgsFontButton:hover {
