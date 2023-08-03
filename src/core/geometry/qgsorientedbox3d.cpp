@@ -177,6 +177,7 @@ QgsOrientedBox3D QgsOrientedBox3D::transformed( const QgsMatrix4x4 &transform ) 
 bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
 {
   // use the Separating Axis Theorem (SAT) for OBB (Oriented Bounding Box) collision detection.
+  // based off section 5 in OBBTree: A Hierarchical Structure for Rapid Interference Detection (1996)
 
   const QgsVector3D thisCenter = center();
   const QgsVector3D thisHalfAxis[3]
