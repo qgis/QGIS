@@ -103,7 +103,7 @@ Returns ``True`` if the link points for the specified ``edge`` should be shown c
     void setLinksCollapsed( Qt::Edge edge, bool collapsed );
 %Docstring
 Sets whether the link points for the specified ``edge`` for this component should be shown collapsed
-in the graphical modeler.
+in the model designer.
 
 .. seealso:: :py:func:`linksCollapsed`
 %End
