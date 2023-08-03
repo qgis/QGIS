@@ -6242,8 +6242,8 @@ rewitten:rewritten
 rewriet:rewrite
 rewriten:rewritten
 rewuired:required
-rference:reference
-rferences:references
+rference:reference:*
+rferences:references:*
 rhymme:rhyme
 rhythem:rhythm
 rhythim:rhythm
