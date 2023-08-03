@@ -86,6 +86,18 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   if ( mPage->layout() )
   {
     connect( &mPage->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mSymbolButton, &QgsSymbolButton::setLayer );
+
+    QgsLayoutPageCollection *pages = mPage->layout()->pageCollection();
+    if ( pages->pageCount() > 1 )
+    {
+      const int pageNumber = mPage->layout()->pageCollection()->pageNumber( mPage );
+      mTitleLabel->setText( tr( "Page (%1/%2)" ).arg( pageNumber + 1 ).arg( pages->pageCount() ) );
+    }
+    else
+    {
+      mTitleLabel->setText( tr( "Page" ) );
+    }
+
   }
 
   showCurrentPageSize();
