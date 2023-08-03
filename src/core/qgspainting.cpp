@@ -191,3 +191,31 @@ QTransform QgsPainting::triangleToTriangleTransform( double inX1, double inY1, d
 
   return ( U.inverted( &ok ) ) * V;
 }
+
+bool QgsPainting::drawTriangleUsingTexture( QPainter *painter, const QPolygonF &triangle, const QImage &textureImage, double textureX1, double textureY1, double textureX2, double textureY2, double textureX3, double textureY3 )
+{
+  bool ok = false;
+  const QTransform brushTransform = triangleToTriangleTransform(
+                                      textureX1 * ( textureImage.width() - 1 ), textureY1 * ( textureImage.height() - 1 ),
+                                      textureX2 * ( textureImage.width() - 1 ), textureY2 * ( textureImage.height() - 1 ),
+                                      textureX3 * ( textureImage.width() - 1 ), textureY3 * ( textureImage.height() - 1 ),
+                                      triangle.at( 0 ).x(), triangle.at( 0 ).y(),
+                                      triangle.at( 1 ).x(), triangle.at( 1 ).y(),
+                                      triangle.at( 2 ).x(), triangle.at( 2 ).y(),
+                                      ok
+                                    );
+  if ( !ok )
+    return false;
+
+  // only store/restore the painter's current brush -- this is cheaper than saving/restoring the whole painter state
+  const QBrush previousBrush = painter->brush();
+
+  QBrush textureBrush( textureImage );
+  textureBrush.setTransform( brushTransform );
+
+  painter->setBrush( textureBrush );
+  painter->drawPolygon( triangle );
+  painter->setBrush( previousBrush );
+
+  return true;
+}

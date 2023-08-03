@@ -63,6 +63,30 @@ to the triangle defined by (``outX1``, ``outY1``), (``outY2``, ``outY2``), (``ou
 
 :return: - Calculated transform (if possible)
          - ok: will be set to ``True`` if the transform could be determined.
+
+
+.. versionadded:: 3.34
+%End
+
+    static bool drawTriangleUsingTexture(
+      QPainter *painter,
+      const QPolygonF &triangle,
+      const QImage &textureImage,
+      double textureX1, double textureY1,
+      double textureX2, double textureY2,
+      double textureX3, double textureY3
+    );
+%Docstring
+Draws a ``triangle`` onto a ``painter`` using a mapped texture image.
+
+The triangle will be rendered using the portion of the texture image described by the triangle (``textureX1``, ``textureY1``), (``textureX2``, ``textureY2``), (``textureX3``, ``textureY3``).
+Texture coordinates should be in the range 0-1 (as a fraction of the image size), where (0, 0) coorresponds to the top-left of the texture image.
+
+The caller must ensure that ``triangle`` is a closed QPolygonF consisting of 4 vertices (the 3 triangle vertices + the first vertex again to close the polygon).
+
+Returns ``True`` if the triangle could be rendered, or ``False`` if it could not (e.g. when the described points are co-linear).
+
+.. versionadded:: 3.34
 %End
 
 };
