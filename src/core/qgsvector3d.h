@@ -127,18 +127,6 @@ class CORE_EXPORT QgsVector3D
                           v1.x() * v2.y() - v1.y() * v2.x() );
     }
 
-    /**
-     * Projects this vector onto an \a other vector.
-     *
-     * \since QGIS 3.34
-     */
-    QgsVector3D projectOnto( const QgsVector3D &other ) SIP_HOLDGIL
-    {
-      const double bbDotProduct = other.mX * other.mX + other.mY * other.mY + other.mZ * other.mZ;
-      const double abDotProduct = QgsVector3D::dotProduct( *this, other );
-      return other * ( abDotProduct / bbDotProduct );
-    }
-
     //! Returns the length of the vector
     double length() const SIP_HOLDGIL
     {
