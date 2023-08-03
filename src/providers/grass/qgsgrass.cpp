@@ -408,11 +408,7 @@ bool QgsGrass::init( void )
     }
 #endif
 
-    //QString p = getenv( "PATH" );
-    //path.append( sep + p );
-
     QgsDebugMsgLevel( QStringLiteral( "sGrassModulesPaths = " ) + sGrassModulesPaths.join( ',' ), 2 );
-    //putEnv( "PATH", path );
 
     // TODO: move where it is required for QProcess
     // Set GRASS_PAGER if not set, it is necessary for some
@@ -425,6 +421,12 @@ bool QgsGrass::init( void )
     // MSYS terminal and built in shell.
     if ( !getenv( "GRASS_PAGER" ) )
     {
+#ifdef Q_OS_WIN
+      // avoid finding pager in current directory
+      bool skipCurrentDirectory = getenv( "NoDefaultCurrentDirectoryInExePath" ) != nullptr;
+      if ( !skipCurrentDirectory )
+        putEnv( QStringLiteral( "NoDefaultCurrentDirectoryInExePath" ), "1" );
+#endif
       QString pager;
       QStringList pagers;
       //pagers << "more" << "less" << "cat"; // se notes above
@@ -454,6 +456,11 @@ bool QgsGrass::init( void )
       {
         putEnv( QStringLiteral( "GRASS_PAGER" ), pager );
       }
+
+#ifdef Q_OS_WIN
+      if ( !skipCurrentDirectory )
+        putEnv( QStringLiteral( "NoDefaultCurrentDirectoryInExePath" ), "" );
+#endif
     }
     sInitialized = 1;
   }
