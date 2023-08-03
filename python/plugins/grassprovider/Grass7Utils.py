@@ -21,7 +21,6 @@ __copyright__ = '(C) 2014-2015, Victor Olaya'
 
 import stat
 import shutil
-import shlex
 import subprocess
 import os
 import sys
@@ -35,7 +34,6 @@ from qgis.core import (Qgis,
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import userFolder, isWindows, isMac, mkdir
-from processing.tests.TestData import points
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
@@ -168,14 +166,12 @@ class Grass7Utils:
                 cmdList = [
                     "grass{}{}{}".format(major, minor, patch),
                     "grass",
-                    "grass{}{}{}.sh".format(major, minor, patch),
-                    "grass.sh"
+                    "grass{}{}{}.{}".format(major, minor, patch, "bat" if isWindows() else "sh"),
+                    "grass.{}".format("bat" if isWindows() else "sh")
                 ]
         else:
-            cmdList = [
-                "grass80", "grass78", "grass76", "grass74", "grass72", "grass70", "grass",
-                "grass80.sh", "grass78.sh", "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"
-            ]
+            cmdList = ["grass80", "grass78", "grass76", "grass74", "grass72", "grass70", "grass"]
+            cmdList.extend(["{}.{}".format(b, "bat" if isWindows() else "sh") for b in cmdList])
 
         # For MS-Windows there is a difference between GRASS Path and GRASS binary
         if isWindows():
@@ -190,8 +186,8 @@ class Grass7Utils:
             # Search in grassPath
             command = searchFolder(path)
 
-        # If everything has failed, use shutil
-        if not command:
+        # If everything has failed, use shutil (but not for Windows as it'd include .)
+        if not command and not isWindows():
             for cmd in cmdList:
                 testBin = shutil.which(cmd)
                 if testBin:
