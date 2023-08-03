@@ -100,6 +100,11 @@ class CORE_EXPORT QgsAbstractTiledMeshNodeBoundingVolume
      */
     virtual void transform( const QgsMatrix4x4 &transform ) = 0;
 
+    /**
+     * Returns TRUE if this bounds intersects the specified \a box.
+     */
+    virtual bool intersects( const QgsOrientedBox3D &box ) const = 0;
+
 };
 
 /**
@@ -122,6 +127,7 @@ class CORE_EXPORT QgsTiledMeshNodeBoundingVolumeRegion : public QgsAbstractTiled
     QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException );
     QgsTiledMeshNodeBoundingVolumeRegion *clone() const FINAL SIP_FACTORY;
     QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException ) SIP_FACTORY;
+    bool intersects( const QgsOrientedBox3D &box ) const FINAL;
 
     /**
      * Returns the volume's region.
@@ -152,6 +158,7 @@ class CORE_EXPORT QgsTiledMeshNodeBoundingVolumeBox : public QgsAbstractTiledMes
     QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException );
     QgsTiledMeshNodeBoundingVolumeBox *clone() const FINAL SIP_FACTORY;
     QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException ) SIP_FACTORY;
+    bool intersects( const QgsOrientedBox3D &box ) const FINAL;
 
     /**
      * Returns the volume's oriented box.
@@ -184,6 +191,7 @@ class CORE_EXPORT QgsTiledMeshNodeBoundingVolumeSphere: public QgsAbstractTiledM
     QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException );
     QgsTiledMeshNodeBoundingVolumeSphere *clone() const FINAL SIP_FACTORY;
     QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const FINAL SIP_THROW( QgsCsException ) SIP_FACTORY;
+    bool intersects( const QgsOrientedBox3D &box ) const FINAL;
 
     /**
      * Returns the volume's sphere.

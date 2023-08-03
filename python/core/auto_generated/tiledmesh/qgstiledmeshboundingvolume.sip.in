@@ -81,6 +81,11 @@ The actual result of transforming a bounding volume depends on subclass specific
 - transforming a :py:class:`QgsTiledMeshNodeBoundingVolumeSphere` causes the radius to be multiplied by the maximum length of the transform scales
 %End
 
+    virtual bool intersects( const QgsOrientedBox3D &box ) const = 0;
+%Docstring
+Returns ``True`` if this bounds intersects the specified ``box``.
+%End
+
 };
 
 class QgsTiledMeshNodeBoundingVolumeRegion : QgsAbstractTiledMeshNodeBoundingVolume
@@ -110,6 +115,8 @@ Constructor for QgsTiledMeshNodeBoundingVolumeRegion, with the specified ``regio
     virtual QgsTiledMeshNodeBoundingVolumeRegion *clone() const ${SIP_FINAL} /Factory/;
 
     virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
+
+    virtual bool intersects( const QgsOrientedBox3D &box ) const ${SIP_FINAL};
 
 
     QgsBox3D region() const;
@@ -147,6 +154,8 @@ Constructor for QgsTiledMeshNodeBoundingVolumeBox, with the specified oriented `
 
     virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
 
+    virtual bool intersects( const QgsOrientedBox3D &box ) const ${SIP_FINAL};
+
 
     QgsOrientedBox3D box() const;
 %Docstring
@@ -182,6 +191,8 @@ Constructor for :py:class:`QgsTiledMeshNodeBoundingVolumeBox`, with the specifie
     virtual QgsTiledMeshNodeBoundingVolumeSphere *clone() const ${SIP_FINAL} /Factory/;
 
     virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
+
+    virtual bool intersects( const QgsOrientedBox3D &box ) const ${SIP_FINAL};
 
 
     QgsSphere sphere() const;

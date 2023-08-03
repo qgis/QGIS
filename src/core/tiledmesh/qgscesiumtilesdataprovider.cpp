@@ -319,10 +319,11 @@ QStringList QgsCesiumTiledMeshIndex::getTiles( const QgsTiledMeshRequest &reques
   traverseNode = [&request, &traverseNode, &results]( QgsTiledMeshNode * node )
   {
     QgsTiledMeshTile *tile = node->tile();
+
     // check filter box first -- if the node doesn't intersect, then don't include the node and don't traverse
     // to its children
-
-    // TODO -- test intersection with request filterBox()
+    if ( !request.filterBox().isNull() && !tile->boundingVolume()->intersects( request.filterBox() ) )
+      return;
 
     // TODO -- option to filter out nodes without content
 
