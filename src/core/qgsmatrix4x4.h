@@ -49,7 +49,14 @@ class CORE_EXPORT QgsMatrix4x4
 
     bool operator==( const QgsMatrix4x4 &other ) const
     {
-      return memcmp( m, other.m, sizeof( m ) ) == 0;
+      const double *data = *m;
+      const double *otherData = *( other.m );
+      for ( int i = 0; i < 16; ++i, data++, otherData++ )
+      {
+        if ( !qgsDoubleNear( *data, *otherData ) )
+          return false;
+      }
+      return true;
     }
 
     bool operator!=( const QgsMatrix4x4 &other ) const
