@@ -73,8 +73,31 @@ class CORE_EXPORT QgsPainting
      * \param ok will be set to TRUE if the transform could be determined.
      *
      * \returns Calculated transform (if possible)
+     *
+     * \since QGIS 3.34
      */
     static QTransform triangleToTriangleTransform( double inX1, double inY1, double inX2, double inY2, double inX3, double inY3, double outX1, double outY1, double outX2, double outY2, double outX3, double outY3, bool &ok SIP_OUT );
+
+    /**
+     * Draws a \a triangle onto a \a painter using a mapped texture image.
+     *
+     * The triangle will be rendered using the portion of the texture image described by the triangle (\a textureX1, \a textureY1), (\a textureX2, \a textureY2), (\a textureX3, \a textureY3).
+     * Texture coordinates should be in the range 0-1 (as a fraction of the image size), where (0, 0) coorresponds to the top-left of the texture image.
+     *
+     * The caller must ensure that \a triangle is a closed QPolygonF consisting of 4 vertices (the 3 triangle vertices + the first vertex again to close the polygon).
+     *
+     * Returns TRUE if the triangle could be rendered, or FALSE if it could not (e.g. when the described points are co-linear).
+     *
+     * \since QGIS 3.34
+     */
+    static bool drawTriangleUsingTexture(
+      QPainter *painter,
+      const QPolygonF &triangle,
+      const QImage &textureImage,
+      double textureX1, double textureY1,
+      double textureX2, double textureY2,
+      double textureX3, double textureY3
+    );
 
 };
 
