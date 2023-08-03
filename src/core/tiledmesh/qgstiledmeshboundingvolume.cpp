@@ -131,6 +131,11 @@ QgsAbstractGeometry *QgsTiledMeshNodeBoundingVolumeRegion::as2DGeometry( const Q
   }
 }
 
+bool QgsTiledMeshNodeBoundingVolumeRegion::intersects( const QgsOrientedBox3D &box ) const
+{
+  return QgsOrientedBox3D::fromBox3D( mRegion ).intersects( box );
+}
+
 
 //
 // QgsTiledMeshNodeBoundingVolumeBox
@@ -214,6 +219,11 @@ QgsAbstractGeometry *QgsTiledMeshNodeBoundingVolumeBox::as2DGeometry( const QgsC
   std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >( x, y );
   QgsGeos geosMp( mp.get() );
   return geosMp.convexHull();
+}
+
+bool QgsTiledMeshNodeBoundingVolumeBox::intersects( const QgsOrientedBox3D &box ) const
+{
+  return mBox.intersects( box );
 }
 
 //
@@ -335,3 +345,11 @@ QgsAbstractGeometry *QgsTiledMeshNodeBoundingVolumeSphere::as2DGeometry( const Q
     return polygon.release();
   }
 }
+
+bool QgsTiledMeshNodeBoundingVolumeSphere::intersects( const QgsOrientedBox3D &box ) const
+{
+  // just a simple "bounding box of sphere" intersects test for now -- this could obviously be refined, but it's likely not necessary...
+  const QgsBox3D boundingBox = mSphere.boundingBox();
+  return QgsOrientedBox3D::fromBox3D( boundingBox ).intersects( box );
+}
+
