@@ -8,10 +8,11 @@
 
 
 
+
 class QgsPainting
 {
 %Docstring(signature="appended")
-Misc painting enums and functions.
+Contains miscellaneous painting utility functions.
 
 .. versionadded:: 3.0
 %End
@@ -23,11 +24,16 @@ Misc painting enums and functions.
 
     static QPainter::CompositionMode getCompositionMode( Qgis::BlendMode blendMode );
 %Docstring
-Returns a QPainter.CompositionMode corresponding to a BlendMode
+Returns a QPainter.CompositionMode corresponding to a :py:class:`Qgis`.BlendMode.
+
+.. seealso:: :py:func:`getBlendModeEnum`
 %End
+
     static Qgis::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 %Docstring
-Returns a BlendMode corresponding to a QPainter.CompositionMode
+Returns a :py:class:`Qgis`.BlendMode corresponding to a QPainter.CompositionMode.
+
+.. seealso:: :py:func:`getCompositionMode`
 %End
 
     static bool isClippingMode( Qgis::BlendMode mode );
@@ -35,6 +41,28 @@ Returns a BlendMode corresponding to a QPainter.CompositionMode
 Returns ``True`` if ``mode`` is a clipping blend mode.
 
 .. versionadded:: 3.30
+%End
+
+    static QTransform triangleToTriangleTransform( double inX1, double inY1, double inX2, double inY2, double inX3, double inY3, double outX1, double outY1, double outX2, double outY2, double outX3, double outY3, bool &ok /Out/ );
+%Docstring
+Calculates the QTransform which maps the triangle defined by the points (``inX1``, ``inY1``), (``inY2``, ``inY2``), (``inX3``, ``inY3``)
+to the triangle defined by (``outX1``, ``outY1``), (``outY2``, ``outY2``), (``outX3``, ``outY3``).
+
+:param inX1: source triangle vertex 1 x-coordinate
+:param inY1: source triangle vertex 1 y-coordinate
+:param inX2: source triangle vertex 2 x-coordinate
+:param inY2: source triangle vertex 2 y-coordinate
+:param inX3: source triangle vertex 3 x-coordinate
+:param inY3: source triangle vertex 3 y-coordinate
+:param outX1: destination triangle vertex 1 x-coordinate
+:param outY1: destination triangle vertex 1 y-coordinate
+:param outX2: destination triangle vertex 2 x-coordinate
+:param outY2: destination triangle vertex 2 y-coordinate
+:param outX3: destination triangle vertex 3 x-coordinate
+:param outY3: destination triangle vertex 3 y-coordinate
+
+:return: - Calculated transform (if possible)
+         - ok: will be set to ``True`` if the transform could be determined.
 %End
 
 };

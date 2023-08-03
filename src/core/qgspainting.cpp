@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgspainting.h"
-
 #include "qgslogger.h"
+
+#include <QTransform>
 
 QPainter::CompositionMode QgsPainting::getCompositionMode( Qgis::BlendMode blendMode )
 {
@@ -169,4 +170,24 @@ bool QgsPainting::isClippingMode( Qgis::BlendMode mode )
       return true;
   }
   return false;
+}
+
+QTransform QgsPainting::triangleToTriangleTransform( double inX1, double inY1, double inX2, double inY2, double inX3, double inY3, double outX1, double outY1, double outX2, double outY2, double outX3, double outY3, bool &ok )
+{
+  // QTransform maps points using X' = X * T (not X' = T * X !)
+  // So we are trying to solve the equation:  U * T = V, where U = input triangle and V = output triangle
+  // Hence T = U^(-1) * V
+
+  const QTransform U(
+    inX1, inY1, 1,
+    inX2, inY2, 1,
+    inX3, inY3, 1 );
+
+  const QTransform V(
+    outX1, outY1, 1,
+    outX2, outY2, 1,
+    outX3, outY3, 1
+  );
+
+  return ( U.inverted( &ok ) ) * V;
 }
