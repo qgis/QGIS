@@ -32,7 +32,6 @@
 #include "qgstiledmeshindex.h"
 #include "qgstiledmeshrequest.h"
 #include "qgstiledmeshtile.h"
-#include "qgsreadwritelocker.h"
 
 #include <QUrl>
 #include <QIcon>
@@ -41,6 +40,7 @@
 #include <QJsonObject>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QMutex>
 #include <nlohmann/json.hpp>
 
 ///@cond PRIVATE
@@ -83,7 +83,7 @@ class QgsCesiumTiledMeshIndex final : public QgsAbstractTiledMeshIndex
       NotJson, // TODO: refine this to actual content types when/if needed!
     };
 
-    mutable QReadWriteLock mLock;
+    mutable QMutex mLock;
     QString mRootPath;
     std::unique_ptr< QgsTiledMeshNode > mRootNode;
     QMap< QString, QgsTiledMeshNode * > mNodeMap;
@@ -124,7 +124,8 @@ class QgsCesiumTilesDataProviderSharedData
 //
 
 QgsCesiumTiledMeshIndex::QgsCesiumTiledMeshIndex( const json &tileset, const QString &rootPath, const QString &authCfg, const QgsHttpHeaders &headers )
-  : mRootPath( rootPath )
+  : mLock( QMutex::Recursive )
+  , mRootPath( rootPath )
   , mAuthCfg( authCfg )
   , mHeaders( headers )
 {
@@ -270,13 +271,13 @@ void QgsCesiumTiledMeshIndex::refineNodeFromJson( QgsTiledMeshNode *node, const 
 
 QgsTiledMeshTile QgsCesiumTiledMeshIndex::rootTile() const
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  QMutexLocker locker( &mLock );
   return mRootNode ? *mRootNode->tile() : QgsTiledMeshTile();
 }
 
 QgsTiledMeshTile QgsCesiumTiledMeshIndex::getTile( const QString &id )
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  QMutexLocker locker( &mLock );
   auto it = mNodeMap.constFind( id );
   if ( it != mNodeMap.constEnd() )
   {
@@ -288,7 +289,7 @@ QgsTiledMeshTile QgsCesiumTiledMeshIndex::getTile( const QString &id )
 
 QString QgsCesiumTiledMeshIndex::parentTileId( const QString &id ) const
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  QMutexLocker locker( &mLock );
   auto it = mNodeMap.constFind( id );
   if ( it != mNodeMap.constEnd() )
   {
@@ -303,7 +304,7 @@ QString QgsCesiumTiledMeshIndex::parentTileId( const QString &id ) const
 
 QStringList QgsCesiumTiledMeshIndex::childTileIds( const QString &id ) const
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  QMutexLocker locker( &mLock );
   auto it = mNodeMap.constFind( id );
   if ( it != mNodeMap.constEnd() )
   {
@@ -325,7 +326,7 @@ QStringList QgsCesiumTiledMeshIndex::getTiles( const QgsTiledMeshRequest &reques
   QStringList results;
 
   std::function< void( QgsTiledMeshNode * )> traverseNode;
-  traverseNode = [&request, &traverseNode, &results]( QgsTiledMeshNode * node )
+  traverseNode = [&request, &traverseNode, &results, this]( QgsTiledMeshNode * node )
   {
     QgsTiledMeshTile *tile = node->tile();
 
@@ -339,8 +340,32 @@ QStringList QgsCesiumTiledMeshIndex::getTiles( const QgsTiledMeshRequest &reques
     if ( request.requiredGeometricError() <= 0 || tile->geometricError() <= 0 || tile->geometricError() > request.requiredGeometricError() )
     {
       // haven't traversed deep enough down this node, we need to explore children
-      const QList< QgsTiledMeshNode * > children = node->children();
-      for ( QgsTiledMeshNode *child : children )
+
+      // are children available?
+      QList< QgsTiledMeshNode * > children = node->children();
+      if ( children.empty() )
+      {
+        switch ( childAvailability( tile->id() ) )
+        {
+          case Qgis::TileChildrenAvailability::NoChildren:
+          case Qgis::TileChildrenAvailability::Available:
+            break;
+          case Qgis::TileChildrenAvailability::NeedFetching:
+          {
+            if ( !( request.flags() & Qgis::TiledMeshRequestFlag::NoHierarchyFetch ) )
+            {
+              // do a blocking fetch of children
+              if ( fetchHierarchy( tile->id() ), request.feedback() )
+              {
+                children = node->children();
+              }
+            }
+            break;
+          }
+        }
+      }
+
+      for ( QgsTiledMeshNode *child : std::as_const( children ) )
       {
         if ( request.feedback() && request.feedback()->isCanceled() )
           break;
@@ -369,7 +394,7 @@ QStringList QgsCesiumTiledMeshIndex::getTiles( const QgsTiledMeshRequest &reques
 
   };
 
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  QMutexLocker locker( &mLock );
   if ( request.parentTileId().isEmpty() )
   {
     if ( mRootNode )
@@ -390,7 +415,7 @@ QStringList QgsCesiumTiledMeshIndex::getTiles( const QgsTiledMeshRequest &reques
 Qgis::TileChildrenAvailability QgsCesiumTiledMeshIndex::childAvailability( const QString &id ) const
 {
   QString contentUri;
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  QMutexLocker locker( &mLock );
   {
     auto it = mNodeMap.constFind( id );
     if ( it == mNodeMap.constEnd() )
@@ -442,7 +467,7 @@ Qgis::TileChildrenAvailability QgsCesiumTiledMeshIndex::childAvailability( const
 
 bool QgsCesiumTiledMeshIndex::fetchHierarchy( const QString &id, QgsFeedback *feedback )
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  QMutexLocker locker( &mLock );
   auto it = mNodeMap.constFind( id );
   if ( it == mNodeMap.constEnd() )
     return false;
@@ -479,14 +504,14 @@ bool QgsCesiumTiledMeshIndex::fetchHierarchy( const QString &id, QgsFeedback *fe
     try
     {
       const auto subTileJson = json::parse( subTile.toStdString() );
-      locker.changeMode( QgsReadWriteLocker::Write );
+      QMutexLocker locker( &mLock );
       refineNodeFromJson( it.value(), subTileJson["root"] );
       mTileContentFormats.insert( id, TileContentFormat::Json );
       return true;
     }
     catch ( json::parse_error & )
     {
-      locker.changeMode( QgsReadWriteLocker::Write );
+      QMutexLocker locker( &mLock );
       mTileContentFormats.insert( id, TileContentFormat::NotJson );
       return false;
     }
