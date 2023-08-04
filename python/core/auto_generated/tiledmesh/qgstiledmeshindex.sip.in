@@ -80,7 +80,7 @@ May return an empty list if no data satisfies the request.
 %Docstring
 Returns the availability for a tile's children.
 
-.. seealso:: :py:func:`fetchChildren`
+.. seealso:: :py:func:`fetchHierarchy`
 %End
 
     bool fetchHierarchy( const QString &id, QgsFeedback *feedback = 0 );
