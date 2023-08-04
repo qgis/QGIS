@@ -16,8 +16,8 @@
 #ifndef QGSGCPTRANSFORMER_H
 #define QGSGCPTRANSFORMER_H
 
+#include <QObject>
 #include <gdal_alg.h>
-#include "qgspoint.h"
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
 
