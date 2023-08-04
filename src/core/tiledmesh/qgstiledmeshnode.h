@@ -19,8 +19,9 @@
 #ifndef QGSTILEDMESHNODE_H
 #define QGSTILEDMESHNODE_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+
+#define SIP_NO_FILE
 
 class QgsTiledMeshTile;
 
@@ -28,9 +29,10 @@ class QgsTiledMeshTile;
  * \ingroup core
  * \brief Allows representing QgsTiledMeshTiles in a hierarchical tree.
  *
+ * \note Not available in Python bindings
  * \since QGIS 3.34
  */
-class CORE_EXPORT QgsTiledMeshNode
+class QgsTiledMeshNode
 {
   public:
 
