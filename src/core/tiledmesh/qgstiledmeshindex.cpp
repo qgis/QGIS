@@ -69,6 +69,9 @@ QgsTiledMeshIndex::QgsTiledMeshIndex( const QgsTiledMeshIndex &other )
 
 QgsTiledMeshIndex &QgsTiledMeshIndex::operator=( const QgsTiledMeshIndex &other )
 {
+  if ( this == &other )
+    return *this;
+
   mIndex = other.mIndex;
   return *this;
 }
