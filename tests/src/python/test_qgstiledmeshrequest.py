@@ -15,6 +15,7 @@ import unittest
 
 import qgis  # NOQA
 from qgis.core import (
+    Qgis,
     QgsTiledMeshRequest,
     QgsFeedback,
     QgsOrientedBox3D
@@ -31,6 +32,16 @@ class TestQgsTiledMeshRequest(QgisTestCase):
 
     def test_basic(self):
         request = QgsTiledMeshRequest()
+
+        self.assertEqual(request.flags(),
+                         Qgis.TiledMeshRequestFlags())
+        request.setFlags(
+            Qgis.TiledMeshRequestFlags(Qgis.TiledMeshRequestFlag.NoHierarchyFetch)
+        )
+        self.assertEqual(request.flags(),
+                         Qgis.TiledMeshRequestFlags(
+                             Qgis.TiledMeshRequestFlag.NoHierarchyFetch
+        ))
 
         request.setRequiredGeometricError(1.2)
         self.assertEqual(request.requiredGeometricError(), 1.2)
