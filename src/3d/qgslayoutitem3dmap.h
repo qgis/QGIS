@@ -108,18 +108,18 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
     void finalizeRestoreFromXml() override;
 
     /**
-     * @brief Set 3D view settings from XML element
+     * \brief Set 3D view settings from XML element
      *
-     * @param elem DOM element representing the settings of the 3D view
+     * \param elem DOM element representing the settings of the 3D view
      *
      * \since QGIS 3.34
      */
     void setSettingsFromXml( const QDomElement &elem );
 
     /**
-     * @brief Set 3D view camera position settings from XML element
+     * \brief Set 3D view camera position settings from XML element
      *
-     * @param elem DOM element representing the settings of the camera
+     * \param elem DOM element representing the settings of the camera
      *
      * \since QGIS 3.34
      */
