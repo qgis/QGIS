@@ -1188,3 +1188,7 @@ QWidget#QgsRasterCalcDialogBase QWidget#mOperatorsGroupBox QPushButton {
 QFrame#mUserInputContainer { 
     background-color: @background;
 }
+
+QgsLayoutRuler {
+    color: @textlight;
+}
