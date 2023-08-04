@@ -43,7 +43,7 @@ class QgsColorButton;
  * \since QGIS 3.32
  */
 template<class T, class V, class U>
-class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWrapper
+class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWrapper
 {
   public:
     //! Constructor

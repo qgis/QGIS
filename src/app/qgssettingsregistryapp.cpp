@@ -28,10 +28,8 @@
 #include "qgsgcptransformer.h"
 #endif
 
-template class QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>;
 template class QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>;
 
-template class QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>;
 template class QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>;
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()

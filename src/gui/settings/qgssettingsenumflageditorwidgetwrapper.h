@@ -137,7 +137,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
  * \since QGIS 3.32
  */
 template <class ENUM>
-class GUI_EXPORT QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<ENUM>, QComboBox, ENUM>
+class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<ENUM>, QComboBox, ENUM>
 {
   public:
     //! Constructor
