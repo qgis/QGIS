@@ -22,8 +22,6 @@
 #include "qgs3dmapcanvaswidget.h"
 #include "qgsmapviewsmanager.h"
 #include "qgisapp.h"
-#include "qscreen.h"
-#include "qgsmapcanvas.h"
 
 float _normalizedAngle( float x )
 {
