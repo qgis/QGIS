@@ -336,19 +336,19 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextrendererutils.cpp
   textrenderer/qgstextshadowsettings.cpp
 
-  tiledmesh/qgscesiumtilesdataprovider.cpp
-  tiledmesh/qgscesiumutils.cpp
-  tiledmesh/qgstiledmeshboundingvolume.cpp
-  tiledmesh/qgstiledmeshconnection.cpp
-  tiledmesh/qgstiledmeshdataitems.cpp
-  tiledmesh/qgstiledmeshdataprovider.cpp
-  tiledmesh/qgstiledmeshindex.cpp
-  tiledmesh/qgstiledmeshlayer.cpp
-  tiledmesh/qgstiledmeshlayerrenderer.cpp
-  tiledmesh/qgstiledmeshnode.cpp
-  tiledmesh/qgstiledmeshprovidermetadata.cpp
-  tiledmesh/qgstiledmeshrequest.cpp
-  tiledmesh/qgstiledmeshtile.cpp
+  tiledscene/qgscesiumtilesdataprovider.cpp
+  tiledscene/qgscesiumutils.cpp
+  tiledscene/qgstiledsceneboundingvolume.cpp
+  tiledscene/qgstiledsceneconnection.cpp
+  tiledscene/qgstiledscenedataitems.cpp
+  tiledscene/qgstiledscenedataprovider.cpp
+  tiledscene/qgstiledsceneindex.cpp
+  tiledscene/qgstiledscenelayer.cpp
+  tiledscene/qgstiledscenelayerrenderer.cpp
+  tiledscene/qgstiledscenenode.cpp
+  tiledscene/qgstiledsceneprovidermetadata.cpp
+  tiledscene/qgstiledscenerequest.cpp
+  tiledscene/qgstiledscenetile.cpp
 
   sensor/qgssensormodel.cpp
   sensor/qgssensormanager.cpp
@@ -1910,19 +1910,19 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h
 
-  tiledmesh/qgscesiumtilesdataprovider.h
-  tiledmesh/qgscesiumutils.h
-  tiledmesh/qgstiledmeshboundingvolume.h
-  tiledmesh/qgstiledmeshconnection.h
-  tiledmesh/qgstiledmeshdataprovider.h
-  tiledmesh/qgstiledmeshdataitems.h
-  tiledmesh/qgstiledmeshindex.h
-  tiledmesh/qgstiledmeshlayer.h
-  tiledmesh/qgstiledmeshlayerrenderer.h
-  tiledmesh/qgstiledmeshnode.h
-  tiledmesh/qgstiledmeshprovidermetadata.h
-  tiledmesh/qgstiledmeshrequest.h
-  tiledmesh/qgstiledmeshtile.h
+  tiledscene/qgscesiumtilesdataprovider.h
+  tiledscene/qgscesiumutils.h
+  tiledscene/qgstiledsceneboundingvolume.h
+  tiledscene/qgstiledsceneconnection.h
+  tiledscene/qgstiledscenedataprovider.h
+  tiledscene/qgstiledscenedataitems.h
+  tiledscene/qgstiledsceneindex.h
+  tiledscene/qgstiledscenelayer.h
+  tiledscene/qgstiledscenelayerrenderer.h
+  tiledscene/qgstiledscenenode.h
+  tiledscene/qgstiledsceneprovidermetadata.h
+  tiledscene/qgstiledscenerequest.h
+  tiledscene/qgstiledscenetile.h
 
   sensor/qgssensormodel.h
   sensor/qgssensormanager.h
@@ -2304,7 +2304,7 @@ target_include_directories(qgis_core PUBLIC
   sensor
   symbology
   textrenderer
-  tiledmesh
+  tiledscene
   validity
   vector
   vectortile

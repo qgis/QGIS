@@ -274,7 +274,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
       break;
   }
 
@@ -714,7 +714,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::Group:
-      case Qgis::LayerType::TiledMesh:
+      case Qgis::LayerType::TiledScene:
       {
         break;
       }
@@ -913,7 +913,7 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
       return false;
   }
   return false; // no warnings

@@ -100,9 +100,9 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
       layerType = QStringLiteral( "vector-tile" );
       break;
     }
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
     {
-      layerType = QStringLiteral( "tiled-mesh" );
+      layerType = QStringLiteral( "tiled-scene" );
       break;
     }
 

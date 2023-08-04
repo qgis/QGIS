@@ -27,7 +27,7 @@
 #include "qgsvectortileconnection.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
-#include "qgstiledmeshconnection.h"
+#include "qgstiledsceneconnection.h"
 
 
 QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
@@ -146,8 +146,8 @@ void QgsManageConnectionsDialog::doExportImport()
       case VectorTile:
         doc = saveVectorTileConnections( items );
         break;
-      case TiledMesh:
-        doc = saveTiledMeshConnections( items );
+      case TiledScene:
+        doc = saveTiledSceneConnections( items );
         break;
     }
 
@@ -226,8 +226,8 @@ void QgsManageConnectionsDialog::doExportImport()
       case VectorTile:
         loadVectorTileConnections( doc, items );
         break;
-      case TiledMesh:
-        loadTiledMeshConnections( doc, items );
+      case TiledScene:
+        loadTiledSceneConnections( doc, items );
         break;
     }
     // clear connections list and close window
@@ -282,8 +282,8 @@ bool QgsManageConnectionsDialog::populateConnections()
       case VectorTile:
         connections = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
         break;
-      case TiledMesh:
-        connections = QgsTiledMeshProviderConnection::sTreeConnectionTiledMesh->items();
+      case TiledScene:
+        connections = QgsTiledSceneProviderConnection::sTreeConnectionTiledScene->items();
         break;
     }
     for ( const QString &connection : std::as_const( connections ) )
@@ -416,11 +416,11 @@ bool QgsManageConnectionsDialog::populateConnections()
           return false;
         }
         break;
-      case TiledMesh:
-        if ( root.tagName() != QLatin1String( "qgsTiledMeshConnections" ) )
+      case TiledScene:
+        if ( root.tagName() != QLatin1String( "qgsTiledSceneConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading Connections" ),
-                                    tr( "The file is not a tiled mesh connections exchange file." ) );
+                                    tr( "The file is not a tiled scene connections exchange file." ) );
           return false;
         }
         break;
@@ -766,25 +766,25 @@ QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStrin
   return doc;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveTiledMeshConnections( const QStringList &connections )
+QDomDocument QgsManageConnectionsDialog::saveTiledSceneConnections( const QStringList &connections )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
-  QDomElement root = doc.createElement( QStringLiteral( "qgsTiledMeshConnections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsTiledSceneConnections" ) );
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
   for ( int i = 0; i < connections.count(); ++i )
   {
-    QDomElement el = doc.createElement( QStringLiteral( "tiledmesh" ) );
+    QDomElement el = doc.createElement( QStringLiteral( "tiledscene" ) );
 
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
-    el.setAttribute( QStringLiteral( "provider" ), QgsTiledMeshProviderConnection::settingsProvider->value( connections[ i ] ) );
-    el.setAttribute( QStringLiteral( "url" ), QgsTiledMeshProviderConnection::settingsUrl->value( connections[ i ] ) );
-    el.setAttribute( QStringLiteral( "authcfg" ), QgsTiledMeshProviderConnection::settingsAuthcfg->value( connections[ i ] ) );
-    el.setAttribute( QStringLiteral( "username" ), QgsTiledMeshProviderConnection::settingsUsername->value( connections[ i ] ) );
-    el.setAttribute( QStringLiteral( "password" ), QgsTiledMeshProviderConnection::settingsPassword->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "provider" ), QgsTiledSceneProviderConnection::settingsProvider->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "url" ), QgsTiledSceneProviderConnection::settingsUrl->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsTiledSceneProviderConnection::settingsAuthcfg->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsTiledSceneProviderConnection::settingsUsername->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsTiledSceneProviderConnection::settingsPassword->value( connections[ i ] ) );
 
-    QgsHttpHeaders httpHeader( QgsTiledMeshProviderConnection::settingsHeaders->value( connections[ i ] ) );
+    QgsHttpHeaders httpHeader( QgsTiledSceneProviderConnection::settingsHeaders->value( connections[ i ] ) );
     httpHeader.updateDomElement( el );
 
     root.appendChild( el );
@@ -1604,19 +1604,19 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
   }
 }
 
-void QgsManageConnectionsDialog::loadTiledMeshConnections( const QDomDocument &doc, const QStringList &items )
+void QgsManageConnectionsDialog::loadTiledSceneConnections( const QDomDocument &doc, const QStringList &items )
 {
   const QDomElement root = doc.documentElement();
-  if ( root.tagName() != QLatin1String( "qgsTiledMeshConnections" ) )
+  if ( root.tagName() != QLatin1String( "qgsTiledSceneConnections" ) )
   {
     QMessageBox::information( this, tr( "Loading Connections" ),
-                              tr( "The file is not a tiled mesh connections exchange file." ) );
+                              tr( "The file is not a tiled scene connections exchange file." ) );
     return;
   }
 
   QString connectionName;
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/qgis/connections-tiled-mesh" ) );
+  settings.beginGroup( QStringLiteral( "/qgis/connections-tiled-scene" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
@@ -1675,14 +1675,14 @@ void QgsManageConnectionsDialog::loadTiledMeshConnections( const QDomDocument &d
       keys << connectionName;
     }
 
-    QgsTiledMeshProviderConnection::settingsProvider->setValue( child.attribute( QStringLiteral( "provider" ) ), connectionName );
-    QgsTiledMeshProviderConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), connectionName );
-    QgsTiledMeshProviderConnection::settingsAuthcfg->setValue( child.attribute( QStringLiteral( "authcfg" ) ), connectionName );
-    QgsTiledMeshProviderConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), connectionName );
-    QgsTiledMeshProviderConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), connectionName );
+    QgsTiledSceneProviderConnection::settingsProvider->setValue( child.attribute( QStringLiteral( "provider" ) ), connectionName );
+    QgsTiledSceneProviderConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), connectionName );
+    QgsTiledSceneProviderConnection::settingsAuthcfg->setValue( child.attribute( QStringLiteral( "authcfg" ) ), connectionName );
+    QgsTiledSceneProviderConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), connectionName );
+    QgsTiledSceneProviderConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), connectionName );
 
     QgsHttpHeaders httpHeader( child );
-    QgsTiledMeshProviderConnection::settingsHeaders->setValue( httpHeader.headers(), connectionName );
+    QgsTiledSceneProviderConnection::settingsHeaders->setValue( httpHeader.headers(), connectionName );
 
     child = child.nextSiblingElement();
   }

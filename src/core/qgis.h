@@ -120,7 +120,7 @@ class CORE_EXPORT Qgis
       Annotation SIP_MONKEYPATCH_COMPAT_NAME( AnnotationLayer ), //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
       PointCloud SIP_MONKEYPATCH_COMPAT_NAME( PointCloudLayer ), //!< Point cloud layer. Added in QGIS 3.18
       Group SIP_MONKEYPATCH_COMPAT_NAME( GroupLayer ), //!< Composite group layer. Added in QGIS 3.24
-      TiledMesh, //!< Tiled mesh layer. Added in QGIS 3.34
+      TiledScene, //!< Tiled scene layer. Added in QGIS 3.34
     };
     Q_ENUM( LayerType )
 
@@ -644,7 +644,7 @@ class CORE_EXPORT Qgis
       Mesh, //!< Mesh layer
       VectorTile, //!< Vector tile layer
       PointCloud, //!< Point cloud layer
-      TiledMesh, //!< Tiled mesh layer (since QGIS 3.34)
+      TiledScene, //!< Tiled scene layer (since QGIS 3.34)
     };
     Q_ENUM( BrowserLayerType )
 
@@ -974,7 +974,7 @@ class CORE_EXPORT Qgis
       MeshDataset SIP_MONKEYPATCH_COMPAT_NAME( FilterMeshDataset ), //!< Mesh datasets
       PointCloud SIP_MONKEYPATCH_COMPAT_NAME( FilterPointCloud ), //!< Point clouds (since QGIS 3.18)
       VectorTile, //!< Vector tile layers (since QGIS 3.32)
-      TiledMesh, //!< Tiled mesh layers (since QGIS 3.34)
+      TiledScene, //!< Tiled scene layers (since QGIS 3.34)
     };
     Q_ENUM( FileFilterType )
 
@@ -3771,39 +3771,39 @@ class CORE_EXPORT Qgis
     Q_ENUM( TileAvailability )
 
     /**
-     * Tiled mesh data provider capabilities.
+     * Tiled scene data provider capabilities.
      *
      * \since QGIS 3.34
      */
-    enum class TiledMeshProviderCapability : int
+    enum class TiledSceneProviderCapability : int
     {
       ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. See QgsDataProvider::layerMetadata()
     };
-    Q_ENUM( TiledMeshProviderCapability )
+    Q_ENUM( TiledSceneProviderCapability )
 
     /**
-     * Tiled mesh data provider capabilities.
+     * Tiled scene data provider capabilities.
      *
      * \since QGIS 3.34
      */
-    Q_DECLARE_FLAGS( TiledMeshProviderCapabilities, TiledMeshProviderCapability )
-    Q_FLAG( TiledMeshProviderCapabilities )
+    Q_DECLARE_FLAGS( TiledSceneProviderCapabilities, TiledSceneProviderCapability )
+    Q_FLAG( TiledSceneProviderCapabilities )
 
     /**
-     * Tiled mesh bounding volume types.
+     * Tiled scene bounding volume types.
      *
      * \since QGIS 3.34
      */
-    enum class TiledMeshBoundingVolumeType
+    enum class TiledSceneBoundingVolumeType
     {
       Region, //!< Region type
       OrientedBox, //!< Oriented bounding box (rotated box)
       Sphere, //!< Sphere
     };
-    Q_ENUM( TiledMeshBoundingVolumeType )
+    Q_ENUM( TiledSceneBoundingVolumeType )
 
     /**
-     * Tiled mesh tile refinement processes.
+     * Tiled scene tile refinement processes.
      *
      * Refinement determines the process by which a lower resolution parent tile
      * renders when its higher resolution children are selected to be rendered.
@@ -3831,23 +3831,23 @@ class CORE_EXPORT Qgis
     Q_ENUM( TileChildrenAvailability )
 
     /**
-     * Flags which control how tiled mesh requests behave.
+     * Flags which control how tiled scene requests behave.
      *
      * \since QGIS 3.34
      */
-    enum class TiledMeshRequestFlag : int
+    enum class TiledSceneRequestFlag : int
     {
       NoHierarchyFetch = 1 << 0,  //!< Do not allow hierarchy fetching when hierarchy is not currently available. Avoids network requests, but may result in an incomplete tile set. If set, then callers will need to manually perform hierarchy fetches as required.
     };
-    Q_ENUM( TiledMeshRequestFlag )
+    Q_ENUM( TiledSceneRequestFlag )
 
     /**
-     * Flags which control how tiled mesh requests behave.
+     * Flags which control how tiled scene requests behave.
      *
      * \since QGIS 3.34
      */
-    Q_DECLARE_FLAGS( TiledMeshRequestFlags, TiledMeshRequestFlag )
-    Q_FLAG( TiledMeshRequestFlags )
+    Q_DECLARE_FLAGS( TiledSceneRequestFlags, TiledSceneRequestFlag )
+    Q_FLAG( TiledSceneRequestFlags )
 
     /**
      * Identify search radius in mm
@@ -4012,8 +4012,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledMeshProviderCapabilities )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledMeshRequestFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneProviderCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRequestFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

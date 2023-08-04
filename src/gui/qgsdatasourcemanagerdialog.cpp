@@ -233,7 +233,7 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
         // otherwise we will be emitting double signals for the old/new signal for these layer types
         break;
 
-      case Qgis::LayerType::TiledMesh:
+      case Qgis::LayerType::TiledScene:
         emit addLayer( type, url, baseName, providerKey );
         break;
     }

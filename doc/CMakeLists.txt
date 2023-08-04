@@ -93,7 +93,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/settings
       ${CMAKE_SOURCE_DIR}/src/core/symbology
       ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-      ${CMAKE_SOURCE_DIR}/src/core/tiledmesh
+      ${CMAKE_SOURCE_DIR}/src/core/tiledscene
       ${CMAKE_SOURCE_DIR}/src/core/validity
       ${CMAKE_SOURCE_DIR}/src/core/vector
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
@@ -128,7 +128,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/settings
       ${CMAKE_SOURCE_DIR}/src/gui/symbology
       ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
-      ${CMAKE_SOURCE_DIR}/src/gui/tiledmesh
+      ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
       ${CMAKE_SOURCE_DIR}/src/gui/vector
       ${CMAKE_SOURCE_DIR}/src/gui/vectortile
       ${CMAKE_SOURCE_DIR}/src/analysis

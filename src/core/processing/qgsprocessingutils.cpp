@@ -36,7 +36,7 @@
 #include "qgsvectortilelayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
-#include "qgstiledmeshlayer.h"
+#include "qgstiledscenelayer.h"
 #include <QRegularExpression>
 #include <QTextCodec>
 #include <QUuid>
@@ -107,9 +107,9 @@ QList<QgsVectorTileLayer *> QgsProcessingUtils::compatibleVectorTileLayers( QgsP
   return compatibleMapLayers< QgsVectorTileLayer >( project, sort );
 }
 
-QList<QgsTiledMeshLayer *> QgsProcessingUtils::compatibleTiledMeshLayers( QgsProject *project, bool sort )
+QList<QgsTiledSceneLayer *> QgsProcessingUtils::compatibleTiledSceneLayers( QgsProject *project, bool sort )
 {
-  return compatibleMapLayers< QgsTiledMeshLayer >( project, sort );
+  return compatibleMapLayers< QgsTiledSceneLayer >( project, sort );
 }
 
 template<typename T> QList<T *> QgsProcessingUtils::compatibleMapLayers( QgsProject *project, bool sort )
@@ -167,8 +167,8 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   for ( QgsVectorTileLayer *vtl : vectorTileLayers )
     layers << vtl;
 
-  const auto tiledMeshLayers = compatibleMapLayers< QgsTiledMeshLayer >( project, false );
-  for ( QgsTiledMeshLayer *tml : tiledMeshLayers )
+  const auto tiledSceneLayers = compatibleMapLayers< QgsTiledSceneLayer >( project, false );
+  for ( QgsTiledSceneLayer *tml : tiledSceneLayers )
     layers << tml;
 
   const auto pluginLayers = compatibleMapLayers< QgsPluginLayer >( project, false );
@@ -226,8 +226,8 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
         return !canUseLayer( qobject_cast< QgsMeshLayer * >( layer ) );
       case Qgis::LayerType::VectorTile:
         return !canUseLayer( qobject_cast< QgsVectorTileLayer * >( layer ) );
-      case Qgis::LayerType::TiledMesh:
-        return !canUseLayer( qobject_cast< QgsTiledMeshLayer * >( layer ) );
+      case Qgis::LayerType::TiledScene:
+        return !canUseLayer( qobject_cast< QgsTiledSceneLayer * >( layer ) );
       case Qgis::LayerType::PointCloud:
         return !canUseLayer( qobject_cast< QgsPointCloudLayer * >( layer ) );
       case Qgis::LayerType::Annotation:
@@ -261,8 +261,8 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
       case LayerHint::VectorTile:
         return l->type() == Qgis::LayerType::VectorTile;
 
-      case LayerHint::TiledMesh:
-        return l->type() == Qgis::LayerType::TiledMesh;
+      case LayerHint::TiledScene:
+        return l->type() == Qgis::LayerType::TiledScene;
     }
     return true;
   };
@@ -420,27 +420,27 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return tileLayer.release();
     }
   }
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::TiledMesh )
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::TiledScene )
   {
-    QgsTiledMeshLayer::LayerOptions tiledMeshOptions;
-    tiledMeshOptions.skipCrsValidation = true;
+    QgsTiledSceneLayer::LayerOptions tiledSceneOptions;
+    tiledSceneOptions.skipCrsValidation = true;
 
-    std::unique_ptr< QgsTiledMeshLayer > tiledMeshLayer;
+    std::unique_ptr< QgsTiledSceneLayer > tiledSceneLayer;
     if ( useProvider )
     {
-      tiledMeshLayer = std::make_unique< QgsTiledMeshLayer >( uri, name, provider, tiledMeshOptions );
+      tiledSceneLayer = std::make_unique< QgsTiledSceneLayer >( uri, name, provider, tiledSceneOptions );
     }
     else
     {
       const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( uri );
       if ( !preferredProviders.empty() )
       {
-        tiledMeshLayer = std::make_unique< QgsTiledMeshLayer >( uri, name, preferredProviders.at( 0 ).metadata()->key(), tiledMeshOptions );
+        tiledSceneLayer = std::make_unique< QgsTiledSceneLayer >( uri, name, preferredProviders.at( 0 ).metadata()->key(), tiledSceneOptions );
       }
     }
-    if ( tiledMeshLayer && tiledMeshLayer->isValid() )
+    if ( tiledSceneLayer && tiledSceneLayer->isValid() )
     {
-      return tiledMeshLayer.release();
+      return tiledSceneLayer.release();
     }
   }
   return nullptr;
@@ -652,7 +652,7 @@ bool QgsProcessingUtils::canUseLayer( const QgsAnnotationLayer *layer )
   return layer && layer->isValid();
 }
 
-bool QgsProcessingUtils::canUseLayer( const QgsTiledMeshLayer *layer )
+bool QgsProcessingUtils::canUseLayer( const QgsTiledSceneLayer *layer )
 {
   return layer && layer->isValid();
 }

@@ -6458,8 +6458,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
           return QCoreApplication::translate( "expressions", "Point Cloud" );
         case Qgis::LayerType::Group:
           return QCoreApplication::translate( "expressions", "Group" );
-        case Qgis::LayerType::TiledMesh:
-          return QCoreApplication::translate( "expressions", "Tiled Mesh" );
+        case Qgis::LayerType::TiledScene:
+          return QCoreApplication::translate( "expressions", "Tiled Scene" );
       }
     }
     else

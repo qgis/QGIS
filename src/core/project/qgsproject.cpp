@@ -59,7 +59,7 @@
 #include "qgsprojectstylesettings.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsvectortilelayer.h"
-#include "qgstiledmeshlayer.h"
+#include "qgstiledscenelayer.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsannotationlayer.h"
 #include "qgspointcloudlayer.h"
@@ -1609,8 +1609,8 @@ bool QgsProject::addLayer( const QDomElement &layerElem,
       mapLayer = std::make_unique<QgsPointCloudLayer>();
       break;
 
-    case Qgis::LayerType::TiledMesh:
-      mapLayer = std::make_unique<QgsTiledMeshLayer>();
+    case Qgis::LayerType::TiledScene:
+      mapLayer = std::make_unique<QgsTiledSceneLayer>();
       break;
 
     case Qgis::LayerType::Plugin:

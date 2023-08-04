@@ -982,9 +982,9 @@ The ``baseName`` parameter will be used as the layer name (and shown in the map 
 .. versionadded:: 3.18
 %End
 
-    virtual QgsTiledMeshLayer *addTiledMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
+    virtual QgsTiledSceneLayer *addTiledSceneLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
-Adds a tiled mesh layer to the current project, using the specified data provider and source ``url``.
+Adds a tiled scene layer to the current project, using the specified data provider and source ``url``.
 
 The ``baseName`` parameter will be used as the layer name (and shown in the map legend).
 

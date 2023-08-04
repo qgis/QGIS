@@ -34,10 +34,10 @@ QgsMapLayer.GroupLayer = Qgis.LayerType.Group
 QgsMapLayer.LayerType.GroupLayer = Qgis.LayerType.Group
 QgsMapLayer.GroupLayer.is_monkey_patched = True
 QgsMapLayer.GroupLayer.__doc__ = "Composite group layer. Added in QGIS 3.24"
-QgsMapLayer.TiledMesh = Qgis.LayerType.TiledMesh
-QgsMapLayer.TiledMesh.is_monkey_patched = True
-QgsMapLayer.TiledMesh.__doc__ = "Tiled mesh layer. Added in QGIS 3.34"
-Qgis.LayerType.__doc__ = "Types of layers that can be added to a map\n\n.. versionadded:: 3.30.\n\n" + '* ``VectorLayer``: ' + Qgis.LayerType.Vector.__doc__ + '\n' + '* ``RasterLayer``: ' + Qgis.LayerType.Raster.__doc__ + '\n' + '* ``PluginLayer``: ' + Qgis.LayerType.Plugin.__doc__ + '\n' + '* ``MeshLayer``: ' + Qgis.LayerType.Mesh.__doc__ + '\n' + '* ``VectorTileLayer``: ' + Qgis.LayerType.VectorTile.__doc__ + '\n' + '* ``AnnotationLayer``: ' + Qgis.LayerType.Annotation.__doc__ + '\n' + '* ``PointCloudLayer``: ' + Qgis.LayerType.PointCloud.__doc__ + '\n' + '* ``GroupLayer``: ' + Qgis.LayerType.Group.__doc__ + '\n' + '* ``TiledMesh``: ' + Qgis.LayerType.TiledMesh.__doc__
+QgsMapLayer.TiledScene = Qgis.LayerType.TiledScene
+QgsMapLayer.TiledScene.is_monkey_patched = True
+QgsMapLayer.TiledScene.__doc__ = "Tiled scene layer. Added in QGIS 3.34"
+Qgis.LayerType.__doc__ = "Types of layers that can be added to a map\n\n.. versionadded:: 3.30.\n\n" + '* ``VectorLayer``: ' + Qgis.LayerType.Vector.__doc__ + '\n' + '* ``RasterLayer``: ' + Qgis.LayerType.Raster.__doc__ + '\n' + '* ``PluginLayer``: ' + Qgis.LayerType.Plugin.__doc__ + '\n' + '* ``MeshLayer``: ' + Qgis.LayerType.Mesh.__doc__ + '\n' + '* ``VectorTileLayer``: ' + Qgis.LayerType.VectorTile.__doc__ + '\n' + '* ``AnnotationLayer``: ' + Qgis.LayerType.Annotation.__doc__ + '\n' + '* ``PointCloudLayer``: ' + Qgis.LayerType.PointCloud.__doc__ + '\n' + '* ``GroupLayer``: ' + Qgis.LayerType.Group.__doc__ + '\n' + '* ``TiledScene``: ' + Qgis.LayerType.TiledScene.__doc__
 # --
 Qgis.LayerType.baseClass = Qgis
 QgsWkbTypes.Type = Qgis.WkbType
@@ -674,10 +674,10 @@ QgsLayerItem.VectorTile.__doc__ = "Vector tile layer"
 QgsLayerItem.PointCloud = Qgis.BrowserLayerType.PointCloud
 QgsLayerItem.PointCloud.is_monkey_patched = True
 QgsLayerItem.PointCloud.__doc__ = "Point cloud layer"
-QgsLayerItem.TiledMesh = Qgis.BrowserLayerType.TiledMesh
-QgsLayerItem.TiledMesh.is_monkey_patched = True
-QgsLayerItem.TiledMesh.__doc__ = "Tiled mesh layer (since QGIS 3.34)"
-Qgis.BrowserLayerType.__doc__ = "Browser item layer types\n\n.. versionadded:: 3.20\n\n" + '* ``NoType``: ' + Qgis.BrowserLayerType.NoType.__doc__ + '\n' + '* ``Vector``: ' + Qgis.BrowserLayerType.Vector.__doc__ + '\n' + '* ``Raster``: ' + Qgis.BrowserLayerType.Raster.__doc__ + '\n' + '* ``Point``: ' + Qgis.BrowserLayerType.Point.__doc__ + '\n' + '* ``Line``: ' + Qgis.BrowserLayerType.Line.__doc__ + '\n' + '* ``Polygon``: ' + Qgis.BrowserLayerType.Polygon.__doc__ + '\n' + '* ``TableLayer``: ' + Qgis.BrowserLayerType.TableLayer.__doc__ + '\n' + '* ``Database``: ' + Qgis.BrowserLayerType.Database.__doc__ + '\n' + '* ``Table``: ' + Qgis.BrowserLayerType.Table.__doc__ + '\n' + '* ``Plugin``: ' + Qgis.BrowserLayerType.Plugin.__doc__ + '\n' + '* ``Mesh``: ' + Qgis.BrowserLayerType.Mesh.__doc__ + '\n' + '* ``VectorTile``: ' + Qgis.BrowserLayerType.VectorTile.__doc__ + '\n' + '* ``PointCloud``: ' + Qgis.BrowserLayerType.PointCloud.__doc__ + '\n' + '* ``TiledMesh``: ' + Qgis.BrowserLayerType.TiledMesh.__doc__
+QgsLayerItem.TiledScene = Qgis.BrowserLayerType.TiledScene
+QgsLayerItem.TiledScene.is_monkey_patched = True
+QgsLayerItem.TiledScene.__doc__ = "Tiled scene layer (since QGIS 3.34)"
+Qgis.BrowserLayerType.__doc__ = "Browser item layer types\n\n.. versionadded:: 3.20\n\n" + '* ``NoType``: ' + Qgis.BrowserLayerType.NoType.__doc__ + '\n' + '* ``Vector``: ' + Qgis.BrowserLayerType.Vector.__doc__ + '\n' + '* ``Raster``: ' + Qgis.BrowserLayerType.Raster.__doc__ + '\n' + '* ``Point``: ' + Qgis.BrowserLayerType.Point.__doc__ + '\n' + '* ``Line``: ' + Qgis.BrowserLayerType.Line.__doc__ + '\n' + '* ``Polygon``: ' + Qgis.BrowserLayerType.Polygon.__doc__ + '\n' + '* ``TableLayer``: ' + Qgis.BrowserLayerType.TableLayer.__doc__ + '\n' + '* ``Database``: ' + Qgis.BrowserLayerType.Database.__doc__ + '\n' + '* ``Table``: ' + Qgis.BrowserLayerType.Table.__doc__ + '\n' + '* ``Plugin``: ' + Qgis.BrowserLayerType.Plugin.__doc__ + '\n' + '* ``Mesh``: ' + Qgis.BrowserLayerType.Mesh.__doc__ + '\n' + '* ``VectorTile``: ' + Qgis.BrowserLayerType.VectorTile.__doc__ + '\n' + '* ``PointCloud``: ' + Qgis.BrowserLayerType.PointCloud.__doc__ + '\n' + '* ``TiledScene``: ' + Qgis.BrowserLayerType.TiledScene.__doc__
 # --
 Qgis.BrowserLayerType.baseClass = Qgis
 # monkey patching scoped based enum
@@ -1040,10 +1040,10 @@ QgsProviderMetadata.FilterPointCloud.__doc__ = "Point clouds (since QGIS 3.18)"
 QgsProviderMetadata.VectorTile = Qgis.FileFilterType.VectorTile
 QgsProviderMetadata.VectorTile.is_monkey_patched = True
 QgsProviderMetadata.VectorTile.__doc__ = "Vector tile layers (since QGIS 3.32)"
-QgsProviderMetadata.TiledMesh = Qgis.FileFilterType.TiledMesh
-QgsProviderMetadata.TiledMesh.is_monkey_patched = True
-QgsProviderMetadata.TiledMesh.__doc__ = "Tiled mesh layers (since QGIS 3.34)"
-Qgis.FileFilterType.__doc__ = "Type of file filters\n\nPrior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterType\n\n.. versionadded:: 3.32\n\n" + '* ``FilterVector``: ' + Qgis.FileFilterType.Vector.__doc__ + '\n' + '* ``FilterRaster``: ' + Qgis.FileFilterType.Raster.__doc__ + '\n' + '* ``FilterMesh``: ' + Qgis.FileFilterType.Mesh.__doc__ + '\n' + '* ``FilterMeshDataset``: ' + Qgis.FileFilterType.MeshDataset.__doc__ + '\n' + '* ``FilterPointCloud``: ' + Qgis.FileFilterType.PointCloud.__doc__ + '\n' + '* ``VectorTile``: ' + Qgis.FileFilterType.VectorTile.__doc__ + '\n' + '* ``TiledMesh``: ' + Qgis.FileFilterType.TiledMesh.__doc__
+QgsProviderMetadata.TiledScene = Qgis.FileFilterType.TiledScene
+QgsProviderMetadata.TiledScene.is_monkey_patched = True
+QgsProviderMetadata.TiledScene.__doc__ = "Tiled scene layers (since QGIS 3.34)"
+Qgis.FileFilterType.__doc__ = "Type of file filters\n\nPrior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterType\n\n.. versionadded:: 3.32\n\n" + '* ``FilterVector``: ' + Qgis.FileFilterType.Vector.__doc__ + '\n' + '* ``FilterRaster``: ' + Qgis.FileFilterType.Raster.__doc__ + '\n' + '* ``FilterMesh``: ' + Qgis.FileFilterType.Mesh.__doc__ + '\n' + '* ``FilterMeshDataset``: ' + Qgis.FileFilterType.MeshDataset.__doc__ + '\n' + '* ``FilterPointCloud``: ' + Qgis.FileFilterType.PointCloud.__doc__ + '\n' + '* ``VectorTile``: ' + Qgis.FileFilterType.VectorTile.__doc__ + '\n' + '* ``TiledScene``: ' + Qgis.FileFilterType.TiledScene.__doc__
 # --
 Qgis.FileFilterType.baseClass = Qgis
 # monkey patching scoped based enum
@@ -3763,23 +3763,23 @@ Qgis.TileAvailability.__doc__ = "Possible availability states for a tile within 
 # --
 Qgis.TileAvailability.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.TiledMeshProviderCapability.ReadLayerMetadata.__doc__ = "Provider can read layer metadata from data store. See QgsDataProvider.layerMetadata()"
-Qgis.TiledMeshProviderCapability.__doc__ = "Tiled mesh data provider capabilities.\n\n.. versionadded:: 3.34\n\n" + '* ``ReadLayerMetadata``: ' + Qgis.TiledMeshProviderCapability.ReadLayerMetadata.__doc__
+Qgis.TiledSceneProviderCapability.ReadLayerMetadata.__doc__ = "Provider can read layer metadata from data store. See QgsDataProvider.layerMetadata()"
+Qgis.TiledSceneProviderCapability.__doc__ = "Tiled scene data provider capabilities.\n\n.. versionadded:: 3.34\n\n" + '* ``ReadLayerMetadata``: ' + Qgis.TiledSceneProviderCapability.ReadLayerMetadata.__doc__
 # --
-Qgis.TiledMeshProviderCapability.baseClass = Qgis
-Qgis.TiledMeshProviderCapabilities.baseClass = Qgis
-TiledMeshProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+Qgis.TiledSceneProviderCapability.baseClass = Qgis
+Qgis.TiledSceneProviderCapabilities.baseClass = Qgis
+TiledSceneProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
-Qgis.TiledMeshBoundingVolumeType.Region.__doc__ = "Region type"
-Qgis.TiledMeshBoundingVolumeType.OrientedBox.__doc__ = "Oriented bounding box (rotated box)"
-Qgis.TiledMeshBoundingVolumeType.Sphere.__doc__ = "Sphere"
-Qgis.TiledMeshBoundingVolumeType.__doc__ = "Tiled mesh bounding volume types.\n\n.. versionadded:: 3.34\n\n" + '* ``Region``: ' + Qgis.TiledMeshBoundingVolumeType.Region.__doc__ + '\n' + '* ``OrientedBox``: ' + Qgis.TiledMeshBoundingVolumeType.OrientedBox.__doc__ + '\n' + '* ``Sphere``: ' + Qgis.TiledMeshBoundingVolumeType.Sphere.__doc__
+Qgis.TiledSceneBoundingVolumeType.Region.__doc__ = "Region type"
+Qgis.TiledSceneBoundingVolumeType.OrientedBox.__doc__ = "Oriented bounding box (rotated box)"
+Qgis.TiledSceneBoundingVolumeType.Sphere.__doc__ = "Sphere"
+Qgis.TiledSceneBoundingVolumeType.__doc__ = "Tiled scene bounding volume types.\n\n.. versionadded:: 3.34\n\n" + '* ``Region``: ' + Qgis.TiledSceneBoundingVolumeType.Region.__doc__ + '\n' + '* ``OrientedBox``: ' + Qgis.TiledSceneBoundingVolumeType.OrientedBox.__doc__ + '\n' + '* ``Sphere``: ' + Qgis.TiledSceneBoundingVolumeType.Sphere.__doc__
 # --
-Qgis.TiledMeshBoundingVolumeType.baseClass = Qgis
+Qgis.TiledSceneBoundingVolumeType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.TileRefinementProcess.Replacement.__doc__ = "When tile is refined then its children should be used in place of itself."
 Qgis.TileRefinementProcess.Additive.__doc__ = "When tile is refined its content should be used alongside its children simultaneously."
-Qgis.TileRefinementProcess.__doc__ = "Tiled mesh tile refinement processes.\n\nRefinement determines the process by which a lower resolution parent tile\nrenders when its higher resolution children are selected to be rendered.\n\n.. versionadded:: 3.34\n\n" + '* ``Replacement``: ' + Qgis.TileRefinementProcess.Replacement.__doc__ + '\n' + '* ``Additive``: ' + Qgis.TileRefinementProcess.Additive.__doc__
+Qgis.TileRefinementProcess.__doc__ = "Tiled scene tile refinement processes.\n\nRefinement determines the process by which a lower resolution parent tile\nrenders when its higher resolution children are selected to be rendered.\n\n.. versionadded:: 3.34\n\n" + '* ``Replacement``: ' + Qgis.TileRefinementProcess.Replacement.__doc__ + '\n' + '* ``Additive``: ' + Qgis.TileRefinementProcess.Additive.__doc__
 # --
 Qgis.TileRefinementProcess.baseClass = Qgis
 # monkey patching scoped based enum
@@ -3790,9 +3790,9 @@ Qgis.TileChildrenAvailability.__doc__ = "Possible availability states for a tile
 # --
 Qgis.TileChildrenAvailability.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.TiledMeshRequestFlag.NoHierarchyFetch.__doc__ = "Do not allow hierarchy fetching when hierarchy is not currently available. Avoids network requests, but may result in an incomplete tile set. If set, then callers will need to manually perform hierarchy fetches as required."
-Qgis.TiledMeshRequestFlag.__doc__ = "Flags which control how tiled mesh requests behave.\n\n.. versionadded:: 3.34\n\n" + '* ``NoHierarchyFetch``: ' + Qgis.TiledMeshRequestFlag.NoHierarchyFetch.__doc__
+Qgis.TiledSceneRequestFlag.NoHierarchyFetch.__doc__ = "Do not allow hierarchy fetching when hierarchy is not currently available. Avoids network requests, but may result in an incomplete tile set. If set, then callers will need to manually perform hierarchy fetches as required."
+Qgis.TiledSceneRequestFlag.__doc__ = "Flags which control how tiled scene requests behave.\n\n.. versionadded:: 3.34\n\n" + '* ``NoHierarchyFetch``: ' + Qgis.TiledSceneRequestFlag.NoHierarchyFetch.__doc__
 # --
-Qgis.TiledMeshRequestFlag.baseClass = Qgis
-Qgis.TiledMeshRequestFlags.baseClass = Qgis
-TiledMeshRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+Qgis.TiledSceneRequestFlag.baseClass = Qgis
+Qgis.TiledSceneRequestFlags.baseClass = Qgis
+TiledSceneRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module

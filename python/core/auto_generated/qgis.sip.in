@@ -84,7 +84,7 @@ The development version
       Annotation,
       PointCloud,
       Group,
-      TiledMesh,
+      TiledScene,
     };
 
     enum class WkbType
@@ -399,7 +399,7 @@ The development version
       Mesh,
       VectorTile,
       PointCloud,
-      TiledMesh,
+      TiledScene,
     };
 
     enum class BrowserDirectoryMonitoring
@@ -586,7 +586,7 @@ The development version
       MeshDataset,
       PointCloud,
       VectorTile,
-      TiledMesh,
+      TiledScene,
     };
 
     enum class SublayerQueryFlag
@@ -2160,15 +2160,15 @@ The development version
       UseLowerZoomLevelTile,
     };
 
-    enum class TiledMeshProviderCapability
+    enum class TiledSceneProviderCapability
     {
       ReadLayerMetadata,
     };
 
-    typedef QFlags<Qgis::TiledMeshProviderCapability> TiledMeshProviderCapabilities;
+    typedef QFlags<Qgis::TiledSceneProviderCapability> TiledSceneProviderCapabilities;
 
 
-    enum class TiledMeshBoundingVolumeType
+    enum class TiledSceneBoundingVolumeType
     {
       Region,
       OrientedBox,
@@ -2188,12 +2188,12 @@ The development version
       NeedFetching,
     };
 
-    enum class TiledMeshRequestFlag
+    enum class TiledSceneRequestFlag
     {
       NoHierarchyFetch,
     };
 
-    typedef QFlags<Qgis::TiledMeshRequestFlag> TiledMeshRequestFlags;
+    typedef QFlags<Qgis::TiledSceneRequestFlag> TiledSceneRequestFlags;
 
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -2356,9 +2356,9 @@ QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, 
 
 QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCapability f1, QFlags<Qgis::VectorTileProviderCapability> f2);
 
-QFlags<Qgis::TiledMeshProviderCapability> operator|(Qgis::TiledMeshProviderCapability f1, QFlags<Qgis::TiledMeshProviderCapability> f2);
+QFlags<Qgis::TiledSceneProviderCapability> operator|(Qgis::TiledSceneProviderCapability f1, QFlags<Qgis::TiledSceneProviderCapability> f2);
 
-QFlags<Qgis::TiledMeshRequestFlag> operator|(Qgis::TiledMeshRequestFlag f1, QFlags<Qgis::TiledMeshRequestFlag> f2);
+QFlags<Qgis::TiledSceneRequestFlag> operator|(Qgis::TiledSceneRequestFlag f1, QFlags<Qgis::TiledSceneRequestFlag> f2);
 
 
 

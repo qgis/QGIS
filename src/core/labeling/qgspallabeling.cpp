@@ -3911,7 +3911,7 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
       return false;
   }
   return false;

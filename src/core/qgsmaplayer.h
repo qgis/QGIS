@@ -118,8 +118,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
         case Qgis::LayerType::Group:
           sipType = sipType_QgsGroupLayer;
           break;
-        case Qgis::LayerType::TiledMesh:
-          sipType = sipType_QgsTiledMeshLayer;
+        case Qgis::LayerType::TiledScene:
+          sipType = sipType_QgsTiledSceneLayer;
           break;
         default:
           sipType = nullptr;

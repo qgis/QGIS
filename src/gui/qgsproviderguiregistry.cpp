@@ -29,7 +29,7 @@
 #include "qgspointcloudproviderguimetadata.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 
-#include "qgstiledmeshproviderguimetadata.h"
+#include "qgstiledsceneproviderguimetadata.h"
 #include "qgsmbtilesvectortileguiprovider.h"
 #include "qgsvtpkvectortileguiprovider.h"
 
@@ -118,8 +118,8 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
     mProviders[ pointcloud->key() ] = pointcloud;
   }
 
-  QgsProviderGuiMetadata *tiledMesh = new QgsTiledMeshProviderGuiMetadata();
-  mProviders[ tiledMesh->key() ] = tiledMesh;
+  QgsProviderGuiMetadata *tiledScene = new QgsTiledSceneProviderGuiMetadata();
+  mProviders[ tiledScene ->key() ] = tiledScene ;
 
 #ifdef HAVE_STATIC_PROVIDERS
   QgsProviderGuiMetadata *wms = new QgsWmsProviderGuiMetadata();
