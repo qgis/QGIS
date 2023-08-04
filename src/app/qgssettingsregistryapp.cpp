@@ -27,18 +27,17 @@
 #include "qgsgcptransformer.h"
 #endif
 
-typedef QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod> QgsSettingsEnumEditorImageWarperResamplingMethod;
-typedef QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod> QgsSettingsEnumEditorWidgetWrappeGcpTransformerInterfaceTransformMethod;
-
+template class QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>;
+template class QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>;
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
 {
 
 #ifdef HAVE_GEOREFERENCER
-  QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorImageWarperResamplingMethod() );
+  QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>() );
 #endif
-  QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrappeGcpTransformerInterfaceTransformMethod() );
+  QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>() );
 
 
   // copy values from old keys to new keys and delete the old ones
