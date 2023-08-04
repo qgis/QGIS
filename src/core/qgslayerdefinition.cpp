@@ -28,7 +28,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
-#include "qgstiledmeshlayer.h"
+#include "qgstiledscenelayer.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsmeshlayer.h"
@@ -340,8 +340,8 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayersInternal( QDom
           layer = new QgsPointCloudLayer();
           break;
 
-        case Qgis::LayerType::TiledMesh:
-          layer = new QgsTiledMeshLayer;
+        case Qgis::LayerType::TiledScene:
+          layer = new QgsTiledSceneLayer;
           break;
 
         case Qgis::LayerType::Group:

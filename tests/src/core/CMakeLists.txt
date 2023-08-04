@@ -193,7 +193,7 @@ set(TESTS
  testqgstemporalnavigationobject.cpp
  testqgstemporalproperty.cpp
  testqgstemporalrangeobject.cpp
- testqgstiledmeshconnection.cpp
+ testqgstiledsceneconnection.cpp
  testqgstiledownloadmanager.cpp
  testqgstracer.cpp
  testqgstranslateproject.cpp

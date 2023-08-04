@@ -1,0 +1,52 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgscesiumutils.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsCesiumUtils
+{
+%Docstring(signature="appended")
+Contains utilities for working with Cesium data.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgscesiumutils.h"
+%End
+  public:
+
+
+    static QgsBox3D parseRegion( const QVariantList &region );
+%Docstring
+Parses a ``region`` object from a Cesium JSON document to a 3D box.
+%End
+
+
+    static QgsOrientedBox3D parseBox( const QVariantList &box );
+%Docstring
+Parses a ``box`` object from a Cesium JSON document to an oriented bounding box.
+%End
+
+
+    static QgsSphere parseSphere( const QVariantList &sphere );
+%Docstring
+Parses a ``sphere`` object from a Cesium JSON document.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgscesiumutils.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

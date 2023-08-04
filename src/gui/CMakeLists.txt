@@ -460,10 +460,10 @@ set(QGIS_GUI_SRCS
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
 
-  tiledmesh/qgstiledmeshconnectiondialog.cpp
-  tiledmesh/qgstiledmeshdataitemguiprovider.cpp
-  tiledmesh/qgstiledmeshproviderguimetadata.cpp
-  tiledmesh/qgstiledmeshsourceselect.cpp
+  tiledscene/qgstiledsceneconnectiondialog.cpp
+  tiledscene/qgstiledscenedataitemguiprovider.cpp
+  tiledscene/qgstiledsceneproviderguimetadata.cpp
+  tiledscene/qgstiledscenesourceselect.cpp
 
   vectortile/qgsarcgisvectortileconnectiondialog.cpp
   vectortile/qgsvectortilebasiclabelingwidget.cpp
@@ -1479,10 +1479,10 @@ set(QGIS_GUI_HDRS
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
 
-  tiledmesh/qgstiledmeshconnectiondialog.h
-  tiledmesh/qgstiledmeshdataitemguiprovider.h
-  tiledmesh/qgstiledmeshproviderguimetadata.h
-  tiledmesh/qgstiledmeshsourceselect.h
+  tiledscene/qgstiledsceneconnectiondialog.h
+  tiledscene/qgstiledscenedataitemguiprovider.h
+  tiledscene/qgstiledsceneproviderguimetadata.h
+  tiledscene/qgstiledscenesourceselect.h
 
   vectortile/qgsarcgisvectortileconnectiondialog.h
   vectortile/qgsvectortilebasiclabelingwidget.h
@@ -1630,7 +1630,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/sensor
   ${CMAKE_SOURCE_DIR}/src/gui/settings
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
-  ${CMAKE_SOURCE_DIR}/src/gui/tiledmesh
+  ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
   ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
 

@@ -620,7 +620,7 @@ supported by all data providers.
 
 .. seealso:: :py:func:`fileVectorTileFilters`
 
-.. seealso:: :py:func:`fileTiledMeshFilters`
+.. seealso:: :py:func:`fileTiledSceneFilters`
 %End
 
     QString fileRasterFilters() const;
@@ -642,7 +642,7 @@ supported by all data providers.
 
 .. seealso:: :py:func:`fileVectorTileFilters`
 
-.. seealso:: :py:func:`fileTiledMeshFilters`
+.. seealso:: :py:func:`fileTiledSceneFilters`
 %End
 
     QString fileMeshFilters() const;
@@ -662,7 +662,7 @@ supported by all data providers.
 
 .. seealso:: :py:func:`fileVectorTileFilters`
 
-.. seealso:: :py:func:`fileTiledMeshFilters`
+.. seealso:: :py:func:`fileTiledSceneFilters`
 
 .. versionadded:: 3.6
 %End
@@ -694,7 +694,7 @@ supported by all data providers.
 
 .. seealso:: :py:func:`fileVectorTileFilters`
 
-.. seealso:: :py:func:`fileTiledMeshFilters`
+.. seealso:: :py:func:`fileTiledSceneFilters`
 
 .. versionadded:: 3.18
 %End
@@ -714,16 +714,16 @@ supported by all data providers.
 
 .. seealso:: :py:func:`filePointCloudFilters`
 
-.. seealso:: :py:func:`fileTiledMeshFilters`
+.. seealso:: :py:func:`fileTiledSceneFilters`
 
 .. versionadded:: 3.32
 %End
 
-    QString fileTiledMeshFilters() const;
+    QString fileTiledSceneFilters() const;
 %Docstring
-Returns a file filter string for supported tiled mesh files.
+Returns a file filter string for supported tiled scene files.
 
-Returns a string suitable for a QFileDialog of tiled mesh file formats
+Returns a string suitable for a QFileDialog of tiled scene file formats
 supported by all data providers.
 
 .. seealso:: :py:func:`fileMeshFilters`

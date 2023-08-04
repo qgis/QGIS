@@ -207,7 +207,7 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
     // Not available for these
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
       break;
@@ -245,7 +245,7 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
     // Not available for these
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
       break;
@@ -283,7 +283,7 @@ void QgsMapLayerStyleManagerWidget::saveStyle()
     // Not available for these
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
       break;
@@ -321,7 +321,7 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
     // Not available for these
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
       break;

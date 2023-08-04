@@ -227,7 +227,7 @@ QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) cons
             case Qgis::LayerType::Annotation:
             case Qgis::LayerType::PointCloud:
             case Qgis::LayerType::Group:
-            case Qgis::LayerType::TiledMesh:
+            case Qgis::LayerType::TiledScene:
               return mSublayer.description();
           }
           break;

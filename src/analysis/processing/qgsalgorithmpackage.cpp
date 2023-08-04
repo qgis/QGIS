@@ -395,9 +395,9 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         errored = true;
         break;
 
-      case Qgis::LayerType::TiledMesh:
+      case Qgis::LayerType::TiledScene:
         //not supported
-        feedback->pushDebugInfo( QObject::tr( "Packaging tiled mesh layers is not supported." ) );
+        feedback->pushDebugInfo( QObject::tr( "Packaging tiled scene layers is not supported." ) );
         errored = true;
         break;
     }

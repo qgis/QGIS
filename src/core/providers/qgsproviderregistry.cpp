@@ -39,7 +39,7 @@
 #include "qgsvtpkvectortiledataprovider.h"
 
 #include "qgscesiumtilesdataprovider.h"
-#include "qgstiledmeshprovidermetadata.h"
+#include "qgstiledsceneprovidermetadata.h"
 
 #ifdef HAVE_EPT
 #include "providers/ept/qgseptprovider.h"
@@ -230,8 +230,8 @@ void QgsProviderRegistry::init()
   registerUnusableUriHandler( new PdalUnusableUriHandlerInterface() );
 
   {
-    const QgsScopedRuntimeProfile profile( QObject::tr( "Create tiled mesh providers" ) );
-    QgsProviderMetadata *metadata = new QgsTiledMeshProviderMetadata();
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create tiled scene providers" ) );
+    QgsProviderMetadata *metadata = new QgsTiledSceneProviderMetadata();
     mProviders[ metadata->key() ] = metadata;
 
     metadata = new QgsCesiumTilesProviderMetadata();
@@ -399,7 +399,7 @@ void QgsProviderRegistry::rebuildFilterStrings()
   mMeshDatasetFileFilters.clear();
   mPointCloudFileFilters.clear();
   mVectorTileFileFilters.clear();
-  mTiledMeshFileFilters.clear();
+  mTiledSceneFileFilters.clear();
 
   QStringList pointCloudWildcards;
   QStringList pointCloudFilters;
@@ -407,8 +407,8 @@ void QgsProviderRegistry::rebuildFilterStrings()
   QStringList vectorTileWildcards;
   QStringList vectorTileFilters;
 
-  QStringList tiledMeshWildcards;
-  QStringList tiledMeshFilters;
+  QStringList tiledSceneWildcards;
+  QStringList tiledSceneFilters;
 
   for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
   {
@@ -483,21 +483,21 @@ void QgsProviderRegistry::rebuildFilterStrings()
       }
     }
 
-    // now get tiled mesh file filters, if any
-    const QString fileTiledMeshFilters = meta->filters( Qgis::FileFilterType::TiledMesh );
-    if ( !fileTiledMeshFilters.isEmpty() )
+    // now get tiled scene file filters, if any
+    const QString fileTiledSceneFilters = meta->filters( Qgis::FileFilterType::TiledScene );
+    if ( !fileTiledSceneFilters.isEmpty() )
     {
-      QgsDebugMsgLevel( "tiled mesh filters: " + fileTiledMeshFilters, 2 );
+      QgsDebugMsgLevel( "tiled scene filters: " + fileTiledSceneFilters, 2 );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      const QStringList filters = fileTiledMeshFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
+      const QStringList filters = fileTiledSceneFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
 #else
-      const QStringList filters = fileTiledMeshFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
+      const QStringList filters = fileTiledSceneFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
 #endif
       for ( const QString &filter : filters )
       {
-        tiledMeshFilters.append( filter );
-        tiledMeshWildcards.append( QgsFileUtils::wildcardsFromFilter( filter ).split( ' ' ) );
+        tiledSceneFilters.append( filter );
+        tiledSceneWildcards.append( QgsFileUtils::wildcardsFromFilter( filter ).split( ' ' ) );
       }
     }
   }
@@ -516,11 +516,11 @@ void QgsProviderRegistry::rebuildFilterStrings()
     mVectorTileFileFilters = vectorTileFilters.join( QLatin1String( ";;" ) );
   }
 
-  if ( !tiledMeshFilters.empty() )
+  if ( !tiledSceneFilters.empty() )
   {
-    tiledMeshFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( tiledMeshWildcards.join( ' ' ) ) );
-    tiledMeshFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
-    mTiledMeshFileFilters = tiledMeshFilters.join( QLatin1String( ";;" ) );
+    tiledSceneFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( tiledSceneWildcards.join( ' ' ) ) );
+    tiledSceneFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
+    mTiledSceneFileFilters = tiledSceneFilters.join( QLatin1String( ";;" ) );
   }
 }
 
@@ -986,9 +986,9 @@ QString QgsProviderRegistry::fileVectorTileFilters() const
   return mVectorTileFileFilters;
 }
 
-QString QgsProviderRegistry::fileTiledMeshFilters() const
+QString QgsProviderRegistry::fileTiledSceneFilters() const
 {
-  return mTiledMeshFileFilters;
+  return mTiledSceneFileFilters;
 }
 
 QString QgsProviderRegistry::databaseDrivers() const

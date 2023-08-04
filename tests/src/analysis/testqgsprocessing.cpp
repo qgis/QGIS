@@ -57,7 +57,7 @@
 #include "qgsjsonutils.h"
 #include "json.hpp"
 #include "qgsspatialindex.h"
-#include "qgstiledmeshlayer.h"
+#include "qgstiledscenelayer.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -988,8 +988,8 @@ void TestQgsProcessing::compatibleLayers()
 
   QgsAnnotationLayer *al = new QgsAnnotationLayer( "secondary annotation layer", QgsAnnotationLayer::LayerOptions( p.transformContext() ) );
 
-  QgsTiledMeshLayer *tml = new QgsTiledMeshLayer( "tiled_mesh_source", QStringLiteral( "tiled mesh" ), QStringLiteral( "test_tiled_mesh_provider" ) );
-  QgsTiledMeshLayer *tml2 = new QgsTiledMeshLayer( "tiled_mesh_source2", QStringLiteral( "A tiled mesh" ), QStringLiteral( "test_tiled_mesh_provider" ) );
+  QgsTiledSceneLayer *tml = new QgsTiledSceneLayer( "tiled_mesh_source", QStringLiteral( "tiled scene" ), QStringLiteral( "test_tiled_mesh_provider" ) );
+  QgsTiledSceneLayer *tml2 = new QgsTiledSceneLayer( "tiled_mesh_source2", QStringLiteral( "A tiled scene" ), QStringLiteral( "test_tiled_mesh_provider" ) );
 
 #ifdef HAVE_EPT
   p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 << pl1 << pl2 << pc1 << pc2 << al << tml << tml2 );
@@ -1090,20 +1090,20 @@ void TestQgsProcessing::compatibleLayers()
     lIds << pcl->name();
   QCOMPARE( lIds, QStringList() << "secondary annotation layer" << QObject::tr( "Annotations" ) );
 
-  // compatibleTiledMeshLayers
-  QVERIFY( QgsProcessingUtils::compatibleTiledMeshLayers( nullptr ).isEmpty() );
+  // compatibleTiledSceneLayers
+  QVERIFY( QgsProcessingUtils::compatibleTiledSceneLayers( nullptr ).isEmpty() );
 
   // sorted
   lIds.clear();
-  for ( QgsTiledMeshLayer *l : QgsProcessingUtils::compatibleTiledMeshLayers( &p ) )
+  for ( QgsTiledSceneLayer *l : QgsProcessingUtils::compatibleTiledSceneLayers( &p ) )
     lIds << l->name();
-  QCOMPARE( lIds, QStringList() << QStringLiteral( "A tiled mesh" ) << QStringLiteral( "tiled mesh" ) );
+  QCOMPARE( lIds, QStringList() << QStringLiteral( "A tiled scene" ) << QStringLiteral( "tiled scene" ) );
 
   // unsorted
   lIds.clear();
-  for ( QgsTiledMeshLayer *pcl : QgsProcessingUtils::compatibleTiledMeshLayers( &p, false ) )
+  for ( QgsTiledSceneLayer *pcl : QgsProcessingUtils::compatibleTiledSceneLayers( &p, false ) )
     lIds << pcl->name();
-  QCOMPARE( lIds, QStringList() << QStringLiteral( "A tiled mesh" ) << QStringLiteral( "tiled mesh" ) );
+  QCOMPARE( lIds, QStringList() << QStringLiteral( "A tiled scene" ) << QStringLiteral( "tiled scene" ) );
 
   // point only
   lIds.clear();
@@ -1149,9 +1149,9 @@ void TestQgsProcessing::compatibleLayers()
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p ) )
     lIds << l->name();
 #ifdef HAVE_EPT
-  QCOMPARE( lIds, QStringList() << QStringLiteral( "A tiled mesh" ) << QObject::tr( "Annotations" ) << "ar2" << "mA" << "MX" << "pA" << "pcA" << "PCX" << "PX" << "R1" << "secondary annotation layer" << QStringLiteral( "tiled mesh" ) << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
+  QCOMPARE( lIds, QStringList() << QStringLiteral( "A tiled scene" ) << QObject::tr( "Annotations" ) << "ar2" << "mA" << "MX" << "pA" << "pcA" << "PCX" << "PX" << "R1" << "secondary annotation layer" << QStringLiteral( "tiled scene" ) << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
 #else
-  QCOMPARE( lIds, QStringList() << QStringLiteral( "A tiled mesh" ) << QObject::tr( "Annotations" ) << "ar2" << "mA" << "MX" << "pA" << "PX" << "R1" << "secondary annotation layer" << QStringLiteral( "tiled mesh" ) << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
+  QCOMPARE( lIds, QStringList() << QStringLiteral( "A tiled scene" ) << QObject::tr( "Annotations" ) << "ar2" << "mA" << "MX" << "pA" << "PX" << "R1" << "secondary annotation layer" << QStringLiteral( "tiled scene" ) << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
 #endif
 
   // unsorted
@@ -1159,9 +1159,9 @@ void TestQgsProcessing::compatibleLayers()
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p, false ) )
     lIds << l->name();
 #ifdef HAVE_EPT
-  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PCX" << "pcA" << "secondary annotation layer" << QObject::tr( "Annotations" ) << QStringLiteral( "A tiled mesh" ) << QStringLiteral( "tiled mesh" ) << "PX" << "pA" );
+  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PCX" << "pcA" << "secondary annotation layer" << QObject::tr( "Annotations" ) << QStringLiteral( "A tiled scene" ) << QStringLiteral( "tiled scene" ) << "PX" << "pA" );
 #else
-  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "secondary annotation layer" << QObject::tr( "Annotations" ) << QStringLiteral( "A tiled mesh" ) << QStringLiteral( "tiled mesh" ) << "PX" << "pA" );
+  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "secondary annotation layer" << QObject::tr( "Annotations" ) << QStringLiteral( "A tiled scene" ) << QStringLiteral( "tiled scene" ) << "PX" << "pA" );
 #endif
 }
 

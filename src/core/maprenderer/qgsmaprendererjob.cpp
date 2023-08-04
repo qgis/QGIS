@@ -35,10 +35,7 @@
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayer.h"
 #include "qgsvectorlayerutils.h"
-#include "qgssymbollayerutils.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsmaplayerstyle.h"
@@ -258,7 +255,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
       case Qgis::LayerType::Mesh:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
-      case Qgis::LayerType::TiledMesh:
+      case Qgis::LayerType::TiledScene:
         break;
     }
 

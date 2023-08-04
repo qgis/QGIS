@@ -1269,7 +1269,7 @@ QString QgsMdalProviderMetadata::filters( Qgis::FileFilterType type )
     case Qgis::FileFilterType::Vector:
     case Qgis::FileFilterType::PointCloud:
     case Qgis::FileFilterType::VectorTile:
-    case Qgis::FileFilterType::TiledMesh:
+    case Qgis::FileFilterType::TiledScene:
       return QString();
   }
   return QString();

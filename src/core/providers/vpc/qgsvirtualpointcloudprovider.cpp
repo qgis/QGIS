@@ -576,7 +576,7 @@ QString QgsVirtualPointCloudProviderMetadata::filters( Qgis::FileFilterType type
     case Qgis::FileFilterType::Mesh:
     case Qgis::FileFilterType::MeshDataset:
     case Qgis::FileFilterType::VectorTile:
-    case Qgis::FileFilterType::TiledMesh:
+    case Qgis::FileFilterType::TiledScene:
       return QString();
 
     case Qgis::FileFilterType::PointCloud:

@@ -91,9 +91,9 @@ QIcon QgsIconUtils::iconPointCloud()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointCloudLayer.svg" ) );
 }
 
-QIcon QgsIconUtils::iconTiledMesh()
+QIcon QgsIconUtils::iconTiledScene()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTiledMeshLayer.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTiledSceneLayer.svg" ) );
 }
 
 QIcon QgsIconUtils::iconDefaultLayer()
@@ -112,7 +112,7 @@ QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
     {
       return QgsIconUtils::iconForLayerType( layer->type() );
     }
@@ -169,8 +169,8 @@ QIcon QgsIconUtils::iconForLayerType( Qgis::LayerType type )
     case Qgis::LayerType::PointCloud:
       return QgsIconUtils::iconPointCloud();
 
-    case Qgis::LayerType::TiledMesh:
-      return QgsIconUtils::iconTiledMesh();
+    case Qgis::LayerType::TiledScene:
+      return QgsIconUtils::iconTiledScene();
 
     case Qgis::LayerType::Vector:
       return QgsIconUtils::iconGeometryCollection();

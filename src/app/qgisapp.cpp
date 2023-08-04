@@ -123,7 +123,7 @@
 #include "vector/qgsvectorelevationpropertieswidget.h"
 #include "mesh/qgsmeshelevationpropertieswidget.h"
 #include "elevation/qgselevationprofilewidget.h"
-#include "qgstiledmeshlayer.h"
+#include "qgstiledscenelayer.h"
 
 #include "layers/qgsapplayerhandling.h"
 #include "qgsmaplayerstylemanager.h"
@@ -391,7 +391,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgssubsetstringeditorinterface.h"
 #include "qgstaskmanager.h"
 #include "qgstaskmanagerwidget.h"
-#include "qgstiledmeshlayer.h"
+#include "qgstiledscenelayer.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsundowidget.h"
 #include "qgsuserinputwidget.h"
@@ -403,7 +403,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilelayerproperties.h"
 #include "qgspointcloudlayerproperties.h"
-#include "qgstiledmeshlayerproperties.h"
+#include "qgstiledscenelayerproperties.h"
 #include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsmaplayeractionregistry.h"
@@ -2440,9 +2440,9 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
       if ( QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsPointCloudLayer>( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
-    else if ( u.layerType == QLatin1String( "tiled-mesh" ) )
+    else if ( u.layerType == QLatin1String( "tiled-scene" ) )
     {
-      if ( QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsTiledMeshLayer>( uri, u.name, u.providerKey, addToLegend ) )
+      if ( QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsTiledSceneLayer>( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
@@ -2655,8 +2655,8 @@ void QgisApp::dataSourceManager( const QString &pageName )
           QgsAppLayerHandling::addLayer< QgsPointCloudLayer >( uri, baseName, providerKey );
           break;
 
-        case Qgis::LayerType::TiledMesh:
-          QgsAppLayerHandling::addLayer< QgsTiledMeshLayer >( uri, baseName, providerKey );
+        case Qgis::LayerType::TiledScene:
+          QgsAppLayerHandling::addLayer< QgsTiledSceneLayer >( uri, baseName, providerKey );
           break;
 
         case Qgis::LayerType::Plugin:
@@ -5645,7 +5645,7 @@ L *QgisApp::addLayer( const QString &uri, const QString &baseName, const QString
 }
 template QgsPointCloudLayer *QgisApp::addLayer<QgsPointCloudLayer>( const QString &uri, const QString &baseName, const QString &provider );
 template QgsVectorTileLayer *QgisApp::addLayer<QgsVectorTileLayer>( const QString &uri, const QString &baseName, const QString &provider );
-template QgsTiledMeshLayer *QgisApp::addLayer<QgsTiledMeshLayer>( const QString &uri, const QString &baseName, const QString &provider );
+template QgsTiledSceneLayer *QgisApp::addLayer<QgsTiledSceneLayer>( const QString &uri, const QString &baseName, const QString &provider );
 template QgsPluginLayer *QgisApp::addLayer<QgsPluginLayer>( const QString &uri, const QString &baseName, const QString &provider );
 
 
@@ -8206,7 +8206,7 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
       return QString();
   }
   return QString();
@@ -8316,10 +8316,10 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
                                     visibleMessageBar() ).saveStyleToFile();
       break;
 
-    case Qgis::LayerType::TiledMesh:
-      QgsTiledMeshLayerProperties( qobject_cast<QgsTiledMeshLayer *>( layer ),
-                                   mMapCanvas,
-                                   visibleMessageBar() ).saveStyleToFile();
+    case Qgis::LayerType::TiledScene:
+      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( layer ),
+                                    mMapCanvas,
+                                    visibleMessageBar() ).saveStyleToFile();
       break;
 
     // Not available for these
@@ -9950,7 +9950,7 @@ void QgisApp::deselectActiveLayer()
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
     {
       visibleMessageBar()->pushMessage(
         tr( "No active vector layer" ),
@@ -10114,7 +10114,7 @@ void QgisApp::copySelectionToClipboard( QgsMapLayer *layerContainingSelection )
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
       return; // not supported
   }
 }
@@ -10741,7 +10741,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
       break;
   }
   return false;
@@ -11074,7 +11074,7 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
       break;
   }
 }
@@ -11142,7 +11142,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
       break;
   }
 }
@@ -11362,7 +11362,7 @@ void QgisApp::updateLayerModifiedActions()
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
-      case Qgis::LayerType::TiledMesh:
+      case Qgis::LayerType::TiledScene:
         break;
     }
   }
@@ -11838,7 +11838,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
       case Qgis::LayerType::VectorTile:
       case Qgis::LayerType::Mesh:
       case Qgis::LayerType::Annotation:
-      case Qgis::LayerType::TiledMesh:
+      case Qgis::LayerType::TiledScene:
       {
         dupLayer = selectedLyr->clone();
         break;
@@ -14703,7 +14703,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
-      case Qgis::LayerType::TiledMesh:
+      case Qgis::LayerType::TiledScene:
         break;   // not supported
     }
   }
@@ -14837,7 +14837,7 @@ bool QgisApp::selectedLayersHaveSelection()
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
-      case Qgis::LayerType::TiledMesh:
+      case Qgis::LayerType::TiledScene:
         return false;
     }
   }
@@ -14869,7 +14869,7 @@ bool QgisApp::selectedLayersHaveSelection()
       case Qgis::LayerType::Mesh:
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
-      case Qgis::LayerType::TiledMesh:
+      case Qgis::LayerType::TiledScene:
       case Qgis::LayerType::Group:
         break;
     }
@@ -15687,7 +15687,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
     }
 
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
     {
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
@@ -16542,22 +16542,22 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
-    case Qgis::LayerType::TiledMesh:
+    case Qgis::LayerType::TiledScene:
     {
-      QgsTiledMeshLayerProperties tiledMeshLayerPropertiesDialog( qobject_cast<QgsTiledMeshLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
+      QgsTiledSceneLayerProperties TiledSceneLayerPropertiesDialog( qobject_cast<QgsTiledSceneLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
 
       for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
       {
-        tiledMeshLayerPropertiesDialog.addPropertiesPageFactory( factory );
+        TiledSceneLayerPropertiesDialog.addPropertiesPageFactory( factory );
       }
 
       if ( !page.isEmpty() )
-        tiledMeshLayerPropertiesDialog.setCurrentPage( page );
+        TiledSceneLayerPropertiesDialog.setCurrentPage( page );
       else
-        tiledMeshLayerPropertiesDialog.restoreLastPage();
+        TiledSceneLayerPropertiesDialog.restoreLastPage();
 
       mMapStyleWidget->blockUpdates( true );
-      if ( tiledMeshLayerPropertiesDialog.exec() )
+      if ( TiledSceneLayerPropertiesDialog.exec() )
       {
         activateDeactivateLayerRelatedActions( mapLayer );
         mMapStyleWidget->updateCurrentWidgetLayer();

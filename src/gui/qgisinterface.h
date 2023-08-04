@@ -60,7 +60,7 @@ class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsVectorTileLayer;
 class QgsPointCloudLayer;
-class QgsTiledMeshLayer;
+class QgsTiledSceneLayer;
 class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
 class QgsStatusBar;
@@ -878,13 +878,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 
     /**
-     * Adds a tiled mesh layer to the current project, using the specified data provider and source \a url.
+     * Adds a tiled scene layer to the current project, using the specified data provider and source \a url.
      *
      * The \a baseName parameter will be used as the layer name (and shown in the map legend).
      *
      * \since QGIS 3.34
      */
-    virtual QgsTiledMeshLayer *addTiledMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
+    virtual QgsTiledSceneLayer *addTiledSceneLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 
     //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;

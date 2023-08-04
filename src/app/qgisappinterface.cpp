@@ -171,9 +171,9 @@ QgsPointCloudLayer *QgisAppInterface::addPointCloudLayer( const QString &url, co
   return qgis->addLayer<QgsPointCloudLayer>( url, baseName, providerKey );
 }
 
-QgsTiledMeshLayer *QgisAppInterface::addTiledMeshLayer( const QString &url, const QString &baseName, const QString &providerKey )
+QgsTiledSceneLayer *QgisAppInterface::addTiledSceneLayer( const QString &url, const QString &baseName, const QString &providerKey )
 {
-  return qgis->addLayer<QgsTiledMeshLayer>( url, baseName, providerKey );
+  return qgis->addLayer<QgsTiledSceneLayer>( url, baseName, providerKey );
 }
 
 bool QgisAppInterface::addProject( const QString &projectName )
