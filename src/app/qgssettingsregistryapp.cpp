@@ -20,6 +20,7 @@
 #include "qgspluginmanager.h"
 #include "qgssettingsentryimpl.h"
 #include "qgsgui.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssettingseditorwidgetregistry.h"
 #include "qgssettingsenumflageditorwidgetwrapper.h"
 #include "qgsimagewarper.h"
@@ -27,7 +28,10 @@
 #include "qgsgcptransformer.h"
 #endif
 
+template class QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>;
 template class QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>;
+
+template class QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>;
 template class QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>;
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
