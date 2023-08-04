@@ -76,22 +76,22 @@ Returns the list of tile IDs which match the given ``request``.
 May return an empty list if no data satisfies the request.
 %End
 
-    bool tileCanRefine( const QString &id ) const;
+    Qgis::TileChildrenAvailability childAvailability( const QString &id ) const;
 %Docstring
-Returns ``True`` if the tile with the given ``id`` can be further refined.
+Returns the availability for a tile's children.
 
-.. seealso:: :py:func:`refineAsync`
+.. seealso:: :py:func:`fetchChildren`
 %End
 
-    bool refineAsync( const QString &id, QgsFeedback *feedback = 0 );
+    bool fetchHierarchy( const QString &id, QgsFeedback *feedback = 0 );
 %Docstring
-Refines the tile with the given ``id`` by fetching any sub datasets attached to the tile.
+Populates the tile with the given ``id`` by fetching any sub datasets attached to the tile.
 
-Blocks while the tile refinement is in progress.
+Blocks while the child fetching is in progress.
 
-Returns ``True`` if the refinement was successful.
+Returns ``True`` if the population was successful.
 
-.. seealso:: :py:func:`tileCanRefine`
+.. seealso:: :py:func:`childAvailability`
 %End
 
     QByteArray retrieveContent( const QString &uri, QgsFeedback *feedback = 0 );
