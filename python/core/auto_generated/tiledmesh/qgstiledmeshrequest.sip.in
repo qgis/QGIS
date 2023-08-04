@@ -26,6 +26,20 @@ Tiled mesh data request.
 
     QgsTiledMeshRequest();
 
+    void setFlags( Qgis::TiledMeshRequestFlags flags );
+%Docstring
+Sets ``flags`` that affect how tiles will be fetched.
+
+.. seealso:: :py:func:`flags`
+%End
+
+    Qgis::TiledMeshRequestFlags flags() const;
+%Docstring
+Returns the flags which affect how tiles are fetched.
+
+.. seealso:: :py:func:`setFlags`
+%End
+
     QgsOrientedBox3D filterBox() const;
 %Docstring
 Returns the box from which data will be taken, in the layer's CRS.

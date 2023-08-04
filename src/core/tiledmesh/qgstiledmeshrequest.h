@@ -39,6 +39,20 @@ class CORE_EXPORT QgsTiledMeshRequest
     QgsTiledMeshRequest();
 
     /**
+     * Sets \a flags that affect how tiles will be fetched.
+     *
+     * \see flags()
+     */
+    void setFlags( Qgis::TiledMeshRequestFlags flags ) { mFlags = flags; }
+
+    /**
+     * Returns the flags which affect how tiles are fetched.
+     *
+     * \see setFlags()
+     */
+    Qgis::TiledMeshRequestFlags flags() const { return mFlags; }
+
+    /**
     * Returns the box from which data will be taken, in the layer's CRS.
     *
     * If the returned box is null, then no filter box is set.
@@ -111,6 +125,7 @@ class CORE_EXPORT QgsTiledMeshRequest
 
   private:
 
+    Qgis::TiledMeshRequestFlags mFlags;
     QgsOrientedBox3D mFilterBox;
     QgsFeedback *mFeedback = nullptr;
     double mRequiredGeometricError = 0;

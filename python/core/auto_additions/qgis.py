@@ -3789,3 +3789,10 @@ Qgis.TileChildrenAvailability.NeedFetching.__doc__ = "Tile has children, but the
 Qgis.TileChildrenAvailability.__doc__ = "Possible availability states for a tile's children.\n\n.. versionadded:: 3.34\n\n" + '* ``NoChildren``: ' + Qgis.TileChildrenAvailability.NoChildren.__doc__ + '\n' + '* ``Available``: ' + Qgis.TileChildrenAvailability.Available.__doc__ + '\n' + '* ``NeedFetching``: ' + Qgis.TileChildrenAvailability.NeedFetching.__doc__
 # --
 Qgis.TileChildrenAvailability.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.TiledMeshRequestFlag.NoHierarchyFetch.__doc__ = "Do not allow hierarchy fetching when hierarchy is not currently available. Avoids network requests, but may result in an incomplete tile set. If set, then callers will need to manually perform hierarchy fetches as required."
+Qgis.TiledMeshRequestFlag.__doc__ = "Flags which control how tiled mesh requests behave.\n\n.. versionadded:: 3.34\n\n" + '* ``NoHierarchyFetch``: ' + Qgis.TiledMeshRequestFlag.NoHierarchyFetch.__doc__
+# --
+Qgis.TiledMeshRequestFlag.baseClass = Qgis
+Qgis.TiledMeshRequestFlags.baseClass = Qgis
+TiledMeshRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module

@@ -3831,6 +3831,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( TileChildrenAvailability )
 
     /**
+     * Flags which control how tiled mesh requests behave.
+     *
+     * \since QGIS 3.34
+     */
+    enum class TiledMeshRequestFlag : int
+    {
+      NoHierarchyFetch = 1 << 0,  //!< Do not allow hierarchy fetching when hierarchy is not currently available. Avoids network requests, but may result in an incomplete tile set. If set, then callers will need to manually perform hierarchy fetches as required.
+    };
+    Q_ENUM( TiledMeshRequestFlag )
+
+    /**
+     * Flags which control how tiled mesh requests behave.
+     *
+     * \since QGIS 3.34
+     */
+    Q_DECLARE_FLAGS( TiledMeshRequestFlags, TiledMeshRequestFlag )
+    Q_FLAG( TiledMeshRequestFlags )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -3994,6 +4013,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledMeshProviderCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledMeshRequestFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
