@@ -77,6 +77,11 @@ jobs:
       runners_outcome: ${{ steps.runners.outcome }}
 
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+
       - name: Checkout
         uses: actions/checkout@v3
 
