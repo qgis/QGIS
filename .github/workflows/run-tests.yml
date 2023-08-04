@@ -327,10 +327,13 @@ jobs:
 
     steps:
 
-      - name: Print disk space
-        run: |
-          echo "DF -H"
-          sudo df -h
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          large-packages: true
+          docker-images: false
+          swap-storage: true
 
       - name: Checkout
         uses: actions/checkout@v3
