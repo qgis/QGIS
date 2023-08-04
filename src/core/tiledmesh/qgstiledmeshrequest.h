@@ -95,11 +95,26 @@ class CORE_EXPORT QgsTiledMeshRequest
      */
     QgsFeedback *feedback() const;
 
+    /**
+     * Returns the parent tile ID, if filtering is limited to children of a specific tile.
+     *
+     * \see setParentTileId()
+     */
+    QString parentTileId() const { return mParentTileId; }
+
+    /**
+     * Sets the parent tile \a id, if filtering is to be limited to children of a specific tile.
+     *
+     * \see parentTileId()
+     */
+    void setParentTileId( const QString &id ) { mParentTileId = id; }
+
   private:
 
     QgsOrientedBox3D mFilterBox;
     QgsFeedback *mFeedback = nullptr;
     double mRequiredGeometricError = 0;
+    QString mParentTileId;
 };
 
 

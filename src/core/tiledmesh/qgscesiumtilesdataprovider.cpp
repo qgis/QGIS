@@ -66,7 +66,7 @@ class QgsCesiumTiledMeshIndex final : public QgsAbstractTiledMeshIndex
     QgsTiledMeshTile getTile( const QString &id ) final;
     QString parentTileId( const QString &id ) const final;
     QStringList childTileIds( const QString &id ) const final;
-    QStringList getTiles( const QgsTiledMeshRequest &request, const QString &parentId = QString() ) final;
+    QStringList getTiles( const QgsTiledMeshRequest &request ) final;
     bool tileCanRefine( const QString &id ) const final;
     bool refineAsync( const QString &id, QgsFeedback *feedback = nullptr ) final;
 
@@ -311,7 +311,7 @@ QStringList QgsCesiumTiledMeshIndex::childTileIds( const QString &id ) const
   return QStringList();
 }
 
-QStringList QgsCesiumTiledMeshIndex::getTiles( const QgsTiledMeshRequest &request, const QString &parentId )
+QStringList QgsCesiumTiledMeshIndex::getTiles( const QgsTiledMeshRequest &request )
 {
   QStringList results;
 
@@ -361,14 +361,14 @@ QStringList QgsCesiumTiledMeshIndex::getTiles( const QgsTiledMeshRequest &reques
   };
 
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
-  if ( parentId.isEmpty() )
+  if ( request.parentTileId().isEmpty() )
   {
     if ( mRootNode )
       traverseNode( mRootNode.get() );
   }
   else
   {
-    auto it = mNodeMap.constFind( parentId );
+    auto it = mNodeMap.constFind( request.parentTileId() );
     if ( it != mNodeMap.constEnd() )
     {
       traverseNode( it.value() );

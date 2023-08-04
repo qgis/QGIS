@@ -110,12 +110,12 @@ QStringList QgsTiledMeshIndex::childTileIds( const QString &id ) const
   return mIndex->childTileIds( id );
 }
 
-QStringList QgsTiledMeshIndex::getTiles( const QgsTiledMeshRequest &request, const QString &parentId )
+QStringList QgsTiledMeshIndex::getTiles( const QgsTiledMeshRequest &request )
 {
   if ( !mIndex )
     return {};
 
-  return mIndex->getTiles( request, parentId );
+  return mIndex->getTiles( request );
 }
 
 bool QgsTiledMeshIndex::tileCanRefine( const QString &id ) const

@@ -28,4 +28,3 @@ QgsFeedback *QgsTiledMeshRequest::feedback() const
 {
   return mFeedback;
 }
-

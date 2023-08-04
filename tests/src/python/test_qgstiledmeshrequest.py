@@ -48,6 +48,10 @@ class TestQgsTiledMeshRequest(QgisTestCase):
             QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 2, 0, 0, 0, 3])
         )
 
+        self.assertFalse(request.parentTileId())
+        request.setParentTileId('parent')
+        self.assertEqual(request.parentTileId(), 'parent')
+
 
 if __name__ == '__main__':
     unittest.main()
