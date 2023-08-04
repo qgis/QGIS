@@ -67,8 +67,8 @@ class QgsCesiumTiledMeshIndex final : public QgsAbstractTiledMeshIndex
     QString parentTileId( const QString &id ) const final;
     QStringList childTileIds( const QString &id ) const final;
     QStringList getTiles( const QgsTiledMeshRequest &request ) final;
-    bool tileCanRefine( const QString &id ) const final;
-    bool refineAsync( const QString &id, QgsFeedback *feedback = nullptr ) final;
+    Qgis::TileChildrenAvailability childAvailability( const QString &id ) const final;
+    bool fetchHierarchy( const QString &id, QgsFeedback *feedback = nullptr ) final;
 
   protected:
 
@@ -378,23 +378,26 @@ QStringList QgsCesiumTiledMeshIndex::getTiles( const QgsTiledMeshRequest &reques
   return results;
 }
 
-bool QgsCesiumTiledMeshIndex::tileCanRefine( const QString &id ) const
+Qgis::TileChildrenAvailability QgsCesiumTiledMeshIndex::childAvailability( const QString &id ) const
 {
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
   auto it = mNodeMap.constFind( id );
   if ( it == mNodeMap.constEnd() )
-    return false;
+    return Qgis::TileChildrenAvailability::NoChildren;
 
   if ( !it.value()->children().isEmpty() )
-    return false; // already refined
+    return Qgis::TileChildrenAvailability::Available;
 
   const QString contentUri = it.value()->tile()->resources().value( QStringLiteral( "content" ) ).toString();
   locker.unlock();
 
-  return contentUri.endsWith( QLatin1String( ".json" ), Qt::CaseInsensitive );
+  if ( contentUri.endsWith( QLatin1String( ".json" ), Qt::CaseInsensitive ) )
+    return Qgis::TileChildrenAvailability::NeedFetching;
+
+  return Qgis::TileChildrenAvailability::NoChildren;
 }
 
-bool QgsCesiumTiledMeshIndex::refineAsync( const QString &id, QgsFeedback *feedback )
+bool QgsCesiumTiledMeshIndex::fetchHierarchy( const QString &id, QgsFeedback *feedback )
 {
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
   auto it = mNodeMap.constFind( id );

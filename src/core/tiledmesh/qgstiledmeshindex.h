@@ -94,22 +94,22 @@ class CORE_EXPORT QgsAbstractTiledMeshIndex
     QByteArray retrieveContent( const QString &uri, QgsFeedback *feedback = nullptr );
 
     /**
-     * Returns TRUE if the tile with the given \a id can be further refined.
+     * Returns the availability for a tile's children.
      *
-     * \see refineAsync()
+     * \see fetchChildren()
      */
-    virtual bool tileCanRefine( const QString &id ) const = 0;
+    virtual Qgis::TileChildrenAvailability childAvailability( const QString &id ) const = 0;
 
     /**
-     * Refines the tile with the given \a id by fetching any sub datasets attached to the tile.
+     * Populates the tile with the given \a id by fetching any sub datasets attached to the tile.
      *
-     * Blocks while the tile refinement is in progress.
+     * Blocks while the child fetching is in progress.
      *
-     * Returns TRUE if the refinement was successful.
+     * Returns TRUE if the population was successful.
      *
-     * \see tileCanRefine()
+     * \see childAvailability()
      */
-    virtual bool refineAsync( const QString &id, QgsFeedback *feedback = nullptr ) = 0;
+    virtual bool fetchHierarchy( const QString &id, QgsFeedback *feedback = nullptr ) = 0;
 
   protected:
 
@@ -200,22 +200,22 @@ class CORE_EXPORT QgsTiledMeshIndex
     QStringList getTiles( const QgsTiledMeshRequest &request );
 
     /**
-     * Returns TRUE if the tile with the given \a id can be further refined.
+     * Returns the availability for a tile's children.
      *
-     * \see refineAsync()
+     * \see fetchChildren()
      */
-    bool tileCanRefine( const QString &id ) const;
+    Qgis::TileChildrenAvailability childAvailability( const QString &id ) const;
 
     /**
-     * Refines the tile with the given \a id by fetching any sub datasets attached to the tile.
+     * Populates the tile with the given \a id by fetching any sub datasets attached to the tile.
      *
-     * Blocks while the tile refinement is in progress.
+     * Blocks while the child fetching is in progress.
      *
-     * Returns TRUE if the refinement was successful.
+     * Returns TRUE if the population was successful.
      *
-     * \see tileCanRefine()
+     * \see childAvailability()
      */
-    bool refineAsync( const QString &id, QgsFeedback *feedback = nullptr );
+    bool fetchHierarchy( const QString &id, QgsFeedback *feedback = nullptr );
 
     /**
      * Retrieves index content for the specified \a uri.

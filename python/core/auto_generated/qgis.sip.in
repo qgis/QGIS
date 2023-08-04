@@ -2181,6 +2181,13 @@ The development version
       Additive,
     };
 
+    enum class TileChildrenAvailability
+    {
+      NoChildren,
+      Available,
+      NeedFetching,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

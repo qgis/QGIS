@@ -3818,6 +3818,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( TileRefinementProcess )
 
     /**
+     * Possible availability states for a tile's children.
+     *
+     * \since QGIS 3.34
+     */
+    enum class TileChildrenAvailability
+    {
+      NoChildren, //!< Tile is known to have no children
+      Available, //!< Tile children are already available
+      NeedFetching, //!< Tile has children, but they are not yet available and must be fetched
+    };
+    Q_ENUM( TileChildrenAvailability )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

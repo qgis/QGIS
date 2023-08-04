@@ -3782,3 +3782,10 @@ Qgis.TileRefinementProcess.Additive.__doc__ = "When tile is refined its content 
 Qgis.TileRefinementProcess.__doc__ = "Tiled mesh tile refinement processes.\n\nRefinement determines the process by which a lower resolution parent tile\nrenders when its higher resolution children are selected to be rendered.\n\n.. versionadded:: 3.34\n\n" + '* ``Replacement``: ' + Qgis.TileRefinementProcess.Replacement.__doc__ + '\n' + '* ``Additive``: ' + Qgis.TileRefinementProcess.Additive.__doc__
 # --
 Qgis.TileRefinementProcess.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.TileChildrenAvailability.NoChildren.__doc__ = "Tile is known to have no children"
+Qgis.TileChildrenAvailability.Available.__doc__ = "Tile children are already available"
+Qgis.TileChildrenAvailability.NeedFetching.__doc__ = "Tile has children, but they are not yet available and must be fetched"
+Qgis.TileChildrenAvailability.__doc__ = "Possible availability states for a tile's children.\n\n.. versionadded:: 3.34\n\n" + '* ``NoChildren``: ' + Qgis.TileChildrenAvailability.NoChildren.__doc__ + '\n' + '* ``Available``: ' + Qgis.TileChildrenAvailability.Available.__doc__ + '\n' + '* ``NeedFetching``: ' + Qgis.TileChildrenAvailability.NeedFetching.__doc__
+# --
+Qgis.TileChildrenAvailability.baseClass = Qgis

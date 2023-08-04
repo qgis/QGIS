@@ -118,20 +118,20 @@ QStringList QgsTiledMeshIndex::getTiles( const QgsTiledMeshRequest &request )
   return mIndex->getTiles( request );
 }
 
-bool QgsTiledMeshIndex::tileCanRefine( const QString &id ) const
+Qgis::TileChildrenAvailability QgsTiledMeshIndex::childAvailability( const QString &id ) const
 {
   if ( !mIndex )
-    return false;
+    return Qgis::TileChildrenAvailability::NoChildren;
 
-  return mIndex->tileCanRefine( id );
+  return mIndex->childAvailability( id );
 }
 
-bool QgsTiledMeshIndex::refineAsync( const QString &id, QgsFeedback *feedback )
+bool QgsTiledMeshIndex::fetchHierarchy( const QString &id, QgsFeedback *feedback )
 {
   if ( !mIndex )
     return {};
 
-  return mIndex->refineAsync( id, feedback );
+  return mIndex->fetchHierarchy( id, feedback );
 }
 
 QByteArray QgsTiledMeshIndex::retrieveContent( const QString &uri, QgsFeedback *feedback )
