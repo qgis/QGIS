@@ -20,6 +20,7 @@
 #include <gdal_alg.h>
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
+#include "qgspointxy.h"
 
 /**
  * \ingroup analysis
