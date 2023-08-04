@@ -69,11 +69,9 @@ Returns a list of the tile IDs of any children for the tile with matching ``id``
 .. seealso:: :py:func:`parentTileId`
 %End
 
-    QStringList getTiles( const QgsTiledMeshRequest &request, const QString &parentId = QString() );
+    QStringList getTiles( const QgsTiledMeshRequest &request );
 %Docstring
 Returns the list of tile IDs which match the given ``request``.
-
-An optional ``parentID`` can be used to limit the results to children of a specific tile.
 
 May return an empty list if no data satisfies the request.
 %End

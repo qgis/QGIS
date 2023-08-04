@@ -80,11 +80,9 @@ class CORE_EXPORT QgsAbstractTiledMeshIndex
     /**
      * Returns the tile IDs which match the given \a request.
      *
-     * An optional \a parentID can be used to limit the results to children of a specific tile.
-     *
      * May return an empty list if no data satisfies the request.
      */
-    virtual QStringList getTiles( const QgsTiledMeshRequest &request, const QString &parentId = QString() ) = 0;
+    virtual QStringList getTiles( const QgsTiledMeshRequest &request ) = 0;
 
     /**
      * Retrieves index content for the specified \a uri.
@@ -197,11 +195,9 @@ class CORE_EXPORT QgsTiledMeshIndex
     /**
      * Returns the list of tile IDs which match the given \a request.
      *
-     * An optional \a parentID can be used to limit the results to children of a specific tile.
-     *
      * May return an empty list if no data satisfies the request.
      */
-    QStringList getTiles( const QgsTiledMeshRequest &request, const QString &parentId = QString() );
+    QStringList getTiles( const QgsTiledMeshRequest &request );
 
     /**
      * Returns TRUE if the tile with the given \a id can be further refined.

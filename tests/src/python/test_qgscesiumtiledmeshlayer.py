@@ -956,7 +956,8 @@ class TestQgsCesiumTiledMeshLayer(unittest.TestCase):
                                QgsOrientedBox3D([-5061003.9912, 2571496.4091, -2824930.1882], [-21.0400, -41.2528, 0.0000, -7.3541, 3.7508, -4.1454, -14.9480, 7.6239, 33.4168]))
 
             # restrict request to one parent tile
-            tile_ids = index.getTiles(request, parent_id)
+            request.setParentTileId(parent_id)
+            tile_ids = index.getTiles(request)
             self.assertEqual(len(tile_ids), 1)
             tile = index.getTile(tile_ids[0])
             self.assertEqual(tile.resources(),
