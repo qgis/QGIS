@@ -128,7 +128,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
   private:
     //! Resets the item tooltip to reflect current map id
     void updateToolTip();
-    // load 3DMapSettings that are only stored in the project
+    //! load 3DMapSettings that are only stored in the project
     void loadProjectSettings();
 
   private:
