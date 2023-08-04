@@ -40,6 +40,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <nlohmann/json.hpp>
 
 ///@cond PRIVATE
@@ -75,10 +76,18 @@ class QgsCesiumTiledMeshIndex final : public QgsAbstractTiledMeshIndex
     QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) final;
 
   private:
+
+    enum class TileContentFormat
+    {
+      Json,
+      NotJson, // TODO: refine this to actual content types when/if needed!
+    };
+
     mutable QReadWriteLock mLock;
     QString mRootPath;
     std::unique_ptr< QgsTiledMeshNode > mRootNode;
     QMap< QString, QgsTiledMeshNode * > mNodeMap;
+    QMap< QString, TileContentFormat > mTileContentFormats;
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
 
@@ -380,21 +389,55 @@ QStringList QgsCesiumTiledMeshIndex::getTiles( const QgsTiledMeshRequest &reques
 
 Qgis::TileChildrenAvailability QgsCesiumTiledMeshIndex::childAvailability( const QString &id ) const
 {
+  QString contentUri;
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
-  auto it = mNodeMap.constFind( id );
-  if ( it == mNodeMap.constEnd() )
-    return Qgis::TileChildrenAvailability::NoChildren;
+  {
+    auto it = mNodeMap.constFind( id );
+    if ( it == mNodeMap.constEnd() )
+      return Qgis::TileChildrenAvailability::NoChildren;
 
-  if ( !it.value()->children().isEmpty() )
-    return Qgis::TileChildrenAvailability::Available;
+    if ( !it.value()->children().isEmpty() )
+      return Qgis::TileChildrenAvailability::Available;
 
-  const QString contentUri = it.value()->tile()->resources().value( QStringLiteral( "content" ) ).toString();
+    contentUri = it.value()->tile()->resources().value( QStringLiteral( "content" ) ).toString();
+  }
+  {
+    // maybe we already retrieved content for this node and know the answer:
+    auto it = mTileContentFormats.constFind( id );
+    if ( it != mTileContentFormats.constEnd() )
+    {
+      switch ( it.value() )
+      {
+        case TileContentFormat::NotJson:
+          return Qgis::TileChildrenAvailability::NoChildren;
+        case TileContentFormat::Json:
+          return Qgis::TileChildrenAvailability::NeedFetching;
+      }
+    }
+  }
   locker.unlock();
 
+  if ( contentUri.isEmpty() )
+    return Qgis::TileChildrenAvailability::NoChildren;
+
+  // https://github.com/CesiumGS/3d-tiles/tree/main/specification#tile-json says:
+  // "A file extension is not required for content.uri. A content’s tile format can
+  // be identified by the magic field in its header, or else as an external tileset if the content is JSON."
+  // This is rather annoying... it means we have to do a network request in order to determine whether
+  // a tile has children or geometry content!
+
+  // let's avoid this request if we can get away with it:
   if ( contentUri.endsWith( QLatin1String( ".json" ), Qt::CaseInsensitive ) )
     return Qgis::TileChildrenAvailability::NeedFetching;
 
-  return Qgis::TileChildrenAvailability::NoChildren;
+  // things we know definitely CAN'T be a child tile map:
+  const thread_local QRegularExpression antiCandidateRx( QStringLiteral( ".*\\.(gltf|glb|b3dm|i3dm|pnts|cmpt|bin|glbin|glbuf|png|jpeg|jpg)$" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+  if ( antiCandidateRx.match( contentUri ).hasMatch() )
+    return Qgis::TileChildrenAvailability::NoChildren;
+
+  // here we **could** do a fetch to verify what the content actually is. But we want this method to be non-blocking,
+  // so let's just report that there IS remote children available and then sort things out when we actually go to fetch those children...
+  return Qgis::TileChildrenAvailability::NeedFetching;
 }
 
 bool QgsCesiumTiledMeshIndex::fetchHierarchy( const QString &id, QgsFeedback *feedback )
@@ -404,22 +447,54 @@ bool QgsCesiumTiledMeshIndex::fetchHierarchy( const QString &id, QgsFeedback *fe
   if ( it == mNodeMap.constEnd() )
     return false;
 
+  {
+    // maybe we already know what content type this tile has. If so, and it's not json, then
+    // don't try to fetch it as a hierarchy
+    auto it = mTileContentFormats.constFind( id );
+    if ( it != mTileContentFormats.constEnd() )
+    {
+      switch ( it.value() )
+      {
+        case TileContentFormat::NotJson:
+          return false;
+        case TileContentFormat::Json:
+          break;
+      }
+    }
+  }
+
   const QString contentUri = it.value()->tile()->resources().value( QStringLiteral( "content" ) ).toString();
   locker.unlock();
 
-  if ( contentUri.endsWith( QLatin1String( ".json" ), Qt::CaseInsensitive ) )
+  if ( contentUri.isEmpty() )
+    return false;
+
+  // if node has content json, fetch it now and parse
+  const QByteArray subTile = retrieveContent( contentUri, feedback );
+  if ( !subTile.isEmpty() )
   {
-    // if node has content json, fetch it now and parse
-    const QByteArray subTile = retrieveContent( contentUri, feedback );
-    if ( !subTile.isEmpty() )
+    // we don't know for certain that the content IS  json -- from https://github.com/CesiumGS/3d-tiles/tree/main/specification#tile-json says:
+    // "A file extension is not required for content.uri. A content’s tile format can
+    // be identified by the magic field in its header, or else as an external tileset if the content is JSON."
+    try
     {
       const auto subTileJson = json::parse( subTile.toStdString() );
       locker.changeMode( QgsReadWriteLocker::Write );
       refineNodeFromJson( it.value(), subTileJson["root"] );
+      mTileContentFormats.insert( id, TileContentFormat::Json );
       return true;
     }
+    catch ( json::parse_error & )
+    {
+      locker.changeMode( QgsReadWriteLocker::Write );
+      mTileContentFormats.insert( id, TileContentFormat::NotJson );
+      return false;
+    }
   }
-  return false;
+  else
+  {
+    return false;
+  }
 }
 
 QByteArray QgsCesiumTiledMeshIndex::fetchContent( const QString &uri, QgsFeedback *feedback )
