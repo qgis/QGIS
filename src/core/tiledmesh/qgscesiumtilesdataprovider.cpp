@@ -40,7 +40,7 @@
 #include <QJsonObject>
 #include <QFileInfo>
 #include <QRegularExpression>
-#include <QMutex>
+#include <QRecursiveMutex>
 #include <nlohmann/json.hpp>
 
 ///@cond PRIVATE
@@ -83,7 +83,7 @@ class QgsCesiumTiledMeshIndex final : public QgsAbstractTiledMeshIndex
       NotJson, // TODO: refine this to actual content types when/if needed!
     };
 
-    mutable QMutex mLock;
+    mutable QRecursiveMutex mLock;
     QString mRootPath;
     std::unique_ptr< QgsTiledMeshNode > mRootNode;
     QMap< QString, QgsTiledMeshNode * > mNodeMap;
@@ -124,8 +124,7 @@ class QgsCesiumTilesDataProviderSharedData
 //
 
 QgsCesiumTiledMeshIndex::QgsCesiumTiledMeshIndex( const json &tileset, const QString &rootPath, const QString &authCfg, const QgsHttpHeaders &headers )
-  : mLock( QMutex::Recursive )
-  , mRootPath( rootPath )
+  : mRootPath( rootPath )
   , mAuthCfg( authCfg )
   , mHeaders( headers )
 {
