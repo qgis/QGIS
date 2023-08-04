@@ -422,7 +422,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       QVariantMap results;
       try
       {
-        if ( childAlg->flags() & QgsProcessingAlgorithm::FlagNoThreading )
+        if ( ( childAlg->flags() & QgsProcessingAlgorithm::FlagNoThreading ) && ( QThread::currentThread() != qApp->thread() ) )
         {
           // child algorithm run step must be called on main thread
           auto runOnMainThread = [modelThread, &context, &modelFeedback, &results, &childAlg, &childParams]
