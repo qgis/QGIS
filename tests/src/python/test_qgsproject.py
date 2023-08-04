@@ -1584,13 +1584,17 @@ class TestQgsProject(unittest.TestCase):
         project = QgsProject()
 
         layer = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+        layer2 = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
 
         project.addMapLayers([layer])
 
-        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), None)
+        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), False)
         project.setFlags(project.flags() | Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
         self.assertTrue(project.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
         self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+
+        project.addMapLayers([layer2])
+        self.assertEqual(layer2.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
 
         tmp_dir = QTemporaryDir()
         tmp_project_file = f"{tmp_dir.path()}/project.qgs"
@@ -1600,10 +1604,11 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(project2.read(tmp_project_file))
 
         layers = list(project2.mapLayers().values())
-        self.assertEqual(len(layers), 1)
+        self.assertEqual(len(layers), 2)
 
         self.assertTrue(project2.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
         self.assertEqual(layers[0].dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+        self.assertEqual(layers[1].dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
 
 
 if __name__ == '__main__':
