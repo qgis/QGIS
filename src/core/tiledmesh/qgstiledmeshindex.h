@@ -96,7 +96,7 @@ class CORE_EXPORT QgsAbstractTiledMeshIndex
     /**
      * Returns the availability for a tile's children.
      *
-     * \see fetchChildren()
+     * \see fetchHierarchy()
      */
     virtual Qgis::TileChildrenAvailability childAvailability( const QString &id ) const = 0;
 
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsTiledMeshIndex
     /**
      * Returns the availability for a tile's children.
      *
-     * \see fetchChildren()
+     * \see fetchHierarchy()
      */
     Qgis::TileChildrenAvailability childAvailability( const QString &id ) const;
 
