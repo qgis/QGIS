@@ -500,6 +500,8 @@ void QgsAuthOAuth2Edit::populateGrantFlows()
                            static_cast<int>( QgsAuthOAuth2Config::Implicit ) );
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::ResourceOwner ),
                            static_cast<int>( QgsAuthOAuth2Config::ResourceOwner ) );
+  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::Pkce ),
+                           static_cast<int>( QgsAuthOAuth2Config::Pkce ) );
 }
 
 
@@ -736,8 +738,9 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
   mOAuthConfigCustom->setGrantFlow( flow );
 
   // bool authcode = ( flow == QgsAuthOAuth2Config::AuthCode );
-  const bool implicit = ( flow == QgsAuthOAuth2Config::Implicit );
-  const bool resowner = ( flow == QgsAuthOAuth2Config::ResourceOwner );
+  const bool implicit = ( flow == QgsAuthOAuth2Config::GrantFlow::Implicit );
+  const bool resowner = ( flow == QgsAuthOAuth2Config::GrantFlow::ResourceOwner );
+  const bool pkce = ( flow == QgsAuthOAuth2Config::GrantFlow::Pkce );
 
   lblRequestUrl->setVisible( !resowner );
   leRequestUrl->setVisible( !resowner );
@@ -753,6 +756,10 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
     leClientSecret->setText( QString() );
 
   leClientId->setPlaceholderText( resowner ? tr( "Optional" ) : tr( "Required" ) );
+
+  // No client secret with PKCE
+  lblClientSecret->setVisible( !pkce );
+  leClientSecret->setVisible( !pkce );
   leClientSecret->setPlaceholderText( resowner ? tr( "Optional" ) : tr( "Required" ) );
 
 
