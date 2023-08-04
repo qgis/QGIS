@@ -23,7 +23,6 @@
 
 class QgsLayoutItem3DMap;
 class Qgs3DMapCanvasWidget;
-class QDomElement;
 
 class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayout3DMapWidgetBase
 {
