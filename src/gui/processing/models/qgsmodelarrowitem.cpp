@@ -42,7 +42,7 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Q
 {
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
   setFlag( QGraphicsItem::ItemIsSelectable, false );
-  mColor = QApplication::palette().color( QPalette::WindowText );
+  mColor = QApplication::palette().color( QPalette::Text );
   mColor.setAlpha( 150 );
   setPen( QPen( mColor, 8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin ) );
   setZValue( QgsModelGraphicsScene::ArrowLink );
