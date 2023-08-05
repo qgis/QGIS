@@ -378,7 +378,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
     painter->drawText( labelRect, Qt::TextWordWrap | Qt::AlignVCenter, text );
   }
 
-  painter->setPen( QPen( QApplication::palette().color( QPalette::WindowText ) ) );
+  painter->setPen( QPen( QApplication::palette().color( QPalette::Text ) ) );
 
   if ( linkPointCount( Qt::TopEdge ) || linkPointCount( Qt::BottomEdge ) )
   {
