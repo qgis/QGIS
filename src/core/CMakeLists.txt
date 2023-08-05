@@ -2314,6 +2314,7 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer
+  ${CMAKE_SOURCE_DIR}/external/tinygltf
 )
 
 if (WITH_EPT)
@@ -2418,6 +2419,11 @@ target_link_libraries(qgis_core
   ${ZLIB_LIBRARIES}
   ${EXIV2_LIBRARY}
 )
+
+if (WITH_DRACO)
+  target_link_libraries(qgis_core ${DRACO_LIBRARY})
+endif()
+
 if (NOT IOS)
   target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
 endif()
