@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgscolorramplegendnode.h"
 #include "qgscolorrampimpl.h"
 #include "qgslegendsettings.h"
@@ -22,6 +23,8 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgstextrenderer.h"
 #include "qgsnumericformat.h"
+
+#include <QPalette>
 
 QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp, const QString &minimumLabel, const QString &maximumLabel, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
@@ -151,6 +154,7 @@ QVariant QgsColorRampLegendNode::data( int role ) const
       QPainter p( &mPixmap );
       p.drawPixmap( 0, 0, pix );
       p.setFont( font );
+      p.setPen( qApp->palette().color( QPalette::Text ) );
 
       switch ( mSettings.orientation() )
       {
