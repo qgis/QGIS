@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/tiledscene/qgstiledscenetexturerenderer.h                   *
+ * src/core/tiledscene/qgstiledscenemeshrenderer.h                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,23 +9,25 @@
 
 
 
-class QgsTiledSceneTextureRenderer : QgsTiledSceneRenderer
+
+class QgsTiledSceneMeshRenderer : QgsTiledSceneRenderer
 {
 %Docstring(signature="appended")
-Renders tiled scene layers using textures.
+Renders tiled scene layers using the raw primitive meshes.
 
 .. versionadded:: 3.34
 %End
 
 %TypeHeaderCode
-#include "qgstiledscenetexturerenderer.h"
+#include "qgstiledscenemeshrenderer.h"
 %End
   public:
 
-    QgsTiledSceneTextureRenderer();
+    QgsTiledSceneMeshRenderer();
 %Docstring
-Constructor for QgsTiledSceneTextureRenderer.
+Constructor for QgsTiledSceneMeshRenderer.
 %End
+    ~QgsTiledSceneMeshRenderer();
 
     virtual QString type() const;
 
@@ -33,9 +35,11 @@ Constructor for QgsTiledSceneTextureRenderer.
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-    virtual Qgis::TiledSceneRendererFlags flags() const;
-
     virtual void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle );
+
+    virtual void startRender( QgsTiledSceneRenderContext &context );
+
+    virtual void stopRender( QgsTiledSceneRenderContext &context );
 
 
     static QgsTiledSceneRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
@@ -43,12 +47,28 @@ Constructor for QgsTiledSceneTextureRenderer.
 Creates a textured renderer from an XML ``element``.
 %End
 
+    QgsFillSymbol *fillSymbol() const;
+%Docstring
+Returns the fill symbol used to render triangles in the mesh.
+
+.. seealso:: :py:func:`setFillSymbol`
+%End
+
+    void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` used to render triangles in the mesh.
+
+Ownership of ``symbol`` is transferred.
+
+.. seealso:: :py:func:`fillSymbol`
+%End
+
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/tiledscene/qgstiledscenetexturerenderer.h                   *
+ * src/core/tiledscene/qgstiledscenemeshrenderer.h                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgstiledscenetexturerenderer.h
+                         qgstiledscenetexturecolorrenderer.h
                          --------------------
     begin                : August 2023
     copyright            : (C) 2023 by Nyall Dawson
@@ -15,56 +15,56 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstiledscenetexturerenderer.h"
-#include "qgspainting.h"
+#include "qgstiledscenetexturecolorrenderer.h"
 
-QgsTiledSceneTextureRenderer::QgsTiledSceneTextureRenderer()
+QgsTiledSceneTextureColorRenderer::QgsTiledSceneTextureColorRenderer()
 {
 
 }
 
-QString QgsTiledSceneTextureRenderer::type() const
+QString QgsTiledSceneTextureColorRenderer::type() const
 {
-  return QStringLiteral( "texture" );
+  return QStringLiteral( "texturecolor" );
 }
 
-QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::clone() const
+QgsTiledSceneRenderer *QgsTiledSceneTextureColorRenderer::clone() const
 {
-  std::unique_ptr< QgsTiledSceneTextureRenderer > res = std::make_unique< QgsTiledSceneTextureRenderer >();
+  std::unique_ptr< QgsTiledSceneTextureColorRenderer > res = std::make_unique< QgsTiledSceneTextureColorRenderer >();
 
   copyCommonProperties( res.get() );
 
   return res.release();
 }
 
-QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+QgsTiledSceneRenderer *QgsTiledSceneTextureColorRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsTiledSceneTextureRenderer > r = std::make_unique< QgsTiledSceneTextureRenderer >();
+  std::unique_ptr< QgsTiledSceneTextureColorRenderer > r = std::make_unique< QgsTiledSceneTextureColorRenderer >();
 
   r->restoreCommonProperties( element, context );
 
   return r.release();
 }
 
-QDomElement QgsTiledSceneTextureRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
+QDomElement QgsTiledSceneTextureColorRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement rendererElem = doc.createElement( QStringLiteral( "renderer" ) );
 
-  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "texture" ) );
+  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "texturecolor" ) );
 
   saveCommonProperties( rendererElem, context );
 
   return rendererElem;
 }
 
-Qgis::TiledSceneRendererFlags QgsTiledSceneTextureRenderer::flags() const
+Qgis::TiledSceneRendererFlags QgsTiledSceneTextureColorRenderer::flags() const
 {
   return Qgis::TiledSceneRendererFlag::RequiresTextures;
 }
 
-void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle )
+void QgsTiledSceneTextureColorRenderer::renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle )
 {
-  if ( context.textureImage().isNull() )
+  const QImage textureImage = context.textureImage();
+  if ( textureImage.isNull() )
     return;
 
   double textureX1;
@@ -75,14 +75,13 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
   double textureY3;
   context.textureCoordinates( textureX1, textureY1, textureX2, textureY2, textureX3, textureY3 );
 
+  const QColor centerColor( textureImage.pixelColor(
+                              ( ( textureX1 + textureX2 + textureX3 ) / 3 ) * ( textureImage.width() - 1 ),
+                              ( ( textureY1 + textureY2 + textureY3 ) / 3 ) * ( textureImage.height() - 1 ) )
+                          );
+  QBrush b( centerColor );
   QPainter *painter = context.renderContext().painter();
   painter->setPen( Qt::NoPen );
-
-  QgsPainting::drawTriangleUsingTexture(
-    painter,
-    triangle, context.textureImage(),
-    textureX1, textureY1,
-    textureX2, textureY2,
-    textureX3, textureY3
-  );
+  painter->setBrush( b );
+  painter->drawPolygon( triangle );
 }

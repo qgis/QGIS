@@ -3850,6 +3850,26 @@ class CORE_EXPORT Qgis
     Q_FLAG( TiledSceneRequestFlags )
 
     /**
+     * Flags which control how tiled scene 2D renderers behave.
+     *
+     * \since QGIS 3.34
+     */
+    enum class TiledSceneRendererFlag : int
+    {
+      RequiresTextures = 1 << 0,  //!< Renderer requires textures
+    };
+    Q_ENUM( TiledSceneRendererFlag )
+
+    /**
+     * Flags which control how tiled scene 2D renderers behave.
+     *
+     * \since QGIS 3.34
+     */
+    Q_DECLARE_FLAGS( TiledSceneRendererFlags, TiledSceneRendererFlag )
+    Q_FLAG( TiledSceneRendererFlags )
+
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -4014,6 +4034,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRequestFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRendererFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

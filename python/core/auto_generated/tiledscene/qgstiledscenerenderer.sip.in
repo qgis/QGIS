@@ -45,6 +45,38 @@ Returns the feedback object used to cancel rendering
 .. versionadded:: 3.20
 %End
 
+    QImage textureImage() const;
+%Docstring
+Returns the current texture image.
+
+.. seealso:: :py:func:`setTextureImage`
+%End
+
+    void setTextureImage( const QImage &image );
+%Docstring
+Sets the current texture ``image``.
+
+.. seealso:: :py:func:`textureImage`
+%End
+
+    void setTextureCoordinates(
+      double textureX1, double textureY1,
+      double textureX2, double textureY2,
+      double textureX3, double textureY3
+    );
+%Docstring
+Sets the current texture coordinates.
+
+.. seealso:: :py:func:`textureCoordinates`
+%End
+
+    void textureCoordinates( double &textureX1 /Out/, double &textureY1 /Out/, double &textureX2 /Out/, double &textureY2 /Out/, double &textureX3 /Out/, double &textureY3 /Out/ );
+%Docstring
+Returns the current texture coordinates.
+
+.. seealso:: :py:func:`setTextureCoordinates`
+%End
+
   private:
     QgsTiledSceneRenderContext( const QgsTiledSceneRenderContext &rh );
 };
@@ -64,8 +96,15 @@ Abstract base class for 2d tiled scene renderers.
 %ConvertToSubClassCode
 
     const QString type = sipCpp->type();
+    if ( type == QLatin1String( "texture" ) )
+      sipType = sipType_QgsTiledSceneTextureRenderer;
+    else if ( type == QLatin1String( "texturecolor" ) )
+      sipType = sipType_QgsTiledSceneTextureColorRenderer;
+    else if ( type == QLatin1String( "mesh" ) )
+      sipType = sipType_QgsTiledSceneMeshRenderer;
+    else
+      sipType = 0;
 
-    sipType = 0;
 %End
   public:
 
@@ -88,6 +127,11 @@ and generate a proper subclass.
 %End
 
 
+
+    virtual Qgis::TiledSceneRendererFlags flags() const;
+%Docstring
+Returns flags which control how the renderer behaves.
+%End
 
     static QgsTiledSceneRenderer *load( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
@@ -184,6 +228,11 @@ Creates a set of legend nodes representing the renderer.
     virtual QStringList legendRuleKeys() const;
 %Docstring
 Returns a list of all rule keys for legend nodes created by the renderer.
+%End
+
+    virtual void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle ) = 0;
+%Docstring
+Renders a ``triangle``.
 %End
 
   protected:

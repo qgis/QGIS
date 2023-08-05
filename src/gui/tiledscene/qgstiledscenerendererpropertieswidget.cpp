@@ -22,6 +22,7 @@
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenerenderer.h"
 #include "qgstiledscenetexturerendererwidget.h"
+#include "qgstiledscenemeshrendererwidget.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
@@ -53,6 +54,7 @@ void QgsTiledSceneRendererPropertiesWidget::initRendererWidgetFunctions()
     return;
 
   initTiledSceneRenderer( QStringLiteral( "texture" ), QgsTiledSceneTextureRendererWidget::create, QStringLiteral( "styleicons/tiledscenetexture.svg" ) );
+  initTiledSceneRenderer( QStringLiteral( "mesh" ), QgsTiledSceneMeshRendererWidget::create, QStringLiteral( "styleicons/tiledscenemesh.svg" ) );
 
   sInitialized = true;
 }

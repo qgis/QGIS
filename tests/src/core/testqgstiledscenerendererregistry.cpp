@@ -31,6 +31,7 @@ class DummyRenderer : public QgsTiledSceneRenderer
     QgsTiledSceneRenderer *clone() const override { return new DummyRenderer(); }
     static QgsTiledSceneRenderer *create( QDomElement &, const QgsReadWriteContext & ) { return new DummyRenderer(); }
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext & ) const override { return doc.createElement( QStringLiteral( "test" ) ); }
+    void renderTriangle( QgsTiledSceneRenderContext &, const QPolygonF & ) override {};
 
 };
 

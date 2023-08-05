@@ -17,13 +17,21 @@
 
 // default renderers
 #include "qgstiledscenetexturerenderer.h"
+#include "qgstiledscenetexturecolorrenderer.h"
+#include "qgstiledscenemeshrenderer.h"
 
 QgsTiledSceneRendererRegistry::QgsTiledSceneRendererRegistry()
 {
   // add default renderers
   addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "texture" ),
-               QObject::tr( "Textures" ),
+               QObject::tr( "Textured" ),
                QgsTiledSceneTextureRenderer::create ) );
+  addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "texturecolor" ),
+               QObject::tr( "Texture Color" ),
+               QgsTiledSceneTextureColorRenderer::create ) );
+  addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "mesh" ),
+               QObject::tr( "Mesh" ),
+               QgsTiledSceneMeshRenderer::create ) );
 }
 
 QgsTiledSceneRendererRegistry::~QgsTiledSceneRendererRegistry()

@@ -3796,3 +3796,10 @@ Qgis.TiledSceneRequestFlag.__doc__ = "Flags which control how tiled scene reques
 Qgis.TiledSceneRequestFlag.baseClass = Qgis
 Qgis.TiledSceneRequestFlags.baseClass = Qgis
 TiledSceneRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.TiledSceneRendererFlag.RequiresTextures.__doc__ = "Renderer requires textures"
+Qgis.TiledSceneRendererFlag.__doc__ = "Flags which control how tiled scene 2D renderers behave.\n\n.. versionadded:: 3.34\n\n" + '* ``RequiresTextures``: ' + Qgis.TiledSceneRendererFlag.RequiresTextures.__doc__
+# --
+Qgis.TiledSceneRendererFlag.baseClass = Qgis
+Qgis.TiledSceneRendererFlags.baseClass = Qgis
+TiledSceneRendererFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module

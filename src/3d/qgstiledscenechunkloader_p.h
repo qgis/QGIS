@@ -36,6 +36,8 @@
 
 #include <QFutureWatcher>
 
+#define SIP_NO_FILE
+
 class Qgs3DMapSettings;
 class QgsTiledSceneChunkLoaderFactory;
 

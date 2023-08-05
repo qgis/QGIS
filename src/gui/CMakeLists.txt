@@ -462,6 +462,7 @@ set(QGIS_GUI_SRCS
 
   tiledscene/qgstiledsceneconnectiondialog.cpp
   tiledscene/qgstiledscenedataitemguiprovider.cpp
+  tiledscene/qgstiledscenemeshrendererwidget.cpp
   tiledscene/qgstiledsceneproviderguimetadata.cpp
   tiledscene/qgstiledscenerendererpropertieswidget.cpp
   tiledscene/qgstiledscenerendererwidget.cpp
@@ -1485,6 +1486,7 @@ set(QGIS_GUI_HDRS
 
   tiledscene/qgstiledsceneconnectiondialog.h
   tiledscene/qgstiledscenedataitemguiprovider.h
+  tiledscene/qgstiledscenemeshrendererwidget.h
   tiledscene/qgstiledsceneproviderguimetadata.h
   tiledscene/qgstiledscenerendererpropertieswidget.h
   tiledscene/qgstiledscenerendererwidget.h
