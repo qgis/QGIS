@@ -28,9 +28,13 @@
 #include "qgsgcptransformer.h"
 #endif
 
+#if defined(_MSC_VER)
+#ifndef SIP_RUN
 template class QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>;
-
 template class QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>;
+#endif
+#endif
+
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
