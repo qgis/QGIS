@@ -33,9 +33,44 @@ QgsTiledSceneRenderContext::QgsTiledSceneRenderContext( QgsRenderContext &contex
 
 }
 
+QImage QgsTiledSceneRenderContext::textureImage() const
+{
+  return mTextureImage;
+}
+
+void QgsTiledSceneRenderContext::setTextureImage( const QImage &image )
+{
+  mTextureImage = image;
+}
+
+void QgsTiledSceneRenderContext::setTextureCoordinates( double textureX1, double textureY1, double textureX2, double textureY2, double textureX3, double textureY3 )
+{
+  mTextureCoordinates[0] = textureX1;
+  mTextureCoordinates[1] = textureY1;
+  mTextureCoordinates[2] = textureX2;
+  mTextureCoordinates[3] = textureY2;
+  mTextureCoordinates[4] = textureX3;
+  mTextureCoordinates[5] = textureY3;
+}
+
+void QgsTiledSceneRenderContext::textureCoordinates( double &textureX1, double &textureY1, double &textureX2, double &textureY2, double &textureX3, double &textureY3 )
+{
+  textureX1 = mTextureCoordinates[0];
+  textureY1 = mTextureCoordinates[1];
+  textureX2 = mTextureCoordinates[2];
+  textureY2 = mTextureCoordinates[3];
+  textureX3 = mTextureCoordinates[4];
+  textureY3 = mTextureCoordinates[5];
+}
+
 //
 // QgsTiledSceneRenderer
 //
+
+Qgis::TiledSceneRendererFlags QgsTiledSceneRenderer::flags() const
+{
+  return Qgis::TiledSceneRendererFlags();
+}
 
 QgsTiledSceneRenderer *QgsTiledSceneRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -112,7 +147,7 @@ void QgsTiledSceneRenderer::copyCommonProperties( QgsTiledSceneRenderer *destina
 
 void QgsTiledSceneRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
 {
-  mMaximumScreenError = element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "0.3" ) ).toDouble();
+  mMaximumScreenError = element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "3" ) ).toDouble();
   mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) );
 }
 

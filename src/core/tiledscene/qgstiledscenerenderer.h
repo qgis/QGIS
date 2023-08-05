@@ -67,6 +67,38 @@ class CORE_EXPORT QgsTiledSceneRenderContext
      */
     QgsFeedback *feedback() const { return mFeedback; }
 
+    /**
+     * Returns the current texture image.
+     *
+     * \see setTextureImage()
+     */
+    QImage textureImage() const;
+
+    /**
+     * Sets the current texture \a image.
+     *
+     * \see textureImage()
+     */
+    void setTextureImage( const QImage &image );
+
+    /**
+     * Sets the current texture coordinates.
+     *
+     * \see textureCoordinates()
+     */
+    void setTextureCoordinates(
+      double textureX1, double textureY1,
+      double textureX2, double textureY2,
+      double textureX3, double textureY3
+    );
+
+    /**
+     * Returns the current texture coordinates.
+     *
+     * \see setTextureCoordinates()
+     */
+    void textureCoordinates( double &textureX1 SIP_OUT, double &textureY1 SIP_OUT, double &textureX2 SIP_OUT, double &textureY2 SIP_OUT, double &textureX3 SIP_OUT, double &textureY3 SIP_OUT );
+
   private:
 #ifdef SIP_RUN
     QgsTiledSceneRenderContext( const QgsTiledSceneRenderContext &rh );
@@ -74,6 +106,9 @@ class CORE_EXPORT QgsTiledSceneRenderContext
 
     QgsRenderContext &mRenderContext;
     QgsFeedback *mFeedback = nullptr;
+    QImage mTextureImage;
+    double mTextureCoordinates[6] { 0, 0, 0, 0, 0, 0 };
+
 };
 
 /**
@@ -91,8 +126,15 @@ class CORE_EXPORT QgsTiledSceneRenderer
     SIP_CONVERT_TO_SUBCLASS_CODE
 
     const QString type = sipCpp->type();
+    if ( type == QLatin1String( "texture" ) )
+      sipType = sipType_QgsTiledSceneTextureRenderer;
+    else if ( type == QLatin1String( "texturecolor" ) )
+      sipType = sipType_QgsTiledSceneTextureColorRenderer;
+    else if ( type == QLatin1String( "mesh" ) )
+      sipType = sipType_QgsTiledSceneMeshRenderer;
+    else
+      sipType = 0;
 
-    sipType = 0;
     SIP_END
 #endif
 
@@ -121,6 +163,11 @@ class CORE_EXPORT QgsTiledSceneRenderer
 
     //! QgsTiledSceneRenderer cannot be copied -- use clone() instead
     QgsTiledSceneRenderer &operator=( const QgsTiledSceneRenderer &other ) = delete;
+
+    /**
+     * Returns flags which control how the renderer behaves.
+     */
+    virtual Qgis::TiledSceneRendererFlags flags() const;
 
     /**
      * Creates a renderer from an XML \a element.
@@ -210,6 +257,11 @@ class CORE_EXPORT QgsTiledSceneRenderer
      */
     virtual QStringList legendRuleKeys() const;
 
+    /**
+     * Renders a \a triangle.
+     */
+    virtual void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle ) = 0;
+
   protected:
 
     /**
@@ -243,7 +295,7 @@ class CORE_EXPORT QgsTiledSceneRenderer
     QThread *mThread = nullptr;
 #endif
 
-    double mMaximumScreenError = 0.3;
+    double mMaximumScreenError = 3;
     Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
 
 };

@@ -18,6 +18,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 #include "qgsmatrix4x4.h"
+#include "qgsconfig.h"
 
 #include <QImage>
 #include <QMatrix4x4>

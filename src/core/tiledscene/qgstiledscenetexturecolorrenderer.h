@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgstiledscenetexturerenderer.h
+                         qgstiledscenetexturecolorrenderer.h
                          --------------------
     begin                : August 2023
     copyright            : (C) 2023 by Nyall Dawson
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTILEDSCENETEXTURERENDERER_H
-#define QGSTILEDSCENETEXTURERENDERER_H
+#ifndef QGSTILEDSCENETEXTURECOLORRENDERER_H
+#define QGSTILEDSCENETEXTURECOLORRENDERER_H
 
 #include "qgstiledscenerenderer.h"
 #include "qgis_core.h"
@@ -24,18 +24,18 @@
 
 /**
  * \ingroup core
- * \brief Renders tiled scene layers using textures.
+ * \brief Renders tiled scene layers using representative colors from textures.
  *
  * \since QGIS 3.34
  */
-class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
+class CORE_EXPORT QgsTiledSceneTextureColorRenderer : public QgsTiledSceneRenderer
 {
   public:
 
     /**
-     * Constructor for QgsTiledSceneTextureRenderer.
+     * Constructor for QgsTiledSceneTextureColorRenderer.
      */
-    QgsTiledSceneTextureRenderer();
+    QgsTiledSceneTextureColorRenderer();
 
     QString type() const override;
     QgsTiledSceneRenderer *clone() const override;
@@ -52,4 +52,4 @@ class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
 
 };
 
-#endif // QGSTILEDSCENETEXTURERENDERER_H
+#endif // QGSTILEDSCENETEXTURECOLORRENDERER_H

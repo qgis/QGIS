@@ -24,6 +24,8 @@
 
 class QgsTiledSceneLayer;
 
+#define SIP_NO_FILE
+
 
 /**
  * \ingroup 3d

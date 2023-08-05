@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/tiledscene/qgstiledscenetexturerenderer.h                   *
+ * src/core/tiledscene/qgstiledscenetexturecolorrenderer.h              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,22 +9,22 @@
 
 
 
-class QgsTiledSceneTextureRenderer : QgsTiledSceneRenderer
+class QgsTiledSceneTextureColorRenderer : QgsTiledSceneRenderer
 {
 %Docstring(signature="appended")
-Renders tiled scene layers using textures.
+Renders tiled scene layers using representative colors from textures.
 
 .. versionadded:: 3.34
 %End
 
 %TypeHeaderCode
-#include "qgstiledscenetexturerenderer.h"
+#include "qgstiledscenetexturecolorrenderer.h"
 %End
   public:
 
-    QgsTiledSceneTextureRenderer();
+    QgsTiledSceneTextureColorRenderer();
 %Docstring
-Constructor for QgsTiledSceneTextureRenderer.
+Constructor for QgsTiledSceneTextureColorRenderer.
 %End
 
     virtual QString type() const;
@@ -48,7 +48,7 @@ Creates a textured renderer from an XML ``element``.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/tiledscene/qgstiledscenetexturerenderer.h                   *
+ * src/core/tiledscene/qgstiledscenetexturecolorrenderer.h              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

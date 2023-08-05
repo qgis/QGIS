@@ -2196,6 +2196,15 @@ The development version
     typedef QFlags<Qgis::TiledSceneRequestFlag> TiledSceneRequestFlags;
 
 
+    enum class TiledSceneRendererFlag
+    {
+      RequiresTextures,
+    };
+
+    typedef QFlags<Qgis::TiledSceneRendererFlag> TiledSceneRendererFlags;
+
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -2359,6 +2368,8 @@ QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCap
 QFlags<Qgis::TiledSceneProviderCapability> operator|(Qgis::TiledSceneProviderCapability f1, QFlags<Qgis::TiledSceneProviderCapability> f2);
 
 QFlags<Qgis::TiledSceneRequestFlag> operator|(Qgis::TiledSceneRequestFlag f1, QFlags<Qgis::TiledSceneRequestFlag> f2);
+
+QFlags<Qgis::TiledSceneRendererFlag> operator|(Qgis::TiledSceneRendererFlag f1, QFlags<Qgis::TiledSceneRendererFlag> f2);
 
 
 
