@@ -293,6 +293,8 @@ if(WITH_CORE)
 
   set (WITH_COPC TRUE CACHE BOOL "Determines whether Cloud Optimized Point Cloud (COPC) support should be built")
 
+  set (WITH_DRACO TRUE CACHE BOOL "Determines whether Draco support should be built")
+
   set (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   mark_as_advanced(WITH_THREAD_LOCAL)
 
@@ -441,6 +443,12 @@ if(WITH_CORE)
     if (PDAL_VERSION_MAJOR GREATER 3 OR (PDAL_VERSION_MAJOR EQUAL 2 AND PDAL_VERSION_MINOR GREATER_EQUAL 5))
       set(PDAL_2_5_OR_HIGHER TRUE)
     endif()
+  endif()
+
+  if (WITH_DRACO)
+    find_package(Draco REQUIRED)
+    message(STATUS "Found Draco: ${DRACO_LIBRARY} (${DRACO_VERSION})")
+    set(HAVE_DRACO TRUE)  # used in qgisconfig.h
   endif()
 
   #############################################################
