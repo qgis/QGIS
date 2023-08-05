@@ -224,7 +224,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
     expressionWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
     expressionWidget->layout()->addWidget( editExpressionButton );
     expressionWidget->layout()->addWidget( new QLabel( mLayer->expressionField( idx ) ) );
-    expressionWidget->setStyleSheet( "background-color: rgb( 200, 200, 255 )" );
+    expressionWidget->setStyleSheet( "*[class~=\"QWidget\"] { background-color: rgba( 103, 0, 243, 0.12 ); } QToolButton { background-color: rgba( 203, 100, 243, 0.6 ); }" );
     mFieldsList->setCellWidget( row, AttrCommentCol, expressionWidget );
   }
   else
