@@ -988,8 +988,8 @@ void TestQgsProcessing::compatibleLayers()
 
   QgsAnnotationLayer *al = new QgsAnnotationLayer( "secondary annotation layer", QgsAnnotationLayer::LayerOptions( p.transformContext() ) );
 
-  QgsTiledSceneLayer *tml = new QgsTiledSceneLayer( "tiled_mesh_source", QStringLiteral( "tiled scene" ), QStringLiteral( "test_tiled_mesh_provider" ) );
-  QgsTiledSceneLayer *tml2 = new QgsTiledSceneLayer( "tiled_mesh_source2", QStringLiteral( "A tiled scene" ), QStringLiteral( "test_tiled_mesh_provider" ) );
+  QgsTiledSceneLayer *tml = new QgsTiledSceneLayer( "tiled_scene_source", QStringLiteral( "tiled scene" ), QStringLiteral( "test_tiled_scene_provider" ) );
+  QgsTiledSceneLayer *tml2 = new QgsTiledSceneLayer( "tiled_scene_source2", QStringLiteral( "A tiled scene" ), QStringLiteral( "test_tiled_scene_provider" ) );
 
 #ifdef HAVE_EPT
   p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 << pl1 << pl2 << pc1 << pc2 << al << tml << tml2 );
