@@ -976,7 +976,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QgsSpinBox" name="spinBoxZMaximum"/>
+          <widget class="QgsDoubleSpinBox" name="spinBoxZMaximum">
+           <property name="minimum">
+            <double>-9999999999.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>9999999999.000000000000000</double>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -990,7 +997,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QgsSpinBox" name="spinBoxZMinimum"/>
+          <widget class="QgsDoubleSpinBox" name="spinBoxZMinimum">
+           <property name="minimum">
+            <double>-9999999999.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>9999999999.000000000000000</double>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -1486,15 +1500,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
