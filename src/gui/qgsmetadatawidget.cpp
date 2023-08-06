@@ -41,6 +41,9 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   // Disable the encoding
   encodingFrame->setHidden( true );
 
+  spinBoxZMinimum->setClearValue( 0 );
+  spinBoxZMaximum->setClearValue( 0 );
+
   // Default categories, we want them translated, so we are not using a CSV.
   mDefaultCategories << tr( "Farming" ) << tr( "Climatology Meteorology Atmosphere" ) << tr( "Location" ) << tr( "Intelligence Military" ) << tr( "Transportation" ) << tr( "Structure" ) << tr( "Boundaries" );
   mDefaultCategories << tr( "Inland Waters" ) << tr( "Planning Cadastre" ) << tr( "Geoscientific Information" ) << tr( "Elevation" ) << tr( "Health" ) << tr( "Biota" ) << tr( "Oceans" ) << tr( "Environment" );
