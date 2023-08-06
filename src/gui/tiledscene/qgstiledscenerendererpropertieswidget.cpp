@@ -26,7 +26,7 @@
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
 
-static bool _initRenderer( const QString &name, QgsTiledSceneRendererWidgetFunc f, const QString &iconName = QString() )
+static bool initTiledSceneRenderer( const QString &name, QgsTiledSceneRendererWidgetFunc f, const QString &iconName = QString() )
 {
   QgsTiledSceneRendererAbstractMetadata *rendererAbstractMetadata = QgsApplication::tiledSceneRendererRegistry()->rendererMetadata( name );
   if ( !rendererAbstractMetadata )
@@ -46,13 +46,13 @@ static bool _initRenderer( const QString &name, QgsTiledSceneRendererWidgetFunc 
   return true;
 }
 
-static void _initRendererWidgetFunctions()
+void QgsTiledSceneRendererPropertiesWidget::initRendererWidgetFunctions()
 {
   static bool sInitialized = false;
   if ( sInitialized )
     return;
 
-  _initRenderer( QStringLiteral( "texture" ), QgsTiledSceneTextureRendererWidget::create, QStringLiteral( "styleicons/tiledscenetexture.svg" ) );
+  initTiledSceneRenderer( QStringLiteral( "texture" ), QgsTiledSceneTextureRendererWidget::create, QStringLiteral( "styleicons/tiledscenetexture.svg" ) );
 
   sInitialized = true;
 }
@@ -67,7 +67,7 @@ QgsTiledSceneRendererPropertiesWidget::QgsTiledSceneRendererPropertiesWidget( Qg
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
   // initialize registry's widget functions
-  _initRendererWidgetFunctions();
+  initRendererWidgetFunctions();
 
   QgsTiledSceneRendererRegistry *reg = QgsApplication::tiledSceneRendererRegistry();
   const QStringList renderers = reg->renderersList();

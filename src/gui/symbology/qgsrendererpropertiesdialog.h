@@ -161,6 +161,9 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     QgsFeatureRequest::OrderBy mOrderBy;
 
   private:
+
+    static void initRendererWidgetFunctions();
+
     bool mDockMode = false;
 
     friend class QgsAppScreenShots;

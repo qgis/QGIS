@@ -107,6 +107,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     void updateGammaSlider( double value );
 
   private:
+    static void initRendererWidgetFunctions();
     void setRendererWidget( const QString &rendererName );
 
     QgsRasterLayer *mRasterLayer = nullptr;
