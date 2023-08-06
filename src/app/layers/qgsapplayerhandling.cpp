@@ -70,6 +70,12 @@
 
 void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
 {
+  // NOTE: The different ways of calling loadDefaultStyle/loadDefaultMetadata below are intentional.
+  // That's because different layer types unfortunately have different behavior wrt return values and error handling.
+  // Some layer types only return errors when it looks like there IS default styles/metadata BUT they can't be loaded for some reason,
+  // while others consider that lack of default styles/metadata itself is an error!
+  // We want to show user facing errors for the first case, but not in the case that the layer just doesn't have
+  // any default style/metadata.
   switch ( layer->type() )
   {
     case Qgis::LayerType::Raster:
@@ -135,13 +141,23 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
     }
 
     case Qgis::LayerType::VectorTile:
-    case Qgis::LayerType::TiledScene:
     {
       bool ok = false;
       QString error = layer->loadDefaultStyle( ok );
       if ( !ok )
         QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Error loading style" ), error, Qgis::MessageLevel::Warning );
       error = layer->loadDefaultMetadata( ok );
+      if ( !ok )
+        QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Error loading layer metadata" ), error, Qgis::MessageLevel::Warning );
+
+      break;
+    }
+
+    case Qgis::LayerType::TiledScene:
+    {
+      bool ok = false;
+      layer->loadDefaultStyle( ok );
+      QString error = layer->loadDefaultMetadata( ok );
       if ( !ok )
         QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Error loading layer metadata" ), error, Qgis::MessageLevel::Warning );
 
