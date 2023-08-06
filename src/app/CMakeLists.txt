@@ -136,6 +136,7 @@ set(QGIS_APP_SRCS
   raster/qgsrasterelevationpropertieswidget.cpp
 
   tiledscene/qgstiledscenelayerproperties.cpp
+  tiledscene/qgstiledscenelayerstylewidget.cpp
 
   vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexeditor.cpp

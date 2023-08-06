@@ -15,9 +15,15 @@
 #include "qgstiledscenerendererregistry.h"
 #include "qgstiledscenerenderer.h"
 
+// default renderers
+#include "qgstiledscenetexturerenderer.h"
+
 QgsTiledSceneRendererRegistry::QgsTiledSceneRendererRegistry()
 {
   // add default renderers
+  addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "texture" ),
+               QObject::tr( "Textures" ),
+               QgsTiledSceneTextureRenderer::create ) );
 }
 
 QgsTiledSceneRendererRegistry::~QgsTiledSceneRendererRegistry()
@@ -65,6 +71,6 @@ QStringList QgsTiledSceneRendererRegistry::renderersList() const
 
 QgsTiledSceneRenderer *QgsTiledSceneRendererRegistry::defaultRenderer( const QgsTiledSceneLayer * )
 {
-  return nullptr;
+  return new QgsTiledSceneTextureRenderer();
 }
 
