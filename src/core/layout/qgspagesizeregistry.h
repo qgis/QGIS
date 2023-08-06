@@ -37,8 +37,8 @@ class CORE_EXPORT QgsPageSize
     QgsPageSize();
 
     /**
-     * Constructor for QgsPageSize, accepting the \a name of the page size and
-     * page \a size.
+     * Constructor for QgsPageSize, accepting the \a name of the page size, the
+     * page \a size and the \a displayName.
     */
     QgsPageSize( const QString &name, const QgsLayoutSize &size, const QString &displayName = QString() );
 
