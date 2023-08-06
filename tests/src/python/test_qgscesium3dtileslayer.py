@@ -15,15 +15,12 @@ import tempfile
 import qgis  # NOQA
 from qgis.core import (
     Qgis,
-    QgsBox3D,
     QgsTiledSceneLayer,
     QgsCoordinateReferenceSystem,
-    QgsMatrix4x4,
     QgsOrientedBox3D,
     QgsTiledSceneRequest,
 )
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 start_app()
 
@@ -103,6 +100,31 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertIn("1.1", layer.dataProvider().htmlMetadata())
             self.assertIn("e575c6f1", layer.dataProvider().htmlMetadata())
             self.assertIn("1.2 - 67.01", layer.dataProvider().htmlMetadata())
+
+            # check metadata
+            layer.loadDefaultMetadata()
+            self.assertEqual(layer.metadata().type(), "dataset")
+            self.assertEqual(layer.metadata().identifier(), 'e575c6f1')
+            self.assertEqual(layer.metadata().crs().authid(), 'EPSG:4978')
+            self.assertEqual(layer.metadata().extent().spatialExtents()[0].extentCrs.authid(), "EPSG:4979")
+            self.assertAlmostEqual(
+                layer.metadata().extent().spatialExtents()[0].bounds.xMinimum(), -75.61444, 3
+            )
+            self.assertAlmostEqual(
+                layer.metadata().extent().spatialExtents()[0].bounds.xMaximum(), -75.609747, 3
+            )
+            self.assertAlmostEqual(
+                layer.metadata().extent().spatialExtents()[0].bounds.yMinimum(), 40.040721, 3
+            )
+            self.assertAlmostEqual(
+                layer.metadata().extent().spatialExtents()[0].bounds.yMaximum(), 40.0443399, 3
+            )
+            self.assertAlmostEqual(
+                layer.metadata().extent().spatialExtents()[0].bounds.zMinimum(), 1.2, 3
+            )
+            self.assertAlmostEqual(
+                layer.metadata().extent().spatialExtents()[0].bounds.zMaximum(), 67.0099999, 3
+            )
 
     def test_source_bounding_volume_region_with_transform(self):
         with tempfile.TemporaryDirectory() as temp_dir:

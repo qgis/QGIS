@@ -32,6 +32,7 @@
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenerequest.h"
 #include "qgstiledscenetile.h"
+#include "qgsreadwritelocker.h"
 
 #include <QUrl>
 #include <QIcon>
@@ -113,8 +114,9 @@ class QgsCesiumTilesDataProviderSharedData
 
     QgsTiledSceneIndex mIndex;
 
-    QReadWriteLock mMutex;
+    QgsLayerMetadata mLayerMetadata;
 
+    QReadWriteLock mMutex;
 
 };
 
@@ -558,6 +560,18 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
 {
   mTileset = json::parse( tileset.toStdString() );
 
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+
+  if ( mTileset.contains( "asset" ) )
+  {
+    const auto &asset = mTileset[ "asset" ];
+    if ( asset.contains( "tilesetVersion" ) )
+    {
+      const QString tilesetVersion = QString::fromStdString( asset["tilesetVersion"].get<std::string>() );
+      mLayerMetadata.setIdentifier( tilesetVersion );
+    }
+  }
+
   // parse root
   {
     const auto &root = mTileset[ "root" ];
@@ -569,6 +583,8 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
     {
       // TODO -- on some datasets there is a "boundingVolume" present on the tileset itself, i.e. not the root node.
       // what does this mean? Should we use it instead of the root node bounding volume if it's present?
+
+      QgsLayerMetadata::SpatialExtent spatialExtent;
 
       const auto &rootBoundingVolume = root[ "boundingVolume" ];
 
@@ -590,7 +606,10 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
           mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
           mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
           mSceneCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
+          mLayerMetadata.setCrs( mSceneCrs );
           mExtent = rootRegion.toRectangle();
+          spatialExtent.extentCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
+          spatialExtent.bounds = rootRegion;
         }
       }
       else if ( rootBoundingVolume.contains( "box" ) )
@@ -604,6 +623,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
           // range in EPSG:4978 !
           mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
           mSceneCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
+          mLayerMetadata.setCrs( mSceneCrs );
 
           const QgsCoordinateTransform transform( mSceneCrs, mLayerCrs, transformContext );
 
@@ -621,6 +641,9 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
           {
             QgsDebugError( QStringLiteral( "Caught transform exception when transforming boundingVolume" ) );
           }
+
+          spatialExtent.extentCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
+          spatialExtent.bounds = mBoundingVolume->bounds();
         }
       }
       else if ( rootBoundingVolume.contains( "sphere" ) )
@@ -634,6 +657,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
           // range in EPSG:4978 !
           mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
           mSceneCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
+          mLayerMetadata.setCrs( mSceneCrs );
 
           const QgsCoordinateTransform transform( mSceneCrs, mLayerCrs, transformContext );
 
@@ -651,12 +675,19 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
           {
             QgsDebugError( QStringLiteral( "Caught transform exception when transforming boundingVolume" ) );
           }
+
+          spatialExtent.extentCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
+          spatialExtent.bounds = mBoundingVolume->bounds();
         }
       }
       else
       {
         QgsDebugError( QStringLiteral( "unsupported boundingVolume format" ) );
       }
+
+      QgsLayerMetadata::Extent layerExtent;
+      layerExtent.setSpatialExtents( {spatialExtent } );
+      mLayerMetadata.setExtent( layerExtent );
     }
 
     mIndex = QgsTiledSceneIndex(
@@ -692,8 +723,14 @@ QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QgsCesiumTilesData
   , mIsValid( other.mIsValid )
   , mAuthCfg( other.mAuthCfg )
   , mHeaders( other.mHeaders )
-  , mShared( other.mShared )
 {
+  QgsReadWriteLocker locker( other.mShared->mMutex, QgsReadWriteLocker::Read );
+  mShared = other.mShared;
+}
+
+Qgis::TiledSceneProviderCapabilities QgsCesiumTilesDataProvider::capabilities() const
+{
+  return Qgis::TiledSceneProviderCapability::ReadLayerMetadata;
 }
 
 QgsCesiumTilesDataProvider::~QgsCesiumTilesDataProvider() = default;
@@ -739,6 +776,8 @@ bool QgsCesiumTilesDataProvider::init()
 
     const QString base = tileSetUri.left( tileSetUri.lastIndexOf( '/' ) );
     mShared->initialize( content.content(), base, transformContext(), mAuthCfg, mHeaders );
+
+    mShared->mLayerMetadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), tileSetUri ) );
   }
   else
   {
@@ -770,6 +809,7 @@ QgsCoordinateReferenceSystem QgsCesiumTilesDataProvider::crs() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
   return mShared->mLayerCrs;
 }
 
@@ -777,6 +817,7 @@ QgsRectangle QgsCesiumTilesDataProvider::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
   return mShared->mExtent;
 }
 
@@ -807,6 +848,7 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
 
   QString metadata;
 
+  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
   if ( mShared->mTileset.contains( "asset" ) )
   {
     const auto &asset = mShared->mTileset[ "asset" ];
@@ -861,25 +903,44 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
   return metadata;
 }
 
+QgsLayerMetadata QgsCesiumTilesDataProvider::layerMetadata() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( !mShared )
+    return QgsLayerMetadata();
+
+  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
+  return mShared->mLayerMetadata;
+}
+
 const QgsCoordinateReferenceSystem QgsCesiumTilesDataProvider::sceneCrs() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( !mShared )
+    return QgsCoordinateReferenceSystem();
 
-  return mShared ? mShared->mSceneCrs : QgsCoordinateReferenceSystem();
+  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
+  return mShared->mSceneCrs ;
 }
 
 const QgsAbstractTiledSceneBoundingVolume *QgsCesiumTilesDataProvider::boundingVolume() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( !mShared )
+    return nullptr;
 
+  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
   return mShared ? mShared->mBoundingVolume.get() : nullptr;
 }
 
 QgsTiledSceneIndex QgsCesiumTilesDataProvider::index() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( !mShared )
+    return QgsTiledSceneIndex( nullptr );
 
-  return mShared ? mShared->mIndex : QgsTiledSceneIndex( nullptr );
+  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
+  return mShared->mIndex;
 }
 
 

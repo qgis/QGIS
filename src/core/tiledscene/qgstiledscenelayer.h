@@ -111,6 +111,7 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
     QString htmlMetadata() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
 
   private slots:
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
