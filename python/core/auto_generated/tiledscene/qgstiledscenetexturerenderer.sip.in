@@ -1,0 +1,50 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgstiledscenetexturerenderer.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsTiledSceneTextureRenderer : QgsTiledSceneRenderer
+{
+%Docstring(signature="appended")
+Renders tiled scene layers using textures.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledscenetexturerenderer.h"
+%End
+  public:
+
+    QgsTiledSceneTextureRenderer();
+%Docstring
+Constructor for QgsTiledSceneTextureRenderer.
+%End
+
+    virtual QString type() const;
+
+    virtual QgsTiledSceneRenderer *clone() const;
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+
+    static QgsTiledSceneRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a textured renderer from an XML ``element``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgstiledscenetexturerenderer.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
