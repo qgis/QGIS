@@ -9,6 +9,7 @@ RUN dnf -y --refresh install \
     clang \
     clazy \
     curl \
+    draco-devel \
     exiv2-devel \
     expat-devel \
     fcgi-devel \
