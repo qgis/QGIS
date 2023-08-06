@@ -42,7 +42,7 @@ class QgsVector3D;
 
 namespace tinygltf
 {
-  class Image;
+  struct Image;
   class Model;
   class Node;
   class TinyGLTF;
