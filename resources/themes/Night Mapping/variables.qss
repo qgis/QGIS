@@ -1,5 +1,5 @@
 @background: #323232
-@itembackground: #222
+@itembackground: #202020
 @itemalternativebackground: #9a9a9a
 @itemdarkbackground: #535353
 @darkgradient: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #565656, stop: 0.1 #525252, stop: 0.5 #4e4e4e, stop: 0.9 #4a4a4a, stop: 1 #464646)
