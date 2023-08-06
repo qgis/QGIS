@@ -84,6 +84,7 @@ BuildRequires:  fcgi-devel
 BuildRequires:  protobuf-compiler
 BuildRequires:  protobuf-devel
 BuildRequires:  protobuf-lite-devel
+BuildRequires:  draco-devel
 
 # OpenCL
 BuildRequires:  opencl-headers
