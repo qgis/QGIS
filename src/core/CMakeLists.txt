@@ -347,6 +347,8 @@ set(QGIS_CORE_SRCS
   tiledscene/qgstiledscenelayerrenderer.cpp
   tiledscene/qgstiledscenenode.cpp
   tiledscene/qgstiledsceneprovidermetadata.cpp
+  tiledscene/qgstiledscenerenderer.cpp
+  tiledscene/qgstiledscenerendererregistry.cpp
   tiledscene/qgstiledscenerequest.cpp
   tiledscene/qgstiledscenetile.cpp
 
@@ -1921,6 +1923,8 @@ set(QGIS_CORE_HDRS
   tiledscene/qgstiledscenelayerrenderer.h
   tiledscene/qgstiledscenenode.h
   tiledscene/qgstiledsceneprovidermetadata.h
+  tiledscene/qgstiledscenerenderer.h
+  tiledscene/qgstiledscenerendererregistry.h
   tiledscene/qgstiledscenerequest.h
   tiledscene/qgstiledscenetile.h
 

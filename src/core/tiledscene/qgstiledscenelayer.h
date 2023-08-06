@@ -22,6 +22,8 @@
 #include "qgsmaplayer.h"
 #include "qgstiledscenedataprovider.h"
 
+class QgsTiledSceneRenderer;
+
 /**
  * \ingroup core
  *
@@ -112,6 +114,30 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
     QString htmlMetadata() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
+    /**
+     * Returns the 2D renderer for the tiled scene.
+     *
+     * \see setRenderer()
+     */
+    QgsTiledSceneRenderer *renderer();
+
+    /**
+     * Returns the 2D renderer for the tiled scene.
+     * \note not available in Python bindings
+     *
+     * \see setRenderer()
+     */
+    const QgsTiledSceneRenderer *renderer() const SIP_SKIP;
+
+    /**
+     * Sets the 2D \a renderer for the tiled scene.
+     *
+     * Ownership of \a renderer is transferred to the layer.
+     *
+     * \see renderer()
+     */
+    void setRenderer( QgsTiledSceneRenderer *renderer SIP_TRANSFER );
+
   private slots:
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
 
@@ -124,6 +150,7 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
 #endif
 
     std::unique_ptr<QgsTiledSceneDataProvider> mDataProvider;
+    std::unique_ptr<QgsTiledSceneRenderer> mRenderer;
 
     LayerOptions mLayerOptions;
 };

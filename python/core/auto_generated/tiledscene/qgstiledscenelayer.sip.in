@@ -9,6 +9,7 @@
 
 
 
+
 class QgsTiledSceneLayer : QgsMapLayer
 {
 %Docstring(signature="appended")
@@ -88,6 +89,23 @@ QgsTiledSceneLayer cannot be copied.
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
+
+    QgsTiledSceneRenderer *renderer();
+%Docstring
+Returns the 2D renderer for the tiled scene.
+
+.. seealso:: :py:func:`setRenderer`
+%End
+
+
+    void setRenderer( QgsTiledSceneRenderer *renderer /Transfer/ );
+%Docstring
+Sets the 2D ``renderer`` for the tiled scene.
+
+Ownership of ``renderer`` is transferred to the layer.
+
+.. seealso:: :py:func:`renderer`
+%End
 
   private:
     QgsTiledSceneLayer( const QgsTiledSceneLayer &rhs );
