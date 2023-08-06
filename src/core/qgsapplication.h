@@ -70,6 +70,7 @@ class QgsConnectionRegistry;
 class QgsScaleBarRendererRegistry;
 class Qgs3DSymbolRegistry;
 class QgsPointCloudRendererRegistry;
+class QgsTiledSceneRendererRegistry;
 class QgsTileDownloadManager;
 class QgsCoordinateReferenceSystemRegistry;
 class QgsRecentStyleHandler;
@@ -722,6 +723,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsPointCloudRendererRegistry *pointCloudRendererRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the application's tiled scene renderer registry, used for managing tiled scene layer 2D renderers.
+     * \since QGIS 3.34
+     */
+    static QgsTiledSceneRendererRegistry *tiledSceneRendererRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's data item provider registry, which keeps a list of data item
      * providers that may add items to the browser tree.
      * \since QGIS 3.0
@@ -1170,6 +1177,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;
       QgsPointCloudRendererRegistry *mPointCloudRendererRegistry = nullptr;
+      QgsTiledSceneRendererRegistry *mTiledSceneRendererRegistry = nullptr;
       QgsSvgCache *mSvgCache = nullptr;
       QgsImageCache *mImageCache = nullptr;
       QgsSourceCache *mSourceCache = nullptr;

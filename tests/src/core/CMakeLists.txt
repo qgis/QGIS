@@ -194,6 +194,7 @@ set(TESTS
  testqgstemporalproperty.cpp
  testqgstemporalrangeobject.cpp
  testqgstiledsceneconnection.cpp
+ testqgstiledscenerendererregistry.cpp
  testqgstiledownloadmanager.cpp
  testqgstracer.cpp
  testqgstranslateproject.cpp
