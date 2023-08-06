@@ -1025,6 +1025,13 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                                  ver );
   }
 
+  // use a localized date/time short format string
+  QString dateTimeFormat = QLocale().dateTimeFormat( QLocale::FormatType::ShortFormat );
+  if ( !dateTimeFormat.contains( "yyyy" ) )
+  {
+    // enforce year with 4 digits
+    dateTimeFormat.replace( "yy", "yyyy" );
+  }
   // if we allow experimental, we show both stable and experimental versions
   if ( ! metadata->value( QStringLiteral( "version_available_stable" ) ).isEmpty() )
   {
@@ -1040,7 +1047,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       const QDateTime dateUpdated = QDateTime::fromString( metadata->value( QStringLiteral( "update_date_stable" ) ).trimmed(), Qt::ISODate );
       if ( dateUpdated.isValid() )
-        dateUpdatedStr += tr( "updated at %1" ).arg( dateUpdated.toString() );
+        dateUpdatedStr += tr( "updated at %1" ).arg( QLocale().toString( dateUpdated, dateTimeFormat ) );
     }
 
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
@@ -1064,7 +1071,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       const QDateTime dateUpdated = QDateTime::fromString( metadata->value( QStringLiteral( "update_date_experimental" ) ).trimmed(), Qt::ISODate );
       if ( dateUpdated.isValid() )
-        dateUpdatedStr += tr( "updated at %1" ).arg( dateUpdated.toString() );
+        dateUpdatedStr += tr( "updated at %1" ).arg( QLocale().toString( dateUpdated, dateTimeFormat ) );
     }
 
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
