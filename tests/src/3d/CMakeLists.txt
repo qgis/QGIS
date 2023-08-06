@@ -26,6 +26,7 @@ set(TESTS
   testqgs3dsymbolregistry.cpp
   testqgs3dutils.cpp
   testqgsaabb.cpp
+  testqgsgltf3dutils.cpp
   testqgslayout3dmap.cpp
   testqgsmaterialregistry.cpp
   testqgspointcloud3drendering.cpp

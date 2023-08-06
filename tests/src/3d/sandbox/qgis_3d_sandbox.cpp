@@ -48,6 +48,12 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( visibleLayers );
 
+  map->setExtent( fullExtent );
+
+  Qgs3DAxisSettings axis;
+  axis.setMode( Qgs3DAxisSettings::Mode::Off );
+  map->set3DAxisSettings( axis );
+
   map->setTransformContext( QgsProject::instance()->transformContext() );
   map->setPathResolver( QgsProject::instance()->pathResolver() );
   map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );

@@ -338,6 +338,7 @@ set(QGIS_CORE_SRCS
 
   tiledscene/qgscesiumtilesdataprovider.cpp
   tiledscene/qgscesiumutils.cpp
+  tiledscene/qgsgltfutils.cpp
   tiledscene/qgstiledsceneboundingvolume.cpp
   tiledscene/qgstiledsceneconnection.cpp
   tiledscene/qgstiledscenedataitems.cpp
@@ -1912,6 +1913,7 @@ set(QGIS_CORE_HDRS
 
   tiledscene/qgscesiumtilesdataprovider.h
   tiledscene/qgscesiumutils.h
+  tiledscene/qgsgltfutils.h
   tiledscene/qgstiledsceneboundingvolume.h
   tiledscene/qgstiledsceneconnection.h
   tiledscene/qgstiledscenedataprovider.h
@@ -2455,6 +2457,12 @@ endif()
 if (WITH_PDAL)
   target_link_libraries(qgis_core
     ${PDAL_LIBRARIES}
+  )
+endif()
+
+if (WITH_DRACO)
+  target_link_libraries(qgis_core
+    draco::draco
   )
 endif()
 
