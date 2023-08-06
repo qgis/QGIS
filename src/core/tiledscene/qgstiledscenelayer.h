@@ -113,6 +113,7 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
     QString htmlMetadata() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
 
     /**
      * Returns the 2D renderer for the tiled scene.

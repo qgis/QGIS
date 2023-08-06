@@ -89,6 +89,8 @@ QgsTiledSceneLayer cannot be copied.
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
+    virtual QString loadDefaultMetadata( bool &resultFlag /Out/ );
+
 
     QgsTiledSceneRenderer *renderer();
 %Docstring

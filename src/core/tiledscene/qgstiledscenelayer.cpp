@@ -82,6 +82,26 @@ QgsRectangle QgsTiledSceneLayer::extent() const
   return mDataProvider->extent();
 }
 
+QString QgsTiledSceneLayer::loadDefaultMetadata( bool &resultFlag )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  resultFlag = false;
+  if ( !mDataProvider || !mDataProvider->isValid() )
+    return QString();
+
+  if ( qgis::down_cast< QgsTiledSceneDataProvider * >( mDataProvider.get() )->capabilities() & Qgis::TiledSceneProviderCapability::ReadLayerMetadata )
+  {
+    setMetadata( mDataProvider->layerMetadata() );
+  }
+  else
+  {
+    QgsMapLayer::loadDefaultMetadata( resultFlag );
+  }
+  resultFlag = true;
+  return QString();
+}
+
 QgsMapLayerRenderer *QgsTiledSceneLayer::createMapRenderer( QgsRenderContext &context )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
