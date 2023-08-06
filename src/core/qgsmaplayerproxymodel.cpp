@@ -50,6 +50,7 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
        ( filters.testFlag( VectorTileLayer ) && layer->type() == Qgis::LayerType::VectorTile ) ||
        ( filters.testFlag( PointCloudLayer ) && layer->type() == Qgis::LayerType::PointCloud ) ||
        ( filters.testFlag( AnnotationLayer ) && layer->type() == Qgis::LayerType::Annotation ) ||
+       ( filters.testFlag( TiledSceneLayer ) && layer->type() == Qgis::LayerType::TiledScene ) ||
        ( filters.testFlag( PluginLayer ) && layer->type() == Qgis::LayerType::Plugin ) )
     return true;
 
