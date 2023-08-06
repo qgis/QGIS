@@ -66,6 +66,8 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
 
   private:
 
+    static void initRendererWidgetFunctions();
+
     QgsPointCloudLayer *mLayer = nullptr;
     QgsStyle *mStyle = nullptr;
 

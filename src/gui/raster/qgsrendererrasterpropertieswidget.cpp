@@ -33,7 +33,7 @@
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
 
-static void _initRendererWidgetFunctions()
+void QgsRendererRasterPropertiesWidget::initRendererWidgetFunctions()
 {
   static bool sInitialized = false;
   if ( sInitialized )
@@ -49,8 +49,6 @@ static void _initRendererWidgetFunctions()
   sInitialized = true;
 }
 
-
-
 QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
   , mRasterLayer( qobject_cast<QgsRasterLayer *>( layer ) )
@@ -61,7 +59,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   setupUi( this );
   connect( mResetColorRenderingBtn, &QToolButton::clicked, this, &QgsRendererRasterPropertiesWidget::mResetColorRenderingBtn_clicked );
 
-  _initRendererWidgetFunctions();
+  initRendererWidgetFunctions();
 
   mResamplingUtils.initWidgets( mRasterLayer, mZoomedInResamplingComboBox, mZoomedOutResamplingComboBox, mMaximumOversamplingSpinBox, mCbEarlyResampling );
 

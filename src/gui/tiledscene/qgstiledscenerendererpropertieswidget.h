@@ -66,6 +66,8 @@ class GUI_EXPORT QgsTiledSceneRendererPropertiesWidget : public QgsMapLayerConfi
 
   private:
 
+    static void initRendererWidgetFunctions();
+
     QgsTiledSceneLayer *mLayer = nullptr;
     QgsStyle *mStyle = nullptr;
 
