@@ -31,6 +31,7 @@ class QgsTiledSceneLayer;
 class QgsFeedback;
 class QgsMapClippingRegion;
 class QgsAbstractTiledSceneBoundingVolume;
+class QgsTiledSceneRenderer;
 
 
 /**
@@ -57,6 +58,9 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
     QgsFeedback *feedback() const override { return mFeedback.get(); }
 
   private:
+
+    std::unique_ptr< QgsTiledSceneRenderer > mRenderer;
+
     QList< QgsMapClippingRegion > mClippingRegions;
 
     int mRenderTimeHint = 0;

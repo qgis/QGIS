@@ -25,6 +25,7 @@
 #include "qgsrendercontext.h"
 #include "qgscurvepolygon.h"
 #include "qgslinesymbol.h"
+#include "qgstiledscenerenderer.h"
 
 QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -32,8 +33,10 @@ QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *laye
 {
   // We must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
   // or use some locking to prevent read/write from multiple threads
-  if ( !layer->dataProvider() ) // || !layer->renderer() )
+  if ( !layer->dataProvider() || !layer->renderer() )
     return;
+
+  mRenderer.reset( layer->renderer()->clone() );
 
   mSceneCrs = layer->dataProvider()->sceneCrs();
 
@@ -48,6 +51,8 @@ QgsTiledSceneLayerRenderer::~QgsTiledSceneLayerRenderer() = default;
 
 bool QgsTiledSceneLayerRenderer::render()
 {
+  QgsTiledSceneRenderContext context( *renderContext(), mFeedback.get() );
+
   // Set up the render configuration options
   QPainter *painter = renderContext()->painter();
 
@@ -69,6 +74,10 @@ bool QgsTiledSceneLayerRenderer::render()
     mBlockRenderUpdates = true;
     mElapsedTimer.start();
   }
+
+  mRenderer->startRender( context );
+
+  bool canceled = false;
 
   if ( mLayerBoundingVolume )
   {
@@ -105,8 +114,9 @@ bool QgsTiledSceneLayerRenderer::render()
     }
   }
 
+  mRenderer->stopRender( context );
   mReadyToCompose = true;
-  return false;
+  return !canceled;
 }
 
 void QgsTiledSceneLayerRenderer::setLayerRenderingTimeHint( int time )

@@ -509,5 +509,7 @@
 %Include auto_generated/settings/qgssettingstreewidget.sip
 %Include auto_generated/tableeditor/qgstableeditordialog.sip
 %Include auto_generated/tableeditor/qgstableeditorwidget.sip
+%Include auto_generated/tiledscene/qgstiledscenerendererpropertieswidget.sip
+%Include auto_generated/tiledscene/qgstiledscenerendererwidget.sip
 %Include auto_generated/vectortile/qgsvectortilelayerproperties.sip
 %Include auto_generated/editorwidgets/qgsqmlwidgetwrapper.sip
