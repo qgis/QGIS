@@ -171,22 +171,22 @@ std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( tinygltf::Node &no
     matrix.reset( new QMatrix4x4 );
     float *mdata = matrix->data();
     for ( int i = 0; i < 16; ++i )
-      mdata[i] = node.matrix[i];
+      mdata[i] = static_cast< float >( node.matrix[i] );
   }
   else if ( node.translation.size() || node.rotation.size() || node.scale.size() )
   {
     matrix.reset( new QMatrix4x4 );
     if ( node.scale.size() )
     {
-      matrix->scale( node.scale[0], node.scale[1], node.scale[2] );
+      matrix->scale( static_cast< float >( node.scale[0] ), static_cast< float >( node.scale[1] ), static_cast< float >( node.scale[2] ) );
     }
     if ( node.rotation.size() )
     {
-      matrix->rotate( QQuaternion( node.rotation[3], node.rotation[0], node.rotation[1], node.rotation[2] ) );
+      matrix->rotate( QQuaternion( static_cast< float >( node.rotation[3] ), static_cast< float >( node.rotation[0] ), static_cast< float >( node.rotation[1] ), static_cast< float >( node.rotation[2] ) ) );
     }
     if ( node.translation.size() )
     {
-      matrix->translate( node.translation[0], node.translation[1], node.translation[2] );
+      matrix->translate( static_cast< float >( node.translation[0] ), static_cast< float >( node.translation[1] ), static_cast< float >( node.translation[2] ) );
     }
   }
   return matrix;
@@ -278,7 +278,7 @@ bool QgsGltfUtils::loadImageDataWithQImage(
   image->pixel_type = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE;
 
   image->image.resize( static_cast<size_t>( image->width * image->height * image->component ) * size_t( image->bits / 8 ) );
-  std::copy( img.constBits(), img.constBits() + image->width * image->height * image->component * ( image->bits / 8 ), image->image.begin() );
+  std::copy( img.constBits(), img.constBits() + static_cast< std::size_t >( image->width ) * image->height * image->component * ( image->bits / 8 ), image->image.begin() );
 
   return true;
 }
