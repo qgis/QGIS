@@ -160,9 +160,9 @@ static Qt3DQAttribute *reprojectPositions( tinygltf::Model &model, int accessorI
     double z = vz[i] - sceneOrigin.z();
 
     // QGIS 3D uses base plane (X,-Z) with Y up - so flip the coordinates
-    out[i * 3 + 0] = x;
-    out[i * 3 + 1] = z;
-    out[i * 3 + 2] = -y;
+    out[i * 3 + 0] = static_cast< float >( x );
+    out[i * 3 + 1] = static_cast< float >( z );
+    out[i * 3 + 2] = static_cast< float >( -y );
   }
 
   Qt3DQBuffer *buffer = new Qt3DQBuffer();
