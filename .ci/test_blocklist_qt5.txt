@@ -24,6 +24,3 @@ test_core_layerdefinition
 PyQgsProviderConnectionMssql
 PyQgsStyleStorageMssql
 
-# CI setup is no longer working for this test
-PyQgsExternalStorageAwsS3
-

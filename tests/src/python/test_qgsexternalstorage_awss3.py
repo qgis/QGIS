@@ -34,7 +34,7 @@ class TestPyQgsExternalStorageAwsS3(TestPyQgsExternalStorageBase, unittest.TestC
         super().setUpClass()
         unittest.TestCase.setUpClass()
 
-        bucket_name = "test_bucket"
+        bucket_name = "test-bucket"
 
         cls.auth_config = QgsAuthMethodConfig("AWSS3")
         cls.auth_config.setConfig("username", "minioadmin")
