@@ -71,6 +71,7 @@ set(TESTS
  testqgsgenericspatialindex.cpp
  testqgsgeometryimport.cpp
  testqgsgeopdfexport.cpp
+ testqgsgltfutils.cpp
  testqgsgml.cpp
  testqgsgradients.cpp
  testqgsgraduatedsymbolrenderer.cpp

@@ -99,6 +99,67 @@ bool QgsGltfUtils::accessorToMapCoordinates( tinygltf::Model &model, int accesso
   return true;
 }
 
+bool QgsGltfUtils::extractTextureCoordinates( tinygltf::Model &model, int accessorIndex, QVector<double> &x, QVector<double> &y )
+{
+  tinygltf::Accessor &accessor = model.accessors[accessorIndex];
+  tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
+  tinygltf::Buffer &b = model.buffers[bv.buffer];
+
+  if ( accessor.componentType != TINYGLTF_PARAMETER_TYPE_FLOAT || accessor.type != TINYGLTF_TYPE_VEC2 )
+  {
+    return false;
+  }
+
+  unsigned char *ptr = b.data.data() + bv.byteOffset + accessor.byteOffset;
+  x.resize( accessor.count );
+  y.resize( accessor.count );
+
+  double *xOut = x.data();
+  double *yOut = y.data();
+
+  for ( std::size_t i = 0; i < accessor.count; i++ )
+  {
+    float *fptr = reinterpret_cast< float * >( ptr );
+
+    *xOut++ = fptr[0];
+    *yOut++ = fptr[1];
+
+    if ( bv.byteStride )
+      ptr += bv.byteStride;
+    else
+      ptr += 2 * sizeof( float );
+  }
+  return true;
+}
+
+QgsGltfUtils::ResourceType QgsGltfUtils::imageResourceType( tinygltf::Model &model, int index )
+{
+  tinygltf::Image &img = model.images[index];
+
+  if ( !img.image.empty() )
+  {
+    return ResourceType::Embedded;
+  }
+  else
+  {
+    return ResourceType::Linked;
+  }
+}
+
+QImage QgsGltfUtils::extractEmbeddedImage( tinygltf::Model &model, int index )
+{
+  tinygltf::Image &img = model.images[index];
+  if ( !img.image.empty() )
+    return QImage( img.image.data(), img.width, img.height, QImage::Format_ARGB32 );
+  else
+    return QImage();
+}
+
+QString QgsGltfUtils::linkedImagePath( tinygltf::Model &model, int index )
+{
+  tinygltf::Image &img = model.images[index];
+  return QString::fromStdString( img.uri );
+}
 
 std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( tinygltf::Node &node )
 {
