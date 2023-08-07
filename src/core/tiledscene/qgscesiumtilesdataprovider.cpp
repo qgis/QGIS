@@ -116,7 +116,7 @@ class QgsCesiumTilesDataProviderSharedData
 
     QgsLayerMetadata mLayerMetadata;
     QString mError;
-    QReadWriteLock mMutex;
+    QReadWriteLock mReadWriteLock;
 
 };
 
@@ -730,7 +730,7 @@ QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QgsCesiumTilesData
   , mAuthCfg( other.mAuthCfg )
   , mHeaders( other.mHeaders )
 {
-  QgsReadWriteLocker locker( other.mShared->mMutex, QgsReadWriteLocker::Read );
+  QgsReadWriteLocker locker( other.mShared->mReadWriteLock, QgsReadWriteLocker::Read );
   mShared = other.mShared;
 }
 
@@ -820,7 +820,7 @@ QgsCoordinateReferenceSystem QgsCesiumTilesDataProvider::crs() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
+  QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
   return mShared->mLayerCrs;
 }
 
@@ -828,7 +828,7 @@ QgsRectangle QgsCesiumTilesDataProvider::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
+  QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
   return mShared->mExtent;
 }
 
@@ -859,7 +859,7 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
 
   QString metadata;
 
-  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
+  QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
   if ( mShared->mTileset.contains( "asset" ) )
   {
     const auto &asset = mShared->mTileset[ "asset" ];
@@ -920,7 +920,7 @@ QgsLayerMetadata QgsCesiumTilesDataProvider::layerMetadata() const
   if ( !mShared )
     return QgsLayerMetadata();
 
-  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
+  QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
   return mShared->mLayerMetadata;
 }
 
@@ -930,7 +930,7 @@ const QgsCoordinateReferenceSystem QgsCesiumTilesDataProvider::sceneCrs() const
   if ( !mShared )
     return QgsCoordinateReferenceSystem();
 
-  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
+  QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
   return mShared->mSceneCrs ;
 }
 
@@ -940,7 +940,7 @@ const QgsAbstractTiledSceneBoundingVolume *QgsCesiumTilesDataProvider::boundingV
   if ( !mShared )
     return nullptr;
 
-  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
+  QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
   return mShared ? mShared->mBoundingVolume.get() : nullptr;
 }
 
@@ -950,7 +950,7 @@ QgsTiledSceneIndex QgsCesiumTilesDataProvider::index() const
   if ( !mShared )
     return QgsTiledSceneIndex( nullptr );
 
-  QgsReadWriteLocker locker( mShared->mMutex, QgsReadWriteLocker::Read );
+  QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
   return mShared->mIndex;
 }
 
