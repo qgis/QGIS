@@ -115,7 +115,7 @@ class QgsCesiumTilesDataProviderSharedData
     QgsTiledSceneIndex mIndex;
 
     QgsLayerMetadata mLayerMetadata;
-
+    QString mError;
     QReadWriteLock mMutex;
 
 };
@@ -559,6 +559,11 @@ QgsCesiumTilesDataProviderSharedData::QgsCesiumTilesDataProviderSharedData()
 void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, const QString &rootPath, const QgsCoordinateTransformContext &transformContext, const QString &authCfg, const QgsHttpHeaders &headers )
 {
   mTileset = json::parse( tileset.toStdString() );
+  if ( !mTileset.contains( "root" ) )
+  {
+    mError = QObject::tr( "JSON is not a valid Cesium 3D Tiles source (does not contain \"root\" value)" );
+    return;
+  }
 
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
 
@@ -682,7 +687,8 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
       }
       else
       {
-        QgsDebugError( QStringLiteral( "unsupported boundingVolume format" ) );
+        mError = QObject::tr( "JSON is not a valid Cesium 3D Tiles source (unsupported boundingVolume format)" );
+        return;
       }
 
       QgsLayerMetadata::Extent layerExtent;
@@ -802,6 +808,11 @@ bool QgsCesiumTilesDataProvider::init()
     }
   }
 
+  if ( !mShared->mIndex.isValid() )
+  {
+    appendError( mShared->mError );
+    return false;
+  }
   return true;
 }
 

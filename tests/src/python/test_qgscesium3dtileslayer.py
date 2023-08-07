@@ -30,6 +30,20 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
         layer = QgsTiledSceneLayer("/nope/tileset.json", "my layer", "cesiumtiles")
         self.assertFalse(layer.dataProvider().isValid())
 
+    def test_invalid_json(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmp_file = os.path.join(temp_dir, "tileset.json")
+            with open(tmp_file, "wt", encoding="utf-8") as f:
+                f.write(
+                    """
+{
+  "featurecollection": {}
+}
+""")
+            layer = QgsTiledSceneLayer(tmp_file, "my layer", "cesiumtiles")
+            self.assertFalse(layer.dataProvider().isValid())
+            self.assertEqual(layer.error().summary(), 'JSON is not a valid Cesium 3D Tiles source (does not contain "root" value)')
+
     def test_source_bounding_volume_region(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_file = os.path.join(temp_dir, "tileset.json")
