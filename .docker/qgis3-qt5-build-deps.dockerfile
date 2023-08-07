@@ -14,8 +14,10 @@ LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Ve
 
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
-  && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu jammy main" >> /etc/apt/sources.list \
-  && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu jammy main" >> /etc/apt/sources.list \
+  # && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu jammy main" >> /etc/apt/sources.list \
+  # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu jammy main" >> /etc/apt/sources.list \
+  # && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 089EBE08314DF160 \
+  && echo "deb http://archive.ubuntu.com/ubuntu jammy main universe" >> /etc/apt/sources.list \
   && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 089EBE08314DF160 \
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
