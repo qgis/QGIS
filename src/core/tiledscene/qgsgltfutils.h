@@ -35,6 +35,7 @@
 #include <QVector>
 
 class QMatrix4x4;
+class QImage;
 
 class QgsCoordinateTransform;
 class QgsMatrix4x4;
@@ -83,6 +84,43 @@ class CORE_EXPORT QgsGltfUtils
                                           QVector<double> &vx, QVector<double> &vy, QVector<double> &vz );
 
     /**
+     * Types of resources referenced by GLTF models.
+     */
+    enum class ResourceType
+    {
+      Embedded, //!< Embedded resource
+      Linked, //!< Linked (external) resource
+    };
+
+    /**
+     * Returns the resource type of the image with specified \a index from a \a model.
+     *
+     * \see extractEmbeddedImage()
+     * \see linkedImagePath()
+     */
+    static ResourceType imageResourceType( tinygltf::Model &model, int index );
+
+    /**
+     * Extracts the embedded image with specified \a index from a \a model.
+     *
+     * Returns a null QImage if no embedded image exists with the given \a index.
+     *
+     * \see imageResourceType()
+     * \see linkedImagePath()
+     */
+    static QImage extractEmbeddedImage( tinygltf::Model &model, int index );
+
+    /**
+     * Extracts the path to a linked image with specified \a index from a \a model.
+     *
+     * Returns a empty string if no linked image exists with the given \a index.
+     *
+     * \see imageResourceType()
+     * \see extractEmbeddedImage()
+     */
+    static QString linkedImagePath( tinygltf::Model &model, int index );
+
+    /**
      * Parses transform of a node - either by reading the 4x4 transform matrix,
      * or by reading translation, rotation and scale, combining all to the final matrix.
      * Returns null pointer if no transform is attached.
@@ -103,6 +141,12 @@ class CORE_EXPORT QgsGltfUtils
       tinygltf::Image *image, const int image_idx, std::string *err,
       std::string *warn, int req_width, int req_height,
       const unsigned char *bytes, int size, void *user_data );
+
+    /**
+     * Extracts the texture coordinates from a \a model, and stores the results in the \a x, \a y vectors.
+     */
+    static bool extractTextureCoordinates( tinygltf::Model &model, int accessorIndex,
+                                           QVector<double> &x, QVector<double> &y );
 
     /**
      * Loads a GLTF model from \a data (both binary and text format are supported)
