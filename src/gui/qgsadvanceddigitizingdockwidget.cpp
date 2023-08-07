@@ -194,12 +194,12 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   // Construction modes
   QMenu *constructionMenu = new QMenu( this );
 
-  mLineExtensionAction = new QAction( "Line Extension", constructionMenu );
+  mLineExtensionAction = new QAction( tr( "Line Extension" ), constructionMenu );
   mLineExtensionAction->setCheckable( true );
   constructionMenu->addAction( mLineExtensionAction );
   connect( mLineExtensionAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::lockParameterlessConstraint );
 
-  mXyVertexAction = new QAction( "X/Y Point", constructionMenu );
+  mXyVertexAction = new QAction( tr( "X/Y Point" ), constructionMenu );
   mXyVertexAction->setCheckable( true );
   constructionMenu->addAction( mXyVertexAction );
   connect( mXyVertexAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::lockParameterlessConstraint );
