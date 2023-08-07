@@ -20,9 +20,23 @@
 #include "qgscoordinatetransform.h"
 
 #include <Qt3DCore/QEntity>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
+typedef Qt3DRender::QAttribute Qt3DQAttribute;
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+typedef Qt3DRender::QGeometry Qt3DQGeometry;
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
+typedef Qt3DCore::QAttribute Qt3DQAttribute;
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+typedef Qt3DCore::QGeometry Qt3DQGeometry;
+#endif
+
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTexture>
 #include <Qt3DExtras/QMetalRoughMaterial>
@@ -39,43 +53,29 @@
 
 ///@cond PRIVATE
 
-static Qt3DRender::QAttribute::VertexBaseType parseVertexBaseType( int componentType )
+static Qt3DQAttribute::VertexBaseType parseVertexBaseType( int componentType )
 {
   switch ( componentType )
   {
-    case 5120: // BYTE
-      return Qt3DRender::QAttribute::Byte;
-    case 5121: // UNSIGNED_BYTE
-      return Qt3DRender::QAttribute::UnsignedByte;
-    case 5122: // SHORT
-      return Qt3DRender::QAttribute::Short;
-    case 5123: // UNSIGNED_SHORT
-      return Qt3DRender::QAttribute::UnsignedShort;
-    case 5125: // UNSIGNED_INT
-      return Qt3DRender::QAttribute::UnsignedInt;
-    case 5126: // FLOAT
-      return Qt3DRender::QAttribute::Float;
+    case TINYGLTF_COMPONENT_TYPE_BYTE:
+      return Qt3DQAttribute::Byte;
+    case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
+      return Qt3DQAttribute::UnsignedByte;
+    case TINYGLTF_COMPONENT_TYPE_SHORT:
+      return Qt3DQAttribute::Short;
+    case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
+      return Qt3DQAttribute::UnsignedShort;
+    case TINYGLTF_COMPONENT_TYPE_INT:
+      return Qt3DQAttribute::Int;
+    case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
+      return Qt3DQAttribute::UnsignedInt;
+    case TINYGLTF_COMPONENT_TYPE_FLOAT:
+      return Qt3DQAttribute::Float;
+    case TINYGLTF_COMPONENT_TYPE_DOUBLE:
+      return Qt3DQAttribute::Double;
   }
   Q_ASSERT( false );
-  return Qt3DRender::QAttribute::UnsignedInt;
-}
-
-
-// tinygltf::GetNumComponentsInType() instead?
-static int parseVertexSize( int type )
-{
-  switch ( type )
-  {
-    case TINYGLTF_TYPE_SCALAR: return 1;
-    case TINYGLTF_TYPE_VEC2: return 2;
-    case TINYGLTF_TYPE_VEC3: return 3;
-    case TINYGLTF_TYPE_VEC4: return 4;
-    case TINYGLTF_TYPE_MAT2: return 4;
-    case TINYGLTF_TYPE_MAT3: return 9;
-    case TINYGLTF_TYPE_MAT4: return 16;
-  }
-  Q_ASSERT( false );
-  return 1;
+  return Qt3DQAttribute::UnsignedInt;
 }
 
 
@@ -108,37 +108,38 @@ static Qt3DRender::QTextureWrapMode::WrapMode parseTextureWrapMode( int wrapMode
 }
 
 
-static Qt3DRender::QAttribute *parseAttribute( tinygltf::Model &model, int accessorIndex )
+static Qt3DQAttribute *parseAttribute( tinygltf::Model &model, int accessorIndex )
 {
   tinygltf::Accessor &accessor = model.accessors[accessorIndex];
   tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
   tinygltf::Buffer &b = model.buffers[bv.buffer];
 
   // TODO: only ever create one QBuffer for a buffer even if it is used multiple times
-  QByteArray byteArray( ( const char * )b.data.data(), ( int )b.data.size() ); // makes a deep copy
-  Qt3DRender::QBuffer *buffer = new Qt3DRender::QBuffer();
+  QByteArray byteArray( reinterpret_cast<const char *>( b.data.data() ),
+                        static_cast<int>( b.data.size() ) ); // makes a deep copy
+  Qt3DQBuffer *buffer = new Qt3DQBuffer();
   buffer->setData( byteArray );
 
-  Qt3DRender::QAttribute *attribute = new Qt3DRender::QAttribute();
+  Qt3DQAttribute *attribute = new Qt3DQAttribute();
 
   // "target" is optional, can be zero
   if ( bv.target == TINYGLTF_TARGET_ARRAY_BUFFER )
-    attribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+    attribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   else if ( bv.target == TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER )
-    attribute->setAttributeType( Qt3DRender::QAttribute::IndexAttribute );
+    attribute->setAttributeType( Qt3DQAttribute::IndexAttribute );
 
   attribute->setBuffer( buffer );
   attribute->setByteOffset( bv.byteOffset + accessor.byteOffset );
   attribute->setByteStride( bv.byteStride );  // could be zero, it seems that's fine (assuming packed)
   attribute->setCount( accessor.count );
   attribute->setVertexBaseType( parseVertexBaseType( accessor.componentType ) );
-  attribute->setVertexSize( parseVertexSize( accessor.type ) );
+  attribute->setVertexSize( tinygltf::GetNumComponentsInType( accessor.type ) );
 
   return attribute;
 }
 
 
-static Qt3DRender::QAttribute *reprojectPositions( tinygltf::Model &model, int accessorIndex, const QgsGltf3DUtils::EntityTransform &transform, const QgsVector3D &tileTranslationEcef, QMatrix4x4 *matrix )
+static Qt3DQAttribute *reprojectPositions( tinygltf::Model &model, int accessorIndex, const QgsGltf3DUtils::EntityTransform &transform, const QgsVector3D &tileTranslationEcef, QMatrix4x4 *matrix )
 {
   tinygltf::Accessor &accessor = model.accessors[accessorIndex];
 
@@ -149,10 +150,10 @@ static Qt3DRender::QAttribute *reprojectPositions( tinygltf::Model &model, int a
 
   QByteArray byteArray;
   byteArray.resize( accessor.count * 4 * 3 );
-  float *out = ( float * )byteArray.data();
+  float *out = reinterpret_cast<float *>( byteArray.data() );
 
   QgsVector3D sceneOrigin = transform.sceneOriginTargetCrs;
-  for ( int i = 0; i < ( int )accessor.count; ++i )
+  for ( int i = 0; i < static_cast<int>( accessor.count ); ++i )
   {
     double x = vx[i] - sceneOrigin.x();
     double y = vy[i] - sceneOrigin.y();
@@ -164,16 +165,16 @@ static Qt3DRender::QAttribute *reprojectPositions( tinygltf::Model &model, int a
     out[i * 3 + 2] = -y;
   }
 
-  Qt3DRender::QBuffer *buffer = new Qt3DRender::QBuffer();
+  Qt3DQBuffer *buffer = new Qt3DQBuffer();
   buffer->setData( byteArray );
 
-  Qt3DRender::QAttribute *attribute = new Qt3DRender::QAttribute();
-  attribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+  Qt3DQAttribute *attribute = new Qt3DQAttribute();
+  attribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   attribute->setBuffer( buffer );
   attribute->setByteOffset( 0 );
   attribute->setByteStride( 12 );
   attribute->setCount( accessor.count );
-  attribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
+  attribute->setVertexBaseType( Qt3DQAttribute::Float );
   attribute->setVertexSize( 3 );
 
   return attribute;
@@ -209,6 +210,7 @@ Q_NOWARN_DEPRECATED_POP
 
 class TinyGltfTextureImage : public Qt3DRender::QAbstractTextureImage
 {
+    Q_OBJECT
   public:
     TinyGltfTextureImage( tinygltf::Image &image )
     {
@@ -223,7 +225,7 @@ class TinyGltfTextureImage : public Qt3DRender::QAbstractTextureImage
       imgDataPtr->setFaces( 1 );
       imgDataPtr->setLayers( 1 );
       imgDataPtr->setMipLevels( 1 );
-      QByteArray imageBytes( ( const char * )image.image.data(), image.image.size() );
+      QByteArray imageBytes( reinterpret_cast<const char *>( image.image.data() ), image.image.size() );
       imgDataPtr->setData( imageBytes, 4 );
       imgDataPtr->setFormat( QOpenGLTexture::RGBA8_UNorm );
       imgDataPtr->setPixelFormat( QOpenGLTexture::BGRA ); // when using tinygltf with STB_image, pixel format is QOpenGLTexture::RGBA
@@ -357,7 +359,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
 
     for ( const tinygltf::Primitive &primitive : mesh.primitives )
     {
-      if ( primitive.mode != 4 )
+      if ( primitive.mode != TINYGLTF_MODE_TRIANGLES )
       {
         if ( errors )
           *errors << QStringLiteral( "Unsupported mesh primitive: %1" ).arg( primitive.mode );
@@ -376,18 +378,18 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
         continue;
       }
 
-      Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry;
+      Qt3DQGeometry *geom = new Qt3DQGeometry;
 
-      Qt3DRender::QAttribute *positionAttribute = reprojectPositions( model, positionAccessorIndex, transform, tileTranslationEcef, matrix.get() );
-      positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
+      Qt3DQAttribute *positionAttribute = reprojectPositions( model, positionAccessorIndex, transform, tileTranslationEcef, matrix.get() );
+      positionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
       geom->addAttribute( positionAttribute );
 
       auto normalIt = primitive.attributes.find( "NORMAL" );
       if ( normalIt != primitive.attributes.end() )
       {
         int normalAccessorIndex = normalIt->second;
-        Qt3DRender::QAttribute *normalAttribute = parseAttribute( model, normalAccessorIndex );
-        normalAttribute->setName( Qt3DRender::QAttribute::defaultNormalAttributeName() );
+        Qt3DQAttribute *normalAttribute = parseAttribute( model, normalAccessorIndex );
+        normalAttribute->setName( Qt3DQAttribute::defaultNormalAttributeName() );
         geom->addAttribute( normalAttribute );
 
         // TODO: we may need to transform normal vectors when we are altering positions
@@ -398,12 +400,12 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
       if ( texIt != primitive.attributes.end() )
       {
         int texAccessorIndex = texIt->second;
-        Qt3DRender::QAttribute *texAttribute = parseAttribute( model, texAccessorIndex );
-        texAttribute->setName( Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName() );
+        Qt3DQAttribute *texAttribute = parseAttribute( model, texAccessorIndex );
+        texAttribute->setName( Qt3DQAttribute::defaultTextureCoordinateAttributeName() );
         geom->addAttribute( texAttribute );
       }
 
-      Qt3DRender::QAttribute *indexAttribute = nullptr;
+      Qt3DQAttribute *indexAttribute = nullptr;
       if ( primitive.indices != -1 )
       {
         indexAttribute = parseAttribute( model, primitive.indices );
@@ -483,5 +485,8 @@ Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const Q
 
   return parseModel( model, transform, baseUri, errors );
 }
+
+// For TinyGltfTextureImage
+#include "qgsgltf3dutils.moc"
 
 ///@endcond
