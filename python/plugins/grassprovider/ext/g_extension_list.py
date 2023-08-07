@@ -35,10 +35,11 @@ def processInputs(alg, parameters, context, feedback):
     # Extensions available in the official GRASS GIS Addons repository including module description
     else:
         optionString = '-c'
-    param = QgsProcessingParameterBoolean(optionString,'',True)
+    param = QgsProcessingParameterBoolean(optionString, '', True)
     alg.addParameter(param)
     # Don't forget to remove the old input parameter
     alg.removeParameter('list')
+
 
 def convertToHtml(alg, fileName, outputs):
     # don't copy this for something that will have lots of data like r.stats
