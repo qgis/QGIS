@@ -238,7 +238,6 @@ void QgsLayoutItemAttributeTable::setMap( QgsLayoutItemMap *map )
     //listen out for extent changes in linked map
     connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
     connect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutTable::refreshAttributes );
-    connect( mMap, &QObject::destroyed, this, &QgsLayoutItemAttributeTable::disconnectCurrentMap );
   }
   refreshAttributes();
   emit changed();
