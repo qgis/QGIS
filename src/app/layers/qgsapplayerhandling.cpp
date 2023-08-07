@@ -29,6 +29,7 @@
 #include "qgsterrainprovider.h"
 #ifdef HAVE_3D
 #include "qgspointcloudlayer3drenderer.h"
+#include "qgstiledscenelayer3drenderer.h"
 #endif
 #include "canvas/qgscanvasrefreshblocker.h"
 #include "qgsproviderutils.h"
@@ -160,6 +161,14 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
       QString error = layer->loadDefaultMetadata( ok );
       if ( !ok )
         QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Error loading layer metadata" ), error, Qgis::MessageLevel::Warning );
+
+#ifdef HAVE_3D
+      if ( !layer->renderer3D() )
+      {
+        std::unique_ptr< QgsTiledSceneLayer3DRenderer > renderer3D = std::make_unique< QgsTiledSceneLayer3DRenderer >();
+        layer->setRenderer3D( renderer3D.release() );
+      }
+#endif
 
       break;
     }

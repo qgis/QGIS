@@ -86,6 +86,13 @@ class CORE_EXPORT QgsCesiumUtils
     * Parses a \a sphere object from a Cesium JSON document.
     */
     static QgsSphere parseSphere( const QVariantList &sphere );
+
+    /**
+     * Extracts GLTF binary data from the legacy b3dm (Batched 3D Model) tile format.
+     * Returns empty byte array on error.
+     */
+    static QByteArray extractGltfFromB3dm( QIODevice &file );
+
 };
 
 #endif // QGSCESIUMUTILS_H

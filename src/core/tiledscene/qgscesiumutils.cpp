@@ -110,3 +110,29 @@ QgsSphere QgsCesiumUtils::parseSphere( const QVariantList &sphere )
 
   return parseSphere( QgsJsonUtils::jsonFromVariant( sphere ) );
 }
+
+
+QByteArray QgsCesiumUtils::extractGltfFromB3dm( QIODevice &file )
+{
+  struct b3dmHeader
+  {
+    unsigned char magic[4];
+    quint32 version;
+    quint32 byteLength;
+    quint32 featureTableJsonByteLength;
+    quint32 featureTableBinaryByteLength;
+    quint32 batchTableJsonByteLength;
+    quint32 batchTableBinaryByteLength;
+  };
+
+  b3dmHeader hdr;
+  if ( !file.read( ( char * )&hdr, sizeof( b3dmHeader ) ) )
+    return QByteArray();
+
+  if ( !file.seek( sizeof( b3dmHeader ) +
+                   hdr.featureTableJsonByteLength + hdr.featureTableBinaryByteLength +
+                   hdr.batchTableJsonByteLength + hdr.batchTableBinaryByteLength ) )
+    return QByteArray();
+
+  return file.readAll();
+}

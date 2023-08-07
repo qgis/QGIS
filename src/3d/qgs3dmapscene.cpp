@@ -60,6 +60,8 @@
 #include "qgssourcecache.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
+#include "qgstiledscenelayer.h"
+#include "qgstiledscenelayer3drenderer.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
@@ -665,6 +667,11 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     {
       QgsPointCloudLayer3DRenderer *pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( renderer );
       pointCloudRenderer->setLayer( static_cast<QgsPointCloudLayer *>( layer ) );
+    }
+    else if ( layer->type() == Qgis::LayerType::TiledScene && renderer->type() == QLatin1String( "tiledscene" ) )
+    {
+      QgsTiledSceneLayer3DRenderer *tiledSceneRenderer = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
+      tiledSceneRenderer->setLayer( static_cast<QgsTiledSceneLayer *>( layer ) );
     }
 
     Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );
