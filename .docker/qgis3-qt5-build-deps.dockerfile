@@ -30,7 +30,7 @@ RUN  apt-get update \
     gpsbabel \
     graphviz \
     libaio1 \
-    libdraco4 \
+    'libdraco4|libdraco7' \
     libexiv2-27 \
     libfcgi0ldbl \
     libgsl27 \
