@@ -2559,7 +2559,7 @@ QList<QgsRelation> QgsOracleProvider::discoverRelations( const QgsVectorLayer *t
   QList<QString> refTableFound;
   if ( !LoggedExecStatic( qry, sql, QVariantList() << mTableName << mOwnerName, mUri.uri() ) )
   {
-    const QString error { tr( "Unable to execute the query to get foreign keys of %1.\nThe error message from the database was:\n%1.\nSQL: %2" )
+    const QString error { tr( "Unable to execute the query to get foreign keys of %1.\nThe error message from the database was:\n%2.\nSQL: %3" )
                           .arg( mTableName )
                           .arg( qry.lastError().text() )
                           .arg( qry.lastQuery() ) };
