@@ -57,7 +57,10 @@ bool QgsGltfUtils::accessorToMapCoordinates( tinygltf::Model &model, int accesso
   vx.resize( accessor.count );
   vy.resize( accessor.count );
   vz.resize( accessor.count );
-  for ( int i = 0; i < ( int )accessor.count; ++i )
+  double *vxOut = vx.data();
+  double *vyOut = vy.data();
+  double *vzOut = vz.data();
+  for ( int i = 0; i < static_cast<int>( accessor.count ); ++i )
   {
     float *fptr = reinterpret_cast<float *>( ptr );
     QVector3D vOrig( fptr[0], fptr[1], fptr[2] );
@@ -70,7 +73,10 @@ bool QgsGltfUtils::accessorToMapCoordinates( tinygltf::Model &model, int accesso
 
     // apply also transform of the node
     QgsVector3D v = tileTransform.map( QgsVector3D( vFlip ) + tileTranslationEcef );
-    vx[i] = v.x(); vy[i] = v.y(); vz[i] = v.z();
+
+    *vxOut++ = v.x();
+    *vyOut++ = v.y();
+    *vzOut++ = v.z();
 
     if ( bv.byteStride )
       ptr += bv.byteStride;
