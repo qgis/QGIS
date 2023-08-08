@@ -5,7 +5,7 @@
 # just the "tsflags=nodocs" line
 printf '[main]\ngpgcheck=True\ninstallonly_limit=3\nclean_requirements_on_remove=True\nbest=False\nskip_if_unavailable=True\ntsflags=nodocs' > /etc/dnf/dnf.conf
 
-dnf install -y --nogpgcheck \
+dnf5 install -y --nogpgcheck \
   mingw64-dlfcn \
   mingw64-exiv2 \
   mingw64-fcgi \
