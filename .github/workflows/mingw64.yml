@@ -31,10 +31,10 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Update system
-        run: dnf -y update
+        run: dnf5 -y update
 
       - name: Install core dependencies
-        run: dnf -y install zip
+        run: dnf5 -y install zip
 
       - name: Install build dependencies
         run: ./ms-windows/mingw/mingwdeps.sh
