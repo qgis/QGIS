@@ -245,6 +245,13 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT bool wmsAddLegendGroupsLegendGraphic( const QgsProject &project );
 
   /**
+   * Returns if name attribute should be skipped for groups in WMS capabilities document.
+   * \param project the QGIS project
+   * \returns if name attribute should be skipped for groups in capabilities
+   */
+  SERVER_EXPORT bool wmsSkipNameForGroup( const QgsProject &project );
+
+  /**
    * Returns the geometry precision for GetFeatureInfo request.
    * \param project the QGIS project
    * \returns the geometry precision for GetFeatureInfo request.

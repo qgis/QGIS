@@ -945,6 +945,7 @@ namespace QgsWms
 
       bool siaFormat = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
       const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
+      bool skipNameForGroup = QgsServerProjectUtils::wmsSkipNameForGroup( *project );
 
       QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();
       for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
@@ -977,14 +978,16 @@ namespace QgsWms
           QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
           QString title = treeGroupChild->customProperty( QStringLiteral( "wmsTitle" ) ).toString();
 
-          QDomElement nameElem = doc.createElement( QStringLiteral( "Name" ) );
-          QDomText nameText;
-          if ( !shortName.isEmpty() )
-            nameText = doc.createTextNode( shortName );
-          else
-            nameText = doc.createTextNode( name );
-          nameElem.appendChild( nameText );
-          layerElem.appendChild( nameElem );
+          if ( !skipNameForGroup ) {
+            QDomElement nameElem = doc.createElement( QStringLiteral( "Name" ) );
+            QDomText nameText;
+            if ( !shortName.isEmpty() )
+              nameText = doc.createTextNode( shortName );
+            else
+              nameText = doc.createTextNode( name );
+            nameElem.appendChild( nameText );
+            layerElem.appendChild( nameElem );
+          }
 
           QDomElement titleElem = doc.createElement( QStringLiteral( "Title" ) );
           QDomText titleText;

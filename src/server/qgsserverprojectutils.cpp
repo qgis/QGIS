@@ -195,6 +195,13 @@ bool QgsServerProjectUtils::wmsAddLegendGroupsLegendGraphic( const QgsProject &p
          || legendGroups.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 }
 
+bool QgsServerProjectUtils::wmsSkipNameForGroup( const QgsProject &project )
+{
+  const QString skipNameForGroup = project.readEntry( QStringLiteral( "WMSSkipNameForGroup" ), QStringLiteral( "/" ), "" );
+  return skipNameForGroup.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
+         || skipNameForGroup.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+}
+
 int QgsServerProjectUtils::wmsFeatureInfoPrecision( const QgsProject &project )
 {
   return project.readNumEntry( QStringLiteral( "WMSPrecision" ), QStringLiteral( "/" ), 6 );
