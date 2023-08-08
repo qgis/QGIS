@@ -99,9 +99,8 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
           QStandardItem *item = mModel.item( r );
           bool isChecked = value.testFlag( item->data().value<ENUM>() );
           item->setData( isChecked ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole );
-          return true;
         }
-
+        return true;
       }
       else
       {

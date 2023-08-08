@@ -50,10 +50,8 @@ QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::EndCapStyle>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::GpsConnectionType>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::GpsInformationComponent>() );
-  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::GpsInformationComponents>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::JoinStyle>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::MapRecenteringMode>() );
-  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::MapToolUnit>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::MapToolUnit>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::SnappingMode>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::SnappingType>() );
@@ -77,6 +75,7 @@ bool QgsSettingsEditorWidgetRegistry::addWrapper( QgsSettingsEditorWidgetWrapper
 {
   if ( mWrappers.contains( wrapper->id() ) )
   {
+    QgsDebugMsgLevel( QString( "Settings editor widget registry already contains a wrapper with id '%1'" ).arg( wrapper->id() ), 2 );
     delete wrapper;
     return false;
   }
