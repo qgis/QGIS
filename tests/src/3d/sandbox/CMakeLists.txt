@@ -11,8 +11,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_BINARY_DIR}/src/native
   ${CMAKE_CURRENT_BINARY_DIR}
 
-  ${CMAKE_SOURCE_DIR}/src/3d/3dtiles
-
   ${CMAKE_SOURCE_DIR}/src/app/3d
   ${CMAKE_BINARY_DIR}/src/app
   ${QWT_INCLUDE_DIR}

@@ -84,7 +84,6 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     mutable QgsTiledSceneIndex mIndex;
     std::unique_ptr<QgsCoordinateTransform> mBoundsTransform;
     std::unique_ptr<QgsCoordinateTransform> mRegionTransform;
-    mutable QHash<QgsChunkNodeId, QString> mNodeIdToIndexId;
 };
 
 
