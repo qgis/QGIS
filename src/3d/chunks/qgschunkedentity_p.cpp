@@ -380,7 +380,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
     }
 
     // ensure we have child nodes (at least skeletons) available, if any
-    if ( node->childCount() == -1 )
+    if ( !node->hasChildrenPopulated() )
       node->populateChildren( mChunkLoaderFactory->createChildren( node ) );
 
     // make sure all nodes leading to children are always loaded
