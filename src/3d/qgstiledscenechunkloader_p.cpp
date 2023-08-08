@@ -21,7 +21,7 @@
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
 
-#include <QBuffer>
+#include <QtCore/QBuffer>
 
 ///@cond PRIVATE
 
