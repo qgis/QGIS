@@ -62,13 +62,26 @@ static bool hasLargeBounds( const QgsTiledSceneTile &t )
 // TODO: move elsewhere
 static QString resolveUri( QString uri, const QString &baseUri )
 {
-  if ( uri.startsWith( "./" ) )
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( baseUri );
+
+  const QString tileSetUri = dsUri.param( QStringLiteral( "url" ) );
+  if ( !tileSetUri.isEmpty() )
   {
-    uri.replace( "./", baseUri );
+    QUrl base( tileSetUri );
+    uri = base.resolved( uri ).toString();
   }
-  else if ( QFileInfo( uri ).isRelative() )
+  else
   {
-    uri = baseUri + uri;
+    // local files
+    if ( uri.startsWith( "./" ) )
+    {
+      uri.replace( "./", baseUri );
+    }
+    else if ( QFileInfo( uri ).isRelative() )
+    {
+      uri = baseUri + uri;
+    }
   }
   return uri;
 }

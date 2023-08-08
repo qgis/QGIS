@@ -17,6 +17,7 @@
 #include "qgsgltf3dutils.h"
 
 #include "qgsgltfutils.h"
+#include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
 
 #include <Qt3DCore/QEntity>
@@ -242,6 +243,59 @@ class TinyGltfTextureImage : public Qt3DRender::QAbstractTextureImage
 };
 
 
+// TODO: move elsewhere
+static QString resolveUri( QString imgUri, const QString &baseUri )
+{
+  if ( imgUri.startsWith( "./" ) )  // TODO: relative URL does not need to start with ./
+  {
+    if ( baseUri.startsWith( "http" ) )
+    {
+      imgUri = QUrl( baseUri ).resolved( imgUri ).toString();
+    }
+    else
+    {
+      imgUri = QFileInfo( baseUri ).absolutePath() + "/" + imgUri;
+    }
+  }
+  return imgUri;
+}
+
+// TODO: move elsewhere
+static QByteArray fetchUri( const QString &imgUri, QStringList *errors )
+{
+  if ( imgUri.startsWith( "http" ) )
+  {
+    QNetworkRequest request = QNetworkRequest( imgUri );
+    QgsBlockingNetworkRequest networkRequest;
+    // TODO: setup auth, setup headers
+    if ( networkRequest.get( request ) != QgsBlockingNetworkRequest::NoError )
+    {
+      if ( errors )
+        *errors << QStringLiteral( "Failed to download image: %1" ).arg( imgUri );
+    }
+    else
+    {
+      const QgsNetworkReplyContent content = networkRequest.reply();
+      return content.content();
+    }
+  }
+  else
+  {
+    QFile f( imgUri );
+    if ( f.open( QIODevice::ReadOnly ) )
+    {
+      return f.readAll();
+    }
+    else
+    {
+      if ( errors )
+        *errors << QStringLiteral( "Unable to open image: %1" ).arg( imgUri );
+    }
+  }
+  return QByteArray();
+}
+
+
 static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QString baseUri, QStringList *errors )
 {
   if ( materialIndex < 0 )
@@ -265,25 +319,16 @@ static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materia
 
     if ( !img.uri.empty() )
     {
-      // TODO: if using a remote URI, we may need to do a network request
       QString imgUri = QString::fromStdString( img.uri );
-      if ( imgUri.startsWith( "./" ) )
-        imgUri = QFileInfo( baseUri ).absolutePath() + "/" + imgUri;
-
-      QFile f( imgUri );
-      if ( f.open( QIODevice::ReadOnly ) )
+      imgUri = resolveUri( imgUri, baseUri );
+      QByteArray ba = fetchUri( imgUri, errors );
+      if ( !ba.isEmpty() )
       {
-        QByteArray ba = f.readAll();
         if ( !QgsGltfUtils::loadImageDataWithQImage( &img, -1, nullptr, nullptr, 0, 0, ( const unsigned char * ) ba.constData(), ba.size(), nullptr ) )
         {
           if ( errors )
             *errors << QStringLiteral( "Failed to load image: %1" ).arg( imgUri );
         }
-      }
-      else
-      {
-        if ( errors )
-          *errors << QStringLiteral( "Unable to open image: %1" ).arg( imgUri );
       }
     }
 
