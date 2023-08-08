@@ -1183,7 +1183,10 @@ tests:
         type: vector
 
   - algorithm: native:arrayoffsetlines
-    name: Array of offset (parallel) lines
+    name: Array of offset (parallel) lines  (GEOS < 3.11)
+    condition:
+      geos:
+        less_than: 31100
     params:
       COUNT: 3
       INPUT:
@@ -1196,6 +1199,25 @@ tests:
     results:
       OUTPUT:
         name: expected/create_parallel_lines.gml
+        type: vector
+
+  - algorithm: native:arrayoffsetlines
+    name: Array of offset (parallel) lines (GEOS >= 3.11)
+    condition:
+      geos:
+        at_least: 31100
+    params:
+      COUNT: 3
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: 1
+      MITER_LIMIT: 2.0
+      OFFSET: -0.2
+      SEGMENTS: 8
+    results:
+      OUTPUT:
+        name: expected/geos311/create_parallel_lines.gml
         type: vector
 
   - algorithm: native:setzfromraster
