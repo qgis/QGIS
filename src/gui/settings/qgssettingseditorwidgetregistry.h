@@ -41,7 +41,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetRegistry
 
     /**
      * Adds an editor widget \a wrapper to the registry
-     * Returns FALSE if an editor widget with same id already exists.
+     * If an editor widget with same id already exists, the wrapper is deleted and FALSE is returned.
      */
     bool addWrapper( QgsSettingsEditorWidgetWrapper *wrapper SIP_TRANSFER );
 

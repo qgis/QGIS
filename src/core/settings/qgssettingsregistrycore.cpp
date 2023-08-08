@@ -569,3 +569,4 @@ void QgsSettingsRegistryCore::backwardCompatibility()
     }
   }
 }
+

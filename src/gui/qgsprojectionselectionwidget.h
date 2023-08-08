@@ -31,6 +31,7 @@ class QgsMapLayer;
 class QgsHighlightableComboBox;
 class QgsCrsSelectionWidget;
 class QLabel;
+class QgsMapLayer;
 
 /**
  * \class QgsProjectionSelectionWidget

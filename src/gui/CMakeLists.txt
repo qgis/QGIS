@@ -1473,6 +1473,7 @@ set(QGIS_GUI_HDRS
 
   settings/qgssettingseditorwidgetwrapper.h
   settings/qgssettingseditorwidgetwrapperimpl.h
+  settings/qgssettingsenumflageditorwidgetwrapper.h
   settings/qgssettingseditorwidgetregistry.h
   settings/qgssettingsregistrygui.h
   settings/qgssettingstreemodel.h
