@@ -65,12 +65,12 @@ class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
     void refineNodeFromJson( QgsTiledSceneNode *node, const json &json );
 
     QgsTiledSceneTile rootTile() const final;
-    QgsTiledSceneTile getTile( const QString &id ) final;
-    QString parentTileId( const QString &id ) const final;
-    QStringList childTileIds( const QString &id ) const final;
-    QStringList getTiles( const QgsTiledSceneRequest &request ) final;
-    Qgis::TileChildrenAvailability childAvailability( const QString &id ) const final;
-    bool fetchHierarchy( const QString &id, QgsFeedback *feedback = nullptr ) final;
+    QgsTiledSceneTile getTile( long long id ) final;
+    long long parentTileId( long long id ) const final;
+    QVector< long long > childTileIds( long long id ) const final;
+    QVector< long long > getTiles( const QgsTiledSceneRequest &request ) final;
+    Qgis::TileChildrenAvailability childAvailability( long long id ) const final;
+    bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) final;
 
   protected:
 
@@ -87,10 +87,11 @@ class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
     mutable QRecursiveMutex mLock;
     QString mRootPath;
     std::unique_ptr< QgsTiledSceneNode > mRootNode;
-    QMap< QString, QgsTiledSceneNode * > mNodeMap;
-    QMap< QString, TileContentFormat > mTileContentFormats;
+    QMap< long long, QgsTiledSceneNode * > mNodeMap;
+    QMap< long long, TileContentFormat > mTileContentFormats;
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
+    long long mNextTileId = 0;
 
 };
 
@@ -135,7 +136,7 @@ QgsCesiumTiledSceneIndex::QgsCesiumTiledSceneIndex( const json &tileset, const Q
 
 std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( const json &json, const QgsTiledSceneTile *parent )
 {
-  std::unique_ptr< QgsTiledSceneTile > tile = std::make_unique< QgsTiledSceneTile >( QUuid::createUuid().toString() );
+  std::unique_ptr< QgsTiledSceneTile > tile = std::make_unique< QgsTiledSceneTile >( mNextTileId++ );
 
   QgsMatrix4x4 transform;
   if ( json.contains( "transform" ) && !json["transform"].is_null() )
@@ -276,7 +277,7 @@ QgsTiledSceneTile QgsCesiumTiledSceneIndex::rootTile() const
   return mRootNode ? *mRootNode->tile() : QgsTiledSceneTile();
 }
 
-QgsTiledSceneTile QgsCesiumTiledSceneIndex::getTile( const QString &id )
+QgsTiledSceneTile QgsCesiumTiledSceneIndex::getTile( long long id )
 {
   QMutexLocker locker( &mLock );
   auto it = mNodeMap.constFind( id );
@@ -288,7 +289,7 @@ QgsTiledSceneTile QgsCesiumTiledSceneIndex::getTile( const QString &id )
   return QgsTiledSceneTile();
 }
 
-QString QgsCesiumTiledSceneIndex::parentTileId( const QString &id ) const
+long long QgsCesiumTiledSceneIndex::parentTileId( long long id ) const
 {
   QMutexLocker locker( &mLock );
   auto it = mNodeMap.constFind( id );
@@ -300,16 +301,16 @@ QString QgsCesiumTiledSceneIndex::parentTileId( const QString &id ) const
     }
   }
 
-  return QString();
+  return -1;
 }
 
-QStringList QgsCesiumTiledSceneIndex::childTileIds( const QString &id ) const
+QVector< long long > QgsCesiumTiledSceneIndex::childTileIds( long long id ) const
 {
   QMutexLocker locker( &mLock );
   auto it = mNodeMap.constFind( id );
   if ( it != mNodeMap.constEnd() )
   {
-    QStringList childIds;
+    QVector< long long > childIds;
     const QList< QgsTiledSceneNode * > children = it.value()->children();
     childIds.reserve( children.size() );
     for ( QgsTiledSceneNode *child : children )
@@ -319,12 +320,12 @@ QStringList QgsCesiumTiledSceneIndex::childTileIds( const QString &id ) const
     return childIds;
   }
 
-  return QStringList();
+  return {};
 }
 
-QStringList QgsCesiumTiledSceneIndex::getTiles( const QgsTiledSceneRequest &request )
+QVector< long long > QgsCesiumTiledSceneIndex::getTiles( const QgsTiledSceneRequest &request )
 {
-  QStringList results;
+  QVector< long long > results;
 
   std::function< void( QgsTiledSceneNode * )> traverseNode;
   traverseNode = [&request, &traverseNode, &results, this]( QgsTiledSceneNode * node )
@@ -396,7 +397,7 @@ QStringList QgsCesiumTiledSceneIndex::getTiles( const QgsTiledSceneRequest &requ
   };
 
   QMutexLocker locker( &mLock );
-  if ( request.parentTileId().isEmpty() )
+  if ( request.parentTileId() < 0 )
   {
     if ( mRootNode )
       traverseNode( mRootNode.get() );
@@ -413,7 +414,7 @@ QStringList QgsCesiumTiledSceneIndex::getTiles( const QgsTiledSceneRequest &requ
   return results;
 }
 
-Qgis::TileChildrenAvailability QgsCesiumTiledSceneIndex::childAvailability( const QString &id ) const
+Qgis::TileChildrenAvailability QgsCesiumTiledSceneIndex::childAvailability( long long id ) const
 {
   QString contentUri;
   QMutexLocker locker( &mLock );
@@ -466,7 +467,7 @@ Qgis::TileChildrenAvailability QgsCesiumTiledSceneIndex::childAvailability( cons
   return Qgis::TileChildrenAvailability::NeedFetching;
 }
 
-bool QgsCesiumTiledSceneIndex::fetchHierarchy( const QString &id, QgsFeedback *feedback )
+bool QgsCesiumTiledSceneIndex::fetchHierarchy( long long id, QgsFeedback *feedback )
 {
   QMutexLocker locker( &mLock );
   auto it = mNodeMap.constFind( id );

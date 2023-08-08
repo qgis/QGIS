@@ -89,7 +89,7 @@ QgsTiledSceneTile QgsTiledSceneIndex::rootTile() const
   return mIndex->rootTile();
 }
 
-QgsTiledSceneTile QgsTiledSceneIndex::getTile( const QString &id )
+QgsTiledSceneTile QgsTiledSceneIndex::getTile( long long id )
 {
   if ( !mIndex )
     return QgsTiledSceneTile();
@@ -97,23 +97,23 @@ QgsTiledSceneTile QgsTiledSceneIndex::getTile( const QString &id )
   return mIndex->getTile( id );
 }
 
-QString QgsTiledSceneIndex::parentTileId( const QString &id ) const
+long long QgsTiledSceneIndex::parentTileId( long long id ) const
 {
   if ( !mIndex )
-    return QString();
+    return -1;
 
   return mIndex->parentTileId( id );
 }
 
-QStringList QgsTiledSceneIndex::childTileIds( const QString &id ) const
+QVector< long long > QgsTiledSceneIndex::childTileIds( long long id ) const
 {
   if ( !mIndex )
-    return QStringList();
+    return {};
 
   return mIndex->childTileIds( id );
 }
 
-QStringList QgsTiledSceneIndex::getTiles( const QgsTiledSceneRequest &request )
+QVector< long long > QgsTiledSceneIndex::getTiles( const QgsTiledSceneRequest &request )
 {
   if ( !mIndex )
     return {};
@@ -121,7 +121,7 @@ QStringList QgsTiledSceneIndex::getTiles( const QgsTiledSceneRequest &request )
   return mIndex->getTiles( request );
 }
 
-Qgis::TileChildrenAvailability QgsTiledSceneIndex::childAvailability( const QString &id ) const
+Qgis::TileChildrenAvailability QgsTiledSceneIndex::childAvailability( long long id ) const
 {
   if ( !mIndex )
     return Qgis::TileChildrenAvailability::NoChildren;
@@ -129,7 +129,7 @@ Qgis::TileChildrenAvailability QgsTiledSceneIndex::childAvailability( const QStr
   return mIndex->childAvailability( id );
 }
 
-bool QgsTiledSceneIndex::fetchHierarchy( const QString &id, QgsFeedback *feedback )
+bool QgsTiledSceneIndex::fetchHierarchy( long long id, QgsFeedback *feedback )
 {
   if ( !mIndex )
     return {};

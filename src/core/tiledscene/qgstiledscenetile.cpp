@@ -23,7 +23,7 @@ QgsTiledSceneTile::QgsTiledSceneTile()
 
 }
 
-QgsTiledSceneTile::QgsTiledSceneTile( const QString &id )
+QgsTiledSceneTile::QgsTiledSceneTile( long long id )
   : mId( id )
 {
 

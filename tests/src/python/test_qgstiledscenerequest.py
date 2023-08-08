@@ -59,9 +59,9 @@ class TestQgsTiledSceneRequest(QgisTestCase):
             QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 2, 0, 0, 0, 3])
         )
 
-        self.assertFalse(request.parentTileId())
-        request.setParentTileId('parent')
-        self.assertEqual(request.parentTileId(), 'parent')
+        self.assertEqual(request.parentTileId(), -1)
+        request.setParentTileId(2)
+        self.assertEqual(request.parentTileId(), 2)
 
 
 if __name__ == '__main__':

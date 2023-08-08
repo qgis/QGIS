@@ -112,16 +112,20 @@ class CORE_EXPORT QgsTiledSceneRequest
     /**
      * Returns the parent tile ID, if filtering is limited to children of a specific tile.
      *
+     * Returns -1 if no parent tile ID filtering is to be made.
+     *
      * \see setParentTileId()
      */
-    QString parentTileId() const { return mParentTileId; }
+    long long parentTileId() const { return mParentTileId; }
 
     /**
      * Sets the parent tile \a id, if filtering is to be limited to children of a specific tile.
      *
+     * Set to -1 if no parent tile ID filtering is to be made.
+     *
      * \see parentTileId()
      */
-    void setParentTileId( const QString &id ) { mParentTileId = id; }
+    void setParentTileId( long long id ) { mParentTileId = id; }
 
   private:
 
@@ -129,7 +133,7 @@ class CORE_EXPORT QgsTiledSceneRequest
     QgsOrientedBox3D mFilterBox;
     QgsFeedback *mFeedback = nullptr;
     double mRequiredGeometricError = 0;
-    QString mParentTileId;
+    long long mParentTileId = -1;
 };
 
 

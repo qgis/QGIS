@@ -715,7 +715,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             )
 
             # children should be populated in advance
-            self.assertFalse(index.parentTileId(root_tile.id()))
+            self.assertEqual(index.parentTileId(root_tile.id()), -1)
             self.assertFalse(root_tile.resources())
             self.assertEqual(root_tile.geometricError(), 100.0)
             self.assertEqual(
