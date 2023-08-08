@@ -141,9 +141,9 @@ class QgsChunkNode
     //! Returns pointer to the parent node. Parent is NULLPTR in the root node
     QgsChunkNode *parent() const { return mParent; }
     //! Returns number of children of the node (returns -1 if the node has not yet been populated with populateChildren())
-    int childCount() const { return mChildCount; }
+    int childCount() const { return mChildren.count(); }
     //! Returns array of the four children. Children may be NULLPTR if they were not created yet
-    QgsChunkNode *const *children() const { return mChildren; }
+    QgsChunkNode *const *children() const { return mChildren.constData(); }
     //! Returns current state of the node
     State state() const { return mState; }
 
@@ -160,6 +160,9 @@ class QgsChunkNode
 
     //! Returns TRUE if all child chunks are available and thus this node could be swapped to the child nodes
     bool allChildChunksResident( QTime currentTime ) const;
+
+    //! Returns whether the child nodes have been populated already
+    bool hasChildrenPopulated() const { return mChildrenPopulated; }
 
     //! Sets child nodes of this node. Takes ownership of all objects. Must be only called once.
     void populateChildren( const QVector<QgsChunkNode *> &children );
@@ -231,8 +234,8 @@ class QgsChunkNode
     QgsChunkNodeId mNodeId;  //!< Chunk coordinates (for use with a tiling scheme)
 
     QgsChunkNode *mParent;        //!< TODO: should be shared pointer
-    QgsChunkNode *mChildren[8];   //!< TODO: should be weak pointers. May be nullptr if not created yet or removed already
-    int mChildCount = -1;         //! Number of children (-1 == not yet populated)
+    QVector<QgsChunkNode *> mChildren;   //!< Child nodes of this node. Initially children are not be populated
+    bool mChildrenPopulated = false;     //!< Whether the child nodes (if any) have been already created
 
     State mState;  //!< State of the node
 
