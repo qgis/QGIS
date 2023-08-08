@@ -37,10 +37,10 @@ jobs:
         run: printf '[main]\ngpgcheck=True\ninstallonly_limit=3\nclean_requirements_on_remove=True\nbest=False\nskip_if_unavailable=True\ntsflags=nodocs' > /etc/dnf/dnf.conf
 
       - name: Update system
-        run: dnf -y update
+        run: dnf5 -y update
 
       - name: Install core dependencies
-        run: dnf -y install zip
+        run: dnf5 -y install zip
 
       - name: Install build dependencies
         run: ./ms-windows/mingw/mingwdeps.sh
