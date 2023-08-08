@@ -22,6 +22,8 @@
 #include "qgssphere.h"
 #include "qgsorientedbox3d.h"
 
+#include <QIODevice>
+
 QgsBox3D QgsCesiumUtils::parseRegion( const json &region )
 {
   try
