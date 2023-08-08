@@ -32,7 +32,8 @@ QgsAbstractTiledSceneBoundingVolume::~QgsAbstractTiledSceneBoundingVolume() = de
 QgsTiledSceneBoundingVolumeRegion::QgsTiledSceneBoundingVolumeRegion( const QgsBox3D &region )
   : mRegion( region )
 {
-
+  // assume EPSG:4979 for regions
+  mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
 }
 
 Qgis::TiledSceneBoundingVolumeType QgsTiledSceneBoundingVolumeRegion::type() const
@@ -46,8 +47,10 @@ void QgsTiledSceneBoundingVolumeRegion::transform( const QgsMatrix4x4 &transform
   ( void ) transform;
 }
 
-QgsBox3D QgsTiledSceneBoundingVolumeRegion::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
+QgsBox3D QgsTiledSceneBoundingVolumeRegion::bounds( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const
 {
+  QgsCoordinateTransform transform( mCrs, crs, context );
+  transform.setBallparkTransformsAreAppropriate( true );
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
     // transform each corner of the box, then collect the min/max x/y/z values of the result
@@ -65,7 +68,7 @@ QgsBox3D QgsTiledSceneBoundingVolumeRegion::bounds( const QgsCoordinateTransform
       y.append( corner.y() );
       z.append( corner.z() );
     }
-    transform.transformInPlace( x, y, z, direction );
+    transform.transformInPlace( x, y, z );
 
     const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
     const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
@@ -83,8 +86,10 @@ QgsTiledSceneBoundingVolumeRegion *QgsTiledSceneBoundingVolumeRegion::clone() co
   return new QgsTiledSceneBoundingVolumeRegion( *this );
 }
 
-QgsAbstractGeometry *QgsTiledSceneBoundingVolumeRegion::as2DGeometry( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
+QgsAbstractGeometry *QgsTiledSceneBoundingVolumeRegion::as2DGeometry( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const
 {
+  QgsCoordinateTransform transform( mCrs, crs, context );
+  transform.setBallparkTransformsAreAppropriate( true );
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
     const QVector< QgsVector3D > corners = mRegion.corners();
@@ -104,7 +109,7 @@ QgsAbstractGeometry *QgsTiledSceneBoundingVolumeRegion::as2DGeometry( const QgsC
 
     if ( transform.isValid() && !transform.isShortCircuited() )
     {
-      transform.transformInPlace( x, y, z, direction );
+      transform.transformInPlace( x, y, z );
     }
 
     std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >( x, y );
@@ -131,9 +136,36 @@ QgsAbstractGeometry *QgsTiledSceneBoundingVolumeRegion::as2DGeometry( const QgsC
   }
 }
 
-bool QgsTiledSceneBoundingVolumeRegion::intersects( const QgsOrientedBox3D &box ) const
+bool QgsTiledSceneBoundingVolumeRegion::intersects( const QgsOrientedBox3D &box, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const
 {
-  return QgsOrientedBox3D::fromBox3D( mRegion ).intersects( box );
+  QgsCoordinateTransform ct( crs, mCrs, context );
+  ct.setBallparkTransformsAreAppropriate( true );
+
+  if ( !ct.isValid() || ct.isShortCircuited() )
+    return QgsOrientedBox3D::fromBox3D( mRegion ).intersects( box );
+
+  QVector< QgsVector3D > corners = box.corners();
+
+  // TODO catch
+  QVector< double > x;
+  x.reserve( 8 );
+  QVector< double > y;
+  y.reserve( 8 );
+  QVector< double > z;
+  z.reserve( 8 );
+  for ( int i = 0; i < 8; ++i )
+  {
+    const QgsVector3D &corner = corners[i];
+    x.append( corner.x() );
+    y.append( corner.y() );
+    z.append( corner.z() );
+  }
+  ct.transformInPlace( x, y, z );
+
+  const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
+  const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
+  const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
+  return mRegion.intersects( QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second ) );
 }
 
 
@@ -144,6 +176,8 @@ bool QgsTiledSceneBoundingVolumeRegion::intersects( const QgsOrientedBox3D &box 
 QgsTiledSceneBoundingVolumeBox::QgsTiledSceneBoundingVolumeBox( const QgsOrientedBox3D &box )
   : mBox( box )
 {
+  // assume EPSG:4978 for boxes
+  mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
 }
 
 Qgis::TiledSceneBoundingVolumeType QgsTiledSceneBoundingVolumeBox::type() const
@@ -156,8 +190,10 @@ void QgsTiledSceneBoundingVolumeBox::transform( const QgsMatrix4x4 &transform )
   mBox = mBox.transformed( transform );
 }
 
-QgsBox3D QgsTiledSceneBoundingVolumeBox::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
+QgsBox3D QgsTiledSceneBoundingVolumeBox::bounds( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const
 {
+  QgsCoordinateTransform transform( mCrs, crs, context );
+  transform.setBallparkTransformsAreAppropriate( true );
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
     const QVector< QgsVector3D > corners = mBox.corners();
@@ -174,7 +210,7 @@ QgsBox3D QgsTiledSceneBoundingVolumeBox::bounds( const QgsCoordinateTransform &t
       y.append( corner.y() );
       z.append( corner.z() );
     }
-    transform.transformInPlace( x, y, z, direction );
+    transform.transformInPlace( x, y, z );
 
     const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
     const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
@@ -192,7 +228,7 @@ QgsTiledSceneBoundingVolumeBox *QgsTiledSceneBoundingVolumeBox::clone() const
   return new QgsTiledSceneBoundingVolumeBox( *this );
 }
 
-QgsAbstractGeometry *QgsTiledSceneBoundingVolumeBox::as2DGeometry( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
+QgsAbstractGeometry *QgsTiledSceneBoundingVolumeBox::as2DGeometry( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const
 {
   std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
 
@@ -211,9 +247,11 @@ QgsAbstractGeometry *QgsTiledSceneBoundingVolumeBox::as2DGeometry( const QgsCoor
     z.append( corner.z() );
   }
 
+  QgsCoordinateTransform transform( mCrs, crs, context );
+  transform.setBallparkTransformsAreAppropriate( true );
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
-    transform.transformInPlace( x, y, z, direction );
+    transform.transformInPlace( x, y, z );
   }
 
   std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >( x, y );
@@ -221,9 +259,35 @@ QgsAbstractGeometry *QgsTiledSceneBoundingVolumeBox::as2DGeometry( const QgsCoor
   return geosMp.convexHull();
 }
 
-bool QgsTiledSceneBoundingVolumeBox::intersects( const QgsOrientedBox3D &box ) const
+bool QgsTiledSceneBoundingVolumeBox::intersects( const QgsOrientedBox3D &box, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const
 {
-  return mBox.intersects( box );
+  QgsCoordinateTransform ct( crs, mCrs, context );
+  ct.setBallparkTransformsAreAppropriate( true );
+
+  if ( !ct.isValid() || ct.isShortCircuited() )
+    return mBox.intersects( box );
+
+  QVector< QgsVector3D > corners = box.corners();
+  // TODO catch
+  QVector< double > x;
+  x.reserve( 8 );
+  QVector< double > y;
+  y.reserve( 8 );
+  QVector< double > z;
+  z.reserve( 8 );
+  for ( int i = 0; i < 8; ++i )
+  {
+    const QgsVector3D &corner = corners[i];
+    x.append( corner.x() );
+    y.append( corner.y() );
+    z.append( corner.z() );
+  }
+  ct.transformInPlace( x, y, z );
+
+  const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
+  const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
+  const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
+  return mBox.intersects( QgsOrientedBox3D::fromBox3D( QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second ) ) );
 }
 
 //
@@ -233,6 +297,8 @@ bool QgsTiledSceneBoundingVolumeBox::intersects( const QgsOrientedBox3D &box ) c
 QgsTiledSceneBoundingVolumeSphere::QgsTiledSceneBoundingVolumeSphere( const QgsSphere &sphere )
   : mSphere( sphere )
 {
+  // assume EPSG:4978 for spheres
+  mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
 
 }
 
@@ -267,8 +333,11 @@ void QgsTiledSceneBoundingVolumeSphere::transform( const QgsMatrix4x4 &transform
   mSphere = QgsSphere( center.x(), center.y(), center.z(), mSphere.radius() * uniformScale );
 }
 
-QgsBox3D QgsTiledSceneBoundingVolumeSphere::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
+QgsBox3D QgsTiledSceneBoundingVolumeSphere::bounds( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const
 {
+  QgsCoordinateTransform transform( mCrs, crs, context );
+  transform.setBallparkTransformsAreAppropriate( true );
+
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
     const QVector< QgsVector3D > corners = mSphere.boundingBox().corners();
@@ -285,7 +354,7 @@ QgsBox3D QgsTiledSceneBoundingVolumeSphere::bounds( const QgsCoordinateTransform
       y.append( corner.y() );
       z.append( corner.z() );
     }
-    transform.transformInPlace( x, y, z, direction );
+    transform.transformInPlace( x, y, z );
 
     const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
     const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
@@ -303,8 +372,10 @@ QgsTiledSceneBoundingVolumeSphere *QgsTiledSceneBoundingVolumeSphere::clone() co
   return new QgsTiledSceneBoundingVolumeSphere( *this );
 }
 
-QgsAbstractGeometry *QgsTiledSceneBoundingVolumeSphere::as2DGeometry( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
+QgsAbstractGeometry *QgsTiledSceneBoundingVolumeSphere::as2DGeometry( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const
 {
+  QgsCoordinateTransform transform( mCrs, crs, context );
+  transform.setBallparkTransformsAreAppropriate( true );
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
     const QgsVector3D sphereCenter = mSphere.centerVector();
@@ -329,7 +400,7 @@ QgsAbstractGeometry *QgsTiledSceneBoundingVolumeSphere::as2DGeometry( const QgsC
       circleYInPlane.append( mSphere.centerY() + mSphere.radius() * ( axis1.y() * std::cos( alpha ) + axis2.y()* std::sin( alpha ) ) );
       circleZInPlane.append( mSphere.centerZ() + mSphere.radius() * ( axis1.z() * std::cos( alpha ) + axis2.z()* std::sin( alpha ) ) );
     }
-    transform.transformInPlace( circleXInPlane, circleYInPlane, circleZInPlane, direction );
+    transform.transformInPlace( circleXInPlane, circleYInPlane, circleZInPlane );
 
     std::unique_ptr< QgsLineString > exterior = std::make_unique< QgsLineString>( circleXInPlane, circleYInPlane );
     exterior->close();
@@ -346,10 +417,38 @@ QgsAbstractGeometry *QgsTiledSceneBoundingVolumeSphere::as2DGeometry( const QgsC
   }
 }
 
-bool QgsTiledSceneBoundingVolumeSphere::intersects( const QgsOrientedBox3D &box ) const
+bool QgsTiledSceneBoundingVolumeSphere::intersects( const QgsOrientedBox3D &box, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const
 {
   // just a simple "bounding box of sphere" intersects test for now -- this could obviously be refined, but it's likely not necessary...
   const QgsBox3D boundingBox = mSphere.boundingBox();
-  return QgsOrientedBox3D::fromBox3D( boundingBox ).intersects( box );
+
+  QgsCoordinateTransform ct( crs, mCrs, context );
+  ct.setBallparkTransformsAreAppropriate( true );
+  if ( !ct.isValid() || ct.isShortCircuited() )
+  {
+    return QgsOrientedBox3D::fromBox3D( boundingBox ).intersects( box );
+  }
+
+  QVector< QgsVector3D > corners = box.corners();
+  // TODO catch
+  QVector< double > x;
+  x.reserve( 8 );
+  QVector< double > y;
+  y.reserve( 8 );
+  QVector< double > z;
+  z.reserve( 8 );
+  for ( int i = 0; i < 8; ++i )
+  {
+    const QgsVector3D &corner = corners[i];
+    x.append( corner.x() );
+    y.append( corner.y() );
+    z.append( corner.z() );
+  }
+  ct.transformInPlace( x, y, z );
+
+  const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
+  const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
+  const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
+  return boundingBox.intersects( QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second ) );
 }
 

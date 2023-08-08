@@ -48,12 +48,11 @@ Abstract base class for bounding volumes for tiled scene nodes.
 Returns the type of the volume;
 %End
 
-    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const = 0;
+    virtual QgsBox3D bounds( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const = 0;
 %Docstring
 Returns the axis aligned bounding box of the volume.
 
-The optional ``transform`` and ``direction`` arguments should be used whenever the volume needs
-to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
+The ``crs`` and ``context`` arguments are used to specify the destination coordinate reference system for the bounding box.
 %End
 
     virtual QgsAbstractTiledSceneBoundingVolume *clone() const = 0 /Factory/;
@@ -61,14 +60,13 @@ to be transformed into a specific destination CRS, in order to correctly handle 
 Returns a clone of the volume.
 %End
 
-    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const = 0 /Factory/;
 %Docstring
 Returns a new geometry representing the 2-dimensional X/Y center slice of the volume.
 
 Caller takes ownership of the returned geometry.
 
-The optional ``transform`` and ``direction`` arguments should be used whenever the volume needs
-to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
+The ``crs`` and ``context`` arguments are used to specify the destination coordinate reference system for the geometry.
 %End
 
     virtual void transform( const QgsMatrix4x4 &transform ) = 0;
@@ -81,10 +79,29 @@ The actual result of transforming a bounding volume depends on subclass specific
 - transforming a :py:class:`QgsTiledSceneBoundingVolumeSphere` causes the radius to be multiplied by the maximum length of the transform scales
 %End
 
-    virtual bool intersects( const QgsOrientedBox3D &box ) const = 0;
+    virtual bool intersects( const QgsOrientedBox3D &box, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const = 0;
 %Docstring
 Returns ``True`` if this bounds intersects the specified ``box``.
+
+The ``crs`` argument specifies the coordinate reference system of the box.
 %End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the ``crs`` associated with the volume.
+
+.. seealso:: :py:func:`crs`
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the coordinate reference system associated with the volume.
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+  protected:
+
 
 };
 
@@ -110,13 +127,13 @@ Constructor for QgsTiledSceneBoundingVolumeRegion, with the specified ``region``
 
     virtual void transform( const QgsMatrix4x4 &transform ) ${SIP_FINAL};
 
-    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
+    virtual QgsBox3D bounds( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const ${SIP_FINAL} throw( QgsCsException );
 
     virtual QgsTiledSceneBoundingVolumeRegion *clone() const ${SIP_FINAL} /Factory/;
 
-    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
+    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
 
-    virtual bool intersects( const QgsOrientedBox3D &box ) const ${SIP_FINAL};
+    virtual bool intersects( const QgsOrientedBox3D &box, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const ${SIP_FINAL};
 
 
     QgsBox3D region() const;
@@ -148,13 +165,13 @@ Constructor for QgsTiledSceneBoundingVolumeBox, with the specified oriented ``bo
 
     virtual void transform( const QgsMatrix4x4 &transform ) ${SIP_FINAL};
 
-    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
+    virtual QgsBox3D bounds( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const ${SIP_FINAL} throw( QgsCsException );
 
     virtual QgsTiledSceneBoundingVolumeBox *clone() const ${SIP_FINAL} /Factory/;
 
-    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
+    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
 
-    virtual bool intersects( const QgsOrientedBox3D &box ) const ${SIP_FINAL};
+    virtual bool intersects( const QgsOrientedBox3D &box, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const ${SIP_FINAL};
 
 
     QgsOrientedBox3D box() const;
@@ -186,13 +203,13 @@ Constructor for QgsTiledSceneBoundingVolumeSphere, with the specified ``sphere``
 
     virtual void transform( const QgsMatrix4x4 &transform ) ${SIP_FINAL};
 
-    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
+    virtual QgsBox3D bounds( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const ${SIP_FINAL} throw( QgsCsException );
 
     virtual QgsTiledSceneBoundingVolumeSphere *clone() const ${SIP_FINAL} /Factory/;
 
-    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
+    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
 
-    virtual bool intersects( const QgsOrientedBox3D &box ) const ${SIP_FINAL};
+    virtual bool intersects( const QgsOrientedBox3D &box, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) const ${SIP_FINAL};
 
 
     QgsSphere sphere() const;

@@ -21,6 +21,8 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsorientedbox3d.h"
 
 class QgsFeedback;
@@ -53,22 +55,38 @@ class CORE_EXPORT QgsTiledSceneRequest
     Qgis::TiledSceneRequestFlags flags() const { return mFlags; }
 
     /**
-    * Returns the box from which data will be taken, in the layer's CRS.
+     * Returns the transform context which should be used when transforming filterBox() coordinates.
+    */
+    QgsCoordinateTransformContext transformContext() const { return mTransformContext; }
+
+    /**
+    * Returns the box from which data will be taken.
+    *
+    * The CRS for the box can be retrieved by filterBoxCrs().
     *
     * If the returned box is null, then no filter box is set.
     *
+    * \see filterBoxCrs()
     * \see setFilterBox()
     */
     QgsOrientedBox3D filterBox() const { return mFilterBox; }
 
     /**
-     * Sets the \a box from which data will be taken, in the layer's CRS.
+     * Returns the coordinate reference system for the filter box.
+     *
+     * \see filterBox()
+     * \see setFilterBox()
+     */
+    QgsCoordinateReferenceSystem filterBoxCrs() const { return mFilterBoxCrs; }
+
+    /**
+     * Sets the \a box from which data will be taken.
      *
      * An null \a box removes the filter.
      *
      * \see filterBox()
      */
-    void setFilterBox( const QgsOrientedBox3D &box ) { mFilterBox = box; }
+    void setFilterBox( const QgsOrientedBox3D &box, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 
     /**
      * Returns the required geometric error threshold for the returned tiles, in
@@ -127,6 +145,9 @@ class CORE_EXPORT QgsTiledSceneRequest
 
     Qgis::TiledSceneRequestFlags mFlags;
     QgsOrientedBox3D mFilterBox;
+    QgsCoordinateReferenceSystem mFilterBoxCrs;
+    QgsCoordinateTransformContext mTransformContext;
+
     QgsFeedback *mFeedback = nullptr;
     double mRequiredGeometricError = 0;
     QString mParentTileId;

@@ -19,6 +19,13 @@
 
 QgsTiledSceneRequest::QgsTiledSceneRequest() = default;
 
+void QgsTiledSceneRequest::setFilterBox( const QgsOrientedBox3D &box, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
+{
+  mFilterBox = box;
+  mFilterBoxCrs = crs;
+  mTransformContext = context;
+}
+
 void QgsTiledSceneRequest::setFeedback( QgsFeedback *feedback )
 {
   mFeedback = feedback;

@@ -18,7 +18,9 @@ from qgis.core import (
     Qgis,
     QgsTiledSceneRequest,
     QgsFeedback,
-    QgsOrientedBox3D
+    QgsOrientedBox3D,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext
 )
 from qgis.testing import start_app, QgisTestCase
 
@@ -52,12 +54,15 @@ class TestQgsTiledSceneRequest(QgisTestCase):
         self.assertEqual(request.feedback(), feedback)
 
         request.setFilterBox(
-            QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 2, 0, 0, 0, 3])
+            QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 2, 0, 0, 0, 3]),
+            QgsCoordinateReferenceSystem("EPSG:4979"), QgsCoordinateTransformContext()
         )
         self.assertEqual(
             request.filterBox(),
             QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 2, 0, 0, 0, 3])
         )
+        self.assertEqual(request.filterBoxCrs(),
+                         QgsCoordinateReferenceSystem('EPSG:4979'))
 
         self.assertFalse(request.parentTileId())
         request.setParentTileId('parent')

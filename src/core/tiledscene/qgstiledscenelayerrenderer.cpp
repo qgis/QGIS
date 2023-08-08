@@ -81,10 +81,9 @@ bool QgsTiledSceneLayerRenderer::render()
 
   if ( mLayerBoundingVolume )
   {
-    const QgsCoordinateTransform transform = QgsCoordinateTransform( mSceneCrs, renderContext()->coordinateTransform().destinationCrs(), renderContext()->transformContext() );
     try
     {
-      std::unique_ptr< QgsAbstractGeometry > rootBoundsGeometry( mLayerBoundingVolume->as2DGeometry( transform ) );
+      std::unique_ptr< QgsAbstractGeometry > rootBoundsGeometry( mLayerBoundingVolume->as2DGeometry( renderContext()->coordinateTransform().destinationCrs(), renderContext()->transformContext() ) );
       if ( QgsCurvePolygon *polygon = qgsgeometry_cast< QgsCurvePolygon * >( rootBoundsGeometry.get() ) )
       {
         QPolygonF rootBoundsPoly = polygon->exteriorRing()->asQPolygonF();

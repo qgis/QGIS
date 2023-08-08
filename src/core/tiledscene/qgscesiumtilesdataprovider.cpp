@@ -165,6 +165,7 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
     if ( !rootRegion.isNull() )
     {
       volume = std::make_unique< QgsTiledSceneBoundingVolumeRegion >( rootRegion );
+      volume->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ) );
     }
   }
   else if ( boundingVolume.contains( "box" ) )
@@ -173,6 +174,7 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
     if ( !bbox.isNull() )
     {
       volume = std::make_unique< QgsTiledSceneBoundingVolumeBox >( bbox );
+      volume->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ) );
     }
   }
   else if ( boundingVolume.contains( "sphere" ) )
@@ -181,6 +183,7 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
     if ( !sphere.isNull() )
     {
       volume = std::make_unique< QgsTiledSceneBoundingVolumeSphere >( sphere );
+      volume->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ) );
     }
   }
   else
@@ -333,7 +336,7 @@ QStringList QgsCesiumTiledSceneIndex::getTiles( const QgsTiledSceneRequest &requ
 
     // check filter box first -- if the node doesn't intersect, then don't include the node and don't traverse
     // to its children
-    if ( !request.filterBox().isNull() && !tile->boundingVolume()->intersects( request.filterBox() ) )
+    if ( !request.filterBox().isNull() && !tile->boundingVolume()->intersects( request.filterBox(), request.filterBoxCrs(), request.transformContext() ) )
       return;
 
     // TODO -- option to filter out nodes without content
@@ -611,6 +614,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
           mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
           mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
           mSceneCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
+          mBoundingVolume->setCrs( mLayerCrs );
           mLayerMetadata.setCrs( mSceneCrs );
           mExtent = rootRegion.toRectangle();
           spatialExtent.extentCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
@@ -630,16 +634,15 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
           mSceneCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
           mLayerMetadata.setCrs( mSceneCrs );
 
-          const QgsCoordinateTransform transform( mSceneCrs, mLayerCrs, transformContext );
-
           mBoundingVolume = std::make_unique< QgsTiledSceneBoundingVolumeBox >( bbox );
+          mBoundingVolume->setCrs( mSceneCrs );
           mBoundingVolume->transform( rootTransform );
           try
           {
-            const QgsBox3D rootRegion = mBoundingVolume->bounds( transform );
+            const QgsBox3D rootRegion = mBoundingVolume->bounds( mLayerCrs, transformContext );
             mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
 
-            std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume->as2DGeometry( transform ) );
+            std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume->as2DGeometry( mLayerCrs, transformContext ) );
             mExtent = extent2D->boundingBox();
           }
           catch ( QgsCsException & )
@@ -648,7 +651,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
           }
 
           spatialExtent.extentCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
-          spatialExtent.bounds = mBoundingVolume->bounds();
+          spatialExtent.bounds = mBoundingVolume->bounds( QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext() );
         }
       }
       else if ( rootBoundingVolume.contains( "sphere" ) )
@@ -664,16 +667,15 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
           mSceneCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
           mLayerMetadata.setCrs( mSceneCrs );
 
-          const QgsCoordinateTransform transform( mSceneCrs, mLayerCrs, transformContext );
-
           mBoundingVolume = std::make_unique< QgsTiledSceneBoundingVolumeSphere >( sphere );
+          mBoundingVolume->setCrs( mSceneCrs );
           mBoundingVolume->transform( rootTransform );
           try
           {
-            const QgsBox3D rootRegion = mBoundingVolume->bounds( transform );
+            const QgsBox3D rootRegion = mBoundingVolume->bounds( mLayerCrs, transformContext );
             mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
 
-            std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume->as2DGeometry( transform ) );
+            std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume->as2DGeometry( mLayerCrs, transformContext ) );
             mExtent = extent2D->boundingBox();
           }
           catch ( QgsCsException & )
@@ -682,7 +684,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
           }
 
           spatialExtent.extentCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
-          spatialExtent.bounds = mBoundingVolume->bounds();
+          spatialExtent.bounds = mBoundingVolume->bounds( QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext() );
         }
       }
       else
