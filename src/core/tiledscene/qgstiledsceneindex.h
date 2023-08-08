@@ -58,31 +58,31 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
     virtual QgsTiledSceneTile rootTile() const = 0;
 
     /**
-     * Returns the tile ID of the parent tile of the tile with matching \a id, or an empty string
+     * Returns the tile ID of the parent tile of the tile with matching \a id, or -1
      * if the tile has no parent.
      *
      * \see childTileIds()
      */
-    virtual QString parentTileId( const QString &id ) const = 0;
+    virtual long long parentTileId( long long id ) const = 0;
 
     /**
      * Returns a list of the tile IDs of any children for the tile with matching \a id.
      *
      * \see parentTileId()
      */
-    virtual QStringList childTileIds( const QString &id ) const = 0;
+    virtual QVector< long long > childTileIds( long long id ) const = 0;
 
     /**
      * Returns the tile with matching \a id, or an invalid tile if the matching tile is not available.
      */
-    virtual QgsTiledSceneTile getTile( const QString &id ) = 0;
+    virtual QgsTiledSceneTile getTile( long long id ) = 0;
 
     /**
      * Returns the tile IDs which match the given \a request.
      *
      * May return an empty list if no data satisfies the request.
      */
-    virtual QStringList getTiles( const QgsTiledSceneRequest &request ) = 0;
+    virtual QVector< long long > getTiles( const QgsTiledSceneRequest &request ) = 0;
 
     /**
      * Retrieves index content for the specified \a uri.
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
      *
      * \see fetchHierarchy()
      */
-    virtual Qgis::TileChildrenAvailability childAvailability( const QString &id ) const = 0;
+    virtual Qgis::TileChildrenAvailability childAvailability( long long id ) const = 0;
 
     /**
      * Populates the tile with the given \a id by fetching any sub datasets attached to the tile.
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
      *
      * \see childAvailability()
      */
-    virtual bool fetchHierarchy( const QString &id, QgsFeedback *feedback = nullptr ) = 0;
+    virtual bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) = 0;
 
   protected:
 
@@ -175,36 +175,36 @@ class CORE_EXPORT QgsTiledSceneIndex
     /**
      * Returns the tile with matching \a id, or an invalid tile if the matching tile is not available.
      */
-    QgsTiledSceneTile getTile( const QString &id );
+    QgsTiledSceneTile getTile( long long id );
 
     /**
-     * Returns the tile ID of the parent tile of the tile with matching \a id, or an empty string
+     * Returns the tile ID of the parent tile of the tile with matching \a id, or -1
      * if the tile has no parent.
      *
      * \see childTileIds()
      */
-    QString parentTileId( const QString &id ) const;
+    long long parentTileId( long long id ) const;
 
     /**
      * Returns a list of the tile IDs of any children for the tile with matching \a id.
      *
      * \see parentTileId()
      */
-    QStringList childTileIds( const QString &id ) const;
+    QVector< long long > childTileIds( long long id ) const;
 
     /**
      * Returns the list of tile IDs which match the given \a request.
      *
      * May return an empty list if no data satisfies the request.
      */
-    QStringList getTiles( const QgsTiledSceneRequest &request );
+    QVector< long long > getTiles( const QgsTiledSceneRequest &request );
 
     /**
      * Returns the availability for a tile's children.
      *
      * \see fetchHierarchy()
      */
-    Qgis::TileChildrenAvailability childAvailability( const QString &id ) const;
+    Qgis::TileChildrenAvailability childAvailability( long long id ) const;
 
     /**
      * Populates the tile with the given \a id by fetching any sub datasets attached to the tile.
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsTiledSceneIndex
      *
      * \see childAvailability()
      */
-    bool fetchHierarchy( const QString &id, QgsFeedback *feedback = nullptr );
+    bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr );
 
     /**
      * Retrieves index content for the specified \a uri.

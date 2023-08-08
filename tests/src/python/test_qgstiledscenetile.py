@@ -33,11 +33,11 @@ class TestQgsTiledSceneTile(QgisTestCase):
     def test_basic(self):
         node = QgsTiledSceneTile()
         self.assertFalse(node.isValid())
-        self.assertFalse(node.id())
+        self.assertEqual(node.id(), -1)
 
-        node = QgsTiledSceneTile("id")
+        node = QgsTiledSceneTile(11)
         self.assertTrue(node.isValid())
-        self.assertEqual(node.id(), "id")
+        self.assertEqual(node.id(), 11)
 
         node.setRefinementProcess(Qgis.TileRefinementProcess.Additive)
         self.assertEqual(node.refinementProcess(), Qgis.TileRefinementProcess.Additive)
@@ -65,7 +65,7 @@ class TestQgsTiledSceneTile(QgisTestCase):
         self.assertEqual(node.geometricError(), 1.2)
 
     def test_copy(self):
-        node = QgsTiledSceneTile("id")
+        node = QgsTiledSceneTile(11)
         node.setRefinementProcess(Qgis.TileRefinementProcess.Additive)
         node.setBoundingVolume(
             QgsTiledSceneBoundingVolumeRegion(QgsBox3d(1, 2, 3, 10, 11, 12))
@@ -76,7 +76,7 @@ class TestQgsTiledSceneTile(QgisTestCase):
 
         copy = QgsTiledSceneTile(node)
         self.assertTrue(copy.isValid())
-        self.assertEqual(copy.id(), "id")
+        self.assertEqual(copy.id(), 11)
         self.assertEqual(copy.refinementProcess(), Qgis.TileRefinementProcess.Additive)
         self.assertEqual(copy.boundingVolume().region(), QgsBox3d(1, 2, 3, 10, 11, 12))
         self.assertEqual(

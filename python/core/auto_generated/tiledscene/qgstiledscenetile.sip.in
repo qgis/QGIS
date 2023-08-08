@@ -30,7 +30,7 @@ Constructor for an invalid tile.
 .. seealso:: :py:func:`isValid`
 %End
 
-    explicit QgsTiledSceneTile( const QString &id );
+    explicit QgsTiledSceneTile( long long id );
 %Docstring
 Constructor for an valid tile.
 
@@ -49,7 +49,7 @@ Copy constructor
 Returns ``True`` if the tile is a valid tile (i.e. not default constructed).
 %End
 
-    QString id() const;
+    long long id() const;
 %Docstring
 Returns the tile's unique ID.
 %End

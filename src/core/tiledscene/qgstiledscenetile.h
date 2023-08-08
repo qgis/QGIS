@@ -47,7 +47,7 @@ class CORE_EXPORT QgsTiledSceneTile
      *
      * \see isValid()
      */
-    explicit QgsTiledSceneTile( const QString &id );
+    explicit QgsTiledSceneTile( long long id );
 
     ~QgsTiledSceneTile();
 
@@ -59,12 +59,12 @@ class CORE_EXPORT QgsTiledSceneTile
     /**
      * Returns TRUE if the tile is a valid tile (i.e. not default constructed).
      */
-    bool isValid() const { return !mId.isEmpty(); }
+    bool isValid() const { return mId >= 0; }
 
     /**
      * Returns the tile's unique ID.
      */
-    QString id() const { return mId; }
+    long long id() const { return mId; }
 
     /**
      * Returns the tile's refinement process.
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsTiledSceneTile
     void setGeometricError( double error );
 
   private:
-    QString mId;
+    long long mId = -1;
     Qgis::TileRefinementProcess mRefinementProcess = Qgis::TileRefinementProcess::Replacement;
     std::unique_ptr< QgsAbstractTiledSceneBoundingVolume > mBoundingVolume;
     std::unique_ptr< QgsMatrix4x4 > mTransform;
