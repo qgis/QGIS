@@ -47,8 +47,18 @@ class QgsVoronoiPolygonsAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    QString voronoiWithAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QString voronoiWithoutAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+
+    std::unique_ptr< QgsProcessingFeatureSource > mSource;
+    double mBuffer;
+    double mTolerance;
+    bool mCopyAttributes;
 };
 
 ///@endcond PRIVATE
