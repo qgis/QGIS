@@ -22,6 +22,7 @@
 #include "qgssphere.h"
 #include "qgsorientedbox3d.h"
 
+#include <QtCore/QBuffer>
 #include <QIODevice>
 
 QgsBox3D QgsCesiumUtils::parseRegion( const json &region )
@@ -114,7 +115,7 @@ QgsSphere QgsCesiumUtils::parseSphere( const QVariantList &sphere )
 }
 
 
-QByteArray QgsCesiumUtils::extractGltfFromB3dm( QIODevice &file )
+QByteArray QgsCesiumUtils::extractGltfFromB3dm( const QByteArray &tileContent )
 {
   struct b3dmHeader
   {
@@ -127,14 +128,31 @@ QByteArray QgsCesiumUtils::extractGltfFromB3dm( QIODevice &file )
     quint32 batchTableBinaryByteLength;
   };
 
+  if ( tileContent.size() < static_cast<int>( sizeof( b3dmHeader ) ) )
+    return QByteArray();
+
   b3dmHeader hdr;
-  if ( !file.read( ( char * )&hdr, sizeof( b3dmHeader ) ) )
-    return QByteArray();
+  memcpy( &hdr, tileContent.constData(), sizeof( b3dmHeader ) );
 
-  if ( !file.seek( sizeof( b3dmHeader ) +
-                   hdr.featureTableJsonByteLength + hdr.featureTableBinaryByteLength +
-                   hdr.batchTableJsonByteLength + hdr.batchTableBinaryByteLength ) )
-    return QByteArray();
+  return tileContent.mid( sizeof( b3dmHeader ) +
+                          hdr.featureTableJsonByteLength + hdr.featureTableBinaryByteLength +
+                          hdr.batchTableJsonByteLength + hdr.batchTableBinaryByteLength );
+}
 
-  return file.readAll();
+QByteArray QgsCesiumUtils::extractGltfFromTileContent( const QByteArray &tileContent )
+{
+  if ( tileContent.startsWith( QByteArray( "b3dm" ) ) )
+  {
+    return QgsCesiumUtils::extractGltfFromB3dm( tileContent );
+  }
+  else if ( tileContent.startsWith( QByteArray( "glTF" ) ) )
+  {
+    return tileContent;
+  }
+  else
+  {
+    // unsupported tile content type
+    // TODO: we could extract "b3dm" data from a composite tile ("cmpt")
+    return QByteArray();
+  }
 }

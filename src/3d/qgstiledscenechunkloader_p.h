@@ -27,6 +27,7 @@
 // version without notice, or even be removed.
 //
 
+#include "qgscoordinatetransform.h"
 #include "qgschunkedentity_p.h"
 #include "qgschunkloader_p.h"
 #include "qgschunknode_p.h"
@@ -34,7 +35,6 @@
 #include "qgstiledscenetile.h"
 
 class Qgs3DMapSettings;
-class QgsCoordinateTransform;
 class QgsTiledSceneChunkLoaderFactory;
 
 
@@ -50,12 +50,12 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
 {
     Q_OBJECT
   public:
-    QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory *factory, const QgsTiledSceneTile &t );
+    QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory &factory, const QgsTiledSceneTile &t );
 
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
 
   private:
-    const QgsTiledSceneChunkLoaderFactory *mFactory;
+    const QgsTiledSceneChunkLoaderFactory &mFactory;
     QgsTiledSceneTile mTile;
 };
 
@@ -82,8 +82,8 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     const Qgs3DMapSettings &mMap;
     QString mRelativePathBase;
     mutable QgsTiledSceneIndex mIndex;
-    std::unique_ptr<QgsCoordinateTransform> mBoundsTransform;
-    std::unique_ptr<QgsCoordinateTransform> mRegionTransform;
+    QgsCoordinateTransform mBoundsTransform;
+    QgsCoordinateTransform mRegionTransform;
 };
 
 
