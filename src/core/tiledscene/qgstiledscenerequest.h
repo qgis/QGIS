@@ -21,6 +21,8 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsorientedbox3d.h"
 
 class QgsFeedback;
@@ -53,16 +55,19 @@ class CORE_EXPORT QgsTiledSceneRequest
     Qgis::TiledSceneRequestFlags flags() const { return mFlags; }
 
     /**
-    * Returns the box from which data will be taken, in the layer's CRS.
+    * Returns the box from which data will be taken.
+    *
+    * The CRS for the box can be retrieved by filterBoxCrs().
     *
     * If the returned box is null, then no filter box is set.
     *
+    * \see filterBoxCrs()
     * \see setFilterBox()
     */
     QgsOrientedBox3D filterBox() const { return mFilterBox; }
 
     /**
-     * Sets the \a box from which data will be taken, in the layer's CRS.
+     * Sets the \a box from which data will be taken.
      *
      * An null \a box removes the filter.
      *
@@ -131,6 +136,7 @@ class CORE_EXPORT QgsTiledSceneRequest
 
     Qgis::TiledSceneRequestFlags mFlags;
     QgsOrientedBox3D mFilterBox;
+
     QgsFeedback *mFeedback = nullptr;
     double mRequiredGeometricError = 0;
     long long mParentTileId = -1;

@@ -9,7 +9,6 @@
 
 
 
-
 class QgsTiledSceneTile
 {
 %Docstring(signature="appended")
@@ -74,16 +73,14 @@ content is handled when its higher resolution children are also included.
 .. seealso:: :py:func:`refinementProcess`
 %End
 
-    void setBoundingVolume( QgsAbstractTiledSceneBoundingVolume *volume /Transfer/ );
+    void setBoundingVolume( const QgsTiledSceneBoundingVolume &volume );
 %Docstring
 Sets the bounding ``volume`` for the tile.
-
-Ownership of ``volume`` is transferred to the tile.
 
 .. seealso:: :py:func:`boundingVolume`
 %End
 
-    const QgsAbstractTiledSceneBoundingVolume *boundingVolume() const;
+    const QgsTiledSceneBoundingVolume &boundingVolume() const;
 %Docstring
 Returns the bounding volume for the tile.
 

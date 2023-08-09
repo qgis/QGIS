@@ -19,6 +19,7 @@
 #include "qgscesiumutils.h"
 #include "nlohmann/json.hpp"
 #include "qgsjsonutils.h"
+#include "qgsmatrix4x4.h"
 #include "qgssphere.h"
 #include "qgsorientedbox3d.h"
 
@@ -114,6 +115,32 @@ QgsSphere QgsCesiumUtils::parseSphere( const QVariantList &sphere )
   return parseSphere( QgsJsonUtils::jsonFromVariant( sphere ) );
 }
 
+QgsSphere QgsCesiumUtils::transformSphere( const QgsSphere &sphere, const QgsMatrix4x4 &transform )
+{
+  if ( !transform.isIdentity() )
+  {
+    // center is transformed, radius is scaled by maximum scalar from transform
+    // see https://github.com/CesiumGS/cesium-native/blob/fd20f5e272850dde6b58c74059e6de767fe25df6/Cesium3DTilesSelection/src/BoundingVolume.cpp#L33
+    const QgsVector3D center = transform.map( sphere.centerVector() );
+    const double uniformScale = std::max(
+                                  std::max(
+                                    std::sqrt(
+                                      transform.constData()[0] * transform.constData()[0] +
+                                      transform.constData()[1] * transform.constData()[1] +
+                                      transform.constData()[2] * transform.constData()[2] ),
+                                    std::sqrt(
+                                      transform.constData()[4] * transform.constData()[4] +
+                                      transform.constData()[5] * transform.constData()[5] +
+                                      transform.constData()[6] * transform.constData()[6] ) ),
+                                  std::sqrt(
+                                    transform.constData()[8] * transform.constData()[8] +
+                                    transform.constData()[9] * transform.constData()[9] +
+                                    transform.constData()[10] * transform.constData()[10] ) );
+
+    return QgsSphere( center.x(), center.y(), center.z(), sphere.radius() * uniformScale );
+  }
+  return sphere;
+}
 
 QByteArray QgsCesiumUtils::extractGltfFromB3dm( const QByteArray &tileContent )
 {
