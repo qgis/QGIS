@@ -29,7 +29,7 @@
 
 size_t qHash( const QgsChunkNodeId &n )
 {
-  return n.d ^ n.x ^ n.y ^ n.z;
+  return n.uniqueId;
 }
 
 static bool hasLargeBounds( const QgsTiledSceneTile &t )
@@ -86,24 +86,6 @@ static QString resolveUri( QString uri, const QString &baseUri )
     }
   }
   return uri;
-}
-
-static QgsChunkNodeId nodeIdFromUuid( const QString &uuid )
-{
-  QgsChunkNodeId nodeId;
-  QUuid nodeUuid = QUuid::fromString( uuid );
-  Q_ASSERT( !nodeUuid.isNull() );
-  Q_ASSERT( sizeof( QUuid ) == 16 && sizeof( QgsChunkNodeId ) == 16 );
-  memcpy( reinterpret_cast<char *>( &nodeId ), reinterpret_cast<const char *>( &nodeUuid ), 16 );
-  return nodeId;
-}
-
-static QString uuidFromNodeId( const QgsChunkNodeId &nodeId )
-{
-  QUuid nodeUuid;
-  Q_ASSERT( sizeof( QUuid ) == 16 && sizeof( QgsChunkNodeId ) == 16 );
-  memcpy( reinterpret_cast<char *>( &nodeUuid ), reinterpret_cast<const char *>( &nodeId ), 16 );
-  return nodeUuid.toString();
 }
 
 ///
@@ -186,23 +168,19 @@ QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DMap
   mRegionTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4979" ), mMap.crs(), mMap.transformContext() );
 }
 
-
 QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
 {
-  QString id = uuidFromNodeId( node->tileId() );
-  QgsTiledSceneTile t = mIndex.getTile( id );
+  const QgsTiledSceneTile t = mIndex.getTile( node->tileId().uniqueId );
 
   return new QgsTiledSceneChunkLoader( node, *this, t );
 }
 
-
 // converts box from map coordinates to world coords (also flips [X,Y] to [X,-Z])
 static QgsAABB aabbConvert( const QgsBox3D &b0, const QgsVector3D &sceneOriginTargetCrs )
 {
-  QgsBox3D b = b0 - sceneOriginTargetCrs;
+  const QgsBox3D b = b0 - sceneOriginTargetCrs;
   return QgsAABB( b.xMinimum(), b.zMinimum(), -b.yMaximum(), b.xMaximum(), b.zMaximum(), -b.yMinimum() );
 }
-
 
 QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId ) const
 {
@@ -227,16 +205,15 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneT
 
 QgsChunkNode *QgsTiledSceneChunkLoaderFactory::createRootNode() const
 {
-  QgsTiledSceneTile t = mIndex.rootTile();
-  QgsChunkNodeId nodeId = nodeIdFromUuid( t.id() );
-  return nodeForTile( t, nodeId );
+  const QgsTiledSceneTile t = mIndex.rootTile();
+  return nodeForTile( t, QgsChunkNodeId( t.id() ) );
 }
 
 
 QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
 {
   QVector<QgsChunkNode *> children;
-  QString indexTileId = uuidFromNodeId( node->tileId() );
+  const long long indexTileId = node->tileId().uniqueId;
 
   switch ( mIndex.childAvailability( indexTileId ) )
   {
@@ -250,10 +227,10 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
       break;
   }
 
-  const QStringList childIds = mIndex.childTileIds( indexTileId );
-  for ( const QString &childId : childIds )
+  const QVector< long long > childIds = mIndex.childTileIds( indexTileId );
+  for ( long long childId : childIds )
   {
-    QgsChunkNodeId chId = nodeIdFromUuid( childId );
+    const QgsChunkNodeId chId( childId );
     QgsTiledSceneTile t = mIndex.getTile( childId );
 
     // first check if this node should be even considered
