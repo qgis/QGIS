@@ -17,6 +17,7 @@
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryoptions.h"
 #include "qgsgeos.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
@@ -90,6 +91,7 @@ class TestQgsVertexTool : public QObject
     void testActiveLayerPriority();
     void testSelectedFeaturesPriority();
     void testVertexToolCompoundCurve();
+    void testTopologicalEditingMoveVertexCreateTopoPoint();
 
   private:
     QPoint mapToScreen( double mapX, double mapY )
@@ -1574,6 +1576,45 @@ void TestQgsVertexTool::testSelectVerticesByPolygon()
   mouseClick( 0.5, 7, Qt::RightButton );
   QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry(), QgsGeometry::fromWkt( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
+}
+
+void TestQgsVertexTool::testTopologicalEditingMoveVertexCreateTopoPoint()
+{
+  // test moving a vertex close to another geometry with geometry precisions set
+
+  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  QgsProject::instance()->setTopologicalEditing( true );
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
+  cfg.setTolerance( 10 );
+  cfg.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  const double geomPrecMultiPolygon = mLayerMultiPolygon->geometryOptions()->geometryPrecision();
+  mLayerMultiPolygon->geometryOptions()->setGeometryPrecision( 0.1 );
+  const double geomPrecPolygon = mLayerPolygon->geometryOptions()->geometryPrecision();
+  mLayerPolygon->geometryOptions()->setGeometryPrecision( 0.1 );
+
+  // move a corner of the multipolygon near to the polygon
+  mouseClick( 4, 5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mouseClick( 4.95, 4.05, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  // a snapped vertex increases the number of vertices in polygon by one
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().constGet()->vertexCount(), 6 );
+  QgsGeometry polygonAsPoints = mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().convertToType( Qgis::GeometryType::Point, true );
+  QCOMPARE( polygonAsPoints.asWkt(), QString( "MultiPoint ((4 1),(7 1),(7 4),(5 4),(4 4),(4 1))" ) );
+
+  mLayerMultiPolygon->undoStack()->undo();
+  mLayerPolygon->undoStack()->undo();
+  mLayerMultiPolygon->geometryOptions()->setGeometryPrecision( geomPrecMultiPolygon );
+  mLayerPolygon->geometryOptions()->setGeometryPrecision( geomPrecPolygon );
+
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().constGet()->vertexCount(), 5 );
+
+  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
 }
 
 QGSTEST_MAIN( TestQgsVertexTool )
