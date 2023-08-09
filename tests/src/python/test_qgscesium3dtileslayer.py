@@ -86,28 +86,17 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertAlmostEqual(layer.extent().yMaximum(), 40.044339909, 3)
 
             self.assertAlmostEqual(
-                layer.dataProvider().boundingVolume().region().xMinimum(),
-                -75.6144410,
+                layer.dataProvider().boundingVolume().box().centerX(),
+                -75.612094,
                 3,
             )
             self.assertAlmostEqual(
-                layer.dataProvider().boundingVolume().region().xMaximum(),
-                -75.6097475,
+                layer.dataProvider().boundingVolume().box().centerY(),
+                40.0425306,
                 3,
             )
             self.assertAlmostEqual(
-                layer.dataProvider().boundingVolume().region().yMinimum(), 40.0407213, 3
-            )
-            self.assertAlmostEqual(
-                layer.dataProvider().boundingVolume().region().yMaximum(),
-                40.044339909,
-                3,
-            )
-            self.assertAlmostEqual(
-                layer.dataProvider().boundingVolume().region().zMinimum(), 1.2, 3
-            )
-            self.assertAlmostEqual(
-                layer.dataProvider().boundingVolume().region().zMaximum(), 67.00999, 3
+                layer.dataProvider().boundingVolume().box().centerZ(), 34.105, 3
             )
 
             # check that version, tileset version, and z range are in html metadata
@@ -174,13 +163,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             layer = QgsTiledSceneLayer(tmp_file, "my layer", "cesiumtiles")
             self.assertTrue(layer.dataProvider().isValid())
 
-            layer_bounds = layer.dataProvider().boundingVolume().region()
-            self.assertAlmostEqual(layer_bounds.xMinimum(), -75.6132, 4)
-            self.assertAlmostEqual(layer_bounds.xMaximum(), -75.6075, 4)
-            self.assertAlmostEqual(layer_bounds.yMinimum(), 40.0383, 4)
-            self.assertAlmostEqual(layer_bounds.yMaximum(), 40.044, 4)
-            self.assertAlmostEqual(layer_bounds.zMinimum(), 1.2, 4)
-            self.assertAlmostEqual(layer_bounds.zMaximum(), 67.01, 4)
+            layer_bounds = layer.dataProvider().boundingVolume().box()
+            self.assertAlmostEqual(layer_bounds.centerX(), -75.61037543, 4)
+            self.assertAlmostEqual(layer_bounds.centerY(), 40.0411555, 4)
+            self.assertAlmostEqual(layer_bounds.centerZ(), 34.1050000, 4)
 
     def test_source_bounding_volume_box(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -277,26 +263,23 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(layer.dataProvider().crs().authid(), "EPSG:4979")
 
             # extent must be in EPSG:4979 to match the layer crs()
-            self.assertAlmostEqual(layer.extent().xMinimum(), 149.5562895, 3)
-            self.assertAlmostEqual(layer.extent().xMaximum(), 149.5989376, 3)
-            self.assertAlmostEqual(layer.extent().yMinimum(), -33.4378807, 3)
-            self.assertAlmostEqual(layer.extent().yMaximum(), -33.402147, 3)
+            self.assertAlmostEqual(layer.extent().xMinimum(), 149.5484313, 3)
+            self.assertAlmostEqual(layer.extent().xMaximum(), 149.60678790, 3)
+            self.assertAlmostEqual(layer.extent().yMinimum(), -33.4484168, 3)
+            self.assertAlmostEqual(layer.extent().yMaximum(), -33.391621, 3)
 
             self.assertAlmostEqual(
-                layer.dataProvider().boundingVolume().sphere().centerX(),
+                layer.dataProvider().boundingVolume().box().centerX(),
                 -4595750.5786,
                 1,
             )
             self.assertAlmostEqual(
-                layer.dataProvider().boundingVolume().sphere().centerY(),
+                layer.dataProvider().boundingVolume().box().centerY(),
                 2698725.128252,
                 1,
             )
             self.assertEqual(
-                layer.dataProvider().boundingVolume().sphere().centerZ(), -3493318.0
-            )
-            self.assertEqual(
-                layer.dataProvider().boundingVolume().sphere().radius(), 1983.0
+                layer.dataProvider().boundingVolume().box().centerZ(), -3493318.0
             )
 
             # check that version, tileset version, and z range are in html metadata

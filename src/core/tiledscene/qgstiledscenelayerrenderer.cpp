@@ -41,8 +41,7 @@ QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *laye
   mSceneCrs = layer->dataProvider()->sceneCrs();
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
-  if ( const QgsAbstractTiledSceneBoundingVolume *layerBoundingVolume = layer->dataProvider()->boundingVolume() )
-    mLayerBoundingVolume.reset( layerBoundingVolume->clone() );
+  mLayerBoundingVolume = layer->dataProvider()->boundingVolume();
 
   mReadyToCompose = false;
 }
@@ -79,39 +78,36 @@ bool QgsTiledSceneLayerRenderer::render()
 
   bool canceled = false;
 
-  if ( mLayerBoundingVolume )
+  const QgsCoordinateTransform transform = QgsCoordinateTransform( mSceneCrs, renderContext()->coordinateTransform().destinationCrs(), renderContext()->transformContext() );
+  try
   {
-    const QgsCoordinateTransform transform = QgsCoordinateTransform( mSceneCrs, renderContext()->coordinateTransform().destinationCrs(), renderContext()->transformContext() );
-    try
+    std::unique_ptr< QgsAbstractGeometry > rootBoundsGeometry( mLayerBoundingVolume.as2DGeometry( transform ) );
+    if ( QgsCurvePolygon *polygon = qgsgeometry_cast< QgsCurvePolygon * >( rootBoundsGeometry.get() ) )
     {
-      std::unique_ptr< QgsAbstractGeometry > rootBoundsGeometry( mLayerBoundingVolume->as2DGeometry( transform ) );
-      if ( QgsCurvePolygon *polygon = qgsgeometry_cast< QgsCurvePolygon * >( rootBoundsGeometry.get() ) )
+      QPolygonF rootBoundsPoly = polygon->exteriorRing()->asQPolygonF();
+
+      // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
+      rootBoundsPoly.erase( std::remove_if( rootBoundsPoly.begin(), rootBoundsPoly.end(),
+                                            []( const QPointF point )
       {
-        QPolygonF rootBoundsPoly = polygon->exteriorRing()->asQPolygonF();
+        return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
+      } ), rootBoundsPoly.end() );
 
-        // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
-        rootBoundsPoly.erase( std::remove_if( rootBoundsPoly.begin(), rootBoundsPoly.end(),
-                                              []( const QPointF point )
-        {
-          return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
-        } ), rootBoundsPoly.end() );
-
-        QPointF *ptr = rootBoundsPoly.data();
-        for ( int i = 0; i < rootBoundsPoly.size(); ++i, ++ptr )
-        {
-          renderContext()->mapToPixel().transformInPlace( ptr->rx(), ptr->ry() );
-        }
-
-        QgsLineSymbol symbol;
-        symbol.startRender( *renderContext() );
-        symbol.renderPolyline( rootBoundsPoly, nullptr, *renderContext() );
-        symbol.stopRender( *renderContext() );
+      QPointF *ptr = rootBoundsPoly.data();
+      for ( int i = 0; i < rootBoundsPoly.size(); ++i, ++ptr )
+      {
+        renderContext()->mapToPixel().transformInPlace( ptr->rx(), ptr->ry() );
       }
+
+      QgsLineSymbol symbol;
+      symbol.startRender( *renderContext() );
+      symbol.renderPolyline( rootBoundsPoly, nullptr, *renderContext() );
+      symbol.stopRender( *renderContext() );
     }
-    catch ( QgsCsException & )
-    {
-      QgsDebugError( QStringLiteral( "Error transforming root bounding volume" ) );
-    }
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugError( QStringLiteral( "Error transforming root bounding volume" ) );
   }
 
   mRenderer->stopRender( context );

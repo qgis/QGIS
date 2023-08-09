@@ -37,27 +37,8 @@ static bool hasLargeBounds( const QgsTiledSceneTile &t )
   if ( t.geometricError() > 1e6 )
     return true;
 
-  switch ( t.boundingVolume()->type() )
-  {
-    case Qgis::TiledSceneBoundingVolumeType::Region:
-    {
-      // TODO: is region always lat/lon in degrees?
-      QgsBox3D region = static_cast<const QgsTiledSceneBoundingVolumeRegion *>( t.boundingVolume() )->region();
-      return region.width() > 15 || region.height() > 15;
-    }
-
-    case Qgis::TiledSceneBoundingVolumeType::OrientedBox:
-    {
-      QgsOrientedBox3D box = static_cast<const QgsTiledSceneBoundingVolumeBox *>( t.boundingVolume() )->box();
-      QgsVector3D size = box.size();
-      return size.x() > 1e5 || size.y() > 1e5 || size.z() > 1e5;
-    }
-
-    case Qgis::TiledSceneBoundingVolumeType::Sphere:
-      return static_cast<const QgsTiledSceneBoundingVolumeSphere *>( t.boundingVolume() )->sphere().diameter() > 1e5;
-  }
-
-  return false;
+  const QgsVector3D size = t.boundingVolume().box().size();
+  return size.x() > 1e5 || size.y() > 1e5 || size.z() > 1e5;
 }
 
 
@@ -165,7 +146,6 @@ QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DMap
   : mMap( map ), mRelativePathBase( relativePathBase ), mIndex( index )
 {
   mBoundsTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4978" ), mMap.crs(), mMap.transformContext() );
-  mRegionTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4979" ), mMap.crs(), mMap.transformContext() );
 }
 
 QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
@@ -195,9 +175,8 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneT
   }
   else
   {
-    bool isRegion = t.boundingVolume()->type() == Qgis::TiledSceneBoundingVolumeType::Region;
-    QgsBox3D box = t.boundingVolume()->bounds( isRegion ? mRegionTransform : mBoundsTransform );
-    QgsAABB aabb = aabbConvert( box, mMap.origin() );
+    const QgsBox3D box = t.boundingVolume().bounds( mBoundsTransform );
+    const QgsAABB aabb = aabbConvert( box, mMap.origin() );
     return new QgsChunkNode( nodeId, aabb, t.geometricError() );
   }
 }
@@ -239,29 +218,26 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
       // if the tile is huge, let's try to see if our scene is actually inside
       // (if not, let' skip this child altogether!)
       // TODO: make OBB of our scene in ECEF rather than just using center of the scene?
-      if ( t.boundingVolume()->type() == Qgis::TiledSceneBoundingVolumeType::OrientedBox )
+      const QgsOrientedBox3D obb = t.boundingVolume().box();
+
+      const QgsPointXY c = mMap.extent().center();
+      const QgsVector3D cEcef = mBoundsTransform.transform( QgsVector3D( c.x(), c.y(), 0 ), Qgis::TransformDirection::Reverse );
+      const QgsVector3D ecef2 = cEcef - obb.center();
+
+      const double *half = obb.halfAxes();
+
+      // this is an approximate check anyway, no need for double precision matrix/vector
+      QMatrix4x4 rot(
+        half[0], half[3], half[6], 0,
+        half[1], half[4], half[7], 0,
+        half[2], half[5], half[8], 0,
+        0, 0, 0, 1 );
+      QVector3D aaa = rot.inverted().map( ecef2.toVector3D() );
+
+      if ( aaa.x() > 1 || aaa.y() > 1 || aaa.z() > 1 ||
+           aaa.x() < -1 || aaa.y() < -1 || aaa.z() < -1 )
       {
-        QgsOrientedBox3D obb = static_cast<const QgsTiledSceneBoundingVolumeBox *>( t.boundingVolume() )->box();
-
-        QgsPointXY c = mMap.extent().center();
-        QgsVector3D cEcef = mBoundsTransform.transform( QgsVector3D( c.x(), c.y(), 0 ), Qgis::TransformDirection::Reverse );
-        QgsVector3D ecef2 = cEcef - obb.center();
-
-        const double *half = obb.halfAxes();
-
-        // this is an approximate check anyway, no need for double precision matrix/vector
-        QMatrix4x4 rot(
-          half[0], half[3], half[6], 0,
-          half[1], half[4], half[7], 0,
-          half[2], half[5], half[8], 0,
-          0, 0, 0, 1 );
-        QVector3D aaa = rot.inverted().map( ecef2.toVector3D() );
-
-        if ( aaa.x() > 1 || aaa.y() > 1 || aaa.z() > 1 ||
-             aaa.x() < -1 || aaa.y() < -1 || aaa.z() < -1 )
-        {
-          continue;
-        }
+        continue;
       }
     }
 

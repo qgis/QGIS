@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgstiledsceneboundingvolume.h"
 
 #include <memory>
 #include <QElapsedTimer>
@@ -30,7 +31,6 @@
 class QgsTiledSceneLayer;
 class QgsFeedback;
 class QgsMapClippingRegion;
-class QgsAbstractTiledSceneBoundingVolume;
 class QgsTiledSceneRenderer;
 
 
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
     QElapsedTimer mElapsedTimer;
 
     QgsCoordinateReferenceSystem mSceneCrs;
-    std::unique_ptr< QgsAbstractTiledSceneBoundingVolume > mLayerBoundingVolume;
+    QgsTiledSceneBoundingVolume mLayerBoundingVolume;
 
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 };

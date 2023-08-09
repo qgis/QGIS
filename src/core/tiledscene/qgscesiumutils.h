@@ -30,6 +30,7 @@ using namespace nlohmann;
 
 class QgsSphere;
 class QgsOrientedBox3D;
+class QgsMatrix4x4;
 
 /**
  * \brief Contains utilities for working with Cesium data.
@@ -86,6 +87,11 @@ class CORE_EXPORT QgsCesiumUtils
     * Parses a \a sphere object from a Cesium JSON document.
     */
     static QgsSphere parseSphere( const QVariantList &sphere );
+
+    /**
+     * Applies a \a transform to a sphere.
+     */
+    static QgsSphere transformSphere( const QgsSphere &sphere, const QgsMatrix4x4 &transform );
 
     /**
      * Extracts GLTF binary data from the legacy b3dm (Batched 3D Model) tile format.

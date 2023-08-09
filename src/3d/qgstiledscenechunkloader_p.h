@@ -87,7 +87,6 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     QString mRelativePathBase;
     mutable QgsTiledSceneIndex mIndex;
     QgsCoordinateTransform mBoundsTransform;
-    QgsCoordinateTransform mRegionTransform;
 };
 
 

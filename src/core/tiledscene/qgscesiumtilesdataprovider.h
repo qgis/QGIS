@@ -56,7 +56,7 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProv
     QString htmlMetadata() const final;
     QgsLayerMetadata layerMetadata() const override;
     const QgsCoordinateReferenceSystem sceneCrs() const final;
-    const QgsAbstractTiledSceneBoundingVolume *boundingVolume() const final;
+    const QgsTiledSceneBoundingVolume &boundingVolume() const final;
     QgsTiledSceneIndex index() const final;
 
   private:

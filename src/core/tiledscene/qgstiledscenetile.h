@@ -22,8 +22,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsmatrix4x4.h"
-
-class QgsAbstractTiledSceneBoundingVolume;
+#include "qgstiledsceneboundingvolume.h"
 
 /**
  * \ingroup core
@@ -89,18 +88,16 @@ class CORE_EXPORT QgsTiledSceneTile
     /**
      * Sets the bounding \a volume for the tile.
      *
-     * Ownership of \a volume is transferred to the tile.
-     *
      * \see boundingVolume()
      */
-    void setBoundingVolume( QgsAbstractTiledSceneBoundingVolume *volume SIP_TRANSFER );
+    void setBoundingVolume( const QgsTiledSceneBoundingVolume &volume );
 
     /**
      * Returns the bounding volume for the tile.
      *
      * \see setBoundingVolume()
      */
-    const QgsAbstractTiledSceneBoundingVolume *boundingVolume() const;
+    const QgsTiledSceneBoundingVolume &boundingVolume() const;
 
     /**
      * Sets the tile's \a transform.
@@ -152,7 +149,7 @@ class CORE_EXPORT QgsTiledSceneTile
   private:
     long long mId = -1;
     Qgis::TileRefinementProcess mRefinementProcess = Qgis::TileRefinementProcess::Replacement;
-    std::unique_ptr< QgsAbstractTiledSceneBoundingVolume > mBoundingVolume;
+    QgsTiledSceneBoundingVolume mBoundingVolume;
     std::unique_ptr< QgsMatrix4x4 > mTransform;
     QVariantMap mResources;
     double mGeometricError = 0;
