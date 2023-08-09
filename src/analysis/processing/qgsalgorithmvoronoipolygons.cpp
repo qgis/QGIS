@@ -66,46 +66,58 @@ void QgsVoronoiPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Voronoi polygons" ), QgsProcessing::TypeVectorPolygon ) );
 }
 
-QVariantMap QgsVoronoiPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsVoronoiPolygonsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
+  Q_UNUSED( feedback );
+
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  if ( source->featureCount() < 3 )
+  if ( mSource->featureCount() < 3 )
     throw QgsProcessingException( QObject::tr( "Input layer should contain at least 3 points." ) );
 
-  const double buffer = parameterAsDouble( parameters, QStringLiteral( "BUFFER" ), context );
-  const double tolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
-  const bool copyAttributes = parameterAsBool( parameters, QStringLiteral( "COPY_ATTRIBUTES" ), context );
+  mBuffer = parameterAsDouble( parameters, QStringLiteral( "BUFFER" ), context );
+  mTolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
+  mCopyAttributes = parameterAsBool( parameters, QStringLiteral( "COPY_ATTRIBUTES" ), context );
 
-  QgsFields fields;
-  if ( copyAttributes )
+  return true;
+}
+
+QVariantMap QgsVoronoiPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QString dest;
+  if ( mCopyAttributes )
   {
-    fields = source->fields();
+    dest = voronoiWithAttributes( parameters, context, feedback );
   }
   else
   {
-    fields.append( QgsField( QStringLiteral( "id" ), QVariant::LongLong ) );
+    dest = voronoiWithoutAttributes( parameters, context, feedback );
   }
 
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsFields fields = mSource->fields();
+
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, source->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QgsFeatureRequest request;
-  if ( !copyAttributes )
-  {
-    request.setSubsetOfAttributes( QList< int >() );
-  }
-  QgsFeatureIterator it = source->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator it = mSource->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
 
   QgsGeometry allPoints;
   QHash< QgsFeatureId, QgsAttributes > attributeCache;
 
   long i = 0;
-  double step = source->featureCount() > 0 ? 50.0 / source->featureCount() : 1;
+  double step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
 
   const QgsSpatialIndex index( it, [&]( const QgsFeature & f )->bool
   {
@@ -137,16 +149,16 @@ QVariantMap QgsVoronoiPolygonsAlgorithm::processAlgorithm( const QVariantMap &pa
     return true;
   }, QgsSpatialIndex::FlagStoreFeatureGeometries );
 
-  QgsRectangle extent = source->sourceExtent();
-  double delta = extent.width() * buffer / 100.0;
+  QgsRectangle extent = mSource->sourceExtent();
+  double delta = extent.width() * mBuffer / 100.0;
   extent.setXMinimum( extent.xMinimum() - delta );
   extent.setXMaximum( extent.xMaximum() + delta );
-  delta = extent.height() * buffer / 100.0;
+  delta = extent.height() * mBuffer / 100.0;
   extent.setYMinimum( extent.yMinimum() - delta );
   extent.setYMaximum( extent.yMaximum() + delta );
   QgsGeometry clippingGeom = QgsGeometry::fromRect( extent );
 
-  QgsGeometry voronoiDiagram = allPoints.voronoiDiagram( clippingGeom, tolerance );
+  QgsGeometry voronoiDiagram = allPoints.voronoiDiagram( clippingGeom, mTolerance );
 
   if ( !voronoiDiagram.isEmpty() )
   {
@@ -162,23 +174,16 @@ QVariantMap QgsVoronoiPolygonsAlgorithm::processAlgorithm( const QVariantMap &pa
       QgsFeature f;
       f.setFields( fields );
       f.setGeometry( QgsGeometry( extentEngine->intersection( collection[i].constGet() ) ) );
-      if ( copyAttributes )
+      const QList< QgsFeatureId > intersected = index.intersects( collection[i].boundingBox() );
+      engine.reset( QgsGeometry::createGeometryEngine( collection[i].constGet() ) );
+      engine->prepareGeometry();
+      for ( const QgsFeatureId id : intersected )
       {
-        const QList< QgsFeatureId > intersected = index.intersects( collection[i].boundingBox() );
-        engine.reset( QgsGeometry::createGeometryEngine( collection[i].constGet() ) );
-        engine->prepareGeometry();
-        for ( const QgsFeatureId id : intersected )
+        if ( engine->intersects( index.geometry( id ).constGet() ) )
         {
-          if ( engine->intersects( index.geometry( id ).constGet() ) )
-          {
-            f.setAttributes( attributeCache.value( id ) );
-            break;
-          }
+          f.setAttributes( attributeCache.value( id ) );
+          break;
         }
-      }
-      else
-      {
-        f.setAttributes( QgsAttributes() << i );
       }
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
@@ -186,9 +191,61 @@ QVariantMap QgsVoronoiPolygonsAlgorithm::processAlgorithm( const QVariantMap &pa
     }
   }
 
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  return outputs;
+  return dest;
+}
+
+QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "id" ), QVariant::LongLong ) );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
+  if ( !sink )
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QList< int >() );
+  QgsFeatureIterator it = mSource->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+
+  QgsGeometry allPoints;
+  QHash< QgsFeatureId, QgsAttributes > attributeCache;
+
+  double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 1;
+
+  QgsRectangle extent = mSource->sourceExtent();
+  double delta = extent.width() * mBuffer / 100.0;
+  extent.setXMinimum( extent.xMinimum() - delta );
+  extent.setXMaximum( extent.xMaximum() + delta );
+  delta = extent.height() * mBuffer / 100.0;
+  extent.setYMinimum( extent.yMinimum() - delta );
+  extent.setYMaximum( extent.yMaximum() + delta );
+  QgsGeometry clippingGeom = QgsGeometry::fromRect( extent );
+
+  QgsGeometry voronoiDiagram = allPoints.voronoiDiagram( clippingGeom, mTolerance );
+
+  if ( !voronoiDiagram.isEmpty() )
+  {
+    std::unique_ptr< QgsGeometryEngine > engine;
+    std::unique_ptr< QgsGeometryEngine > extentEngine( QgsGeometry::createGeometryEngine( clippingGeom.constGet() ) );
+    QVector< QgsGeometry > collection = voronoiDiagram.asGeometryCollection();
+    for ( int i = 0; i < collection.length(); i++ )
+    {
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+      QgsFeature f;
+      f.setFields( fields );
+      f.setGeometry( QgsGeometry( extentEngine->intersection( collection[i].constGet() ) ) );
+      f.setAttributes( QgsAttributes() << i );
+      if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      feedback->setProgress( i * step );
+    }
+  }
+
+  return dest;
 }
 
 ///@endcond
