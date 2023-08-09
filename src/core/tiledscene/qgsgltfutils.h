@@ -75,12 +75,12 @@ class CORE_EXPORT QgsGltfUtils
      * Finally, P_MAP is calculated by optionally doing a coordinate transform with PROJ
      * using \a ecefToTargetCrs
      */
-    static bool accessorToMapCoordinates( tinygltf::Model &model,
+    static bool accessorToMapCoordinates( const tinygltf::Model &model,
                                           int accessorIndex,
                                           const QgsMatrix4x4 &tileTransform,
                                           const QgsCoordinateTransform *ecefToTargetCrs,
                                           const QgsVector3D &tileTranslationEcef,
-                                          QMatrix4x4 *nodeTransform,
+                                          const QMatrix4x4 *nodeTransform,
                                           QVector<double> &vx, QVector<double> &vy, QVector<double> &vz );
 
     /**
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsGltfUtils
      * \see extractEmbeddedImage()
      * \see linkedImagePath()
      */
-    static ResourceType imageResourceType( tinygltf::Model &model, int index );
+    static ResourceType imageResourceType( const tinygltf::Model &model, int index );
 
     /**
      * Extracts the embedded image with specified \a index from a \a model.
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsGltfUtils
      * \see imageResourceType()
      * \see linkedImagePath()
      */
-    static QImage extractEmbeddedImage( tinygltf::Model &model, int index );
+    static QImage extractEmbeddedImage( const tinygltf::Model &model, int index );
 
     /**
      * Extracts the path to a linked image with specified \a index from a \a model.
@@ -118,14 +118,14 @@ class CORE_EXPORT QgsGltfUtils
      * \see imageResourceType()
      * \see extractEmbeddedImage()
      */
-    static QString linkedImagePath( tinygltf::Model &model, int index );
+    static QString linkedImagePath( const tinygltf::Model &model, int index );
 
     /**
      * Parses transform of a node - either by reading the 4x4 transform matrix,
      * or by reading translation, rotation and scale, combining all to the final matrix.
      * Returns null pointer if no transform is attached.
      */
-    static std::unique_ptr<QMatrix4x4> parseNodeTransform( tinygltf::Node &node );
+    static std::unique_ptr<QMatrix4x4> parseNodeTransform( const tinygltf::Node &node );
 
     /**
      * Try to extract translation of the model: by either using CESIUM_RTC extension
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsGltfUtils
     /**
      * Extracts the texture coordinates from a \a model, and stores the results in the \a x, \a y vectors.
      */
-    static bool extractTextureCoordinates( tinygltf::Model &model, int accessorIndex,
+    static bool extractTextureCoordinates( const tinygltf::Model &model, int accessorIndex,
                                            QVector<double> &x, QVector<double> &y );
 
     /**

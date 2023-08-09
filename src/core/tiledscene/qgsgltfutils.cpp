@@ -40,11 +40,11 @@
 ///@cond PRIVATE
 
 
-bool QgsGltfUtils::accessorToMapCoordinates( tinygltf::Model &model, int accessorIndex, const QgsMatrix4x4 &tileTransform, const QgsCoordinateTransform *ecefToTargetCrs, const QgsVector3D &tileTranslationEcef, QMatrix4x4 *nodeTransform, QVector<double> &vx, QVector<double> &vy, QVector<double> &vz )
+bool QgsGltfUtils::accessorToMapCoordinates( const tinygltf::Model &model, int accessorIndex, const QgsMatrix4x4 &tileTransform, const QgsCoordinateTransform *ecefToTargetCrs, const QgsVector3D &tileTranslationEcef, const QMatrix4x4 *nodeTransform, QVector<double> &vx, QVector<double> &vy, QVector<double> &vz )
 {
-  tinygltf::Accessor &accessor = model.accessors[accessorIndex];
-  tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
-  tinygltf::Buffer &b = model.buffers[bv.buffer];
+  const tinygltf::Accessor &accessor = model.accessors[accessorIndex];
+  const tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
+  const tinygltf::Buffer &b = model.buffers[bv.buffer];
 
   if ( accessor.componentType != TINYGLTF_PARAMETER_TYPE_FLOAT || accessor.type != TINYGLTF_TYPE_VEC3 )
   {
@@ -52,7 +52,7 @@ bool QgsGltfUtils::accessorToMapCoordinates( tinygltf::Model &model, int accesso
     return false;
   }
 
-  unsigned char *ptr = b.data.data() + bv.byteOffset + accessor.byteOffset;
+  const unsigned char *ptr = b.data.data() + bv.byteOffset + accessor.byteOffset;
 
   vx.resize( accessor.count );
   vy.resize( accessor.count );
@@ -62,7 +62,7 @@ bool QgsGltfUtils::accessorToMapCoordinates( tinygltf::Model &model, int accesso
   double *vzOut = vz.data();
   for ( int i = 0; i < static_cast<int>( accessor.count ); ++i )
   {
-    float *fptr = reinterpret_cast<float *>( ptr );
+    const float *fptr = reinterpret_cast<const float *>( ptr );
     QVector3D vOrig( fptr[0], fptr[1], fptr[2] );
 
     if ( nodeTransform )
@@ -99,18 +99,18 @@ bool QgsGltfUtils::accessorToMapCoordinates( tinygltf::Model &model, int accesso
   return true;
 }
 
-bool QgsGltfUtils::extractTextureCoordinates( tinygltf::Model &model, int accessorIndex, QVector<double> &x, QVector<double> &y )
+bool QgsGltfUtils::extractTextureCoordinates( const tinygltf::Model &model, int accessorIndex, QVector<double> &x, QVector<double> &y )
 {
-  tinygltf::Accessor &accessor = model.accessors[accessorIndex];
-  tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
-  tinygltf::Buffer &b = model.buffers[bv.buffer];
+  const tinygltf::Accessor &accessor = model.accessors[accessorIndex];
+  const tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
+  const tinygltf::Buffer &b = model.buffers[bv.buffer];
 
   if ( accessor.componentType != TINYGLTF_PARAMETER_TYPE_FLOAT || accessor.type != TINYGLTF_TYPE_VEC2 )
   {
     return false;
   }
 
-  unsigned char *ptr = b.data.data() + bv.byteOffset + accessor.byteOffset;
+  const unsigned char *ptr = b.data.data() + bv.byteOffset + accessor.byteOffset;
   x.resize( accessor.count );
   y.resize( accessor.count );
 
@@ -119,7 +119,7 @@ bool QgsGltfUtils::extractTextureCoordinates( tinygltf::Model &model, int access
 
   for ( std::size_t i = 0; i < accessor.count; i++ )
   {
-    float *fptr = reinterpret_cast< float * >( ptr );
+    const float *fptr = reinterpret_cast< const float * >( ptr );
 
     *xOut++ = fptr[0];
     *yOut++ = fptr[1];
@@ -132,9 +132,9 @@ bool QgsGltfUtils::extractTextureCoordinates( tinygltf::Model &model, int access
   return true;
 }
 
-QgsGltfUtils::ResourceType QgsGltfUtils::imageResourceType( tinygltf::Model &model, int index )
+QgsGltfUtils::ResourceType QgsGltfUtils::imageResourceType( const tinygltf::Model &model, int index )
 {
-  tinygltf::Image &img = model.images[index];
+  const tinygltf::Image &img = model.images[index];
 
   if ( !img.image.empty() )
   {
@@ -146,22 +146,22 @@ QgsGltfUtils::ResourceType QgsGltfUtils::imageResourceType( tinygltf::Model &mod
   }
 }
 
-QImage QgsGltfUtils::extractEmbeddedImage( tinygltf::Model &model, int index )
+QImage QgsGltfUtils::extractEmbeddedImage( const tinygltf::Model &model, int index )
 {
-  tinygltf::Image &img = model.images[index];
+  const tinygltf::Image &img = model.images[index];
   if ( !img.image.empty() )
     return QImage( img.image.data(), img.width, img.height, QImage::Format_ARGB32 );
   else
     return QImage();
 }
 
-QString QgsGltfUtils::linkedImagePath( tinygltf::Model &model, int index )
+QString QgsGltfUtils::linkedImagePath( const tinygltf::Model &model, int index )
 {
-  tinygltf::Image &img = model.images[index];
+  const tinygltf::Image &img = model.images[index];
   return QString::fromStdString( img.uri );
 }
 
-std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( tinygltf::Node &node )
+std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( const tinygltf::Node &node )
 {
   // read node's transform: either specified with 4x4 "matrix" element
   // -OR- given by "translation", "rotation" and "scale" elements (to be combined as T * R * S)
@@ -195,15 +195,16 @@ std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( tinygltf::Node &no
 
 QgsVector3D QgsGltfUtils::extractTileTranslation( tinygltf::Model &model )
 {
-  tinygltf::Scene &scene = model.scenes[model.defaultScene];
+  const tinygltf::Scene &scene = model.scenes[model.defaultScene];
 
   QgsVector3D tileTranslationEcef;
-  if ( model.extensions.find( "CESIUM_RTC" ) != model.extensions.end() )
+  auto it = model.extensions.find( "CESIUM_RTC" );
+  if ( it != model.extensions.end() )
   {
-    tinygltf::Value v = model.extensions["CESIUM_RTC"];
+    const tinygltf::Value v = it->second;
     if ( v.IsObject() && v.Has( "center" ) )
     {
-      tinygltf::Value center = v.Get( "center" );
+      const tinygltf::Value center = v.Get( "center" );
       if ( center.IsArray() && center.Size() == 3 )
       {
         tileTranslationEcef = QgsVector3D( center.Get( 0 ).GetNumberAsDouble(), center.Get( 1 ).GetNumberAsDouble(), center.Get( 2 ).GetNumberAsDouble() );
