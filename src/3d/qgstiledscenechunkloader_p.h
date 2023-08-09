@@ -34,6 +34,8 @@
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenetile.h"
 
+#include <QFutureWatcher>
+
 class Qgs3DMapSettings;
 class QgsTiledSceneChunkLoaderFactory;
 
@@ -57,6 +59,8 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
   private:
     const QgsTiledSceneChunkLoaderFactory &mFactory;
     QgsTiledSceneTile mTile;
+    QFutureWatcher<void> *mFutureWatcher = nullptr;
+    Qt3DCore::QEntity *mEntity = nullptr;
 };
 
 

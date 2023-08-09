@@ -16,10 +16,13 @@
 #include "qgstiledscenechunkloader_p.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgsapplication.h"
 #include "qgscesiumutils.h"
 #include "qgsgltf3dutils.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
+
+#include <QtConcurrentRun>
 
 
 ///@cond PRIVATE
@@ -108,62 +111,70 @@ static QString uuidFromNodeId( const QgsChunkNodeId &nodeId )
 QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory &factory, const QgsTiledSceneTile &t )
   : QgsChunkLoader( node ), mFactory( factory ), mTile( t )
 {
-  // start async (actually just do deferred finish()!)
-  // TODO: loading in background thread
-  QMetaObject::invokeMethod( this, "finished", Qt::QueuedConnection );
+  mFutureWatcher = new QFutureWatcher<void>( this );
+  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
+
+  const QFuture<void> future = QtConcurrent::run( [this]
+  {
+    // we do not load tiles that are too big - at least for the time being
+    // the problem is that their 3D bounding boxes with ECEF coordinates are huge
+    // and we are unable to turn them into planar bounding boxes
+    if ( hasLargeBounds( mTile ) )
+      return;
+
+    QString uri = mTile.resources().value( QStringLiteral( "content" ) ).toString();
+    if ( uri.isEmpty() )
+    {
+      // nothing to show for this tile
+      // TODO: can we skip loading it at all?
+      return;
+    }
+
+    uri = resolveUri( uri, mFactory.mRelativePathBase );
+    QByteArray content = mFactory.mIndex.retrieveContent( uri );
+    if ( content.isEmpty() )
+    {
+      // the request probably failed
+      // TODO: how can we report it?
+      return;
+    }
+
+    QByteArray gltfData = QgsCesiumUtils::extractGltfFromTileContent( content );
+    if ( gltfData.isEmpty() )
+    {
+      // unsupported tile content type
+      return;
+    }
+
+    QgsGltf3DUtils::EntityTransform entityTransform;
+    entityTransform.tileTransform = mTile.transform() ? *mTile.transform() : QgsMatrix4x4();
+    entityTransform.sceneOriginTargetCrs = mFactory.mMap.origin();
+    entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
+
+    QStringList errors;
+    mEntity = QgsGltf3DUtils::gltfToEntity( gltfData, entityTransform, uri, &errors );
+
+    if ( mEntity )
+      mEntity->moveToThread( QgsApplication::instance()->thread() );
+
+    // TODO: report errors somewhere?
+    if ( !errors.isEmpty() )
+    {
+      QgsDebugError( "gltf load errors: " + errors.join( '\n' ) );
+    }
+  } );
+
+  // emit finished() as soon as the handler is populated with features
+  mFutureWatcher->setFuture( future );
 }
 
 Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  // we do not load tiles that are too big - at least for the time being
-  // the problem is that their 3D bounding boxes with ECEF coordinates are huge
-  // and we are unable to turn them into planar bounding boxes
-  if ( hasLargeBounds( mTile ) )
-  {
+  if ( !mEntity )
     return new Qt3DCore::QEntity( parent );
-  }
 
-  QString uri = mTile.resources().value( QStringLiteral( "content" ) ).toString();
-  if ( uri.isEmpty() )
-  {
-    // nothing to show for this tile
-    // TODO: can we skip loading it at all?
-    return new Qt3DCore::QEntity( parent );
-  }
-
-  uri = resolveUri( uri, mFactory.mRelativePathBase );
-
-  QByteArray content = mFactory.mIndex.retrieveContent( uri );
-  if ( content.isEmpty() )
-  {
-    // the request probably failed
-    // TODO: how can we report it?
-    return new Qt3DCore::QEntity( parent );
-  }
-
-  QByteArray gltfData = QgsCesiumUtils::extractGltfFromTileContent( content );
-  if ( gltfData.isEmpty() )
-  {
-    // unsupported tile content type
-    return new Qt3DCore::QEntity( parent );
-  }
-
-  QgsGltf3DUtils::EntityTransform entityTransform;
-  entityTransform.tileTransform = mTile.transform() ? *mTile.transform() : QgsMatrix4x4();
-  entityTransform.sceneOriginTargetCrs = mFactory.mMap.origin();
-  entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
-
-  QStringList errors;
-  Qt3DCore::QEntity *gltfEntity = QgsGltf3DUtils::gltfToEntity( gltfData, entityTransform, uri, &errors );
-
-  // TODO: report errors somewhere?
-  if ( !errors.isEmpty() )
-  {
-    QgsDebugError( "gltf load errors: " + errors.join( '\n' ) );
-  }
-
-  gltfEntity->setParent( parent );
-  return gltfEntity;
+  mEntity->setParent( parent );
+  return mEntity;
 }
 
 ///
@@ -275,6 +286,14 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
           continue;
         }
       }
+    }
+
+    if ( mIndex.childAvailability( childId ) == Qgis::TileChildrenAvailability::NeedFetching )
+    {
+      // we need to make sure that if a child tile's content references another tileset JSON,
+      // we fetch its hierarchy before a chunk node is created for such child tile - otherwise we
+      // end up trying to load tileset JSON file instead of the actual content
+      mIndex.fetchHierarchy( childId );
     }
 
     QgsChunkNode *nChild = nodeForTile( t, chId );
