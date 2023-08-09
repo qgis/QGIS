@@ -57,11 +57,8 @@ class CORE_EXPORT QgsTiledSceneRequest
     /**
     * Returns the box from which data will be taken.
     *
-    * The CRS for the box can be retrieved by filterBoxCrs().
-    *
     * If the returned box is null, then no filter box is set.
     *
-    * \see filterBoxCrs()
     * \see setFilterBox()
     */
     QgsOrientedBox3D filterBox() const { return mFilterBox; }
