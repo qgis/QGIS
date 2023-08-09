@@ -47,8 +47,18 @@ class QgsConcaveHullAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    void concaveHullGeos( std::unique_ptr< QgsFeatureSink > &sink, const QVariantMap &parameters, QgsProcessingFeedback *feedback );
+    void concaveHullQgis( std::unique_ptr< QgsFeatureSink > &sink, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+
+    std::unique_ptr< QgsProcessingFeatureSource > mSource;
+    double mPercentage;
+    bool mAllowHoles;
+    bool mSplitMultipart;
 };
 
 ///@endcond PRIVATE

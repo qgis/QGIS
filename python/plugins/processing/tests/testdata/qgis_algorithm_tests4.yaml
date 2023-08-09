@@ -269,23 +269,6 @@ tests:
             fid: skip
 
   - algorithm: native:concavehull
-    name: Concave Hull - Points (0.3)
-    params:
-      ALPHA: 0.3
-      HOLES: true
-      INPUT:
-        name: points.gml
-        type: vector
-      NO_MULTIGEOMETRY: false
-    results:
-      OUTPUT:
-        name: expected/concave_hull_points_03.gml
-        type: vector
-        compare:
-          geometry:
-            normalize: True
-
-  - algorithm: native:concavehull
     name: Concave Hull - Points (0.7)
     params:
       ALPHA: 0.7
@@ -297,6 +280,23 @@ tests:
     results:
       OUTPUT:
         name: expected/concave_hull_points_07.gml
+        type: vector
+        compare:
+          geometry:
+            normalize: True
+
+  - algorithm: native:concavehull
+    name: Concave Hull - Points (0.9)
+    params:
+      ALPHA: 1
+      HOLES: true
+      INPUT:
+        name: points.gml
+        type: vector
+      NO_MULTIGEOMETRY: false
+    results:
+      OUTPUT:
+        name: expected/concave_hull_points_09.gml
         type: vector
         compare:
           geometry:
