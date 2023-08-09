@@ -978,7 +978,8 @@ namespace QgsWms
           QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
           QString title = treeGroupChild->customProperty( QStringLiteral( "wmsTitle" ) ).toString();
 
-          if ( !skipNameForGroup ) {
+          if ( !skipNameForGroup )
+          {
             QDomElement nameElem = doc.createElement( QStringLiteral( "Name" ) );
             QDomText nameText;
             if ( !shortName.isEmpty() )
