@@ -91,7 +91,15 @@ class CORE_EXPORT QgsCesiumUtils
      * Extracts GLTF binary data from the legacy b3dm (Batched 3D Model) tile format.
      * Returns empty byte array on error.
      */
-    static QByteArray extractGltfFromB3dm( QIODevice &file );
+    static QByteArray extractGltfFromB3dm( const QByteArray &tileContent );
+
+    /**
+     * Extracts GLTF binary data from tile content.
+     * Returns empty byte array on error.
+     *
+     * \note cmpt, pnts, i3dm tile types are currently not supported
+     */
+    static QByteArray extractGltfFromTileContent( const QByteArray &tileContent );
 
 };
 

@@ -59,7 +59,7 @@ class _3D_EXPORT QgsGltf3DUtils
       //! Tile's matrix to transform GLTF model coordinates to ECEF (normally EPSG:4978)
       QgsMatrix4x4 tileTransform;
       //! Transform from ECEF (normally EPSG:4978) to the target CRS
-      QgsCoordinateTransform *ecefToTargetCrs = nullptr;
+      const QgsCoordinateTransform *ecefToTargetCrs = nullptr;
     };
 
     /**

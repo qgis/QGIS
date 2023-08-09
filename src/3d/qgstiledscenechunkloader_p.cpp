@@ -21,7 +21,6 @@
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
 
-#include <QtCore/QBuffer>
 
 ///@cond PRIVATE
 
@@ -106,11 +105,9 @@ static QString uuidFromNodeId( const QgsChunkNodeId &nodeId )
 
 ///
 
-QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory *factory, const QgsTiledSceneTile &t )
+QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory &factory, const QgsTiledSceneTile &t )
   : QgsChunkLoader( node ), mFactory( factory ), mTile( t )
 {
-  qDebug() << "chunk loader " << node->tileId().text();
-
   // start async (actually just do deferred finish()!)
   // TODO: loading in background thread
   QMetaObject::invokeMethod( this, "finished", Qt::QueuedConnection );
@@ -118,8 +115,6 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
 
 Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  qDebug() << "create entity!" << mNode->tileId().text();
-
   // we do not load tiles that are too big - at least for the time being
   // the problem is that their 3D bounding boxes with ECEF coordinates are huge
   // and we are unable to turn them into planar bounding boxes
@@ -136,49 +131,36 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
     return new Qt3DCore::QEntity( parent );
   }
 
-  uri = resolveUri( uri, mFactory->mRelativePathBase );
+  uri = resolveUri( uri, mFactory.mRelativePathBase );
 
-  qDebug() << "loading: " << uri;
-  QByteArray content = mFactory->mIndex.retrieveContent( uri );
-
+  QByteArray content = mFactory.mIndex.retrieveContent( uri );
   if ( content.isEmpty() )
   {
     // the request probably failed
     // TODO: how can we report it?
-    qDebug() << "retrieveContent returned no content";
     return new Qt3DCore::QEntity( parent );
   }
 
-  QByteArray gltfData;
-  if ( content.startsWith( QByteArray( "b3dm" ) ) )
-  {
-    QBuffer buffer( &content );
-    buffer.open( QIODevice::ReadOnly );
-    gltfData = QgsCesiumUtils::extractGltfFromB3dm( buffer );
-  }
-  else if ( content.startsWith( QByteArray( "glTF" ) ) )
-  {
-    gltfData = content;
-  }
-  else
+  QByteArray gltfData = QgsCesiumUtils::extractGltfFromTileContent( content );
+  if ( gltfData.isEmpty() )
   {
     // unsupported tile content type
-    // TODO: we could extract "b3dm" data from a composite tile ("cmpt")
-    qDebug() << "unsupported content";
     return new Qt3DCore::QEntity( parent );
   }
 
   QgsGltf3DUtils::EntityTransform entityTransform;
   entityTransform.tileTransform = mTile.transform() ? *mTile.transform() : QgsMatrix4x4();
-  entityTransform.sceneOriginTargetCrs = mFactory->mMap.origin();
-  entityTransform.ecefToTargetCrs = mFactory->mBoundsTransform.get();
+  entityTransform.sceneOriginTargetCrs = mFactory.mMap.origin();
+  entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
 
   QStringList errors;
   Qt3DCore::QEntity *gltfEntity = QgsGltf3DUtils::gltfToEntity( gltfData, entityTransform, uri, &errors );
 
   // TODO: report errors somewhere?
   if ( !errors.isEmpty() )
-    qDebug() << "gltf load errors: " << errors;
+  {
+    QgsDebugError( "gltf load errors: " + errors.join( '\n' ) );
+  }
 
   gltfEntity->setParent( parent );
   return gltfEntity;
@@ -189,8 +171,8 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
 QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DMapSettings &map, QString relativePathBase, const QgsTiledSceneIndex &index )
   : mMap( map ), mRelativePathBase( relativePathBase ), mIndex( index )
 {
-  mBoundsTransform.reset( new QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4978" ), mMap.crs(), mMap.transformContext() ) );
-  mRegionTransform.reset( new QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4979" ), mMap.crs(), mMap.transformContext() ) );
+  mBoundsTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4978" ), mMap.crs(), mMap.transformContext() );
+  mRegionTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4979" ), mMap.crs(), mMap.transformContext() );
 }
 
 
@@ -199,7 +181,7 @@ QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode
   QString id = uuidFromNodeId( node->tileId() );
   QgsTiledSceneTile t = mIndex.getTile( id );
 
-  return new QgsTiledSceneChunkLoader( node, this, t );
+  return new QgsTiledSceneChunkLoader( node, *this, t );
 }
 
 
@@ -220,15 +202,13 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneT
     QgsVector3D v1 = mMap.mapToWorldCoordinates( QgsVector3D( mMap.extent().xMaximum(), mMap.extent().yMaximum(), +100 ) );
     QgsAABB aabb( v0.x(), v0.y(), v0.z(), v1.x(), v1.y(), v1.z() );
     float err = std::min( 1e6, t.geometricError() );
-    //qDebug() << "child" << nodeId.text() << aabb.toString() << err;
     return new QgsChunkNode( nodeId, aabb, err );
   }
   else
   {
     bool isRegion = t.boundingVolume()->type() == Qgis::TiledSceneBoundingVolumeType::Region;
-    QgsBox3D box = t.boundingVolume()->bounds( isRegion ? *mRegionTransform.get() : *mBoundsTransform.get() );
+    QgsBox3D box = t.boundingVolume()->bounds( isRegion ? mRegionTransform : mBoundsTransform );
     QgsAABB aabb = aabbConvert( box, mMap.origin() );
-    //qDebug() << "child" << nodeId.text() << aabb.toString() << t.geometricError();
     return new QgsChunkNode( nodeId, aabb, t.geometricError() );
   }
 }
@@ -244,7 +224,6 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::createRootNode() const
 
 QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
 {
-  qDebug() << "create children" << node->tileId().text();
   QVector<QgsChunkNode *> children;
   QString indexTileId = uuidFromNodeId( node->tileId() );
 
@@ -255,7 +234,6 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
     case Qgis::TileChildrenAvailability::Available:
       break;
     case Qgis::TileChildrenAvailability::NeedFetching:
-      qDebug() << "going to fetch hierarchy!";
       if ( !mIndex.fetchHierarchy( indexTileId ) )
         return children;
       break;
@@ -278,7 +256,7 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
         QgsOrientedBox3D obb = static_cast<const QgsTiledSceneBoundingVolumeBox *>( t.boundingVolume() )->box();
 
         QgsPointXY c = mMap.extent().center();
-        QgsVector3D cEcef = mBoundsTransform->transform( QgsVector3D( c.x(), c.y(), 0 ), Qgis::TransformDirection::Reverse );
+        QgsVector3D cEcef = mBoundsTransform.transform( QgsVector3D( c.x(), c.y(), 0 ), Qgis::TransformDirection::Reverse );
         QgsVector3D ecef2 = cEcef - obb.center();
 
         const double *half = obb.halfAxes();
@@ -294,7 +272,6 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
         if ( aaa.x() > 1 || aaa.y() > 1 || aaa.z() > 1 ||
              aaa.x() < -1 || aaa.y() < -1 || aaa.z() < -1 )
         {
-          qDebug() << "skipping child because our scene is not in it" << chId.text();
           continue;
         }
       }

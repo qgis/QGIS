@@ -42,10 +42,20 @@ Parses a ``box`` object from a Cesium JSON document to an oriented bounding box.
 Parses a ``sphere`` object from a Cesium JSON document.
 %End
 
-    static QByteArray extractGltfFromB3dm( QIODevice &file );
+    static QByteArray extractGltfFromB3dm( const QByteArray &tileContent );
 %Docstring
 Extracts GLTF binary data from the legacy b3dm (Batched 3D Model) tile format.
 Returns empty byte array on error.
+%End
+
+    static QByteArray extractGltfFromTileContent( const QByteArray &tileContent );
+%Docstring
+Extracts GLTF binary data from tile content.
+Returns empty byte array on error.
+
+.. note::
+
+   cmpt, pnts, i3dm tile types are currently not supported
 %End
 
 };
