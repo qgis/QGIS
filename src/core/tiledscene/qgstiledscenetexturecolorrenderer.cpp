@@ -76,8 +76,8 @@ void QgsTiledSceneTextureColorRenderer::renderTriangle( QgsTiledSceneRenderConte
   context.textureCoordinates( textureX1, textureY1, textureX2, textureY2, textureX3, textureY3 );
 
   const QColor centerColor( textureImage.pixelColor(
-                              ( ( textureX1 + textureX2 + textureX3 ) / 3 ) * ( textureImage.width() - 1 ),
-                              ( ( textureY1 + textureY2 + textureY3 ) / 3 ) * ( textureImage.height() - 1 ) )
+                              static_cast<int>( ( ( textureX1 + textureX2 + textureX3 ) / 3 ) * ( textureImage.width() - 1 ) ),
+                              static_cast< int >( ( ( textureY1 + textureY2 + textureY3 ) / 3 ) * ( textureImage.height() - 1 ) ) )
                           );
   QBrush b( centerColor );
   QPainter *painter = context.renderContext().painter();
