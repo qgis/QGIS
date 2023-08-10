@@ -225,6 +225,20 @@ class CORE_EXPORT QgsTiledSceneRenderer
     void setMaximumScreenErrorUnit( Qgis::RenderUnit unit );
 
     /**
+     * Sets whether to render the borders of tiles.
+     *
+     * \see isTileBorderRenderingEnabled()
+     */
+    void setTileBorderRenderingEnabled( bool enabled ) { mTileBorderRendering = enabled; }
+
+    /**
+     * Returns whether to render also borders of tiles.
+     *
+     * see setTileBorderRenderingEnabled()
+     */
+    bool isTileBorderRenderingEnabled() const { return mTileBorderRendering; }
+
+    /**
      * Must be called when a new render cycle is started. A call to startRender() must always
      * be followed by a corresponding call to stopRender() after all features have been rendered.
      *
@@ -297,6 +311,7 @@ class CORE_EXPORT QgsTiledSceneRenderer
 
     double mMaximumScreenError = 3;
     Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
+    bool mTileBorderRendering = false;
 
 };
 

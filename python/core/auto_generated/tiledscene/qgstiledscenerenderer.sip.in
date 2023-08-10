@@ -193,6 +193,20 @@ Sets the ``unit`` for the maximum screen error allowed when rendering the tiled 
 .. seealso:: :py:func:`maximumScreenErrorUnit`
 %End
 
+    void setTileBorderRenderingEnabled( bool enabled );
+%Docstring
+Sets whether to render the borders of tiles.
+
+.. seealso:: :py:func:`isTileBorderRenderingEnabled`
+%End
+
+    bool isTileBorderRenderingEnabled() const;
+%Docstring
+Returns whether to render also borders of tiles.
+
+see :py:func:`~QgsTiledSceneRenderer.setTileBorderRenderingEnabled`
+%End
+
     virtual void startRender( QgsTiledSceneRenderContext &context );
 %Docstring
 Must be called when a new render cycle is started. A call to :py:func:`~QgsTiledSceneRenderer.startRender` must always
