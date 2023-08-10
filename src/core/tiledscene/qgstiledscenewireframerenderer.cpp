@@ -17,20 +17,11 @@
 
 #include "qgstiledscenewireframerenderer.h"
 #include "qgsfillsymbol.h"
-#include "qgsfillsymbollayer.h"
 #include "qgssymbollayerutils.h"
 
 QgsTiledSceneWireframeRenderer::QgsTiledSceneWireframeRenderer()
 {
-  QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
-  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
-  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
-  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
-
-  mFillSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+  mFillSymbol.reset( createDefaultfillSymbol() );
 }
 
 QgsTiledSceneWireframeRenderer::~QgsTiledSceneWireframeRenderer() = default;
@@ -67,6 +58,19 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::create( QDomElement &elem
 
   r->restoreCommonProperties( element, context );
   return r.release();
+}
+
+QgsFillSymbol *QgsTiledSceneWireframeRenderer::createDefaultfillSymbol()
+{
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
+  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
+  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
+  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+
+  return QgsFillSymbol::createSimple( properties );
 }
 
 QgsFillSymbol *QgsTiledSceneWireframeRenderer::fillSymbol() const

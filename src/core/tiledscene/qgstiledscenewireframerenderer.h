@@ -53,6 +53,13 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
     static QgsTiledSceneRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /**
+     * Returns a copy of the default fill symbol used to render triangles in the wireframe.
+     *
+     * \see setFillSymbol()
+     */
+    static QgsFillSymbol *createDefaultfillSymbol() SIP_FACTORY;
+
+    /**
      * Returns the fill symbol used to render triangles in the wireframe.
      *
      * \see setFillSymbol()

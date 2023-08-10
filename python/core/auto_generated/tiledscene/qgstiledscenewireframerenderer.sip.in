@@ -47,6 +47,13 @@ Constructor for QgsTiledSceneWireframeRenderer.
 Creates a textured renderer from an XML ``element``.
 %End
 
+    static QgsFillSymbol *createDefaultfillSymbol() /Factory/;
+%Docstring
+Returns a copy of the default fill symbol used to render triangles in the wireframe.
+
+.. seealso:: :py:func:`setFillSymbol`
+%End
+
     QgsFillSymbol *fillSymbol() const;
 %Docstring
 Returns the fill symbol used to render triangles in the wireframe.
