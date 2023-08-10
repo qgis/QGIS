@@ -84,27 +84,37 @@ static Qt3DRender::QAbstractTexture::Filter parseTextureFilter( int filter )
 {
   switch ( filter )
   {
-    case TINYGLTF_TEXTURE_FILTER_NEAREST: return Qt3DRender::QTexture2D::Nearest;
-    case TINYGLTF_TEXTURE_FILTER_LINEAR: return Qt3DRender::QTexture2D::Linear;
-    case TINYGLTF_TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST: return Qt3DRender::QTexture2D::NearestMipMapNearest;
-    case TINYGLTF_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST: return Qt3DRender::QTexture2D::LinearMipMapNearest;
-    case TINYGLTF_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR: return Qt3DRender::QTexture2D::NearestMipMapLinear;
-    case TINYGLTF_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR: return Qt3DRender::QTexture2D::LinearMipMapLinear;
+    case TINYGLTF_TEXTURE_FILTER_NEAREST:
+      return Qt3DRender::QTexture2D::Nearest;
+    case TINYGLTF_TEXTURE_FILTER_LINEAR:
+      return Qt3DRender::QTexture2D::Linear;
+    case TINYGLTF_TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST:
+      return Qt3DRender::QTexture2D::NearestMipMapNearest;
+    case TINYGLTF_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST:
+      return Qt3DRender::QTexture2D::LinearMipMapNearest;
+    case TINYGLTF_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR:
+      return Qt3DRender::QTexture2D::NearestMipMapLinear;
+    case TINYGLTF_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR:
+      return Qt3DRender::QTexture2D::LinearMipMapLinear;
   }
-  Q_ASSERT( false );
+
+  // play it safe and handle malformed models
   return Qt3DRender::QTexture2D::Nearest;
 }
-
 
 static Qt3DRender::QTextureWrapMode::WrapMode parseTextureWrapMode( int wrapMode )
 {
   switch ( wrapMode )
   {
-    case TINYGLTF_TEXTURE_WRAP_REPEAT: return Qt3DRender::QTextureWrapMode::Repeat;
-    case TINYGLTF_TEXTURE_WRAP_CLAMP_TO_EDGE: return Qt3DRender::QTextureWrapMode::ClampToEdge;
-    case TINYGLTF_TEXTURE_WRAP_MIRRORED_REPEAT: return Qt3DRender::QTextureWrapMode::MirroredRepeat;
+    case TINYGLTF_TEXTURE_WRAP_REPEAT:
+      return Qt3DRender::QTextureWrapMode::Repeat;
+    case TINYGLTF_TEXTURE_WRAP_CLAMP_TO_EDGE:
+      return Qt3DRender::QTextureWrapMode::ClampToEdge;
+    case TINYGLTF_TEXTURE_WRAP_MIRRORED_REPEAT:
+      return Qt3DRender::QTextureWrapMode::MirroredRepeat;
   }
-  Q_ASSERT( false );
+  // some malformed GLTF models have incorrect texture wrap modes (eg
+  // https://qld.digitaltwin.terria.io/api/v0/data/b73ccb60-66ef-4470-8c3c-44af36c4d69b/CBD/tileset.json )
   return Qt3DRender::QTextureWrapMode::Repeat;
 }
 
