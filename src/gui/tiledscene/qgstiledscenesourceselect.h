@@ -23,6 +23,7 @@
 
 #include "qgsabstractdatasourcewidget.h"
 #include "ui_qgstiledscenesourceselectbase.h"
+#include "qgshelp.h"
 
 /*!
  * \brief Dialog to create connections to tiled scene servers.
@@ -58,6 +59,8 @@ class QgsTiledSceneSourceSelect : public QgsAbstractDataSourceWidget, private Ui
     void btnLoad_clicked();
     //! Stores the selected datasource whenerver it is changed
     void cmbConnections_currentTextChanged( const QString &text );
+
+    void showHelp();
 
   private:
     void populateConnectionList();
