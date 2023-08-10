@@ -28,6 +28,7 @@ QgsTiledSceneWireframeRendererWidget::QgsTiledSceneWireframeRendererWidget( QgsT
   setupUi( this );
 
   mFillSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
+  mFillSymbolButton->setSymbol( QgsTiledSceneWireframeRenderer::createDefaultfillSymbol() );
 
   if ( layer )
   {
