@@ -13305,7 +13305,7 @@ void QgisApp::new3DMapCanvas()
     name = tr( "3D Map %1" ).arg( ++i );
   }
 
-  Qgs3DMapCanvasWidget *canvasWidget = createNew3DMapCanvasDock( name, true );
+  Qgs3DMapCanvasWidget *canvasWidget = createNew3DMapCanvasDock( name, false );
   if ( canvasWidget )
   {
     QgsProject *prj = QgsProject::instance();
