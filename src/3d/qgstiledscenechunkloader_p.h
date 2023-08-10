@@ -81,12 +81,18 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     virtual QgsChunkNode *createRootNode() const override;
     virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
+    virtual bool canCreateChildren( QgsChunkNode *node ) override;
+    virtual void prepareChildren( QgsChunkNode *node ) override;
+
     QgsChunkNode *nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId ) const;
+    void fetchHierarchyForNode( long long nodeId, QgsChunkNode *origNode );
 
     const Qgs3DMapSettings &mMap;
     QString mRelativePathBase;
     mutable QgsTiledSceneIndex mIndex;
     QgsCoordinateTransform mBoundsTransform;
+    QSet<long long> mPendingHierarchyFetches;
+    QSet<long long> mFutureHierarchyFetches;
 };
 
 
@@ -107,6 +113,8 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
     explicit QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettings &map, QString relativePathBase, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes );
 
     ~QgsTiledSceneLayerChunkedEntity();
+
+    int pendingJobsCount() const override;
 };
 
 /// @endcond

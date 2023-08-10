@@ -30,7 +30,6 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 #include "qgschunklist_p.h"
 #include "qgschunkloader_p.h"
 #include "qgschunknode_p.h"
-#include "qgstessellatedpolygongeometry.h"
 
 #include "qgseventtracing.h"
 
@@ -62,6 +61,13 @@ QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFact
   mRootNode = loaderFactory->createRootNode();
   mChunkLoaderQueue = new QgsChunkList;
   mReplacementQueue = new QgsChunkList;
+
+  // in case the chunk loader factory supports fetching of hierarchy in background (to avoid GUI freezes)
+  connect( loaderFactory, &QgsChunkLoaderFactory::childrenPrepared, this, [this]
+  {
+    setNeedsUpdate( true );
+    emit pendingJobsCountChanged();
+  } );
 }
 
 
@@ -202,6 +208,7 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneState &state )
                     .arg( enabled )
                     .arg( disabled )
                     .arg( mFrustumCulled )
+                    .arg( mChunkLoaderQueue->count() )
                     .arg( mReplacementQueue->count() )
                     .arg( unloaded )
                     .arg( t.elapsed() ), 2 );
@@ -381,7 +388,24 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
 
     // ensure we have child nodes (at least skeletons) available, if any
     if ( !node->hasChildrenPopulated() )
-      node->populateChildren( mChunkLoaderFactory->createChildren( node ) );
+    {
+      // Some chunked entities (e.g. tiled scene) may know the full node hierarchy in advance
+      // and need to fetch it from a remote server. Having a blocking network request
+      // in createChildren() is not wanted because this code runs on the main thread and thus
+      // would cause GUI freezes. Here is a mechanism to first check whether there are any
+      // network requests needed (with canCreateChildren()), and if that's the case,
+      // prepareChildren() will start those requests in the background and immediately returns.
+      // The factory will emit a signal when hierarchy fetching is done to force another update
+      // of this entity to create children of this node.
+      if ( mChunkLoaderFactory->canCreateChildren( node ) )
+      {
+        node->populateChildren( mChunkLoaderFactory->createChildren( node ) );
+      }
+      else
+      {
+        mChunkLoaderFactory->prepareChildren( node );
+      }
+    }
 
     // make sure all nodes leading to children are always loaded
     // so that zooming out does not create issues

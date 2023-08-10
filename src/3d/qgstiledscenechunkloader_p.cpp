@@ -194,17 +194,8 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
   QVector<QgsChunkNode *> children;
   const long long indexTileId = node->tileId().uniqueId;
 
-  switch ( mIndex.childAvailability( indexTileId ) )
-  {
-    case Qgis::TileChildrenAvailability::NoChildren:
-      return children;
-    case Qgis::TileChildrenAvailability::Available:
-      break;
-    case Qgis::TileChildrenAvailability::NeedFetching:
-      if ( !mIndex.fetchHierarchy( indexTileId ) )
-        return children;
-      break;
-  }
+  // fetching of hierarchy is handled by canCreateChildren() + prepareChildren()
+  Q_ASSERT( mIndex.childAvailability( indexTileId ) != Qgis::TileChildrenAvailability::NeedFetching );
 
   const QVector< long long > childIds = mIndex.childTileIds( indexTileId );
   for ( long long childId : childIds )
@@ -241,19 +232,88 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
       }
     }
 
-    if ( mIndex.childAvailability( childId ) == Qgis::TileChildrenAvailability::NeedFetching )
-    {
-      // we need to make sure that if a child tile's content references another tileset JSON,
-      // we fetch its hierarchy before a chunk node is created for such child tile - otherwise we
-      // end up trying to load tileset JSON file instead of the actual content
-      mIndex.fetchHierarchy( childId );
-    }
+    // fetching of hierarchy is handled by canCreateChildren() + prepareChildren()
+    Q_ASSERT( mIndex.childAvailability( childId ) != Qgis::TileChildrenAvailability::NeedFetching );
 
     QgsChunkNode *nChild = nodeForTile( t, chId );
     children.append( nChild );
   }
   return children;
 }
+
+bool QgsTiledSceneChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
+{
+  long long nodeId = node->tileId().uniqueId;
+  if ( mFutureHierarchyFetches.contains( nodeId ) || mPendingHierarchyFetches.contains( nodeId ) )
+    return false;
+
+  if ( mIndex.childAvailability( nodeId ) == Qgis::TileChildrenAvailability::NeedFetching )
+  {
+    mFutureHierarchyFetches.insert( nodeId );
+    return false;
+  }
+
+  // we need to make sure that if a child tile's content references another tileset JSON,
+  // we fetch its hierarchy before a chunk node is created for such child tile - otherwise we
+  // end up trying to load tileset JSON file instead of the actual content
+
+  const QVector< long long > childIds = mIndex.childTileIds( nodeId );
+  for ( long long childId : childIds )
+  {
+    if ( mFutureHierarchyFetches.contains( childId ) || mPendingHierarchyFetches.contains( childId ) )
+      return false;
+
+    if ( mIndex.childAvailability( childId ) == Qgis::TileChildrenAvailability::NeedFetching )
+    {
+      mFutureHierarchyFetches.insert( childId );
+      return false;
+    }
+  }
+  return true;
+}
+
+void QgsTiledSceneChunkLoaderFactory::fetchHierarchyForNode( long long nodeId, QgsChunkNode *origNode )
+{
+  Q_ASSERT( !mPendingHierarchyFetches.contains( nodeId ) );
+  mFutureHierarchyFetches.remove( nodeId );
+  mPendingHierarchyFetches.insert( nodeId );
+
+  QFutureWatcher<void> *futureWatcher = new QFutureWatcher<void>( this );
+  connect( futureWatcher, &QFutureWatcher<void>::finished, this, [this, origNode, nodeId, futureWatcher]
+  {
+    mPendingHierarchyFetches.remove( nodeId );
+    emit childrenPrepared( origNode );
+    futureWatcher->deleteLater();
+  } );
+  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId]
+  {
+    mIndex.fetchHierarchy( nodeId );
+  } ) );
+}
+
+void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
+{
+  long long nodeId = node->tileId().uniqueId;
+  if ( mFutureHierarchyFetches.contains( nodeId ) )
+  {
+    fetchHierarchyForNode( nodeId, node );
+    return;
+  }
+
+  // we need to make sure that if a child tile's content references another tileset JSON,
+  // we fetch its hierarchy before a chunk node is created for such child tile - otherwise we
+  // end up trying to load tileset JSON file instead of the actual content
+
+  const QVector< long long > childIds = mIndex.childTileIds( nodeId );
+  for ( long long childId : childIds )
+  {
+    if ( mFutureHierarchyFetches.contains( childId ) )
+    {
+      fetchHierarchyForNode( childId, node );
+    }
+  }
+}
+
 
 ///
 
@@ -269,6 +329,11 @@ QgsTiledSceneLayerChunkedEntity::~QgsTiledSceneLayerChunkedEntity()
 {
   // cancel / wait for jobs
   cancelActiveJobs();
+}
+
+int QgsTiledSceneLayerChunkedEntity::pendingJobsCount() const
+{
+  return QgsChunkedEntity::pendingJobsCount() + static_cast<QgsTiledSceneChunkLoaderFactory *>( mChunkLoaderFactory )->mPendingHierarchyFetches.count();
 }
 
 /// @endcond
