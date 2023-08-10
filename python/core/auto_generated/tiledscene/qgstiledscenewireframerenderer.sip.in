@@ -41,6 +41,8 @@ Constructor for QgsTiledSceneWireframeRenderer.
 
     virtual void stopRender( QgsTiledSceneRenderContext &context );
 
+    virtual Qgis::TiledSceneRendererFlags flags() const;
+
 
     static QgsTiledSceneRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
@@ -68,6 +70,22 @@ Sets the fill ``symbol`` used to render triangles in the wireframe.
 Ownership of ``symbol`` is transferred.
 
 .. seealso:: :py:func:`fillSymbol`
+%End
+
+    bool useTextureColors() const;
+%Docstring
+Returns ``True`` if representative colors from the textures will be used to recolor
+the symbols used to render the wireframe.
+
+.. seealso:: :py:func:`setUseTextureColors`
+%End
+
+    void setUseTextureColors( bool enabled );
+%Docstring
+Sets whether representative colors from the textures should be used to recolor
+the symbols used to render the wireframe.
+
+.. seealso:: :py:func:`useTextureColors`
 %End
 
 };

@@ -351,7 +351,6 @@ set(QGIS_CORE_SRCS
   tiledscene/qgstiledscenerenderer.cpp
   tiledscene/qgstiledscenerendererregistry.cpp
   tiledscene/qgstiledscenerequest.cpp
-  tiledscene/qgstiledscenetexturecolorrenderer.cpp
   tiledscene/qgstiledscenetexturerenderer.cpp
   tiledscene/qgstiledscenetile.cpp
   tiledscene/qgstiledscenewireframerenderer.cpp
@@ -1931,7 +1930,6 @@ set(QGIS_CORE_HDRS
   tiledscene/qgstiledscenerenderer.h
   tiledscene/qgstiledscenerendererregistry.h
   tiledscene/qgstiledscenerequest.h
-  tiledscene/qgstiledscenetexturecolorrenderer.h
   tiledscene/qgstiledscenetexturerenderer.h
   tiledscene/qgstiledscenetile.h
   tiledscene/qgstiledscenewireframerenderer.h

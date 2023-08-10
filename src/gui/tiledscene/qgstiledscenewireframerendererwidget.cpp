@@ -36,6 +36,7 @@ QgsTiledSceneWireframeRendererWidget::QgsTiledSceneWireframeRendererWidget( QgsT
   }
 
   connect( mFillSymbolButton, &QgsSymbolButton::changed, this, &QgsTiledSceneWireframeRendererWidget::emitWidgetChanged );
+  connect( mCheckUseTextureColors, &QCheckBox::toggled, this, &QgsTiledSceneWireframeRendererWidget::emitWidgetChanged );
 }
 
 QgsTiledSceneRendererWidget *QgsTiledSceneWireframeRendererWidget::create( QgsTiledSceneLayer *layer, QgsStyle *style, QgsTiledSceneRenderer * )
@@ -47,6 +48,7 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRendererWidget::renderer()
 {
   std::unique_ptr< QgsTiledSceneWireframeRenderer > renderer = std::make_unique< QgsTiledSceneWireframeRenderer >();
   renderer->setFillSymbol( mFillSymbolButton->clonedSymbol< QgsFillSymbol >() );
+  renderer->setUseTextureColors( mCheckUseTextureColors->isChecked() );
 
   return renderer.release();
 }
@@ -60,10 +62,12 @@ void QgsTiledSceneWireframeRendererWidget::emitWidgetChanged()
 void QgsTiledSceneWireframeRendererWidget::setFromRenderer( const QgsTiledSceneRenderer *renderer )
 {
   mBlockChangedSignal = true;
-  if ( const QgsTiledSceneWireframeRenderer *meshRenderer = dynamic_cast< const QgsTiledSceneWireframeRenderer * >( renderer ) )
+  if ( const QgsTiledSceneWireframeRenderer *wireframeRenderer = dynamic_cast< const QgsTiledSceneWireframeRenderer * >( renderer ) )
   {
-    mFillSymbolButton->setSymbol( meshRenderer->fillSymbol()->clone() );
+    mFillSymbolButton->setSymbol( wireframeRenderer->fillSymbol()->clone() );
+    mCheckUseTextureColors->setChecked( wireframeRenderer->useTextureColors() );
   }
+
   mBlockChangedSignal = false;
 }
 
