@@ -445,8 +445,8 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
   const bool needsTextures = mRenderer->flags() & Qgis::TiledSceneRendererFlag::RequiresTextures;
 
   QImage textureImage;
-  QVector< double > texturePointX;
-  QVector< double > texturePointY;
+  QVector< float > texturePointX;
+  QVector< float > texturePointY;
   QPair< int, int > textureId{ -1, -1 };
   if ( needsTextures )
   {

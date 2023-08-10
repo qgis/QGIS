@@ -192,7 +192,7 @@ QTransform QgsPainting::triangleToTriangleTransform( double inX1, double inY1, d
   return ( U.inverted( &ok ) ) * V;
 }
 
-bool QgsPainting::drawTriangleUsingTexture( QPainter *painter, const QPolygonF &triangle, const QImage &textureImage, double textureX1, double textureY1, double textureX2, double textureY2, double textureX3, double textureY3 )
+bool QgsPainting::drawTriangleUsingTexture( QPainter *painter, const QPolygonF &triangle, const QImage &textureImage, float textureX1, float textureY1, float textureX2, float textureY2, float textureX3, float textureY3 )
 {
   bool ok = false;
   const QTransform brushTransform = triangleToTriangleTransform(

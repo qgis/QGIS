@@ -60,9 +60,9 @@ Sets the current texture ``image``.
 %End
 
     void setTextureCoordinates(
-      double textureX1, double textureY1,
-      double textureX2, double textureY2,
-      double textureX3, double textureY3
+      float textureX1, float textureY1,
+      float textureX2, float textureY2,
+      float textureX3, float textureY3
     );
 %Docstring
 Sets the current texture coordinates.
@@ -70,7 +70,7 @@ Sets the current texture coordinates.
 .. seealso:: :py:func:`textureCoordinates`
 %End
 
-    void textureCoordinates( double &textureX1 /Out/, double &textureY1 /Out/, double &textureX2 /Out/, double &textureY2 /Out/, double &textureX3 /Out/, double &textureY3 /Out/ ) const;
+    void textureCoordinates( float &textureX1 /Out/, float &textureY1 /Out/, float &textureX2 /Out/, float &textureY2 /Out/, float &textureX3 /Out/, float &textureY3 /Out/ ) const;
 %Docstring
 Returns the current texture coordinates.
 

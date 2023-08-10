@@ -146,7 +146,7 @@ class CORE_EXPORT QgsGltfUtils
      * Extracts the texture coordinates from a \a model, and stores the results in the \a x, \a y vectors.
      */
     static bool extractTextureCoordinates( const tinygltf::Model &model, int accessorIndex,
-                                           QVector<double> &x, QVector<double> &y );
+                                           QVector<float> &x, QVector<float> &y );
 
     /**
      * Loads a GLTF model from \a data (both binary and text format are supported)
