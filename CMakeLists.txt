@@ -372,7 +372,7 @@ if(WITH_CORE)
 
   find_package(Protobuf CONFIG)
   find_package(Protobuf REQUIRED)
-  if((${Protobuf_VERSION} GREATER 4.23) OR (${Protobuf_VERSION} EQUAL 4.23))
+  if(Protobuf_VERSION GREATER_EQUAL 4.23)
     set(Protobuf_LITE_LIBRARY protobuf::libprotobuf-lite)
   endif()
 
