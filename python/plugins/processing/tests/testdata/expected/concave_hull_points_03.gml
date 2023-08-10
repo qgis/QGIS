@@ -11,7 +11,6 @@
     <ogr:concave_hull_points_03 gml:id="concave_hull_points_03.0">
       <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>1 2</gml:lowerCorner><gml:upperCorner>3 5</gml:upperCorner></gml:Envelope></gml:boundedBy>
       <ogr:geometryProperty><gml:Polygon srsName="urn:ogc:def:crs:EPSG::4326" gml:id="concave_hull_points_03.geom.0"><gml:exterior><gml:LinearRing><gml:posList>2 2 3 3 2 5 1 4 2 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogr:geometryProperty>
-      <ogr:id>1</ogr:id>
     </ogr:concave_hull_points_03>
   </ogr:featureMember>
 </ogr:FeatureCollection>

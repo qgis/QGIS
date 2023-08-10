@@ -40,13 +40,6 @@
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
         <xs:element name="geometryProperty" type="gml:SurfacePropertyType" nillable="true" minOccurs="0" maxOccurs="1"/> <!-- restricted to Polygon --><!-- srsName="urn:ogc:def:crs:EPSG::4326" -->
-        <xs:element name="id" nillable="true" minOccurs="0" maxOccurs="1">
-          <xs:simpleType>
-            <xs:restriction base="xs:long">
-              <xs:totalDigits value="20"/>
-            </xs:restriction>
-          </xs:simpleType>
-        </xs:element>
       </xs:sequence>
     </xs:extension>
   </xs:complexContent>
