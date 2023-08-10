@@ -389,7 +389,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
     // ensure we have child nodes (at least skeletons) available, if any
     if ( !node->hasChildrenPopulated() )
     {
-      // Some chunked entities (e.g. tiled scene) may know the full node hierarchy in advance
+      // Some chunked entities (e.g. tiled scene) may not know the full node hierarchy in advance
       // and need to fetch it from a remote server. Having a blocking network request
       // in createChildren() is not wanted because this code runs on the main thread and thus
       // would cause GUI freezes. Here is a mechanism to first check whether there are any
