@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgstiledscenemeshrenderer.h
+                         qgstiledscenewireframerenderer.h
                          --------------------
     begin                : August 2023
     copyright            : (C) 2023 by Nyall Dawson
@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstiledscenemeshrenderer.h"
+#include "qgstiledscenewireframerenderer.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
 #include "qgssymbollayerutils.h"
 
-QgsTiledSceneMeshRenderer::QgsTiledSceneMeshRenderer()
+QgsTiledSceneWireframeRenderer::QgsTiledSceneWireframeRenderer()
 {
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
@@ -33,16 +33,16 @@ QgsTiledSceneMeshRenderer::QgsTiledSceneMeshRenderer()
   mFillSymbol.reset( QgsFillSymbol::createSimple( properties ) );
 }
 
-QgsTiledSceneMeshRenderer::~QgsTiledSceneMeshRenderer() = default;
+QgsTiledSceneWireframeRenderer::~QgsTiledSceneWireframeRenderer() = default;
 
-QString QgsTiledSceneMeshRenderer::type() const
+QString QgsTiledSceneWireframeRenderer::type() const
 {
-  return QStringLiteral( "mesh" );
+  return QStringLiteral( "wireframe" );
 }
 
-QgsTiledSceneRenderer *QgsTiledSceneMeshRenderer::clone() const
+QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::clone() const
 {
-  std::unique_ptr< QgsTiledSceneMeshRenderer > res = std::make_unique< QgsTiledSceneMeshRenderer >();
+  std::unique_ptr< QgsTiledSceneWireframeRenderer > res = std::make_unique< QgsTiledSceneWireframeRenderer >();
 
   res->setFillSymbol( mFillSymbol->clone() );
 
@@ -51,9 +51,9 @@ QgsTiledSceneRenderer *QgsTiledSceneMeshRenderer::clone() const
   return res.release();
 }
 
-QgsTiledSceneRenderer *QgsTiledSceneMeshRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsTiledSceneMeshRenderer > r = std::make_unique< QgsTiledSceneMeshRenderer >();
+  std::unique_ptr< QgsTiledSceneWireframeRenderer > r = std::make_unique< QgsTiledSceneWireframeRenderer >();
   {
     const QDomElement fillSymbolElem = element.firstChildElement( QStringLiteral( "fillSymbol" ) );
     if ( !fillSymbolElem.isNull() )
@@ -69,21 +69,21 @@ QgsTiledSceneRenderer *QgsTiledSceneMeshRenderer::create( QDomElement &element, 
   return r.release();
 }
 
-QgsFillSymbol *QgsTiledSceneMeshRenderer::fillSymbol() const
+QgsFillSymbol *QgsTiledSceneWireframeRenderer::fillSymbol() const
 {
   return mFillSymbol.get();
 }
 
-void QgsTiledSceneMeshRenderer::setFillSymbol( QgsFillSymbol *symbol )
+void QgsTiledSceneWireframeRenderer::setFillSymbol( QgsFillSymbol *symbol )
 {
   mFillSymbol.reset( symbol );
 }
 
-QDomElement QgsTiledSceneMeshRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
+QDomElement QgsTiledSceneWireframeRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement rendererElem = doc.createElement( QStringLiteral( "renderer" ) );
 
-  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "mesh" ) );
+  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "wireframe" ) );
 
   {
     QDomElement fillSymbolElem = doc.createElement( QStringLiteral( "fillSymbol" ) );
@@ -100,17 +100,17 @@ QDomElement QgsTiledSceneMeshRenderer::save( QDomDocument &doc, const QgsReadWri
   return rendererElem;
 }
 
-void QgsTiledSceneMeshRenderer::renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle )
+void QgsTiledSceneWireframeRenderer::renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle )
 {
   mFillSymbol->renderPolygon( triangle, nullptr, nullptr, context.renderContext() );
 }
 
-void QgsTiledSceneMeshRenderer::startRender( QgsTiledSceneRenderContext &context )
+void QgsTiledSceneWireframeRenderer::startRender( QgsTiledSceneRenderContext &context )
 {
   mFillSymbol->startRender( context.renderContext() );
 }
 
-void QgsTiledSceneMeshRenderer::stopRender( QgsTiledSceneRenderContext &context )
+void QgsTiledSceneWireframeRenderer::stopRender( QgsTiledSceneRenderContext &context )
 {
   mFillSymbol->stopRender( context.renderContext() );
 }

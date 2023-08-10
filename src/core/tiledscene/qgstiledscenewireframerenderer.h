@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgstiledscenemeshrenderer.h
+                         qgstiledscenewireframerenderer.h
                          --------------------
     begin                : August 2023
     copyright            : (C) 2023 by Nyall Dawson
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTILEDSCENEMESHRENDERER_H
-#define QGSTILEDSCENEMESHRENDERER_H
+#ifndef QGSTILEDSCENEWIREFRAMERENDERER_H
+#define QGSTILEDSCENEWIREFRAMERENDERER_H
 
 #include "qgstiledscenerenderer.h"
 #include "qgis_core.h"
@@ -26,19 +26,19 @@ class QgsFillSymbol;
 
 /**
  * \ingroup core
- * \brief Renders tiled scene layers using the raw primitive meshes.
+ * \brief Renders tiled scene layers using the raw primitive wireframes.
  *
  * \since QGIS 3.34
  */
-class CORE_EXPORT QgsTiledSceneMeshRenderer : public QgsTiledSceneRenderer
+class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
 {
   public:
 
     /**
-     * Constructor for QgsTiledSceneMeshRenderer.
+     * Constructor for QgsTiledSceneWireframeRenderer.
      */
-    QgsTiledSceneMeshRenderer();
-    ~QgsTiledSceneMeshRenderer();
+    QgsTiledSceneWireframeRenderer();
+    ~QgsTiledSceneWireframeRenderer();
 
     QString type() const override;
     QgsTiledSceneRenderer *clone() const override;
@@ -53,14 +53,14 @@ class CORE_EXPORT QgsTiledSceneMeshRenderer : public QgsTiledSceneRenderer
     static QgsTiledSceneRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /**
-     * Returns the fill symbol used to render triangles in the mesh.
+     * Returns the fill symbol used to render triangles in the wireframe.
      *
      * \see setFillSymbol()
      */
     QgsFillSymbol *fillSymbol() const;
 
     /**
-     * Sets the fill \a symbol used to render triangles in the mesh.
+     * Sets the fill \a symbol used to render triangles in the wireframe.
      *
      * Ownership of \a symbol is transferred.
      *
@@ -74,4 +74,4 @@ class CORE_EXPORT QgsTiledSceneMeshRenderer : public QgsTiledSceneRenderer
 
 };
 
-#endif // QGSTILEDSCENEMESHRENDERER_H
+#endif // QGSTILEDSCENEWIREFRAMERENDERER_H

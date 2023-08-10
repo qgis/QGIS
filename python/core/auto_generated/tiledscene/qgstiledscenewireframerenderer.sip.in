@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/tiledscene/qgstiledscenemeshrenderer.h                      *
+ * src/core/tiledscene/qgstiledscenewireframerenderer.h                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,24 +10,24 @@
 
 
 
-class QgsTiledSceneMeshRenderer : QgsTiledSceneRenderer
+class QgsTiledSceneWireframeRenderer : QgsTiledSceneRenderer
 {
 %Docstring(signature="appended")
-Renders tiled scene layers using the raw primitive meshes.
+Renders tiled scene layers using the raw primitive wireframes.
 
 .. versionadded:: 3.34
 %End
 
 %TypeHeaderCode
-#include "qgstiledscenemeshrenderer.h"
+#include "qgstiledscenewireframerenderer.h"
 %End
   public:
 
-    QgsTiledSceneMeshRenderer();
+    QgsTiledSceneWireframeRenderer();
 %Docstring
-Constructor for QgsTiledSceneMeshRenderer.
+Constructor for QgsTiledSceneWireframeRenderer.
 %End
-    ~QgsTiledSceneMeshRenderer();
+    ~QgsTiledSceneWireframeRenderer();
 
     virtual QString type() const;
 
@@ -49,14 +49,14 @@ Creates a textured renderer from an XML ``element``.
 
     QgsFillSymbol *fillSymbol() const;
 %Docstring
-Returns the fill symbol used to render triangles in the mesh.
+Returns the fill symbol used to render triangles in the wireframe.
 
 .. seealso:: :py:func:`setFillSymbol`
 %End
 
     void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
-Sets the fill ``symbol`` used to render triangles in the mesh.
+Sets the fill ``symbol`` used to render triangles in the wireframe.
 
 Ownership of ``symbol`` is transferred.
 
@@ -68,7 +68,7 @@ Ownership of ``symbol`` is transferred.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/tiledscene/qgstiledscenemeshrenderer.h                      *
+ * src/core/tiledscene/qgstiledscenewireframerenderer.h                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

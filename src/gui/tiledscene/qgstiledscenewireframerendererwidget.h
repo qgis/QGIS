@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgstiledscenemeshrendererwidget.h
+    qgstiledscenewireframerendererwidget.h
     ---------------------
     begin                : August 2023
     copyright            : (C) 2023 by Nyall Dawson
@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTILEDSCENEMESHRENDERERWIDGET_H
-#define QGSTILEDSCENEMESHRENDERERWIDGET_H
+#ifndef QGSTILEDSCENEWIREFRAMERENDERERWIDGET_H
+#define QGSTILEDSCENEWIREFRAMERENDERERWIDGET_H
 
 #include "qgstiledscenerendererwidget.h"
-#include "ui_qgstiledscenemeshrendererwidgetbase.h"
+#include "ui_qgstiledscenewireframerendererwidgetbase.h"
 #include "qgis_gui.h"
 
 class QgsTiledSceneLayer;
@@ -30,12 +30,12 @@ class QgsTiledSceneRenderer;
 
 ///@cond PRIVATE
 
-class GUI_EXPORT QgsTiledSceneMeshRendererWidget: public QgsTiledSceneRendererWidget, private Ui::QgsTiledSceneMeshRendererWidgetBase
+class GUI_EXPORT QgsTiledSceneWireframeRendererWidget: public QgsTiledSceneRendererWidget, private Ui::QgsTiledSceneWireframeRendererWidgetBase
 {
     Q_OBJECT
 
   public:
-    QgsTiledSceneMeshRendererWidget( QgsTiledSceneLayer *layer, QgsStyle *style );
+    QgsTiledSceneWireframeRendererWidget( QgsTiledSceneLayer *layer, QgsStyle *style );
     static QgsTiledSceneRendererWidget *create( QgsTiledSceneLayer *layer, QgsStyle *style, QgsTiledSceneRenderer * );
 
     QgsTiledSceneRenderer *renderer() override;
@@ -53,4 +53,4 @@ class GUI_EXPORT QgsTiledSceneMeshRendererWidget: public QgsTiledSceneRendererWi
 
 ///@endcond
 
-#endif // QGSTILEDSCENEMESHRENDERERWIDGET_H
+#endif // QGSTILEDSCENEWIREFRAMERENDERERWIDGET_H

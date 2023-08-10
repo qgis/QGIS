@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgstiledscenemeshrendererwidget.cpp
+    qgstiledscenewireframerendererwidget.cpp
     ---------------------
     begin                : August 2023
     copyright            : (C) 2023 by Nyall Dawson
@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstiledscenemeshrendererwidget.h"
+#include "qgstiledscenewireframerendererwidget.h"
 #include "qgstiledscenelayer.h"
-#include "qgstiledscenemeshrenderer.h"
+#include "qgstiledscenewireframerenderer.h"
 #include "qgsfillsymbol.h"
 
 ///@cond PRIVATE
 
-QgsTiledSceneMeshRendererWidget::QgsTiledSceneMeshRendererWidget( QgsTiledSceneLayer *layer, QgsStyle *style )
+QgsTiledSceneWireframeRendererWidget::QgsTiledSceneWireframeRendererWidget( QgsTiledSceneLayer *layer, QgsStyle *style )
   : QgsTiledSceneRendererWidget( layer, style )
 {
   setupUi( this );
@@ -34,32 +34,32 @@ QgsTiledSceneMeshRendererWidget::QgsTiledSceneMeshRendererWidget( QgsTiledSceneL
     setFromRenderer( layer->renderer() );
   }
 
-  connect( mFillSymbolButton, &QgsSymbolButton::changed, this, &QgsTiledSceneMeshRendererWidget::emitWidgetChanged );
+  connect( mFillSymbolButton, &QgsSymbolButton::changed, this, &QgsTiledSceneWireframeRendererWidget::emitWidgetChanged );
 }
 
-QgsTiledSceneRendererWidget *QgsTiledSceneMeshRendererWidget::create( QgsTiledSceneLayer *layer, QgsStyle *style, QgsTiledSceneRenderer * )
+QgsTiledSceneRendererWidget *QgsTiledSceneWireframeRendererWidget::create( QgsTiledSceneLayer *layer, QgsStyle *style, QgsTiledSceneRenderer * )
 {
-  return new QgsTiledSceneMeshRendererWidget( layer, style );
+  return new QgsTiledSceneWireframeRendererWidget( layer, style );
 }
 
-QgsTiledSceneRenderer *QgsTiledSceneMeshRendererWidget::renderer()
+QgsTiledSceneRenderer *QgsTiledSceneWireframeRendererWidget::renderer()
 {
-  std::unique_ptr< QgsTiledSceneMeshRenderer > renderer = std::make_unique< QgsTiledSceneMeshRenderer >();
+  std::unique_ptr< QgsTiledSceneWireframeRenderer > renderer = std::make_unique< QgsTiledSceneWireframeRenderer >();
   renderer->setFillSymbol( mFillSymbolButton->clonedSymbol< QgsFillSymbol >() );
 
   return renderer.release();
 }
 
-void QgsTiledSceneMeshRendererWidget::emitWidgetChanged()
+void QgsTiledSceneWireframeRendererWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
     emit widgetChanged();
 }
 
-void QgsTiledSceneMeshRendererWidget::setFromRenderer( const QgsTiledSceneRenderer *renderer )
+void QgsTiledSceneWireframeRendererWidget::setFromRenderer( const QgsTiledSceneRenderer *renderer )
 {
   mBlockChangedSignal = true;
-  if ( const QgsTiledSceneMeshRenderer *meshRenderer = dynamic_cast< const QgsTiledSceneMeshRenderer * >( renderer ) )
+  if ( const QgsTiledSceneWireframeRenderer *meshRenderer = dynamic_cast< const QgsTiledSceneWireframeRenderer * >( renderer ) )
   {
     mFillSymbolButton->setSymbol( meshRenderer->fillSymbol()->clone() );
   }
