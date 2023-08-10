@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Vector Tiles Connection</string>
+   <string>Tiled Scene Connection</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
