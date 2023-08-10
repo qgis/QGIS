@@ -211,7 +211,9 @@ tests:
       RADIUS_2: 5.0
     results:
       OUTPUT:
-        hash: 1c3adf57a7e319582736a1a222211e2360115fc930d6a12415dbdec3
+        hash:
+        - 1c3adf57a7e319582736a1a222211e2360115fc930d6a12415dbdec3
+        - 362fe6834eab26e44e65c0af786cc2a6d82c99d468f365afb1434796
         type: rasterhash
 
   - algorithm: gdal:griddatametrics
@@ -230,7 +232,9 @@ tests:
       RADIUS_2: 5.0
     results:
       OUTPUT:
-        hash: 11075786ce1a8f5875c203a881f39bb49e7d9f9adcb83c286c72b644
+        hash:
+        - 11075786ce1a8f5875c203a881f39bb49e7d9f9adcb83c286c72b644
+        - 066a82275eda08e0eb834e404f7f975944c7a8a46bd9f72333df4d05
         type: rasterhash
 
   - algorithm: gdal:gridinversedistance
@@ -251,7 +255,9 @@ tests:
       SMOOTHING: 0.0
     results:
       OUTPUT:
-        hash: 26658f6dd6a1dd4b576b2e71d3b31f1679d7144b8e53fb58502eff64
+        hash:
+        - 26658f6dd6a1dd4b576b2e71d3b31f1679d7144b8e53fb58502eff64
+        - 56fcd2cf1bc6eef4af088a161e0f190e5a1b8903d94bee6e15f56028
         type: rasterhash
 
   - algorithm: gdal:gridinversedistancenearestneighbor
@@ -270,7 +276,9 @@ tests:
       SMOOTHING: 0.0
     results:
       OUTPUT:
-        hash: 34fb2b6dc92f5f4147bf136a46dd872f4f94d3bca259d10c8c388620
+        hash:
+        - 34fb2b6dc92f5f4147bf136a46dd872f4f94d3bca259d10c8c388620
+        - 45c46d108d920b0ef19c5108a2829a581c2bd7c55cb3105c2814ea0a
         type: rasterhash
 
   - algorithm: gdal:gridlinear
@@ -289,6 +297,7 @@ tests:
         - aca7c839c679613f4910cbdea660359f1551c104c57fea9a61795668
         - 57e2bc100ec9836e2aa7df4ccf6b5715bd3f3524a524ce47bec52f68
         - e607570f34b1c61bc622751b324023b67642b657ef4b91a80d9057cb
+        - 31018c45cee587869c4b9693787db6974b5c92f1188c4046ddf3a307
         type: rasterhash
 
   - algorithm: gdal:gridnearestneighbor
@@ -305,7 +314,9 @@ tests:
       RADIUS_2: 0.0
     results:
       OUTPUT:
-        hash: 354f728b1dd133ad3db28a51b956bf3108615d31363f3a55b2ce04b9
+        hash:
+        - 354f728b1dd133ad3db28a51b956bf3108615d31363f3a55b2ce04b9
+        - 38db2a0bcdf6c8d25644545e050240f61377fddcbca471053949db35
         type: rasterhash
 
   - algorithm: gdal:hillshade
@@ -339,7 +350,9 @@ tests:
       WHITE: false
     results:
       OUTPUT:
-        hash: fff4a08498e93494f3f2cf1a9074451e6fd68341849aedc9e2c45e6a
+        hash:
+        - fff4a08498e93494f3f2cf1a9074451e6fd68341849aedc9e2c45e6a
+        - 0a382e4268b3f18c12fe89d241846d93b87ec782e9fc585e8f090630
         type: rasterhash
 
   - algorithm: gdal:rasterize
