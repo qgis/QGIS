@@ -70,7 +70,7 @@ Sets the current texture coordinates.
 .. seealso:: :py:func:`textureCoordinates`
 %End
 
-    void textureCoordinates( double &textureX1 /Out/, double &textureY1 /Out/, double &textureX2 /Out/, double &textureY2 /Out/, double &textureX3 /Out/, double &textureY3 /Out/ );
+    void textureCoordinates( double &textureX1 /Out/, double &textureY1 /Out/, double &textureX2 /Out/, double &textureY2 /Out/, double &textureX3 /Out/, double &textureY3 /Out/ ) const;
 %Docstring
 Returns the current texture coordinates.
 

@@ -97,7 +97,7 @@ class CORE_EXPORT QgsTiledSceneRenderContext
      *
      * \see setTextureCoordinates()
      */
-    void textureCoordinates( double &textureX1 SIP_OUT, double &textureY1 SIP_OUT, double &textureX2 SIP_OUT, double &textureY2 SIP_OUT, double &textureX3 SIP_OUT, double &textureY3 SIP_OUT );
+    void textureCoordinates( double &textureX1 SIP_OUT, double &textureY1 SIP_OUT, double &textureX2 SIP_OUT, double &textureY2 SIP_OUT, double &textureX3 SIP_OUT, double &textureY3 SIP_OUT ) const;
 
   private:
 #ifdef SIP_RUN

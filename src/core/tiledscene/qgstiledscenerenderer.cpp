@@ -53,7 +53,7 @@ void QgsTiledSceneRenderContext::setTextureCoordinates( double textureX1, double
   mTextureCoordinates[5] = textureY3;
 }
 
-void QgsTiledSceneRenderContext::textureCoordinates( double &textureX1, double &textureY1, double &textureX2, double &textureY2, double &textureX3, double &textureY3 )
+void QgsTiledSceneRenderContext::textureCoordinates( double &textureX1, double &textureY1, double &textureX2, double &textureY2, double &textureX3, double &textureY3 ) const
 {
   textureX1 = mTextureCoordinates[0];
   textureY1 = mTextureCoordinates[1];
