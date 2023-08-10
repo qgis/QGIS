@@ -128,8 +128,6 @@ class CORE_EXPORT QgsTiledSceneRenderer
     const QString type = sipCpp->type();
     if ( type == QLatin1String( "texture" ) )
       sipType = sipType_QgsTiledSceneTextureRenderer;
-    else if ( type == QLatin1String( "texturecolor" ) )
-      sipType = sipType_QgsTiledSceneTextureColorRenderer;
     else if ( type == QLatin1String( "wireframe" ) )
       sipType = sipType_QgsTiledSceneWireframeRenderer;
     else

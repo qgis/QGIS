@@ -36,6 +36,7 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::clone() const
   std::unique_ptr< QgsTiledSceneWireframeRenderer > res = std::make_unique< QgsTiledSceneWireframeRenderer >();
 
   res->setFillSymbol( mFillSymbol->clone() );
+  res->setUseTextureColors( mUseTextureColors );
 
   copyCommonProperties( res.get() );
 
@@ -55,6 +56,8 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::create( QDomElement &elem
         r->mFillSymbol = std::move( fillSymbol );
     }
   }
+
+  r->setUseTextureColors( element.attribute( QStringLiteral( "useTextureColors" ), QStringLiteral( "0" ) ).toInt() );
 
   r->restoreCommonProperties( element, context );
   return r.release();
@@ -83,11 +86,22 @@ void QgsTiledSceneWireframeRenderer::setFillSymbol( QgsFillSymbol *symbol )
   mFillSymbol.reset( symbol );
 }
 
+bool QgsTiledSceneWireframeRenderer::useTextureColors() const
+{
+  return mUseTextureColors;
+}
+
+void QgsTiledSceneWireframeRenderer::setUseTextureColors( bool newUseTextureColors )
+{
+  mUseTextureColors = newUseTextureColors;
+}
+
 QDomElement QgsTiledSceneWireframeRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement rendererElem = doc.createElement( QStringLiteral( "renderer" ) );
 
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "wireframe" ) );
+  rendererElem.setAttribute( QStringLiteral( "useTextureColors" ), mUseTextureColors ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   {
     QDomElement fillSymbolElem = doc.createElement( QStringLiteral( "fillSymbol" ) );
@@ -106,15 +120,54 @@ QDomElement QgsTiledSceneWireframeRenderer::save( QDomDocument &doc, const QgsRe
 
 void QgsTiledSceneWireframeRenderer::renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle )
 {
-  mFillSymbol->renderPolygon( triangle, nullptr, nullptr, context.renderContext() );
+  if ( mUseTextureColors )
+  {
+    std::unique_ptr< QgsFillSymbol > s( mFillSymbol->clone() );
+    const QImage textureImage = context.textureImage();
+    if ( !textureImage.isNull() )
+    {
+      float textureX1;
+      float textureY1;
+      float textureX2;
+      float textureY2;
+      float textureX3;
+      float textureY3;
+      context.textureCoordinates( textureX1, textureY1, textureX2, textureY2, textureX3, textureY3 );
+
+      const QColor centerColor( textureImage.pixelColor(
+                                  static_cast<int>( ( ( textureX1 + textureX2 + textureX3 ) / 3 ) * ( textureImage.width() - 1 ) ),
+                                  static_cast< int >( ( ( textureY1 + textureY2 + textureY3 ) / 3 ) * ( textureImage.height() - 1 ) ) )
+                              );
+      s->setColor( centerColor );
+    }
+    s->startRender( context.renderContext() );
+    s->renderPolygon( triangle, nullptr, nullptr, context.renderContext() );
+    s->stopRender( context.renderContext() );
+  }
+  else
+  {
+    mFillSymbol->renderPolygon( triangle, nullptr, nullptr, context.renderContext() );
+  }
 }
 
 void QgsTiledSceneWireframeRenderer::startRender( QgsTiledSceneRenderContext &context )
 {
-  mFillSymbol->startRender( context.renderContext() );
+  if ( !mUseTextureColors )
+    mFillSymbol->startRender( context.renderContext() );
 }
 
 void QgsTiledSceneWireframeRenderer::stopRender( QgsTiledSceneRenderContext &context )
 {
-  mFillSymbol->stopRender( context.renderContext() );
+  if ( !mUseTextureColors )
+    mFillSymbol->stopRender( context.renderContext() );
+}
+
+Qgis::TiledSceneRendererFlags QgsTiledSceneWireframeRenderer::flags() const
+{
+  Qgis::TiledSceneRendererFlags flags;
+
+  if ( mUseTextureColors )
+    flags |= Qgis::TiledSceneRendererFlag::RequiresTextures;
+
+  return flags;
 }

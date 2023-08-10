@@ -46,6 +46,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
     void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle ) override;
     void startRender( QgsTiledSceneRenderContext &context ) override;
     void stopRender( QgsTiledSceneRenderContext &context ) override;
+    Qgis::TiledSceneRendererFlags flags() const override;
 
     /**
      * Creates a textured renderer from an XML \a element.
@@ -75,9 +76,26 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      */
     void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Returns TRUE if representative colors from the textures will be used to recolor
+     * the symbols used to render the wireframe.
+     *
+     * \see setUseTextureColors()
+     */
+    bool useTextureColors() const;
+
+    /**
+     * Sets whether representative colors from the textures should be used to recolor
+     * the symbols used to render the wireframe.
+     *
+     * \see useTextureColors()
+     */
+    void setUseTextureColors( bool enabled );
+
   private:
 
     std::unique_ptr< QgsFillSymbol> mFillSymbol;
+    bool mUseTextureColors = false;
 
 };
 
