@@ -17,6 +17,7 @@
 
 
 #include "qgstiledscenelayerrenderer.h"
+#include "qgscurve.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenelayer.h"
 #include "qgsfeedback.h"
@@ -27,6 +28,7 @@
 #include "qgstiledscenerenderer.h"
 #include "qgsgltfutils.h"
 #include "qgscesiumutils.h"
+#include "qgscurvepolygon.h"
 
 #include <QMatrix4x4>
 
@@ -51,6 +53,7 @@ QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *laye
   mLayerBoundingVolume = layer->dataProvider()->boundingVolume();
 
   mIndex = layer->dataProvider()->index();
+  mRenderTileBorders = mRenderer->isTileBorderRenderingEnabled();
 
   mReadyToCompose = false;
 }
@@ -233,6 +236,30 @@ bool QgsTiledSceneLayerRenderer::renderTiles( QgsTiledSceneRenderContext &contex
     mRenderer->renderTriangle( context, data.triangle );
   }
 
+  if ( mRenderTileBorders )
+  {
+    QPainter *painter = renderContext()->painter();
+    for ( const TileDetails &tile : std::as_const( mTileDetails ) )
+    {
+      QPen pen;
+      QBrush brush;
+      if ( tile.hasContent )
+      {
+        brush = QBrush( QColor( 0, 0, 255, 10 ) );
+        pen = QPen( QColor( 0, 0, 255, 150 ) );
+      }
+      else
+      {
+        brush = QBrush( QColor( 255, 0, 255, 10 ) );
+        pen = QPen( QColor( 255, 0, 255, 150 ) );
+      }
+      pen.setWidth( 2 );
+      painter->setPen( pen );
+      painter->setBrush( brush );
+      painter->drawPolygon( tile.boundary );
+    }
+  }
+
   return true;
 }
 
@@ -240,45 +267,40 @@ void QgsTiledSceneLayerRenderer::renderTile( const QgsTiledSceneTile &tile, QgsT
 {
   const bool hasContent = renderTileContent( tile, context );
 
-#if 0
-  const QgsTiledSceneBoundingVolume &volume = tile.boundingVolume();
-  try
+  if ( mRenderTileBorders )
   {
-    std::unique_ptr< QgsAbstractGeometry > volumeGeometry( volume.as2DGeometry( mSceneToMapTransform ) );
-    if ( QgsCurvePolygon *polygon = qgsgeometry_cast< QgsCurvePolygon * >( volumeGeometry.get() ) )
+    const QgsTiledSceneBoundingVolume &volume = tile.boundingVolume();
+    try
     {
-      QPolygonF rootBoundsPoly = polygon->exteriorRing()->asQPolygonF( );
-
-      // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
-      rootBoundsPoly.erase( std::remove_if( rootBoundsPoly.begin(), rootBoundsPoly.end(),
-                                            []( const QPointF point )
+      std::unique_ptr< QgsAbstractGeometry > volumeGeometry( volume.as2DGeometry( mSceneToMapTransform ) );
+      if ( QgsCurvePolygon *polygon = qgsgeometry_cast< QgsCurvePolygon * >( volumeGeometry.get() ) )
       {
-        return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
-      } ), rootBoundsPoly.end() );
+        QPolygonF volumePolygon = polygon->exteriorRing()->asQPolygonF( );
 
-      QPointF *ptr = rootBoundsPoly.data();
-      for ( int i = 0; i < rootBoundsPoly.size(); ++i, ++ptr )
-      {
-        renderContext()->mapToPixel().transformInPlace( ptr->rx(), ptr->ry() );
+        // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
+        volumePolygon.erase( std::remove_if( volumePolygon.begin(), volumePolygon.end(),
+                                             []( const QPointF point )
+        {
+          return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
+        } ), volumePolygon.end() );
+
+        QPointF *ptr = volumePolygon.data();
+        for ( int i = 0; i < volumePolygon.size(); ++i, ++ptr )
+        {
+          renderContext()->mapToPixel().transformInPlace( ptr->rx(), ptr->ry() );
+        }
+
+        TileDetails details;
+        details.boundary = volumePolygon;
+        details.hasContent = hasContent;
+        mTileDetails.append( details );
       }
-
-
-      QgsFillSymbol symbol;
-      if ( hasContent )
-        symbol.setColor( QColor( 0, 0, 255, 30 ) );
-      else
-        symbol.setColor( QColor( 255, 0, 255, 30 ) );
-      symbol.startRender( *renderContext() );
-      symbol.renderPolygon( rootBoundsPoly, nullptr, nullptr, *renderContext() );
-      symbol.stopRender( *renderContext() );
-
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugError( QStringLiteral( "Error transforming bounding volume" ) );
     }
   }
-  catch ( QgsCsException & )
-  {
-    QgsDebugError( QStringLiteral( "Error transforming root bounding volume" ) );
-  }
-#endif
 }
 
 bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &tile, QgsTiledSceneRenderContext &context )

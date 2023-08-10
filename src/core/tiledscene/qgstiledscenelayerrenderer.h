@@ -103,6 +103,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
 
 
     std::unique_ptr< QgsTiledSceneRenderer > mRenderer;
+    bool mRenderTileBorders = false;
 
     QList< QgsMapClippingRegion > mClippingRegions;
 
@@ -127,6 +128,13 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
     QVector< TriangleData > mTriangleData;
     int mCurrentModelId = 0;
     QHash< QPair< int, int >, QImage > mTextures;
+
+    struct TileDetails
+    {
+      QPolygonF boundary;
+      bool hasContent = false;
+    };
+    QVector< TileDetails > mTileDetails;
 
     std::unique_ptr<QgsFeedback> mFeedback;
     QSet< int > mWarnedPrimitiveTypes;

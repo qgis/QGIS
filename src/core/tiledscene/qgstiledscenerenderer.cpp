@@ -143,17 +143,19 @@ void QgsTiledSceneRenderer::copyCommonProperties( QgsTiledSceneRenderer *destina
 {
   destination->setMaximumScreenError( mMaximumScreenError );
   destination->setMaximumScreenErrorUnit( mMaximumScreenErrorUnit );
+  destination->setTileBorderRenderingEnabled( mTileBorderRendering );
 }
 
 void QgsTiledSceneRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
 {
   mMaximumScreenError = element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "3" ) ).toDouble();
   mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) );
+  mTileBorderRendering = element.attribute( QStringLiteral( "tileBorderRendering" ), QStringLiteral( "0" ) ).toInt();
 }
 
 void QgsTiledSceneRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
 {
-
   element.setAttribute( QStringLiteral( "maximumScreenError" ), qgsDoubleToString( mMaximumScreenError ) );
   element.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( mMaximumScreenErrorUnit ) );
+  element.setAttribute( QStringLiteral( "tileBorderRendering" ), mTileBorderRendering ? 1 : 0 );
 }
