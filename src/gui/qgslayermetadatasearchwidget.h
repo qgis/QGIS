@@ -22,6 +22,7 @@
 #include "qgsfeedback.h"
 #include "qgsabstractlayermetadataprovider.h"
 #include "qgsabstractdatasourcewidget.h"
+#include "qgshelp.h"
 
 class QgsMapCanvas;
 class QgsLayerMetadataResultsProxyModel;
@@ -53,6 +54,9 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QgsAbstractDataSourceWidg
     void refresh() override;
     void addButtonClicked() override;
     void reset() override;
+
+  private slots:
+    void showHelp();
 
   private:
 
