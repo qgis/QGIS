@@ -34,8 +34,8 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="concave_hull_points_07" type="ogr:concave_hull_points_07_Type" substitutionGroup="gml:AbstractFeature"/>
-<xs:complexType name="concave_hull_points_07_Type">
+<xs:element name="concave_hull_points_03_geos" type="ogr:concave_hull_points_03_geos_Type" substitutionGroup="gml:AbstractFeature"/>
+<xs:complexType name="concave_hull_points_03_geos_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>

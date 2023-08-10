@@ -90,12 +90,11 @@ QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parame
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QgsGeometry concaveHull;
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
-  concaveHullQgis( sink, parameters, context, feedback );
-#else
+//~ #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
+  //~ concaveHullQgis( sink, parameters, context, feedback );
+//~ #else
   concaveHullGeos( sink, parameters, feedback );
-#endif
+//~ #endif
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
@@ -255,7 +254,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
       toDelete << edgesIt.key();
     }
 
-    edgesIt++;
+    ++edgesIt;
     i++;
     multiStepFeedback.setProgress( i * step );
   }

@@ -209,7 +209,6 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
   QgsFeatureIterator it = mSource->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
 
   QgsGeometry allPoints;
-  QHash< QgsFeatureId, QgsAttributes > attributeCache;
 
   double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 1;
 
