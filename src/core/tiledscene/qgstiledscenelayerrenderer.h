@@ -120,9 +120,9 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
     struct TriangleData
     {
       QPolygonF triangle;
-      double z;
+      float z;
       QPair< int, int > textureId { -1, -1 };
-      double textureCoords[6];
+      float textureCoords[6];
     };
 
     QVector< TriangleData > mTriangleData;

@@ -88,8 +88,8 @@ void TestQgsGltfUtils::testExtractTextureCoordinates()
 
   tinygltf::Model model;
   QVERIFY( QgsGltfUtils::loadGltfModel( data, model, nullptr, nullptr ) );
-  QVector< double > x;
-  QVector< double > y;
+  QVector< float > x;
+  QVector< float > y;
   QVERIFY( QgsGltfUtils::extractTextureCoordinates( model, 3, x, y ) );
   QCOMPARE( x.size(), 24 );
   QCOMPARE( y.size(), 24 );

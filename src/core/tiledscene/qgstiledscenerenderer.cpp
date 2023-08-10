@@ -43,7 +43,7 @@ void QgsTiledSceneRenderContext::setTextureImage( const QImage &image )
   mTextureImage = image;
 }
 
-void QgsTiledSceneRenderContext::setTextureCoordinates( double textureX1, double textureY1, double textureX2, double textureY2, double textureX3, double textureY3 )
+void QgsTiledSceneRenderContext::setTextureCoordinates( float textureX1, float textureY1, float textureX2, float textureY2, float textureX3, float textureY3 )
 {
   mTextureCoordinates[0] = textureX1;
   mTextureCoordinates[1] = textureY1;
@@ -53,7 +53,7 @@ void QgsTiledSceneRenderContext::setTextureCoordinates( double textureX1, double
   mTextureCoordinates[5] = textureY3;
 }
 
-void QgsTiledSceneRenderContext::textureCoordinates( double &textureX1, double &textureY1, double &textureX2, double &textureY2, double &textureX3, double &textureY3 ) const
+void QgsTiledSceneRenderContext::textureCoordinates( float &textureX1, float &textureY1, float &textureX2, float &textureY2, float &textureX3, float &textureY3 ) const
 {
   textureX1 = mTextureCoordinates[0];
   textureY1 = mTextureCoordinates[1];

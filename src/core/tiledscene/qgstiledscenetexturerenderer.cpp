@@ -67,12 +67,12 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
   if ( context.textureImage().isNull() )
     return;
 
-  double textureX1;
-  double textureY1;
-  double textureX2;
-  double textureY2;
-  double textureX3;
-  double textureY3;
+  float textureX1;
+  float textureY1;
+  float textureX2;
+  float textureY2;
+  float textureX3;
+  float textureY3;
   context.textureCoordinates( textureX1, textureY1, textureX2, textureY2, textureX3, textureY3 );
 
   QPainter *painter = context.renderContext().painter();

@@ -100,7 +100,7 @@ bool QgsGltfUtils::accessorToMapCoordinates( const tinygltf::Model &model, int a
   return true;
 }
 
-bool QgsGltfUtils::extractTextureCoordinates( const tinygltf::Model &model, int accessorIndex, QVector<double> &x, QVector<double> &y )
+bool QgsGltfUtils::extractTextureCoordinates( const tinygltf::Model &model, int accessorIndex, QVector<float> &x, QVector<float> &y )
 {
   const tinygltf::Accessor &accessor = model.accessors[accessorIndex];
   const tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
@@ -115,8 +115,8 @@ bool QgsGltfUtils::extractTextureCoordinates( const tinygltf::Model &model, int 
   x.resize( accessor.count );
   y.resize( accessor.count );
 
-  double *xOut = x.data();
-  double *yOut = y.data();
+  float *xOut = x.data();
+  float *yOut = y.data();
 
   for ( std::size_t i = 0; i < accessor.count; i++ )
   {

@@ -87,9 +87,9 @@ class CORE_EXPORT QgsTiledSceneRenderContext
      * \see textureCoordinates()
      */
     void setTextureCoordinates(
-      double textureX1, double textureY1,
-      double textureX2, double textureY2,
-      double textureX3, double textureY3
+      float textureX1, float textureY1,
+      float textureX2, float textureY2,
+      float textureX3, float textureY3
     );
 
     /**
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsTiledSceneRenderContext
      *
      * \see setTextureCoordinates()
      */
-    void textureCoordinates( double &textureX1 SIP_OUT, double &textureY1 SIP_OUT, double &textureX2 SIP_OUT, double &textureY2 SIP_OUT, double &textureX3 SIP_OUT, double &textureY3 SIP_OUT ) const;
+    void textureCoordinates( float &textureX1 SIP_OUT, float &textureY1 SIP_OUT, float &textureX2 SIP_OUT, float &textureY2 SIP_OUT, float &textureX3 SIP_OUT, float &textureY3 SIP_OUT ) const;
 
   private:
 #ifdef SIP_RUN
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsTiledSceneRenderContext
     QgsRenderContext &mRenderContext;
     QgsFeedback *mFeedback = nullptr;
     QImage mTextureImage;
-    double mTextureCoordinates[6] { 0, 0, 0, 0, 0, 0 };
+    float mTextureCoordinates[6] { 0, 0, 0, 0, 0, 0 };
 
 };
 
