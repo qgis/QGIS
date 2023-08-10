@@ -18,7 +18,7 @@
 // default renderers
 #include "qgstiledscenetexturerenderer.h"
 #include "qgstiledscenetexturecolorrenderer.h"
-#include "qgstiledscenemeshrenderer.h"
+#include "qgstiledscenewireframerenderer.h"
 
 QgsTiledSceneRendererRegistry::QgsTiledSceneRendererRegistry()
 {
@@ -29,9 +29,9 @@ QgsTiledSceneRendererRegistry::QgsTiledSceneRendererRegistry()
   addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "texturecolor" ),
                QObject::tr( "Texture Color" ),
                QgsTiledSceneTextureColorRenderer::create ) );
-  addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "mesh" ),
-               QObject::tr( "Mesh" ),
-               QgsTiledSceneMeshRenderer::create ) );
+  addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "wireframe" ),
+               QObject::tr( "Wireframe" ),
+               QgsTiledSceneWireframeRenderer::create ) );
 }
 
 QgsTiledSceneRendererRegistry::~QgsTiledSceneRendererRegistry()

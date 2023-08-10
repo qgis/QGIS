@@ -130,8 +130,8 @@ class CORE_EXPORT QgsTiledSceneRenderer
       sipType = sipType_QgsTiledSceneTextureRenderer;
     else if ( type == QLatin1String( "texturecolor" ) )
       sipType = sipType_QgsTiledSceneTextureColorRenderer;
-    else if ( type == QLatin1String( "mesh" ) )
-      sipType = sipType_QgsTiledSceneMeshRenderer;
+    else if ( type == QLatin1String( "wireframe" ) )
+      sipType = sipType_QgsTiledSceneWireframeRenderer;
     else
       sipType = 0;
 
