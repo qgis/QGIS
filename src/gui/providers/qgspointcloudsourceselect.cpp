@@ -32,6 +32,7 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
   connect( mRadioSrcFile, &QRadioButton::toggled, this, &QgsPointCloudSourceSelect::radioSrcFile_toggled );
   connect( mRadioSrcProtocol, &QRadioButton::toggled, this, &QgsPointCloudSourceSelect::radioSrcProtocol_toggled );
   connect( cmbProtocolTypes, &QComboBox::currentTextChanged, this, &QgsPointCloudSourceSelect::cmbProtocolTypes_currentIndexChanged );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPointCloudSourceSelect::showHelp );
 
   radioSrcFile_toggled( true );
   setProtocolWidgetsVisibility();
@@ -181,6 +182,11 @@ void QgsPointCloudSourceSelect::setProtocolWidgetsVisibility()
   labelKey->hide();
   mKey->hide();
   mAuthWarning->hide();
+}
+
+void QgsPointCloudSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) );
 }
 
 ///@endcond
