@@ -70,7 +70,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
     QgsCoordinateReferenceSystem mSceneCrs;
     QgsTiledSceneBoundingVolume mLayerBoundingVolume;
 
-    std::unique_ptr<QgsFeedback> mFeedback = nullptr;
+    std::unique_ptr<QgsFeedback> mFeedback;
 };
 
 #endif // QGSTILEDSCENELAYERRENDERER_H
