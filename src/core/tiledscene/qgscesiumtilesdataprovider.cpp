@@ -42,12 +42,35 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QRecursiveMutex>
+#include <QUrlQuery>
 #include <nlohmann/json.hpp>
 
 ///@cond PRIVATE
 
 #define PROVIDER_KEY QStringLiteral( "cesiumtiles" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Cesium 3D Tiles data provider" )
+
+
+// This is to support a case seen with Google's tiles. Root URL is something like this:
+// https://tile.googleapis.com/.../root.json?key=123
+// The returned JSON contains relative links with "session" (e.g. "/.../abc.json?session=456")
+// When fetching such abc.json, we have to include also "key" from the original URL!
+// Then the content of abc.json contains relative links (e.g. "/.../xyz.glb") and we
+// need to add both "key" and "session" (otherwise requests fail).
+//
+// This function simply copies any query items from the base URL to the content URI.
+static QString appendQueryFromBaseUrl( const QString &contentUri, const QUrl &baseUrl )
+{
+  QUrlQuery contentQuery( QUrl( contentUri ).query() );
+  const QList<QPair<QString, QString>> baseUrlQueryItems = QUrlQuery( baseUrl.query() ).queryItems();
+  for ( const QPair<QString, QString> &kv : baseUrlQueryItems )
+  {
+    contentQuery.addQueryItem( kv.first, kv.second );
+  }
+  QUrl newContentUrl( contentUri );
+  newContentUrl.setQuery( contentQuery );
+  return newContentUrl.toString();
+}
 
 
 class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
@@ -254,11 +277,17 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
     {
       QString relativeUri = QString::fromStdString( contentJson["uri"].get<std::string>() );
       contentUri = baseUrl.resolved( QUrl( relativeUri ) ).toString();
+
+      if ( baseUrl.hasQuery() && QUrl( relativeUri ).isRelative() )
+        contentUri = appendQueryFromBaseUrl( contentUri, baseUrl );
     }
     else if ( contentJson.contains( "url" ) && !contentJson["url"].is_null() )
     {
       QString relativeUri = QString::fromStdString( contentJson["url"].get<std::string>() );
       contentUri = baseUrl.resolved( QUrl( relativeUri ) ).toString();
+
+      if ( baseUrl.hasQuery() && QUrl( relativeUri ).isRelative() )
+        contentUri = appendQueryFromBaseUrl( contentUri, baseUrl );
     }
     if ( !contentUri.isEmpty() )
     {
