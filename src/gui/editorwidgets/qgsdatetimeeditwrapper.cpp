@@ -284,5 +284,6 @@ void QgsDateTimeEditWrapper::setEnabled( bool enabled )
   if ( !mQDateTimeEdit )
     return;
 
-  mQDateTimeEdit->setEnabled( enabled );
+  mQDateTimeEdit->setReadOnly( !enabled );
+  mQDateTimeEdit->setFrame( enabled );
 }
