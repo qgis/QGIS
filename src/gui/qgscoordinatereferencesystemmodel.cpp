@@ -523,7 +523,10 @@ QModelIndex QgsCoordinateReferenceSystemModel::indexOfParentTreeNode( QgsCoordin
 }
 
 ///@cond PRIVATE
-QgsCoordinateReferenceSystemModelNode::~QgsCoordinateReferenceSystemModelNode() = default;
+QgsCoordinateReferenceSystemModelNode::~QgsCoordinateReferenceSystemModelNode()
+{
+  qDeleteAll( mChildren );
+}
 
 QgsCoordinateReferenceSystemModelNode *QgsCoordinateReferenceSystemModelNode::takeChild( QgsCoordinateReferenceSystemModelNode *node )
 {
