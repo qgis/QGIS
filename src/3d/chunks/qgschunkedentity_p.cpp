@@ -175,8 +175,8 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneState &state )
   {
     QgsChunkListEntry *entry = mReplacementQueue->takeLast();
     usedGpuMemory -= QgsChunkedEntity::calculateEntityGpuMemorySize( entry->chunk->entity() );
-    entry->chunk->unloadChunk();  // also deletes the entry
     mActiveNodes.removeOne( entry->chunk );
+    entry->chunk->unloadChunk();  // also deletes the entry
 #ifdef QGISDEBUG
     ++unloaded;
 #endif
