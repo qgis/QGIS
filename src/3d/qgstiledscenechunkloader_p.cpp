@@ -41,34 +41,6 @@ static bool hasLargeBounds( const QgsTiledSceneTile &t )
   return size.x() > 1e5 || size.y() > 1e5 || size.z() > 1e5;
 }
 
-
-// TODO: move elsewhere
-static QString resolveUri( QString uri, const QString &baseUri )
-{
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( baseUri );
-
-  const QString tileSetUri = dsUri.param( QStringLiteral( "url" ) );
-  if ( !tileSetUri.isEmpty() )
-  {
-    QUrl base( tileSetUri );
-    uri = base.resolved( uri ).toString();
-  }
-  else
-  {
-    // local files
-    if ( uri.startsWith( "./" ) )
-    {
-      uri.replace( "./", baseUri );
-    }
-    else if ( QFileInfo( uri ).isRelative() )
-    {
-      uri = baseUri + uri;
-    }
-  }
-  return uri;
-}
-
 ///
 
 QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory &factory, const QgsTiledSceneTile &t )
@@ -93,7 +65,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
       return;
     }
 
-    uri = resolveUri( uri, mFactory.mRelativePathBase );
+    uri = mTile.baseUrl().resolved( uri ).toString();
     QByteArray content = mFactory.mIndex.retrieveContent( uri );
     if ( content.isEmpty() )
     {
@@ -142,8 +114,8 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
 
 ///
 
-QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DMapSettings &map, QString relativePathBase, const QgsTiledSceneIndex &index )
-  : mMap( map ), mRelativePathBase( relativePathBase ), mIndex( index )
+QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index )
+  : mMap( map ), mIndex( index )
 {
   mBoundsTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4978" ), mMap.crs(), mMap.transformContext() );
 }
@@ -317,8 +289,8 @@ void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
 
 ///
 
-QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettings &map, QString relativePathBase, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes )
-  : QgsChunkedEntity( maximumScreenError, new QgsTiledSceneChunkLoaderFactory( map, relativePathBase, index ), true )
+QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes )
+  : QgsChunkedEntity( maximumScreenError, new QgsTiledSceneChunkLoaderFactory( map, index ), true )
 {
   if ( index.rootTile().refinementProcess() == Qgis::TileRefinementProcess::Additive )
     setUsingAdditiveStrategy( true );

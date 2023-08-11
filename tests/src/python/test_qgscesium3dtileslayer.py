@@ -13,6 +13,7 @@ import os
 import tempfile
 
 import qgis  # NOQA
+from qgis.PyQt.QtCore import QUrl
 from qgis.core import (
     Qgis,
     QgsTiledSceneLayer,
@@ -701,6 +702,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(root_tile.id()), -1)
             self.assertFalse(root_tile.resources())
             self.assertEqual(root_tile.geometricError(), 100.0)
+            self.assertEqual(root_tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 root_tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -728,9 +730,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             child_tile0 = index.getTile(children[0])
             self.assertEqual(
                 child_tile0.resources(),
-                {"content": temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"},
             )
             self.assertEqual(child_tile0.geometricError(), 9.1)
+            self.assertEqual(child_tile0.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile0.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -758,9 +761,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(child_tile00.id()), child_tile0.id())
             self.assertEqual(
                 child_tile00.resources(),
-                {"content": temp_dir + "/LOD-1/Mesh-XR-YR.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-1/Mesh-XR-YR.b3dm"},
             )
             self.assertEqual(child_tile00.geometricError(), 3)
+            self.assertEqual(child_tile00.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile00.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -787,9 +791,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(child_tile000.id()), child_tile00.id())
             self.assertEqual(
                 child_tile000.resources(),
-                {"content": temp_dir + "/LOD-0/Mesh-XR-YR.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-0/Mesh-XR-YR.b3dm"},
             )
             self.assertEqual(child_tile000.geometricError(), 0)
+            self.assertEqual(child_tile000.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile000.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -816,9 +821,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(child_tile1.id()), root_tile.id())
             self.assertEqual(
                 child_tile1.resources(),
-                {"content": temp_dir + "/LOD-2/Mesh-XL-YR.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YR.b3dm"},
             )
             self.assertEqual(child_tile1.geometricError(), 9.1)
+            self.assertEqual(child_tile1.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile1.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -846,9 +852,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(child_tile10.id()), child_tile1.id())
             self.assertEqual(
                 child_tile10.resources(),
-                {"content": temp_dir + "/LOD-1/Mesh-XL-YR.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-1/Mesh-XL-YR.b3dm"},
             )
             self.assertEqual(child_tile10.geometricError(), 3)
+            self.assertEqual(child_tile10.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile10.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -875,9 +882,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(child_tile100.id()), child_tile10.id())
             self.assertEqual(
                 child_tile100.resources(),
-                {"content": temp_dir + "/LOD-0/Mesh-XL-YR.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-0/Mesh-XL-YR.b3dm"},
             )
             self.assertEqual(child_tile100.geometricError(), 0)
+            self.assertEqual(child_tile100.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile100.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -904,9 +912,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(child_tile2.id()), root_tile.id())
             self.assertEqual(
                 child_tile2.resources(),
-                {"content": temp_dir + "/LOD-2/Mesh-XR-YL.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YL.b3dm"},
             )
             self.assertEqual(child_tile2.geometricError(), 9.0)
+            self.assertEqual(child_tile2.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile2.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -933,9 +942,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(child_tile20.id()), child_tile2.id())
             self.assertEqual(
                 child_tile20.resources(),
-                {"content": temp_dir + "/LOD-1/Mesh-XR-YL.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-1/Mesh-XR-YL.b3dm"},
             )
             self.assertEqual(child_tile20.geometricError(), 3)
+            self.assertEqual(child_tile20.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile20.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -962,9 +972,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(child_tile200.id()), child_tile20.id())
             self.assertEqual(
                 child_tile200.resources(),
-                {"content": temp_dir + "/LOD-0/Mesh-XR-YL.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-0/Mesh-XR-YL.b3dm"},
             )
             self.assertEqual(child_tile200.geometricError(), 0)
+            self.assertEqual(child_tile200.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile200.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -991,9 +1002,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(child_tile3.id()), root_tile.id())
             self.assertEqual(
                 child_tile3.resources(),
-                {"content": temp_dir + "/LOD-2/Mesh-XL-YL.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YL.b3dm"},
             )
             self.assertEqual(child_tile3.geometricError(), 9.1)
+            self.assertEqual(child_tile3.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile3.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1020,9 +1032,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(child_tile30.id()), child_tile3.id())
             self.assertEqual(
                 child_tile30.resources(),
-                {"content": temp_dir + "/LOD-1/Mesh-XL-YL.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-1/Mesh-XL-YL.b3dm"},
             )
             self.assertEqual(child_tile30.geometricError(), 3)
+            self.assertEqual(child_tile30.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile30.refinementProcess(), Qgis.TileRefinementProcess.Replacement
             )
@@ -1049,9 +1062,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(index.parentTileId(child_tile300.id()), child_tile30.id())
             self.assertEqual(
                 child_tile300.resources(),
-                {"content": temp_dir + "/LOD-0/Mesh-XL-YL.b3dm"},
+                {"content": "file://" + temp_dir + "/LOD-0/Mesh-XL-YL.b3dm"},
             )
             self.assertEqual(child_tile300.geometricError(), 0)
+            self.assertEqual(child_tile300.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 child_tile300.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1080,6 +1094,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             tile = index.getTile(tile_ids[11])
             self.assertFalse(tile.resources())
             self.assertEqual(tile.geometricError(), 100.0)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1103,9 +1118,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[2])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1129,9 +1145,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[1])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-1/Mesh-XR-YR.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-1/Mesh-XR-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 3)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1155,9 +1172,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[0])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-0/Mesh-XR-YR.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-0/Mesh-XR-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 0)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1181,9 +1199,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[5])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-2/Mesh-XL-YR.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1207,9 +1226,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[4])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-1/Mesh-XL-YR.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-1/Mesh-XL-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 3)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1233,9 +1253,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[3])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-0/Mesh-XL-YR.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-0/Mesh-XL-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 0)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1259,9 +1280,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[8])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-2/Mesh-XR-YL.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.0)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1285,9 +1307,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[7])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-1/Mesh-XR-YL.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-1/Mesh-XR-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 3)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1311,9 +1334,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[6])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-0/Mesh-XR-YL.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-0/Mesh-XR-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 0)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1337,9 +1361,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[10])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-2/Mesh-XL-YL.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1365,9 +1390,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[9])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-0/Mesh-XL-YL.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-0/Mesh-XL-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 0)
+            self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
             self.assertEqual(
                 tile.refinementProcess(), Qgis.TileRefinementProcess.Additive
             )
@@ -1422,7 +1448,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             tile = index.getTile(tile_ids[0])
             parent_id = tile_ids[0]
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
             self.assertEqual(
@@ -1448,7 +1474,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[1])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-2/Mesh-XL-YR.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
             self.assertEqual(
@@ -1474,7 +1500,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[2])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-2/Mesh-XR-YL.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.0)
             self.assertEqual(
@@ -1500,7 +1526,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[3])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-2/Mesh-XL-YL.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
             self.assertEqual(
@@ -1530,7 +1556,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(len(tile_ids), 1)
             tile = index.getTile(tile_ids[0])
             self.assertEqual(
-                tile.resources(), {"content": temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"}
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"}
             )
 
 

@@ -14,6 +14,7 @@ __copyright__ = "Copyright 2023, The QGIS Project"
 import unittest
 
 import qgis  # NOQA
+from qgis.PyQt.QtCore import QUrl
 from qgis.core import (
     Qgis,
     QgsTiledSceneBoundingVolume,
@@ -65,6 +66,10 @@ class TestQgsTiledSceneTile(QgisTestCase):
         node.setGeometricError(1.2)
         self.assertEqual(node.geometricError(), 1.2)
 
+        node = QgsTiledSceneTile()
+        node.setBaseUrl(QUrl("http://example.com/foo.txt"))
+        self.assertEqual(node.baseUrl(), QUrl("http://example.com/foo.txt"))
+
     def test_copy(self):
         node = QgsTiledSceneTile(11)
         node.setRefinementProcess(Qgis.TileRefinementProcess.Additive)
@@ -74,6 +79,7 @@ class TestQgsTiledSceneTile(QgisTestCase):
         node.setTransform(QgsMatrix4x4(1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0))
         node.setResources({"content": "parent"})
         node.setGeometricError(1.2)
+        node.setBaseUrl(QUrl("http://example.com/hello.json"))
 
         copy = QgsTiledSceneTile(node)
         self.assertTrue(copy.isValid())
@@ -86,6 +92,7 @@ class TestQgsTiledSceneTile(QgisTestCase):
         )
         self.assertEqual(copy.resources(), {"content": "parent"})
         self.assertEqual(copy.geometricError(), 1.2)
+        self.assertEqual(copy.baseUrl(), QUrl("http://example.com/hello.json"))
 
     def test_set_transform(self):
         node = QgsTiledSceneTile()
