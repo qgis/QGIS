@@ -56,6 +56,8 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
   public:
     QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory &factory, const QgsTiledSceneTile &t );
 
+    ~QgsTiledSceneChunkLoader();
+
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
 
   private:

@@ -103,6 +103,16 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
   mFutureWatcher->setFuture( future );
 }
 
+QgsTiledSceneChunkLoader::~QgsTiledSceneChunkLoader()
+{
+  if ( !mFutureWatcher->isFinished() )
+  {
+    disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
+    mFutureWatcher->waitForFinished();
+  }
+}
+
+
 Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
   if ( !mEntity )
