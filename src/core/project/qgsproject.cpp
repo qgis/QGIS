@@ -1086,7 +1086,12 @@ void QgsProject::clear()
   releaseHandlesToProjectArchive();
 
   mAuxiliaryStorage.reset( new QgsAuxiliaryStorage() );
+
+  QgsArchive* oldArchive = mArchive.release();
+  
   mArchive.reset( new QgsArchive() );
+
+  connect(mStyleSettings->projectStyle(), &QObject::destroyed, [=]{ delete oldArchive; });
 
   // must happen AFTER archive reset, as it will populate a new style database within the new archive
   mStyleSettings->reset();
