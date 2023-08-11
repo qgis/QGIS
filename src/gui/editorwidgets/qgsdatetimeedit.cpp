@@ -69,7 +69,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( const QVariant & var, QMetaType::Type parserTy
 void QgsDateTimeEdit::setAllowNull( bool allowNull )
 {
   mAllowNull = allowNull;
-  mClearAction->setVisible( mAllowNull && ( !mIsNull || mIsEmpty ) );
+  mClearAction->setVisible( !isReadOnly() && mAllowNull && ( !mIsNull || mIsEmpty ) );
 }
 
 
@@ -100,6 +100,16 @@ void QgsDateTimeEdit::setEmpty()
 {
   mClearAction->setVisible( mAllowNull );
   mIsEmpty = true;
+}
+
+bool QgsDateTimeEdit::event( QEvent *event )
+{
+  if ( event->type() == QEvent::ReadOnlyChange || event->type() == QEvent::EnabledChange )
+  {
+    mClearAction->setVisible( !isReadOnly() && mAllowNull && ( !mIsNull || mIsEmpty ) );
+  }
+
+  return QDateTimeEdit::event( event );
 }
 
 void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
