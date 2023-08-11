@@ -314,3 +314,22 @@ void QgsRangeWidgetWrapper::updateValues( const QVariant &value, const QVariantL
     mSlider->setValue( value.toInt() );
   }
 }
+
+void QgsRangeWidgetWrapper::setEnabled( bool enabled )
+{
+  if ( mDoubleSpinBox )
+  {
+    mDoubleSpinBox->setReadOnly( !enabled );
+    mDoubleSpinBox->setFrame( enabled );
+  }
+  else if ( mIntSpinBox )
+  {
+    mIntSpinBox->setReadOnly( !enabled );
+    mIntSpinBox->setFrame( enabled );
+  }
+  else
+  {
+    QgsEditorWidgetWrapper::setEnabled( enabled );
+  }
+}
+
