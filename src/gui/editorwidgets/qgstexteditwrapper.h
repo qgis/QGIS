@@ -95,8 +95,6 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     QTextEdit *mTextEdit = nullptr;
     QPlainTextEdit *mPlainTextEdit = nullptr;
     QLineEdit *mLineEdit = nullptr;
-    QPalette mReadOnlyPalette;
-    QPalette mWritablePalette;
     QString mPlaceholderText;
     QString mPlaceholderTextBackup;
 
