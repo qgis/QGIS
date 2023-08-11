@@ -189,9 +189,6 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
       emit valuesChanged( value );
     } );
     connect( mLineEdit, &QLineEdit::textChanged, this, &QgsTextEditWrapper::textChanged );
-
-    mWritablePalette = mLineEdit->palette();
-    mReadOnlyPalette = mLineEdit->palette();
   }
 }
 
@@ -258,15 +255,6 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
   if ( mLineEdit )
   {
     mLineEdit->setReadOnly( !enabled );
-    if ( enabled )
-      mLineEdit->setPalette( mWritablePalette );
-    else
-    {
-      mLineEdit->setPalette( mReadOnlyPalette );
-      // removing frame + setting transparent background to distinguish the readonly lineEdit from a normal one
-      // did not get this working via the Palette:
-      mLineEdit->setStyleSheet( QStringLiteral( "QLineEdit { background-color: rgba(255, 255, 255, 75%); }" ) );
-    }
     mLineEdit->setFrame( enabled );
   }
 }
