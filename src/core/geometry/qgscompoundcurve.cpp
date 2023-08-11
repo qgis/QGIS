@@ -793,7 +793,7 @@ bool QgsCompoundCurve::moveVertex( QgsVertexId position, const QgsPoint &newPos 
 
 bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
 {
-  QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
+  const QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
   if ( curveIds.isEmpty() )
     return false;
 
@@ -812,24 +812,28 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
       {
         QgsPointSequence points;
         circularString->points( points );
-        const QgsPointSequence partA = points.mid( 0, subVertexId.vertex );
-        const QgsPointSequence partB = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex + 1];
-        const QgsPointSequence partC = points.mid( subVertexId.vertex + 1 );
-
-        std::unique_ptr<QgsCircularString> curveA = std::make_unique<QgsCircularString>();
-        curveA->setPoints( partA );
-        std::unique_ptr<QgsLineString> curveB = std::make_unique<QgsLineString>();
-        curveB->setPoints( partB );
-        std::unique_ptr<QgsCircularString> curveC = std::make_unique<QgsCircularString>();
-        curveC->setPoints( partC );
 
         removeCurve( curveId );
+
         if ( subVertexId.vertex < points.length() - 2 )
+        {
+          std::unique_ptr<QgsCircularString> curveC = std::make_unique<QgsCircularString>();
+          curveC->setPoints( points.mid( subVertexId.vertex + 1 ) );
           mCurves.insert( curveId, curveC.release() );
+        }
+
+        const QgsPointSequence partB = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex + 1];
+        std::unique_ptr<QgsLineString> curveB = std::make_unique<QgsLineString>();
+        curveB->setPoints( partB );
         mCurves.insert( curveId, curveB.release() );
         curve = mCurves.at( curveId );
+
         if ( subVertexId.vertex > 1 )
+        {
+          std::unique_ptr<QgsCircularString> curveA = std::make_unique<QgsCircularString>();
+          curveA->setPoints( points.mid( 0, subVertexId.vertex ) );
           mCurves.insert( curveId, curveA.release() );
+        }
       }
     }
     else if ( !curve->deleteVertex( subVertexId ) )
