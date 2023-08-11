@@ -39,6 +39,7 @@ QgsTiledSceneTile::QgsTiledSceneTile( const QgsTiledSceneTile &other )
   , mBoundingVolume( other.mBoundingVolume )
   , mResources( other.mResources )
   , mGeometricError( other.mGeometricError )
+  , mBaseUrl( other.mBaseUrl )
 {
   mTransform.reset( other.mTransform ? new QgsMatrix4x4( *other.mTransform.get() ) : nullptr );
 }
@@ -51,6 +52,7 @@ QgsTiledSceneTile &QgsTiledSceneTile::operator=( const QgsTiledSceneTile &other 
   mResources = other.mResources;
   mGeometricError = other.mGeometricError;
   mBoundingVolume = other.mBoundingVolume;
+  mBaseUrl = other.mBaseUrl;
   return *this;
 }
 
@@ -92,3 +94,12 @@ void QgsTiledSceneTile::setGeometricError( double error )
   mGeometricError = error;
 }
 
+QUrl QgsTiledSceneTile::baseUrl() const
+{
+  return mBaseUrl;
+}
+
+void QgsTiledSceneTile::setBaseUrl( const QUrl &baseUrl )
+{
+  mBaseUrl = baseUrl;
+}

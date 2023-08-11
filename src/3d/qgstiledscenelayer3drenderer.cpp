@@ -65,9 +65,7 @@ Qt3DCore::QEntity *QgsTiledSceneLayer3DRenderer::createEntity( const Qgs3DMapSet
 
   QgsTiledSceneIndex index = tsl->dataProvider()->index();
 
-  QString relativePathBase = QFileInfo( tsl->source() ).path() + "/";
-
-  return new QgsTiledSceneLayerChunkedEntity( map, relativePathBase, index, maximumScreenError(), showBoundingBoxes() );
+  return new QgsTiledSceneLayerChunkedEntity( map, index, maximumScreenError(), showBoundingBoxes() );
 }
 
 void QgsTiledSceneLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

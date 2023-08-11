@@ -24,6 +24,8 @@
 #include "qgsmatrix4x4.h"
 #include "qgstiledsceneboundingvolume.h"
 
+#include <QUrl>
+
 /**
  * \ingroup core
  * \brief Represents an individual tile from a tiled scene data source.
@@ -146,6 +148,22 @@ class CORE_EXPORT QgsTiledSceneTile
      */
     void setGeometricError( double error );
 
+    /**
+     * Returns the tile's base URL. If this tile's resources are relative paths, they would
+     * get resolved against this URL.
+     *
+     * \see setBaseUrl()
+     */
+    QUrl baseUrl() const;
+
+    /**
+     * Sets the tile's base URL. If this tile's resources are relative paths, they would
+     * get resolved against this URL.
+     *
+     * \see baseUrl()
+     */
+    void setBaseUrl( const QUrl &baseUrl );
+
   private:
     long long mId = -1;
     Qgis::TileRefinementProcess mRefinementProcess = Qgis::TileRefinementProcess::Replacement;
@@ -153,6 +171,7 @@ class CORE_EXPORT QgsTiledSceneTile
     std::unique_ptr< QgsMatrix4x4 > mTransform;
     QVariantMap mResources;
     double mGeometricError = 0;
+    QUrl mBaseUrl;
 
 };
 

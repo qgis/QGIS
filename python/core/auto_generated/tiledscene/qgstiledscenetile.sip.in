@@ -9,6 +9,7 @@
 
 
 
+
 class QgsTiledSceneTile
 {
 %Docstring(signature="appended")
@@ -132,6 +133,22 @@ Sets the tile's geometric ``error``, which is the error, in scene CRS units, of 
 simplified representation of its source geometry.
 
 .. seealso:: :py:func:`geometricError`
+%End
+
+    QUrl baseUrl() const;
+%Docstring
+Returns the tile's base URL. If this tile's resources are relative paths, they would
+get resolved against this URL.
+
+.. seealso:: :py:func:`setBaseUrl`
+%End
+
+    void setBaseUrl( const QUrl &baseUrl );
+%Docstring
+Sets the tile's base URL. If this tile's resources are relative paths, they would
+get resolved against this URL.
+
+.. seealso:: :py:func:`baseUrl`
 %End
 
 };

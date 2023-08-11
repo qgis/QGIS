@@ -244,34 +244,17 @@ class TinyGltfTextureImage : public Qt3DRender::QAbstractTextureImage
 
 
 // TODO: move elsewhere
-static QString resolveUri( QString imgUri, const QString &baseUri )
+static QByteArray fetchUri( const QUrl &url, QStringList *errors )
 {
-  if ( imgUri.startsWith( "./" ) )  // TODO: relative URL does not need to start with ./
+  if ( url.scheme().startsWith( "http" ) )
   {
-    if ( baseUri.startsWith( "http" ) )
-    {
-      imgUri = QUrl( baseUri ).resolved( imgUri ).toString();
-    }
-    else
-    {
-      imgUri = QFileInfo( baseUri ).absolutePath() + "/" + imgUri;
-    }
-  }
-  return imgUri;
-}
-
-// TODO: move elsewhere
-static QByteArray fetchUri( const QString &imgUri, QStringList *errors )
-{
-  if ( imgUri.startsWith( "http" ) )
-  {
-    QNetworkRequest request = QNetworkRequest( imgUri );
+    QNetworkRequest request = QNetworkRequest( url );
     QgsBlockingNetworkRequest networkRequest;
     // TODO: setup auth, setup headers
     if ( networkRequest.get( request ) != QgsBlockingNetworkRequest::NoError )
     {
       if ( errors )
-        *errors << QStringLiteral( "Failed to download image: %1" ).arg( imgUri );
+        *errors << QStringLiteral( "Failed to download image: %1" ).arg( url.toString() );
     }
     else
     {
@@ -279,9 +262,9 @@ static QByteArray fetchUri( const QString &imgUri, QStringList *errors )
       return content.content();
     }
   }
-  else
+  else if ( url.isLocalFile() && QFile::exists( url.toLocalFile() ) )
   {
-    QFile f( imgUri );
+    QFile f( url.toLocalFile() );
     if ( f.open( QIODevice::ReadOnly ) )
     {
       return f.readAll();
@@ -289,7 +272,7 @@ static QByteArray fetchUri( const QString &imgUri, QStringList *errors )
     else
     {
       if ( errors )
-        *errors << QStringLiteral( "Unable to open image: %1" ).arg( imgUri );
+        *errors << QStringLiteral( "Unable to open image: %1" ).arg( url.toString() );
     }
   }
   return QByteArray();
@@ -320,8 +303,8 @@ static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materia
     if ( !img.uri.empty() )
     {
       QString imgUri = QString::fromStdString( img.uri );
-      imgUri = resolveUri( imgUri, baseUri );
-      QByteArray ba = fetchUri( imgUri, errors );
+      QUrl url = QUrl( baseUri ).resolved( imgUri );
+      QByteArray ba = fetchUri( url, errors );
       if ( !ba.isEmpty() )
       {
         if ( !QgsGltfUtils::loadImageDataWithQImage( &img, -1, nullptr, nullptr, 0, 0, ( const unsigned char * ) ba.constData(), ba.size(), nullptr ) )

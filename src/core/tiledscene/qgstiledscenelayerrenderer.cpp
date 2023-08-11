@@ -467,8 +467,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
         case QgsGltfUtils::ResourceType::Linked:
         {
           const QString linkedPath = QgsGltfUtils::linkedImagePath( model, tex.source );
-          const QString base = contentUri.left( contentUri.lastIndexOf( '/' ) );
-          const QString textureUri = base + '/' + linkedPath;
+          const QString textureUri = QUrl( contentUri ).resolved( linkedPath ).toString();
           const QByteArray rep = mIndex.retrieveContent( textureUri, feedback() );
           if ( !rep.isEmpty() )
           {
