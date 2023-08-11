@@ -70,6 +70,10 @@ QAbstractSpinBox {
     color: @textlight;
 }
 
+QAbstractSpinBox:no-frame {
+    border-color: transparent;
+}
+
 QAbstractSpinBox::up-button {
     subcontrol-origin: border;
     subcontrol-position: top right;
@@ -224,6 +228,11 @@ QLineEdit
     background-color: @itembackground;
     selection-background-color: @selection;
     selection-color: @text;
+}
+
+QLineEdit:no-frame
+{
+    border-color: transparent;
 }
 
 QTextEdit, QPlainTextEdit
@@ -1089,6 +1098,10 @@ QPushButton[flat=true], QPushButton[autoRaise=true], QToolButton[autoRaise=true]
 
 QComboBox:focus, QAbstractSpinBox:focus, QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {
     border:1px solid @focusdark;
+}
+
+QComboBox:focus:read-only, QAbstractSpinBox:focus:read-only, QLineEdit:focus:read-only, QPlainTextEdit:focus:read-only, QTextEdit:focus:read-only {
+    border-color: transparent;
 }
 
 QToolButton[autoRaise=true]:focus:!pressed {
