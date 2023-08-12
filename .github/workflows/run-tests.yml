@@ -82,7 +82,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-          large-packages: true
+          large-packages: false
           docker-images: false
           swap-storage: true
           
@@ -331,7 +331,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-          large-packages: true
+          large-packages: false
           docker-images: false
           swap-storage: true
 
