@@ -2318,10 +2318,6 @@ target_include_directories(qgis_core PUBLIC
   validity
   vector
   vectortile
-)
-
-# treat these as system libraries -- we don't want warnings from them
-target_include_directories(qgis_core SYSTEM PUBLIC
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
