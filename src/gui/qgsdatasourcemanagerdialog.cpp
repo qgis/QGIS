@@ -190,7 +190,7 @@ void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget 
   ui->mOptionsStackedWidget->addWidget( dlg );
   QListWidgetItem *layerItem = new QListWidgetItem( text, ui->mOptionsListWidget );
   layerItem->setData( Qt::UserRole, providerName );
-  layerItem->setToolTip( toolTip.isEmpty() ? tr( "Add %1 layer" ).arg( providerName ) : toolTip );
+  layerItem->setToolTip( toolTip.isEmpty() ? tr( "Add %1 layer" ).arg( text ) : toolTip );
   layerItem->setIcon( icon );
   // Set crs and extent from canvas
   if ( mMapCanvas )
