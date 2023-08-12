@@ -204,10 +204,11 @@ void QgsExpressionLineEdit::updateLineEditStyle( const QString &expression )
   if ( !mLineEdit )
     return;
 
+  QPalette appPalette = qApp->palette();
   QPalette palette = mLineEdit->palette();
   if ( !isEnabled() )
   {
-    palette.setColor( QPalette::Text, Qt::gray );
+    palette.setColor( QPalette::Text, appPalette.color( QPalette::Disabled, QPalette::Text ) );
   }
   else
   {
@@ -222,7 +223,7 @@ void QgsExpressionLineEdit::updateLineEditStyle( const QString &expression )
     }
     else
     {
-      palette.setColor( QPalette::Text, Qt::black );
+      palette.setColor( QPalette::Text, appPalette.color( QPalette::Text ) );
     }
   }
   mLineEdit->setPalette( palette );
