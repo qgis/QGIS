@@ -23,7 +23,6 @@
 
 #include "qgsabstractdatasourcewidget.h"
 #include "ui_qgstiledscenesourceselectbase.h"
-#include "qgshelp.h"
 
 /*!
  * \brief Dialog to create connections to tiled scene servers.

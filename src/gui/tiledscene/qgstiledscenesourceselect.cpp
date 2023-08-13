@@ -22,6 +22,7 @@
 #include "qgsproviderutils.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgstiledsceneconnectiondialog.h"
+#include "qgshelp.h"
 
 #include <QMenu>
 #include <QMessageBox>

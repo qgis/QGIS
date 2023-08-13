@@ -22,7 +22,6 @@
 #include "qgsfeedback.h"
 #include "qgsabstractlayermetadataprovider.h"
 #include "qgsabstractdatasourcewidget.h"
-#include "qgshelp.h"
 
 class QgsMapCanvas;
 class QgsLayerMetadataResultsProxyModel;
