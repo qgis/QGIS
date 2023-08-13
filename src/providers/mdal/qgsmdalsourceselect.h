@@ -20,7 +20,6 @@
 #include "ui_qgsmdalsourceselectbase.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
-#include "qgshelp.h"
 
 
 /**
