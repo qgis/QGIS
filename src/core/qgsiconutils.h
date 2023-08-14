@@ -42,7 +42,7 @@ class CORE_EXPORT QgsIconUtils
 
     /**
      * Returns the icon for a vector layer whose geometry \a typeGroup is provided.
-     * 1since QGIS 3.28
+     * \since QGIS 3.28
      */
     static QIcon iconForGeometryType( Qgis::GeometryType typeGroup );
 
