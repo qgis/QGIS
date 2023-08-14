@@ -21,6 +21,7 @@
 #include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgshelp.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -49,6 +50,9 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
     void radioSrcFile_toggled( bool checked );
     void radioSrcProtocol_toggled( bool checked );
     void cmbProtocolTypes_currentIndexChanged( const QString &text );
+
+  private slots:
+    void showHelp();
 
   private:
 
