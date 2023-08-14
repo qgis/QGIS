@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscesiumtilesdataprovider.h"
+#include "qgsauthmanager.h"
 #include "qgsproviderutils.h"
 #include "qgsapplication.h"
 #include "qgsprovidersublayerdetails.h"
@@ -33,6 +34,7 @@
 #include "qgstiledscenerequest.h"
 #include "qgstiledscenetile.h"
 #include "qgsreadwritelocker.h"
+#include "qgstiledownloadmanager.h"
 
 #include <QUrl>
 #include <QIcon>
@@ -43,6 +45,7 @@
 #include <QRegularExpression>
 #include <QRecursiveMutex>
 #include <QUrlQuery>
+#include <QApplication>
 #include <nlohmann/json.hpp>
 
 ///@cond PRIVATE
@@ -595,10 +598,38 @@ QByteArray QgsCesiumTiledSceneIndex::fetchContent( const QString &uri, QgsFeedba
   if ( uri.startsWith( "http" ) )
   {
     QNetworkRequest networkRequest = QNetworkRequest( url );
+    QgsSetRequestInitiatorClass( networkRequest, QStringLiteral( "QgsCesiumTiledSceneIndex" ) );
+    networkRequest.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+    networkRequest.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
     mHeaders.updateNetworkRequest( networkRequest );
-    const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet(
-                                           networkRequest, mAuthCfg, false, feedback );
-    return reply.content();
+
+    if ( QThread::currentThread() == QApplication::instance()->thread() )
+    {
+      // running on main thread, use a blocking get to handle authcfg and SSL errors ok.
+      const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet(
+                                             networkRequest, mAuthCfg, false, feedback );
+      return reply.content();
+    }
+    else
+    {
+      // running on background thread, use tile download manager for efficient network handling
+      if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( networkRequest, mAuthCfg ) )
+      {
+        // TODO -- report error
+        return QByteArray();
+      }
+      std::unique_ptr< QgsTileDownloadManagerReply > reply( QgsApplication::tileDownloadManager()->get( networkRequest ) );
+
+      QEventLoop loop;
+      if ( feedback )
+        QObject::connect( feedback, &QgsFeedback::canceled, &loop, &QEventLoop::quit );
+
+      QObject::connect( reply.get(), &QgsTileDownloadManagerReply::finished, &loop, &QEventLoop::quit );
+      loop.exec();
+
+      return reply->data();
+    }
   }
   else if ( url.isLocalFile() && QFile::exists( url.toLocalFile() ) )
   {
