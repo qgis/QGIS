@@ -83,7 +83,7 @@ struct QgsChunkNodeId
   //! Returns textual representation of the node ID in form of "Z/X/Y"
   QString text() const
   {
-    if ( uniqueId == -1 )
+    if ( uniqueId != -1 )
       return QString::number( uniqueId );
     else if ( z == -1 )
       return QStringLiteral( "%1/%2/%3" ).arg( d ).arg( x ).arg( y );   // quadtree
