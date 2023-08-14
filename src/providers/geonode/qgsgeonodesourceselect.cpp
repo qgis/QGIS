@@ -25,6 +25,7 @@
 
 #include "qgsgeonodenewconnection.h"
 #include "qgsmanageconnectionsdialog.h"
+#include "qgshelp.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
@@ -57,6 +58,7 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
   connect( btnLoad, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::loadGeonodeConnection );
   connect( lineFilter, &QLineEdit::textChanged, this, &QgsGeoNodeSourceSelect::filterChanged );
   connect( treeView, &QTreeView::clicked, this, &QgsGeoNodeSourceSelect::treeViewSelectionChanged );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGeoNodeSourceSelect::showHelp );
 
   mItemDelegate = new QgsGeonodeItemDelegate( treeView );
   treeView->setItemDelegate( mItemDelegate );
@@ -150,8 +152,7 @@ void QgsGeoNodeSourceSelect::setConnectionListPosition( const QString &selectedC
 
 void QgsGeoNodeSourceSelect::showHelp()
 {
-  //TODO - correct URL
-  //QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#spatialite-layers" ) );
+  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
 }
 
 void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
