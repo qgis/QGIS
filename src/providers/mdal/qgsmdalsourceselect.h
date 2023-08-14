@@ -20,6 +20,7 @@
 #include "ui_qgsmdalsourceselectbase.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
+#include "qgshelp.h"
 
 
 /**
@@ -37,6 +38,9 @@ class QgsMdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsM
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
+
+  private slots:
+    void showHelp();
 
   private:
     QString mMeshPath;
