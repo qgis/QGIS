@@ -21,7 +21,6 @@
 #include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgshelp.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
