@@ -24,6 +24,7 @@
 #include "ui_qgspointcloudsourceselectbase.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
+#include "qgshelp.h"
 
 
 /**
@@ -51,6 +52,9 @@ class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui
 
     //! Sets protocol-related widget visibility
     void setProtocolWidgetsVisibility();
+
+    void showHelp();
+
   private:
     QString mPath;
     QString mDataSourceType;
