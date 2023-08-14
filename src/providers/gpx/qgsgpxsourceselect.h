@@ -20,6 +20,7 @@
 #include "ui_qgsgpxsourceselectbase.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
+#include "qgshelp.h"
 
 
 /**
@@ -41,6 +42,7 @@ class QgsGpxSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsGp
   private slots:
 
     void enableRelevantControls();
+    void showHelp();
 
   private:
     QString mGpxPath;
