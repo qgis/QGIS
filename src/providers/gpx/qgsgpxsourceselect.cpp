@@ -18,6 +18,7 @@
 #include "qgsgpxsourceselect.h"
 #include "qgsproviderregistry.h"
 #include "ogr/qgsogrhelperfunctions.h"
+#include "qgshelp.h"
 
 #include <QMessageBox>
 
