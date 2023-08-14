@@ -125,6 +125,15 @@ to :py:func:`QgsApplication.nullRepresentation()`.
 .. versionadded:: 3.14
 %End
 
+    virtual bool event( QEvent *event );
+
+%Docstring
+Reimplemented to enable/disable the clear action
+depending on read-only status
+
+.. versionadded:: 3.34
+%End
+
   signals:
 
     void valueChanged( const QDateTime &date );

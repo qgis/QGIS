@@ -71,6 +71,9 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
     void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
+  public slots:
+    void setEnabled( bool enabled ) override;
+
   private slots:
     // NOTE - cannot be named "valueChanged", otherwise implicit conversion to QVariant results in
     // infinite recursion
