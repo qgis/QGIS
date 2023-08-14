@@ -20,6 +20,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsiconutils.h"
+#include "qgshelp.h"
 
 
 QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )

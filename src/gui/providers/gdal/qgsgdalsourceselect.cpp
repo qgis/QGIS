@@ -25,6 +25,7 @@
 
 #include <gdal.h>
 #include <cpl_minixml.h>
+#include "qgshelp.h"
 
 QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
   QgsAbstractDataSourceWidget( parent, fl, widgetMode )
