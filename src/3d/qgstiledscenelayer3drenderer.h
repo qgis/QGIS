@@ -17,6 +17,7 @@
 #define QGSTILEDSCENELAYER3DRENDERER_H
 
 #include "qgis_3d.h"
+#include "qgis_sip.h"
 
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
@@ -24,7 +25,6 @@
 
 class QgsTiledSceneLayer;
 
-#define SIP_NO_FILE
 
 
 /**
@@ -35,7 +35,7 @@ class QgsTiledSceneLayer;
  *
  * \since QGIS 3.34
  */
-class _3D_EXPORT QgsTiledSceneLayer3DRendererMetadata : public Qgs3DRendererAbstractMetadata SIP_SKIP
+class _3D_EXPORT QgsTiledSceneLayer3DRendererMetadata : public Qgs3DRendererAbstractMetadata
 {
   public:
     QgsTiledSceneLayer3DRendererMetadata();
@@ -94,8 +94,8 @@ class _3D_EXPORT QgsTiledSceneLayer3DRenderer : public QgsAbstract3DRenderer
     void setShowBoundingBoxes( bool showBoundingBoxes );
 
     virtual QString type() const override { return "tiledscene"; }
-    virtual QgsAbstract3DRenderer *clone() const override;
-    virtual Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const override;
+    virtual QgsAbstract3DRenderer *clone() const override SIP_FACTORY;
+    virtual Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const override SIP_SKIP;
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     virtual void resolveReferences( const QgsProject &project ) override;
@@ -104,6 +104,12 @@ class _3D_EXPORT QgsTiledSceneLayer3DRenderer : public QgsAbstract3DRenderer
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     double mMaximumScreenError = 50.0;
     bool mShowBoundingBoxes = true;
+
+  private:
+#ifdef SIP_RUN
+    QgsTiledSceneLayer3DRenderer( const QgsTiledSceneLayer3DRenderer & );
+    QgsTiledSceneLayer3DRenderer &operator=( const QgsTiledSceneLayer3DRenderer & );
+#endif
 };
 
 #endif
