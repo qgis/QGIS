@@ -587,6 +587,9 @@ bool QgsCesiumTiledSceneIndex::fetchHierarchy( long long id, QgsFeedback *feedba
   }
   else
   {
+    // we got empty content, so the hierarchy content is probably missing,
+    // so let's mark it as not JSON so that we do not try to fetch it again
+    mTileContentFormats.insert( id, TileContentFormat::NotJson );
     return false;
   }
 }
