@@ -151,6 +151,8 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     updateExtentFilter( mExtentFilterComboBox->currentIndex() );
   } );
 
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayerMetadataSearchWidget::showHelp );
+
   // Start loading metadata in the model
   mSourceModel->reloadAsync();
   mIsLoading = true;
@@ -240,4 +242,9 @@ void QgsLayerMetadataSearchWidget::showEvent( QShowEvent *event )
 {
   QgsAbstractDataSourceWidget::showEvent( event );
   mSearchFilterLineEdit->setText( mProxyModel->filterString( ) );
+}
+
+void QgsLayerMetadataSearchWidget::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#the-layer-metadata-search-panel" ) );
 }
