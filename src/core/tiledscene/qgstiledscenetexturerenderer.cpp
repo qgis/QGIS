@@ -112,23 +112,24 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
 
   auto smallestAngleInTriangle = []( const QPolygonF & triangle )
   {
-    double angles[3];
-    for ( int i = 0; i < 3; ++i )
-    {
-      const QPointF p1 = triangle.at( i );
-      const QPointF p2 = triangle.at( ( i + 1 ) % 3 );
-      const QPointF p3 = triangle.at( ( i + 2 ) % 3 );
+    const QPointF p1 = triangle.at( 0 );
+    const QPointF p2 = triangle.at( 1 );
+    const QPointF p3 = triangle.at( 2 );
 
-      const QPointF v1 = p2 - p1;
-      const QPointF v2 = p2 - p3;
+    const QPointF v1 = p2 - p1;
+    const QPointF v2 = p3 - p2;
+    const QPointF v3 = p1 - p3;
 
-      const double dotProduct = v1.x() * v2.x() + v1.y() * v2.y();
-      const double magV1 = std::sqrt( v1.x() * v1.x() + v1.y() * v1.y() );
-      const double magV2 = std::sqrt( v2.x() * v2.x() + v2.y() * v2.y() );
+    const double a = std::sqrt( v1.x() * v1.x() + v1.y() * v1.y() );
+    const double b = std::sqrt( v2.x() * v2.x() + v2.y() * v2.y() );
+    const double c = std::sqrt( v3.x() * v3.x() + v3.y() * v3.y() );
 
-      angles[i] = std::acos( dotProduct / ( magV1 * magV2 ) );
-    }
-    return std::min( std::min( angles[0], angles[1] ), angles[2] );
+    return std::min(
+             std::min(
+               std::acos( ( b * b + c * c - a * a )  / ( 2 * b * c ) ),
+               std::acos( ( a * a + c * c - b * b )  / ( 2 * a * c ) ) ),
+             std::acos( ( a * a + b * b - c * c )  / ( 2 * a * b ) )
+           );
   };
 
   auto growTriangle = [&unitNormal, &intersect]( const QPolygonF & triangle, float pixels )
@@ -166,6 +167,12 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
   // buffer the triangles out slightly to reduce artifacts caused by antialiasing,
   // but try to avoid new artifacts caused by buffering narrow triangles
   const double minAngle = smallestAngleInTriangle( triangle ) * 180 / M_PI;
+  if ( std::isnan( minAngle ) || minAngle < 0.1 )
+  {
+    // don't try to draw slivers
+    return;
+  }
+
   float pixels = 1;
   const QPainter::RenderHints prevHints = painter->renderHints();
   if ( minAngle < 10 )
