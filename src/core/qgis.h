@@ -3857,6 +3857,7 @@ class CORE_EXPORT Qgis
     enum class TiledSceneRendererFlag : int
     {
       RequiresTextures = 1 << 0,  //!< Renderer requires textures
+      ForceRasterRender = 1 << 1, //!< Layer should always be rendered as a raster image
     };
     Q_ENUM( TiledSceneRendererFlag )
 
