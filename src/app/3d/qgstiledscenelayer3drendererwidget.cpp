@@ -35,7 +35,7 @@ void QgsTiledSceneLayer3DPropertiesWidget::syncToLayer( QgsTiledSceneLayer *laye
   mLayer = layer;
 
   QgsAbstract3DRenderer *renderer = layer->renderer3D();
-  if ( !renderer || renderer->type() != "tiledscene" )
+  if ( !renderer || renderer->type() != QLatin1String( "tiledscene" ) )
     return;
 
   QgsTiledSceneLayer3DRenderer *r = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
