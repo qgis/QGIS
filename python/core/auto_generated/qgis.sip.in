@@ -1166,6 +1166,15 @@ The development version
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
 
+    enum class MapLayerRendererFlag
+    {
+      RenderPartialOutputs,
+      RenderPartialOutputOverPreviousCachedImage,
+    };
+
+    typedef QFlags<Qgis::MapLayerRendererFlag> MapLayerRendererFlags;
+
+
 
     enum class TextRenderFormat
       {
@@ -2303,6 +2312,8 @@ QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Q
 QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QFlags<Qgis::AnnotationItemGuiFlag> f2);
 
 QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
+
+QFlags<Qgis::MapLayerRendererFlag> operator|(Qgis::MapLayerRendererFlag f1, QFlags<Qgis::MapLayerRendererFlag> f2);
 
 QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
 

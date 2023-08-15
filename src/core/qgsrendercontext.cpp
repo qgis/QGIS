@@ -43,6 +43,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   : QgsTemporalRangeObject( rh )
   , mFlags( rh.mFlags )
   , mPainter( rh.mPainter )
+  , mPreviewRenderPainter( rh.mPreviewRenderPainter )
   , mMaskPainter( rh.mMaskPainter )
   , mCoordTransform( rh.mCoordTransform )
   , mDistanceArea( rh.mDistanceArea )
@@ -93,6 +94,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 {
   mFlags = rh.mFlags;
   mPainter = rh.mPainter;
+  mPreviewRenderPainter = rh.mPreviewRenderPainter;
   mMaskPainter = rh.mMaskPainter;
   mCoordTransform = rh.mCoordTransform;
   mExtent = rh.mExtent;

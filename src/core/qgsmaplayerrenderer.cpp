@@ -19,6 +19,21 @@
 QgsMapLayerRenderer::~QgsMapLayerRenderer() = default;
 
 
+bool QgsMapLayerRenderer::forceRasterRender() const
+{
+  return false;
+}
+
+Qgis::MapLayerRendererFlags QgsMapLayerRenderer::flags() const
+{
+  return Qgis::MapLayerRendererFlags();
+}
+
+QgsFeedback *QgsMapLayerRenderer::feedback() const
+{
+  return nullptr;
+}
+
 QList<QgsRenderedItemDetails *> QgsMapLayerRenderer::takeRenderedItemDetails()
 {
   return std::move( mRenderedItemDetails );

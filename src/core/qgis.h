@@ -1942,6 +1942,26 @@ class CORE_EXPORT Qgis
     Q_ENUM( RenderContextFlag )
     Q_FLAG( RenderContextFlags )
 
+    /**
+     * Flags which control how map layer renderers behave.
+     *
+     * \since QGIS 3.34
+     */
+    enum class MapLayerRendererFlag : int
+    {
+      RenderPartialOutputs = 1 << 0,  //!< The renderer benefits from rendering temporary in-progress preview renders. These are temporary results which will be used for the layer during rendering in-progress compositions, which will differ from the final layer render. They can be used for showing overlays or other information to users which help inform them about what is actually occurring during a slow layer render, but where these overlays and additional content is not wanted in the final layer renders. Another use case is rendering unsorted results as soon as they are available, before doing a final sorted render of the entire layer contents.
+      RenderPartialOutputOverPreviousCachedImage = 1 << 1,//!< When rendering temporary in-progress preview renders, these preview renders can be drawn over any previously cached layer render we have for the same region. This can allow eg a low-resolution zoomed in version of the last map render to be used as a base painting surface to overdraw with incremental preview render outputs. If not set, an empty image will be used as the starting point for the render preview image.
+    };
+    Q_ENUM( MapLayerRendererFlag )
+
+    /**
+     * Flags which control how map layer renderers behave.
+     *
+     * \since QGIS 3.34
+     */
+    Q_DECLARE_FLAGS( MapLayerRendererFlags, MapLayerRendererFlag )
+    Q_FLAG( MapLayerRendererFlags )
+
     // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
     // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
 
@@ -4002,6 +4022,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FileOperationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapSettingsFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RenderContextFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MarkerLinePlacements )

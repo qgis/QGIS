@@ -66,7 +66,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
     ~QgsTiledSceneLayerRenderer();
 
     bool render() override;
-    void setLayerRenderingTimeHint( int time ) override;
+    Qgis::MapLayerRendererFlags flags() const override;
     bool forceRasterRender() const override;
     QgsFeedback *feedback() const override { return mFeedback.get(); }
 
@@ -107,10 +107,6 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
 
     QList< QgsMapClippingRegion > mClippingRegions;
 
-    int mRenderTimeHint = 0;
-    bool mBlockRenderUpdates = false;
-    QElapsedTimer mElapsedTimer;
-
     QgsCoordinateReferenceSystem mSceneCrs;
     QgsTiledSceneBoundingVolume mLayerBoundingVolume;
     QgsTiledSceneIndex mIndex;
@@ -138,6 +134,8 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
 
     std::unique_ptr<QgsFeedback> mFeedback;
     QSet< int > mWarnedPrimitiveTypes;
+
+    QElapsedTimer mElapsedTimer;
 };
 
 #endif // QGSTILEDSCENELAYERRENDERER_H
