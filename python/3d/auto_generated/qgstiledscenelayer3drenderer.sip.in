@@ -17,10 +17,6 @@ class QgsTiledSceneLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
 %Docstring(signature="appended")
 Metadata for tiled scene layer 3D renderer to allow creation of its instances from XML
 
-.. note::
-
-   Not available in Python bindings
-
 .. versionadded:: 3.34
 %End
 
@@ -48,6 +44,16 @@ class QgsTiledSceneLayer3DRenderer : QgsAbstract3DRenderer
 
 %TypeHeaderCode
 #include "qgstiledscenelayer3drenderer.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->type() == QStringLiteral( "tiledscene" ) )
+    {
+      sipType = sipType_QgsTiledSceneLayer3DRenderer;
+    }
+    else
+    {
+      sipType = 0;
+    }
 %End
   public:
     QgsTiledSceneLayer3DRenderer();
