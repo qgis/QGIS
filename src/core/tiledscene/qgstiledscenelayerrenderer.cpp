@@ -502,29 +502,16 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
     return triangle.boundingRect().intersects( outputRect );
   };
 
-  auto renderPreviewTriangle = [&context, this]( const TriangleData & data )
-  {
-    if ( data.textureId.first >= 0 )
-    {
-      context.setTextureImage( mTextures.value( data.textureId ) );
-      context.setTextureCoordinates( data.textureCoords[0], data.textureCoords[1],
-                                     data.textureCoords[2], data.textureCoords[3],
-                                     data.textureCoords[4], data.textureCoords[5] );
-    }
-    QPainter *finalPainter = context.renderContext().painter();
-    context.renderContext().setPainter( context.renderContext().previewRenderPainter() );
-    mRenderer->renderTriangle( context, data.triangle );
-    context.renderContext().setPainter( finalPainter );
-  };
-
   const bool useTexture = !textureImage.isNull();
   bool hasStoredTexture = false;
+
+  QVector< TriangleData > thisTileTriangleData;
 
   if ( primitive.indices == -1 )
   {
     Q_ASSERT( x.size() % 3 == 0 );
 
-    mTriangleData.reserve( mTriangleData.size() + x.size() );
+    thisTileTriangleData.reserve( x.size() );
     for ( int i = 0; i < x.size(); i += 3 )
     {
       if ( context.renderContext().renderingStopped() )
@@ -545,12 +532,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
       data.z = ( z[i] + z[i + 1] + z[i + 2] ) / 3;
       if ( needTriangle( data.triangle ) )
       {
-        if ( context.renderContext().previewRenderPainter() )
-        {
-          renderPreviewTriangle( data );
-        }
-
-        mTriangleData.push_back( data );
+        thisTileTriangleData.push_back( data );
         if ( !hasStoredTexture && !textureImage.isNull() )
         {
           // have to make an explicit .copy() here, as we don't necessarily own the image data
@@ -573,7 +555,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
 
     const char *primitivePtr = reinterpret_cast< const char * >( bPrimitive.data.data() ) + bvPrimitive.byteOffset + primitiveAccessor.byteOffset;
 
-    mTriangleData.reserve( mTriangleData.size() + primitiveAccessor.count / 3 );
+    thisTileTriangleData.reserve( primitiveAccessor.count / 3 );
     for ( std::size_t i = 0; i < primitiveAccessor.count / 3; i++ )
     {
       if ( context.renderContext().renderingStopped() )
@@ -637,12 +619,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
       data.z = ( z[index1] + z[index2] + z[index3] ) / 3;
       if ( needTriangle( data.triangle ) )
       {
-        if ( context.renderContext().previewRenderPainter() )
-        {
-          renderPreviewTriangle( data );
-        }
-
-        mTriangleData.push_back( data );
+        thisTileTriangleData.push_back( data );
         if ( !hasStoredTexture && !textureImage.isNull() )
         {
           // have to make an explicit .copy() here, as we don't necessarily own the image data
@@ -652,6 +629,34 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
       }
     }
   }
+
+  if ( context.renderContext().previewRenderPainter() )
+  {
+    // swap out the destination painter for the preview render painter, and render
+    // the triangles from this tile in a sorted order
+    QPainter *finalPainter = context.renderContext().painter();
+    context.renderContext().setPainter( context.renderContext().previewRenderPainter() );
+
+    std::sort( thisTileTriangleData.begin(), thisTileTriangleData.end(), []( const TriangleData & a, const TriangleData & b )
+    {
+      return a.z < b.z;
+    } );
+
+    for ( const TriangleData &data : std::as_const( thisTileTriangleData ) )
+    {
+      if ( useTexture && data.textureId.first >= 0 )
+      {
+        context.setTextureImage( mTextures.value( data.textureId ) );
+        context.setTextureCoordinates( data.textureCoords[0], data.textureCoords[1],
+                                       data.textureCoords[2], data.textureCoords[3],
+                                       data.textureCoords[4], data.textureCoords[5] );
+      }
+      mRenderer->renderTriangle( context, data.triangle );
+    }
+    context.renderContext().setPainter( finalPainter );
+  }
+
+  mTriangleData.append( thisTileTriangleData );
 
   // as soon as first tile is rendered, we can start showing layer updates. But we still delay
   // this by e.g. 3 seconds before we start forcing progressive updates, so that we don't show the unsorted
