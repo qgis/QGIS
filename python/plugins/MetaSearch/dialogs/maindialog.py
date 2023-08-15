@@ -739,13 +739,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             provider_name = 'wcs'
             setting_node = QgsSettingsTree.node('connections').childNode('ows').childNode('connections')
             data_url = item_data['wcs']
-        elif caller == 'mActionAddAms':
-            # TODO: this doesn't exist anymore?
-            service_type = 'ESRI:ArcGIS:MapServer'
-            sname = 'AMS'
-            dyn_param = []
-            provider_name = 'arcgismapserver'
-            data_url = item_data['ams'].split('MapServer')[0] + 'MapServer'
         elif caller == 'mActionAddAfs':
             service_type = 'ESRI:ArcGIS:FeatureServer'
             sname = 'AFS'
@@ -800,10 +793,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'mConnectionsComboBox')
             connect = 'mConnectButton_clicked'
-        elif service_type == 'ESRI:ArcGIS:MapServer':
-            ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
-            conn_cmb = ows_provider.findChild(QComboBox)
-            connect = 'connectToServer'
         elif service_type == 'ESRI:ArcGIS:FeatureServer':
             def addAfsLayer(path, name):
                 self.iface.addVectorLayer(path, name, 'afs')
@@ -822,7 +811,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             # only for wfs
             if service_type == 'OGC:WFS':
                 ows_provider.cmbConnections_activated(index)
-            elif service_type in ['ESRI:ArcGIS:MapServer', 'ESRI:ArcGIS:FeatureServer']:  # noqa
+            elif service_type = 'ESRI:ArcGIS:FeatureServer':
                 ows_provider.cmbConnections_activated(index)
         getattr(ows_provider, connect)()
 
