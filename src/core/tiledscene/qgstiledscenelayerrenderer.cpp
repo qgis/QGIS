@@ -105,6 +105,11 @@ void QgsTiledSceneLayerRenderer::setLayerRenderingTimeHint( int time )
   mRenderTimeHint = time;
 }
 
+bool QgsTiledSceneLayerRenderer::forceRasterRender() const
+{
+  return mRenderer ? ( mRenderer->flags() & Qgis::TiledSceneRendererFlag::ForceRasterRender ) : false;
+}
+
 QgsTiledSceneRequest QgsTiledSceneLayerRenderer::createBaseRequest()
 {
   const QgsRenderContext *context = renderContext();

@@ -3798,7 +3798,8 @@ Qgis.TiledSceneRequestFlags.baseClass = Qgis
 TiledSceneRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.TiledSceneRendererFlag.RequiresTextures.__doc__ = "Renderer requires textures"
-Qgis.TiledSceneRendererFlag.__doc__ = "Flags which control how tiled scene 2D renderers behave.\n\n.. versionadded:: 3.34\n\n" + '* ``RequiresTextures``: ' + Qgis.TiledSceneRendererFlag.RequiresTextures.__doc__
+Qgis.TiledSceneRendererFlag.ForceRasterRender.__doc__ = "Layer should always be rendered as a raster image"
+Qgis.TiledSceneRendererFlag.__doc__ = "Flags which control how tiled scene 2D renderers behave.\n\n.. versionadded:: 3.34\n\n" + '* ``RequiresTextures``: ' + Qgis.TiledSceneRendererFlag.RequiresTextures.__doc__ + '\n' + '* ``ForceRasterRender``: ' + Qgis.TiledSceneRendererFlag.ForceRasterRender.__doc__
 # --
 Qgis.TiledSceneRendererFlag.baseClass = Qgis
 Qgis.TiledSceneRendererFlags.baseClass = Qgis

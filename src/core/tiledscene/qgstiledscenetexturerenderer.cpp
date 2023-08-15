@@ -59,7 +59,10 @@ QDomElement QgsTiledSceneTextureRenderer::save( QDomDocument &doc, const QgsRead
 
 Qgis::TiledSceneRendererFlags QgsTiledSceneTextureRenderer::flags() const
 {
-  return Qgis::TiledSceneRendererFlag::RequiresTextures;
+  // force raster rendering for this renderer type -- there's no benefit in exporting these layers as a bunch
+  // of triangular images which are pieced together, that adds a lot of extra content to the exports and results
+  // in files which can be extremely slow to open and render in other viewers.
+  return Qgis::TiledSceneRendererFlag::RequiresTextures | Qgis::TiledSceneRendererFlag::ForceRasterRender;
 }
 
 void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle )

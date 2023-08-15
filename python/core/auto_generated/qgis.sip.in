@@ -2199,6 +2199,7 @@ The development version
     enum class TiledSceneRendererFlag
     {
       RequiresTextures,
+      ForceRasterRender,
     };
 
     typedef QFlags<Qgis::TiledSceneRendererFlag> TiledSceneRendererFlags;

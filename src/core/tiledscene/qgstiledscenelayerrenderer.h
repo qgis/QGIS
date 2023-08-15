@@ -67,7 +67,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
 
     bool render() override;
     void setLayerRenderingTimeHint( int time ) override;
-
+    bool forceRasterRender() const override;
     QgsFeedback *feedback() const override { return mFeedback.get(); }
 
   private:
