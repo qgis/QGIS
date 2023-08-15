@@ -82,13 +82,7 @@ bool QgsTiledSceneLayerRenderer::render()
       rc->painter()->setClipPath( path, Qt::IntersectClip );
   }
 
-  // if the previous layer render was relatively quick (e.g. less than 3 seconds), the we show any previously
-  // cached version of the layer during rendering instead of the usual progressive updates
-  if ( mRenderTimeHint > 0 && mRenderTimeHint <= MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
-  {
-    mBlockRenderUpdates = true;
-    mElapsedTimer.start();
-  }
+  mElapsedTimer.start();
 
   mSceneToMapTransform = QgsCoordinateTransform( mSceneCrs, rc->coordinateTransform().destinationCrs(), rc->transformContext() );
 
@@ -100,9 +94,14 @@ bool QgsTiledSceneLayerRenderer::render()
   return result;
 }
 
-void QgsTiledSceneLayerRenderer::setLayerRenderingTimeHint( int time )
+Qgis::MapLayerRendererFlags QgsTiledSceneLayerRenderer::flags() const
 {
-  mRenderTimeHint = time;
+  // we want to show temporary incremental renders we retrieve each tile in the scene, as this can be slow and
+  // we need to show the user that some activity is happening here.
+  // But we can't render the final layer result incrementally, as we need to collect ALL the content from the
+  // scene before we can sort it by z order and avoid random z-order stacking artifacts!
+  // So we request here a preview render image for the temporary incremental updates:
+  return Qgis::MapLayerRendererFlag::RenderPartialOutputs | Qgis::MapLayerRendererFlag::RenderPartialOutputOverPreviousCachedImage;
 }
 
 bool QgsTiledSceneLayerRenderer::forceRasterRender() const
@@ -497,21 +496,25 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
     }
   }
 
-# if 0
-  // as soon as first feature is rendered, we can start showing layer updates.
-  // but if we are blocking render updates (so that a previously cached image is being shown), we wait
-  // at most e.g. 3 seconds before we start forcing progressive updates.
-
-
-  if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
-  {
-    mReadyToCompose = true;
-  }
-#endif
   const QRect outputRect = QRect( QPoint( 0, 0 ), context.renderContext().outputSize() );
   auto needTriangle = [&outputRect]( const QPolygonF & triangle ) -> bool
   {
     return triangle.boundingRect().intersects( outputRect );
+  };
+
+  auto renderPreviewTriangle = [&context, this]( const TriangleData & data )
+  {
+    if ( data.textureId.first >= 0 )
+    {
+      context.setTextureImage( mTextures.value( data.textureId ) );
+      context.setTextureCoordinates( data.textureCoords[0], data.textureCoords[1],
+                                     data.textureCoords[2], data.textureCoords[3],
+                                     data.textureCoords[4], data.textureCoords[5] );
+    }
+    QPainter *finalPainter = context.renderContext().painter();
+    context.renderContext().setPainter( context.renderContext().previewRenderPainter() );
+    mRenderer->renderTriangle( context, data.triangle );
+    context.renderContext().setPainter( finalPainter );
   };
 
   const bool useTexture = !textureImage.isNull();
@@ -542,6 +545,11 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
       data.z = ( z[i] + z[i + 1] + z[i + 2] ) / 3;
       if ( needTriangle( data.triangle ) )
       {
+        if ( context.renderContext().previewRenderPainter() )
+        {
+          renderPreviewTriangle( data );
+        }
+
         mTriangleData.push_back( data );
         if ( !hasStoredTexture && !textureImage.isNull() )
         {
@@ -629,6 +637,11 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
       data.z = ( z[index1] + z[index2] + z[index3] ) / 3;
       if ( needTriangle( data.triangle ) )
       {
+        if ( context.renderContext().previewRenderPainter() )
+        {
+          renderPreviewTriangle( data );
+        }
+
         mTriangleData.push_back( data );
         if ( !hasStoredTexture && !textureImage.isNull() )
         {
@@ -640,4 +653,11 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
     }
   }
 
+  // as soon as first tile is rendered, we can start showing layer updates. But we still delay
+  // this by e.g. 3 seconds before we start forcing progressive updates, so that we don't show the unsorted
+  // z triangle render if the overall layer render only takes a second or so.
+  if ( mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
+  {
+    mReadyToCompose = true;
+  }
 }

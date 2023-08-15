@@ -113,6 +113,12 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
       painter->setCompositionMode( job.blendMode );
     }
 
+    if ( job.previewRenderImage && !job.previewRenderImageInitialized )
+    {
+      job.previewRenderImage->fill( 0 );
+      job.previewRenderImageInitialized = true;
+    }
+
     if ( job.img )
     {
       job.img->fill( 0 );

@@ -123,6 +123,29 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 #endif
 
     /**
+     * Returns the const destination QPainter for temporary in-progress preview renders.
+     *
+     * May be NULLPTR if temporary in-progress preview renders are not required.
+     *
+     * \see setPreviewRenderPainter()
+     * \since QGIS 3.34
+    */
+    QPainter *previewRenderPainter() {return mPreviewRenderPainter;}
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the const destination QPainter for temporary in-progress preview renders.
+     *
+     * May be NULLPTR if temporary in-progress preview renders are not required.
+     *
+     * \see setPreviewRenderPainter()
+     * \since QGIS 3.34
+    */
+    const QPainter *previewRenderPainter() const { return mPreviewRenderPainter; }
+#endif
+
+    /**
      * Sets relevant flags on a destination \a painter, using the flags and settings
      * currently defined for the render context.
      *
@@ -548,6 +571,18 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see painter()
      */
     void setPainter( QPainter *p ) {mPainter = p;}
+
+    /**
+     * Sets the destination \a painter for temporary in-progress preview renders.
+     * Ownership of \a painter is not transferred and the QPainter destination must
+     * stay alive for the duration of any rendering operations.
+     *
+     * \a painter may be NULLPTR if temporary in-progress preview renders are not required.
+     *
+     * \see previewRenderPainter()
+     * \since QGIS 3.34
+    */
+    void setPreviewRenderPainter( QPainter *painter ) { mPreviewRenderPainter = painter; }
 
     /**
      * Sets a mask QPainter for the render operation. Ownership of the painter
@@ -1098,6 +1133,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     //! Painter for rendering operations
     QPainter *mPainter = nullptr;
+
+    //! Painter for in-progress rendering operations
+    QPainter *mPreviewRenderPainter = nullptr;
 
     /**
      * Mask painters for selective masking.

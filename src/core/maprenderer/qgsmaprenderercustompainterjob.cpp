@@ -325,6 +325,12 @@ void QgsMapRendererCustomPainterJob::doRender()
       QElapsedTimer layerTime;
       layerTime.start();
 
+      if ( job.previewRenderImage && !job.previewRenderImageInitialized )
+      {
+        job.previewRenderImage->fill( 0 );
+        job.previewRenderImageInitialized = true;
+      }
+
       if ( job.img )
       {
         job.img->fill( 0 );
@@ -431,6 +437,12 @@ void QgsMapRendererCustomPainterJob::doRender()
       {
         QElapsedTimer layerTime;
         layerTime.start();
+
+        if ( job.previewRenderImage && !job.previewRenderImageInitialized )
+        {
+          job.previewRenderImage->fill( 0 );
+          job.previewRenderImageInitialized = true;
+        }
 
         if ( job.img )
         {

@@ -95,8 +95,24 @@ class LayerRenderJob
      */
     QgsElevationMap *elevationMap = nullptr;
 
+    /**
+     * Pointer to destination image for in-progress preview renders.
+     *
+     * May be NULLPTR if it is not necessary to draw in-progress preview renders.
+     *
+     * \since QGIS 3.34
+     */
+    QImage *previewRenderImage = nullptr;
+
     //! TRUE when img has been initialized (filled with transparent pixels)
     bool imageInitialized = false;
+
+    /**
+     * TRUE when previewRenderImage has been initialized (filled with transparent pixels).
+     *
+     * \since QGIS 3.34
+     */
+    bool previewRenderImageInitialized = false;
 
     bool imageCanBeComposed() const;
 

@@ -84,6 +84,18 @@ Returns the destination QPainter for the render operation.
 %End
 
 
+    QPainter *previewRenderPainter();
+%Docstring
+Returns the const destination QPainter for temporary in-progress preview renders.
+
+May be ``None`` if temporary in-progress preview renders are not required.
+
+.. seealso:: :py:func:`setPreviewRenderPainter`
+
+.. versionadded:: 3.34
+%End
+
+
     void setPainterFlagsUsingContext( QPainter *painter = 0 ) const;
 %Docstring
 Sets relevant flags on a destination ``painter``, using the flags and settings
@@ -554,6 +566,19 @@ is not transferred and the QPainter destination must stay alive for the duration
 of any rendering operations.
 
 .. seealso:: :py:func:`painter`
+%End
+
+    void setPreviewRenderPainter( QPainter *painter );
+%Docstring
+Sets the destination ``painter`` for temporary in-progress preview renders.
+Ownership of ``painter`` is not transferred and the QPainter destination must
+stay alive for the duration of any rendering operations.
+
+``painter`` may be ``None`` if temporary in-progress preview renders are not required.
+
+.. seealso:: :py:func:`previewRenderPainter`
+
+.. versionadded:: 3.34
 %End
 
     void setMaskPainter( QPainter *p, int id = 0 );
