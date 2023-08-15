@@ -22,6 +22,7 @@
 
 #include <QImage>
 #include <QMatrix4x4>
+#include <QRegularExpression>
 
 #define TINYGLTF_IMPLEMENTATION       // should be defined just in one CPP file
 
@@ -309,7 +310,15 @@ bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model
   if ( errors )
     *errors = QString::fromStdString( err );
   if ( warnings )
+  {
     *warnings = QString::fromStdString( warn );
+
+    // strip unwanted warnings
+    const thread_local QRegularExpression rxFailedToLoadExternalUriForImage( QStringLiteral( "Failed to load external 'uri' for image\\[\\d+\\] name = \".*?\"\\n?" ) );
+    warnings->replace( rxFailedToLoadExternalUriForImage, QString() );
+    const thread_local QRegularExpression rxFileNotFound( QStringLiteral( "File not found : .*?\\n" ) );
+    warnings->replace( rxFileNotFound, QString() );
+  }
 
   return res;
 }
