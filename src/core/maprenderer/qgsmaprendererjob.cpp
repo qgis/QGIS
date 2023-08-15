@@ -641,12 +641,16 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     {
       if ( mCache && ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputOverPreviousCachedImage ) && mCache->hasAnyCacheImage( job.layerId + QStringLiteral( "_preview" ) ) )
       {
-        job.previewRenderImage = new QImage( mCache->transformedCacheImage( job.layerId + QStringLiteral( "_preview" ), mSettings.mapToPixel() ) );
-        job.previewRenderImageInitialized = true;
-        job.context()->setPreviewRenderPainter( new QPainter( job.previewRenderImage ) );
-        job.context()->setPainterFlagsUsingContext( painter );
+        const QImage cachedImage = mCache->transformedCacheImage( job.layerId + QStringLiteral( "_preview" ), mSettings.mapToPixel() );
+        if ( !cachedImage.isNull() )
+        {
+          job.previewRenderImage = new QImage( cachedImage );
+          job.previewRenderImageInitialized = true;
+          job.context()->setPreviewRenderPainter( new QPainter( job.previewRenderImage ) );
+          job.context()->setPainterFlagsUsingContext( painter );
+        }
       }
-      else
+      if ( !job.previewRenderImage )
       {
         job.context()->setPreviewRenderPainter( allocateImageAndPainter( ml->id(), job.previewRenderImage, job.context() ) );
         job.previewRenderImageInitialized = false;
