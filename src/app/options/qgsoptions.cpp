@@ -2255,8 +2255,10 @@ void QgsOptions::loadGdalDriverList()
   QString myGdalDriverDescription;
   QStringList myDrivers;
   QStringList myGdalWriteDrivers;
-  QMap<QString, QString> myDriversFlags, myDriversExt, myDriversLongName;
-  QMap<QString, Qgis::LayerType> driversType;
+  QMap<QString, QString> rasterDriversFlags;
+  QMap<QString, QString> vectorDriversFlags;
+  QMap<QString, QString> myDriversExt, myDriversLongName;
+  QMap<QString, QSet< int >> driversType;
 
   // make sure we save list when accept()
   mLoadedGdalDriverList = true;
@@ -2283,19 +2285,19 @@ void QgsOptions::loadGdalDriverList()
     myDrivers << myGdalDriverDescription;
     if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) == QLatin1String( "YES" ) )
     {
-      driversType[myGdalDriverDescription] = Qgis::LayerType::Raster;
+      driversType[myGdalDriverDescription].insert( static_cast< int >( Qgis::LayerType::Raster ) );
     }
-    else if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VECTOR, nullptr ) ) == QLatin1String( "YES" ) )
+    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VECTOR, nullptr ) ) == QLatin1String( "YES" ) )
     {
-      driversType[myGdalDriverDescription] = Qgis::LayerType::Vector;
+      driversType[myGdalDriverDescription].insert( static_cast< int >( Qgis::LayerType::Vector ) );
     }
 
     QgsDebugMsgLevel( QStringLiteral( "driver #%1 - %2" ).arg( i ).arg( myGdalDriverDescription ), 2 );
 
     // get driver R/W flags, adopted from GDALGeneralCmdLineProcessor()
-    QString driverFlags = "";
-    if ( driversType[myGdalDriverDescription] == Qgis::LayerType::Raster )
+    if ( driversType.value( myGdalDriverDescription ).contains( static_cast< int >( Qgis::LayerType::Raster ) ) )
     {
+      QString driverFlags = "";
       if ( QgsGdalUtils::supportsRasterCreate( myGdalDriver ) )
       {
         myGdalWriteDrivers << myGdalDriverDescription;
@@ -2306,9 +2308,15 @@ void QgsOptions::loadGdalDriverList()
         driverFlags = "rw";
       else
         driverFlags = "ro";
+
+      if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VIRTUALIO, nullptr ) )
+        driverFlags += "v";
+
+      rasterDriversFlags[myGdalDriverDescription] = driverFlags;
     }
-    else
+    if ( driversType.value( myGdalDriverDescription ).contains( static_cast< int >( Qgis::LayerType::Vector ) ) )
     {
+      QString driverFlags = "";
       if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_OPEN, nullptr ) )
         driverFlags = "r";
 
@@ -2318,20 +2326,20 @@ void QgsOptions::loadGdalDriverList()
         driverFlags += "w";
       else
         driverFlags += "o";
+
+      if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VIRTUALIO, nullptr ) )
+        driverFlags += "v";
+
+      vectorDriversFlags[myGdalDriverDescription] = driverFlags;
     }
-
-    if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VIRTUALIO, nullptr ) )
-      driverFlags += "v";
-
-    myDriversFlags[myGdalDriverDescription] = driverFlags;
 
     // get driver extensions and long name
     // the gdal provider can override/add extensions but there is no interface to query this
     // aside from parsing QgsRasterLayer::buildSupportedRasterFileFilter()
     myDriversExt[myGdalDriverDescription] = QString( GDALGetMetadataItem( myGdalDriver, "DMD_EXTENSION", "" ) ).toLower();
     myDriversLongName[myGdalDriverDescription] = QString( GDALGetMetadataItem( myGdalDriver, "DMD_LONGNAME", "" ) );
-
   }
+
   // restore active drivers
   QgsApplication::applyGdalSkippedDrivers();
 
@@ -2346,28 +2354,32 @@ void QgsOptions::loadGdalDriverList()
 
   for ( const QString &myName : std::as_const( myDrivers ) )
   {
-    QTreeWidgetItem *mypItem = new QTreeWidgetItem( QStringList( myName ) );
-    if ( mySkippedDrivers.contains( myName ) )
+    const QSet< int > layerTypes = driversType[myName];
+    for ( int layerType : layerTypes )
     {
-      mypItem->setCheckState( 0, Qt::Unchecked );
-    }
-    else
-    {
-      mypItem->setCheckState( 0, Qt::Checked );
-    }
+      QTreeWidgetItem *mypItem = new QTreeWidgetItem( QStringList( myName ) );
+      if ( mySkippedDrivers.contains( myName ) )
+      {
+        mypItem->setCheckState( 0, Qt::Unchecked );
+      }
+      else
+      {
+        mypItem->setCheckState( 0, Qt::Checked );
+      }
 
-    // add driver metadata
-    mypItem->setText( 1, myDriversExt[myName] );
-    QString myFlags = myDriversFlags[myName];
-    mypItem->setText( 2, myFlags );
-    mypItem->setText( 3, myDriversLongName[myName] );
-    if ( driversType[myName] == Qgis::LayerType::Raster )
-    {
-      lstRasterDrivers->addTopLevelItem( mypItem );
-    }
-    else
-    {
-      lstVectorDrivers->addTopLevelItem( mypItem );
+      // add driver metadata
+      mypItem->setText( 1, myDriversExt[myName] );
+      const QString myFlags = static_cast< Qgis::LayerType >( layerType ) == Qgis::LayerType::Raster ? rasterDriversFlags[myName] : vectorDriversFlags[myName];
+      mypItem->setText( 2, myFlags );
+      mypItem->setText( 3, myDriversLongName[myName] );
+      if ( static_cast< Qgis::LayerType >( layerType ) == Qgis::LayerType::Raster )
+      {
+        lstRasterDrivers->addTopLevelItem( mypItem );
+      }
+      else
+      {
+        lstVectorDrivers->addTopLevelItem( mypItem );
+      }
     }
   }
 
