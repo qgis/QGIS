@@ -1024,6 +1024,8 @@ void QgsProject::clear()
 
   ScopedIntIncrementor snapSingleBlocker( &mBlockSnappingUpdates );
 
+  emit willBeCleared()
+
   mProjectScope.reset();
   mFile.setFileName( QString() );
   mProperties.clearKeys();
