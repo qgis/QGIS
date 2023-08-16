@@ -88,7 +88,7 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     virtual bool canCreateChildren( QgsChunkNode *node ) override;
     virtual void prepareChildren( QgsChunkNode *node ) override;
 
-    QgsChunkNode *nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId ) const;
+    QgsChunkNode *nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const;
     void fetchHierarchyForNode( long long nodeId, QgsChunkNode *origNode );
 
     const Qgs3DMapSettings &mMap;
