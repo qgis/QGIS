@@ -811,7 +811,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             # only for wfs
             if service_type == 'OGC:WFS':
                 ows_provider.cmbConnections_activated(index)
-            elif service_type = 'ESRI:ArcGIS:FeatureServer':
+            elif service_type == 'ESRI:ArcGIS:FeatureServer':
                 ows_provider.cmbConnections_activated(index)
         getattr(ows_provider, connect)()
 
