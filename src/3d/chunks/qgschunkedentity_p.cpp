@@ -51,6 +51,21 @@ static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::Scene
   return sse;
 }
 
+
+static bool hasAnyActiveChildren( QgsChunkNode *node, QList<QgsChunkNode *> &activeNodes )
+{
+  for ( int i = 0; i < node->childCount(); ++i )
+  {
+    QgsChunkNode *child = node->children()[i];
+    if ( child->entity() && activeNodes.contains( child ) )
+      return true;
+    if ( hasAnyActiveChildren( child, activeNodes ) )
+      return true;
+  }
+  return false;
+}
+
+
 QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitiveBudget, Qt3DCore::QNode *parent )
   : Qgs3DMapSceneEntity( parent )
   , mTau( tau )
@@ -110,6 +125,7 @@ QgsChunkedEntity::~QgsChunkedEntity()
     delete mChunkLoaderFactory;
   }
 }
+
 
 void QgsChunkedEntity::handleSceneUpdate( const SceneState &state )
 {
@@ -173,20 +189,13 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneState &state )
 #endif
   }
 
-  double usedGpuMemory = QgsChunkedEntity::calculateEntityGpuMemorySize( this );
-
-  // unload those that are over the limit for replacement
-  // TODO: what to do when our cache is too small and nodes are being constantly evicted + loaded again
-  while ( usedGpuMemory > mGpuMemoryLimit )
-  {
-    QgsChunkListEntry *entry = mReplacementQueue->takeLast();
-    usedGpuMemory -= QgsChunkedEntity::calculateEntityGpuMemorySize( entry->chunk->entity() );
-    mActiveNodes.removeOne( entry->chunk );
-    entry->chunk->unloadChunk();  // also deletes the entry
+  // if this entity's loaded nodes are using more GPU memory than allowed,
+  // let's try to unload those that are not needed right now
 #ifdef QGISDEBUG
-    ++unloaded;
+  unloaded = unloadNodes();
+#else
+  unloadNodes();
 #endif
-  }
 
   if ( mBboxesEntity )
   {
@@ -213,6 +222,51 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneState &state )
                     .arg( unloaded )
                     .arg( t.elapsed() ), 2 );
 }
+
+
+int QgsChunkedEntity::unloadNodes()
+{
+  double usedGpuMemory = QgsChunkedEntity::calculateEntityGpuMemorySize( this );
+  if ( usedGpuMemory <= mGpuMemoryLimit )
+    return 0;
+
+  QgsDebugMsgLevel( QStringLiteral( "Going to unload nodes to free GPU memory (used: %1 MB, limit: %2 MB)" ).arg( usedGpuMemory ).arg( mGpuMemoryLimit ), 2 );
+
+  int unloaded = 0;
+
+  // unload nodes starting from the back of the queue with currently loaded
+  // nodes - i.e. those that have been least recently used
+  QgsChunkListEntry *entry = mReplacementQueue->last();
+  while ( entry && usedGpuMemory > mGpuMemoryLimit )
+  {
+    // not all nodes are safe to unload: we do not want to unload nodes
+    // that are currently active, or have their descendants active or their
+    // siblings or their descendants are active (because in the next scene
+    // update, these would be very likely loaded again, making the unload worthless)
+    if ( entry->chunk->parent() && !hasAnyActiveChildren( entry->chunk->parent(), mActiveNodes ) )
+    {
+      QgsChunkListEntry *entryPrev = entry->prev;
+      mReplacementQueue->takeEntry( entry );
+      usedGpuMemory -= QgsChunkedEntity::calculateEntityGpuMemorySize( entry->chunk->entity() );
+      mActiveNodes.removeOne( entry->chunk );
+      entry->chunk->unloadChunk();  // also deletes the entry
+      ++unloaded;
+      entry = entryPrev;
+    }
+    else
+    {
+      entry = entry->prev;
+    }
+  }
+
+  if ( usedGpuMemory > mGpuMemoryLimit )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Unable to unload enough nodes to free GPU memory (used: %1 MB, limit: %2 MB)" ).arg( usedGpuMemory ).arg( mGpuMemoryLimit ), 2 );
+  }
+
+  return unloaded;
+}
+
 
 QgsRange<float> QgsChunkedEntity::getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const
 {
