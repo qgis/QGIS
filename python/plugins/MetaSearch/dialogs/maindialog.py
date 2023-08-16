@@ -39,7 +39,7 @@ from qgis.PyQt.QtGui import QColor
 from qgis.core import (Qgis, QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPointXY,
                        QgsProviderRegistry, QgsSettings, QgsProject,
-                       QgsRectangle)
+                       QgsRectangle, QgsSettingsTree)
 from qgis.gui import QgsRubberBand, QgsGui
 from qgis.utils import OverrideCursor
 
@@ -718,35 +718,38 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         caller = self.sender().objectName()
 
-        # stype = human name,/qgis/connections-%s,providername
         if caller == 'mActionAddWms':
-            stype = ['OGC:WMS/OGC:WMTS', 'wms', 'wms']
+            service_type = 'OGC:WMS/OGC:WMTS'
+            sname = 'WMS'
+            dyn_param = ['wms']
+            provider_name = 'wms'
+            setting_node = QgsSettingsTree.node('connections').childNode('ows').childNode('connections')
             data_url = item_data['wms']
         elif caller == 'mActionAddWfs':
-            stype = ['OGC:WFS', 'wfs', 'WFS']
+            service_type = 'OGC:WFS'
+            sname = 'WFS'
+            dyn_param = ['wfs']
+            provider_name = 'WFS'
+            setting_node = QgsSettingsTree.node('connections').childNode('ows').childNode('connections')
             data_url = item_data['wfs']
         elif caller == 'mActionAddWcs':
-            stype = ['OGC:WCS', 'wcs', 'wcs']
+            service_type = 'OGC:WCS'
+            sname = 'WCS'
+            dyn_param = ['wcs']
+            provider_name = 'wcs'
+            setting_node = QgsSettingsTree.node('connections').childNode('ows').childNode('connections')
             data_url = item_data['wcs']
-        elif caller == 'mActionAddAms':
-            stype = ['ESRI:ArcGIS:MapServer', 'ams', 'arcgismapserver']
-            data_url = item_data['ams'].split('MapServer')[0] + 'MapServer'
         elif caller == 'mActionAddAfs':
-            stype = ['ESRI:ArcGIS:FeatureServer', 'afs', 'arcgisfeatureserver']
-            data_url = (item_data['afs'].split('FeatureServer')[0] +
-                        'FeatureServer')
+            service_type = 'ESRI:ArcGIS:FeatureServer'
+            sname = 'AFS'
+            dyn_param = []
+            provider_name = 'arcgisfeatureserver'
+            setting_node = QgsSettingsTree.node('connections').childNode('arcgisfeatureserver')
+            data_url = (item_data['afs'].split('FeatureServer')[0] + 'FeatureServer')
 
-        sname = '%s from MetaSearch' % stype[1]
+        keys = setting_node.items(dyn_param)
 
-        # store connection
-        # check if there is a connection with same name
-        if caller in ['mActionAddAms', 'mActionAddAfs']:
-            self.settings.beginGroup('/qgis/connections-%s' % stype[2])
-        else:
-            self.settings.beginGroup('/qgis/connections-%s' % stype[1])
-        keys = self.settings.childGroups()
-        self.settings.endGroup()
-
+        sname = '%s from MetaSearch' % sname
         for key in keys:
             if key.startswith(sname):
                 conn_name_matches.append(key)
@@ -765,19 +768,14 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 return
 
         # no dups detected or overwrite is allowed
-        if caller in ['mActionAddAms', 'mActionAddAfs']:
-            self.settings.beginGroup('/qgis/connections-%s' % stype[2])
-        else:
-            self.settings.beginGroup('/qgis/connections-%s' % stype[1])
-        self.settings.setValue('/%s/url' % sname, clean_ows_url(data_url))
-        self.settings.endGroup()
+        dyn_param.append(sname)
+        setting_node.childSetting('url').setValue(clean_ows_url(data_url), dyn_param)
 
         # open provider window
         ows_provider = QgsGui.sourceSelectProviderRegistry().\
             createSelectionWidget(
-                stype[2], self, Qt.Widget,
+                provider_name, self, Qt.Widget,
                 QgsProviderRegistry.WidgetMode.Embedded)
-        service_type = stype[0]
 
         # connect dialog signals to iface slots
         if service_type == 'OGC:WMS/OGC:WMTS':
@@ -795,10 +793,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'mConnectionsComboBox')
             connect = 'mConnectButton_clicked'
-        elif service_type == 'ESRI:ArcGIS:MapServer':
-            ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
-            conn_cmb = ows_provider.findChild(QComboBox)
-            connect = 'connectToServer'
         elif service_type == 'ESRI:ArcGIS:FeatureServer':
             def addAfsLayer(path, name):
                 self.iface.addVectorLayer(path, name, 'afs')
@@ -817,7 +811,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             # only for wfs
             if service_type == 'OGC:WFS':
                 ows_provider.cmbConnections_activated(index)
-            elif service_type in ['ESRI:ArcGIS:MapServer', 'ESRI:ArcGIS:FeatureServer']:  # noqa
+            elif service_type == 'ESRI:ArcGIS:FeatureServer':
                 ows_provider.cmbConnections_activated(index)
         getattr(ows_provider, connect)()
 
