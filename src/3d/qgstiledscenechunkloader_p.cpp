@@ -144,7 +144,7 @@ static QgsAABB aabbConvert( const QgsBox3D &b0, const QgsVector3D &sceneOriginTa
   return QgsAABB( b.xMinimum(), b.zMinimum(), -b.yMaximum(), b.xMaximum(), b.zMaximum(), -b.yMinimum() );
 }
 
-QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId ) const
+QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const
 {
   if ( hasLargeBounds( t ) )
   {
@@ -153,13 +153,13 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneT
     QgsVector3D v1 = mMap.mapToWorldCoordinates( QgsVector3D( mMap.extent().xMaximum(), mMap.extent().yMaximum(), +100 ) );
     QgsAABB aabb( v0.x(), v0.y(), v0.z(), v1.x(), v1.y(), v1.z() );
     float err = std::min( 1e6, t.geometricError() );
-    return new QgsChunkNode( nodeId, aabb, err );
+    return new QgsChunkNode( nodeId, aabb, err, parent );
   }
   else
   {
     const QgsBox3D box = t.boundingVolume().bounds( mBoundsTransform );
     const QgsAABB aabb = aabbConvert( box, mMap.origin() );
-    return new QgsChunkNode( nodeId, aabb, t.geometricError() );
+    return new QgsChunkNode( nodeId, aabb, t.geometricError(), parent );
   }
 }
 
@@ -167,7 +167,7 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneT
 QgsChunkNode *QgsTiledSceneChunkLoaderFactory::createRootNode() const
 {
   const QgsTiledSceneTile t = mIndex.rootTile();
-  return nodeForTile( t, QgsChunkNodeId( t.id() ) );
+  return nodeForTile( t, QgsChunkNodeId( t.id() ), nullptr );
 }
 
 
@@ -217,7 +217,7 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
     // fetching of hierarchy is handled by canCreateChildren() + prepareChildren()
     Q_ASSERT( mIndex.childAvailability( childId ) != Qgis::TileChildrenAvailability::NeedFetching );
 
-    QgsChunkNode *nChild = nodeForTile( t, chId );
+    QgsChunkNode *nChild = nodeForTile( t, chId, node );
     children.append( nChild );
   }
   return children;
