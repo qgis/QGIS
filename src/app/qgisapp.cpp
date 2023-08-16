@@ -1104,6 +1104,19 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     saveRecentProjects();
     updateRecentProjectPaths();
   } );
+  connect( mWelcomePage, &QgsWelcomePage::projectsCleared, this, [ this ]()
+  {
+    mRecentProjects.erase(
+      std::remove_if(
+        mRecentProjects.begin(),
+        mRecentProjects.end(),
+    []( const QgsRecentProjectItemsModel::RecentProjectData & recentProject ) { return !recentProject.pin; }
+      ),
+    mRecentProjects.end()
+    );
+    saveRecentProjects();
+    updateRecentProjectPaths();
+  } );
   endProfile();
 
   mCentralContainer = new QStackedWidget;
@@ -5205,6 +5218,14 @@ void QgisApp::updateRecentProjectPaths()
     }
   }
 
+  // Add clear recent projects action
+  if ( !mRecentProjects.isEmpty() )
+  {
+    mRecentProjectsMenu->addSeparator();
+    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear Recently Opened" ) );
+    connect( clearRecentProjectsAction, &QAction::triggered, mWelcomePage, &QgsWelcomePage::clearRecentProjects );
+  }
+
   std::vector< QgsNative::RecentProjectProperties > recentProjects;
   for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : std::as_const( mRecentProjects ) )
   {
@@ -6885,6 +6906,10 @@ void QgisApp::openProject( QAction *action )
   // possibly save any pending work before opening a different project
   Q_ASSERT( action );
   const QString project = action->data().toString().replace( "&&", "&" );
+
+  // If project is empty, it means that the clicked action is "Clear recent projects"
+  if ( project.isEmpty() )
+    return;
 
   if ( checkTasksDependOnProject() )
     return;
