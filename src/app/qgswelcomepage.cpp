@@ -259,8 +259,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       QAction *pinAction = new QAction( tr( "Pin to List" ), menu );
       connect( pinAction, &QAction::triggered, this, [this, index]
       {
-        mRecentProjectsModel->pinProject( index );
-        emit projectPinned( index.row() );
+        pinProject( index.row() );
       } );
       menu->addAction( pinAction );
     }
@@ -269,8 +268,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       QAction *pinAction = new QAction( tr( "Unpin from List" ), menu );
       connect( pinAction, &QAction::triggered, this, [this, index]
       {
-        mRecentProjectsModel->unpinProject( index );
-        emit projectUnpinned( index.row() );
+        unpinProject( index.row() );
       } );
       menu->addAction( pinAction );
     }
@@ -328,8 +326,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
   QAction *removeProjectAction = new QAction( tr( "Remove from List" ), menu );
   connect( removeProjectAction, &QAction::triggered, this, [this, index]
   {
-    mRecentProjectsModel->removeProject( index );
-    emit projectRemoved( index.row() );
+    removeProject( index.row() );
   } );
   menu->addAction( removeProjectAction );
 
@@ -453,5 +450,29 @@ bool QgsWelcomePage::eventFilter( QObject *obj, QEvent *event )
   }
 
   return QWidget::eventFilter( obj, event );
+}
+
+void QgsWelcomePage::removeProject( int row )
+{
+  mRecentProjectsModel->removeProject( mRecentProjectsModel->index( row ) );
+  emit projectRemoved( row );
+}
+
+void QgsWelcomePage::pinProject( int row )
+{
+  mRecentProjectsModel->pinProject( mRecentProjectsModel->index( row ) );
+  emit projectPinned( row );
+}
+
+void QgsWelcomePage::unpinProject( int row )
+{
+  mRecentProjectsModel->unpinProject( mRecentProjectsModel->index( row ) );
+  emit projectUnpinned( row );
+}
+
+void QgsWelcomePage::clearRecentProjects( bool clearPinned )
+{
+  mRecentProjectsModel->clear( clearPinned );
+  emit projectsCleared();
 }
 

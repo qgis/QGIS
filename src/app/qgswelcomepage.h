@@ -47,10 +47,17 @@ class QgsWelcomePage : public QWidget
      */
     static QString newsFeedUrl();
 
+  public slots:
+    void removeProject( int row );
+    void pinProject( int row );
+    void unpinProject( int row );
+    void clearRecentProjects( bool clearPinned = false );
+
   signals:
     void projectRemoved( int row );
     void projectPinned( int row );
     void projectUnpinned( int row );
+    void projectsCleared();
 
   protected:
     bool eventFilter( QObject *obj, QEvent *event ) override;
