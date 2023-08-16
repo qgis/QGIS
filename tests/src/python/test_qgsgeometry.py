@@ -4851,7 +4851,7 @@ class TestQgsGeometry(QgisTestCase):
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0,1.5 -0.5,1 -1),(1 -1,0 0)))"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(1)
-        expected_wkt = "CurvePolygon (CompoundCurve (CircularString (0 0, 1.5 -0.5, 1 -1),(1 -1, 0 0)))"
+        expected_wkt = "CurvePolygon (CompoundCurve ((0 0, 2 0),CircularString (2 0, 1.5 -0.5, 1 -1),(1 -1, 0 0)))"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0,1.5 -0.5,1 -1),(1 -1,0 0)))"
@@ -4863,7 +4863,7 @@ class TestQgsGeometry(QgisTestCase):
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0,1.5 -0.5,1 -1),(1 -1,0 0)))"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(3)
-        expected_wkt = "CurvePolygon (CompoundCurve (CircularString (0 0, 1 1, 1 -1),(1 -1, 0 0)))"
+        expected_wkt = "CurvePolygon (CompoundCurve (CircularString (0 0, 1 1, 2 0),(2 0, 1 -1),(1 -1, 0 0)))"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0,1.5 -0.5,1 -1),(1 -1,0 0)))"
