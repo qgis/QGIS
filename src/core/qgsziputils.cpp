@@ -70,7 +70,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
 
   if ( rc == ZIP_ER_OK && z )
   {
-    const int count = zip_get_num_files( z );
+    const int count = zip_get_num_entries( z, ZIP_FL_UNCHANGED );
     if ( count != -1 )
     {
       struct zip_stat stat;
@@ -308,7 +308,7 @@ const QStringList QgsZipUtils::files( const QString &zip )
 
   if ( rc == ZIP_ER_OK && z )
   {
-    const int count = zip_get_num_files( z );
+    const int count = zip_get_num_entries( z, ZIP_FL_UNCHANGED );
     if ( count != -1 )
     {
       struct zip_stat stat;
