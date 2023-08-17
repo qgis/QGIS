@@ -1689,6 +1689,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted when the project is about to be cleared.
      *
      * \see clear()
+     * \since QGIS 3.34
      */
     void willBeCleared();
 
