@@ -310,6 +310,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
 
   if ( mDataProvider )
     layer->setProviderEncoding( mDataProvider->encoding() );
+  layer->setSubsetString( subsetString() );
   layer->setDisplayExpression( displayExpression() );
   layer->setMapTipTemplate( mapTipTemplate() );
   layer->setMapTipsEnabled( mapTipsEnabled() );
