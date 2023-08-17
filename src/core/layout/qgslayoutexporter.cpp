@@ -27,6 +27,8 @@
 #include "qgslinestring.h"
 #include "qgsmessagelog.h"
 #include "qgslabelingresults.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QImageWriter>
 #include <QSize>
@@ -143,6 +145,8 @@ class LayoutItemHider
 };
 
 ///@endcond PRIVATE
+
+const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingPdf = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-pdf" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported PDF file with the default viewer after exporting a print layout" ) );
 
 QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
   : mLayout( layout )

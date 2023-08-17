@@ -23,6 +23,8 @@ Handles rendering and exports of layouts to various formats.
 %End
   public:
 
+    static const QgsSettingsEntryBool *settingOpenAfterExportingPdf;
+
     struct PageExportDetails
     {
       QString directory;
