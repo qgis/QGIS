@@ -3293,6 +3293,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.setLegendUrlFormat('MyLegendUrlFormat')
         layer.setDependencies([dep])
         layer.setCrs(srs)
+        layer.setSubsetString('fldint = 457')
 
         layer.setCustomProperty('MyKey0', 'MyValue0')
         layer.setCustomProperty('MyKey1', 'MyValue1')
@@ -3402,6 +3403,8 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # compare xml documents
         self.assertEqual(layer_doc.toString(), clone_doc.toString())
+
+        self.assertEqual(clone.subsetString(), layer.subsetString())
 
     def testQgsVectorLayerSelectedFeatureSource(self):
         """
