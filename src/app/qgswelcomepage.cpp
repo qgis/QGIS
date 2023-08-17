@@ -200,6 +200,11 @@ QString QgsWelcomePage::newsFeedUrl()
   return QStringLiteral( FEED_URL );
 }
 
+QgsRecentProjectItemsModel *QgsWelcomePage::recentProjectsModel()
+{
+  return mRecentProjectsModel;
+}
+
 void QgsWelcomePage::recentProjectItemActivated( const QModelIndex &index )
 {
   QgisApp::instance()->openProject( mRecentProjectsModel->data( index, Qt::ToolTipRole ).toString() );

@@ -72,6 +72,7 @@ set(QGIS_APP_SRCS
   qgstemporalcontrollerdockwidget.cpp
   qgsversioninfo.cpp
   qgsrecentprojectsitemsmodel.cpp
+  qgsrecentprojectsmenueventfilter.cpp
   qgsvectorlayerdigitizingproperties.cpp
   qgswelcomepage.cpp
 

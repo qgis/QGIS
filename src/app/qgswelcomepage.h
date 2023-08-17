@@ -47,6 +47,8 @@ class QgsWelcomePage : public QWidget
      */
     static QString newsFeedUrl();
 
+    QgsRecentProjectItemsModel *recentProjectsModel();
+
   public slots:
     void removeProject( int row );
     void pinProject( int row );
