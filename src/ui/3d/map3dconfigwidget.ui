@@ -235,7 +235,7 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QgsExtentGroupBox" name="groupExtent">
+                <widget class="QgsExtent3DWidget" name="mExtent3D">
                  <property name="title">
                   <string>Extent</string>
                  </property>
@@ -1267,9 +1267,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsExtentGroupBox</class>
+   <class>QgsExtent3DWidget</class>
    <extends>QGroupBox</extends>
-   <header>qgsextentgroupbox.h</header>
+   <header>qgsextent3dwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
