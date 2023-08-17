@@ -56,7 +56,7 @@ QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortHelpString() const
                       "A cell is classified as terrain if there is no cell within the kernel radius to which the height difference is larger than the allowed "
                       "maximum height difference at the distance between these two cells.\n\n"
                       "The approximate terrain slope (<i>s</i>) parameter is used to modify the filter function to match the overall slope in the study "
-                      "<i>area( dz_max( d ) = d * s )</i>.\n\n"
+                      "area (<i>dz_max( d ) = d * s</i>).\n\n"
                       "A 5 % confidence interval (<i>ci = 1.65 * sqrt( 2 * stddev )</i>) may be used to modify the filter function even further by either "
                       "relaxing (<i>dz_max( d ) = d * s + ci</i>) or amplifying (<i>dz_max( d ) = d * s - ci</i>) the filter criterium.\n\n"
                       "References: Vosselman, G. (2000): Slope based filtering of laser altimetry data. IAPRS, Vol. XXXIII, Part B3, Amsterdam, The Netherlands, 935-942\n\n"
