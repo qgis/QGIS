@@ -261,6 +261,16 @@ QStringList QgsLayoutPdfExportOptionsDialog::geoPdfLayerOrder() const
   return order;
 }
 
+void QgsLayoutPdfExportOptionsDialog::setOpenAfterExporting( bool enabled )
+{
+  mOpenAfterExportingCheckBox->setChecked( enabled );
+}
+
+bool QgsLayoutPdfExportOptionsDialog::openAfterExporting() const
+{
+  return mOpenAfterExportingCheckBox->isChecked();
+}
+
 void QgsLayoutPdfExportOptionsDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );

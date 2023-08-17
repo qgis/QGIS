@@ -98,6 +98,7 @@
 #include <QWindow>
 #include <QScreen>
 #include <QActionGroup>
+#include <QDesktopServices>
 
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
@@ -2386,6 +2387,12 @@ void QgsLayoutDesignerDialog::exportToPdf()
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                 Qgis::MessageLevel::Success, 0 );
+
+      // Open exported file in the default viewer if enabled
+      if ( QgsLayoutExporter::settingOpenAfterExportingPdf->value() )
+      {
+        QDesktopServices::openUrl( QUrl::fromLocalFile( outputFileName ) );
+      }
       break;
     }
 
@@ -4519,6 +4526,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   dialog.setUseOgcBestPracticeFormat( useOgcBestPracticeFormat );
   dialog.setExportThemes( exportThemes );
   dialog.setLosslessImageExport( losslessImages );
+  dialog.setOpenAfterExporting( QgsLayoutExporter::settingOpenAfterExportingPdf->value() );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -4534,6 +4542,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   exportThemes = dialog.exportThemes();
   geoPdfLayerOrder = dialog.geoPdfLayerOrder();
   losslessImages = dialog.losslessImageExport();
+  QgsLayoutExporter::settingOpenAfterExportingPdf->setValue( dialog.openAfterExporting() );
 
   if ( mLayout )
   {
