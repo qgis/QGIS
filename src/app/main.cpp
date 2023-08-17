@@ -1039,6 +1039,8 @@ int main( int argc, char *argv[] )
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );
 
+  QString missingLastProfile;
+
   // If profile name was not explicitly set, use the policy to determine which profile to use
   if ( profileName.isEmpty() )
   {
@@ -1058,7 +1060,11 @@ int main( int argc, char *argv[] )
           // If last used profile no longer exists, use the default profile
           if ( !manager.profileExists( profileName ) )
           {
-            profileName  = manager.defaultProfileName();
+            if ( profileName != manager.defaultProfileName() )
+            {
+              missingLastProfile = profileName;
+            }
+            profileName = manager.defaultProfileName();
           }
           break;
 
@@ -1789,6 +1795,13 @@ int main( int argc, char *argv[] )
   delete mypSplash;
 
   qgis->completeInitialization();
+
+  // Warn if the user selection policy was set to "Use last used profile" but the last used profile was not found
+  if ( !missingLastProfile.isEmpty() )
+  {
+    qgis->messageBar()->pushWarning( QObject::tr( "Profile not found" ),
+                                     QObject::tr( "The last used profile '%1' was not found. The default profile was used instead." ).arg( missingLastProfile ) );
+  }
 
 #if defined(ANDROID)
   // fix for Qt Ministro hiding app's menubar in favor of native Android menus
