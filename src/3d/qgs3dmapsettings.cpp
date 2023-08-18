@@ -968,7 +968,7 @@ void Qgs3DMapSettings::set3DAxisSettings( const Qgs3DAxisSettings &axisSettings,
   {
     if ( force )
     {
-      // ie. refresh. We nned to disconnect and to reconnect to avoid 'dirty' project
+      // ie. refresh. We need to disconnect and to reconnect to avoid 'dirty' project
       disconnect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
       emit axisSettingsChanged();
       connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
