@@ -22,6 +22,7 @@
 #include "qgsmatrix4x4.h"
 #include "qgssphere.h"
 #include "qgsorientedbox3d.h"
+#include "qgslogger.h"
 
 #include <QtCore/QBuffer>
 #include <QIODevice>
@@ -142,7 +143,7 @@ QgsSphere QgsCesiumUtils::transformSphere( const QgsSphere &sphere, const QgsMat
   return sphere;
 }
 
-QByteArray QgsCesiumUtils::extractGltfFromB3dm( const QByteArray &tileContent )
+QgsCesiumUtils::B3DMContents QgsCesiumUtils::extractGltfFromB3dm( const QByteArray &tileContent )
 {
   struct b3dmHeader
   {
@@ -155,31 +156,65 @@ QByteArray QgsCesiumUtils::extractGltfFromB3dm( const QByteArray &tileContent )
     quint32 batchTableBinaryByteLength;
   };
 
+  QgsCesiumUtils::B3DMContents res;
   if ( tileContent.size() < static_cast<int>( sizeof( b3dmHeader ) ) )
-    return QByteArray();
+    return res;
 
   b3dmHeader hdr;
   memcpy( &hdr, tileContent.constData(), sizeof( b3dmHeader ) );
 
-  return tileContent.mid( sizeof( b3dmHeader ) +
-                          hdr.featureTableJsonByteLength + hdr.featureTableBinaryByteLength +
-                          hdr.batchTableJsonByteLength + hdr.batchTableBinaryByteLength );
+  const QString featureTableJson( tileContent.mid( sizeof( b3dmHeader ), hdr.featureTableJsonByteLength ) );
+  if ( !featureTableJson.isEmpty() )
+  {
+    try
+    {
+      const json featureTable = json::parse( featureTableJson.toStdString() );
+      if ( featureTable.contains( "RTC_CENTER" ) )
+      {
+        const auto &rtcCenterJson = featureTable[ "RTC_CENTER" ];
+        if ( rtcCenterJson.is_array() && rtcCenterJson.size() == 3 )
+        {
+          res.rtcCenter.setX( rtcCenterJson[0].get<double>() );
+          res.rtcCenter.setY( rtcCenterJson[1].get<double>() );
+          res.rtcCenter.setZ( rtcCenterJson[2].get<double>() );
+        }
+        else
+        {
+          QgsDebugError( QStringLiteral( "Invalid RTC_CENTER value" ) );
+        }
+      }
+    }
+    catch ( json::parse_error &ex )
+    {
+      QgsDebugError( QStringLiteral( "Error parsing feature table JSON: %1" ).arg( ex.what() ) );
+    }
+  }
+
+  res.gltf = tileContent.mid( sizeof( b3dmHeader ) +
+                              hdr.featureTableJsonByteLength + hdr.featureTableBinaryByteLength +
+                              hdr.batchTableJsonByteLength + hdr.batchTableBinaryByteLength );
+  return res;
 }
 
-QByteArray QgsCesiumUtils::extractGltfFromTileContent( const QByteArray &tileContent )
+QgsCesiumUtils::TileContents QgsCesiumUtils::extractGltfFromTileContent( const QByteArray &tileContent )
 {
+  TileContents res;
   if ( tileContent.startsWith( QByteArray( "b3dm" ) ) )
   {
-    return QgsCesiumUtils::extractGltfFromB3dm( tileContent );
+    const B3DMContents b3dmContents = QgsCesiumUtils::extractGltfFromB3dm( tileContent );
+    res.gltf = b3dmContents.gltf;
+    res.rtcCenter = b3dmContents.rtcCenter;
+    return res;
   }
   else if ( tileContent.startsWith( QByteArray( "glTF" ) ) )
   {
-    return tileContent;
+    res.gltf = tileContent;
+    return res;
   }
   else
   {
     // unsupported tile content type
     // TODO: we could extract "b3dm" data from a composite tile ("cmpt")
-    return QByteArray();
+    return res;
   }
 }
