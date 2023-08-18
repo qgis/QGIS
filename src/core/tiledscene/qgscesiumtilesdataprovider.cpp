@@ -993,7 +993,7 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
     }
     if ( !extensions.isEmpty() )
     {
-      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Extensions Required" ) % QStringLiteral( "</td><td><ul><li>%1</li></ul></a>" ).arg( extensions.join( QStringLiteral( "</li><li>" ) ) ) % QStringLiteral( "</td></tr>\n" );
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Extensions Required" ) % QStringLiteral( "</td><td><ul><li>%1</li></ul></a>" ).arg( extensions.join( QLatin1String( "</li><li>" ) ) ) % QStringLiteral( "</td></tr>\n" );
     }
   }
   if ( mShared->mTileset.contains( "extensionsUsed" ) )
@@ -1005,7 +1005,7 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
     }
     if ( !extensions.isEmpty() )
     {
-      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Extensions Used" ) % QStringLiteral( "</td><td><ul><li>%1</li></ul></a>" ).arg( extensions.join( QStringLiteral( "</li><li>" ) ) ) % QStringLiteral( "</td></tr>\n" );
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Extensions Used" ) % QStringLiteral( "</td><td><ul><li>%1</li></ul></a>" ).arg( extensions.join( QLatin1String( "</li><li>" ) ) ) % QStringLiteral( "</td></tr>\n" );
     }
   }
 

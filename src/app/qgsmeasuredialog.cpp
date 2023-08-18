@@ -728,7 +728,7 @@ void QgsMeasureDialog::copyMeasurements()
   QString separator = settingClipboardSeparator->value();
 
   // If the field separator is a comma and the locale uses a comma as decimal separator, change to a semicolon
-  if ( separator == QStringLiteral( "," ) && !alwaysUseDecimalPoint && QLocale().decimalPoint() == QStringLiteral( "," ) )
+  if ( separator == QLatin1String( "," ) && !alwaysUseDecimalPoint && QLocale().decimalPoint() == QLatin1String( "," ) )
     separator = QStringLiteral( ";" );
 
   if ( separator.isEmpty() )
@@ -749,7 +749,7 @@ void QgsMeasureDialog::copyMeasurements()
   auto replaceDecimalSeparator = [ alwaysUseDecimalPoint ]( const QString & value ) -> QString
   {
     QString result = value;
-    if ( alwaysUseDecimalPoint && QLocale().decimalPoint() != QStringLiteral( "." ) )
+    if ( alwaysUseDecimalPoint && QLocale().decimalPoint() != QLatin1String( "." ) )
       result.replace( QLocale().decimalPoint(), QStringLiteral( "." ) );
     return result;
   };

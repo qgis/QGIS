@@ -471,14 +471,14 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   {
     // Quoting floating point values, application name for PostgreSQL connection, etc in 1 request
     QString sql;
-    sql += QStringLiteral( "SET extra_float_digits=3;" );
+    sql += QLatin1String( "SET extra_float_digits=3;" );
     sql += QStringLiteral( "SET application_name=%1;" ).arg( quotedValue( QgsApplication::applicationFullName() ) );
-    sql += QStringLiteral( "SET datestyle='ISO';" );
+    sql += QLatin1String( "SET datestyle='ISO';" );
 
     // Set the PostgreSQL message level so that we don't get the
     // 'there is no transaction in progress' warning.
 #ifndef QGISDEBUG
-    sql += QStringLiteral( "SET client_min_messages to error;" );
+    sql += QLatin1String( "SET client_min_messages to error;" );
 #endif
 
     LoggedPQexecNR( "QgsPostgresConn", sql );

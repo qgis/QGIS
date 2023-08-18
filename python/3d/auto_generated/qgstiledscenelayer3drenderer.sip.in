@@ -46,7 +46,7 @@ class QgsTiledSceneLayer3DRenderer : QgsAbstract3DRenderer
 #include "qgstiledscenelayer3drenderer.h"
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->type() == QStringLiteral( "tiledscene" ) )
+    if ( sipCpp->type() == QLatin1String( "tiledscene" ) )
     {
       sipType = sipType_QgsTiledSceneLayer3DRenderer;
     }
