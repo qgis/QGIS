@@ -253,7 +253,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   {
     painter->setPen( mLockedPen );
 
-    const QgsPointLocator::Match snap = mAdvancedDigitizingDockWidget->lockedSnapVertices().last();
+    const QgsPointLocator::Match snap = mAdvancedDigitizingDockWidget->lockedSnapVertices().constLast();
     const QPointF snappedPoint = toCanvasCoordinates( snap.point() );
 
     const QgsFeature feature = snap.layer()->getFeature( snap.featureId() );
