@@ -120,7 +120,7 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   fields.append( QgsField( QStringLiteral( "right" ), QVariant::Double ) );
   fields.append( QgsField( QStringLiteral( "bottom" ), QVariant::Double ) );
   
-  switch (mIdx)
+  switch ( mIdx )
   {
     case 0: //point
     case 2: //rectangle
@@ -129,7 +129,7 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       fields.append( QgsField( QStringLiteral( "col_index" ), QVariant::LongLong ) );
       break;
     default:
-      break;  
+      break;
   }
   
 
