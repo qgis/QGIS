@@ -177,7 +177,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   // enable or disable Build Pyramids button depending on selection in pyramid list
   connect( lbxPyramidResolutions, &QListWidget::itemSelectionChanged, this, &QgsRasterLayerProperties::toggleBuildPyramidsButton );
 
-  connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
+  mRefreshSettingsWidget->setLayer( mRasterLayer );
 
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setMapCanvas( mCanvas );
@@ -816,10 +816,7 @@ void QgsRasterLayerProperties::sync()
     mInvertColorsCheck->setChecked( hueSaturationFilter->invertColors() );
   }
 
-
-  mRefreshLayerCheckBox->setChecked( mRasterLayer->hasAutoRefreshEnabled() );
-  mRefreshLayerIntervalSpinBox->setEnabled( mRasterLayer->hasAutoRefreshEnabled() );
-  mRefreshLayerIntervalSpinBox->setValue( mRasterLayer->autoRefreshInterval() / 1000.0 );
+  mRefreshSettingsWidget->syncToLayer();
 
   QgsDebugMsgLevel( QStringLiteral( "populate general tab" ), 3 );
   /*
@@ -1036,8 +1033,7 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
   mRasterLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 
-  mRasterLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
-  mRasterLayer->setAutoRefreshEnabled( mRefreshLayerCheckBox->isChecked() );
+  mRefreshSettingsWidget->saveToLayer();
 
   //update the legend pixmap
   // pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );

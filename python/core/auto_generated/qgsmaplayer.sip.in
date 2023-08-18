@@ -1356,7 +1356,7 @@ Returns whether scale based visibility is enabled for the layer.
 .. seealso:: :py:func:`isInScaleRange`
 %End
 
-    bool hasAutoRefreshEnabled() const;
+ bool hasAutoRefreshEnabled() const /Deprecated/;
 %Docstring
 Returns ``True`` if auto refresh is enabled for the layer.
 
@@ -1364,7 +1364,19 @@ Returns ``True`` if auto refresh is enabled for the layer.
 
 .. seealso:: :py:func:`setAutoRefreshEnabled`
 
-.. versionadded:: 3.0
+.. deprecated::
+   use :py:func:`~QgsMapLayer.autoRefreshMode` instead.
+%End
+
+    Qgis::AutoRefreshMode autoRefreshMode() const;
+%Docstring
+Returns the layer's automatical refresh mode.
+
+.. seealso:: :py:func:`autoRefreshInterval`
+
+.. seealso:: :py:func:`setAutoRefreshMode`
+
+.. versionadded:: 3.34
 %End
 
     int autoRefreshInterval() const;
@@ -1383,7 +1395,7 @@ auto refresh is only active when :py:func:`~QgsMapLayer.hasAutoRefreshEnabled` i
 %Docstring
 Sets the auto refresh interval (in milliseconds) for the layer. This
 will cause the layer to be automatically redrawn on a matching interval.
-Note that auto refresh must be enabled by calling :py:func:`~QgsMapLayer.setAutoRefreshEnabled`.
+Note that auto refresh must be enabled by calling :py:func:`~QgsMapLayer.setAutoRefreshMode`.
 
 Note that auto refresh triggers deferred repaints of the layer. Any map
 canvas must be refreshed separately in order to view the refreshed layer.
@@ -1395,7 +1407,7 @@ canvas must be refreshed separately in order to view the refreshed layer.
 .. versionadded:: 3.0
 %End
 
-    void setAutoRefreshEnabled( bool enabled );
+ void setAutoRefreshEnabled( bool enabled ) /Deprecated/;
 %Docstring
 Sets whether auto refresh is enabled for the layer.
 
@@ -1403,7 +1415,19 @@ Sets whether auto refresh is enabled for the layer.
 
 .. seealso:: :py:func:`setAutoRefreshInterval`
 
-.. versionadded:: 3.0
+.. deprecated::
+   Use :py:func:`~QgsMapLayer.setAutoRefreshMode` instead.
+%End
+
+    void setAutoRefreshMode( Qgis::AutoRefreshMode mode );
+%Docstring
+Sets the automatic refresh mode for the layer.
+
+.. seealso:: :py:func:`autoRefreshMode`
+
+.. seealso:: :py:func:`setAutoRefreshInterval`
+
+.. versionadded:: 3.34
 %End
 
     virtual const QgsLayerMetadata &metadata() const;

@@ -955,6 +955,13 @@ The development version
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
 
 
+    enum class AutoRefreshMode
+    {
+      Disabled,
+      ReloadData,
+      RedrawOnly,
+    };
+
     enum class DataProviderFlag
     {
       IsBasemapSource,
