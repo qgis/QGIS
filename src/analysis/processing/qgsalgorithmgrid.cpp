@@ -119,7 +119,7 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   fields.append( QgsField( QStringLiteral( "top" ), QVariant::Double ) );
   fields.append( QgsField( QStringLiteral( "right" ), QVariant::Double ) );
   fields.append( QgsField( QStringLiteral( "bottom" ), QVariant::Double ) );
-  
+
   switch ( mIdx )
   {
     case 0: //point
@@ -131,7 +131,6 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     default:
       break;
   }
-  
 
 
   Qgis::WkbType outputWkb = Qgis::WkbType::Polygon;
