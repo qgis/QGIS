@@ -122,12 +122,14 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   
   switch (mIdx)
   {
-  case 0: //point
-  case 2: //rectangle
-  case 4: //hexagon
-    fields.append( QgsField( QStringLiteral( "row_index" ), QVariant::LongLong ) );
-    fields.append( QgsField( QStringLiteral( "col_index" ), QVariant::LongLong ) );
-    break;  
+    case 0: //point
+    case 2: //rectangle
+    case 4: //hexagon
+      fields.append( QgsField( QStringLiteral( "row_index" ), QVariant::LongLong ) );
+      fields.append( QgsField( QStringLiteral( "col_index" ), QVariant::LongLong ) );
+      break;
+    default:
+      break;  
   }
   
 
@@ -198,7 +200,7 @@ void QgsGridAlgorithm::createPointGrid( std::unique_ptr< QgsFeatureSink > &sink,
       const double y = mGridExtent.yMaximum() - ( row * mVSpacing - row * mVOverlay );
 
       f.setGeometry( QgsGeometry( new QgsPoint( x, y ) ) );
-      f.setAttributes( QgsAttributes() << id << x << y << x + mHSpacing << y + mVSpacing << row << col);
+      f.setAttributes( QgsAttributes() << id << x << y << x + mHSpacing << y + mVSpacing << row << col );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
 
@@ -358,7 +360,7 @@ void QgsGridAlgorithm::createRectangleGrid( std::unique_ptr< QgsFeatureSink > &s
       std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
       poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
       f.setGeometry( std::move( poly ) );
-      f.setAttributes( QgsAttributes() << id << x1 << y1 << x2 << y2 << row << col);
+      f.setAttributes( QgsAttributes() << id << x1 << y1 << x2 << y2 << row << col );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
 
@@ -525,7 +527,7 @@ void QgsGridAlgorithm::createHexagonGrid( std::unique_ptr<QgsFeatureSink> &sink,
       std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
       poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
       f.setGeometry( std::move( poly ) );
-      f.setAttributes( QgsAttributes() << id << x1 << y1 << x4 << y3 << row << col);
+      f.setAttributes( QgsAttributes() << id << x1 << y1 << x4 << y3 << row << col );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
 
