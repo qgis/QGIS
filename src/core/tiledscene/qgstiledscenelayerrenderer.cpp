@@ -314,8 +314,8 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
     return false;
 
   const QByteArray tileContent = mIndex.retrieveContent( contentUri, feedback() );
-  const QByteArray gltfContent = QgsCesiumUtils::extractGltfFromTileContent( tileContent );
-  if ( gltfContent.isEmpty() )
+  const QgsCesiumUtils::TileContents content = QgsCesiumUtils::extractGltfFromTileContent( tileContent );
+  if ( content.gltf.isEmpty() )
   {
     return false;
   }
@@ -324,10 +324,10 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   QString gltfErrors;
   QString gltfWarnings;
   mCurrentModelId++;
-  const bool res = QgsGltfUtils::loadGltfModel( gltfContent, model, &gltfErrors, &gltfWarnings );
+  const bool res = QgsGltfUtils::loadGltfModel( content.gltf, model, &gltfErrors, &gltfWarnings );
   if ( res )
   {
-    const QgsVector3D tileTranslationEcef = QgsGltfUtils::extractTileTranslation( model );
+    const QgsVector3D tileTranslationEcef = content.rtcCenter + QgsGltfUtils::extractTileTranslation( model );
     const tinygltf::Scene &scene = model.scenes[model.defaultScene];
     const int nodeIndex = scene.nodes[0];
     const tinygltf::Node &gltfNode = model.nodes[nodeIndex];

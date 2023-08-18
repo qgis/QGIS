@@ -74,8 +74,11 @@ class _3D_EXPORT QgsGltf3DUtils
      * In the process, it applies transforms to the position coordinates: in addition to
      * what QgsGltfUtils::accessorToMapCoordinates() does, it does an extra step of converting
      * map coordinates to 3D scene coordinates: P_SCENE = flip_ZY(P_MAP - sceneOriginTargetCrs)
+     *
+     * If an external RTC correction is to be applied (eg in the case of the legacy B3DM format),
+     * it can be specified via the \a rtcCenter argument.
      */
-    static Qt3DCore::QEntity *gltfToEntity( const QByteArray &data, const EntityTransform &transform, const QString &baseUri, QStringList *errors = nullptr );
+    static Qt3DCore::QEntity *gltfToEntity( const QByteArray &data, const EntityTransform &transform, const QString &baseUri, QStringList *errors = nullptr, const QgsVector3D &rtcCenter = QgsVector3D() );
 
 };
 

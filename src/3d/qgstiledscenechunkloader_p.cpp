@@ -74,8 +74,8 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
       return;
     }
 
-    QByteArray gltfData = QgsCesiumUtils::extractGltfFromTileContent( content );
-    if ( gltfData.isEmpty() )
+    const QgsCesiumUtils::TileContents tileContent = QgsCesiumUtils::extractGltfFromTileContent( content );
+    if ( tileContent.gltf.isEmpty() )
     {
       // unsupported tile content type
       return;
@@ -87,7 +87,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
 
     QStringList errors;
-    mEntity = QgsGltf3DUtils::gltfToEntity( gltfData, entityTransform, uri, &errors );
+    mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors, tileContent.rtcCenter );
 
     if ( mEntity )
       mEntity->moveToThread( QgsApplication::instance()->thread() );

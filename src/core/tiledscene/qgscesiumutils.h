@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgsbox3d.h"
+#include "qgsvector3d.h"
 #include "qgis_sip.h"
 #include "nlohmann/json_fwd.hpp"
 
@@ -94,18 +95,42 @@ class CORE_EXPORT QgsCesiumUtils
     static QgsSphere transformSphere( const QgsSphere &sphere, const QgsMatrix4x4 &transform );
 
     /**
-     * Extracts GLTF binary data from the legacy b3dm (Batched 3D Model) tile format.
-     * Returns empty byte array on error.
+     * Encapsulates the contents of a B3DM file.
      */
-    static QByteArray extractGltfFromB3dm( const QByteArray &tileContent );
+    struct B3DMContents
+    {
+      //! GLTF binary content
+      QByteArray gltf;
+
+      //! Optional RTC center
+      QgsVector3D rtcCenter;
+    };
 
     /**
-     * Extracts GLTF binary data from tile content.
+     * Extracts GLTF binary data and other contents from the legacy b3dm (Batched 3D Model) tile format.
+     * Returns empty byte array on error.
+     */
+    static B3DMContents extractGltfFromB3dm( const QByteArray &tileContent );
+
+    /**
+     * Encapsulates the contents of a 3D tile.
+     */
+    struct TileContents
+    {
+      //! GLTF binary content
+      QByteArray gltf;
+
+      //! Optional RTC center
+      QgsVector3D rtcCenter;
+    };
+
+    /**
+     * Parses tile content.
      * Returns empty byte array on error.
      *
      * \note cmpt, pnts, i3dm tile types are currently not supported
      */
-    static QByteArray extractGltfFromTileContent( const QByteArray &tileContent );
+    static TileContents extractGltfFromTileContent( const QByteArray &tileContent );
 
 };
 
