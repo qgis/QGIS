@@ -146,6 +146,35 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( cbxProjectDefaultNew, &QCheckBox::toggled, this, &QgsOptions::cbxProjectDefaultNew_toggled );
   connect( leLayerGlobalCrs, &QgsProjectionSelectionWidget::crsChanged, this, &QgsOptions::leLayerGlobalCrs_crsChanged );
   connect( lstRasterDrivers, &QTreeWidget::itemDoubleClicked, this, &QgsOptions::lstRasterDrivers_itemDoubleClicked );
+
+  // some drivers apply for both raster and vector -- we treat these as siblings
+  // and must ensure that checking/unchecking one also checks/unchecks the other
+  // (we can't selectively just disable the raster/vector part of a GDAL driver)
+  auto syncItem = [ = ]( QTreeWidgetItem * changedItem, QTreeWidget * otherTree )
+  {
+    const QString driver = changedItem->data( 0, Qt::UserRole ).toString();
+    for ( int i = 0; i < otherTree->topLevelItemCount(); ++ i )
+    {
+      if ( QTreeWidgetItem *otherItem = otherTree->topLevelItem( i ) )
+      {
+        const QString otherDriver = otherItem->data( 0, Qt::UserRole ).toString();
+        if ( otherDriver == driver )
+        {
+          otherItem->setCheckState( 0, changedItem->checkState( 0 ) );
+          return;
+        }
+      }
+    }
+  };
+  connect( lstRasterDrivers, &QTreeWidget::itemChanged, this, [ = ]( QTreeWidgetItem * item, int )
+  {
+    syncItem( item, lstVectorDrivers );
+  } );
+  connect( lstVectorDrivers, &QTreeWidget::itemChanged, this, [ = ]( QTreeWidgetItem * item, int )
+  {
+    syncItem( item, lstRasterDrivers );
+  } );
+
   connect( mProjectOnLaunchCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged );
   connect( mProxyTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProxyTypeComboBox_currentIndexChanged );
   connect( mCustomVariablesChkBx, &QCheckBox::toggled, this, &QgsOptions::mCustomVariablesChkBx_toggled );
@@ -2352,33 +2381,34 @@ void QgsOptions::loadGdalDriverList()
     strMap.insert( str.toLower(), str );
   myDrivers = strMap.values();
 
-  for ( const QString &myName : std::as_const( myDrivers ) )
+  for ( const QString &driverName : std::as_const( myDrivers ) )
   {
-    const QSet< int > layerTypes = driversType[myName];
+    const QSet< int > layerTypes = driversType[driverName];
     for ( int layerType : layerTypes )
     {
-      QTreeWidgetItem *mypItem = new QTreeWidgetItem( QStringList( myName ) );
-      if ( mySkippedDrivers.contains( myName ) )
+      QTreeWidgetItem *driverItem = new QTreeWidgetItem( QStringList( driverName ) );
+      if ( mySkippedDrivers.contains( driverName ) )
       {
-        mypItem->setCheckState( 0, Qt::Unchecked );
+        driverItem->setCheckState( 0, Qt::Unchecked );
       }
       else
       {
-        mypItem->setCheckState( 0, Qt::Checked );
+        driverItem->setCheckState( 0, Qt::Checked );
       }
 
       // add driver metadata
-      mypItem->setText( 1, myDriversExt[myName] );
-      const QString myFlags = static_cast< Qgis::LayerType >( layerType ) == Qgis::LayerType::Raster ? rasterDriversFlags[myName] : vectorDriversFlags[myName];
-      mypItem->setText( 2, myFlags );
-      mypItem->setText( 3, myDriversLongName[myName] );
+      driverItem->setData( 0, Qt::UserRole, driverName );
+      driverItem->setText( 1, myDriversExt[driverName] );
+      const QString driverFlags = static_cast< Qgis::LayerType >( layerType ) == Qgis::LayerType::Raster ? rasterDriversFlags[driverName] : vectorDriversFlags[driverName];
+      driverItem->setText( 2, driverFlags );
+      driverItem->setText( 3, myDriversLongName[driverName] );
       if ( static_cast< Qgis::LayerType >( layerType ) == Qgis::LayerType::Raster )
       {
-        lstRasterDrivers->addTopLevelItem( mypItem );
+        lstRasterDrivers->addTopLevelItem( driverItem );
       }
       else
       {
-        lstVectorDrivers->addTopLevelItem( mypItem );
+        lstVectorDrivers->addTopLevelItem( driverItem );
       }
     }
   }
