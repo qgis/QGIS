@@ -210,7 +210,6 @@ Constructor for PdfExportSettings
       QStringList exportThemes;
 
       QVector<qreal> predefinedMapScales;
-
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );

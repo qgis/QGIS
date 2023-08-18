@@ -558,6 +558,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   // in items missing from the output
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+
+  // Force synchronous legend graphics requests. Necessary for WMS GetPrint,
+  // as otherwise processing the request ends before remote graphics are downloaded.
+  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagSynchronousLegendGraphics, true );
+
   mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
   mLayout->renderContext().setExportThemes( settings.exportThemes );
 

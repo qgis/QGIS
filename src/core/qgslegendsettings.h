@@ -368,6 +368,24 @@ class CORE_EXPORT QgsLegendSettings
     void setWmsLegendSize( QSizeF s ) {mWmsLegendSize = s;}
 
     /**
+     * Sets whether to request legend graphics synchronously.
+     *
+     * \see synchronousLegendRequests()
+     *
+     * \since QGIS 3.34
+     */
+    void setSynchronousLegendRequests( bool b ) {mSynchronousLegendRequests = b;}
+
+    /**
+     * Returns whether to request legend graphics synchronously.
+     *
+     * \see setSynchronousLegendRequests()
+     *
+     * \since QGIS 3.34
+     */
+    bool synchronousLegendRequests() const {return mSynchronousLegendRequests;}
+
+    /**
      * Returns the line spacing to use between lines of legend text.
      *
      * \see setLineSpacing()
@@ -525,6 +543,9 @@ class CORE_EXPORT QgsLegendSettings
 
     //! Width and height of WMS legendGraphic pixmap
     QSizeF mWmsLegendSize;
+
+    //! Whether to request legend graphics synchronously
+    bool mSynchronousLegendRequests = false;
 
     //! Spacing between lines when wrapped
     double mLineSpacing = 1;
