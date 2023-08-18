@@ -439,8 +439,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>336</width>
-                <height>562</height>
+                <width>653</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -733,8 +733,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>653</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -950,8 +950,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>164</width>
-                <height>103</height>
+                <width>653</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1345,8 +1345,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>653</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1582,8 +1582,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>695</width>
-                <height>552</height>
+                <width>639</width>
+                <height>705</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1857,50 +1857,11 @@
                 </widget>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
-                 <item>
-                  <widget class="QCheckBox" name="mRefreshLayerCheckBox">
-                   <property name="text">
-                    <string>Refresh layer at interval (seconds)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QgsDoubleSpinBox" name="mRefreshLayerIntervalSpinBox">
-                   <property name="toolTip">
-                    <string>Lower values result in more data refreshing. Canvas updates are deferred in order to avoid refreshing multiple times if more than one layer has an auto update interval set.</string>
-                   </property>
-                   <property name="decimals">
-                    <number>2</number>
-                   </property>
-                   <property name="minimum">
-                    <double>0.000000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>100000000000000000000.000000000000000</double>
-                   </property>
-                   <property name="singleStep">
-                    <double>5.000000000000000</double>
-                   </property>
-                   <property name="value">
-                    <double>10.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_4">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
+                <widget class="QgsMapLayerRefreshSettingsWidget" name="mRefreshSettingsWidget" native="true">
+                 <property name="focusPolicy">
+                  <enum>Qt::StrongFocus</enum>
+                 </property>
+                </widget>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_14">
@@ -2203,8 +2164,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>374</width>
-                <height>815</height>
+                <width>331</width>
+                <height>829</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2750,6 +2711,12 @@
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsMapLayerRefreshSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsmaplayerrefreshsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
@@ -2792,8 +2759,7 @@
   <tabstop>mUseReferenceScaleGroupBox</tabstop>
   <tabstop>mReferenceScaleWidget</tabstop>
   <tabstop>mForceRasterCheckBox</tabstop>
-  <tabstop>mRefreshLayerCheckBox</tabstop>
-  <tabstop>mRefreshLayerIntervalSpinBox</tabstop>
+  <tabstop>mRefreshSettingsWidget</tabstop>
   <tabstop>mRefreshLayerNotificationCheckBox</tabstop>
   <tabstop>mNotificationMessageCheckBox</tabstop>
   <tabstop>mNotifyMessagValueLineEdit</tabstop>
@@ -2815,10 +2781,15 @@
   <tabstop>mButtonAddWmsDimension</tabstop>
   <tabstop>mButtonEditWmsDimension</tabstop>
   <tabstop>mButtonRemoveWmsDimension</tabstop>
+  <tabstop>mEnableMapTips</tabstop>
+  <tabstop>mRadioOverrideSelectionSymbol</tabstop>
+  <tabstop>mRadioDefaultSelectionColor</tabstop>
+  <tabstop>mRadioOverrideSelectionColor</tabstop>
+  <tabstop>mSelectionColorButton</tabstop>
+  <tabstop>mSelectionSymbolButton</tabstop>
+  <tabstop>tableViewMetadataUrl</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

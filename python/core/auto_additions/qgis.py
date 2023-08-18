@@ -1569,6 +1569,13 @@ Qgis.MapLayerProperty.baseClass = Qgis
 Qgis.MapLayerProperties.baseClass = Qgis
 MapLayerProperties = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.AutoRefreshMode.Disabled.__doc__ = "Automatic refreshing is disabled"
+Qgis.AutoRefreshMode.ReloadData.__doc__ = "Reload data (and draw the new data)"
+Qgis.AutoRefreshMode.RedrawOnly.__doc__ = "Redraw current data only"
+Qgis.AutoRefreshMode.__doc__ = "Map layer automatic refresh modes.\n\n.. versionadded:: 3.34\n\n" + '* ``Disabled``: ' + Qgis.AutoRefreshMode.Disabled.__doc__ + '\n' + '* ``ReloadData``: ' + Qgis.AutoRefreshMode.ReloadData.__doc__ + '\n' + '* ``RedrawOnly``: ' + Qgis.AutoRefreshMode.RedrawOnly.__doc__
+# --
+Qgis.AutoRefreshMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.DataProviderFlag.IsBasemapSource.__doc__ = "Associated source should be considered a 'basemap' layer. See Qgis.MapLayerProperty.IsBasemapLayer."
 Qgis.DataProviderFlag.__doc__ = "Generic data provider flags.\n\n.. versionadded:: 3.26\n\n" + '* ``IsBasemapSource``: ' + Qgis.DataProviderFlag.IsBasemapSource.__doc__
 # --

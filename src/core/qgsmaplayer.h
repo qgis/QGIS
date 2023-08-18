@@ -1450,9 +1450,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns TRUE if auto refresh is enabled for the layer.
      * \see autoRefreshInterval()
      * \see setAutoRefreshEnabled()
-     * \since QGIS 3.0
+     * \deprecated use autoRefreshMode() instead.
      */
-    bool hasAutoRefreshEnabled() const;
+    Q_DECL_DEPRECATED bool hasAutoRefreshEnabled() const SIP_DEPRECATED;
+
+    /**
+     * Returns the layer's automatical refresh mode.
+     * \see autoRefreshInterval()
+     * \see setAutoRefreshMode()
+     * \since QGIS 3.34
+     */
+    Qgis::AutoRefreshMode autoRefreshMode() const;
 
     /**
      * Returns the auto refresh interval (in milliseconds). Note that
@@ -1466,7 +1474,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Sets the auto refresh interval (in milliseconds) for the layer. This
      * will cause the layer to be automatically redrawn on a matching interval.
-     * Note that auto refresh must be enabled by calling setAutoRefreshEnabled().
+     * Note that auto refresh must be enabled by calling setAutoRefreshMode().
      *
      * Note that auto refresh triggers deferred repaints of the layer. Any map
      * canvas must be refreshed separately in order to view the refreshed layer.
@@ -1480,9 +1488,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets whether auto refresh is enabled for the layer.
      * \see hasAutoRefreshEnabled()
      * \see setAutoRefreshInterval()
-     * \since QGIS 3.0
+     * \deprecated Use setAutoRefreshMode() instead.
      */
-    void setAutoRefreshEnabled( bool enabled );
+    Q_DECL_DEPRECATED void setAutoRefreshEnabled( bool enabled ) SIP_DEPRECATED;
+
+    /**
+     * Sets the automatic refresh mode for the layer.
+     * \see autoRefreshMode()
+     * \see setAutoRefreshInterval()
+     * \since QGIS 3.34
+     */
+    void setAutoRefreshMode( Qgis::AutoRefreshMode mode );
 
     /**
      * Returns a reference to the layer's metadata store.
@@ -2258,6 +2274,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Manager of multiple styles available for a layer (may be NULLPTR)
     QgsMapLayerStyleManager *mStyleManager = nullptr;
+
+    Qgis::AutoRefreshMode mAutoRefreshMode = Qgis::AutoRefreshMode::Disabled;
 
     //! Timer for triggering automatic refreshes of the layer
     QTimer *mRefreshTimer = nullptr;

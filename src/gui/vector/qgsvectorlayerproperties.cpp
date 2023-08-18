@@ -437,7 +437,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( QgsProject::instance(), &QObject::destroyed, this, [ = ] {mLayersDependenciesTreeView->setModel( nullptr );} );
   mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel );
 
-  connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
+  mRefreshSettingsWidget->setLayer( mLayer );
 
   // auxiliary layer
   QMenu *menu = new QMenu( this );
@@ -671,9 +671,7 @@ void QgsVectorLayerProperties::syncToLayer()
 
   mForceRasterCheckBox->setChecked( mLayer->renderer() && mLayer->renderer()->forceRasterRender() );
 
-  mRefreshLayerCheckBox->setChecked( mLayer->hasAutoRefreshEnabled() );
-  mRefreshLayerIntervalSpinBox->setEnabled( mLayer->hasAutoRefreshEnabled() );
-  mRefreshLayerIntervalSpinBox->setValue( mLayer->autoRefreshInterval() / 1000.0 );
+  mRefreshSettingsWidget->syncToLayer();
 
   mRefreshLayerNotificationCheckBox->setChecked( mLayer->isRefreshOnNotifyEnabled() );
   mNotificationMessageCheckBox->setChecked( !mLayer->refreshOnNotifyMessage().isEmpty() );
@@ -916,8 +914,7 @@ void QgsVectorLayerProperties::apply()
     selectionProperties->setSelectionRenderingMode( Qgis::SelectionRenderingMode::Default );
   }
 
-  mLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
-  mLayer->setAutoRefreshEnabled( mRefreshLayerCheckBox->isChecked() );
+  mRefreshSettingsWidget->saveToLayer();
 
   mLayer->setRefreshOnNotifyEnabled( mRefreshLayerNotificationCheckBox->isChecked() );
   mLayer->setRefreshOnNofifyMessage( mNotificationMessageCheckBox->isChecked() ? mNotifyMessagValueLineEdit->text() : QString() );

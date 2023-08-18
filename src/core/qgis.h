@@ -1605,6 +1605,19 @@ class CORE_EXPORT Qgis
     Q_FLAG( MapLayerProperties )
 
     /**
+     * Map layer automatic refresh modes.
+     *
+     * \since QGIS 3.34
+     */
+    enum class AutoRefreshMode : int
+    {
+      Disabled = 0, //!< Automatic refreshing is disabled
+      ReloadData = 1, //!< Reload data (and draw the new data)
+      RedrawOnly = 2, //!< Redraw current data only
+    };
+    Q_ENUM( AutoRefreshMode )
+
+    /**
      * Generic data provider flags.
      *
      * \since QGIS 3.26
