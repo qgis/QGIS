@@ -1647,7 +1647,7 @@ just before a new project is read).
 .. versionadded:: 3.2
 %End
 
-    void willBeCleared();
+    void aboutToBeCleared();
 %Docstring
 Emitted when the project is about to be cleared.
 
