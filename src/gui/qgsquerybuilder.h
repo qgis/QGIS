@@ -131,8 +131,6 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
      */
     void loadQuery();
 
-    void setDatasourceDescription( const QString &uri );
-
   private slots:
     void btnEqual_clicked();
     void btnLessThan_clicked();

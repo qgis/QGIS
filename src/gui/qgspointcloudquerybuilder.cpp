@@ -74,7 +74,7 @@ QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
 
   mOrigSubsetString = layer->subsetString();
 
-  lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
+  setWindowTitle( tr( "Provider Filter - %1" ).arg( layer->name() ) );
   mTxtSql->setText( mOrigSubsetString );
 }
 

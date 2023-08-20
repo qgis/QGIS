@@ -114,8 +114,6 @@ Load query from the XML file
 .. versionadded:: 3.16
 %End
 
-    void setDatasourceDescription( const QString &uri );
-
 };
 /************************************************************************
  * This file has been generated automatically from                      *

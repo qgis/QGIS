@@ -19,7 +19,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Query Builder</string>
+   <string>Provider Filter</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -30,13 +30,6 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="lblDataUri">
-     <property name="text">
-      <string>Datasource</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
     <widget class="QSplitter" name="splitter_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -332,7 +325,7 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
@@ -341,7 +334,6 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
   <zorder>splitter_2</zorder>
-  <zorder>lblDataUri</zorder>
   <zorder>buttonBox</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

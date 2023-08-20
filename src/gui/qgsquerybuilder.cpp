@@ -87,7 +87,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   connect( layer, &QgsVectorLayer::subsetStringChanged, this, &QgsQueryBuilder::layerSubsetStringChanged );
   layerSubsetStringChanged();
 
-  lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
+  setWindowTitle( tr( "Provider Filter - %1" ).arg( layer->name() ) );
   mTxtSql->setText( mOrigSubsetString );
 
   mFilterLineEdit->setShowSearchIcon( true );
@@ -451,11 +451,6 @@ void QgsQueryBuilder::btnILike_clicked()
 {
   mTxtSql->insertText( QStringLiteral( " ILIKE " ) );
   mTxtSql->setFocus();
-}
-
-void QgsQueryBuilder::setDatasourceDescription( const QString &uri )
-{
-  lblDataUri->setText( uri );
 }
 
 void QgsQueryBuilder::showHelp()
