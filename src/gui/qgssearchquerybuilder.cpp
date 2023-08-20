@@ -63,7 +63,8 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
   setupListViews();
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSearchQueryBuilder::showHelp );
 
-  setWindowTitle( tr( "Search Query Builder" ) );
+  if ( layer )
+    setWindowTitle( tr( "Search Query Builder - %1" ).arg( layer->name() ) );
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
@@ -83,8 +84,6 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
   pbn->setToolTip( tr( "Load query from xml file" ) );
   connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::loadQuery );
 
-  if ( layer )
-    lblDataUri->setText( layer->name() );
   populateFields();
 }
 
