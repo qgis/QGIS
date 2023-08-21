@@ -71,6 +71,11 @@ class CORE_EXPORT QgsMatrix4x4
     //! Returns matrix data (in column-major order)
     QList< double > dataList() const SIP_PYNAME( data ) SIP_HOLDGIL;
 
+    /**
+     * Multiplies this matrix by another that translates coordinates by the components of a \a vector.
+     */
+    void translate( const QgsVector3D &vector );
+
     //! Matrix-vector multiplication (vector is converted to homogenous coordinates [X,Y,Z,1] and back)
     QgsVector3D map( const QgsVector3D &vector ) const SIP_HOLDGIL
     {
