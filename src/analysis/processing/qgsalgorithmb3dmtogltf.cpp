@@ -1,0 +1,128 @@
+/***************************************************************************
+                         qgsalgorithmb3dmtogltf.cpp
+                         ---------------------
+    begin                : August 2023
+    copyright            : (C) 2023 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsalgorithmb3dmtogltf.h"
+#include "qgscesiumutils.h"
+#include "qgsgltfutils.h"
+
+#define TINYGLTF_IMPLEMENTATION
+#define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
+#define TINYGLTF_NO_STB_IMAGE_WRITE   // we don't need writing of images
+
+#include "tiny_gltf.h"
+#include <fstream>
+
+///@cond PRIVATE
+
+QString QgsB3DMToGltfAlgorithm::name() const
+{
+  return QStringLiteral( "b3dmtogltf" );
+}
+
+QString QgsB3DMToGltfAlgorithm::displayName() const
+{
+  return QObject::tr( "Convert B3DM to GLTF" );
+}
+
+QStringList QgsB3DMToGltfAlgorithm::tags() const
+{
+  return QObject::tr( "3d,tiles,cesium" ).split( ',' );
+}
+
+QString QgsB3DMToGltfAlgorithm::group() const
+{
+  return QObject::tr( "3D Tiles" );
+}
+
+QString QgsB3DMToGltfAlgorithm::groupId() const
+{
+  return QStringLiteral( "3dtiles" );
+}
+
+QString QgsB3DMToGltfAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Converts files from the legacy B3DM format to GLTF." );
+}
+
+QgsB3DMToGltfAlgorithm *QgsB3DMToGltfAlgorithm::createInstance() const
+{
+  return new QgsB3DMToGltfAlgorithm();
+}
+
+void QgsB3DMToGltfAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input B3DM" ), QgsProcessingParameterFile::File,
+                QStringLiteral( "b3dm" ), QVariant(), false, QStringLiteral( "B3DM (*.b3dm *.B3DM)" ) ) );
+
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output GLTF file" ), QStringLiteral( "GLTF (*.gltf *.GLTF)" ) ) );
+}
+
+QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  const QString path = parameterAsFile( parameters, QStringLiteral( "INPUT" ), context );
+  const QString outputPath = parameterAsFile( parameters, QStringLiteral( "OUTPUT" ), context );
+
+  if ( !QFile::exists( path ) )
+    throw QgsProcessingException( QObject::tr( "Could not load source file %1." ).arg( path ) );
+
+  QFile f( path );
+  QByteArray b3dmContent;
+  if ( f.open( QIODevice::ReadOnly ) )
+  {
+    b3dmContent = f.readAll();
+  }
+  else
+  {
+    throw QgsProcessingException( QObject::tr( "Could not load source file %1." ).arg( path ) );
+  }
+
+  const QByteArray gltfContent = QgsCesiumUtils::extractGltfFromB3dm( b3dmContent );
+
+  // load gltf and then rewrite -- this allows us to both validate the B3DM GLTF content, and
+  // also gives the opportunity to "upgrade" B3DM specific options (like CESIUM_RTC) to standard
+  // GLTF extensions
+  tinygltf::Model model;
+  QString errors;
+  QString warnings;
+  if ( !QgsGltfUtils::loadGltfModel( gltfContent, model, &errors, &warnings ) )
+  {
+    throw QgsProcessingException( QObject::tr( "Error loading B3DM model: %1" ).arg( errors ) );
+  }
+  if ( !warnings.isEmpty() )
+  {
+    feedback->pushWarning( warnings );
+  }
+
+  const QByteArray outputFile = QFile::encodeName( outputPath );
+  std::ofstream of( outputFile.constData(), std::ios::binary | std::ios::trunc );
+  if ( !of )
+    throw QgsProcessingException( QObject::tr( "Could not create destination file %1." ).arg( outputPath ) );
+
+  tinygltf::TinyGLTF writer;
+  if ( !writer.WriteGltfSceneToStream( &model, of ) )
+  {
+    of.close();
+    throw QgsProcessingException( QObject::tr( "Could not write GLTF model to %1." ).arg( outputPath ) );
+  }
+  of.close();
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), outputPath );
+  return outputs;
+}
+
+///@endcond

@@ -47,6 +47,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmaspect.cpp
   processing/qgsalgorithmassignprojection.cpp
   processing/qgsalgorithmattributeindex.cpp
+  processing/qgsalgorithmb3dmtogltf.cpp
   processing/qgsalgorithmbatchgeocode.cpp
   processing/qgsalgorithmbatchnominatimgeocode.cpp
   processing/qgsalgorithmboundary.cpp
@@ -515,6 +516,7 @@ target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
+  ${CMAKE_SOURCE_DIR}/external/tinygltf
 
   ${CMAKE_BINARY_DIR}/src/analysis
 
@@ -575,6 +577,10 @@ endif()
 
 if(HAVE_OPENCL)
     target_link_libraries(qgis_analysis ${OpenCL_LIBRARIES})
+endif()
+
+if (WITH_DRACO)
+  target_link_libraries(qgis_analysis ${DRACO_LIBRARY})
 endif()
 
 target_compile_definitions(qgis_analysis PRIVATE "-DQT_NO_FOREACH")
