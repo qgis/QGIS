@@ -191,4 +191,3 @@ QgsFeatureSource::SpatialIndexPresence QgsFeatureSource::hasSpatialIndex() const
 {
   return SpatialIndexUnknown;
 }
-
