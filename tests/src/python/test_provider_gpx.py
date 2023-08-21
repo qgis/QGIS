@@ -182,6 +182,9 @@ class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertFalse(vl.dataProvider().changeAttributeValues({1: {1: 'a'}}))
 
+        source = vl.dataProvider().featureSource()
+        self.assertFalse(list(source.getFeatures()))
+
     def test_encode_decode_uri(self):
         metadata = QgsProviderRegistry.instance().providerMetadata('gpx')
         self.assertIsNotNone(metadata)
