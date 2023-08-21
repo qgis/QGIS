@@ -115,7 +115,7 @@ class _3D_EXPORT QgsTiledSceneLayer3DRenderer : public QgsAbstract3DRenderer
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     double mMaximumScreenError = 50.0;
-    bool mShowBoundingBoxes = true;
+    bool mShowBoundingBoxes = false;
 
   private:
 #ifdef SIP_RUN
