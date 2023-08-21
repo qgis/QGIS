@@ -11,6 +11,18 @@
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="0" column="1">
     <widget class="QgsDoubleSpinBox" name="mMaxErrorSpinBox">
      <property name="suffix">
@@ -30,7 +42,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="lblMaxError">
      <property name="text">
-      <string>Maximum error</string>
+      <string>Maximum screen space error</string>
      </property>
     </widget>
    </item>
