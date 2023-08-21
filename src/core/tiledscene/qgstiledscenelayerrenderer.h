@@ -129,6 +129,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
     {
       QPolygonF boundary;
       bool hasContent = false;
+      QString id;
     };
     QVector< TileDetails > mTileDetails;
 
