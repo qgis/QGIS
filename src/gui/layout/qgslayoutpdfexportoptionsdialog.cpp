@@ -104,7 +104,7 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
       showContextMenuForGeoPdfStructure( point, mGeoPdfStructureProxyModel->mapToSource( index ) );
   } );
 
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutPdfExportOptionsDialog::showHelp );
+  connect( mHelpButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutPdfExportOptionsDialog::showHelp );
   QgsGui::enableAutoGeometryRestore( this );
 }
 
