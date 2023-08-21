@@ -29,6 +29,7 @@
 #include "qgsgltfutils.h"
 #include "qgscesiumutils.h"
 #include "qgscurvepolygon.h"
+#include "qgstextrenderer.h"
 
 #include <QMatrix4x4>
 
@@ -261,6 +262,15 @@ bool QgsTiledSceneLayerRenderer::renderTiles( QgsTiledSceneRenderContext &contex
       painter->setPen( pen );
       painter->setBrush( brush );
       painter->drawPolygon( tile.boundary );
+#if 1
+      QgsTextFormat format;
+      format.setColor( QColor( 255, 0, 0 ) );
+      format.buffer().setEnabled( true );
+
+      QgsTextRenderer::drawText( QRectF( QPoint( 0, 0 ), renderContext()->outputSize() ).intersected( tile.boundary.boundingRect() ),
+                                 0, Qgis::TextHorizontalAlignment::Center, { tile.id },
+                                 *renderContext(), format, true, Qgis::TextVerticalAlignment::VerticalCenter );
+#endif
     }
   }
 
@@ -297,6 +307,7 @@ void QgsTiledSceneLayerRenderer::renderTile( const QgsTiledSceneTile &tile, QgsT
         TileDetails details;
         details.boundary = volumePolygon;
         details.hasContent = hasContent;
+        details.id = QString::number( tile.id() );
         mTileDetails.append( details );
       }
     }
