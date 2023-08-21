@@ -146,6 +146,7 @@ class LayoutItemHider
 
 ///@endcond PRIVATE
 
+const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingImage = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-image" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported image file with the default viewer after exporting a print layout" ) );
 const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingPdf = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-pdf" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported PDF file with the default viewer after exporting a print layout" ) );
 
 QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )

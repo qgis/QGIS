@@ -33,7 +33,7 @@ QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *p
   connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mResolutionSpinBox_valueChanged );
 
   connect( mClipToContentGroupBox, &QGroupBox::toggled, this, &QgsLayoutImageExportOptionsDialog::clipToContentsToggled );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutImageExportOptionsDialog::showHelp );
+  connect( mHelpButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutImageExportOptionsDialog::showHelp );
   QgsGui::enableAutoGeometryRestore( this );
 }
 
@@ -130,6 +130,16 @@ void QgsLayoutImageExportOptionsDialog::setCropMargins( int topMargin, int right
   mRightMarginSpinBox->setValue( rightMargin );
   mBottomMarginSpinBox->setValue( bottomMargin );
   mLeftMarginSpinBox->setValue( leftMargin );
+}
+
+bool QgsLayoutImageExportOptionsDialog::openAfterExporting() const
+{
+  return mOpenAfterExportingCheckBox->isChecked();
+}
+
+void QgsLayoutImageExportOptionsDialog::setOpenAfterExporting( bool enabled )
+{
+  mOpenAfterExportingCheckBox->setChecked( enabled );
 }
 
 void QgsLayoutImageExportOptionsDialog::mWidthSpinBox_valueChanged( int value )
