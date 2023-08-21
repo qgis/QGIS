@@ -1204,6 +1204,16 @@ QgsRectangle QgsGeometry::boundingBox() const
   return QgsRectangle();
 }
 
+QgsBox3D QgsGeometry::boundingBox3D() const
+{
+  if ( d->geometry )
+  {
+    return d->geometry->boundingBox3D();
+  }
+  return QgsBox3D();
+}
+
+
 QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const
 {
   mLastError.clear();
