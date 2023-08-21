@@ -2147,18 +2147,10 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
   QVERIFY( result.isEmpty() );
 
   // oriented rectangle
-  geomTest = QgsGeometry::fromWkt( QStringLiteral( " Polygon(0 0, 5 5, -2.07106781186547462 12.07106781186547551, -7.07106781186547462 7.07106781186547551, 0 0) " ) );
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( " Polygon((0 0, 5 5, -2.07106781186547462 12.07106781186547551, -7.07106781186547462 7.07106781186547551, 0 0)) " ) );
   result = geomTest.orientedMinimumBoundingBox( );
-  QgsPolygonXY geomXY, resultXY;
-  geomXY = geomTest.asPolygon();
-  resultXY = result.asPolygon();
-
-  QCOMPARE( geomXY.count(), resultXY.count() );
-  // can't strictly compare, use tolerance
-  for ( int i = 0 ; i < geomXY.count() ; ++i )
-  {
-    QVERIFY( geomXY.at( 0 ).at( i ).compare( resultXY.at( 0 ).at( i ), 1E-8 ) );
-  }
+  QgsGeometry expectedGeom = QgsGeometry::fromWkt( QStringLiteral( " Polygon((-7.07106781186547462 7.07106781186547551, 0 0, 5 5, -2.07106781186547462 12.07106781186547551, -7.07106781186547462 7.07106781186547551)) " ) );
+  QCOMPARE( result.asWkt( 3 ), QStringLiteral( "Polygon ((-7.071 7.071, 0 0, 5 5, -2.071 12.071, -7.071 7.071))" ) );
 
   // Issue https://github.com/qgis/QGIS/issues/33532
   geomTest = QgsGeometry::fromWkt( QStringLiteral( " Polygon ((264 -525, 248 -521, 244 -519, 233 -508, 231 -504, 210 -445, 196 -396, 180 -332, 178 -322, 176 -310, 174 -296, 174 -261, 176 -257, 178 -255, 183 -251, 193 -245, 197 -243, 413 -176, 439 -168, 447 -166, 465 -164, 548 -164, 552 -166, 561 -175, 567 -187, 602 -304, 618 -379, 618 -400, 616 -406, 612 -414, 606 -420, 587 -430, 575 -436, 547 -446, 451 -474, 437 -478, 321 -511, 283 -521, 275 -523, 266 -525, 264 -525)) " ) );
