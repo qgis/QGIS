@@ -2272,6 +2272,12 @@ void QgsLayoutDesignerDialog::exportToRaster()
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileNExt.first ).toString(), QDir::toNativeSeparators( fileNExt.first ) ),
                                 Qgis::MessageLevel::Success, 0 );
+
+      // Open exported file in the default viewer if enabled
+      if ( QgsLayoutExporter::settingOpenAfterExportingImage->value() )
+      {
+        QDesktopServices::openUrl( QUrl::fromLocalFile( fileNExt.first ) );
+      }
       break;
 
     case QgsLayoutExporter::PrintError:
@@ -4301,6 +4307,7 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
   if ( mLayout )
     imageDlg.setGenerateWorldFile( mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool() );
   imageDlg.setAntialiasing( antialias );
+  imageDlg.setOpenAfterExporting( QgsLayoutExporter::settingOpenAfterExportingImage->value() );
 
   if ( !imageDlg.exec() )
     return false;
@@ -4308,6 +4315,8 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
   imageSize = QSize( imageDlg.imageWidth(), imageDlg.imageHeight() );
   cropToContents = imageDlg.cropToContents();
   imageDlg.getCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+  QgsLayoutExporter::settingOpenAfterExportingImage->setValue( imageDlg.openAfterExporting() );
+
   if ( mLayout )
   {
     mLayout->setCustomProperty( QStringLiteral( "imageCropToContents" ), cropToContents );

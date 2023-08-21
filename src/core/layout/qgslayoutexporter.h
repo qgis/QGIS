@@ -52,6 +52,9 @@ class CORE_EXPORT QgsLayoutExporter
 
   public:
 
+    //! Settings entry - Whether to automatically open images after exporting them \since QGIS 3.34
+    static const QgsSettingsEntryBool *settingOpenAfterExportingImage SIP_SKIP;
+
     //! Settings entry - Whether to automatically open pdfs after exporting them \since QGIS 3.34
     static const QgsSettingsEntryBool *settingOpenAfterExportingPdf SIP_SKIP;
 
