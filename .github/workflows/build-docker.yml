@@ -55,6 +55,14 @@ jobs:
       matrix: ${{ fromJSON( needs.define-strategy.outputs.matrix ) }}
 
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          large-packages: true
+          docker-images: false
+          swap-storage: true
+
       - name: Free additional space
         run: |
           df -h
