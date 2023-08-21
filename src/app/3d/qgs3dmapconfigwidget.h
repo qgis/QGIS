@@ -20,6 +20,8 @@
 
 #include <ui_map3dconfigwidget.h>
 
+#include "qgsorientedbox3d.h"
+
 class QCheckBox;
 class Qgs3DMapSettings;
 class QgsMapCanvas;
@@ -39,6 +41,8 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     ~Qgs3DMapConfigWidget() override;
 
     void apply();
+
+    void reject();
 
   signals:
 
@@ -60,8 +64,11 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     QgsShadowRenderingSettingsWidget *mShadowSettingsWidget = nullptr;
     QCheckBox *mShowExtentIn2DViewCheckbox = nullptr;
 
+    QgsOrientedBox3D mOldSceneBox;
+
     void init3DAxisPage();
     void updateTerrain();
+    QgsOrientedBox3D updateExtent3D( bool doUpdate = true );
 };
 
 #endif // QGS3DMAPCONFIGWIDGET_H

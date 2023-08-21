@@ -83,6 +83,7 @@ QgsExtent3DWidget::QgsExtent3DWidget( QWidget *parent )
 
   connect( mRotationSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsExtent3DWidget::onRotationChanged );
   connect( mRotationSlider, &QSlider::valueChanged, this, &QgsExtent3DWidget::onRotationChanged );
+  connect( mPreviewExtentCheckBox, &QCheckBox::toggled, this, [ = ] { emit showIn2DViewChanged(); } );
 }
 
 void QgsExtent3DWidget::setMapCanvas( QgsMapCanvas *canvas )
@@ -320,6 +321,7 @@ void QgsExtent3DWidget::setOutputExtent( const QgsRectangle &rectangle, const Qg
   }
 
   updateTitle( state );
+  emit extentChanged();
 }
 
 void QgsExtent3DWidget::updateTitle( const QgsExtentWidget::ExtentState &state )
@@ -359,6 +361,7 @@ QgsRectangle QgsExtent3DWidget::extent() const
 void QgsExtent3DWidget::onRotationChanged( int rotation )
 {
   setRotation( rotation );
+  emit rotationChanged();
 }
 
 void QgsExtent3DWidget::setRotation( double rotation )
