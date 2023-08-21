@@ -26,7 +26,7 @@
 #include <unistd.h>
 #include "qgslogger.h"
 
-#ifdef Q_OS_LINUX
+#if defined( Q_OS_UNIX) && !defined(Q_OS_ANDROiD)
 //
 // QgsFCGXStreamData copied from libfcgi FCGX_Stream_Data
 //
@@ -69,7 +69,7 @@ SocketMonitoringThread::SocketMonitoringThread( bool *isResponseFinished, QgsFee
   if ( FCGI_stdout && FCGI_stdout->fcgx_stream && FCGI_stdout->fcgx_stream->data )
   {
     qintptr fd = 0;
-#ifdef Q_OS_LINUX
+#if defined( Q_OS_UNIX) && !defined(Q_OS_ANDROiD)
     QgsFCGXStreamData *stream = static_cast<QgsFCGXStreamData *>( FCGI_stdin->fcgx_stream->data );
     if ( stream && stream->reqDataPtr )
     {
