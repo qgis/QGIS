@@ -53,7 +53,7 @@ class CORE_EXPORT QgsLayoutExporter
   public:
 
     //! Settings entry - Whether to automatically open pdfs after exporting them \since QGIS 3.34
-    static const QgsSettingsEntryBool *settingOpenAfterExportingPdf;
+    static const QgsSettingsEntryBool *settingOpenAfterExportingPdf SIP_SKIP;
 
     //! Contains details of a page being exported by the class
     struct PageExportDetails

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>489</width>
-    <height>696</height>
+    <width>565</width>
+    <height>773</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,8 +27,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>457</width>
-        <height>973</height>
+        <width>533</width>
+        <height>944</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -97,13 +97,6 @@
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>Image compression</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0" colspan="2">
-           <widget class="QCheckBox" name="mOpenAfterExportingCheckBox">
-            <property name="text">
-             <string>Open file after exporting</string>
             </property>
            </widget>
           </item>
@@ -299,14 +292,48 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Save</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QDialogButtonBox" name="mHelpButtonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Help</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mOpenAfterExportingCheckBox">
+       <property name="text">
+        <string>Open file after exporting</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -331,7 +358,6 @@
   <tabstop>mIncludeMetadataCheckbox</tabstop>
   <tabstop>mTextRenderFormatComboBox</tabstop>
   <tabstop>mComboImageCompression</tabstop>
-  <tabstop>mOpenAfterExportingCheckBox</tabstop>
   <tabstop>mGeoPDFGroupBox</tabstop>
   <tabstop>mGeoPdfFormatComboBox</tabstop>
   <tabstop>mIncludeMapThemesCheck</tabstop>
