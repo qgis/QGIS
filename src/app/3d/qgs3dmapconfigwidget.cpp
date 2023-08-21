@@ -259,12 +259,8 @@ Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
   settings.setValue( QStringLiteral( "Windows/3DMapConfig/Tab" ), m3DOptionsListWidget->currentRow() );
 }
 
-void Qgs3DMapConfigWidget::apply()
+void Qgs3DMapConfigWidget::updateTerrain()
 {
-  mMap->setExtent( mExtent3D->extent() );
-  mMap->setZRotation( mExtent3D->rotation() );
-  mMap->setShowExtentIn2DView( mExtent3D->showIn2DView() );
-
   const QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
 
   mMap->setTerrainRenderingEnabled( groupTerrain->isChecked() );
@@ -337,6 +333,15 @@ void Qgs3DMapConfigWidget::apply()
     }
     break;
   }
+}
+
+void Qgs3DMapConfigWidget::apply()
+{
+  mMap->setExtent( mExtent3D->extent() );
+  mMap->setZRotation( mExtent3D->rotation() );
+  mMap->setShowExtentIn2DView( mExtent3D->showIn2DView() );
+
+  updateTerrain();
 
   mMap->setFieldOfView( spinCameraFieldOfView->value() );
   mMap->setProjectionType( cboCameraProjectionType->currentData().value< Qt3DRender::QCameraLens::ProjectionType >() );
