@@ -259,6 +259,8 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
   if ( url.scheme().startsWith( "http" ) )
   {
     QNetworkRequest request = QNetworkRequest( url );
+    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
     QgsBlockingNetworkRequest networkRequest;
     // TODO: setup auth, setup headers
     if ( networkRequest.get( request ) != QgsBlockingNetworkRequest::NoError )
