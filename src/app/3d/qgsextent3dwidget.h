@@ -68,6 +68,9 @@ class QgsExtent3DWidget : public QgsCollapsibleGroupBox, private Ui::QgsExtent3D
   signals:
 
     void toggleDialogVisibility( bool visible );
+    void extentChanged();
+    void rotationChanged();
+    void showIn2DViewChanged();
 
   private slots:
 

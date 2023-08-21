@@ -17,13 +17,13 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgsdemterraingenerator.h"
+#include "qgsextent3dwidget.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsmeshterraingenerator.h"
 #include "qgs3dutils.h"
 #include "qgsguiutils.h"
 #include "qgsmapcanvas.h"
-#include "qgsorientedbox3d.h"
 #include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
@@ -248,6 +248,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   const QgsOrientedBox3D sceneBox = mMap->box();
   const double rotationZ = sceneBox.eulerAngles().z();
   QgsRectangle horizontalExtent = mMap->extent();
+  mOldSceneBox = sceneBox;
   if ( rotationZ != 0.0 )
   {
     // rotation is counter-clockwise
@@ -259,6 +260,21 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mExtent3D->setMapCanvas( mMainCanvas );
   mExtent3D->setRotation( rotationZ );
   mExtent3D->setShowIn2DView( mMap->showExtentIn2DView() );
+
+  connect( mExtent3D, &QgsExtent3DWidget::extentChanged, this, [ = ]
+  {
+    updateExtent3D();
+  } );
+
+  connect( mExtent3D, &QgsExtent3DWidget::rotationChanged, this, [ = ]
+  {
+    updateExtent3D();
+  } );
+
+  connect( mExtent3D, &QgsExtent3DWidget::showIn2DViewChanged, this, [ = ]
+  {
+    mMap->setShowExtentIn2DView( mExtent3D->showIn2DView() );
+  } );
 
   onTerrainTypeChanged();
 }
@@ -272,19 +288,7 @@ Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
 
 void Qgs3DMapConfigWidget::apply()
 {
-  QgsBox3D sceneAABox = QgsBox3D( mExtent3D->extent() );
-  sceneAABox.setZMinimum( Qgs3DMapSettings::DEFAULT_MIN_DEPTH );
-  sceneAABox.setZMaximum( Qgs3DMapSettings::DEFAULT_MAX_DEPTH );
-  QgsOrientedBox3D sceneBox = QgsOrientedBox3D::fromBox3D( sceneAABox );
-
-  if ( mExtent3D->rotation() != 0.0 )
-  {
-    // rotation is counter-clockwise
-    sceneBox = Qgs3DUtils::rotateOrientedBoundingBox3D( sceneBox, -mExtent3D->rotation() );
-  }
-
-  mMap->setBox( sceneBox );
-  updateTerrain();
+  updateExtent3D();
 
   mMap->setFieldOfView( static_cast<float>( spinCameraFieldOfView->value() ) );
   mMap->setProjectionType( cboCameraProjectionType->currentData().value< Qt3DRender::QCameraLens::ProjectionType >() );
@@ -408,6 +412,18 @@ void Qgs3DMapConfigWidget::updateTerrain()
     }
     break;
   }
+}
+
+void Qgs3DMapConfigWidget::reject()
+{
+  QgsOrientedBox3D currentBox = updateExtent3D( false );
+  if ( currentBox == mOldSceneBox )
+  {
+    return;
+  }
+
+  mMap->setBox( mOldSceneBox );
+  updateTerrain();
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()
@@ -554,4 +570,27 @@ void Qgs3DMapConfigWidget::on3DAxisChanged()
   }
 
   mMap->set3DAxisSettings( s );
+}
+
+QgsOrientedBox3D Qgs3DMapConfigWidget::updateExtent3D( bool doUpdate )
+{
+  QgsBox3D sceneAABox = QgsBox3D( mExtent3D->extent() );
+  sceneAABox.setZMinimum( Qgs3DMapSettings::DEFAULT_MIN_DEPTH );
+  sceneAABox.setZMaximum( Qgs3DMapSettings::DEFAULT_MAX_DEPTH );
+  QgsOrientedBox3D sceneBox = QgsOrientedBox3D::fromBox3D( sceneAABox );
+
+  const double rotationZ = mExtent3D->rotation();
+  if ( rotationZ != 0 )
+  {
+    // rotation is counter-clockwise
+    sceneBox = Qgs3DUtils::rotateOrientedBoundingBox3D( sceneBox, -rotationZ );
+  }
+
+  if ( doUpdate )
+  {
+    mMap->setBox( sceneBox );
+    updateTerrain();
+  }
+
+  return sceneBox;
 }

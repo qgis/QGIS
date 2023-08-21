@@ -511,7 +511,11 @@ void Qgs3DMapCanvasWidget::configure()
                                    || map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   };
 
-  connect( buttons, &QDialogButtonBox::rejected, mConfigureDialog, &QDialog::reject );
+  connect( buttons, &QDialogButtonBox::rejected, mConfigureDialog, [ = ]()
+  {
+    configWidget->reject();
+    mConfigureDialog->reject();
+  } );
   connect( buttons, &QDialogButtonBox::clicked, mConfigureDialog, [ = ]( QAbstractButton * button )
   {
     if ( button == buttons->button( QDialogButtonBox::Apply ) || button == buttons->button( QDialogButtonBox::Ok ) )
