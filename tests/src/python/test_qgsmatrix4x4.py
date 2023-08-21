@@ -78,6 +78,22 @@ class TestQgsMatrix4x4(QgisTestCase):
                              13, 14, 15, 16])])
             )
 
+    def test_translate(self):
+        """
+        Test translating a matrix
+        """
+        m = QgsMatrix4x4()
+        m.translate(QgsVector3D(1, 2, 3))
+        self.assertEqual(m.data(), [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 2.0, 3.0, 1.0])
+
+        m = QgsMatrix4x4(1, 2, 3, 4,
+                         5, 6, 7, 8,
+                         9, 10, 11, 12,
+                         0, 0, 0, 1)
+
+        m.translate(QgsVector3D(1, 2, 3))
+        self.assertEqual(m.data(), [1.0, 5.0, 9.0, 0.0, 2.0, 6.0, 10.0, 0.0, 3.0, 7.0, 11.0, 0.0, 18.0, 46.0, 74.0, 1.0])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -29,6 +29,13 @@ QgsMatrix4x4::QgsMatrix4x4( double m11, double m12, double m13, double m14,
   m[3][0] = m14; m[3][1] = m24; m[3][2] = m34; m[3][3] = m44;
 }
 
+void QgsMatrix4x4::translate( const QgsVector3D &vector )
+{
+  m[3][0] += m[0][0] * vector.x() + m[1][0] * vector.y() + m[2][0] * vector.z();
+  m[3][1] += m[0][1] * vector.x() + m[1][1] * vector.y() + m[2][1] * vector.z();
+  m[3][2] += m[0][2] * vector.x() + m[1][2] * vector.y() + m[2][2] * vector.z();
+  m[3][3] += m[0][3] * vector.x() + m[1][3] * vector.y() + m[2][3] * vector.z();
+}
 
 QList< double > QgsMatrix4x4::dataList() const
 {
