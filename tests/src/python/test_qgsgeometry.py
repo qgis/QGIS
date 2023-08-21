@@ -2343,6 +2343,37 @@ class TestQgsGeometry(QgisTestCase):
         line = QgsGeometry.fromPolylineXY(points)
         assert line.boundingBox().isNull()
 
+    def testBoundingBox3D(self):
+        # null
+        points = []
+        geom = QgsGeometry.fromPolylineXY(points)
+        assert geom.boundingBox3D().isNull()
+
+        # fromBox3D
+        box3D = QgsBox3D(1, 2, 3, 4, 5, 6)
+        box3D_geom = QgsGeometry.fromBox3D(box3D)
+        result = box3D_geom.boundingBox3D()
+        self.assertEqual(
+            box3D, result,
+            f"Expected:\n{box3D.toString()}\nGot:\n{result.toString()}\n")
+
+        # 2D polyline
+        points = [QgsPointXY(5, 0), QgsPointXY(0, 0), QgsPointXY(0, 4), QgsPointXY(5, 4), QgsPointXY(5, 1),
+                  QgsPointXY(1, 1), QgsPointXY(1, 3), QgsPointXY(4, 3), QgsPointXY(4, 2), QgsPointXY(2, 2)]
+        polyline2D = QgsGeometry.fromPolylineXY(points)
+        expbb2D = QgsBox3D(0, 0, float("nan"), 5, 4, float("nan"))
+        bb2D = polyline2D.boundingBox3D()
+        self.assertEqual(
+            expbb2D, bb2D, f"Expected:\n{expbb2D.toString()}\nGot:\n{bb2D.toString()}\n")
+
+        # 3D polyline
+        points = [QgsPoint(5, 0, -3), QgsPoint(0, 0, 5), QgsPoint(0, 4, -3), QgsPoint(5, 4, 0), QgsPoint(5, 1, 1),
+                  QgsPoint(1, 1, 2), QgsPoint(1, 3, 5), QgsPoint(4, 3, 9), QgsPoint(4, 2, -6), QgsPoint(2, 2, 8)]
+        polyline3D = QgsGeometry.fromPolyline(points)
+        expbb3D = QgsBox3D(0, 0, -6, 5, 4, 9)
+        bb3D = polyline3D.boundingBox3D()
+        self.assertEqual(expbb3D, bb3D, f"Expected:\n{expbb3D.toString()}\nGot:\n{bb3D.toString()}\n")
+
     def testCollectGeometry(self):
         # collect points
         geometries = [QgsGeometry.fromPointXY(QgsPointXY(0, 0)), QgsGeometry.fromPointXY(QgsPointXY(1, 1))]

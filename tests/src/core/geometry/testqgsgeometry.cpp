@@ -155,6 +155,7 @@ class TestQgsGeometry : public QgsTest
     void createCollectionOfType();
 
     void orientedMinimumBoundingBox( );
+    void boundingBox3D();
     void minimalEnclosingCircle( );
     void splitGeometry();
     void snappedToGrid();
@@ -2173,6 +2174,21 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
   QCOMPARE( result.asWkt( 2 ), resultTestWKT );
 
 }
+
+void TestQgsGeometry::boundingBox3D()
+{
+  QgsGeometry geomTest;
+  QCOMPARE( geomTest.boundingBox3D(), QgsBox3D() );
+
+  QgsGeometry geomTest2D = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 5 5, -2.07106781186547462 12.07106781186547551, -7.07106781186547462 7.07106781186547551))" ) );
+  QgsBox3D expectedResult2D = QgsBox3D( -7.07106781186547462, 0, std::numeric_limits< double >::quiet_NaN(), 5, 12.07106781186547551, std::numeric_limits< double >::quiet_NaN() );
+  QCOMPARE( geomTest2D.boundingBox3D(), expectedResult2D );
+
+  QgsGeometry geomTest3D = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0 0, 5 5 3, -2.07106781186547462 12.07106781186547551 4.3489, -7.07106781186547462 7.07106781186547551 -7.8909))" ) );
+  QgsBox3D expectedResult3D = QgsBox3D( -7.07106781186547462, 0, -7.8909, 5, 12.07106781186547551, 4.3489 );
+  QCOMPARE( geomTest3D.boundingBox3D(), expectedResult3D );
+}
+
 void TestQgsGeometry::minimalEnclosingCircle()
 {
   QgsGeometry geomTest;
