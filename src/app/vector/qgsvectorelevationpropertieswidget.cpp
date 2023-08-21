@@ -39,7 +39,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   mSurfaceLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mSurfaceFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
   mSurfaceMarkerStyleButton->setSymbolType( Qgis::SymbolType::Marker );
-  mElevationLimitSpinBox->setClearValue( mElevationLimitSpinBox->minimum(), tr( "No set" ) );
+  mElevationLimitSpinBox->setClearValue( mElevationLimitSpinBox->minimum(), tr( "Not set" ) );
 
   mComboClamping->addItem( tr( "Clamped to Terrain" ), static_cast< int >( Qgis::AltitudeClamping::Terrain ) );
   mComboClamping->addItem( tr( "Relative to Terrain" ), static_cast< int >( Qgis::AltitudeClamping::Relative ) );
