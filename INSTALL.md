@@ -135,9 +135,9 @@ those formats in GDAL.
 
 **Requires:** Ubuntu / Debian derived distro
 
-**Note:** Refer to the section Building Debian packages for building
-debian packages. Unless you plan to develop on QGIS, that is probably the
-easiest option to compile and install QGIS.
+**Note:** Refer to the section [Building Debian packages](#310-building-debian-packages)
+for building debian packages. Unless you plan to develop on QGIS, that is
+probably the easiest option to compile and install QGIS.
 
 These notes are for Ubuntu - other versions and Debian derived distros may
 require slight variations in package names.
@@ -405,17 +405,11 @@ Instead of creating a personal installation as in the previous step you can
 also create debian package. This is done from the QGIS root directory, where
 you'll find a debian directory.
 
-First you need to install the debian packaging tools once:
+First you need to install the [build dependencies](#33-install-build-dependencies)
+and setup a changelog entry for your distribution. For example for Debian Bookworm:
 
 ```bash
-apt-get install build-essential
-```
-
-First you need to create an changelog entry for your distribution. For example
-for Ubuntu Precise:
-
-```bash
-dch -l ~precise --force-distribution --distribution precise "precise build"
+dch -l ~bookworm --force-distribution --distribution bookworm "bookworm build"
 ```
 
 The QGIS packages will be created with:
@@ -425,9 +419,6 @@ dpkg-buildpackage -us -uc -b
 ```
 
 **Note:** Install `devscripts` to get `dch`.
-
-**Note:** If `dpkg-buildpackage` complains about unmet build dependencies
-you can install them using `apt-get` and re-run the command.
 
 **Note:** If you have `libqgis1-dev` installed, you need to remove it first
 using `dpkg -r libqgis1-dev`.  Otherwise `dpkg-buildpackage` will complain about a
