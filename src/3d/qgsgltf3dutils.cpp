@@ -479,7 +479,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
 }
 
 
-static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors, const QgsVector3D &rtcCenter )
+static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors )
 {
   tinygltf::Scene &scene = model.scenes[model.defaultScene];
 
@@ -497,7 +497,7 @@ static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUti
       *errors << "Scene contains multiple nodes: only loading the first one!";
   }
 
-  const QgsVector3D tileTranslationEcef = rtcCenter + QgsGltfUtils::extractTileTranslation( model );
+  const QgsVector3D tileTranslationEcef = QgsGltfUtils::extractTileTranslation( model );
 
   int rootNodeIndex = scene.nodes[0];
   const QVector<Qt3DCore::QEntity *> entities = parseNode( model, rootNodeIndex, transform, tileTranslationEcef, baseUri, QMatrix4x4(), errors );
@@ -508,7 +508,7 @@ static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUti
 }
 
 
-Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const QgsGltf3DUtils::EntityTransform &transform, const QString &baseUri, QStringList *errors, const QgsVector3D &rtcCenter )
+Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const QgsGltf3DUtils::EntityTransform &transform, const QString &baseUri, QStringList *errors )
 {
   tinygltf::Model model;
   QString gltfErrors, gltfWarnings;
@@ -523,7 +523,7 @@ Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const Q
     return nullptr;
   }
 
-  return parseModel( model, transform, baseUri, errors, rtcCenter );
+  return parseModel( model, transform, baseUri, errors );
 }
 
 // For TinyGltfTextureImage
