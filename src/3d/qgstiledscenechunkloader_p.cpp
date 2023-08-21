@@ -82,12 +82,13 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     }
 
     QgsGltf3DUtils::EntityTransform entityTransform;
-    entityTransform.tileTransform = mTile.transform() ? *mTile.transform() : QgsMatrix4x4();
+    entityTransform.tileTransform = ( mTile.transform() ? *mTile.transform() : QgsMatrix4x4() );
+    entityTransform.tileTransform.translate( tileContent.rtcCenter );
     entityTransform.sceneOriginTargetCrs = mFactory.mMap.origin();
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
 
     QStringList errors;
-    mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors, tileContent.rtcCenter );
+    mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
 
     if ( mEntity )
       mEntity->moveToThread( QgsApplication::instance()->thread() );
