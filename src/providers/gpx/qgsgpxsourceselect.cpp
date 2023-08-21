@@ -18,6 +18,7 @@
 #include "qgsgpxsourceselect.h"
 #include "qgsproviderregistry.h"
 #include "ogr/qgsogrhelperfunctions.h"
+#include "qgshelp.h"
 
 #include <QMessageBox>
 
@@ -39,6 +40,8 @@ QgsGpxSourceSelect::QgsGpxSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   connect( mFileWidget, &QgsFileWidget::fileChanged,
            this, &QgsGpxSourceSelect::enableRelevantControls );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGpxSourceSelect::showHelp );
 }
 
 void QgsGpxSourceSelect::addButtonClicked()
@@ -80,4 +83,9 @@ void QgsGpxSourceSelect::enableRelevantControls()
   cbGPXWaypoints->setChecked( enabled );
   cbGPXRoutes->setChecked( enabled );
   cbGPXTracks->setChecked( enabled );
+}
+
+void QgsGpxSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#gps" ) );
 }

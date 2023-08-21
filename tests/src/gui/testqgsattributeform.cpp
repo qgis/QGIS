@@ -17,6 +17,7 @@
 #include "qgstest.h"
 #include <QPushButton>
 #include <QLineEdit>
+#include <QSignalSpy>
 
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include "qgsattributeform.h"
@@ -32,7 +33,7 @@
 #include "qgsmultiedittoolbutton.h"
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorcontainer.h"
-#include <QSignalSpy>
+#include "qgsspinbox.h"
 
 class TestQgsAttributeForm : public QObject
 {
@@ -600,15 +601,15 @@ void TestQgsAttributeForm::testEditableJoin()
 
   // test if widget is enabled for layerA
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
-  QCOMPARE( ww->widget()->isEnabled(), true );
+  QCOMPARE( qobject_cast<QgsSpinBox *>( ww->widget() )->isReadOnly(), false );
 
   // test if widget is enabled for layerB
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
-  QCOMPARE( ww->widget()->isEnabled(), true );
+  QCOMPARE( qobject_cast<QgsSpinBox *>( ww->widget() )->isReadOnly(), false );
 
   // test if widget is disabled for layerC
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
-  QCOMPARE( ww->widget()->isEnabled(), false );
+  QCOMPARE( qobject_cast<QgsSpinBox *>( ww->widget() )->isReadOnly(), true );
 
   // change attributes
   form.changeAttribute( QStringLiteral( "layerB_col0" ), QVariant( 333 ) );

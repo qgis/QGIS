@@ -50,6 +50,9 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
     void radioSrcProtocol_toggled( bool checked );
     void cmbProtocolTypes_currentIndexChanged( const QString &text );
 
+  private slots:
+    void showHelp();
+
   private:
 
     void computeDataSources();

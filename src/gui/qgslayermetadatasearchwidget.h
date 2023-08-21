@@ -54,6 +54,9 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QgsAbstractDataSourceWidg
     void addButtonClicked() override;
     void reset() override;
 
+  private slots:
+    void showHelp();
+
   private:
 
     QgsLayerMetadataResultsProxyModel *mProxyModel = nullptr;

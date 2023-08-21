@@ -262,14 +262,12 @@ namespace pal
       bool hasSameLabelFeatureAs( FeaturePart *part ) const;
 
       /**
-       * Returns the width of the label, optionally taking an \a angle into account.
-       * \returns the width of the label
+       * Returns the width of the label, optionally taking an \a angle (in radians) into account.
        */
       double getLabelWidth( double angle = 0.0 ) const { return mLF->size( angle ).width(); }
 
       /**
-       * Returns the height of the label, optionally taking an \a angle into account.
-       * \returns the hieght of the label
+       * Returns the height of the label, optionally taking an \a angle (in radians) into account.
        */
       double getLabelHeight( double angle = 0.0 ) const { return mLF->size( angle ).height(); }
 

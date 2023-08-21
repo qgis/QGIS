@@ -38,6 +38,9 @@ class QgsMdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsM
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
 
+  private slots:
+    void showHelp();
+
   private:
     QString mMeshPath;
 
