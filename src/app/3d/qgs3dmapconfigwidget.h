@@ -40,6 +40,8 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
 
     void apply();
 
+    void reject();
+
   signals:
 
     void isValidChanged( bool valid );
@@ -59,6 +61,9 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     QgsSkyboxRenderingSettingsWidget *mSkyboxSettingsWidget = nullptr;
     QgsShadowRenderingSettingsWidget *mShadowSettingsWidget = nullptr;
     QCheckBox *mShowExtentIn2DViewCheckbox = nullptr;
+
+    double mOldRotation;
+    QgsRectangle mOldExtent;
 
     void init3DAxisPage();
     void updateTerrain();

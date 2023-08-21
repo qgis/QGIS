@@ -17,6 +17,7 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgsdemterraingenerator.h"
+#include "qgsextent3dwidget.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsmeshterraingenerator.h"
@@ -244,10 +245,30 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   // ==================
   // Page: General
 
+  mOldRotation = mMap->zRotation();
+  mOldExtent = mMap->extent();
+
   mExtent3D->setDefaultExtent( mMap->extent(), mMap->crs() );
   mExtent3D->setMapCanvas( mMainCanvas );
   mExtent3D->setRotation( mMap->zRotation() );
   mExtent3D->setShowIn2DView( mMap->showExtentIn2DView() );
+
+  connect( mExtent3D, &QgsExtent3DWidget::extentChanged, this, [ = ]
+  {
+    mMap->setExtent( mExtent3D->extent() );
+    updateTerrain();
+  } );
+
+  connect( mExtent3D, &QgsExtent3DWidget::rotationChanged, this, [ = ]
+  {
+    mMap->setZRotation( mExtent3D->rotation() );
+    updateTerrain();
+  } );
+
+  connect( mExtent3D, &QgsExtent3DWidget::showIn2DViewChanged, this, [ = ]
+  {
+    mMap->setShowExtentIn2DView( mExtent3D->showIn2DView() );
+  } );
 
   onTerrainTypeChanged();
 }
@@ -333,6 +354,17 @@ void Qgs3DMapConfigWidget::updateTerrain()
     }
     break;
   }
+}
+
+void Qgs3DMapConfigWidget::reject()
+{
+  if ( mExtent3D->extent() == mOldExtent && mExtent3D->rotation() == mOldRotation )
+    return;
+
+  mMap->setExtent( mOldExtent );
+  mMap->setZRotation( mOldRotation );
+
+  updateTerrain();
 }
 
 void Qgs3DMapConfigWidget::apply()
