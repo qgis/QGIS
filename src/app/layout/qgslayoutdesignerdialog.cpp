@@ -2511,6 +2511,12 @@ void QgsLayoutDesignerDialog::exportToSvg()
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                 Qgis::MessageLevel::Success, 0 );
+
+      // Open exported file in the default viewer if enabled
+      if ( QgsLayoutExporter::settingOpenAfterExportingSvg->value() )
+      {
+        QDesktopServices::openUrl( QUrl::fromLocalFile( outputFileName ) );
+      }
       break;
     }
 
@@ -4391,7 +4397,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   Ui::QgsSvgExportOptionsDialog options;
   options.setupUi( &dialog );
 
-  connect( options.buttonBox, &QDialogButtonBox::helpRequested, this, [ & ]
+  connect( options.mHelpButtonBox, &QDialogButtonBox::helpRequested, this, [ & ]
   {
     QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
   }
@@ -4411,6 +4417,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
   options.mDisableRasterTilingCheckBox->setChecked( disableRasterTiles );
   options.mSimplifyGeometriesCheckbox->setChecked( simplify );
+  options.mOpenAfterExportingCheckBox->setChecked( QgsLayoutExporter::settingOpenAfterExportingSvg->value() );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -4426,6 +4433,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   disableRasterTiles = options.mDisableRasterTilingCheckBox->isChecked();
   simplify = options.mSimplifyGeometriesCheckbox->isChecked();
   Qgis::TextRenderFormat textRenderFormat = static_cast< Qgis::TextRenderFormat >( options.mTextRenderFormatComboBox->currentData().toInt() );
+  QgsLayoutExporter::settingOpenAfterExportingSvg->setValue( options.mOpenAfterExportingCheckBox->isChecked() );
 
   if ( mLayout )
   {
