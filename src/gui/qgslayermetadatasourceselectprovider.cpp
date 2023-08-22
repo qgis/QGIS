@@ -36,7 +36,7 @@ QString QgsLayerMetadataSourceSelectProvider::text() const
 
 QString QgsLayerMetadataSourceSelectProvider::toolTip() const
 {
-  return QObject::tr( "Search and add layer metadata" );
+  return QObject::tr( "Find layers by metadata" );
 }
 
 QIcon QgsLayerMetadataSourceSelectProvider::icon() const
