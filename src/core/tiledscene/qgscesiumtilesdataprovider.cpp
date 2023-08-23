@@ -1058,6 +1058,16 @@ QgsTiledSceneIndex QgsCesiumTilesDataProvider::index() const
   return mShared->mIndex;
 }
 
+QgsDoubleRange QgsCesiumTilesDataProvider::zRange() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( !mShared )
+    return QgsDoubleRange();
+
+  QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
+  return mShared->mZRange;
+}
+
 
 //
 // QgsCesiumTilesProviderMetadata

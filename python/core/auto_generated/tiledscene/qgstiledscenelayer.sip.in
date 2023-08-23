@@ -91,6 +91,8 @@ QgsTiledSceneLayer cannot be copied.
 
     virtual QString loadDefaultMetadata( bool &resultFlag /Out/ );
 
+    virtual QgsMapLayerElevationProperties *elevationProperties();
+
 
     QgsTiledSceneRenderer *renderer();
 %Docstring

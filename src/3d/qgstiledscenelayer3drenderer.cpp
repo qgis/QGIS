@@ -18,6 +18,7 @@
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenechunkloader_p.h"
+#include "qgstiledscenelayerelevationproperties.h"
 
 #include "qgs3dmapsettings.h"
 
@@ -65,7 +66,11 @@ Qt3DCore::QEntity *QgsTiledSceneLayer3DRenderer::createEntity( const Qgs3DMapSet
 
   QgsTiledSceneIndex index = tsl->dataProvider()->index();
 
-  return new QgsTiledSceneLayerChunkedEntity( map, index, maximumScreenError(), showBoundingBoxes() );
+  return new QgsTiledSceneLayerChunkedEntity( map, index,
+         maximumScreenError(),
+         showBoundingBoxes(),
+         qgis::down_cast< const QgsTiledSceneLayerElevationProperties * >( tsl->elevationProperties() )->zScale(),
+         qgis::down_cast< const QgsTiledSceneLayerElevationProperties * >( tsl->elevationProperties() )->zOffset() );
 }
 
 void QgsTiledSceneLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

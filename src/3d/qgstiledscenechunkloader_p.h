@@ -54,7 +54,7 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
 {
     Q_OBJECT
   public:
-    QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory &factory, const QgsTiledSceneTile &t );
+    QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory &factory, const QgsTiledSceneTile &t, double zValueScale, double zValueOffset );
 
     ~QgsTiledSceneChunkLoader();
 
@@ -79,7 +79,8 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
 {
     Q_OBJECT
   public:
-    QgsTiledSceneChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index );
+    QgsTiledSceneChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index,
+                                     double zValueScale, double zValueOffset );
 
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     virtual QgsChunkNode *createRootNode() const override;
@@ -94,6 +95,8 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     const Qgs3DMapSettings &mMap;
     QString mRelativePathBase;
     mutable QgsTiledSceneIndex mIndex;
+    double mZValueScale = 1.0;
+    double mZValueOffset = 0;
     QgsCoordinateTransform mBoundsTransform;
     QSet<long long> mPendingHierarchyFetches;
     QSet<long long> mFutureHierarchyFetches;
@@ -114,7 +117,8 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes );
+    explicit QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes,
+        double zValueScale, double zValueOffset );
 
     ~QgsTiledSceneLayerChunkedEntity();
 

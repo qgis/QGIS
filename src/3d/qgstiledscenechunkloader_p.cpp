@@ -43,13 +43,15 @@ static bool hasLargeBounds( const QgsTiledSceneTile &t )
 
 ///
 
-QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory &factory, const QgsTiledSceneTile &t )
-  : QgsChunkLoader( node ), mFactory( factory ), mTile( t )
+QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory &factory, const QgsTiledSceneTile &t, double zValueScale, double zValueOffset )
+  : QgsChunkLoader( node )
+  , mFactory( factory )
+  , mTile( t )
 {
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [this]
+  const QFuture<void> future = QtConcurrent::run( [this, zValueScale, zValueOffset]
   {
     // we do not load tiles that are too big - at least for the time being
     // the problem is that their 3D bounding boxes with ECEF coordinates are huge
@@ -86,6 +88,8 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     entityTransform.tileTransform.translate( tileContent.rtcCenter );
     entityTransform.sceneOriginTargetCrs = mFactory.mMap.origin();
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
+    entityTransform.zValueScale = zValueScale;
+    entityTransform.zValueOffset = zValueOffset;
 
     QStringList errors;
     mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
@@ -125,8 +129,11 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
 
 ///
 
-QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index )
-  : mMap( map ), mIndex( index )
+QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index, double zValueScale, double zValueOffset )
+  : mMap( map )
+  , mIndex( index )
+  , mZValueScale( zValueScale )
+  , mZValueOffset( zValueOffset )
 {
   mBoundsTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4978" ), mMap.crs(), mMap.transformContext() );
 }
@@ -135,7 +142,7 @@ QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode
 {
   const QgsTiledSceneTile t = mIndex.getTile( node->tileId().uniqueId );
 
-  return new QgsTiledSceneChunkLoader( node, *this, t );
+  return new QgsTiledSceneChunkLoader( node, *this, t, mZValueScale, mZValueOffset );
 }
 
 // converts box from map coordinates to world coords (also flips [X,Y] to [X,-Z])
@@ -158,7 +165,9 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneT
   }
   else
   {
-    const QgsBox3D box = t.boundingVolume().bounds( mBoundsTransform );
+    QgsBox3D box = t.boundingVolume().bounds( mBoundsTransform );
+    box.setZMinimum( box.zMinimum() * mZValueScale + mZValueOffset );
+    box.setZMaximum( box.zMaximum() * mZValueScale + mZValueOffset );
     const QgsAABB aabb = aabbConvert( box, mMap.origin() );
     return new QgsChunkNode( nodeId, aabb, t.geometricError(), parent );
   }
@@ -300,8 +309,8 @@ void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
 
 ///
 
-QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes )
-  : QgsChunkedEntity( maximumScreenError, new QgsTiledSceneChunkLoaderFactory( map, index ), true )
+QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
+  : QgsChunkedEntity( maximumScreenError, new QgsTiledSceneChunkLoaderFactory( map, index, zValueScale, zValueOffset ), true )
 {
   if ( index.rootTile().refinementProcess() == Qgis::TileRefinementProcess::Additive )
     setUsingAdditiveStrategy( true );

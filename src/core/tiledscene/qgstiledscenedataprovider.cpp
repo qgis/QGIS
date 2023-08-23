@@ -47,3 +47,10 @@ QString QgsTiledSceneDataProvider::htmlMetadata() const
 
   return QString();
 }
+
+QgsDoubleRange QgsTiledSceneDataProvider::zRange() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsDoubleRange();
+}
