@@ -454,6 +454,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "pointcloud/qgspointcloudlayerexporter.h"
 
 #include "tiledscene/qgstiledscenelayerstylewidget.h"
+#include "tiledscene/qgstiledsceneelevationpropertieswidget.h"
 
 #include "project/qgsprojectelevationsettingswidget.h"
 #include "sensor/qgsprojectsensorsettingswidget.h"
@@ -1307,6 +1308,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsRasterElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsVectorElevationPropertiesWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsTiledSceneElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsMeshElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsLayerTreeGroupPropertiesWidgetFactory( this ) );

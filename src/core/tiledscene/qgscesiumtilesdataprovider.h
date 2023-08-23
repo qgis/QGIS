@@ -58,6 +58,7 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProv
     const QgsCoordinateReferenceSystem sceneCrs() const final;
     const QgsTiledSceneBoundingVolume &boundingVolume() const final;
     QgsTiledSceneIndex index() const final;
+    QgsDoubleRange zRange() const final;
 
   private:
 

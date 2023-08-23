@@ -99,6 +99,12 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertAlmostEqual(
                 layer.dataProvider().boundingVolume().box().centerZ(), 34.105, 3
             )
+            self.assertAlmostEqual(
+                layer.dataProvider().zRange().lower(), 1.2, 3
+            )
+            self.assertAlmostEqual(
+                layer.dataProvider().zRange().upper(), 67.0099, 3
+            )
 
             # check that version, tileset version, and z range are in html metadata
             self.assertIn("1.1", layer.dataProvider().htmlMetadata())

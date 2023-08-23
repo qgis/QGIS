@@ -23,6 +23,7 @@
 #include "qgstiledscenedataprovider.h"
 
 class QgsTiledSceneRenderer;
+class QgsTiledSceneLayerElevationProperties;
 
 /**
  * \ingroup core
@@ -114,6 +115,7 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
     QString htmlMetadata() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
+    QgsMapLayerElevationProperties *elevationProperties() override;
 
     /**
      * Returns the 2D renderer for the tiled scene.
@@ -152,6 +154,7 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
 
     std::unique_ptr<QgsTiledSceneDataProvider> mDataProvider;
     std::unique_ptr<QgsTiledSceneRenderer> mRenderer;
+    QgsTiledSceneLayerElevationProperties *mElevationProperties = nullptr;
 
     LayerOptions mLayerOptions;
 };

@@ -135,6 +135,7 @@ set(QGIS_APP_SRCS
 
   raster/qgsrasterelevationpropertieswidget.cpp
 
+  tiledscene/qgstiledsceneelevationpropertieswidget.cpp
   tiledscene/qgstiledscenelayerproperties.cpp
   tiledscene/qgstiledscenelayerstylewidget.cpp
 

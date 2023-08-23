@@ -102,6 +102,11 @@ class CORE_EXPORT QgsTiledSceneDataProvider: public QgsDataProvider
      */
     virtual QgsTiledSceneIndex index() const = 0;
 
+    /**
+     * Returns the provider's z range, or an infinite range if this is not known.
+     */
+    virtual QgsDoubleRange zRange() const;
+
 };
 
 #endif // QGSTILEDSCENEDATAPROVIDER_H

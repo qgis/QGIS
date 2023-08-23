@@ -60,6 +60,9 @@ class _3D_EXPORT QgsGltf3DUtils
       QgsMatrix4x4 tileTransform;
       //! Transform from ECEF (normally EPSG:4978) to the target CRS
       const QgsCoordinateTransform *ecefToTargetCrs = nullptr;
+
+      double zValueScale = 1;
+      double zValueOffset = 0;
     };
 
     /**

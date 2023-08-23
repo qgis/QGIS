@@ -27,12 +27,14 @@
 #include "qgsapplication.h"
 #include "qgstiledscenelayerrenderer.h"
 #include "qgstiledscenerendererregistry.h"
+#include "qgstiledscenelayerelevationproperties.h"
 
 QgsTiledSceneLayer::QgsTiledSceneLayer( const QString &uri,
                                         const QString &baseName,
                                         const QString &provider,
                                         const QgsTiledSceneLayer::LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::TiledScene, baseName, uri )
+  , mElevationProperties( new QgsTiledSceneLayerElevationProperties( this ) )
   , mLayerOptions( options )
 {
   if ( !uri.isEmpty() && !provider.isEmpty() )
@@ -67,6 +69,9 @@ QgsTiledSceneLayer *QgsTiledSceneLayer::clone() const
   if ( mRenderer )
     layer->setRenderer( mRenderer->clone() );
 
+  layer->mElevationProperties = mElevationProperties->clone();
+  layer->mElevationProperties->setParent( layer );
+
   layer->mLayerOptions = mLayerOptions;
 
   return layer;
@@ -100,6 +105,13 @@ QString QgsTiledSceneLayer::loadDefaultMetadata( bool &resultFlag )
   }
   resultFlag = true;
   return QString();
+}
+
+QgsMapLayerElevationProperties *QgsTiledSceneLayer::elevationProperties()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mElevationProperties;
 }
 
 QgsMapLayerRenderer *QgsTiledSceneLayer::createMapRenderer( QgsRenderContext &context )

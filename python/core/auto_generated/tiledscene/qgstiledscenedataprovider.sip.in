@@ -90,6 +90,11 @@ The index is thread safe and can be used safely across multiple threads or trans
 threads.
 %End
 
+    virtual QgsDoubleRange zRange() const;
+%Docstring
+Returns the provider's z range, or an infinite range if this is not known.
+%End
+
 };
 
 /************************************************************************
