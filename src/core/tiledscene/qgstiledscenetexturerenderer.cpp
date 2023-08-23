@@ -153,7 +153,7 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
     QPolygonF result;
     result.reserve( 4 );
     // limit triangle vertices to shifting AT MOST 2 pixels from their original locations, to avoid narrow triangles
-    // getting bufffered too large
+    // getting buffered too large
     static double constexpr MAX_TRIANGLE_GROW_PIXELS_SQUARED = 3 * 3;
     for ( int i = 0; i < 3; ++i )
     {
