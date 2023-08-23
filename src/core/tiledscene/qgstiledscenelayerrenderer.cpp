@@ -359,7 +359,8 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   }
   else if ( !gltfErrors.isEmpty() )
   {
-    mErrors.append( gltfErrors );
+    if ( !mErrors.contains( gltfErrors ) )
+      mErrors.append( gltfErrors );
   }
   if ( !gltfWarnings.isEmpty() )
   {
