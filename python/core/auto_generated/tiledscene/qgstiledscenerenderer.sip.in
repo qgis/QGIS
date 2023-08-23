@@ -247,6 +247,11 @@ Returns a list of all rule keys for legend nodes created by the renderer.
 Renders a ``triangle``.
 %End
 
+    virtual void renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line ) = 0;
+%Docstring
+Renders a ``line``.
+%End
+
   protected:
 
     void copyCommonProperties( QgsTiledSceneRenderer *destination ) const;

@@ -23,6 +23,7 @@
 #include "qgis_sip.h"
 
 class QgsFillSymbol;
+class QgsLineSymbol;
 
 /**
  * \ingroup core
@@ -44,6 +45,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
     QgsTiledSceneRenderer *clone() const override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle ) override;
+    void renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line ) override;
     void startRender( QgsTiledSceneRenderContext &context ) override;
     void stopRender( QgsTiledSceneRenderContext &context ) override;
     Qgis::TiledSceneRendererFlags flags() const override;
@@ -58,7 +60,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      *
      * \see setFillSymbol()
      */
-    static QgsFillSymbol *createDefaultfillSymbol() SIP_FACTORY;
+    static QgsFillSymbol *createDefaultFillSymbol() SIP_FACTORY;
 
     /**
      * Returns the fill symbol used to render triangles in the wireframe.
@@ -75,6 +77,29 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      * \see fillSymbol()
      */
     void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns a copy of the default line symbol used to render lines in the wireframe.
+     *
+     * \see setLineSymbol()
+     */
+    static QgsLineSymbol *createDefaultLineSymbol() SIP_FACTORY;
+
+    /**
+     * Returns the line symbol used to render lines in the wireframe.
+     *
+     * \see setLineSymbol()
+     */
+    QgsLineSymbol *lineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render lines in the wireframe.
+     *
+     * Ownership of \a symbol is transferred.
+     *
+     * \see lineSymbol()
+     */
+    void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns TRUE if representative colors from the textures will be used to recolor
@@ -95,6 +120,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
   private:
 
     std::unique_ptr< QgsFillSymbol> mFillSymbol;
+    std::unique_ptr< QgsLineSymbol> mLineSymbol;
     bool mUseTextureColors = false;
 
 };

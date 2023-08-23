@@ -19,6 +19,7 @@
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenewireframerenderer.h"
 #include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 
 ///@cond PRIVATE
 
@@ -28,7 +29,9 @@ QgsTiledSceneWireframeRendererWidget::QgsTiledSceneWireframeRendererWidget( QgsT
   setupUi( this );
 
   mFillSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
-  mFillSymbolButton->setSymbol( QgsTiledSceneWireframeRenderer::createDefaultfillSymbol() );
+  mFillSymbolButton->setSymbol( QgsTiledSceneWireframeRenderer::createDefaultFillSymbol() );
+  mLineSymbolButton->setSymbolType( Qgis::SymbolType::Line );
+  mLineSymbolButton->setSymbol( QgsTiledSceneWireframeRenderer::createDefaultLineSymbol() );
 
   if ( layer )
   {
@@ -36,6 +39,7 @@ QgsTiledSceneWireframeRendererWidget::QgsTiledSceneWireframeRendererWidget( QgsT
   }
 
   connect( mFillSymbolButton, &QgsSymbolButton::changed, this, &QgsTiledSceneWireframeRendererWidget::emitWidgetChanged );
+  connect( mLineSymbolButton, &QgsSymbolButton::changed, this, &QgsTiledSceneWireframeRendererWidget::emitWidgetChanged );
   connect( mCheckUseTextureColors, &QCheckBox::toggled, this, &QgsTiledSceneWireframeRendererWidget::emitWidgetChanged );
 }
 
@@ -48,6 +52,7 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRendererWidget::renderer()
 {
   std::unique_ptr< QgsTiledSceneWireframeRenderer > renderer = std::make_unique< QgsTiledSceneWireframeRenderer >();
   renderer->setFillSymbol( mFillSymbolButton->clonedSymbol< QgsFillSymbol >() );
+  renderer->setLineSymbol( mLineSymbolButton->clonedSymbol< QgsLineSymbol >() );
   renderer->setUseTextureColors( mCheckUseTextureColors->isChecked() );
 
   return renderer.release();
@@ -65,6 +70,7 @@ void QgsTiledSceneWireframeRendererWidget::setFromRenderer( const QgsTiledSceneR
   if ( const QgsTiledSceneWireframeRenderer *wireframeRenderer = dynamic_cast< const QgsTiledSceneWireframeRenderer * >( renderer ) )
   {
     mFillSymbolButton->setSymbol( wireframeRenderer->fillSymbol()->clone() );
+    mLineSymbolButton->setSymbol( wireframeRenderer->lineSymbol()->clone() );
     mCheckUseTextureColors->setChecked( wireframeRenderer->useTextureColors() );
   }
 

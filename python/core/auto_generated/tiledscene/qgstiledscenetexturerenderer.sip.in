@@ -37,6 +37,8 @@ Constructor for QgsTiledSceneTextureRenderer.
 
     virtual void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle );
 
+    virtual void renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line );
+
 
     static QgsTiledSceneRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
