@@ -69,7 +69,7 @@ void QgsTiledSceneRenderContext::textureCoordinates( float &textureX1, float &te
 
 Qgis::TiledSceneRendererFlags QgsTiledSceneRenderer::flags() const
 {
-  return Qgis::TiledSceneRendererFlags();
+  return Qgis::TiledSceneRendererFlag::RendersLines | Qgis::TiledSceneRendererFlag::RendersTriangles;
 }
 
 QgsTiledSceneRenderer *QgsTiledSceneRenderer::load( QDomElement &element, const QgsReadWriteContext &context )

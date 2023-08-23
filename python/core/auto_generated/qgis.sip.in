@@ -2209,6 +2209,8 @@ The development version
     {
       RequiresTextures,
       ForceRasterRender,
+      RendersTriangles,
+      RendersLines,
     };
 
     typedef QFlags<Qgis::TiledSceneRendererFlag> TiledSceneRendererFlags;

@@ -62,7 +62,9 @@ Qgis::TiledSceneRendererFlags QgsTiledSceneTextureRenderer::flags() const
   // force raster rendering for this renderer type -- there's no benefit in exporting these layers as a bunch
   // of triangular images which are pieced together, that adds a lot of extra content to the exports and results
   // in files which can be extremely slow to open and render in other viewers.
-  return Qgis::TiledSceneRendererFlag::RequiresTextures | Qgis::TiledSceneRendererFlag::ForceRasterRender;
+  return Qgis::TiledSceneRendererFlag::RequiresTextures |
+         Qgis::TiledSceneRendererFlag::ForceRasterRender |
+         Qgis::TiledSceneRendererFlag::RendersTriangles;
 }
 
 void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle )

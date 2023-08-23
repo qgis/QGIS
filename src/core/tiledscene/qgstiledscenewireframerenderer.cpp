@@ -212,7 +212,8 @@ void QgsTiledSceneWireframeRenderer::stopRender( QgsTiledSceneRenderContext &con
 
 Qgis::TiledSceneRendererFlags QgsTiledSceneWireframeRenderer::flags() const
 {
-  Qgis::TiledSceneRendererFlags flags;
+  Qgis::TiledSceneRendererFlags flags = Qgis::TiledSceneRendererFlag::RendersTriangles |
+                                        Qgis::TiledSceneRendererFlag::RendersLines;
 
   if ( mUseTextureColors )
     flags |= Qgis::TiledSceneRendererFlag::RequiresTextures;
