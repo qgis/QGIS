@@ -3878,6 +3878,8 @@ class CORE_EXPORT Qgis
     {
       RequiresTextures = 1 << 0,  //!< Renderer requires textures
       ForceRasterRender = 1 << 1, //!< Layer should always be rendered as a raster image
+      RendersTriangles = 1 << 2, //!< Renderer can render triangle primitives
+      RendersLines = 1 << 3, //!< Renderer can render line primitives
     };
     Q_ENUM( TiledSceneRendererFlag )
 

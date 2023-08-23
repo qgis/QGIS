@@ -392,11 +392,13 @@ void QgsTiledSceneLayerRenderer::renderPrimitive( const tinygltf::Model &model, 
   switch ( primitive.mode )
   {
     case TINYGLTF_MODE_TRIANGLES:
-      renderTrianglePrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform, contentUri, context );
+      if ( mRenderer->flags() & Qgis::TiledSceneRendererFlag::RendersTriangles )
+        renderTrianglePrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform, contentUri, context );
       break;
 
     case TINYGLTF_MODE_LINE:
-      renderLinePrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform, contentUri, context );
+      if ( mRenderer->flags() & Qgis::TiledSceneRendererFlag::RendersLines )
+        renderLinePrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform, contentUri, context );
       return;
 
     case TINYGLTF_MODE_POINTS:
@@ -695,7 +697,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
   }
 }
 
-void QgsTiledSceneLayerRenderer::renderLinePrimitive( const tinygltf::Model &model, const tinygltf::Primitive &primitive, const QgsTiledSceneTile &tile, const QgsVector3D &tileTranslationEcef, const QMatrix4x4 *gltfLocalTransform, const QString &contentUri, QgsTiledSceneRenderContext &context )
+void QgsTiledSceneLayerRenderer::renderLinePrimitive( const tinygltf::Model &model, const tinygltf::Primitive &primitive, const QgsTiledSceneTile &tile, const QgsVector3D &tileTranslationEcef, const QMatrix4x4 *gltfLocalTransform, const QString &, QgsTiledSceneRenderContext &context )
 {
   auto posIt = primitive.attributes.find( "POSITION" );
   if ( posIt == primitive.attributes.end() )
