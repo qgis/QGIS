@@ -68,7 +68,7 @@ void QgsB3DMToGltfAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input B3DM" ), QgsProcessingParameterFile::File,
                 QStringLiteral( "b3dm" ), QVariant(), false, QStringLiteral( "B3DM (*.b3dm *.B3DM)" ) ) );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output GLTF file" ), QStringLiteral( "GLTF (*.gltf *.GLTF)" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output file" ), QStringLiteral( "GLTF (*.gltf *.GLTF);;GLB (*.glb *.GLB)" ) ) );
 }
 
 QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -134,13 +134,15 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
     model.extensionsUsed.emplace_back( "CESIUM_RTC" );
   }
 
+  const QString outputExtension = QFileInfo( outputPath ).suffix();
+  const bool isGlb = outputExtension.compare( QLatin1String( "glb" ), Qt::CaseInsensitive ) == 0;
   const QByteArray outputFile = QFile::encodeName( outputPath );
   std::ofstream of( outputFile.constData(), std::ios::binary | std::ios::trunc );
   if ( !of )
     throw QgsProcessingException( QObject::tr( "Could not create destination file %1." ).arg( outputPath ) );
 
   tinygltf::TinyGLTF writer;
-  if ( !writer.WriteGltfSceneToStream( &model, of ) )
+  if ( !writer.WriteGltfSceneToStream( &model, of, true, isGlb ) )
   {
     of.close();
     throw QgsProcessingException( QObject::tr( "Could not write GLTF model to %1." ).arg( outputPath ) );
