@@ -274,6 +274,11 @@ class CORE_EXPORT QgsTiledSceneRenderer
      */
     virtual void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle ) = 0;
 
+    /**
+     * Renders a \a line.
+     */
+    virtual void renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line ) = 0;
+
   protected:
 
     /**

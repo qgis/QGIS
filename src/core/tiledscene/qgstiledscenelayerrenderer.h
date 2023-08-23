@@ -101,6 +101,13 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
                                   const QString &contentUri,
                                   QgsTiledSceneRenderContext &context );
 
+    void renderLinePrimitive( const tinygltf::Model &model,
+                              const tinygltf::Primitive &primitive,
+                              const QgsTiledSceneTile &tile,
+                              const QgsVector3D &tileTranslationEcef,
+                              const QMatrix4x4 *gltfLocalTransform,
+                              const QString &contentUri,
+                              QgsTiledSceneRenderContext &context );
 
     std::unique_ptr< QgsTiledSceneRenderer > mRenderer;
     bool mRenderTileBorders = false;
@@ -113,15 +120,23 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
 
     QgsCoordinateTransform mSceneToMapTransform;
 
-    struct TriangleData
+    enum class PrimitiveType
     {
-      QPolygonF triangle;
+      Line,
+      Triangle
+    };
+
+    struct PrimitiveData
+    {
+      PrimitiveType type;
+      QPolygonF coordinates;
       float z;
       QPair< int, int > textureId { -1, -1 };
       float textureCoords[6];
     };
 
-    QVector< TriangleData > mTriangleData;
+    QVector< PrimitiveData > mPrimitiveData;
+
     int mCurrentModelId = 0;
     QHash< QPair< int, int >, QImage > mTextures;
 
