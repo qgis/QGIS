@@ -473,7 +473,7 @@ void Qgs3DMapScene::createTerrain()
   {
     mSceneEntities.removeOne( mTerrain );
 
-    mTerrain->deleteLater();
+    delete mTerrain;
     mTerrain = nullptr;
   }
 
