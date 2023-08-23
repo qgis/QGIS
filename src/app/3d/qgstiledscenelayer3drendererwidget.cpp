@@ -26,7 +26,7 @@ QgsTiledSceneLayer3DPropertiesWidget::QgsTiledSceneLayer3DPropertiesWidget( QWid
 {
   setupUi( this );
 
-  mMaxErrorSpinBox->setClearValue( 15 );
+  mMaxErrorSpinBox->setClearValue( 16 );
 
   connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsTiledSceneLayer3DPropertiesWidget::widgetChanged );
   connect( mShowBoundingBoxesCheckBox, &QCheckBox::clicked, this, &QgsTiledSceneLayer3DPropertiesWidget::widgetChanged );
