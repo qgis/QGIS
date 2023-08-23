@@ -600,7 +600,7 @@ void Qgs3DMapScene::createTerrain()
   {
     mChunkEntities.removeOne( mTerrain );
 
-    mTerrain->deleteLater();
+    delete mTerrain;
     mTerrain = nullptr;
   }
 
