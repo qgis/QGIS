@@ -1070,7 +1070,7 @@ QgsCesiumTilesProviderMetadata::QgsCesiumTilesProviderMetadata():
 
 QIcon QgsCesiumTilesProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "xxxcesiumxxx.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconCesium3dTiles.svg" ) );
 }
 
 QgsCesiumTilesDataProvider *QgsCesiumTilesProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

@@ -13,8 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstiledscenedataitems.h"
+#include "qgsprovidermetadata.h"
 #include "qgstiledsceneconnection.h"
 #include "qgsdataprovider.h"
+#include "qgsproviderregistry.h"
 
 ///@cond PRIVATE
 
@@ -49,8 +51,14 @@ QgsTiledSceneLayerItem::QgsTiledSceneLayerItem( QgsDataItem *parent, QString nam
 {
   setState( Qgis::BrowserItemState::Populated );
 
-  // TODO icon should be taken from associated provider metadata
-  mIconName = QStringLiteral( "mIconTiledSceneLayer.svg" );
+  if ( QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( provider ) )
+  {
+    mIcon = metadata->icon();
+  }
+  else
+  {
+    mIconName = QStringLiteral( "mIconTiledSceneLayer.svg" );
+  }
 }
 
 
