@@ -24,7 +24,7 @@ QgsTiledSceneRootItem::QgsTiledSceneRootItem( QgsDataItem *parent, QString name,
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "tiled-scene" ) )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
-  mIconName = QStringLiteral( "mIconTiledSceneLayer.svg" );
+  mIconName = QStringLiteral( "mIconTiledScene.svg" );
   populate();
 }
 
