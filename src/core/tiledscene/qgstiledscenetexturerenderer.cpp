@@ -152,6 +152,9 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
 
     QPolygonF result;
     result.reserve( 4 );
+    // limit triangle vertices to shifting AT MOST 2 pixels from their original locations, to avoid narrow triangles
+    // getting bufffered too large
+    static double constexpr MAX_TRIANGLE_GROW_PIXELS_SQUARED = 3 * 3;
     for ( int i = 0; i < 3; ++i )
     {
       const auto &edge1 = offsetEdges[i];
@@ -161,7 +164,18 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
       if ( vertex.isNull() )
         return triangle;
 
-      result << vertex;
+      const QPointF originalPoint = triangle.at( i );
+
+      // don't allow triangle to grow too large
+      double delta = std::pow( vertex.x() - originalPoint.x(), 2 ) + std::pow( vertex.y() - originalPoint.y(), 2 );
+      if ( delta > MAX_TRIANGLE_GROW_PIXELS_SQUARED )
+      {
+        double dx = ( vertex.x() - originalPoint.x() ) * MAX_TRIANGLE_GROW_PIXELS_SQUARED / delta;
+        double dy = ( vertex.y() - originalPoint.y() ) * MAX_TRIANGLE_GROW_PIXELS_SQUARED / delta;
+        result << triangle.at( i ) + QPointF( dx, dy );
+      }
+      else
+        result << vertex;
     }
     result << result.at( 0 );
     return result;
@@ -176,24 +190,12 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
     return;
   }
 
-  float pixels = 1;
-  const QPainter::RenderHints prevHints = painter->renderHints();
-  if ( minAngle < 10 )
-  {
-    painter->setRenderHint( QPainter::Antialiasing, false );
-    pixels = 0;
-  }
-  else if ( minAngle < 15 )
-    pixels = 0.5;
-  else if ( minAngle < 25 )
-    pixels = 0.75;
-
   QgsPainting::drawTriangleUsingTexture(
     painter,
-    pixels > 0 ? growTriangle( triangle, pixels ) : triangle, context.textureImage(),
+    growTriangle( triangle, 1 ),
+    context.textureImage(),
     textureX1, textureY1,
     textureX2, textureY2,
     textureX3, textureY3
   );
-  painter->setRenderHints( prevHints );
 }
