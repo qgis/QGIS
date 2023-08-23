@@ -92,7 +92,7 @@ QgsTiledSceneRendererPropertiesWidget::QgsTiledSceneRendererPropertiesWidget( Qg
                                    Qgis::RenderUnit::Pixels,
                                    Qgis::RenderUnit::Points,
                                    Qgis::RenderUnit::Inches } );
-  mMaxErrorSpinBox->setClearValue( 0.3 );
+  mMaxErrorSpinBox->setClearValue( 3 );
 
   connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsTiledSceneRendererPropertiesWidget::emitWidgetChanged );
   connect( mMaxErrorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTiledSceneRendererPropertiesWidget::emitWidgetChanged );
