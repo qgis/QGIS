@@ -75,6 +75,7 @@ QStringList QgsPdalThinByDecimateAlgorithm::createArgumentLists( const QVariantM
 
   const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
+  checkOutputFormat( layer->source(), outputFile );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
   int step = parameterAsInt( parameters, QStringLiteral( "POINTS_NUMBER" ), context );

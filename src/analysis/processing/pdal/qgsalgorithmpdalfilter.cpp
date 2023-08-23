@@ -76,6 +76,7 @@ QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &para
 
   const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
+  checkOutputFormat( layer->source(), outputFile );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args = { QStringLiteral( "translate" ),
