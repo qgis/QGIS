@@ -80,17 +80,17 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
     throw QgsProcessingException( QObject::tr( "Could not load source file %1." ).arg( path ) );
 
   QFile f( path );
-  QByteArray b3dmContent;
+  QByteArray fileContent;
   if ( f.open( QIODevice::ReadOnly ) )
   {
-    b3dmContent = f.readAll();
+    fileContent = f.readAll();
   }
   else
   {
     throw QgsProcessingException( QObject::tr( "Could not load source file %1." ).arg( path ) );
   }
 
-  const QByteArray gltfContent = QgsCesiumUtils::extractGltfFromB3dm( b3dmContent );
+  const QgsCesiumUtils::B3DMContents b3dmContent = QgsCesiumUtils::extractGltfFromB3dm( fileContent );
 
   // load gltf and then rewrite -- this allows us to both validate the B3DM GLTF content, and
   // also gives the opportunity to "upgrade" B3DM specific options (like CESIUM_RTC) to standard
@@ -98,7 +98,7 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
   tinygltf::Model model;
   QString errors;
   QString warnings;
-  if ( !QgsGltfUtils::loadGltfModel( gltfContent, model, &errors, &warnings ) )
+  if ( !QgsGltfUtils::loadGltfModel( b3dmContent.gltf, model, &errors, &warnings ) )
   {
     throw QgsProcessingException( QObject::tr( "Error loading B3DM model: %1" ).arg( errors ) );
   }
@@ -116,6 +116,22 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
     const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
     const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
     feedback->pushDebugInfo( QObject::tr( "Found %1 primitives in default scene node (%2)" ).arg( mesh.primitives.size() ).arg( nodeIndex ) );
+  }
+
+  if ( !b3dmContent.rtcCenter.isNull() )
+  {
+    // transfer B3DM RTC center to GLTF CESIUM_RTC extension
+    tinygltf::Value::Object cesiumRtc;
+    cesiumRtc["center"] = tinygltf::Value( tinygltf::Value::Array
+    {
+      tinygltf::Value( b3dmContent.rtcCenter.x() ),
+      tinygltf::Value( b3dmContent.rtcCenter.y() ),
+      tinygltf::Value( b3dmContent.rtcCenter.z() )
+    } );
+
+    model.extensions["CESIUM_RTC"] = tinygltf::Value( cesiumRtc );
+    model.extensionsRequired.emplace_back( "CESIUM_RTC" );
+    model.extensionsUsed.emplace_back( "CESIUM_RTC" );
   }
 
   const QByteArray outputFile = QFile::encodeName( outputPath );
