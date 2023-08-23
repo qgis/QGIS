@@ -298,6 +298,11 @@ bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model
   bool res;
   if ( data.startsWith( "glTF" ) )   // 4-byte magic value in binary GLTF
   {
+    if ( data.at( 4 ) == 1 )
+    {
+      *errors = QObject::tr( "GLTF version 1 tiles cannot be loaded" );
+      return false;
+    }
     res = loader.LoadBinaryFromMemory( &model, &err, &warn,
                                        ( const unsigned char * )data.constData(), data.size(), baseDir );
   }
