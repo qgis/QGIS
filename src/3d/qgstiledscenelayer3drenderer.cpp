@@ -86,7 +86,7 @@ void QgsTiledSceneLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
 
   mShowBoundingBoxes = elem.attribute( QStringLiteral( "show-bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
-  mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "50.0" ) ).toDouble();
+  mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "15.0" ) ).toDouble();
 }
 
 void QgsTiledSceneLayer3DRenderer::resolveReferences( const QgsProject &project )
