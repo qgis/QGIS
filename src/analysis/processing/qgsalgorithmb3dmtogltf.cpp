@@ -109,13 +109,13 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
   feedback->pushDebugInfo( QObject::tr( "Found %1 scenes" ).arg( model.scenes.size() ) );
 
   const tinygltf::Scene &scene = model.scenes[model.defaultScene];
-  feedback->pushDebugInfo( QObject::tr( "Found %1 nodes in default scene (%2)" ).arg( scene.nodes.size() ).arg( model.defaultScene ) );
+  feedback->pushDebugInfo( QObject::tr( "Found %1 nodes in default scene [%2]" ).arg( scene.nodes.size() ).arg( model.defaultScene ) );
   if ( !scene.nodes.empty() )
   {
     const int nodeIndex = scene.nodes[0];
     const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
     const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
-    feedback->pushDebugInfo( QObject::tr( "Found %1 primitives in default scene node (%2)" ).arg( mesh.primitives.size() ).arg( nodeIndex ) );
+    feedback->pushDebugInfo( QObject::tr( "Found %1 primitives in default scene node [%2]" ).arg( mesh.primitives.size() ).arg( nodeIndex ) );
   }
 
   if ( !b3dmContent.rtcCenter.isNull() )
