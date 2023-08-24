@@ -670,11 +670,8 @@ void QgsChunkedEntity::onActiveJobFinished()
 
 void QgsChunkedEntity::startJobs()
 {
-  while ( mActiveJobs.count() < 4 )
+  while ( mActiveJobs.count() < 4 && !mChunkLoaderQueue->isEmpty() )
   {
-    if ( mChunkLoaderQueue->isEmpty() )
-      return;
-
     QgsChunkListEntry *entry = mChunkLoaderQueue->takeFirst();
     Q_ASSERT( entry );
     QgsChunkNode *node = entry->chunk;
@@ -717,6 +714,7 @@ void QgsChunkedEntity::cancelActiveJob( QgsChunkQueueJob *job )
   Q_ASSERT( job );
 
   QgsChunkNode *node = job->chunk();
+  disconnect( job, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
 
   if ( qobject_cast<QgsChunkLoader *>( job ) )
   {
