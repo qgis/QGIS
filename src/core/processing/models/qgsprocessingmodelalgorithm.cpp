@@ -474,6 +474,19 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( !ppRes.isEmpty() )
         results = ppRes;
 
+      if ( feedback && !skipGenericLogging )
+      {
+        const QVariantMap displayOutputs = QgsProcessingUtils::removePointerValuesFromMap( results );
+        QStringList formattedOutputs;
+        for ( auto displayOutputIt = displayOutputs.constBegin(); displayOutputIt != displayOutputs.constEnd(); ++displayOutputIt )
+        {
+          formattedOutputs << QStringLiteral( "%1: %2" ).arg( displayOutputIt.key(),
+                           QgsProcessingUtils::variantToPythonLiteral( displayOutputIt.value() ) );;
+        }
+        feedback->pushInfo( QObject::tr( "Results:" ) );
+        feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( formattedOutputs.join( QLatin1String( ", " ) ) ) );
+      }
+
       childResults.insert( childId, results );
 
       // look through child alg's outputs to determine whether any of these should be copied
