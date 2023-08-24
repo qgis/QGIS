@@ -62,6 +62,9 @@ void QgsProcessingHistoryWidget::saveLog()
                      tr( "Save File" ),
                      QDir::homePath(),
                      tr( "Log files (*.log *.LOG)" ) );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
 
   if ( fileName.isEmpty() )
     return;
