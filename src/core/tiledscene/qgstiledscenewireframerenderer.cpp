@@ -196,6 +196,8 @@ void QgsTiledSceneWireframeRenderer::renderLine( QgsTiledSceneRenderContext &con
 
 void QgsTiledSceneWireframeRenderer::startRender( QgsTiledSceneRenderContext &context )
 {
+  QgsTiledSceneRenderer::startRender( context );
+
   if ( !mUseTextureColors )
     mFillSymbol->startRender( context.renderContext() );
 
@@ -208,6 +210,8 @@ void QgsTiledSceneWireframeRenderer::stopRender( QgsTiledSceneRenderContext &con
     mFillSymbol->stopRender( context.renderContext() );
 
   mLineSymbol->stopRender( context.renderContext() );
+
+  QgsTiledSceneRenderer::stopRender( context );
 }
 
 Qgis::TiledSceneRendererFlags QgsTiledSceneWireframeRenderer::flags() const
