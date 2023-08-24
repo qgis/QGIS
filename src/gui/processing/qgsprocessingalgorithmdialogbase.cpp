@@ -151,6 +151,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
           {
             mContextOptionsWidget = new QgsProcessingContextOptionsWidget();
             mContextOptionsWidget->setFromContext( processingContext() );
+            mContextOptionsWidget->setLogLevel( mLogLevel );
             panel->openPanel( mContextOptionsWidget );
 
             connect( mContextOptionsWidget, &QgsPanelWidget::widgetChanged, this, [ = ]
@@ -161,6 +162,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
               mAreaUnits = mContextOptionsWidget->areaUnit();
               mTemporaryFolderOverride = mContextOptionsWidget->temporaryFolder();
               mMaximumThreads = mContextOptionsWidget->maximumThreads();
+              mLogLevel = mContextOptionsWidget->logLevel();
             } );
           }
         }
@@ -954,6 +956,10 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
   mTemporaryFolderWidget->setStorageMode( QgsFileWidget::GetDirectory );
   mTemporaryFolderWidget->lineEdit()->setPlaceholderText( tr( "Default" ) );
 
+  mLogLevelComboBox->addItem( tr( "Default" ), QgsProcessingContext::LogLevel::DefaultLevel );
+  mLogLevelComboBox->addItem( tr( "Verbose" ), QgsProcessingContext::LogLevel::Verbose );
+  mLogLevelComboBox->addItem( tr( "Verbose (Model Debugging)" ), QgsProcessingContext::LogLevel::ModelDebug );
+
   mDistanceUnitsCombo->addItem( tr( "Default" ), QVariant::fromValue( Qgis::DistanceUnit::Unknown ) );
   for ( Qgis::DistanceUnit unit :
         {
@@ -1014,6 +1020,7 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
 
   mThreadsSpinBox->setRange( 1, QThread::idealThreadCount() );
 
+  connect( mLogLevelComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mComboInvalidFeatureFiltering, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mDistanceUnitsCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mAreaUnitsCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
@@ -1028,6 +1035,7 @@ void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingConte
   whileBlocking( mAreaUnitsCombo )->setCurrentIndex( mAreaUnitsCombo->findData( QVariant::fromValue( context->areaUnit() ) ) );
   whileBlocking( mTemporaryFolderWidget )->setFilePath( context->temporaryFolder() );
   whileBlocking( mThreadsSpinBox )->setValue( context->maximumThreads() );
+  whileBlocking( mLogLevelComboBox )->setCurrentIndex( mLogLevelComboBox->findData( static_cast< int >( context->logLevel() ) ) );
 }
 
 QgsFeatureRequest::InvalidGeometryCheck QgsProcessingContextOptionsWidget::invalidGeometryCheck() const
@@ -1053,6 +1061,16 @@ QString QgsProcessingContextOptionsWidget::temporaryFolder()
 int QgsProcessingContextOptionsWidget::maximumThreads() const
 {
   return mThreadsSpinBox->value();
+}
+
+void QgsProcessingContextOptionsWidget::setLogLevel( QgsProcessingContext::LogLevel level )
+{
+  whileBlocking( mLogLevelComboBox )->setCurrentIndex( mLogLevelComboBox->findData( static_cast< int >( level ) ) );
+}
+
+QgsProcessingContext::LogLevel QgsProcessingContextOptionsWidget::logLevel() const
+{
+  return static_cast< QgsProcessingContext::LogLevel >( mLogLevelComboBox->currentData().toInt() );
 }
 
 ///@endcond

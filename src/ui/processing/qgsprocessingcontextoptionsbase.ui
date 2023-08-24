@@ -60,8 +60,12 @@
           <string>Environment Settings</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="1">
-           <widget class="QgsFileWidget" name="mTemporaryFolderWidget" native="true"/>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Number of threads to use</string>
+            </property>
+           </widget>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_4">
@@ -70,15 +74,21 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_5">
+          <item row="1" column="1">
+           <widget class="QgsSpinBox" name="mThreadsSpinBox"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QgsFileWidget" name="mTemporaryFolderWidget" native="true"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>Number of threads to use</string>
+             <string>Logging level</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QgsSpinBox" name="mThreadsSpinBox"/>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="mLogLevelComboBox"/>
           </item>
          </layout>
         </widget>
