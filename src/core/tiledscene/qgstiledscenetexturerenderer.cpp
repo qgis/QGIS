@@ -17,11 +17,15 @@
 
 #include "qgstiledscenetexturerenderer.h"
 #include "qgspainting.h"
+#include "qgsfillsymbol.h"
+#include "qgssymbollayerutils.h"
 
 QgsTiledSceneTextureRenderer::QgsTiledSceneTextureRenderer()
 {
-
+  mFillSymbol.reset( createDefaultFillSymbol() );
 }
+
+QgsTiledSceneTextureRenderer::~QgsTiledSceneTextureRenderer() = default;
 
 QString QgsTiledSceneTextureRenderer::type() const
 {
@@ -31,6 +35,7 @@ QString QgsTiledSceneTextureRenderer::type() const
 QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::clone() const
 {
   std::unique_ptr< QgsTiledSceneTextureRenderer > res = std::make_unique< QgsTiledSceneTextureRenderer >();
+  res->setFillSymbol( mFillSymbol->clone() );
 
   copyCommonProperties( res.get() );
 
@@ -40,10 +45,43 @@ QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::clone() const
 QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   std::unique_ptr< QgsTiledSceneTextureRenderer > r = std::make_unique< QgsTiledSceneTextureRenderer >();
+  {
+    const QDomElement fillSymbolElem = element.firstChildElement( QStringLiteral( "fillSymbol" ) );
+    if ( !fillSymbolElem.isNull() )
+    {
+      const QDomElement symbolElem = fillSymbolElem.firstChildElement( QStringLiteral( "symbol" ) );
+      std::unique_ptr< QgsFillSymbol > fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
+      if ( fillSymbol )
+        r->mFillSymbol = std::move( fillSymbol );
+    }
+  }
 
   r->restoreCommonProperties( element, context );
 
   return r.release();
+}
+
+QgsFillSymbol *QgsTiledSceneTextureRenderer::createDefaultFillSymbol()
+{
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "224,224,224" ) );
+  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "124,124,124" ) );
+  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
+  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+
+  return QgsFillSymbol::createSimple( properties );
+}
+
+QgsFillSymbol *QgsTiledSceneTextureRenderer::fillSymbol() const
+{
+  return mFillSymbol.get();
+}
+
+void QgsTiledSceneTextureRenderer::setFillSymbol( QgsFillSymbol *symbol )
+{
+  mFillSymbol.reset( symbol );
 }
 
 QDomElement QgsTiledSceneTextureRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -51,6 +89,16 @@ QDomElement QgsTiledSceneTextureRenderer::save( QDomDocument &doc, const QgsRead
   QDomElement rendererElem = doc.createElement( QStringLiteral( "renderer" ) );
 
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "texture" ) );
+
+  {
+    QDomElement fillSymbolElem = doc.createElement( QStringLiteral( "fillSymbol" ) );
+    const QDomElement symbolElement = QgsSymbolLayerUtils::saveSymbol( QString(),
+                                      mFillSymbol.get(),
+                                      doc,
+                                      context );
+    fillSymbolElem.appendChild( symbolElement );
+    rendererElem.appendChild( fillSymbolElem );
+  }
 
   saveCommonProperties( rendererElem, context );
 
@@ -70,7 +118,10 @@ Qgis::TiledSceneRendererFlags QgsTiledSceneTextureRenderer::flags() const
 void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle )
 {
   if ( context.textureImage().isNull() )
+  {
+    mFillSymbol->renderPolygon( triangle, nullptr, nullptr, context.renderContext() );
     return;
+  }
 
   float textureX1;
   float textureY1;
@@ -205,4 +256,17 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
 void QgsTiledSceneTextureRenderer::renderLine( QgsTiledSceneRenderContext &, const QPolygonF & )
 {
 
+}
+
+void QgsTiledSceneTextureRenderer::startRender( QgsTiledSceneRenderContext &context )
+{
+  QgsTiledSceneRenderer::startRender( context );
+  mFillSymbol->startRender( context.renderContext() );
+}
+
+void QgsTiledSceneTextureRenderer::stopRender( QgsTiledSceneRenderContext &context )
+{
+  mFillSymbol->stopRender( context.renderContext() );
+
+  QgsTiledSceneRenderer::stopRender( context );
 }

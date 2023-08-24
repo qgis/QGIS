@@ -22,6 +22,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+class QgsFillSymbol;
+
 /**
  * \ingroup core
  * \brief Renders tiled scene layers using textures.
@@ -36,6 +38,7 @@ class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
      * Constructor for QgsTiledSceneTextureRenderer.
      */
     QgsTiledSceneTextureRenderer();
+    ~QgsTiledSceneTextureRenderer();
 
     QString type() const override;
     QgsTiledSceneRenderer *clone() const override;
@@ -43,14 +46,39 @@ class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
     Qgis::TiledSceneRendererFlags flags() const override;
     void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle ) override;
     void renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line ) override;
+    void startRender( QgsTiledSceneRenderContext &context ) override;
+    void stopRender( QgsTiledSceneRenderContext &context ) override;
 
     /**
      * Creates a textured renderer from an XML \a element.
      */
     static QgsTiledSceneRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-  private:
+    /**
+     * Returns a copy of the default fill symbol used to render triangles without textures.
+     *
+     * \see setFillSymbol()
+     */
+    static QgsFillSymbol *createDefaultFillSymbol() SIP_FACTORY;
 
+    /**
+     * Returns the fill symbol used to render triangles without textures.
+     *
+     * \see setFillSymbol()
+     */
+    QgsFillSymbol *fillSymbol() const;
+
+    /**
+     * Sets the fill \a symbol used to render triangles without textures.
+     *
+     * Ownership of \a symbol is transferred.
+     *
+     * \see fillSymbol()
+     */
+    void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+  private:
+    std::unique_ptr< QgsFillSymbol> mFillSymbol;
 };
 
 #endif // QGSTILEDSCENETEXTURERENDERER_H
