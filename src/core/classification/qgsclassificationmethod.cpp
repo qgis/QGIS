@@ -75,7 +75,7 @@ QgsClassificationMethod *QgsClassificationMethod::create( const QDomElement &ele
   }
 
   // label format
-  QDomElement labelFormatElem = element.firstChildElement( QStringLiteral( "labelformat" ) );
+  QDomElement labelFormatElem = element.firstChildElement( QStringLiteral( "labelFormat" ) );
   if ( !labelFormatElem.isNull() )
   {
     QString format = labelFormatElem.attribute( QStringLiteral( "format" ), "%1" + QStringLiteral( " - " ) + "%2" );
