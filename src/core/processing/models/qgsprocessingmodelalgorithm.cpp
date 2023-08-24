@@ -322,8 +322,6 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QVariantMap childResults;
   QVariantMap childInputs;
 
-  const bool verboseLog = context.logLevel() == QgsProcessingContext::Verbose;
-
   QVariantMap finalResults;
   QSet< QString > executed;
   bool executedAlg = true;
@@ -357,7 +355,25 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms[ childId ];
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
 
-      const bool skipGenericLogging = !verboseLog || childAlg->flags() & QgsProcessingAlgorithm::FlagSkipGenericModelLogging;
+      bool skipGenericLogging = true;
+      switch ( context.logLevel() )
+      {
+        case QgsProcessingContext::DefaultLevel:
+          // at default log level we skip all the generic logs about prepare steps, step inputs and outputs
+          skipGenericLogging = true;
+          break;
+        case QgsProcessingContext::Verbose:
+          // at verbose log level we include all the generic logs about prepare steps, step inputs and outputs
+          // UNLESS the algorithm specifically tells to skip these (eg raise warning steps and other special cases)
+          skipGenericLogging = childAlg->flags() & QgsProcessingAlgorithm::FlagSkipGenericModelLogging;
+          break;
+        case QgsProcessingContext::ModelDebug:
+          // at model debug log level we'll show all the generic logs for step preparation, inputs and outputs
+          // for every child algorithm
+          skipGenericLogging = false;
+          break;
+      }
+
       if ( feedback && !skipGenericLogging )
         feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
 
