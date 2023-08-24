@@ -6652,8 +6652,8 @@ bool TinyGLTF::LoadBinaryFromMemory(Model *model, std::string *err,
       if (err) {
         (*err) =
             "Insufficient storage space for Chunk1(BIN data). At least Chunk1 "
-            "Must have 4 bytes or more bytes, but got " +
-            std::to_string((header_and_json_size + 12ull) - uint64_t(length)) +
+            "Must have 4 or more bytes, but got " +
+            std::to_string((header_and_json_size + 8ull) - uint64_t(length)) +
             ".\n";
       }
       return false;
