@@ -4740,6 +4740,25 @@ static bool ParseDracoExtension(Primitive *primitive, Model *model,
 
   // create new bufferView for indices
   if (primitive->indices >= 0) {
+    const draco::PointIndex::ValueType numPoint = mesh->num_points();
+    // handle the situation where the stored component type does not match the
+    // required type for the actual number of stored points
+    int supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE;
+    if (numPoint < static_cast<draco::PointIndex::ValueType>(
+            std::numeric_limits<uint8_t>::max())) {
+      supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE;
+    } else if (
+        numPoint < static_cast<draco::PointIndex::ValueType>(
+            std::numeric_limits<uint16_t>::max())) {
+      supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT;
+    } else {
+      supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT;
+    }
+
+    if (supposedComponentType > model->accessors[primitive->indices].componentType) {
+      model->accessors[primitive->indices].componentType = supposedComponentType;
+    }
+
     int32_t componentSize = GetComponentSizeInBytes(
         model->accessors[primitive->indices].componentType);
     Buffer decodedIndexBuffer;
