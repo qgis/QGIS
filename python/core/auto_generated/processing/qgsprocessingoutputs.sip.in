@@ -10,7 +10,6 @@
 
 
 
-
 class QgsProcessingOutputDefinition
 {
 %Docstring(signature="appended")
@@ -53,6 +52,8 @@ as generated layers or calculated values.
       sipType = sipType_QgsProcessingOutputFile;
     else if ( sipCpp->type() == QgsProcessingOutputConditionalBranch::typeName() )
       sipType = sipType_QgsProcessingOutputConditionalBranch;
+    else if ( sipCpp->type() == QgsProcessingOutputVariant::typeName() )
+      sipType = sipType_QgsProcessingOutputVariant;
     else
       sipType = nullptr;
 %End
@@ -308,6 +309,33 @@ Constructor for QgsProcessingOutputHtml.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
+};
+
+
+class QgsProcessingOutputVariant : QgsProcessingOutputDefinition
+{
+%Docstring(signature="appended")
+A variant output for processing algorithms, capable of storing any QVariant value.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputVariant( const QString &name, const QString &description = QString() );
+%Docstring
+Constructor for QgsProcessingOutputVariant.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the output class.
+%End
+    virtual QString type() const;
+
 };
 
 class QgsProcessingOutputNumber : QgsProcessingOutputDefinition

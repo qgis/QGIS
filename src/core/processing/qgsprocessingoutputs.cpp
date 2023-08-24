@@ -94,3 +94,14 @@ QString QgsProcessingOutputMultipleLayers::type() const
 QgsProcessingOutputConditionalBranch::QgsProcessingOutputConditionalBranch( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QgsProcessingOutputVariant::QgsProcessingOutputVariant( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{
+
+}
+
+QString QgsProcessingOutputVariant::type() const
+{
+  return typeName();
+}
