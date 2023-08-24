@@ -60,6 +60,11 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mDistanceToMapFrameSpinBox->setShowClearButton( true );
   mDistanceToMapFrameSpinBox->setClearValue( 0 );
 
+  mOffsetXSpinBox->setShowClearButton( true );
+  mOffsetXSpinBox->setClearValue( 0 );
+  mOffsetYSpinBox->setShowClearButton( true );
+  mOffsetYSpinBox->setClearValue( 0 );
+
   connect( mIntervalXSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsLayoutMapGridWidget::mIntervalXSpinBox_editingFinished );
   connect( mIntervalYSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsLayoutMapGridWidget::mIntervalYSpinBox_editingFinished );
   connect( mOffsetXSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mOffsetXSpinBox_valueChanged );
