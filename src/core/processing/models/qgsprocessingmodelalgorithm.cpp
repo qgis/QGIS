@@ -1004,7 +1004,8 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingParameterDatabaseTable::typeName(),
       QStringList() << QgsProcessingOutputNumber::typeName()
       << QgsProcessingOutputString::typeName()
-      << QgsProcessingOutputBoolean::typeName() );
+      << QgsProcessingOutputBoolean::typeName()
+      << QgsProcessingOutputVariant::typeName() );
 
   for ( const QgsProcessingModelChildParameterSource &source : std::as_const( sources ) )
   {
