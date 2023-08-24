@@ -41,6 +41,7 @@ expression context.
     {
       DefaultLevel,
       Verbose,
+      ModelDebug,
     };
 
     QgsProcessingContext();
