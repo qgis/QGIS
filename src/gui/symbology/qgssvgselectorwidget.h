@@ -32,7 +32,7 @@
 #include <QWidget>
 #include <QThread>
 #include <QElapsedTimer>
-#include <QStyledItemDelegate>
+#include <QItemDelegate>
 
 
 class QCheckBox;
@@ -124,13 +124,13 @@ class GUI_EXPORT QgsSvgParametersModel : public QAbstractTableModel
  * \brief A delegate which will show a field expression widget to set the value of the SVG parameter
  * \since QGIS 3.18
  */
-class GUI_EXPORT QgsSvgParameterValueDelegate : public QStyledItemDelegate
+class GUI_EXPORT QgsSvgParameterValueDelegate : public QItemDelegate
 {
     Q_OBJECT
 
   public:
     QgsSvgParameterValueDelegate( QObject *parent = nullptr )
-      : QStyledItemDelegate( parent )
+      : QItemDelegate( parent )
     {}
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
