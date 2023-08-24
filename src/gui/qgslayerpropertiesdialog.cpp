@@ -88,6 +88,9 @@ void QgsLayerPropertiesDialog::saveMetadataToFile()
 
   QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Layer Metadata as QMD" ),
                            lastUsedDir, tr( "QMD File" ) + " (*.qmd)" );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( outputFileName.isEmpty() )
   {
     return;
@@ -195,6 +198,9 @@ void QgsLayerPropertiesDialog::saveStyleToFile()
                              tr( "Save layer properties as style file" ),
                              lastUsedDir,
                              tr( "QGIS Layer Style File" ) + " (*.qml)" );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( outputFileName.isEmpty() )
     return;
 

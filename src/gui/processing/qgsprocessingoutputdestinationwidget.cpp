@@ -432,6 +432,9 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     emit skipOutputChanged( false );
     emit destinationChanged();
   }
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
 }
 
 void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
@@ -442,6 +445,9 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
     lastPath = settings.value( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), QString() ).toString();
 
   QString filename =  QFileDialog::getSaveFileName( this, tr( "Save to GeoPackage" ), lastPath, tr( "GeoPackage files (*.gpkg);;All files (*.*)" ), nullptr, QFileDialog::DontConfirmOverwrite );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
 
   if ( filename.isEmpty() )
     return;

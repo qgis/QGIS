@@ -1062,6 +1062,9 @@ void QgsExpressionBuilderWidget::exportUserExpressions_pressed()
                            lastSaveDir,
                            tr( "User expressions" ) + " (*.json)" );
 
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( saveFileName.isEmpty() )
     return;
 

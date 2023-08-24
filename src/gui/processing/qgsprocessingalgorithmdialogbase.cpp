@@ -662,6 +662,9 @@ void QgsProcessingAlgorithmDialogBase::saveLog()
   const QString htmlExt = tr( "HTML files" ) + QStringLiteral( " (*.html *.HTML)" );
 
   const QString path = QFileDialog::getSaveFileName( this, tr( "Save Log to File" ), lastUsedDir, txtExt + ";;" + htmlExt, &filter );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( path.isEmpty() )
   {
     return;

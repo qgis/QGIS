@@ -218,6 +218,9 @@ void QgsAbstractFileContentSourceLineEdit::extractFile()
                        extractFileTitle(),
                        defaultPath(),
                        fileFilter() );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( file.isEmpty() )
   {
     return;
