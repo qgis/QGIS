@@ -355,6 +355,10 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         range = QgsRendererRange(20.0, 25.5, symbol.clone(), 'Third range', False)
         renderer.addClassRange(range)
 
+        # Add classification method label and precision
+        renderer.classificationMethod().setLabelFormat("111")
+        renderer.classificationMethod().setLabelPrecision(1)
+
         # Add class by lower and upper
         renderer.addClassLowerUpper(25.5, 30.5)
         # (Update label for sorting tests)
@@ -388,6 +392,10 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
             dumpGraduatedRenderer(renderer2),
             "Save/create from DOM doesn't replicate renderer properly"
         )
+
+        # Check classification method label and precision properly created from DOM
+        self.assertEqual(renderer2.classificationMethod().labelFormat(), "111")
+        self.assertEqual(renderer2.classificationMethod().labelPrecision(), 1)
 
         # Check sorting
 
