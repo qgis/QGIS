@@ -5192,7 +5192,7 @@ static bool ParsePbrMetallicRoughness(
   return true;
 }
 
-static bool ParseMaterial(Material *material, std::string *err,
+static bool ParseMaterial(Material *material, std::string *err, std::string *warn,
                           const detail::json &o,
                           bool store_original_json_for_extras_and_extensions) {
   ParseStringProperty(&material->name, err, o, "name", /* required */ false);
@@ -5200,7 +5200,15 @@ static bool ParseMaterial(Material *material, std::string *err,
   if (ParseNumberArrayProperty(&material->emissiveFactor, err, o,
                                "emissiveFactor",
                                /* required */ false)) {
-    if (material->emissiveFactor.size() != 3) {
+    if (material->emissiveFactor.size() == 4) {
+      if (warn) {
+        (*warn) +=
+            "Array length of `emissiveFactor` parameter in "
+            "material must be 3, but got 4\n";
+      }
+      material->emissiveFactor.resize(3);
+    }
+    else if (material->emissiveFactor.size() != 3) {
       if (err) {
         (*err) +=
             "Array length of `emissiveFactor` parameter in "
@@ -6198,7 +6206,7 @@ bool TinyGLTF::LoadFromString(Model *model, std::string *err, std::string *warn,
       Material material;
       ParseStringProperty(&material.name, err, o, "name", false);
 
-      if (!ParseMaterial(&material, err, o,
+      if (!ParseMaterial(&material, err, warn, o,
                          store_original_json_for_extras_and_extensions_)) {
         return false;
       }
