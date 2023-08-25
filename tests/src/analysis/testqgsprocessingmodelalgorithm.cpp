@@ -107,6 +107,7 @@ class TestQgsProcessingModelAlgorithm: public QObject
     void modelNameMatchesFileName();
     void renameModelParameter();
     void internalVersion();
+    void modelChildOrderWithVariables();
 
   private:
 
@@ -1184,7 +1185,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
 
   // Check variables for child algorithm
   // without values
-  QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = model2.variablesForChildAlgorithm( QStringLiteral( "cx1" ), context );
+  QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = model2.variablesForChildAlgorithm( QStringLiteral( "cx1" ), &context );
   QCOMPARE( variables.count(), 7 );
   QCOMPARE( variables.value( "DIST" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( variables.value( "CRS" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
@@ -1195,7 +1196,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QCOMPARE( variables.value( "SOURCE_LAYER_maxy" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
 
   // with values
-  variables = model2.variablesForChildAlgorithm( QStringLiteral( "cx1" ), context, modelInputs, childResults );
+  variables = model2.variablesForChildAlgorithm( QStringLiteral( "cx1" ), &context, modelInputs, childResults );
   QCOMPARE( variables.count(), 7 );
   QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
@@ -1231,7 +1232,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:Centroids" ) );
   QCOMPARE( params.count(), 2 );
 
-  variables = model2.variablesForChildAlgorithm( "cx2", context );
+  variables = model2.variablesForChildAlgorithm( "cx2", &context );
   QCOMPARE( variables.count(), 12 );
   QCOMPARE( variables.value( "DIST" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
@@ -1251,7 +1252,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QCOMPARE( variables.value( "cx1_OUTPUT_maxy" ).source.outputChildId(), QStringLiteral( "cx1" ) );
 
   // with values
-  variables = model2.variablesForChildAlgorithm( "cx2", context, modelInputs, childResults );
+  variables = model2.variablesForChildAlgorithm( "cx2", &context, modelInputs, childResults );
   QCOMPARE( variables.count(), 12 );
   QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
@@ -1336,7 +1337,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "AB" ) );
   model2.removeChildAlgorithm( "cx4" );
 
-  variables = model2.variablesForChildAlgorithm( "cx3", context );
+  variables = model2.variablesForChildAlgorithm( "cx3", &context );
   QCOMPARE( variables.count(), 17 );
   QCOMPARE( variables.value( "DIST" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
@@ -1365,7 +1366,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QCOMPARE( variables.value( "cx2_OUTPUT_maxy" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx2_OUTPUT_maxy" ).source.outputChildId(), QStringLiteral( "cx2" ) );
   // with values
-  variables = model2.variablesForChildAlgorithm( "cx3", context, modelInputs, childResults );
+  variables = model2.variablesForChildAlgorithm( "cx3", &context, modelInputs, childResults );
   QCOMPARE( variables.count(), 17 );
   QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
@@ -1385,7 +1386,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QgsProcessingModelChildAlgorithm &cx1 = model2.childAlgorithm( QStringLiteral( "cx1" ) );
   const QString oldDescription = cx1.description();
   cx1.setDescription( "cx '():.1" );
-  variables = model2.variablesForChildAlgorithm( "cx3", context );
+  variables = model2.variablesForChildAlgorithm( "cx3", &context );
   QVERIFY( !variables.contains( "cx1_OUTPUT" ) );
   QVERIFY( !variables.contains( "cx '():.1_OUTPUT" ) );
   QVERIFY( variables.contains( "cx______1_OUTPUT" ) );
@@ -2392,6 +2393,72 @@ void TestQgsProcessingModelAlgorithm::internalVersion()
   QgsProcessingModelAlgorithm model3;
   QVERIFY( model3.loadVariant( model2.toVariant() ) );
   QCOMPARE( model3.mInternalVersion, QgsProcessingModelAlgorithm::InternalVersion::Version2 );
+}
+
+void TestQgsProcessingModelAlgorithm::modelChildOrderWithVariables()
+{
+  // dependencies
+  QgsProcessingModelAlgorithm model( "test", "testGroup" );
+
+  QgsProcessingModelChildAlgorithm c1;
+  c1.setChildId( QStringLiteral( "c1" ) );
+  c1.setAlgorithmId( QStringLiteral( "native:stringconcatenation" ) );
+  model.addChildAlgorithm( c1 );
+
+  QgsProcessingModelChildAlgorithm c2;
+  c2.setChildId( QStringLiteral( "c2" ) );
+  c2.setAlgorithmId( QStringLiteral( "native:stringconcatenation" ) );
+  c2.setParameterSources(
+  {
+    {QStringLiteral( "INPUT_1" ), {QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c1_CONCATENATION || 'x'" ) )} }
+  }
+  );
+  model.addChildAlgorithm( c2 );
+
+  QgsProcessingContext context;
+  QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = model.variablesForChildAlgorithm( QStringLiteral( "c2" ), &context );
+  QCOMPARE( variables.size(), 1 );
+  QCOMPARE( variables.begin().key(), QStringLiteral( "c1_CONCATENATION" ) );
+
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).isEmpty() );
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).size(), 1 );
+  QCOMPARE( *model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).constBegin(), QStringLiteral( "c1" ) );
+
+  QgsProcessingModelChildAlgorithm c3;
+  c3.setChildId( QStringLiteral( "c3" ) );
+  c3.setAlgorithmId( QStringLiteral( "native:stringconcatenation" ) );
+
+  // make c1 dependent on c3's output via a variable
+  model.childAlgorithm( QStringLiteral( "c1" ) ).setParameterSources(
+  {
+    {QStringLiteral( "INPUT_1" ), {QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c3_CONCATENATION || 'x'" ) )} }
+  }
+  );
+  model.addChildAlgorithm( c3 );
+
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c3" ) ).size(), 0 );
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).size(), 1 );
+  QCOMPARE( *model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).constBegin(), QStringLiteral( "c3" ) );
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).size(), 2 );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).contains( QStringLiteral( "c1" ) ) );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).contains( QStringLiteral( "c3" ) ) );
+
+  // circular dependency -- this is ok, we just don't want to hang
+  model.childAlgorithm( QStringLiteral( "c3" ) ).setParameterSources(
+  {
+    {QStringLiteral( "INPUT_1" ), {QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c2_CONCATENATION || 'x'" ) )} }
+  }
+  );
+
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c3" ) ).size(), 2 );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c3" ) ).contains( QStringLiteral( "c1" ) ) );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c3" ) ).contains( QStringLiteral( "c2" ) ) );
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).size(), 2 );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).contains( QStringLiteral( "c2" ) ) );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).contains( QStringLiteral( "c3" ) ) );
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).size(), 2 );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).contains( QStringLiteral( "c1" ) ) );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).contains( QStringLiteral( "c3" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingModelAlgorithm )

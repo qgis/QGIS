@@ -993,7 +993,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
   return lines;
 }
 
-QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingModelAlgorithm::variablesForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters, const QVariantMap &results ) const
+QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingModelAlgorithm::variablesForChildAlgorithm( const QString &childId, QgsProcessingContext *context, const QVariantMap &modelParameters, const QVariantMap &results ) const
 {
   QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables;
 
@@ -1122,16 +1122,20 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     {
       QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
       value = fromVar.sink;
-      if ( value.userType() == QMetaType::type( "QgsProperty" ) )
+      if ( value.userType() == QMetaType::type( "QgsProperty" ) && context )
       {
-        value = value.value< QgsProperty >().valueAsString( context.expressionContext() );
+        value = value.value< QgsProperty >().valueAsString( context->expressionContext() );
       }
     }
-    QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( value ) );
-    if ( !layer )
-      layer = QgsProcessingUtils::mapLayerFromString( value.toString(), context );
+    QgsMapLayer *layer = nullptr;
+    if ( context )
+    {
+      layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( value ) );
+      if ( !layer )
+        layer = QgsProcessingUtils::mapLayerFromString( value.toString(), *context );
+    }
 
-    variables.insert( safeName( name ), VariableDefinition( QVariant::fromValue( QgsWeakMapLayerPointer( layer ) ), source, description ) );
+    variables.insert( safeName( name ), VariableDefinition( layer ? QVariant::fromValue( QgsWeakMapLayerPointer( layer ) ) : QVariant(), source, description ) );
     variables.insert( safeName( QStringLiteral( "%1_minx" ).arg( name ) ), VariableDefinition( layer ? layer->extent().xMinimum() : QVariant(), source, QObject::tr( "Minimum X of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_miny" ).arg( name ) ), VariableDefinition( layer ? layer->extent().yMinimum() : QVariant(), source, QObject::tr( "Minimum Y of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_maxx" ).arg( name ) ), VariableDefinition( layer ? layer->extent().xMaximum() : QVariant(), source, QObject::tr( "Maximum X of %1" ).arg( description ) ) );
@@ -1187,18 +1191,18 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     {
       QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
       value = fromVar.sink;
-      if ( value.userType() == QMetaType::type( "QgsProperty" ) )
+      if ( context && value.userType() == QMetaType::type( "QgsProperty" ) )
       {
-        value = value.value< QgsProperty >().valueAsString( context.expressionContext() );
+        value = value.value< QgsProperty >().valueAsString( context->expressionContext() );
       }
     }
     if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( value ) ) )
     {
       featureSource = layer;
     }
-    if ( !featureSource )
+    if ( context && !featureSource )
     {
-      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( value.toString(), context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
+      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( value.toString(), *context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
         featureSource = vl;
     }
 
@@ -1215,7 +1219,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
 QgsExpressionContextScope *QgsProcessingModelAlgorithm::createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters, const QVariantMap &results ) const
 {
   std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope( QStringLiteral( "algorithm_inputs" ) ) );
-  QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = variablesForChildAlgorithm( childId, context, modelParameters, results );
+  QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = variablesForChildAlgorithm( childId, &context, modelParameters, results );
   QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition>::const_iterator varIt = variables.constBegin();
   for ( ; varIt != variables.constEnd(); ++varIt )
   {
@@ -2093,10 +2097,42 @@ void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QStri
     const auto constValue = paramIt.value();
     for ( const QgsProcessingModelChildParameterSource &source : constValue )
     {
-      if ( source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput && !depends.contains( source.outputChildId() ) )
+      switch ( source.source() )
       {
-        depends.insert( source.outputChildId() );
-        dependsOnChildAlgorithmsRecursive( source.outputChildId(), depends );
+        case Qgis::ProcessingModelChildParameterSource::ChildOutput:
+          if ( !depends.contains( source.outputChildId() ) )
+          {
+            depends.insert( source.outputChildId() );
+            dependsOnChildAlgorithmsRecursive( source.outputChildId(), depends );
+          }
+          break;
+
+        case Qgis::ProcessingModelChildParameterSource::Expression:
+        {
+          const QgsExpression exp( source.expression() );
+          const QSet<QString> vars = exp.referencedVariables();
+          if ( vars.empty() )
+            break;
+
+          // find the source of referenced variables and check if it's another child algorithm
+          const QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> availableVariables = variablesForChildAlgorithm( childId );
+          for ( auto childVarIt = availableVariables.constBegin(); childVarIt != availableVariables.constEnd(); ++childVarIt )
+          {
+            if ( !vars.contains( childVarIt.key() ) || depends.contains( childVarIt->source.outputChildId() ) )
+              continue;
+
+            // this variable is required for the child's expression, so the corresponding algorithm must be run first
+            depends.insert( childVarIt->source.outputChildId() );
+            dependsOnChildAlgorithmsRecursive( childVarIt->source.outputChildId(), depends );
+          }
+          break;
+        }
+
+        case Qgis::ProcessingModelChildParameterSource::ModelParameter:
+        case Qgis::ProcessingModelChildParameterSource::StaticValue:
+        case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+        case Qgis::ProcessingModelChildParameterSource::ModelOutput:
+          break;
       }
     }
   }
