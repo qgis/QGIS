@@ -53,6 +53,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmboundary.cpp
   processing/qgsalgorithmboundingbox.cpp
   processing/qgsalgorithmbuffer.cpp
+  processing/qgsalgorithmcalculateexpression.cpp
   processing/qgsalgorithmcalculateoverlaps.cpp
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcellstatistics.cpp
