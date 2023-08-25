@@ -38,6 +38,7 @@ from qgis.core import (QgsMapLayer,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterMeshLayer,
+                       QgsProcessingParameterPointCloudLayer,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterMapLayer)
 
@@ -114,6 +115,10 @@ class BatchInputSelectionPanel(QWidget):
               or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
                   self.param.layerType() == QgsProcessing.TypeMesh)):
             layers = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance())
+        elif (isinstance(self.param, QgsProcessingParameterPointCloudLayer)
+              or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
+                  self.param.layerType() == QgsProcessing.TypePointCloud)):
+            layers = QgsProcessingUtils.compatiblePointCloudLayer(QgsProject.instance())
         else:
             datatypes = [QgsProcessing.TypeVectorAnyGeometry]
             if isinstance(self.param, QgsProcessingParameterFeatureSource):
