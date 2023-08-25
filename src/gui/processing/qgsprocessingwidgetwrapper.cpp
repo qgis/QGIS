@@ -235,6 +235,7 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
         description = QObject::tr( "%1 [optional]" ).arg( description );
       std::unique_ptr< QLabel > label = std::make_unique< QLabel >( description );
       label->setToolTip( mParameterDefinition->toolTip() );
+      label->setWordWrap( true );
       return label.release();
     }
   }
