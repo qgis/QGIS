@@ -243,6 +243,8 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     QComboBox *mChildOutputCombo = nullptr;
     QgsFilterLineEdit *mModelOutputName = nullptr;
 
+    QList< Qgis::ProcessingModelChildParameterSource > mLimitedSources;
+
     friend class TestProcessingGui;
 };
 
