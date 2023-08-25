@@ -116,7 +116,7 @@ class BatchInputSelectionPanel(QWidget):
         elif (isinstance(self.param, QgsProcessingParameterPointCloudLayer)
               or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
                   self.param.layerType() == QgsProcessing.TypePointCloud)):
-            layers = QgsProcessingUtils.compatiblePointCloudLayer(QgsProject.instance())
+            layers = QgsProcessingUtils.compatiblePointCloudLayers(QgsProject.instance())
         else:
             datatypes = [QgsProcessing.TypeVectorAnyGeometry]
             if isinstance(self.param, QgsProcessingParameterFeatureSource):
