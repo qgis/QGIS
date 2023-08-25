@@ -155,11 +155,13 @@ void QgsMeasureDialog::updateSettings()
 
   mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
   mCanvasUnits = mCanvas->mapUnits();
+
   // Configure QgsDistanceArea
   mDistanceUnits = QgsProject::instance()->distanceUnits();
   mMapDistanceUnits = QgsProject::instance()->crs().mapUnits();
   mAreaUnits = QgsProject::instance()->areaUnits();
   mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+  updateUnitsMembers();
 
   // Calling projChanged() will set the ellipsoid and clear then re-populate the table
   projChanged();
@@ -181,6 +183,20 @@ void QgsMeasureDialog::unitsChanged( int index )
   if ( mMeasureArea )
   {
     mAreaUnits = static_cast< Qgis::AreaUnit >( mUnitsCombo->itemData( index ).toInt() );
+  }
+  else
+  {
+    mDistanceUnits = static_cast< Qgis::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
+  }
+
+  updateUnitsMembers();
+  updateUi();
+}
+
+void QgsMeasureDialog:: updateUnitsMembers()
+{
+  if ( mMeasureArea )
+  {
     if ( mAreaUnits == Qgis::AreaUnit::Unknown )
     {
       mUseMapUnits = true;
@@ -193,7 +209,6 @@ void QgsMeasureDialog::unitsChanged( int index )
   }
   else
   {
-    mDistanceUnits = static_cast< Qgis::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
     if ( mDistanceUnits == Qgis::DistanceUnit::Unknown )
     {
       mUseMapUnits = true;
@@ -204,8 +219,6 @@ void QgsMeasureDialog::unitsChanged( int index )
       mUseMapUnits = false;
     }
   }
-
-  updateUi();
 }
 
 void QgsMeasureDialog::restart()
