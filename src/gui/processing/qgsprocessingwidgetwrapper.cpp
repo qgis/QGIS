@@ -369,7 +369,7 @@ QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterfac
   widget->setExpressionHelpText( modelerExpressionFormatString() );
 
   if ( parameter->isDestination() )
-    widget->setSourceType( QgsProcessingModelChildParameterSource::ModelOutput );
+    widget->setSourceType( Qgis::ProcessingModelChildParameterSource::ModelOutput );
   else
     widget->setSourceType( defaultModelSource( parameter ) );
 
@@ -393,9 +393,9 @@ QString QgsProcessingParameterWidgetFactoryInterface::modelerExpressionFormatStr
   return QString();
 }
 
-QgsProcessingModelChildParameterSource::Source QgsProcessingParameterWidgetFactoryInterface::defaultModelSource( const QgsProcessingParameterDefinition * ) const
+Qgis::ProcessingModelChildParameterSource QgsProcessingParameterWidgetFactoryInterface::defaultModelSource( const QgsProcessingParameterDefinition * ) const
 {
-  return QgsProcessingModelChildParameterSource::StaticValue;
+  return Qgis::ProcessingModelChildParameterSource::StaticValue;
 }
 
 //
