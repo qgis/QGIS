@@ -1069,17 +1069,17 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForPoint( const Qgs
   }
 }
 
-void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine( const QgsPolygon *triangle, const QgsLineString *ls, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts )
+void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine( const QgsPolygon *triangle, const QgsLineString *intersectionLine, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts )
 {
-  const int numPoints = ls->numPoints();
+  const int numPoints = intersectionLine->numPoints();
   QVector< double > newX( numPoints );
   QVector< double > newY( numPoints );
   QVector< double > newZ( numPoints );
   QVector< double > newDistance( numPoints );
 
-  const double *inX = ls->xData();
-  const double *inY = ls->yData();
-  const double *inZ = ls->is3D() ? ls->zData() : nullptr;
+  const double *inX = intersectionLine->xData();
+  const double *inY = intersectionLine->yData();
+  const double *inZ = intersectionLine->is3D() ? intersectionLine->zData() : nullptr;
   double *outX = newX.data();
   double *outY = newY.data();
   double *outZ = newZ.data();
@@ -1137,7 +1137,6 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine( const QgsP
     ring->close();
     transformedParts.append( QgsGeometry( new QgsPolygon( ring.release() ) ) );
 
-
     std::unique_ptr< QgsLineString > distanceVHeightRing = std::make_unique< QgsLineString >( newDistance, newZ );
     std::unique_ptr< QgsLineString > extrudedDistanceVHeightRing = std::make_unique< QgsLineString >( newDistance, extrudedZ );
     std::unique_ptr< QgsLineString > reversedDistanceVHeightExtrusion( extrudedDistanceVHeightRing->reversed() );
@@ -1179,9 +1178,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           break;
 
         case Qgis::GeometryType::Line:
-          if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( *it ) )
+          if ( const QgsLineString *intersectionLine = qgsgeometry_cast< const QgsLineString * >( *it ) )
           {
-            processTriangleIntersectForLine( triangle, ls, transformedParts, crossSectionParts );
+            processTriangleIntersectForLine( triangle, intersectionLine, transformedParts, crossSectionParts );
           }
           break;
 
@@ -1190,13 +1189,13 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           {
             if ( const QgsCurve *exterior = poly->exteriorRing() )
             {
-              QgsLineString *ls = qgsgeometry_cast<QgsLineString *>( exterior );
-              processTriangleIntersectForLine( triangle, ls, transformedParts, crossSectionParts );
+              QgsLineString *intersectionLine = qgsgeometry_cast<QgsLineString *>( exterior );
+              processTriangleIntersectForLine( triangle, intersectionLine, transformedParts, crossSectionParts );
             }
             for ( int i = 0; i < poly->numInteriorRings(); ++i )
             {
-              QgsLineString *ls = qgsgeometry_cast<QgsLineString *>( poly->interiorRing( i ) );
-              processTriangleIntersectForLine( triangle, ls, transformedParts, crossSectionParts );
+              QgsLineString *intersectionLine = qgsgeometry_cast<QgsLineString *>( poly->interiorRing( i ) );
+              processTriangleIntersectForLine( triangle, intersectionLine, transformedParts, crossSectionParts );
             }
           }
           break;
