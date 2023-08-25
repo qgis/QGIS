@@ -1475,6 +1475,16 @@ The development version
     typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
 
 
+    enum class ProcessingModelChildParameterSource
+    {
+      ModelParameter,
+      ChildOutput,
+      StaticValue,
+      Expression,
+      ExpressionText,
+      ModelOutput,
+    };
+
     enum class CrsDefinitionFormat
       {
       Wkt,
