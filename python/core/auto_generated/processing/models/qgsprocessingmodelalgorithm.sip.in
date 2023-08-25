@@ -540,7 +540,7 @@ parameter ``source``, and ``description``.
         QString description;
     };
 
-    QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition > variablesForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),
+    QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition > variablesForChildAlgorithm( const QString &childId, QgsProcessingContext *context = 0, const QVariantMap &modelParameters = QVariantMap(),
         const QVariantMap &results = QVariantMap() ) const;
 %Docstring
 Returns a map of variable name to variable definition for expression context variables which are available
