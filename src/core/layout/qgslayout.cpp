@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayout.h"
+#include "qgslayoutframe.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutitemlabel.h"
@@ -1117,6 +1118,18 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
         {
           QgsLayoutMultiFrame *html = QgsLayoutItemHtml::createFromLabel( label );
           addMultiFrame( html );
+          if ( item->isGroupMember() )
+          {
+            QgsLayoutItemGroup *group = item->parentGroup();
+            QList<QgsLayoutItem *> groupItems = group->items();
+            groupItems.removeAll( item.get() );
+            group->removeItems();
+            for ( QgsLayoutItem *groupItem : std::as_const( groupItems ) )
+            {
+              group->addItem( groupItem );
+            }
+            group->addItem( html->frame( 0 ) );
+          }
           newMultiFrames << html;
           continue;
         }
