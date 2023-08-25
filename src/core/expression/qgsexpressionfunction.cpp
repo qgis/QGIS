@@ -5400,24 +5400,8 @@ static QVariant fcnBearing( const QVariantList &values, const QgsExpressionConte
     return QVariant();
   }
 
-  QgsPointXY point1 = geom1.asPoint();
-  if ( geom1.isMultipart() )
-  {
-    const QgsMultiPointXY multiPoint = geom1.asMultiPoint();
-    if ( multiPoint.count() == 1 )
-    {
-      point1 = multiPoint[0];
-    }
-  }
-  QgsPointXY point2 = geom2.asPoint();
-  if ( geom2.isMultipart() )
-  {
-    const QgsMultiPointXY multiPoint = geom2.asMultiPoint();
-    if ( multiPoint.count() == 1 )
-    {
-      point2 = multiPoint[0];
-    }
-  }
+  const QgsPointXY point1 = geom1.asPoint();
+  const QgsPointXY point2 = geom2.asPoint();
   if ( point1.isEmpty() || point2.isEmpty() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `bearing` requires point geometries or multi point geometries with a single part." ) );
