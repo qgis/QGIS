@@ -2876,6 +2876,7 @@ QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
         }
 
         mComboBox->setToolTip( parameterDefinition()->toolTip() );
+        mComboBox->setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLengthWithIcon );
         connect( mComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
         {
           emit widgetValueHasChanged( this );
