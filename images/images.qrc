@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/images">
         <file>flags/af.svg</file>
+        <file>flags/az.svg</file>
         <file>flags/ar.svg</file>
         <file>flags/bg.svg</file>
         <file>flags/cy.svg</file>
