@@ -5457,14 +5457,18 @@ static QVariant fcnBearing( const QVariantList &values, const QgsExpressionConte
 
   try
   {
-    const double bearing = std::fmod( da.bearing( point1, point2 ) + 2 * M_PI, 2 * M_PI );
-    return bearing;
+    const double bearing = da.bearing( point1, point2 );
+    if ( std::isfinite( bearing ) )
+    {
+      return std::fmod( bearing + 2 * M_PI, 2 * M_PI );
+    }
   }
   catch ( QgsCsException &cse )
   {
     QgsMessageLog::logMessage( QObject::tr( "Error caught in bearing() function: %1" ).arg( cse.what() ) );
     return QVariant();
   }
+  return QVariant();
 }
 
 static QVariant fcnProject( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
