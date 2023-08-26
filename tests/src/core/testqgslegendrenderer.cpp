@@ -1564,8 +1564,8 @@ void TestQgsLegendRenderer::testTextOnSymbol()
   QgsDefaultVectorLayerLegend *legend = new QgsDefaultVectorLayerLegend( vl );
   legend->setTextOnSymbolEnabled( true );
   QHash<QString, QString> content;
-  content["0"] = "Rd";
-  content["2"] = "Bl";
+  content[cats[0].uuid()] = "Rd";
+  content[cats[2].uuid()] = "Bl";
   legend->setTextOnSymbolContent( content );
   QgsTextFormat textFormat;
   textFormat.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Roman" ) ) );

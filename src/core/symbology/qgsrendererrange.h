@@ -48,8 +48,19 @@ class CORE_EXPORT QgsRendererRange
      * \param range The classification range
      * \param symbol The symbol for this renderer range
      * \param render If TRUE, it will be renderered
+     * \param uuid Optional parameter to manually set the UUID key identifier for the this range (since QGIS 3.34).
      */
-    QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol SIP_TRANSFER, bool render = true );
+    QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol SIP_TRANSFER, bool render = true, const QString &uuid = QString() );
+
+    /**
+     * Creates a renderer symbol range
+     * \param lowerValue The lower bound of the range
+     * \param upperValue The upper bound of the range
+     * \param symbol The symbol for this renderer range
+     * \param label The label used for the range
+     * \param render If TRUE, it will be renderered
+     * \param uuid Optional parameter to manually set the UUID key identifier for the this range (since QGIS 3.34).
+     */
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true, const QString &uuid = QString() );
     QgsRendererRange( const QgsRendererRange &range );
 
@@ -58,6 +69,10 @@ class CORE_EXPORT QgsRendererRange
 
     bool operator<( const QgsRendererRange &other ) const;
 
+    /**
+     * Returns a unique identifier for this range.
+     * \since QGIS 3.34
+     */
     QString uuid() const;
 
     /**

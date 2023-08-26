@@ -47,6 +47,11 @@ Copy constructor.
     ~QgsRendererCategory();
 
     QString uuid() const;
+%Docstring
+Returns a unique identifier for this category.
+
+.. versionadded:: 3.34
+%End
 
     QVariant value() const;
 %Docstring
