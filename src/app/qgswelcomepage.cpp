@@ -255,7 +255,10 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     const bool pin = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PinRole ).toBool();
     QString path = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PathRole ).toString();
     if ( path.isEmpty() )
+    {
+      delete menu;
       return;
+    }
 
     QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
     const bool enabled = mRecentProjectsModel->flags( index ) & Qt::ItemIsEnabled;
