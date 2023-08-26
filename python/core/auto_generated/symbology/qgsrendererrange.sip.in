@@ -34,11 +34,13 @@ Creates a renderer symbol range
 :param symbol: The symbol for this renderer range
 :param render: If ``True``, it will be renderered
 %End
-    QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
+    QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true, const QString &uuid = QString() );
     QgsRendererRange( const QgsRendererRange &range );
 
 
     bool operator<( const QgsRendererRange &other ) const;
+
+    QString uuid() const;
 
     double lowerValue() const;
 %Docstring
