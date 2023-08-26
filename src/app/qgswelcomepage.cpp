@@ -477,7 +477,20 @@ void QgsWelcomePage::unpinProject( int row )
 
 void QgsWelcomePage::clearRecentProjects( bool clearPinned )
 {
-  mRecentProjectsModel->clear( clearPinned );
-  emit projectsCleared();
+  QString message;
+  if ( clearPinned )
+  {
+    message = tr( "Are you sure you want to clear the list of recent projects, including pinned projects?" );
+  }
+  else
+  {
+    message = tr( "Are you sure you want to clear the list of recent projects?" );
+  }
+
+  if ( QMessageBox::question( this,  tr( "Recent Projects" ), message ) == QMessageBox::Yes )
+  {
+    mRecentProjectsModel->clear( clearPinned );
+    emit projectsCleared();
+  }
 }
 
