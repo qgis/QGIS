@@ -435,7 +435,7 @@ int QgsGeometryUtils::circleCircleIntersections( const QgsPointXY &center1, cons
   /* Determine the distance from point 2 to either of the
    * intersection points.
    */
-  const double h = std::sqrt( ( r1 * r1 ) - ( a * a ) );
+  const double h = std::sqrt( std:fabs( ( r1 * r1 ) - ( a * a ) ) );
 
   /* Now determine the offsets of the intersection points from
    * point 2.
