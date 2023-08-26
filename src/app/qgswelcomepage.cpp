@@ -244,96 +244,115 @@ void QgsWelcomePage::versionInfoReceived()
 void QgsWelcomePage::showContextMenuForProjects( QPoint point )
 {
   const QModelIndex index = mRecentProjectsListView->indexAt( point );
-  if ( !index.isValid() )
+  if ( mRecentProjectsModel->rowCount() == 0 )
     return;
 
-  const bool pin = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PinRole ).toBool();
-  QString path = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PathRole ).toString();
-  if ( path.isEmpty() )
-    return;
-
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
-  const bool enabled = mRecentProjectsModel->flags( index ) & Qt::ItemIsEnabled;
 
   QMenu *menu = new QMenu( this );
 
-  if ( enabled )
+  if ( index.isValid() )
   {
-    if ( !pin )
+    const bool pin = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PinRole ).toBool();
+    QString path = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PathRole ).toString();
+    if ( path.isEmpty() )
+      return;
+
+    QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
+    const bool enabled = mRecentProjectsModel->flags( index ) & Qt::ItemIsEnabled;
+
+    if ( enabled )
     {
-      QAction *pinAction = new QAction( tr( "Pin to List" ), menu );
-      connect( pinAction, &QAction::triggered, this, [this, index]
+      if ( !pin )
       {
-        pinProject( index.row() );
-      } );
-      menu->addAction( pinAction );
+        QAction *pinAction = new QAction( tr( "Pin to List" ), menu );
+        connect( pinAction, &QAction::triggered, this, [this, index]
+        {
+          pinProject( index.row() );
+        } );
+        menu->addAction( pinAction );
+      }
+      else
+      {
+        QAction *pinAction = new QAction( tr( "Unpin from List" ), menu );
+        connect( pinAction, &QAction::triggered, this, [this, index]
+        {
+          unpinProject( index.row() );
+        } );
+        menu->addAction( pinAction );
+      }
+
+      if ( storage )
+      {
+        path = storage->filePath( path );
+      }
+
+      if ( !path.isEmpty() )
+      {
+        QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
+        connect( openFolderAction, &QAction::triggered, this, [path]
+        {
+          const QgsFocusKeeper focusKeeper;
+          QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( path );
+        } );
+        menu->addAction( openFolderAction );
+      }
     }
     else
     {
-      QAction *pinAction = new QAction( tr( "Unpin from List" ), menu );
-      connect( pinAction, &QAction::triggered, this, [this, index]
+      QAction *rescanAction = new QAction( tr( "Refresh" ), menu );
+      connect( rescanAction, &QAction::triggered, this, [this, index]
       {
-        unpinProject( index.row() );
+        mRecentProjectsModel->recheckProject( index );
       } );
-      menu->addAction( pinAction );
-    }
+      menu->addAction( rescanAction );
 
-    if ( storage )
-    {
-      path = storage->filePath( path );
-    }
-
-    if ( !path.isEmpty() )
-    {
-      QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
-      connect( openFolderAction, &QAction::triggered, this, [path]
+      bool showClosestPath = storage ? false : true;
+      if ( storage && ( storage->type() == QLatin1String( "geopackage" ) ) )
       {
-        const QgsFocusKeeper focusKeeper;
-        QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( path );
-      } );
-      menu->addAction( openFolderAction );
-    }
-  }
-  else
-  {
-    QAction *rescanAction = new QAction( tr( "Refresh" ), menu );
-    connect( rescanAction, &QAction::triggered, this, [this, index]
-    {
-      mRecentProjectsModel->recheckProject( index );
-    } );
-    menu->addAction( rescanAction );
+        const thread_local QRegularExpression reGpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
+        const QRegularExpressionMatch matchGpkg = reGpkg.match( path );
+        if ( matchGpkg.hasMatch() )
+        {
+          path = matchGpkg.captured( 2 );
+          showClosestPath = true;
+        }
+      }
 
-    bool showClosestPath = storage ? false : true;
-    if ( storage && ( storage->type() == QLatin1String( "geopackage" ) ) )
-    {
-      const thread_local QRegularExpression reGpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
-      const QRegularExpressionMatch matchGpkg = reGpkg.match( path );
-      if ( matchGpkg.hasMatch() )
+      if ( showClosestPath )
       {
-        path = matchGpkg.captured( 2 );
-        showClosestPath = true;
+        // add an entry to open the closest existing path to the original project file or geopackage location
+        // to help users re-find moved/renamed projects!
+        const QString closestPath = QgsFileUtils::findClosestExistingPath( path );
+        QAction *openFolderAction = new QAction( tr( "Open “%1”…" ).arg( QDir::toNativeSeparators( closestPath ) ), menu );
+        connect( openFolderAction, &QAction::triggered, this, [closestPath]
+        {
+          QDesktopServices::openUrl( QUrl::fromLocalFile( closestPath ) );
+        } );
+        menu->addAction( openFolderAction );
       }
     }
-
-    if ( showClosestPath )
+    QAction *removeProjectAction = new QAction( tr( "Remove from List" ), menu );
+    connect( removeProjectAction, &QAction::triggered, this, [this, index]
     {
-      // add an entry to open the closest existing path to the original project file or geopackage location
-      // to help users re-find moved/renamed projects!
-      const QString closestPath = QgsFileUtils::findClosestExistingPath( path );
-      QAction *openFolderAction = new QAction( tr( "Open “%1”…" ).arg( QDir::toNativeSeparators( closestPath ) ), menu );
-      connect( openFolderAction, &QAction::triggered, this, [closestPath]
-      {
-        QDesktopServices::openUrl( QUrl::fromLocalFile( closestPath ) );
-      } );
-      menu->addAction( openFolderAction );
-    }
+      removeProject( index.row() );
+    } );
+    menu->addAction( removeProjectAction );
+    menu->addSeparator();
   }
-  QAction *removeProjectAction = new QAction( tr( "Remove from List" ), menu );
-  connect( removeProjectAction, &QAction::triggered, this, [this, index]
+
+  QAction *clearAction = new QAction( tr( "Clear List" ), menu );
+  connect( clearAction, &QAction::triggered, this, [this]
   {
-    removeProject( index.row() );
+    clearRecentProjects( false );
   } );
-  menu->addAction( removeProjectAction );
+  menu->addAction( clearAction );
+  QAction *clearPinnedAction = new QAction( tr( "Clear List (including pinned projects)" ), menu );
+  connect( clearPinnedAction, &QAction::triggered, this, [this]
+  {
+    clearRecentProjects( true );
+  } );
+  menu->addAction( clearPinnedAction );
+
 
   menu->popup( mapToGlobal( point ) );
   connect( menu, &QMenu::aboutToHide, menu, &QMenu::deleteLater );
@@ -490,7 +509,7 @@ void QgsWelcomePage::clearRecentProjects( bool clearPinned )
   if ( QMessageBox::question( this,  tr( "Recent Projects" ), message ) == QMessageBox::Yes )
   {
     mRecentProjectsModel->clear( clearPinned );
-    emit projectsCleared();
+    emit projectsCleared( clearPinned );
   }
 }
 

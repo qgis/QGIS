@@ -1105,16 +1105,23 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     saveRecentProjects();
     updateRecentProjectPaths();
   } );
-  connect( mWelcomePage, &QgsWelcomePage::projectsCleared, this, [ this ]()
+  connect( mWelcomePage, &QgsWelcomePage::projectsCleared, this, [ this ]( bool clearPinned )
   {
-    mRecentProjects.erase(
-      std::remove_if(
-        mRecentProjects.begin(),
-        mRecentProjects.end(),
-    []( const QgsRecentProjectItemsModel::RecentProjectData & recentProject ) { return !recentProject.pin; }
-      ),
-    mRecentProjects.end()
-    );
+    if ( clearPinned )
+    {
+      mRecentProjects.clear();
+    }
+    else
+    {
+      mRecentProjects.erase(
+        std::remove_if(
+          mRecentProjects.begin(),
+          mRecentProjects.end(),
+      []( const QgsRecentProjectItemsModel::RecentProjectData & recentProject ) { return !recentProject.pin; }
+        ),
+      mRecentProjects.end()
+      );
+    }
     saveRecentProjects();
     updateRecentProjectPaths();
   } );
