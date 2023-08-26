@@ -63,6 +63,10 @@ class CORE_EXPORT QgsRendererCategory
     QgsRendererCategory &operator=( QgsRendererCategory cat );
     ~QgsRendererCategory();
 
+    /**
+     * Returns a unique identifier for this category.
+     * \since QGIS 3.34
+     */
     QString uuid() const;
 
     /**
