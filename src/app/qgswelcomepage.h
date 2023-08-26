@@ -59,7 +59,7 @@ class QgsWelcomePage : public QWidget
     void projectRemoved( int row );
     void projectPinned( int row );
     void projectUnpinned( int row );
-    void projectsCleared();
+    void projectsCleared( bool clearPinned );
 
   protected:
     bool eventFilter( QObject *obj, QEvent *event ) override;
