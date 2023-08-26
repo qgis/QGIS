@@ -50,13 +50,15 @@ class CORE_EXPORT QgsRendererRange
      * \param render If TRUE, it will be renderered
      */
     QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol SIP_TRANSFER, bool render = true );
-    QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
+    QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true, const QString &uuid = QString() );
     QgsRendererRange( const QgsRendererRange &range );
 
     // default dtor is OK
     QgsRendererRange &operator=( QgsRendererRange range );
 
     bool operator<( const QgsRendererRange &other ) const;
+
+    QString uuid() const;
 
     /**
      * Returns the lower bound of the range.
@@ -183,6 +185,7 @@ class CORE_EXPORT QgsRendererRange
     std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
     bool mRender = true;
+    QString mUuid;
 
     // for cpy+swap idiom
     void swap( QgsRendererRange &other );
