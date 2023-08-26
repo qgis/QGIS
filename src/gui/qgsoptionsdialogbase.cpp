@@ -30,6 +30,9 @@
 #include <QStandardItem>
 #include <QTreeView>
 #include <QHeaderView>
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
+#include <QScreen>
+#endif
 #include <functional>
 
 #include "qgsfilterlineedit.h"
@@ -39,6 +42,209 @@
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgsvariantutils.h"
+
+
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
+static void checkRestoredGeometry( const QRect &availableGeometry, QRect *restoredGeometry,
+                                   int frameHeight )
+{
+  // compare with restored geometry's height increased by frameHeight
+  const int height = restoredGeometry->height() + frameHeight;
+
+  // Step 1: Resize if necessary:
+  // make height / width 2px smaller than screen, because an exact match would be fullscreen
+  if ( availableGeometry.height() <= height )
+    restoredGeometry->setHeight( availableGeometry.height() - 2 - frameHeight );
+  if ( availableGeometry.width() <= restoredGeometry->width() )
+    restoredGeometry->setWidth( availableGeometry.width() - 2 );
+
+  // Step 2: Move if necessary:
+  // Construct a rectangle from restored Geometry adjusted by frameHeight
+  const QRect restored = restoredGeometry->adjusted( 0, -frameHeight, 0, 0 );
+
+  // Return if restoredGeometry (including frame) fits into screen
+  if ( availableGeometry.contains( restored ) )
+    return;
+
+  // (size is correct, but at least one edge is off screen)
+
+  // Top out of bounds => move down
+  if ( restored.top() <= availableGeometry.top() )
+  {
+    restoredGeometry->moveTop( availableGeometry.top() + 1 + frameHeight );
+  }
+  else if ( restored.bottom() >= availableGeometry.bottom() )
+  {
+    // Bottom out of bounds => move up
+    restoredGeometry->moveBottom( availableGeometry.bottom() - 1 );
+  }
+
+  // Left edge out of bounds => move right
+  if ( restored.left() <= availableGeometry.left() )
+  {
+    restoredGeometry->moveLeft( availableGeometry.left() + 1 );
+  }
+  else if ( restored.right() >= availableGeometry.right() )
+  {
+    // Right edge out of bounds => move left
+    restoredGeometry->moveRight( availableGeometry.right() - 1 );
+  }
+}
+
+
+QSize QgsOptionsDialogBase::adjustedSize() const
+{
+  QSize s = sizeHint();
+
+  if ( isWindow() )
+  {
+    Qt::Orientations exp;
+    if ( layout() )
+    {
+      if ( layout()->hasHeightForWidth() )
+        s.setHeight( layout()->totalHeightForWidth( s.width() ) );
+      exp = layout()->expandingDirections();
+    }
+    else
+    {
+      if ( sizePolicy().hasHeightForWidth() )
+        s.setHeight( heightForWidth( s.width() ) );
+      exp = sizePolicy().expandingDirections();
+    }
+    if ( exp & Qt::Horizontal )
+      s.setWidth( qMax( s.width(), 200 ) );
+    if ( exp & Qt::Vertical )
+      s.setHeight( qMax( s.height(), 100 ) );
+
+    QRect screen;
+    if ( const QScreen *screenAtPoint = QGuiApplication::screenAt( pos() ) )
+      screen = screenAtPoint->geometry();
+    else
+      screen = QGuiApplication::primaryScreen()->geometry();
+
+    s.setWidth( qMin( s.width(), screen.width() * 2 / 3 ) );
+    s.setHeight( qMin( s.height(), screen.height() * 2 / 3 ) );
+
+  }
+
+  if ( !s.isValid() )
+  {
+    QRect r = childrenRect(); // get children rectangle
+    if ( r.isNull() )
+      return s;
+    s = r.size() + QSize( 2 * r.x(), 2 * r.y() );
+  }
+
+  return s;
+}
+
+
+bool QgsOptionsDialogBase::restoreGeometry2( const QByteArray &geometry )
+{
+  if ( geometry.size() < 4 )
+    return false;
+  QDataStream stream( geometry );
+  stream.setVersion( QDataStream::Qt_4_0 );
+
+  const quint32 magicNumber = 0x1D9D0CB;
+  quint32 storedMagicNumber;
+  stream >> storedMagicNumber;
+  if ( storedMagicNumber != magicNumber )
+    return false;
+
+  const quint16 currentMajorVersion = 3;
+  quint16 majorVersion = 0;
+  quint16 minorVersion = 0;
+
+  stream >> majorVersion >> minorVersion;
+
+  if ( majorVersion > currentMajorVersion )
+    return false;
+  // (Allow all minor versions.)
+
+  QRect restoredFrameGeometry;
+  QRect restoredGeometry;
+  QRect restoredNormalGeometry;
+  qint32 restoredScreenNumber;
+  quint8 maximized;
+  quint8 fullScreen;
+  qint32 restoredScreenWidth = 0;
+
+  stream >> restoredFrameGeometry // Only used for sanity checks in version 0
+         >> restoredNormalGeometry
+         >> restoredScreenNumber
+         >> maximized
+         >> fullScreen;
+
+  if ( maximized || fullScreen )
+  {
+    return QWidget::restoreGeometry( geometry );
+  }
+
+  if ( majorVersion > 1 )
+    stream >> restoredScreenWidth;
+  if ( majorVersion > 2 )
+    stream >> restoredGeometry;
+
+  // ### Qt 6 - Perhaps it makes sense to dumb down the restoreGeometry() logic, see QTBUG-69104
+
+  if ( restoredScreenNumber >= qMax( QGuiApplication::screens().size(), 1 ) )
+    restoredScreenNumber = 0;
+  const QScreen *restoredScreen = QGuiApplication::screens().value( restoredScreenNumber, nullptr );
+  const qreal screenWidthF = restoredScreen ? qreal( restoredScreen->geometry().width() ) : 0;
+  // Sanity check bailing out when large variations of screen sizes occur due to
+  // high DPI scaling or different levels of DPI awareness.
+  if ( restoredScreenWidth )
+  {
+    const qreal factor = qreal( restoredScreenWidth ) / screenWidthF;
+    if ( factor < 0.8 || factor > 1.25 )
+      return false;
+  }
+  else
+  {
+    // Saved by Qt 5.3 and earlier, try to prevent too large windows
+    // unless the size will be adapted by maximized or fullscreen.
+    if ( !maximized && !fullScreen && qreal( restoredFrameGeometry.width() ) / screenWidthF > 1.5 )
+      return false;
+  }
+
+  const int frameHeight = QApplication::style()
+                          ? QApplication::style()->pixelMetric( QStyle::PM_TitleBarHeight )
+                          : 20;
+
+  if ( !restoredNormalGeometry.isValid() )
+    restoredNormalGeometry = QRect( QPoint( 0, frameHeight ), sizeHint() );
+  if ( !restoredNormalGeometry.isValid() )
+  {
+    // use the widget's adjustedSize if the sizeHint() doesn't help
+    restoredNormalGeometry.setSize( restoredNormalGeometry
+                                    .size()
+                                    .expandedTo( adjustedSize() ) );
+  }
+
+  const QRect availableGeometry = restoredScreen ? restoredScreen->availableGeometry()
+                                  : QRect();
+
+  // Modify the restored geometry if we are about to restore to coordinates
+  // that would make the window "lost". This happens if:
+  // - The restored geometry is completely or partly oustside the available geometry
+  // - The title bar is outside the available geometry.
+
+  checkRestoredGeometry( availableGeometry, &restoredGeometry, frameHeight );
+  checkRestoredGeometry( availableGeometry, &restoredNormalGeometry, frameHeight );
+
+  setWindowState( windowState() & ~( Qt::WindowMaximized | Qt::WindowFullScreen ) );
+
+  // FIXME: Why fall back to restoredNormalGeometry if majorVersion <= 2?
+  if ( majorVersion > 2 )
+    setGeometry( restoredGeometry );
+  else
+    setGeometry( restoredNormalGeometry );
+
+  return true;
+}
+#endif
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QDialog( parent, fl )
@@ -221,7 +427,11 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   }
   updateWindowTitle();
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
+  restoreGeometry2( mSettings->value( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
+#else
   restoreGeometry( mSettings->value( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
+#endif
   // mOptListWidget width is fixed to take up less space in QtDesigner
   // revert it now unless the splitter's state hasn't been saved yet
   QAbstractItemView *optView = mOptListWidget ? static_cast< QAbstractItemView * >( mOptListWidget ) : static_cast< QAbstractItemView * >( mOptTreeView );

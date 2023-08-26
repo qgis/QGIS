@@ -244,6 +244,11 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
 
     void setListToItemAtIndex( int index );
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
+    bool restoreGeometry2( const QByteArray &geometry );
+    QSize adjustedSize() const;
+#endif
+
 };
 
 #endif // QGSOPTIONSDIALOGBASE_H
