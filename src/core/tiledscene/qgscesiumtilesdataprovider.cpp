@@ -855,10 +855,96 @@ bool QgsCesiumTilesDataProvider::init()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( dataSourceUri() );
+  QString tileSetUri;
+  const QString uri = dataSourceUri();
 
-  const QString tileSetUri = dsUri.param( QStringLiteral( "url" ) );
+  if ( uri.startsWith( QLatin1String( "ion://" ) ) )
+  {
+    QUrl url( uri );
+    const QString assetId = QUrlQuery( url ).queryItemValue( QStringLiteral( "assetId" ) );
+
+    const QString CESIUM_ION_URL = QStringLiteral( "https://api.cesium.com/" );
+
+    // get asset info
+    {
+      const QString assetInfoEndpoint = CESIUM_ION_URL + QStringLiteral( "v1/assets/%1" ).arg( assetId );
+      QNetworkRequest request = QNetworkRequest( assetInfoEndpoint );
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
+      mHeaders.updateNetworkRequest( request );
+
+      QgsBlockingNetworkRequest networkRequest;
+      networkRequest.setAuthCfg( mAuthCfg );
+
+      switch ( networkRequest.get( request ) )
+      {
+        case QgsBlockingNetworkRequest::NoError:
+          break;
+
+        case QgsBlockingNetworkRequest::NetworkError:
+        case QgsBlockingNetworkRequest::TimeoutError:
+        case QgsBlockingNetworkRequest::ServerExceptionError:
+          // TODO -- error reporting
+          return false;
+      }
+
+      const QgsNetworkReplyContent content = networkRequest.reply();
+      const json assetInfoJson  = json::parse( content.content().toStdString() );
+      if ( assetInfoJson["type"] != "3DTILES" )
+      {
+        appendError( QgsErrorMessage( tr( "Only ion 3D Tiles content can be accessed, not %1" ).arg( QString::fromStdString( assetInfoJson["type"].get<std::string>() ) ) ) );
+        return false;
+      }
+
+      mShared->mLayerMetadata.setTitle( QString::fromStdString( assetInfoJson["name"].get<std::string>() ) );
+      mShared->mLayerMetadata.setAbstract( QString::fromStdString( assetInfoJson["description"].get<std::string>() ) );
+      const QString attribution = QString::fromStdString( assetInfoJson["attribution"].get<std::string>() );
+      if ( !attribution.isEmpty() )
+        mShared->mLayerMetadata.setRights( { attribution } );
+
+      mShared->mLayerMetadata.setDateTime( Qgis::MetadataDateType::Created, QDateTime::fromString( QString::fromStdString( assetInfoJson["dateAdded"].get<std::string>() ), Qt::DateFormat::ISODate ) );
+    }
+
+    // get tileset access details
+    {
+      const QString tileAccessEndpoint = CESIUM_ION_URL + QStringLiteral( "v1/assets/%1/endpoint" ).arg( assetId );
+      QNetworkRequest request = QNetworkRequest( tileAccessEndpoint );
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
+      mHeaders.updateNetworkRequest( request );
+
+      QgsBlockingNetworkRequest networkRequest;
+      networkRequest.setAuthCfg( mAuthCfg );
+
+      switch ( networkRequest.get( request ) )
+      {
+        case QgsBlockingNetworkRequest::NoError:
+          break;
+
+        case QgsBlockingNetworkRequest::NetworkError:
+        case QgsBlockingNetworkRequest::TimeoutError:
+        case QgsBlockingNetworkRequest::ServerExceptionError:
+          // TODO -- error reporting
+          return false;
+      }
+
+      const QgsNetworkReplyContent content = networkRequest.reply();
+      const json tileAccessJson = json::parse( content.content().toStdString() );
+
+      tileSetUri = QString::fromStdString( tileAccessJson["url"].get<std::string>() );
+
+      // The tileset accessToken is NOT the same as the token we use to access the asset details -- ie we can't
+      // use the same authentication as we got from the providers auth cfg!
+      mHeaders.insert( QStringLiteral( "Authorization" ),
+                       QStringLiteral( "Bearer %1" ).arg( QString::fromStdString( tileAccessJson["accessToken"].get<std::string>() ) ) );
+      mAuthCfg.clear();
+    }
+  }
+  else
+  {
+    QgsDataSourceUri dsUri;
+    dsUri.setEncodedUri( uri );
+    tileSetUri = dsUri.param( QStringLiteral( "url" ) );
+  }
+
   if ( !tileSetUri.isEmpty() )
   {
     const QUrl url( tileSetUri );
