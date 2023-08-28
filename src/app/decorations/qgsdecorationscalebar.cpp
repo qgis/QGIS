@@ -242,12 +242,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   QPaintDevice *device = context.painter()->device();
   const int deviceHeight = device->height() / device->devicePixelRatioF();
   const int deviceWidth = device->width() / device->devicePixelRatioF();
-  const QgsSettings settings;
-  bool ok = false;
-  Qgis::DistanceUnit preferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( QStringLiteral( "qgis/measure/displayunits" ) ).toString(), &ok );
-  if ( !ok )
-    preferredUnits = Qgis::DistanceUnit::Meters;
-
+  const Qgis::DistanceUnit preferredUnits = QgsProject::instance()->distanceUnits();
   Qgis::DistanceUnit scaleBarUnits = mapSettings.mapUnits();
 
   //Get map units per pixel
