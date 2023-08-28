@@ -3993,7 +3993,7 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric
     return aIsNan && bIsNan;
 
   const double diff = a - b;
-  return diff > -epsilon && diff <= epsilon;
+  return diff >= -epsilon && diff <= epsilon;
 }
 
 /**
@@ -4010,7 +4010,7 @@ inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
     return aIsNan && bIsNan;
 
   const float diff = a - b;
-  return diff > -epsilon && diff <= epsilon;
+  return diff >= -epsilon && diff <= epsilon;
 }
 
 //! Compare two doubles using specified number of significant digits

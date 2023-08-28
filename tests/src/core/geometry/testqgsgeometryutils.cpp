@@ -1077,6 +1077,25 @@ void TestQgsGeometryUtils::testCircleCircleIntersection()
   QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 0, 0 ), 1, QgsPointXY( 3, 0 ), 2, int1, int2 ), 1 );
   QCOMPARE( int1, QgsPointXY( 1, 0 ) );
   QCOMPARE( int2, QgsPointXY( 1, 0 ) );
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 5.17140812687688189, 0.57209787912912891 ), 2.2602305137548804, QgsPointXY( 11.33315669032675643, -2.99891549287022841 ), 4.8615165936742235, int1, int2 ), 1 );
+  QCOMPARE( int1, QgsPointXY( 7.12696368243243938, -0.56123545420420506 ) );
+  QCOMPARE( int2, QgsPointXY( 7.12696368243243938, -0.56123545420420506 ) );
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( -1.33611111111111125, -0.08333333333333348 ), 0.8101402103918971, QgsPointXY( -0.19561185568356954, -0.68452673929513763 ), 2.0993927314298557, int1, int2 ), 1 );
+  QCOMPARE( int1, QgsPointXY( -2.052777777777778, 0.2944444444444439 ) );
+  QCOMPARE( int2, QgsPointXY( -2.052777777777778, 0.2944444444444439 ) );
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 0, 0 ), 3.1, QgsPointXY( 10, 0 ), 6.9, int1, int2 ), 1 );
+  QCOMPARE( int1, QgsPointXY( 3.1, 0 ) );
+  QCOMPARE( int2, QgsPointXY( 3.1, 0 ) );
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 0, 0 ), 3.1, QgsPointXY( 6.9, 0 ), 10, int1, int2 ), 1 );
+  QCOMPARE( int1, QgsPointXY( -3.1, 0 ) );
+  QCOMPARE( int2, QgsPointXY( -3.1, 0 ) );
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 0, 0 ), 6.9, QgsPointXY( 3.1, 0 ), 10, int1, int2 ), 1 );
+  QCOMPARE( int1, QgsPointXY( -6.9, 0 ) );
+  QCOMPARE( int2, QgsPointXY( -6.9, 0 ) );
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 0, 0 ), 7.111, QgsPointXY( -3, 0 ), 10.111, int1, int2 ), 1 );
+  QCOMPARE( int1, QgsPointXY( 7.111, 0 ) );
+  QCOMPARE( int2, QgsPointXY( 7.111, 0 ) );
+
   // two intersections
   QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 5, 3 ), 2, QgsPointXY( 7, -1 ), 4, int1, int2 ), 2 );
   QGSCOMPARENEAR( int1.x(), 3.8, 0.001 );
