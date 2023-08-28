@@ -280,12 +280,12 @@
     <addaction name="mActionDonate"/>
     <addaction name="mActionGetInvolved"/>
     <addaction name="mActionNeedSupport"/>
+    <addaction name="mActionSponsors"/>
     <addaction name="separator"/>
     <addaction name="mActionQgisHomePage"/>
     <addaction name="mActionCheckQgisVersion"/>
     <addaction name="separator"/>
     <addaction name="mActionAbout"/>
-    <addaction name="mActionSponsors"/>
    </widget>
    <widget class="QMenu" name="mSettingsMenu">
     <property name="title">
