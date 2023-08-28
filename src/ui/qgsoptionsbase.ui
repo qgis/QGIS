@@ -1569,7 +1569,7 @@
                   <string>Planimetric measurements</string>
                  </property>
                  <property name="toolTip">
-                  <string>When new projects are created, defaults measurement ellipsoid to none/planimetric and calculations are cartesian.</string>
+                  <string>When new projects are created, defaults measurement ellipsoid to none/planimetric and calculations are Cartesian.</string>
                  </property>
                 </widget>
                </item>
