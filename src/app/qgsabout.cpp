@@ -205,10 +205,7 @@ void QgsAbout::setLicence()
 {
   // read the DONORS file and populate the text widget
   QFile licenceFile( QgsApplication::licenceFilePath() );
-#ifdef QGISDEBUG
-  printf( "Reading licence file %s.............................................\n",
-          licenceFile.fileName().toLocal8Bit().constData() );
-#endif
+  QgsDebugMsgLevel( QStringLiteral( "Reading licence file %1" ).arg( licenceFile.fileName() ), 2 );
   if ( licenceFile.open( QIODevice::ReadOnly ) )
   {
     txtLicense->setText( licenceFile.readAll() );
