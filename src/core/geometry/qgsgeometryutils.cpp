@@ -397,13 +397,17 @@ int QgsGeometryUtils::circleCircleIntersections( const QgsPointXY &center1, cons
   // determine the straight-line distance between the centers
   const double d = center1.distance( center2 );
 
+  // check if the circles intersect at only 1 point, either "externally" or "internally"
+  const bool singleSolutionExt = qgsDoubleNear( d, r1 + r2 );
+  const bool singleSolutionInt = qgsDoubleNear( d, std::fabs( r1 - r2 ) );
+
   // check for solvability
-  if ( d > ( r1 + r2 ) )
+  if ( !singleSolutionExt && d > ( r1 + r2 ) )
   {
     // no solution. circles do not intersect.
     return 0;
   }
-  else if ( d < std::fabs( r1 - r2 ) )
+  else if ( !singleSolutionInt && d < std::fabs( r1 - r2 ) )
   {
     // no solution. one circle is contained in the other
     return 0;
@@ -419,8 +423,11 @@ int QgsGeometryUtils::circleCircleIntersections( const QgsPointXY &center1, cons
    * centers.
   */
 
-  // Determine the distance from point 0 to point 2.
-  const double a = ( ( r1 * r1 ) - ( r2 * r2 ) + ( d * d ) ) / ( 2.0 * d ) ;
+  /* Determine the distance 'a' from point 0 to point 2.
+   * In the general case, a = ( ( r1 * r1 ) - ( r2 * r2 ) + ( d * d ) ) / ( 2.0 * d ).
+   * If d = r1 + r2 or d = r1 - r2 (i.e. r1 > r2), then a = r1; if d = r2 - r1 (i.e. r2 > r1), then a = -r1.
+  */
+  const double a = singleSolutionExt ? r1 : ( singleSolutionInt ? ( r1 > r2 ? r1 : -r1 ) : ( ( r1 * r1 ) - ( r2 * r2 ) + ( d * d ) ) / ( 2.0 * d ) );
 
   /* dx and dy are the vertical and horizontal distances between
    * the circle centers.
@@ -431,6 +438,17 @@ int QgsGeometryUtils::circleCircleIntersections( const QgsPointXY &center1, cons
   // Determine the coordinates of point 2.
   const double x2 = center1.x() + ( dx * a / d );
   const double y2 = center1.y() + ( dy * a / d );
+
+  // only 1 solution
+  if ( singleSolutionExt || singleSolutionInt )
+  {
+    intersection1 = QgsPointXY( x2, y2 );
+    intersection2 = QgsPointXY( x2, y2 );
+
+    return 1;
+  }
+
+  // 2 solutions
 
   /* Determine the distance from point 2 to either of the
    * intersection points.
@@ -446,10 +464,6 @@ int QgsGeometryUtils::circleCircleIntersections( const QgsPointXY &center1, cons
   // determine the absolute intersection points
   intersection1 = QgsPointXY( x2 + rx, y2 - ry );
   intersection2 = QgsPointXY( x2 - rx, y2 +  ry );
-
-  // see if we have 1 or 2 solutions
-  if ( qgsDoubleNear( d, r1 + r2 ) )
-    return 1;
 
   return 2;
 }
