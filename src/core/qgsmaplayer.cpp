@@ -1041,6 +1041,7 @@ void QgsMapLayer::setAutoRefreshInterval( int interval )
   {
     mRefreshTimer->stop();
     mRefreshTimer->setInterval( 0 );
+    setAutoRefreshMode( Qgis::AutoRefreshMode::Disabled );
   }
   else
   {
