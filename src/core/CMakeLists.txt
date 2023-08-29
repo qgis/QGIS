@@ -338,17 +338,23 @@ set(QGIS_CORE_SRCS
 
   tiledscene/qgscesiumtilesdataprovider.cpp
   tiledscene/qgscesiumutils.cpp
+  tiledscene/qgsgltfutils.cpp
   tiledscene/qgstiledsceneboundingvolume.cpp
   tiledscene/qgstiledsceneconnection.cpp
   tiledscene/qgstiledscenedataitems.cpp
   tiledscene/qgstiledscenedataprovider.cpp
   tiledscene/qgstiledsceneindex.cpp
   tiledscene/qgstiledscenelayer.cpp
+  tiledscene/qgstiledscenelayerelevationproperties.cpp
   tiledscene/qgstiledscenelayerrenderer.cpp
   tiledscene/qgstiledscenenode.cpp
   tiledscene/qgstiledsceneprovidermetadata.cpp
+  tiledscene/qgstiledscenerenderer.cpp
+  tiledscene/qgstiledscenerendererregistry.cpp
   tiledscene/qgstiledscenerequest.cpp
+  tiledscene/qgstiledscenetexturerenderer.cpp
   tiledscene/qgstiledscenetile.cpp
+  tiledscene/qgstiledscenewireframerenderer.cpp
 
   sensor/qgssensormodel.cpp
   sensor/qgssensormanager.cpp
@@ -1912,17 +1918,23 @@ set(QGIS_CORE_HDRS
 
   tiledscene/qgscesiumtilesdataprovider.h
   tiledscene/qgscesiumutils.h
+  tiledscene/qgsgltfutils.h
   tiledscene/qgstiledsceneboundingvolume.h
   tiledscene/qgstiledsceneconnection.h
   tiledscene/qgstiledscenedataprovider.h
   tiledscene/qgstiledscenedataitems.h
   tiledscene/qgstiledsceneindex.h
   tiledscene/qgstiledscenelayer.h
+  tiledscene/qgstiledscenelayerelevationproperties.h
   tiledscene/qgstiledscenelayerrenderer.h
   tiledscene/qgstiledscenenode.h
   tiledscene/qgstiledsceneprovidermetadata.h
+  tiledscene/qgstiledscenerenderer.h
+  tiledscene/qgstiledscenerendererregistry.h
   tiledscene/qgstiledscenerequest.h
+  tiledscene/qgstiledscenetexturerenderer.h
   tiledscene/qgstiledscenetile.h
+  tiledscene/qgstiledscenewireframerenderer.h
 
   sensor/qgssensormodel.h
   sensor/qgssensormanager.h
@@ -2314,6 +2326,7 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer
+  ${CMAKE_SOURCE_DIR}/external/tinygltf
 )
 
 if (WITH_EPT)
@@ -2418,6 +2431,11 @@ target_link_libraries(qgis_core
   ${ZLIB_LIBRARIES}
   ${EXIV2_LIBRARY}
 )
+
+if (WITH_DRACO)
+  target_link_libraries(qgis_core ${DRACO_LIBRARY})
+endif()
+
 if (NOT IOS)
   target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
 endif()

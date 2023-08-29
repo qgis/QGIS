@@ -68,7 +68,7 @@ for the data provider for 2D use.
    transforming bounding volumes or geometries associated with the provider.
 %End
 
-    virtual const QgsAbstractTiledSceneBoundingVolume *boundingVolume() const = 0;
+    virtual const QgsTiledSceneBoundingVolume &boundingVolume() const = 0;
 %Docstring
 Returns the bounding volume for the data provider.
 
@@ -88,6 +88,11 @@ implementation.
 
 The index is thread safe and can be used safely across multiple threads or transferred between
 threads.
+%End
+
+    virtual QgsDoubleRange zRange() const;
+%Docstring
+Returns the provider's z range, or an infinite range if this is not known.
 %End
 
 };

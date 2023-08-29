@@ -571,6 +571,20 @@ class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, priv
      * Returns the number of threads to use selected in the widget.
      */
     int maximumThreads() const;
+
+    /**
+     * Sets the log \a level to shown in the widget.
+     *
+     * \since QGIS 3.34
+     */
+    void setLogLevel( QgsProcessingContext::LogLevel level );
+
+    /**
+     * Returns the logging level selected in the widget.
+     *
+     * \since QGIS 3.34
+     */
+    QgsProcessingContext::LogLevel logLevel() const;
 };
 
 #endif

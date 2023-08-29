@@ -82,7 +82,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-          large-packages: true
+          large-packages: false
           docker-images: false
           swap-storage: true
           
@@ -331,7 +331,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-          large-packages: true
+          large-packages: false
           docker-images: false
           swap-storage: true
 
@@ -409,7 +409,7 @@ jobs:
           echo "TEST_BATCH=$TEST_BATCH"
           echo "DOCKERFILE=$DOCKERFILE"
           mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
-          mkdir -p /tmp/minio_tests/test_bucket && chmod -R 777 /tmp/minio_tests
+          mkdir -p /tmp/minio_tests/test-bucket && chmod -R 777 /tmp/minio_tests
           docker-compose -f .docker/$DOCKERFILE run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
 
       - name: Archive test results report

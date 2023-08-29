@@ -1041,7 +1041,7 @@ void TestQgsProject::testAsynchronousLayerLoading()
   for ( const QString &rasterFile : std::as_const( rasterFiles ) )
   {
     layers << new QgsRasterLayer( QString( TEST_DATA_DIR ) + QStringLiteral( "/raster/" ) + rasterFile, rasterFile, QStringLiteral( "gdal" ) );
-    if ( layers.last()->name() == QStringLiteral( "statistXXXX_XXXXXX.asc" ) )
+    if ( layers.last()->name() == QLatin1String( "statistXXXX_XXXXXX.asc" ) )
       QVERIFY( !layers.last()->isValid() );
     else
       QVERIFY( layers.last()->isValid() );
@@ -1050,7 +1050,7 @@ void TestQgsProject::testAsynchronousLayerLoading()
   for ( const QString &vectorFile : std::as_const( vectorFiles ) )
   {
     layers << new QgsVectorLayer( QString( TEST_DATA_DIR ) + QString( '/' ) + vectorFile, vectorFile, QStringLiteral( "ogr" ) );
-    if ( layers.last()->name() == QStringLiteral( "linestXXXX_XXXXXX.shp" ) )
+    if ( layers.last()->name() == QLatin1String( "linestXXXX_XXXXXX.shp" ) )
       QVERIFY( ! layers.last()->isValid() );
     else
       QVERIFY( layers.last()->isValid() );

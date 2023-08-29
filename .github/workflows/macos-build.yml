@@ -133,6 +133,7 @@ jobs:
                -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
                -DWITH_BINDINGS=TRUE \
                -DWITH_3D=TRUE \
+               -DWITH_DRACO=FALSE \
                -DWITH_PDAL=TRUE \
                -DWITH_EPT=TRUE \
                ../QGIS

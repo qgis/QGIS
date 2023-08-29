@@ -22,8 +22,9 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsmatrix4x4.h"
+#include "qgstiledsceneboundingvolume.h"
 
-class QgsAbstractTiledSceneBoundingVolume;
+#include <QUrl>
 
 /**
  * \ingroup core
@@ -47,7 +48,7 @@ class CORE_EXPORT QgsTiledSceneTile
      *
      * \see isValid()
      */
-    explicit QgsTiledSceneTile( const QString &id );
+    explicit QgsTiledSceneTile( long long id );
 
     ~QgsTiledSceneTile();
 
@@ -59,12 +60,12 @@ class CORE_EXPORT QgsTiledSceneTile
     /**
      * Returns TRUE if the tile is a valid tile (i.e. not default constructed).
      */
-    bool isValid() const { return !mId.isEmpty(); }
+    bool isValid() const { return mId >= 0; }
 
     /**
      * Returns the tile's unique ID.
      */
-    QString id() const { return mId; }
+    long long id() const { return mId; }
 
     /**
      * Returns the tile's refinement process.
@@ -89,18 +90,16 @@ class CORE_EXPORT QgsTiledSceneTile
     /**
      * Sets the bounding \a volume for the tile.
      *
-     * Ownership of \a volume is transferred to the tile.
-     *
      * \see boundingVolume()
      */
-    void setBoundingVolume( QgsAbstractTiledSceneBoundingVolume *volume SIP_TRANSFER );
+    void setBoundingVolume( const QgsTiledSceneBoundingVolume &volume );
 
     /**
      * Returns the bounding volume for the tile.
      *
      * \see setBoundingVolume()
      */
-    const QgsAbstractTiledSceneBoundingVolume *boundingVolume() const;
+    const QgsTiledSceneBoundingVolume &boundingVolume() const;
 
     /**
      * Sets the tile's \a transform.
@@ -149,13 +148,30 @@ class CORE_EXPORT QgsTiledSceneTile
      */
     void setGeometricError( double error );
 
+    /**
+     * Returns the tile's base URL. If this tile's resources are relative paths, they would
+     * get resolved against this URL.
+     *
+     * \see setBaseUrl()
+     */
+    QUrl baseUrl() const;
+
+    /**
+     * Sets the tile's base URL. If this tile's resources are relative paths, they would
+     * get resolved against this URL.
+     *
+     * \see baseUrl()
+     */
+    void setBaseUrl( const QUrl &baseUrl );
+
   private:
-    QString mId;
+    long long mId = -1;
     Qgis::TileRefinementProcess mRefinementProcess = Qgis::TileRefinementProcess::Replacement;
-    std::unique_ptr< QgsAbstractTiledSceneBoundingVolume > mBoundingVolume;
+    QgsTiledSceneBoundingVolume mBoundingVolume;
     std::unique_ptr< QgsMatrix4x4 > mTransform;
     QVariantMap mResources;
     double mGeometricError = 0;
+    QUrl mBaseUrl;
 
 };
 

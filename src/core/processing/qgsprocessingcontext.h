@@ -63,6 +63,7 @@ class CORE_EXPORT QgsProcessingContext
     {
       DefaultLevel = 0, //!< Default logging level
       Verbose, //!< Verbose logging
+      ModelDebug, //!< Model debug level logging. Includes verbose logging and other outputs useful for debugging models (since QGIS 3.34).
     };
 
     /**

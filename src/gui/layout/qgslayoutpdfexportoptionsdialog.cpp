@@ -104,7 +104,7 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
       showContextMenuForGeoPdfStructure( point, mGeoPdfStructureProxyModel->mapToSource( index ) );
   } );
 
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutPdfExportOptionsDialog::showHelp );
+  connect( mHelpButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutPdfExportOptionsDialog::showHelp );
   QgsGui::enableAutoGeometryRestore( this );
 }
 
@@ -259,6 +259,16 @@ QStringList QgsLayoutPdfExportOptionsDialog::geoPdfLayerOrder() const
     order << mGeoPdfStructureProxyModel->data( mGeoPdfStructureProxyModel->index( row, 0 ), QgsGeoPdfLayerTreeModel::LayerIdRole ).toString();
   }
   return order;
+}
+
+void QgsLayoutPdfExportOptionsDialog::setOpenAfterExporting( bool enabled )
+{
+  mOpenAfterExportingCheckBox->setChecked( enabled );
+}
+
+bool QgsLayoutPdfExportOptionsDialog::openAfterExporting() const
+{
+  return mOpenAfterExportingCheckBox->isChecked();
 }
 
 void QgsLayoutPdfExportOptionsDialog::showHelp()

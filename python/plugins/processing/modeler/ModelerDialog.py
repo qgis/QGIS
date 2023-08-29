@@ -146,7 +146,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.setLastRunChildAlgorithmInputs(dlg.results().get('CHILD_INPUTS', {}))
 
         dlg = AlgorithmDialog(self.model().create(), parent=self)
-        dlg.setLogLevel(QgsProcessingContext.Verbose)
+        dlg.setLogLevel(QgsProcessingContext.ModelDebug)
         dlg.setParameters(self.model().designerParameterValues())
         dlg.algorithmFinished.connect(on_finished)
         dlg.exec_()

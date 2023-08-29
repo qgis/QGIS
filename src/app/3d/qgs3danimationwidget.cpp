@@ -324,6 +324,7 @@ void Qgs3DAnimationWidget::onAddKeyframe()
   initializeController( animation() );
 
   cboKeyframe->setCurrentIndex( index + 1 );
+  QgsProject::instance()->setDirty( true );
 }
 
 void Qgs3DAnimationWidget::onRemoveKeyframe()
@@ -336,6 +337,7 @@ void Qgs3DAnimationWidget::onRemoveKeyframe()
   cboKeyframe->removeItem( index );
 
   initializeController( animation() );
+  QgsProject::instance()->setDirty( true );
 }
 
 void Qgs3DAnimationWidget::onEditKeyframe()

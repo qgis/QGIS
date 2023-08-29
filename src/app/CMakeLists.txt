@@ -135,7 +135,9 @@ set(QGIS_APP_SRCS
 
   raster/qgsrasterelevationpropertieswidget.cpp
 
+  tiledscene/qgstiledsceneelevationpropertieswidget.cpp
   tiledscene/qgstiledscenelayerproperties.cpp
+  tiledscene/qgstiledscenelayerstylewidget.cpp
 
   vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexeditor.cpp
@@ -362,6 +364,7 @@ if (WITH_3D)
     3d/qgsrulebased3drendererwidget.cpp
     3d/qgssimplelinematerialwidget.cpp
     3d/qgssymbol3dwidget.cpp
+    3d/qgstiledscenelayer3drendererwidget.cpp
     3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
@@ -528,6 +531,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/devtools
   ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
+  ${CMAKE_SOURCE_DIR}/src/app/georeferencer
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager

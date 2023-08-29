@@ -395,6 +395,24 @@ Sets the desired size (in millimeters) of WMS legend graphics shown in the legen
 .. seealso:: :py:func:`wmsLegendSize`
 %End
 
+    void setSynchronousLegendRequests( bool b );
+%Docstring
+Sets whether to request legend graphics synchronously.
+
+.. seealso:: :py:func:`synchronousLegendRequests`
+
+.. versionadded:: 3.34
+%End
+
+    bool synchronousLegendRequests() const;
+%Docstring
+Returns whether to request legend graphics synchronously.
+
+.. seealso:: :py:func:`setSynchronousLegendRequests`
+
+.. versionadded:: 3.34
+%End
+
  double lineSpacing() const /Deprecated/;
 %Docstring
 Returns the line spacing to use between lines of legend text.

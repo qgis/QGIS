@@ -38,6 +38,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     static const QgsSettingsEntryBool *settingClipboardHeader;
     static const QgsSettingsEntryString *settingClipboardSeparator;
+    static const QgsSettingsEntryBool *settingClipboardAlwaysUseDecimalPoint;
 
     //! Constructor
     QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = Qt::WindowFlags() );

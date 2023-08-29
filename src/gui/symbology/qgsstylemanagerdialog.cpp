@@ -2182,6 +2182,9 @@ void QgsStyleManagerDialog::addStyleDatabase( bool createNew )
                            tr( "Add Style Database" ),
                            initialFolder,
                            tr( "Style databases" ) + " (*.db *.xml)" );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( ! databasePath.isEmpty() )
   {
     QgsStyleManagerDialog::settingLastStyleDatabaseFolder->setValue( QFileInfo( databasePath ).path() );

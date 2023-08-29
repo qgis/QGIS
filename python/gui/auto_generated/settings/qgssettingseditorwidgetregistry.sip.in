@@ -31,7 +31,7 @@ Constructor
     bool addWrapper( QgsSettingsEditorWidgetWrapper *wrapper /Transfer/ );
 %Docstring
 Adds an editor widget ``wrapper`` to the registry
-Returns ``False`` if an editor widget with same id already exists.
+If an editor widget with same id already exists, the wrapper is deleted and ``False`` is returned.
 %End
 
     QgsSettingsEditorWidgetWrapper *createWrapper( const QString &id, QObject *parent ) const;

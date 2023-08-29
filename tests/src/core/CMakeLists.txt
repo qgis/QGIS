@@ -71,6 +71,7 @@ set(TESTS
  testqgsgenericspatialindex.cpp
  testqgsgeometryimport.cpp
  testqgsgeopdfexport.cpp
+ testqgsgltfutils.cpp
  testqgsgml.cpp
  testqgsgradients.cpp
  testqgsgraduatedsymbolrenderer.cpp
@@ -194,6 +195,7 @@ set(TESTS
  testqgstemporalproperty.cpp
  testqgstemporalrangeobject.cpp
  testqgstiledsceneconnection.cpp
+ testqgstiledscenerendererregistry.cpp
  testqgstiledownloadmanager.cpp
  testqgstracer.cpp
  testqgstranslateproject.cpp

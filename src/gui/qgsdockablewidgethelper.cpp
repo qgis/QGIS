@@ -397,7 +397,7 @@ void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
   if ( mDockGeometry.isEmpty() && mOwnerWindow )
   {
     const QFontMetrics fm( mOwnerWindow->font() );
-    const int initialDockSize = fm.horizontalAdvance( '0' ) * 50;
+    const int initialDockSize = fm.horizontalAdvance( '0' ) * 75;
     mDockGeometry = QRect( static_cast< int >( mOwnerWindow->rect().width() * 0.75 ),
                            static_cast< int >( mOwnerWindow->rect().height() * 0.5 ),
                            initialDockSize, initialDockSize );

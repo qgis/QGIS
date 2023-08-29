@@ -19,12 +19,14 @@
 #include "qgstiledsceneboundingvolume.h"
 
 QgsTiledSceneTile::QgsTiledSceneTile()
+  : mBoundingVolume( QgsTiledSceneBoundingVolume( QgsOrientedBox3D() ) )
 {
 
 }
 
-QgsTiledSceneTile::QgsTiledSceneTile( const QString &id )
+QgsTiledSceneTile::QgsTiledSceneTile( long long id )
   : mId( id )
+  , mBoundingVolume( QgsTiledSceneBoundingVolume( QgsOrientedBox3D() ) )
 {
 
 }
@@ -34,10 +36,11 @@ QgsTiledSceneTile::~QgsTiledSceneTile() = default;
 QgsTiledSceneTile::QgsTiledSceneTile( const QgsTiledSceneTile &other )
   : mId( other.mId )
   , mRefinementProcess( other.mRefinementProcess )
+  , mBoundingVolume( other.mBoundingVolume )
   , mResources( other.mResources )
   , mGeometricError( other.mGeometricError )
+  , mBaseUrl( other.mBaseUrl )
 {
-  mBoundingVolume.reset( other.mBoundingVolume ? other.mBoundingVolume->clone() : nullptr );
   mTransform.reset( other.mTransform ? new QgsMatrix4x4( *other.mTransform.get() ) : nullptr );
 }
 
@@ -48,7 +51,8 @@ QgsTiledSceneTile &QgsTiledSceneTile::operator=( const QgsTiledSceneTile &other 
   mTransform.reset( other.mTransform ? new QgsMatrix4x4( *other.mTransform.get() ) : nullptr );
   mResources = other.mResources;
   mGeometricError = other.mGeometricError;
-  mBoundingVolume.reset( other.mBoundingVolume ? other.mBoundingVolume->clone() : nullptr );
+  mBoundingVolume = other.mBoundingVolume;
+  mBaseUrl = other.mBaseUrl;
   return *this;
 }
 
@@ -57,14 +61,14 @@ void QgsTiledSceneTile::setRefinementProcess( Qgis::TileRefinementProcess proces
   mRefinementProcess = process;
 }
 
-void QgsTiledSceneTile::setBoundingVolume( QgsAbstractTiledSceneBoundingVolume *volume )
+void QgsTiledSceneTile::setBoundingVolume( const QgsTiledSceneBoundingVolume &volume )
 {
-  mBoundingVolume.reset( volume );
+  mBoundingVolume = volume;
 }
 
-const QgsAbstractTiledSceneBoundingVolume *QgsTiledSceneTile::boundingVolume() const
+const QgsTiledSceneBoundingVolume &QgsTiledSceneTile::boundingVolume() const
 {
-  return mBoundingVolume.get();
+  return mBoundingVolume;
 }
 
 void QgsTiledSceneTile::setTransform( const QgsMatrix4x4 &transform )
@@ -90,3 +94,12 @@ void QgsTiledSceneTile::setGeometricError( double error )
   mGeometricError = error;
 }
 
+QUrl QgsTiledSceneTile::baseUrl() const
+{
+  return mBaseUrl;
+}
+
+void QgsTiledSceneTile::setBaseUrl( const QUrl &baseUrl )
+{
+  mBaseUrl = baseUrl;
+}

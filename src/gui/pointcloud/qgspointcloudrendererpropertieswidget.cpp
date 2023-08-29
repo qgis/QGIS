@@ -29,7 +29,7 @@
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
 
-static bool _initRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
+static bool initPointCloudRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
   QgsPointCloudRendererAbstractMetadata *rendererAbstractMetadata = QgsApplication::pointCloudRendererRegistry()->rendererMetadata( name );
   if ( !rendererAbstractMetadata )
@@ -49,16 +49,16 @@ static bool _initRenderer( const QString &name, QgsPointCloudRendererWidgetFunc 
   return true;
 }
 
-static void _initRendererWidgetFunctions()
+void QgsPointCloudRendererPropertiesWidget::initRendererWidgetFunctions()
 {
   static bool sInitialized = false;
   if ( sInitialized )
     return;
 
-  _initRenderer( QStringLiteral( "extent" ), QgsPointCloudExtentRendererWidget::create, QStringLiteral( "styleicons/pointcloudextent.svg" ) );
-  _initRenderer( QStringLiteral( "rgb" ), QgsPointCloudRgbRendererWidget::create, QStringLiteral( "styleicons/multibandcolor.svg" ) );
-  _initRenderer( QStringLiteral( "ramp" ), QgsPointCloudAttributeByRampRendererWidget::create, QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) );
-  _initRenderer( QStringLiteral( "classified" ), QgsPointCloudClassifiedRendererWidget::create, QStringLiteral( "styleicons/paletted.svg" ) );
+  initPointCloudRenderer( QStringLiteral( "extent" ), QgsPointCloudExtentRendererWidget::create, QStringLiteral( "styleicons/pointcloudextent.svg" ) );
+  initPointCloudRenderer( QStringLiteral( "rgb" ), QgsPointCloudRgbRendererWidget::create, QStringLiteral( "styleicons/multibandcolor.svg" ) );
+  initPointCloudRenderer( QStringLiteral( "ramp" ), QgsPointCloudAttributeByRampRendererWidget::create, QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) );
+  initPointCloudRenderer( QStringLiteral( "classified" ), QgsPointCloudClassifiedRendererWidget::create, QStringLiteral( "styleicons/paletted.svg" ) );
 
   sInitialized = true;
 }
@@ -73,7 +73,7 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
   // initialize registry's widget functions
-  _initRendererWidgetFunctions();
+  initRendererWidgetFunctions();
 
   QgsPointCloudRendererRegistry *reg = QgsApplication::pointCloudRendererRegistry();
   const QStringList renderers = reg->renderersList();

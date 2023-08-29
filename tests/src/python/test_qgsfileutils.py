@@ -33,6 +33,7 @@ class TestQgsFileUtils(unittest.TestCase):
         self.assertEqual(QgsFileUtils.extensionsFromFilter('PNG Files (*.png)'), ['png'])
         self.assertEqual(QgsFileUtils.extensionsFromFilter('PNG Files (*.PNG)'), ['PNG'])
         self.assertEqual(QgsFileUtils.extensionsFromFilter('Geotiff Files (*.tiff *.tif)'), ['tiff', 'tif'])
+        self.assertEqual(QgsFileUtils.extensionsFromFilter('TAR.GZ Files (*.tar.gz *.tgz)'), ['tar.gz', 'tgz'])
 
     def testWildcardsFromFilter(self):
         self.assertEqual(QgsFileUtils.wildcardsFromFilter(''), '')

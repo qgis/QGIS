@@ -2542,7 +2542,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                             'SKIP_NODATA': False,
                                             'OUTPUT': outsource}, context, feedback),
                     ['gdal2xyz.py',
-                     '-band 1 -srcnodata -999 ' +
+                     '-band 1 -srcnodata -999.0 ' +
                      source + ' ' +
                      outsource])
 
@@ -2555,7 +2555,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                             'SKIP_NODATA': False,
                                             'OUTPUT': outsource}, context, feedback),
                     ['gdal2xyz.py',
-                     '-band 1 -dstnodata -999 ' +
+                     '-band 1 -dstnodata -999.0 ' +
                      source + ' ' +
                      outsource])
 

@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 class QgsFeedback;
 class QgsRenderContext;
@@ -86,13 +87,20 @@ class CORE_EXPORT QgsMapLayerRenderer
      *
      * \since QGIS 3.18
      */
-    virtual bool forceRasterRender() const { return false; }
+    virtual bool forceRasterRender() const;
+
+    /**
+     * Returns flags which control how the map layer rendering behaves.
+     *
+     * \since QGIS 3.34
+     */
+    virtual Qgis::MapLayerRendererFlags flags() const;
 
     /**
      * Access to feedback object of the layer renderer (may be NULLPTR)
      * \since QGIS 3.0
      */
-    virtual QgsFeedback *feedback() const { return nullptr; }
+    virtual QgsFeedback *feedback() const;
 
     //! Returns list of errors (problems) that happened during the rendering
     QStringList errors() const { return mErrors; }

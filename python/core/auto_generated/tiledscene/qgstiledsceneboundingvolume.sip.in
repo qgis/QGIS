@@ -10,10 +10,10 @@
 
 
 
-class QgsAbstractTiledSceneBoundingVolume
+class QgsTiledSceneBoundingVolume
 {
 %Docstring(signature="appended")
-Abstract base class for bounding volumes for tiled scene nodes.
+Represents a bounding volume for a tiled scene.
 
 .. versionadded:: 3.34
 %End
@@ -23,32 +23,12 @@ Abstract base class for bounding volumes for tiled scene nodes.
 %End
   public:
 
-%ConvertToSubClassCode
-    switch ( sipCpp->type() )
-    {
-      case Qgis::TiledSceneBoundingVolumeType::Region:
-        sipType = sipType_QgsTiledSceneBoundingVolumeRegion;
-        break;
-      case Qgis::TiledSceneBoundingVolumeType::OrientedBox:
-        sipType = sipType_QgsTiledSceneBoundingVolumeBox;
-        break;
-      case Qgis::TiledSceneBoundingVolumeType::Sphere:
-        sipType = sipType_QgsTiledSceneBoundingVolumeSphere;
-        break;
-      default:
-        sipType = 0;
-        break;
-    };
-%End
-
-    virtual ~QgsAbstractTiledSceneBoundingVolume();
-
-    virtual Qgis::TiledSceneBoundingVolumeType type() const = 0;
+    QgsTiledSceneBoundingVolume( const QgsOrientedBox3D &box = QgsOrientedBox3D() );
 %Docstring
-Returns the type of the volume;
+Constructor for QgsTiledSceneBoundingVolume, with the specified oriented ``box``.
 %End
 
-    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const = 0;
+    QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
 Returns the axis aligned bounding box of the volume.
 
@@ -56,12 +36,7 @@ The optional ``transform`` and ``direction`` arguments should be used whenever t
 to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
 %End
 
-    virtual QgsAbstractTiledSceneBoundingVolume *clone() const = 0 /Factory/;
-%Docstring
-Returns a clone of the volume.
-%End
-
-    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const = 0 /Factory/;
+    QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const /Factory/;
 %Docstring
 Returns a new geometry representing the 2-dimensional X/Y center slice of the volume.
 
@@ -71,91 +46,15 @@ The optional ``transform`` and ``direction`` arguments should be used whenever t
 to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
 %End
 
-    virtual void transform( const QgsMatrix4x4 &transform ) = 0;
+    void transform( const QgsMatrix4x4 &transform );
 %Docstring
 Applies a ``transform`` to the bounding volume.
-
-The actual result of transforming a bounding volume depends on subclass specific logic. For instance:
-
-- transforming a :py:class:`QgsTiledSceneBoundingVolumeRegion` results in no change to the region
-- transforming a :py:class:`QgsTiledSceneBoundingVolumeSphere` causes the radius to be multiplied by the maximum length of the transform scales
 %End
 
-    virtual bool intersects( const QgsOrientedBox3D &box ) const = 0;
+    bool intersects( const QgsOrientedBox3D &box ) const;
 %Docstring
 Returns ``True`` if this bounds intersects the specified ``box``.
 %End
-
-};
-
-class QgsTiledSceneBoundingVolumeRegion : QgsAbstractTiledSceneBoundingVolume
-{
-%Docstring(signature="appended")
-A region bounding volume for tiled scene nodes.
-
-.. versionadded:: 3.34
-%End
-
-%TypeHeaderCode
-#include "qgstiledsceneboundingvolume.h"
-%End
-  public:
-
-    QgsTiledSceneBoundingVolumeRegion( const QgsBox3D &region );
-%Docstring
-Constructor for QgsTiledSceneBoundingVolumeRegion, with the specified ``region``.
-%End
-
-    virtual Qgis::TiledSceneBoundingVolumeType type() const ${SIP_FINAL};
-
-    virtual void transform( const QgsMatrix4x4 &transform ) ${SIP_FINAL};
-
-    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
-
-    virtual QgsTiledSceneBoundingVolumeRegion *clone() const ${SIP_FINAL} /Factory/;
-
-    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
-
-    virtual bool intersects( const QgsOrientedBox3D &box ) const ${SIP_FINAL};
-
-
-    QgsBox3D region() const;
-%Docstring
-Returns the volume's region.
-%End
-
-};
-
-class QgsTiledSceneBoundingVolumeBox : QgsAbstractTiledSceneBoundingVolume
-{
-%Docstring(signature="appended")
-A oriented box bounding volume for tiled scene nodes.
-
-.. versionadded:: 3.34
-%End
-
-%TypeHeaderCode
-#include "qgstiledsceneboundingvolume.h"
-%End
-  public:
-
-    QgsTiledSceneBoundingVolumeBox( const QgsOrientedBox3D &box );
-%Docstring
-Constructor for QgsTiledSceneBoundingVolumeBox, with the specified oriented ``box``.
-%End
-
-    virtual Qgis::TiledSceneBoundingVolumeType type() const ${SIP_FINAL};
-
-    virtual void transform( const QgsMatrix4x4 &transform ) ${SIP_FINAL};
-
-    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
-
-    virtual QgsTiledSceneBoundingVolumeBox *clone() const ${SIP_FINAL} /Factory/;
-
-    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
-
-    virtual bool intersects( const QgsOrientedBox3D &box ) const ${SIP_FINAL};
-
 
     QgsOrientedBox3D box() const;
 %Docstring
@@ -163,45 +62,6 @@ Returns the volume's oriented box.
 %End
 
 };
-
-class QgsTiledSceneBoundingVolumeSphere: QgsAbstractTiledSceneBoundingVolume
-{
-%Docstring(signature="appended")
-A spherical bounding volume for tiled scene nodes.
-
-.. versionadded:: 3.34
-%End
-
-%TypeHeaderCode
-#include "qgstiledsceneboundingvolume.h"
-%End
-  public:
-
-    QgsTiledSceneBoundingVolumeSphere( const QgsSphere &sphere );
-%Docstring
-Constructor for QgsTiledSceneBoundingVolumeSphere, with the specified ``sphere``.
-%End
-
-    virtual Qgis::TiledSceneBoundingVolumeType type() const ${SIP_FINAL};
-
-    virtual void transform( const QgsMatrix4x4 &transform ) ${SIP_FINAL};
-
-    virtual QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException );
-
-    virtual QgsTiledSceneBoundingVolumeSphere *clone() const ${SIP_FINAL} /Factory/;
-
-    virtual QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const ${SIP_FINAL} throw( QgsCsException ) /Factory/;
-
-    virtual bool intersects( const QgsOrientedBox3D &box ) const ${SIP_FINAL};
-
-
-    QgsSphere sphere() const;
-%Docstring
-Returns the volume's sphere.
-%End
-
-};
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -57,6 +57,7 @@
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
 #include "qgstiledownloadmanager.h"
+#include "qgstiledscenerendererregistry.h"
 #include "qgsunittypes.h"
 #include "qgsuserprofile.h"
 #include "qgsuserprofilemanager.h"
@@ -2428,6 +2429,11 @@ QgsPointCloudRendererRegistry *QgsApplication::pointCloudRendererRegistry()
   return members()->mPointCloudRendererRegistry;
 }
 
+QgsTiledSceneRendererRegistry *QgsApplication::tiledSceneRendererRegistry()
+{
+  return members()->mTiledSceneRendererRegistry;
+}
+
 QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
 {
   if ( auto *lInstance = instance() )
@@ -2738,6 +2744,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup tiled scene renderer registry" ) );
+    mTiledSceneRendererRegistry = new QgsTiledSceneRendererRegistry();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup GPS registry" ) );
     mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
     profiler->end();
@@ -2851,6 +2862,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mSensorRegistry;
   delete mLayoutItemRegistry;
   delete mPointCloudRendererRegistry;
+  delete mTiledSceneRendererRegistry;
   delete mRasterRendererRegistry;
   delete mRendererRegistry;
   delete mSvgCache;

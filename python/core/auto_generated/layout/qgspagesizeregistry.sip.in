@@ -26,8 +26,8 @@ A named page size for layouts.
 
     QgsPageSize( const QString &name, const QgsLayoutSize &size, const QString &displayName = QString() );
 %Docstring
-Constructor for QgsPageSize, accepting the ``name`` of the page size and
-page ``size``.
+Constructor for QgsPageSize, accepting the ``name`` of the page size, the
+page ``size`` and the ``displayName``.
 %End
 
     QgsPageSize( const QgsLayoutSize &size );

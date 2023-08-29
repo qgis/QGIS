@@ -59,6 +59,8 @@ class QgsTiledSceneSourceSelect : public QgsAbstractDataSourceWidget, private Ui
     //! Stores the selected datasource whenerver it is changed
     void cmbConnections_currentTextChanged( const QString &text );
 
+    void showHelp();
+
   private:
     void populateConnectionList();
     void setConnectionListPosition();

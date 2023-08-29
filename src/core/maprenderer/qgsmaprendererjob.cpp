@@ -65,7 +65,12 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
   renderer = other.renderer;
   other.renderer = nullptr;
 
+  previewRenderImage = other.previewRenderImage;
+  other.previewRenderImage = nullptr;
+
   imageInitialized = other.imageInitialized;
+  previewRenderImageInitialized = other.previewRenderImageInitialized;
+
   blendMode = other.blendMode;
   opacity = other.opacity;
   cached = other.cached;
@@ -96,6 +101,7 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
 
 LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
   : imageInitialized( other.imageInitialized )
+  , previewRenderImageInitialized( other.previewRenderImageInitialized )
   , blendMode( other.blendMode )
   , opacity( other.opacity )
   , cached( other.cached )
@@ -114,6 +120,9 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
 
   img = other.img;
   other.img = nullptr;
+
+  previewRenderImage = other.previewRenderImage;
+  other.previewRenderImage = nullptr;
 
   renderer = other.renderer;
   other.renderer = nullptr;
@@ -628,6 +637,32 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.context()->setElevationMap( job.elevationMap );
     }
 
+    if ( ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputs ) && ( mSettings.flags() & Qgis::MapSettingsFlag::RenderPartialOutput ) )
+    {
+      if ( mCache && ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputOverPreviousCachedImage ) && mCache->hasAnyCacheImage( job.layerId + QStringLiteral( "_preview" ) ) )
+      {
+        const QImage cachedImage = mCache->transformedCacheImage( job.layerId + QStringLiteral( "_preview" ), mSettings.mapToPixel() );
+        if ( !cachedImage.isNull() )
+        {
+          job.previewRenderImage = new QImage( cachedImage );
+          job.previewRenderImageInitialized = true;
+          job.context()->setPreviewRenderPainter( new QPainter( job.previewRenderImage ) );
+          job.context()->setPainterFlagsUsingContext( painter );
+        }
+      }
+      if ( !job.previewRenderImage )
+      {
+        job.context()->setPreviewRenderPainter( allocateImageAndPainter( ml->id(), job.previewRenderImage, job.context() ) );
+        job.previewRenderImageInitialized = false;
+      }
+
+      if ( !job.previewRenderImage )
+      {
+        delete job.context()->previewRenderPainter();
+        job.context()->setPreviewRenderPainter( nullptr );
+      }
+    }
+
     job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
   }
 
@@ -1017,6 +1052,14 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
       job.img = nullptr;
     }
 
+    if ( job.previewRenderImage )
+    {
+      delete job.context()->previewRenderPainter();
+      job.context()->setPreviewRenderPainter( nullptr );
+      delete job.previewRenderImage;
+      job.previewRenderImage = nullptr;
+    }
+
     if ( job.elevationMap )
     {
       job.context()->setElevationMap( nullptr );
@@ -1081,6 +1124,14 @@ void QgsMapRendererJob::cleanupSecondPassJobs( std::vector< LayerRenderJob > &jo
 
       delete job.img;
       job.img = nullptr;
+    }
+
+    if ( job.previewRenderImage )
+    {
+      delete job.context()->previewRenderPainter();
+      job.context()->setPreviewRenderPainter( nullptr );
+      delete job.previewRenderImage;
+      job.previewRenderImage = nullptr;
     }
 
     if ( job.picture )
@@ -1231,6 +1282,9 @@ QImage QgsMapRendererJob::layerImageToBeComposed(
 {
   if ( job.imageCanBeComposed() )
   {
+    if ( job.previewRenderImage && !job.completed )
+      return *job.previewRenderImage;
+
     Q_ASSERT( job.img );
     return *job.img;
   }

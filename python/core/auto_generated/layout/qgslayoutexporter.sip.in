@@ -23,6 +23,9 @@ Handles rendering and exports of layouts to various formats.
 %End
   public:
 
+
+
+
     struct PageExportDetails
     {
       QString directory;
@@ -210,7 +213,6 @@ Constructor for PdfExportSettings
       QStringList exportThemes;
 
       QVector<qreal> predefinedMapScales;
-
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );

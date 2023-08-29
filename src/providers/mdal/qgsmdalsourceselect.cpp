@@ -20,6 +20,7 @@
 #include "qgsmdalsourceselect.h"
 #include "qgsproviderregistry.h"
 #include "ogr/qgsogrhelperfunctions.h"
+#include "qgshelp.h"
 
 QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
   QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -35,6 +36,7 @@ QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
     mMeshPath = path;
     emit enableButtons( ! mMeshPath.isEmpty() );
   } );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMdalSourceSelect::showHelp );
 }
 
 void QgsMdalSourceSelect::addButtonClicked()
@@ -54,4 +56,9 @@ void QgsMdalSourceSelect::addButtonClicked()
     Q_NOWARN_DEPRECATED_POP
     emit addLayer( Qgis::LayerType::Mesh, path, QFileInfo( path ).completeBaseName(), QStringLiteral( "mdal" ) );
   }
+}
+
+void QgsMdalSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-mesh-layer" ) );
 }

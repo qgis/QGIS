@@ -1647,6 +1647,15 @@ just before a new project is read).
 .. versionadded:: 3.2
 %End
 
+    void aboutToBeCleared();
+%Docstring
+Emitted when the project is about to be cleared.
+
+.. seealso:: :py:func:`clear`
+
+.. versionadded:: 3.34
+%End
+
     void readProject( const QDomDocument & );
 %Docstring
 Emitted when a project is being read.

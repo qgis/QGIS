@@ -22,6 +22,7 @@
 #include "qgsproviderutils.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgstiledsceneconnectiondialog.h"
+#include "qgshelp.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -68,6 +69,7 @@ QgsTiledSceneSourceSelect::QgsTiledSceneSourceSelect( QWidget *parent, Qt::Windo
   connect( btnLoad, &QToolButton::clicked, this, &QgsTiledSceneSourceSelect::btnLoad_clicked );
   connect( cmbConnections, &QComboBox::currentTextChanged, this, &QgsTiledSceneSourceSelect::cmbConnections_currentTextChanged );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsTiledSceneSourceSelect::showHelp );
 
   populateConnectionList();
 
@@ -213,6 +215,11 @@ void QgsTiledSceneSourceSelect::cmbConnections_currentTextChanged( const QString
 {
   QgsTiledSceneProviderConnection::setSelectedConnection( text );
   emit enableButtons( !text.isEmpty() );
+}
+
+void QgsTiledSceneSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html" ) );
 }
 
 ///@endcond

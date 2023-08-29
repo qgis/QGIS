@@ -97,6 +97,9 @@ void QgsSubstitutionListWidget::mButtonExport_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Substitutions" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( fileName.isEmpty() )
   {
     return;

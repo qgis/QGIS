@@ -27,6 +27,7 @@ RUN  apt-get update \
     gpsbabel \
     graphviz \
     libaio1 \
+    libdraco4 \
     libexiv2-27 \
     libfcgi0ldbl \
     libgsl27 \
@@ -175,6 +176,7 @@ RUN  apt-get update \
     cmake \
     flex \
     grass-dev \
+    libdraco-dev \
     libexiv2-dev \
     libexpat1-dev \
     libfcgi-dev \

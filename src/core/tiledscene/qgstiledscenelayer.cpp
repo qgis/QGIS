@@ -21,16 +21,20 @@
 #include "qgspainting.h"
 #include "qgsproviderregistry.h"
 #include "qgslayermetadataformatter.h"
+#include "qgstiledscenerenderer.h"
 #include "qgsxmlutils.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 #include "qgstiledscenelayerrenderer.h"
+#include "qgstiledscenerendererregistry.h"
+#include "qgstiledscenelayerelevationproperties.h"
 
 QgsTiledSceneLayer::QgsTiledSceneLayer( const QString &uri,
                                         const QString &baseName,
                                         const QString &provider,
                                         const QgsTiledSceneLayer::LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::TiledScene, baseName, uri )
+  , mElevationProperties( new QgsTiledSceneLayerElevationProperties( this ) )
   , mLayerOptions( options )
 {
   if ( !uri.isEmpty() && !provider.isEmpty() )
@@ -62,6 +66,12 @@ QgsTiledSceneLayer *QgsTiledSceneLayer::clone() const
   QgsTiledSceneLayer *layer = new QgsTiledSceneLayer( source(), name(), mProviderKey, mLayerOptions );
   QgsMapLayer::clone( layer );
 
+  if ( mRenderer )
+    layer->setRenderer( mRenderer->clone() );
+
+  layer->mElevationProperties = mElevationProperties->clone();
+  layer->mElevationProperties->setParent( layer );
+
   layer->mLayerOptions = mLayerOptions;
 
   return layer;
@@ -77,11 +87,64 @@ QgsRectangle QgsTiledSceneLayer::extent() const
   return mDataProvider->extent();
 }
 
+QString QgsTiledSceneLayer::loadDefaultMetadata( bool &resultFlag )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  resultFlag = false;
+  if ( !mDataProvider || !mDataProvider->isValid() )
+    return QString();
+
+  if ( qgis::down_cast< QgsTiledSceneDataProvider * >( mDataProvider.get() )->capabilities() & Qgis::TiledSceneProviderCapability::ReadLayerMetadata )
+  {
+    setMetadata( mDataProvider->layerMetadata() );
+  }
+  else
+  {
+    QgsMapLayer::loadDefaultMetadata( resultFlag );
+  }
+  resultFlag = true;
+  return QString();
+}
+
+QgsMapLayerElevationProperties *QgsTiledSceneLayer::elevationProperties()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mElevationProperties;
+}
+
 QgsMapLayerRenderer *QgsTiledSceneLayer::createMapRenderer( QgsRenderContext &context )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return new QgsTiledSceneLayerRenderer( this, context );
+}
+
+QgsTiledSceneRenderer *QgsTiledSceneLayer::renderer()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mRenderer.get();
+}
+
+const QgsTiledSceneRenderer *QgsTiledSceneLayer::renderer() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mRenderer.get();
+}
+
+void QgsTiledSceneLayer::setRenderer( QgsTiledSceneRenderer *renderer )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( renderer == mRenderer.get() )
+    return;
+
+  mRenderer.reset( renderer );
+  emit rendererChanged();
+  emitStyleChanged();
 }
 
 QgsTiledSceneDataProvider *QgsTiledSceneLayer::dataProvider()
@@ -172,7 +235,7 @@ bool QgsTiledSceneLayer::readSymbology( const QDomNode &node, QString &errorMess
   return true;
 }
 
-bool QgsTiledSceneLayer::readStyle( const QDomNode &node, QString &, QgsReadWriteContext &, QgsMapLayer::StyleCategories categories )
+bool QgsTiledSceneLayer::readStyle( const QDomNode &node, QString &, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -186,6 +249,25 @@ bool QgsTiledSceneLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     {
       const QDomElement e = blendModeNode.toElement();
       setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
+    }
+
+    QDomElement rendererElement = node.firstChildElement( QStringLiteral( "renderer" ) );
+    if ( !rendererElement.isNull() )
+    {
+      std::unique_ptr< QgsTiledSceneRenderer > r( QgsTiledSceneRenderer::load( rendererElement, context ) );
+      if ( r )
+      {
+        setRenderer( r.release() );
+      }
+      else
+      {
+        result = false;
+      }
+    }
+    // make sure layer has a renderer - if none exists, fallback to a default renderer
+    if ( !mRenderer )
+    {
+      setRenderer( QgsTiledSceneRendererRegistry::defaultRenderer( this ) );
     }
   }
 
@@ -231,7 +313,7 @@ bool QgsTiledSceneLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   return true;
 }
 
-bool QgsTiledSceneLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &, const QgsReadWriteContext &, QgsMapLayer::StyleCategories categories ) const
+bool QgsTiledSceneLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -250,6 +332,12 @@ bool QgsTiledSceneLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
     const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
+
+    if ( mRenderer )
+    {
+      const QDomElement rendererElement = mRenderer->save( doc, context );
+      node.appendChild( rendererElement );
+    }
   }
 
   // add the layer opacity and scale visibility
@@ -320,6 +408,32 @@ void QgsTiledSceneLayer::setDataSourcePrivate( const QString &dataSource, const 
   if ( !( flags & QgsDataProvider::SkipGetExtent ) )
   {
     setExtent( mDataProvider->extent() );
+  }
+
+  bool loadDefaultStyleFlag = false;
+  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  {
+    loadDefaultStyleFlag = true;
+  }
+
+  if ( !mRenderer || loadDefaultStyleFlag )
+  {
+    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+
+    bool defaultLoadedFlag = false;
+
+    if ( !defaultLoadedFlag && loadDefaultStyleFlag )
+    {
+      loadDefaultStyle( defaultLoadedFlag );
+    }
+
+    if ( !defaultLoadedFlag )
+    {
+      // all else failed, create default renderer
+      setRenderer( QgsTiledSceneRendererRegistry::defaultRenderer( this ) );
+    }
   }
 }
 

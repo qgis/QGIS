@@ -30,7 +30,7 @@ Constructor for an invalid tile.
 .. seealso:: :py:func:`isValid`
 %End
 
-    explicit QgsTiledSceneTile( const QString &id );
+    explicit QgsTiledSceneTile( long long id );
 %Docstring
 Constructor for an valid tile.
 
@@ -49,7 +49,7 @@ Copy constructor
 Returns ``True`` if the tile is a valid tile (i.e. not default constructed).
 %End
 
-    QString id() const;
+    long long id() const;
 %Docstring
 Returns the tile's unique ID.
 %End
@@ -74,16 +74,14 @@ content is handled when its higher resolution children are also included.
 .. seealso:: :py:func:`refinementProcess`
 %End
 
-    void setBoundingVolume( QgsAbstractTiledSceneBoundingVolume *volume /Transfer/ );
+    void setBoundingVolume( const QgsTiledSceneBoundingVolume &volume );
 %Docstring
 Sets the bounding ``volume`` for the tile.
-
-Ownership of ``volume`` is transferred to the tile.
 
 .. seealso:: :py:func:`boundingVolume`
 %End
 
-    const QgsAbstractTiledSceneBoundingVolume *boundingVolume() const;
+    const QgsTiledSceneBoundingVolume &boundingVolume() const;
 %Docstring
 Returns the bounding volume for the tile.
 
@@ -135,6 +133,22 @@ Sets the tile's geometric ``error``, which is the error, in scene CRS units, of 
 simplified representation of its source geometry.
 
 .. seealso:: :py:func:`geometricError`
+%End
+
+    QUrl baseUrl() const;
+%Docstring
+Returns the tile's base URL. If this tile's resources are relative paths, they would
+get resolved against this URL.
+
+.. seealso:: :py:func:`setBaseUrl`
+%End
+
+    void setBaseUrl( const QUrl &baseUrl );
+%Docstring
+Sets the tile's base URL. If this tile's resources are relative paths, they would
+get resolved against this URL.
+
+.. seealso:: :py:func:`baseUrl`
 %End
 
 };

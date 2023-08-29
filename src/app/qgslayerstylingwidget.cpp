@@ -112,6 +112,7 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
                            | QgsMapLayerProxyModel::Filter::MeshLayer
                            | QgsMapLayerProxyModel::Filter::VectorTileLayer
                            | QgsMapLayerProxyModel::Filter::PointCloudLayer
+                           | QgsMapLayerProxyModel::Filter::TiledSceneLayer
                            | QgsMapLayerProxyModel::Filter::AnnotationLayer );
   mLayerCombo->setAdditionalLayers( { QgsProject::instance()->mainAnnotationLayer() } );
 

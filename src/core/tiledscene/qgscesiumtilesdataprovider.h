@@ -46,7 +46,7 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProv
     QgsCesiumTilesDataProvider &operator=( const QgsCesiumTilesDataProvider &other ) = delete;
 
     ~QgsCesiumTilesDataProvider() final;
-
+    Qgis::TiledSceneProviderCapabilities capabilities() const final;
     QgsCesiumTilesDataProvider *clone() const final;
     QgsCoordinateReferenceSystem crs() const final;
     QgsRectangle extent() const final;
@@ -54,9 +54,11 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProv
     QString name() const final;
     QString description() const final;
     QString htmlMetadata() const final;
+    QgsLayerMetadata layerMetadata() const override;
     const QgsCoordinateReferenceSystem sceneCrs() const final;
-    const QgsAbstractTiledSceneBoundingVolume *boundingVolume() const final;
+    const QgsTiledSceneBoundingVolume &boundingVolume() const final;
     QgsTiledSceneIndex index() const final;
+    QgsDoubleRange zRange() const final;
 
   private:
 

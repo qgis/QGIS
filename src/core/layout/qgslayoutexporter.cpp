@@ -27,6 +27,8 @@
 #include "qgslinestring.h"
 #include "qgsmessagelog.h"
 #include "qgslabelingresults.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QImageWriter>
 #include <QSize>
@@ -143,6 +145,10 @@ class LayoutItemHider
 };
 
 ///@endcond PRIVATE
+
+const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingImage = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-image" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported image file with the default viewer after exporting a print layout" ) );
+const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingPdf = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-pdf" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported PDF file with the default viewer after exporting a print layout" ) );
+const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingSvg = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-svg" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported SVG file with the default viewer after exporting a print layout" ) );
 
 QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
   : mLayout( layout )
@@ -558,6 +564,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   // in items missing from the output
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+
+  // Force synchronous legend graphics requests. Necessary for WMS GetPrint,
+  // as otherwise processing the request ends before remote graphics are downloaded.
+  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagSynchronousLegendGraphics, true );
+
   mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
   mLayout->renderContext().setExportThemes( settings.exportThemes );
 

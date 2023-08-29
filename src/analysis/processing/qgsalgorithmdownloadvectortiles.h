@@ -54,9 +54,9 @@ class QgsDownloadVectorTilesAlgorithm : public QgsProcessingAlgorithm
   private:
 
     std::unique_ptr< QgsVectorTileDataProvider > mProvider;
-    int mMaxZoom;
-    int mSourceMinZoom;
-    long long mTileLimit;
+    int mMaxZoom = 10;
+    int mSourceMinZoom = 1;
+    long long mTileLimit = 100;
     QString mLayerName;
     QgsRectangle mExtent;
     QgsVectorTileMatrixSet mTileMatrixSet;

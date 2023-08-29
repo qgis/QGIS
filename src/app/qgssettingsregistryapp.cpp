@@ -19,11 +19,33 @@
 #include "qgsidentifyresultsdialog.h"
 #include "qgspluginmanager.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsgui.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingseditorwidgetregistry.h"
+#include "qgssettingsenumflageditorwidgetwrapper.h"
+#include "qgsimagewarper.h"
+#ifdef HAVE_GEOREFERENCER
+#include "qgsgcptransformer.h"
+#endif
+
+#if defined(_MSC_VER)
+#ifndef SIP_RUN
+template class QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>;
+template class QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>;
+#endif
+#endif
 
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
 {
+
+#ifdef HAVE_GEOREFERENCER
+  QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>() );
+#endif
+  QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>() );
+
+
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 

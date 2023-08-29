@@ -33,6 +33,7 @@ Stores information relating to the current rendering settings for a layout.
       FlagDisableTiledRasterLayerRenders,
       FlagRenderLabelsByMapLayer,
       FlagLosslessImageRendering,
+      FlagSynchronousLegendGraphics
     };
     typedef QFlags<QgsLayoutRenderContext::Flag> Flags;
 

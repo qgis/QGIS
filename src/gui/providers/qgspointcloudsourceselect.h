@@ -51,6 +51,9 @@ class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui
 
     //! Sets protocol-related widget visibility
     void setProtocolWidgetsVisibility();
+
+    void showHelp();
+
   private:
     QString mPath;
     QString mDataSourceType;

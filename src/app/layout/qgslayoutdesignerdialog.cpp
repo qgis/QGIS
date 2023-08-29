@@ -98,6 +98,7 @@
 #include <QWindow>
 #include <QScreen>
 #include <QActionGroup>
+#include <QDesktopServices>
 
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
@@ -2271,6 +2272,12 @@ void QgsLayoutDesignerDialog::exportToRaster()
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileNExt.first ).toString(), QDir::toNativeSeparators( fileNExt.first ) ),
                                 Qgis::MessageLevel::Success, 0 );
+
+      // Open exported file in the default viewer if enabled
+      if ( QgsLayoutExporter::settingOpenAfterExportingImage->value() )
+      {
+        QDesktopServices::openUrl( QUrl::fromLocalFile( fileNExt.first ) );
+      }
       break;
 
     case QgsLayoutExporter::PrintError:
@@ -2386,6 +2393,12 @@ void QgsLayoutDesignerDialog::exportToPdf()
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                 Qgis::MessageLevel::Success, 0 );
+
+      // Open exported file in the default viewer if enabled
+      if ( QgsLayoutExporter::settingOpenAfterExportingPdf->value() )
+      {
+        QDesktopServices::openUrl( QUrl::fromLocalFile( outputFileName ) );
+      }
       break;
     }
 
@@ -2498,6 +2511,12 @@ void QgsLayoutDesignerDialog::exportToSvg()
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                 Qgis::MessageLevel::Success, 0 );
+
+      // Open exported file in the default viewer if enabled
+      if ( QgsLayoutExporter::settingOpenAfterExportingSvg->value() )
+      {
+        QDesktopServices::openUrl( QUrl::fromLocalFile( outputFileName ) );
+      }
       break;
     }
 
@@ -4294,6 +4313,7 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
   if ( mLayout )
     imageDlg.setGenerateWorldFile( mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool() );
   imageDlg.setAntialiasing( antialias );
+  imageDlg.setOpenAfterExporting( QgsLayoutExporter::settingOpenAfterExportingImage->value() );
 
   if ( !imageDlg.exec() )
     return false;
@@ -4301,6 +4321,8 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
   imageSize = QSize( imageDlg.imageWidth(), imageDlg.imageHeight() );
   cropToContents = imageDlg.cropToContents();
   imageDlg.getCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+  QgsLayoutExporter::settingOpenAfterExportingImage->setValue( imageDlg.openAfterExporting() );
+
   if ( mLayout )
   {
     mLayout->setCustomProperty( QStringLiteral( "imageCropToContents" ), cropToContents );
@@ -4375,7 +4397,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   Ui::QgsSvgExportOptionsDialog options;
   options.setupUi( &dialog );
 
-  connect( options.buttonBox, &QDialogButtonBox::helpRequested, this, [ & ]
+  connect( options.mHelpButtonBox, &QDialogButtonBox::helpRequested, this, [ & ]
   {
     QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
   }
@@ -4395,6 +4417,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
   options.mDisableRasterTilingCheckBox->setChecked( disableRasterTiles );
   options.mSimplifyGeometriesCheckbox->setChecked( simplify );
+  options.mOpenAfterExportingCheckBox->setChecked( QgsLayoutExporter::settingOpenAfterExportingSvg->value() );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -4410,6 +4433,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   disableRasterTiles = options.mDisableRasterTilingCheckBox->isChecked();
   simplify = options.mSimplifyGeometriesCheckbox->isChecked();
   Qgis::TextRenderFormat textRenderFormat = static_cast< Qgis::TextRenderFormat >( options.mTextRenderFormatComboBox->currentData().toInt() );
+  QgsLayoutExporter::settingOpenAfterExportingSvg->setValue( options.mOpenAfterExportingCheckBox->isChecked() );
 
   if ( mLayout )
   {
@@ -4519,6 +4543,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   dialog.setUseOgcBestPracticeFormat( useOgcBestPracticeFormat );
   dialog.setExportThemes( exportThemes );
   dialog.setLosslessImageExport( losslessImages );
+  dialog.setOpenAfterExporting( QgsLayoutExporter::settingOpenAfterExportingPdf->value() );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -4534,6 +4559,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   exportThemes = dialog.exportThemes();
   geoPdfLayerOrder = dialog.geoPdfLayerOrder();
   losslessImages = dialog.losslessImageExport();
+  QgsLayoutExporter::settingOpenAfterExportingPdf->setValue( dialog.openAfterExporting() );
 
   if ( mLayout )
   {

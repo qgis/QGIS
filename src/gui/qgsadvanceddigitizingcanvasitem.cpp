@@ -18,7 +18,6 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
 #include "qgsmapcanvas.h"
-#include "qgscadutils.h"
 
 
 QgsAdvancedDigitizingCanvasItem::QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
@@ -254,7 +253,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   {
     painter->setPen( mLockedPen );
 
-    const QgsPointLocator::Match snap = mAdvancedDigitizingDockWidget->lockedSnapVertices().last();
+    const QgsPointLocator::Match snap = mAdvancedDigitizingDockWidget->lockedSnapVertices().constLast();
     const QPointF snappedPoint = toCanvasCoordinates( snap.point() );
 
     const QgsFeature feature = snap.layer()->getFeature( snap.featureId() );
@@ -308,7 +307,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   painter->setPen( mCursorPen );
 
   const QList< QgsPointLocator::Match > lockedSnapVertices = mAdvancedDigitizingDockWidget->lockedSnapVertices();
-  for ( QgsPointLocator::Match snapMatch : lockedSnapVertices )
+  for ( const QgsPointLocator::Match &snapMatch : lockedSnapVertices )
   {
     const QgsPointXY point = snapMatch.point();
     const QPointF canvasPoint = toCanvasCoordinates( point );

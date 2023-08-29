@@ -57,7 +57,7 @@ QString QgsFileUtils::representFileSize( qint64 bytes )
 
 QStringList QgsFileUtils::extensionsFromFilter( const QString &filter )
 {
-  const thread_local QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]+)" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9\\.]+)" ) );
   QStringList extensions;
   QRegularExpressionMatchIterator matches = rx.globalMatch( filter );
 

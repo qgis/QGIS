@@ -26,6 +26,7 @@
 
 #include <gdal.h>
 #include <cpl_minixml.h>
+#include "qgshelp.h"
 
 QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
   QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -39,6 +40,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   connect( radioSrcOgcApi, &QRadioButton::toggled, this, &QgsGdalSourceSelect::radioSrcOgcApi_toggled );
   connect( radioSrcProtocol, &QRadioButton::toggled, this, &QgsGdalSourceSelect::radioSrcProtocol_toggled );
   connect( cmbProtocolTypes, &QComboBox::currentTextChanged, this, &QgsGdalSourceSelect::cmbProtocolTypes_currentIndexChanged );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGdalSourceSelect::showHelp );
 
   whileBlocking( radioSrcFile )->setChecked( true );
   protocolGroupBox->hide();
@@ -449,6 +451,11 @@ void QgsGdalSourceSelect::fillOpenOptions()
 
   mOpenOptionsGroupBox->setVisible( !mOpenOptionsWidgets.empty() );
 
+}
+
+void QgsGdalSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) );
 }
 
 ///@endcond

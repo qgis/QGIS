@@ -314,7 +314,7 @@ void QgsExternalResourceWidget::updateDocumentContent( const QString &filePath )
     case Web:
     {
 #ifdef WITH_QTWEBKIT
-      mWebView->load( QUrl::fromEncoded( filePath.toUtf8() ) );
+      mWebView->load( QUrl::fromUserInput( filePath.toUtf8() ) );
       mWebView->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
 #endif
       break;

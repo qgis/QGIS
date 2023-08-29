@@ -1166,6 +1166,15 @@ The development version
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
 
+    enum class MapLayerRendererFlag
+    {
+      RenderPartialOutputs,
+      RenderPartialOutputOverPreviousCachedImage,
+    };
+
+    typedef QFlags<Qgis::MapLayerRendererFlag> MapLayerRendererFlags;
+
+
 
     enum class TextRenderFormat
       {
@@ -1465,6 +1474,16 @@ The development version
     };
     typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
 
+
+    enum class ProcessingModelChildParameterSource
+    {
+      ModelParameter,
+      ChildOutput,
+      StaticValue,
+      Expression,
+      ExpressionText,
+      ModelOutput,
+    };
 
     enum class CrsDefinitionFormat
       {
@@ -2196,6 +2215,18 @@ The development version
     typedef QFlags<Qgis::TiledSceneRequestFlag> TiledSceneRequestFlags;
 
 
+    enum class TiledSceneRendererFlag
+    {
+      RequiresTextures,
+      ForceRasterRender,
+      RendersTriangles,
+      RendersLines,
+    };
+
+    typedef QFlags<Qgis::TiledSceneRendererFlag> TiledSceneRendererFlags;
+
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -2294,6 +2325,8 @@ QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QF
 
 QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
 
+QFlags<Qgis::MapLayerRendererFlag> operator|(Qgis::MapLayerRendererFlag f1, QFlags<Qgis::MapLayerRendererFlag> f2);
+
 QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
 
 QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
@@ -2359,6 +2392,8 @@ QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCap
 QFlags<Qgis::TiledSceneProviderCapability> operator|(Qgis::TiledSceneProviderCapability f1, QFlags<Qgis::TiledSceneProviderCapability> f2);
 
 QFlags<Qgis::TiledSceneRequestFlag> operator|(Qgis::TiledSceneRequestFlag f1, QFlags<Qgis::TiledSceneRequestFlag> f2);
+
+QFlags<Qgis::TiledSceneRendererFlag> operator|(Qgis::TiledSceneRendererFlag f1, QFlags<Qgis::TiledSceneRendererFlag> f2);
 
 
 

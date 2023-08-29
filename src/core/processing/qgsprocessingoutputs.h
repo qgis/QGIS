@@ -20,8 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgsprocessingparameters.h"
-
+#include "qgsprocessing.h"
 //
 // Output definitions
 //
@@ -69,6 +68,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputFile;
     else if ( sipCpp->type() == QgsProcessingOutputConditionalBranch::typeName() )
       sipType = sipType_QgsProcessingOutputConditionalBranch;
+    else if ( sipCpp->type() == QgsProcessingOutputVariant::typeName() )
+      sipType = sipType_QgsProcessingOutputVariant;
     else
       sipType = nullptr;
     SIP_END
@@ -303,6 +304,29 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
      */
     static QString typeName() { return QStringLiteral( "outputHtml" ); }
     QString type() const override { return typeName(); }
+};
+
+
+/**
+ * \class QgsProcessingOutputVariant
+ * \ingroup core
+ * \brief A variant output for processing algorithms, capable of storing any QVariant value.
+  * \since QGIS 3.34
+ */
+class CORE_EXPORT QgsProcessingOutputVariant : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputVariant.
+     */
+    QgsProcessingOutputVariant( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputVariant" ); }
+    QString type() const override;
 };
 
 /**

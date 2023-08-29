@@ -17,6 +17,7 @@ RUN apt-get update \
   libzip-dev \
   libprotobuf-dev \
   qtbase5-dev \
+  libdraco-dev \
   libqt5svg5-dev \
   libqt5serialport5-dev \
   qttools5-dev \

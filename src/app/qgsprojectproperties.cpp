@@ -2288,6 +2288,9 @@ void QgsProjectProperties::pbnExportScales_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save scales" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( fileName.isEmpty() )
   {
     return;
@@ -2621,6 +2624,9 @@ void QgsProjectProperties::addStyleDatabasePrivate( bool createNew )
                            tr( "Add Style Database" ),
                            initialFolder,
                            tr( "Style databases" ) + " (*.db *.xml)" );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( ! databasePath.isEmpty() )
   {
     QgsStyleManagerDialog::settingLastStyleDatabaseFolder->setValue( QFileInfo( databasePath ).path() );

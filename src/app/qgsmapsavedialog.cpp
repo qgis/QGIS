@@ -491,6 +491,9 @@ void QgsMapSaveDialog::onAccepted()
       QgsSettings settings;
       const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
       QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Save Map As" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+      // return dialog focus on Mac
+      activateWindow();
+      raise();
       if ( !fileName.isEmpty() )
       {
         fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << QStringLiteral( "pdf" ) );

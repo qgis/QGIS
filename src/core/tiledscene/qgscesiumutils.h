@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgsbox3d.h"
+#include "qgsvector3d.h"
 #include "qgis_sip.h"
 #include "nlohmann/json_fwd.hpp"
 
@@ -30,6 +31,7 @@ using namespace nlohmann;
 
 class QgsSphere;
 class QgsOrientedBox3D;
+class QgsMatrix4x4;
 
 /**
  * \brief Contains utilities for working with Cesium data.
@@ -86,6 +88,50 @@ class CORE_EXPORT QgsCesiumUtils
     * Parses a \a sphere object from a Cesium JSON document.
     */
     static QgsSphere parseSphere( const QVariantList &sphere );
+
+    /**
+     * Applies a \a transform to a sphere.
+     */
+    static QgsSphere transformSphere( const QgsSphere &sphere, const QgsMatrix4x4 &transform );
+
+    /**
+     * Encapsulates the contents of a B3DM file.
+     */
+    struct B3DMContents
+    {
+      //! GLTF binary content
+      QByteArray gltf;
+
+      //! Optional RTC center
+      QgsVector3D rtcCenter;
+    };
+
+    /**
+     * Extracts GLTF binary data and other contents from the legacy b3dm (Batched 3D Model) tile format.
+     * Returns empty byte array on error.
+     */
+    static B3DMContents extractGltfFromB3dm( const QByteArray &tileContent );
+
+    /**
+     * Encapsulates the contents of a 3D tile.
+     */
+    struct TileContents
+    {
+      //! GLTF binary content
+      QByteArray gltf;
+
+      //! Optional RTC center
+      QgsVector3D rtcCenter;
+    };
+
+    /**
+     * Parses tile content.
+     * Returns empty byte array on error.
+     *
+     * \note cmpt, pnts, i3dm tile types are currently not supported
+     */
+    static TileContents extractGltfFromTileContent( const QByteArray &tileContent );
+
 };
 
 #endif // QGSCESIUMUTILS_H

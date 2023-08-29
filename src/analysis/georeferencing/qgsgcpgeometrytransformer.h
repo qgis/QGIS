@@ -21,6 +21,7 @@
 #include "qgis_analysis.h"
 #include "qgsgeometrytransformer.h"
 #include "qgsgcptransformer.h"
+#include "qgsfeedback.h"
 #include <memory>
 
 class QgsGeometry;

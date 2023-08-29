@@ -13,8 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstiledscenedataitems.h"
+#include "qgsprovidermetadata.h"
 #include "qgstiledsceneconnection.h"
 #include "qgsdataprovider.h"
+#include "qgsproviderregistry.h"
 
 ///@cond PRIVATE
 
@@ -22,7 +24,7 @@ QgsTiledSceneRootItem::QgsTiledSceneRootItem( QgsDataItem *parent, QString name,
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "tiled-scene" ) )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
-  mIconName = QStringLiteral( "mIconTiledSceneLayer.svg" );
+  mIconName = QStringLiteral( "mIconTiledScene.svg" );
   populate();
 }
 
@@ -49,8 +51,14 @@ QgsTiledSceneLayerItem::QgsTiledSceneLayerItem( QgsDataItem *parent, QString nam
 {
   setState( Qgis::BrowserItemState::Populated );
 
-  // TODO icon should be taken from associated provider metadata
-  mIconName = QStringLiteral( "mIconTiledSceneLayer.svg" );
+  if ( QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( provider ) )
+  {
+    mIcon = metadata->icon();
+  }
+  else
+  {
+    mIconName = QStringLiteral( "mIconTiledSceneLayer.svg" );
+  }
 }
 
 
@@ -58,7 +66,7 @@ QgsTiledSceneLayerItem::QgsTiledSceneLayerItem( QgsDataItem *parent, QString nam
 
 QString QgsTiledSceneDataItemProvider::name()
 {
-  return QStringLiteral( "Tiled Scene" );
+  return QStringLiteral( "Scene" );
 }
 
 QString QgsTiledSceneDataItemProvider::dataProviderKey() const
@@ -74,7 +82,7 @@ int QgsTiledSceneDataItemProvider::capabilities() const
 QgsDataItem *QgsTiledSceneDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
-    return new QgsTiledSceneRootItem( parentItem, QStringLiteral( "Tiled Scene" ), QStringLiteral( "tiled-scene:" ) );
+    return new QgsTiledSceneRootItem( parentItem, QObject::tr( "Scene" ), QStringLiteral( "tiled-scene:" ) );
 
   return nullptr;
 }

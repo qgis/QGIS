@@ -24,6 +24,7 @@
 
 #include "qgssettingsentryimpl.h"
 #include "qgscolorbutton.h"
+#include <QComboBox>
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QSpinBox>
@@ -31,7 +32,7 @@
 #include <QTableWidget>
 
 
-//TODO variant map, enum
+//TODO variant map
 
 class QgsColorButton;
 
@@ -42,7 +43,7 @@ class QgsColorButton;
  * \since QGIS 3.32
  */
 template<class T, class V, class U>
-class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWrapper
+class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWrapper
 {
   public:
     //! Constructor
@@ -72,7 +73,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEdit
 
     QVariant variantValueFromWidget() const override
     {
-      return valueFromWidget();
+      return QVariant::fromValue( valueFromWidget() );
     };
 
     //! Returns the widget value
@@ -96,7 +97,8 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEdit
 
     bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) override
     {
-      mSetting = dynamic_cast<const T *>( setting );
+      mSetting = static_cast<const T *>( setting );
+      Q_ASSERT( mSetting );
       mEditor = qobject_cast<V *>( editor );
       if ( mEditor )
       {
@@ -242,6 +244,7 @@ class GUI_EXPORT QgsSettingsColorEditorWidgetWrapper : public QgsSettingsEditorW
 
     void configureEditorPrivateImplementation() override;
 };
+
 
 ///**
 // * \ingroup gui

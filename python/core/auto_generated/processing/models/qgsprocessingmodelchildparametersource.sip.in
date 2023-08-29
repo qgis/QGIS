@@ -23,16 +23,6 @@ Source for the value of a parameter for a child algorithm within a model.
 %End
   public:
 
-    enum Source
-    {
-      ModelParameter,
-      ChildOutput,
-      StaticValue,
-      Expression,
-      ExpressionText,
-      ModelOutput,
-    };
-
     QgsProcessingModelChildParameterSource();
 %Docstring
 Constructor for QgsProcessingModelChildParameterSource. It is recommended that the static methods
@@ -118,12 +108,12 @@ algorithms already executed by the model.
 .. versionadded:: 3.2
 %End
 
-    Source source() const;
+    Qgis::ProcessingModelChildParameterSource source() const;
 %Docstring
 Returns the parameter value's source.
 %End
 
-    void setSource( Source source );
+    void setSource( Qgis::ProcessingModelChildParameterSource source );
 %Docstring
 Sets the parameter's source.
 

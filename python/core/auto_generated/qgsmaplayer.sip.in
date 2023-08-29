@@ -1162,16 +1162,32 @@ Write just the symbology information for the layer into the document
 
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
 %Docstring
-Updates the data source of the layer. The layer's renderer and legend will be preserved only
-if the geometry type of the new data source matches the current geometry type of the layer.
+Updates the data source of the layer.
+
+The ``dataSource`` argument must specify the new data source string for the layer. The format varies depending on
+the specified data ``provider`` in use. See :py:class:`QgsDataSourceUri` and the documentation for the various :py:class:`QgsMapLayer`
+subclasses for further details on data source strings.
+
+The ``baseName`` argument specifies the user-visible name to use for the layer. (See :py:func:`~QgsMapLayer.name` or :py:func:`~QgsMapLayer.setName`).
+
+The ``provider`` argument is used to specify the unique key of the data provider to use for
+the layer. This must match one of the values returned by :py:func:`QgsProviderRegistry.instance()`->:py:func:`~QgsMapLayer.providerList`.
+(See :py:func:`~QgsMapLayer.providerType`).
+
+If ``loadDefaultStyleFlag`` is set to ``True`` then the layer's existing style will be reset to the default
+for the data source.
+
+.. note::
+
+   If ``loadDefaultStyleFlag`` is ``False`` then the layer's renderer and legend will be preserved only
+   if the geometry type of the new data source matches the current geometry type of the layer.
+
+After setting a new data source callers can test :py:func:`~QgsMapLayer.isValid` to determine whether the new source
+and provider are valid and ready for use. If setting the new data source fails and the layer
+returns ``False`` to :py:func:`~QgsMapLayer.isValid`, then descriptive errors relating to setting the data source can
+be retrieved by calling :py:func:`~QgsMapLayer.error`.
 
 This method was defined in :py:class:`QgsVectorLayer` since 2.10 and was marked as deprecated since 3.2
-
-:param dataSource: new layer data source
-:param baseName: base name of the layer
-:param provider: provider string
-:param loadDefaultStyleFlag: set to ``True`` to reset the layer's style to the default for the
-                             data source
 
 .. seealso:: :py:func:`dataSourceChanged`
 
@@ -1180,15 +1196,32 @@ This method was defined in :py:class:`QgsVectorLayer` since 2.10 and was marked 
 
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
 %Docstring
-Updates the data source of the layer. The layer's renderer and legend will be preserved only
-if the geometry type of the new data source matches the current geometry type of the layer.
+Updates the data source of the layer.
 
-:param dataSource: new layer data source
-:param baseName: base name of the layer
-:param provider: provider string
-:param options: provider options
-:param loadDefaultStyleFlag: set to ``True`` to reset the layer's style to the default for the
-                             data source
+The ``dataSource`` argument must specify the new data source string for the layer. The format varies depending on
+the specified data ``provider`` in use. See :py:class:`QgsDataSourceUri` and the documentation for the various :py:class:`QgsMapLayer`
+subclasses for further details on data source strings.
+
+The ``baseName`` argument specifies the user-visible name to use for the layer. (See :py:func:`~QgsMapLayer.name` or :py:func:`~QgsMapLayer.setName`).
+
+The ``provider`` argument is used to specify the unique key of the data provider to use for
+the layer. This must match one of the values returned by :py:func:`QgsProviderRegistry.instance()`->:py:func:`~QgsMapLayer.providerList`.
+(See :py:func:`~QgsMapLayer.providerType`).
+
+The ``options`` argument can be used to pass additional layer properties to the new data provider.
+
+If ``loadDefaultStyleFlag`` is set to ``True`` then the layer's existing style will be reset to the default
+for the data source.
+
+.. note::
+
+   If ``loadDefaultStyleFlag`` is ``False`` then the layer's renderer and legend will be preserved only
+   if the geometry type of the new data source matches the current geometry type of the layer.
+
+After setting a new data source callers can test :py:func:`~QgsMapLayer.isValid` to determine whether the new source
+and provider are valid and ready for use. If setting the new data source fails and the layer
+returns ``False`` to :py:func:`~QgsMapLayer.isValid`, then descriptive errors relating to setting the data source can
+be retrieved by calling :py:func:`~QgsMapLayer.error`.
 
 .. seealso:: :py:func:`dataSourceChanged`
 
@@ -1197,16 +1230,32 @@ if the geometry type of the new data source matches the current geometry type of
 
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
 %Docstring
-Updates the data source of the layer. The layer's renderer and legend will be preserved only
-if the geometry type of the new data source matches the current geometry type of the layer.
+Updates the data source of the layer.
 
-Subclasses should override setDataSourcePrivate: default implementation does nothing.
+The ``dataSource`` argument must specify the new data source string for the layer. The format varies depending on
+the specified data ``provider`` in use. See :py:class:`QgsDataSourceUri` and the documentation for the various :py:class:`QgsMapLayer`
+subclasses for further details on data source strings.
 
-:param dataSource: new layer data source
-:param baseName: base name of the layer
-:param provider: provider string
-:param options: provider options
-:param flags: provider read flags which control dataprovider construction like FlagTrustDataSource, FlagLoadDefaultStyle, etc
+The ``baseName`` argument specifies the user-visible name to use for the layer. (See :py:func:`~QgsMapLayer.name` or :py:func:`~QgsMapLayer.setName`).
+
+The ``provider`` argument is used to specify the unique key of the data provider to use for
+the layer. This must match one of the values returned by :py:func:`QgsProviderRegistry.instance()`->:py:func:`~QgsMapLayer.providerList`.
+(See :py:func:`~QgsMapLayer.providerType`).
+
+The ``options`` argument can be used to pass additional layer properties to the new data provider.
+
+The ``flags`` argument specifies provider read flags which control the data provider construction,
+such as :py:class:`QgsDataProvider`.ReadFlag.FlagTrustDataSource, :py:class:`QgsDataProvider`.ReadFlag.FlagLoadDefaultStyle, etc.
+
+.. note::
+
+   The layer's renderer and legend will be preserved only
+   if the geometry type of the new data source matches the current geometry type of the layer.
+
+After setting a new data source callers can test :py:func:`~QgsMapLayer.isValid` to determine whether the new source
+and provider are valid and ready for use. If setting the new data source fails and the layer
+returns ``False`` to :py:func:`~QgsMapLayer.isValid`, then descriptive errors relating to setting the data source can
+be retrieved by calling :py:func:`~QgsMapLayer.error`.
 
 .. seealso:: :py:func:`dataSourceChanged`
 

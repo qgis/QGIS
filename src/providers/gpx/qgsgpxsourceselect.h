@@ -41,6 +41,7 @@ class QgsGpxSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsGp
   private slots:
 
     void enableRelevantControls();
+    void showHelp();
 
   private:
     QString mGpxPath;

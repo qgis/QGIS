@@ -2041,26 +2041,41 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_CONSTRAINED" \
                          "SIP_CONVERT_TO_SUBCLASS_CODE" \
                          "SIP_DEPRECATED" \
+                         "SIP_DOC_TEMPLATE" \
                          "SIP_END" \
                          "SIP_EXTERNAL" \
                          "SIP_FACTORY" \
                          "SIP_FEATURE" \
+                         "SIP_FORCE" \
+                         "SIP_GETWRAPPER" \
+                         "SIP_HOLDGIL" \
                          "SIP_IF_FEATURE" \
+                         "SIP_IF_MODULE" \
+                         "SIP_IN" \
                          "SIP_INOUT" \
                          "SIP_KEEPREFERENCE" \
+                         "SIP_MAKE_PRIVATE" \
                          "SIP_NODEFAULTCTORS" \
+                         "SIP_NO_FILE" \
                          "SIP_OUT" \
+                         "SIP_PROPERTY" \
                          "SIP_PYARGDEFAULT" \
                          "SIP_PYARGREMOVE" \
+                         "SIP_PYARGRENAME" \
                          "SIP_PYNAME" \
                          "SIP_PYALTERNATIVETYPE" \
+                         "SIP_PYTHON_SPECIAL_BOOL" \
+                         "SIP_RELEASEGIL" \
                          "SIP_SKIP" \
+                         "SIP_THROW" \
                          "SIP_TRANSFER" \
                          "SIP_TRANSFERBACK" \
                          "SIP_TRANSFERTHIS" \
+                         "SIP_TYPEHINT" \
                          "SIP_VIRTUAL_CATCHER_CODE" \
                          "SIP_VIRTUALERRORHANDLER" \
                          "SIP_WHEN_FEATURE" \
+                         "SIP_MONKEYPATCH_COMPAT_NAME" \
                          "SIP_MONKEYPATCH_SCOPEENUM" \
                          "SIP_MONKEYPATCH_SCOPEENUM_UNNEST"
 

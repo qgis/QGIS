@@ -55,7 +55,7 @@ bool QgsVtpkTiles::open()
   mZip = zip_open( fileNamePtr.constData(), ZIP_CHECKCONS, &rc );
   if ( rc == ZIP_ER_OK && mZip )
   {
-    const int count = zip_get_num_files( mZip );
+    const int count = zip_get_num_entries( mZip, ZIP_FL_UNCHANGED );
     if ( count != -1 )
     {
       return true;

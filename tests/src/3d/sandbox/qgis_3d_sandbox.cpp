@@ -28,8 +28,12 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapcanvas.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgsprojectviewsettings.h"
 #include "qgspointlightsettings.h"
+#include "qgsterrainprovider.h"
+#include "qgstiledscenelayer.h"
+#include "qgstiledscenelayer3drenderer.h"
 
 #include <QScreen>
 
@@ -48,6 +52,12 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( visibleLayers );
 
+  map->setExtent( fullExtent );
+
+  Qgs3DAxisSettings axis;
+  axis.setMode( Qgs3DAxisSettings::Mode::Off );
+  map->set3DAxisSettings( axis );
+
   map->setTransformContext( QgsProject::instance()->transformContext() );
   map->setPathResolver( QgsProject::instance()->pathResolver() );
   map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
@@ -59,6 +69,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
   map->setTerrainGenerator( flatTerrain );
+  map->setTerrainElevationOffset( QgsProject::instance()->elevationProperties()->terrainProvider()->offset() );
 
   QgsPointLightSettings defaultPointLight;
   defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
@@ -90,7 +101,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
 
 int main( int argc, char *argv[] )
 {
-  const QApplication app( argc, argv );
+  QgsApplication myApp( argc, argv, true, QString(), QStringLiteral( "desktop" ) );
 
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
@@ -121,6 +132,14 @@ int main( int argc, char *argv[] )
       r->resolveReferences( *QgsProject::instance() );
       pcLayer->setRenderer3D( r );
     }
+
+    if ( QgsTiledSceneLayer *tsLayer = qobject_cast<QgsTiledSceneLayer *>( layer ) )
+    {
+      QgsTiledSceneLayer3DRenderer *r = new QgsTiledSceneLayer3DRenderer();
+      r->setLayer( tsLayer );
+      r->resolveReferences( *QgsProject::instance() );
+      tsLayer->setRenderer3D( r );
+    }
   }
 
   Qgs3DMapCanvas *canvas = new Qgs3DMapCanvas;
@@ -128,5 +147,5 @@ int main( int argc, char *argv[] )
   canvas->resize( 800, 600 );
   canvas->show();
 
-  return QApplication::exec();
+  return myApp.exec();
 }

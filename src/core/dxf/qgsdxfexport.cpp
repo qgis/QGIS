@@ -965,7 +965,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
     writeGroup( 8, layer );
     writeGroup( 2, blockIt.value() ); // Block name
     writeGroup( 50, mPointSymbolBlockAngles.value( symbolLayer ) - angle );
-    if ( scale != 1.0 )
+    if ( std::isfinite( scale ) && scale != 1.0 )
     {
       writeGroup( 41, scale );
       writeGroup( 42, scale );

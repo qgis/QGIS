@@ -29,10 +29,12 @@
 #include "qgsalgorithmaspect.h"
 #include "qgsalgorithmassignprojection.h"
 #include "qgsalgorithmattributeindex.h"
+#include "qgsalgorithmb3dmtogltf.h"
 #include "qgsalgorithmbatchnominatimgeocode.h"
 #include "qgsalgorithmboundary.h"
 #include "qgsalgorithmboundingbox.h"
 #include "qgsalgorithmbuffer.h"
+#include "qgsalgorithmcalculateexpression.h"
 #include "qgsalgorithmcalculateoverlaps.h"
 #include "qgsalgorithmcategorizeusingstyle.h"
 #include "qgsalgorithmcellstatistics.h"
@@ -90,6 +92,7 @@
 #include "qgsalgorithmforcerhr.h"
 #include "qgsalgorithmfuzzifyraster.h"
 #include "qgsalgorithmgeometrybyexpression.h"
+#include "qgsalgorithmgltftovector.h"
 #if QT_CONFIG(process)
 #include "qgsalgorithmgpsbabeltools.h"
 #endif
@@ -277,11 +280,13 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAspectAlgorithm() );
   addAlgorithm( new QgsAssignProjectionAlgorithm() );
   addAlgorithm( new QgsAttributeIndexAlgorithm() );
+  addAlgorithm( new QgsB3DMToGltfAlgorithm() );
   addAlgorithm( new QgsBatchNominatimGeocodeAlgorithm() );
   addAlgorithm( new QgsBookmarksToLayerAlgorithm() );
   addAlgorithm( new QgsBoundaryAlgorithm() );
   addAlgorithm( new QgsBoundingBoxAlgorithm() );
   addAlgorithm( new QgsBufferAlgorithm() );
+  addAlgorithm( new QgsCalculateExpressionAlgorithm() );
   addAlgorithm( new QgsCalculateVectorOverlapsAlgorithm() );
   addAlgorithm( new QgsCategorizeUsingStyleAlgorithm() );
   addAlgorithm( new QgsCellStatisticsAlgorithm() );
@@ -353,6 +358,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFuzzifyRasterGaussianMembershipAlgorithm() );
   addAlgorithm( new QgsFuzzifyRasterNearMembershipAlgorithm() );
   addAlgorithm( new QgsGeometryByExpressionAlgorithm() );
+  addAlgorithm( new QgsGltfToVectorFeaturesAlgorithm() );
 #if QT_CONFIG(process)
   addAlgorithm( new QgsConvertGpxFeatureTypeAlgorithm() );
   addAlgorithm( new QgsConvertGpsDataAlgorithm() );

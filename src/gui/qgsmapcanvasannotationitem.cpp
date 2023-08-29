@@ -97,7 +97,7 @@ void QgsMapCanvasAnnotationItem::updateBoundingRect()
   const double fillSymbolBleed = mAnnotation && mAnnotation->fillSymbol() ?
                                  QgsSymbolLayerUtils::estimateMaxSymbolBleed( mAnnotation->fillSymbol(), rc ) : 0;
 
-  const double mmToPixelScale = mMapCanvas->logicalDpiX() / 25.4;
+  const double mmToPixelScale = mMapCanvas->physicalDpiX() / 25.4;
 
   if ( mAnnotation && !mAnnotation->hasFixedMapPosition() )
   {

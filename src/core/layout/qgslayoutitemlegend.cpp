@@ -128,6 +128,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
     // no longer required, but left set for api stability
     mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
     mSettings.setDpi( dpi );
+    mSettings.setSynchronousLegendRequests( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagSynchronousLegendGraphics );
     Q_NOWARN_DEPRECATED_POP
   }
   if ( mMap && mLayout )

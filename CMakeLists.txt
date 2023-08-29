@@ -293,6 +293,8 @@ if(WITH_CORE)
 
   set (WITH_COPC TRUE CACHE BOOL "Determines whether Cloud Optimized Point Cloud (COPC) support should be built")
 
+  set (WITH_DRACO TRUE CACHE BOOL "Determines whether Draco support should be built")
+
   set (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   mark_as_advanced(WITH_THREAD_LOCAL)
 
@@ -368,7 +370,12 @@ if(WITH_CORE)
     message (SEND_ERROR "sqlite3 dependency was not found!")
   endif()
 
-  find_package(Protobuf REQUIRED)   # for decoding of vector tiles in MVT format
+  find_package(Protobuf CONFIG)
+  find_package(Protobuf REQUIRED)
+  if(Protobuf_VERSION GREATER_EQUAL 4.23)
+    set(Protobuf_LITE_LIBRARY protobuf::libprotobuf-lite)
+  endif()
+
   message(STATUS "Found Protobuf: ${Protobuf_LIBRARIES}")
   if (NOT Protobuf_PROTOC_EXECUTABLE)
     message (SEND_ERROR "Protobuf library's 'protoc' tool was not found!")
@@ -441,6 +448,12 @@ if(WITH_CORE)
     if (PDAL_VERSION_MAJOR GREATER 3 OR (PDAL_VERSION_MAJOR EQUAL 2 AND PDAL_VERSION_MINOR GREATER_EQUAL 5))
       set(PDAL_2_5_OR_HIGHER TRUE)
     endif()
+  endif()
+
+  if (WITH_DRACO)
+    find_package(Draco REQUIRED)
+    message(STATUS "Found Draco: ${DRACO_LIBRARY} (${DRACO_VERSION})")
+    set(HAVE_DRACO TRUE)  # used in qgisconfig.h
   endif()
 
   #############################################################

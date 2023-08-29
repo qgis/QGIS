@@ -29,6 +29,7 @@
 #include "qgsterrainprovider.h"
 #ifdef HAVE_3D
 #include "qgspointcloudlayer3drenderer.h"
+#include "qgstiledscenelayer3drenderer.h"
 #endif
 #include "canvas/qgscanvasrefreshblocker.h"
 #include "qgsproviderutils.h"
@@ -70,6 +71,12 @@
 
 void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
 {
+  // NOTE: The different ways of calling loadDefaultStyle/loadDefaultMetadata below are intentional.
+  // That's because different layer types unfortunately have different behavior wrt return values and error handling.
+  // Some layer types only return errors when it looks like there IS default styles/metadata BUT they can't be loaded for some reason,
+  // while others consider that lack of default styles/metadata itself is an error!
+  // We want to show user facing errors for the first case, but not in the case that the layer just doesn't have
+  // any default style/metadata.
   switch ( layer->type() )
   {
     case Qgis::LayerType::Raster:
@@ -135,7 +142,6 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
     }
 
     case Qgis::LayerType::VectorTile:
-    case Qgis::LayerType::TiledScene:
     {
       bool ok = false;
       QString error = layer->loadDefaultStyle( ok );
@@ -144,6 +150,25 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
       error = layer->loadDefaultMetadata( ok );
       if ( !ok )
         QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Error loading layer metadata" ), error, Qgis::MessageLevel::Warning );
+
+      break;
+    }
+
+    case Qgis::LayerType::TiledScene:
+    {
+      bool ok = false;
+      layer->loadDefaultStyle( ok );
+      QString error = layer->loadDefaultMetadata( ok );
+      if ( !ok )
+        QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Error loading layer metadata" ), error, Qgis::MessageLevel::Warning );
+
+#ifdef HAVE_3D
+      if ( !layer->renderer3D() )
+      {
+        std::unique_ptr< QgsTiledSceneLayer3DRenderer > renderer3D = std::make_unique< QgsTiledSceneLayer3DRenderer >();
+        layer->setRenderer3D( renderer3D.release() );
+      }
+#endif
 
       break;
     }

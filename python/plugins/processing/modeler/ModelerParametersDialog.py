@@ -126,11 +126,11 @@ class ModelerParametersDialog(QDialog):
 
     def resolveValueDescription(self, value):
         if isinstance(value, QgsProcessingModelChildParameterSource):
-            if value.source() == QgsProcessingModelChildParameterSource.StaticValue:
+            if value.source() == Qgis.ProcessingModelChildParameterSource.StaticValue:
                 return value.staticValue()
-            elif value.source() == QgsProcessingModelChildParameterSource.ModelParameter:
+            elif value.source() == Qgis.ProcessingModelChildParameterSource.ModelParameter:
                 return self.model.parameterDefinition(value.parameterName()).description()
-            elif value.source() == QgsProcessingModelChildParameterSource.ChildOutput:
+            elif value.source() == Qgis.ProcessingModelChildParameterSource.ChildOutput:
                 alg = self.model.childAlgorithm(value.outputChildId())
 
                 output_name = alg.algorithm().outputDefinition(value.outputName()).description()
@@ -373,7 +373,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                         value = param.defaultValue()
 
                     if isinstance(value,
-                                  QgsProcessingModelChildParameterSource) and value.source() == QgsProcessingModelChildParameterSource.StaticValue:
+                                  QgsProcessingModelChildParameterSource) and value.source() == Qgis.ProcessingModelChildParameterSource.StaticValue:
                         value = value.staticValue()
                     wrapper.setValue(value)
 
@@ -442,7 +442,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             valid = True
             for subval in val:
                 if (isinstance(subval, QgsProcessingModelChildParameterSource)
-                        and subval.source() == QgsProcessingModelChildParameterSource.StaticValue
+                        and subval.source() == Qgis.ProcessingModelChildParameterSource.StaticValue
                         and not param.checkValueIsAcceptable(subval.staticValue())) \
                         or (subval is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
                     valid = False

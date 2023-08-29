@@ -147,6 +147,8 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     void startJobs();
     QgsChunkQueueJob *startJob( QgsChunkNode *node );
 
+    int unloadNodes();
+
   private slots:
     void onActiveJobFinished();
 

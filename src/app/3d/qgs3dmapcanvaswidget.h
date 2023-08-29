@@ -62,6 +62,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
 
+    void showAnimationWidget() { mActionAnim->trigger(); }
+
   protected:
     void resizeEvent( QResizeEvent *event ) override;
 
@@ -113,6 +115,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionSync2DNavTo3D = nullptr;
     QAction *mActionSync3DNavTo2D = nullptr;
     QAction *mShowFrustumPolyogon = nullptr;
+    QAction *mActionAnim = nullptr;
     QToolButton *mBtnOptions = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QObjectUniquePtr< QgsRubberBand > mViewFrustumHighlight;

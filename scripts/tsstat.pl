@@ -38,6 +38,7 @@ my @lang;
 my $translators= {
 	'af' => '',
 	'ar' => 'Ichaouia Amine, Hosham Munier, Ammar Shaarbaf',
+	'az' => '',
 	'bg' => 'Захари Савов, Jordan Tzvetkov',
 	'bs' => 'Almir Karabegovic',
 	'ca' => 'Albert F, Pau Reguant Ridó, Xavier Roijals',
@@ -181,6 +182,8 @@ print "<table>";
 print "<tr><th colspan=\"2\" style=\"width:250px;\">Language</th><th>Finished %</th><th>Translators</th></tr>\n";
 for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
 	last if $l->{percentage} < 35;
+	print STDERR "WARNING: images/flags/" . $l->{svg} . ".svg MISSING.\n" unless -f "images/flags/" . $l->{svg} . ".svg";
+	print STDERR "WARNING: flags/" . $l->{svg} . ".svg MISSING IN RESOURCES.\n" if system("grep -Fq '<file>flags/" . $l->{svg} . ".svg</file>' images/images.qrc") != 0;
 	printf "\n<tr>"
 		. '<td align="center"><img src="qrc:/images/flags/%s.svg" height="20"></td><td>%s</td>'
 		. '<td><div title="finished:%d unfinished:%d untranslated:%d" class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'

@@ -235,6 +235,7 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
         description = QObject::tr( "%1 [optional]" ).arg( description );
       std::unique_ptr< QLabel > label = std::make_unique< QLabel >( description );
       label->setToolTip( mParameterDefinition->toolTip() );
+      label->setWordWrap( true );
       return label.release();
     }
   }
@@ -369,7 +370,7 @@ QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterfac
   widget->setExpressionHelpText( modelerExpressionFormatString() );
 
   if ( parameter->isDestination() )
-    widget->setSourceType( QgsProcessingModelChildParameterSource::ModelOutput );
+    widget->setSourceType( Qgis::ProcessingModelChildParameterSource::ModelOutput );
   else
     widget->setSourceType( defaultModelSource( parameter ) );
 
@@ -393,9 +394,9 @@ QString QgsProcessingParameterWidgetFactoryInterface::modelerExpressionFormatStr
   return QString();
 }
 
-QgsProcessingModelChildParameterSource::Source QgsProcessingParameterWidgetFactoryInterface::defaultModelSource( const QgsProcessingParameterDefinition * ) const
+Qgis::ProcessingModelChildParameterSource QgsProcessingParameterWidgetFactoryInterface::defaultModelSource( const QgsProcessingParameterDefinition * ) const
 {
-  return QgsProcessingModelChildParameterSource::StaticValue;
+  return Qgis::ProcessingModelChildParameterSource::StaticValue;
 }
 
 //

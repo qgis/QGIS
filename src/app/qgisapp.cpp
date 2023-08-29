@@ -138,6 +138,7 @@
 #include "qgs3danimationwidget.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 #include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgslayoutitem3dmap.h"
@@ -148,6 +149,7 @@
 #include "qgsvectorlayer3drendererwidget.h"
 #include "qgsmeshlayer3drendererwidget.h"
 #include "qgspointcloudlayer3drendererwidget.h"
+#include "qgstiledscenelayer3drendererwidget.h"
 #include "qgs3dapputils.h"
 #include "qgs3doptions.h"
 #include "qgsmapviewsmanager.h"
@@ -450,6 +452,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "pointcloud/qgspointcloudlayerstylewidget.h"
 #include "pointcloud/qgspointcloudlayersaveasdialog.h"
 #include "pointcloud/qgspointcloudlayerexporter.h"
+
+#include "tiledscene/qgstiledscenelayerstylewidget.h"
+#include "tiledscene/qgstiledsceneelevationpropertieswidget.h"
 
 #include "project/qgsprojectelevationsettingswidget.h"
 #include "sensor/qgsprojectsensorsettingswidget.h"
@@ -1293,14 +1298,17 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   registerMapLayerPropertiesFactory( new QgsVectorLayerDigitizingPropertiesFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsPointCloudRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsTiledSceneRendererWidgetFactory( this ) );
 #ifdef HAVE_3D
   registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsTiledSceneLayer3DRendererWidgetFactory( this ) );
 #endif
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsRasterElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsVectorElevationPropertiesWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsTiledSceneElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsMeshElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsLayerTreeGroupPropertiesWidgetFactory( this ) );
@@ -13288,12 +13296,6 @@ void QgisApp::new3DMapCanvas()
     return;
   }
 
-  if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
-  {
-    QMessageBox::warning( this, tr( "New 3D Map View" ), tr( "3D view currently does not support unprojected coordinate reference systems (CRS).\nPlease switch project's CRS to a projected CRS." ) );
-    return;
-  }
-
   int i = 1;
   const QList< QString > usedCanvasNames = QgsProject::instance()->viewsManager()->get3DViewsNames();
   QString name = tr( "3D Map %1" ).arg( i );
@@ -13302,15 +13304,24 @@ void QgisApp::new3DMapCanvas()
     name = tr( "3D Map %1" ).arg( ++i );
   }
 
-  Qgs3DMapCanvasWidget *canvasWidget = createNew3DMapCanvasDock( name, true );
+  Qgs3DMapCanvasWidget *canvasWidget = createNew3DMapCanvasDock( name, false );
   if ( canvasWidget )
   {
     QgsProject *prj = QgsProject::instance();
-    QgsRectangle fullExtent = mMapCanvas->projectExtent();
     QgsSettings settings;
 
     Qgs3DMapSettings *map = new Qgs3DMapSettings;
-    map->setCrs( prj->crs() );
+    if ( !prj->crs().isGeographic() )
+    {
+      map->setCrs( prj->crs() );
+    }
+    else
+    {
+      map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+    }
+
+    const QgsReferencedRectangle projectExtent = prj->viewSettings()->fullExtent();
+    const QgsRectangle fullExtent = Qgs3DUtils::tryReprojectExtent2D( projectExtent, projectExtent.crs(), map->crs(), prj->transformContext() );
     map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
@@ -13343,9 +13354,9 @@ void QgisApp::new3DMapCanvas()
 
     canvasWidget->setMapSettings( map );
 
-    QgsRectangle extent = mMapCanvas->extent();
-    float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
-    canvasWidget->mapCanvas3D()->setViewFromTop( mMapCanvas->extent().center(), dist, static_cast< float >( mMapCanvas->rotation() ) );
+    const QgsRectangle canvasExtent = Qgs3DUtils::tryReprojectExtent2D( mMapCanvas->extent(),  mMapCanvas->mapSettings().destinationCrs(), map->crs(), prj->transformContext() );
+    float dist = static_cast< float >( std::max( canvasExtent.width(), canvasExtent.height() ) );
+    canvasWidget->mapCanvas3D()->setViewFromTop( canvasExtent.center(), dist, static_cast< float >( mMapCanvas->rotation() ) );
 
     const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( QStringLiteral( "map3d/axisInversion" ), Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
     if ( canvasWidget->mapCanvas3D()->cameraController() )
@@ -16117,6 +16128,7 @@ void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomDocument
   QDomElement elemCamera = widget->mapCanvas3D()->cameraController()->writeXml( doc );
   elem3DMap.appendChild( elemCamera );
   QDomElement elemAnimation = widget->animationWidget()->animation().writeXml( doc );
+  elemAnimation.setAttribute( QStringLiteral( "widget-visible" ), !widget->animationWidget()->isHidden() ? 1 : 0 );
   elem3DMap.appendChild( elemAnimation );
 
   widget->dockableWidgetHelper()->writeXml( elem3DMap );
@@ -16159,6 +16171,11 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
     Qgs3DAnimationSettings animationSettings;
     animationSettings.readXml( elemAnimation );
     widget->animationWidget()->setAnimation( animationSettings );
+    bool animationWidgetIsVisible = elemAnimation.attribute( QStringLiteral( "widget-visible" ), QStringLiteral( "0" ) ).toInt();
+    if ( animationWidgetIsVisible )
+    {
+      widget->showAnimationWidget();
+    }
   }
 
   widget->dockableWidgetHelper()->readXml( elem3DMap );

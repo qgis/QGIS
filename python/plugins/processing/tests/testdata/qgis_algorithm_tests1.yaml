@@ -1531,7 +1531,10 @@ tests:
             precision: 7
 
   - algorithm: native:offsetline
-    name: Offset line negative
+    name: Offset line negative (GEOS < 3.11)
+    condition:
+      geos:
+        less_than: 31100
     params:
       DISTANCE: -1.0
       INPUT:
@@ -1543,6 +1546,27 @@ tests:
     results:
       OUTPUT:
         name: expected/line_offset_round_negative.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: native:offsetline
+    name: Offset line negative (GEOS >= 3.11)
+    condition:
+      geos:
+        at_least: 31100
+    params:
+      DISTANCE: -1.0
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITER_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT:
+        name: expected/geos311/line_offset_round_negative.gml
         type: vector
         compare:
           geometry:
@@ -1620,7 +1644,10 @@ tests:
         type: vector
 
   - algorithm: native:buffer
-    name: Buffer polygons using miter
+    name: Buffer polygons using miter (GEOS < 3.11)
+    condition:
+      geos:
+        less_than: 31100
     params:
       DISSOLVE: false
       DISTANCE: 1.0
@@ -1634,6 +1661,29 @@ tests:
     results:
       OUTPUT:
         name: expected/buffer_polys_miter.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+
+  - algorithm: native:buffer
+    name: Buffer polygons using miter (GEOS >= 3.11)
+    condition:
+      geos:
+        at_least: 31100
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: '0'
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN_STYLE: '1'
+      MITER_LIMIT: 2
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/geos311/buffer_polys_miter.gml
         type: vector
         compare:
           geometry:

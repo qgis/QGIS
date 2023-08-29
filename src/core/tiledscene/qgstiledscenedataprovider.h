@@ -23,7 +23,7 @@
 #include "qgsdataprovider.h"
 #include "qgis.h"
 
-class QgsAbstractTiledSceneBoundingVolume;
+class QgsTiledSceneBoundingVolume;
 class QgsTiledSceneIndex;
 
 /**
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsTiledSceneDataProvider: public QgsDataProvider
      *
      * \warning Coordinates in the returned volume are in the sceneCrs() reference system, not the QgsDataProvider::crs() system.
      */
-    virtual const QgsAbstractTiledSceneBoundingVolume *boundingVolume() const = 0;
+    virtual const QgsTiledSceneBoundingVolume &boundingVolume() const = 0;
 
     /**
      * Returns the provider's tile index.
@@ -101,6 +101,11 @@ class CORE_EXPORT QgsTiledSceneDataProvider: public QgsDataProvider
      * threads.
      */
     virtual QgsTiledSceneIndex index() const = 0;
+
+    /**
+     * Returns the provider's z range, or an infinite range if this is not known.
+     */
+    virtual QgsDoubleRange zRange() const;
 
 };
 

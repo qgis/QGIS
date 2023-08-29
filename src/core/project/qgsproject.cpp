@@ -527,9 +527,8 @@ void QgsProject::setFlags( Qgis::ProjectFlags flags )
     for ( auto layerIt = layers.constBegin(); layerIt != layers.constEnd(); ++layerIt )
     {
       if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() ) )
-      {
-        vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, newEvaluateDefaultValues );
-      }
+        if ( vl->dataProvider() )
+          vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, newEvaluateDefaultValues );
     }
   }
 
@@ -1023,6 +1022,8 @@ void QgsProject::clear()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   ScopedIntIncrementor snapSingleBlocker( &mBlockSnappingUpdates );
+
+  emit aboutToBeCleared();
 
   mProjectScope.reset();
   mFile.setFileName( QString() );
@@ -2667,6 +2668,14 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
   {
     if ( ! layer->isValid() )
       return;
+
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
+    {
+      vlayer->setReadExtentFromXml( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics );
+      if ( vlayer->dataProvider() )
+        vlayer->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues,
+            ( bool )( mFlags & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide ) );
+    }
 
     connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
 

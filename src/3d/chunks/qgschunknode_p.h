@@ -47,31 +47,54 @@ class QgsChunkQueueJobFactory;
 /**
  * Helper class to store integer coordinates of a chunk node.
  *
+ * IDs can be stored using quad or octree depth, x, y and z, where:
+ *
  * - "d" is the depth of the tree
  * - when used with a quadtree, "x" and "y" are the coordinates within the depth level of the tree ("z" coordinate is always -1)
  * - when used with an octree, "x", "y" and "z" are the coordinates within the depth level of the tree
+ *
+ * Or alternatively, IDs can be associated with a direct integer ID if a unique
+ * ID is already available by the loader.
  */
 struct QgsChunkNodeId
 {
-  //! Constructs node ID
+
+  /**
+   * Constructs node ID from depth, x, y and z.
+   */
   QgsChunkNodeId( int _d = -1, int _x = -1, int _y = -1, int _z = -1 )
     : d( _d ), x( _x ), y( _y ), z( _z ) {}
 
-  int d, x, y, z;
+  /**
+   * Constructs node ID from a unique integer ID.
+   *
+   * Useful for nodes which are not structured in a quadtree or octree arrangement.
+   */
+  QgsChunkNodeId( long long id )
+    : uniqueId( id )
+  {}
+
+  int d = 0;
+  int x = 0;
+  int y = 0;
+  int z = 0;
+  long long uniqueId = -1;
 
   //! Returns textual representation of the node ID in form of "Z/X/Y"
   QString text() const
   {
-    if ( z == -1 )
+    if ( uniqueId != -1 )
+      return QString::number( uniqueId );
+    else if ( z == -1 )
       return QStringLiteral( "%1/%2/%3" ).arg( d ).arg( x ).arg( y );   // quadtree
     else
       return QStringLiteral( "%1/%2/%3/%4" ).arg( d ).arg( x ).arg( y ).arg( z );   // octree
   }
 
-  // TODO c++20 - replace with = default
   bool operator==( const QgsChunkNodeId &other ) const
   {
-    return d == other.d && x == other.x && y == other.y && z == other.z;
+    return ( uniqueId == -1 && other.uniqueId == -1 && d == other.d && x == other.x && y == other.y && z == other.z )
+           || ( uniqueId != -1 && uniqueId == other.uniqueId );
   }
 
   bool operator!=( const QgsChunkNodeId &other ) const
@@ -141,9 +164,9 @@ class QgsChunkNode
     //! Returns pointer to the parent node. Parent is NULLPTR in the root node
     QgsChunkNode *parent() const { return mParent; }
     //! Returns number of children of the node (returns -1 if the node has not yet been populated with populateChildren())
-    int childCount() const { return mChildCount; }
+    int childCount() const { return mChildren.count(); }
     //! Returns array of the four children. Children may be NULLPTR if they were not created yet
-    QgsChunkNode *const *children() const { return mChildren; }
+    QgsChunkNode *const *children() const { return mChildren.constData(); }
     //! Returns current state of the node
     State state() const { return mState; }
 
@@ -160,6 +183,9 @@ class QgsChunkNode
 
     //! Returns TRUE if all child chunks are available and thus this node could be swapped to the child nodes
     bool allChildChunksResident( QTime currentTime ) const;
+
+    //! Returns whether the child nodes have been populated already
+    bool hasChildrenPopulated() const { return mChildrenPopulated; }
 
     //! Sets child nodes of this node. Takes ownership of all objects. Must be only called once.
     void populateChildren( const QVector<QgsChunkNode *> &children );
@@ -231,8 +257,8 @@ class QgsChunkNode
     QgsChunkNodeId mNodeId;  //!< Chunk coordinates (for use with a tiling scheme)
 
     QgsChunkNode *mParent;        //!< TODO: should be shared pointer
-    QgsChunkNode *mChildren[8];   //!< TODO: should be weak pointers. May be nullptr if not created yet or removed already
-    int mChildCount = -1;         //! Number of children (-1 == not yet populated)
+    QVector<QgsChunkNode *> mChildren;   //!< Child nodes of this node. Initially children are not be populated
+    bool mChildrenPopulated = false;     //!< Whether the child nodes (if any) have been already created
 
     State mState;  //!< State of the node
 

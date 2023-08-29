@@ -134,6 +134,11 @@ class GUI_EXPORT QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::
      */
     void setCropMargins( int topMargin, int rightMargin, int bottomMargin, int leftMargin );
 
+    //! Sets whether to open the pdf after exporting it
+    void setOpenAfterExporting( bool enabled );
+    //! Returns whether the pdf should be opened after exporting it
+    bool openAfterExporting() const;
+
   private slots:
 
     void mWidthSpinBox_valueChanged( int value );

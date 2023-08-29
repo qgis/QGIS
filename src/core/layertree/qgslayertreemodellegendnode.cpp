@@ -1262,7 +1262,7 @@ QgsWmsLegendNode::QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *paren
 
 QgsWmsLegendNode::~QgsWmsLegendNode() = default;
 
-QImage QgsWmsLegendNode::getLegendGraphic() const
+QImage QgsWmsLegendNode::getLegendGraphic( bool synchronous ) const
 {
   if ( ! mValid && ! mFetcher )
   {
@@ -1290,6 +1290,13 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
         connect( mFetcher.get(), &QgsImageFetcher::error, this, &QgsWmsLegendNode::getLegendGraphicErrored );
         connect( mFetcher.get(), &QgsImageFetcher::progress, this, &QgsWmsLegendNode::getLegendGraphicProgress );
         mFetcher->start();
+        if ( synchronous )
+        {
+          QEventLoop loop;
+          // The slots getLegendGraphicFinished and getLegendGraphicErrored will destroy the fetcher
+          connect( mFetcher.get(), &QObject::destroyed, &loop, &QEventLoop::quit );
+          loop.exec();
+        }
       }
     }
     else
@@ -1322,7 +1329,7 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
 {
   Q_UNUSED( itemHeight )
 
-  const QImage image = getLegendGraphic();
+  const QImage image = getLegendGraphic( settings.synchronousLegendRequests() );
 
   double px2mm = 1000. / image.dotsPerMeterX();
   double mmWidth = image.width() * px2mm;

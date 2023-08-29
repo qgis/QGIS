@@ -1366,6 +1366,8 @@ Qgis::CrsType QgsCoordinateReferenceSystem::type() const
 #if PROJ_VERSION_MAJOR>9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR>=2)
     case PJ_TYPE_DERIVED_PROJECTED_CRS:
       return Qgis::CrsType::DerivedProjected;
+    case PJ_TYPE_COORDINATE_METADATA:
+      return Qgis::CrsType::Other;
 #endif
   }
   return Qgis::CrsType::Unknown;
@@ -2678,8 +2680,9 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         case PJ_TYPE_DERIVED_PROJECTED_CRS:
           srsTypeString = qgsEnumValueToKey( Qgis::CrsType::DerivedProjected );
           break;
+        case PJ_TYPE_COORDINATE_METADATA:
+          continue;
 #endif
-
         case PJ_TYPE_OTHER_CRS:
           srsTypeString = qgsEnumValueToKey( Qgis::CrsType::Other );
           break;
