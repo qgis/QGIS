@@ -58,7 +58,8 @@ class QgsVectorTileDataProviderSharedData
 
     QCache< QgsTileXYZ, QgsVectorTileRawData > mTileCache;
 
-    QReadWriteLock mMutex; //!< Access to all data members is guarded by the mutex
+    // cannot use a read/write lock here -- see https://bugreports.qt.io/browse/QTBUG-19794
+    QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
 };
 
