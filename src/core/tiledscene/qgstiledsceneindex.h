@@ -23,7 +23,7 @@
 #include "qgis.h"
 
 #include <QCache>
-#include <QReadWriteLock>
+#include <QMutex>
 
 class QgsTiledSceneTile;
 class QgsFeedback;
@@ -125,7 +125,9 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
 
   private:
 
-    mutable QReadWriteLock mCacheLock;
+    // we have to use a mutex to protect a QCache, not a read/write lock
+    // see https://bugreports.qt.io/browse/QTBUG-19794
+    mutable QMutex mCacheMutex;
     QCache< QString, QByteArray > mContentCache;
 
 };

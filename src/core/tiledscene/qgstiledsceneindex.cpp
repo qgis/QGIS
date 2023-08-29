@@ -18,7 +18,6 @@
 #include "qgstiledsceneindex.h"
 #include "qgsfeedback.h"
 #include "qgstiledscenetile.h"
-#include "qgsreadwritelocker.h"
 
 //
 // QgsAbstractTiledSceneIndex
@@ -33,7 +32,7 @@ QgsAbstractTiledSceneIndex::~QgsAbstractTiledSceneIndex() = default;
 
 QByteArray QgsAbstractTiledSceneIndex::retrieveContent( const QString &uri, QgsFeedback *feedback )
 {
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
+  QMutexLocker locker( &mCacheMutex );
   if ( QByteArray *cachedData = mContentCache.object( uri ) )
   {
     return *cachedData;
@@ -44,7 +43,7 @@ QByteArray QgsAbstractTiledSceneIndex::retrieveContent( const QString &uri, QgsF
   if ( feedback && feedback->isCanceled() )
     return QByteArray();
 
-  locker.changeMode( QgsReadWriteLocker::Write );
+  locker.relock();
   mContentCache.insert( uri, new QByteArray( res ) );
   return res;
 }
