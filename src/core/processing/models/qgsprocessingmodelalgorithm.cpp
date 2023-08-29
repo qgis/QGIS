@@ -2118,6 +2118,10 @@ void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QStri
           const QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> availableVariables = variablesForChildAlgorithm( childId );
           for ( auto childVarIt = availableVariables.constBegin(); childVarIt != availableVariables.constEnd(); ++childVarIt )
           {
+            // we're only looking here for variables coming from other child algorithm outputs
+            if ( childVarIt->source.source() != Qgis::ProcessingModelChildParameterSource::ChildOutput )
+              continue;
+
             if ( !vars.contains( childVarIt.key() ) || depends.contains( childVarIt->source.outputChildId() ) )
               continue;
 

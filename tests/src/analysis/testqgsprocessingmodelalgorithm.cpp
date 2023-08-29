@@ -2400,9 +2400,18 @@ void TestQgsProcessingModelAlgorithm::modelChildOrderWithVariables()
   // dependencies
   QgsProcessingModelAlgorithm model( "test", "testGroup" );
 
+  const QgsProcessingModelParameter stringParam( "a_parameter" );
+  model.addModelParameter( new QgsProcessingParameterString( "a_parameter" ), stringParam );
+
   QgsProcessingModelChildAlgorithm c1;
   c1.setChildId( QStringLiteral( "c1" ) );
   c1.setAlgorithmId( QStringLiteral( "native:stringconcatenation" ) );
+  // a parameter source from an expression which isn't coming from another child algorithm
+  c1.setParameterSources(
+  {
+    {QStringLiteral( "INPUT_2" ), {QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@a_parameter || 'x'" ) )} }
+  }
+  );
   model.addChildAlgorithm( c1 );
 
   QgsProcessingModelChildAlgorithm c2;
@@ -2417,8 +2426,9 @@ void TestQgsProcessingModelAlgorithm::modelChildOrderWithVariables()
 
   QgsProcessingContext context;
   QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = model.variablesForChildAlgorithm( QStringLiteral( "c2" ), &context );
-  QCOMPARE( variables.size(), 1 );
-  QCOMPARE( variables.begin().key(), QStringLiteral( "c1_CONCATENATION" ) );
+  QCOMPARE( variables.size(), 2 );
+  QCOMPARE( variables.firstKey(), QStringLiteral( "a_parameter" ) );
+  QCOMPARE( variables.lastKey(), QStringLiteral( "c1_CONCATENATION" ) );
 
   QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).isEmpty() );
   QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).size(), 1 );
@@ -2429,10 +2439,8 @@ void TestQgsProcessingModelAlgorithm::modelChildOrderWithVariables()
   c3.setAlgorithmId( QStringLiteral( "native:stringconcatenation" ) );
 
   // make c1 dependent on c3's output via a variable
-  model.childAlgorithm( QStringLiteral( "c1" ) ).setParameterSources(
-  {
-    {QStringLiteral( "INPUT_1" ), {QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c3_CONCATENATION || 'x'" ) )} }
-  }
+  model.childAlgorithm( QStringLiteral( "c1" ) ).addParameterSources(
+    QStringLiteral( "INPUT_1" ), QList< QgsProcessingModelChildParameterSource > {QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c3_CONCATENATION || 'x'" ) )}
   );
   model.addChildAlgorithm( c3 );
 
