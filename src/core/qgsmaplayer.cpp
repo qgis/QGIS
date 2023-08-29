@@ -1614,6 +1614,7 @@ QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::Propert
     const QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
     if ( !myDirInfo.isWritable() )
     {
+      resultFlag = false;
       return tr( "The directory containing your dataset needs to be writable!" );
     }
 
@@ -1939,6 +1940,7 @@ QString QgsMapLayer::saveSldStyleV2( bool &resultFlag, const QgsSldExportContext
     const QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
     if ( !myDirInfo.isWritable() )
     {
+      resultFlag = false;
       return tr( "The directory containing your dataset needs to be writable!" );
     }
 
