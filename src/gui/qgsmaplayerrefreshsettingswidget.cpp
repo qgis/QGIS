@@ -37,7 +37,7 @@ void QgsMapLayerRefreshSettingsWidget::setLayer( QgsMapLayer *layer )
 
 void QgsMapLayerRefreshSettingsWidget::saveToLayer()
 {
-  mLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
+  mLayer->setAutoRefreshInterval( static_cast< int >( mRefreshLayerIntervalSpinBox->value() * 1000.0 ) );
   if ( !mEnabledGroupBox->isChecked() )
   {
     mLayer->setAutoRefreshMode( Qgis::AutoRefreshMode::Disabled );
