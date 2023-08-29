@@ -244,16 +244,14 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsPointCloudAttributeCollection attributes() const;
 
     /**
-     * Returns node data block
+     * Returns node data block.
      *
      * e.g. positions (needs to be scaled and offset applied to get coordinates) or
-     * classification, intensity or custom attributes
-     *
-     * It is caller responsibility to free the block.
+     * classification, intensity or custom attributes.
      *
      * May return nullptr in case the node is not present or any other problem with loading
      */
-    virtual QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) = 0;
+    virtual std::unique_ptr< QgsPointCloudBlock > nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) = 0;
 
     /**
      * Returns a handle responsible for loading a node data block

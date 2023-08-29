@@ -94,7 +94,7 @@ void QgsRemoteCopcPointCloudIndex::load( const QString &url )
   }
 }
 
-QgsPointCloudBlock *QgsRemoteCopcPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsRemoteCopcPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
   std::unique_ptr<QgsPointCloudBlockRequest> blockRequest( asyncNodeData( n, request ) );
   if ( !blockRequest )
@@ -104,12 +104,14 @@ QgsPointCloudBlock *QgsRemoteCopcPointCloudIndex::nodeData( const IndexedPointCl
   connect( blockRequest.get(), &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
   loop.exec();
 
-  if ( !blockRequest->block() )
+  std::unique_ptr<QgsPointCloudBlock> block = blockRequest->takeBlock();
+
+  if ( !block )
   {
     QgsDebugError( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
   }
 
-  return blockRequest->block();
+  return block;
 }
 
 QgsPointCloudBlockRequest *QgsRemoteCopcPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )

@@ -50,10 +50,9 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     virtual ~QgsPointCloudBlockRequest() = 0;
 
     /**
-     * Returns the requested block. if the returned block is nullptr, that means the data request failed
-     * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly
+     * Returns the requested block. if the returned block is nullptr, that means the data request failed.
      */
-    QgsPointCloudBlock *block();
+    std::unique_ptr<QgsPointCloudBlock> takeBlock();
 
     //! Returns the error message string of the request
     QString errorStr();
@@ -68,7 +67,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudAttributeCollection mRequestedAttributes;
     std::unique_ptr<QgsTileDownloadManagerReply> mTileDownloadManagerReply = nullptr;
-    QgsPointCloudBlock *mBlock = nullptr;
+    std::unique_ptr<QgsPointCloudBlock> mBlock;
     QString mErrorStr;
     QgsVector3D mScale, mOffset;
     QgsPointCloudExpression mFilterExpression;
