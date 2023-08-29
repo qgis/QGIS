@@ -862,6 +862,7 @@ bool QgsCesiumTilesDataProvider::init()
   {
     QUrl url( uri );
     const QString assetId = QUrlQuery( url ).queryItemValue( QStringLiteral( "assetId" ) );
+    const QString accessToken = QUrlQuery( url ).queryItemValue( QStringLiteral( "accessToken" ) );
 
     const QString CESIUM_ION_URL = QStringLiteral( "https://api.cesium.com/" );
 
@@ -871,9 +872,12 @@ bool QgsCesiumTilesDataProvider::init()
       QNetworkRequest request = QNetworkRequest( assetInfoEndpoint );
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
       mHeaders.updateNetworkRequest( request );
+      if ( !accessToken.isEmpty() )
+        request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
 
       QgsBlockingNetworkRequest networkRequest;
-      networkRequest.setAuthCfg( mAuthCfg );
+      if ( accessToken.isEmpty() )
+        networkRequest.setAuthCfg( mAuthCfg );
 
       switch ( networkRequest.get( request ) )
       {
@@ -910,9 +914,12 @@ bool QgsCesiumTilesDataProvider::init()
       QNetworkRequest request = QNetworkRequest( tileAccessEndpoint );
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
       mHeaders.updateNetworkRequest( request );
+      if ( !accessToken.isEmpty() )
+        request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
 
       QgsBlockingNetworkRequest networkRequest;
-      networkRequest.setAuthCfg( mAuthCfg );
+      if ( accessToken.isEmpty() )
+        networkRequest.setAuthCfg( mAuthCfg );
 
       switch ( networkRequest.get( request ) )
       {
