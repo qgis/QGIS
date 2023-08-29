@@ -74,7 +74,7 @@ void QgsSaveFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
   param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( param.release() );
 
-  std::unique_ptr< QgsProcessingParameterEnum > paramEnum = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "ACTION_ON_EXISTING_FILE" ), QObject::tr( "Action to take on pre-existing file" ), QStringList() << QObject::tr( "Create or overwrite file" ) << QObject::tr( "Create or overwrite layer" ) << QObject::tr( "Append features to existing layer, but do not create new fields" ) << QObject::tr( "Append features to existing layer, and create new fields if needed" ), false, 0, true );
+  std::unique_ptr< QgsProcessingParameterEnum > paramEnum = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "ACTION_ON_EXISTING_FILE" ), QObject::tr( "Action to take on pre-existing file" ), QStringList() << QObject::tr( "Create or overwrite file" ) << QObject::tr( "Create or overwrite layer" ) << QObject::tr( "Append features to existing layer, but do not create new fields" ) << QObject::tr( "Append features to existing layer, and create new fields if needed" ), false, 0 );
   paramEnum->setFlags( paramEnum->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( paramEnum.release() );
 
@@ -161,8 +161,8 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
-  QString filePath = destination;
-  layerName.clear(); // value of final layer name will be extracted from the destination string
+  finalFileName = destination;
+  finalLayerName.clear(); // value of final layer name will be extracted from the destination string
   const int separatorIndex = destination.indexOf( '|' );
   if ( separatorIndex > -1 )
   {
@@ -170,14 +170,14 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
     const QRegularExpressionMatch match = layerNameRx.match( destination );
     if ( match.hasMatch() )
     {
-      layerName = match.captured( 1 );
+      finalLayerName = match.captured( 1 );
     }
-    filePath = destination.mid( 0, separatorIndex );
+    finalFileName = destination.mid( 0, separatorIndex );
   }
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), destination );
-  outputs.insert( QStringLiteral( "FILE_PATH" ), filePath );
+  outputs.insert( QStringLiteral( "FILE_PATH" ), finalFileName );
   outputs.insert( QStringLiteral( "LAYER_NAME" ), finalLayerName );
   return outputs;
 }
