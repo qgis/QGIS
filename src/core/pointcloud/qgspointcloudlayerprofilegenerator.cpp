@@ -648,7 +648,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPo
       if ( blockRequests.isEmpty() )
         loop.exit();
 
-      std::unique_ptr<QgsPointCloudBlock> block( blockRequest->block() );
+      std::unique_ptr<QgsPointCloudBlock> block = blockRequest->takeBlock();
 
       blockRequest->deleteLater();
 
@@ -675,7 +675,8 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPo
   // was called for all blocks, so let's clean up anything that is left
   for ( QgsPointCloudBlockRequest *blockRequest : std::as_const( blockRequests ) )
   {
-    delete blockRequest->block();
+    std::unique_ptr<QgsPointCloudBlock> block = blockRequest->takeBlock();
+    block.reset();
     blockRequest->deleteLater();
   }
 

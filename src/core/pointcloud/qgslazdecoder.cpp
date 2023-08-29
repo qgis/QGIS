@@ -462,7 +462,7 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
 }
 
 template<typename FileType>
-QgsPointCloudBlock *decompressLaz_( FileType &file, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   if ( ! file.good() )
     return nullptr;
@@ -516,7 +516,7 @@ QgsPointCloudBlock *decompressLaz_( FileType &file, const QgsPointCloudAttribute
     {
       // skip processing if the expression cannot be prepared
       block->setPointCount( 0 );
-      return block.release();
+      return block;
     }
 
     int xAttributeOffset, yAttributeOffset;
@@ -571,7 +571,7 @@ QgsPointCloudBlock *decompressLaz_( FileType &file, const QgsPointCloudAttribute
     QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t.elapsed() / 1000. ), 2 );
 #endif
     block->setPointCount( count - skippedPoints );
-    return block.release();
+    return block;
   }
   catch ( std::exception &e )
   {
@@ -580,7 +580,7 @@ QgsPointCloudBlock *decompressLaz_( FileType &file, const QgsPointCloudAttribute
   }
 }
 
-QgsPointCloudBlock *QgsLazDecoder::decompressLaz( const QString &filename,
+std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressLaz( const QString &filename,
     const QgsPointCloudAttributeCollection &requestedAttributes,
     QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
@@ -589,7 +589,7 @@ QgsPointCloudBlock *QgsLazDecoder::decompressLaz( const QString &filename,
   return decompressLaz_<std::ifstream>( file, requestedAttributes, filterExpression, filterRect );
 }
 
-QgsPointCloudBlock *QgsLazDecoder::decompressLaz( const QByteArray &byteArrayData,
+std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressLaz( const QByteArray &byteArrayData,
     const QgsPointCloudAttributeCollection &requestedAttributes,
     QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
@@ -597,7 +597,7 @@ QgsPointCloudBlock *QgsLazDecoder::decompressLaz( const QByteArray &byteArrayDat
   return decompressLaz_<std::istringstream>( file, requestedAttributes, filterExpression, filterRect );
 }
 
-QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   // COPC only supports point formats 6, 7 and 8
   int lasPointFormat = lazInfo.pointFormat();
@@ -631,7 +631,7 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLa
   {
     // skip processing if the expression cannot be prepared
     block->setPointCount( 0 );
-    return block.release();
+    return block;
   }
 
   int xAttributeOffset, yAttributeOffset;
@@ -680,7 +680,7 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLa
   }
 
   block->setPointCount( pointCount - skippedPoints );
-  return block.release();
+  return block;
 }
 
 #if defined(_MSC_VER)

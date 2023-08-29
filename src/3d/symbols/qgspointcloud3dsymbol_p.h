@@ -73,7 +73,7 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
 #else
     virtual Qt3DCore::QGeometry *makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride ) = 0;
 #endif
-    QgsPointCloudBlock *pointCloudBlock( QgsPointCloudIndex *pc, const IndexedPointCloudNode &node, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context );
+    std::unique_ptr<QgsPointCloudBlock> pointCloudBlock( QgsPointCloudIndex *pc, const IndexedPointCloudNode &node, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context );
 
     // outputs
     PointData outNormal;  //!< Features that are not selected

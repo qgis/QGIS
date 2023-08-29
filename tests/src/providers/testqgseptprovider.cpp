@@ -685,7 +685,7 @@ void TestQgsEptProvider::testPointCloudRequest()
   int count = 0;
   for ( IndexedPointCloudNode node : nodes )
   {
-    auto block = index->nodeData( node, request );
+    std::unique_ptr< QgsPointCloudBlock> block( index->nodeData( node, request ) );
     count += block->pointCount();
   }
   QCOMPARE( count, layer->pointCount() );
@@ -696,7 +696,7 @@ void TestQgsEptProvider::testPointCloudRequest()
   count = 0;
   for ( IndexedPointCloudNode node : nodes )
   {
-    auto block = index->nodeData( node, request );
+    std::unique_ptr< QgsPointCloudBlock> block( index->nodeData( node, request ) );
     count += block->pointCount();
   }
   QCOMPARE( count, 217600 );
@@ -707,7 +707,7 @@ void TestQgsEptProvider::testPointCloudRequest()
   count = 0;
   for ( IndexedPointCloudNode node : nodes )
   {
-    auto block = index->nodeData( node, request );
+    std::unique_ptr< QgsPointCloudBlock> block( index->nodeData( node, request ) );
     count += block->pointCount();
   }
   QCOMPARE( count, 0 );
@@ -718,7 +718,7 @@ void TestQgsEptProvider::testPointCloudRequest()
   request.setFilterRect( extent );
   for ( IndexedPointCloudNode node : nodes )
   {
-    auto block = index->nodeData( node, request );
+    std::unique_ptr< QgsPointCloudBlock> block( index->nodeData( node, request ) );
     count += block->pointCount();
   }
   QCOMPARE( count, layer->pointCount() );

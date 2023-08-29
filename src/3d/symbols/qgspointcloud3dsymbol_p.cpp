@@ -466,9 +466,9 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
   filterTriangles( triangleIndexes, context, bbox );
 }
 
-QgsPointCloudBlock *QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context )
+std::unique_ptr<QgsPointCloudBlock> QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context )
 {
-  QgsPointCloudBlock *block = nullptr;
+  std::unique_ptr<QgsPointCloudBlock> block;
   if ( pc->accessType() == QgsPointCloudIndex::AccessType::Local )
   {
     block = pc->nodeData( n, request );
@@ -487,7 +487,7 @@ QgsPointCloudBlock *QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloud
     loop.exec();
 
     if ( !loopAborted )
-      block = req->block();
+      block = req->takeBlock();
   }
   return block;
 }
