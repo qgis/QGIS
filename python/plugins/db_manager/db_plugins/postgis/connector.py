@@ -349,7 +349,7 @@ class PostGisDBConnector(DBConnector):
         return res
 
     def getPsqlVersion(self):
-        regex = "^PostgreSQL\s([0-9]{1,2})"
+        regex = r"^PostgreSQL\s([0-9]{1,2})"
         match = re.match(regex, self.getInfo()[0])
         if match:
             return int(match.group(1))
