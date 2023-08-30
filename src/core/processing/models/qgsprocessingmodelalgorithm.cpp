@@ -2126,7 +2126,7 @@ bool QgsProcessingModelAlgorithm::validateChildAlgorithm( const QString &childId
         if ( def->isDestination() )
           continue;
 
-        if ( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) )
+        if ( !def->checkValueIsAcceptable( QVariant() ) )
         {
           res = false;
           issues <<  QObject::tr( "Parameter <i>%1</i> is mandatory" ).arg( def->name() );
