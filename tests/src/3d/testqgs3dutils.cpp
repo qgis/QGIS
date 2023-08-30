@@ -27,11 +27,11 @@
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
  */
-class TestQgs3DUtils : public QObject
+class TestQgs3DUtils : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgs3DUtils() = default;
+    TestQgs3DUtils() : QgsTest( QStringLiteral( "3D Utils" ) ) { }
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -47,11 +47,14 @@ class TestQgs3DUtils : public QObject
 //runs before all tests
 void TestQgs3DUtils::initTestCase()
 {
+  QgsApplication::init();
+  QgsApplication::initQgis();
 }
 
 //runs after all tests
 void TestQgs3DUtils::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
 }
 
 void TestQgs3DUtils::testTransforms()

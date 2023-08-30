@@ -20,11 +20,11 @@
  * \ingroup UnitTests
  * This is a unit test for the QgsAABB class
  */
-class TestQgsAABB : public QObject
+class TestQgsAABB : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsAABB() = default;
+    TestQgsAABB() : QgsTest( QStringLiteral( "QgsAABB tests" ) ) {};
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -43,6 +43,7 @@ void TestQgsAABB::initTestCase()
 //runs after all tests
 void TestQgsAABB::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
 }
 
 void TestQgsAABB::testIsEmpty()
