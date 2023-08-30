@@ -166,7 +166,6 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
   const QString scanZipSetting = settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString();
   QStringList zipFileList;
   const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( filePath );
-  QgsZipItem *zipItem = nullptr;
   bool populated = false;
 
   QgsDebugMsgLevel( QStringLiteral( "path = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( path, name, scanZipSetting, vsiPrefix ), 3 );
@@ -179,39 +178,35 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
   if ( !QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) )
     return nullptr;
 
-  zipItem = new QgsZipItem( parent, name, filePath, path );
+  std::unique_ptr< QgsZipItem > zipItem = std::make_unique< QgsZipItem >( parent, name, filePath, path );
+  // force populate zipItem if it has less than 10 items and is not a .tgz or .tar.gz file (slow loading)
+  // for other items populating will be delayed until item is opened
+  // this might be polluting the tree with empty items but is necessary for performance reasons
+  // could also accept all files smaller than a certain size and add options for file count and/or size
 
-  if ( zipItem )
+  // first get list of files inside .zip or .tar files
+  if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) ||
+       path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) )
   {
-    // force populate zipItem if it has less than 10 items and is not a .tgz or .tar.gz file (slow loading)
-    // for other items populating will be delayed until item is opened
-    // this might be polluting the tree with empty items but is necessary for performance reasons
-    // could also accept all files smaller than a certain size and add options for file count and/or size
-
-    // first get list of files inside .zip or .tar files
-    if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) ||
-         path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) )
-    {
-      zipFileList = zipItem->getZipFileList();
-    }
-    // force populate if less than 10 items
-    if ( !zipFileList.isEmpty() && zipFileList.count() <= 10 )
-    {
-      zipItem->populate( zipItem->createChildren() );
-      populated = true; // there is no QgsDataItem::isPopulated() function
-      QgsDebugMsgLevel( QStringLiteral( "Got zipItem with %1 children, path=%2, name=%3" ).arg( zipItem->rowCount() ).arg( zipItem->path(), zipItem->name() ), 3 );
-    }
-    else
-    {
-      QgsDebugMsgLevel( QStringLiteral( "Delaying populating zipItem with path=%1, name=%2" ).arg( zipItem->path(), zipItem->name() ), 3 );
-    }
+    zipFileList = zipItem->getZipFileList();
+  }
+  // force populate if less than 10 items
+  if ( !zipFileList.isEmpty() && zipFileList.count() <= 10 )
+  {
+    zipItem->populate( zipItem->createChildren() );
+    populated = true; // there is no QgsDataItem::isPopulated() function
+    QgsDebugMsgLevel( QStringLiteral( "Got zipItem with %1 children, path=%2, name=%3" ).arg( zipItem->rowCount() ).arg( zipItem->path(), zipItem->name() ), 3 );
+  }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Delaying populating zipItem with path=%1, name=%2" ).arg( zipItem->path(), zipItem->name() ), 3 );
   }
 
   // only display if has children or if is not populated
-  if ( zipItem && ( !populated || zipItem->rowCount() > 0 ) )
+  if ( !populated || zipItem->rowCount() > 0 )
   {
     QgsDebugMsgLevel( QStringLiteral( "returning zipItem" ), 3 );
-    return zipItem;
+    return zipItem.release();
   }
 
   return nullptr;
