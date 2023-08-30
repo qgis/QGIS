@@ -2008,14 +2008,12 @@ void TestQgsProcessingModelAlgorithm::modelValidate()
   m.addChildAlgorithm( alg2c1 );
 
   QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
-  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.size(), 1 );
   QCOMPARE( errors.at( 0 ), QStringLiteral( "Parameter <i>INPUT</i> is mandatory" ) );
-  QCOMPARE( errors.at( 1 ), QStringLiteral( "Parameter <i>ALL_PARTS</i> is mandatory" ) );
 
   QVERIFY( !m.validate( errors ) );
-  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.size(), 1 );
   QCOMPARE( errors.at( 0 ), QStringLiteral( "<b>centroids</b>: Parameter <i>INPUT</i> is mandatory" ) );
-  QCOMPARE( errors.at( 1 ), QStringLiteral( "<b>centroids</b>: Parameter <i>ALL_PARTS</i> is mandatory" ) );
 
   QgsProcessingModelChildParameterSource badSource;
   badSource.setSource( QgsProcessingModelChildParameterSource::StaticValue );
@@ -2023,9 +2021,8 @@ void TestQgsProcessingModelAlgorithm::modelValidate()
   m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << badSource );
 
   QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
-  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.size(), 1 );
   QCOMPARE( errors.at( 0 ), QStringLiteral( "Value for <i>INPUT</i> is not acceptable for this parameter" ) );
-  QCOMPARE( errors.at( 1 ), QStringLiteral( "Parameter <i>ALL_PARTS</i> is mandatory" ) );
 
   QgsProcessingModelChildParameterSource goodSource;
   goodSource.setSource( QgsProcessingModelChildParameterSource::Expression );
@@ -2034,6 +2031,31 @@ void TestQgsProcessingModelAlgorithm::modelValidate()
   QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
   QCOMPARE( errors.size(), 1 );
   QCOMPARE( errors.at( 0 ), QStringLiteral( "Value for <i>INPUT</i> is not acceptable for this parameter" ) );
+
+  QgsProcessingModelChildAlgorithm alg3c1;
+  alg3c1.setChildId( QStringLiteral( "cx3" ) );
+  alg3c1.setAlgorithmId( "native:stringconcatenation" );
+  alg3c1.setDescription( QStringLiteral( "string concat" ) );
+  m.addChildAlgorithm( alg3c1 );
+  QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx3" ), errors ) );
+  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Parameter <i>INPUT_1</i> is mandatory" ) );
+  QCOMPARE( errors.at( 1 ), QStringLiteral( "Parameter <i>INPUT_2</i> is mandatory" ) );
+  goodSource.setSource( QgsProcessingModelChildParameterSource::StaticValue );
+  goodSource.setStaticValue( 56 );
+  m.childAlgorithm( QStringLiteral( "cx3" ) ).addParameterSources( QStringLiteral( "INPUT_1" ), QList< QgsProcessingModelChildParameterSource >() << goodSource );
+  QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx3" ), errors ) );
+  QCOMPARE( errors.size(), 1 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Parameter <i>INPUT_2</i> is mandatory" ) );
+  badSource.setSource( QgsProcessingModelChildParameterSource::StaticValue );
+  badSource.setStaticValue( "" );
+  m.childAlgorithm( QStringLiteral( "cx3" ) ).addParameterSources( QStringLiteral( "INPUT_1" ), QList< QgsProcessingModelChildParameterSource >() << badSource );
+  QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx3" ), errors ) );
+  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Value for <i>INPUT_1</i> is not acceptable for this parameter" ) );
+  QCOMPARE( errors.at( 1 ), QStringLiteral( "Parameter <i>INPUT_2</i> is mandatory" ) );
+
+  m.removeChildAlgorithm( QStringLiteral( "cx3" ) );
 
   badSource.setSource( QgsProcessingModelChildParameterSource::ChildOutput );
   badSource.setOutputChildId( QStringLiteral( "cc" ) );
