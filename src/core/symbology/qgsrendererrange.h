@@ -70,7 +70,7 @@ class CORE_EXPORT QgsRendererRange
     bool operator<( const QgsRendererRange &other ) const;
 
     /**
-     * Returns a unique identifier for this range.
+     * Returns the unique identifier for this range.
      * \since QGIS 3.34
      */
     QString uuid() const;

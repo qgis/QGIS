@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRendererCategory
     *
     * The \a render argument indicates whether the category should initially be rendered and appear checked in the layer tree.
     *
-    * The optional \a uuid argument manuallys set the UUID key identifier for the category (since QGIS 3.34).
+    * The optional \a uuid argument manually set the UUID key identifier for the category (since QGIS 3.34).
     */
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true, const QString &uuid = QString() );
 
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsRendererCategory
     ~QgsRendererCategory();
 
     /**
-     * Returns a unique identifier for this category.
+     * Returns the unique identifier for this category.
      * \since QGIS 3.34
      */
     QString uuid() const;

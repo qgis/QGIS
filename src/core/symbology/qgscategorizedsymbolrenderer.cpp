@@ -1267,7 +1267,7 @@ bool QgsCategorizedSymbolRenderer::legendSymbolItemsCheckable() const
 
 bool QgsCategorizedSymbolRenderer::legendSymbolItemChecked( const QString &key )
 {
-  for ( auto category : std::as_const( mCategories ) )
+  for ( const QgsRendererCategory &category : std::as_const( mCategories ) )
   {
     if ( category.uuid() == key )
     {
