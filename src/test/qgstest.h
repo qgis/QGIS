@@ -176,7 +176,7 @@ class TEST_EXPORT QgsTest : public QObject
       return result;
     }
 
-    bool imageCheck( const QString &name, const QString &referenceImage, const QImage &image, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ) )
+    bool imageCheck( const QString &name, const QString &referenceImage, const QImage &image, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0 )
     {
       const QString renderedFileName = QDir::tempPath() + '/' + name + ".png";
       image.save( renderedFileName );
@@ -185,6 +185,7 @@ class TEST_EXPORT QgsTest : public QObject
       checker.setControlPathPrefix( mControlPathPrefix );
       checker.setControlName( controlName.isEmpty() ? "expected_" + referenceImage : controlName );
       checker.setRenderedImage( renderedFileName );
+      checker.setColorTolerance( colorTolerance );
       checker.setSizeTolerance( sizeTolerance.width(), sizeTolerance.height() );
 
       const bool result = checker.runTest( name, allowedMismatch );
