@@ -37,7 +37,7 @@ The ``label`` argument specifies the label used for this category in legends and
 
 The ``render`` argument indicates whether the category should initially be rendered and appear checked in the layer tree.
 
-The optional ``uuid`` argument manuallys set the UUID key identifier for the category (since QGIS 3.34).
+The optional ``uuid`` argument manually set the UUID key identifier for the category (since QGIS 3.34).
 %End
 
     QgsRendererCategory( const QgsRendererCategory &cat );
@@ -48,7 +48,7 @@ Copy constructor.
 
     QString uuid() const;
 %Docstring
-Returns a unique identifier for this category.
+Returns the unique identifier for this category.
 
 .. versionadded:: 3.34
 %End

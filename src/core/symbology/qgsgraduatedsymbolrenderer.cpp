@@ -973,7 +973,7 @@ bool QgsGraduatedSymbolRenderer::legendSymbolItemsCheckable() const
 
 bool QgsGraduatedSymbolRenderer::legendSymbolItemChecked( const QString &key )
 {
-  for ( auto &range : std::as_const( mRanges ) )
+  for ( const QgsRendererRange &range : std::as_const( mRanges ) )
   {
     if ( range.uuid() == key )
     {
