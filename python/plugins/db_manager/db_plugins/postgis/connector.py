@@ -357,7 +357,7 @@ class PostGisDBConnector(DBConnector):
         match = re.match(regex, self.getInfo()[0])
         if match:
             return int(match.group(1))
-        return
+        raise DbError(f"Unknown PostgreSQL version: {self.getInfo()[0]}")
 
     def getSpatialInfo(self):
         """ returns tuple about PostGIS support:
