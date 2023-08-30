@@ -137,6 +137,8 @@ void QgsLeastSquares::helmert( const QVector<QgsPointXY> &sourceCoordinates,
   pixelSize = std::sqrt( std::pow( gsl_vector_get( x, 0 ), 2 ) +
                          std::pow( gsl_vector_get( x, 1 ), 2 ) );
   rotation = std::atan2( gsl_vector_get( x, 1 ), gsl_vector_get( x, 0 ) );
+
+  gsl_vector_free( x );
 #endif
 }
 
