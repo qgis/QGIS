@@ -348,6 +348,13 @@ class PostGisDBConnector(DBConnector):
         self._close_cursor(c)
         return res
 
+    def getPsqlVersion(self):
+        regex = r"^PostgreSQL\s([0-9]{1,2})"
+        match = re.match(regex, self.getInfo()[0])
+        if match:
+            return int(match.group(1))
+        raise DbError(f"Unknown PostgreSQL version: {self.getInfo()[0]}")
+
     def getSpatialInfo(self):
         """ returns tuple about PostGIS support:
                 - lib version
@@ -644,7 +651,7 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         schema_where = " AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
-        version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
+        version_number = self.getPsqlVersion()
         ad_col_name = 'adsrc' if version_number < 12 else 'adbin'
 
         sql = """SELECT a.attnum AS ordinal_position,
@@ -692,7 +699,7 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         schema_where = " AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
-        version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
+        version_number = self.getPsqlVersion()
         con_col_name = 'consrc' if version_number < 12 else 'conbin'
 
         # In the query below, we exclude rows where pg_constraint.contype whose values are equal to 't'
