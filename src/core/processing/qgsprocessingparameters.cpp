@@ -3018,10 +3018,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterCrs::clone() const
   return new QgsProcessingParameterCrs( *this );
 }
 
-bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext * ) const
 {
+  QVariant input = v;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.userType() == QMetaType::type( "QgsCoordinateReferenceSystem" ) )
   {
@@ -3103,10 +3109,17 @@ QgsProcessingParameterDefinition *QgsProcessingParameterMapLayer::clone() const
   return new QgsProcessingParameterMapLayer( *this );
 }
 
-bool QgsProcessingParameterMapLayer::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+bool QgsProcessingParameterMapLayer::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
 {
+  QVariant input = v;
+
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -3307,7 +3320,7 @@ QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( 
     break;
   }
 
-  return new QgsProcessingParameterMapLayer( name, description, def, isOptional, types );
+  return new QgsProcessingParameterMapLayer( name, description, def.isEmpty() ? QVariant() : def, isOptional, types );
 }
 
 QString QgsProcessingParameterMapLayer::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
@@ -3378,10 +3391,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterExtent::clone() const
   return new QgsProcessingParameterExtent( *this );
 }
 
-bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
 {
+  QVariant input = v;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
   {
@@ -3514,10 +3533,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterPoint::clone() const
   return new QgsProcessingParameterPoint( *this );
 }
 
-bool QgsProcessingParameterPoint::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterPoint::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext * ) const
 {
+  QVariant input = v;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -3611,10 +3636,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterGeometry::clone() const
   return new QgsProcessingParameterGeometry( *this );
 }
 
-bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext * ) const
 {
+  QVariant input = v;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -3876,10 +3907,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterFile::clone() const
   return new QgsProcessingParameterFile( *this );
 }
 
-bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext * ) const
 {
+  QVariant input = v;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -4023,10 +4060,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterMatrix::clone() const
   return new QgsProcessingParameterMatrix( *this );
 }
 
-bool QgsProcessingParameterMatrix::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterMatrix::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext * ) const
 {
+  QVariant input = v;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.type() == QVariant::String )
   {
@@ -4155,10 +4198,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterMultipleLayers::clone() 
   return new QgsProcessingParameterMultipleLayers( *this );
 }
 
-bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
 {
+  QVariant input = v;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( mLayerType != QgsProcessing::TypeFile )
   {
@@ -4604,10 +4653,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterRange::clone() const
   return new QgsProcessingParameterRange( *this );
 }
 
-bool QgsProcessingParameterRange::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterRange::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext * ) const
 {
+  QVariant input = v;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -4727,10 +4782,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterRasterLayer::clone() con
   return new QgsProcessingParameterRasterLayer( *this );
 }
 
-bool QgsProcessingParameterRasterLayer::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+bool QgsProcessingParameterRasterLayer::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
 {
+  QVariant input = v;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -5444,10 +5505,14 @@ QgsProcessingParameterDefinition *QgsProcessingParameterVectorLayer::clone() con
 
 bool QgsProcessingParameterVectorLayer::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
 {
-  if ( !v.isValid() )
-    return mFlags & FlagOptional;
-
   QVariant var = v;
+  if ( !var.isValid() )
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -5591,10 +5656,15 @@ QgsProcessingParameterDefinition *QgsProcessingParameterMeshLayer::clone() const
 
 bool QgsProcessingParameterMeshLayer::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
 {
-  if ( !v.isValid() )
-    return mFlags & FlagOptional;
-
   QVariant var = v;
+
+  if ( !var.isValid() )
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -5679,10 +5749,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterField::clone() const
   return new QgsProcessingParameterField( *this );
 }
 
-bool QgsProcessingParameterField::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterField::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext * ) const
 {
+  QVariant input = v;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -5967,7 +6043,12 @@ bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant
 {
   QVariant var = input;
   if ( !var.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
   {
@@ -6233,7 +6314,7 @@ QgsProcessingParameterFeatureSource *QgsProcessingParameterFeatureSource::fromSc
     break;
   }
 
-  return new QgsProcessingParameterFeatureSource( name, description, types, def, isOptional );
+  return new QgsProcessingParameterFeatureSource( name, description, types, def.isEmpty() ? QVariant() : def, isOptional );
 }
 
 QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QString &name, const QString &description, QgsProcessing::SourceType type, const QVariant &defaultValue, bool optional, bool createByDefault, bool supportsAppend )
@@ -6252,7 +6333,12 @@ bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &
 {
   QVariant var = input;
   if ( !var.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
@@ -6509,7 +6595,7 @@ QgsProcessingParameterFeatureSink *QgsProcessingParameterFeatureSink::fromScript
     def = def.mid( 6 );
   }
 
-  return new QgsProcessingParameterFeatureSink( name, description, type, definition, isOptional );
+  return new QgsProcessingParameterFeatureSink( name, description, type, definition.trimmed().isEmpty() ? QVariant() : definition, isOptional );
 }
 
 bool QgsProcessingParameterFeatureSink::supportsAppend() const
@@ -6536,7 +6622,12 @@ bool QgsProcessingParameterRasterDestination::checkValueIsAcceptable( const QVar
 {
   QVariant var = input;
   if ( !var.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
@@ -6660,7 +6751,12 @@ bool QgsProcessingParameterFileDestination::checkValueIsAcceptable( const QVaria
 {
   QVariant var = input;
   if ( !var.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
@@ -6813,7 +6909,12 @@ bool QgsProcessingParameterFolderDestination::checkValueIsAcceptable( const QVar
 {
   QVariant var = input;
   if ( !var.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -6961,7 +7062,12 @@ bool QgsProcessingParameterVectorDestination::checkValueIsAcceptable( const QVar
 {
   QVariant var = input;
   if ( !var.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
@@ -7196,7 +7302,7 @@ QgsProcessingParameterVectorDestination *QgsProcessingParameterVectorDestination
     def = def.mid( 8 );
   }
 
-  return new QgsProcessingParameterVectorDestination( name, description, type, definition, isOptional );
+  return new QgsProcessingParameterVectorDestination( name, description, type, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 QgsProcessingParameterBand::QgsProcessingParameterBand( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional, bool allowMultiple )
@@ -7212,10 +7318,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterBand::clone() const
   return new QgsProcessingParameterBand( *this );
 }
 
-bool QgsProcessingParameterBand::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterBand::checkValueIsAcceptable( const QVariant &value, QgsProcessingContext * ) const
 {
+  QVariant input = value;
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -7911,7 +8023,7 @@ QgsProcessingParameterColor *QgsProcessingParameterColor::fromScriptCode( const 
     def.chop( 1 );
 
   QVariant defaultValue = def;
-  if ( def == QLatin1String( "None" ) )
+  if ( def == QLatin1String( "None" ) || def.isEmpty() )
     defaultValue = QVariant();
 
   return new QgsProcessingParameterColor( name, description, defaultValue, allowOpacity, isOptional );
@@ -8789,10 +8901,15 @@ QgsProcessingParameterDefinition *QgsProcessingParameterPointCloudLayer::clone()
 
 bool QgsProcessingParameterPointCloudLayer::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
 {
-  if ( !v.isValid() )
-    return mFlags & FlagOptional;
-
   QVariant var = v;
+
+  if ( !var.isValid() )
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -8878,10 +8995,14 @@ QgsProcessingParameterDefinition *QgsProcessingParameterAnnotationLayer::clone()
 
 bool QgsProcessingParameterAnnotationLayer::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
 {
-  if ( !v.isValid() )
-    return mFlags & FlagOptional;
-
   QVariant var = v;
+  if ( !var.isValid() )
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -8959,7 +9080,12 @@ bool QgsProcessingParameterPointCloudDestination::checkValueIsAcceptable( const 
 {
   QVariant var = input;
   if ( !var.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
@@ -9084,10 +9210,16 @@ QgsProcessingParameterDefinition *QgsProcessingParameterPointCloudAttribute::clo
   return new QgsProcessingParameterPointCloudAttribute( *this );
 }
 
-bool QgsProcessingParameterPointCloudAttribute::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterPointCloudAttribute::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext * ) const
 {
-  if ( !input.isValid() )
-    return mFlags & FlagOptional;
+  QVariant input = v;
+  if ( !v.isValid() )
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
 
   if ( input.userType() == QMetaType::type( "QgsProperty" ) )
   {
@@ -9306,7 +9438,12 @@ bool QgsProcessingParameterVectorTileDestination::checkValueIsAcceptable( const 
 {
   QVariant var = input;
   if ( !var.isValid() )
-    return mFlags & FlagOptional;
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    var = defaultValue();
+  }
 
   if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
