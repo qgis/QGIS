@@ -3214,8 +3214,6 @@ void QgsMapCanvas::setSnappingUtils( QgsSnappingUtils *utils )
 
 void QgsMapCanvas::readProject( const QDomDocument &doc )
 {
-  QgsProject *project = qobject_cast< QgsProject * >( sender() );
-
   QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapcanvas" ) );
   if ( nodes.count() )
   {
@@ -3270,12 +3268,12 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "Couldn't read mapcanvas information from project" ), 2 );
-    if ( !project->viewSettings()->defaultViewExtent().isNull() )
+    if ( !QgsProject::instance()->viewSettings()->defaultViewExtent().isNull() )
     {
-      setReferencedExtent( project->viewSettings()->defaultViewExtent() );
+      setReferencedExtent( QgsProject::instance()->viewSettings()->defaultViewExtent() );
     }
 
-    setRotation( project->viewSettings()->defaultRotation() );
+    setRotation( QgsProject::instance()->viewSettings()->defaultRotation() );
     clearExtentHistory(); // clear the extent history on project load
   }
 }
