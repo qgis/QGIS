@@ -42,6 +42,13 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   QgsLayerTree *root = QgsProject::instance()->layerTreeRoot();
   const QList< QgsMapLayer * > visibleLayers = root->checkedLayers();
 
+  QgsCoordinateReferenceSystem crs = QgsProject::instance()->crs();
+  if ( crs.isGeographic() )
+  {
+    // we can't deal with non-projected CRS, so let's just pick something
+    QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  }
+
   QgsMapSettings ms;
   ms.setDestinationCrs( QgsProject::instance()->crs() );
   ms.setLayers( visibleLayers );
