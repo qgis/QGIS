@@ -130,7 +130,7 @@ QgsTiledSceneRequest QgsTiledSceneLayerRenderer::createBaseRequest()
   request.setFeedback( feedback() );
 
   // TODO what z range makes sense here??
-  const QVector< QgsVector3D > corners = QgsBox3D( mapExtent, -1000, 1000 ).corners();
+  const QVector< QgsVector3D > corners = QgsBox3D( mapExtent, -10000, 10000 ).corners();
   QVector< double > x;
   x.reserve( 8 );
   QVector< double > y;
