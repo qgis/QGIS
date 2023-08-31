@@ -323,11 +323,17 @@ QgsTiledSceneNode *QgsCesiumTiledSceneIndex::nodeFromJson( const json &json, con
 
 void QgsCesiumTiledSceneIndex::refineNodeFromJson( QgsTiledSceneNode *node, const QUrl &baseUrl, const json &json )
 {
-  std::unique_ptr< QgsTiledSceneTile > newTile = tileFromJson( json, baseUrl, node->parentNode() ? node->parentNode()->tile() : nullptr );
+  std::unique_ptr< QgsTiledSceneTile > newTile = tileFromJson( json, baseUrl, node->tile() );
   // copy just the resources from the retrieved tileset to the refined node. We assume all the rest of the tile content
   // should be the same between the node being refined and the root node of the fetched sub dataset!
   // (Ie the bounding volume, geometric error, etc).
   node->tile()->setResources( newTile->resources() );
+
+  // root tile of the sub dataset may have transform as well, we need to bring it back
+  // (actually even the referencing tile may have transform - if that's the case,
+  // that transform got combined with the root tile's transform in tileFromJson)
+  if ( newTile->transform() )
+    node->tile()->setTransform( *newTile->transform() );
 
   if ( json.contains( "children" ) )
   {
