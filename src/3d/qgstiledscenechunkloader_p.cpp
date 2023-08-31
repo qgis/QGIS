@@ -154,6 +154,7 @@ static QgsAABB aabbConvert( const QgsBox3D &b0, const QgsVector3D &sceneOriginTa
 
 QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const
 {
+  QgsChunkNode *node = nullptr;
   if ( hasLargeBounds( t ) )
   {
     // use the full extent of the scene
@@ -161,7 +162,7 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneT
     QgsVector3D v1 = mMap.mapToWorldCoordinates( QgsVector3D( mMap.extent().xMaximum(), mMap.extent().yMaximum(), +100 ) );
     QgsAABB aabb( v0.x(), v0.y(), v0.z(), v1.x(), v1.y(), v1.z() );
     float err = std::min( 1e6, t.geometricError() );
-    return new QgsChunkNode( nodeId, aabb, err, parent );
+    node = new QgsChunkNode( nodeId, aabb, err, parent );
   }
   else
   {
@@ -169,8 +170,11 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneT
     box.setZMinimum( box.zMinimum() * mZValueScale + mZValueOffset );
     box.setZMaximum( box.zMaximum() * mZValueScale + mZValueOffset );
     const QgsAABB aabb = aabbConvert( box, mMap.origin() );
-    return new QgsChunkNode( nodeId, aabb, t.geometricError(), parent );
+    node = new QgsChunkNode( nodeId, aabb, t.geometricError(), parent );
   }
+
+  node->setRefinementProcess( t.refinementProcess() );
+  return node;
 }
 
 
@@ -312,8 +316,6 @@ void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
 QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
   : QgsChunkedEntity( maximumScreenError, new QgsTiledSceneChunkLoaderFactory( map, index, zValueScale, zValueOffset ), true )
 {
-  if ( index.rootTile().refinementProcess() == Qgis::TileRefinementProcess::Additive )
-    setUsingAdditiveStrategy( true );
   setShowBoundingBoxes( showBoundingBoxes );
 }
 
