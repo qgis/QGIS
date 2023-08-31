@@ -93,16 +93,6 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     //! Returns the root node of the whole quadtree hierarchy of nodes
     QgsChunkNode *rootNode() const { return mRootNode; }
 
-    //! Sets whether additive strategy is enabled - see usingAditiveStrategy()
-    void setUsingAdditiveStrategy( bool additive ) { mAdditiveStrategy = additive; }
-
-    /**
-     * Returns whether additive strategy is enabled.
-     * With additive strategy enabled, also all parent nodes are added to active nodes.
-     * This is desired when child nodes add more detailed data rather than just replace coarser data in parents.
-     */
-    bool usingAditiveStrategy() const { return mAdditiveStrategy; }
-
     /**
      * Sets the limit of the GPU memory used to render the entity
      * \since QGIS 3.26
@@ -188,12 +178,6 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
 
     //! jobs that are currently being processed (asynchronously in worker threads)
     QList<QgsChunkQueueJob *> mActiveJobs;
-
-    /**
-     * With additive strategy enabled, also all parent nodes are added to active nodes.
-     * This is desired when child nodes add more detailed data rather than just replace coarser data in parents.
-     */
-    bool mAdditiveStrategy = false;
 
     bool mIsValid = true;
 
