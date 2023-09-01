@@ -114,7 +114,7 @@ namespace QgsWms
        * \returns the legend as a JSON object
        * \since QGIS 3.34
        */
-      QJsonObject *getLegendGraphicsAsJson( QgsLayerTreeModelLegendNode &nodeModel );
+      QJsonObject getLegendGraphicsAsJson( QgsLayerTreeModelLegendNode &nodeModel );
 
       typedef QSet<QString> SymbolSet;
       typedef QHash<QgsVectorLayer *, SymbolSet> HitTest;

@@ -245,11 +245,10 @@ namespace QgsWms
 
     // init renderer
     QgsLegendSettings settings = legendSettings();
-    QgsLegendRenderer renderer( &model, settings );
 
     // rendering
     QgsRenderContext renderContext;
-    return renderer.exportLegendToJson( renderContext, nodeModel );
+    return nodeModel.exportSymbolToJson( settings, renderContext );
   }
 
   void QgsRenderer::runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const
