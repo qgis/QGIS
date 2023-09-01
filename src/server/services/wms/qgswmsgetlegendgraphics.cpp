@@ -129,10 +129,15 @@ namespace QgsWms
     if ( format == QgsWmsParameters::Format::JSON )
     {
       QJsonObject result;
+
       if ( !parameters.rule().isEmpty() )
       {
-        throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                      QStringLiteral( "RULE cannot be used with JSON format" ) );
+        QgsLayerTreeModelLegendNode *node = legendNode( parameters.rule(), *model.get() );
+        if ( ! node )
+        {
+          throw QgsException( QStringLiteral( "Could not get a legend node for the requested RULE" ) );
+        }
+        result = renderer.getLegendGraphicsAsJson( *node );
       }
       else
       {

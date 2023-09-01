@@ -233,6 +233,25 @@ namespace QgsWms
     return renderer.exportLegendToJson( renderContext );
   }
 
+  QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModelLegendNode &nodeModel )
+  {
+    // get layers
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
+
+    // configure layers
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers );
+
+    // init renderer
+    QgsLegendSettings settings = legendSettings();
+    QgsLegendRenderer renderer( &model, settings );
+
+    // rendering
+    QgsRenderContext renderContext;
+    return renderer.exportLegendToJson( renderContext, nodeModel );
+  }
+
   void QgsRenderer::runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const
   {
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );

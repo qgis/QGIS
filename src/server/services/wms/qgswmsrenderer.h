@@ -107,6 +107,15 @@ namespace QgsWms
        */
       QJsonObject getLegendGraphicsAsJson( QgsLayerTreeModel &model );
 
+      /**
+       * Returns the map legend as a JSON object (or NULLPTR in case of error). The
+       * caller takes ownership of the image object.
+       * \param nodeModel The node model to use for building the legend
+       * \returns the legend as a JSON object
+       * \since QGIS 3.34
+       */
+      QJsonObject *getLegendGraphicsAsJson( QgsLayerTreeModelLegendNode &nodeModel );
+
       typedef QSet<QString> SymbolSet;
       typedef QHash<QgsVectorLayer *, SymbolSet> HitTest;
 
