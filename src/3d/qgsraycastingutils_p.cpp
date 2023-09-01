@@ -391,7 +391,7 @@ namespace QgsRayCastingUtils
 
     for ( int i = 0; i < vertexCount; i += 3 )
     {
-      int v0index, v1index, v2index;
+      int v0index = 0, v1index = 0, v2index = 0;
       if ( !indexAttr )
       {
         v0index = i;
