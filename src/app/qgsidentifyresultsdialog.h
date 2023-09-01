@@ -51,6 +51,7 @@ class QgsDockWidget;
 class QgsMapLayerAction;
 class QgsEditorWidgetSetup;
 class QgsSettingsEntryBool;
+class QgsTiledSceneLayer;
 
 class QwtPlotCurve;
 
@@ -177,6 +178,15 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void addFeature( QgsPointCloudLayer *layer,
                      const QString &label,
                      const QMap< QString, QString > &attributes );
+
+    /**
+     * Adds results from tiled scene layer
+     * \since QGIS 3.34
+     */
+    void addFeature( QgsTiledSceneLayer *layer,
+                     const QString &label,
+                     const QMap< QString, QString > &attributes,
+                     const QMap< QString, QString > &derivedAttributes );
 
     //! Adds feature from identify results
     void addFeature( const QgsMapToolIdentify::IdentifyResult &result );
@@ -309,6 +319,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QgsMeshLayer *meshLayer( QTreeWidgetItem *item );
     QgsVectorTileLayer *vectorTileLayer( QTreeWidgetItem *item );
     QgsPointCloudLayer *pointCloudLayer( QTreeWidgetItem *item );
+    QgsTiledSceneLayer *tiledSceneLayer( QTreeWidgetItem *item );
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QObject *layer );
