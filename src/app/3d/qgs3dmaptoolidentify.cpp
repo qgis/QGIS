@@ -26,6 +26,7 @@
 #include "qgsmaptoolidentifyaction.h"
 
 #include "qgspointcloudlayer.h"
+#include "qgstiledscenelayer.h"
 #include "qgscameracontroller.h"
 
 
@@ -61,6 +62,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, QgsRayCastingUtils::RayCastContext( false, mCanvas->windowSize(), mCanvas->cameraController()->camera()->farPlane() ) );
 
   QHash<QgsPointCloudLayer *, QVector<QVariantMap>> pointCloudResults;
+  QHash<QgsTiledSceneLayer *, QVector<QVariantMap>> tiledSceneResults;
 
   QList<QgsMapToolIdentify::IdentifyResult> identifyResults;
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
@@ -86,6 +88,14 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       for ( const QgsRayCastingUtils::RayHit &hit : it->second )
       {
         pointCloudResults[ pclayer ].append( hit.attributes );
+      }
+    }
+    else if ( QgsTiledSceneLayer *tslayer = qobject_cast<QgsTiledSceneLayer *>( it->first ) )
+    {
+      tiledSceneResults[ tslayer ] = QVector<QVariantMap>();
+      for ( const QgsRayCastingUtils::RayHit &hit : it->second )
+      {
+        tiledSceneResults[ tslayer ].append( hit.attributes );
       }
     }
   }
@@ -133,6 +143,26 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( it->first, it->second, identifyResults );
     identifyTool2D->showIdentifyResults( identifyResults );
   }
+
+  for ( auto it = tiledSceneResults.constKeyValueBegin(); it != tiledSceneResults.constKeyValueEnd(); ++it )
+  {
+    // for the whole layer
+    for ( const QVariantMap &hitAttributes : it->second )
+    {
+      QMap<QString, QString> derivedAttributes;
+      const QList<QString> keys = hitAttributes.keys();
+      for ( const QString &key : keys )
+      {
+        derivedAttributes[key] = hitAttributes[key].toString();
+      }
+      QString nodeId = hitAttributes["node_id"].toString();
+      QgsMapToolIdentify::IdentifyResult res( it->first, nodeId, QMap<QString, QString>(), derivedAttributes );
+      identifyResults.append( res );
+    }
+
+    identifyTool2D->showIdentifyResults( identifyResults );
+  }
+
 }
 
 void Qgs3DMapToolIdentify::activate()

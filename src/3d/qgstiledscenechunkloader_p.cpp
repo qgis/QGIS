@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgscesiumutils.h"
 #include "qgsgltf3dutils.h"
+#include "qgsraycastingutils_p.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
 
@@ -311,6 +312,7 @@ void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
 
 QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
   : QgsChunkedEntity( maximumScreenError, new QgsTiledSceneChunkLoaderFactory( map, index, zValueScale, zValueOffset ), true )
+  , mIndex( index )
 {
   if ( index.rootTile().refinementProcess() == Qgis::TileRefinementProcess::Additive )
     setUsingAdditiveStrategy( true );
@@ -326,6 +328,76 @@ QgsTiledSceneLayerChunkedEntity::~QgsTiledSceneLayerChunkedEntity()
 int QgsTiledSceneLayerChunkedEntity::pendingJobsCount() const
 {
   return QgsChunkedEntity::pendingJobsCount() + static_cast<QgsTiledSceneChunkLoaderFactory *>( mChunkLoaderFactory )->mPendingHierarchyFetches.count();
+}
+
+QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+{
+  Q_UNUSED( context );
+  QgsDebugMsgLevel( QStringLiteral( "Ray cast on tiled scene layer" ), 2 );
+#ifdef QGISDEBUG
+  int nodeUsed = 0;
+  int nodesAll = 0;
+  int hits = 0;
+#endif
+
+  QVector<QgsRayCastingUtils::RayHit> result;
+  float minDist = -1;
+  QVector3D intersectionPoint;
+  QgsChunkNode *minNode = nullptr;
+  int minTriangleIndex = -1;
+
+  const QList<QgsChunkNode *> active = activeNodes();
+  for ( QgsChunkNode *node : active )
+  {
+#ifdef QGISDEBUG
+    nodesAll++;
+#endif
+    if ( node->entity() &&
+         ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
+         QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
+    {
+#ifdef QGISDEBUG
+      nodeUsed++;
+#endif
+      const QList<Qt3DRender::QGeometryRenderer *> rendLst = node->entity()->findChildren<Qt3DRender::QGeometryRenderer *>();
+      for ( const auto &rend : rendLst )
+      {
+        QVector3D nodeIntPoint;
+        int triangleIndex = -1;
+        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, QMatrix4x4(), nodeIntPoint, triangleIndex );
+        if ( success )
+        {
+#ifdef QGISDEBUG
+          hits++;
+#endif
+          float dist = ( ray.origin() - nodeIntPoint ).length();
+          if ( minDist < 0 || dist < minDist )
+          {
+            minDist = dist;
+            minNode = node;
+            minTriangleIndex = triangleIndex;
+            intersectionPoint = nodeIntPoint;
+          }
+        }
+      }
+    }
+  }
+
+  if ( minDist >= 0 )
+  {
+    QVariantMap vm;
+    QgsTiledSceneTile tile = mIndex.getTile( minNode->tileId().uniqueId );
+    // at this point this is mostly for debugging - we may want to change/rename what's returned here
+    vm["node_id"] = tile.id();
+    vm["node_error"] = tile.geometricError();
+    vm["node_content"] = tile.resources().value( QStringLiteral( "content" ) );
+    vm["triangle_index"] = minTriangleIndex;
+    QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint, FID_NULL, vm );
+    result.append( hit );
+  }
+
+  QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ), 2 );
+  return result;
 }
 
 /// @endcond

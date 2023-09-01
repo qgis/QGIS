@@ -249,8 +249,9 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
         }
 
         QVector3D nodeIntPoint;
-        QgsFeatureId fid = FID_NULL;
-        if ( polygonGeom->rayIntersection( ray, transformMatrix, nodeIntPoint, fid ) )
+        int triangleIndex = -1;
+
+        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, transformMatrix, nodeIntPoint, triangleIndex ) )
         {
 #ifdef QGISDEBUG
           hits++;
@@ -260,7 +261,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
           {
             minDist = dist;
             intersectionPoint = nodeIntPoint;
-            nearestFid = fid;
+            nearestFid = polygonGeom->triangleIndexToFeatureId( triangleIndex );
           }
         }
       }
