@@ -1562,7 +1562,7 @@ class TinyGLTF {
   size_t bin_size_ = 0;
   bool is_binary_ = false;
 
-  ParseStrictness strictness_ = ParseStrictness::STRICT;
+  ParseStrictness strictness_ = STRICT;
 
   bool serialize_default_values_ = false;  ///< Serialize default values?
 
