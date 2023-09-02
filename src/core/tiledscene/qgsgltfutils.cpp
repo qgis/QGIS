@@ -292,6 +292,12 @@ bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model
 
   loader.SetImageLoader( QgsGltfUtils::loadImageDataWithQImage, nullptr );
 
+  // in QGIS we always tend towards permissive handling of datasets, allowing
+  // users to load data wherever we can even if it's not strictly conformant
+  // with specifications...
+  // (and there's a lot of non-compliant GLTF out there!)
+  loader.SetParseStrictness( tinygltf::ParseStrictness::PERMISSIVE );
+
   std::string baseDir;  // TODO: may be useful to set it from baseUri
   std::string err, warn;
 
