@@ -19,6 +19,7 @@
 #include "qgsgltfutils.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
+#include "qgslogger.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -514,6 +515,14 @@ Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const Q
   QString gltfErrors, gltfWarnings;
 
   bool res = QgsGltfUtils::loadGltfModel( data, model, &gltfErrors, &gltfWarnings );
+  if ( !gltfErrors.isEmpty() )
+  {
+    QgsDebugError( QStringLiteral( "Error raised reading %1: %2" ).arg( baseUri, gltfErrors ) );
+  }
+  if ( !gltfWarnings.isEmpty() )
+  {
+    QgsDebugError( QStringLiteral( "Warnings raised reading %1: %2" ).arg( baseUri, gltfWarnings ) );
+  }
   if ( !res )
   {
     if ( errors )

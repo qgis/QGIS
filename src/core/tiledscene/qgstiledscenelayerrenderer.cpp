@@ -379,10 +379,11 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   {
     if ( !mErrors.contains( gltfErrors ) )
       mErrors.append( gltfErrors );
+    QgsDebugError( QStringLiteral( "Error raised reading %1: %2" ).arg( contentUri, gltfErrors ) );
   }
   if ( !gltfWarnings.isEmpty() )
   {
-    QgsDebugError( gltfWarnings );
+    QgsDebugError( QStringLiteral( "Warnings raised reading %1: %2" ).arg( contentUri, gltfWarnings ) );
   }
   return true;
 }
