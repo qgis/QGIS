@@ -195,6 +195,11 @@ typedef enum {
   OBJECT_TYPE
 } Type;
 
+typedef enum {
+  PERMISSIVE,
+  STRICT
+} ParseStrictness;
+
 static inline int32_t GetComponentSizeInBytes(uint32_t componentType) {
   if (componentType == TINYGLTF_COMPONENT_TYPE_BYTE) {
     return 1;
@@ -1464,6 +1469,11 @@ class TinyGLTF {
                             bool prettyPrint, bool writeBinary);
 
   ///
+  /// Sets the parsing strictness.
+  ///
+  void SetParseStrictness(ParseStrictness strictness);
+
+  ///
   /// Set callback to use for loading image data
   ///
   void SetImageLoader(LoadImageDataFunction LoadImageData, void *user_data);
@@ -1551,6 +1561,8 @@ class TinyGLTF {
   const unsigned char *bin_data_ = nullptr;
   size_t bin_size_ = 0;
   bool is_binary_ = false;
+
+  ParseStrictness strictness_ = ParseStrictness::STRICT;
 
   bool serialize_default_values_ = false;  ///< Serialize default values?
 
@@ -2551,6 +2563,10 @@ static bool LoadExternalFile(std::vector<unsigned char> *out, std::string *err,
 
   out->swap(buf);
   return true;
+}
+
+void TinyGLTF::SetParseStrictness(ParseStrictness strictness) {
+  strictness_ = strictness;
 }
 
 void TinyGLTF::SetImageLoader(LoadImageDataFunction func, void *user_data) {
@@ -5213,13 +5229,14 @@ static bool ParsePbrMetallicRoughness(
 
 static bool ParseMaterial(Material *material, std::string *err, std::string *warn,
                           const detail::json &o,
-                          bool store_original_json_for_extras_and_extensions) {
+                          bool store_original_json_for_extras_and_extensions,
+                          ParseStrictness strictness) {
   ParseStringProperty(&material->name, err, o, "name", /* required */ false);
 
   if (ParseNumberArrayProperty(&material->emissiveFactor, err, o,
                                "emissiveFactor",
                                /* required */ false)) {
-    if (material->emissiveFactor.size() == 4) {
+    if (strictness==ParseStrictness::PERMISSIVE && material->emissiveFactor.size() == 4) {
       if (warn) {
         (*warn) +=
             "Array length of `emissiveFactor` parameter in "
@@ -6226,7 +6243,8 @@ bool TinyGLTF::LoadFromString(Model *model, std::string *err, std::string *warn,
       ParseStringProperty(&material.name, err, o, "name", false);
 
       if (!ParseMaterial(&material, err, warn, o,
-                         store_original_json_for_extras_and_extensions_)) {
+                         store_original_json_for_extras_and_extensions_,
+                         strictness_)) {
         return false;
       }
 
