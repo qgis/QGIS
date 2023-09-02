@@ -197,7 +197,7 @@ typedef enum {
 
 typedef enum {
   PERMISSIVE,
-  STRICT
+  DEFAULT // Strict parsing
 } ParseStrictness;
 
 static inline int32_t GetComponentSizeInBytes(uint32_t componentType) {
@@ -1562,7 +1562,7 @@ class TinyGLTF {
   size_t bin_size_ = 0;
   bool is_binary_ = false;
 
-  ParseStrictness strictness_ = STRICT;
+  ParseStrictness strictness_ = DEFAULT;
 
   bool serialize_default_values_ = false;  ///< Serialize default values?
 
