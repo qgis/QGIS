@@ -837,7 +837,7 @@ struct Accessor {
     int count;
     bool isSparse;
     struct {
-      int byteOffset;
+      size_t byteOffset;
       int bufferView;
       int componentType;  // a TINYGLTF_COMPONENT_TYPE_ value
       Value extras;
@@ -847,7 +847,7 @@ struct Accessor {
     } indices;
     struct {
       int bufferView;
-      int byteOffset;
+      size_t byteOffset;
       Value extras;
       ExtensionMap extensions;
       std::string extras_json_string;
@@ -4648,24 +4648,26 @@ static bool ParseSparseAccessor(
   const detail::json &indices_obj = detail::GetValue(indices_iterator);
   const detail::json &values_obj = detail::GetValue(values_iterator);
 
-  int indices_buffer_view = 0, indices_byte_offset = 0, component_type = 0;
+  int indices_buffer_view = 0, component_type = 0;
+  size_t indices_byte_offset = 0;
   if (!ParseIntegerProperty(&indices_buffer_view, err, indices_obj,
                             "bufferView", true, "SparseAccessor")) {
     return false;
   }
-  ParseIntegerProperty(&indices_byte_offset, err, indices_obj, "byteOffset",
+  ParseUnsignedProperty(&indices_byte_offset, err, indices_obj, "byteOffset",
                        false);
   if (!ParseIntegerProperty(&component_type, err, indices_obj, "componentType",
                             true, "SparseAccessor")) {
     return false;
   }
 
-  int values_buffer_view = 0, values_byte_offset = 0;
+  int values_buffer_view = 0;
+  size_t values_byte_offset = 0;
   if (!ParseIntegerProperty(&values_buffer_view, err, values_obj, "bufferView",
                             true, "SparseAccessor")) {
     return false;
   }
-  ParseIntegerProperty(&values_byte_offset, err, values_obj, "byteOffset",
+  ParseUnsignedProperty(&values_byte_offset, err, values_obj, "byteOffset",
                        false);
 
   sparse->count = count;
@@ -4873,8 +4875,9 @@ static bool GetAttributeForAllPoints(uint32_t componentType, draco::Mesh *mesh,
 }
 
 static bool ParseDracoExtension(Primitive *primitive, Model *model,
-                                std::string *err,
-                                const Value &dracoExtensionValue) {
+                                std::string *err, std::string *warn,
+                                const Value &dracoExtensionValue,
+                                ParseStrictness strictness) {
   (void)err;
   auto bufferViewValue = dracoExtensionValue.Get("bufferView");
   if (!bufferViewValue.IsInt()) return false;
@@ -4906,23 +4909,31 @@ static bool ParseDracoExtension(Primitive *primitive, Model *model,
 
   // create new bufferView for indices
   if (primitive->indices >= 0) {
-    const draco::PointIndex::ValueType numPoint = mesh->num_points();
-    // handle the situation where the stored component type does not match the
-    // required type for the actual number of stored points
-    int supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE;
-    if (numPoint < static_cast<draco::PointIndex::ValueType>(
-            std::numeric_limits<uint8_t>::max())) {
-      supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE;
-    } else if (
-        numPoint < static_cast<draco::PointIndex::ValueType>(
-            std::numeric_limits<uint16_t>::max())) {
-      supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT;
-    } else {
-      supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT;
-    }
+    if (strictness == ParseStrictness::PERMISSIVE) {
+      const draco::PointIndex::ValueType numPoint = mesh->num_points();
+      // handle the situation where the stored component type does not match the
+      // required type for the actual number of stored points
+      int supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE;
+      if (numPoint < static_cast<draco::PointIndex::ValueType>(
+                         std::numeric_limits<uint8_t>::max())) {
+        supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE;
+      } else if (
+          numPoint < static_cast<draco::PointIndex::ValueType>(
+                         std::numeric_limits<uint16_t>::max())) {
+        supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT;
+      } else {
+        supposedComponentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT;
+      }
 
-    if (supposedComponentType > model->accessors[primitive->indices].componentType) {
-      model->accessors[primitive->indices].componentType = supposedComponentType;
+      if (supposedComponentType > model->accessors[primitive->indices].componentType) {
+        model->accessors[primitive->indices].componentType = supposedComponentType;
+        if (warn) {
+          (*warn) +=
+              "GLTF component type " + std::to_string(model->accessors[primitive->indices].componentType) +
+              " is not sufficient for number of stored points,"
+              " treating as " + std::to_string(supposedComponentType) + "\n";
+        }
+      }
     }
 
     int32_t componentSize = GetComponentSizeInBytes(
@@ -4990,9 +5001,11 @@ static bool ParseDracoExtension(Primitive *primitive, Model *model,
 }
 #endif
 
-static bool ParsePrimitive(Primitive *primitive, Model *model, std::string *err,
+static bool ParsePrimitive(Primitive *primitive, Model *model,
+                           std::string *err, std::string *warn,
                            const detail::json &o,
-                           bool store_original_json_for_extras_and_extensions) {
+                           bool store_original_json_for_extras_and_extensions,
+                           ParseStrictness strictness) {
   int material = -1;
   ParseIntegerProperty(&material, err, o, "material", false);
   primitive->material = material;
@@ -5041,18 +5054,22 @@ static bool ParsePrimitive(Primitive *primitive, Model *model, std::string *err,
   auto dracoExtension =
       primitive->extensions.find("KHR_draco_mesh_compression");
   if (dracoExtension != primitive->extensions.end()) {
-    ParseDracoExtension(primitive, model, err, dracoExtension->second);
+    ParseDracoExtension(primitive, model, err, warn, dracoExtension->second, strictness);
   }
 #else
   (void)model;
+  (void)warn;
+  (void)strictness;
 #endif
 
   return true;
 }
 
-static bool ParseMesh(Mesh *mesh, Model *model, std::string *err,
+static bool ParseMesh(Mesh *mesh, Model *model,
+                      std::string *err, std::string *warn,
                       const detail::json &o,
-                      bool store_original_json_for_extras_and_extensions) {
+                      bool store_original_json_for_extras_and_extensions,
+                      ParseStrictness strictness) {
   ParseStringProperty(&mesh->name, err, o, "name", false);
 
   mesh->primitives.clear();
@@ -5065,8 +5082,9 @@ static bool ParseMesh(Mesh *mesh, Model *model, std::string *err,
              detail::ArrayBegin(detail::GetValue(primObject));
          i != primEnd; ++i) {
       Primitive primitive;
-      if (ParsePrimitive(&primitive, model, err, *i,
-                         store_original_json_for_extras_and_extensions)) {
+      if (ParsePrimitive(&primitive, model, err, warn, *i,
+                         store_original_json_for_extras_and_extensions,
+                         strictness)) {
         // Only add the primitive if the parsing succeeds.
         mesh->primitives.emplace_back(std::move(primitive));
       }
@@ -6097,8 +6115,9 @@ bool TinyGLTF::LoadFromString(Model *model, std::string *err, std::string *warn,
         return false;
       }
       Mesh mesh;
-      if (!ParseMesh(&mesh, model, err, o,
-                     store_original_json_for_extras_and_extensions_)) {
+      if (!ParseMesh(&mesh, model, err, warn, o,
+                     store_original_json_for_extras_and_extensions_,
+                     strictness_)) {
         return false;
       }
 
@@ -7143,7 +7162,7 @@ static void SerializeGltfAccessor(const Accessor &accessor, detail::json &o) {
     SerializeNumberProperty<int>("bufferView", accessor.bufferView, o);
 
   if (accessor.byteOffset != 0)
-    SerializeNumberProperty<int>("byteOffset", int(accessor.byteOffset), o);
+    SerializeNumberProperty<size_t>("byteOffset", accessor.byteOffset, o);
 
   SerializeNumberProperty<int>("componentType", accessor.componentType, o);
   SerializeNumberProperty<size_t>("count", accessor.count, o);
@@ -7214,7 +7233,7 @@ static void SerializeGltfAccessor(const Accessor &accessor, detail::json &o) {
       detail::json indices;
       SerializeNumberProperty<int>("bufferView",
                                    accessor.sparse.indices.bufferView, indices);
-      SerializeNumberProperty<int>("byteOffset",
+      SerializeNumberProperty<size_t>("byteOffset",
                                    accessor.sparse.indices.byteOffset, indices);
       SerializeNumberProperty<int>(
           "componentType", accessor.sparse.indices.componentType, indices);
@@ -7225,7 +7244,7 @@ static void SerializeGltfAccessor(const Accessor &accessor, detail::json &o) {
       detail::json values;
       SerializeNumberProperty<int>("bufferView",
                                    accessor.sparse.values.bufferView, values);
-      SerializeNumberProperty<int>("byteOffset",
+      SerializeNumberProperty<size_t>("byteOffset",
                                    accessor.sparse.values.byteOffset, values);
       SerializeExtrasAndExtensions(accessor.sparse.values, values);
       detail::JsonAddMember(sparse, "values", std::move(values));
