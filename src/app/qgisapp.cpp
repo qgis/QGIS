@@ -5193,6 +5193,7 @@ void QgisApp::updateRecentProjectPaths()
   mRecentProjectsMenu->clear();
 
   const auto constMRecentProjects = mRecentProjects;
+  int projectIndex = 0;
   for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : constMRecentProjects )
   {
     QAction *action = mRecentProjectsMenu->addAction(
@@ -5223,7 +5224,7 @@ void QgisApp::updateRecentProjectPaths()
         action->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorBadLayer.svg" ) ) );
     }
 
-    action->setData( recentProject.path );
+    action->setData( projectIndex++ );
     if ( recentProject.pin )
     {
       action->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/pin.svg" ) ) );
@@ -6912,17 +6913,19 @@ void QgisApp::openTemplate( const QString &fileName )
 }
 
 // Open the project file corresponding to the
-// path at the given index in mRecentProjectPaths
+// path at the given index in mRecentProjects
 void QgisApp::openProject( QAction *action )
 {
-  // possibly save any pending work before opening a different project
   Q_ASSERT( action );
-  const QString project = action->data().toString().replace( "&&", "&" );
 
-  // If project is empty, it means that the clicked action is "Clear recent projects"
-  if ( project.isEmpty() )
+  bool ok;
+  const int projectIndex = action->data().toInt( &ok );
+  if ( !ok || projectIndex < 0 || projectIndex >= mRecentProjects.count() )
     return;
+  QString project =  mRecentProjects.at( projectIndex ).path;
+  project.replace( "&&", "&" );
 
+  // possibly save any pending work before opening a different project
   if ( checkTasksDependOnProject() )
     return;
 

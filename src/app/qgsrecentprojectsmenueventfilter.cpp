@@ -33,30 +33,29 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
 {
 
   if ( event->type() != QEvent::MouseButtonPress )
-    return false;
+    return QObject::eventFilter( obj, event );
 
   QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>( event );
   if ( !mouseEvent )
-    return false;
+    return QObject::eventFilter( obj, event );
 
   if ( mouseEvent->button() != Qt::RightButton )
-    return false;
+    return QObject::eventFilter( obj, event );
 
   QMenu *menu = qobject_cast<QMenu *>( obj );
   if ( !menu )
-    return false;
+    return QObject::eventFilter( obj, event );
 
   QAction *action = menu->actionAt( mouseEvent->pos() );
   if ( !action )
-    return false;
+    return QObject::eventFilter( obj, event );
 
-  int actionIndex = menu->actions().indexOf( action );
+  bool ok = false;
+  const int actionIndex = action->data().toInt( &ok );
+  if ( !ok )
+    return QObject::eventFilter( obj, event );
 
-  // The last action is the "Clear recent projects" action
-  if ( actionIndex == menu->actions().count() - 1 )
-    return false;
-
-  QModelIndex modelIndex = mWelcomePage->recentProjectsModel()->index( actionIndex, 0 );
+  const QModelIndex modelIndex = mWelcomePage->recentProjectsModel()->index( actionIndex, 0 );
   const bool pinned = mWelcomePage->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PinRole ).toBool();
 
   QMenu subMenu;
