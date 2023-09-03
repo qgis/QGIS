@@ -98,56 +98,70 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
   tinygltf::Model model;
   QString errors;
   QString warnings;
-  if ( !QgsGltfUtils::loadGltfModel( b3dmContent.gltf, model, &errors, &warnings ) )
+  const bool res = QgsGltfUtils::loadGltfModel( b3dmContent.gltf, model, &errors, &warnings );
+  if ( !errors.isEmpty() )
   {
-    throw QgsProcessingException( QObject::tr( "Error loading B3DM model: %1" ).arg( errors ) );
+    feedback->reportError( errors );
   }
   if ( !warnings.isEmpty() )
   {
     feedback->pushWarning( warnings );
   }
-  feedback->pushDebugInfo( QObject::tr( "Found %1 scenes" ).arg( model.scenes.size() ) );
-
-  const tinygltf::Scene &scene = model.scenes[model.defaultScene];
-  feedback->pushDebugInfo( QObject::tr( "Found %1 nodes in default scene [%2]" ).arg( scene.nodes.size() ).arg( model.defaultScene ) );
-  if ( !scene.nodes.empty() )
+  if ( !res )
   {
-    const int nodeIndex = scene.nodes[0];
-    const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
-    const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
-    feedback->pushDebugInfo( QObject::tr( "Found %1 primitives in default scene node [%2]" ).arg( mesh.primitives.size() ).arg( nodeIndex ) );
-  }
-
-  if ( !b3dmContent.rtcCenter.isNull() )
-  {
-    // transfer B3DM RTC center to GLTF CESIUM_RTC extension
-    tinygltf::Value::Object cesiumRtc;
-    cesiumRtc["center"] = tinygltf::Value( tinygltf::Value::Array
+    // if we can't read the GLTF, then just write the original B3DM content to the output file
+    QFile outputFile( outputPath );
+    if ( !outputFile.open( QFile::WriteOnly ) )
     {
-      tinygltf::Value( b3dmContent.rtcCenter.x() ),
-      tinygltf::Value( b3dmContent.rtcCenter.y() ),
-      tinygltf::Value( b3dmContent.rtcCenter.z() )
-    } );
-
-    model.extensions["CESIUM_RTC"] = tinygltf::Value( cesiumRtc );
-    model.extensionsRequired.emplace_back( "CESIUM_RTC" );
-    model.extensionsUsed.emplace_back( "CESIUM_RTC" );
+      throw QgsProcessingException( QObject::tr( "Could not create destination file %1." ).arg( outputPath ) );
+    }
+    outputFile.write( b3dmContent.gltf );
   }
-
-  const QString outputExtension = QFileInfo( outputPath ).suffix();
-  const bool isGlb = outputExtension.compare( QLatin1String( "glb" ), Qt::CaseInsensitive ) == 0;
-  const QByteArray outputFile = QFile::encodeName( outputPath );
-  std::ofstream of( outputFile.constData(), std::ios::binary | std::ios::trunc );
-  if ( !of )
-    throw QgsProcessingException( QObject::tr( "Could not create destination file %1." ).arg( outputPath ) );
-
-  tinygltf::TinyGLTF writer;
-  if ( !writer.WriteGltfSceneToStream( &model, of, true, isGlb ) )
+  else
   {
+    feedback->pushDebugInfo( QObject::tr( "Found %1 scenes" ).arg( model.scenes.size() ) );
+
+    const tinygltf::Scene &scene = model.scenes[model.defaultScene];
+    feedback->pushDebugInfo( QObject::tr( "Found %1 nodes in default scene [%2]" ).arg( scene.nodes.size() ).arg( model.defaultScene ) );
+    if ( !scene.nodes.empty() )
+    {
+      const int nodeIndex = scene.nodes[0];
+      const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
+      const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
+      feedback->pushDebugInfo( QObject::tr( "Found %1 primitives in default scene node [%2]" ).arg( mesh.primitives.size() ).arg( nodeIndex ) );
+    }
+
+    if ( !b3dmContent.rtcCenter.isNull() )
+    {
+      // transfer B3DM RTC center to GLTF CESIUM_RTC extension
+      tinygltf::Value::Object cesiumRtc;
+      cesiumRtc["center"] = tinygltf::Value( tinygltf::Value::Array
+      {
+        tinygltf::Value( b3dmContent.rtcCenter.x() ),
+        tinygltf::Value( b3dmContent.rtcCenter.y() ),
+        tinygltf::Value( b3dmContent.rtcCenter.z() )
+      } );
+
+      model.extensions["CESIUM_RTC"] = tinygltf::Value( cesiumRtc );
+      model.extensionsRequired.emplace_back( "CESIUM_RTC" );
+      model.extensionsUsed.emplace_back( "CESIUM_RTC" );
+    }
+
+    const QString outputExtension = QFileInfo( outputPath ).suffix();
+    const bool isGlb = outputExtension.compare( QLatin1String( "glb" ), Qt::CaseInsensitive ) == 0;
+    const QByteArray outputFile = QFile::encodeName( outputPath );
+    std::ofstream of( outputFile.constData(), std::ios::binary | std::ios::trunc );
+    if ( !of )
+      throw QgsProcessingException( QObject::tr( "Could not create destination file %1." ).arg( outputPath ) );
+
+    tinygltf::TinyGLTF writer;
+    if ( !writer.WriteGltfSceneToStream( &model, of, true, isGlb ) )
+    {
+      of.close();
+      throw QgsProcessingException( QObject::tr( "Could not write GLTF model to %1." ).arg( outputPath ) );
+    }
     of.close();
-    throw QgsProcessingException( QObject::tr( "Could not write GLTF model to %1." ).arg( outputPath ) );
   }
-  of.close();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), outputPath );
