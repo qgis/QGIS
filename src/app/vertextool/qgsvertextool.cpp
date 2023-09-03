@@ -2427,10 +2427,11 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
         id.insert( it2.key() );
         ignoreFeatures.insert( layer, id );
         int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers, ignoreFeatures );
+
         switch ( avoidIntersectionsReturn )
         {
-          case 2:
-            emit messageEmitted( tr( "The operation would change the geometry type." ), Qgis::MessageLevel::Warning );
+          case 2: // Geometry type was changed, let's try our best to make it compatible with the target layer
+            featGeom.coerceToType( layer->wkbType() );
             break;
 
           case 3:
