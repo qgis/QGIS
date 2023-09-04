@@ -52,21 +52,6 @@ Saves the default style when appropriate button is pressed
    use :py:func:`~QgsRasterLayerProperties.saveStyleAsDefault` instead
 %End
 
- void loadStyle() /Deprecated/;
-%Docstring
-Loads a saved style when appropriate button is pressed
-
-.. deprecated::
-   use :py:func:`~QgsRasterLayerProperties.loadStyleFromFile` instead.
-%End
-
-    void saveStyleAs();
-%Docstring
-Saves a style when appriate button is pressed
-
-.. versionadded:: 3.30
-%End
-
   protected slots:
     virtual void optionsStackedWidget_CurrentChanged( int index ) ${SIP_FINAL};
 

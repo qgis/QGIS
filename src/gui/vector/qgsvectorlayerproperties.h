@@ -64,34 +64,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
     bool eventFilter( QObject *obj, QEvent *ev ) override;
 
-    /**
-     * Loads the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadDefaultStyle();
-
-    /**
-     * Saves the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void saveDefaultStyle();
-
-    /**
-     * Loads a saved style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadStyle();
-
-    /**
-     * Saves a style when appriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void saveStyleAs();
-
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) final;
     void syncToLayer() FINAL;
