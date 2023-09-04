@@ -5279,6 +5279,9 @@ class TestQgsGeometry(QgisTestCase):
         result = extended.asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         f"Extend line: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        expbb = QgsRectangle(-1, 0, 1, 3)
+        bb = extended.boundingBox()
+        self.assertEqual(expbb, bb, f"Extend line: bbox Expected:\n{expbb.toString()}\nGot:\n{bb.toString()}\n")
 
         # multilinestring
         multilinestring = QgsGeometry.fromWkt('MultiLineString((0 0, 1 0, 1 1),(11 11, 11 10, 10 10))')
@@ -5286,7 +5289,10 @@ class TestQgsGeometry(QgisTestCase):
         exp = 'MultiLineString((-1 0, 1 0, 1 3),(11 12, 11 10, 8 10))'
         result = extended.asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"Extend line: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+                        f"Extend multiline: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        expbb = QgsRectangle(-1, 0, 11, 12)
+        bb = extended.boundingBox()
+        self.assertEqual(expbb, bb, f"Extend multiline: bbox Expected:\n{expbb.toString()}\nGot:\n{bb.toString()}\n")
 
     def testRemoveRings(self):
         empty = QgsGeometry()
