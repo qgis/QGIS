@@ -850,20 +850,6 @@ QStringList QgsVectorDataProvider::errors() const
   return mErrors;
 }
 
-bool QgsVectorDataProvider::isSaveAndLoadStyleToDatabaseSupported() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return false;
-}
-
-bool QgsVectorDataProvider::isDeleteStyleFromDatabaseSupported() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return false;
-}
-
 QgsFeatureRenderer *QgsVectorDataProvider::createRenderer( const QVariantMap & ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

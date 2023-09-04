@@ -474,6 +474,18 @@ String sequence used for separating components of sublayers strings.
 .. versionadded:: 3.12
 %End
 
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const;
+%Docstring
+It returns ``False`` by default.
+Must be implemented by providers that support saving and loading styles to db returning ``True``
+%End
+
+    virtual bool isDeleteStyleFromDatabaseSupported() const;
+%Docstring
+It returns ``False`` by default.
+Must be implemented by providers that support delete styles from db returning ``True``
+%End
+
   signals:
 
     void fullExtentCalculated();
