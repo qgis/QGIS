@@ -1516,25 +1516,31 @@ void QgsLineString::extend( double startDistance, double endDistance )
   if ( mX.size() < 2 || mY.size() < 2 )
     return;
 
+  const bool extendStart = startDistance > 0;
+  const bool extendEnd = endDistance > 0;
+
   // start of line
-  if ( startDistance > 0 )
+  if ( extendStart )
   {
-    double currentLen = std::sqrt( std::pow( mX.at( 0 ) - mX.at( 1 ), 2 ) +
-                                   std::pow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
-    double newLen = currentLen + startDistance;
+    const double currentLen = std::sqrt( std::pow( mX.at( 0 ) - mX.at( 1 ), 2 ) +
+                                         std::pow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
+    const double newLen = currentLen + startDistance;
     mX[ 0 ] = mX.at( 1 ) + ( mX.at( 0 ) - mX.at( 1 ) ) / currentLen * newLen;
     mY[ 0 ] = mY.at( 1 ) + ( mY.at( 0 ) - mY.at( 1 ) ) / currentLen * newLen;
   }
   // end of line
-  if ( endDistance > 0 )
+  if ( extendEnd )
   {
-    int last = mX.size() - 1;
-    double currentLen = std::sqrt( std::pow( mX.at( last ) - mX.at( last - 1 ), 2 ) +
-                                   std::pow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
-    double newLen = currentLen + endDistance;
+    const int last = mX.size() - 1;
+    const double currentLen = std::sqrt( std::pow( mX.at( last ) - mX.at( last - 1 ), 2 ) +
+                                         std::pow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
+    const double newLen = currentLen + endDistance;
     mX[ last ] = mX.at( last - 1 ) + ( mX.at( last ) - mX.at( last - 1 ) ) / currentLen * newLen;
     mY[ last ] = mY.at( last - 1 ) + ( mY.at( last ) - mY.at( last - 1 ) ) / currentLen * newLen;
   }
+
+  if ( extendStart || extendEnd )
+    clearCache(); //set bounding box invalid
 }
 
 QgsLineString *QgsLineString::createEmptyWithSameType() const
