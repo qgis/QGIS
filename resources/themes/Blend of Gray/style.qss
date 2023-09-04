@@ -244,6 +244,9 @@ QLineEdit, QTextEdit, QPlainTextEdit
     selection-background-color: @selection;
     selection-color: @itemdarkbackground;
 }
+QLineEdit:read-only {
+    color: @text;
+}
 
 QLineEdit:no-frame
 {
@@ -390,6 +393,10 @@ QComboBox QAbstractItemView, QComboBox QListView {
     color: @itembackground;
     selection-background-color: @selection;
     selection-color: @text;
+}
+QComboBox::separator {
+    height: 1px;
+    background-color: @background;
 }
 QComboBox::drop-down {
      subcontrol-origin: border;
@@ -1074,7 +1081,7 @@ QComboBox:focus, QAbstractSpinBox:focus, QLineEdit:focus, QPlainTextEdit:focus, 
     border:1px solid @focus;
 }
 
-QComboBox:focus:read-only, QAbstractSpinBox:focus:read-only, QLineEdit:focus:read-only, QPlainTextEdit:focus:read-only, QTextEdit:focus:read-only {
+QComboBox:editable:focus:read-only, QAbstractSpinBox:focus:read-only, QLineEdit:focus:read-only, QPlainTextEdit:focus:read-only, QTextEdit:focus:read-only {
     border-color: transparent;
 }
 
