@@ -2446,7 +2446,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
               for ( int i = 0; i < newGeoms.size(); ++i )
               {
                 QgsGeometry currentPart = newGeoms.at( i );
-                double currentPartSize = layer->geometryType() == Qgis::GeometryType::Polygon ? currentPart.area() : currentPart.length();
+                const double currentPartSize = layer->geometryType() == Qgis::GeometryType::Polygon ? currentPart.area() : currentPart.length();
 
                 QgsFeature partFeature( layer->fields() );
                 partFeature.setAttributes( originalFeature.attributes() );
