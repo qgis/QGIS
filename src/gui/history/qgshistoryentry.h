@@ -43,14 +43,14 @@ class GUI_EXPORT QgsHistoryEntry
     /**
      * Constructor for QgsHistoryEntry \a entry, with the specified \a providerId and \a timestamp.
      */
-    QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QVariantMap &entry );
+    explicit QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QVariantMap &entry );
 
     /**
      * Constructor for QgsHistoryEntry \a entry.
      *
      * The entry timestamp will be automatically set to the current date/time.
      */
-    QgsHistoryEntry( const QVariantMap &entry );
+    explicit QgsHistoryEntry( const QVariantMap &entry );
 
     /**
      * Returns TRUE if the entry is valid.
