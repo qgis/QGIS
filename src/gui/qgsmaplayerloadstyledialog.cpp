@@ -19,7 +19,7 @@
 #include "qgsmaplayerloadstyledialog.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgsvectorlayerproperties.h"
+#include "qgslayerpropertiesdialog.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgshelp.h"
 #include "qgsapplication.h"
@@ -57,36 +57,24 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   // load style type combobox
   connect( mStyleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
-    const QgsVectorLayerProperties::StyleType type = currentStyleType();
-    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer );
-    mFileLabel->setVisible( !vl || ( type != QgsVectorLayerProperties::StyleType::DB && type != QgsVectorLayerProperties::StyleType::Local ) );
-    mFileWidget->setVisible( !vl || ( type != QgsVectorLayerProperties::StyleType::DB && type != QgsVectorLayerProperties::StyleType::Local ) );
-    if ( vl )
-    {
-      mFromDbWidget->setVisible( type == QgsVectorLayerProperties::StyleType::DB );
-      mDeleteButton->setVisible( type == QgsVectorLayerProperties::StyleType::DB && vl->dataProvider()->isDeleteStyleFromDatabaseSupported() );
-    }
-    else
-    {
-      mFromDbWidget->setVisible( false );
-      mDeleteButton->setVisible( false );
-    }
+    const QgsLayerPropertiesDialog::StyleType type = currentStyleType();
+    mFileLabel->setVisible( type != QgsLayerPropertiesDialog::StyleType::DB && type != QgsLayerPropertiesDialog::StyleType::Local );
+    mFileWidget->setVisible( type != QgsLayerPropertiesDialog::StyleType::DB && type != QgsLayerPropertiesDialog::StyleType::Local );
+    mFromDbWidget->setVisible( type == QgsLayerPropertiesDialog::StyleType::DB );
+    mDeleteButton->setVisible( type == QgsLayerPropertiesDialog::StyleType::DB && mLayer->dataProvider()->isDeleteStyleFromDatabaseSupported() );
 
-    mStyleCategoriesListView->setEnabled( !vl || currentStyleType() != QgsVectorLayerProperties::StyleType::SLD );
+    mStyleCategoriesListView->setEnabled( currentStyleType() != QgsLayerPropertiesDialog::StyleType::SLD );
     updateLoadButtonState();
   } );
-  mStyleTypeComboBox->addItem( tr( "From File" ), QgsVectorLayerProperties::QML ); // QML is used as entry, but works for SLD too, see currentStyleType()
-  mStyleTypeComboBox->addItem( tr( "Default from local database" ), QgsVectorLayerProperties::Local );
+  mStyleTypeComboBox->addItem( tr( "From File" ), QgsLayerPropertiesDialog::QML ); // QML is used as entry, but works for SLD too, see currentStyleType()
+  mStyleTypeComboBox->addItem( tr( "Default from local database" ), QgsLayerPropertiesDialog::Local );
 
-  if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer ) )
+  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
   {
-    if ( vl->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
+    mStyleTypeComboBox->addItem( tr( "From Database (%1)" ).arg( providerName ), QgsLayerPropertiesDialog::StyleType::DB );
+    if ( settings.value( QStringLiteral( "style/lastLoadStyleTypeSelection" ) ) == QgsLayerPropertiesDialog::StyleType::DB )
     {
-      mStyleTypeComboBox->addItem( tr( "From Database (%1)" ).arg( providerName ), QgsVectorLayerProperties::StyleType::DB );
-      if ( settings.value( QStringLiteral( "style/lastLoadStyleTypeSelection" ) ) == QgsVectorLayerProperties::StyleType::DB )
-      {
-        mStyleTypeComboBox->setCurrentIndex( mStyleTypeComboBox->findData( QgsVectorLayerProperties::StyleType::DB ) );
-      }
+      mStyleTypeComboBox->setCurrentIndex( mStyleTypeComboBox->findData( QgsLayerPropertiesDialog::StyleType::DB ) );
     }
   }
 
@@ -124,8 +112,7 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   mFileWidget->setDefaultRoot( myLastUsedDir );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
-    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer );
-    mStyleCategoriesListView->setEnabled( !vl || currentStyleType() != QgsVectorLayerProperties::SLD );
+    mStyleCategoriesListView->setEnabled( currentStyleType() != QgsLayerPropertiesDialog::SLD );
     QgsSettings settings;
     const QFileInfo tmplFileInfo( path );
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), tmplFileInfo.absolutePath() );
@@ -167,14 +154,14 @@ QgsMapLayer::StyleCategories QgsMapLayerLoadStyleDialog::styleCategories() const
   return mModel->categories();
 }
 
-QgsVectorLayerProperties::StyleType QgsMapLayerLoadStyleDialog::currentStyleType() const
+QgsLayerPropertiesDialog::StyleType QgsMapLayerLoadStyleDialog::currentStyleType() const
 {
-  QgsVectorLayerProperties::StyleType type = mStyleTypeComboBox->currentData().value<QgsVectorLayerProperties::StyleType>();
-  if ( type == QgsVectorLayerProperties::QML )
+  QgsLayerPropertiesDialog::StyleType type = mStyleTypeComboBox->currentData().value<QgsLayerPropertiesDialog::StyleType>();
+  if ( type == QgsLayerPropertiesDialog::QML )
   {
     const QFileInfo fi( mFileWidget->filePath() );
     if ( fi.exists() && fi.suffix().compare( QStringLiteral( "sld" ), Qt::CaseInsensitive ) == 0 )
-      type = QgsVectorLayerProperties::SLD;
+      type = QgsLayerPropertiesDialog::SLD;
   }
   return type;
 }
@@ -298,10 +285,6 @@ void QgsMapLayerLoadStyleDialog::accept()
 
 void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
 {
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( mLayer );
-  if ( !vl )
-    return;
-
   QString msgError;
   const QString opInfo = QObject::tr( "Delete style %1 from %2" ).arg( mSelectedStyleName, mLayer->providerType() );
 
@@ -310,7 +293,7 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  vl->deleteStyleFromDatabase( mSelectedStyleId, msgError );
+  mLayer->deleteStyleFromDatabase( mSelectedStyleId, msgError );
   if ( !msgError.isNull() )
   {
     QgsDebugError( opInfo + " failed." );
@@ -328,7 +311,7 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
     QString errorMsg;
     QStringList ids, names, descriptions;
     //get the list of styles in the db
-    const int sectionLimit = vl->listStylesInDatabase( ids, names, descriptions, errorMsg );
+    const int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
     if ( !errorMsg.isNull() )
     {
       QMessageBox::warning( this, tr( "Error occurred while retrieving styles from database" ), errorMsg );
@@ -342,19 +325,12 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
 
 void QgsMapLayerLoadStyleDialog::updateLoadButtonState()
 {
-  const QgsVectorLayerProperties::StyleType type = currentStyleType();
-  if ( mLayer->type() == Qgis::LayerType::Vector )
-  {
-    mLoadButton->setEnabled( ( type == QgsVectorLayerProperties::DB
-                               && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()
-                                  ) ) ||
-                             ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) ||
-                             type == QgsVectorLayerProperties::Local );
-  }
-  else
-  {
-    mLoadButton->setEnabled( !mFileWidget->filePath().isEmpty() );
-  }
+  const QgsLayerPropertiesDialog::StyleType type = currentStyleType();
+  mLoadButton->setEnabled( ( type == QgsLayerPropertiesDialog::DB
+                             && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()
+                                ) ) ||
+                           ( type != QgsLayerPropertiesDialog::DB && !mFileWidget->filePath().isEmpty() ) ||
+                           type == QgsLayerPropertiesDialog::Local );
 }
 
 void QgsMapLayerLoadStyleDialog::showHelp()
