@@ -1361,12 +1361,12 @@ std::unique_ptr< QgsCurve > lineToCurve( const QgsCurve *curve, double distanceT
       std::unique_ptr< QgsCurve > processed = lineToCurve( in->curveAt( i ), distanceTolerance, pointSpacingAngleTolerance );
       if ( processed )
       {
-        // check the simplified type ref of the geometry to see if it consists of just a single linestring component.
-        // If so, we extract this line string along, so that we don't create geometry components which consits of a
-        // compound curve with only linestring parts.
-        if ( QgsWkbTypes::flatType( processed->simplifiedTypeRef()->wkbType() ) == Qgis::WkbType::LineString )
+        if ( const QgsCompoundCurve *processedCompoundCurve = qgsgeometry_cast< const QgsCompoundCurve *>( processed.get() ) )
         {
-          out->addCurve( qgsgeometry_cast< const QgsLineString * >( processed->simplifiedTypeRef() )->clone() );
+          for ( int i = 0; i < processedCompoundCurve->nCurves(); ++i )
+          {
+            out->addCurve( processedCompoundCurve->curveAt( i )->clone() );
+          }
         }
         else
         {
