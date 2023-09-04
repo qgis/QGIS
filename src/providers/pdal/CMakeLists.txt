@@ -257,6 +257,12 @@ if (WITH_GUI)
   add_dependencies(provider_pdal_gui_a ui)
 endif()
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "BSD")
+  set(CMAKE_THREAD_LIBS -pthread)
+  set(CMAKE_USE_PTHREADS ON)
+  set(CMAKE_EXE_LINKER_FLAGS -pthread)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "BSD")
+
 install(TARGETS provider_pdal
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
