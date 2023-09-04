@@ -129,6 +129,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
      */
     static QString expandAuthConfig( const QString &dsName );
 
+    QString storageType() const override;
     QString description() const override;
     QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
     QgsCoordinateReferenceSystem crs() const override;

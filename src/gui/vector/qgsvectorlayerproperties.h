@@ -59,16 +59,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     Q_OBJECT
 
   public:
-#ifndef SIP_RUN
-    enum StyleType
-    {
-      QML,
-      SLD,
-      DB,
-      Local,
-    };
-    Q_ENUM( StyleType )
-#endif
 
     QgsVectorLayerProperties( QgsMapCanvas *canvas, QgsMessageBar *messageBar, QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 

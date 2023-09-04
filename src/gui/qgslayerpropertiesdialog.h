@@ -42,6 +42,17 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
 
   public:
 
+#ifndef SIP_RUN
+    enum StyleType
+    {
+      QML,
+      SLD,
+      DB,
+      Local,
+    };
+    Q_ENUM( StyleType )
+#endif
+
     /**
      * Constructor for QgsLayerPropertiesDialog.
      *

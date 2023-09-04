@@ -92,11 +92,6 @@ same time, some synchronization mechanisms must be used (e.g. mutexes) to preven
 .. versionadded:: 2.4
 %End
 
-    virtual QString storageType() const;
-%Docstring
-Returns the permanent storage type for this layer as a friendly name.
-%End
-
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
 
 %Docstring
@@ -662,6 +657,8 @@ from the ``source`` provider.
 
 .. versionadded:: 3.8.1
 %End
+
+    virtual QString storageType() const;
 
     virtual QgsVectorDataProviderTemporalCapabilities *temporalCapabilities();
 

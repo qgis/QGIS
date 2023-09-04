@@ -93,6 +93,11 @@ Create a new dataprovider with the specified in the ``uri``.
 Additional creation options are specified within the ``options`` value and since QGIS 3.16 creation flags are specified within the ``flags`` value.
 %End
 
+    virtual QString storageType() const;
+%Docstring
+Returns the permanent storage type for this layer as a friendly name.
+%End
+
     virtual QgsCoordinateReferenceSystem crs() const = 0;
 %Docstring
 Returns the coordinate system for the data source.

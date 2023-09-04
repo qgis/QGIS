@@ -135,11 +135,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsAbstractFeatureSource *featureSource() const = 0 SIP_FACTORY;
 
     /**
-     * Returns the permanent storage type for this layer as a friendly name.
-     */
-    virtual QString storageType() const;
-
-    /**
      * Query the provider for features specified in request.
      * \param request feature request describing parameters of features to return
      * \returns iterator for matching features from provider
@@ -642,6 +637,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
 
+    QString storageType() const override;
     QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() override;
     const QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
 

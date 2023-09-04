@@ -52,7 +52,7 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgslabelinggui.h"
-#include "qgsvectorlayersavestyledialog.h"
+#include "qgsmaplayersavestyledialog.h"
 #include "qgsmaplayerloadstyledialog.h"
 #include "qgsmessagebar.h"
 #include "qgssymbolwidgetcontext.h"
@@ -1146,7 +1146,7 @@ void QgsVectorLayerProperties::saveStyleAs()
 {
   if ( !mLayer->dataProvider() )
     return;
-  QgsVectorLayerSaveStyleDialog dlg( mLayer );
+  QgsLayerSaveStyleDialog dlg( mLayer );
   QgsSettings settings;
 
   if ( dlg.exec() )
@@ -1188,7 +1188,7 @@ void QgsVectorLayerProperties::saveStyleAs()
       {
         QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( mLayer->providerType() );
 
-        QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
+        QgsLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
 
         if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), dbSettings.name, errorMessage ) )
         {
@@ -1237,7 +1237,7 @@ void QgsVectorLayerProperties::saveStyleAs()
 
 void QgsVectorLayerProperties::saveMultipleStylesAs()
 {
-  QgsVectorLayerSaveStyleDialog dlg( mLayer );
+  QgsLayerSaveStyleDialog dlg( mLayer );
   dlg.setSaveOnlyCurrentStyle( false );
   QgsSettings settings;
 
@@ -1311,7 +1311,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
                                       .arg( styleName, mLayer->providerType() );
             QString msgError;
 
-            QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
+            QgsLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
 
             // If a name is defined, we add _1 etc. else we use the style name
             QString name { dbSettings.name };
