@@ -35,6 +35,7 @@
 #include <QByteArray>
 
 #include "qgsmeshlayer.h"
+#include "qgs3dutils.h"
 #include "qgsmeshlayerutils.h"
 #include "qgstriangularmesh.h"
 
@@ -170,6 +171,10 @@ void QgsMesh3DMaterial::configure()
 
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass();
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
+
+  Qt3DRender::QCullFace *cullingFace = new Qt3DRender::QCullFace();
+  cullingFace->setMode( Qgs3DUtils::qt3DcullingMode( mSymbol->cullingMode() ) );
+  renderPass->addRenderState( cullingFace );
 
   //Load shader programs
   const QUrl urlVert( QStringLiteral( "qrc:/shaders/mesh/mesh.vert" ) );
