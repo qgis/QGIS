@@ -120,7 +120,7 @@ class HistoryDialog(BASE, WIDGET):
         with open(fileName, 'w', encoding='utf-8') as f:
             for entry in entries:
                 f.write('ALGORITHM{}{}{}{}\n'.format(HistoryDialog.LOG_SEPARATOR,
-                                                     entry.timestamp.toString("YYYY-mm-dd HH:MM:SS"),
+                                                     entry.timestamp.toString("yyyy-MM-dd HH:mm:ss"),
                                                      HistoryDialog.LOG_SEPARATOR,
                                                      entry.entry.get('python_command')))
 
