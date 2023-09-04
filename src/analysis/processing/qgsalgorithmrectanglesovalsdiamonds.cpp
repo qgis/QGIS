@@ -121,7 +121,7 @@ void QgsRectanglesOvalsDiamondsAlgorithm::initParameters( const QVariantMap & )
   rotationParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( rotationParam.release() );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), QgsProcessingParameterNumber::Integer, 5, false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), QgsProcessingParameterNumber::Integer, 36, false, 1 ) );
 }
 
 bool QgsRectanglesOvalsDiamondsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
