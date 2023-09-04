@@ -96,6 +96,20 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      */
     void setEnabled( bool enabled );
 
+    /**
+     * Returns culling mode
+     *
+     * \since QGIS 3.34
+     */
+    Qgs3DTypes::CullingMode cullingMode() const;
+
+    /**
+     * Sets culling mode
+     *
+     * \since QGIS 3.34
+     */
+    void setCullingMode( const Qgs3DTypes::CullingMode &mode );
+
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
     Qgis::AltitudeClamping altitudeClamping() const { return mAltClamping; }
     //! Sets method that determines altitude (whether to clamp to feature to terrain)
@@ -351,6 +365,8 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     bool mAddBackFaces = false;
 
     bool mEnabled = true;
+
+    Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;
 
     //! Triangles settings
     bool mSmoothedTriangles = false;
