@@ -289,8 +289,12 @@ class CORE_EXPORT QgsPointLocator : public QObject
             {
               const QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
               point = QgsGeometryUtils::closestPoint( line, QgsPoint( snappedPoint ) );
+              if ( QgsWkbTypes::isCurvedType( mLayer->wkbType() ) )
+              {
+                point.setX( snappedPoint.x() );
+                point.setY( snappedPoint.y() );
+              }
             }
-
 
             if ( transform.isValid() )
             {
