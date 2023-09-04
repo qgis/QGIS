@@ -109,7 +109,7 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
   }
   if ( !res )
   {
-    // if we can't read the GLTF, then just write the original B3DM content to the output file
+    // if we can't read the GLTF, then just write the original GLTF content to the output file
     QFile outputFile( outputPath );
     if ( !outputFile.open( QFile::WriteOnly ) )
     {
