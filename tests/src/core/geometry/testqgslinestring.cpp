@@ -2438,6 +2438,7 @@ void TestQgsLineString::extend()
   QCOMPARE( ls.pointN( 0 ), QgsPoint( QgsWkbTypes::Point, -1, 0 ) );
   QCOMPARE( ls.pointN( 1 ), QgsPoint( QgsWkbTypes::Point, 1, 0 ) );
   QCOMPARE( ls.pointN( 2 ), QgsPoint( QgsWkbTypes::Point, 1, 3 ) );
+  QCOMPARE( ls.boundingBox(), QgsRectangle( -1, 0, 1, 3 ) );
 }
 
 void TestQgsLineString::addToPainterPath()
