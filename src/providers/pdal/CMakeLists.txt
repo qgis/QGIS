@@ -190,6 +190,7 @@ if (PDAL_2_5_OR_HIGHER)
   target_link_libraries (pdal_wrench PRIVATE
     ${PDAL_LIBRARIES}
     ${GDAL_LIBRARY}
+    Threads::Threads
   )
 
   install(TARGETS pdal_wrench
