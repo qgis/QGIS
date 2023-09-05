@@ -17,7 +17,6 @@
 
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsmesh3dsymbol.h"
-#include "qgsmesh3dsymbol_p.h"
 
 #include "qgsmeshlayer.h"
 #include "qgsxmlutils.h"
