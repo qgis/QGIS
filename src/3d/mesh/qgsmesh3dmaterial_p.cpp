@@ -122,7 +122,7 @@ QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer,
   configure();
 
   // this method has to be called even if there isn't arrows (terrain) because it configures the parameter of shaders
-  // If al the parameters ("uniform" in shaders) are not defined in QGis, the shaders it happens the sahder doesn't work (depend on hardware?)
+  // If all the parameters ("uniform" in shaders) are not defined in QGIS, the shaders sometimes don't work (depends on hardware?)
   configureArrows( layer, timeRange );
 
   eff->addTechnique( mTechnique );
