@@ -1248,6 +1248,19 @@ void TestQgsVertexTool::testAvoidIntersections()
   mLayerPolygon->undoStack()->undo(); // delete feature polygonF_topo1
   QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
 
+  // Make sure the largest part is preserved if multiple parts are created
+  polygonF2.setGeometry( QgsGeometry::fromWkt( "Polygon ((8 3, 9 3, 9 2, 8 2, 8 3))" ) );
+  mLayerPolygon->addFeature( polygonF2 );
+  const QgsFeatureId fidPoly2 = polygonF2.id();
+  mouseClick( 8, 2.75, Qt::LeftButton ); // moves the edge
+  mouseClick( 3, 2.75, Qt::LeftButton );
+
+  QCOMPARE( mLayerPolygon->getFeature( fidPoly2 ).geometry().asWkt( 1 ), "Polygon ((9 3, 9 2, 7 2, 7 3, 9 3))" );
+  mLayerPolygon->undoStack()->undo(); // undo edge move
+  mLayerPolygon->undoStack()->undo(); // undo feature addition
+
+  QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
+
   QgsProject::instance()->setTopologicalEditing( false );
   QgsProject::instance()->setAvoidIntersectionsMode( mode );
 }
