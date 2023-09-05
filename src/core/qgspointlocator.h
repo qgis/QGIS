@@ -287,12 +287,17 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
             if ( !( geom.isNull() || geom.isEmpty() ) )
             {
-              const QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
-              point = QgsGeometryUtils::closestPoint( line, QgsPoint( snappedPoint ) );
+              // when snapping to a curve we need to use real geometry in order to have correct location
+              // of the snapped point, see https://github.com/qgis/QGIS/issues/53197.
+              // In other cases it is ok to use only a segment to speedup calculations.
               if ( QgsWkbTypes::isCurvedType( mLayer->wkbType() ) )
               {
-                point.setX( snappedPoint.x() );
-                point.setY( snappedPoint.y() );
+                point = QgsGeometryUtils::closestPoint( *geom.constGet(), QgsPoint( snappedPoint ) );
+              }
+              else
+              {
+                const QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
+                point = QgsGeometryUtils::closestPoint( line, QgsPoint( snappedPoint ) );
               }
             }
 
