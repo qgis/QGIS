@@ -217,8 +217,8 @@ void QgsLayoutMouseHandles::drawMovePreview( QPainter *painter )
   }
 
   double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( nullptr, painter ) * 25.4;
-  double widthInPixels = boundingRect().width() * destinationDpi;
-  double heightInPixels = boundingRect().height() * destinationDpi;
+  double widthInPixels = boundingRect().width() * QgsLayoutUtils::scaleFactorFromItemStyle( nullptr, painter );
+  double heightInPixels = boundingRect().height() * QgsLayoutUtils::scaleFactorFromItemStyle( nullptr, painter );
 
   // limit size of image for better performance
   if ( ( widthInPixels > CACHE_SIZE_LIMIT || heightInPixels > CACHE_SIZE_LIMIT ) )
@@ -259,7 +259,6 @@ void QgsLayoutMouseHandles::drawMovePreview( QPainter *painter )
     expandItemList( selectedItems, itemsToDraw );
 
     // Draw a semi-transparent version of the selected items
-    // painter->setOpacity( 0.5 );
     // the MouseHandles can be rotated if a single rotated item is selected, so we need
     // so we need to compensate for the rotation before applying the translation offset
     p.rotate( -rotation() );
