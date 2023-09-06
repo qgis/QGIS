@@ -358,20 +358,22 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   {
     const QgsVector3D tileTranslationEcef = content.rtcCenter + QgsGltfUtils::extractTileTranslation( model );
     const tinygltf::Scene &scene = model.scenes[model.defaultScene];
-    const int nodeIndex = scene.nodes[0];
-    const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
-    const std::unique_ptr< QMatrix4x4 > gltfLocalTransform = QgsGltfUtils::parseNodeTransform( gltfNode );
-
-    if ( gltfNode.mesh >= 0 )
+    for ( int nodeIndex : scene.nodes )
     {
-      const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
+      const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
+      const std::unique_ptr< QMatrix4x4 > gltfLocalTransform = QgsGltfUtils::parseNodeTransform( gltfNode );
 
-      for ( const tinygltf::Primitive &primitive : mesh.primitives )
+      if ( gltfNode.mesh >= 0 )
       {
-        if ( context.renderContext().renderingStopped() )
-          break;
+        const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
 
-        renderPrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform.get(), contentUri, context );
+        for ( const tinygltf::Primitive &primitive : mesh.primitives )
+        {
+          if ( context.renderContext().renderingStopped() )
+            break;
+
+          renderPrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform.get(), contentUri, context );
+        }
       }
     }
   }

@@ -491,20 +491,15 @@ static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUti
     return nullptr;
   }
 
-  if ( scene.nodes.size() > 1 )
-  {
-    // TODO: handle multiple root nodes
-    if ( errors )
-      *errors << "Scene contains multiple nodes: only loading the first one!";
-  }
-
   const QgsVector3D tileTranslationEcef = QgsGltfUtils::extractTileTranslation( model );
 
-  int rootNodeIndex = scene.nodes[0];
-  const QVector<Qt3DCore::QEntity *> entities = parseNode( model, rootNodeIndex, transform, tileTranslationEcef, baseUri, QMatrix4x4(), errors );
   Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
-  for ( Qt3DCore::QEntity *e : entities )
-    e->setParent( rootEntity );
+  for ( const int nodeIndex : scene.nodes )
+  {
+    const QVector<Qt3DCore::QEntity *> entities = parseNode( model, nodeIndex, transform, tileTranslationEcef, baseUri, QMatrix4x4(), errors );
+    for ( Qt3DCore::QEntity *e : entities )
+      e->setParent( rootEntity );
+  }
   return rootEntity;
 }
 
