@@ -266,7 +266,7 @@ namespace QgsRayCastingUtils
     const QVector3D n = QVector3D::crossProduct( ab, ac );
     const float d = QVector3D::dotProduct( qp, n );
 
-    if ( d <= 0.0f )
+    if ( d <= 0.0f || std::isnan( d ) )
       return false;
 
     const QVector3D ap = ray.origin() - a;
@@ -359,15 +359,15 @@ namespace QgsRayCastingUtils
       const QByteArray indexBuf = indexAttr->buffer()->data();
       if ( indexAttr->vertexBaseType() == Qt3DQAttribute::UnsignedByte )
       {
-        indexPtrUChar = reinterpret_cast<const uchar *>( indexBuf.constData() );
+        indexPtrUChar = reinterpret_cast<const uchar *>( indexBuf.constData() + indexAttr->byteOffset() );
       }
       else if ( indexAttr->vertexBaseType() == Qt3DQAttribute::UnsignedShort )
       {
-        indexPtrUShort = reinterpret_cast<const ushort *>( indexBuf.constData() );
+        indexPtrUShort = reinterpret_cast<const ushort *>( indexBuf.constData() + indexAttr->byteOffset() );
       }
       else if ( indexAttr->vertexBaseType() == Qt3DQAttribute::UnsignedInt )
       {
-        indexPtrUInt = reinterpret_cast<const uint *>( indexBuf.constData() );
+        indexPtrUInt = reinterpret_cast<const uint *>( indexBuf.constData() + indexAttr->byteOffset() );
       }
       else
       {
