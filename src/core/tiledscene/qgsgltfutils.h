@@ -30,6 +30,7 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 #include <memory>
 #include <QVector>
@@ -81,6 +82,7 @@ class CORE_EXPORT QgsGltfUtils
                                           const QgsCoordinateTransform *ecefToTargetCrs,
                                           const QgsVector3D &tileTranslationEcef,
                                           const QMatrix4x4 *nodeTransform,
+                                          Qgis::Axis gltfUpAxis,
                                           QVector<double> &vx, QVector<double> &vy, QVector<double> &vz );
 
     /**
@@ -132,7 +134,7 @@ class CORE_EXPORT QgsGltfUtils
      * or by taking translation from the root node. The returned offset should be
      * in ECEF coordinates.
      */
-    static QgsVector3D extractTileTranslation( tinygltf::Model &model );
+    static QgsVector3D extractTileTranslation( tinygltf::Model &model, Qgis::Axis upAxis = Qgis::Axis::Y );
 
     /**
      * Helper function to allow tinygltf to read images, based on QImage readers.

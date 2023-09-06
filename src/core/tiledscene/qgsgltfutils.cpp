@@ -19,6 +19,7 @@
 #include "qgsexception.h"
 #include "qgsmatrix4x4.h"
 #include "qgsconfig.h"
+#include "qgslogger.h"
 
 #include <QImage>
 #include <QMatrix4x4>
@@ -42,7 +43,7 @@
 ///@cond PRIVATE
 
 
-bool QgsGltfUtils::accessorToMapCoordinates( const tinygltf::Model &model, int accessorIndex, const QgsMatrix4x4 &tileTransform, const QgsCoordinateTransform *ecefToTargetCrs, const QgsVector3D &tileTranslationEcef, const QMatrix4x4 *nodeTransform, QVector<double> &vx, QVector<double> &vy, QVector<double> &vz )
+bool QgsGltfUtils::accessorToMapCoordinates( const tinygltf::Model &model, int accessorIndex, const QgsMatrix4x4 &tileTransform, const QgsCoordinateTransform *ecefToTargetCrs, const QgsVector3D &tileTranslationEcef, const QMatrix4x4 *nodeTransform, Qgis::Axis gltfUpAxis, QVector<double> &vx, QVector<double> &vy, QVector<double> &vz )
 {
   const tinygltf::Accessor &accessor = model.accessors[accessorIndex];
   const tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
@@ -70,11 +71,30 @@ bool QgsGltfUtils::accessorToMapCoordinates( const tinygltf::Model &model, int a
     if ( nodeTransform )
       vOrig = nodeTransform->map( vOrig );
 
-    // go from y-up to z-up according to 3D Tiles spec
-    QVector3D vFlip( vOrig.x(), -vOrig.z(), vOrig.y() );
+    QgsVector3D v;
+    switch ( gltfUpAxis )
+    {
+      case Qgis::Axis::X:
+      {
+        QgsDebugError( QStringLiteral( "X up translation not yet supported" ) );
+        v = tileTransform.map( tileTranslationEcef );
+        break;
+      }
 
-    // apply also transform of the node
-    QgsVector3D v = tileTransform.map( QgsVector3D( vFlip ) + tileTranslationEcef );
+      case Qgis::Axis::Y:
+      {
+        // go from y-up to z-up according to 3D Tiles spec
+        QVector3D vFlip( vOrig.x(), -vOrig.z(), vOrig.y() );
+        v = tileTransform.map( QgsVector3D( vFlip ) + tileTranslationEcef );
+        break;
+      }
+
+      case Qgis::Axis::Z:
+      {
+        v = tileTransform.map( QgsVector3D( vOrig ) + tileTranslationEcef );
+        break;
+      }
+    }
 
     *vxOut++ = v.x();
     *vyOut++ = v.y();
@@ -195,7 +215,7 @@ std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( const tinygltf::No
 }
 
 
-QgsVector3D QgsGltfUtils::extractTileTranslation( tinygltf::Model &model )
+QgsVector3D QgsGltfUtils::extractTileTranslation( tinygltf::Model &model, Qgis::Axis upAxis )
 {
   const tinygltf::Scene &scene = model.scenes[model.defaultScene];
 
@@ -228,9 +248,25 @@ QgsVector3D QgsGltfUtils::extractTileTranslation( tinygltf::Model &model )
     // this will ensure that we keep double precision rather than losing precision when dealing with floats
     if ( rootTranslation.length() > 1e6 )
     {
-      // we flip Y/Z axes here because GLTF uses Y-up convention, while 3D Tiles use Z-up convention
-      tileTranslationEcef = QgsVector3D( rootTranslation.x(), -rootTranslation.z(), rootTranslation.y() );
-      rootNode.translation[0] = rootNode.translation[1] = rootNode.translation[2] = 0;
+      switch ( upAxis )
+      {
+        case Qgis::Axis::X:
+          QgsDebugError( QStringLiteral( "X up translation not yet supported" ) );
+          break;
+        case Qgis::Axis::Y:
+        {
+          // we flip Y/Z axes here because GLTF uses Y-up convention, while 3D Tiles use Z-up convention
+          tileTranslationEcef = QgsVector3D( rootTranslation.x(), -rootTranslation.z(), rootTranslation.y() );
+          rootNode.translation[0] = rootNode.translation[1] = rootNode.translation[2] = 0;
+          break;
+        }
+        case Qgis::Axis::Z:
+        {
+          tileTranslationEcef = QgsVector3D( rootTranslation.x(), rootTranslation.y(), rootTranslation.z() );
+          rootNode.translation[0] = rootNode.translation[1] = rootNode.translation[2] = 0;
+          break;
+        }
+      }
     }
   }
 

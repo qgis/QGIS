@@ -1722,6 +1722,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( CoordinateOrder )
 
     /**
+     * Cartesian axes.
+     *
+     * \since QGIS 3.34
+     */
+    enum class Axis : int
+    {
+      X, //!< X-axis
+      Y, //!< Y-axis
+      Z //!< Z-axis
+    };
+    Q_ENUM( Axis )
+
+    /**
      * Flags for annotation items.
      *
      * \since QGIS 3.22

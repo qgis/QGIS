@@ -356,7 +356,8 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   const bool res = QgsGltfUtils::loadGltfModel( content.gltf, model, &gltfErrors, &gltfWarnings );
   if ( res )
   {
-    const QgsVector3D tileTranslationEcef = content.rtcCenter + QgsGltfUtils::extractTileTranslation( model );
+    const QgsVector3D tileTranslationEcef = content.rtcCenter + QgsGltfUtils::extractTileTranslation( model,
+                                            static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() ) );
     const tinygltf::Scene &scene = model.scenes[model.defaultScene];
     for ( int nodeIndex : scene.nodes )
     {
@@ -472,6 +473,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
     &mSceneToMapTransform,
     tileTranslationEcef,
     gltfLocalTransform,
+    static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
     x, y, z
   );
 
@@ -718,6 +720,7 @@ void QgsTiledSceneLayerRenderer::renderLinePrimitive( const tinygltf::Model &mod
     &mSceneToMapTransform,
     tileTranslationEcef,
     gltfLocalTransform,
+    static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
     x, y, z
   );
 

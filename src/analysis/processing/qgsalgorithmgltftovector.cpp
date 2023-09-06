@@ -101,6 +101,7 @@ std::unique_ptr< QgsAbstractGeometry > extractTriangles(
     &ecefTransform,
     tileTranslationEcef,
     gltfLocalTransform,
+    Qgis::Axis::Y,
     x, y, z
   );
 
@@ -203,6 +204,7 @@ std::unique_ptr< QgsAbstractGeometry > extractLines(
     &ecefTransform,
     tileTranslationEcef,
     gltfLocalTransform,
+    Qgis::Axis::Y,
     x, y, z
   );
 
