@@ -44,7 +44,11 @@ void QgsGraphicsViewMouseHandles::paintInternal( QPainter *painter, bool showHan
 
   if ( showTemporaryBoundingBoxes && mIsDragging )
   {
-    drawMovePreview( painter );
+    // Do not draw the preview if the user just clicked without moving the mouse
+    if ( transform().dx() != 0 || transform().dy() != 0 )
+    {
+      drawMovePreview( painter );
+    }
   }
 
   if ( showStaticBoundingBoxes )
