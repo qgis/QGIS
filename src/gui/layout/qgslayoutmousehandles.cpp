@@ -217,11 +217,8 @@ void QgsLayoutMouseHandles::drawMovePreview( QPainter *painter )
   }
 
   double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( nullptr, painter ) * 25.4;
-  double widthInPixels = 0;
-  double heightInPixels = 0;
-
-  widthInPixels = boundingRect().width() * QgsLayoutUtils::scaleFactorFromItemStyle( nullptr, painter );
-  heightInPixels = boundingRect().height() * QgsLayoutUtils::scaleFactorFromItemStyle( nullptr, painter );
+  double widthInPixels = boundingRect().width() * destinationDpi;
+  double heightInPixels = boundingRect().height() * destinationDpi;
 
   // limit size of image for better performance
   if ( ( widthInPixels > CACHE_SIZE_LIMIT || heightInPixels > CACHE_SIZE_LIMIT ) )
