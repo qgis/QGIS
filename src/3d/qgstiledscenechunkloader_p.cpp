@@ -91,6 +91,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
     entityTransform.zValueScale = zValueScale;
     entityTransform.zValueOffset = zValueOffset;
+    entityTransform.gltfUpAxis = static_cast< Qgis::Axis >( mTile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() );
 
     QStringList errors;
     mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );

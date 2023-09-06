@@ -164,6 +164,20 @@ class CORE_EXPORT QgsTiledSceneTile
      */
     void setBaseUrl( const QUrl &baseUrl );
 
+    /**
+     * Returns additional metadata attached to the tile.
+     *
+     * \see setMetadata()
+     */
+    QVariantMap metadata() const;
+
+    /**
+     * Sets additional \a metadata attached to the tile.
+     *
+     * \see metadata()
+     */
+    void setMetadata( const QVariantMap &metadata );
+
   private:
     long long mId = -1;
     Qgis::TileRefinementProcess mRefinementProcess = Qgis::TileRefinementProcess::Replacement;
@@ -172,6 +186,7 @@ class CORE_EXPORT QgsTiledSceneTile
     QVariantMap mResources;
     double mGeometricError = 0;
     QUrl mBaseUrl;
+    QVariantMap mMetadata;
 
 };
 

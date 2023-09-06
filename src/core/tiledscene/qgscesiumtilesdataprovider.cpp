@@ -87,8 +87,8 @@ class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
       const QgsHttpHeaders &headers,
       const QgsCoordinateTransformContext &transformContext );
 
-    std::unique_ptr< QgsTiledSceneTile > tileFromJson( const json &node, const QUrl &baseUrl, const QgsTiledSceneTile *parent );
-    QgsTiledSceneNode *nodeFromJson( const json &node, const QUrl &baseUrl, QgsTiledSceneNode *parent );
+    std::unique_ptr< QgsTiledSceneTile > tileFromJson( const json &node, const QUrl &baseUrl, const QgsTiledSceneTile *parent, Qgis::Axis gltfUpAxis );
+    QgsTiledSceneNode *nodeFromJson( const json &node, const QUrl &baseUrl, QgsTiledSceneNode *parent, Qgis::Axis gltfUpAxis );
     void refineNodeFromJson( QgsTiledSceneNode *node, const QUrl &baseUrl, const json &json );
 
     QgsTiledSceneTile rootTile() const final;
@@ -153,19 +153,49 @@ class QgsCesiumTilesDataProviderSharedData
 // QgsCesiumTiledSceneIndex
 //
 
+Qgis::Axis axisFromJson( const json &json )
+{
+  const std::string gltfUpAxisString = json.get<std::string>();
+  if ( gltfUpAxisString == "z" || gltfUpAxisString == "Z" )
+  {
+    return Qgis::Axis::Z;
+  }
+  else if ( gltfUpAxisString == "y" || gltfUpAxisString == "Y" )
+  {
+    return Qgis::Axis::Y;
+  }
+  else if ( gltfUpAxisString == "x" || gltfUpAxisString == "X" )
+  {
+    return Qgis::Axis::X;
+  }
+  QgsDebugError( QStringLiteral( "Unsupported gltfUpAxis value: %1" ).arg( QString::fromStdString( gltfUpAxisString ) ) );
+  return Qgis::Axis::Y;
+}
+
 QgsCesiumTiledSceneIndex::QgsCesiumTiledSceneIndex( const json &tileset, const QUrl &rootUrl, const QString &authCfg, const QgsHttpHeaders &headers, const QgsCoordinateTransformContext &transformContext )
   : mTransformContext( transformContext )
   , mAuthCfg( authCfg )
   , mHeaders( headers )
 {
-  mRootNode.reset( nodeFromJson( tileset[ "root" ], rootUrl, nullptr ) );
+  Qgis::Axis gltfUpAxis = Qgis::Axis::Y;
+  if ( tileset.contains( "asset" ) )
+  {
+    const auto &assetJson = tileset["asset"];
+    if ( assetJson.contains( "gltfUpAxis" ) )
+    {
+      gltfUpAxis = axisFromJson( assetJson["gltfUpAxis"] );
+    }
+  }
+
+  mRootNode.reset( nodeFromJson( tileset[ "root" ], rootUrl, nullptr, gltfUpAxis ) );
 }
 
-std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( const json &json, const QUrl &baseUrl, const QgsTiledSceneTile *parent )
+std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( const json &json, const QUrl &baseUrl, const QgsTiledSceneTile *parent, Qgis::Axis gltfUpAxis )
 {
   std::unique_ptr< QgsTiledSceneTile > tile = std::make_unique< QgsTiledSceneTile >( mNextTileId++ );
 
   tile->setBaseUrl( baseUrl );
+  tile->setMetadata( {{ QStringLiteral( "gltfUpAxis" ), static_cast< int >( gltfUpAxis ) }} );
 
   QgsMatrix4x4 transform;
   if ( json.contains( "transform" ) && !json["transform"].is_null() )
@@ -301,9 +331,9 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
   return tile;
 }
 
-QgsTiledSceneNode *QgsCesiumTiledSceneIndex::nodeFromJson( const json &json, const QUrl &baseUrl, QgsTiledSceneNode *parent )
+QgsTiledSceneNode *QgsCesiumTiledSceneIndex::nodeFromJson( const json &json, const QUrl &baseUrl, QgsTiledSceneNode *parent, Qgis::Axis gltfUpAxis )
 {
-  std::unique_ptr< QgsTiledSceneTile > tile = tileFromJson( json, baseUrl, parent ? parent->tile() : nullptr );
+  std::unique_ptr< QgsTiledSceneTile > tile = tileFromJson( json, baseUrl, parent ? parent->tile() : nullptr, gltfUpAxis );
   std::unique_ptr< QgsTiledSceneNode > newNode = std::make_unique< QgsTiledSceneNode >( tile.release() );
   mNodeMap.insert( newNode->tile()->id(), newNode.get() );
 
@@ -314,7 +344,7 @@ QgsTiledSceneNode *QgsCesiumTiledSceneIndex::nodeFromJson( const json &json, con
   {
     for ( const auto &childJson : json["children"] )
     {
-      nodeFromJson( childJson, baseUrl, newNode.get() );
+      nodeFromJson( childJson, baseUrl, newNode.get(), gltfUpAxis );
     }
   }
 
@@ -323,11 +353,24 @@ QgsTiledSceneNode *QgsCesiumTiledSceneIndex::nodeFromJson( const json &json, con
 
 void QgsCesiumTiledSceneIndex::refineNodeFromJson( QgsTiledSceneNode *node, const QUrl &baseUrl, const json &json )
 {
-  std::unique_ptr< QgsTiledSceneTile > newTile = tileFromJson( json, baseUrl, node->tile() );
+  const auto &rootTileJson = json["root"];
+
+  Qgis::Axis gltfUpAxis = Qgis::Axis::Y;
+  if ( json.contains( "asset" ) )
+  {
+    const auto &assetJson = json["asset"];
+    if ( assetJson.contains( "gltfUpAxis" ) )
+    {
+      gltfUpAxis = axisFromJson( assetJson["gltfUpAxis"] );
+    }
+  }
+
+  std::unique_ptr< QgsTiledSceneTile > newTile = tileFromJson( rootTileJson, baseUrl, node->tile(), gltfUpAxis );
   // copy just the resources from the retrieved tileset to the refined node. We assume all the rest of the tile content
   // should be the same between the node being refined and the root node of the fetched sub dataset!
   // (Ie the bounding volume, geometric error, etc).
   node->tile()->setResources( newTile->resources() );
+
 
   // root tile of the sub dataset may have transform as well, we need to bring it back
   // (actually even the referencing tile may have transform - if that's the case,
@@ -335,11 +378,11 @@ void QgsCesiumTiledSceneIndex::refineNodeFromJson( QgsTiledSceneNode *node, cons
   if ( newTile->transform() )
     node->tile()->setTransform( *newTile->transform() );
 
-  if ( json.contains( "children" ) )
+  if ( rootTileJson.contains( "children" ) )
   {
-    for ( const auto &childJson : json["children"] )
+    for ( const auto &childJson : rootTileJson["children"] )
     {
-      nodeFromJson( childJson, baseUrl, node );
+      nodeFromJson( childJson, baseUrl, node, gltfUpAxis );
     }
   }
 }
@@ -580,7 +623,7 @@ bool QgsCesiumTiledSceneIndex::fetchHierarchy( long long id, QgsFeedback *feedba
     {
       const auto subTileJson = json::parse( subTile.toStdString() );
       QMutexLocker locker( &mLock );
-      refineNodeFromJson( it.value(), QUrl( contentUri ), subTileJson["root"] );
+      refineNodeFromJson( it.value(), QUrl( contentUri ), subTileJson );
       mTileContentFormats.insert( id, TileContentFormat::Json );
       return true;
     }

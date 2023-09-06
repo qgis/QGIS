@@ -1651,6 +1651,13 @@ Qgis.CoordinateOrder.__doc__ = "Order of coordinates.\n\n.. versionadded:: 3.26\
 # --
 Qgis.CoordinateOrder.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.Axis.X.__doc__ = "X-axis"
+Qgis.Axis.Y.__doc__ = "Y-axis"
+Qgis.Axis.Z.__doc__ = "Z-axis"
+Qgis.Axis.__doc__ = "Cartesian axes.\n\n.. versionadded:: 3.34\n\n" + '* ``X``: ' + Qgis.Axis.X.__doc__ + '\n' + '* ``Y``: ' + Qgis.Axis.Y.__doc__ + '\n' + '* ``Z``: ' + Qgis.Axis.Z.__doc__
+# --
+Qgis.Axis.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ = "Item's bounding box will vary depending on map scale"
 Qgis.AnnotationItemFlag.__doc__ = "Flags for annotation items.\n\n.. versionadded:: 3.22\n\n" + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__
 # --

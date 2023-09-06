@@ -1037,6 +1037,13 @@ The development version
       YX,
     };
 
+    enum class Axis
+    {
+      X,
+      Y,
+      Z
+    };
+
     enum class AnnotationItemFlag
     {
       ScaleDependentBoundingBox,

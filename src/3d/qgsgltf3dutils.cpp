@@ -156,7 +156,7 @@ static Qt3DQAttribute *reprojectPositions( tinygltf::Model &model, int accessorI
   tinygltf::Accessor &accessor = model.accessors[accessorIndex];
 
   QVector<double> vx, vy, vz;
-  bool res = QgsGltfUtils::accessorToMapCoordinates( model, accessorIndex, transform.tileTransform, transform.ecefToTargetCrs, tileTranslationEcef, matrix, vx, vy, vz );
+  bool res = QgsGltfUtils::accessorToMapCoordinates( model, accessorIndex, transform.tileTransform, transform.ecefToTargetCrs, tileTranslationEcef, matrix, transform.gltfUpAxis, vx, vy, vz );
   if ( !res )
     return nullptr;
 
