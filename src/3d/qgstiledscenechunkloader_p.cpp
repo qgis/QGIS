@@ -38,6 +38,9 @@ static bool hasLargeBounds( const QgsTiledSceneTile &t )
   if ( t.geometricError() > 1e6 )
     return true;
 
+  if ( t.boundingVolume().box().isNull() )
+    return true;
+
   const QgsVector3D size = t.boundingVolume().box().size();
   return size.x() > 1e5 || size.y() > 1e5 || size.z() > 1e5;
 }

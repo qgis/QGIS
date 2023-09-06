@@ -194,39 +194,46 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
     QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( boundingVolume[ "region" ] );
     if ( !rootRegion.isNull() )
     {
-      // we need to transform regions from EPSG:4979 to EPSG:4978
-      QVector< QgsVector3D > corners = rootRegion.corners();
-
-      QVector< double > x;
-      x.reserve( 8 );
-      QVector< double > y;
-      y.reserve( 8 );
-      QVector< double > z;
-      z.reserve( 8 );
-      for ( int i = 0; i < 8; ++i )
+      if ( rootRegion.width() > 20 || rootRegion.height() > 20 )
       {
-        const QgsVector3D &corner = corners[i];
-        x.append( corner.x() );
-        y.append( corner.y() );
-        z.append( corner.z() );
+        // treat very large regions as global -- these will not transform to EPSG:4978
       }
-      QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ),  QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ), mTransformContext );
-      ct.setBallparkTransformsAreAppropriate( true );
-      try
+      else
       {
-        ct.transformInPlace( x, y, z );
-      }
-      catch ( QgsCsException & )
-      {
-        QgsDebugError( QStringLiteral( "Cannot transform region bounding volume" ) );
-      }
+        // we need to transform regions from EPSG:4979 to EPSG:4978
+        QVector< QgsVector3D > corners = rootRegion.corners();
 
-      const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
-      const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
-      const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
-      volume = QgsTiledSceneBoundingVolume( QgsOrientedBox3D::fromBox3D( QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second ) ) );
+        QVector< double > x;
+        x.reserve( 8 );
+        QVector< double > y;
+        y.reserve( 8 );
+        QVector< double > z;
+        z.reserve( 8 );
+        for ( int i = 0; i < 8; ++i )
+        {
+          const QgsVector3D &corner = corners[i];
+          x.append( corner.x() );
+          y.append( corner.y() );
+          z.append( corner.z() );
+        }
+        QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ),  QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ), mTransformContext );
+        ct.setBallparkTransformsAreAppropriate( true );
+        try
+        {
+          ct.transformInPlace( x, y, z );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugError( QStringLiteral( "Cannot transform region bounding volume" ) );
+        }
 
-      // note that matrix transforms are NOT applied to region bounding volumes!
+        const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
+        const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
+        const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
+        volume = QgsTiledSceneBoundingVolume( QgsOrientedBox3D::fromBox3D( QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second ) ) );
+
+        // note that matrix transforms are NOT applied to region bounding volumes!
+      }
     }
   }
   else if ( boundingVolume.contains( "box" ) )
@@ -407,7 +414,7 @@ QVector< long long > QgsCesiumTiledSceneIndex::getTiles( const QgsTiledSceneRequ
 
     // check filter box first -- if the node doesn't intersect, then don't include the node and don't traverse
     // to its children
-    if ( !request.filterBox().isNull() && !tile->boundingVolume().intersects( request.filterBox() ) )
+    if ( !request.filterBox().isNull() && !tile->boundingVolume().box().isNull() && !tile->boundingVolume().intersects( request.filterBox() ) )
       return;
 
     // TODO -- option to filter out nodes without content
