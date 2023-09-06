@@ -196,8 +196,8 @@ typedef enum {
 } Type;
 
 typedef enum {
-  PERMISSIVE,
-  DEFAULT // Strict parsing
+  Permissive,
+  Strict
 } ParseStrictness;
 
 static inline int32_t GetComponentSizeInBytes(uint32_t componentType) {
@@ -1562,7 +1562,7 @@ class TinyGLTF {
   size_t bin_size_ = 0;
   bool is_binary_ = false;
 
-  ParseStrictness strictness_ = DEFAULT;
+  ParseStrictness strictness_ = ParseStrictness::Strict;
 
   bool serialize_default_values_ = false;  ///< Serialize default values?
 
@@ -4909,7 +4909,7 @@ static bool ParseDracoExtension(Primitive *primitive, Model *model,
 
   // create new bufferView for indices
   if (primitive->indices >= 0) {
-    if (strictness == ParseStrictness::PERMISSIVE) {
+    if (strictness == ParseStrictness::Permissive) {
       const draco::PointIndex::ValueType numPoint = mesh->num_points();
       // handle the situation where the stored component type does not match the
       // required type for the actual number of stored points
@@ -5254,7 +5254,7 @@ static bool ParseMaterial(Material *material, std::string *err, std::string *war
   if (ParseNumberArrayProperty(&material->emissiveFactor, err, o,
                                "emissiveFactor",
                                /* required */ false)) {
-    if (strictness==ParseStrictness::PERMISSIVE && material->emissiveFactor.size() == 4) {
+    if (strictness==ParseStrictness::Permissive && material->emissiveFactor.size() == 4) {
       if (warn) {
         (*warn) +=
             "Array length of `emissiveFactor` parameter in "
@@ -6733,10 +6733,17 @@ bool TinyGLTF::LoadBinaryFromMemory(Model *model, std::string *err,
     }
 
     if ((chunk1_length % 4) != 0) {
-      if (err) {
-        (*err) = "BIN Chunk end does not aligned to a 4-byte boundary.";
+      if (strictness_==ParseStrictness::Permissive) {
+        if (warn) {
+          (*warn) += "BIN Chunk end is not aligned to a 4-byte boundary.\n";
+        }
       }
-      return false;
+      else {
+        if (err) {
+          (*err) = "BIN Chunk end is not aligned to a 4-byte boundary.";
+        }
+        return false;
+      }
     }
 
     if (uint64_t(chunk1_length) + header_and_json_size > uint64_t(length)) {
