@@ -26,6 +26,7 @@ class TestQgsRectangle: public QObject
     Q_OBJECT
   private slots:
     void isEmpty();
+    void isNull();
     void fromWkt();
     void constructor();
     void constructorTwoPoints();
@@ -65,6 +66,16 @@ void TestQgsRectangle::isEmpty()
   r = QgsRectangle( 2, 2, 3, 4 );
   r.setYMaximum( 1 );
   QVERIFY( r.isEmpty() );
+}
+
+void TestQgsRectangle::isNull()
+{
+  QVERIFY( QgsRectangle().isNull() );
+  QVERIFY( QgsRectangle( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(),
+                         std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() ).isNull() );
+  QVERIFY( QgsRectangle( 0.0, 0.0, 0.0, 0.0 ).isNull() );
+  QVERIFY( !QgsRectangle( std::numeric_limits<double>::max(), -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), -std::numeric_limits<double>::max() ).isNull() );
+  QVERIFY( !QgsRectangle( 1, 2, 2, 1 ).isNull() );
 }
 
 void TestQgsRectangle::fromWkt()
