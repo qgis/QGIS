@@ -609,10 +609,10 @@ double QgsLayoutItemMap::estimatedFrameBleed() const
     for ( int i = 0; i < mGridStack->size(); ++i )
     {
       const QgsLayoutItemMapGrid *grid = qobject_cast<QgsLayoutItemMapGrid *>( mGridStack->item( i ) );
-      if ( grid->enabled() )
+      if ( grid->mEvaluatedEnabled )
       {
         // Grid bleed is the grid frame width + grid frame offset + half the pen width
-        frameBleed = std::max( frameBleed, grid->frameWidth() + grid->frameMargin() + grid->framePenSize() / 2.0 );
+        frameBleed = std::max( frameBleed, grid->mEvaluatedGridFrameWidth + grid->mEvaluatedGridFrameMargin + grid->mEvaluatedGridFrameLineThickness / 2.0 );
       }
     }
   }
