@@ -266,5 +266,3 @@ void QgsMesh3DSymbolWidget::enableArrowSettings( bool isEnable )
 {
   mGroupBoxArrowsSettings->setVisible( isEnable );
 }
-
-
