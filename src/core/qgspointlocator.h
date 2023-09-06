@@ -290,7 +290,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
               // when snapping to a curve we need to use real geometry in order to have correct location
               // of the snapped point, see https://github.com/qgis/QGIS/issues/53197.
               // In other cases it is ok to use only a segment to speedup calculations.
-              if ( QgsWkbTypes::isCurvedType( mLayer->wkbType() ) )
+              if ( QgsWkbTypes::isCurvedType( geom.wkbType() ) )
               {
                 point = QgsGeometryUtils::closestPoint( *geom.constGet(), QgsPoint( snappedPoint ) );
               }
