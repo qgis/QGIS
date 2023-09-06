@@ -24,7 +24,11 @@ QgsTiledSceneNode::QgsTiledSceneNode( QgsTiledSceneTile *tile )
 
 }
 
-QgsTiledSceneNode::~QgsTiledSceneNode() = default;
+QgsTiledSceneNode::~QgsTiledSceneNode()
+{
+  qDeleteAll( mChildren );
+  mChildren.clear();
+}
 
 QgsTiledSceneTile *QgsTiledSceneNode::tile()
 {
