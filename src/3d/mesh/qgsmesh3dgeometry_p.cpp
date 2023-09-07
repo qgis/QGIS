@@ -319,9 +319,9 @@ void QgsMeshDataset3DGeometry::prepareData()
 
 QgsMeshTerrain3DGeometry::QgsMeshTerrain3DGeometry( const QgsTriangularMesh &triangularMesh,
     const QgsVector3D &origin,
-    double verticalSacle,
+    double verticalScale,
     Qt3DCore::QNode *parent )
-  : QgsMesh3DGeometry( triangularMesh, origin, verticalSacle, parent )
+  : QgsMesh3DGeometry( triangularMesh, origin, verticalScale, parent )
 {
 
   const int stride = ( 3 /*position*/ +
