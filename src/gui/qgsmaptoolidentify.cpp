@@ -1069,19 +1069,12 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   {
     // Try to determine the clicked column/row (0-based) in the raster
     const QgsRectangle extent = dprovider->extent();
-    const double xres = layer->rasterUnitsPerPixelX();
-    const double yres = layer->rasterUnitsPerPixelY();
 
     const int rasterCol = static_cast< int >( std::floor( ( point.x() - extent.xMinimum() ) / xres ) );
     const int rasterRow = static_cast< int >( std::floor( ( extent.yMaximum() - point.y() ) / yres ) );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      derivedAttributes.unite( tr( "(clicked raster column)" ), QLocale().toString( rasterCol ) );
-      derivedAttributes.unite( tr( "(clicked raster row)" ), QLocale().toString( rasterRow ) );
-#else
-      derivedAttributes.insert( tr( "(clicked raster column)" ), QLocale().toString( rasterCol ) );
-      derivedAttributes.insert( tr( "(clicked raster row)" ), QLocale().toString( rasterRow ) );
-#endif
+    derivedAttributes.insert( tr( "Column (0-based)" ), QLocale().toString( rasterCol ) );
+    derivedAttributes.insert( tr( "Row (0-based)" ), QLocale().toString( rasterRow ) );
   }
 
   if ( identifyResult.isValid() )
