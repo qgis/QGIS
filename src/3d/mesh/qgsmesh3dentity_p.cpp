@@ -102,4 +102,3 @@ void QgsMesh3DTerrainTileEntity::applyMaterial()
     QgsMesh3DMaterial::ZValue );
   addComponent( material );
 }
-
