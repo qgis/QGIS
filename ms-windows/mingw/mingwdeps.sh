@@ -10,6 +10,7 @@ dnf5 install -y --nogpgcheck \
   mingw64-exiv2 \
   mingw64-fcgi \
   ccache \
+  mingw64-cmake \
   mingw64-gcc-c++ \
   mingw64-gdal \
   mingw64-gdb \
