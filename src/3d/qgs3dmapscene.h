@@ -163,7 +163,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     /**
      * Returns the scene's elevation range
-     * \note Only terrain and point cloud layers are taken into account
+     * \note Only some layer types are considered by this method (eg terrain, point cloud and mesh layers)
      *
      * \since QGIS 3.30
      */

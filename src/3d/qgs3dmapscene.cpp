@@ -1090,12 +1090,39 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); it++ )
   {
     QgsMapLayer *layer = it.key();
-    if ( layer->type() == Qgis::LayerType::PointCloud )
+    switch ( layer->type() )
     {
-      QgsPointCloudLayer *pcl = qobject_cast< QgsPointCloudLayer *>( layer );
-      QgsDoubleRange zRange = pcl->elevationProperties()->calculateZRange( pcl );
-      yMin = std::min( yMin, zRange.lower() );
-      yMax = std::max( yMax, zRange.upper() );
+      case Qgis::LayerType::PointCloud:
+      {
+        QgsPointCloudLayer *pcl = qobject_cast< QgsPointCloudLayer *>( layer );
+        QgsDoubleRange zRange = pcl->elevationProperties()->calculateZRange( pcl );
+        yMin = std::min( yMin, zRange.lower() );
+        yMax = std::max( yMax, zRange.upper() );
+        break;
+      }
+      case Qgis::LayerType::Mesh:
+      {
+        QgsMeshLayer *meshLayer = qobject_cast< QgsMeshLayer *>( layer );
+        QgsAbstract3DRenderer *renderer3D = meshLayer->renderer3D();
+        if ( renderer3D )
+        {
+          QgsMeshLayer3DRenderer *meshLayerRenderer = static_cast<QgsMeshLayer3DRenderer *>( renderer3D );
+          const int verticalGroupDatasetIndex = meshLayerRenderer->symbol()->verticalDatasetGroupIndex();
+          const QgsMeshDatasetGroupMetadata verticalGroupMetadata = meshLayer->datasetGroupMetadata( verticalGroupDatasetIndex );
+          const double verticalScale = meshLayerRenderer->symbol()->verticalScale();
+          yMin = std::min( yMin, verticalGroupMetadata.minimum() * verticalScale );
+          yMax = std::max( yMax, verticalGroupMetadata.maximum() * verticalScale );
+        }
+        break;
+      }
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::Group:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::TiledScene:
+      case Qgis::LayerType::Vector:
+      case Qgis::LayerType::VectorTile:
+        break;
     }
   }
   const QgsDoubleRange yRange( std::min( yMin, std::numeric_limits<double>::max() ),
