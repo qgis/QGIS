@@ -73,7 +73,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     QgsMapToolIdentifyAction *mIdentifyAction = nullptr;
     QgisApp *mQgisApp = nullptr;
 
-    QList<QgsMapToolIdentify::IdentifyResult> testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref );
+    QList<QgsMapToolIdentify::IdentifyResult> testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref, bool roundToCanvasPixels = true );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyMesh( QgsMeshLayer *layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVectorTile( QgsVectorTileLayer *layer, double xGeoref, double yGeoref );
@@ -566,7 +566,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
 }
 
 // private
-QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref )
+QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref, bool roundToCanvasPixels )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
@@ -575,8 +575,10 @@ QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIden
   if ( canvas->mapSettings().isTemporal() )
     identifyContext.setTemporalRange( canvas->temporalRange() );
 
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer, QgsMapToolIdentify::DefaultQgsSetting, identifyContext );
-  return result;
+  if ( roundToCanvasPixels )
+    return action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer, QgsMapToolIdentify::DefaultQgsSetting, identifyContext );
+  else
+    return action->identify( QgsGeometry::fromPointXY( QgsPointXY( xGeoref, yGeoref ) ), QgsMapToolIdentify::DefaultQgsSetting, {layer}, QgsMapToolIdentify::AllLayers, identifyContext );
 }
 
 // private
@@ -711,8 +713,8 @@ void TestQgsMapToolIdentifyAction::identifyRasterDerivedAttributes()
   QVERIFY( tempLayer->isValid() );
 
   const QgsRectangle layerExtent = tempLayer->extent();
-  const double layerXSize = tempLayer->rasterUnitsPerPixelX();
-  const double layerYSize = tempLayer->rasterUnitsPerPixelY();
+  const double halfColumn = tempLayer->rasterUnitsPerPixelX() * 0.5;
+  const double halfRow = tempLayer->rasterUnitsPerPixelY() * 0.5;
 
   canvas->resize( tempLayer->width(), tempLayer->height() );  // make canvas fit raster 1:1
   canvas->setDestinationCrs( tempLayer->crs() );
@@ -721,32 +723,60 @@ void TestQgsMapToolIdentifyAction::identifyRasterDerivedAttributes()
   // checking the four corners of the raster plus one somewhere in the center
   QList<QgsMapToolIdentify::IdentifyResult> results;
 
-  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMinimum() + layerXSize, layerExtent.yMaximum() - layerYSize / 2 );
+  // right at corner of raster
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMinimum() + 0.0000000001, layerExtent.yMaximum() - 0.0000000001, false );
   QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster column)" )], QString( "0" ) );
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster row)" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Column (0-based)" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString( "0" ) );
 
-  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMaximum() - layerXSize / 2, layerExtent.yMaximum() - layerYSize / 2 );
+  // offset by half a pixel
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMinimum() + halfColumn, layerExtent.yMaximum() - halfRow, false );
   QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster column)" )], QString::number( tempLayer->width() - 1 ) );
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster row)" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Column (0-based)" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString( "0" ) );
 
-  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMinimum() + layerXSize, layerExtent.yMinimum() + layerYSize / 2 );
+  // right at corner of raster
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMaximum() - 0.0000000001, layerExtent.yMaximum() - 0.0000000001, false );
   QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster column)" )], QString( "0" ) );
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster row)" )], QString::number( tempLayer->height() - 1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Column (0-based)" )], QString::number( tempLayer->width() - 1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString( "0" ) );
 
-  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMaximum() - layerXSize / 2, layerExtent.yMinimum() + layerYSize / 2 );
+  // offset by half a pixel
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMaximum() - halfColumn, layerExtent.yMaximum() - halfRow, false );
   QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster column)" )], QString::number( tempLayer->width() - 1 ) );
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster row)" )], QString::number( tempLayer->height() - 1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Column (0-based)" )], QString::number( tempLayer->width() - 1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString( "0" ) );
 
-  const double xSomewhereCenter = layerExtent.xMinimum() + layerXSize * 200 + layerXSize;
-  const double ySomewhereCenter = layerExtent.yMaximum() - layerYSize * 140 - layerYSize;
-  results = testIdentifyRaster( tempLayer.get(), xSomewhereCenter, ySomewhereCenter );
+  // right at corner of raster
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMinimum() + 0.0000000001, layerExtent.yMinimum() + 0.0000000001, false );
   QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster column)" )], QString( "200" ) );
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "(clicked raster row)" )], QString( "140" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Column (0-based)" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString::number( tempLayer->height() - 1 ) );
+
+  // offset by half a pixel
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMinimum() + halfColumn, layerExtent.yMinimum() + halfRow, false );
+  QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Column (0-based)" )], QString( "0" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString::number( tempLayer->height() - 1 ) );
+
+  // right at corner of raster
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMaximum() - 0.0000000001, layerExtent.yMinimum() + 0.0000000001, false );
+  QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Column (0-based)" )], QString::number( tempLayer->width() - 1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString::number( tempLayer->height() - 1 ) );
+
+  // offset by half a pixel
+  results = testIdentifyRaster( tempLayer.get(), layerExtent.xMaximum() - halfColumn, layerExtent.yMinimum() + halfRow, false );
+  QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Column (0-based)" )], QString::number( tempLayer->width() - 1 ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString::number( tempLayer->height() - 1 ) );
+
+  const double xSomewhereCenter = layerExtent.xMinimum() + halfColumn * 2 * 201;
+  const double ySomewhereCenter = layerExtent.yMaximum() - halfRow * 2 * 141;
+  results = testIdentifyRaster( tempLayer.get(), xSomewhereCenter, ySomewhereCenter, false );
+  QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Column (0-based)" )], QString( "200" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString( "140" ) );
 }
 
 void TestQgsMapToolIdentifyAction::identifyMesh()
