@@ -642,7 +642,7 @@ void TestQgsMapToolIdentifyAction::identifyRasterTemporal()
   // valid temporal range on canvas
   canvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ),
                             QDateTime( QDate( 2050, 01, 01 ), QTime( 1, 0, 0 ), Qt::UTC ) ) );
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9" ) );
 }
 
 void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
@@ -659,25 +659,25 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
 
   canvas->setExtent( QgsRectangle( 0, 0, 7, 1 ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 1.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.987" ) );
-
-  // More than 6 significant digits for corresponding value in .asc:
-  // precision loss in Float32
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 2.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1.234568" ) ); // in .asc file : 1.2345678
-
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 3.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "123456" ) );
-
-  // More than 6 significant digits: no precision loss here for that particular value
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 4.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1234567" ) );
-
-  // More than 6 significant digits: no precision loss here for that particular value
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 5.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9876" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 1.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "-999.987" ) );
 
   // More than 6 significant digits for corresponding value in .asc:
   // precision loss in Float32
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1.234568" ) ); // in .asc file : 1.2345678901234
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 2.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "1.234568" ) ); // in .asc file : 1.2345678
+
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 3.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "123456" ) );
+
+  // More than 6 significant digits: no precision loss here for that particular value
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 4.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "1234567" ) );
+
+  // More than 6 significant digits: no precision loss here for that particular value
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 5.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9876" ) );
+
+  // More than 6 significant digits for corresponding value in .asc:
+  // precision loss in Float32
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "1.234568" ) ); // in .asc file : 1.2345678901234
 }
 
 void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
@@ -689,19 +689,19 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
 
   canvas->setExtent( QgsRectangle( 0, 0, 7, 1 ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 1.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.987" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 1.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "-999.987" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 2.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1.2345678" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 2.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "1.2345678" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 3.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "123456" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 3.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "123456" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 4.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1234567" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 4.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "1234567" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 5.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9876" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 5.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "-999.9876" ) );
 
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 )[0].mAttributes[QStringLiteral( "Band 1" )], QString( "1.2345678901234" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 ).at( 0 ).mAttributes[QStringLiteral( "Band 1" )], QString( "1.2345678901234" ) );
 }
 
 void TestQgsMapToolIdentifyAction::identifyRasterDerivedAttributes()
