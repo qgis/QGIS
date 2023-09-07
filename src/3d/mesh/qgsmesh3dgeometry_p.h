@@ -253,7 +253,7 @@ class QgsMeshTerrain3DGeometry: public  QgsMesh3DGeometry
     //! Constructs a mesh layer geometry from triangular mesh.
     explicit QgsMeshTerrain3DGeometry( const QgsTriangularMesh &triangularMesh,
                                        const QgsVector3D &origin,
-                                       double verticalSacle,
+                                       double verticalScale,
                                        QNode *parent );
 };
 
