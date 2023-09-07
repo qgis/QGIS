@@ -1062,22 +1062,18 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   derivedAttributes.insert( derivedAttributesForPoint( QgsPoint( pointInCanvasCrs ) ) );
 #endif
 
+  const double xres = layer->rasterUnitsPerPixelX();
+  const double yres = layer->rasterUnitsPerPixelY();
   // Don't derive clicked column/row for providers that serve dynamically rendered map images
-  if (
-    dprovider->name() != QStringLiteral( "wms" ) &&
-    dprovider->name() != QStringLiteral( "arcgismapserver" )
-  )
+  if ( ( dprovider->capabilities() & QgsRasterDataProvider::Size ) && !qgsDoubleNear( xres, 0 ) && !qgsDoubleNear( yres, 0 ) )
   {
     // Try to determine the clicked column/row (0-based) in the raster
     const QgsRectangle extent = dprovider->extent();
     const double xres = layer->rasterUnitsPerPixelX();
     const double yres = layer->rasterUnitsPerPixelY();
 
-    // rasterUnitsPerPixel might be 0 (eg for XYZ or other rasters where the concept doesn't make sense)
-    if ( xres > 0 && yres > 0 )
-    {
-      const int rasterCol = static_cast< int >( std::floor( ( point.x() - extent.xMinimum() ) / xres ) );
-      const int rasterRow = static_cast< int >( std::floor( ( extent.yMaximum() - point.y() ) / yres ) );
+    const int rasterCol = static_cast< int >( std::floor( ( point.x() - extent.xMinimum() ) / xres ) );
+    const int rasterRow = static_cast< int >( std::floor( ( extent.yMaximum() - point.y() ) / yres ) );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
       derivedAttributes.unite( tr( "(clicked raster column)" ), QLocale().toString( rasterCol ) );
@@ -1086,7 +1082,6 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
       derivedAttributes.insert( tr( "(clicked raster column)" ), QLocale().toString( rasterCol ) );
       derivedAttributes.insert( tr( "(clicked raster row)" ), QLocale().toString( rasterRow ) );
 #endif
-    }
   }
 
   if ( identifyResult.isValid() )
