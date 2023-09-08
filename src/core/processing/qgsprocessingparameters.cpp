@@ -33,6 +33,7 @@
 #include "qgsapplication.h"
 #include "qgslayoutmanager.h"
 #include "qgsprintlayout.h"
+#include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 #include "qgsfileutils.h"
 #include "qgsproviderregistry.h"
@@ -2450,6 +2451,40 @@ QgsProcessingParameterDefinition::QgsProcessingParameterDefinition( const QStrin
   , mDefault( defaultValue )
   , mFlags( optional ? FlagOptional : 0 )
 {}
+
+QVariant QgsProcessingParameterDefinition::guiDefaultValueOverride() const
+{
+  QVariant defaultSettingsValue = defaultGuiValueFromSetting();
+  if ( !defaultSettingsValue.isNull() )
+  {
+    return defaultSettingsValue;
+  }
+  return mGuiDefault;
+}
+
+QVariant QgsProcessingParameterDefinition::defaultValueForGui() const
+{
+  QVariant defaultSettingsValue = defaultGuiValueFromSetting();
+  if ( !defaultSettingsValue.isNull() )
+  {
+    return defaultSettingsValue;
+  }
+  return mGuiDefault.isValid() ? mGuiDefault : mDefault;
+}
+
+QVariant QgsProcessingParameterDefinition::defaultGuiValueFromSetting() const
+{
+  if ( mAlgorithm )
+  {
+    QgsSettings s;
+    QVariant settingValue = s.value( QStringLiteral( "/Processing/DefaultGuiParam/%1/%2" ).arg( mAlgorithm->id() ).arg( mName ) );
+    if ( !settingValue.isNull() )
+    {
+      return settingValue;
+    }
+  }
+  return QVariant();
+}
 
 bool QgsProcessingParameterDefinition::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
