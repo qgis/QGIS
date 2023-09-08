@@ -100,6 +100,7 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
+    QString mLayerName;
 };
 
 
