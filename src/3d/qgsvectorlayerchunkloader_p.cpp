@@ -46,6 +46,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   }
 
   QgsVectorLayer *layer = mFactory->mLayer;
+  mLayerName = mFactory->mLayer->name();
   const Qgs3DMapSettings &map = mFactory->mMap;
 
   QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mFactory->mSymbol.get() );
@@ -120,7 +121,7 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
   if ( mNode->level() < mFactory->mLeafLevel )
   {
     Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );  // dummy entity
-    entity->setObjectName( mFactory->mLayer->name() + "_CONTAINER_" + mNode->tileId().text() );
+    entity->setObjectName( mLayerName + "_CONTAINER_" + mNode->tileId().text() );
     return entity;
   }
 
@@ -134,7 +135,7 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
   }
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
-  entity->setObjectName( mFactory->mLayer->name() + "_" + mNode->tileId().text() );
+  entity->setObjectName( mLayerName + "_" + mNode->tileId().text() );
   mHandler->finalize( entity, mContext );
 
   // fix the vertical range of the node from the estimated vertical range to the true range
