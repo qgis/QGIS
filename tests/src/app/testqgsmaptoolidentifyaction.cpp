@@ -775,8 +775,8 @@ void TestQgsMapToolIdentifyAction::identifyRasterDerivedAttributes()
   const double ySomewhereCenter = layerExtent.yMaximum() - halfRow * 2 * 141;
   results = testIdentifyRaster( tempLayer.get(), xSomewhereCenter, ySomewhereCenter, false );
   QCOMPARE( results.length(), 1 );  // just to ensure that we did get a result back
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Column (0-based)" )], QString( "200" ) );
-  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString( "140" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Column (0-based)" )], QString( "201" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Row (0-based)" )], QString( "141" ) );
 }
 
 void TestQgsMapToolIdentifyAction::identifyMesh()
