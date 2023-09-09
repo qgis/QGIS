@@ -15,8 +15,17 @@
 
 #include "qgsrecentprojectsmenueventfilter.h"
 
-#include "qgswelcomepage.h"
+#include "qgsapplication.h"
+#include "qgsfocuskeeper.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
 #include "qgsprojectlistitemdelegate.h"
+#include "qgswelcomepage.h"
+
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageguiprovider.h"
+#include "qgsprojectstorageguiregistry.h"
+#include "qgsprojectstorageregistry.h"
 
 #include <QMenu>
 #include <QAction>
@@ -57,20 +66,37 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
 
   const QModelIndex modelIndex = mWelcomePage->recentProjectsModel()->index( actionIndex, 0 );
   const bool pinned = mWelcomePage->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PinRole ).toBool();
+  QString path = mWelcomePage->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PathRole ).toString();
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
+  if ( storage )
+  {
+    path = storage->filePath( path );
+  }
 
   QMenu subMenu;
   if ( pinned )
   {
-    QAction *unpin = subMenu.addAction( tr( "Unpin" ) );
+    QAction *unpin = subMenu.addAction( tr( "Unpin from List" ) );
     connect( unpin, &QAction::triggered, this, [this, actionIndex] { mWelcomePage->unpinProject( actionIndex ); } );
   }
   else
   {
-    QAction *remove = subMenu.addAction( tr( "Remove" ) );
-    QAction *pin = subMenu.addAction( tr( "Pin" ) );
-    connect( remove, &QAction::triggered, this, [this, actionIndex] { mWelcomePage->removeProject( actionIndex ); } );
+    QAction *pin = subMenu.addAction( tr( "Pin to List" ) );
     connect( pin, &QAction::triggered, this, [this, actionIndex] { mWelcomePage->pinProject( actionIndex ); } );
   }
+
+  if ( !path.isEmpty() )
+  {
+    QAction *openFolderAction = subMenu.addAction( tr( "Open Directory…" ) );
+    connect( openFolderAction, &QAction::triggered, this, [path]
+    {
+      const QgsFocusKeeper focusKeeper;
+      QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( path );
+    } );
+  }
+
+  QAction *remove = subMenu.addAction( tr( "Remove from List" ) );
+  connect( remove, &QAction::triggered, this, [this, actionIndex] { mWelcomePage->removeProject( actionIndex ); } );
   subMenu.exec( menu->mapToGlobal( mouseEvent->pos() ) );
   return true;
 }
