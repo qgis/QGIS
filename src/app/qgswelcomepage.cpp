@@ -349,7 +349,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     clearRecentProjects( false );
   } );
   menu->addAction( clearAction );
-  QAction *clearPinnedAction = new QAction( tr( "Clear List (including pinned projects)" ), menu );
+  QAction *clearPinnedAction = new QAction( tr( "Clear List (Including Pinned Projects)" ), menu );
   connect( clearPinnedAction, &QAction::triggered, this, [this]
   {
     clearRecentProjects( true );
