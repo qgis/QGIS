@@ -793,7 +793,9 @@ The ``variables`` list should contain the variable names only, without the usual
 %Docstring
 Default gui value for an algorithm parameter from settings
 
-:return: default value from settings or null QVariant if there is no default value defined in the settings
+:return: default value from settings or invalid QVariant if there is no default value defined in the settings
+
+.. versionadded:: 3.34
 %End
 
 
