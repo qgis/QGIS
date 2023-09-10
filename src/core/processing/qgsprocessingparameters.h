@@ -899,7 +899,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     /**
      * Default gui value for an algorithm parameter from settings
      *
-     * \return default value from settings or null QVariant if there is no default value defined in the settings
+     * \return default value from settings or invalid QVariant if there is no default value defined in the settings
      */
     QVariant defaultGuiValueFromSetting() const;
 
