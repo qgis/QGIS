@@ -2465,7 +2465,7 @@ QVariant QgsProcessingParameterDefinition::guiDefaultValueOverride() const
 QVariant QgsProcessingParameterDefinition::defaultValueForGui() const
 {
   QVariant defaultSettingsValue = defaultGuiValueFromSetting();
-  if ( !defaultSettingsValue.isNull() )
+  if ( defaultSettingsValue.isValid() )
   {
     return defaultSettingsValue;
   }
