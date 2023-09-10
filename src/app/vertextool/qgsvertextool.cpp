@@ -2469,7 +2469,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
                 QgisApp::instance()->pasteFeatures( layer, 0, removedFeatures.size(), unconstFeatures );
               } );
               messageBarItem->layout()->addWidget( restoreButton );
-              QgisApp::instance()->messageBar()->pushWidget( messageBarItem, Qgis::MessageLevel::Info, 5 );
+              QgisApp::instance()->messageBar()->pushWidget( messageBarItem, Qgis::MessageLevel::Info, 15 );
             }
             break;
           }
