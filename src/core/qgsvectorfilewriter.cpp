@@ -69,22 +69,20 @@ QgsVectorFileWriter::FieldValueConverter *QgsVectorFileWriter::FieldValueConvert
   return new FieldValueConverter( *this );
 }
 
-QgsVectorFileWriter::QgsVectorFileWriter(
-  const QString &vectorFileName,
-  const QString &fileEncoding,
-  const QgsFields &fields,
-  Qgis::WkbType geometryType,
-  const QgsCoordinateReferenceSystem &srs,
-  const QString &driverName,
-  const QStringList &datasourceOptions,
-  const QStringList &layerOptions,
-  QString *newFilename,
-  Qgis::FeatureSymbologyExport symbologyExport,
-  QgsFeatureSink::SinkFlags sinkFlags,
-  QString *newLayer,
-  const QgsCoordinateTransformContext &transformContext,
-  FieldNameSource fieldNameSource
-)
+QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
+    const QString &fileEncoding,
+    const QgsFields &fields,
+    Qgis::WkbType geometryType,
+    const QgsCoordinateReferenceSystem &srs,
+    const QString &driverName,
+    const QStringList &datasourceOptions,
+    const QStringList &layerOptions,
+    QString *newFilename,
+    Qgis::FeatureSymbologyExport symbologyExport,
+    QgsFeatureSink::SinkFlags sinkFlags,
+    QString *newLayer,
+    const QgsCoordinateTransformContext &transformContext,
+    FieldNameSource fieldNameSource )
   : mError( NoError )
   , mWkbType( geometryType )
   , mSymbologyExport( symbologyExport )
@@ -95,29 +93,29 @@ QgsVectorFileWriter::QgsVectorFileWriter(
         QString(), CreateOrOverwriteFile, newLayer, sinkFlags, transformContext, fieldNameSource );
 }
 
-QgsVectorFileWriter::QgsVectorFileWriter(
-  const QString &vectorFileName,
-  const QString &fileEncoding,
-  const QgsFields &fields,
-  Qgis::WkbType geometryType,
-  const QgsCoordinateReferenceSystem &srs,
-  const QString &driverName,
-  const QStringList &datasourceOptions,
-  const QStringList &layerOptions,
-  QString *newFilename,
-  Qgis::FeatureSymbologyExport symbologyExport,
-  FieldValueConverter *fieldValueConverter,
-  const QString &layerName,
-  ActionOnExistingFile action,
-  QString *newLayer,
-  const QgsCoordinateTransformContext &transformContext,
-  QgsFeatureSink::SinkFlags sinkFlags,
-  FieldNameSource fieldNameSource
-)
+QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
+    const QString &fileEncoding,
+    const QgsFields &fields,
+    Qgis::WkbType geometryType,
+    const QgsCoordinateReferenceSystem &srs,
+    const QString &driverName,
+    const QStringList &datasourceOptions,
+    const QStringList &layerOptions,
+    QString *newFilename,
+    Qgis::FeatureSymbologyExport symbologyExport,
+    FieldValueConverter *fieldValueConverter,
+    const QString &layerName,
+    ActionOnExistingFile action,
+    QString *newLayer,
+    const QgsCoordinateTransformContext &transformContext,
+    QgsFeatureSink::SinkFlags sinkFlags,
+    FieldNameSource fieldNameSource,
+    bool includeConstraints )
   : mError( NoError )
   , mWkbType( geometryType )
   , mSymbologyExport( symbologyExport )
   , mSymbologyScale( 1.0 )
+  , mIncludeConstraints( includeConstraints )
 {
   init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName,
         datasourceOptions, layerOptions, newFilename, fieldValueConverter,
@@ -140,7 +138,7 @@ QgsVectorFileWriter *QgsVectorFileWriter::create(
   return new QgsVectorFileWriter( fileName, options.fileEncoding, fields, geometryType, srs,
                                   options.driverName, options.datasourceOptions, options.layerOptions,
                                   newFilename, options.symbologyExport, options.fieldValueConverter, options.layerName,
-                                  options.actionOnExistingFile, newLayer, transformContext, sinkFlags, options.fieldNameSource );
+                                  options.actionOnExistingFile, newLayer, transformContext, sinkFlags, options.fieldNameSource, options.includeConstraints );
   Q_NOWARN_DEPRECATED_POP
 }
 
@@ -864,6 +862,18 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
         OGR_Fld_SetComment( fld.get(), mCodec->fromUnicode( attrField.comment() ).constData() );
 #endif
+
+        if ( mIncludeConstraints )
+        {
+          if ( attrField.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull )
+          {
+            OGR_Fld_SetNullable( fld.get(), false );
+          }
+          if ( attrField.constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+          {
+            OGR_Fld_SetUnique( fld.get(), true );
+          }
+        }
 
         // create the field
         QgsDebugMsgLevel( "creating field " + attrField.name() +
