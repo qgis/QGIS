@@ -1064,6 +1064,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
 
   const double xres = layer->rasterUnitsPerPixelX();
   const double yres = layer->rasterUnitsPerPixelY();
+  QgsRectangle pixelRect;
   // Don't derive clicked column/row for providers that serve dynamically rendered map images
   if ( ( dprovider->capabilities() & QgsRasterDataProvider::Size ) && !qgsDoubleNear( xres, 0 ) && !qgsDoubleNear( yres, 0 ) )
   {
@@ -1075,12 +1076,16 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
 
     derivedAttributes.insert( tr( "Column (0-based)" ), QLocale().toString( rasterCol ) );
     derivedAttributes.insert( tr( "Row (0-based)" ), QLocale().toString( rasterRow ) );
+
+    pixelRect = QgsRectangle( rasterCol * xres + extent.xMinimum(),
+                              extent.yMaximum() - ( rasterRow + 1 ) * yres,
+                              ( rasterCol + 1 ) * xres + extent.xMinimum(),
+                              extent.yMaximum() - ( rasterRow * yres ) );
   }
 
   if ( identifyResult.isValid() )
   {
     QMap<int, QVariant> values = identifyResult.results();
-    QgsGeometry geometry;
     if ( format == Qgis::RasterIdentifyFormat::Value )
     {
       for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
@@ -1152,7 +1157,15 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
       }
 
       QString label = layer->name();
-      results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
+      QgsFeature feature;
+      if ( !pixelRect.isNull() )
+      {
+        feature.setGeometry( QgsGeometry::fromRect( pixelRect ) );
+      }
+
+      IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ), label, QgsFields(), feature, derivedAttributes );
+      result.mAttributes = attributes;
+      results->append( result );
     }
     else if ( format == Qgis::RasterIdentifyFormat::Feature )
     {
