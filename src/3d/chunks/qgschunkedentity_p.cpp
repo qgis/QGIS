@@ -286,18 +286,11 @@ QgsRange<float> QgsChunkedEntity::getNearFarPlaneRange( const QMatrix4x4 &viewMa
     // project each corner of bbox to camera coordinates
     // and determine closest and farthest point.
     QgsAABB bbox = node->bbox();
-    for ( int i = 0; i < 8; ++i )
-    {
-      const QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
-                         ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
-                         ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
-
-      const QVector4D pc = viewMatrix * p;
-
-      const float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
-      fnear = std::min( fnear, dst );
-      ffar = std::max( ffar, dst );
-    }
+    float bboxfnear;
+    float bboxffar;
+    Qgs3DUtils::computeBoundingBoxNearFarPlanes( bbox, viewMatrix, bboxfnear, bboxffar );
+    fnear = std::min( fnear, bboxfnear );
+    ffar = std::max( ffar, bboxffar );
   }
   return QgsRange<float>( fnear, ffar );
 }

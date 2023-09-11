@@ -274,6 +274,20 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.32
      */
     static float screenSpaceError( float epsilon, float distance, float screenSize, float fov );
+
+    /**
+     * This routine computes \a nearPlane \a farPlane from the closest and farthest corners point
+     * of bounding box \a bbox.
+     * In case of error, fnear will equal 1e9 and ffar 0.
+     *
+     * \param bbox in world coordinates
+     * \param viewMatrix camera view matrix
+     * \param fnear near plane
+     * \param ffar far plane
+     *
+     * \since QGIS 3.34
+     */
+    static void computeBoundingBoxNearFarPlanes( const QgsAABB &bbox, const QMatrix4x4 &viewMatrix, float &fnear, float &ffar );
 };
 
 #endif // QGS3DUTILS_H
