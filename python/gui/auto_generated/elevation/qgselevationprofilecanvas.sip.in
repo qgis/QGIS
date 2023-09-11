@@ -242,6 +242,16 @@ Sets the distance ``unit`` used by the canvas.
 .. versionadded:: 3.32
 %End
 
+    void setBackgroundColor( const QColor &color );
+%Docstring
+Sets the background ``color`` to use for the profile canvas.
+
+The chart text, border and axis color will be automatically updated to ensure
+readability with the new background color.
+
+.. versionadded:: 3.34
+%End
+
   signals:
 
     void activeJobCountChanged( int count );

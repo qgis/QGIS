@@ -109,6 +109,7 @@
 #include <geos_c.h>
 
 #include "options/qgscodeeditoroptions.h"
+#include "options/qgselevationoptions.h"
 #include "options/qgsfontoptions.h"
 #include "options/qgsgpsdeviceoptions.h"
 #include "options/qgsgpsoptions.h"
@@ -1956,6 +1957,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsGpsOptionsFactory >() ) );
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsGpsDeviceOptionsFactory >() ) );
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsCustomProjectionOptionsFactory >() ) );
+  mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsElevationOptionsFactory >() ) );
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsFontOptionsFactory >() ) );
   mOptionWidgetFactories.emplace_back( QgsScopedOptionsWidgetFactory( std::make_unique< QgsUserProfileOptionsFactory >() ) );
 
