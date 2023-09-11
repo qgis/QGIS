@@ -52,6 +52,7 @@ class QgsProfilePoint;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryString;
+class QgsSettingsEntryColor;
 class QgsMapLayerProxyModel;
 
 class QgsAppElevationProfileLayerTreeView : public QgsElevationProfileLayerTreeView
@@ -95,6 +96,7 @@ class QgsElevationProfileWidget : public QWidget
     static const QgsSettingsEntryBool *settingShowLayerTree;
     static const QgsSettingsEntryBool *settingLockAxis;
     static const QgsSettingsEntryString *settingLastExportDir;
+    static const QgsSettingsEntryColor *settingBackgroundColor;
 
     QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();

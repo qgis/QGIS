@@ -69,6 +69,7 @@ const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance = new 
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowLayerTree = new QgsSettingsEntryBool( QStringLiteral( "show-layer-tree" ), QgsSettingsTree::sTreeElevationProfile, true, QStringLiteral( "Whether the layer tree should be shown for elevation profile plots" ) );
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingLockAxis = new QgsSettingsEntryBool( QStringLiteral( "lock-axis-ratio" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "Whether the the distance and elevation axis scales are locked to each other" ) );
 const QgsSettingsEntryString *QgsElevationProfileWidget::settingLastExportDir = new QgsSettingsEntryString( QStringLiteral( "last-export-dir" ), QgsSettingsTree::sTreeElevationProfile, QString(), QStringLiteral( "Last elevation profile export directory" ) );
+const QgsSettingsEntryColor *QgsElevationProfileWidget::settingBackgroundColor = new QgsSettingsEntryColor( QStringLiteral( "background-color" ), QgsSettingsTree::sTreeElevationProfile, QColor(), QStringLiteral( "Elevation profile chart background color" ) );
 //
 // QgsElevationProfileLayersDialog
 //
@@ -157,6 +158,12 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( mCanvas, &QgsElevationProfileCanvas::canvasPointHovered, this, &QgsElevationProfileWidget::onCanvasPointHovered );
 
   mCanvas->setLockAxisScales( settingLockAxis->value() );
+
+  mCanvas->setBackgroundColor( settingBackgroundColor->value() );
+  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [ = ]
+  {
+    mCanvas->setBackgroundColor( settingBackgroundColor->value() );
+  } );
 
   mPanTool = new QgsPlotToolPan( mCanvas );
 
