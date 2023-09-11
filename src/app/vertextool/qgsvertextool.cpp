@@ -2462,11 +2462,14 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
               removedFeatures.removeAt( largestPartIndex );
               QgsMessageBarItem *messageBarItem = QgisApp::instance()->messageBar()->createMessage( tr( "Avoid overlaps" ), tr( "Only the largest of multiple created geometries was preserved." ) );
               QPushButton *restoreButton = new QPushButton( tr( "Restore others" ) );
+              QPointer<QgsVectorLayer> layerPtr( layer );
               connect( restoreButton, &QPushButton::clicked, restoreButton, [ = ]
               {
-                layer->beginEditCommand( tr( "Restored geometry parts removed by avoid overlaps" ) );
+                if ( !layerPtr )
+                  return;
+                layerPtr->beginEditCommand( tr( "Restored geometry parts removed by avoid overlaps" ) );
                 QgsFeatureList unconstFeatures = removedFeatures;
-                QgisApp::instance()->pasteFeatures( layer, 0, removedFeatures.size(), unconstFeatures );
+                QgisApp::instance()->pasteFeatures( layerPtr.data(), 0, removedFeatures.size(), unconstFeatures );
               } );
               messageBarItem->layout()->addWidget( restoreButton );
               QgisApp::instance()->messageBar()->pushWidget( messageBarItem, Qgis::MessageLevel::Info, 15 );
