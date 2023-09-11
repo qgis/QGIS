@@ -6493,6 +6493,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
       return layer->crs().toProj();
     else if ( QString::compare( layerProperty, QStringLiteral( "crs_description" ), Qt::CaseInsensitive ) == 0 )
       return layer->crs().description();
+    else if ( QString::compare( layerProperty, QStringLiteral( "crs_ellipsoid" ), Qt::CaseInsensitive ) == 0 )
+      return layer->crs().ellipsoidAcronym();
     else if ( QString::compare( layerProperty, QStringLiteral( "extent" ), Qt::CaseInsensitive ) == 0 )
     {
       QgsGeometry extentGeom = QgsGeometry::fromRect( layer->extent() );
