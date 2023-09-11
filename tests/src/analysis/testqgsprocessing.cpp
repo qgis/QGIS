@@ -809,6 +809,7 @@ class TestQgsProcessing: public QObject
     void sourceTypeToString();
     void formatHelp();
     void preprocessParameters();
+    void guiDefaultParameterValues();
 
   private:
 
@@ -12657,6 +12658,27 @@ void TestQgsProcessing::preprocessParameters()
 
   QCOMPARE( outputs.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >().propertyType(), QgsProperty::ExpressionBasedProperty );
   QCOMPARE( outputs.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >().expressionString(), QStringLiteral( "A_FIELD * 200" ) );
+}
+
+void TestQgsProcessing::guiDefaultParameterValues()
+{
+  DummyAlgorithm alg( "testAlgorithm" );
+  QgsProcessingParameterNumber *intTestParam = new QgsProcessingParameterNumber( QStringLiteral( "testIntegerParameter" ), QStringLiteral( "A test parameter" ), QgsProcessingParameterNumber::Integer, 10 );
+  alg.addParameter( intTestParam );
+  QgsProcessingParameterString *stringTestParam = new QgsProcessingParameterString( QStringLiteral( "testStringParameter" ), QStringLiteral( "A test parameter" ), QStringLiteral( "test, test, test" ) );
+  alg.addParameter( stringTestParam );
+
+  QgsSettings s;
+  s.setValue( QStringLiteral( "/Processing/DefaultGuiParam/testAlgorithm/testIntegerParameter" ), 42 );
+  s.setValue( QStringLiteral( "/Processing/DefaultGuiParam/testAlgorithm/testStringParameter" ), QStringLiteral( "defaultString" ) );
+
+  QCOMPARE( intTestParam->defaultValueForGui(), 42 );
+  QCOMPARE( intTestParam->guiDefaultValueOverride(), 42 );
+  QCOMPARE( stringTestParam->defaultValueForGui(), QStringLiteral( "defaultString" ) );
+  QCOMPARE( stringTestParam->guiDefaultValueOverride(), QStringLiteral( "defaultString" ) );
+
+  s.remove( QStringLiteral( "/Processing/DefaultGuiParam/testAlgorithm/testIntegerParameter" ) );
+  s.remove( QStringLiteral( "/Processing/DefaultGuiParam/testAlgorithm/testStringParameter" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
