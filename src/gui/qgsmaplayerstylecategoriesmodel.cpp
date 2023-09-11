@@ -30,6 +30,8 @@ QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerTyp
       break;
 
     case Qgis::LayerType::Raster:
+      mCategoryList << QgsMapLayer::StyleCategory::Symbology << QgsMapLayer::StyleCategory::AllStyleCategories;
+      break;
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Mesh:
@@ -41,7 +43,11 @@ QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerTyp
   }
 
   // move All categories to top
-  mCategoryList.move( mCategoryList.indexOf( QgsMapLayer::AllStyleCategories ), 0 );
+  int idxAllStyleCategories = mCategoryList.indexOf( QgsMapLayer::AllStyleCategories );
+  if ( idxAllStyleCategories > 0 )
+  {
+    mCategoryList.move( idxAllStyleCategories, 0 );
+  }
 }
 
 void QgsMapLayerStyleCategoriesModel::setCategories( QgsMapLayer::StyleCategories categories )
@@ -69,7 +75,7 @@ void QgsMapLayerStyleCategoriesModel::setShowAllCategories( bool showAll )
 int QgsMapLayerStyleCategoriesModel::rowCount( const QModelIndex & ) const
 {
   int count = mCategoryList.count();
-  if ( !mShowAllCategories )
+  if ( count > 0 && !mShowAllCategories )
     count--;
   return count;
 }
