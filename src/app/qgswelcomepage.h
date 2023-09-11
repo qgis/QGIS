@@ -53,7 +53,7 @@ class QgsWelcomePage : public QWidget
     void removeProject( int row );
     void pinProject( int row );
     void unpinProject( int row );
-    void clearRecentProjects( bool clearPinned = false );
+    void clearRecentProjects();
 
   signals:
     void projectRemoved( int row );

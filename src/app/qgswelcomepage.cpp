@@ -344,18 +344,8 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
   }
 
   QAction *clearAction = new QAction( tr( "Clear List" ), menu );
-  connect( clearAction, &QAction::triggered, this, [this]
-  {
-    clearRecentProjects( false );
-  } );
+  connect( clearAction, &QAction::triggered, this, [this] { clearRecentProjects(); } );
   menu->addAction( clearAction );
-  QAction *clearPinnedAction = new QAction( tr( "Clear List (including pinned projects)" ), menu );
-  connect( clearPinnedAction, &QAction::triggered, this, [this]
-  {
-    clearRecentProjects( true );
-  } );
-  menu->addAction( clearPinnedAction );
-
 
   menu->popup( mapToGlobal( point ) );
   connect( menu, &QMenu::aboutToHide, menu, &QMenu::deleteLater );
@@ -497,20 +487,18 @@ void QgsWelcomePage::unpinProject( int row )
   emit projectUnpinned( row );
 }
 
-void QgsWelcomePage::clearRecentProjects( bool clearPinned )
+void QgsWelcomePage::clearRecentProjects()
 {
-  QString message;
-  if ( clearPinned )
+  QMessageBox messageBox( QMessageBox::Question,
+                          tr( "Recent Projects" ),
+                          tr( "Are you sure you want to clear the list of recent projects?" ),
+                          QMessageBox::No | QMessageBox::Yes | QMessageBox::YesToAll,
+                          this );
+  messageBox.button( QMessageBox::YesToAll )->setText( tr( "Yes, including pinned projects" ) );
+  int answer = messageBox.exec();
+  if ( answer != QMessageBox::No )
   {
-    message = tr( "Are you sure you want to clear the list of recent projects, including pinned projects?" );
-  }
-  else
-  {
-    message = tr( "Are you sure you want to clear the list of recent projects?" );
-  }
-
-  if ( QMessageBox::question( this,  tr( "Recent Projects" ), message ) == QMessageBox::Yes )
-  {
+    const bool clearPinned = ( answer == QMessageBox::YesToAll );
     mRecentProjectsModel->clear( clearPinned );
     emit projectsCleared( clearPinned );
   }

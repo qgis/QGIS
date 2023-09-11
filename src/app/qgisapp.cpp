@@ -5235,8 +5235,8 @@ void QgisApp::updateRecentProjectPaths()
   if ( !mRecentProjects.isEmpty() )
   {
     mRecentProjectsMenu->addSeparator();
-    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear Recently Opened" ) );
-    connect( clearRecentProjectsAction, &QAction::triggered, mWelcomePage, &QgsWelcomePage::clearRecentProjects );
+    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List" ) );
+    connect( clearRecentProjectsAction, &QAction::triggered, mWelcomePage, [ = ]() { mWelcomePage->clearRecentProjects(); } );
   }
 
   std::vector< QgsNative::RecentProjectProperties > recentProjects;
