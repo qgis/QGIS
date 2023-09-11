@@ -766,6 +766,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "layer_id" ), QCoreApplication::translate( "variable_help", "ID of current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer_crs" ), QCoreApplication::translate( "variable_help", "CRS Authority ID of current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Ellipsoid acronym of current layer CRS." ) );
 
   //feature variables
   sVariableHelpTexts()->insert( QStringLiteral( "feature" ), QCoreApplication::translate( "variable_help", "The current feature being evaluated. This can be used with the 'attribute' function to evaluate attribute values from the current feature." ) );

@@ -843,6 +843,7 @@ void TestQgsExpressionContext::layerScope()
   QCOMPARE( context.variable( "layer_name" ).toString(), vectorLayer->name() );
   QCOMPARE( context.variable( "layer_id" ).toString(), vectorLayer->id() );
   QCOMPARE( context.variable( "layer_crs" ).toString(), vectorLayer->sourceCrs().authid() );
+  QCOMPARE( context.variable( "layer_crs_ellipsoid" ).toString(), vectorLayer->sourceCrs().ellipsoidAcronym() );
 
   QgsExpression expProject( QStringLiteral( "var('layer_name')" ) );
   QCOMPARE( expProject.evaluate( &context ).toString(), vectorLayer->name() );
