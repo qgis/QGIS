@@ -394,6 +394,8 @@ Constructor
         bool saveMetadata;
 
         QgsLayerMetadata layerMetadata;
+
+        bool includeConstraints;
     };
 
 
@@ -738,6 +740,7 @@ Returns whether there are among the attributes specified some that do not exist 
 %End
 
   protected:
+
 
 
 
