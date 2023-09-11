@@ -404,13 +404,15 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   if ( fnear < 1 )
     fnear = 1;  // does not really make sense to use negative far plane (behind camera)
 
+  // the update didn't work out... this can happen if the scene does not contain
+  // any Qgs3DMapSceneEntity. Use the scene extent to compute near and far planes
+  // as a fallback.
   if ( fnear == 1e9 && ffar == 0 )
   {
-    // the update didn't work out... this should not happen
-    // well at least temporarily use some conservative starting values
-    qWarning() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
-    fnear = 1;
-    ffar = 1e9;
+    QgsDoubleRange sceneYRange = elevationRange();
+    sceneYRange = sceneYRange.isInfinite() ? QgsDoubleRange( 0.0, 0.0 ) : sceneYRange;
+    const QgsAABB sceneBbox = Qgs3DUtils::mapToWorldExtent( mMap.extent(), sceneYRange.lower(), sceneYRange.upper(), mMap.origin() );
+    Qgs3DUtils::computeBoundingBoxNearFarPlanes( sceneBbox, viewMatrix, fnear, ffar );
   }
 
   // when zooming in a lot, fnear can become smaller than ffar. This should not happen
