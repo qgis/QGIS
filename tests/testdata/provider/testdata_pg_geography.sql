@@ -10,5 +10,6 @@ CREATE TABLE qgis_test.testgeog
 INSERT INTO qgis_test.testgeog(geog) VALUES ('POINT(40 0)'::geography);
 INSERT INTO qgis_test.testgeog(geog) VALUES ('POINT(40 60)'::geography);
 INSERT INTO qgis_test.testgeog(geog) VALUES ('POINT(40 -60)'::geography);
+INSERT INTO qgis_test.testgeog(geog) VALUES ('POINT(180 45)'::geography);
 
 CREATE INDEX testgeog_geog_idx ON qgis_test.testgeog USING GIST ( geog );
