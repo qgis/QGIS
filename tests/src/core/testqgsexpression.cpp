@@ -1975,6 +1975,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "layer_property crs" ) << QStringLiteral( "layer_property('%1','crs')" ).arg( mPointsLayer->name() ) << false << QVariant( "EPSG:4326" );
       QTest::newRow( "layer_property crs_description" ) << QStringLiteral( "layer_property('%1','crs_description')" ).arg( mPointsLayer->name() ) << false << QVariant( "WGS 84" );
       QTest::newRow( "layer_property crs_definition" ) << QStringLiteral( "layer_property('%1','crs_definition')" ).arg( mPointsLayer->name() ) << false << QVariant( "+proj=longlat +datum=WGS84 +no_defs" );
+      QTest::newRow( "layer_property crs_ellipsoid" ) << QStringLiteral( "layer_property('%1','crs_ellipsoid')" ).arg( mPointsLayer->name() ) << false << QVariant( "EPSG:7030" );
       QTest::newRow( "layer_property extent" ) << QStringLiteral( "geom_to_wkt(layer_property('%1','extent'))" ).arg( mPointsLayer->name() ) << false << QVariant( "Polygon ((-118.88888889 22.80020704, -83.33333333 22.80020704, -83.33333333 46.87198068, -118.88888889 46.87198068, -118.88888889 22.80020704))" );
       QTest::newRow( "layer_property distance_units" ) << QStringLiteral( "layer_property('%1','distance_units')" ).arg( mPointsLayer->name() ) << false << QVariant( "degrees" );
       QTest::newRow( "layer_property type" ) << QStringLiteral( "layer_property('%1','type')" ).arg( mPointsLayer->name() ) << false << QVariant( "Vector" );
