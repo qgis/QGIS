@@ -1098,7 +1098,7 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
   }
   const QgsDoubleRange yRange( std::min( yMin, std::numeric_limits<double>::max() ),
                                std::max( yMax, std::numeric_limits<double>::lowest() ) );
-  return yRange;
+  return yRange.isEmpty() ? QgsDoubleRange() : yRange;
 }
 
 QMap< QString, Qgs3DMapScene * > Qgs3DMapScene::openScenes()
