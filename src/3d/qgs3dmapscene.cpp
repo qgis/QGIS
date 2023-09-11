@@ -404,10 +404,6 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   if ( fnear < 1 )
     fnear = 1;  // does not really make sense to use negative far plane (behind camera)
 
-  // when zooming in a lot, fnear can become smaller than ffar. This should not happen
-  if ( fnear > ffar )
-    std::swap( fnear, ffar );
-
   if ( fnear == 1e9 && ffar == 0 )
   {
     // the update didn't work out... this should not happen
@@ -416,6 +412,10 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
     fnear = 1;
     ffar = 1e9;
   }
+
+  // when zooming in a lot, fnear can become smaller than ffar. This should not happen
+  if ( fnear > ffar )
+    std::swap( fnear, ffar );
 
   // set near/far plane - with some tolerance in front/behind expected near/far planes
   float newFar = ffar * 2;
