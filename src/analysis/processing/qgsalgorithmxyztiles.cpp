@@ -291,6 +291,7 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   mTotalTiles = mMetaTiles.size();
 
   QEventLoop loop;
+  // cppcheck-suppress danglingLifetime
   mEventLoop = &loop;
   startJobs();
   loop.exec();
@@ -474,6 +475,7 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   mTotalTiles = mMetaTiles.size();
 
   QEventLoop loop;
+  // cppcheck-suppress danglingLifetime
   mEventLoop = &loop;
   startJobs();
   loop.exec();
