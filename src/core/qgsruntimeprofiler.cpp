@@ -302,7 +302,7 @@ QString QgsRuntimeProfiler::translateGroupName( const QString &group )
     return tr( "Startup" );
   else if ( group == QLatin1String( "projectload" ) )
     return tr( "Project Load" );
-  else if ( group == QLatin1String( "render" ) )
+  else if ( group == QLatin1String( "rendering" ) )
     return tr( "Map Render" );
   return QString();
 }
