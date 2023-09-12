@@ -44,6 +44,7 @@
 #include "qgslabelingengine.h"
 #include "qgsrendercontext.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsruntimeprofiler.h"
 
 #include <cfloat>
 #include <list>
@@ -102,6 +103,12 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
 {
   QgsLabelingEngineFeedback *feedback = qobject_cast< QgsLabelingEngineFeedback * >( context.feedback() );
 
+  std::unique_ptr< QgsScopedRuntimeProfile > extractionProfile;
+  if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+  {
+    extractionProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Placing labels" ), QStringLiteral( "rendering" ) );
+  }
+
   // expand out the incoming buffer by 1000x -- that's the visible map extent, yet we may be getting features which exceed this extent
   // (while 1000x may seem excessive here, this value is only used for scaling coordinates in the spatial indexes
   // and the consequence of inserting coordinates outside this extent is worse than the consequence of setting this value too large.)
@@ -142,6 +149,12 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
 
   double step = !mLayers.empty() ? 100.0 / mLayers.size() : 1;
   int index = -1;
+  std::unique_ptr< QgsScopedRuntimeProfile > candidateProfile;
+  if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+  {
+    candidateProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Generating label candidates" ), QStringLiteral( "rendering" ) );
+  }
+
   for ( const auto &it : mLayers )
   {
     index++;
@@ -161,6 +174,12 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
 
     if ( feedback )
       feedback->emit candidateCreationAboutToBegin( it.first );
+
+    std::unique_ptr< QgsScopedRuntimeProfile > layerProfile;
+    if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+    {
+      layerProfile = std::make_unique< QgsScopedRuntimeProfile >( it.first->providerId(), QStringLiteral( "rendering" ) );
+    }
 
     // check for connected features with the same label text and join them
     if ( layer->mergeConnectedLines() )
@@ -296,6 +315,9 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     if ( feedback )
       feedback->emit candidateCreationFinished( it.first );
   }
+
+  candidateProfile.reset();
+
   palLocker.unlock();
 
   if ( isCanceled() )
@@ -314,6 +336,13 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
   {
     if ( feedback )
       feedback->emit obstacleCostingAboutToBegin();
+
+    std::unique_ptr< QgsScopedRuntimeProfile > costingProfile;
+    if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+    {
+      costingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Assigning label costs" ), QStringLiteral( "rendering" ) );
+    }
+
     // Filtering label positions against obstacles
     index = -1;
     step = !allObstacleParts.empty() ? 100.0 / allObstacleParts.size() : 1;
@@ -350,6 +379,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
 
     if ( feedback )
       feedback->emit obstacleCostingFinished();
+    costingProfile.reset();
 
     if ( isCanceled() )
     {
@@ -359,6 +389,12 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     step = prob->mFeatureCount != 0 ? 100.0 / prob->mFeatureCount : 1;
     if ( feedback )
       feedback->emit calculatingConflictsAboutToBegin();
+
+    std::unique_ptr< QgsScopedRuntimeProfile > conflictProfile;
+    if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+    {
+      conflictProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Calculating conflicts" ), QStringLiteral( "rendering" ) );
+    }
 
     int idlp = 0;
     for ( std::size_t i = 0; i < prob->mFeatureCount; i++ ) /* for each feature into prob */
@@ -499,6 +535,8 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     if ( feedback )
       feedback->emit calculatingConflictsFinished();
 
+    conflictProfile.reset();
+
     int nbOverlaps = 0;
 
     double amin[2];
@@ -506,6 +544,12 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
 
     if ( feedback )
       feedback->emit finalizingCandidatesAboutToBegin();
+
+    std::unique_ptr< QgsScopedRuntimeProfile > finalizingProfile;
+    if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+    {
+      finalizingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Finalizing labels" ), QStringLiteral( "rendering" ) );
+    }
 
     index = -1;
     step = !features.empty() ? 100.0 / features.size() : 1;
@@ -557,6 +601,8 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     if ( feedback )
       feedback->emit finalizingCandidatesFinished();
 
+    finalizingProfile.reset();
+
     nbOverlaps /= 2;
     prob->mAllNblp = prob->mTotalCandidates;
     prob->mNbOverlap = nbOverlaps;
@@ -579,10 +625,25 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, QgsRenderContext &conte
   if ( !prob )
     return QList<LabelPosition *>();
 
+
+  std::unique_ptr< QgsScopedRuntimeProfile > calculatingProfile;
+  if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+  {
+    calculatingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Calculating optimal labeling" ), QStringLiteral( "rendering" ) );
+  }
+
   if ( feedback )
     feedback->emit reductionAboutToBegin();
 
-  prob->reduce();
+  {
+    std::unique_ptr< QgsScopedRuntimeProfile > reductionProfile;
+    if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+    {
+      reductionProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Reducing labeling" ), QStringLiteral( "rendering" ) );
+    }
+
+    prob->reduce();
+  }
 
   if ( feedback )
     feedback->emit reductionFinished();
@@ -590,13 +651,20 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, QgsRenderContext &conte
   if ( feedback )
     feedback->emit solvingPlacementAboutToBegin();
 
-  try
   {
-    prob->chainSearch( context );
-  }
-  catch ( InternalException::Empty & )
-  {
-    return QList<LabelPosition *>();
+    std::unique_ptr< QgsScopedRuntimeProfile > solvingProfile;
+    if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+    {
+      solvingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Solving labeling" ), QStringLiteral( "rendering" ) );
+    }
+    try
+    {
+      prob->chainSearch( context );
+    }
+    catch ( InternalException::Empty & )
+    {
+      return QList<LabelPosition *>();
+    }
   }
 
   if ( feedback )
