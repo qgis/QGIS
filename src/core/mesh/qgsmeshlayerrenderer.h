@@ -118,6 +118,8 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     bool mIsEditable = false;
 
   protected:
+    QString mLayerName;
+
     //! feedback class for cancellation
     std::unique_ptr<QgsMeshLayerRendererFeedback> mFeedback;
 
@@ -158,6 +160,9 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     double mElevationScale = 1.0;
     double mElevationOffset = 0.0;
     bool mRenderElevationMap = false;
+
+    bool mEnableProfile = false;
+    quint64 mPreparationTime = 0;
 
   private:
 
