@@ -1151,6 +1151,7 @@ The development version
       HighQualityImageTransforms,
       SkipSymbolRendering,
       ForceRasterMasks,
+      RecordProfile,
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -1176,6 +1177,7 @@ The development version
       RenderingSubSymbol,
       HighQualityImageTransforms,
       SkipSymbolRendering,
+      RecordProfile,
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
