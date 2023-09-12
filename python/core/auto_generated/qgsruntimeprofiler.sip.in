@@ -134,6 +134,15 @@ Returns the translated name of a standard profile ``group``.
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
 
+    QString asText( const QString &group = QString() );
+%Docstring
+Returns the model as a multi-line text string.
+
+:param group: A group name to filter the model against.
+
+.. versionadded:: 3.34
+%End
+
 
     void groupAdded( const QString &group );
 %Docstring

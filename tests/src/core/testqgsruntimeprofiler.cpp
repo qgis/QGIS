@@ -87,6 +87,17 @@ void TestQgsRuntimeProfiler::testGroups()
   QCOMPARE( profiler.childGroups( QString(), QStringLiteral( "group 1" ) ), QStringList() << QStringLiteral( "task 1" ) );
   QCOMPARE( profiler.childGroups( QStringLiteral( "task 1" ), QStringLiteral( "group 1" ) ), QStringList() << QStringLiteral( "task 1a" ) );
   QCOMPARE( profiler.childGroups( QString(), QStringLiteral( "group 2" ) ), QStringList() << QStringLiteral( "task 2" ) );
+
+  QString profilerAsText = profiler.asText();
+  // verify individual chunks as the ordering of individual model items can vary
+  QVERIFY( profilerAsText.contains( QStringLiteral( "group 2\r\n- task 2: 0" ) ) );
+  QVERIFY( profilerAsText.contains( QStringLiteral( "group 1\r\n" ) ) );
+  QVERIFY( profilerAsText.contains( QStringLiteral( "\r\n- task 1: 0" ) ) );
+  QVERIFY( profilerAsText.contains( QStringLiteral( "\r\n-- task 1a: 0" ) ) );
+
+  profilerAsText = profiler.asText( QStringLiteral( "group 2" ) );
+  // verify individual chunks as the ordering of individual model items can vary
+  QCOMPARE( profilerAsText, QStringLiteral( "group 2\r\n- task 2: 0" ) );
 }
 
 
