@@ -793,6 +793,9 @@ void QgsMapCanvas::refreshMap()
   renderSettings.setLayers( allLayers );
 
   // create the renderer job
+
+  QgsApplication::profiler()->clear( QStringLiteral( "rendering" ) );
+
   Q_ASSERT( !mJob );
   mJobCanceled = false;
   if ( mUseParallelRendering )
