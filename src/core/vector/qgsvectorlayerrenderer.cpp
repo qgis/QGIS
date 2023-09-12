@@ -40,6 +40,8 @@
 #include "qgsmapclippingutils.h"
 #include "qgsfeaturerenderergenerator.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsapplication.h"
 
 #include <QPicture>
 #include <QTimer>
@@ -48,10 +50,14 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   : QgsMapLayerRenderer( layer->id(), &context )
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mLayer( layer )
+  , mLayerName( layer->name() )
   , mFields( layer->fields() )
   , mSource( std::make_unique< QgsVectorLayerFeatureSource >( layer ) )
   , mNoSetLayerExpressionContext( layer->customProperty( QStringLiteral( "_noset_layer_expression_context" ) ).toBool() )
+  , mEnableProfile( context.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
+  QElapsedTimer timer;
+  timer.start();
   std::unique_ptr< QgsFeatureRenderer > mainRenderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
 
   QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast< QgsVectorLayerSelectionProperties * >( layer->selectionProperties() );
@@ -200,6 +206,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   }
 
   mReadyToCompose = false;
+  mPreparationTime = timer.elapsed();
 }
 
 QgsVectorLayerRenderer::~QgsVectorLayerRenderer() = default;
@@ -234,6 +241,14 @@ bool QgsVectorLayerRenderer::render()
     return false;
   }
 
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( mEnableProfile )
+  {
+    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, QStringLiteral( "rendering" ) );
+    if ( mPreparationTime > 0 )
+      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, QStringLiteral( "rendering" ) );
+  }
+
   // if the previous layer render was relatively quick (e.g. less than 3 seconds), the we show any previously
   // cached version of the layer during rendering instead of the usual progressive updates
   if ( mRenderTimeHint > 0 && mRenderTimeHint <= MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
@@ -243,16 +258,17 @@ bool QgsVectorLayerRenderer::render()
   }
 
   bool res = true;
+  int rendererIndex = 0;
   for ( const std::unique_ptr< QgsFeatureRenderer > &renderer : mRenderers )
   {
-    res = renderInternal( renderer.get() ) && res;
+    res = renderInternal( renderer.get(), rendererIndex++ ) && res;
   }
 
   mReadyToCompose = true;
   return res && !renderContext()->renderingStopped();
 }
 
-bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
+bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int rendererIndex )
 {
   const bool isMainRenderer = renderer == mRenderer;
 
@@ -266,6 +282,17 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
     if ( !isMainRenderer ||
          ( !mDrawVertexMarkers && !mLabelProvider && !mDiagramProvider && mSelectedFeatureIds.isEmpty() ) )
       return true;
+  }
+
+  std::unique_ptr< QgsScopedRuntimeProfile > preparingProfile;
+  if ( mEnableProfile )
+  {
+    QString title;
+    if ( mRenderers.size() > 1 )
+      title = QObject::tr( "Preparing render %1" ).arg( rendererIndex + 1 );
+    else
+      title = QObject::tr( "Preparing render" );
+    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( title, QStringLiteral( "rendering" ) );
   }
 
   QgsScopedQPainterState painterState( context.painter() );
@@ -426,12 +453,28 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
   // which could benefit from early exit paths...
   context.expressionContext().setFeedback( mFeedback.get() );
 
+  std::unique_ptr< QgsScopedRuntimeProfile > preparingFeatureItProfile;
+  if ( mEnableProfile )
+  {
+    preparingFeatureItProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Prepare feature iteration" ), QStringLiteral( "rendering" ) );
+  }
+
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
   // Attach an interruption checker so that iterators that have potentially
   // slow fetchFeature() implementations, such as in the WFS provider, can
   // check it, instead of relying on just the mContext.renderingStopped() check
   // in drawRenderer()
+
   fit.setInterruptionChecker( mFeedback.get() );
+
+  preparingFeatureItProfile.reset();
+  preparingProfile.reset();
+
+  std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
+  if ( mEnableProfile )
+  {
+    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
+  }
 
   if ( ( renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) && renderer->usingSymbolLevels() )
     drawRendererLevels( renderer, fit );
@@ -455,6 +498,10 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
 
 void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeatureIterator &fit )
 {
+  QElapsedTimer timer;
+  timer.start();
+  quint64 totalLabelTime = 0;
+
   const bool isMainRenderer = renderer == mRenderer;
 
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
@@ -532,6 +579,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
         // new labeling engine
         if ( isMainRenderer && context.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
         {
+          const quint64 startLabelTime = timer.elapsed();
           QgsGeometry obstacleGeometry;
           QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
           QgsSymbol *symbol = nullptr;
@@ -560,6 +608,8 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
 
           if ( mApplyLabelClipGeometries )
             context.setFeatureClipGeometry( QgsGeometry() );
+
+          totalLabelTime += ( timer.elapsed() - startLabelTime );
         }
       }
     }
@@ -572,6 +622,17 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
   }
 
   delete context.expressionContext().popScope();
+
+  std::unique_ptr< QgsScopedRuntimeProfile > cleanupProfile;
+  if ( mEnableProfile )
+  {
+    QgsApplication::profiler()->record( QObject::tr( "Rendering features" ), ( timer.elapsed() - totalLabelTime ) / 1000.0, QStringLiteral( "rendering" ) );
+    if ( totalLabelTime > 0 )
+    {
+      QgsApplication::profiler()->record( QObject::tr( "Registering labels" ), totalLabelTime / 1000.0, QStringLiteral( "rendering" ) );
+    }
+    cleanupProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Finalizing" ), QStringLiteral( "rendering" ) );
+  }
 
   if ( mSelectionSymbol && isMainRenderer )
     mSelectionSymbol->stopRender( context );
@@ -629,6 +690,16 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
 
   if ( mApplyLabelClipGeometries )
     context.setFeatureClipGeometry( mLabelClipFeatureGeom );
+
+  std::unique_ptr< QgsScopedRuntimeProfile > fetchFeaturesProfile;
+  if ( mEnableProfile )
+  {
+    fetchFeaturesProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Fetching features" ), QStringLiteral( "rendering" ) );
+  }
+
+  QElapsedTimer timer;
+  timer.start();
+  quint64 totalLabelTime = 0;
 
   // 1. fetch features
   QgsFeature fet;
@@ -690,6 +761,8 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     // new labeling engine
     if ( isMainRenderer && context.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
     {
+      const quint64 startLabelTime = timer.elapsed();
+
       QgsGeometry obstacleGeometry;
       QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
       QgsSymbol *symbol = nullptr;
@@ -712,6 +785,17 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
       {
         mDiagramProvider->registerFeature( fet, context, obstacleGeometry );
       }
+
+      totalLabelTime += ( timer.elapsed() - startLabelTime );
+    }
+  }
+
+  fetchFeaturesProfile.reset();
+  if ( mEnableProfile )
+  {
+    if ( totalLabelTime > 0 )
+    {
+      QgsApplication::profiler()->record( QObject::tr( "Registering labels" ), totalLabelTime / 1000.0, QStringLiteral( "rendering" ) );
     }
   }
 
@@ -727,6 +811,12 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     return;
   }
 
+
+  std::unique_ptr< QgsScopedRuntimeProfile > sortingProfile;
+  if ( mEnableProfile )
+  {
+    sortingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Sorting features" ), QStringLiteral( "rendering" ) );
+  }
   // find out the order
   QgsSymbolLevelOrder levels;
   QgsSymbolList symbols = renderer->symbols( context );
@@ -744,6 +834,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
       levels[level].append( item );
     }
   }
+  sortingProfile.reset();
 
   if ( mApplyClipGeometries )
     context.setFeatureClipGeometry( mClipFeatureGeom );
@@ -754,6 +845,12 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     for ( int l = 0; l < levels.count(); l++ )
     {
       const QgsSymbolLevel &level = levels[l];
+      std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
+      if ( mEnableProfile )
+      {
+        renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering symbol level %1" ).arg( l + 1 ), QStringLiteral( "rendering" ) );
+      }
+
       for ( int i = 0; i < level.count(); i++ )
       {
         const QgsSymbolLevelItem &item = level[i];
@@ -834,6 +931,12 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     }
 
     mSelectionSymbol->stopRender( context );
+  }
+
+  std::unique_ptr< QgsScopedRuntimeProfile > cleanupProfile;
+  if ( mEnableProfile )
+  {
+    cleanupProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Finalizing" ), QStringLiteral( "rendering" ) );
   }
 
   stopRenderer( renderer, selRenderer );
