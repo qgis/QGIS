@@ -374,7 +374,7 @@
                     <item>
                      <widget class="QLabel" name="label_43">
                       <property name="text">
-                       <string>Font</string>
+                       <string>Font &lt;i&gt;(QGIS restart required)&lt;/i&gt;</string>
                       </property>
                      </widget>
                     </item>
