@@ -98,7 +98,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     void stopRenderer( QgsFeatureRenderer *renderer, QgsSingleSymbolRenderer *selRenderer );
 
 
-    bool renderInternal( QgsFeatureRenderer *renderer );
+    bool renderInternal( QgsFeatureRenderer *renderer, int rendererIndex );
 
   private:
 
@@ -106,6 +106,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     //! The rendered layer
     QgsVectorLayer *mLayer = nullptr;
+    QString mLayerName;
 
     QgsFields mFields; // TODO: use fields from mSource
 
@@ -158,6 +159,9 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QElapsedTimer mElapsedTimer;
 
     bool mNoSetLayerExpressionContext = false;
+
+    bool mEnableProfile = false;
+    quint64 mPreparationTime = 0;
 
     std::unique_ptr< QgsSymbol > mSelectionSymbol;
 
