@@ -19,6 +19,7 @@
 #include "qgsgltfutils.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
+#include "qgslogger.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -155,7 +156,7 @@ static Qt3DQAttribute *reprojectPositions( tinygltf::Model &model, int accessorI
   tinygltf::Accessor &accessor = model.accessors[accessorIndex];
 
   QVector<double> vx, vy, vz;
-  bool res = QgsGltfUtils::accessorToMapCoordinates( model, accessorIndex, transform.tileTransform, transform.ecefToTargetCrs, tileTranslationEcef, matrix, vx, vy, vz );
+  bool res = QgsGltfUtils::accessorToMapCoordinates( model, accessorIndex, transform.tileTransform, transform.ecefToTargetCrs, tileTranslationEcef, matrix, transform.gltfUpAxis, vx, vy, vz );
   if ( !res )
     return nullptr;
 
@@ -490,20 +491,15 @@ static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUti
     return nullptr;
   }
 
-  if ( scene.nodes.size() > 1 )
-  {
-    // TODO: handle multiple root nodes
-    if ( errors )
-      *errors << "Scene contains multiple nodes: only loading the first one!";
-  }
-
   const QgsVector3D tileTranslationEcef = QgsGltfUtils::extractTileTranslation( model );
 
-  int rootNodeIndex = scene.nodes[0];
-  const QVector<Qt3DCore::QEntity *> entities = parseNode( model, rootNodeIndex, transform, tileTranslationEcef, baseUri, QMatrix4x4(), errors );
   Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
-  for ( Qt3DCore::QEntity *e : entities )
-    e->setParent( rootEntity );
+  for ( const int nodeIndex : scene.nodes )
+  {
+    const QVector<Qt3DCore::QEntity *> entities = parseNode( model, nodeIndex, transform, tileTranslationEcef, baseUri, QMatrix4x4(), errors );
+    for ( Qt3DCore::QEntity *e : entities )
+      e->setParent( rootEntity );
+  }
   return rootEntity;
 }
 
@@ -514,6 +510,14 @@ Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const Q
   QString gltfErrors, gltfWarnings;
 
   bool res = QgsGltfUtils::loadGltfModel( data, model, &gltfErrors, &gltfWarnings );
+  if ( !gltfErrors.isEmpty() )
+  {
+    QgsDebugError( QStringLiteral( "Error raised reading %1: %2" ).arg( baseUri, gltfErrors ) );
+  }
+  if ( !gltfWarnings.isEmpty() )
+  {
+    QgsDebugError( QStringLiteral( "Warnings raised reading %1: %2" ).arg( baseUri, gltfWarnings ) );
+  }
   if ( !res )
   {
     if ( errors )

@@ -116,9 +116,16 @@ Comparator for sorting of geometry.
 Clears the geometry, ie reset it to a null geometry
 %End
 
-    virtual QgsRectangle boundingBox() const = 0;
+    virtual QgsRectangle boundingBox() const;
 %Docstring
 Returns the minimal bounding box for the geometry
+%End
+
+    virtual QgsBox3D boundingBox3D() const = 0;
+%Docstring
+Returns the 3D bounding box for the geometry.
+
+.. versionadded:: 3.34
 %End
 
 
@@ -552,6 +559,16 @@ calculate and handles invalid geometries.
 .. versionadded:: 3.20
 %End
 
+    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if the bounding box of this geometry intersects with a ``box3d``.
+
+Since this test only considers the bounding box of the geometry, is is very fast to
+calculate and handles invalid geometries.
+
+.. versionadded:: 3.34
+%End
+
     virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 %Docstring
 Returns a version of the geometry without curves. Caller takes ownership of
@@ -929,6 +946,15 @@ Updates the geometry type based on whether sub geometries contain z or m values.
 %Docstring
 Default calculator for the minimal bounding box for the geometry. Derived classes should override this method
 if a more efficient bounding box calculation is available.
+%End
+
+    virtual QgsBox3D calculateBoundingBox3D() const;
+%Docstring
+Calculates the minimal 3D bounding box for the geometry.
+
+.. seealso:: :py:func:`calculateBoundingBox`
+
+.. versionadded:: 3.34
 %End
 
     virtual void clearCache() const;

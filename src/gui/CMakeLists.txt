@@ -619,6 +619,7 @@ set(QGIS_GUI_SRCS
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
   qgsmaplayerloadstyledialog.cpp
+  qgsmaplayerrefreshsettingswidget.cpp
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp
@@ -895,6 +896,7 @@ set(QGIS_GUI_HDRS
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
   qgsmaplayerloadstyledialog.h
+  qgsmaplayerrefreshsettingswidget.h
   qgsmaplayerstylecategoriesmodel.h
   qgsmaplayerstyleguiutils.h
   qgsmaplayerstylemanagerwidget.h

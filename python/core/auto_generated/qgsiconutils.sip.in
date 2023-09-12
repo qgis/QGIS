@@ -30,7 +30,8 @@ Returns the icon for a vector layer whose geometry ``type`` is provided.
     static QIcon iconForGeometryType( Qgis::GeometryType typeGroup );
 %Docstring
 Returns the icon for a vector layer whose geometry ``typeGroup`` is provided.
-1since QGIS 3.28
+
+.. versionadded:: 3.28
 %End
 
     static QIcon iconPoint();

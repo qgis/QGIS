@@ -2343,6 +2343,37 @@ class TestQgsGeometry(QgisTestCase):
         line = QgsGeometry.fromPolylineXY(points)
         assert line.boundingBox().isNull()
 
+    def testBoundingBox3D(self):
+        # null
+        points = []
+        geom = QgsGeometry.fromPolylineXY(points)
+        assert geom.boundingBox3D().isNull()
+
+        # fromBox3D
+        box3D = QgsBox3D(1, 2, 3, 4, 5, 6)
+        box3D_geom = QgsGeometry.fromBox3D(box3D)
+        result = box3D_geom.boundingBox3D()
+        self.assertEqual(
+            box3D, result,
+            f"Expected:\n{box3D.toString()}\nGot:\n{result.toString()}\n")
+
+        # 2D polyline
+        points = [QgsPointXY(5, 0), QgsPointXY(0, 0), QgsPointXY(0, 4), QgsPointXY(5, 4), QgsPointXY(5, 1),
+                  QgsPointXY(1, 1), QgsPointXY(1, 3), QgsPointXY(4, 3), QgsPointXY(4, 2), QgsPointXY(2, 2)]
+        polyline2D = QgsGeometry.fromPolylineXY(points)
+        expbb2D = QgsBox3D(0, 0, float("nan"), 5, 4, float("nan"))
+        bb2D = polyline2D.boundingBox3D()
+        self.assertEqual(
+            expbb2D, bb2D, f"Expected:\n{expbb2D.toString()}\nGot:\n{bb2D.toString()}\n")
+
+        # 3D polyline
+        points = [QgsPoint(5, 0, -3), QgsPoint(0, 0, 5), QgsPoint(0, 4, -3), QgsPoint(5, 4, 0), QgsPoint(5, 1, 1),
+                  QgsPoint(1, 1, 2), QgsPoint(1, 3, 5), QgsPoint(4, 3, 9), QgsPoint(4, 2, -6), QgsPoint(2, 2, 8)]
+        polyline3D = QgsGeometry.fromPolyline(points)
+        expbb3D = QgsBox3D(0, 0, -6, 5, 4, 9)
+        bb3D = polyline3D.boundingBox3D()
+        self.assertEqual(expbb3D, bb3D, f"Expected:\n{expbb3D.toString()}\nGot:\n{bb3D.toString()}\n")
+
     def testCollectGeometry(self):
         # collect points
         geometries = [QgsGeometry.fromPointXY(QgsPointXY(0, 0)), QgsGeometry.fromPointXY(QgsPointXY(1, 1))]
@@ -5248,6 +5279,9 @@ class TestQgsGeometry(QgisTestCase):
         result = extended.asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         f"Extend line: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        expbb = QgsRectangle(-1, 0, 1, 3)
+        bb = extended.boundingBox()
+        self.assertEqual(expbb, bb, f"Extend line: bbox Expected:\n{expbb.toString()}\nGot:\n{bb.toString()}\n")
 
         # multilinestring
         multilinestring = QgsGeometry.fromWkt('MultiLineString((0 0, 1 0, 1 1),(11 11, 11 10, 10 10))')
@@ -5255,7 +5289,10 @@ class TestQgsGeometry(QgisTestCase):
         exp = 'MultiLineString((-1 0, 1 0, 1 3),(11 12, 11 10, 8 10))'
         result = extended.asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"Extend line: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+                        f"Extend multiline: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        expbb = QgsRectangle(-1, 0, 11, 12)
+        bb = extended.boundingBox()
+        self.assertEqual(expbb, bb, f"Extend multiline: bbox Expected:\n{expbb.toString()}\nGot:\n{bb.toString()}\n")
 
     def testRemoveRings(self):
         empty = QgsGeometry()
@@ -6090,6 +6127,9 @@ class TestQgsGeometry(QgisTestCase):
                 0.00000001],
             ["CurvePolygon (CompoundCurve (CircularString (2613627 1178798, 2613639 1178805, 2613648 1178794),(2613648 1178794, 2613627 1178798)))",
              "CurvePolygon (CompoundCurve (CircularString (2613627 1178798, 2613639 1178805, 2613648 1178794),(2613648 1178794, 2613627 1178798)))",
+             0.00000001, 0.000000001],
+            ["CurvePolygon (CompoundCurve ((2653264.45800000010058284 1213405.36899999994784594, 2653279.07700000004842877 1213383.28700000001117587, 2653278.33142686076462269 1213384.25132044195197523, 2653277.59772348683327436 1213385.22470247372984886, 2653276.87600000016391277 1213386.20699999993667006))",
+             "CurvePolygon (CompoundCurve ((2653264.45800000010058284 1213405.36899999994784594, 2653279.07700000004842877 1213383.28700000001117587),CircularString (2653279.07700000004842877 1213383.28700000001117587, 2653278.33142686076462269 1213384.25132044195197523, 2653276.87600000016391277 1213386.20699999993667006)))",
              0.00000001, 0.000000001]
         ]
         for t in tests:

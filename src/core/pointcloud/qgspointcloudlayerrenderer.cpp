@@ -33,18 +33,25 @@
 #include "qgsmessagelog.h"
 #include "qgsmapclippingutils.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsapplication.h"
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
+  , mLayerName( layer->name() )
   , mLayerAttributes( layer->attributes() )
   , mSubIndexes( layer && layer->dataProvider() ? layer->dataProvider()->subIndexes() : QVector<QgsPointCloudSubIndex>() )
   , mFeedback( new QgsFeedback )
+  , mEnableProfile( context.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
   // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
   // or use some locking to prevent read/write from multiple threads
   if ( !mLayer || !mLayer->dataProvider() || !mLayer->renderer() )
     return;
+
+  QElapsedTimer timer;
+  timer.start();
 
   mRenderer.reset( mLayer->renderer()->clone() );
   if ( !mSubIndexes.isEmpty() )
@@ -67,10 +74,26 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 
   mReadyToCompose = false;
+
+  mPreparationTime = timer.elapsed();
 }
 
 bool QgsPointCloudLayerRenderer::render()
 {
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( mEnableProfile )
+  {
+    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, QStringLiteral( "rendering" ) );
+    if ( mPreparationTime > 0 )
+      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, QStringLiteral( "rendering" ) );
+  }
+
+  std::unique_ptr< QgsScopedRuntimeProfile > preparingProfile;
+  if ( mEnableProfile )
+  {
+    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Preparing render" ), QStringLiteral( "rendering" ) );
+  }
+
   QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset, mZScale, mZOffset, mFeedback.get() );
 
   // Set up the render configuration options
@@ -152,6 +175,13 @@ bool QgsPointCloudLayerRenderer::render()
   catch ( QgsCsException & )
   {
     QgsDebugError( QStringLiteral( "Transformation of extent failed!" ) );
+  }
+
+  preparingProfile.reset();
+  std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
+  if ( mEnableProfile )
+  {
+    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
   }
 
   bool canceled = false;
@@ -356,7 +386,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
       if ( blockRequests.isEmpty() )
         loop.exit();
 
-      std::unique_ptr<QgsPointCloudBlock> block( blockRequest->block() );
+      std::unique_ptr<QgsPointCloudBlock> block( blockRequest->takeBlock() );
 
       blockRequest->deleteLater();
 
@@ -404,7 +434,9 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
   // was called for all blocks, so let's clean up anything that is left
   for ( QgsPointCloudBlockRequest *blockRequest : std::as_const( blockRequests ) )
   {
-    delete blockRequest->block();
+    std::unique_ptr<QgsPointCloudBlock> block = blockRequest->takeBlock();
+    block.reset();
+
     blockRequest->deleteLater();
   }
 

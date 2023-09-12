@@ -17,10 +17,12 @@
 
 #include "qgscircularstring.h"
 #include "qgsapplication.h"
+#include "qgsbox3d.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
+#include "qgsrectangle.h"
 #include "qgswkbptr.h"
 #include "qgsgeometrytransformer.h"
 #include "qgsfeedback.h"
@@ -267,30 +269,46 @@ void QgsCircularString::clear()
   clearCache();
 }
 
-QgsRectangle QgsCircularString::calculateBoundingBox() const
+QgsBox3D QgsCircularString::calculateBoundingBox3D() const
 {
-  QgsRectangle bbox;
+  QgsBox3D bbox;
   int nPoints = numPoints();
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
+    QgsRectangle box2d = segmentBoundingBox( QgsPoint( mX[i], mY[i] ), QgsPoint( mX[i + 1], mY[i + 1] ), QgsPoint( mX[i + 2], mY[i + 2] ) );
+    double zMin = std::numeric_limits<double>::quiet_NaN();
+    double zMax = std::numeric_limits<double>::quiet_NaN();
+    if ( is3D() )
+    {
+      zMin = *std::min_element( mZ.begin() + i, mZ.begin() + i + 3 );
+      zMax = *std::max_element( mZ.begin() + i, mZ.begin() + i + 3 );
+    }
     if ( i == 0 )
     {
-      bbox = segmentBoundingBox( QgsPoint( mX[i], mY[i] ), QgsPoint( mX[i + 1], mY[i + 1] ), QgsPoint( mX[i + 2], mY[i + 2] ) );
+      bbox = QgsBox3D( box2d, zMin, zMax );
     }
     else
     {
-      QgsRectangle segmentBox = segmentBoundingBox( QgsPoint( mX[i], mY[i] ), QgsPoint( mX[i + 1], mY[i + 1] ), QgsPoint( mX[i + 2], mY[i + 2] ) );
-      bbox.combineExtentWith( segmentBox );
+      bbox.combineWith( QgsBox3D( box2d, zMin, zMax ) );
     }
   }
 
   if ( nPoints > 0 && nPoints % 2 == 0 )
   {
+    double z = std::numeric_limits<double>::quiet_NaN();
     if ( nPoints == 2 )
     {
-      bbox.combineExtentWith( mX[ 0 ], mY[ 0 ] );
+      if ( is3D() )
+      {
+        z = mZ[ 0 ];
+      }
+      bbox.combineWith( mX[ 0 ], mY[ 0 ], z );
     }
-    bbox.combineExtentWith( mX[ nPoints - 1 ], mY[ nPoints - 1 ] );
+    if ( is3D() )
+    {
+      z = mZ[ nPoints - 1 ];
+    }
+    bbox.combineWith( mX[ nPoints - 1 ], mY[ nPoints - 1 ], z );
   }
   return bbox;
 }

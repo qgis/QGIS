@@ -29,6 +29,7 @@
 
 #include "qgsaabb.h"
 
+#include "qgis.h"
 #include <QTime>
 
 #define SIP_NO_FILE
@@ -167,6 +168,8 @@ class QgsChunkNode
     int childCount() const { return mChildren.count(); }
     //! Returns array of the four children. Children may be NULLPTR if they were not created yet
     QgsChunkNode *const *children() const { return mChildren.constData(); }
+    //! Returns how the chunked entity should behave when it is going to activate node's children
+    Qgis::TileRefinementProcess refinementProcess() const { return mRefinementProcess; }
     //! Returns current state of the node
     State state() const { return mState; }
 
@@ -189,6 +192,9 @@ class QgsChunkNode
 
     //! Sets child nodes of this node. Takes ownership of all objects. Must be only called once.
     void populateChildren( const QVector<QgsChunkNode *> &children );
+
+    //! Sets how the chunked entity should behave when it is going to activate node's children
+    void setRefinementProcess( Qgis::TileRefinementProcess refinementProcess ) { mRefinementProcess = refinementProcess; }
 
     //! how deep is the node in the tree (zero means root node, every level adds one)
     int level() const;
@@ -261,6 +267,8 @@ class QgsChunkNode
     bool mChildrenPopulated = false;     //!< Whether the child nodes (if any) have been already created
 
     State mState;  //!< State of the node
+
+    Qgis::TileRefinementProcess mRefinementProcess = Qgis::TileRefinementProcess::Replacement;  //!< How to handle display of the node when children get activated
 
     QgsChunkListEntry *mLoaderQueueEntry;       //!< Not null <=> QueuedForLoad or QueuedForUpdate state
     QgsChunkListEntry *mReplacementQueueEntry;  //!< Not null <=> has non-null entity (Loaded or QueuedForUpdate or Updating state)

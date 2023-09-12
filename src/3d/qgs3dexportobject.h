@@ -104,6 +104,18 @@ class _3D_EXPORT Qgs3DExportObject
     //! saves the texture of the object and material information
     QString saveMaterial( QTextStream &mtlOut, const QString &folder );
 
+    //! Returns the vertex coordinates
+    QVector<float> vertexPosition() const { return mVertexPosition; }
+
+    //! Returns the vertex normal coordinates
+    QVector<float> normals() const { return mNormals;}
+
+    //! Returns the vertex texture coordinates
+    QVector<float> texturesUV() const { return mTexturesUV;}
+
+    //! Returns the vertex indexes
+    QVector<unsigned int> indexes() const { return mIndexes; }
+
   private:
     QString mName;
     ObjectType mType = ObjectType::TriangularFaces;

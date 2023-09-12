@@ -1,0 +1,31 @@
+{
+  "name": "bearing",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns the north-based bearing as the angle in radians measured clockwise on the ellipsoid from the vertical on point_a to point_b.",
+  "arguments": [{
+    "arg": "point_a",
+    "description": "point geometry"
+  }, {
+    "arg": "point_b",
+    "description": "point geometry"
+  }, {
+    "arg": "source_crs",
+    "optional": true,
+    "description": "an optional string representing the source CRS of the points. By default the current layer's CRS is used."
+
+  }, {
+    "arg": "ellipsoid",
+    "optional": true,
+    "description": "an optional string representing the acronym or the authority:ID (eg 'EPSG:7030') of the ellipsoid on which the bearing should be measured. By default the current project's ellipsoid setting is used."  
+
+  }],
+  "examples": [{
+    "expression": "degrees( bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:3857', 'EPSG:7030') )",
+    "returns": "49.980071"
+  }, {
+    "expression": "degrees( bearing( make_point(18736872, -1877769), make_point(16198544, -4534850), 'EPSG:3857', 'WGS84') )",
+    "returns": "219.282386"
+  }],
+  "tags": ["measured", "clockwise", "points", "angle", "vertical", "north", "azimuth", "bearing", "radians", "ellipsoid"]
+}

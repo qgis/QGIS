@@ -83,7 +83,7 @@ of the curve.
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
-    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
 
     virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
 
@@ -222,7 +222,7 @@ Appends first point if not already closed.
   protected:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
-    virtual QgsRectangle calculateBoundingBox() const;
+    virtual QgsBox3D calculateBoundingBox3D() const;
 
 
 };

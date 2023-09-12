@@ -30,6 +30,8 @@
 #include "qgscesiumutils.h"
 #include "qgscurvepolygon.h"
 #include "qgstextrenderer.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsapplication.h"
 
 #include <QMatrix4x4>
 
@@ -39,12 +41,17 @@
 
 QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
+  , mLayerName( layer->name() )
   , mFeedback( new QgsFeedback )
+  , mEnableProfile( context.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
   // We must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
   // or use some locking to prevent read/write from multiple threads
   if ( !layer->dataProvider() || !layer->renderer() )
     return;
+
+  QElapsedTimer timer;
+  timer.start();
 
   mRenderer.reset( layer->renderer()->clone() );
 
@@ -57,6 +64,8 @@ QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *laye
   mRenderTileBorders = mRenderer->isTileBorderRenderingEnabled();
 
   mReadyToCompose = false;
+
+  mPreparationTime = timer.elapsed();
 }
 
 QgsTiledSceneLayerRenderer::~QgsTiledSceneLayerRenderer() = default;
@@ -65,6 +74,20 @@ bool QgsTiledSceneLayerRenderer::render()
 {
   if ( !mIndex.isValid() )
     return false;
+
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( mEnableProfile )
+  {
+    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, QStringLiteral( "rendering" ) );
+    if ( mPreparationTime > 0 )
+      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, QStringLiteral( "rendering" ) );
+  }
+
+  std::unique_ptr< QgsScopedRuntimeProfile > preparingProfile;
+  if ( mEnableProfile )
+  {
+    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Preparing render" ), QStringLiteral( "rendering" ) );
+  }
 
   QgsRenderContext *rc = renderContext();
   QgsTiledSceneRenderContext context( *rc, mFeedback.get() );
@@ -88,6 +111,14 @@ bool QgsTiledSceneLayerRenderer::render()
   mSceneToMapTransform = QgsCoordinateTransform( mSceneCrs, rc->coordinateTransform().destinationCrs(), rc->transformContext() );
 
   mRenderer->startRender( context );
+
+  preparingProfile.reset();
+  std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
+  if ( mEnableProfile )
+  {
+    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
+  }
+
   const bool result = renderTiles( context );
   mRenderer->stopRender( context );
   mReadyToCompose = true;
@@ -130,7 +161,7 @@ QgsTiledSceneRequest QgsTiledSceneLayerRenderer::createBaseRequest()
   request.setFeedback( feedback() );
 
   // TODO what z range makes sense here??
-  const QVector< QgsVector3D > corners = QgsBox3D( mapExtent, -1000, 1000 ).corners();
+  const QVector< QgsVector3D > corners = QgsBox3D( mapExtent, -10000, 10000 ).corners();
   QVector< double > x;
   x.reserve( 8 );
   QVector< double > y;
@@ -356,22 +387,25 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   const bool res = QgsGltfUtils::loadGltfModel( content.gltf, model, &gltfErrors, &gltfWarnings );
   if ( res )
   {
-    const QgsVector3D tileTranslationEcef = content.rtcCenter + QgsGltfUtils::extractTileTranslation( model );
+    const QgsVector3D tileTranslationEcef = content.rtcCenter + QgsGltfUtils::extractTileTranslation( model,
+                                            static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() ) );
     const tinygltf::Scene &scene = model.scenes[model.defaultScene];
-    const int nodeIndex = scene.nodes[0];
-    const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
-    const std::unique_ptr< QMatrix4x4 > gltfLocalTransform = QgsGltfUtils::parseNodeTransform( gltfNode );
-
-    if ( gltfNode.mesh >= 0 )
+    for ( int nodeIndex : scene.nodes )
     {
-      const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
+      const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
+      const std::unique_ptr< QMatrix4x4 > gltfLocalTransform = QgsGltfUtils::parseNodeTransform( gltfNode );
 
-      for ( const tinygltf::Primitive &primitive : mesh.primitives )
+      if ( gltfNode.mesh >= 0 )
       {
-        if ( context.renderContext().renderingStopped() )
-          break;
+        const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
 
-        renderPrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform.get(), contentUri, context );
+        for ( const tinygltf::Primitive &primitive : mesh.primitives )
+        {
+          if ( context.renderContext().renderingStopped() )
+            break;
+
+          renderPrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform.get(), contentUri, context );
+        }
       }
     }
   }
@@ -379,10 +413,11 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   {
     if ( !mErrors.contains( gltfErrors ) )
       mErrors.append( gltfErrors );
+    QgsDebugError( QStringLiteral( "Error raised reading %1: %2" ).arg( contentUri, gltfErrors ) );
   }
   if ( !gltfWarnings.isEmpty() )
   {
-    QgsDebugError( gltfWarnings );
+    QgsDebugError( QStringLiteral( "Warnings raised reading %1: %2" ).arg( contentUri, gltfWarnings ) );
   }
   return true;
 }
@@ -469,6 +504,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
     &mSceneToMapTransform,
     tileTranslationEcef,
     gltfLocalTransform,
+    static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
     x, y, z
   );
 
@@ -715,6 +751,7 @@ void QgsTiledSceneLayerRenderer::renderLinePrimitive( const tinygltf::Model &mod
     &mSceneToMapTransform,
     tileTranslationEcef,
     gltfLocalTransform,
+    static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
     x, y, z
   );
 

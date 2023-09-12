@@ -44,13 +44,15 @@
 #include <QDomElement>
 #include <QSettings> // for legend
 #include <QRegularExpression>
+#include <QUuid>
 
-QgsRendererCategory::QgsRendererCategory( const QVariant &value, QgsSymbol *symbol, const QString &label, bool render )
+QgsRendererCategory::QgsRendererCategory( const QVariant &value, QgsSymbol *symbol, const QString &label, bool render, const QString &uuid )
   : mValue( value )
   , mSymbol( symbol )
   , mLabel( label )
   , mRender( render )
 {
+  mUuid = !uuid.isEmpty() ? uuid : QUuid::createUuid().toString();
 }
 
 QgsRendererCategory::QgsRendererCategory( const QgsRendererCategory &cat )
@@ -58,6 +60,7 @@ QgsRendererCategory::QgsRendererCategory( const QgsRendererCategory &cat )
   , mSymbol( cat.mSymbol ? cat.mSymbol->clone() : nullptr )
   , mLabel( cat.mLabel )
   , mRender( cat.mRender )
+  , mUuid( cat.mUuid )
 {
 }
 
@@ -75,6 +78,12 @@ void QgsRendererCategory::swap( QgsRendererCategory &cat )
   std::swap( mValue, cat.mValue );
   std::swap( mSymbol, cat.mSymbol );
   std::swap( mLabel, cat.mLabel );
+  std::swap( mUuid, cat.mUuid );
+}
+
+QString QgsRendererCategory::uuid() const
+{
+  return mUuid;
 }
 
 QVariant QgsRendererCategory::value() const
@@ -701,6 +710,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
   };
 
   QDomElement catElem = catsElem.firstChildElement();
+  int i = 0;
   while ( !catElem.isNull() )
   {
     if ( catElem.tagName() == QLatin1String( "category" ) )
@@ -729,10 +739,11 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
       QString symbolName = catElem.attribute( QStringLiteral( "symbol" ) );
       QString label = catElem.attribute( QStringLiteral( "label" ) );
       bool render = catElem.attribute( QStringLiteral( "render" ) ) != QLatin1String( "false" );
+      QString uuid = catElem.attribute( QStringLiteral( "uuid" ), QString::number( i++ ) );
       if ( symbolMap.contains( symbolName ) )
       {
         QgsSymbol *symbol = symbolMap.take( symbolName );
-        cats.append( QgsRendererCategory( value, symbol, label, render ) );
+        cats.append( QgsRendererCategory( value, symbol, label, render, uuid ) );
       }
     }
     catElem = catElem.nextSiblingElement();
@@ -866,6 +877,7 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
       catElem.setAttribute( QStringLiteral( "symbol" ), symbolName );
       catElem.setAttribute( QStringLiteral( "label" ), cat.label() );
       catElem.setAttribute( QStringLiteral( "render" ), cat.renderState() ? "true" : "false" );
+      catElem.setAttribute( QStringLiteral( "uuid" ), cat.uuid() );
       catsElem.appendChild( catElem );
       i++;
     }
@@ -914,10 +926,9 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
 QgsLegendSymbolList QgsCategorizedSymbolRenderer::baseLegendSymbolItems() const
 {
   QgsLegendSymbolList lst;
-  int i = 0;
   for ( const QgsRendererCategory &cat : mCategories )
   {
-    lst << QgsLegendSymbolItem( cat.symbol(), cat.label(), QString::number( i++ ), true );
+    lst << QgsLegendSymbolItem( cat.symbol(), cat.label(), cat.uuid(), true );
   }
   return lst;
 }
@@ -1085,7 +1096,6 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
 QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   const QVariant value = valueForFeature( feature, context );
-  int i = 0;
 
   for ( const QgsRendererCategory &cat : mCategories )
   {
@@ -1120,11 +1130,10 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
     if ( match )
     {
       if ( cat.renderState() || mCounting )
-        return QSet< QString >() << QString::number( i );
+        return QSet< QString >() << cat.uuid();
       else
         return QSet< QString >();
     }
-    i++;
   }
 
   return QSet< QString >();
@@ -1133,8 +1142,17 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
 QString QgsCategorizedSymbolRenderer::legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const
 {
   ok = false;
-  int ruleIndex = key.toInt( &ok );
-  if ( !ok || ruleIndex < 0 || ruleIndex >= mCategories.size() )
+  int i = 0;
+  for ( i = 0; i < mCategories.size(); i++ )
+  {
+    if ( mCategories[i].uuid() == key )
+    {
+      ok = true;
+      break;
+    }
+  }
+
+  if ( !ok )
   {
     ok = false;
     return QString();
@@ -1146,7 +1164,7 @@ QString QgsCategorizedSymbolRenderer::legendKeyToExpression( const QString &key,
   const QString attributeComponent = QgsExpression::quoteFieldExpression( mAttrName, layer );
 
   ok = true;
-  const QgsRendererCategory &cat = mCategories[ ruleIndex ];
+  const QgsRendererCategory &cat = mCategories[i];
   if ( cat.value().type() == QVariant::List )
   {
     const QVariantList list = cat.value().toList();
@@ -1249,30 +1267,46 @@ bool QgsCategorizedSymbolRenderer::legendSymbolItemsCheckable() const
 
 bool QgsCategorizedSymbolRenderer::legendSymbolItemChecked( const QString &key )
 {
-  bool ok;
-  int index = key.toInt( &ok );
-  if ( ok && index >= 0 && index < mCategories.size() )
-    return mCategories.at( index ).renderState();
-  else
-    return true;
+  for ( const QgsRendererCategory &category : std::as_const( mCategories ) )
+  {
+    if ( category.uuid() == key )
+    {
+      return category.renderState();
+    }
+  }
+
+  return true;
 }
 
 void QgsCategorizedSymbolRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
-  bool ok;
-  int index = key.toInt( &ok );
+  bool ok = false;
+  int i = 0;
+  for ( i = 0; i < mCategories.size(); i++ )
+  {
+    if ( mCategories[i].uuid() == key )
+    {
+      ok = true;
+      break;
+    }
+  }
+
   if ( ok )
-    updateCategorySymbol( index, symbol );
+    updateCategorySymbol( i, symbol );
   else
     delete symbol;
 }
 
 void QgsCategorizedSymbolRenderer::checkLegendSymbolItem( const QString &key, bool state )
 {
-  bool ok;
-  int index = key.toInt( &ok );
-  if ( ok )
-    updateCategoryRenderState( index, state );
+  for ( int i = 0; i < mCategories.size(); i++ )
+  {
+    if ( mCategories[i].uuid() == key )
+    {
+      updateCategoryRenderState( i, state );
+      break;
+    }
+  }
 }
 
 QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer )

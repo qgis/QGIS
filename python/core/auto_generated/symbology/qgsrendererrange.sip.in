@@ -26,19 +26,38 @@ Constructor for QgsRendererRange.
 %End
     ~QgsRendererRange();
 
-    QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol /Transfer/, bool render = true );
+    QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol /Transfer/, bool render = true, const QString &uuid = QString() );
 %Docstring
 Creates a renderer symbol range
 
 :param range: The classification range
 :param symbol: The symbol for this renderer range
 :param render: If ``True``, it will be renderered
+:param uuid: Optional parameter to manually set the UUID key identifier for the this range (since QGIS 3.34).
 %End
-    QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
+
+    QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true, const QString &uuid = QString() );
+%Docstring
+Creates a renderer symbol range
+
+:param lowerValue: The lower bound of the range
+:param upperValue: The upper bound of the range
+:param symbol: The symbol for this renderer range
+:param label: The label used for the range
+:param render: If ``True``, it will be renderered
+:param uuid: Optional parameter to manually set the UUID key identifier for the this range (since QGIS 3.34).
+%End
     QgsRendererRange( const QgsRendererRange &range );
 
 
     bool operator<( const QgsRendererRange &other ) const;
+
+    QString uuid() const;
+%Docstring
+Returns the unique identifier for this range.
+
+.. versionadded:: 3.34
+%End
 
     double lowerValue() const;
 %Docstring

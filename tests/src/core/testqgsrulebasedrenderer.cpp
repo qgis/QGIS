@@ -1147,9 +1147,9 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QgsVectorLayerFeatureCounter *counter = layer->countSymbolFeatures();
       counter->waitForFinished();
 
-      QCOMPARE( counter->featureCount( "0" ), 1LL );
-      QCOMPARE( counter->featureCount( "1" ), 1LL );
-      QCOMPARE( counter->featureCount( "2" ), 1LL );
+      QCOMPARE( counter->featureCount( cats[0].uuid() ), 1LL );
+      QCOMPARE( counter->featureCount( cats[1].uuid() ), 1LL );
+      QCOMPARE( counter->featureCount( cats[2].uuid() ), 1LL );
     }
 
     void testLegendKeys()

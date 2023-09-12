@@ -42,9 +42,8 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
 
 #ifdef HAVE_GEOREFERENCER
   QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>() );
-#endif
   QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>() );
-
+#endif
 
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted

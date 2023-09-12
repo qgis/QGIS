@@ -122,7 +122,12 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
 
     ~QgsTiledSceneLayerChunkedEntity();
 
+    QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
+
     int pendingJobsCount() const override;
+
+  private:
+    mutable QgsTiledSceneIndex mIndex;
 };
 
 /// @endcond

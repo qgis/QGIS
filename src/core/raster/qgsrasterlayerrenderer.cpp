@@ -31,6 +31,8 @@
 #include "qgsgdalutils.h"
 #include "qgsrasterresamplefilter.h"
 #include "qgsrasterlayerelevationproperties.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsapplication.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
@@ -75,11 +77,17 @@ void QgsRasterLayerRendererFeedback::onNewData()
 ///
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
   : QgsMapLayerRenderer( layer->id(), &rendererContext )
+  , mLayerName( layer->name() )
   , mLayerOpacity( layer->opacity() )
   , mProviderCapabilities( static_cast<QgsRasterDataProvider::Capability>( layer->dataProvider()->capabilities() ) )
   , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
+  , mEnableProfile( rendererContext.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
   mReadyToCompose = false;
+
+  QElapsedTimer timer;
+  timer.start();
+
   QgsMapToPixel mapToPixel = rendererContext.mapToPixel();
   if ( rendererContext.mapToPixel().mapRotation() )
   {
@@ -302,6 +310,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mFeedback->setRenderContext( rendererContext );
 
   mPipe->moveToThread( nullptr );
+
+  mPreparationTime = timer.elapsed();
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
@@ -313,6 +323,14 @@ QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
 
 bool QgsRasterLayerRenderer::render()
 {
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( mEnableProfile )
+  {
+    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, QStringLiteral( "rendering" ) );
+    if ( mPreparationTime > 0 )
+      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, QStringLiteral( "rendering" ) );
+  }
+
   // Skip rendering of out of view tiles (xyz)
   if ( !mRasterViewPort || ( renderContext()->testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) &&
                              !( mProviderCapabilities &
@@ -323,6 +341,13 @@ bool QgsRasterLayerRenderer::render()
 
   QElapsedTimer time;
   time.start();
+
+  std::unique_ptr< QgsScopedRuntimeProfile > preparingProfile;
+  if ( mEnableProfile )
+  {
+    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Preparing render" ), QStringLiteral( "rendering" ) );
+  }
+
   //
   //
   // The goal here is to make as many decisions as possible early on (outside of the rendering loop)
@@ -360,6 +385,13 @@ bool QgsRasterLayerRenderer::render()
 
   // important -- disable SmoothPixmapTransform for raster layer renders. We want individual pixels to be clearly defined!
   renderContext()->painter()->setRenderHint( QPainter::SmoothPixmapTransform, false );
+
+  preparingProfile.reset();
+  std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
+  if ( mEnableProfile )
+  {
+    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
+  }
 
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe->last() );

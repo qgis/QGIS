@@ -56,6 +56,8 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
 
     // data coming from the vector tile layer
 
+    QString mLayerName;
+
     std::unique_ptr< QgsVectorTileDataProvider > mDataProvider;
 
     //! Tile renderer object to do rendering of individual tiles
@@ -104,6 +106,9 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     double mLayerOpacity = 1.0;
 
     QgsVectorTileMatrixSet mTileMatrixSet;
+
+    bool mEnableProfile = false;
+    quint64 mPreparationTime = 0;
 
 };
 

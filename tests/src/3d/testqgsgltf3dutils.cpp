@@ -45,11 +45,11 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
  */
-class TestQgsGltf3DUtils : public QObject
+class TestQgsGltf3DUtils : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsGltf3DUtils() = default;
+    TestQgsGltf3DUtils() : QgsTest( QStringLiteral( "GLTF 3D Utils" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -71,6 +71,7 @@ void TestQgsGltf3DUtils::initTestCase()
 //runs after all tests
 void TestQgsGltf3DUtils::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
 }
 
 void TestQgsGltf3DUtils::testInvalid()

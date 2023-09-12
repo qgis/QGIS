@@ -27,7 +27,7 @@ Gets a polygon representation of this surface.
 Ownership is transferred to the caller.
 %End
 
-    virtual QgsRectangle boundingBox() const;
+    virtual QgsBox3D boundingBox3D() const;
 
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 

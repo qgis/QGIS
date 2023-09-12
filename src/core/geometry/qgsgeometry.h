@@ -1177,6 +1177,13 @@ class CORE_EXPORT QgsGeometry
     QgsRectangle boundingBox() const;
 
     /**
+     * Returns the 3D bounding box of the geometry.
+     *
+     * \since QGIS 3.34
+     */
+    QgsBox3D boundingBox3D() const;
+
+    /**
      * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
      * rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
      * width and height of the rotated bounding box will also be returned.

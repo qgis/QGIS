@@ -605,6 +605,8 @@ segment in the line.
 
     virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
 
+    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
+
 
     QVector< QgsVertexId > collectDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) const;
 %Docstring
@@ -840,20 +842,31 @@ corresponds to the last point in the line.
 %End
 
 
-    QgsBox3D calculateBoundingBox3d() const;
+ QgsBox3D calculateBoundingBox3d() const /Deprecated/;
+%Docstring
+Calculates the minimal 3D bounding box for the geometry.
+Deprecated: use calculateBoundingBox3D instead
+
+.. seealso:: :py:func:`calculateBoundingBox`
+
+.. versionadded:: 3.26
+
+.. deprecated:: QGIS 3.34
+%End
+
+    virtual QgsBox3D calculateBoundingBox3D() const;
+
 %Docstring
 Calculates the minimal 3D bounding box for the geometry.
 
 .. seealso:: :py:func:`calculateBoundingBox`
 
-.. versionadded:: 3.26
+.. versionadded:: 3.34
 %End
 
   protected:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
-    virtual QgsRectangle calculateBoundingBox() const;
-
 
 };
 

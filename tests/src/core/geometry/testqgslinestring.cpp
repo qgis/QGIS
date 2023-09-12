@@ -2331,16 +2331,16 @@ void TestQgsLineString::boundingBox3D()
                   << QgsPoint( -2.0, -1.0, -1.0 )
                   << QgsPoint( 1.0, 2.0, -1.0 )
                   << QgsPoint( 1.0, 2.0, 2.0 ) );
-  QCOMPARE( bb3d.calculateBoundingBox3d(), QgsBox3D( QgsPoint( -2.0, -1.0, -1.0 ), QgsPoint( 1.0, 2.0, 2.0 ) ) );
+  QCOMPARE( bb3d.calculateBoundingBox3D(), QgsBox3D( QgsPoint( -2.0, -1.0, -1.0 ), QgsPoint( 1.0, 2.0, 2.0 ) ) );
   // retrieve again, should use cached values
-  QCOMPARE( bb3d.calculateBoundingBox3d(), QgsBox3D( QgsPoint( -2.0, -1.0, -1.0 ), QgsPoint( 1.0, 2.0, 2.0 ) ) );
+  QCOMPARE( bb3d.calculateBoundingBox3D(), QgsBox3D( QgsPoint( -2.0, -1.0, -1.0 ), QgsPoint( 1.0, 2.0, 2.0 ) ) );
 
   // linestring with z
   bb3d.setPoints( QgsPointSequence() << QgsPoint( -1.0, -1.0 )
                   << QgsPoint( -2.0, -1.0 )
                   << QgsPoint( 1.0, 2.0 )
                   << QgsPoint( 1.0, 2.0 ) );
-  QCOMPARE( bb3d.calculateBoundingBox3d(), QgsBox3D( QgsPoint( -2.0, -1, std::numeric_limits< double >::quiet_NaN() ), QgsPoint( 1.0, 2.0, std::numeric_limits< double >::quiet_NaN() ) ) );
+  QCOMPARE( bb3d.calculateBoundingBox3D(), QgsBox3D( QgsPoint( -2.0, -1, std::numeric_limits< double >::quiet_NaN() ), QgsPoint( 1.0, 2.0, std::numeric_limits< double >::quiet_NaN() ) ) );
 }
 
 void TestQgsLineString::angle()
@@ -2461,6 +2461,7 @@ void TestQgsLineString::extend()
   QCOMPARE( ls.pointN( 0 ), QgsPoint( Qgis::WkbType::Point, -1, 0 ) );
   QCOMPARE( ls.pointN( 1 ), QgsPoint( Qgis::WkbType::Point, 1, 0 ) );
   QCOMPARE( ls.pointN( 2 ), QgsPoint( Qgis::WkbType::Point, 1, 3 ) );
+  QCOMPARE( ls.boundingBox(), QgsRectangle( -1, 0, 1, 3 ) );
 }
 
 void TestQgsLineString::addToPainterPath()
@@ -2972,6 +2973,7 @@ void TestQgsLineString::orientation()
 
 void TestQgsLineString::boundingBoxIntersects()
 {
+  // 2d
   QgsLineString ls;
   QVERIFY( !ls.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
 
@@ -2994,6 +2996,30 @@ void TestQgsLineString::boundingBoxIntersects()
   QVERIFY( !ls.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
   QCOMPARE( ls.boundingBox(), QgsRectangle( 11, -10, 13, 12 ) );
   QVERIFY( ls.boundingBoxIntersects( QgsRectangle( 12, 3, 16, 9 ) ) );
+
+  // 3d
+  QgsLineString ls3d;
+  QVERIFY( !ls3d.boundingBoxIntersects( QgsBox3D( 1, 3, 5, 6, 9, 11 ) ) );
+
+  ls3d.setPoints( QgsPointSequence() << QgsPoint( 11, 2 )
+                  << QgsPoint( 11, 12 ) << QgsPoint( 13, -10 ) );
+
+  QVERIFY( ls3d.boundingBoxIntersects( QgsRectangle( 12, 3, 16, 9 ) ) );
+
+  // double test because of cache
+  QVERIFY( ls3d.boundingBoxIntersects( QgsRectangle( 12, 3, 16, 9 ) ) );
+  QVERIFY( !ls3d.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( !ls3d.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QCOMPARE( ls3d.boundingBox(), QgsRectangle( 11, -10, 13, 12 ) );
+
+  // clear cache
+  ls3d.setPoints( QgsPointSequence() << QgsPoint( 11, 2 )
+                  << QgsPoint( 11, 12 ) << QgsPoint( 13, -10 ) );
+
+  QVERIFY( !ls3d.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( !ls3d.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QCOMPARE( ls3d.boundingBox(), QgsRectangle( 11, -10, 13, 12 ) );
+  QVERIFY( ls3d.boundingBoxIntersects( QgsRectangle( 12, 3, 16, 9 ) ) );
 }
 
 

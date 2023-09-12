@@ -685,6 +685,8 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertTrue(index.isValid())
 
             root_tile = index.rootTile()
+            self.assertEqual(root_tile.metadata(), {'gltfUpAxis': Qgis.Axis.Y})
+
             root_node_bounds = root_tile.boundingVolume()
             self.compare_boxes(
                 root_node_bounds.box(),
@@ -1564,6 +1566,52 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(
                 tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"}
             )
+
+    def test_gltf_up_axis(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmp_file = os.path.join(temp_dir, "tileset.json")
+            with open(tmp_file, "wt", encoding="utf-8") as f:
+                f.write(
+                    """
+        {
+  "asset": {
+    "version": "1.0",
+    "gltfUpAxis":"Z"
+  },
+  "geometricError": 100.0,
+  "root": {
+    "boundingVolume": {
+      "box": [
+        -1.45782,
+        0.265355,
+        7.44958,
+        94.1946,
+        0.0,
+        0.0,
+        0.0,
+        -14.9309,
+        0.0,
+        0.0,
+        0.0,
+        75.0565
+      ]
+    },
+    "geometricError": 100.0,
+    "refine": "ADD",
+    "content": null,
+    "children": [
+    ]
+  }
+}"""
+                )
+            layer = QgsTiledSceneLayer(tmp_file, "my layer", "cesiumtiles")
+            self.assertTrue(layer.dataProvider().isValid())
+
+            index = layer.dataProvider().index()
+            self.assertTrue(index.isValid())
+
+            root_tile = index.rootTile()
+            self.assertEqual(root_tile.metadata(), {'gltfUpAxis': Qgis.Axis.Z})
 
 
 if __name__ == "__main__":

@@ -301,7 +301,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
   return true;
 }
 
-QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
   mHierarchyMutex.lock();
   const bool found = mHierarchy.contains( n );

@@ -72,7 +72,7 @@ Curve polygon geometry type
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
-    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
 
 
     double roundness() const;
@@ -342,7 +342,7 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
   protected:
 
 
-    virtual QgsRectangle calculateBoundingBox() const;
+    virtual QgsBox3D calculateBoundingBox3D() const;
 
 };
 

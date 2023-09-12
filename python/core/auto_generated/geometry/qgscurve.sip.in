@@ -206,7 +206,7 @@ Returns a geometry without curves. Caller takes ownership
 
     void normalize() final /HoldGIL/;
 
-    virtual QgsRectangle boundingBox() const;
+    virtual QgsBox3D boundingBox3D() const;
 
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 

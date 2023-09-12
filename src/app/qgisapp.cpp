@@ -410,6 +410,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmessagelogviewer.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgswelcomepage.h"
+#include "qgsrecentprojectsmenueventfilter.h"
 #include "qgsversioninfo.h"
 #include "qgslegendfilterbutton.h"
 #include "qgsvirtuallayerdefinition.h"
@@ -1063,6 +1064,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     settings.setValue( QStringLiteral( "qgis/main_canvas_preview_jobs" ), true );
   }
   mMapCanvas->setPreviewJobsEnabled( settings.value( QStringLiteral( "qgis/main_canvas_preview_jobs" ), true ).toBool() );
+  // record profiling time on the main canvas only
+  mMapCanvas->mapSettings().setFlag( Qgis::MapSettingsFlag::RecordProfile );
 
   // set canvas color right away
   int myRed = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
@@ -1101,6 +1104,26 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mWelcomePage, &QgsWelcomePage::projectUnpinned, this, [ this ]( int row )
   {
     mRecentProjects.at( row ).pin = false;
+    saveRecentProjects();
+    updateRecentProjectPaths();
+  } );
+  connect( mWelcomePage, &QgsWelcomePage::projectsCleared, this, [ this ]( bool clearPinned )
+  {
+    if ( clearPinned )
+    {
+      mRecentProjects.clear();
+    }
+    else
+    {
+      mRecentProjects.erase(
+        std::remove_if(
+          mRecentProjects.begin(),
+          mRecentProjects.end(),
+      []( const QgsRecentProjectItemsModel::RecentProjectData & recentProject ) { return !recentProject.pin; }
+        ),
+      mRecentProjects.end()
+      );
+    }
     saveRecentProjects();
     updateRecentProjectPaths();
   } );
@@ -3351,6 +3374,10 @@ void QgisApp::createMenus()
 
   // Connect once for the entire submenu.
   connect( mRecentProjectsMenu, &QMenu::triggered, this, static_cast < void ( QgisApp::* )( QAction *action ) >( &QgisApp::openProject ) );
+  QgsRecentProjectsMenuEventFilter *recentsProjectMenuEventFilter = new QgsRecentProjectsMenuEventFilter( mWelcomePage, mRecentProjectsMenu );
+  mRecentProjectsMenu->installEventFilter( recentsProjectMenuEventFilter );
+
+
   connect( mProjectFromTemplateMenu, &QMenu::triggered,
            this, &QgisApp::fileNewFromTemplateAction );
 
@@ -5168,6 +5195,7 @@ void QgisApp::updateRecentProjectPaths()
   mRecentProjectsMenu->clear();
 
   const auto constMRecentProjects = mRecentProjects;
+  int projectIndex = 0;
   for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : constMRecentProjects )
   {
     QAction *action = mRecentProjectsMenu->addAction(
@@ -5198,11 +5226,19 @@ void QgisApp::updateRecentProjectPaths()
         action->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorBadLayer.svg" ) ) );
     }
 
-    action->setData( recentProject.path );
+    action->setData( projectIndex++ );
     if ( recentProject.pin )
     {
       action->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/pin.svg" ) ) );
     }
+  }
+
+  // Add clear recent projects action
+  if ( !mRecentProjects.isEmpty() )
+  {
+    mRecentProjectsMenu->addSeparator();
+    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List" ) );
+    connect( clearRecentProjectsAction, &QAction::triggered, mWelcomePage, [ = ]() { mWelcomePage->clearRecentProjects(); } );
   }
 
   std::vector< QgsNative::RecentProjectProperties > recentProjects;
@@ -6879,13 +6915,19 @@ void QgisApp::openTemplate( const QString &fileName )
 }
 
 // Open the project file corresponding to the
-// path at the given index in mRecentProjectPaths
+// path at the given index in mRecentProjects
 void QgisApp::openProject( QAction *action )
 {
-  // possibly save any pending work before opening a different project
   Q_ASSERT( action );
-  const QString project = action->data().toString().replace( "&&", "&" );
 
+  bool ok;
+  const int projectIndex = action->data().toInt( &ok );
+  if ( !ok || projectIndex < 0 || projectIndex >= mRecentProjects.count() )
+    return;
+  QString project =  mRecentProjects.at( projectIndex ).path;
+  project.replace( "&&", "&" );
+
+  // possibly save any pending work before opening a different project
   if ( checkTasksDependOnProject() )
     return;
 

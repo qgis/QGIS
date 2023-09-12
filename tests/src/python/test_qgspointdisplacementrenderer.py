@@ -489,8 +489,8 @@ class TestQgsPointDisplacementRenderer(QgisTestCase):
     def test_legend_keys(self):
         symbol1 = QgsMarkerSymbol()
         symbol2 = QgsMarkerSymbol()
-        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1'),
-                                                            QgsRendererCategory('cat2', symbol2, 'cat2')
+        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1', True, '0'),
+                                                            QgsRendererCategory('cat2', symbol2, 'cat2', True, '1')
                                                             ])
 
         renderer = QgsPointDisplacementRenderer()

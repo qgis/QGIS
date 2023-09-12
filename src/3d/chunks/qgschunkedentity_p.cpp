@@ -492,7 +492,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
       // has additive strategy. With additive strategy, child nodes should be rendered
       // in addition to the parent nodes (rather than child nodes replacing parent entirely)
 
-      if ( mAdditiveStrategy )
+      if ( node->refinementProcess() == Qgis::TileRefinementProcess::Additive )
       {
         // Logic of the additive strategy:
         // - children that are not loaded will get requested to be loaded
@@ -547,7 +547,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
     {
       mActiveNodes << node;
       // if we are not using additive strategy we need to make sure the parent primitives are not counted
-      if ( !mAdditiveStrategy && node->parent() && nodes.contains( node->parent() ) )
+      if ( node->refinementProcess() != Qgis::TileRefinementProcess::Additive && node->parent() && nodes.contains( node->parent() ) )
       {
         nodes.remove( node->parent() );
         renderedCount -= mChunkLoaderFactory->primitivesCount( node->parent() );

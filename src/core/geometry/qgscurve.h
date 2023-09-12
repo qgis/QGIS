@@ -21,7 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
-#include "qgsrectangle.h"
+#include "qgsbox3d.h"
 #include <QPainterPath>
 
 class QgsLineString;
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
     QgsCurve *toCurveType() const override SIP_FACTORY;
     void normalize() final SIP_HOLDGIL;
 
-    QgsRectangle boundingBox() const override;
+    QgsBox3D boundingBox3D() const override;
     bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
 
     /**
@@ -355,7 +355,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
     /**
      * Cached bounding box.
      */
-    mutable QgsRectangle mBoundingBox;
+    mutable QgsBox3D mBoundingBox;
 
     mutable bool mHasCachedSummedUpArea = false;
     mutable double mSummedUpArea = 0;

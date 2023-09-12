@@ -50,6 +50,7 @@ from qgis.core import (
     QgsVectorFileWriter,
     QgsVectorLayer,
     QgsWkbTypes,
+    QgsFieldConstraints
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1714,6 +1715,95 @@ class TestQgsVectorFileWriter(QgisTestCase):
                 writer.capabilities() & Qgis.VectorFileWriterCapability.FieldAliases)
             self.assertFalse(
                 writer.capabilities() & Qgis.VectorFileWriterCapability.FieldComments)
+
+    def testWriteFieldConstraints(self):
+        """
+        Test explicitly including field constraints.
+        """
+        layer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=name:string(20)&'
+             'field=age:integer&field=size:double'),
+            'test',
+            'memory')
+
+        self.assertTrue(layer.isValid())
+        myProvider = layer.dataProvider()
+
+        layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintNotNull)
+        layer.setFieldConstraint(2, QgsFieldConstraints.ConstraintUnique)
+
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
+        ft.setAttributes(['Johny', 20, 0.3])
+        myResult, myFeatures = myProvider.addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.includeConstraints = True
+
+        dest = os.path.join(str(QDir.tempPath()), 'constraints.gpkg')
+        result, err = QgsVectorFileWriter.writeAsVectorFormatV2(
+            layer,
+            dest,
+            QgsProject.instance().transformContext(),
+            options)
+        self.assertEqual(result, QgsVectorFileWriter.NoError)
+
+        res = QgsVectorLayer(dest, 'result')
+        self.assertTrue(res.isValid())
+        self.assertEqual([f.name() for f in res.fields()], ['fid', 'name', 'age', 'size'])
+
+        self.assertEqual(res.fields()['name'].constraints().constraints(),
+                         QgsFieldConstraints.Constraints())
+        self.assertEqual(res.fields()['age'].constraints().constraints(),
+                         QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(res.fields()['size'].constraints().constraints(),
+                         QgsFieldConstraints.ConstraintUnique)
+
+    def testWriteSkipFieldConstraints(self):
+        """
+        Test that default is to skip field constraints.
+        """
+        layer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=name:string(20)&'
+             'field=age:integer&field=size:double'),
+            'test',
+            'memory')
+
+        self.assertTrue(layer.isValid())
+        myProvider = layer.dataProvider()
+
+        layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintNotNull)
+        layer.setFieldConstraint(2, QgsFieldConstraints.ConstraintUnique)
+
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
+        ft.setAttributes(['Johny', 20, 0.3])
+        myResult, myFeatures = myProvider.addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+
+        dest = os.path.join(str(QDir.tempPath()), 'constraints.gpkg')
+        result, err = QgsVectorFileWriter.writeAsVectorFormatV2(
+            layer,
+            dest,
+            QgsProject.instance().transformContext(),
+            options)
+        self.assertEqual(result, QgsVectorFileWriter.NoError)
+
+        res = QgsVectorLayer(dest, 'result')
+        self.assertTrue(res.isValid())
+        self.assertEqual([f.name() for f in res.fields()], ['fid', 'name', 'age', 'size'])
+
+        self.assertEqual(res.fields()['name'].constraints().constraints(),
+                         QgsFieldConstraints.Constraints())
+        self.assertEqual(res.fields()['age'].constraints().constraints(),
+                         QgsFieldConstraints.Constraints())
+        self.assertEqual(res.fields()['size'].constraints().constraints(),
+                         QgsFieldConstraints.Constraints())
 
 
 if __name__ == '__main__':

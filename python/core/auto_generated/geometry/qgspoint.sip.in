@@ -367,7 +367,7 @@ Example
     void normalize() final /HoldGIL/;
     virtual bool isEmpty() const /HoldGIL/;
 
-    virtual QgsRectangle boundingBox() const /HoldGIL/;
+    virtual QgsBox3D boundingBox3D() const /HoldGIL/;
 
     virtual QString geometryType() const /HoldGIL/;
 
@@ -453,6 +453,8 @@ Angle undefined. Always returns 0.0
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
     virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+
+    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
 
 
     virtual bool addZValue( double zValue = 0 );

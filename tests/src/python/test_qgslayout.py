@@ -38,7 +38,9 @@ from qgis.core import (
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
+from utilities import unitTestDataPath
 
+TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
@@ -580,6 +582,19 @@ class TestQgsLayout(QgisTestCase):
         self.assertEqual(item1.zValue(), 3)
         self.assertEqual(item2.zValue(), 1)
         self.assertEqual(item3.zValue(), 2)
+
+    def testConverGroupedHtmlLabelItem(self):
+        p = QgsProject.instance()
+        p.read(os.path.join(TEST_DATA_DIR, 'projects', 'test-project-print_layout_with_group-qgis_330.qgz'))
+        lm = p.layoutManager()
+
+        self.assertEqual(len(lm.printLayouts()), 1)
+        layout = lm.printLayouts()[0]
+        self.assertEqual(len(layout.multiFrames()), 1)
+        multi_frame = layout.multiFrames()[0]
+
+        self.assertEqual(multi_frame.html(), '<b>Lorem ipsum</b> - <i> Lorem ipsum, Lorem ipsum.</i>')
+        self.assertTrue(multi_frame.frame(0).isGroupMember())
 
 
 if __name__ == '__main__':

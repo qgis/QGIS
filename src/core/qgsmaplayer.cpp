@@ -95,7 +95,21 @@ QgsMapLayer::QgsMapLayer( Qgis::LayerType type,
   mID = generateId( lyrname );
   connect( this, &QgsMapLayer::crsChanged, this, &QgsMapLayer::configChanged );
   connect( this, &QgsMapLayer::nameChanged, this, &QgsMapLayer::configChanged );
-  connect( mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
+  connect( mRefreshTimer, &QTimer::timeout, this, [ = ]
+  {
+
+    switch ( mAutoRefreshMode )
+    {
+      case Qgis::AutoRefreshMode::Disabled:
+        break;
+      case Qgis::AutoRefreshMode::RedrawOnly:
+        triggerRepaint( true );
+        break;
+      case Qgis::AutoRefreshMode::ReloadData:
+        reload();
+        break;
+    }
+  } );
 }
 
 QgsMapLayer::~QgsMapLayer()
@@ -558,7 +572,14 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   mMetadata.readMetadataXml( metadataElem );
 
   setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), QStringLiteral( "0" ) ).toInt() );
-  setAutoRefreshEnabled( layerElement.attribute( QStringLiteral( "autoRefreshEnabled" ), QStringLiteral( "0" ) ).toInt() );
+  if ( layerElement.hasAttribute( QStringLiteral( "autoRefreshMode" ) ) )
+  {
+    setAutoRefreshMode( qgsEnumKeyToValue( layerElement.attribute( QStringLiteral( "autoRefreshMode" ) ), Qgis::AutoRefreshMode::Disabled ) );
+  }
+  else
+  {
+    setAutoRefreshMode( layerElement.attribute( QStringLiteral( "autoRefreshEnabled" ), QStringLiteral( "0" ) ).toInt() ? Qgis::AutoRefreshMode::RedrawOnly : Qgis::AutoRefreshMode::Disabled );
+  }
   setRefreshOnNofifyMessage( layerElement.attribute( QStringLiteral( "refreshOnNotifyMessage" ), QString() ) );
   setRefreshOnNotifyEnabled( layerElement.attribute( QStringLiteral( "refreshOnNotifyEnabled" ), QStringLiteral( "0" ) ).toInt() );
 
@@ -609,7 +630,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   }
 
   layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer->interval() ) );
-  layerElement.setAttribute( QStringLiteral( "autoRefreshEnabled" ), mRefreshTimer->isActive() ? 1 : 0 );
+  layerElement.setAttribute( QStringLiteral( "autoRefreshMode" ), qgsEnumValueToKey( mAutoRefreshMode ) );
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyEnabled" ),  mIsRefreshOnNofifyEnabled ? 1 : 0 );
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyMessage" ),  mRefreshOnNofifyMessage );
 
@@ -995,7 +1016,14 @@ bool QgsMapLayer::hasAutoRefreshEnabled() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mRefreshTimer->isActive();
+  return mAutoRefreshMode != Qgis::AutoRefreshMode::Disabled;;
+}
+
+Qgis::AutoRefreshMode QgsMapLayer::autoRefreshMode() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mAutoRefreshMode;
 }
 
 int QgsMapLayer::autoRefreshInterval() const
@@ -1013,6 +1041,7 @@ void QgsMapLayer::setAutoRefreshInterval( int interval )
   {
     mRefreshTimer->stop();
     mRefreshTimer->setInterval( 0 );
+    setAutoRefreshMode( Qgis::AutoRefreshMode::Disabled );
   }
   else
   {
@@ -1025,10 +1054,29 @@ void QgsMapLayer::setAutoRefreshEnabled( bool enabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( !enabled )
-    mRefreshTimer->stop();
-  else if ( mRefreshTimer->interval() > 0 )
-    mRefreshTimer->start();
+  setAutoRefreshMode( enabled ? Qgis::AutoRefreshMode::RedrawOnly : Qgis::AutoRefreshMode::Disabled );
+}
+
+void QgsMapLayer::setAutoRefreshMode( Qgis::AutoRefreshMode mode )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mode == mAutoRefreshMode )
+    return;
+
+  mAutoRefreshMode = mode;
+  switch ( mAutoRefreshMode )
+  {
+    case Qgis::AutoRefreshMode::Disabled:
+      mRefreshTimer->stop();
+      break;
+
+    case Qgis::AutoRefreshMode::RedrawOnly:
+    case Qgis::AutoRefreshMode::ReloadData:
+      if ( mRefreshTimer->interval() > 0 )
+        mRefreshTimer->start();
+      break;
+  }
 
   emit autoRefreshIntervalChanged( mRefreshTimer->isActive() ? mRefreshTimer->interval() : 0 );
 }
@@ -1614,6 +1662,7 @@ QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::Propert
     const QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
     if ( !myDirInfo.isWritable() )
     {
+      resultFlag = false;
       return tr( "The directory containing your dataset needs to be writable!" );
     }
 
@@ -1939,6 +1988,7 @@ QString QgsMapLayer::saveSldStyleV2( bool &resultFlag, const QgsSldExportContext
     const QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
     if ( !myDirInfo.isWritable() )
     {
+      resultFlag = false;
       return tr( "The directory containing your dataset needs to be writable!" );
     }
 

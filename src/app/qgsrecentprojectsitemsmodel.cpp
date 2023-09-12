@@ -146,6 +146,27 @@ void QgsRecentProjectItemsModel::removeProject( const QModelIndex &index )
   endRemoveRows();
 }
 
+void QgsRecentProjectItemsModel::clear( bool clearPinned )
+{
+  beginResetModel();
+  if ( clearPinned )
+  {
+    mRecentProjects.clear();
+  }
+  else
+  {
+    mRecentProjects.erase(
+      std::remove_if(
+        mRecentProjects.begin(),
+        mRecentProjects.end(),
+    []( const QgsRecentProjectItemsModel::RecentProjectData & recentProject ) { return !recentProject.pin; }
+      ),
+    mRecentProjects.end()
+    );
+  }
+  endResetModel();
+}
+
 void QgsRecentProjectItemsModel::recheckProject( const QModelIndex &index )
 {
   QString path;

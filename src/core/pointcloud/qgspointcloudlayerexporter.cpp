@@ -357,7 +357,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
   qint64 pointsExported = 0;
   for ( const IndexedPointCloudNode &node : nodes )
   {
-    block.reset( mParent->mIndex->nodeData( node, request ) );
+    block = mParent->mIndex->nodeData( node, request );
     const QgsPointCloudAttributeCollection attributesCollection = block->attributes();
     const char *ptr = block->data();
     int count = block->pointCount();

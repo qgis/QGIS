@@ -81,7 +81,7 @@ void QgsLayoutItemGroup::addItem( QgsLayoutItem *item )
   mItems << QPointer< QgsLayoutItem >( item );
   item->setParentGroup( this );
 
-  updateBoundingRect( item );
+  updateBoundingRect();
 }
 
 void QgsLayoutItemGroup::removeItems()
@@ -172,7 +172,7 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useRefer
   QgsLayoutItem::attemptMove( point, includesFrame );
   if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->endMacro();
-  resetBoundingRect();
+  updateBoundingRect();
 }
 
 void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size, bool includesFrame )
@@ -224,7 +224,7 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size, bool includes
   if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->endMacro();
 
-  resetBoundingRect();
+  updateBoundingRect();
 }
 
 bool QgsLayoutItemGroup::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
@@ -269,7 +269,7 @@ void QgsLayoutItemGroup::finalizeRestoreFromXml()
     }
   }
 
-  resetBoundingRect();
+  updateBoundingRect();
 }
 
 QgsLayoutItem::ExportLayerBehavior QgsLayoutItemGroup::exportLayerBehavior() const
@@ -286,53 +286,58 @@ void QgsLayoutItemGroup::draw( QgsLayoutItemRenderContext & )
   // nothing to draw here!
 }
 
-void QgsLayoutItemGroup::resetBoundingRect()
+
+void QgsLayoutItemGroup::updateBoundingRect()
 {
-  mBoundingRectangle = QRectF();
-  for ( QgsLayoutItem *item : std::as_const( mItems ) )
+
+  if ( mItems.isEmpty() )
   {
-    updateBoundingRect( item );
+    setRect( QRectF() );
+    return;
   }
+
+  //check if all child items have same rotation
+  auto itemIter = mItems.constBegin();
+
+  //start with rotation of first child
+  double rotation = ( *itemIter )->rotation();
+
+  //iterate through remaining children, checking if they have same rotation
+  for ( ++itemIter; itemIter != mItems.constEnd(); ++itemIter )
+  {
+    if ( !qgsDoubleNear( ( *itemIter )->rotation(), rotation ) )
+    {
+      //item has a different rotation
+      rotation = 0.0;
+      break;
+    }
+  }
+  setScenePos( QPointF( 0, 0 ) );
+  setItemRotation( rotation );
+
+  itemIter = mItems.constBegin();
+
+  // start with handle bounds of first child
+  QRectF groupRect = mapFromItem( ( *itemIter ), ( *itemIter )->rect() ).boundingRect();
+  QRectF groupRectWithFrame = mapFromItem( ( *itemIter ), ( *itemIter )->rectWithFrame() ).boundingRect();
+
+  //iterate through remaining children, expanding the bounds as required
+  for ( ++itemIter; itemIter != mItems.constEnd(); ++itemIter )
+  {
+    groupRect |= mapFromItem( ( *itemIter ), ( *itemIter )->rect() ).boundingRect();
+    groupRectWithFrame |= mapFromItem( ( *itemIter ), ( *itemIter )->rectWithFrame() ).boundingRect();
+  }
+
+  mItemSize = mLayout->convertFromLayoutUnits( groupRect.size(), sizeWithUnits().units() );
+  mItemPosition = mLayout->convertFromLayoutUnits( mapToScene( groupRect.topLeft() ), positionWithUnits().units() );
+  setRect( 0, 0, groupRect.width(), groupRect.height() );
+  setPos( mapToScene( groupRect.topLeft() ) );
+
+  QPointF bleedShift = groupRectWithFrame.topLeft() - groupRect.topLeft();
+  mRectWithFrame = QRectF( bleedShift, groupRectWithFrame.size() );
 }
 
-void QgsLayoutItemGroup::updateBoundingRect( QgsLayoutItem *item )
+QRectF QgsLayoutItemGroup::rectWithFrame() const
 {
-  //update extent
-  if ( mBoundingRectangle.isEmpty() ) //we add the first item
-  {
-    mBoundingRectangle = QRectF( 0, 0, item->rect().width(), item->rect().height() );
-    setSceneRect( QRectF( item->pos().x(), item->pos().y(), item->rect().width(), item->rect().height() ) );
-
-    if ( !qgsDoubleNear( item->rotation(), 0.0 ) )
-    {
-      setItemRotation( item->rotation() );
-    }
-  }
-  else
-  {
-    if ( !qgsDoubleNear( item->rotation(), rotation() ) )
-    {
-      //items have mixed rotation, so reset rotation of group
-      mBoundingRectangle = mapRectToScene( mBoundingRectangle );
-      setItemRotation( 0 );
-      mBoundingRectangle = mBoundingRectangle.united( item->mapRectToScene( item->rect() ) );
-      setSceneRect( mBoundingRectangle );
-    }
-    else
-    {
-      //items have same rotation, so keep rotation of group
-      mBoundingRectangle = mBoundingRectangle.united( mapRectFromItem( item, item->rect() ) );
-      QPointF newPos = mapToScene( mBoundingRectangle.topLeft().x(), mBoundingRectangle.topLeft().y() );
-      mBoundingRectangle = QRectF( 0, 0, mBoundingRectangle.width(), mBoundingRectangle.height() );
-      setSceneRect( QRectF( newPos.x(), newPos.y(), mBoundingRectangle.width(), mBoundingRectangle.height() ) );
-    }
-  }
-}
-
-void QgsLayoutItemGroup::setSceneRect( const QRectF &rectangle )
-{
-  mItemPosition = mLayout->convertFromLayoutUnits( rectangle.topLeft(), positionWithUnits().units() );
-  mItemSize = mLayout->convertFromLayoutUnits( rectangle.size(), sizeWithUnits().units() );
-  setScenePos( rectangle.topLeft() );
-  setRect( 0, 0, rectangle.width(), rectangle.height() );
+  return mRectWithFrame;
 }

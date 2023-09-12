@@ -1304,6 +1304,9 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     friend class TestQgsLayoutMapGrid;
 
+    // Needs access to evaluated properties to compute frame bleed
+    friend class QgsLayoutItemMap;
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItemMapGrid::FrameSideFlags )

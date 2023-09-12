@@ -74,6 +74,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectortilelayer.h"
 #include "qgsrelationmanager.h"
+#include "qgstiledscenelayer.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #include "qgsstringutils.h"
@@ -537,7 +538,9 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
+      break;
     case Qgis::LayerType::TiledScene:
+      addFeature( qobject_cast<QgsTiledSceneLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes );
       break;
   }
 }
@@ -1369,6 +1372,56 @@ void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer,
 }
 
 
+void QgsIdentifyResultsDialog::addFeature( QgsTiledSceneLayer *layer,
+    const QString &label,
+    const QMap< QString, QString > &attributes,
+    const QMap< QString, QString > &derivedAttributes )
+{
+  QTreeWidgetItem *layItem = layerItem( layer );
+
+  if ( !layItem )
+  {
+    layItem = new QTreeWidgetItem( QStringList() << layer->name() );
+    layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
+    lstResults->addTopLevelItem( layItem );
+    QFont boldFont;
+    boldFont.setBold( true );
+    layItem->setFont( 0, boldFont );
+
+    connect( layer, &QObject::destroyed, this, &QgsIdentifyResultsDialog::layerDestroyed );
+    connect( layer, &QgsMapLayer::crsChanged, this, &QgsIdentifyResultsDialog::layerDestroyed );
+  }
+
+  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( QgsFields(), QgsFeature(), layer->crs(), QStringList() << label << QString() );
+  layItem->addChild( featItem );
+
+  layItem->setFirstColumnSpanned( true );
+  const QString countSuffix = layItem->childCount() > 1
+                              ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
+                              : QString();
+  layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( layer->name(), countSuffix ) );
+
+  // TODO: support attributes in future
+  Q_UNUSED( attributes );
+
+  if ( derivedAttributes.size() >= 0 )
+  {
+    QgsTreeWidgetItem *derivedItem = new QgsTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
+    derivedItem->setData( 0, Qt::UserRole, "derived" );
+    derivedItem->setAlwaysOnTopPriority( 0 );
+    featItem->addChild( derivedItem );
+
+    for ( QMap< QString, QString>::const_iterator it = derivedAttributes.begin(); it != derivedAttributes.end(); ++it )
+    {
+      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << it.key() << it.value() );
+      attrItem->setToolTip( 1, it.value() );
+      attrItem->setData( 1, REPRESENTED_VALUE_ROLE, it.value() );
+      derivedItem->addChild( attrItem );
+    }
+  }
+}
+
+
 void QgsIdentifyResultsDialog::editingToggled()
 {
   QTreeWidgetItem *layItem = layerItem( sender() );
@@ -1498,7 +1551,8 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   QgsRasterLayer *rlayer = rasterLayer( item );
   QgsVectorTileLayer *vtlayer = vectorTileLayer( item );
   QgsPointCloudLayer *pclayer = pointCloudLayer( item );
-  if ( !vlayer && !rlayer && !vtlayer && !pclayer )
+  QgsTiledSceneLayer *tslayer = tiledSceneLayer( item );
+  if ( !vlayer && !rlayer && !vtlayer && !pclayer && !tslayer )
   {
     QgsDebugError( QStringLiteral( "Item does not belong to a layer." ) );
     return;
@@ -1904,6 +1958,14 @@ QgsPointCloudLayer *QgsIdentifyResultsDialog::pointCloudLayer( QTreeWidgetItem *
   return qobject_cast<QgsPointCloudLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
+QgsTiledSceneLayer *QgsIdentifyResultsDialog::tiledSceneLayer( QTreeWidgetItem *item )
+{
+  item = layerItem( item );
+  if ( !item )
+    return nullptr;
+  return qobject_cast<QgsTiledSceneLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
+}
+
 QTreeWidgetItem *QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &idx )
 {
   QTreeWidgetItem *featItem = featureItem( item );
@@ -2139,12 +2201,12 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
     case Qgis::LayerType::Raster:
     case Qgis::LayerType::VectorTile:
     case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::TiledScene:
       break;
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Mesh:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
-    case Qgis::LayerType::TiledScene:
       return; // not supported
   }
 

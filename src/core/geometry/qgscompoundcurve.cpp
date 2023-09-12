@@ -146,18 +146,18 @@ void QgsCompoundCurve::clear()
   clearCache();
 }
 
-QgsRectangle QgsCompoundCurve::calculateBoundingBox() const
+QgsBox3D QgsCompoundCurve::calculateBoundingBox3D() const
 {
   if ( mCurves.empty() )
   {
-    return QgsRectangle();
+    return QgsBox3D();
   }
 
-  QgsRectangle bbox = mCurves.at( 0 )->boundingBox();
+  QgsBox3D bbox = mCurves.at( 0 )->boundingBox3D();
   for ( int i = 1; i < mCurves.size(); ++i )
   {
-    QgsRectangle curveBox = mCurves.at( i )->boundingBox();
-    bbox.combineExtentWith( curveBox );
+    QgsBox3D curveBox = mCurves.at( i )->boundingBox3D();
+    bbox.combineWith( curveBox );
   }
   return bbox;
 }
@@ -534,7 +534,7 @@ bool QgsCompoundCurve::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
-bool QgsCompoundCurve::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+bool QgsCompoundCurve::boundingBoxIntersects( const QgsBox3D &box3d ) const
 {
   if ( mCurves.empty() )
     return false;
@@ -542,7 +542,7 @@ bool QgsCompoundCurve::boundingBoxIntersects( const QgsRectangle &rectangle ) co
   // if we already have the bounding box calculated, then this check is trivial!
   if ( !mBoundingBox.isNull() )
   {
-    return mBoundingBox.intersects( rectangle );
+    return mBoundingBox.intersects( box3d );
   }
 
   // otherwise loop through each member curve and test the bounding box intersection.
@@ -552,7 +552,7 @@ bool QgsCompoundCurve::boundingBoxIntersects( const QgsRectangle &rectangle ) co
   // bounding boxes are cached, so would be reused without additional expense)
   for ( const QgsCurve *curve : mCurves )
   {
-    if ( curve->boundingBoxIntersects( rectangle ) )
+    if ( curve->boundingBoxIntersects( box3d ) )
       return true;
   }
 
@@ -560,7 +560,7 @@ bool QgsCompoundCurve::boundingBoxIntersects( const QgsRectangle &rectangle ) co
   // bounding box of the overall compound curve.
   // so here we fall back to the non-optimised base class check which has to first calculate
   // the overall bounding box of the compound curve..
-  return QgsAbstractGeometry::boundingBoxIntersects( rectangle );
+  return QgsAbstractGeometry::boundingBoxIntersects( box3d );
 }
 
 const QgsAbstractGeometry *QgsCompoundCurve::simplifiedTypeRef() const

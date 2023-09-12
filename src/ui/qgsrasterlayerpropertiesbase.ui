@@ -275,7 +275,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>10</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -320,8 +320,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>253</width>
-                <height>392</height>
+                <width>643</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -443,8 +443,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>462</width>
-                <height>306</height>
+                <width>643</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1012,8 +1012,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>89</width>
-                <height>31</height>
+                <width>643</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1108,50 +1108,11 @@
             </widget>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
-              <widget class="QCheckBox" name="mRefreshLayerCheckBox">
-               <property name="text">
-                <string>Refresh layer at interval (seconds)</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QgsDoubleSpinBox" name="mRefreshLayerIntervalSpinBox">
-               <property name="toolTip">
-                <string>Higher values result in more simplification</string>
-               </property>
-               <property name="decimals">
-                <number>2</number>
-               </property>
-               <property name="minimum">
-                <double>0.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>100000000000000000000.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>5.000000000000000</double>
-               </property>
-               <property name="value">
-                <double>10.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_6">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
+            <widget class="QgsMapLayerRefreshSettingsWidget" name="mRefreshSettingsWidget" native="true">
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
+             </property>
+            </widget>
            </item>
            <item>
             <spacer name="verticalSpacer_6">
@@ -1230,8 +1191,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>442</width>
-                <height>155</height>
+                <width>504</width>
+                <height>187</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1298,9 +1259,12 @@
                       </property>
                       <property name="html">
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
@@ -1673,8 +1637,8 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>263</width>
-                <height>599</height>
+                <width>629</width>
+                <height>709</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -2153,6 +2117,12 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
    <header>qgsexpressionlineedit.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsMapLayerRefreshSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsmaplayerrefreshsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
@@ -2185,8 +2155,7 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
   <tabstop>transparencyScrollArea</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>chkUseScaleDependentRendering</tabstop>
-  <tabstop>mRefreshLayerCheckBox</tabstop>
-  <tabstop>mRefreshLayerIntervalSpinBox</tabstop>
+  <tabstop>mRefreshSettingsWidget</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>tePyramidDescription</tabstop>
   <tabstop>lbxPyramidResolutions</tabstop>
@@ -2210,10 +2179,14 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
   <tabstop>mPublishDataSourceUrlCheckBox</tabstop>
   <tabstop>mBackgroundLayerCheckBox</tabstop>
   <tabstop>mInvertColorsCheck</tabstop>
+  <tabstop>mEnableMapTips</tabstop>
+  <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mMapTipExpressionWidget</tabstop>
+  <tabstop>mCreateRasterAttributeTableButton</tabstop>
+  <tabstop>mLoadRasterAttributeTableFromFileButton</tabstop>
+  <tabstop>tableViewMetadataUrl</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

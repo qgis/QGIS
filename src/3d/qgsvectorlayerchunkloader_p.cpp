@@ -46,6 +46,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   }
 
   QgsVectorLayer *layer = mFactory->mLayer;
+  mLayerName = mFactory->mLayer->name();
   const Qgs3DMapSettings &map = mFactory->mMap;
 
   QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mFactory->mSymbol.get() );
@@ -119,7 +120,9 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
 {
   if ( mNode->level() < mFactory->mLeafLevel )
   {
-    return new Qt3DCore::QEntity( parent );  // dummy entity
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );  // dummy entity
+    entity->setObjectName( mLayerName + "_CONTAINER_" + mNode->tileId().text() );
+    return entity;
   }
 
   if ( mHandler->featureCount() == 0 )
@@ -132,6 +135,7 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
   }
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+  entity->setObjectName( mLayerName + "_" + mNode->tileId().text() );
   mHandler->finalize( entity, mContext );
 
   // fix the vertical range of the node from the estimated vertical range to the true range
@@ -249,8 +253,9 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
         }
 
         QVector3D nodeIntPoint;
-        QgsFeatureId fid = FID_NULL;
-        if ( polygonGeom->rayIntersection( ray, transformMatrix, nodeIntPoint, fid ) )
+        int triangleIndex = -1;
+
+        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, transformMatrix, nodeIntPoint, triangleIndex ) )
         {
 #ifdef QGISDEBUG
           hits++;
@@ -260,7 +265,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
           {
             minDist = dist;
             intersectionPoint = nodeIntPoint;
-            nearestFid = fid;
+            nearestFid = polygonGeom->triangleIndexToFeatureId( triangleIndex );
           }
         }
       }

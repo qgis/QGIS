@@ -25,7 +25,7 @@ Represents an individual category (class) from a :py:class:`QgsCategorizedSymbol
 Constructor for QgsRendererCategory.
 %End
 
-    QgsRendererCategory( const QVariant &value, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
+    QgsRendererCategory( const QVariant &value, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true, const QString &uuid = QString() );
 %Docstring
 Constructor for a new QgsRendererCategory, with the specified ``value`` and ``symbol``.
 
@@ -36,6 +36,8 @@ The ownership of ``symbol`` is transferred to the category.
 The ``label`` argument specifies the label used for this category in legends and the layer tree.
 
 The ``render`` argument indicates whether the category should initially be rendered and appear checked in the layer tree.
+
+The optional ``uuid`` argument manually set the UUID key identifier for the category (since QGIS 3.34).
 %End
 
     QgsRendererCategory( const QgsRendererCategory &cat );
@@ -43,6 +45,13 @@ The ``render`` argument indicates whether the category should initially be rende
 Copy constructor.
 %End
     ~QgsRendererCategory();
+
+    QString uuid() const;
+%Docstring
+Returns the unique identifier for this category.
+
+.. versionadded:: 3.34
+%End
 
     QVariant value() const;
 %Docstring

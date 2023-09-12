@@ -493,6 +493,11 @@ const QgsMapSettings &QgsMapCanvas::mapSettings() const
   return mSettings;
 }
 
+QgsMapSettings &QgsMapCanvas::mapSettings()
+{
+  return mSettings;
+}
+
 void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   if ( mSettings.destinationCrs() == crs )
@@ -788,6 +793,9 @@ void QgsMapCanvas::refreshMap()
   renderSettings.setLayers( allLayers );
 
   // create the renderer job
+
+  QgsApplication::profiler()->clear( QStringLiteral( "rendering" ) );
+
   Q_ASSERT( !mJob );
   mJobCanceled = false;
   if ( mUseParallelRendering )
@@ -3530,6 +3538,8 @@ void QgsMapCanvas::startPreviewJob( int number )
   jobSettings.setExtent( jobExtent );
   jobSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, false );
   jobSettings.setFlag( Qgis::MapSettingsFlag::RenderPreviewJob, true );
+  // never profile preview jobs
+  jobSettings.setFlag( Qgis::MapSettingsFlag::RecordProfile, false );
 
   // truncate preview layers to fast layers
   const QList<QgsMapLayer *> layers = jobSettings.layers();

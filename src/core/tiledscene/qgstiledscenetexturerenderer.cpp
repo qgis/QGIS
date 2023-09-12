@@ -68,8 +68,8 @@ QgsFillSymbol *QgsTiledSceneTextureRenderer::createDefaultFillSymbol()
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "124,124,124" ) );
-  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
-  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.1" ) );
+  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "round" ) );
 
   return QgsFillSymbol::createSimple( properties );
 }

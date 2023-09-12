@@ -139,6 +139,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
 
     /**
+     * Returns a reference to the map settings used for map rendering.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.34
+     */
+    QgsMapSettings &mapSettings() SIP_SKIP;
+
+    /**
      * Sets the temporal \a controller for this canvas.
      *
      * The controller will be used to update the canvas' temporal range.

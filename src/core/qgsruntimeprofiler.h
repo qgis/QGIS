@@ -220,6 +220,13 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     void end( const QString &group = "startup" );
 
     /**
+     * Manually adds a profile event with the given name and total \a time (in seconds).
+     *
+     * \since QGIS 3.34
+     */
+    void record( const QString &name, double time, const QString &group = "startup" );
+
+    /**
      * Returns the profile time for the specified \a name.
      * \since QGIS 3.14
      */

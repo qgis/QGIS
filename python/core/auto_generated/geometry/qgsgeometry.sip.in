@@ -1105,6 +1105,13 @@ Returns the bounding box of the geometry.
 .. seealso:: :py:func:`orientedMinimumBoundingBox`
 %End
 
+    QgsBox3D boundingBox3D() const;
+%Docstring
+Returns the 3D bounding box of the geometry.
+
+.. versionadded:: 3.34
+%End
+
     QgsGeometry orientedMinimumBoundingBox( double &area /Out/, double &angle /Out/, double &width /Out/, double &height /Out/ ) const;
 %Docstring
 Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)

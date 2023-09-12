@@ -87,8 +87,8 @@ class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
       const QgsHttpHeaders &headers,
       const QgsCoordinateTransformContext &transformContext );
 
-    std::unique_ptr< QgsTiledSceneTile > tileFromJson( const json &node, const QUrl &baseUrl, const QgsTiledSceneTile *parent );
-    QgsTiledSceneNode *nodeFromJson( const json &node, const QUrl &baseUrl, QgsTiledSceneNode *parent );
+    std::unique_ptr< QgsTiledSceneTile > tileFromJson( const json &node, const QUrl &baseUrl, const QgsTiledSceneTile *parent, Qgis::Axis gltfUpAxis );
+    QgsTiledSceneNode *nodeFromJson( const json &node, const QUrl &baseUrl, QgsTiledSceneNode *parent, Qgis::Axis gltfUpAxis );
     void refineNodeFromJson( QgsTiledSceneNode *node, const QUrl &baseUrl, const json &json );
 
     QgsTiledSceneTile rootTile() const final;
@@ -153,19 +153,49 @@ class QgsCesiumTilesDataProviderSharedData
 // QgsCesiumTiledSceneIndex
 //
 
+Qgis::Axis axisFromJson( const json &json )
+{
+  const std::string gltfUpAxisString = json.get<std::string>();
+  if ( gltfUpAxisString == "z" || gltfUpAxisString == "Z" )
+  {
+    return Qgis::Axis::Z;
+  }
+  else if ( gltfUpAxisString == "y" || gltfUpAxisString == "Y" )
+  {
+    return Qgis::Axis::Y;
+  }
+  else if ( gltfUpAxisString == "x" || gltfUpAxisString == "X" )
+  {
+    return Qgis::Axis::X;
+  }
+  QgsDebugError( QStringLiteral( "Unsupported gltfUpAxis value: %1" ).arg( QString::fromStdString( gltfUpAxisString ) ) );
+  return Qgis::Axis::Y;
+}
+
 QgsCesiumTiledSceneIndex::QgsCesiumTiledSceneIndex( const json &tileset, const QUrl &rootUrl, const QString &authCfg, const QgsHttpHeaders &headers, const QgsCoordinateTransformContext &transformContext )
   : mTransformContext( transformContext )
   , mAuthCfg( authCfg )
   , mHeaders( headers )
 {
-  mRootNode.reset( nodeFromJson( tileset[ "root" ], rootUrl, nullptr ) );
+  Qgis::Axis gltfUpAxis = Qgis::Axis::Y;
+  if ( tileset.contains( "asset" ) )
+  {
+    const auto &assetJson = tileset["asset"];
+    if ( assetJson.contains( "gltfUpAxis" ) )
+    {
+      gltfUpAxis = axisFromJson( assetJson["gltfUpAxis"] );
+    }
+  }
+
+  mRootNode.reset( nodeFromJson( tileset[ "root" ], rootUrl, nullptr, gltfUpAxis ) );
 }
 
-std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( const json &json, const QUrl &baseUrl, const QgsTiledSceneTile *parent )
+std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( const json &json, const QUrl &baseUrl, const QgsTiledSceneTile *parent, Qgis::Axis gltfUpAxis )
 {
   std::unique_ptr< QgsTiledSceneTile > tile = std::make_unique< QgsTiledSceneTile >( mNextTileId++ );
 
   tile->setBaseUrl( baseUrl );
+  tile->setMetadata( {{ QStringLiteral( "gltfUpAxis" ), static_cast< int >( gltfUpAxis ) }} );
 
   QgsMatrix4x4 transform;
   if ( json.contains( "transform" ) && !json["transform"].is_null() )
@@ -194,39 +224,46 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
     QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( boundingVolume[ "region" ] );
     if ( !rootRegion.isNull() )
     {
-      // we need to transform regions from EPSG:4979 to EPSG:4978
-      QVector< QgsVector3D > corners = rootRegion.corners();
-
-      QVector< double > x;
-      x.reserve( 8 );
-      QVector< double > y;
-      y.reserve( 8 );
-      QVector< double > z;
-      z.reserve( 8 );
-      for ( int i = 0; i < 8; ++i )
+      if ( rootRegion.width() > 20 || rootRegion.height() > 20 )
       {
-        const QgsVector3D &corner = corners[i];
-        x.append( corner.x() );
-        y.append( corner.y() );
-        z.append( corner.z() );
+        // treat very large regions as global -- these will not transform to EPSG:4978
       }
-      QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ),  QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ), mTransformContext );
-      ct.setBallparkTransformsAreAppropriate( true );
-      try
+      else
       {
-        ct.transformInPlace( x, y, z );
-      }
-      catch ( QgsCsException & )
-      {
-        QgsDebugError( QStringLiteral( "Cannot transform region bounding volume" ) );
-      }
+        // we need to transform regions from EPSG:4979 to EPSG:4978
+        QVector< QgsVector3D > corners = rootRegion.corners();
 
-      const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
-      const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
-      const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
-      volume = QgsTiledSceneBoundingVolume( QgsOrientedBox3D::fromBox3D( QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second ) ) );
+        QVector< double > x;
+        x.reserve( 8 );
+        QVector< double > y;
+        y.reserve( 8 );
+        QVector< double > z;
+        z.reserve( 8 );
+        for ( int i = 0; i < 8; ++i )
+        {
+          const QgsVector3D &corner = corners[i];
+          x.append( corner.x() );
+          y.append( corner.y() );
+          z.append( corner.z() );
+        }
+        QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ),  QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ), mTransformContext );
+        ct.setBallparkTransformsAreAppropriate( true );
+        try
+        {
+          ct.transformInPlace( x, y, z );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugError( QStringLiteral( "Cannot transform region bounding volume" ) );
+        }
 
-      // note that matrix transforms are NOT applied to region bounding volumes!
+        const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
+        const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
+        const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
+        volume = QgsTiledSceneBoundingVolume( QgsOrientedBox3D::fromBox3D( QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second ) ) );
+
+        // note that matrix transforms are NOT applied to region bounding volumes!
+      }
     }
   }
   else if ( boundingVolume.contains( "box" ) )
@@ -301,9 +338,9 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
   return tile;
 }
 
-QgsTiledSceneNode *QgsCesiumTiledSceneIndex::nodeFromJson( const json &json, const QUrl &baseUrl, QgsTiledSceneNode *parent )
+QgsTiledSceneNode *QgsCesiumTiledSceneIndex::nodeFromJson( const json &json, const QUrl &baseUrl, QgsTiledSceneNode *parent, Qgis::Axis gltfUpAxis )
 {
-  std::unique_ptr< QgsTiledSceneTile > tile = tileFromJson( json, baseUrl, parent ? parent->tile() : nullptr );
+  std::unique_ptr< QgsTiledSceneTile > tile = tileFromJson( json, baseUrl, parent ? parent->tile() : nullptr, gltfUpAxis );
   std::unique_ptr< QgsTiledSceneNode > newNode = std::make_unique< QgsTiledSceneNode >( tile.release() );
   mNodeMap.insert( newNode->tile()->id(), newNode.get() );
 
@@ -314,7 +351,7 @@ QgsTiledSceneNode *QgsCesiumTiledSceneIndex::nodeFromJson( const json &json, con
   {
     for ( const auto &childJson : json["children"] )
     {
-      nodeFromJson( childJson, baseUrl, newNode.get() );
+      nodeFromJson( childJson, baseUrl, newNode.get(), gltfUpAxis );
     }
   }
 
@@ -323,17 +360,36 @@ QgsTiledSceneNode *QgsCesiumTiledSceneIndex::nodeFromJson( const json &json, con
 
 void QgsCesiumTiledSceneIndex::refineNodeFromJson( QgsTiledSceneNode *node, const QUrl &baseUrl, const json &json )
 {
-  std::unique_ptr< QgsTiledSceneTile > newTile = tileFromJson( json, baseUrl, node->parentNode() ? node->parentNode()->tile() : nullptr );
+  const auto &rootTileJson = json["root"];
+
+  Qgis::Axis gltfUpAxis = Qgis::Axis::Y;
+  if ( json.contains( "asset" ) )
+  {
+    const auto &assetJson = json["asset"];
+    if ( assetJson.contains( "gltfUpAxis" ) )
+    {
+      gltfUpAxis = axisFromJson( assetJson["gltfUpAxis"] );
+    }
+  }
+
+  std::unique_ptr< QgsTiledSceneTile > newTile = tileFromJson( rootTileJson, baseUrl, node->tile(), gltfUpAxis );
   // copy just the resources from the retrieved tileset to the refined node. We assume all the rest of the tile content
   // should be the same between the node being refined and the root node of the fetched sub dataset!
   // (Ie the bounding volume, geometric error, etc).
   node->tile()->setResources( newTile->resources() );
 
-  if ( json.contains( "children" ) )
+
+  // root tile of the sub dataset may have transform as well, we need to bring it back
+  // (actually even the referencing tile may have transform - if that's the case,
+  // that transform got combined with the root tile's transform in tileFromJson)
+  if ( newTile->transform() )
+    node->tile()->setTransform( *newTile->transform() );
+
+  if ( rootTileJson.contains( "children" ) )
   {
-    for ( const auto &childJson : json["children"] )
+    for ( const auto &childJson : rootTileJson["children"] )
     {
-      nodeFromJson( childJson, baseUrl, node );
+      nodeFromJson( childJson, baseUrl, node, gltfUpAxis );
     }
   }
 }
@@ -401,7 +457,7 @@ QVector< long long > QgsCesiumTiledSceneIndex::getTiles( const QgsTiledSceneRequ
 
     // check filter box first -- if the node doesn't intersect, then don't include the node and don't traverse
     // to its children
-    if ( !request.filterBox().isNull() && !tile->boundingVolume().intersects( request.filterBox() ) )
+    if ( !request.filterBox().isNull() && !tile->boundingVolume().box().isNull() && !tile->boundingVolume().intersects( request.filterBox() ) )
       return;
 
     // TODO -- option to filter out nodes without content
@@ -574,7 +630,7 @@ bool QgsCesiumTiledSceneIndex::fetchHierarchy( long long id, QgsFeedback *feedba
     {
       const auto subTileJson = json::parse( subTile.toStdString() );
       QMutexLocker locker( &mLock );
-      refineNodeFromJson( it.value(), QUrl( contentUri ), subTileJson["root"] );
+      refineNodeFromJson( it.value(), QUrl( contentUri ), subTileJson );
       mTileContentFormats.insert( id, TileContentFormat::Json );
       return true;
     }
@@ -862,6 +918,7 @@ bool QgsCesiumTilesDataProvider::init()
   {
     QUrl url( uri );
     const QString assetId = QUrlQuery( url ).queryItemValue( QStringLiteral( "assetId" ) );
+    const QString accessToken = QUrlQuery( url ).queryItemValue( QStringLiteral( "accessToken" ) );
 
     const QString CESIUM_ION_URL = QStringLiteral( "https://api.cesium.com/" );
 
@@ -871,9 +928,12 @@ bool QgsCesiumTilesDataProvider::init()
       QNetworkRequest request = QNetworkRequest( assetInfoEndpoint );
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
       mHeaders.updateNetworkRequest( request );
+      if ( !accessToken.isEmpty() )
+        request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
 
       QgsBlockingNetworkRequest networkRequest;
-      networkRequest.setAuthCfg( mAuthCfg );
+      if ( accessToken.isEmpty() )
+        networkRequest.setAuthCfg( mAuthCfg );
 
       switch ( networkRequest.get( request ) )
       {
@@ -910,9 +970,12 @@ bool QgsCesiumTilesDataProvider::init()
       QNetworkRequest request = QNetworkRequest( tileAccessEndpoint );
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
       mHeaders.updateNetworkRequest( request );
+      if ( !accessToken.isEmpty() )
+        request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
 
       QgsBlockingNetworkRequest networkRequest;
-      networkRequest.setAuthCfg( mAuthCfg );
+      if ( accessToken.isEmpty() )
+        networkRequest.setAuthCfg( mAuthCfg );
 
       switch ( networkRequest.get( request ) )
       {

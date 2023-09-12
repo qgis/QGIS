@@ -119,11 +119,11 @@ bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QL
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
  */
-class TestQgsTessellator : public QObject
+class TestQgsTessellator : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsTessellator() = default;
+    TestQgsTessellator() : QgsTest( QStringLiteral( "Test QgsTessellator" ) ) {};
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -156,6 +156,7 @@ void TestQgsTessellator::initTestCase()
 //runs after all tests
 void TestQgsTessellator::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
 }
 
 void TestQgsTessellator::testBasic()

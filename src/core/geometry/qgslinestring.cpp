@@ -424,6 +424,8 @@ bool QgsLineString::isClosed() const
   return closed;
 }
 
+// As `bool boundingBoxIntersects( const QgsBox3D &box3d )` and `bool boundingBoxIntersects( const QgsRectangle &rectangle )` are nearly
+// the same: if one of these functions is changed then remember to also update the other accordingly
 bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
 {
   if ( mX.empty() )
@@ -502,6 +504,95 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
   return QgsCurve::boundingBoxIntersects( rectangle );
 }
 
+// As `bool boundingBoxIntersects( const QgsBox3D &box3d )` and `bool boundingBoxIntersects( const QgsRectangle &rectangle )` are nearly
+// the same: if one of these functions is changed then remember to also update the other accordingly
+bool QgsLineString::boundingBoxIntersects( const QgsBox3D &box3d ) const
+{
+  if ( mX.empty() )
+    return false;
+
+  if ( mZ.empty() )
+    return boundingBoxIntersects( box3d.toRectangle() );
+
+  if ( !mBoundingBox.isNull() )
+  {
+    return mBoundingBox.intersects( box3d );
+  }
+  const int nb = mX.size();
+
+  // We are a little fancy here!
+  if ( nb > 40 )
+  {
+    // if a large number of vertices, take some sample vertices at 1/5th increments through the linestring
+    // and test whether any are inside the rectangle. Maybe we can shortcut a lot of iterations by doing this!
+    // (why 1/5th? it's picked so that it works nicely for polygon rings which are almost rectangles, so the vertex extremities
+    // will fall on approximately these vertex indices)
+    if ( box3d.contains( mX.at( 0 ), mY.at( 0 ), mZ.at( 0 ) ) ||
+         box3d.contains( mX.at( static_cast< int >( nb * 0.2 ) ), mY.at( static_cast< int >( nb * 0.2 ) ), mZ.at( static_cast< int >( nb * 0.2 ) ) ) ||
+         box3d.contains( mX.at( static_cast< int >( nb * 0.4 ) ), mY.at( static_cast< int >( nb * 0.4 ) ), mZ.at( static_cast< int >( nb * 0.4 ) ) ) ||
+         box3d.contains( mX.at( static_cast< int >( nb * 0.6 ) ), mY.at( static_cast< int >( nb * 0.6 ) ), mZ.at( static_cast< int >( nb * 0.6 ) ) ) ||
+         box3d.contains( mX.at( static_cast< int >( nb * 0.8 ) ), mY.at( static_cast< int >( nb * 0.8 ) ), mZ.at( static_cast< int >( nb * 0.8 ) ) ) ||
+         box3d.contains( mX.at( nb - 1 ), mY.at( nb - 1 ), mZ.at( nb - 1 ) ) )
+      return true;
+  }
+
+  // Be even MORE fancy! Given that bounding box calculation is non-free, cached, and we don't
+  // already have it, we start performing the bounding box calculation while we are testing whether
+  // each point falls inside the rectangle. That way if we end up testing the majority of the points
+  // anyway, we can update the cached bounding box with the results we've calculated along the way
+  // and save future calls to calculate the bounding box!
+  double xmin = std::numeric_limits<double>::max();
+  double ymin = std::numeric_limits<double>::max();
+  double zmin = std::numeric_limits<double>::max();
+  double xmax = -std::numeric_limits<double>::max();
+  double ymax = -std::numeric_limits<double>::max();
+  double zmax = -std::numeric_limits<double>::max();
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  const double *z = mZ.constData();
+  bool foundPointInBox = false;
+  for ( int i = 0; i < nb; ++i )
+  {
+    const double px = *x++;
+    xmin = std::min( xmin, px );
+    xmax = std::max( xmax, px );
+    const double py = *y++;
+    ymin = std::min( ymin, py );
+    ymax = std::max( ymax, py );
+    const double pz = *z++;
+    zmin = std::min( zmin, pz );
+    zmax = std::max( zmax, pz );
+
+    if ( !foundPointInBox && box3d.contains( px, py, pz ) )
+    {
+      foundPointInBox = true;
+
+      // now... we have a choice to make. If we've already looped through the majority of the points
+      // in this linestring then let's just continue to iterate through the remainder so that we can
+      // complete the overall bounding box calculation we've already mostly done. If however we're only
+      // just at the start of iterating the vertices, we shortcut out early and leave the bounding box
+      // uncalculated
+      if ( i < nb * 0.5 )
+        return true;
+    }
+  }
+
+  // at this stage we now know the overall bounding box of the linestring, so let's cache
+  // it so we don't ever have to calculate this again. We've done all the hard work anyway!
+  mBoundingBox = QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax, false );
+
+  if ( foundPointInBox )
+    return true;
+
+  // NOTE: if none of the points in the line actually fell inside the rectangle, it doesn't
+  // exclude that the OVERALL bounding box of the linestring itself intersects the rectangle!!
+  // So we fall back to the parent class method which compares the overall bounding box against
+  // the rectangle... and this will be very cheap now that we've already calculated and cached
+  // the linestring's bounding box!
+  return QgsCurve::boundingBoxIntersects( box3d );
+}
+
 QVector< QgsVertexId > QgsLineString::collectDuplicateNodes( double epsilon, bool useZValues ) const
 {
   QVector< QgsVertexId > res;
@@ -573,47 +664,36 @@ bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
   return true;
 }
 
-// duplicated code from calculateBoundingBox3d to avoid useless z computation
-QgsRectangle QgsLineString::calculateBoundingBox() const
+QgsBox3D QgsLineString::calculateBoundingBox3D() const
 {
-  if ( mX.empty() )
-    return QgsRectangle();
-
-  auto result = std::minmax_element( mX.begin(), mX.end() );
-  const double xmin = *result.first;
-  const double xmax = *result.second;
-  result = std::minmax_element( mY.begin(), mY.end() );
-  const double ymin = *result.first;
-  const double ymax = *result.second;
-  return QgsRectangle( xmin, ymin, xmax, ymax, false );
-}
-
-QgsBox3D QgsLineString::calculateBoundingBox3d() const
-{
-
   if ( mX.empty() )
   {
     return QgsBox3D();
   }
 
-  if ( mBoundingBox.isNull() )
-  {
-    mBoundingBox = calculateBoundingBox();
-  }
+  auto result2D = std::minmax_element( mX.begin(), mX.end() );
+  const double xmin = *result2D.first;
+  const double xmax = *result2D.second;
+  result2D = std::minmax_element( mY.begin(), mY.end() );
+  const double ymin = *result2D.first;
+  const double ymax = *result2D.second;
 
-  QgsBox3D out;
+  double zmin = std::numeric_limits< double >::quiet_NaN();
+  double zmax = std::numeric_limits< double >::quiet_NaN();
+
   if ( is3D() )
   {
-    auto result = std::minmax_element( mZ.begin(), mZ.end() );
-    const double zmin = *result.first;
-    const double zmax = *result.second;
-    out = QgsBox3D( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), zmin, mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), zmax );
+    auto resultZ = std::minmax_element( mZ.begin(), mZ.end() );
+    zmin = *resultZ.first;
+    zmax = *resultZ.second;
   }
-  else
-  {
-    out = QgsBox3D( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), std::numeric_limits< double >::quiet_NaN(), mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), std::numeric_limits< double >::quiet_NaN() );
-  }
-  return out;
+
+  return QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
+}
+
+QgsBox3D QgsLineString::calculateBoundingBox3d() const
+{
+  return calculateBoundingBox3D();
 }
 
 void QgsLineString::scroll( int index )
@@ -1515,25 +1595,31 @@ void QgsLineString::extend( double startDistance, double endDistance )
   if ( mX.size() < 2 || mY.size() < 2 )
     return;
 
+  const bool extendStart = startDistance > 0;
+  const bool extendEnd = endDistance > 0;
+
   // start of line
-  if ( startDistance > 0 )
+  if ( extendStart )
   {
-    double currentLen = std::sqrt( std::pow( mX.at( 0 ) - mX.at( 1 ), 2 ) +
-                                   std::pow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
-    double newLen = currentLen + startDistance;
+    const double currentLen = std::sqrt( std::pow( mX.at( 0 ) - mX.at( 1 ), 2 ) +
+                                         std::pow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
+    const double newLen = currentLen + startDistance;
     mX[ 0 ] = mX.at( 1 ) + ( mX.at( 0 ) - mX.at( 1 ) ) / currentLen * newLen;
     mY[ 0 ] = mY.at( 1 ) + ( mY.at( 0 ) - mY.at( 1 ) ) / currentLen * newLen;
   }
   // end of line
-  if ( endDistance > 0 )
+  if ( extendEnd )
   {
-    int last = mX.size() - 1;
-    double currentLen = std::sqrt( std::pow( mX.at( last ) - mX.at( last - 1 ), 2 ) +
-                                   std::pow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
-    double newLen = currentLen + endDistance;
+    const int last = mX.size() - 1;
+    const double currentLen = std::sqrt( std::pow( mX.at( last ) - mX.at( last - 1 ), 2 ) +
+                                         std::pow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
+    const double newLen = currentLen + endDistance;
     mX[ last ] = mX.at( last - 1 ) + ( mX.at( last ) - mX.at( last - 1 ) ) / currentLen * newLen;
     mY[ last ] = mY.at( last - 1 ) + ( mY.at( last ) - mY.at( last - 1 ) ) / currentLen * newLen;
   }
+
+  if ( extendStart || extendEnd )
+    clearCache(); //set bounding box invalid
 }
 
 QgsLineString *QgsLineString::createEmptyWithSameType() const

@@ -546,6 +546,15 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
          * \since QGIS 3.20
          */
         QgsLayerMetadata layerMetadata;
+
+        /**
+         * Set to TRUE to transfer field constraints to the exported vector file.
+         *
+         * Support for field constraints depends on the output file format.
+         *
+         * \since QGIS 3.34
+         */
+        bool includeConstraints = false;
     };
 
 #ifndef SIP_RUN
@@ -626,6 +635,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param transformContext transform context, needed if the output file srs is forced to specific crs (added in QGIS 3.10.3)
      * \param sinkFlags feature sink flags (added in QGIS 3.10.3)
      * \param fieldNameSource source for field names (since QGIS 3.18)
+     * \param includeConstraints set to TRUE to copy field constraints to the destination layer (since QGIS 3.34)
      * \note not available in Python bindings
      * \deprecated Use create() instead.
      */
@@ -645,7 +655,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            QString *newLayer = nullptr,
                                            const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
-                                           FieldNameSource fieldNameSource = Original
+                                           FieldNameSource fieldNameSource = Original,
+                                           bool includeConstraints = false
                                          ) SIP_SKIP;
 
     //! QgsVectorFileWriter cannot be copied.
@@ -977,6 +988,9 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     //! Field value converter
     FieldValueConverter *mFieldValueConverter = nullptr;
+
+    //! Whether to transfer field constraints to output
+    bool mIncludeConstraints = false;
 
   private:
 #ifdef SIP_RUN

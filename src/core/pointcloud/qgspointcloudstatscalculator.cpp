@@ -26,8 +26,6 @@
 
 #include "qgspointcloudrenderer.h"
 
-#include "qgsapplication.h"
-#include "qgspointcloudstatscalculationtask.h"
 #include "qgsfeedback.h"
 #include "qgspointcloudblockrequest.h"
 
@@ -63,7 +61,7 @@ struct StatsProcessor
       std::unique_ptr<QgsPointCloudBlock> block = nullptr;
       if ( mIndex->accessType() == QgsPointCloudIndex::Local )
       {
-        block.reset( mIndex->nodeData( node, mRequest ) );
+        block = mIndex->nodeData( node, mRequest );
       }
       else
       {
@@ -73,10 +71,12 @@ struct StatsProcessor
         QObject::connect( mFeedback, &QgsFeedback::canceled, &loop, &QEventLoop::quit );
         loop.exec();
         if ( !mFeedback->isCanceled() )
-          block.reset( request->block() );
-        if ( !request->block() )
         {
-          QgsMessageLog::logMessage( QObject::tr( "Unable to calculate statistics for node %1, error: \"%2\"" ).arg( node.toString() ).arg( request->errorStr() ) );
+          block = request->takeBlock();
+          if ( !block )
+          {
+            QgsMessageLog::logMessage( QObject::tr( "Unable to calculate statistics for node %1, error: \"%2\"" ).arg( node.toString(), request->errorStr() ) );
+          }
         }
       }
 

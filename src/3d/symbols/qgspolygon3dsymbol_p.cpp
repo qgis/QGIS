@@ -68,7 +68,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
       QByteArray materialDataDefined;
     };
 
-    void processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
+    void processPolygon( const QgsPolygon *poly, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
     void processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, PolygonData &out );
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected );
     Qt3DRender::QMaterial *material( const QgsPolygon3DSymbol *symbol, bool isSelected, const Qgs3DRenderContext &context ) const;
@@ -110,8 +110,10 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   return true;
 }
 
-void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
+void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
 {
+  std::unique_ptr< QgsPolygon > polyClone( poly->clone() );
+
   const uint oldVerticesCount = out.tessellator->dataVerticesCount();
   if ( mSymbol->edgesEnabled() )
   {
@@ -135,14 +137,13 @@ void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatur
     }
   }
 
-  Qgs3DUtils::clampAltitudes( polyClone, mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), height, context.map() );
+  Qgs3DUtils::clampAltitudes( polyClone.get(), mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), height, context.map() );
 
   Q_ASSERT( out.tessellator->dataVerticesCount() % 3 == 0 );
   const uint startingTriangleIndex = static_cast<uint>( out.tessellator->dataVerticesCount() / 3 );
   out.triangleIndexStartingIndices.append( startingTriangleIndex );
   out.triangleIndexFids.append( fid );
   out.tessellator->addPolygon( *polyClone, extrusionHeight );
-  delete polyClone;
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
     processMaterialDatadefined( out.tessellator->dataVerticesCount() - oldVerticesCount, context.expressionContext(), out );
@@ -184,15 +185,14 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
 
   if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon *>( g ) )
   {
-    QgsPolygon *polyClone = poly->clone();
-    processPolygon( polyClone, f.id(), height, extrusionHeight, context, out );
+    processPolygon( poly, f.id(), height, extrusionHeight, context, out );
   }
   else if ( const QgsMultiPolygon *mpoly = qgsgeometry_cast< const QgsMultiPolygon *>( g ) )
   {
     for ( int i = 0; i < mpoly->numGeometries(); ++i )
     {
-      QgsPolygon *polyClone = static_cast< const QgsPolygon *>( mpoly->polygonN( i ) )->clone();
-      processPolygon( polyClone, f.id(), height, extrusionHeight, context, out );
+      const QgsPolygon *poly = mpoly->polygonN( i );
+      processPolygon( poly, f.id(), height, extrusionHeight, context, out );
     }
   }
   else if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( g ) )
@@ -202,8 +202,8 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
       const QgsAbstractGeometry *g2 = gc->geometryN( i );
       if ( QgsWkbTypes::flatType( g2->wkbType() ) == Qgis::WkbType::Polygon )
       {
-        QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
-        processPolygon( polyClone, f.id(), height, extrusionHeight, context, out );
+        const QgsPolygon *poly = static_cast< const QgsPolygon *>( g2 );
+        processPolygon( poly, f.id(), height, extrusionHeight, context, out );
       }
     }
   }

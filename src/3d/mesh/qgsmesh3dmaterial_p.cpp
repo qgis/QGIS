@@ -122,7 +122,7 @@ QgsMesh3DMaterial::QgsMesh3DMaterial( QgsMeshLayer *layer,
   configure();
 
   // this method has to be called even if there isn't arrows (terrain) because it configures the parameter of shaders
-  // If al the parameters ("uniform" in shaders) are not defined in QGis, the shaders it happens the sahder doesn't work (depend on hardware?)
+  // If all the parameters ("uniform" in shaders) are not defined in QGIS, the shaders sometimes don't work (depends on hardware?)
   configureArrows( layer, timeRange );
 
   eff->addTechnique( mTechnique );
@@ -132,10 +132,9 @@ QgsMesh3DMaterial::QgsMesh3DMaterial( QgsMeshLayer *layer,
 void QgsMesh3DMaterial::configure()
 {
   // Create the texture to pass the color ramp
-  Qt3DRender::QTexture1D *colorRampTexture = nullptr;
+  Qt3DRender::QTexture1D *colorRampTexture = new Qt3DRender::QTexture1D( this );
   if ( mSymbol->colorRampShader().colorRampItemList().count() > 0 )
   {
-    colorRampTexture = new Qt3DRender::QTexture1D( this );
     switch ( mMagnitudeType )
     {
       case QgsMesh3DMaterial::ZValue:
@@ -148,9 +147,15 @@ void QgsMesh3DMaterial::configure()
         break;
     }
 
-    colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
-    colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
   }
+  else
+  {
+    // create a simple texture to have a valid parameter in the shader and avoid undefined behaviors
+    colorRampTexture->addTextureImage( new QgsColorRampTexture( QgsColorRampShader(), 1 ) );
+  }
+
+  colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
+  colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
 
   // Create and configure technique
   mTechnique = new Qt3DRender::QTechnique();
@@ -184,8 +189,7 @@ void QgsMesh3DMaterial::configure()
   mTechnique->addParameter( new Qt3DRender::QParameter( "lineColor", QVector4D( wireframecolor.redF(), wireframecolor.greenF(), wireframecolor.blueF(), 1.0f ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "wireframeEnabled", mSymbol->wireframeEnabled() ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "textureType", int( mSymbol->renderingStyle() ) ) );
-  if ( colorRampTexture )
-    mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampTexture", colorRampTexture ) ) ;
+  mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampTexture", colorRampTexture ) ) ;
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampCount", mSymbol->colorRampShader().colorRampItemList().count() ) );
   const int colorRampType = mSymbol->colorRampShader().colorRampType();
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampType", colorRampType ) );
@@ -203,8 +207,8 @@ void QgsMesh3DMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   if ( layer )
     datasetIndex = layer->activeVectorDatasetAtTime( timeRange );
 
-  QVector<QgsVector> vectors;
-  QSize gridSize;
+  QVector<QgsVector> vectors( 1 );
+  QSize gridSize( 1, 1 );
   QgsPointXY minCorner;
   std::unique_ptr< Qt3DRender::QParameter > arrowsEnabledParameter = std::make_unique< Qt3DRender::QParameter >( "arrowsEnabled", nullptr );
   if ( !layer || mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol->arrowsEnabled() || meta.isScalar() || !datasetIndex.isValid() )

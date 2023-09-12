@@ -51,8 +51,10 @@ class CORE_EXPORT QgsRendererCategory
     * The \a label argument specifies the label used for this category in legends and the layer tree.
     *
     * The \a render argument indicates whether the category should initially be rendered and appear checked in the layer tree.
+    *
+    * The optional \a uuid argument manually set the UUID key identifier for the category (since QGIS 3.34).
     */
-    QgsRendererCategory( const QVariant &value, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
+    QgsRendererCategory( const QVariant &value, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true, const QString &uuid = QString() );
 
     /**
      * Copy constructor.
@@ -60,6 +62,12 @@ class CORE_EXPORT QgsRendererCategory
     QgsRendererCategory( const QgsRendererCategory &cat );
     QgsRendererCategory &operator=( QgsRendererCategory cat );
     ~QgsRendererCategory();
+
+    /**
+     * Returns the unique identifier for this category.
+     * \since QGIS 3.34
+     */
+    QString uuid() const;
 
     /**
      * Returns the value corresponding to this category.
@@ -151,6 +159,7 @@ class CORE_EXPORT QgsRendererCategory
     std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
     bool mRender = true;
+    QString mUuid;
 
     void swap( QgsRendererCategory &other );
 };

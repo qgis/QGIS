@@ -577,7 +577,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      *
      * \since QGIS 3.18
      */
-    QVariant guiDefaultValueOverride() const { return mGuiDefault; }
+    QVariant guiDefaultValueOverride() const;
 
     /**
      * Sets the default \a value to use for the parameter in GUI widgets. Caller takes responsibility
@@ -604,7 +604,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      *
      * \since QGIS 3.18
      */
-    QVariant defaultValueForGui() const { return mGuiDefault.isValid() ? mGuiDefault : mDefault; }
+    QVariant defaultValueForGui() const;
 
     /**
      * Returns any flags associated with the parameter.
@@ -895,6 +895,14 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     QVariant valueAsJsonObjectPrivate( const QVariant &value, QgsProcessingContext &context, ValueAsStringFlags flags ) const;
 #endif
+
+    /**
+     * Default gui value for an algorithm parameter from settings
+     *
+     * \return default value from settings or invalid QVariant if there is no default value defined in the settings
+     * \since QGIS 3.34
+     */
+    QVariant defaultGuiValueFromSetting() const;
 
     //! Parameter name
     QString mName;

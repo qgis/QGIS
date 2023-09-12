@@ -67,7 +67,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
-    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
+    bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 
     /**
      * Returns the roundness of the curve polygon.
@@ -376,7 +376,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     std::unique_ptr< QgsCurve > mExteriorRing;
     QVector<QgsCurve *> mInteriorRings;
 
-    QgsRectangle calculateBoundingBox() const override;
+    QgsBox3D calculateBoundingBox3D() const override;
 };
 
 // clazy:excludeall=qstring-allocations

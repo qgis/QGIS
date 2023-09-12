@@ -5387,6 +5387,74 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   }
 }
 
+static QVariant fcnBearing( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsGeometry geom2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
+  QString sourceCrs = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  QString ellipsoid = QgsExpressionUtils::getStringValue( values.at( 3 ), parent );
+
+  if ( geom1.isNull() || geom2.isNull() || geom1.type() != Qgis::GeometryType::Point || geom2.type() != Qgis::GeometryType::Point )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `bearing` requires two valid point geometries." ) );
+    return QVariant();
+  }
+
+  const QgsPointXY point1 = geom1.asPoint();
+  const QgsPointXY point2 = geom2.asPoint();
+  if ( point1.isEmpty() || point2.isEmpty() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `bearing` requires point geometries or multi point geometries with a single part." ) );
+    return QVariant();
+  }
+
+  QgsCoordinateTransformContext tContext;
+  if ( context )
+  {
+    tContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
+
+    if ( sourceCrs.isEmpty() )
+    {
+      sourceCrs = context->variable( QStringLiteral( "layer_crs" ) ).toString();
+    }
+
+    if ( ellipsoid.isEmpty() )
+    {
+      ellipsoid = context->variable( QStringLiteral( "project_ellipsoid" ) ).toString();
+    }
+  }
+
+  const QgsCoordinateReferenceSystem sCrs = QgsCoordinateReferenceSystem( sourceCrs );
+  if ( !sCrs.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `bearing` requires a valid source CRS." ) );
+    return QVariant();
+  }
+
+  QgsDistanceArea da;
+  da.setSourceCrs( sCrs, tContext );
+  if ( !da.setEllipsoid( ellipsoid ) )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `bearing` requires a valid ellipsoid acronym or ellipsoid authority ID." ) );
+    return QVariant();
+  }
+
+  try
+  {
+    const double bearing = da.bearing( point1, point2 );
+    if ( std::isfinite( bearing ) )
+    {
+      return std::fmod( bearing + 2 * M_PI, 2 * M_PI );
+    }
+  }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error caught in bearing() function: %1" ).arg( cse.what() ) );
+    return QVariant();
+  }
+  return QVariant();
+}
+
 static QVariant fcnProject( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -6425,6 +6493,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
       return layer->crs().toProj();
     else if ( QString::compare( layerProperty, QStringLiteral( "crs_description" ), Qt::CaseInsensitive ) == 0 )
       return layer->crs().description();
+    else if ( QString::compare( layerProperty, QStringLiteral( "crs_ellipsoid" ), Qt::CaseInsensitive ) == 0 )
+      return layer->crs().ellipsoidAcronym();
     else if ( QString::compare( layerProperty, QStringLiteral( "extent" ), Qt::CaseInsensitive ) == 0 )
     {
       QgsGeometry extentGeom = QgsGeometry::fromRect( layer->extent() );
@@ -8029,6 +8099,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "radians" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "degrees" ) ), fcnRadians, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "degrees" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "radians" ) ), fcnDegrees, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "azimuth" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point_a" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point_b" ) ), fcnAzimuth, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "bearing" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point_a" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point_b" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "source_crs" ), true, QVariant() ) << QgsExpressionFunction::Parameter( QStringLiteral( "ellipsoid" ), true, QVariant() ), fcnBearing, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "inclination" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point_a" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point_b" ) ), fcnInclination, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "project" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "azimuth" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "elevation" ), true, M_PI_2 ), fcnProject, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "abs" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnAbs, QStringLiteral( "Math" ) )

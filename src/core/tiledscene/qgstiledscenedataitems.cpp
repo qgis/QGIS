@@ -66,7 +66,7 @@ QgsTiledSceneLayerItem::QgsTiledSceneLayerItem( QgsDataItem *parent, QString nam
 
 QString QgsTiledSceneDataItemProvider::name()
 {
-  return QStringLiteral( "Scene" );
+  return QStringLiteral( "Scenes" );
 }
 
 QString QgsTiledSceneDataItemProvider::dataProviderKey() const
@@ -82,7 +82,7 @@ int QgsTiledSceneDataItemProvider::capabilities() const
 QgsDataItem *QgsTiledSceneDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
-    return new QgsTiledSceneRootItem( parentItem, QObject::tr( "Scene" ), QStringLiteral( "tiled-scene:" ) );
+    return new QgsTiledSceneRootItem( parentItem, QObject::tr( "Scenes" ), QStringLiteral( "tiled-scene:" ) );
 
   return nullptr;
 }

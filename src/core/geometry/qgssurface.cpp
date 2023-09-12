@@ -42,7 +42,7 @@ bool QgsSurface::isValid( QString &error, Qgis::GeometryValidityFlags flags ) co
 
 void QgsSurface::clearCache() const
 {
-  mBoundingBox = QgsRectangle();
+  mBoundingBox = QgsBox3D();
   mHasCachedValidity = false;
   mValidityFailureReason.clear();
   QgsAbstractGeometry::clearCache();
