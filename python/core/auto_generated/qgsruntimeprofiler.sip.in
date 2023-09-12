@@ -76,6 +76,13 @@ the active ``group`` appended after ending.
 End the current profile event.
 %End
 
+    void record( const QString &name, double time, const QString &group = "startup" );
+%Docstring
+Manually adds a profile event with the given name and total ``time`` (in seconds).
+
+.. versionadded:: 3.34
+%End
+
     double profileTime( const QString &name, const QString &group = "startup" ) const;
 %Docstring
 Returns the profile time for the specified ``name``.
