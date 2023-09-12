@@ -46,6 +46,7 @@
 #include "qgselevationmap.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgsruntimeprofiler.h"
 
 const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettingsTree::sTreeMap, false );
 
@@ -1417,6 +1418,12 @@ void QgsMapRendererJob::logRenderingTime( const std::vector< LayerRenderJob > &j
 void QgsMapRendererJob::drawLabeling( QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter )
 {
   QgsDebugMsgLevel( QStringLiteral( "Draw labeling start" ), 5 );
+
+  std::unique_ptr< QgsScopedRuntimeProfile > labelingProfile;
+  if ( renderContext.flags() & Qgis::RenderContextFlag::RecordProfile )
+  {
+    labelingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "(labeling)" ), QStringLiteral( "rendering" ) );
+  }
 
   QElapsedTimer t;
   t.start();
