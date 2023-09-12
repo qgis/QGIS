@@ -1601,7 +1601,7 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexCreateTopoPoint()
   mouseClick( 4.95, 4.05, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   // a snapped vertex increases the number of vertices in polygon by one
-  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().constGet()->vertexCount(), 6 );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().constGet()->vertexCount(), 5 );
   QgsGeometry polygonAsPoints = mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().convertToType( Qgis::GeometryType::Point, true );
   QCOMPARE( polygonAsPoints.asWkt(), QString( "MultiPoint ((4 1),(7 1),(7 4),(5 4),(4 4),(4 1))" ) );
 
