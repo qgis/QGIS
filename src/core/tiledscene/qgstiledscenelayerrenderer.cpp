@@ -30,6 +30,8 @@
 #include "qgscesiumutils.h"
 #include "qgscurvepolygon.h"
 #include "qgstextrenderer.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsapplication.h"
 
 #include <QMatrix4x4>
 
@@ -39,12 +41,17 @@
 
 QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
+  , mLayerName( layer->name() )
   , mFeedback( new QgsFeedback )
+  , mEnableProfile( context.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
   // We must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
   // or use some locking to prevent read/write from multiple threads
   if ( !layer->dataProvider() || !layer->renderer() )
     return;
+
+  QElapsedTimer timer;
+  timer.start();
 
   mRenderer.reset( layer->renderer()->clone() );
 
@@ -57,6 +64,8 @@ QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *laye
   mRenderTileBorders = mRenderer->isTileBorderRenderingEnabled();
 
   mReadyToCompose = false;
+
+  mPreparationTime = timer.elapsed();
 }
 
 QgsTiledSceneLayerRenderer::~QgsTiledSceneLayerRenderer() = default;
@@ -65,6 +74,20 @@ bool QgsTiledSceneLayerRenderer::render()
 {
   if ( !mIndex.isValid() )
     return false;
+
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( mEnableProfile )
+  {
+    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, QStringLiteral( "rendering" ) );
+    if ( mPreparationTime > 0 )
+      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, QStringLiteral( "rendering" ) );
+  }
+
+  std::unique_ptr< QgsScopedRuntimeProfile > preparingProfile;
+  if ( mEnableProfile )
+  {
+    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Preparing render" ), QStringLiteral( "rendering" ) );
+  }
 
   QgsRenderContext *rc = renderContext();
   QgsTiledSceneRenderContext context( *rc, mFeedback.get() );
@@ -88,6 +111,14 @@ bool QgsTiledSceneLayerRenderer::render()
   mSceneToMapTransform = QgsCoordinateTransform( mSceneCrs, rc->coordinateTransform().destinationCrs(), rc->transformContext() );
 
   mRenderer->startRender( context );
+
+  preparingProfile.reset();
+  std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
+  if ( mEnableProfile )
+  {
+    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
+  }
+
   const bool result = renderTiles( context );
   mRenderer->stopRender( context );
   mReadyToCompose = true;

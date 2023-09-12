@@ -109,6 +109,8 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
                               const QString &contentUri,
                               QgsTiledSceneRenderContext &context );
 
+    QString mLayerName;
+
     std::unique_ptr< QgsTiledSceneRenderer > mRenderer;
     bool mRenderTileBorders = false;
 
@@ -152,6 +154,9 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
     QSet< int > mWarnedPrimitiveTypes;
 
     QElapsedTimer mElapsedTimer;
+
+    bool mEnableProfile = false;
+    quint64 mPreparationTime = 0;
 };
 
 #endif // QGSTILEDSCENELAYERRENDERER_H
