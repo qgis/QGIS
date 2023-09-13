@@ -51,8 +51,8 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     {
       QML,
       SLD,
-      DB,
-      Local,
+      DatasourceDatabase,
+      UserDatabase,
     };
     Q_ENUM( StyleType )
 #endif

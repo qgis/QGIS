@@ -439,7 +439,7 @@ void QgsLayerPropertiesDialog::saveStyleAs()
 
         break;
       }
-      case DB:
+      case DatasourceDatabase:
       {
         QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( mLayer->providerType() );
 
@@ -472,7 +472,7 @@ void QgsLayerPropertiesDialog::saveStyleAs()
         }
         break;
       }
-      case Local:
+      case UserDatabase:
       {
         QString infoWindowTitle = tr( "Save default style to local database" );
         errorMessage = mLayer->saveDefaultStyle( defaultLoadedFlag, dlg.styleCategories() );
@@ -533,7 +533,7 @@ void QgsLayerPropertiesDialog::loadStyle()
         }
         break;
       }
-      case DB:
+      case DatasourceDatabase:
       {
         QString selectedStyleId = dlg.selectedStyleId();
 
@@ -560,7 +560,7 @@ void QgsLayerPropertiesDialog::loadStyle()
         }
         break;
       }
-      case Local:
+      case UserDatabase:
       {
         errorMsg = mLayer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag, true, categories );
         //reset if the default style was loaded OK only

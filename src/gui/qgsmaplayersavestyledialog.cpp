@@ -40,10 +40,10 @@ QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWid
   connect( mStyleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     const QgsLayerPropertiesDialog::StyleType type = currentStyleType();
-    mFileLabel->setVisible( type != QgsLayerPropertiesDialog::DB && type != QgsLayerPropertiesDialog::Local );
-    mFileWidget->setVisible( type != QgsLayerPropertiesDialog::DB && type != QgsLayerPropertiesDialog::Local );
-    mSaveToDbWidget->setVisible( type == QgsLayerPropertiesDialog::DB );
-    mSaveToSldWidget->setVisible( type == QgsLayerPropertiesDialog::SLD && layer->type() == Qgis::LayerType::Vector && static_cast<QgsVectorLayer*>(layer)->geometryType() == Qgis::GeometryType::Polygon );
+    mFileLabel->setVisible( type != QgsLayerPropertiesDialog::DatasourceDatabase && type != QgsLayerPropertiesDialog::UserDatabase );
+    mFileWidget->setVisible( type != QgsLayerPropertiesDialog::DatasourceDatabase && type != QgsLayerPropertiesDialog::UserDatabase );
+    mSaveToDbWidget->setVisible( type == QgsLayerPropertiesDialog::DatasourceDatabase );
+    mSaveToSldWidget->setVisible( type == QgsLayerPropertiesDialog::SLD && layer->type() == Qgis::LayerType::Vector && static_cast<QgsVectorLayer *>( layer )->geometryType() == Qgis::GeometryType::Polygon );
     mStyleCategoriesListView->setEnabled( type != QgsLayerPropertiesDialog::SLD );
     mFileWidget->setFilter( type == QgsLayerPropertiesDialog::QML ? tr( "QGIS Layer Style File (*.qml)" ) : tr( "SLD File (*.sld)" ) );
     updateSaveButtonState();
@@ -97,10 +97,10 @@ void QgsMapLayerSaveStyleDialog::populateStyleComboBox()
   mStyleTypeComboBox->addItem( tr( "As SLD Style File" ), QgsLayerPropertiesDialog::SLD );
 
   if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
-    mStyleTypeComboBox->addItem( tr( "In Database (%1)" ).arg( providerName ), QgsLayerPropertiesDialog::DB );
+    mStyleTypeComboBox->addItem( tr( "In Database (%1)" ).arg( providerName ), QgsLayerPropertiesDialog::DatasourceDatabase );
 
   if ( mSaveOnlyCurrentStyle )
-    mStyleTypeComboBox->addItem( tr( "As Default In Local Database" ), QgsLayerPropertiesDialog::Local );
+    mStyleTypeComboBox->addItem( tr( "As Default In Local Database" ), QgsLayerPropertiesDialog::UserDatabase );
 }
 
 void QgsMapLayerSaveStyleDialog::accept()
@@ -115,7 +115,7 @@ void QgsMapLayerSaveStyleDialog::updateSaveButtonState()
   bool enabled { false };
   switch ( type )
   {
-    case QgsLayerPropertiesDialog::DB:
+    case QgsLayerPropertiesDialog::DatasourceDatabase:
       if ( saveOnlyCurrentStyle( ) )
       {
         enabled = ! mDbStyleNameEdit->text().isEmpty();
@@ -129,7 +129,7 @@ void QgsMapLayerSaveStyleDialog::updateSaveButtonState()
     case QgsLayerPropertiesDialog::SLD:
       enabled = ! mFileWidget->filePath().isEmpty();
       break;
-    case QgsLayerPropertiesDialog::Local:
+    case QgsLayerPropertiesDialog::UserDatabase:
       enabled = true;
       break;
   }

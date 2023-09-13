@@ -1096,7 +1096,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
 
             break;
           }
-          case DB:
+          case DatasourceDatabase:
           {
             QString infoWindowTitle = QObject::tr( "Save style '%1' to DB (%2)" )
                                       .arg( styleName, mLayer->providerType() );
@@ -1150,7 +1150,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             }
             break;
           }
-          case Local:
+          case UserDatabase:
             break;
         }
         styleIndex ++;

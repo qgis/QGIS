@@ -58,23 +58,23 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   connect( mStyleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     const QgsLayerPropertiesDialog::StyleType type = currentStyleType();
-    mFileLabel->setVisible( type != QgsLayerPropertiesDialog::StyleType::DB && type != QgsLayerPropertiesDialog::StyleType::Local );
-    mFileWidget->setVisible( type != QgsLayerPropertiesDialog::StyleType::DB && type != QgsLayerPropertiesDialog::StyleType::Local );
-    mFromDbWidget->setVisible( type == QgsLayerPropertiesDialog::StyleType::DB );
-    mDeleteButton->setVisible( type == QgsLayerPropertiesDialog::StyleType::DB && mLayer->dataProvider()->isDeleteStyleFromDatabaseSupported() );
+    mFileLabel->setVisible( type != QgsLayerPropertiesDialog::StyleType::DatasourceDatabase && type != QgsLayerPropertiesDialog::StyleType::UserDatabase );
+    mFileWidget->setVisible( type != QgsLayerPropertiesDialog::StyleType::DatasourceDatabase && type != QgsLayerPropertiesDialog::StyleType::UserDatabase );
+    mFromDbWidget->setVisible( type == QgsLayerPropertiesDialog::StyleType::DatasourceDatabase );
+    mDeleteButton->setVisible( type == QgsLayerPropertiesDialog::StyleType::DatasourceDatabase && mLayer->dataProvider()->isDeleteStyleFromDatabaseSupported() );
 
     mStyleCategoriesListView->setEnabled( currentStyleType() != QgsLayerPropertiesDialog::StyleType::SLD );
     updateLoadButtonState();
   } );
   mStyleTypeComboBox->addItem( tr( "From File" ), QgsLayerPropertiesDialog::QML ); // QML is used as entry, but works for SLD too, see currentStyleType()
-  mStyleTypeComboBox->addItem( tr( "Default from local database" ), QgsLayerPropertiesDialog::Local );
+  mStyleTypeComboBox->addItem( tr( "Default from local database" ), QgsLayerPropertiesDialog::UserDatabase );
 
   if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
   {
-    mStyleTypeComboBox->addItem( tr( "From Database (%1)" ).arg( providerName ), QgsLayerPropertiesDialog::StyleType::DB );
-    if ( settings.value( QStringLiteral( "style/lastLoadStyleTypeSelection" ) ) == QgsLayerPropertiesDialog::StyleType::DB )
+    mStyleTypeComboBox->addItem( tr( "From Database (%1)" ).arg( providerName ), QgsLayerPropertiesDialog::StyleType::DatasourceDatabase );
+    if ( settings.value( QStringLiteral( "style/lastLoadStyleTypeSelection" ) ) == QgsLayerPropertiesDialog::StyleType::DatasourceDatabase )
     {
-      mStyleTypeComboBox->setCurrentIndex( mStyleTypeComboBox->findData( QgsLayerPropertiesDialog::StyleType::DB ) );
+      mStyleTypeComboBox->setCurrentIndex( mStyleTypeComboBox->findData( QgsLayerPropertiesDialog::StyleType::DatasourceDatabase ) );
     }
   }
 
@@ -326,11 +326,11 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
 void QgsMapLayerLoadStyleDialog::updateLoadButtonState()
 {
   const QgsLayerPropertiesDialog::StyleType type = currentStyleType();
-  mLoadButton->setEnabled( ( type == QgsLayerPropertiesDialog::DB
+  mLoadButton->setEnabled( ( type == QgsLayerPropertiesDialog::DatasourceDatabase
                              && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()
                                 ) ) ||
-                           ( type != QgsLayerPropertiesDialog::DB && !mFileWidget->filePath().isEmpty() ) ||
-                           type == QgsLayerPropertiesDialog::Local );
+                           ( type != QgsLayerPropertiesDialog::DatasourceDatabase && !mFileWidget->filePath().isEmpty() ) ||
+                           type == QgsLayerPropertiesDialog::UserDatabase );
 }
 
 void QgsMapLayerLoadStyleDialog::showHelp()
