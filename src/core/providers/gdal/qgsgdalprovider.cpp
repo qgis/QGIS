@@ -1775,11 +1775,6 @@ QString QgsGdalProvider::providerKey()
   return PROVIDER_KEY;
 };
 
-QString QgsGdalProvider::storageType() const
-{
-  return mDriverName;
-}
-
 QString QgsGdalProvider::description() const
 {
   return PROVIDER_DESCRIPTION;

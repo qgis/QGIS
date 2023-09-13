@@ -84,23 +84,15 @@ QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWid
 
 void QgsMapLayerSaveStyleDialog::populateStyleComboBox()
 {
-  QString providerName = mLayer->providerType();
-  if ( providerName == QLatin1String( "ogr" ) )
-  {
-    providerName = mLayer->dataProvider()->storageType();
-    if ( providerName == QLatin1String( "GPKG" ) )
-      providerName = QStringLiteral( "GeoPackage" );
-  }
-
   mStyleTypeComboBox->clear();
-  mStyleTypeComboBox->addItem( tr( "As QGIS QML Style File" ), QgsLayerPropertiesDialog::QML );
-  mStyleTypeComboBox->addItem( tr( "As SLD Style File" ), QgsLayerPropertiesDialog::SLD );
+  mStyleTypeComboBox->addItem( tr( "As QGIS QML style file" ), QgsLayerPropertiesDialog::QML );
+  mStyleTypeComboBox->addItem( tr( "As SLD style file" ), QgsLayerPropertiesDialog::SLD );
 
   if ( mLayer->dataProvider()->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::SaveToDatabase ) )
-    mStyleTypeComboBox->addItem( tr( "In Database (%1)" ).arg( providerName ), QgsLayerPropertiesDialog::DatasourceDatabase );
+    mStyleTypeComboBox->addItem( tr( "In datasource database" ), QgsLayerPropertiesDialog::DatasourceDatabase );
 
   if ( mSaveOnlyCurrentStyle )
-    mStyleTypeComboBox->addItem( tr( "As Default In Local Database" ), QgsLayerPropertiesDialog::UserDatabase );
+    mStyleTypeComboBox->addItem( tr( "As default in local user database" ), QgsLayerPropertiesDialog::UserDatabase );
 }
 
 void QgsMapLayerSaveStyleDialog::accept()

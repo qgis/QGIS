@@ -28,13 +28,6 @@ QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::Pro
   mReadFlags = flags;
 }
 
-QString QgsDataProvider::storageType() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QStringLiteral( "Generic file" );
-}
-
 Qgis::DataProviderFlags QgsDataProvider::flags() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

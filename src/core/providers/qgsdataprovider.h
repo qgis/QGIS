@@ -142,11 +142,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
                      QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     /**
-     * Returns the permanent storage type for this layer as a friendly name.
-     */
-    virtual QString storageType() const;
-
-    /**
      * Returns the coordinate system for the data source.
      * If the provider isn't capable of returning its projection then an invalid
      * QgsCoordinateReferenceSystem will be returned.
