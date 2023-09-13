@@ -221,6 +221,7 @@
 #include "qgsalgorithmvectorize.h"
 #include "qgsalgorithmwedgebuffers.h"
 #include "qgsalgorithmwritevectortiles.h"
+#include "qgsalgorithmxyztiles.h"
 #include "qgsalgorithmzonalhistogram.h"
 #include "qgsalgorithmzonalstatistics.h"
 #include "qgsalgorithmzonalstatisticsfeaturebased.h"
@@ -519,6 +520,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsWedgeBuffersAlgorithm() );
   addAlgorithm( new QgsWriteVectorTilesXyzAlgorithm() );
   addAlgorithm( new QgsWriteVectorTilesMbtilesAlgorithm() );
+  addAlgorithm( new QgsXyzTilesDirectoryAlgorithm() );
+  addAlgorithm( new QgsXyzTilesMbtilesAlgorithm() );
   addAlgorithm( new QgsZonalHistogramAlgorithm() );
   addAlgorithm( new QgsZonalStatisticsAlgorithm() );
   addAlgorithm( new QgsZonalStatisticsFeatureBasedAlgorithm() );

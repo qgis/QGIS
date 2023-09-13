@@ -233,16 +233,6 @@ qgis:statisticsbycategories: >
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
 
-qgis:tilesxyzdirectory: >
-  This algorithm generates raster XYZ tiles of map canvas content.
-
-  Tile images are saved as individual images in directory structure.
-
-qgis:tilesxyzmbtiles: >
-  This algorithm generates raster XYZ tiles of map canvas content.
-
-  Tile images are saved as a single file in the “MBTiles” format.
-
 qgis:tininterpolation: >
   Generates a Triangulated Irregular Network (TIN) interpolation of a point vector layer.
 
