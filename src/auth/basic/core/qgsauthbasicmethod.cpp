@@ -102,8 +102,8 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     return false;
   }
 
-  const QString username = mconfig.config( QStringLiteral( "username" ) );
-  const QString password = mconfig.config( QStringLiteral( "password" ) );
+  QString username = mconfig.config( QStringLiteral( "username" ) );
+  QString password = mconfig.config( QStringLiteral( "password" ) );
 
   if ( username.isEmpty() )
   {
@@ -139,6 +139,21 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   // Branch for OGR
   if ( dataprovider == QLatin1String( "ogr" ) || dataprovider == QLatin1String( "gdal" ) )
   {
+    // If username or password contains comma or double quote we need to quote the string
+    if ( username.contains( ',' ) || username.contains( '"' ) )
+    {
+      username.replace( '"', QStringLiteral( R"(\")" ) );
+      username.prepend( '"' );
+      username.append( '"' );
+    }
+
+    if ( password.contains( ',' ) || password.contains( '"' ) )
+    {
+      password.replace( '"', QStringLiteral( R"(\")" ) );
+      password.prepend( '"' );
+      password.append( '"' );
+    }
+
     if ( ! password.isEmpty() )
     {
       const QString fullUri( connectionItems.first() );
