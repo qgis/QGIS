@@ -662,7 +662,8 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         # First test with invalid URI
         vl = QgsVectorLayer('/idont/exist.gpkg', 'test', 'ogr')
 
-        self.assertFalse(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, 0)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, 0)
 
         res, err = QgsProviderRegistry.instance().styleExists('ogr', '/idont/exist.gpkg', '')
         self.assertFalse(res)
@@ -711,7 +712,8 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         vl2 = QgsVectorLayer(f'{tmpfile}|layername=test2', 'test2', 'ogr')
         self.assertTrue(vl2.isValid())
 
-        self.assertTrue(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, Qgis.ProviderStyleStorageCapability.LoadFromDatabase)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, Qgis.ProviderStyleStorageCapability.SaveToDatabase)
 
         # style tables don't exist yet
         res, err = QgsProviderRegistry.instance().styleExists('ogr', vl.source(), '')

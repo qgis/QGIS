@@ -2405,7 +2405,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bo
   QString returnMessage;
   QString qml, errorMsg;
   QString styleName;
-  if ( !loadFromLocalDB && dataProvider() && dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
+  if ( !loadFromLocalDB && dataProvider() && dataProvider()->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::LoadFromDatabase ) )
   {
     qml = QgsProviderRegistry::instance()->loadStoredStyle( mProviderKey, mDataSource, styleName, errorMsg );
   }

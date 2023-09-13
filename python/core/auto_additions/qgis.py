@@ -3647,6 +3647,15 @@ Qgis.DatabaseProviderConnectionCapability2.baseClass = Qgis
 Qgis.DatabaseProviderConnectionCapabilities2.baseClass = Qgis
 DatabaseProviderConnectionCapabilities2 = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.ProviderStyleStorageCapability.SaveToDatabase.__doc__ = ""
+Qgis.ProviderStyleStorageCapability.LoadFromDatabase.__doc__ = ""
+Qgis.ProviderStyleStorageCapability.DeleteFromDatabase.__doc__ = ""
+Qgis.ProviderStyleStorageCapability.__doc__ = "The StorageCapability enum represents the style storage operations supported by the provider.\n\n.. versionadded:: 3.34\n\n" + '* ``SaveToDatabase``: ' + Qgis.ProviderStyleStorageCapability.SaveToDatabase.__doc__ + '\n' + '* ``LoadFromDatabase``: ' + Qgis.ProviderStyleStorageCapability.LoadFromDatabase.__doc__ + '\n' + '* ``DeleteFromDatabase``: ' + Qgis.ProviderStyleStorageCapability.DeleteFromDatabase.__doc__
+# --
+Qgis.ProviderStyleStorageCapability.baseClass = Qgis
+Qgis.ProviderStyleStorageCapabilities.baseClass = Qgis
+ProviderStyleStorageCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.UserProfileSelectionPolicy.LastProfile.__doc__ = "Open the last closed profile (only mode supported prior to QGIS 3.32)"
 Qgis.UserProfileSelectionPolicy.DefaultProfile.__doc__ = "Open a specific profile"
 Qgis.UserProfileSelectionPolicy.AskUser.__doc__ = "Let the user choose which profile to open"

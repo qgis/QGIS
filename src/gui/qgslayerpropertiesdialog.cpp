@@ -291,7 +291,7 @@ void QgsLayerPropertiesDialog::loadDefaultStyle()
   const QgsDataProvider *provider = mLayer->dataProvider();
   if ( !provider )
     return;
-  if ( provider->isSaveAndLoadStyleToDatabaseSupported() )
+  if ( provider->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::LoadFromDatabase ) )
   {
     QMessageBox askToUser;
     askToUser.setText( tr( "Load default style from: " ) );
@@ -350,7 +350,7 @@ void QgsLayerPropertiesDialog::saveDefaultStyle()
   const QgsDataProvider *provider = mLayer->dataProvider();
   if ( !provider )
     return;
-  if ( provider->isSaveAndLoadStyleToDatabaseSupported() )
+  if ( provider->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::SaveToDatabase ) )
   {
     QMessageBox askToUser;
     askToUser.setText( tr( "Save default style to: " ) );

@@ -1957,7 +1957,7 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
   if ( resultFlag )
   {
     // Try to load all stored styles from DB
-    if ( mLoadAllStoredStyle && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
+    if ( mLoadAllStoredStyle && mDataProvider && mDataProvider->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::LoadFromDatabase ) )
     {
       QStringList ids, names, descriptions;
       QString errorMessage;

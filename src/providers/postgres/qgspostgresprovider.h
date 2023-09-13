@@ -154,8 +154,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
                                        QgsFeedback *feedback = nullptr ) const override;
     void enumValues( int index, QStringList &enumList ) const override;
     bool isValid() const override;
-    bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
-    bool isDeleteStyleFromDatabaseSupported() const override { return true; }
+    Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
     QgsAttributeList attributeIndexes() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QString defaultValueClause( int fieldId ) const override;

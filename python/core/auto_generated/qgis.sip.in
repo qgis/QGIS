@@ -2109,6 +2109,15 @@ The development version
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 
 
+    enum class ProviderStyleStorageCapability
+    {
+      SaveToDatabase,
+      LoadFromDatabase,
+      DeleteFromDatabase
+    };
+    typedef QFlags<Qgis::ProviderStyleStorageCapability> ProviderStyleStorageCapabilities;
+
+
     enum class UserProfileSelectionPolicy
     {
       LastProfile,

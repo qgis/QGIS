@@ -96,7 +96,7 @@ void QgsMapLayerSaveStyleDialog::populateStyleComboBox()
   mStyleTypeComboBox->addItem( tr( "As QGIS QML Style File" ), QgsLayerPropertiesDialog::QML );
   mStyleTypeComboBox->addItem( tr( "As SLD Style File" ), QgsLayerPropertiesDialog::SLD );
 
-  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
+  if ( mLayer->dataProvider()->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::SaveToDatabase ) )
     mStyleTypeComboBox->addItem( tr( "In Database (%1)" ).arg( providerName ), QgsLayerPropertiesDialog::DatasourceDatabase );
 
   if ( mSaveOnlyCurrentStyle )

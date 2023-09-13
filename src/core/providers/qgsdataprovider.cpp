@@ -142,16 +142,7 @@ QString QgsDataProvider::sublayerSeparator()
   return SUBLAYER_SEPARATOR;
 }
 
-bool QgsDataProvider::isSaveAndLoadStyleToDatabaseSupported() const
+Qgis::ProviderStyleStorageCapabilities QgsDataProvider::styleStorageCapabilities() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  return false;
+  return Qgis::ProviderStyleStorageCapabilities();
 }
-
-bool QgsDataProvider::isDeleteStyleFromDatabaseSupported() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return false;
-}
-
