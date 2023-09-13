@@ -234,6 +234,8 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      */
     void updateLockButton();
 
+    void updateLockButtonIcon();
+
     SymbolLayerItem *currentLayerItem();
 
     /**
@@ -257,6 +259,8 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QgsStyle *mStyle = nullptr;
     QgsSymbol *mSymbol = nullptr;
     QMenu *mAdvancedMenu = nullptr;
+    QAction *mLockColorAction = nullptr;
+    QAction *mLockSelectionColorAction = nullptr;
     QPointer< QgsVectorLayer > mVectorLayer;
 
     QStandardItemModel *mSymbolLayersModel = nullptr;
