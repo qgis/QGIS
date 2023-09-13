@@ -341,7 +341,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   }
 
   std::unique_ptr< QgsAbstractGeometry > diffGeom( geomEngine->difference( combinedGeometries.get() ) );
-  if ( geomEngine->isEqual( diffGeom.get() ) )
+  if ( !diffGeom || geomEngine->isEqual( diffGeom.get() ) )
   {
     return nullptr;
   }
