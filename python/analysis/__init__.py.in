@@ -27,6 +27,9 @@ from qgis._analysis import *
 
 # preserve API compatibility following QgsExifTools moved to core
 from qgis.core import QgsExifTools
+# preserve API compatibility as QgsAlignRaster.Item moved to QgsAlignRasterData.RasterItem
+from qgis.core import QgsAlignRasterData
 
 from qgis.core import Qgis
 QgsAlignRaster.ResampleAlg = Qgis.GdalResampleAlgorithm
+QgsAlignRaster.Item = QgsAlignRasterData.RasterItem

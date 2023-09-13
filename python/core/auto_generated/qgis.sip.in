@@ -2215,7 +2215,7 @@ The development version
 
 
     enum class GdalResampleAlgorithm
-    {
+      {
       RA_NearestNeighbour,
       RA_Bilinear,
       RA_Cubic,
