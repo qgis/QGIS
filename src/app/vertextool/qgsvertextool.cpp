@@ -2426,11 +2426,55 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
       if ( avoidIntersectionsLayers.size() > 0 )
       {
         int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers, ignoreFeatures );
+
         switch ( avoidIntersectionsReturn )
         {
-          case 2:
-            emit messageEmitted( tr( "The operation would change the geometry type." ), Qgis::MessageLevel::Warning );
+          case 2: // Geometry type was changed, let's try our best to make it compatible with the target layer
+          {
+            const QVector<QgsGeometry> newGeoms = featGeom.coerceToType( layer->wkbType() );
+            if ( newGeoms.count() == 1 )
+            {
+              featGeom = newGeoms.at( 0 );
+            }
+            else // handle multi geometries
+            {
+              QgsFeatureList removedFeatures;
+              double largest = 0;
+              QgsFeature originalFeature = layer->getFeature( it2.key() );
+              int largestPartIndex = -1;
+              for ( int i = 0; i < newGeoms.size(); ++i )
+              {
+                QgsGeometry currentPart = newGeoms.at( i );
+                const double currentPartSize = layer->geometryType() == Qgis::GeometryType::Polygon ? currentPart.area() : currentPart.length();
+
+                QgsFeature partFeature( layer->fields() );
+                partFeature.setAttributes( originalFeature.attributes() );
+                partFeature.setGeometry( currentPart );
+                removedFeatures.append( partFeature );
+                if ( currentPartSize > largest )
+                {
+                  featGeom = currentPart;
+                  largestPartIndex = i;
+                  largest = currentPartSize;
+                }
+              }
+              removedFeatures.removeAt( largestPartIndex );
+              QgsMessageBarItem *messageBarItem = QgisApp::instance()->messageBar()->createMessage( tr( "Avoid overlaps" ), tr( "Only the largest of multiple created geometries was preserved." ) );
+              QPushButton *restoreButton = new QPushButton( tr( "Restore others" ) );
+              QPointer<QgsVectorLayer> layerPtr( layer );
+              connect( restoreButton, &QPushButton::clicked, restoreButton, [ = ]
+              {
+                if ( !layerPtr )
+                  return;
+                layerPtr->beginEditCommand( tr( "Restored geometry parts removed by avoid overlaps" ) );
+                QgsFeatureList unconstFeatures = removedFeatures;
+                QgisApp::instance()->pasteFeatures( layerPtr.data(), 0, removedFeatures.size(), unconstFeatures );
+              } );
+              messageBarItem->layout()->addWidget( restoreButton );
+              QgisApp::instance()->messageBar()->pushWidget( messageBarItem, Qgis::MessageLevel::Info, 15 );
+            }
             break;
+          }
 
           case 3:
             emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::MessageLevel::Warning );
