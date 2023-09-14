@@ -1422,22 +1422,28 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
     qDeleteAll( runnables );
 
     // We try with the first layer returned invalid but this time in the main thread to maybe have credentials and continue with others not loaded in parallel
-    QMap<QString, LayerToLoad>::ConstIterator it = layersToLoad.find( layerToAttemptInMainThread );
-    if ( it != layersToLoad.constEnd() )
+    auto it = layersToLoad.find( layerToAttemptInMainThread );
+    if ( it != layersToLoad.end() )
     {
-      const LayerToLoad &lay =  it.value();
-      QgsDataProvider::ReadFlags providerFlags = lay.flags;
-      providerFlags.setFlag( QgsDataProvider::SkipCredentialsRequest, false );
-      providerFlags.setFlag( QgsDataProvider::ParallelThreadLoading, false );
-      QgsScopedRuntimeProfile profile( "Create data providers/" + lay.layerId, QStringLiteral( "projectload" ) );
-      std::unique_ptr<QgsDataProvider> provider( QgsProviderRegistry::instance()->createProvider( lay.provider, lay.dataSource, lay.options, providerFlags ) );
-      i++;
-      if ( provider && provider->isValid() )
+      std::unique_ptr<QgsDataProvider> provider;
+      QString layerId;
       {
-        emit layerLoaded( i, totalProviderCount );
+        const LayerToLoad &lay = it.value();
+        QgsDataProvider::ReadFlags providerFlags = lay.flags;
+        providerFlags.setFlag( QgsDataProvider::SkipCredentialsRequest, false );
+        providerFlags.setFlag( QgsDataProvider::ParallelThreadLoading, false );
+        QgsScopedRuntimeProfile profile( "Create data providers/" + lay.layerId, QStringLiteral( "projectload" ) );
+        provider.reset( QgsProviderRegistry::instance()->createProvider( lay.provider, lay.dataSource, lay.options, providerFlags ) );
+        i++;
+        if ( provider && provider->isValid() )
+        {
+          emit layerLoaded( i, totalProviderCount );
+        }
+        layerId = lay.layerId;
+        layersToLoad.erase( it );
+        // can't access "lay" anymore -- it's now been freed
       }
-      layersToLoad.remove( lay.layerId );
-      loadedProviders.insert( lay.layerId, provider.release() );
+      loadedProviders.insert( layerId, provider.release() );
     }
 
     // if there still are some not loaded providers or some invalid in parallel thread we start again
