@@ -60,7 +60,9 @@ QgsDelaunayTriangulationAlgorithm *QgsDelaunayTriangulationAlgorithm::createInst
 void QgsDelaunayTriangulationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPoint ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), QgsProcessingParameterNumber::Double, 0, true, 0 ) );
+  std::unique_ptr<QgsProcessingParameterNumber> toleranceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), QgsProcessingParameterNumber::Double, 0, true, 0 );
+  toleranceParam->setHelp( QObject::tr( "Specifies an optional snapping tolerance which can be used to improve the robustness of the triangulation" ) );
+  addParameter( toleranceParam.release() );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "ADD_ATTRIBUTES" ), QObject::tr( "Add point IDs to output" ), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Delaunay triangulation" ), QgsProcessing::TypeVectorPolygon ) );
 }
@@ -94,12 +96,12 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest().setNoAttributes(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
 
   QgsGeometry allPoints;
 
-  long i = 0;
-  double step = source->featureCount() > 0 ? 50.0 / source->featureCount() : 1;
+  long long i = 0;
+  const double step = source->featureCount() > 0 ? 50.0 / source->featureCount() : 1;
 
   const QgsSpatialIndex index( it, [&]( const QgsFeature & f )->bool
   {
@@ -129,11 +131,11 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
     return true;
   }, QgsSpatialIndex::FlagStoreFeatureGeometries );
 
-  QgsGeometry triangulation = allPoints.delaunayTriangulation( tolerance );
+  const QgsGeometry triangulation = allPoints.delaunayTriangulation( tolerance );
 
   if ( !triangulation.isEmpty() )
   {
-    QVector< QgsGeometry > collection = triangulation.asGeometryCollection();
+    const QVector< QgsGeometry > collection = triangulation.asGeometryCollection();
     for ( int i = 0; i < collection.length(); i++ )
     {
       if ( feedback->isCanceled() )
@@ -142,7 +144,7 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
       }
       QgsFeature f;
       f.setFields( fields );
-      f.setGeometry( collection[i] );
+      f.setGeometry( collection[ i ] );
       if ( addAttributes )
       {
         const QList< QgsFeatureId > nearest = index.nearestNeighbor( collection[i], 3 );
