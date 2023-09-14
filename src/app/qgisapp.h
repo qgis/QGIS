@@ -1675,8 +1675,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showRasterCalculator();
     //! Calculate new meshes from existing ones
     void showMeshCalculator();
-    //! Open dialog to align raster layers
-    void showAlignRasterTool();
 
     /**
      * Called whenever user wants to embed layers

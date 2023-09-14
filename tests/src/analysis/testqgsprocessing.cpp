@@ -51,6 +51,7 @@
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparametermeshdataset.h"
+#include "qgsprocessingparameteralignrasterlayers.h"
 #include "qgsdxfexport.h"
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
@@ -58,6 +59,7 @@
 #include "json.hpp"
 #include "qgsspatialindex.h"
 #include "qgstiledscenelayer.h"
+#include "qgsalignrasterdata.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -779,6 +781,7 @@ class TestQgsProcessing: public QgsTest
     void parameterMeshDatasetGroups();
     void parameterMeshDatasetTime();
     void parameterDxfLayers();
+    void parameterAlignRasterLayers();
 #ifdef HAVE_EPT
     void parameterPointCloudLayer();
 #endif
@@ -11601,6 +11604,79 @@ void TestQgsProcessing::parameterPointCloudAttribute()
   params.insert( "optional",  QVariant() );
   attributes = QgsProcessingParameters::parameterAsStrings( def.get(), params, context );
   QCOMPARE( attributes, QStringList() << "abc" << "def" );
+}
+
+void TestQgsProcessing::parameterAlignRasterLayers()
+{
+  QgsProcessingContext context;
+  QgsProject project;
+  context.setProject( &project );
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  const QString raster = testDataDir + "landsat.tif";
+  const QFileInfo fi( raster );
+  QgsRasterLayer *rasterLayer = new QgsRasterLayer( fi.filePath(), "R1" );
+  project.addMapLayer( rasterLayer );
+
+  std::unique_ptr< QgsProcessingParameterAlignRasterLayers > def( new QgsProcessingParameterAlignRasterLayers( "align raster layer" ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( rasterLayer ) ) );
+
+  // should also be OK
+  QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif" ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif" ) );
+  // ... unless we use context, when the check that the layer actually exists is performed
+  QVERIFY( !def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif", &context ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif", &context ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif", &context ) );
+
+  QVariantList layerList;
+  QVERIFY( !def->checkValueIsAcceptable( layerList ) );
+  QVariantMap layerMap;
+  layerList.append( layerMap );
+  QVERIFY( !def->checkValueIsAcceptable( layerList ) );
+  layerMap["inputFile"] = "layer.tif";
+  layerMap["outputFile"] = "layer2.tif";
+  layerList[0] = layerMap;
+  QVERIFY( def->checkValueIsAcceptable( layerList ) );
+  QVERIFY( !def->checkValueIsAcceptable( layerList, &context ) ); //no corresponding layer in the context's project
+  layerMap["inputFile"] = "R1";
+  layerList[0] = layerMap;
+  QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
+
+  const QString valueAsPythonString = def->valueAsPythonString( layerList, context );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'inputFile': '%1','outputFile': '%2','resampleMethod': %3,'rescale': False}]" ).arg( rasterLayer->source() ).arg( QStringLiteral( "layer2.tif" ) ).arg( 0 ) );
+
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( layerList, context ) ).dump() ),
+            QStringLiteral( "[{\"inputFile\":\"%1\",\"outputFile\":\"%2\"}]" ).arg( rasterLayer->source() ).arg( QStringLiteral( "layer2.tif" ) ) );
+  bool ok = false;
+  QCOMPARE( def->valueAsString( layerList, context, ok ), QString() );
+  QVERIFY( !ok );
+
+  QCOMPARE( def->valueAsStringList( layerList, context, ok ), QStringList() );
+  QVERIFY( !ok );
+
+  const QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterAlignRasterLayers('align raster layer', '')" ) );
+
+  const QgsAlignRasterData::RasterItem item( rasterLayer->source(), QStringLiteral( "layer2.tif" ) );
+  QVariantMap vm;
+  vm["inputFile"] = rasterLayer->source();
+  vm["outputFile"] = QStringLiteral( "layer2.tif" );
+  vm["resampleMethod"] = 0;
+  vm["rescale"] = false;
+  QList<QgsAlignRasterData::RasterItem> itemList = def->parameterAsItems( QVariantList() << vm, context );
+  QCOMPARE( itemList.at( 0 ).inputFilename, item.inputFilename );
+  QCOMPARE( itemList.at( 0 ).outputFilename, item.outputFilename );
+  itemList = def->parameterAsItems( QVariant( QStringList() << rasterLayer->source() ), context );
+  QCOMPARE( itemList.at( 0 ).inputFilename, item.inputFilename );
+  QCOMPARE( itemList.at( 0 ).outputFilename, QString() );
+  itemList = def->parameterAsItems( layerList, context );
+  QCOMPARE( itemList.at( 0 ).inputFilename, item.inputFilename );
+  QCOMPARE( itemList.at( 0 ).outputFilename, item.outputFilename );
 }
 
 void TestQgsProcessing::checkParamValues()

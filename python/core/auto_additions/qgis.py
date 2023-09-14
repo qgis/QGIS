@@ -3844,3 +3844,19 @@ Qgis.TiledSceneRendererFlag.__doc__ = "Flags which control how tiled scene 2D re
 Qgis.TiledSceneRendererFlag.baseClass = Qgis
 Qgis.TiledSceneRendererFlags.baseClass = Qgis
 TiledSceneRendererFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.GdalResampleAlgorithm.RA_NearestNeighbour.__doc__ = "Nearest neighbour (select on one input pixel)"
+Qgis.GdalResampleAlgorithm.RA_Bilinear.__doc__ = "Bilinear (2x2 kernel)"
+Qgis.GdalResampleAlgorithm.RA_Cubic.__doc__ = "Cubic Convolution Approximation (4x4 kernel)"
+Qgis.GdalResampleAlgorithm.RA_CubicSpline.__doc__ = "Cubic B-Spline Approximation (4x4 kernel)"
+Qgis.GdalResampleAlgorithm.RA_Lanczos.__doc__ = "Lanczos windowed sinc interpolation (6x6 kernel)"
+Qgis.GdalResampleAlgorithm.RA_Average.__doc__ = "Average (computes the average of all non-NODATA contributing pixels)"
+Qgis.GdalResampleAlgorithm.RA_Mode.__doc__ = "Mode (selects the value which appears most often of all the sampled points)"
+Qgis.GdalResampleAlgorithm.RA_Max.__doc__ = "Maximum (selects the maximum of all non-NODATA contributing pixels)"
+Qgis.GdalResampleAlgorithm.RA_Min.__doc__ = "Minimum (selects the minimum of all non-NODATA contributing pixels)"
+Qgis.GdalResampleAlgorithm.RA_Median.__doc__ = "Median (selects the median of all non-NODATA contributing pixels)"
+Qgis.GdalResampleAlgorithm.RA_Q1.__doc__ = "First quartile (selects the first quartile of all non-NODATA contributing pixels)"
+Qgis.GdalResampleAlgorithm.RA_Q3.__doc__ = "Third quartile (selects the third quartile of all non-NODATA contributing pixels)"
+Qgis.GdalResampleAlgorithm.__doc__ = "Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)\n\n.. note::\n\n   RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only\n\n.. versionadded:: 3.34\n\n" + '* ``RA_NearestNeighbour``: ' + Qgis.GdalResampleAlgorithm.RA_NearestNeighbour.__doc__ + '\n' + '* ``RA_Bilinear``: ' + Qgis.GdalResampleAlgorithm.RA_Bilinear.__doc__ + '\n' + '* ``RA_Cubic``: ' + Qgis.GdalResampleAlgorithm.RA_Cubic.__doc__ + '\n' + '* ``RA_CubicSpline``: ' + Qgis.GdalResampleAlgorithm.RA_CubicSpline.__doc__ + '\n' + '* ``RA_Lanczos``: ' + Qgis.GdalResampleAlgorithm.RA_Lanczos.__doc__ + '\n' + '* ``RA_Average``: ' + Qgis.GdalResampleAlgorithm.RA_Average.__doc__ + '\n' + '* ``RA_Mode``: ' + Qgis.GdalResampleAlgorithm.RA_Mode.__doc__ + '\n' + '* ``RA_Max``: ' + Qgis.GdalResampleAlgorithm.RA_Max.__doc__ + '\n' + '* ``RA_Min``: ' + Qgis.GdalResampleAlgorithm.RA_Min.__doc__ + '\n' + '* ``RA_Median``: ' + Qgis.GdalResampleAlgorithm.RA_Median.__doc__ + '\n' + '* ``RA_Q1``: ' + Qgis.GdalResampleAlgorithm.RA_Q1.__doc__ + '\n' + '* ``RA_Q3``: ' + Qgis.GdalResampleAlgorithm.RA_Q3.__doc__
+# --
+Qgis.GdalResampleAlgorithm.baseClass = Qgis
