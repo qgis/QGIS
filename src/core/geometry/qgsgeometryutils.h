@@ -13,8 +13,7 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGEOMETRYUTILS_H
-#define QGSGEOMETRYUTILS_H
+#pragma once
 
 #include <limits>
 
@@ -23,6 +22,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspoint.h"
 #include "qgsvertexid.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryutils_base.h"
 #include "qgsvector3d.h"
 
 #include <QJsonArray>
@@ -84,34 +84,6 @@ class CORE_EXPORT QgsGeometryUtils
                                     QgsVertexId &nextVertex SIP_OUT );
 
     /**
-     * Returns the squared 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
-     */
-    static double sqrDistance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 ); }
-
-    /**
-     * Returns the squared 2D distance between two points.
-     */
-    static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL
-    {
-      return sqrDistance2D( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
-    }
-
-    /**
-     * Returns the 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
-     */
-    static double distance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return std::sqrt( sqrDistance2D( x1, y1, x2, y2 ) ); }
-
-    /**
-     * Returns the 2D distance between two points.
-     */
-    static double distance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL { return std::sqrt( sqrDistance2D( pt1, pt2 ) ); }
-
-    /**
-     * Returns the squared distance between a point and a line.
-     */
-    static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon ) SIP_HOLDGIL;
-
-    /**
      * Returns the distance between a point and an infinite line.
      * \param point The point to find the distance to the line
      * \param linePoint1 The first point of the line
@@ -120,57 +92,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 3.26
      */
     static double distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon = 1e-7 );
-
-    /**
-     * Computes the intersection between two lines. Z dimension is
-     * supported and is retrieved from the first 3D point amongst \a p1 and
-     * \a p2.
-     * \param p1 Point on the first line
-     * \param v1 Direction vector of the first line
-     * \param p2 Point on the second line
-     * \param v2 Direction vector of the second line
-     * \param intersection Output parameter, the intersection point
-     * \returns Whether the lines intersect
-     */
-    static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection SIP_OUT ) SIP_HOLDGIL;
-
-    /**
-     * \brief Compute the intersection between two segments
-     * \param p1 First segment start point
-     * \param p2 First segment end point
-     * \param q1 Second segment start point
-     * \param q2 Second segment end point
-     * \param intersectionPoint Output parameter, the intersection point
-     * \param isIntersection Output parameter, return TRUE if an intersection is found
-     * \param tolerance The tolerance to use
-     * \param acceptImproperIntersection By default, this method returns TRUE only if segments have proper intersection. If set true, returns also TRUE if segments have improper intersection (end of one segment on other segment ; continuous segments).
-     * \returns  Whether the segments intersect
-     *
-     * ### Example
-     *
-     * \code{.py}
-     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
-     *   ret[0], ret[1].asWkt(), ret[2]
-     *   # Whether the segments intersect, the intersection point, is intersect
-     *   # (False, 'Point (0 0)', False)
-     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ) )
-     *   ret[0], ret[1].asWkt(), ret[2]
-     *   # (False, 'Point (0 5)', True)
-     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
-     *   ret[0], ret[1].asWkt(), ret[2]
-     *   # (True, 'Point (0 5)', True)
-     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ) )
-     *   ret[0], ret[1].asWkt(), ret[2]
-     *   # (False, 'Point (0 2)', True)
-     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
-     *   ret[0], ret[1].asWkt(), ret[2]
-     *   # (True, 'Point (0 2)', True)
-     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ), QgsPoint( 2, 0 ), QgsPoint( -1, 0 ) )
-     *   ret[0], ret[1].asWkt(), ret[2]
-     *   # (True, 'Point (0 0)', True)
-     * \endcode
-     */
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, double tolerance = 1e-8, bool acceptImproperIntersection = false ) SIP_HOLDGIL;
 
     /**
      * \brief Compute the intersection of a line and a circle.
@@ -293,15 +214,6 @@ class CORE_EXPORT QgsGeometryUtils
     static QVector<SelfIntersection> selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
     /**
-     * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> (\a x2, \a y2).
-     * A positive return value indicates the point is to the right of the line.
-     *
-     * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
-     * on the line, or exactly in line with the segment) and the result is undefined.
-     */
-    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 ) SIP_HOLDGIL;
-
-    /**
      * Returns a value < 0 if the point \a point is left of the line from \a p1 -> \a p2.
      * A positive return value indicates the point is to the right of the line.
      *
@@ -318,48 +230,6 @@ class CORE_EXPORT QgsGeometryUtils
     static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance ) SIP_HOLDGIL;
 
     /**
-     * Calculates the point a specified \a distance from (\a x1, \a y1) toward a second point (\a x2, \a y2).
-     *
-     * Optionally, interpolated z and m values can be obtained by specifying the \a z1, \a z2 and \a z arguments
-     * and/or the \a m1, \a m2, \a m arguments.
-     *
-     * \note Not available in Python bindings
-     * \since QGIS 3.4
-     */
-    static void pointOnLineWithDistance( double x1, double y1, double x2, double y2, double distance, double &x, double &y,
-                                         double *z1 = nullptr, double *z2 = nullptr, double *z = nullptr,
-                                         double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP;
-
-    /**
-     * Calculates a point a certain \a proportion of the way along the segment from (\a x1, \a y1) to (\a x2, \a y2),
-     * offset from the segment by the specified \a offset amount.
-     *
-     * \param x1 x-coordinate of start of segment
-     * \param y1 y-coordinate of start of segment
-     * \param x2 x-coordinate of end of segment
-     * \param y2 y-coordinate of end of segment
-     * \param proportion proportion of the segment's length at which to place the point (between 0.0 and 1.0)
-     * \param offset perpendicular offset from segment to apply to point. A negative \a offset shifts the point to the left of the segment, while a positive \a offset will shift it to the right of the segment.
-     * \param x calculated point x-coordinate
-     * \param y calculated point y-coordinate
-     *
-     * ### Example
-     *
-     * \code{.py}
-     *   # Offset point at center of segment by 2 units to the right
-     *   x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, 2 )
-     *   # (6.0, 3.0)
-     *
-     *   # Offset point at center of segment by 2 units to the left
-     *   x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, -2 )
-     *   # (6.0, 7.0)
-     * \endcode
-     *
-     * \since QGIS 3.20
-     */
-    static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x SIP_OUT, double *y  SIP_OUT );
-
-    /**
      * Interpolates a point on an arc defined by three points, \a pt1, \a pt2 and \a pt3. The arc will be
      * interpolated by the specified \a distance from \a pt1.
      *
@@ -368,36 +238,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 3.4
      */
     static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance ) SIP_HOLDGIL;
-
-    //! Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
-    static double ccwAngle( double dy, double dx ) SIP_HOLDGIL;
-
-    //! Returns radius and center of the circle through pt1, pt2, pt3
-    static void circleCenterRadius( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double &radius SIP_OUT,
-                                    double &centerX SIP_OUT, double &centerY SIP_OUT ) SIP_HOLDGIL;
-
-    /**
-     * Returns TRUE if the circle defined by three angles is ordered clockwise.
-     *
-     * The angles are defined counter-clockwise from the origin, i.e. using
-     * Euclidean angles as opposed to geographic "North up" angles.
-     */
-    static bool circleClockwise( double angle1, double angle2, double angle3 ) SIP_HOLDGIL;
-
-    //! Returns TRUE if, in a circle, angle is between angle1 and angle2
-    static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise ) SIP_HOLDGIL;
-
-    /**
-     * Returns TRUE if an angle is between angle1 and angle3 on a circle described by
-     * angle1, angle2 and angle3.
-     */
-    static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 ) SIP_HOLDGIL;
-
-    //! Length of a circular string segment defined by pt1, pt2, pt3
-    static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL;
-
-    //! Calculates angle of a circular string part defined by pt1, pt2, pt3
-    static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL;
 
     /**
      * Calculates midpoint on circle passing through \a p1 and \a p2, closest to
@@ -458,12 +298,6 @@ class CORE_EXPORT QgsGeometryUtils
     static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     /**
-     * Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
-     * \since 3.0
-     */
-    static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) SIP_HOLDGIL;
-
-    /**
      * Returns a list of points contained in a WKT string.
      * \note not available in Python bindings
      */
@@ -506,62 +340,6 @@ class CORE_EXPORT QgsGeometryUtils
     static json pointsToJson( const QgsPointSequence &points, int precision ) SIP_SKIP;
 
     /**
-     * Ensures that an angle is in the range 0 <= angle < 2 pi.
-     * \param angle angle in radians
-     * \returns equivalent angle within the range [0, 2 pi)
-     */
-    static double normalizedAngle( double angle ) SIP_HOLDGIL;
-
-    /**
-     * Calculates the direction of line joining two points in radians, clockwise from the north direction.
-     * \param x1 x-coordinate of line start
-     * \param y1 y-coordinate of line start
-     * \param x2 x-coordinate of line end
-     * \param y2 y-coordinate of line end
-     * \returns angle in radians. Returned value is undefined if start and end point are the same.
-     */
-    static double lineAngle( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL;
-
-    /**
-     * Calculates the angle between the lines AB and BC, where AB and BC described
-     * by points a, b and b, c.
-     * \param x1 x-coordinate of point a
-     * \param y1 y-coordinate of point a
-     * \param x2 x-coordinate of point b
-     * \param y2 y-coordinate of point b
-     * \param x3 x-coordinate of point c
-     * \param y3 y-coordinate of point c
-     * \returns angle between lines in radians. Returned value is undefined if two or more points are equal.
-     */
-    static double angleBetweenThreePoints( double x1, double y1, double x2, double y2,
-                                           double x3, double y3 ) SIP_HOLDGIL;
-
-    /**
-     * Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
-     * clockwise from the north direction.
-     * \param x1 x-coordinate of line start
-     * \param y1 y-coordinate of line start
-     * \param x2 x-coordinate of line end
-     * \param y2 y-coordinate of line end
-     * \returns angle in radians. Returned value is undefined if start and end point are the same.
-     */
-    static double linePerpendicularAngle( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL;
-
-    /**
-     * Calculates the average angle (in radians) between the two linear segments from
-     * (\a x1, \a y1) to (\a x2, \a y2) and (\a x2, \a y2) to (\a x3, \a y3).
-     */
-    static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL;
-
-    /**
-     * Averages two angles, correctly handling negative angles and ensuring the result is between 0 and 2 pi.
-     * \param a1 first angle (in radians)
-     * \param a2 second angle (in radians)
-     * \returns average angle (in radians)
-     */
-    static double averageAngle( double a1, double a2 ) SIP_HOLDGIL;
-
-    /**
      * Parses a WKT block of the format "TYPE( contents )" and returns a pair of geometry type to contents ("Pair(wkbType, "contents")")
      * \note not available in Python bindings
      */
@@ -575,30 +353,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \note not available in Python bindings
      */
     static QStringList wktGetChildBlocks( const QString &wkt, const QString &defaultType = QString() ) SIP_SKIP;
-
-    /**
-     * Returns a number representing the closest side of a rectangle defined by /a right,
-     * \a bottom, \a left, \a top to the point at (\a x, \a y), where
-     * the point may be in the interior of the rectangle or outside it.
-     *
-     * The returned value may be:
-     *
-     * 1. Point is closest to top side of rectangle
-     * 2. Point is located on the top-right diagonal of rectangle, equally close to the top and right sides
-     * 3. Point is closest to right side of rectangle
-     * 4. Point is located on the bottom-right diagonal of rectangle, equally close to the bottom and right sides
-     * 5. Point is closest to bottom side of rectangle
-     * 6. Point is located on the bottom-left diagonal of rectangle, equally close to the bottom and left sides
-     * 7. Point is closest to left side of rectangle
-     * 8. Point is located on the top-left diagonal of rectangle, equally close to the top and left sides
-     *
-     * \note This method effectively partitions the space outside of the rectangle into Voronoi cells, so a point
-     * to the top left of the rectangle may be assigned to the left or top sides based on its position relative
-     * to the diagonal line extended from the rectangle's top-left corner.
-     *
-     * \since QGIS 3.20
-     */
-    static int closestSideOfRectangle( double right, double bottom, double left, double top, double x, double y );
 
     /**
      * Returns a middle point between points pt1 and pt2.
@@ -701,149 +455,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns A line (segment) from p to perpendicular point on segment [s1, s2]
      */
     static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) SIP_HOLDGIL;
-
-    /**
-     * \brief Create a perpendicular line segment to a given segment [\a segmentPoint1,\a segmentPoint2] with its center at \a centerPoint.
-     *
-     * May be used to split geometries. Unless \a segmentLength is specified the new centered perpendicular line segment will have double the length of the input segment.
-     *
-     * The result is a line (segment) centered in point p and perpendicular to segment [segmentPoint1, segmentPoint2].
-     *
-     * \param centerPointX x-coordinate of the point where the center of the perpendicular should be located
-     * \param centerPointY y-coordinate of the point where the center of the perpendicular should be located
-     * \param segmentPoint1x: x-coordinate of segmentPoint1, the segment's start point
-     * \param segmentPoint1y: y-coordinate of segmentPoint1, the segment's start point
-     * \param segmentPoint2x: x-coordinate of segmentPoint2, the segment's end point
-     * \param segmentPoint2y: y-coordinate of segmentPoint2, the segment's end point
-     * \param perpendicularSegmentPoint1x: x-coordinate of the perpendicularCenterSegment's start point
-     * \param perpendicularSegmentPoint1y: y-coordinate of the perpendicularCenterSegment's start point
-     * \param perpendicularSegmentPoint2x: x-coordinate of the perpendicularCenterSegment's end point
-     * \param perpendicularSegmentPoint2y: y-coordinate of the perpendicularCenterSegment's end point
-     * \param segmentLength (optional) Trims to given length. A segmentLength value of 0 refers to the default length which is double the length of the input segment. Set to 1 for a normalized length.
-     *
-     *
-     * \since QGIS 3.24
-     */
-
-    static void perpendicularCenterSegment( double centerPointX, double centerPointY,
-                                            double segmentPoint1x, double segmentPoint1y,
-                                            double segmentPoint2x, double segmentPoint2y,
-                                            double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
-                                            double &perpendicularSegmentPoint2x SIP_OUT, double &perpendicularSegmentPoint2y SIP_OUT,
-                                            double segmentLength = 0
-                                          ) SIP_HOLDGIL;
-
-    /**
-     * An algorithm to calculate the shortest distance between two skew lines.
-     * \param P1 is the first point of the first line,
-     * \param P12 is the second point on the first line,
-     * \param P2 is the first point on the second line,
-     * \param P22 is the second point on the second line.
-     * \return the shortest distance
-     */
-    static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
-                                     const QgsVector3D &P2, const QgsVector3D &P22 ) SIP_HOLDGIL;
-
-    /**
-     * A method to project one skew line onto another.
-     * \param P1 is a first point that belonds to first skew line,
-     * \param P12 is the second point that belongs to first skew line,
-     * \param P2 is the first point that belongs to second skew line,
-     * \param P22 is the second point that belongs to second skew line,
-     * \param X1 is the result projection point of line P2P22 onto line P1P12,
-     * \param epsilon the tolerance to use.
-     * \return TRUE if such point exists, FALSE - otherwise.
-     */
-    static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
-                                     const QgsVector3D &P2, const QgsVector3D &P22,
-                                     QgsVector3D &X1  SIP_OUT,
-                                     double epsilon = 0.0001 ) SIP_HOLDGIL;
-
-    /**
-     * An algorithm to calculate an (approximate) intersection of two lines in 3D.
-     * \param La1 is the first point on the first line,
-     * \param La2 is the second point on the first line,
-     * \param Lb1 is the first point on the second line,
-     * \param Lb2 is the second point on the second line,
-     * \param intersection is the result intersection, of it can be found.
-     * \return TRUE if the intersection can be found, FALSE - otherwise.
-     *
-     * ### Example
-     *
-     * \code{.py}
-     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
-     *   # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,0,0))
-     *   # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,3,0))
-     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,0,0))
-     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,3,0))
-     *   # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,0,0))
-     *   # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,1,0), QgsVector3D(3,2,0))
-     *   # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,2,0), QgsVector3D(3,1,0))
-     *   # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
-     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(5,5,5), QgsVector3D(0,0,0), QgsVector3D(0,5,5), QgsVector3D(5,0,0))
-     *   # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
-     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(0,5,0), QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0))
-     *   # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
-     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0), QgsVector3D(0,5,5), QgsVector3D(5,5,5))
-     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
-     *   \endcode
-     */
-    static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
-                                     const QgsVector3D &Lb1, const QgsVector3D &Lb2,
-                                     QgsVector3D &intersection  SIP_OUT ) SIP_HOLDGIL;
-
-    /**
-     * Returns the area of the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
-     * (\a cX, \a cY).
-     *
-     * \since QGIS 3.10
-     */
-    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) SIP_HOLDGIL;
-
-    /**
-     * Given the line (\a x1, \a y1) to (\a x2, \a y2) and a point (\a px, \a py) returns the fraction
-     * of the line length at which the point lies.
-     *
-     * \warning this method requires that the point definitely lies on the line!
-     *
-     * \since QGIS 3.32
-     */
-    static double pointFractionAlongLine( double x1, double y1, double x2, double y2, double px, double py );
-
-    /**
-     * Returns a weighted point inside the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
-     * (\a cX, \a cY).
-     *
-     * \param aX x-coordinate of first vertex in triangle
-     * \param aY y-coordinate of first vertex in triangle
-     * \param bX x-coordinate of second vertex in triangle
-     * \param bY y-coordinate of second vertex in triangle
-     * \param cX x-coordinate of third vertex in triangle
-     * \param cY y-coordinate of third vertex in triangle
-     * \param weightB weighting factor along axis A-B (between 0 and 1)
-     * \param weightC weighting factor along axis A-C (between 0 and 1)
-     * \param pointX x-coordinate of generated point
-     * \param pointY y-coordinate of generated point
-     *
-     * \since QGIS 3.10
-     */
-    static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
-                                         double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL;
-
-    /**
-     * Given the points (\a x1, \a y1), (\a x2, \a y2) and (\a x3, \a y3) returns TRUE if these
-     * points can be considered collinear with a specified tolerance \a epsilon.
-     *
-     * \since QGIS 3.32
-     */
-    static bool pointsAreCollinear( double x1, double y1, double x2, double y2, double x3, double y3, double epsilon );
 
     /**
      * A Z dimension is added to \a point if one of the point in the list
@@ -986,49 +597,6 @@ class CORE_EXPORT QgsGeometryUtils
       return QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
     }
 
-    /**
-     * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)
-     * and segment (\a bX, \a bY) (\a dX, \a dY).
-     * The bisector segment of AB-CD is (point, projection of point by \a angle)
-     *
-     * \param aX x-coordinate of first vertex of the segment ab
-     * \param aY y-coordinate of first vertex of the segment ab
-     * \param bX x-coordinate of second vertex of the segment ab
-     * \param bY y-coordinate of second vertex of the segment ab
-     * \param cX x-coordinate of first vertex of the segment cd
-     * \param cY y-coordinate of first vertex of the segment cd
-     * \param dX x-coordinate of second vertex of the segment cd
-     * \param dY y-coordinate of second vertex of the segment cd
-     * \param pointX x-coordinate of generated point
-     * \param pointY y-coordinate of generated point
-     * \param angle angle of the bisector from pointX, pointY origin on [ab-cd]
-     * \returns TRUE if the bisector exists (A B and C D are not collinear)
-     *
-     * \since QGIS 3.18
-     */
-
-    static bool angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
-                               double &pointX SIP_OUT, double &pointY SIP_OUT, double &angle SIP_OUT ) SIP_HOLDGIL;
-
-    /**
-     * Returns the point (\a pointX, \a pointY) forming the bisector from point (\a aX, \a aY) to the segment (\a bX, \a bY) (\a cX, \a cY).
-     * The bisector segment of ABC is (A-point)
-     *
-     * \param aX x-coordinate of first vertex in triangle
-     * \param aY y-coordinate of first vertex in triangle
-     * \param bX x-coordinate of second vertex in triangle
-     * \param bY y-coordinate of second vertex in triangle
-     * \param cX x-coordinate of third vertex in triangle
-     * \param cY y-coordinate of third vertex in triangle
-     * \param pointX x-coordinate of generated point
-     * \param pointY y-coordinate of generated point
-     * \returns TRUE if the bisector exists (A B and C are not collinear)
-     *
-     * \since QGIS 3.18
-     */
-    static bool bisector( double aX, double aY, double bX, double bY, double cX, double cY,
-                          double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL;
-
     //! \note not available in Python bindings
     enum ComponentType SIP_SKIP
     {
@@ -1094,6 +662,569 @@ class CORE_EXPORT QgsGeometryUtils
       }
       return minDist;
     }
-};
 
-#endif // QGSGEOMETRYUTILS_H
+    /******************************/
+    /* From QgsGeometryUtils_Base */
+    /******************************/
+
+    /**
+     * Returns the squared 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
+     */
+    static double sqrDistance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return QgsGeometryUtilsBase::sqrDistance2D( x1, y1, x2, y2 ); }
+
+    /**
+     * Returns the squared 2D distance between two points.
+     */
+    static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::sqrDistance2D( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
+    }
+
+    /**
+     * Returns the 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
+     */
+    static double distance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return QgsGeometryUtilsBase::distance2D( x1, y1, x2, y2 ); }
+
+    /**
+     * Returns the 2D distance between two points.
+     */
+    static double distance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL { return QgsGeometryUtilsBase::distance2D( pt1.x(), pt1.y(), pt2.x(), pt2.y() );}
+
+    /**
+     * Returns the squared distance between a point and a line.
+     */
+    static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::sqrDistToLine( ptX, ptY, x1, y1, x2, y2, minDistX, minDistY, epsilon );
+    }
+
+    /**
+     * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> (\a x2, \a y2).
+     * A positive return value indicates the point is to the right of the line.
+     *
+     * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+     * on the line, or exactly in line with the segment) and the result is undefined.
+     */
+    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::leftOfLine( x, y, x1, y1, x2, y2 ) ;
+    }
+
+    /**
+     * Calculates the point a specified \a distance from (\a x1, \a y1) toward a second point (\a x2, \a y2).
+     *
+     * Optionally, interpolated z and m values can be obtained by specifying the \a z1, \a z2 and \a z arguments
+     * and/or the \a m1, \a m2, \a m arguments.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
+    static void pointOnLineWithDistance( double x1, double y1, double x2, double y2, double distance, double &x, double &y,
+                                         double *z1 = nullptr, double *z2 = nullptr, double *z = nullptr,
+                                         double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP
+    {
+      return QgsGeometryUtilsBase::pointOnLineWithDistance( x1, y1, x2, y2, distance, x, y,
+          z1, z2, z,
+          m1, m2, m );
+    }
+
+    /**
+     * Calculates a point a certain \a proportion of the way along the segment from (\a x1, \a y1) to (\a x2, \a y2),
+     * offset from the segment by the specified \a offset amount.
+     *
+     * \param x1 x-coordinate of start of segment
+     * \param y1 y-coordinate of start of segment
+     * \param x2 x-coordinate of end of segment
+     * \param y2 y-coordinate of end of segment
+     * \param proportion proportion of the segment's length at which to place the point (between 0.0 and 1.0)
+     * \param offset perpendicular offset from segment to apply to point. A negative \a offset shifts the point to the left of the segment, while a positive \a offset will shift it to the right of the segment.
+     * \param x calculated point x-coordinate
+     * \param y calculated point y-coordinate
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *   # Offset point at center of segment by 2 units to the right
+     *   x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, 2 )
+     *   # (6.0, 3.0)
+     *
+     *   # Offset point at center of segment by 2 units to the left
+     *   x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, -2 )
+     *   # (6.0, 7.0)
+     * \endcode
+     *
+     * \since QGIS 3.20
+     */
+    static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x SIP_OUT, double *y SIP_OUT )
+    {
+      QgsGeometryUtilsBase::perpendicularOffsetPointAlongSegment( x1, y1, x2, y2, proportion, offset, x, y );
+    }
+
+
+
+    //! Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
+    static double ccwAngle( double dy, double dx ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::ccwAngle( dy, dx );
+    }
+
+
+    /**
+     * Returns TRUE if the circle defined by three angles is ordered clockwise.
+     *
+     * The angles are defined counter-clockwise from the origin, i.e. using
+     * Euclidean angles as opposed to geographic "North up" angles.
+     */
+
+    static bool circleClockwise( double angle1, double angle2, double angle3 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::circleClockwise( angle1, angle2, angle3 );
+    }
+
+    //! Returns TRUE if, in a circle, angle is between angle1 and angle2
+
+    static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::circleAngleBetween( angle, angle1, angle2, clockwise );
+    }
+
+    /**
+     * Returns TRUE if an angle is between angle1 and angle3 on a circle described by
+     * angle1, angle2 and angle3.
+     */
+
+    static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::angleOnCircle( angle, angle1, angle2, angle3 );
+    }
+
+    //! Length of a circular string segment defined by pt1, pt2, pt3
+
+    static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
+    }
+
+    //! Calculates angle of a circular string part defined by pt1, pt2, pt3
+
+    static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::sweepAngle( centerX, centerY, x1, y1, x2, y2, x3, y3 );
+    }
+
+    /**
+     * Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
+     * \since 3.0
+     */
+
+    static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::interpolateArcValue( angle, a1, a2, a3, zm1, zm2, zm3 );
+    }
+
+    /**
+     * Ensures that an angle is in the range 0 <= angle < 2 pi.
+     * \param angle angle in radians
+     * \returns equivalent angle within the range [0, 2 pi)
+     */
+
+    static double normalizedAngle( double angle ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::normalizedAngle( angle );
+    }
+
+    /**
+     * Calculates the direction of line joining two points in radians, clockwise from the north direction.
+     * \param x1 x-coordinate of line start
+     * \param y1 y-coordinate of line start
+     * \param x2 x-coordinate of line end
+     * \param y2 y-coordinate of line end
+     * \returns angle in radians. Returned value is undefined if start and end point are the same.
+     */
+
+    static double lineAngle( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::lineAngle( x1, y1, x2, y2 );
+    }
+
+    /**
+     * Calculates the angle between the lines AB and BC, where AB and BC described
+     * by points a, b and b, c.
+     * \param x1 x-coordinate of point a
+     * \param y1 y-coordinate of point a
+     * \param x2 x-coordinate of point b
+     * \param y2 y-coordinate of point b
+     * \param x3 x-coordinate of point c
+     * \param y3 y-coordinate of point c
+     * \returns angle between lines in radians. Returned value is undefined if two or more points are equal.
+     */
+
+    static double angleBetweenThreePoints( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::angleBetweenThreePoints( x1, y1, x2, y2, x3, y3 );
+    }
+
+    /**
+     * Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
+     * clockwise from the north direction.
+     * \param x1 x-coordinate of line start
+     * \param y1 y-coordinate of line start
+     * \param x2 x-coordinate of line end
+     * \param y2 y-coordinate of line end
+     * \returns angle in radians. Returned value is undefined if start and end point are the same.
+     */
+
+    static double linePerpendicularAngle( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::linePerpendicularAngle( x1, y1, x2, y2 );
+    }
+
+    /**
+     * Calculates the average angle (in radians) between the two linear segments from
+     * (\a x1, \a y1) to (\a x2, \a y2) and (\a x2, \a y2) to (\a x3, \a y3).
+     */
+
+    static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::averageAngle( x1, y1, x2, y2, x3, y3 );
+    }
+
+    /**
+     * Averages two angles, correctly handling negative angles and ensuring the result is between 0 and 2 pi.
+     * \param a1 first angle (in radians)
+     * \param a2 second angle (in radians)
+     * \returns average angle (in radians)
+     */
+    static double averageAngle( double a1, double a2 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::averageAngle( a1, a2 );
+    }
+
+
+    /**
+     * Returns a number representing the closest side of a rectangle defined by /a right,
+     * \a bottom, \a left, \a top to the point at (\a x, \a y), where
+     * the point may be in the interior of the rectangle or outside it.
+     *
+     * The returned value may be:
+     *
+     * 1. Point is closest to top side of rectangle
+     * 2. Point is located on the top-right diagonal of rectangle, equally close to the top and right sides
+     * 3. Point is closest to right side of rectangle
+     * 4. Point is located on the bottom-right diagonal of rectangle, equally close to the bottom and right sides
+     * 5. Point is closest to bottom side of rectangle
+     * 6. Point is located on the bottom-left diagonal of rectangle, equally close to the bottom and left sides
+     * 7. Point is closest to left side of rectangle
+     * 8. Point is located on the top-left diagonal of rectangle, equally close to the top and left sides
+     *
+     * \note This method effectively partitions the space outside of the rectangle into Voronoi cells, so a point
+     * to the top left of the rectangle may be assigned to the left or top sides based on its position relative
+     * to the diagonal line extended from the rectangle's top-left corner.
+     *
+     * \since QGIS 3.20
+     */
+
+    static int closestSideOfRectangle( double right, double bottom, double left, double top, double x, double y )
+    {
+      return QgsGeometryUtilsBase::closestSideOfRectangle( right, bottom, left, top, x, y );
+    }
+
+    /**
+     * \brief Create a perpendicular line segment to a given segment [\a segmentPoint1,\a segmentPoint2] with its center at \a centerPoint.
+     *
+     * May be used to split geometries. Unless \a segmentLength is specified the new centered perpendicular line segment will have double the length of the input segment.
+     *
+     * The result is a line (segment) centered in point p and perpendicular to segment [segmentPoint1, segmentPoint2].
+     *
+     * \param centerPointX x-coordinate of the point where the center of the perpendicular should be located
+     * \param centerPointY y-coordinate of the point where the center of the perpendicular should be located
+     * \param segmentPoint1x: x-coordinate of segmentPoint1, the segment's start point
+     * \param segmentPoint1y: y-coordinate of segmentPoint1, the segment's start point
+     * \param segmentPoint2x: x-coordinate of segmentPoint2, the segment's end point
+     * \param segmentPoint2y: y-coordinate of segmentPoint2, the segment's end point
+     * \param perpendicularSegmentPoint1x: x-coordinate of the perpendicularCenterSegment's start point
+     * \param perpendicularSegmentPoint1y: y-coordinate of the perpendicularCenterSegment's start point
+     * \param perpendicularSegmentPoint2x: x-coordinate of the perpendicularCenterSegment's end point
+     * \param perpendicularSegmentPoint2y: y-coordinate of the perpendicularCenterSegment's end point
+     * \param segmentLength (optional) Trims to given length. A segmentLength value of 0 refers to the default length which is double the length of the input segment. Set to 1 for a normalized length.
+     *
+     *
+     * \since QGIS 3.24
+     */
+
+    static void perpendicularCenterSegment( double centerPointX, double centerPointY,
+                                            double segmentPoint1x, double segmentPoint1y,
+                                            double segmentPoint2x, double segmentPoint2y,
+                                            double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
+                                            double &perpendicularSegmentPoint2x SIP_OUT, double &perpendicularSegmentPoint2y SIP_OUT,
+                                            double segmentLength = 0 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::perpendicularCenterSegment( centerPointX, centerPointY, segmentPoint1x, segmentPoint1y, segmentPoint2x, segmentPoint2y, perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y, segmentLength );
+    }
+
+    /**
+     * An algorithm to calculate the shortest distance between two skew lines.
+     * \param P1 is the first point of the first line,
+     * \param P12 is the second point on the first line,
+     * \param P2 is the first point on the second line,
+     * \param P22 is the second point on the second line.
+     * \return the shortest distance
+     */
+
+    static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12, const QgsVector3D &P2, const QgsVector3D &P22 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::skewLinesDistance( P1, P12, P2, P22 );
+    }
+
+    /**
+     * A method to project one skew line onto another.
+     * \param P1 is a first point that belonds to first skew line,
+     * \param P12 is the second point that belongs to first skew line,
+     * \param P2 is the first point that belongs to second skew line,
+     * \param P22 is the second point that belongs to second skew line,
+     * \param X1 is the result projection point of line P2P22 onto line P1P12,
+     * \param epsilon the tolerance to use.
+     * \return TRUE if such point exists, FALSE - otherwise.
+     */
+    static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
+                                     const QgsVector3D &P2, const QgsVector3D &P22,
+                                     QgsVector3D &X1 SIP_OUT,
+                                     double epsilon = 0.0001 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::skewLinesProjection( P1, P12, P2, P22, X1, epsilon );
+    }
+
+
+    /**
+     * An algorithm to calculate an (approximate) intersection of two lines in 3D.
+     * \param La1 is the first point on the first line,
+     * \param La2 is the second point on the first line,
+     * \param Lb1 is the first point on the second line,
+     * \param Lb2 is the second point on the second line,
+     * \param intersection is the result intersection, of it can be found.
+     * \return TRUE if the intersection can be found, FALSE - otherwise.
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,3,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,3,0))
+     *   # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,0,0))
+     *   # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,1,0), QgsVector3D(3,2,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,2,0), QgsVector3D(3,1,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(5,5,5), QgsVector3D(0,0,0), QgsVector3D(0,5,5), QgsVector3D(5,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(0,5,0), QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0), QgsVector3D(0,5,5), QgsVector3D(5,5,5))
+     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
+     *   \endcode
+     */
+    static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
+                                     const QgsVector3D &Lb1, const QgsVector3D &Lb2,
+                                     QgsVector3D &intersection SIP_OUT ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::linesIntersection3D( La1, La2, Lb1, Lb2, intersection );
+    }
+
+    /**
+     * Returns the area of the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
+     * (\a cX, \a cY).
+     *
+     * \since QGIS 3.10
+     */
+
+    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::triangleArea( aX, aY, bX, bY, cX, cY );
+    }
+
+    /**
+     * Given the line (\a x1, \a y1) to (\a x2, \a y2) and a point (\a px, \a py) returns the fraction
+     * of the line length at which the point lies.
+     *
+     * \warning this method requires that the point definitely lies on the line!
+     *
+     * \since QGIS 3.32
+     */
+
+    static double pointFractionAlongLine( double x1, double y1, double x2, double y2, double px, double py )
+    {
+      return QgsGeometryUtilsBase::pointFractionAlongLine( x1, y1, x2, y2, px, py );
+    }
+
+    /**
+     * Returns a weighted point inside the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
+     * (\a cX, \a cY).
+     *
+     * \param aX x-coordinate of first vertex in triangle
+     * \param aY y-coordinate of first vertex in triangle
+     * \param bX x-coordinate of second vertex in triangle
+     * \param bY y-coordinate of second vertex in triangle
+     * \param cX x-coordinate of third vertex in triangle
+     * \param cY y-coordinate of third vertex in triangle
+     * \param weightB weighting factor along axis A-B (between 0 and 1)
+     * \param weightC weighting factor along axis A-C (between 0 and 1)
+     * \param pointX x-coordinate of generated point
+     * \param pointY y-coordinate of generated point
+     *
+     * \since QGIS 3.10
+     */
+
+    static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
+                                         double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, pointX, pointY );
+    }
+
+    /**
+     * Given the points (\a x1, \a y1), (\a x2, \a y2) and (\a x3, \a y3) returns TRUE if these
+     * points can be considered collinear with a specified tolerance \a epsilon.
+     *
+     * \since QGIS 3.32
+     */
+
+    static bool pointsAreCollinear( double x1, double y1, double x2, double y2, double x3, double y3, double epsilon )
+    {
+      return QgsGeometryUtilsBase::pointsAreCollinear( x1, y1, x2, y2, x3, y3, epsilon );
+    }
+
+    /**
+     * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)
+     * and segment (\a bX, \a bY) (\a dX, \a dY).
+     * The bisector segment of AB-CD is (point, projection of point by \a angle)
+     *
+     * \param aX x-coordinate of first vertex of the segment ab
+     * \param aY y-coordinate of first vertex of the segment ab
+     * \param bX x-coordinate of second vertex of the segment ab
+     * \param bY y-coordinate of second vertex of the segment ab
+     * \param cX x-coordinate of first vertex of the segment cd
+     * \param cY y-coordinate of first vertex of the segment cd
+     * \param dX x-coordinate of second vertex of the segment cd
+     * \param dY y-coordinate of second vertex of the segment cd
+     * \param pointX x-coordinate of generated point
+     * \param pointY y-coordinate of generated point
+     * \param angle angle of the bisector from pointX, pointY origin on [ab-cd]
+     * \returns TRUE if the bisector exists (A B and C D are not collinear)
+     *
+     * \since QGIS 3.18
+     */
+
+    static bool angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
+                               double &pointX SIP_OUT, double &pointY SIP_OUT, double &angle SIP_OUT ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::angleBisector( aX, aY, bX, bY, cX, cY, dX, dY, pointX, pointY, angle );
+    }
+
+    /**
+     * Returns the point (\a pointX, \a pointY) forming the bisector from point (\a aX, \a aY) to the segment (\a bX, \a bY) (\a cX, \a cY).
+     * The bisector segment of ABC is (A-point)
+     *
+     * \param aX x-coordinate of first vertex in triangle
+     * \param aY y-coordinate of first vertex in triangle
+     * \param bX x-coordinate of second vertex in triangle
+     * \param bY y-coordinate of second vertex in triangle
+     * \param cX x-coordinate of third vertex in triangle
+     * \param cY y-coordinate of third vertex in triangle
+     * \param pointX x-coordinate of generated point
+     * \param pointY y-coordinate of generated point
+     * \returns TRUE if the bisector exists (A B and C are not collinear)
+     *
+     * \since QGIS 3.18
+     */
+
+    static bool bisector( double aX, double aY, double bX, double bY, double cX, double cY,
+                          double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::bisector( aX, aY, bX, bY, cX, cY, pointX, pointY );
+    }
+
+    //! Returns radius and center of the circle through pt1, pt2, pt3
+    static void circleCenterRadius( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double &radius SIP_OUT,
+                                    double &centerX SIP_OUT, double &centerY SIP_OUT ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::circleCenterRadius( pt1.x(), pt1.y(), pt2.x(), pt2.y(), pt3.x(), pt3.y(), radius, centerX, centerY );
+    }
+
+    /**
+     * Computes the intersection between two lines. Z dimension is
+     * supported and is retrieved from the first 3D point amongst \a p1 and
+     * \a p2.
+     * \param p1 Point on the first line
+     * \param v1 Direction vector of the first line
+     * \param p2 Point on the second line
+     * \param v2 Direction vector of the second line
+     * \param intersection Output parameter, the intersection point
+     * \returns Whether the lines intersect
+     */
+    static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection SIP_OUT ) SIP_HOLDGIL
+    {
+      double intersectionX = 0.0, intersectionY = 0.0;
+      bool result = QgsGeometryUtilsBase::lineIntersection( p1.x(), p1.y(), v1, p2.x(), p2.y(), v2, intersectionX, intersectionY );
+      intersection = QgsPoint( intersectionX, intersectionY );
+
+      // z and m support for intersection point
+      QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << p1 << p2, intersection );
+
+      return result;
+    }
+
+    /**
+     * \brief Compute the intersection between two segments
+     * \param p1 First segment start point
+     * \param p2 First segment end point
+     * \param q1 Second segment start point
+     * \param q2 Second segment end point
+     * \param intersectionPoint Output parameter, the intersection point
+     * \param isIntersection Output parameter, return TRUE if an intersection is found
+     * \param tolerance The tolerance to use
+     * \param acceptImproperIntersection By default, this method returns TRUE only if segments have proper intersection. If set true, returns also TRUE if segments have improper intersection (end of one segment on other segment ; continuous segments).
+     * \returns  Whether the segments intersect
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # Whether the segments intersect, the intersection point, is intersect
+     *   # (False, 'Point (0 0)', False)
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ) )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # (False, 'Point (0 5)', True)
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # (True, 'Point (0 5)', True)
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ) )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # (False, 'Point (0 2)', True)
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # (True, 'Point (0 2)', True)
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ), QgsPoint( 2, 0 ), QgsPoint( -1, 0 ) )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # (True, 'Point (0 0)', True)
+     * \endcode
+     */
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, double tolerance = 1e-8, bool acceptImproperIntersection = false ) SIP_HOLDGIL
+    {
+      double intersectionPointX = 0.0, intersectionPointY = 0.0;
+      bool result = QgsGeometryUtilsBase::segmentIntersection( p1.x(), p1.y(), p2.x(), p2.y(), q1.x(), q1.y(), q2.x(), q2.y(), intersectionPointX, intersectionPointY, isIntersection, tolerance, acceptImproperIntersection );
+      intersectionPoint.setX( intersectionPointX );
+      intersectionPoint.setY( intersectionPointY );
+      return result;
+    }
+
+
+};
+#include "qgsgeometryutils_base.h"

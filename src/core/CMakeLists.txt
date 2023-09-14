@@ -852,6 +852,7 @@ set(QGIS_CORE_SRCS
   geometry/qgsgeometryeditutils.cpp
   geometry/qgsgeometryfactory.cpp
   geometry/qgsgeometryutils.cpp
+  geometry/qgsgeometryutils_base.cpp
   geometry/qgsgeos.cpp
   geometry/qgsinternalgeometryengine.cpp
   geometry/qgslinesegment.cpp
@@ -1441,6 +1442,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsgeometryfactory.h
   geometry/qgsgeometrytransformer.h
   geometry/qgsgeometryutils.h
+  geometry/qgsgeometryutils_base.h
   geometry/qgsgeos.h
   geometry/qgsinternalgeometryengine.h
   geometry/qgslinesegment.h

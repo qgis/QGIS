@@ -683,25 +683,6 @@ void QgsPoint::transformVertices( const std::function<QgsPoint( const QgsPoint &
   clearCache();
 }
 
-double QgsPoint::distance( double x, double y ) const
-{
-  return QgsGeometryUtils::distance2D( mX, mY, x, y );
-}
-
-double QgsPoint::distance( const QgsPoint &other ) const
-{
-  return QgsGeometryUtils::distance2D( mX, mY, other.x(), other.y() );
-}
-
-double QgsPoint::distanceSquared( double x, double y ) const
-{
-  return QgsGeometryUtils::sqrDistance2D( mX, mY, x, y );
-}
-double QgsPoint::distanceSquared( const QgsPoint &other ) const
-{
-  return QgsGeometryUtils::sqrDistance2D( mX, mY, other.x(), other.y() );
-}
-
 double QgsPoint::distance3D( double x, double y, double z ) const
 {
   double zDistSquared = 0.0;

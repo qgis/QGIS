@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
+#include "qgsgeometryutils_base.h"
 #include "qgsrectangle.h"
 
 /***************************************************************************
@@ -340,7 +341,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared()
      * \since QGIS 3.0
     */
-    double distance( double x, double y ) const SIP_HOLDGIL;
+    double distance( double x, double y ) const SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::distance2D( mX, mY, x, y );
+    }
 
     /**
      * Returns the Cartesian 2D distance between this point and another point. In certain
@@ -349,7 +353,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared()
      * \since QGIS 3.0
     */
-    double distance( const QgsPoint &other ) const SIP_HOLDGIL;
+    double distance( const QgsPoint &other ) const SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::distance2D( mX, mY, other.x(), other.y() );
+    }
 
     /**
      * Returns the Cartesian 2D squared distance between this point a specified x, y coordinate. Calling
@@ -358,7 +365,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( double x, double y ) const SIP_HOLDGIL;
+    double distanceSquared( double x, double y ) const SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, x, y );
+    }
 
     /**
      * Returns the Cartesian 2D squared distance between this point another point. Calling
@@ -367,7 +377,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( const QgsPoint &other ) const SIP_HOLDGIL;
+    double distanceSquared( const QgsPoint &other ) const SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, other.x(), other.y() );
+    }
 
     /**
      * Returns the Cartesian 3D distance between this point and a specified x, y, z coordinate. In certain
