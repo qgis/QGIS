@@ -129,7 +129,7 @@ QVariantMap QgsCellStatisticsAlgorithmBase::processAlgorithm( const QVariantMap 
   std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
-  mOutputRasterDataProvider = writer->createOneBandRaster( mDataType, mLayerWidth, mLayerHeight, mExtent, mCrs );
+  mOutputRasterDataProvider.reset( writer->createOneBandRaster( mDataType, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
   if ( !mOutputRasterDataProvider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !mOutputRasterDataProvider->isValid() )
@@ -140,6 +140,8 @@ QVariantMap QgsCellStatisticsAlgorithmBase::processAlgorithm( const QVariantMap 
 
   //call child statistics method
   processRasterStack( feedback );
+
+  mOutputRasterDataProvider.reset();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "EXTENT" ), mExtent.toString() );
@@ -263,7 +265,7 @@ void QgsCellStatisticsAlgorithm::processRasterStack( QgsProcessingFeedback *feed
   int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
   int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   mOutputRasterDataProvider->setEditable( true );
-  QgsRasterIterator outputIter( mOutputRasterDataProvider );
+  QgsRasterIterator outputIter( mOutputRasterDataProvider.get() );
   outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
 
   int iterLeft = 0;
@@ -440,7 +442,7 @@ void QgsCellStatisticsPercentileAlgorithm::processRasterStack( QgsProcessingFeed
   int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
   int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   mOutputRasterDataProvider->setEditable( true );
-  QgsRasterIterator outputIter( mOutputRasterDataProvider );
+  QgsRasterIterator outputIter( mOutputRasterDataProvider.get() );
   outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
 
   int iterLeft = 0;
@@ -578,7 +580,7 @@ void QgsCellStatisticsPercentRankFromValueAlgorithm::processRasterStack( QgsProc
   int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
   int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   mOutputRasterDataProvider->setEditable( true );
-  QgsRasterIterator outputIter( mOutputRasterDataProvider );
+  QgsRasterIterator outputIter( mOutputRasterDataProvider.get() );
   outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
 
   int iterLeft = 0;
@@ -721,7 +723,7 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack( QgsPro
   int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
   int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   mOutputRasterDataProvider->setEditable( true );
-  QgsRasterIterator outputIter( mOutputRasterDataProvider );
+  QgsRasterIterator outputIter( mOutputRasterDataProvider.get() );
   outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
 
   int iterLeft = 0;
