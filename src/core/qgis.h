@@ -3894,8 +3894,8 @@ class CORE_EXPORT Qgis
      * \note RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only
      * \since QGIS 3.34
      */
-    enum class GdalResampleAlgorithm SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAlignRaster, ResampleAlg ) : int
-      {
+    enum class GdalResampleAlgorithm : int
+    {
       RA_NearestNeighbour = 0, //!< Nearest neighbour (select on one input pixel)
       RA_Bilinear = 1,       //!< Bilinear (2x2 kernel)
       RA_Cubic = 2,          //!< Cubic Convolution Approximation (4x4 kernel)
