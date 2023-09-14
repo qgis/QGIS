@@ -84,9 +84,27 @@ class CORE_EXPORT QgsGeometryUtils
                                     QgsVertexId &nextVertex SIP_OUT );
 
     /**
+     * Returns the squared 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
+     */
+    static double sqrDistance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 ); }
+
+    /**
      * Returns the squared 2D distance between two points.
      */
-    static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
+    static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL
+    {
+      return sqrDistance2D( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
+    }
+
+    /**
+     * Returns the 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
+     */
+    static double distance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return std::sqrt( sqrDistance2D( x1, y1, x2, y2 ) ); }
+
+    /**
+     * Returns the 2D distance between two points.
+     */
+    static double distance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL { return std::sqrt( sqrDistance2D( pt1, pt2 ) ); }
 
     /**
      * Returns the squared distance between a point and a line.

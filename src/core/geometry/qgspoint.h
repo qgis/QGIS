@@ -340,10 +340,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared()
      * \since QGIS 3.0
     */
-    double distance( double x, double y ) const SIP_HOLDGIL
-    {
-      return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
-    }
+    double distance( double x, double y ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 2D distance between this point and another point. In certain
@@ -352,10 +349,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared()
      * \since QGIS 3.0
     */
-    double distance( const QgsPoint &other ) const SIP_HOLDGIL
-    {
-      return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
-    }
+    double distance( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 2D squared distance between this point a specified x, y coordinate. Calling
@@ -364,10 +358,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( double x, double y ) const SIP_HOLDGIL
-    {
-      return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
-    }
+    double distanceSquared( double x, double y ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 2D squared distance between this point another point. Calling
@@ -376,10 +367,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( const QgsPoint &other ) const SIP_HOLDGIL
-    {
-      return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() );
-    }
+    double distanceSquared( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D distance between this point and a specified x, y, z coordinate. In certain
