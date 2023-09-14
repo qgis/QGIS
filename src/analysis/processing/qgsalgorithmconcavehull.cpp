@@ -50,7 +50,7 @@ QString QgsConcaveHullAlgorithm::groupId() const
 
 QString QgsConcaveHullAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "computes the concave hull of the features from an input layer." );
+  return QObject::tr( "This algorithm computes the concave hull of the features from an input layer." );
 }
 
 QgsConcaveHullAlgorithm *QgsConcaveHullAlgorithm::createInstance() const
@@ -90,11 +90,11 @@ QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parame
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-//~ #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
-  //~ concaveHullQgis( sink, parameters, context, feedback );
-//~ #else
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
+  concaveHullQgis( sink, parameters, context, feedback );
+#else
   concaveHullGeos( sink, parameters, feedback );
-//~ #endif
+#endif
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
@@ -103,10 +103,10 @@ QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parame
 
 void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr< QgsFeatureSink > &sink, const QVariantMap &parameters, QgsProcessingFeedback *feedback )
 {
-  long i = 0;
+  long long i = 0;
   double step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
 
-  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setNoAttributes(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   QgsFeature f;
   QgsGeometry allPoints;
   while ( it.nextFeature( f ) )
@@ -134,7 +134,7 @@ void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr< QgsFeatureSink >
       allPoints.addPart( qgsgeometry_cast< QgsPoint * >( geom )->clone(), Qgis::GeometryType::Point );
     }
   }
-  QgsGeometry concaveHull = allPoints.concaveHull( mPercentage, mAllowHoles );
+  const QgsGeometry concaveHull = allPoints.concaveHull( mPercentage, mAllowHoles );
 
   if ( mSplitMultipart && concaveHull.isMultipart() )
   {
@@ -215,7 +215,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
   QMap<long, double> edges;
   long i = 0;
   double step = layer->featureCount() > 0 ? 100.0 / layer->featureCount() : 1;
-  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ) );
+  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setNoAttributes() );
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {
@@ -236,7 +236,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
     QVector<double> vec = length.mid( length.size() - 3, -1 );
     edges[f.id()] = *std::max_element( vec.constBegin(), vec.constEnd() );
   }
-  double maxLength = *std::max_element( length.constBegin(), length.constEnd() );
+  const double maxLength = *std::max_element( length.constBegin(), length.constEnd() );
 
   feedback->setProgressText( QObject::tr( "Removing features…" ) );
   multiStepFeedback.setCurrentStep( 3 );
@@ -291,7 +291,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
 
   if ( mSplitMultipart && concaveHull.isMultipart() )
   {
-    QVector< QgsGeometry > collection = concaveHull.asGeometryCollection();
+    const QVector< QgsGeometry > collection = concaveHull.asGeometryCollection();
     step = collection.length() > 0 ? 50.0 / collection.length() : 1;
     for ( int i = 0; i < collection.length(); i++ )
     {

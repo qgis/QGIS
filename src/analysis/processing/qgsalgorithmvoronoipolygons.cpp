@@ -103,7 +103,7 @@ QVariantMap QgsVoronoiPolygonsAlgorithm::processAlgorithm( const QVariantMap &pa
 
 QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsFields fields = mSource->fields();
+  const QgsFields fields = mSource->fields();
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
@@ -116,8 +116,8 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
   QgsGeometry allPoints;
   QHash< QgsFeatureId, QgsAttributes > attributeCache;
 
-  long i = 0;
-  double step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
+  long long i = 0;
+  const double step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
 
   const QgsSpatialIndex index( it, [&]( const QgsFeature & f )->bool
   {
@@ -156,15 +156,15 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
   delta = extent.height() * mBuffer / 100.0;
   extent.setYMinimum( extent.yMinimum() - delta );
   extent.setYMaximum( extent.yMaximum() + delta );
-  QgsGeometry clippingGeom = QgsGeometry::fromRect( extent );
+  const QgsGeometry clippingGeom = QgsGeometry::fromRect( extent );
 
-  QgsGeometry voronoiDiagram = allPoints.voronoiDiagram( clippingGeom, mTolerance );
+  const QgsGeometry voronoiDiagram = allPoints.voronoiDiagram( clippingGeom, mTolerance );
 
   if ( !voronoiDiagram.isEmpty() )
   {
     std::unique_ptr< QgsGeometryEngine > engine;
     std::unique_ptr< QgsGeometryEngine > extentEngine( QgsGeometry::createGeometryEngine( clippingGeom.constGet() ) );
-    QVector< QgsGeometry > collection = voronoiDiagram.asGeometryCollection();
+    const QVector< QgsGeometry > collection = voronoiDiagram.asGeometryCollection();
     for ( int i = 0; i < collection.length(); i++ )
     {
       if ( feedback->isCanceled() )
@@ -204,13 +204,11 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QList< int >() );
-  QgsFeatureIterator it = mSource->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setNoAttributes(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
 
   QgsGeometry allPoints;
 
-  double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 1;
+  const double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 1;
 
   QgsRectangle extent = mSource->sourceExtent();
   double delta = extent.width() * mBuffer / 100.0;
@@ -219,15 +217,15 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
   delta = extent.height() * mBuffer / 100.0;
   extent.setYMinimum( extent.yMinimum() - delta );
   extent.setYMaximum( extent.yMaximum() + delta );
-  QgsGeometry clippingGeom = QgsGeometry::fromRect( extent );
+  const QgsGeometry clippingGeom = QgsGeometry::fromRect( extent );
 
-  QgsGeometry voronoiDiagram = allPoints.voronoiDiagram( clippingGeom, mTolerance );
+  const QgsGeometry voronoiDiagram = allPoints.voronoiDiagram( clippingGeom, mTolerance );
 
   if ( !voronoiDiagram.isEmpty() )
   {
     std::unique_ptr< QgsGeometryEngine > engine;
     std::unique_ptr< QgsGeometryEngine > extentEngine( QgsGeometry::createGeometryEngine( clippingGeom.constGet() ) );
-    QVector< QgsGeometry > collection = voronoiDiagram.asGeometryCollection();
+    const QVector< QgsGeometry > collection = voronoiDiagram.asGeometryCollection();
     for ( int i = 0; i < collection.length(); i++ )
     {
       if ( feedback->isCanceled() )
