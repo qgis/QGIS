@@ -331,7 +331,6 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layers() const
 
 void QgsLayoutItemMap::setLayers( const QList<QgsMapLayer *> &layers )
 {
-
   mGroupLayers.clear();
 
   QList<QgsMapLayer *> layersCopy { layers };
@@ -343,9 +342,17 @@ void QgsLayoutItemMap::setLayers( const QList<QgsMapLayer *> &layers )
   {
     if ( const QgsGroupLayer *groupLayer = qobject_cast<QgsGroupLayer *>( *it ) )
     {
-      std::unique_ptr<QgsGroupLayer> groupLayerClone { groupLayer->clone() };
-      mGroupLayers[ groupLayer->id() ] = std::move( groupLayerClone );
-      *it = mGroupLayers[ groupLayer->id() ].get();
+      auto existingIt = mGroupLayers.find( groupLayer->id() );
+      if ( existingIt != mGroupLayers.end( ) )
+      {
+        *it = ( *existingIt ).second.get();
+      }
+      else
+      {
+        std::unique_ptr<QgsGroupLayer> groupLayerClone { groupLayer->clone() };
+        mGroupLayers[ groupLayer->id() ] = std::move( groupLayerClone );
+        *it = mGroupLayers[ groupLayer->id() ].get();
+      }
     }
   }
   mLayers = _qgis_listRawToRef( layersCopy );
