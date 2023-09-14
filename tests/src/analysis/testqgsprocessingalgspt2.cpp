@@ -19,56 +19,34 @@
 #include "qgstest.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingprovider.h"
-#include "qgsprocessingutils.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
-#include "qgsprocessingmodelalgorithm.h"
 #include "qgsnativealgorithms.h"
-#include "qgsalgorithmfillnodata.h"
-#include "qgsalgorithmlinedensity.h"
-#include "qgsalgorithmimportphotos.h"
-#include "qgsalgorithmtransform.h"
-#include "qgsalgorithmkmeansclustering.h"
 #include "qgsvectorlayer.h"
-#include "qgscategorizedsymbolrenderer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsmultipolygon.h"
-#include "qgsrasteranalysisutils.h"
 #include "qgsrasteranalysisutils.cpp"
-#include "qgsrasterfilewriter.h"
-#include "qgsreclassifyutils.h"
-#include "qgsalgorithmrasterlogicalop.h"
 #include "qgsprintlayout.h"
 #include "qgslayertree.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutitemmap.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsrulebasedrenderer.h"
 #include "qgspallabeling.h"
-#include "qgsrastershader.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgslayoutitemscalebar.h"
-#include "annotations/qgstextannotation.h"
 #include "qgsfontutils.h"
-#include "annotations/qgsannotationmanager.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsstyle.h"
-#include "qgsbookmarkmanager.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsrenderchecker.h"
-#include "qgsrelationmanager.h"
 #include "qgsmeshlayer.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
 #include "qgsalgorithmgpsbabeltools.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
-#include "qgscolorrampimpl.h"
 #include "qgstextformat.h"
+#include "qgsreferencedgeometry.h"
 
-class TestQgsProcessingAlgsPt2: public QObject
+class TestQgsProcessingAlgsPt2: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsProcessingAlgsPt2()
+      : QgsTest( QStringLiteral( "Processing Algorithms Pt 2" ), QStringLiteral( "processing_algorithm" ) )
+    {}
 
   private:
 
@@ -120,8 +98,6 @@ class TestQgsProcessingAlgsPt2: public QObject
     void splitWithLines();
 
   private:
-
-    bool imageCheck( const QString &testName, const QString &renderedImage );
 
     QString mPointLayerPath;
     QgsVectorLayer *mPointsLayer = nullptr;
@@ -333,7 +309,7 @@ void TestQgsProcessingAlgsPt2::exportLayoutPng()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   QVERIFY( QFile::exists( outputPng ) );
-  QVERIFY( imageCheck( "export_layout_custom_layers", outputPng ) );
+  QVERIFY( imageCheck( "export_layout_custom_layers", "export_layout_custom_layers", outputPng, QString(), 500, QSize( 3, 3 ) ) );
 }
 
 void TestQgsProcessingAlgsPt2::exportAtlasLayoutPdf()
@@ -474,7 +450,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
 
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/export_1.png" ) );
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/export_10.png" ) );
-  QVERIFY( imageCheck( "export_atlas", QDir::tempPath() + "/my_atlas/export_1.png" ) );
+  QVERIFY( imageCheck( "export_atlas", "export_atlas", QDir::tempPath() + "/my_atlas/export_1.png", QString(), 500, QSize( 3, 3 ) ) );
 
   parameters[QStringLiteral( "FILENAME_EXPRESSION" )] = QStringLiteral( "'custom_'||@atlas_featurenumber" );
   parameters.insert( QStringLiteral( "LAYERS" ), QVariantList() << QVariant::fromValue( mPointsLayer ) );
@@ -486,7 +462,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
 
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_1.png" ) );
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_10.png" ) );
-  QVERIFY( imageCheck( "export_atlas_custom_layers", QDir::tempPath() + "/my_atlas/custom_1.png" ) );
+  QVERIFY( imageCheck( "export_atlas_custom_layers", "export_atlas_custom_layers", QDir::tempPath() + "/my_atlas/custom_1.png", QString(), 500, QSize( 3, 3 ) ) );
 }
 #endif
 
@@ -1713,7 +1689,7 @@ void TestQgsProcessingAlgsPt2::extractLabels()
 
 void TestQgsProcessingAlgsPt2::splitVectorLayer()
 {
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
 
   QgsFeature f;
@@ -1735,7 +1711,7 @@ void TestQgsProcessingAlgsPt2::splitVectorLayer()
     outputDir.removeRecursively();
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer ) );
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
   parameters.insert( QStringLiteral( "FIELD" ), QStringLiteral( "col1" ) );
   parameters.insert( QStringLiteral( "FILE_TYPE" ), QStringLiteral( "gpkg" ) );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputDir.absolutePath() );
@@ -1755,7 +1731,7 @@ void TestQgsProcessingAlgsPt2::splitVectorLayer()
 
 void TestQgsProcessingAlgsPt2::buffer()
 {
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
 
   std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:buffer" ) ) );
@@ -1763,7 +1739,7 @@ void TestQgsProcessingAlgsPt2::buffer()
 
   // buffering empty layer should produce an empty layer
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer ) );
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
   parameters.insert( QStringLiteral( "DISTANCE" ), 2.0 );
   parameters.insert( QStringLiteral( "SEGMENTS" ), 5 );
   parameters.insert( QStringLiteral( "END_CAP_STYLE" ), 0 );
@@ -1802,25 +1778,25 @@ void TestQgsProcessingAlgsPt2::buffer()
 void TestQgsProcessingAlgsPt2::splitWithLines()
 {
   QgsFeature l1_1, l1_2, l2_1, l2_2, p1_1, p1_2, p2_1, p2_2;
-  QgsVectorLayer *lineLayer1 = new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=epsg:4326" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > lineLayer1 = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiLineString?crs=epsg:4326" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
   QVERIFY( lineLayer1->isValid() );
   l1_1.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((19 40, 26 40),(20 39, 25 39))" ) );
   l1_2.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((19 35, 26 35))" ) );
   lineLayer1->dataProvider()->addFeature( l1_1 );
   lineLayer1->dataProvider()->addFeature( l1_2 );
-  QgsVectorLayer *lineLayer2 = new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=epsg:4326" ), QStringLiteral( "l2" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > lineLayer2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiLineString?crs=epsg:4326" ), QStringLiteral( "l2" ), QStringLiteral( "memory" ) );
   QVERIFY( lineLayer2->isValid() );
   l2_1.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((20 42, 20 34, 23 42))" ) );
   l2_2.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((21 42, 21 34),(23 42, 23 34, 25 42))" ) );
   lineLayer2->dataProvider()->addFeature( l2_1 );
   lineLayer2->dataProvider()->addFeature( l2_2 );
-  QgsVectorLayer *polygonLayer1 = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=epsg:4326" ), QStringLiteral( "p1" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > polygonLayer1 = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiPolygon?crs=epsg:4326" ), QStringLiteral( "p1" ), QStringLiteral( "memory" ) );
   QVERIFY( polygonLayer1->isValid() );
   p1_1.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((25 41, 25 38, 18 38, 18 41, 25 41),(19 39, 24 39, 24 40, 19 40, 19 39)))" ) );
   p1_2.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((18 37, 21 37, 21 35, 18 35, 18 37),(19.5 36.5, 19.5 35.5, 20.5 35.5, 20.5 36.5, 19.5 36.5)),((22 37, 25 37, 25 35, 22 35, 22 37),(24 36, 24 35.5, 24.5 35.5, 24.5 36, 24 36),(23.5 35.5, 23.5 36.5, 22.5 36.5, 22.5 35.5, 23.5 35.5)))" ) );
   polygonLayer1->dataProvider()->addFeature( p1_1 );
   polygonLayer1->dataProvider()->addFeature( p1_2 );
-  QgsVectorLayer *polygonLayer2 = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=epsg:4326" ), QStringLiteral( "p2" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > polygonLayer2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiPolygon?crs=epsg:4326" ), QStringLiteral( "p2" ), QStringLiteral( "memory" ) );
   QVERIFY( polygonLayer2->isValid() );
   p2_1.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((23 42, 20 34, 20 42, 23 42),(20.5 38.5, 21 38.5, 21.5 40.5, 20.5 40.5, 20.5 38.5)))" ) );
   p2_2.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((23 34, 23 42, 25 42, 23 34),(24 40.5, 23.5 40.5, 23.5 39.5, 24 40.5)),((19.5 34.5, 17.5 34.5, 17.5 42, 18.5 42, 19.5 34.5),(18.5 37.5, 18 37.5, 18.5 36.5, 18.5 37.5)))" ) );
@@ -1832,8 +1808,8 @@ void TestQgsProcessingAlgsPt2::splitWithLines()
 
   // Split lineLayer1 with lineLayer2
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( lineLayer1 ) );
-  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( lineLayer2 ) );
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( lineLayer1.get() ) );
+  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( lineLayer2.get() ) );
   parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
 
   bool ok = false;
@@ -1849,8 +1825,8 @@ void TestQgsProcessingAlgsPt2::splitWithLines()
   QCOMPARE( splitLayer->featureCount(), 17 );
 
   // Split polygonLayer1 with lineLayer2
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer1 ) );
-  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( lineLayer2 ) );
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer1.get() ) );
+  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( lineLayer2.get() ) );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
@@ -1861,8 +1837,8 @@ void TestQgsProcessingAlgsPt2::splitWithLines()
   QCOMPARE( splitLayer->featureCount(), 16 );
 
   // Split lineLayer1 with polygonLayer2
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( lineLayer1 ) );
-  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( polygonLayer2 ) );
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( lineLayer1.get() ) );
+  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( polygonLayer2.get() ) );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
@@ -1873,8 +1849,8 @@ void TestQgsProcessingAlgsPt2::splitWithLines()
   QCOMPARE( splitLayer->featureCount(), 21 );
 
   // Split polygonLayer1 with polygonLayer2
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer1 ) );
-  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( polygonLayer2 ) );
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer1.get() ) );
+  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( polygonLayer2.get() ) );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
@@ -1883,17 +1859,6 @@ void TestQgsProcessingAlgsPt2::splitWithLines()
   QVERIFY( splitLayer->isValid() );
   QCOMPARE( splitLayer->wkbType(), Qgis::WkbType::MultiPolygon );
   QCOMPARE( splitLayer->featureCount(), 20 );
-}
-
-bool TestQgsProcessingAlgsPt2::imageCheck( const QString &testName, const QString &renderedImage )
-{
-  QgsRenderChecker checker;
-  checker.setControlPathPrefix( QStringLiteral( "processing_algorithm" ) );
-  checker.setControlName( "expected_" + testName );
-  checker.setRenderedImage( renderedImage );
-  checker.setSizeTolerance( 3, 3 );
-  const bool equal = checker.compareImages( testName, 500 );
-  return equal;
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

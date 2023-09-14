@@ -22,19 +22,16 @@ Email                : zilolv at gmail dot com
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
 #include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgsmeshmemorydataprovider.h"
-#include "qgslinesegment.h"
-#include "qgsmultilinestring.h"
-#include "qgslinestring.h"
 #include "qgsgeometryfactory.h"
 
-class TestQgsMeshContours : public QObject
+class TestQgsMeshContours : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsMeshContours() = default;
+    TestQgsMeshContours()
+      : QgsTest( QStringLiteral( "Mesh Contours Tests" ) )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

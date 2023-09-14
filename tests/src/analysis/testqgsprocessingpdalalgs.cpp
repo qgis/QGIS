@@ -24,9 +24,15 @@
 #include "qgspdalalgorithmbase.h"
 
 
-class TestQgsProcessingPdalAlgs: public QObject
+class TestQgsProcessingPdalAlgs: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsProcessingPdalAlgs()
+      : QgsTest( QStringLiteral( "Processing PDAL Algorithms Test" ) )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

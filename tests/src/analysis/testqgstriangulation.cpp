@@ -22,11 +22,16 @@ Email                : vcloarec at gmail dot com
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
-class TestQgsTriangulation : public QObject
+class TestQgsTriangulation : public QgsTest
 {
     Q_OBJECT
 
   public:
+
+    TestQgsTriangulation()
+      : QgsTest( QStringLiteral( "Triangulation Test" ) )
+    {}
+
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
