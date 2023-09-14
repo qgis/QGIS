@@ -1021,17 +1021,22 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
 
   // we might have a point or a multipoint, depending on number of
   // intersections between the geometry and the split geometry
-  std::unique_ptr< QgsAbstractGeometry > splitGeom( fromGeos( GEOSsplitPoint ) );
-  std::unique_ptr< QgsMultiPoint > splitPoints( qgsgeometry_cast<QgsMultiPoint *>( splitGeom->clone() ) );
-  if ( !splitPoints )
+  std::unique_ptr< QgsMultiPoint > splitPoints;
   {
-    QgsPoint *splitPoint = qgsgeometry_cast<QgsPoint *>( splitGeom->clone() );
-    if ( !splitPoint )
+    std::unique_ptr< QgsAbstractGeometry > splitGeom( fromGeos( GEOSsplitPoint ) );
+
+    if ( qgsgeometry_cast<QgsMultiPoint *>( splitGeom.get() ) )
     {
-      return nullptr;
+      splitPoints.reset( qgsgeometry_cast<QgsMultiPoint *>( splitGeom.release() ) );
     }
-    splitPoints.reset( new QgsMultiPoint() );
-    splitPoints->addGeometry( splitPoint );
+    else if ( qgsgeometry_cast<QgsPoint *>( splitGeom.get() ) )
+    {
+      splitPoints = std::make_unique< QgsMultiPoint >();
+      if ( QgsPoint *point = qgsgeometry_cast<QgsPoint *>( splitGeom.get() ) )
+      {
+        splitPoints->addGeometry( qgsgeometry_cast<QgsPoint *>( splitGeom.release() ) );
+      }
+    }
   }
 
   QgsMultiCurve lines;
