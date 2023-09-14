@@ -49,23 +49,8 @@ static bool inCircle( const QgsPoint &testedPoint, const QgsPoint &point1, const
 
 QgsDualEdgeTriangulation::~QgsDualEdgeTriangulation()
 {
-  //remove all the points
-  if ( !mPointVector.isEmpty() )
-  {
-    for ( int i = 0; i < mPointVector.count(); i++ )
-    {
-      delete mPointVector[i];
-    }
-  }
-
-  //remove all the HalfEdge
-  if ( !mHalfEdge.isEmpty() )
-  {
-    for ( int i = 0; i < mHalfEdge.count(); i++ )
-    {
-      delete mHalfEdge[i];
-    }
-  }
+  qDeleteAll( mPointVector );
+  qDeleteAll( mHalfEdge );
 }
 
 void QgsDualEdgeTriangulation::performConsistencyTest()
