@@ -22,12 +22,8 @@
 #include "qgsprocessingutils.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
-#include "qgsprocessingmodelalgorithm.h"
 #include "qgsnativealgorithms.h"
-#include "qgsalgorithmfillnodata.h"
-#include "qgsalgorithmlinedensity.h"
 #include "qgsalgorithmimportphotos.h"
-#include "qgsalgorithmtransform.h"
 #include "qgsalgorithmkmeansclustering.h"
 #include "qgsvectorlayer.h"
 #include "qgscategorizedsymbolrenderer.h"
@@ -36,10 +32,8 @@
 #include "qgsrasteranalysisutils.h"
 #include "qgsrasteranalysisutils.cpp"
 #include "qgsrasterfilewriter.h"
-#include "qgsreclassifyutils.h"
 #include "qgsalgorithmrasterlogicalop.h"
 #include "qgsprintlayout.h"
-#include "qgslayertree.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutitemmap.h"
 #include "qgsmarkersymbollayer.h"
@@ -55,19 +49,21 @@
 #include "qgsstyle.h"
 #include "qgsbookmarkmanager.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsrenderchecker.h"
 #include "qgsrelationmanager.h"
 #include "qgsmeshlayer.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
-#include "qgsannotationlayer.h"
-#include "qgsannotationmarkeritem.h"
 #include "qgscolorrampimpl.h"
 #include "qgstextformat.h"
 
-class TestQgsProcessingAlgsPt1: public QObject
+class TestQgsProcessingAlgsPt1: public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsProcessingAlgsPt1()
+      : QgsTest( QStringLiteral( "Processing Algorithms Pt 1" ) )
+    {}
 
   private:
 
@@ -174,8 +170,6 @@ class TestQgsProcessingAlgsPt1: public QObject
     // WARNING this test is "full" -- adding more to it will cause timeouts on CI! Add to testqgsprocessingalgspt(N+1).cpp instead
 
   private:
-
-    bool imageCheck( const QString &testName, const QString &renderedImage );
 
     QString mPointLayerPath;
     QgsVectorLayer *mPointsLayer = nullptr;
@@ -5798,17 +5792,6 @@ void TestQgsProcessingAlgsPt1::setProjectVariable()
   QVERIFY( ok );
   scope.reset( QgsExpressionContextUtils::projectScope( &p ) );
   QCOMPARE( scope->variable( QStringLiteral( "my_var" ) ).toInt(), 13 );
-}
-
-bool TestQgsProcessingAlgsPt1::imageCheck( const QString &testName, const QString &renderedImage )
-{
-  QgsRenderChecker checker;
-  checker.setControlPathPrefix( QStringLiteral( "processing_algorithm" ) );
-  checker.setControlName( "expected_" + testName );
-  checker.setRenderedImage( renderedImage );
-  checker.setSizeTolerance( 3, 3 );
-  const bool equal = checker.compareImages( testName, 500 );
-  return equal;
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt1 )

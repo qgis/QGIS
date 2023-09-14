@@ -39,9 +39,14 @@ class DummyMaterialSettings : public QgsAbstractMaterialSettings
     QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext & ) const override {return QByteArray();}
 };
 
-class TestQgsMaterialRegistry : public QObject
+class TestQgsMaterialRegistry : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsMaterialRegistry()
+      : QgsTest( QStringLiteral( "3D Material Registry Tests" ), QStringLiteral( "3d" ) )
+    {}
 
   private slots:
     void initTestCase();

@@ -690,9 +690,14 @@ class DummyPluginLayer: public QgsPluginLayer
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override { Q_UNUSED( transformContext ); };
 };
 
-class TestQgsProcessing: public QObject
+class TestQgsProcessing: public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsProcessing()
+      : QgsTest( QStringLiteral( "Processing Tests" ) )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

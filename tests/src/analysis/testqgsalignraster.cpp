@@ -32,9 +32,14 @@ static QString _tempFile( const QString &name )
 }
 
 
-class TestAlignRaster : public QObject
+class TestAlignRaster : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestAlignRaster()
+      : QgsTest( QStringLiteral( "Align Raster Tests" ) )
+    {}
 
     QString SRC_FILE;
   private slots:

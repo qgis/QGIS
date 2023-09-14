@@ -24,12 +24,16 @@ Email                : nyall dot dawson at gmail dot com
 #include <geos_c.h>
 
 
-class TestQgsGeometrySnapper : public QObject
+class TestQgsGeometrySnapper : public QgsTest
 {
     Q_OBJECT
 
   public:
 
+  public:
+    TestQgsGeometrySnapper()
+      : QgsTest( QStringLiteral( "Geometry Snapper Tests" ), QStringLiteral( "3d" ) )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

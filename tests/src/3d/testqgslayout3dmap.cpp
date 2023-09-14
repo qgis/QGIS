@@ -19,7 +19,6 @@
 #include "qgsapplication.h"
 #include "qgsflatterraingenerator.h"
 #include "qgslayoutitem3dmap.h"
-#include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
@@ -33,7 +32,7 @@ class TestQgsLayout3DMap : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayout3DMap() : QgsTest( QStringLiteral( "Layout 3D Map Tests" ) ) {}
+    TestQgsLayout3DMap() : QgsTest( QStringLiteral( "Layout 3D Map Tests" ), QStringLiteral( "composer_3d" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -44,7 +43,6 @@ class TestQgsLayout3DMap : public QgsTest
     void testBasic();
 
   private:
-    QFont mTestFont;
     std::unique_ptr<QgsProject> mProject;
     QgsRasterLayer *mLayerDtm;
 };
@@ -62,9 +60,6 @@ void TestQgsLayout3DMap::initTestCase()
   mProject->addMapLayer( mLayerDtm );
 
   mProject->setCrs( mLayerDtm->crs() );
-
-  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Oblique" ) );
-  mTestFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Oblique " ) );
 }
 
 void TestQgsLayout3DMap::cleanupTestCase()
@@ -110,14 +105,14 @@ void TestQgsLayout3DMap::testBasic()
   l.addLayoutItem( map3dItem );
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  QgsLayoutChecker checker( QStringLiteral( "composer3d_basic_qt5" ), &l );
+  QVERIFY(
+    layoutCheck( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 )
+  );
 #else
-  QgsLayoutChecker checker( QStringLiteral( "composer3d_basic_qt6" ), &l );
+  QVERIFY(
+    layoutCheck( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 )
+  );
 #endif
-
-  checker.setControlPathPrefix( QStringLiteral( "composer_3d" ) );
-  const bool result = checker.testLayout( mReport, 0, 100 );
-  QVERIFY( result );
 
   QVERIFY( !map->isTemporal() );
 
@@ -126,7 +121,16 @@ void TestQgsLayout3DMap::testBasic()
   map3dItem->setTemporalRange( QgsDateTimeRange( begin, end ) );
 
   map3dItem->refresh();
-  checker.testLayout( mReport, 0, 100 );
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  QVERIFY(
+    layoutCheck( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 )
+  );
+#else
+  QVERIFY(
+    layoutCheck( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 )
+  );
+#endif
 
   QVERIFY( map->isTemporal() );
   QCOMPARE( map->temporalRange(), QgsDateTimeRange( begin, end ) );

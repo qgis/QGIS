@@ -21,9 +21,16 @@
 #include "qgsrasterfilewriter.h"
 #include <QTemporaryDir>
 
-class TestQgsReclassifyUtils: public QObject
+class TestQgsReclassifyUtils: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsReclassifyUtils()
+      : QgsTest( QStringLiteral( "Reclassify Utils Test" ) )
+    {}
+
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
