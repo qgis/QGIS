@@ -139,20 +139,6 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   // Branch for OGR
   if ( dataprovider == QLatin1String( "ogr" ) || dataprovider == QLatin1String( "gdal" ) )
   {
-    // If username or password contains comma or double quote we need to quote the string
-    if ( username.contains( ',' ) || username.contains( '"' ) )
-    {
-      username.replace( '"', QStringLiteral( R"(\")" ) );
-      username.prepend( '"' );
-      username.append( '"' );
-    }
-
-    if ( password.contains( ',' ) || password.contains( '"' ) )
-    {
-      password.replace( '"', QStringLiteral( R"(\")" ) );
-      password.prepend( '"' );
-      password.append( '"' );
-    }
 
     if ( ! password.isEmpty() )
     {
@@ -210,6 +196,20 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         }
         else if ( uri.startsWith( QLatin1String( "MySQL:" ) ) )
         {
+          // If username or password contains comma or double quote we need to quote the string
+          if ( username.contains( ',' ) || username.contains( '"' ) )
+          {
+            username.replace( '"', QStringLiteral( R"(\")" ) );
+            username.prepend( '"' );
+            username.append( '"' );
+          }
+
+          if ( password.contains( ',' ) || password.contains( '"' ) )
+          {
+            password.replace( '"', QStringLiteral( R"(\")" ) );
+            password.prepend( '"' );
+            password.append( '"' );
+          }
           uri += QStringLiteral( ",user=%1" ).arg( username );
           uri += QStringLiteral( ",password=%1" ).arg( password );
         }
