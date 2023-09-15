@@ -346,7 +346,7 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
     QFile htmlFile( outputHtml );
     if ( !htmlFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
-      throw QgsProcessingException( QObject::tr( "Could not html file %1" ).arg( outputHtml ) );
+      throw QgsProcessingException( QObject::tr( "Could not open html file %1" ).arg( outputHtml ) );
     }
     QTextStream fout( &htmlFile );
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
