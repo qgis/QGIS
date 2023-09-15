@@ -64,9 +64,15 @@ void QgsVirtualRasterCalculatorAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT" ), QObject::tr( "Input layers" ), QgsProcessing::SourceType::TypeRaster ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Expression" ), QVariant(),  QStringLiteral( "INPUT" ), false, Qgis::ExpressionType::RasterCalculator ) );
-  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Output extent" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE" ), QObject::tr( "Output cell size (leave empty to set automatically)" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0.0 ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Output CRS" ), QVariant(), true ) );
+  std::unique_ptr<QgsProcessingParameterExtent> extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Output extent" ), QVariant(), true );
+  extentParam->setHelp( QObject::tr( "Extent of the output layer. If not specified, the extent will be the overall extent of all input layers" ) );
+  addParameter( extentParam.release() );
+  std::unique_ptr<QgsProcessingParameterNumber> cellSizeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "CELL_SIZE" ), QObject::tr( "Output cell size (leave empty to set automatically)" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0.0 );
+  cellSizeParam->setHelp( QObject::tr( "Cell size of the output layer. If not specified, the smallest cell size from the input layers will be used" ) );
+  addParameter( cellSizeParam.release() );
+  std::unique_ptr<QgsProcessingParameterCrs> crsParam = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "CRS" ), QObject::tr( "Output CRS" ), QVariant(), true );
+  crsParam->setHelp( QObject::tr( "CRS of the output layer. If not specified, the CRS of the first input layer will be used" ) );
+  addParameter( crsParam.release() );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "LAYER_NAME" ), QObject::tr( "Output layer name" ), QVariant(), false, true ) );
   addOutput( new QgsProcessingOutputRasterLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Calculated" ) ) );
 }
@@ -119,7 +125,7 @@ QVariantMap QgsVirtualRasterCalculatorAlgorithm::processAlgorithm( const QVarian
     rasterParameters.rInputLayers.append( rasterLayer );
 
     QgsRectangle ext = rLayer->extent();
-    if ( rLayer->crs().authid() != crs.authid() )
+    if ( rLayer->crs() != crs )
     {
       QgsCoordinateTransform ct( rLayer->crs(), crs, context.transformContext() );
       ext = ct.transformBoundingBox( ext );

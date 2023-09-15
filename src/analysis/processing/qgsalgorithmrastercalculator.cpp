@@ -58,11 +58,18 @@ QgsRasterCalculatorAlgorithm *QgsRasterCalculatorAlgorithm::createInstance() con
 
 void QgsRasterCalculatorAlgorithm::initAlgorithm( const QVariantMap & )
 {
+
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT" ), QObject::tr( "Input layers" ), QgsProcessing::SourceType::TypeRaster ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Expression" ), QVariant(),  QStringLiteral( "INPUT" ), false, Qgis::ExpressionType::RasterCalculator ) );
-  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Output extent" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE" ), QObject::tr( "Output cell size (leave empty to set automatically)" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0.0 ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Output CRS" ), QVariant(), true ) );
+  std::unique_ptr<QgsProcessingParameterExtent> extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Output extent" ), QVariant(), true );
+  extentParam->setHelp( QObject::tr( "Extent of the output layer. If not specified, the extent will be the overall extent of all input layers" ) );
+  addParameter( extentParam.release() );
+  std::unique_ptr<QgsProcessingParameterNumber> cellSizeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "CELL_SIZE" ), QObject::tr( "Output cell size (leave empty to set automatically)" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0.0 );
+  cellSizeParam->setHelp( QObject::tr( "Cell size of the output layer. If not specified, the smallest cell size from the input layers will be used" ) );
+  addParameter( cellSizeParam.release() );
+  std::unique_ptr<QgsProcessingParameterCrs> crsParam = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "CRS" ), QObject::tr( "Output CRS" ), QVariant(), true );
+  crsParam->setHelp( QObject::tr( "CRS of the output layer. If not specified, the CRS of the first input layer will be used" ) );
+  addParameter( crsParam.release() );
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Calculated" ) ) );
 }
 
@@ -72,7 +79,9 @@ bool QgsRasterCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {
+
     QgsMapLayer *clonedLayer { layer->clone() };
+    clonedLayer->moveToThread( nullptr );
     mLayers << clonedLayer;
   }
 
@@ -88,6 +97,11 @@ bool QgsRasterCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
 QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    layer->moveToThread( QThread::currentThread() );
+  }
+
   QgsCoordinateReferenceSystem crs;
   if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
   {
@@ -130,7 +144,7 @@ QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &p
     }
 
     QgsRectangle ext = rLayer->extent();
-    if ( rLayer->crs().authid() != crs.authid() )
+    if ( rLayer->crs() != crs )
     {
       QgsCoordinateTransform ct( rLayer->crs(), crs, context.transformContext() );
       ext = ct.transformBoundingBox( ext );
@@ -159,26 +173,22 @@ QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &p
 
   QgsRasterCalculator calc( expression, outputFile, outputFormat, bbox, crs, width, height, entries, context.transformContext() );
   QgsRasterCalculator::Result result = calc.processCalculation( feedback );
+  qDeleteAll( mLayers );
+  mLayers.clear();
   switch ( result )
   {
     case QgsRasterCalculator::CreateOutputError:
       throw QgsProcessingException( QObject::tr( "Error creating output file." ) );
-      break;
     case QgsRasterCalculator::InputLayerError:
       throw QgsProcessingException( QObject::tr( "Error reading input layer." ) );
-      break;
     case QgsRasterCalculator::ParserError:
       throw QgsProcessingException( QObject::tr( "Error parsing formula." ) );
-      break;
     case QgsRasterCalculator::MemoryError:
       throw QgsProcessingException( QObject::tr( "Error allocating memory for result." ) );
-      break;
     case QgsRasterCalculator::BandError:
       throw QgsProcessingException( QObject::tr( "Invalid band number for input." ) );
-      break;
     case QgsRasterCalculator::CalculationError:
       throw QgsProcessingException( QObject::tr( "Error occurred while performing calculation." ) );
-      break;
     default:
       break;
   }

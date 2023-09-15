@@ -53,7 +53,7 @@ QgsProcessingRasterCalculatorExpressionLineEdit::QgsProcessingRasterCalculatorEx
 
 QgsProcessingRasterCalculatorExpressionLineEdit::~QgsProcessingRasterCalculatorExpressionLineEdit() = default;
 
-void QgsProcessingRasterCalculatorExpressionLineEdit::setLayers( QVariantList layers )
+void QgsProcessingRasterCalculatorExpressionLineEdit::setLayers( const QVariantList &layers )
 {
   mLayers = layers;
 }
@@ -96,7 +96,7 @@ void QgsProcessingRasterCalculatorExpressionLineEdit::expressionEdited( const QS
 }
 
 
-QgsProcessingRasterCalculatorExpressionDialog::QgsProcessingRasterCalculatorExpressionDialog( QVariantList layers, const QString &startExpression, QWidget *parent )
+QgsProcessingRasterCalculatorExpressionDialog::QgsProcessingRasterCalculatorExpressionDialog( const QVariantList &layers, const QString &startExpression, QWidget *parent )
   : QDialog( parent )
   , mLayers( layers )
   , mInitialText( startExpression )

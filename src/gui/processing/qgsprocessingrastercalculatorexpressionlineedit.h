@@ -57,7 +57,7 @@ class GUI_EXPORT QgsProcessingRasterCalculatorExpressionLineEdit : public QWidge
     /**
      * Sets a layers associated with the widget.
      */
-    void setLayers( QVariantList layers );
+    void setLayers( const QVariantList &layers );
 
     /**
      * Returns the current expression shown in the widget.
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsProcessingRasterCalculatorExpressionDialog : public QDialog,
     /**
      * Constructor for QgsProcessingRasterCalculatorExpressionDialog.
      */
-    QgsProcessingRasterCalculatorExpressionDialog( QVariantList layers, const QString &startExpression = QString(), QWidget *parent = nullptr );
+    QgsProcessingRasterCalculatorExpressionDialog( const QVariantList &layers, const QString &startExpression = QString(), QWidget *parent = nullptr );
 
     /**
      * Sets the current expression to show in the widget.

@@ -5470,13 +5470,18 @@ QString QgsProcessingParameterExpression::asPythonString( const QgsProcessing::P
       QgsProcessingContext c;
       code += QStringLiteral( ", defaultValue=%1" ).arg( valueAsPythonString( mDefault, c ) );
 
-      if ( mExpressionType == Qgis::ExpressionType::PointCloud )
+
+      switch ( mExpressionType )
       {
-        code += QLatin1String( ", type=Qgis.ExpressionType.PointCloud)" );
-      }
-      else
-      {
-        code += QLatin1Char( ')' );
+        case Qgis::ExpressionType::PointCloud:
+          code += QLatin1String( ", type=Qgis.ExpressionType.PointCloud)" );
+          break;
+        case Qgis::ExpressionType::RasterCalculator:
+          code += QLatin1String( ", type=Qgis.ExpressionType.RasterCalculator)" );
+          break;
+        default:
+          code += QLatin1Char( ')' );
+          break;
       }
       return code;
     }
