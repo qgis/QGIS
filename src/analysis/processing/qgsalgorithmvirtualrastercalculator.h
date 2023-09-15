@@ -52,8 +52,34 @@ class QgsVirtualRasterCalculatorAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-  private:
     QList< QgsMapLayer * > mLayers;
+};
+
+class QgsVirtualRasterCalculatorModelerAlgorithm : public QgsVirtualRasterCalculatorAlgorithm
+{
+
+  public:
+
+    QgsVirtualRasterCalculatorModelerAlgorithm() = default;
+    Flags flags() const override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QgsVirtualRasterCalculatorModelerAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+  private:
+
+    /**
+     * Generates Excel-like names from the number
+     * A, B, C, …, Y, Z, AA, AB, AC, …, AZ, BA, BB, BC…
+     */
+    QString indexToName( int index ) const;
 };
 
 ///@endcond PRIVATE

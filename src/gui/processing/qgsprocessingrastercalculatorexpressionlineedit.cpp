@@ -176,7 +176,7 @@ QString QgsProcessingRasterCalculatorExpressionDialog::quoteBandEntry( const QSt
 
 void QgsProcessingRasterCalculatorExpressionDialog::mLayersList_itemDoubleClicked( QListWidgetItem *item )
 {
-  mExpressionTextEdit->insertPlainText( quoteBandEntry( item->text() ) );
+  mExpressionTextEdit->insertPlainText( quoteBandEntry( QStringLiteral( "%1@1" ).arg( item->text() ) ) );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnPlus_clicked()

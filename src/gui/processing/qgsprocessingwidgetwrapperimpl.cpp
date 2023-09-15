@@ -2303,6 +2303,10 @@ QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
         {
           mRasterCalculatorExpLineEdit = new QgsProcessingRasterCalculatorExpressionLineEdit();
           mRasterCalculatorExpLineEdit->setToolTip( parameterDefinition()->toolTip() );
+          if ( type() == QgsProcessingGui::Modeler )
+          {
+            mRasterCalculatorExpLineEdit->setLayers( QVariantList() << "A" << "B" << "C" << "D" << "E" << "F" << "G" );
+          }
           connect( mRasterCalculatorExpLineEdit, &QgsProcessingRasterCalculatorExpressionLineEdit::expressionChanged, this, [ = ]( const QString & )
           {
             emit widgetValueHasChanged( this );

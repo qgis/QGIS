@@ -1190,7 +1190,7 @@ tests:
           - 'Maximum value: 15:29:22'
           - 'NULL \(missing\) values: 1'
 
-  - algorithm: qgis:rastercalculator
+  - algorithm: native:rastercalc
     name: Raster Calculator with cellsize
     params:
       LAYERS:
@@ -1199,13 +1199,14 @@ tests:
             type: raster
         type: multi
       CELLSIZE: 0.001
-      EXPRESSION: dem@1
+      EXPRESSION: '"dem.tif@1"'
     results:
       OUTPUT:
         hash: 525577c05dd999239d9c6f95fd5e70d96355da3a0ea71bfcf021e729
+        hash: 6ced822cc490c7a3d9346b6c8cd4b282eb4e2a9fdd6e7371f6174117
         type: rasterhash
 
-  - algorithm: qgis:rastercalculator
+  - algorithm: native:rastercalc
     name: Raster Calculator
     params:
       LAYERS:
@@ -1214,7 +1215,7 @@ tests:
             type: raster
         type: multi
       CELLSIZE: 0.0
-      EXPRESSION: dem@1 * 2
+      EXPRESSION: '"dem.tif@1" * 2'
     results:
       OUTPUT:
         hash: 98daf025230ec9d031f7502c6a80a3b04dd060808d6b7bcb4328e87c

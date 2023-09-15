@@ -38,6 +38,7 @@ class QgsRasterCalculatorAlgorithm : public QgsProcessingAlgorithm
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRasterCalculator.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRasterCalculator.svg" ) ); }
+    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -53,8 +54,35 @@ class QgsRasterCalculatorAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-  private:
     QList< QgsMapLayer * > mLayers;
+};
+
+class QgsRasterCalculatorModelerAlgorithm : public QgsRasterCalculatorAlgorithm
+{
+
+  public:
+
+    QgsRasterCalculatorModelerAlgorithm() = default;
+    Flags flags() const override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QgsRasterCalculatorModelerAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    /**
+     * Generates Excel-like names from the number
+     * A, B, C, …, Y, Z, AA, AB, AC, …, AZ, BA, BB, BC…
+     */
+    QString indexToName( int index ) const;
 };
 
 ///@endcond PRIVATE

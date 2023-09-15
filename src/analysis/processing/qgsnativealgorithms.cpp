@@ -443,6 +443,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRandomPoissonRasterAlgorithm() );
   addAlgorithm( new QgsRandomUniformRasterAlgorithm() );
   addAlgorithm( new QgsRasterCalculatorAlgorithm() );
+  addAlgorithm( new QgsRasterCalculatorModelerAlgorithm() );
   addAlgorithm( new QgsRasterDtmSlopeBasedFilterAlgorithm() );
   addAlgorithm( new QgsRasterFrequencyByEqualOperatorAlgorithm() );
   addAlgorithm( new QgsRasterFrequencyByGreaterThanOperatorAlgorithm() );
@@ -525,6 +526,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsUnionAlgorithm() );
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsVirtualRasterCalculatorAlgorithm() );
+  addAlgorithm( new QgsVirtualRasterCalculatorModelerAlgorithm() );
   addAlgorithm( new QgsWedgeBuffersAlgorithm() );
   addAlgorithm( new QgsWriteVectorTilesXyzAlgorithm() );
   addAlgorithm( new QgsWriteVectorTilesMbtilesAlgorithm() );
