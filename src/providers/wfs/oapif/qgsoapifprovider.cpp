@@ -224,6 +224,21 @@ bool QgsOapifProvider::init()
   if ( mShared->mCapabilityExtent.isNull() )
   {
     mShared->mCapabilityExtent = itemsRequest.bbox();
+    if ( !mShared->mCapabilityExtent.isNull() )
+    {
+      QgsCoordinateReferenceSystem defaultCrs =
+        QgsCoordinateReferenceSystem::fromOgcWmsCrs(
+          QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
+      if ( defaultCrs != mShared->mSourceCrs )
+      {
+        QgsCoordinateTransform ct( defaultCrs, mShared->mSourceCrs, transformContext() );
+        ct.setBallparkTransformsAreAppropriate( true );
+        QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
+        mShared->mCapabilityExtent = ct.transformBoundingBox( mShared->mCapabilityExtent );
+        QgsDebugMsgLevel( "after ext:" + mShared->mCapabilityExtent.toString(), 4 );
+      }
+    }
+
   }
 
   mShared->mFields = itemsRequest.fields();
@@ -261,12 +276,14 @@ long long QgsOapifProvider::featureCount() const
     QgsFeature f;
     QgsFeatureRequest request;
     request.setNoAttributes();
+    constexpr int MAX_FEATURES = 1000;
+    request.setLimit( MAX_FEATURES + 1 );
     auto iter = getFeatures( request );
     long long count = 0;
     bool countExact = true;
     while ( iter.nextFeature( f ) )
     {
-      if ( count == 1000 ) // to avoid too long processing time
+      if ( count == MAX_FEATURES ) // to avoid too long processing time
       {
         countExact = false;
         break;
