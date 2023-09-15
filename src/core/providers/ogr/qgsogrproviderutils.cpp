@@ -1553,7 +1553,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     {
       if ( !ds->canBeShared )
         continue;
-      Q_ASSERT( ds->refCount > 0 );
+      Q_ASSERT( sDeferDatasetClosingCounter > 0 || ds->refCount > 0 );
 
       QString layerName;
       OGRLayerH hLayer;
@@ -2296,7 +2296,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     {
       if ( !ds->canBeShared )
         continue;
-      Q_ASSERT( ds->refCount > 0 );
+      Q_ASSERT( sDeferDatasetClosingCounter > 0 || ds->refCount > 0 );
 
       auto iter2 = ds->setLayers.find( layerName );
       if ( iter2 == ds->setLayers.end() )
