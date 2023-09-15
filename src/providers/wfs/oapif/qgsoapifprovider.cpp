@@ -229,8 +229,16 @@ bool QgsOapifProvider::init()
     QgsCoordinateTransform ct( collectionRequest->collection().mBboxCrs, mShared->mSourceCrs, transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
     QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
-    mShared->mCapabilityExtent = ct.transformBoundingBox( mShared->mCapabilityExtent );
-    QgsDebugMsgLevel( "after ext:" + mShared->mCapabilityExtent.toString(), 4 );
+    try
+    {
+      mShared->mCapabilityExtent = ct.transformBoundingBox( mShared->mCapabilityExtent );
+      QgsDebugMsgLevel( "after ext:" + mShared->mCapabilityExtent.toString(), 4 );
+    }
+    catch ( const QgsCsException &e )
+    {
+      QgsMessageLog::logMessage( tr( "Cannot compute layer extent: %1" ).arg( e.what() ), tr( "OAPIF" ) );
+      mShared->mCapabilityExtent = QgsRectangle();
+    }
   }
 
   // Merge contact info from /api
@@ -277,8 +285,16 @@ bool QgsOapifProvider::init()
         QgsCoordinateTransform ct( defaultCrs, mShared->mSourceCrs, transformContext() );
         ct.setBallparkTransformsAreAppropriate( true );
         QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
-        mShared->mCapabilityExtent = ct.transformBoundingBox( mShared->mCapabilityExtent );
-        QgsDebugMsgLevel( "after ext:" + mShared->mCapabilityExtent.toString(), 4 );
+        try
+        {
+          mShared->mCapabilityExtent = ct.transformBoundingBox( mShared->mCapabilityExtent );
+          QgsDebugMsgLevel( "after ext:" + mShared->mCapabilityExtent.toString(), 4 );
+        }
+        catch ( const QgsCsException &e )
+        {
+          QgsMessageLog::logMessage( tr( "Cannot compute layer extent: %1" ).arg( e.what() ), tr( "OAPIF" ) );
+          mShared->mCapabilityExtent = QgsRectangle();
+        }
       }
     }
 
