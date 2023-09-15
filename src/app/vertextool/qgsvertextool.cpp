@@ -2440,7 +2440,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
             {
               QgsFeatureList removedFeatures;
               double largest = 0;
-              QgsFeature originalFeature = layer->getFeature( it2.key() );
+              QgsFeature originalFeature = layer->getFeature( itFeatEdit.key() );
               int largestPartIndex = -1;
               for ( int i = 0; i < newGeoms.size(); ++i )
               {
