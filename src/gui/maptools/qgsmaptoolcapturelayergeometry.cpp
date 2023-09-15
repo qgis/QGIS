@@ -38,8 +38,9 @@ void QgsMapToolCaptureLayerGeometry::geometryCaptured( const QgsGeometry &geomet
     case QgsMapToolCapture::CaptureLine:
     case QgsMapToolCapture::CapturePolygon:
       //does provider support circular strings?
+      const bool datasetIsCurved = QgsWkbTypes::isCurvedType( vlayer->wkbType() );
       const bool providerSupportsCurvedSegments = vlayer && ( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries );
-      if ( !providerSupportsCurvedSegments )
+      if ( !datasetIsCurved || !providerSupportsCurvedSegments )
         g = QgsGeometry( g.constGet()->segmentize() );
 
       QList<QgsVectorLayer *>  avoidIntersectionsLayers;
