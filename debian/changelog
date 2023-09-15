@@ -1,8 +1,14 @@
-qgis (3.32.2) UNRELEASED; urgency=medium
+qgis (3.32.3) UNRELEASED; urgency=medium
+
+  * Release of 3.32.3
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 15 Sep 2023 14:04:20 +0200
+
+qgis (3.32.2) unstable; urgency=medium
 
   * Release of 3.32.2
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 18 Aug 2023 14:02:15 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 15 Sep 2023 14:04:19 +0200
 
 qgis (3.32.1) unstable; urgency=medium
 
