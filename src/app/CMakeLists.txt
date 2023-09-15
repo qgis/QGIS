@@ -599,15 +599,6 @@ if (WITH_3D)
   target_link_libraries(qgis_app qgis_3d)
 endif()
 
-if (HAVE_GEOREFERENCER)
-  include_directories(SYSTEM
-    ${GSL_INCLUDE_DIR}
-  )
-  target_link_libraries(qgis_app
-    ${GSL_LIBRARIES}
-  )
-endif()
-
 GENERATE_EXPORT_HEADER(
    qgis_app
    BASE_NAME APP

@@ -464,10 +464,6 @@ include_directories(SYSTEM ${SQLITE3_INCLUDE_DIR})
 include_directories(BEFORE raster)
 include_directories(BEFORE mesh)
 
-if(HAVE_GSL)
-  include_directories(SYSTEM ${GSL_INCLUDE_DIR})
-endif()
-
 if(NOT MSVC)
   set_source_files_properties(
     ${BISON_QgsRasterCalcParser_OUTPUTS}
@@ -577,7 +573,7 @@ target_link_libraries(
   )
 
 if(HAVE_GSL)
-  target_link_libraries(qgis_analysis ${GSL_LIBRARIES})
+  target_link_libraries(qgis_analysis GSL::gsl)
 endif()
 
 if(HAVE_OPENCL)
