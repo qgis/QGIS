@@ -130,6 +130,13 @@ namespace QgsWms
     {
       QJsonObject result;
 
+      Qgis::LegendJsonRenderFlags jsonFlags;
+
+      if ( parameters.showRuleDetailsAsBool() )
+      {
+        jsonFlags.setFlag( Qgis::LegendJsonRenderFlag::ShowRuleDetails );
+      }
+
       if ( !parameters.rule().isEmpty() )
       {
         QgsLayerTreeModelLegendNode *node = legendNode( parameters.rule(), *model.get() );
@@ -137,11 +144,11 @@ namespace QgsWms
         {
           throw QgsException( QStringLiteral( "Could not get a legend node for the requested RULE" ) );
         }
-        result = renderer.getLegendGraphicsAsJson( *node );
+        result = renderer.getLegendGraphicsAsJson( *node, jsonFlags );
       }
       else
       {
-        result = renderer.getLegendGraphicsAsJson( *model.get() );
+        result = renderer.getLegendGraphicsAsJson( *model.get(), jsonFlags );
       }
       tree->clear();
       response.setHeader( QStringLiteral( "Content-Type" ), parameters.formatAsString() );

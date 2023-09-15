@@ -214,7 +214,7 @@ namespace QgsWms
     return image.release();
   }
 
-  QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModel &model )
+  QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModel &model, const Qgis::LegendJsonRenderFlags &jsonRenderFlags )
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
@@ -226,6 +226,7 @@ namespace QgsWms
 
     // init renderer
     QgsLegendSettings settings = legendSettings();
+    settings.setJsonRenderFlags( jsonRenderFlags );
     QgsLegendRenderer renderer( &model, settings );
 
     // rendering
@@ -233,7 +234,7 @@ namespace QgsWms
     return renderer.exportLegendToJson( renderContext );
   }
 
-  QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModelLegendNode &nodeModel )
+  QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModelLegendNode &nodeModel, const Qgis::LegendJsonRenderFlags &jsonRenderFlags )
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
@@ -245,6 +246,7 @@ namespace QgsWms
 
     // init renderer
     QgsLegendSettings settings = legendSettings();
+    settings.setJsonRenderFlags( jsonRenderFlags );
 
     // rendering
     QgsRenderContext renderContext;
