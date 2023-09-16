@@ -455,7 +455,6 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
   )
 endif()
 
-include_directories(SYSTEM ${SPATIALITE_INCLUDE_DIR})
 include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
 include_directories(SYSTEM ${SQLITE3_INCLUDE_DIR})
 include_directories(BEFORE raster)

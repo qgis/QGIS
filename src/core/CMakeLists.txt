@@ -2259,12 +2259,6 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${EXIV2_INCLUDE_DIR}
 )
 
-if (WITH_SPATIALITE)
-  target_include_directories(qgis_core SYSTEM PUBLIC
-    ${SPATIALITE_INCLUDE_DIR}
-  )
-endif()
-
 target_include_directories(qgis_core PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -2441,7 +2435,7 @@ if (NOT IOS)
 endif()
 
 if (WITH_SPATIALITE)
-  target_link_libraries(qgis_core ${SPATIALITE_LIBRARY})
+  target_link_libraries(qgis_core spatialite::spatialite)
 endif()
 
 if (BUILD_WITH_QT6)

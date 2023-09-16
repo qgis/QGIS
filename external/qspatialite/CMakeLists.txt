@@ -17,8 +17,7 @@ add_library(qsqlspatialite SHARED ${QSQLSPATIALITE_SRC})
 target_link_libraries(qsqlspatialite
         ${Qt5Core_LIBRARIES}
         ${Qt5Sql_LIBRARIES}
-	${SQLITE3_LIBRARY}
-	${SPATIALITE_LIBRARY}
+        spatialite::spatialite
 	qgis_core
 )
 
