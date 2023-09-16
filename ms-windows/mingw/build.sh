@@ -76,10 +76,7 @@ mkdir -p "$BUILDDIR"
 (
   CRSSYNC_BIN=$(readlink -f "$SRCDIR")/build/output/bin/crssync
   cd "$BUILDDIR"
-  rpm --eval "%{mingw64_cmake}" > mingw64-cmake.sh
-  sed -i -e 's/%__cmake/cmake/' mingw64-cmake.sh
-  chmod +x mingw64-cmake.sh
-  ./mingw$bits-cmake.sh \
+  mingw$bits-cmake \
     -DCMAKE_CROSS_COMPILING=1 \
     -DUSE_CCACHE=ON \
     -DCMAKE_BUILD_TYPE=$buildtype \
