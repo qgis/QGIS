@@ -2760,6 +2760,87 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         attrs = [f['name'] for f in vl2.getFeatures()]
         self.assertEqual(attrs, ['a', 'b'])
 
+    def testChangeAttributeValuesOptimization(self):
+        """Test issuing 'UPDATE layer SET column_name = constant' when possible"""
+
+        # Below value comes from QgsOgrProvider::changeAttributeValues()
+        THRESHOLD_UPDATE_OPTIM = 100
+
+        tmpfile = os.path.join(self.basetestpath, 'testChangeAttributeValuesOptimization.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('int_field', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('int64_field', ogr.OFTInteger64))
+        lyr.CreateField(ogr.FieldDefn('real_field', ogr.OFTReal))
+        for i in range(THRESHOLD_UPDATE_OPTIM + 1):
+            f = ogr.Feature(lyr.GetLayerDefn())
+            lyr.CreateFeature(f)
+        ds = None
+
+        vl = QgsVectorLayer(f'{tmpfile}' + "|layername=" + "test", 'test', 'ogr')
+
+        # Does not trigger the optim: not constant value
+        field_name, value, other_value = "str_field", "my_value", "other_value"
+        vl.startEditing()
+        fieldid = vl.fields().indexFromName(field_name)
+        for idx, feature in enumerate(vl.getFeatures()):
+            if idx == THRESHOLD_UPDATE_OPTIM:
+                vl.changeAttributeValue(feature.id(), fieldid, other_value)
+            else:
+                vl.changeAttributeValue(feature.id(), fieldid, value)
+        vl.commitChanges()
+
+        got = [feat[field_name] for feat in vl.getFeatures()]
+        self.assertEqual(set(got), set([value, other_value]))
+
+        # Does not trigger the optim: update of different fields
+        vl.startEditing()
+        fieldid = vl.fields().indexFromName("int_field")
+        fieldid2 = vl.fields().indexFromName("int64_field")
+        for idx, feature in enumerate(vl.getFeatures()):
+            if idx == THRESHOLD_UPDATE_OPTIM:
+                vl.changeAttributeValue(feature.id(), fieldid2, 1)
+            else:
+                vl.changeAttributeValue(feature.id(), fieldid, 1)
+        vl.commitChanges()
+
+        got = [feat["int_field"] for feat in vl.getFeatures()]
+        self.assertEqual(set(got), set([1, QVariant()]))
+        got = [feat["int64_field"] for feat in vl.getFeatures()]
+        self.assertEqual(set(got), set([1, QVariant()]))
+
+        # Does not trigger the optim: not all features updated
+        vl.startEditing()
+        fieldid = vl.fields().indexFromName("real_field")
+        for idx, feature in enumerate(vl.getFeatures()):
+            if idx == THRESHOLD_UPDATE_OPTIM:
+                break
+            vl.changeAttributeValue(feature.id(), fieldid, 1.5)
+        vl.commitChanges()
+
+        got = [feat["real_field"] for feat in vl.getFeatures()]
+        self.assertEqual(set(got), set([1.5, QVariant()]))
+
+        # Triggers the optim
+        for field_name, value in [("str_field", "my_value"),
+                                  ("int_field", 123),
+                                  ("int64_field", 1234567890123),
+                                  ("real_field", 2.5),
+                                  ("real_field", None),
+                                  ]:
+            vl.startEditing()
+            fieldid = vl.fields().indexFromName(field_name)
+            for feature in vl.getFeatures():
+                vl.changeAttributeValue(feature.id(), fieldid, value)
+            vl.commitChanges()
+
+            got = [feat[field_name] for feat in vl.getFeatures()]
+            if value:
+                self.assertEqual(set(got), set([value]))
+            else:
+                self.assertEqual(set(got), set([QVariant()]))
+
 
 if __name__ == '__main__':
     unittest.main()
