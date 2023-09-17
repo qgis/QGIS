@@ -337,6 +337,18 @@ void QgsFileWidget::openFileDialog()
         // make sure filename ends with filter. This isn't automatically done by
         // getSaveFileName on some platforms (e.g. gnome)
         fileName = QgsFileUtils::addExtensionFromFilter( fileName, mSelectedFilter );
+
+        // A bit of hack to solve https://github.com/qgis/QGIS/issues/54566
+        // to be able to select an existing File Geodatabase, we add in the filter
+        // the "gdb" file that is found in all File Geodatabase .gdb directory
+        // to allow the user to select it. We now need to remove this gdb file
+        // (which became gdb.gdb due to above logic) from the selected filename
+        if ( mFilter.contains( QLatin1String( "(*.gdb *.GDB gdb)" ) ) &&
+             ( fileName.endsWith( QLatin1String( "/gdb.gdb" ) ) ||
+               fileName.endsWith( QLatin1String( "\\gdb.gdb" ) ) ) )
+        {
+          fileName.chop( static_cast<int>( strlen( "/gdb.gdb" ) ) );
+        }
       }
       break;
     }
