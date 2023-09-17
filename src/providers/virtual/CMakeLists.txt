@@ -40,8 +40,6 @@ target_include_directories(provider_virtuallayer_a PUBLIC
 
 target_link_libraries(provider_virtuallayer_a
   qgis_core
-  ${SQLITE3_LIBRARY}
-  ${SPATIALITE_LIBRARY}
 )
 
 # require c++17
@@ -97,8 +95,6 @@ else()
     qgis_core
     ${QT_VERSION_BASE}::Core
     ${QT_VERSION_BASE}::Widgets
-    ${SQLITE3_LIBRARY}
-    ${SPATIALITE_LIBRARY}
   )
 
   if (WITH_GUI)
