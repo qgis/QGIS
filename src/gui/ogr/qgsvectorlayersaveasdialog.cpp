@@ -948,7 +948,8 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
-          options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
+          if ( !opt->mValue.isEmpty() )
+            options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }
@@ -1007,7 +1008,8 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
-          options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
+          if ( !opt->mValue.isEmpty() )
+            options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }
