@@ -398,6 +398,9 @@ void QgsGPXFeatureIterator::readAttributes( QgsFeature &feature, const QgsWaypoi
       case QgsGPXProvider::URLNameAttr:
         feature.setAttribute( i, QVariant( wpt.urlname ) );
         break;
+      case QgsGPXProvider::TimeAttr:
+        feature.setAttribute( i, QVariant( wpt.time ) );
+        break;
     }
   }
 }

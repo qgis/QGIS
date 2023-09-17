@@ -11,6 +11,8 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
 
+from qgis.PyQt.QtCore import Qt, QDateTime, QVariant
+
 from qgis.core import (
     QgsFeature,
     QgsPathResolver,
@@ -219,6 +221,13 @@ class TestPyQgsGpxProvider(QgisTestCase, ProviderTestCase):
 
         self.assertEqual(meta.absoluteToRelativeUri(absolute_uri, context), relative_uri)
         self.assertEqual(meta.relativeToAbsoluteUri(relative_uri, context), absolute_uri)
+
+    def test_waypoint_layer(self):
+        vl = QgsVectorLayer(f'{unitTestDataPath()}/gpx_test_suite.gpx' + "?type=waypoint", 'test2', 'gpx')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields().field("time").type(), QVariant.DateTime)
+        values = [f["time"] for f in vl.getFeatures()]
+        self.assertEqual(values[0], QDateTime(2023, 4, 25, 9, 52, 14, 0, Qt.TimeSpec(1)))
 
 
 if __name__ == '__main__':
