@@ -11,7 +11,6 @@ else ()
   target_link_libraries(crssync
     qgis_core
     ${PROJ_LIBRARY}
-    ${GDAL_LIBRARY}
   )
 
   if(MSVC AND NOT USING_NMAKE)
