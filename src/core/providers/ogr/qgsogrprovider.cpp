@@ -2235,7 +2235,91 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     mayNeedResetReadingAfterGetFeature = false;
   }
 
-  for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
+  /* Optimization to update a single field of all layer's feature with a
+   * constant value */
+  bool useUpdate = false;
+  // If changing the below value, update it into test_provider_ogr_gpkg.py
+  // as well
+  constexpr size_t THRESHOLD_UPDATE_OPTIM = 100;
+  if ( static_cast<size_t>( attr_map.size() ) >= THRESHOLD_UPDATE_OPTIM &&
+       ( mGDALDriverName == QLatin1String( "GPKG" ) ||
+         mGDALDriverName == QLatin1String( "SQLite" ) ) &&
+       mOgrLayer->TestCapability( OLCFastFeatureCount ) &&
+       attr_map.size() == mOgrLayer->GetFeatureCount() )
+  {
+    std::set<QgsFeatureId> fids;
+    OGRFieldDefnH fd = nullptr;
+    int fieldIdx = -1;
+    QVariant val;
+    OGRFieldType type = OFTMaxType;
+    useUpdate = true;
+    for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
+    {
+      QgsFeatureId fid = it.key();
+      fids.insert( fid );
+      const QgsAttributeMap &attr = it.value();
+      if ( attr.size() != 1 )
+      {
+        useUpdate = false;
+        break;
+      }
+      QgsAttributeMap::const_iterator it2 = attr.begin();
+      if ( fieldIdx < 0 )
+      {
+        fieldIdx = it2.key();
+        if ( fieldIdx == 0 && mFirstFieldIsFid )
+        {
+          useUpdate = false;
+          break;
+        }
+        fd = mOgrLayer->GetLayerDefn().GetFieldDefn(
+               ( mFirstFieldIsFid && fieldIdx > 0 ) ? fieldIdx - 1 : fieldIdx );
+        if ( !fd )
+        {
+          useUpdate = false;
+          break;
+        }
+        type = OGR_Fld_GetType( fd );
+        if ( type != OFTInteger && type != OFTInteger64 && type != OFTString && type != OFTReal )
+        {
+          useUpdate = false;
+          break;
+        }
+        val = *it2;
+      }
+      else if ( fieldIdx != it2.key() || val != *it2 )
+      {
+        useUpdate = false;
+        break;
+      }
+    }
+    if ( useUpdate && fids.size() != static_cast<size_t>( attr_map.size() ) )
+    {
+      useUpdate = false;
+    }
+    if ( useUpdate )
+    {
+      QString sql = QStringLiteral( "UPDATE %1 SET %2 = %3" )
+                    .arg( QString::fromUtf8( QgsOgrProviderUtils::quotedIdentifier( mOgrLayer->name(), mGDALDriverName ) ) )
+                    .arg( QString::fromUtf8( QgsOgrProviderUtils::quotedIdentifier( QByteArray( OGR_Fld_GetNameRef( fd ) ), mGDALDriverName ) ) )
+                    .arg( QgsOgrProviderUtils::quotedValue( val ) );
+      QgsDebugMsgLevel( QStringLiteral( "Using optimized changeAttributeValues(): %1" ).arg( sql ), 3 );
+      CPLErrorReset();
+      mOgrOrigLayer->ExecuteSQLNoReturn( sql.toUtf8() );
+      if ( CPLGetLastErrorType() != CE_None )
+      {
+        useUpdate = false;
+        returnValue = false;
+      }
+    }
+  }
+
+  // General case: let's iterate over all features and attributes to update
+  QgsChangedAttributesMap::const_iterator it = attr_map.begin();
+  if ( useUpdate )
+    it = attr_map.end();
+
+  for ( ; it != attr_map.end(); ++it )
   {
     QgsFeatureId fid = it.key();
 
