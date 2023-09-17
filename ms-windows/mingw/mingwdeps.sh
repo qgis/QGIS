@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dnf5 install -y --nogpgcheck \
+dnf install -y --nogpgcheck \
   mingw64-dlfcn \
   mingw64-exiv2 \
   mingw64-fcgi \
