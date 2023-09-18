@@ -20,6 +20,8 @@ if(PC_SPATIALITE_FOUND)
   add_library(spatialite::spatialite ALIAS PkgConfig::PC_SPATIALITE)
   set(SPATIALITE_FOUND TRUE)
 else()
+  # Fallback for systems without PkgConfig, e.g. OSGeo4W
+
   # This macro checks if the symbol exists
   include(CheckLibraryExists)
   
