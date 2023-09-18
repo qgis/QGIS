@@ -35,6 +35,7 @@ class TestQgsDataSourceUri: public QObject
     void checkConnectionInfo_data();
     void checkAuthParams();
     void checkParameterKeys();
+    void checkRemovePassword();
 };
 
 void TestQgsDataSourceUri::checkparser_data()
@@ -522,6 +523,12 @@ void TestQgsDataSourceUri::checkParameterKeys()
   QCOMPARE( uri.parameterKeys().size(), 2 );
   QVERIFY( uri.parameterKeys().contains( QLatin1String( "dbname" ) ) );
   QVERIFY( uri.parameterKeys().contains( QLatin1String( "bar" ) ) );
+}
+
+void TestQgsDataSourceUri::checkRemovePassword()
+{
+  const QString uri = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ) );
+  QCOMPARE( uri, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test") );
 }
 
 QGSTEST_MAIN( TestQgsDataSourceUri )
