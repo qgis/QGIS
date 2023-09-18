@@ -414,7 +414,17 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
   }
 
   // https://docs.qgis.org/3.16/en/docs/server_manual/services.html#wms-map
-  const QString map = QUrlQuery( request.originalUrl().query().replace( QLatin1String( "MAP" ), QStringLiteral( "MAP" ), Qt::CaseInsensitive ) ).queryItemValue( QStringLiteral( "MAP" ) );
+  const QUrlQuery query { request.originalUrl().query() };
+  const QList<QPair<QString, QString>> constItems { query.queryItems( ) };
+  QString map;
+  for ( const QPair<QString, QString> &item : std::as_const( constItems ) )
+  {
+    if ( 0 == item.first.compare( QLatin1String( "MAP" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      map = item.second;
+      break;
+    }
+  }
 
   if ( ! map.isEmpty() )
   {
