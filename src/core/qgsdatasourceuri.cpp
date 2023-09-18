@@ -248,6 +248,17 @@ QString QgsDataSourceUri::removePassword( const QString &aUri )
     regexp.setPattern( QStringLiteral( "/.*@" ) );
     safeName.replace( regexp, QStringLiteral( "/@" ) );
   }
+  else if ( aUri.contains( QLatin1String( "postgresql:" ) ) )
+  {
+    // postgresql://user:pwd@...
+    regexp.setPattern( QStringLiteral( "/.*@" ) );
+    const QString matched = regexp.match(aUri).capturedView().toString();
+
+    QString anonymised = matched.split( QStringLiteral( ":" ) )[0];
+    anonymised.append( QStringLiteral( "@" ) );
+
+    safeName.replace( regexp, anonymised );
+  }
   else if ( aUri.contains( QLatin1String( "SDE:" ) ) )
   {
     QStringList strlist = aUri.split( ',' );
