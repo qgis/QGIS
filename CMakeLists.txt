@@ -361,7 +361,7 @@ if(WITH_CORE)
   find_package(Proj)
   find_package(GEOS)
   find_package(GDAL)
-  find_package(Expat REQUIRED)
+  find_package(EXPAT REQUIRED)
   find_package(Spatialindex REQUIRED)
   find_package(LibZip REQUIRED)
 
