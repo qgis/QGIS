@@ -308,6 +308,52 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         image = QImage.fromData(response.body(), "PNG")
         self._assertBlue(image.pixelColor(100, 100))
 
+    def test_wms_getprint_atlas_dd_theme_(self):
+        """Test a template with atlas DD theme"""
+
+        project = self.project
+
+        # No LAYERS specified
+        params = {
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetPrint',
+            'TEMPLATE': 'data_defined_theme',
+            'FORMAT': 'png',
+            'CRS': 'EPSG:4326',
+            'DPI': '72',
+        }
+
+        def _test_red():
+            params['ATLAS_PK'] = '2'
+
+            response = QgsBufferServerResponse()
+            request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+            self.server.handleRequest(request, response, project)
+
+            image = QImage.fromData(response.body(), "PNG")
+            # Expected: white and red
+            self._assertRed(image.pixelColor(325, 184))
+            self._assertWhite(image.pixelColor(685, 150))
+
+        def _test_green():
+            params['ATLAS_PK'] = '4'
+
+            response = QgsBufferServerResponse()
+            request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+            self.server.handleRequest(request, response, project)
+
+            image = QImage.fromData(response.body(), "PNG")
+            # Expected: green and white
+            self._assertGreen(image.pixelColor(325, 184))
+            self._assertWhite(image.pixelColor(685, 150))
+
+        # Alternate test to make sure nothing is cached
+        _test_red()
+        _test_green()
+        _test_red()
+        _test_green()
+
 
 if __name__ == '__main__':
     unittest.main()
