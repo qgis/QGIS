@@ -62,7 +62,6 @@ target_include_directories(provider_wfs_a PUBLIC
 )
 
 target_link_libraries(provider_wfs_a
-  ${EXPAT_LIBRARY}
   qgis_core
 )
 
@@ -120,7 +119,6 @@ else()
   target_compile_definitions(provider_wfs PRIVATE "-DQT_NO_FOREACH")
 
   target_link_libraries (provider_wfs
-    ${EXPAT_LIBRARY}
     qgis_core
   )
 
