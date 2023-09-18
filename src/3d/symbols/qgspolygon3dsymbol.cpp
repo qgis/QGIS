@@ -24,6 +24,7 @@
 #include "qgs3dsceneexporter.h"
 #include "qgsvectorlayerelevationproperties.h"
 #include "qgsvectorlayer.h"
+#include "qgstessellatedpolygongeometry.h"
 
 QgsPolygon3DSymbol::QgsPolygon3DSymbol()
   : mMaterialSettings( std::make_unique< QgsPhongMaterialSettings >() )
@@ -170,7 +171,13 @@ void QgsPolygon3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *mater
 
 bool QgsPolygon3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const
 {
-  const QList<Qt3DCore::QEntity *> subEntities = entity->findChildren<Qt3DCore::QEntity *>( QString(), Qt::FindDirectChildrenOnly );
+  QList<Qt3DCore::QEntity *> subEntities = entity->findChildren<Qt3DCore::QEntity *>( QString(), Qt::FindDirectChildrenOnly );
+  // sort geometries by their name in order to always export them in the same way:
+  std::sort( subEntities.begin(), subEntities.end(), []( const Qt3DCore::QEntity * a, const Qt3DCore::QEntity * b )
+  {
+    return a->objectName() < b->objectName();
+  } );
+
   if ( subEntities.isEmpty() )
   {
     const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
