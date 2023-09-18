@@ -231,7 +231,7 @@ struct _GEOSQueryCallbackData
 {
   QList< const QgsPointCloudLayerProfileResults::PointResult * > *list;
 };
-void _GEOSQueryCallback( void *item, void *userdata )
+inline void _GEOSQueryCallback( void *item, void *userdata )
 {
   reinterpret_cast<_GEOSQueryCallbackData *>( userdata )->list->append( reinterpret_cast<const QgsPointCloudLayerProfileResults::PointResult *>( item ) );
 }

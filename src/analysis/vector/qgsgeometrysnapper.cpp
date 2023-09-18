@@ -185,7 +185,7 @@ struct _GEOSQueryCallbackData
   QList< QgsSnapIndex::SnapItem * > *list;
 };
 
-void _GEOSQueryCallback( void *item, void *userdata )
+inline void _GEOSQueryCallback( void *item, void *userdata )
 {
   reinterpret_cast<_GEOSQueryCallbackData *>( userdata )->list->append( static_cast<QgsSnapIndex::SnapItem *>( item ) );
 }
