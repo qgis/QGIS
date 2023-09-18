@@ -113,7 +113,6 @@ endif()
 
 target_link_libraries(qgis_server
   qgis_core
-  ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
   ${QCA_LIBRARY}

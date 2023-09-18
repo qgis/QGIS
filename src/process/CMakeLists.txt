@@ -42,7 +42,6 @@ target_link_libraries(qgis_process
   qgis_core
   qgis_analysis
   ${QT_VERSION_BASE}::Core
-  ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
 )
 
