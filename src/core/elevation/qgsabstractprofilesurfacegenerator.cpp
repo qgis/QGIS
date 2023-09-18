@@ -157,10 +157,6 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
   double currentPartStartDistance = 0;
   for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
   {
-    if ( std::isnan( prevDistance ) )
-    {
-      currentPartStartDistance = pointIt.key();
-    }
     if ( std::isnan( pointIt.value() ) )
     {
       if ( currentLine.length() > 1 )
@@ -182,7 +178,10 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
       currentLine.clear();
       continue;
     }
-
+    if ( currentLine.length() < 1 )
+    {
+        currentPartStartDistance = pointIt.key();
+    }
     currentLine.append( context.worldTransform().map( QPointF( pointIt.key(), pointIt.value() ) ) );
     prevDistance = pointIt.key();
   }
