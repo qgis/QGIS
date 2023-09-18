@@ -1032,7 +1032,7 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
     else if ( qgsgeometry_cast<QgsPoint *>( splitGeom.get() ) )
     {
       splitPoints = std::make_unique< QgsMultiPoint >();
-      if ( QgsPoint *point = qgsgeometry_cast<QgsPoint *>( splitGeom.get() ) )
+      if ( qgsgeometry_cast<QgsPoint *>( splitGeom.get() ) )
       {
         splitPoints->addGeometry( qgsgeometry_cast<QgsPoint *>( splitGeom.release() ) );
       }
