@@ -252,7 +252,7 @@ QString QgsDataSourceUri::removePassword( const QString &aUri )
   {
     // postgresql://user:pwd@...
     regexp.setPattern( QStringLiteral( "/.*@" ) );
-    const QString matched = regexp.match(aUri).capturedView().toString();
+    const QString matched = regexp.match( aUri ).capturedView().toString();
 
     QString anonymised = matched.split( QStringLiteral( ":" ) )[0];
     anonymised.append( QStringLiteral( "@" ) );
