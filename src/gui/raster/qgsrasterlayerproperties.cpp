@@ -753,6 +753,8 @@ void QgsRasterLayerProperties::sync()
   if ( !provider )
     return;
 
+  mRasterTransparencyWidget->syncToLayer();
+
   if ( provider->dataType( 1 ) == Qgis::DataType::ARGB32
        || provider->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
   {

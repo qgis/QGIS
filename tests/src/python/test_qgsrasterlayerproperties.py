@@ -25,6 +25,7 @@ from qgis.gui import (
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
+import tempfile
 
 from utilities import unitTestDataPath
 
@@ -97,6 +98,29 @@ class TestQgsRasterLayerProperties(QgisTestCase):
         dialog.accept()
         self.assertEqual(MyFactory.COUNT, 1, msg='Custom QgsMapLayerConfigWidget::createWidget(...) not called')
         self.assertEqual(MyWidget.COUNT, 1, msg='Custom QgsMapLayerConfigWidget::apply() not called')
+
+    def test_transparency_load(self):
+        """Test issue GH #54496"""
+
+        myCanvas = QgsMapCanvas()
+        myPath = pathlib.Path(unitTestDataPath('raster')) / 'band1_float32_noct_epsg4326.tif'
+        myRasterLayer = QgsRasterLayer(myPath.as_posix(), myPath.name)
+
+        assert myRasterLayer.isValid(), f'Raster not loaded {myPath}'
+
+        dialog = QgsRasterLayerProperties(myRasterLayer, myCanvas)
+
+        with tempfile.NamedTemporaryFile(suffix='.qml') as qml_file_object:
+            renderer = myRasterLayer.renderer()
+            renderer.setOpacity(0.5)
+            self.assertTrue(myRasterLayer.saveNamedStyle(qml_file_object.name)[1])
+            myRasterLayer.loadNamedStyle(qml_file_object.name)
+            dialog.syncToLayer()
+            renderer = myRasterLayer.renderer()
+            self.assertEqual(renderer.opacity(), 0.5)
+            dialog.apply()
+            renderer = myRasterLayer.renderer()
+            self.assertEqual(renderer.opacity(), 0.5)
 
 
 if __name__ == '__main__':
