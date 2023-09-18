@@ -682,7 +682,18 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   GDALDriverH hDriver = GDALGetDriverByName( format().toUtf8().constData() );
   if ( hDriver )
   {
-    mAddToCanvas->setEnabled( GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr ) != nullptr );
+    const bool canReopen = GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr ) != nullptr;
+    if ( mAddToCanvas->isEnabled() && !canReopen )
+    {
+      mAddToCanvasStateOnOpenCompatibleDriver = mAddToCanvas->isChecked();
+      mAddToCanvas->setChecked( false );
+      mAddToCanvas->setEnabled( false );
+    }
+    else if ( !mAddToCanvas->isEnabled() && canReopen )
+    {
+      mAddToCanvas->setChecked( mAddToCanvasStateOnOpenCompatibleDriver );
+      mAddToCanvas->setEnabled( true );
+    }
   }
 }
 
@@ -1065,12 +1076,14 @@ QStringList QgsVectorLayerSaveAsDialog::attributesExportNames() const
 
 bool QgsVectorLayerSaveAsDialog::addToCanvas() const
 {
-  return mAddToCanvas->isChecked() && mAddToCanvas->isEnabled();
+  return mAddToCanvas->isChecked();
 }
 
 void QgsVectorLayerSaveAsDialog::setAddToCanvas( bool enabled )
 {
-  mAddToCanvas->setChecked( enabled );
+  mAddToCanvasStateOnOpenCompatibleDriver = enabled;
+  if ( mAddToCanvas->isEnabled() )
+    mAddToCanvas->setChecked( enabled );
 }
 
 Qgis::FeatureSymbologyExport QgsVectorLayerSaveAsDialog::symbologyExport() const

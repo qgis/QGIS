@@ -287,6 +287,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
     Options mOptions = Option::AllOptions;
     QString mDefaultOutputLayerNameFromInputLayerName;
+    bool mAddToCanvasStateOnOpenCompatibleDriver = true;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorLayerSaveAsDialog::Options )
