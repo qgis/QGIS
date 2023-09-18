@@ -816,6 +816,7 @@ void QgisApp::annotationItemTypeAdded( int id )
   action->setCheckable( true );
   action->setData( id );
   action->setIcon( QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->creationIcon() );
+  action->setObjectName( QStringLiteral( "mAction%1" ).arg( name.replace( " ", "" ) ) );
 
   mMapToolGroup->addAction( action );
 
