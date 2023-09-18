@@ -7,16 +7,21 @@
 # CMake module to search for SpatiaLite library
 #
 # If it's found it sets SPATIALITE_FOUND to TRUE
-# and following variables are set:
-#    SPATIALITE_INCLUDE_DIR
-#    SPATIALITE_LIBRARY
+# and adds the following target
+#
+#   spatialite::spatialite
 
-find_package(PkgConfig REQUIRED)
-pkg_search_module(PC_SPATIALITE IMPORTED_TARGET spatialite)
+find_package(PkgConfig)
+if(PkgConfig_FOUND)
+  pkg_search_module(PC_SPATIALITE IMPORTED_TARGET spatialite)
+endif()
 
 if(PC_SPATIALITE_FOUND)
   add_library(spatialite::spatialite ALIAS PkgConfig::PC_SPATIALITE)
+  set(SPATIALITE_FOUND TRUE)
 else()
+  # Fallback for systems without PkgConfig, e.g. OSGeo4W
+
   # This macro checks if the symbol exists
   include(CheckLibraryExists)
   
