@@ -331,7 +331,7 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
     }
     if ( currentLine.length() < 1 )
     {
-        currentPartStartDistance = pointIt.key();
+      currentPartStartDistance = pointIt.key();
     }
     currentLine.append( context.worldTransform().map( QPointF( pointIt.key(), pointIt.value() ) ) );
     prevDistance = pointIt.key();
