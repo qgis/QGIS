@@ -1,8 +1,6 @@
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/providers/grass
 )
-include_directories(BEFORE SYSTEM
-)
 include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
