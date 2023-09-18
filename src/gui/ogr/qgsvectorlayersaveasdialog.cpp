@@ -236,7 +236,6 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
   for ( it = options.constBegin(); it != options.constEnd(); ++it )
   {
     QgsVectorFileWriter::Option *option = it.value();
-    QLabel *label = new QLabel( it.key() );
     QWidget *control = nullptr;
     switch ( option->type )
     {
@@ -295,6 +294,8 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
 
     if ( control )
     {
+      QLabel *label = new QLabel( it.key() );
+
       // Pack the tooltip in some html element, so it gets linebreaks.
       label->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( option->docString.toHtmlEscaped() ) );
       control->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( option->docString.toHtmlEscaped() ) );
