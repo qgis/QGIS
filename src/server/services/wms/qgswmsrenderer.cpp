@@ -454,15 +454,19 @@ namespace QgsWms
           }
 
           filterString.append( " )" );
+
         }
 
         atlas->setFilterFeatures( true );
+
         QString errorString;
         atlas->setFilterExpression( filterString, errorString );
+
         if ( !errorString.isEmpty() )
         {
           throw QgsException( QStringLiteral( "An error occurred during the Atlas print: %1" ).arg( errorString ) );
         }
+
       }
     }
 
@@ -667,7 +671,7 @@ namespace QgsWms
     return tempOutputFile.readAll();
   }
 
-  bool QgsRenderer::configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint )
+  bool QgsRenderer::configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, QgsLayoutAtlas *atlas )
   {
 
     c->renderContext().setSelectionColor( mapSettings.selectionColor() );
@@ -689,7 +693,7 @@ namespace QgsWms
         cMapParams.mLayers = mWmsParameters.composerMapParameters( -1 ).mLayers;
       }
 
-      if ( !atlasPrint || !map->atlasDriven() ) //No need to extent, scal, rotation set with atlas feature
+      if ( !atlas || !map->atlasDriven() ) //No need to extent, scale, rotation set with atlas feature
       {
         //map extent is mandatory
         if ( !cMapParams.mHasExtent )
@@ -727,6 +731,7 @@ namespace QgsWms
 
       if ( !map->keepLayerSet() )
       {
+
         QList<QgsMapLayer *> layerSet;
 
         for ( const auto &layer : std::as_const( cMapParams.mLayers ) )
@@ -774,6 +779,15 @@ namespace QgsWms
         QMap<QString, QString> layersStyle;
         if ( map->followVisibilityPreset() )
         {
+
+          if ( atlas )
+          {
+            // Possibly triggers a refresh of the DD visibility preset (theme) name
+            // see issue GH #54475
+            atlas->updateFeatures();
+            atlas->first();
+          }
+
           const QString presetName = map->followVisibilityPresetName();
           if ( layerSet.isEmpty() )
           {
