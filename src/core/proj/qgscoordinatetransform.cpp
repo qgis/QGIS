@@ -666,7 +666,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   // check if result bbox is geographic and is crossing 180/-180 line: ie. min X is before the 180° and max X is after the -180°
   bool doHandle180Crossover = false;
-  if ( nXPoints > 0 && x.size() >= nXPoints )
+  if ( nXPoints > 0 )
   {
     const double xMin = std::fmod( x[0], 180.0 );
     const double xMax = std::fmod( x[nXPoints - 1], 180.0 );
