@@ -2,7 +2,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/providers/grass
 )
 include_directories(BEFORE SYSTEM
-  ${GDAL_INCLUDE_DIR}
 )
 include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
@@ -30,7 +29,6 @@ macro (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
     ${QT_VERSION_BASE}::Test
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
-    ${GDAL_LIBRARY}
     qgis_core
     qgis_test
     qgisgrass${grass_build_version}

@@ -183,13 +183,12 @@ if (PDAL_2_5_OR_HIGHER)
 
   target_include_directories(pdal_wrench PRIVATE
     ${PDAL_INCLUDE_DIR}
-    ${GDAL_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/external
   )
 
   target_link_libraries (pdal_wrench PRIVATE
     ${PDAL_LIBRARIES}
-    ${GDAL_LIBRARY}
+    GDAL::GDAL
     Threads::Threads
   )
 

@@ -116,7 +116,6 @@ target_link_libraries(qgis_server
   ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
-  ${GDAL_LIBRARY}
   ${QCA_LIBRARY}
 )
 
