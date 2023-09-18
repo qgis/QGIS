@@ -20,6 +20,7 @@
 #ifndef QGSWMSRENDERER_H
 #define QGSWMSRENDERER_H
 
+#include "qgslayoutatlas.h"
 #include "qgsserversettings.h"
 #include "qgswmsparameters.h"
 #include "qgswmsrendercontext.h"
@@ -324,10 +325,10 @@ namespace QgsWms
        * Configures the print layout for the GetPrint request
        *\param c the print layout
        *\param mapSettings the map settings
-       *\param atlasPrint true if atlas is used for printing
+       *\param atlas atlas used for printing, maybe NULL
        *\returns true in case of success
        */
-      bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint = false );
+      bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, QgsLayoutAtlas *atlas );
 
       void removeTemporaryLayers();
 
