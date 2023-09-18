@@ -9,7 +9,6 @@ include_directories(
 )
 include_directories (SYSTEM
   ${GDAL_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
