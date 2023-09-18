@@ -21,7 +21,6 @@ include_directories(
 )
 
 include_directories(SYSTEM
-  ${GDAL_INCLUDE_DIR}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}

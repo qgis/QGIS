@@ -67,7 +67,6 @@ include_directories(
 )
 
 include_directories (SYSTEM
-  ${GDAL_INCLUDE_DIR}
   ${ODBC_INCLUDE_DIRS}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
