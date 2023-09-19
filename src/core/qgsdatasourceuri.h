@@ -188,7 +188,7 @@ class CORE_EXPORT QgsDataSourceUri
     /**
      * Removes the password element from a URI.
      */
-    static QString removePassword( const QString &aUri );
+    static QString removePassword( const QString &aUri, bool hide = false );
 
     /**
      * Returns any associated authentication configuration ID stored in the URI.
