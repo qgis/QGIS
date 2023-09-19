@@ -34,7 +34,6 @@ target_link_libraries(qgis_3d_sandbox
   ${QT_VERSION_BASE}::Svg
   ${QT_VERSION_BASE}::Network
   ${QT_VERSION_BASE}::Test
-  ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
   ${QWT_LIBRARY}
   qgis_core

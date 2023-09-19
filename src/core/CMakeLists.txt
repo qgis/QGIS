@@ -2247,7 +2247,6 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${${QT_VERSION_BASE}Network_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Sql_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Concurrent_INCLUDE_DIRS}
-  ${PROJ_INCLUDE_DIR}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
   ${GEOS_INCLUDE_DIR}
@@ -2415,7 +2414,6 @@ target_link_libraries(qgis_core
   ${OPTIONAL_QTWEBKIT}
   ${QCA_LIBRARY}
   ${QTKEYCHAIN_LIBRARY}
-  ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
   GDAL::GDAL
   ${SPATIALINDEX_LIBRARY}
@@ -2425,6 +2423,7 @@ target_link_libraries(qgis_core
   ${Protobuf_LITE_LIBRARY}
   ${ZLIB_LIBRARIES}
   ${EXIV2_LIBRARY}
+  PROJ::proj
 )
 
 if (WITH_DRACO)

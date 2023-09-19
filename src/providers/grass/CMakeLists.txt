@@ -8,7 +8,6 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 include_directories (SYSTEM
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
