@@ -207,7 +207,7 @@ QgsRecentProjectItemsModel *QgsWelcomePage::recentProjectsModel()
 
 void QgsWelcomePage::recentProjectItemActivated( const QModelIndex &index )
 {
-  QgisApp::instance()->openProject( mRecentProjectsModel->data( index, Qt::ToolTipRole ).toString() );
+  QgisApp::instance()->openProject( mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PathRole ).toString() );
 }
 
 void QgsWelcomePage::templateProjectItemActivated( const QModelIndex &index )
