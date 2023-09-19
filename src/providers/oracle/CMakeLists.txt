@@ -39,7 +39,6 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/ui
 )
 include_directories(SYSTEM
-  ${GEOS_INCLUDE_DIR}
   ${QT_QTSQL_INCLUDEDIR}
 )
 

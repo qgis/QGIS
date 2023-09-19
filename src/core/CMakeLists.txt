@@ -2249,7 +2249,6 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${${QT_VERSION_BASE}Concurrent_INCLUDE_DIRS}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
-  ${GEOS_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
@@ -2414,7 +2413,7 @@ target_link_libraries(qgis_core
   ${OPTIONAL_QTWEBKIT}
   ${QCA_LIBRARY}
   ${QTKEYCHAIN_LIBRARY}
-  ${GEOS_LIBRARY}
+  GEOS::geos_c
   GDAL::GDAL
   ${SPATIALINDEX_LIBRARY}
   EXPAT::EXPAT
