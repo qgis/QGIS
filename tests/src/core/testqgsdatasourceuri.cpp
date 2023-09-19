@@ -527,8 +527,14 @@ void TestQgsDataSourceUri::checkParameterKeys()
 
 void TestQgsDataSourceUri::checkRemovePassword()
 {
-  const QString uri = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ) );
-  QCOMPARE( uri, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
+  const QString uri0 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ) );
+  QCOMPARE( uri0, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
+
+  const QString uri1 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ), true );
+  QCOMPARE( uri1, QStringLiteral( "postgresql://user:XXXXXXXX@127.0.0.1:5432?dbname=test" ) );
+
+  const QString uri2 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
+  QCOMPARE( uri2, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
 }
 
 QGSTEST_MAIN( TestQgsDataSourceUri )
