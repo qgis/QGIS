@@ -290,7 +290,8 @@ QString QgsDataSourceUri::removePassword( const QString &aUri, bool hide )
 
     QString anonymised = matched;
     const QStringList items = matched.split( QStringLiteral( ":" ) );
-    if (items.size() > 1) {
+    if ( items.size() > 1 )
+    {
       anonymised = matched.split( QStringLiteral( ":" ) )[0];
       if ( hide )
       {

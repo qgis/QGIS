@@ -167,7 +167,7 @@ Sets the ``username`` for the URI.
 Sets the ``password`` for the URI.
 %End
 
-    static QString removePassword( const QString &aUri );
+    static QString removePassword( const QString &aUri, bool hide = false );
 %Docstring
 Removes the password element from a URI.
 %End
