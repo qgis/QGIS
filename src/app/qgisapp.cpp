@@ -4474,7 +4474,7 @@ void QgisApp::setupConnections()
       QString name = QgsProject::instance()->title().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->title();
       if ( QgsProject::instance()->projectStorage() )
       {
-        name = QgsDataSourceUri::removePassword( name );
+        name = QgsDataSourceUri::removePassword( name, true );
       }
 
       mProjectLoadingProxyTask = new QgsProxyProgressTask( tr( "Loading “%1”" ).arg( name ) );
