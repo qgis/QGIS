@@ -286,13 +286,13 @@ void TestQgsFieldExpressionWidget::testIsValid()
 
 void TestQgsFieldExpressionWidget::testFilters()
 {
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=intfld:int&field=stringfld:string&field=string2fld:string&field=longfld:long&field=doublefld:double&field=datefld:date&field=timefld:time&field=datetimefld:datetime" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=intfld:int&field=stringfld:string&field=string2fld:string&field=longfld:long&field=doublefld:double&field=datefld:date&field=timefld:time&field=datetimefld:datetime&field=binaryfld:binary&field=booleanfld:boolean" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( layer );
 
   std::unique_ptr< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
   widget->setLayer( layer );
 
-  QCOMPARE( widget->mCombo->count(), 8 );
+  QCOMPARE( widget->mCombo->count(), 10 );
   QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "intfld" ) );
   QCOMPARE( widget->mCombo->itemText( 1 ), QStringLiteral( "stringfld" ) );
   QCOMPARE( widget->mCombo->itemText( 2 ), QStringLiteral( "string2fld" ) );
@@ -301,6 +301,8 @@ void TestQgsFieldExpressionWidget::testFilters()
   QCOMPARE( widget->mCombo->itemText( 5 ), QStringLiteral( "datefld" ) );
   QCOMPARE( widget->mCombo->itemText( 6 ), QStringLiteral( "timefld" ) );
   QCOMPARE( widget->mCombo->itemText( 7 ), QStringLiteral( "datetimefld" ) );
+  QCOMPARE( widget->mCombo->itemText( 8 ), QStringLiteral( "binaryfld" ) );
+  QCOMPARE( widget->mCombo->itemText( 9 ), QStringLiteral( "booleanfld" ) );
 
   widget->setFilters( QgsFieldProxyModel::String );
   QCOMPARE( widget->mCombo->count(), 2 );
@@ -337,6 +339,14 @@ void TestQgsFieldExpressionWidget::testFilters()
   widget->setFilters( QgsFieldProxyModel::DateTime );
   QCOMPARE( widget->mCombo->count(), 1 );
   QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "datetimefld" ) );
+
+  widget->setFilters( QgsFieldProxyModel::Binary );
+  QCOMPARE( widget->mCombo->count(), 1 );
+  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "binaryfld" ) );
+
+  widget->setFilters( QgsFieldProxyModel::Boolean );
+  QCOMPARE( widget->mCombo->count(), 1 );
+  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "booleanfld" ) );
 
   QgsProject::instance()->removeMapLayer( layer );
 }

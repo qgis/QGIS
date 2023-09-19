@@ -6861,6 +6861,21 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
   QCOMPARE( fromCode->defaultToAllFields(), def->defaultToAllFields() );
 
+  def->setDataType( QgsProcessingParameterField::Binary );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterField('non_optional', '', type=QgsProcessingParameterField.Binary, parentLayerParameterName='my_parent', allowMultiple=False, defaultValue=None)" ) );
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterField * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
+  QCOMPARE( fromCode->dataType(), def->dataType() );
+  QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->defaultToAllFields(), def->defaultToAllFields() );
+
   // multiple
   def.reset( new QgsProcessingParameterField( "non_optional", QString(), QVariant(), QString(), QgsProcessingParameterField::Any, true, false ) );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );

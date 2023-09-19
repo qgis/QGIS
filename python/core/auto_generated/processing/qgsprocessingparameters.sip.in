@@ -3172,7 +3172,9 @@ A vector layer or feature source field parameter for processing algorithms.
       Any,
       Numeric,
       String,
-      DateTime
+      DateTime,
+      Binary,
+      Boolean,
     };
 
     QgsProcessingParameterField( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),

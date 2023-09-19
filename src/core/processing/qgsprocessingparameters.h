@@ -3065,7 +3065,9 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
       Any = -1, //!< Accepts any field
       Numeric = 0, //!< Accepts numeric fields
       String = 1, //!< Accepts string fields
-      DateTime = 2 //!< Accepts datetime fields
+      DateTime = 2, //!< Accepts datetime fields
+      Binary = 3, //!< Accepts binary fields, since QGIS 3.34
+      Boolean = 4, //!< Accepts boolean fields, since QGIS 3.34
     };
 
     /**
