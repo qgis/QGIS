@@ -32,10 +32,6 @@ add_library (plugin_topology MODULE ${topol_SRCS} ${topol_RCCS} ${topol_UIS_H})
 # require c++17
 target_compile_features(plugin_topology PRIVATE cxx_std_17)
 
-include_directories(SYSTEM
-  ${GEOS_INCLUDE_DIR}
-)
-
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/plugins
 
