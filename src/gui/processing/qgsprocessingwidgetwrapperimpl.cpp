@@ -4412,6 +4412,8 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
   mDataTypeComboBox->addItem( tr( "Number" ), QgsProcessingParameterField::Numeric );
   mDataTypeComboBox->addItem( tr( "String" ), QgsProcessingParameterField::String );
   mDataTypeComboBox->addItem( tr( "Date/time" ), QgsProcessingParameterField::DateTime );
+  mDataTypeComboBox->addItem( tr( "Binary" ), QgsProcessingParameterField::Binary );
+  mDataTypeComboBox->addItem( tr( "Boolean" ), QgsProcessingParameterField::Boolean );
   if ( const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( definition ) )
     mDataTypeComboBox->setCurrentIndex( mDataTypeComboBox->findData( fieldParam->dataType() ) );
 
@@ -4498,6 +4500,10 @@ QWidget *QgsProcessingFieldWidgetWrapper::createWidget()
           mComboBox->setFilters( QgsFieldProxyModel::String );
         else if ( fieldParam->dataType() == QgsProcessingParameterField::DateTime )
           mComboBox->setFilters( QgsFieldProxyModel::Date | QgsFieldProxyModel::Time | QgsFieldProxyModel::DateTime );
+        else if ( fieldParam->dataType() == QgsProcessingParameterField::Binary )
+          mComboBox->setFilters( QgsFieldProxyModel::Binary );
+        else if ( fieldParam->dataType() == QgsProcessingParameterField::Boolean )
+          mComboBox->setFilters( QgsFieldProxyModel::Boolean );
 
         mComboBox->setToolTip( parameterDefinition()->toolTip() );
         connect( mComboBox, &QgsFieldComboBox::fieldChanged, this, [ = ]( const QString & )
@@ -4794,6 +4800,16 @@ QgsFields QgsProcessingFieldWidgetWrapper::filterFields( const QgsFields &fields
 
       case QgsProcessingParameterField::DateTime:
         if ( f.type() == QVariant::Date || f.type() == QVariant::Time || f.type() == QVariant::DateTime )
+          res.append( f );
+        break;
+
+      case QgsProcessingParameterField::Binary:
+        if ( f.type() == QVariant::ByteArray )
+          res.append( f );
+        break;
+
+      case QgsProcessingParameterField::Boolean:
+        if ( f.type() == QVariant::Bool )
           res.append( f );
         break;
     }

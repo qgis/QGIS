@@ -35,6 +35,8 @@ The :py:class:`QgsFieldProxyModel` class provides an easy to use model to displa
       Time,
       HideReadOnly,
       DateTime,
+      Binary,
+      Boolean,
       AllTypes,
     };
     typedef QFlags<QgsFieldProxyModel::Filter> Filters;

@@ -3326,6 +3326,8 @@ void TestProcessingGui::testFieldWrapper()
     f.append( QgsField( QStringLiteral( "date" ), QVariant::Date ) );
     f.append( QgsField( QStringLiteral( "time" ), QVariant::Time ) );
     f.append( QgsField( QStringLiteral( "datetime" ), QVariant::DateTime ) );
+    f.append( QgsField( QStringLiteral( "binary" ), QVariant::ByteArray ) );
+    f.append( QgsField( QStringLiteral( "boolean" ), QVariant::Bool ) );
 
     QgsFields f2 = wrapper3.filterFields( f );
     QCOMPARE( f2, f );
@@ -3426,18 +3428,55 @@ void TestProcessingGui::testFieldWrapper()
     QCOMPARE( f2.at( 1 ).name(), QStringLiteral( "time" ) );
     QCOMPARE( f2.at( 2 ).name(), QStringLiteral( "datetime" ) );
 
-
-    // default to all fields
-    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true );
-    param.setDefaultToAllFields( true );
+    // binary fields
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Binary, false, true );
     QgsProcessingFieldWidgetWrapper wrapper7( &param, type );
     w = wrapper7.createWrappedWidget( context );
-    wrapper7.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
       case QgsProcessingGui::Standard:
       case QgsProcessingGui::Batch:
-        QCOMPARE( wrapper7.widgetValue().toList(), QVariantList() << QStringLiteral( "aaa" ) << QStringLiteral( "bbb" ) );
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper7.wrappedWidget() )->filters(), QgsFieldProxyModel::Binary );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    f2 = wrapper7.filterFields( f );
+    QCOMPARE( f2.size(), 1 );
+    QCOMPARE( f2.at( 0 ).name(), QStringLiteral( "binary" ) );
+    delete w;
+
+    // boolean fields
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Boolean, false, true );
+    QgsProcessingFieldWidgetWrapper wrapper8( &param, type );
+    w = wrapper8.createWrappedWidget( context );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper8.wrappedWidget() )->filters(), QgsFieldProxyModel::Boolean );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    f2 = wrapper8.filterFields( f );
+    QCOMPARE( f2.size(), 1 );
+    QCOMPARE( f2.at( 0 ).name(), QStringLiteral( "boolean" ) );
+    delete w;
+
+    // default to all fields
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true );
+    param.setDefaultToAllFields( true );
+    QgsProcessingFieldWidgetWrapper wrapper9( &param, type );
+    w = wrapper9.createWrappedWidget( context );
+    wrapper9.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper9.widgetValue().toList(), QVariantList() << QStringLiteral( "aaa" ) << QStringLiteral( "bbb" ) );
         break;
 
       case QgsProcessingGui::Modeler:
@@ -3449,17 +3488,17 @@ void TestProcessingGui::testFieldWrapper()
     QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "LineString?field=bbb:string" ), QStringLiteral( "y" ), QStringLiteral( "memory" ) );
     p.addMapLayer( vl2 );
 
-    QgsProcessingFieldWidgetWrapper wrapper8( &param, type );
-    wrapper8.registerProcessingContextGenerator( &generator );
-    w = wrapper8.createWrappedWidget( context );
+    QgsProcessingFieldWidgetWrapper wrapper10( &param, type );
+    wrapper10.registerProcessingContextGenerator( &generator );
+    w = wrapper10.createWrappedWidget( context );
     layerWrapper.setWidgetValue( QVariantList() << vl->id() << vl2->id(), context );
-    wrapper8.setParentLayerWrapperValue( &layerWrapper );
+    wrapper10.setParentLayerWrapperValue( &layerWrapper );
 
     switch ( type )
     {
       case QgsProcessingGui::Standard:
       case QgsProcessingGui::Batch:
-        QCOMPARE( wrapper8.widgetValue().toList(), QVariantList() << QStringLiteral( "bbb" ) );
+        QCOMPARE( wrapper10.widgetValue().toList(), QVariantList() << QStringLiteral( "bbb" ) );
         break;
 
       case QgsProcessingGui::Modeler:

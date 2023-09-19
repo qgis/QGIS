@@ -46,8 +46,10 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
       Date = 16, //!< Date or datetime fields
       Time = 32, //!< Time fields
       HideReadOnly = 64,  //!< Hide read-only fields
-      DateTime = 128, //!< Datetime fieldss
-      AllTypes = Numeric | Date | String | Time, //!< All field types
+      DateTime = 128, //!< Datetime fields
+      Binary = 256, //!< Binary fields, since QGIS 3.34
+      Boolean = 512, //!< Boolean fields, since QGIS 3.34
+      AllTypes = Numeric | Date | String | Time | DateTime | Binary | Boolean, //!< All field types
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )
