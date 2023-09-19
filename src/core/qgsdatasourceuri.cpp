@@ -254,8 +254,12 @@ QString QgsDataSourceUri::removePassword( const QString &aUri )
     regexp.setPattern( QStringLiteral( "/.*@" ) );
     const QString matched = regexp.match( aUri ).captured();
 
-    QString anonymised = matched.split( QStringLiteral( ":" ) )[0];
-    anonymised.append( QStringLiteral( "@" ) );
+    QString anonymised = matched;
+    const QStringList items = matched.split( QStringLiteral( ":" ) );
+    if (items.size() > 1) {
+      anonymised = matched.split( QStringLiteral( ":" ) )[0];
+      anonymised.append( QStringLiteral( "@" ) );
+    }
 
     safeName.replace( regexp, anonymised );
   }
