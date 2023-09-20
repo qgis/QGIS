@@ -1911,7 +1911,11 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
   double myMinVal, myMaxVal;
   int myBinCount;
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(4,0,0)
+  uint64_t *myHistogramArray = nullptr;
+#else
   GUIntBig *myHistogramArray = nullptr;
+#endif
   CPLErr myError = GDALGetDefaultHistogramEx( myGdalBand, &myMinVal, &myMaxVal,
                    &myBinCount, &myHistogramArray, false,
                    nullptr, nullptr );
@@ -2067,7 +2071,11 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   }
 #endif
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(4,0,0)
+  uint64_t *myHistogramArray = new uint64_t[myHistogram.binCount];
+#else
   GUIntBig *myHistogramArray = new GUIntBig[myHistogram.binCount];
+#endif
   CPLErr myError = GDALGetRasterHistogramEx( myGdalBand, myMinVal, myMaxVal,
                    myHistogram.binCount, myHistogramArray,
                    includeOutOfRange, bApproxOK, progressCallback,

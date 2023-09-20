@@ -79,7 +79,7 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
       // PK
       if ( ! mPrimaryKeyColumnName.isEmpty() )
       {
-        row.push_back( OGR_F_GetFID( fet.get() ) );
+        row.push_back( static_cast<qint64>( OGR_F_GetFID( fet.get() ) ) );
       }
 
       if ( ! mFields.isEmpty() )

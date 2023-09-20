@@ -2970,7 +2970,11 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           if ( mSupportedListSubTypes.contains( QVariant::LongLong ) )
           {
             const int count = list.count();
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(4,0,0)
+            int64_t *lst = new int64_t[count];
+#else
             long long *lst = new long long[count];
+#endif
             if ( count > 0 )
             {
               int pos = 0;

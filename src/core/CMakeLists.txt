@@ -2237,6 +2237,10 @@ if (MSVC)
   target_compile_definitions(qgis_core PUBLIC _HAS_AUTO_PTR_ETC=1)
 endif()
 
+# Add compatibility for deprecated integer data types no longer available
+# by default in GDAL 4.0
+target_compile_definitions(qgis_core PUBLIC GDAL_USE_OLD_INT_TYPES=1)
+
 target_include_directories(qgis_core SYSTEM PUBLIC
   ${${QT_VERSION_BASE}Core_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Gui_INCLUDE_DIRS}

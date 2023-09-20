@@ -1631,7 +1631,11 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
         {
           const QVariantList list = attrVal.toList();
           const int count = list.count();
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(4,0,0)
+          int64_t *lst = new int64_t[count];
+#else
           long long *lst = new long long[count];
+#endif
           if ( count > 0 )
           {
             int pos = 0;
@@ -2427,7 +2431,11 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
           {
             const QVariantList list = it2->toList();
             const int count = list.count();
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(4,0,0)
+            int64_t *lst = new int64_t[count];
+#else
             long long *lst = new long long[count];
+#endif
             if ( count > 0 )
             {
               int pos = 0;

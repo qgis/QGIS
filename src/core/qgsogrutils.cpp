@@ -152,7 +152,7 @@ QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType typ
       return value->Integer;
 
     case OFTInteger64:
-      return value->Integer64;
+      return static_cast<qint64>( value->Integer64 );
 
     case OFTReal:
       return value->Real;
@@ -200,7 +200,7 @@ QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType typ
       QVariantList res;
       res.reserve( value->Integer64List.nCount );
       for ( int i = 0; i < value->Integer64List.nCount; ++i )
-        res << value->Integer64List.paList[ i ];
+        res << static_cast<qint64>( value->Integer64List.paList[ i ] );
       return res;
     }
 
@@ -568,7 +568,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         value = QVariant( bool( OGR_F_GetFieldAsInteger( ogrFet, attIndex ) ) );
         break;
       case QVariant::LongLong:
-        value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attIndex ) );
+        value = QVariant( static_cast<qint64>( OGR_F_GetFieldAsInteger64( ogrFet, attIndex ) ) );
         break;
       case QVariant::Double:
         value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attIndex ) );
@@ -694,13 +694,13 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
           {
             QVariantList list;
             int count = 0;
-            const long long *lst = OGR_F_GetFieldAsInteger64List( ogrFet, attIndex, &count );
+            const auto *lst = OGR_F_GetFieldAsInteger64List( ogrFet, attIndex, &count );
             if ( count > 0 )
             {
               list.reserve( count );
               for ( int i = 0; i < count; i++ )
               {
-                list << lst[i];
+                list << static_cast<qint64>( lst[i] );
               }
             }
             value = list;
