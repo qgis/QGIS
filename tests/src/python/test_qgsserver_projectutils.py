@@ -15,9 +15,9 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import os
 
 from qgis.core import QgsProject
-from qgis.server import QgsServerProjectUtils
+from qgis.server import QgsServerProjectUtils, QgsServerSettings, QgsBufferServerRequest
 from qgis.testing import unittest, start_app
-
+from unittest import mock
 from utilities import unitTestDataPath
 
 start_app()
@@ -81,6 +81,16 @@ class TestQgsServerProjectUtils(unittest.TestCase):
         expected.append('landsat20170313142548073')
 
         self.assertEqual(expected, result)
+
+    @mock.patch.dict(os.environ, {"QGIS_SERVER_WFS_SERVICE_URL": "http://localhost:8080"})
+    def test_map_uppercase_replace(self):
+        """Test issue GH #54533 MAP replacementin URL arg"""
+
+        settings = QgsServerSettings()
+        self.assertIsNotNone(settings.serviceUrl('WFS'))
+        request = QgsBufferServerRequest('http://localhost:8080/?MaP=/mAp.qgs&SERVICE=WMS&REQUEST=GetMap')
+        service_url = QgsServerProjectUtils.serviceUrl('WFS', request, settings)
+        self.assertEqual(service_url, 'http://localhost:8080/?MAP=/mAp.qgs')
 
 
 if __name__ == '__main__':
