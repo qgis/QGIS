@@ -31,6 +31,10 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   cboCullingMode->addItem( tr( "Front" ), Qgs3DTypes::Front );
   cboCullingMode->addItem( tr( "Back" ), Qgs3DTypes::Back );
 
+  cboCullingMode->setItemData( 0, tr( "Both sides of the shapes are visible" ), Qt::ToolTipRole );
+  cboCullingMode->setItemData( 1, tr( "Only the back of the shapes is visible" ), Qt::ToolTipRole );
+  cboCullingMode->setItemData( 2, tr( "Only the front of the shapes is visible" ), Qt::ToolTipRole );
+
   QgsPolygon3DSymbol defaultSymbol;
   setSymbol( &defaultSymbol, nullptr );
 
