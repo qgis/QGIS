@@ -16,7 +16,9 @@ import os
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QCoreApplication, QDateTime, Qt
+from osgeo import gdal
+
+from qgis.PyQt.QtCore import QCoreApplication, QDateTime, Qt, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsApplication,
@@ -1643,6 +1645,50 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
 
         values = [f['cnt'] for f in vl.getFeatures()]
         self.assertEqual(values, [200])
+
+    # GDAL 3.5.0 is required since it is the first version that tags "complex"
+    # fields as OFSTJSON
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 5, 0), "GDAL 3.5.0 required")
+    def testFeatureComplexAttribute(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testFeatureComplexAttribute'
+        create_landing_page_api_collection(endpoint)
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"center": {
+                    "type": "Point",
+                    "coordinates": [
+                        6.50,
+                        51.80
+                    ]
+                }},
+                    "geometry": {"type": "Point", "coordinates": [66.33, -70.332]}}
+            ]
+        }
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        # real page
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.fields().field("center").type(), QVariant.Map)
+
+        # First time we getFeatures(): comes directly from the GeoJSON layer
+        values = [f["center"] for f in vl.getFeatures()]
+        self.assertEqual(values, [{'coordinates': [6.5, 51.8], 'type': 'Point'}])
+
+        # Now, that comes from the Spatialite cache, through
+        # serialization and deserialization
+        values = [f["center"] for f in vl.getFeatures()]
+        self.assertEqual(values, [{'coordinates': [6.5, 51.8], 'type': 'Point'}])
 
 
 if __name__ == '__main__':

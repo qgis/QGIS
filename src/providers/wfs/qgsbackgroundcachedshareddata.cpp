@@ -24,6 +24,7 @@
 
 #include <QCryptographicHash>
 #include <QDir>
+#include <QJsonDocument>
 #include <QMutex>
 
 #include <set>
@@ -628,6 +629,16 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
         const QVariant::Type fieldType = dataProviderFields.at( idx ).type();
         if ( v.type() == QVariant::DateTime && !QgsVariantUtils::isNull( v ) )
           cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
+        else if ( v.type() == QVariant::Map  && !QgsVariantUtils::isNull( v ) )
+        {
+          QString stringValue = QString::fromUtf8( QJsonDocument::fromVariant( v ).toJson().constData() );
+          if ( stringValue.isEmpty() )
+          {
+            //store as string, because it's no valid QJson value
+            stringValue = v.toString();
+          }
+          cachedFeature.setAttribute( idx, stringValue );
+        }
         else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
           cachedFeature.setAttribute( idx, v );
         else
