@@ -2067,27 +2067,27 @@ QString QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( const QStr
     case Qgis::CadConstraintType::Distance:
     {
       // Remove distance unit suffix
-      const QString distanceUnit { QgsUnitTypes::toAbbreviatedString( QgsProject::instance()->distanceUnits() ).prepend( ' ' ) };
+      const QString distanceUnit { QgsUnitTypes::toAbbreviatedString( QgsProject::instance()->distanceUnits() ) };
       if ( value.endsWith( distanceUnit ) )
       {
-        value.remove( distanceUnit );
+        value.chop( distanceUnit.length() );
       }
       break;
     }
     case Qgis::CadConstraintType::Angle:
     {
       // Remove angle suffix
-      const QString angleUnit { tr( "°" ).prepend( ' ' ) };
+      const QString angleUnit { tr( "°" ) };
       if ( value.endsWith( angleUnit ) )
       {
-        value.remove( angleUnit );
+        value.chop( angleUnit.length() );
       }
       break;
     }
     default:
       break;
   }
-  return value;
+  return value.trimmed();
 }
 
 QgsPoint QgsAdvancedDigitizingDockWidget::currentPointV2( bool *exist ) const
