@@ -4926,13 +4926,13 @@ static bool ParseDracoExtension(Primitive *primitive, Model *model,
       }
 
       if (supposedComponentType > model->accessors[primitive->indices].componentType) {
-        model->accessors[primitive->indices].componentType = supposedComponentType;
         if (warn) {
           (*warn) +=
               "GLTF component type " + std::to_string(model->accessors[primitive->indices].componentType) +
               " is not sufficient for number of stored points,"
               " treating as " + std::to_string(supposedComponentType) + "\n";
         }
+        model->accessors[primitive->indices].componentType = supposedComponentType;
       }
     }
 
@@ -6767,10 +6767,6 @@ bool TinyGLTF::LoadBinaryFromMemory(Model *model, std::string *err,
 
     bin_size_ = size_t(chunk1_length);
   }
-
-  // Extract JSON string.
-  std::string jsonString(reinterpret_cast<const char *>(&bytes[20]),
-                         chunk0_length);
 
   is_binary_ = true;
 
