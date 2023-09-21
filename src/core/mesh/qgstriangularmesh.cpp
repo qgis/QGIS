@@ -20,7 +20,6 @@
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgstriangularmesh.h"
-#include "qgsrendercontext.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
@@ -534,12 +533,10 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
   int path = 0;
   while ( true )
   {
-    QgsTriangularMesh *simplifiedMesh = new QgsTriangularMesh( *this );
     size_t maxNumberOfIndexes = baseIndexCount / pow( reductionFactor, path + 1 );
 
     if ( indexes.size() <= int( maxNumberOfIndexes ) )
     {
-      delete simplifiedMesh;
       break;
     }
 
@@ -552,7 +549,7 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
                     vertices.data(),
                     verticesCount,
                     sizeof( float ) * 3,
-                    maxNumberOfIndexes );
+                    maxNumberOfIndexes, 1e-1f );
 
 
     returnIndexes.resize( size );
@@ -560,7 +557,6 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
     if ( size == 0 || int( size ) >= indexes.size() )
     {
       QgsDebugError( QStringLiteral( "Mesh simplification failed after %1 path" ).arg( path + 1 ) );
-      delete simplifiedMesh;
       break;
     }
 
@@ -576,11 +572,12 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
       newMesh.faces[i ] = f;
     }
 
+    QgsTriangularMesh *simplifiedMesh = new QgsTriangularMesh( *this );
+
     simplifiedMesh->mTriangularMesh = newMesh;
     simplifiedMesh->mSpatialFaceIndex = QgsMeshSpatialIndex( simplifiedMesh->mTriangularMesh );
     simplifiedMesh->finalizeTriangles();
     simplifiedMeshes.push_back( simplifiedMesh );
-
     QgsDebugMsgLevel( QStringLiteral( "Simplified mesh created with %1 triangles" ).arg( newMesh.faceCount() ), 2 );
 
     simplifiedMesh->mTrianglesToNativeFaces = QVector<int>( simplifiedMesh->triangles().count(), 0 );
