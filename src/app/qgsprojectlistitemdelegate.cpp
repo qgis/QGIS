@@ -80,7 +80,7 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( QString::number( titleSize ),
                index.data( QgsProjectListItemDelegate::TitleRole ).toString(),
                index.data( QgsProjectListItemDelegate::PinRole ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
-               mShowPath ? index.data( QgsProjectListItemDelegate::NativePathRole ).toString() : QString(),
+               mShowPath ? index.data( QgsProjectListItemDelegate::AnonymisedNativePathRole ).toString() : QString(),
                index.data( QgsProjectListItemDelegate::CrsRole ).toString() ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 

@@ -27,6 +27,8 @@
 #include <QUrl>
 #include <QUrlQuery>
 
+#define HIDING_TOKEN QStringLiteral( "XXXXXXXX" )
+
 QgsDataSourceUri::QgsDataSourceUri()
 {
   // do nothing
@@ -222,7 +224,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
   }
 }
 
-QString QgsDataSourceUri::removePassword( const QString &aUri )
+QString QgsDataSourceUri::removePassword( const QString &aUri, bool hide )
 {
   QRegularExpression regexp;
   regexp.setPatternOptions( QRegularExpression::InvertedGreedinessOption );
@@ -230,23 +232,75 @@ QString QgsDataSourceUri::removePassword( const QString &aUri )
   if ( aUri.contains( QLatin1String( " password=" ) ) )
   {
     regexp.setPattern( QStringLiteral( " password=.* " ) );
-    safeName.replace( regexp, QStringLiteral( " " ) );
+
+    if ( hide )
+    {
+      safeName.replace( regexp, QStringLiteral( " password=%1 " ).arg( HIDING_TOKEN ) );
+    }
+    else
+    {
+      safeName.replace( regexp, QStringLiteral( " " ) );
+    }
   }
   else if ( aUri.contains( QLatin1String( ",password=" ) ) )
   {
     regexp.setPattern( QStringLiteral( ",password=.*," ) );
-    safeName.replace( regexp, QStringLiteral( "," ) );
+
+    if ( hide )
+    {
+      safeName.replace( regexp, QStringLiteral( ",password=%1," ).arg( HIDING_TOKEN ) );
+    }
+    else
+    {
+      safeName.replace( regexp, QStringLiteral( "," ) );
+    }
   }
   else if ( aUri.contains( QLatin1String( "IDB:" ) ) )
   {
     regexp.setPattern( QStringLiteral( " pass=.* " ) );
-    safeName.replace( regexp, QStringLiteral( " " ) );
+
+    if ( hide )
+    {
+      safeName.replace( regexp, QStringLiteral( " pass=%1 " ).arg( HIDING_TOKEN ) );
+    }
+    else
+    {
+      safeName.replace( regexp, QStringLiteral( " " ) );
+    }
   }
   else if ( ( aUri.contains( QLatin1String( "OCI:" ) ) )
             || ( aUri.contains( QLatin1String( "ODBC:" ) ) ) )
   {
     regexp.setPattern( QStringLiteral( "/.*@" ) );
-    safeName.replace( regexp, QStringLiteral( "/@" ) );
+
+    if ( hide )
+    {
+      safeName.replace( regexp, QStringLiteral( "/%1@" ).arg( HIDING_TOKEN ) );
+    }
+    else
+    {
+      safeName.replace( regexp, QStringLiteral( "/@" ) );
+    }
+  }
+  else if ( aUri.contains( QLatin1String( "postgresql:" ) ) )
+  {
+    // postgresql://user:pwd@...
+    regexp.setPattern( QStringLiteral( "/.*@" ) );
+    const QString matched = regexp.match( aUri ).captured();
+
+    QString anonymised = matched;
+    const QStringList items = matched.split( QStringLiteral( ":" ) );
+    if ( items.size() > 1 )
+    {
+      anonymised = matched.split( QStringLiteral( ":" ) )[0];
+      if ( hide )
+      {
+        anonymised.append( QStringLiteral( ":%1" ).arg( HIDING_TOKEN ) );
+      }
+      anonymised.append( QStringLiteral( "@" ) );
+    }
+
+    safeName.replace( regexp, anonymised );
   }
   else if ( aUri.contains( QLatin1String( "SDE:" ) ) )
   {

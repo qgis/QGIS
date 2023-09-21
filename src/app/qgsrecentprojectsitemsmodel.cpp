@@ -21,6 +21,7 @@
 #include "qgsprojectstorageregistry.h"
 #include "qgsprojectlistitemdelegate.h"
 #include "qgsprojectstorage.h"
+#include "qgsdatasourceuri.h"
 
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
@@ -88,7 +89,16 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
     }
 
     case Qt::ToolTipRole:
-      return mRecentProjects.at( index.row() ).path;
+    case QgsProjectListItemDelegate::AnonymisedNativePathRole:
+    {
+      QString name = mRecentProjects.at( index.row() ).path;
+      QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( name );
+      if ( storage )
+      {
+        name = QgsDataSourceUri::removePassword( name, true );
+      }
+      return name;
+    }
 
     default:
       return QVariant();

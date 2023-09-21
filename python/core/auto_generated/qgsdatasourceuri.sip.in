@@ -167,9 +167,14 @@ Sets the ``username`` for the URI.
 Sets the ``password`` for the URI.
 %End
 
-    static QString removePassword( const QString &aUri );
+    static QString removePassword( const QString &aUri, bool hide = false );
 %Docstring
 Removes the password element from a URI.
+
+:param aUri: A data source uri
+:param hide: ``True`` to replace the password value with 'xxxxxxxx', ``False`` to remove password (key and value) (since QGIS 3.34)
+
+:return: The data source uri without the password
 %End
 
     QString authConfigId() const;
