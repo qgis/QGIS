@@ -1389,7 +1389,8 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     }
   }
   OGRLayerH subsetLayer = nullptr;
-  if ( cleanedSubsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) )
+  if ( cleanedSubsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) ||
+       cleanedSubsetString.startsWith( QLatin1String( "WITH " ), Qt::CaseInsensitive ) )
   {
     QByteArray sql = encoding->fromUnicode( cleanedSubsetString );
 

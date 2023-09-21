@@ -563,6 +563,11 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         vl.setSubsetString("SELECT fid, foo FROM test WHERE foo = 'baz'")
         got = [feat for feat in vl.getFeatures()]
         self.assertEqual(len(got), 1)
+
+        # test SQLite CTE Common Table Expression (issue https://github.com/qgis/QGIS/issues/54677)
+        vl.setSubsetString("WITH test_cte AS (SELECT fid, foo FROM test WHERE foo = 'baz') SELECT * FROM test_cte")
+        self.assertEqual(len(got), 1)
+
         del vl
 
         testdata_path = unitTestDataPath('provider')
