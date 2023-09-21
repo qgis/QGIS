@@ -20,34 +20,29 @@
 #include "qgshanautils.h"
 #include "qgslogger.h"
 
-QgsHanaConnectionPoolGroup::QgsHanaConnectionPoolGroup( const QString &name )
-  : QgsConnectionPoolGroup<QgsHanaConnection*>( name )
-{
-  initTimer( this );
-}
 
 QBasicMutex QgsHanaConnectionPool::sMutex;
 std::shared_ptr<QgsHanaConnectionPool> QgsHanaConnectionPool::sInstance;
 
-QgsHanaConnection *QgsHanaConnectionPool::getConnection( const QString &connInfo )
+QgsHanaConnection *QgsHanaConnectionPool::getConnection( const QString &connectionInfo )
 {
-  std::shared_ptr<QgsConnectionPool> instance;
+  std::shared_ptr<QgsHanaConnectionPool> instance;
   {
     QMutexLocker lock( &sMutex );
     if ( !sInstance )
       sInstance = std::shared_ptr<QgsHanaConnectionPool>( new QgsHanaConnectionPool() );
     instance = sInstance;
   }
-  return instance->acquireConnection( connInfo );
+  return instance->acquireConnection( connectionInfo );
 }
 
-void QgsHanaConnectionPool::returnConnection( QgsHanaConnection *conn )
+void QgsHanaConnectionPool::returnConnection( QgsHanaConnection *connection )
 {
   QMutexLocker lock( &sMutex );
   if ( sInstance )
-    sInstance->releaseConnection( conn );
+    sInstance->releaseConnection( connection );
   else
-    qgsConnectionPool_ConnectionDestroy( conn );
+    delete connection;
 }
 
 void QgsHanaConnectionPool::cleanupInstance()

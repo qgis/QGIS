@@ -25,10 +25,12 @@
 #include <QMutex>
 
 #include "qgis.h"
+#include "qgssqlconnectionconfigurator.h"
 #include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
 #include "qgsconfig.h"
 #include "qgsvectordataprovider.h"
+#include "qgspostgresresult.h"
 
 extern "C"
 {
@@ -151,66 +153,6 @@ struct QgsPostgresLayerProperty
 #endif
 };
 
-class QgsPostgresResult
-{
-  public:
-    explicit QgsPostgresResult( PGresult *result = nullptr ) : mRes( result ) {}
-    ~QgsPostgresResult();
-
-    QgsPostgresResult &operator=( PGresult *result );
-    QgsPostgresResult &operator=( const QgsPostgresResult &src );
-
-    QgsPostgresResult( const QgsPostgresResult &rh ) = delete;
-
-    ExecStatusType PQresultStatus();
-    QString PQresultErrorMessage();
-
-    int PQntuples();
-    QString PQgetvalue( int row, int col );
-    bool PQgetisnull( int row, int col );
-
-    int PQnfields();
-    QString PQfname( int col );
-    Oid PQftable( int col );
-    Oid PQftype( int col );
-    int PQfmod( int col );
-    int PQftablecol( int col );
-    Oid PQoidValue();
-
-    PGresult *result() const { return mRes; }
-
-  private:
-    PGresult *mRes = nullptr;
-
-};
-
-struct PGException
-{
-    explicit PGException( QgsPostgresResult &r )
-      : mWhat( r.PQresultErrorMessage() )
-    {}
-
-    QString errorMessage() const
-    {
-      return mWhat;
-    }
-
-  private:
-    QString mWhat;
-};
-
-//! Wraps acquireConnection() and releaseConnection() from a QgsPostgresConnPool.
-// This can be used for creating std::shared_ptr<QgsPoolPostgresConn>.
-class QgsPoolPostgresConn
-{
-    class QgsPostgresConn *mPgConn;
-  public:
-    QgsPoolPostgresConn( const QString &connInfo );
-    ~QgsPoolPostgresConn();
-
-    class QgsPostgresConn *get() const { return mPgConn; }
-};
-
 #include "qgsconfig.h"
 constexpr int sPostgresConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
 #define QGS_QUERY_LOG_ORIGIN_PG_CON QString(QString( __FILE__ ).mid( sPostgresConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")")
@@ -218,7 +160,7 @@ constexpr int sPostgresConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CM
 #define LoggedPQexec(_class, query) PQexec( query, true, true, _class, QGS_QUERY_LOG_ORIGIN_PG_CON )
 #define LoggedPQexecNoLogError(_class, query ) PQexec( query, false, true, _class, QGS_QUERY_LOG_ORIGIN_PG_CON )
 
-class QgsPostgresConn : public QObject
+class QgsPostgresConn : public QObject, public QgsSqlConnectionConfigurator<QgsPostgreSqlConnectionSettings>
 {
     Q_OBJECT
 
@@ -458,19 +400,6 @@ class QgsPostgresConn : public QObject
 
     static Qgis::WkbType wkbTypeFromGeomType( Qgis::GeometryType geomType );
     static Qgis::WkbType wkbTypeFromOgcWkbType( unsigned int ogcWkbType );
-
-    static QStringList connectionList();
-    static QString selectedConnection();
-    static void setSelectedConnection( const QString &connName );
-    static QgsDataSourceUri connUri( const QString &connName );
-    static bool publicSchemaOnly( const QString &connName );
-    static bool geometryColumnsOnly( const QString &connName );
-    static bool dontResolveType( const QString &connName );
-    static bool useEstimatedMetadata( const QString &connName );
-    static bool allowGeometrylessTables( const QString &connName );
-    static bool allowProjectsInDatabase( const QString &connName );
-    static void deleteConnection( const QString &connName );
-    static bool allowMetadataInDatabase( const QString &connName );
 
     //! A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback}
     void lock() { mLock.lock(); }

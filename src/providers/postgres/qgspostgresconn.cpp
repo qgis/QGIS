@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgspostgresconn.h"
+#include "qgspostgresresult.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
 #include "qgscredentials.h"
+#include "qgssqlconnectionconfigurator.h"
 #include "qgsvectordataprovider.h"
 #include "qgswkbtypes.h"
 #include "qgssettings.h"
@@ -46,113 +48,6 @@
 #include <netinet/in.h>
 #endif
 
-const int PG_DEFAULT_TIMEOUT = 30;
-
-QgsPostgresResult::~QgsPostgresResult()
-{
-  if ( mRes )
-    ::PQclear( mRes );
-  mRes = nullptr;
-}
-
-QgsPostgresResult &QgsPostgresResult::operator=( PGresult *result )
-{
-  if ( mRes )
-    ::PQclear( mRes );
-  mRes = result;
-  return *this;
-}
-
-QgsPostgresResult &QgsPostgresResult::operator=( const QgsPostgresResult &src )
-{
-  if ( mRes )
-    ::PQclear( mRes );
-  mRes = src.result();
-  return *this;
-}
-
-ExecStatusType QgsPostgresResult::PQresultStatus()
-{
-  return mRes ? ::PQresultStatus( mRes ) : PGRES_FATAL_ERROR;
-}
-
-QString QgsPostgresResult::PQresultErrorMessage()
-{
-  return mRes ? QString::fromUtf8( ::PQresultErrorMessage( mRes ) ) : QObject::tr( "no result buffer" );
-}
-
-int QgsPostgresResult::PQntuples()
-{
-  Q_ASSERT( mRes );
-  return ::PQntuples( mRes );
-}
-
-QString QgsPostgresResult::PQgetvalue( int row, int col )
-{
-  Q_ASSERT( mRes );
-  return PQgetisnull( row, col )
-         ? QString()
-         : QString::fromUtf8( ::PQgetvalue( mRes, row, col ) );
-}
-
-bool QgsPostgresResult::PQgetisnull( int row, int col )
-{
-  Q_ASSERT( mRes );
-  return ::PQgetisnull( mRes, row, col );
-}
-
-int QgsPostgresResult::PQnfields()
-{
-  Q_ASSERT( mRes );
-  return ::PQnfields( mRes );
-}
-
-QString QgsPostgresResult::PQfname( int col )
-{
-  Q_ASSERT( mRes );
-  return QString::fromUtf8( ::PQfname( mRes, col ) );
-}
-
-Oid QgsPostgresResult::PQftable( int col )
-{
-  Q_ASSERT( mRes );
-  return ::PQftable( mRes, col );
-}
-
-int QgsPostgresResult::PQftablecol( int col )
-{
-  Q_ASSERT( mRes );
-  return ::PQftablecol( mRes, col );
-}
-
-Oid QgsPostgresResult::PQftype( int col )
-{
-  Q_ASSERT( mRes );
-  return ::PQftype( mRes, col );
-}
-
-int QgsPostgresResult::PQfmod( int col )
-{
-  Q_ASSERT( mRes );
-  return ::PQfmod( mRes, col );
-}
-
-Oid QgsPostgresResult::PQoidValue()
-{
-  Q_ASSERT( mRes );
-  return ::PQoidValue( mRes );
-}
-
-QgsPoolPostgresConn::QgsPoolPostgresConn( const QString &connInfo )
-  : mPgConn( QgsPostgresConnPool::instance()->acquireConnection( connInfo ) )
-{
-}
-
-QgsPoolPostgresConn::~QgsPoolPostgresConn()
-{
-  if ( mPgConn )
-    QgsPostgresConnPool::instance()->releaseConnection( mPgConn );
-}
 
 
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;
@@ -331,8 +226,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     if ( !connectString.contains( QStringLiteral( "connect_timeout=" ) ) )
     {
       // add default timeout
-      QgsSettings settings;
-      int timeout = settings.value( QStringLiteral( "PostgreSQL/default_timeout" ), PG_DEFAULT_TIMEOUT, QgsSettings::Providers ).toInt();
+      int timeout = QgsPostgreSqlConnectionSettings::sDefaultTimeout->defaultValue();
       connectString += QStringLiteral( " connect_timeout=%1" ).arg( timeout );
     }
 
@@ -2696,153 +2590,6 @@ Qgis::WkbType QgsPostgresConn::wkbTypeFromGeomType( Qgis::GeometryType geomType 
   return Qgis::WkbType::Unknown;
 }
 
-QStringList QgsPostgresConn::connectionList()
-{
-  QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "PostgreSQL/connections" ) );
-  return settings.childGroups();
-}
-
-QString QgsPostgresConn::selectedConnection()
-{
-  QgsSettings settings;
-  return settings.value( QStringLiteral( "PostgreSQL/connections/selected" ) ).toString();
-}
-
-void QgsPostgresConn::setSelectedConnection( const QString &name )
-{
-  QgsSettings settings;
-  return settings.setValue( QStringLiteral( "PostgreSQL/connections/selected" ), name );
-}
-
-QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
-{
-  QgsDebugMsgLevel( "theConnName = " + connName, 2 );
-
-  QgsSettings settings;
-
-  QString key = "/PostgreSQL/connections/" + connName;
-
-  QString service = settings.value( key + "/service" ).toString();
-  QString host = settings.value( key + "/host" ).toString();
-  QString port = settings.value( key + "/port" ).toString();
-  if ( port.length() == 0 )
-  {
-    port = QStringLiteral( "5432" );
-  }
-  QString database = settings.value( key + "/database" ).toString();
-
-  bool estimatedMetadata = useEstimatedMetadata( connName );
-  QgsDataSourceUri::SslMode sslmode = settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer );
-
-  QString username;
-  QString password;
-  if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
-  {
-    username = settings.value( key + "/username" ).toString();
-  }
-
-  if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
-  {
-    password = settings.value( key + "/password" ).toString();
-  }
-
-  // Old save setting
-  if ( settings.contains( key + "/save" ) )
-  {
-    username = settings.value( key + "/username" ).toString();
-
-    if ( settings.value( key + "/save" ).toString() == QLatin1String( "true" ) )
-    {
-      password = settings.value( key + "/password" ).toString();
-    }
-  }
-
-  QString authcfg = settings.value( key + "/authcfg" ).toString();
-
-  QgsDataSourceUri uri;
-  if ( !service.isEmpty() )
-  {
-    uri.setConnection( service, database, username, password, sslmode, authcfg );
-  }
-  else
-  {
-    uri.setConnection( host, port, database, username, password, sslmode, authcfg );
-  }
-  uri.setUseEstimatedMetadata( estimatedMetadata );
-
-  return uri;
-}
-
-bool QgsPostgresConn::publicSchemaOnly( const QString &connName )
-{
-  QgsSettings settings;
-  return settings.value( "/PostgreSQL/connections/" + connName + "/publicOnly", false ).toBool();
-}
-
-bool QgsPostgresConn::geometryColumnsOnly( const QString &connName )
-{
-  QgsSettings settings;
-
-  return settings.value( "/PostgreSQL/connections/" + connName + "/geometryColumnsOnly", false ).toBool();
-}
-
-bool QgsPostgresConn::dontResolveType( const QString &connName )
-{
-  QgsSettings settings;
-
-  return settings.value( "/PostgreSQL/connections/" + connName + "/dontResolveType", false ).toBool();
-}
-
-bool QgsPostgresConn::useEstimatedMetadata( const QString &connName )
-{
-  QgsSettings settings;
-
-  return settings.value( "/PostgreSQL/connections/" + connName + "/estimatedMetadata", false ).toBool();
-}
-
-
-bool QgsPostgresConn::allowGeometrylessTables( const QString &connName )
-{
-  QgsSettings settings;
-  return settings.value( "/PostgreSQL/connections/" + connName + "/allowGeometrylessTables", false ).toBool();
-}
-
-bool QgsPostgresConn::allowProjectsInDatabase( const QString &connName )
-{
-  QgsSettings settings;
-  return settings.value( "/PostgreSQL/connections/" + connName + "/projectsInDatabase", false ).toBool();
-}
-
-void QgsPostgresConn::deleteConnection( const QString &connName )
-{
-  QgsSettings settings;
-
-  QString key = "/PostgreSQL/connections/" + connName;
-  settings.remove( key + "/service" );
-  settings.remove( key + "/host" );
-  settings.remove( key + "/port" );
-  settings.remove( key + "/database" );
-  settings.remove( key + "/username" );
-  settings.remove( key + "/password" );
-  settings.remove( key + "/sslmode" );
-  settings.remove( key + "/publicOnly" );
-  settings.remove( key + "/geometryColumnsOnly" );
-  settings.remove( key + "/allowGeometrylessTables" );
-  settings.remove( key + "/estimatedMetadata" );
-  settings.remove( key + "/saveUsername" );
-  settings.remove( key + "/savePassword" );
-  settings.remove( key + "/save" );
-  settings.remove( key + "/authcfg" );
-  settings.remove( key + "/keys" );
-  settings.remove( key );
-}
-
-bool QgsPostgresConn::allowMetadataInDatabase( const QString &connName )
-{
-  QgsSettings settings;
-  return settings.value( "/PostgreSQL/connections/" + connName + "/metadataInDatabase", false ).toBool();
-}
 
 bool QgsPostgresConn::cancel()
 {

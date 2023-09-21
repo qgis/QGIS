@@ -21,6 +21,7 @@ email                : sherman at mrcc.com
 #include "qgslogger.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsapplication.h"
+#include "qgspostgresconn.h"
 #include "qgspostgresprovider.h"
 #include "qgspgnewconnection.h"
 #include "qgsmanageconnectionsdialog.h"

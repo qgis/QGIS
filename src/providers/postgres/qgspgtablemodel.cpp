@@ -163,7 +163,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
     pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
 
-    QStringList defPk( QgsSettings().value( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, layerProperty.schemaName, layerProperty.tableName ), QStringList() ).toStringList() );
+    QStringList defPk( QgsPostgreSqlConnectionSettings::sKeys->valueWithDefaultOverride( QStringList(), { mConnectionName, layerProperty.schemaName, layerProperty.tableName } ) );
 
     if ( !layerProperty.pkCols.isEmpty() && defPk.isEmpty() )
     {
@@ -509,7 +509,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     cols << QgsPostgresConn::quotedIdentifier( col );
   }
 
-  QgsSettings().setValue( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, schemaName, tableName ), QVariant( qgis::setToList( s1 ) ) );
+  QgsPostgreSqlConnectionSettings::sKeys->setValue( qgis::setToList( s1 ), { mConnectionName, schemaName, tableName } );
 
   uri.setDataSource( schemaName, tableName, geomColumnName, sql, cols.join( ',' ) );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );

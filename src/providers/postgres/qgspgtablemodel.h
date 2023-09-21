@@ -67,13 +67,13 @@ class QgsPgTableModel : public QgsAbstractDbTableModel
 
     QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata );
 
-    void setConnectionName( const QString &connName ) { mConnName = connName;  }
+    void setConnectionName( const QString &connName ) { mConnectionName = connName;  }
 
   private:
     //! Number of tables in the model
     int mTableCount = 0;
     //! connection name
-    QString mConnName;
+    QString mConnectionName;
     QStringList mColumns;
 
 };

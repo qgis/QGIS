@@ -18,69 +18,26 @@
 
 #include "qgsconnectionpool.h"
 #include "qgspostgresconn.h"
+#include "qgssqlconnpool.h"
 
 
-inline QString qgsConnectionPool_ConnectionToName( QgsPostgresConn *c )
-{
-  return c->connInfo();
-}
-
-inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsPostgresConn *&c )
-{
-  c = QgsPostgresConn::connectDb( connInfo, true, false );
-}
-
-inline void qgsConnectionPool_ConnectionDestroy( QgsPostgresConn *c )
-{
-  c->unref(); // will delete itself
-}
-
-inline void qgsConnectionPool_InvalidateConnection( QgsPostgresConn *c )
-{
-  Q_UNUSED( c )
-}
-
-inline bool qgsConnectionPool_ConnectionIsValid( QgsPostgresConn *c )
-{
-  Q_UNUSED( c )
-  return true;
-}
-
-
-class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsPostgresConn *>
+// QObject currently does not support templating (due to the macros Q_OBJECT, slots),
+// hence this class explicitly specializes QgsSqlConnectionPoolGroup.
+class QgsPostgresConnPoolGroup : public QObject, public QgsSqlConnectionPoolGroup<QgsPostgresConn>
 {
     Q_OBJECT
-
   public:
-    explicit QgsPostgresConnPoolGroup( const QString &name ) : QgsConnectionPoolGroup<QgsPostgresConn*>( name ) { initTimer( this ); }
-
+    explicit QgsPostgresConnPoolGroup( const QString &name ) : QgsSqlConnectionPoolGroup<QgsPostgresConn>( name, this ) {}
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
-    void startExpirationTimer() { expirationTimer->start(); }
-    void stopExpirationTimer() { expirationTimer->stop(); }
-
+    void startExpirationTimer() { mExpirationTimer->start(); }
+    void stopExpirationTimer() { mExpirationTimer->stop(); }
   protected:
     Q_DISABLE_COPY( QgsPostgresConnPoolGroup )
-
 };
+
 
 //! PostgreSQL connection pool - singleton
-class QgsPostgresConnPool : public QgsConnectionPool<QgsPostgresConn *, QgsPostgresConnPoolGroup>
-{
-  public:
-    static QgsPostgresConnPool *instance();
-
-    static void cleanupInstance();
-
-  protected:
-    Q_DISABLE_COPY( QgsPostgresConnPool )
-
-  private:
-    QgsPostgresConnPool();
-    ~QgsPostgresConnPool() override;
-
-    static QgsPostgresConnPool *sInstance;
-};
-
+using QgsPostgresConnPool = QgsSqlConnectionPool<QgsPostgresConn, QgsPostgresConnPoolGroup>;
 
 #endif // QGSPOSTGRESCONNPOOL_H

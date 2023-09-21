@@ -82,13 +82,12 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
     QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const override;
 
-    static const QStringList CONFIGURATION_PARAMETERS;
-    static const QString SETTINGS_BASE_KEY;
+    static const QList<std::pair<QString, const QgsSettingsEntryBool *>> CONFIGURATION_BOOL_PARAMETERS;
 
   private:
 
-    QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPoolPostgresConn > pgconn = nullptr ) const;
-    QgsAbstractDatabaseProviderConnection::QueryResult execSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPoolPostgresConn > pgconn = nullptr ) const;
+    QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPostgresConn > pgconn = nullptr ) const;
+    QgsAbstractDatabaseProviderConnection::QueryResult execSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPostgresConn > pgconn = nullptr ) const;
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;

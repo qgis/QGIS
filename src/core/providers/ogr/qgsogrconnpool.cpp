@@ -18,6 +18,43 @@
 
 #include "qgslogger.h"
 
+
+void QgsOgrConnPoolGroup::connectionCreate( const QString &connectionInfo, QgsOgrConn *&connection )
+{
+  connection = new QgsOgrConn;
+
+  const QVariantMap parts = QgsOgrProviderMetadata().decodeUri( connectionInfo );
+  const QString fullPath = parts.value( QStringLiteral( "vsiPrefix" ) ).toString()
+                           + parts.value( QStringLiteral( "path" ) ).toString()
+                           + parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
+  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+  char **papszOpenOptions = nullptr;
+  for ( const QString &option : std::as_const( openOptions ) )
+  {
+    papszOpenOptions = CSLAddString( papszOpenOptions,
+                                     option.toUtf8().constData() );
+  }
+  connection->ds = QgsOgrProviderUtils::GDALOpenWrapper( fullPath.toUtf8().constData(), false, papszOpenOptions, nullptr );
+  CSLDestroy( papszOpenOptions );
+  connection->path = connectionInfo;
+  connection->valid = true;
+}
+
+void QgsOgrConnPoolGroup::connectionDestroy( QgsOgrConn *connection )
+{
+  destroyOgrConn( connection );
+}
+
+void QgsOgrConnPoolGroup::invalidateConnection( QgsOgrConn *connection )
+{
+  connection->valid = false;
+}
+
+bool QgsOgrConnPoolGroup::connectionIsValid( QgsOgrConn *connection )
+{
+  return connection->valid;
+}
+
 QgsOgrConnPool *QgsOgrConnPool::sInstance = nullptr;
 
 // static public
@@ -43,5 +80,11 @@ QgsOgrConnPool::~QgsOgrConnPool()
 {
   QgsDebugCall;
 }
+
+QString QgsOgrConnPool::connectionToName( QgsOgrConn *connection )
+{
+  return connection->path;
+}
+
 
 ///@endcond

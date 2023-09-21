@@ -20,34 +20,9 @@
 #include "qgshanaconnection.h"
 #include "qgsconnectionpool.h"
 
+#include <QtCore/qalgorithms.h>
 #include <memory>
 #include <QMutex>
-
-inline QString qgsConnectionPool_ConnectionToName( QgsHanaConnection *c )
-{
-  return c->connInfo();
-}
-
-inline void qgsConnectionPool_ConnectionCreate( const QgsDataSourceUri &uri, QgsHanaConnection *&c )
-{
-  c = QgsHanaConnection::createConnection( uri );
-}
-
-inline void qgsConnectionPool_ConnectionDestroy( QgsHanaConnection *c )
-{
-  delete c;
-}
-
-inline void qgsConnectionPool_InvalidateConnection( QgsHanaConnection *c )
-{
-  Q_UNUSED( c );
-}
-
-inline bool qgsConnectionPool_ConnectionIsValid( QgsHanaConnection *c )
-{
-  Q_UNUSED( c );
-  return true;
-}
 
 class QgsHanaConnectionPoolGroup
   : public QObject, public QgsConnectionPoolGroup<QgsHanaConnection *>
@@ -55,12 +30,42 @@ class QgsHanaConnectionPoolGroup
     Q_OBJECT
 
   public:
-    explicit QgsHanaConnectionPoolGroup( const QString &name );
+    explicit QgsHanaConnectionPoolGroup( const QString &name )
+      : QgsConnectionPoolGroup<QgsHanaConnection*>( name )
+    {
+      initTimer( this );
+    }
+
+    ~QgsHanaConnectionPoolGroup() override
+    {
+      for ( const Item &item : std::as_const( mConnections ) )
+      {
+        delete item.connection;
+      }
+    }
+
+    void connectionCreate( const QString &uri, QgsHanaConnection *&c ) override
+    {
+      c = QgsHanaConnection::createConnection( uri );
+    }
+
+    void connectionDestroy( QgsHanaConnection *connection ) override
+    {
+      delete connection;
+    }
+
+    void invalidateConnection( QgsHanaConnection * ) override {}
+
+
+    bool connectionIsValid( QgsHanaConnection * ) override
+    {
+      return true;
+    }
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
-    void startExpirationTimer() { expirationTimer->start(); }
-    void stopExpirationTimer() { expirationTimer->stop(); }
+    void startExpirationTimer() { mExpirationTimer->start(); }
+    void stopExpirationTimer() { mExpirationTimer->stop(); }
 
   protected:
     Q_DISABLE_COPY( QgsHanaConnectionPoolGroup )
@@ -70,9 +75,14 @@ class QgsHanaConnectionPool
   : public QgsConnectionPool<QgsHanaConnection *, QgsHanaConnectionPoolGroup>
 {
   public:
-    static QgsHanaConnection *getConnection( const QString &connInfo );
-    static void returnConnection( QgsHanaConnection *conn );
+    static QgsHanaConnection *getConnection( const QString &connectionInfo );
+    static void returnConnection( QgsHanaConnection *connection );
     static void cleanupInstance();
+
+    QString connectionToName( QgsHanaConnection *connection ) override
+    {
+      return connection->connInfo();
+    }
 
   protected:
     Q_DISABLE_COPY( QgsHanaConnectionPool )
