@@ -90,7 +90,9 @@ void QgsCameraController::setCameraMovementSpeed( double movementSpeed )
   if ( movementSpeed == mCameraMovementSpeed )
     return;
 
-  mCameraMovementSpeed = movementSpeed;
+  // If the speed becomes 0, navigation does not work anymore
+  // If the speed becomes too important, only one walk can move the view far from the scene.
+  mCameraMovementSpeed = std::clamp( movementSpeed, 0.05, 150.0 );
   emit cameraMovementSpeedChanged( mCameraMovementSpeed );
 }
 
