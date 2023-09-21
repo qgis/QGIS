@@ -100,6 +100,7 @@ void QgsMapToolAddRing::polygonCaptured( const QgsCurvePolygon *polygon )
     case Qgis::GeometryOperationResult::LayerNotEditable:
     case Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound:
     case Qgis::GeometryOperationResult::AddPartNotMultiGeometry:
+    case Qgis::GeometryOperationResult::GeometryTypeHasChanged:
       errorMessage = tr( "an unknown error occurred (%1)" ).arg( qgsEnumValueToKey( addRingReturnCode ) );
       break;
   }

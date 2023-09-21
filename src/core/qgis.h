@@ -1483,6 +1483,7 @@ class CORE_EXPORT Qgis
       AddRingNotInExistingFeature, //!< The input ring doesn't have any existing ring to fit into
       // Split features
       SplitCannotSplitPoint, //!< Cannot split points
+      GeometryTypeHasChanged, //!< Operation has changed geometry type
     };
     Q_ENUM( GeometryOperationResult )
 

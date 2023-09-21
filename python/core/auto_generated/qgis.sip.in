@@ -891,6 +891,7 @@ The development version
       AddRingNotInExistingFeature,
       // Split features
       SplitCannotSplitPoint,
+      GeometryTypeHasChanged,
     };
 
     enum class GeometryValidityFlag

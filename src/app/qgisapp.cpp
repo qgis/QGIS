@@ -10221,7 +10221,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
         }
         if ( avoidIntersectionsLayers.size() > 0 )
         {
-          geom.avoidIntersections( avoidIntersectionsLayers );
+          geom.avoidIntersectionsV2( avoidIntersectionsLayers );
         }
 
         // count collapsed geometries
