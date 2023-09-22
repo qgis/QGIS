@@ -59,6 +59,15 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
     if ( mProject )
     {
       newFeature = QgsVectorLayerUtils::duplicateFeature( layer, f, mProject, duplicateFeatureContext );
+      if ( !newFeature.isValid() )
+      {
+        couldNotWriteCount++;
+        QgsDebugError( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( f.id() ) );
+      }
+      else
+      {
+        fidList.insert( newFeature.id() );
+      }
 
       const auto duplicateFeatureContextLayers = duplicateFeatureContext.layers();
       for ( QgsVectorLayer *chl : duplicateFeatureContextLayers )
@@ -81,13 +90,16 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
         couldNotWriteCount++;
         QgsDebugError( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( f.id() ) );
       }
+      else
+      {
+        fidList.insert( newFeature.id() );
+      }
     }
 
     // translate
     if ( newFeature.hasGeometry() )
     {
       QgsGeometry geom = newFeature.geometry();
-      fidList.insert( newFeature.id() );
       if ( topologicalEditing )
       {
         if ( topologicalLayer )
