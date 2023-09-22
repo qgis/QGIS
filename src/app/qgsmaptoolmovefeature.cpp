@@ -244,7 +244,6 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       case CopyMove:
         QgsFeatureRequest request;
-        qDebug() << mMovedFeatures;
         request.setFilterFids( mMovedFeatures );
         QString errorMsg;
         QString childrenInfoMsg;
