@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>359</width>
-        <height>2256</height>
+        <y>-2299</y>
+        <width>517</width>
+        <height>3237</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -1000,6 +1000,9 @@
             <property name="suffix">
              <string> mm</string>
             </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
+            </property>
            </widget>
           </item>
           <item row="15" column="1">
@@ -1009,6 +1012,9 @@
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
             </property>
            </widget>
           </item>
@@ -1047,6 +1053,9 @@
             <property name="suffix">
              <string> mm</string>
             </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
+            </property>
            </widget>
           </item>
           <item row="8" column="0">
@@ -1063,6 +1072,9 @@
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
             </property>
            </widget>
           </item>
@@ -1084,6 +1096,9 @@
             <property name="suffix">
              <string> mm</string>
             </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
+            </property>
            </widget>
           </item>
           <item row="15" column="0">
@@ -1104,6 +1119,9 @@
             <property name="suffix">
              <string> mm</string>
             </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
+            </property>
            </widget>
           </item>
           <item row="4" column="1">
@@ -1113,6 +1131,9 @@
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
             </property>
            </widget>
           </item>
@@ -1131,6 +1152,9 @@
             <property name="suffix">
              <string> mm</string>
             </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
+            </property>
            </widget>
           </item>
           <item row="2" column="0">
@@ -1147,6 +1171,9 @@
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
             </property>
            </widget>
           </item>
@@ -1167,6 +1194,9 @@
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
             </property>
            </widget>
           </item>
@@ -1198,6 +1228,9 @@
             <property name="suffix">
              <string> mm</string>
             </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
+            </property>
            </widget>
           </item>
           <item row="17" column="0">
@@ -1225,6 +1258,9 @@
             <property name="suffix">
              <string> mm</string>
             </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
+            </property>
            </widget>
           </item>
           <item row="9" column="1">
@@ -1234,6 +1270,9 @@
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
             </property>
            </widget>
           </item>
@@ -1295,6 +1334,9 @@
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>9999.989999999999782</double>
             </property>
            </widget>
           </item>
