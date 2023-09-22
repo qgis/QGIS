@@ -163,20 +163,10 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/session_role", txtSessionRole->text() );
   settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username() : QString() );
   settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password() : QString() );
   settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );
-  settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
-  settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
-  settings.setValue( baseKey + "/dontResolveType", cb_dontResolveType->isChecked() );
-  settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
   settings.setValue( baseKey + "/sslmode", cbxSSLmode->currentData().toInt() );
-  settings.setValue( baseKey + "/saveUsername", mAuthSettings->storeUsernameIsChecked( ) ? "true" : "false" );
-  settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
-  settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
-  settings.setValue( baseKey + "/projectsInDatabase", cb_projectsInDatabase->isChecked() );
-  settings.setValue( baseKey + "/metadataInDatabase", cb_metadataInDatabase->isChecked() );
 
   // remove old save setting
   settings.remove( baseKey + "/save" );
@@ -192,7 +182,7 @@ void QgsPgNewConnection::accept()
   configuration.insert( "estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
   configuration.insert( "projectsInDatabase", cb_projectsInDatabase->isChecked() );
   configuration.insert( "metadataInDatabase", cb_metadataInDatabase->isChecked() );
-
+  configuration.insert( "session_role", txtSessionRole->text() );
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
   std::unique_ptr< QgsPostgresProviderConnection > providerConnection( qgis::down_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) ) );
