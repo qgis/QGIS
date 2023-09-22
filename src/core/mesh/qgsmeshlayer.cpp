@@ -1390,7 +1390,7 @@ QgsMeshRendererSettings QgsMeshLayer::accordSymbologyWithGroupName( const QgsMes
   QString activeVectorName;
   QgsMeshRendererSettings consistentSettings = settings;
   int activeScalar = consistentSettings.activeScalarDatasetGroup();
-  int activeVector = consistentSettings.activeScalarDatasetGroup();
+  int activeVector = consistentSettings.activeVectorDatasetGroup();
 
   for ( auto it = nameToIndex.constBegin(); it != nameToIndex.constEnd(); ++it )
   {
