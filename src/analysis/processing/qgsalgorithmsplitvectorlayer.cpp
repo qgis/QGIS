@@ -18,6 +18,7 @@
 #include "qgsalgorithmsplitvectorlayer.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvariantutils.h"
+#include "qgsfileutils.h"
 
 ///@cond PRIVATE
 
@@ -139,9 +140,7 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
     }
     else
     {
-      QString value = ( *it ).toString();
-      value.replace( QRegularExpression( "<|>|\\:|\\\\|\\/|\\||\\?|\\*|\"" ), QStringLiteral( "_" ) );
-      fileName = QStringLiteral( "%1%2.%3" ).arg( baseName ).arg( value ).arg( outputFormat );
+      fileName = QStringLiteral( "%1%2.%3" ).arg( baseName ).arg( QgsFileUtils::stringToSafeFilename( ( *it ).toString() ) ).arg( outputFormat );
     }
     feedback->pushInfo( QObject::tr( "Creating layer: %1" ).arg( fileName ) );
 
