@@ -345,6 +345,16 @@ class PyQgsGdalProvider(QgisTestCase):
         rl = QgsRasterLayer(tmpfile)
         self.assertEqual(rl.dataProvider().bandDescription(1), 'my metadata description')
 
+    def testDisplayBandNameBadLayer(self):
+        """Test crash from issue GH #54702"""
+
+        rl = QgsRasterLayer("https://FAKESERVER/ImageServer/WCSServer", "BadWCS", "wcs")
+        self.assertFalse(rl.isValid())
+        # This was triggering a std::bad_alloc exception:
+        self.assertEqual(rl.dataProvider().displayBandName(1), 'Band 1')
+        # This was triggering another crash:
+        self.assertEqual(rl.dataProvider().colorInterpretationName(1), 'Undefined')
+
 
 if __name__ == '__main__':
     unittest.main()
