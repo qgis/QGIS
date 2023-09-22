@@ -179,7 +179,6 @@ install(TARGETS
 )
 
 install(FILES
-  admin.sld
   wms_metadata.xml
   DESTINATION ${QGIS_CGIBIN_DIR}
 )
