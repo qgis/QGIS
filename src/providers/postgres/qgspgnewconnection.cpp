@@ -166,16 +166,7 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username() : QString() );
   settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password() : QString() );
   settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );
-  settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
-  settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
-  settings.setValue( baseKey + "/dontResolveType", cb_dontResolveType->isChecked() );
-  settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
   settings.setValue( baseKey + "/sslmode", cbxSSLmode->currentData().toInt() );
-  settings.setValue( baseKey + "/saveUsername", mAuthSettings->storeUsernameIsChecked( ) ? "true" : "false" );
-  settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
-  settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
-  settings.setValue( baseKey + "/projectsInDatabase", cb_projectsInDatabase->isChecked() );
-  settings.setValue( baseKey + "/metadataInDatabase", cb_metadataInDatabase->isChecked() );
 
   // remove old save setting
   settings.remove( baseKey + "/save" );
