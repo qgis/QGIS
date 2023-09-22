@@ -255,8 +255,11 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
       }
       else
       {
-        const QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( geom ) );
-        allPoints[ groupValue ] << qMakePair( orderValue, point );
+        const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >(geom);
+        if ( point )
+        {
+          allPoints[ groupValue ] << qMakePair( orderValue, *point );
+        }
       }
     }
     ++currentPoint;
