@@ -342,13 +342,13 @@ QString QgsMapLayer::metadataUrlFormat() const
   }
 }
 
-QString QgsMapLayer::publicSource() const
+QString QgsMapLayer::publicSource( bool hidePassword ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // Redo this every time we're asked for it, as we don't know if
   // dataSource has changed.
-  QString safeName = QgsDataSourceUri::removePassword( mDataSource );
+  QString safeName = QgsDataSourceUri::removePassword( mDataSource, hidePassword );
   return safeName;
 }
 
