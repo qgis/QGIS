@@ -153,7 +153,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
         if ( renderer->type() == QLatin1String( "vector" ) )
         {
           const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
-          if ( pointSymbol->shapeProperties()[QStringLiteral( "model" )].toString() == url )
+          if ( pointSymbol->shapeProperties().value( QStringLiteral( "model" ) ).toString() == url )
           {
             removeLayerEntity( layer );
             addLayerEntity( layer );
@@ -165,7 +165,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
           for ( auto rule : rules )
           {
             const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
-            if ( pointSymbol->shapeProperties()[QStringLiteral( "model" )].toString() == url )
+            if ( pointSymbol->shapeProperties().value( QStringLiteral( "model" ) ).toString() == url )
             {
               removeLayerEntity( layer );
               addLayerEntity( layer );
@@ -334,7 +334,8 @@ void Qgs3DMapScene::onCameraChanged()
 void removeQLayerComponentsFromHierarchy( Qt3DCore::QEntity *entity )
 {
   QVector<Qt3DCore::QComponent *> toBeRemovedComponents;
-  for ( Qt3DCore::QComponent *component : entity->components() )
+  const Qt3DCore::QComponentVector entityComponents = entity->components();
+  for ( Qt3DCore::QComponent *component : entityComponents )
   {
     Qt3DRender::QLayer *layer = qobject_cast<Qt3DRender::QLayer *>( component );
     if ( layer != nullptr )
@@ -342,7 +343,8 @@ void removeQLayerComponentsFromHierarchy( Qt3DCore::QEntity *entity )
   }
   for ( Qt3DCore::QComponent *component : toBeRemovedComponents )
     entity->removeComponent( component );
-  for ( Qt3DCore::QEntity *obj : entity->findChildren<Qt3DCore::QEntity *>() )
+  const QList< Qt3DCore::QEntity *> childEntities = entity->findChildren<Qt3DCore::QEntity *>();
+  for ( Qt3DCore::QEntity *obj : childEntities )
   {
     if ( obj != nullptr )
       removeQLayerComponentsFromHierarchy( obj );
@@ -353,7 +355,9 @@ void addQLayerComponentsToHierarchy( Qt3DCore::QEntity *entity, const QVector<Qt
 {
   for ( Qt3DRender::QLayer *layer : layers )
     entity->addComponent( layer );
-  for ( Qt3DCore::QEntity *child : entity->findChildren<Qt3DCore::QEntity *>() )
+
+  const QList< Qt3DCore::QEntity *> childEntities = entity->findChildren<Qt3DCore::QEntity *>();
+  for ( Qt3DCore::QEntity *child : childEntities )
   {
     if ( child != nullptr )
       addQLayerComponentsToHierarchy( child, layers );
@@ -763,7 +767,8 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 {
   // this is probably not the best place for material-specific configuration,
   // maybe this could be more generalized when other materials need some specific treatment
-  for ( QgsLineMaterial *lm : newEntity->findChildren<QgsLineMaterial *>() )
+  const QList< QgsLineMaterial *> childLineMaterials = newEntity->findChildren<QgsLineMaterial *>();
+  for ( QgsLineMaterial *lm : childLineMaterials )
   {
     connect( mEngine, &QgsAbstract3DEngine::sizeChanged, lm, [lm, this]
     {
@@ -773,7 +778,8 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
     lm->setViewportSize( mEngine->size() );
   }
   // configure billboard's viewport when the viewport is changed.
-  for ( QgsPoint3DBillboardMaterial *bm : newEntity->findChildren<QgsPoint3DBillboardMaterial *>() )
+  const QList< QgsPoint3DBillboardMaterial *> childBillboardMaterials = newEntity->findChildren<QgsPoint3DBillboardMaterial *>();
+  for ( QgsPoint3DBillboardMaterial *bm : childBillboardMaterials )
   {
     connect( mEngine, &QgsAbstract3DEngine::sizeChanged, bm, [bm, this]
     {
@@ -786,7 +792,8 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
   // Finalize adding the 3D transparent objects by adding the layer components to the entities
   QgsShadowRenderingFrameGraph *frameGraph = mEngine->frameGraph();
   Qt3DRender::QLayer *transparentLayer = frameGraph->transparentObjectLayer();
-  for ( Qt3DRender::QMaterial *material : newEntity->findChildren<Qt3DRender::QMaterial *>() )
+  const QList< Qt3DRender::QMaterial *> childMaterials = newEntity->findChildren<Qt3DRender::QMaterial *>();
+  for ( Qt3DRender::QMaterial *material : childMaterials )
   {
     // This handles the phong material without data defined properties.
     if ( Qt3DExtras::QDiffuseSpecularMaterial *ph = qobject_cast<Qt3DExtras::QDiffuseSpecularMaterial *>( material ) )
@@ -806,7 +813,8 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
       Qt3DRender::QEffect *effect = material->effect();
       if ( effect )
       {
-        for ( const auto *parameter : effect->parameters() )
+        const QVector< Qt3DRender::QParameter *> parameters = effect->parameters();
+        for ( const Qt3DRender::QParameter *parameter : parameters )
         {
           if ( parameter->name() == "opacity" && parameter->value() != 1.0f )
           {
@@ -1065,7 +1073,8 @@ QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLay
   if ( !mLayerEntities.contains( layer ) ) return chunks;
   if ( QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( mLayerEntities[ layer ] ) )
   {
-    for ( QgsChunkNode *n : c->activeNodes() )
+    const QList< QgsChunkNode * > activeNodes = c->activeNodes();
+    for ( QgsChunkNode *n : activeNodes )
       chunks.push_back( n );
   }
   return chunks;
