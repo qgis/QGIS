@@ -106,7 +106,7 @@ Returns the scene's elevation range
 
 .. note::
 
-   Only terrain and point cloud layers are taken into account
+   Only some layer types are considered by this method (eg terrain, point cloud and mesh layers)
 
 .. versionadded:: 3.30
 %End
