@@ -18,7 +18,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 
 include_directories(SYSTEM
   ${QT_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
   ${QT5_3DEXTRA_INCLUDE_DIR}
 )
 
@@ -35,9 +34,7 @@ target_link_libraries(qgis_3d_sandbox
   ${QT_VERSION_BASE}::Svg
   ${QT_VERSION_BASE}::Network
   ${QT_VERSION_BASE}::Test
-  ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
-  ${GDAL_LIBRARY}
   ${QWT_LIBRARY}
   qgis_core
   qgis_3d

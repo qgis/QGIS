@@ -26,6 +26,7 @@
 #include <QDataStream>
 #include <QDir>
 #include <QFile>
+#include <QJsonDocument>
 #include <QMutex>
 #include <QPushButton>
 #include <QStyle>
@@ -944,7 +945,9 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
       else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
         dstFeature.setAttribute( i, v );
       else if ( fieldType == QVariant::DateTime && !QgsVariantUtils::isNull( v ) )
-        dstFeature.setAttribute( i, QVariant( QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) ) );
+        dstFeature.setAttribute( i, QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) );
+      else if ( fieldType == QVariant::Map && !QgsVariantUtils::isNull( v ) )
+        dstFeature.setAttribute( i, QJsonDocument::fromJson( v.toString().toUtf8() ).toVariant() );
       else
         dstFeature.setAttribute( i, QgsVectorDataProvider::convertValue( fieldType, v.toString() ) );
     }

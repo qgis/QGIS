@@ -40,6 +40,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmaddxyfields.cpp
   processing/qgsalgorithmaffinetransform.cpp
   processing/qgsalgorithmaggregate.cpp
+  processing/qgsalgorithmalignrasters.cpp
+  processing/qgsalgorithmalignsingleraster.cpp
   processing/qgsalgorithmangletonearest.cpp
   processing/qgsalgorithmannotations.cpp
   processing/qgsalgorithmapplylayerstyle.cpp
@@ -237,6 +239,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmwedgebuffers.cpp
   processing/qgsalgorithmwritevectortiles.cpp
+  processing/qgsalgorithmxyztiles.cpp
   processing/qgsalgorithmzonalhistogram.cpp
   processing/qgsalgorithmzonalstatistics.cpp
   processing/qgsalgorithmzonalstatisticsfeaturebased.cpp
@@ -455,15 +458,10 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
   )
 endif()
 
-include_directories(SYSTEM ${SPATIALITE_INCLUDE_DIR})
 include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
 include_directories(SYSTEM ${SQLITE3_INCLUDE_DIR})
 include_directories(BEFORE raster)
 include_directories(BEFORE mesh)
-
-if(HAVE_GSL)
-  include_directories(SYSTEM ${GSL_INCLUDE_DIR})
-endif()
 
 if(NOT MSVC)
   set_source_files_properties(
@@ -574,7 +572,7 @@ target_link_libraries(
   )
 
 if(HAVE_GSL)
-  target_link_libraries(qgis_analysis ${GSL_LIBRARIES})
+  target_link_libraries(qgis_analysis GSL::gsl)
 endif()
 
 if(HAVE_OPENCL)

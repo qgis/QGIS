@@ -305,7 +305,15 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mEndDateTimeEdit->setDateTime( range.end() );
 
   title( QgsProject::instance()->title() );
-  mProjectFileLineEdit->setText( QDir::toNativeSeparators( !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath() ) );
+
+  QString name = !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath();
+  if ( QgsProject::instance()->projectStorage() )
+  {
+    name = QgsDataSourceUri::removePassword( name, true );
+  }
+
+  mProjectFileLineEdit->setText( QDir::toNativeSeparators( name ) );
+
   mProjectHomeLineEdit->setShowClearButton( true );
   mProjectHomeLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->presetHomePath() ) );
   connect( mButtonSetProjectHome, &QToolButton::clicked, this, [ = ]

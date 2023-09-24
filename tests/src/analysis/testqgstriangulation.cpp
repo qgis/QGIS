@@ -22,11 +22,16 @@ Email                : vcloarec at gmail dot com
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
-class TestQgsTriangulation : public QObject
+class TestQgsTriangulation : public QgsTest
 {
     Q_OBJECT
 
   public:
+
+    TestQgsTriangulation()
+      : QgsTest( QStringLiteral( "Triangulation Test" ) )
+    {}
+
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -61,109 +66,121 @@ void TestQgsTriangulation::cleanup()
 
 void TestQgsTriangulation::dualEdge()
 {
-  //3 points
-  QgsDualEdgeTriangulation triangulation;
-  // Add colinear points
-  triangulation.addPoint( QgsPoint( 1, 0, 0 ) );
-  triangulation.addPoint( QgsPoint( 1, 1, 0 ) );
-  QgsMesh mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 2 );
-  QCOMPARE( mesh.faceCount(), 0 );
-  triangulation.addPoint( QgsPoint( 2, 2, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 3 );
-  QCOMPARE( mesh.faceCount(), 1 );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 2, 1} ) ) );
+  {
+    //3 points
+    QgsDualEdgeTriangulation triangulation;
+    // Add colinear points
+    triangulation.addPoint( QgsPoint( 1, 0, 0 ) );
+    triangulation.addPoint( QgsPoint( 1, 1, 0 ) );
+    QgsMesh mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 2 );
+    QCOMPARE( mesh.faceCount(), 0 );
+    triangulation.addPoint( QgsPoint( 2, 2, 0 ) );
+    mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 3 );
+    QCOMPARE( mesh.faceCount(), 1 );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 2, 1} ) ) );
+  }
 
-  //4 points
-  triangulation = QgsDualEdgeTriangulation();
-  // Add colinear points
-  triangulation.addPoint( QgsPoint( 1, 0, 0 ) );
-  triangulation.addPoint( QgsPoint( 1, 1, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 2 );
-  QCOMPARE( mesh.faceCount(), 0 );
-  triangulation.addPoint( QgsPoint( 2, 2, 0 ) );
-  triangulation.addPoint( QgsPoint( 2, 3, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 4 );
-  QCOMPARE( mesh.faceCount(), 2 );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 2, 1} ) ) );
+  {
+    //4 points
+    QgsDualEdgeTriangulation triangulation;
+    // Add colinear points
+    triangulation.addPoint( QgsPoint( 1, 0, 0 ) );
+    triangulation.addPoint( QgsPoint( 1, 1, 0 ) );
+    QgsMesh mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 2 );
+    QCOMPARE( mesh.faceCount(), 0 );
+    triangulation.addPoint( QgsPoint( 2, 2, 0 ) );
+    triangulation.addPoint( QgsPoint( 2, 3, 0 ) );
+    mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 4 );
+    QCOMPARE( mesh.faceCount(), 2 );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 2, 1} ) ) );
+  }
 
-  //3 first colinear points
-  triangulation = QgsDualEdgeTriangulation();
-  triangulation.addPoint( QgsPoint( 1, 0, 0 ) );
-  triangulation.addPoint( QgsPoint( 1, 1, 0 ) );
-  triangulation.addPoint( QgsPoint( 1, 2, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 3 );
-  QCOMPARE( mesh.faceCount(), 0 );
-  triangulation.addPoint( QgsPoint( 2, 2, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 4 );
-  QCOMPARE( mesh.faceCount(), 2 );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 1} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {3, 2, 1} ) ) );
-  triangulation.addPoint( QgsPoint( 2, 3, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 5 );
-  QCOMPARE( mesh.faceCount(), 3 );
+  {
+    //3 first colinear points
+    QgsDualEdgeTriangulation triangulation;
+    triangulation.addPoint( QgsPoint( 1, 0, 0 ) );
+    triangulation.addPoint( QgsPoint( 1, 1, 0 ) );
+    triangulation.addPoint( QgsPoint( 1, 2, 0 ) );
+    QgsMesh mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 3 );
+    QCOMPARE( mesh.faceCount(), 0 );
+    triangulation.addPoint( QgsPoint( 2, 2, 0 ) );
+    mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 4 );
+    QCOMPARE( mesh.faceCount(), 2 );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 1} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {3, 2, 1} ) ) );
+    triangulation.addPoint( QgsPoint( 2, 3, 0 ) );
+    mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 5 );
+    QCOMPARE( mesh.faceCount(), 3 );
+  }
 
-  //3 first colinear points with different order
-  triangulation = QgsDualEdgeTriangulation();
-  triangulation.addPoint( QgsPoint( 1, 0, 0 ) );
-  triangulation.addPoint( QgsPoint( 1, 2, 0 ) );
-  triangulation.addPoint( QgsPoint( 1, 1, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 3 );
-  QCOMPARE( mesh.faceCount(), 0 );
-  triangulation.addPoint( QgsPoint( 2, 2, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 4 );
-  QCOMPARE( mesh.faceCount(), 2 );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 2} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 2, 3} ) ) );
-  triangulation.addPoint( QgsPoint( 2, 3, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 5 );
-  QCOMPARE( mesh.faceCount(), 3 );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 2} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 3, 4} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 2, 3} ) ) );
+  {
+    //3 first colinear points with different order
+    QgsDualEdgeTriangulation triangulation;
+    triangulation.addPoint( QgsPoint( 1, 0, 0 ) );
+    triangulation.addPoint( QgsPoint( 1, 2, 0 ) );
+    triangulation.addPoint( QgsPoint( 1, 1, 0 ) );
+    QgsMesh mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 3 );
+    QCOMPARE( mesh.faceCount(), 0 );
+    triangulation.addPoint( QgsPoint( 2, 2, 0 ) );
+    mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 4 );
+    QCOMPARE( mesh.faceCount(), 2 );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 2} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 2, 3} ) ) );
+    triangulation.addPoint( QgsPoint( 2, 3, 0 ) );
+    mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 5 );
+    QCOMPARE( mesh.faceCount(), 3 );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 2} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 3, 4} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 2, 3} ) ) );
+  }
 
-  //4 first colinear points
-  triangulation = QgsDualEdgeTriangulation();
-  triangulation.addPoint( QgsPoint( 1, 1, 0 ) );
-  triangulation.addPoint( QgsPoint( 2, 1, 0 ) );
-  triangulation.addPoint( QgsPoint( 3, 1, 0 ) );
-  triangulation.addPoint( QgsPoint( 4, 1, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 4 );
-  QCOMPARE( mesh.faceCount(), 0 );
-  triangulation.addPoint( QgsPoint( 1, 2, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 5 );
-  QCOMPARE( mesh.faceCount(), 3 );
-  triangulation.addPoint( QgsPoint( 2, 2, 0 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.vertices.count(), 6 );
-  QCOMPARE( mesh.faceCount(), 4 );
+  {
+    //4 first colinear points
+    QgsDualEdgeTriangulation triangulation;
+    triangulation.addPoint( QgsPoint( 1, 1, 0 ) );
+    triangulation.addPoint( QgsPoint( 2, 1, 0 ) );
+    triangulation.addPoint( QgsPoint( 3, 1, 0 ) );
+    triangulation.addPoint( QgsPoint( 4, 1, 0 ) );
+    QgsMesh mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 4 );
+    QCOMPARE( mesh.faceCount(), 0 );
+    triangulation.addPoint( QgsPoint( 1, 2, 0 ) );
+    mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 5 );
+    QCOMPARE( mesh.faceCount(), 3 );
+    triangulation.addPoint( QgsPoint( 2, 2, 0 ) );
+    mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.vertices.count(), 6 );
+    QCOMPARE( mesh.faceCount(), 4 );
+  }
 
-  triangulation = QgsDualEdgeTriangulation();
-  triangulation.addPoint( QgsPoint( 2, 0, 1 ) );
-  triangulation.addPoint( QgsPoint( 0, 2, 1 ) );
-  triangulation.addPoint( QgsPoint( 2, 4, 1 ) );
-  triangulation.addPoint( QgsPoint( 4, 2, 1 ) );
+  {
+    QgsDualEdgeTriangulation triangulation;
+    triangulation.addPoint( QgsPoint( 2, 0, 1 ) );
+    triangulation.addPoint( QgsPoint( 0, 2, 1 ) );
+    triangulation.addPoint( QgsPoint( 2, 4, 1 ) );
+    triangulation.addPoint( QgsPoint( 4, 2, 1 ) );
 
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.faceCount(), 2 );
-  QCOMPARE( mesh.vertexCount(), 4 );
+    QgsMesh mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.faceCount(), 2 );
+    QCOMPARE( mesh.vertexCount(), 4 );
 
-  //add point exactly on existing edge
-  triangulation.addPoint( QgsPoint( 2, 2, 1 ) );
-  mesh = triangulation.triangulationToMesh();
-  QCOMPARE( mesh.faceCount(), 4 );
-  QCOMPARE( mesh.vertexCount(), 5 );
+    //add point exactly on existing edge
+    triangulation.addPoint( QgsPoint( 2, 2, 1 ) );
+    mesh = triangulation.triangulationToMesh();
+    QCOMPARE( mesh.faceCount(), 4 );
+    QCOMPARE( mesh.vertexCount(), 5 );
+  }
 }
 
 void TestQgsTriangulation::meshTriangulation()

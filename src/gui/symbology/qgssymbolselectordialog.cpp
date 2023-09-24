@@ -273,7 +273,35 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "locked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
   iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "unlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
   iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "unlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
-  btnLock->setIcon( iconLock );
+
+  QIcon iconColorLock;
+  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorLocked.svg" ) ), QSize(), QIcon::Normal, QIcon::On );
+  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorLocked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
+  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorUnlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
+  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorUnlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
+
+  mLockColorAction = new QAction( tr( "Lock Color" ), this );
+  mLockColorAction->setToolTip( tr( "Avoid changing the color of the layer when the symbol color is changed" ) );
+  mLockColorAction->setCheckable( true );
+  mLockColorAction->setIcon( iconColorLock );
+
+  QIcon iconSelectLock;
+  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectLocked.svg" ) ), QSize(), QIcon::Normal, QIcon::On );
+  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectLocked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
+  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectUnlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
+  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectUnlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
+
+  mLockSelectionColorAction = new QAction( tr( "Lock Color When Selected" ), this );
+  mLockSelectionColorAction->setToolTip( tr( "Avoid changing the color of the layer when a feature is selected" ) );
+  mLockSelectionColorAction->setCheckable( true );
+  mLockSelectionColorAction->setIcon( iconSelectLock );
+
+  QMenu *lockMenu = new QMenu( this );
+  lockMenu->addAction( mLockColorAction );
+  lockMenu->addAction( mLockSelectionColorAction );
+  btnLock->setMenu( lockMenu );
+  btnLock->setPopupMode( QToolButton::InstantPopup );
+
   btnDuplicate->setIcon( QIcon( QgsApplication::iconPath( "mActionDuplicateLayer.svg" ) ) );
   btnUp->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowUp.svg" ) ) );
   btnDown->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
@@ -311,9 +339,23 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   connect( btnDown, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::moveLayerDown );
   connect( btnAddLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::addLayer );
   connect( btnRemoveLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::removeLayer );
-  connect( btnLock, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::lockLayer );
+  connect( mLockColorAction, &QAction::toggled, this, &QgsSymbolSelectorWidget::lockLayer );
+  connect( mLockSelectionColorAction, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    QgsSymbolLayer *layer = currentLayer();
+    if ( !layer )
+      return;
+
+    Qgis::SymbolLayerUserFlags flags = layer->userFlags();
+    flags.setFlag( Qgis::SymbolLayerUserFlag::DisableSelectionRecoloring, checked );
+    layer->setUserFlags( flags );
+    updateLockButtonIcon();
+    emit symbolModified();
+  } );
   connect( btnDuplicate, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::duplicateLayer );
   connect( this, &QgsSymbolSelectorWidget::symbolModified, this, &QgsPanelWidget::widgetChanged );
+
+  updateLockButtonIcon();
 
   updateUi();
 
@@ -587,7 +629,22 @@ void QgsSymbolSelectorWidget::updateLockButton()
   QgsSymbolLayer *layer = currentLayer();
   if ( !layer )
     return;
-  btnLock->setChecked( layer->isLocked() );
+  mLockColorAction->setChecked( layer->isLocked() );
+  mLockSelectionColorAction->setChecked( layer->userFlags() & Qgis::SymbolLayerUserFlag::DisableSelectionRecoloring );
+
+  updateLockButtonIcon();
+}
+
+void QgsSymbolSelectorWidget::updateLockButtonIcon()
+{
+  if ( mLockColorAction->isChecked() && mLockSelectionColorAction->isChecked() )
+    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "locked.svg" ) ) );
+  else if ( mLockColorAction->isChecked() )
+    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconColorLocked.svg" ) ) );
+  else if ( mLockSelectionColorAction->isChecked() )
+    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSelectLocked.svg" ) ) );
+  else
+    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "unlocked.svg" ) ) );
 }
 
 void QgsSymbolSelectorWidget::addLayer()
@@ -703,7 +760,8 @@ void QgsSymbolSelectorWidget::lockLayer()
   QgsSymbolLayer *layer = currentLayer();
   if ( !layer )
     return;
-  layer->setLocked( btnLock->isChecked() );
+  layer->setLocked( mLockColorAction->isChecked() );
+  updateLockButtonIcon();
   emit symbolModified();
 }
 

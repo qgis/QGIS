@@ -256,6 +256,16 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void setDistanceUnit( Qgis::DistanceUnit unit );
 
+    /**
+     * Sets the background \a color to use for the profile canvas.
+     *
+     * The chart text, border and axis color will be automatically updated to ensure
+     * readability with the new background color.
+     *
+     * \since QGIS 3.34
+     */
+    void setBackgroundColor( const QColor &color );
+
   signals:
 
     /**
@@ -301,6 +311,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
   private:
 
+    void updateChartFromPalette();
     QgsProfileSnapContext snapContext() const;
     QgsProfileIdentifyContext identifyContext() const;
 

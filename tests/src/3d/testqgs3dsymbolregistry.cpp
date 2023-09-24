@@ -36,9 +36,13 @@ class Dummy3DSymbol : public QgsAbstract3DSymbol
 
 };
 
-class TestQgs3DSymbolRegistry : public QObject
+class TestQgs3DSymbolRegistry : public QgsTest
 {
     Q_OBJECT
+  public:
+    TestQgs3DSymbolRegistry()
+      : QgsTest( QStringLiteral( "3D Symbol Registry Tests" ), QStringLiteral( "3d" ) )
+    {}
 
   private slots:
     void initTestCase();

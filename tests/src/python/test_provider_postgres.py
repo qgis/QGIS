@@ -3280,6 +3280,28 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             extracted_fids = [f['id'] for f in vl_result.getFeatures()]
             self.assertEqual(set(extracted_fids), {1, 2})  # Bug ?
 
+    def testGeographyAddFeature(self):
+        """Test issue GH #54572 Error saving edit on PostGIS geometry when table also contains geography"""
+
+        self.execSQLCommand(
+            'DROP TABLE IF EXISTS qgis_test."geom_and_geog" CASCADE')
+        self.execSQLCommand("""
+            CREATE TABLE qgis_test.geom_and_geog (
+                pkey SERIAL PRIMARY KEY,
+                geom geometry(POLYGON, 3857),
+                geog geography(POLYGON, 4326)
+            );""")
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pkey\' srid=3857 table="qgis_test"."geom_and_geog" (geom) sql=', 'geom_and_geog', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 0)
+        dp = vl.dataProvider()
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('POLYGON((28.030080546000004 -26.2055410477482,28.030103891999996 -26.20540054874821,28.030532775999998 -26.205458576748192,28.030553322999996 -26.2056050407482,28.030080546000004 -26.2055410477482))'))
+        f.setAttribute('geog', 'POLYGON((28.030080546000004 -26.2055410477482,28.030103891999996 -26.20540054874821,28.030532775999998 -26.205458576748192,28.030553322999996 -26.2056050407482,28.030080546000004 -26.2055410477482))')
+        self.assertTrue(dp.addFeature(f))
+        self.assertEqual(vl.featureCount(), 1)
+
 
 class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):
 

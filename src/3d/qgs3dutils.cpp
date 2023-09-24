@@ -846,3 +846,22 @@ float Qgs3DUtils::screenSpaceError( float epsilon, float distance, float screenS
   float phi = epsilon * screenSize / ( 2 * distance * tan( fov * M_PI / ( 2 * 180 ) ) );
   return phi;
 }
+
+void Qgs3DUtils::computeBoundingBoxNearFarPlanes( const QgsAABB &bbox, const QMatrix4x4 &viewMatrix, float &fnear, float &ffar )
+{
+  fnear = 1e9;
+  ffar = 0;
+
+  for ( int i = 0; i < 8; ++i )
+  {
+    const QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
+                       ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
+                       ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
+
+    const QVector4D pc = viewMatrix * p;
+
+    const float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
+    fnear = std::min( fnear, dst );
+    ffar = std::max( ffar, dst );
+  }
+}

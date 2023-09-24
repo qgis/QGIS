@@ -20,11 +20,15 @@ Email                : nyall dot dawson at gmail dot com
 #include "qgsidwinterpolator.h"
 #include "qgsvectorlayer.h"
 
-class TestQgsInterpolator : public QObject
+class TestQgsInterpolator : public QgsTest
 {
     Q_OBJECT
 
   public:
+
+    TestQgsInterpolator()
+      : QgsTest( QStringLiteral( "Interpolator Tests" ) )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

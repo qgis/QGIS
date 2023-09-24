@@ -28,9 +28,16 @@
  * \ingroup UnitTests
  * This is a unit test for the zonal statistics class
  */
-class TestQgsZonalStatistics : public QObject
+class TestQgsZonalStatistics : public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsZonalStatistics()
+      : QgsTest( QStringLiteral( "Zonal Statistics Test" ) )
+    {}
+
 
   private slots:
     void initTestCase();

@@ -193,7 +193,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     }
 
     QString uri;
-    qint64 count;
+    qint64 count = 0;
     QgsRectangle extent;
     QgsGeometry geometry;
     QgsDoubleRange zRange;

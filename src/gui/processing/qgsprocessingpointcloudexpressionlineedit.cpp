@@ -309,7 +309,7 @@ void QgsProcessingPointCloudExpressionDialog::test()
     int offset;
     for ( const auto &attribute : attributes )
     {
-      if ( mLayer->dataProvider() &&
+      if ( mLayer && mLayer->dataProvider() &&
            !mLayer->dataProvider()->attributes().find( attribute, offset ) )
       {
         QMessageBox::warning( this,

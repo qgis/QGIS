@@ -235,7 +235,6 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
   for ( it = options.constBegin(); it != options.constEnd(); ++it )
   {
     QgsVectorFileWriter::Option *option = it.value();
-    QLabel *label = new QLabel( it.key() );
     QWidget *control = nullptr;
     switch ( option->type )
     {
@@ -294,6 +293,8 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
 
     if ( control )
     {
+      QLabel *label = new QLabel( it.key() );
+
       // Pack the tooltip in some html element, so it gets linebreaks.
       label->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( option->docString.toHtmlEscaped() ) );
       control->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( option->docString.toHtmlEscaped() ) );
@@ -681,7 +682,18 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   GDALDriverH hDriver = GDALGetDriverByName( format().toUtf8().constData() );
   if ( hDriver )
   {
-    mAddToCanvas->setEnabled( GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr ) != nullptr );
+    const bool canReopen = GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr ) != nullptr;
+    if ( mAddToCanvas->isEnabled() && !canReopen )
+    {
+      mAddToCanvasStateOnOpenCompatibleDriver = mAddToCanvas->isChecked();
+      mAddToCanvas->setChecked( false );
+      mAddToCanvas->setEnabled( false );
+    }
+    else if ( !mAddToCanvas->isEnabled() && canReopen )
+    {
+      mAddToCanvas->setChecked( mAddToCanvasStateOnOpenCompatibleDriver );
+      mAddToCanvas->setEnabled( true );
+    }
   }
 }
 
@@ -948,7 +960,8 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
-          options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
+          if ( !opt->mValue.isEmpty() )
+            options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }
@@ -1007,7 +1020,8 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
-          options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
+          if ( !opt->mValue.isEmpty() )
+            options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }
@@ -1064,12 +1078,14 @@ QStringList QgsVectorLayerSaveAsDialog::attributesExportNames() const
 
 bool QgsVectorLayerSaveAsDialog::addToCanvas() const
 {
-  return mAddToCanvas->isChecked() && mAddToCanvas->isEnabled();
+  return mAddToCanvas->isChecked();
 }
 
 void QgsVectorLayerSaveAsDialog::setAddToCanvas( bool enabled )
 {
-  mAddToCanvas->setChecked( enabled );
+  mAddToCanvasStateOnOpenCompatibleDriver = enabled;
+  if ( mAddToCanvas->isEnabled() )
+    mAddToCanvas->setChecked( enabled );
 }
 
 Qgis::FeatureSymbologyExport QgsVectorLayerSaveAsDialog::symbologyExport() const

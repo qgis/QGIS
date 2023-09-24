@@ -48,17 +48,17 @@
 
 const QStringList QgsGPXProvider::sAttributeNames = { "name", "elevation", "symbol", "number",
                                                       "comment", "description", "source",
-                                                      "url", "url name"
+                                                      "url", "url name", "time"
                                                     };
 const QList< QVariant::Type > QgsGPXProvider::sAttributeTypes = { QVariant::String, QVariant::Double, QVariant::String, QVariant::Int,
                                                                   QVariant::String, QVariant::String, QVariant::String,
-                                                                  QVariant::String, QVariant::String
+                                                                  QVariant::String, QVariant::String, QVariant::DateTime,
                                                                 };
 const QList< QgsGPXProvider::DataType > QgsGPXProvider::sAttributedUsedForLayerType =
 {
   QgsGPXProvider::AllType, QgsGPXProvider::WaypointType, QgsGPXProvider::TrkRteType, QgsGPXProvider::TrkRteType,
   QgsGPXProvider::AllType, QgsGPXProvider::AllType, QgsGPXProvider::AllType, QgsGPXProvider::AllType,
-  QgsGPXProvider::AllType, QgsGPXProvider::AllType
+  QgsGPXProvider::AllType, QgsGPXProvider::AllType, QgsGPXProvider::WaypointType,
 };
 
 const QString GPX_KEY = QStringLiteral( "gpx" );

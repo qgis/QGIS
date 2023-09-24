@@ -24,9 +24,14 @@
 #include "qgs3d.h"
 
 
-class TestQgs3dMaterial : public QObject
+class TestQgs3dMaterial : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgs3dMaterial()
+      : QgsTest( QStringLiteral( "3D Material Tests" ), QStringLiteral( "3d" ) )
+    {}
 
   private slots:
     void initTestCase();

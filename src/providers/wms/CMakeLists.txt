@@ -80,7 +80,6 @@ else()
 
   target_link_libraries(provider_wms
     qgis_core
-    ${GDAL_LIBRARY}  # for OGR_G_CreateGeometryFromJson()
   )
 
   if (WITH_GUI)

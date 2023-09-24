@@ -133,6 +133,8 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
     static QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context );
 
     Qt3DCore::QTransform *mTransform = nullptr;
+
+    bool applyTerrainOffset() const;
 };
 
 /// @endcond

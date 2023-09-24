@@ -82,9 +82,15 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
 };
 
 
-class TestQgsProcessingModelAlgorithm: public QObject
+class TestQgsProcessingModelAlgorithm: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsProcessingModelAlgorithm()
+      : QgsTest( QStringLiteral( "Processing Model Test" ) )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

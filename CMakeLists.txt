@@ -358,10 +358,10 @@ if(WITH_CORE)
   endif()
 
   # required
-  find_package(Proj)
-  find_package(GEOS)
-  find_package(GDAL)
-  find_package(Expat REQUIRED)
+  find_package(Proj REQUIRED)
+  find_package(GEOS REQUIRED)
+  find_package(GDAL REQUIRED)
+  find_package(EXPAT REQUIRED)
   find_package(Spatialindex REQUIRED)
   find_package(LibZip REQUIRED)
 
@@ -401,10 +401,6 @@ if(WITH_CORE)
   if (WITH_SPATIALITE)
     find_package(SpatiaLite REQUIRED)
     set (HAVE_SPATIALITE TRUE)
-  endif()
-
-  if (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
-    message (SEND_ERROR "Some dependencies were not found! Proj: ${PROJ_FOUND}, Geos: ${GEOS_FOUND}, GDAL: ${GDAL_FOUND}")
   endif()
 
   if (POSTGRES_FOUND)

@@ -38,7 +38,7 @@ target_include_directories(provider_spatialite_a PUBLIC
 
 target_link_libraries(provider_spatialite_a
   qgis_core
-  ${SPATIALITE_LIBRARY}
+  spatialite::spatialite
 )
 
 # require c++17
@@ -95,7 +95,7 @@ else()
   
   target_link_libraries(provider_spatialite
     qgis_core
-    ${SPATIALITE_LIBRARY}
+    spatialite::spatialite
   )
 
   if (WITH_GUI)

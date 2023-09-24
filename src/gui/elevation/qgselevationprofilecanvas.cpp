@@ -35,6 +35,8 @@
 #include "qgsprofilesnapping.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsscreenhelper.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 
 #include <QWheelEvent>
 #include <QTimer>
@@ -287,7 +289,10 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       crossHairPen.setWidthF( 1 );
       crossHairPen.setStyle( Qt::DashLine );
       crossHairPen.setCapStyle( Qt::FlatCap );
-      crossHairPen.setColor( QColor( 0, 0, 0, 150 ) );
+      const QPalette scenePalette = mPlotItem->scene()->palette();
+      QColor penColor = scenePalette.color( QPalette::ColorGroup::Active, QPalette::Text );
+      penColor.setAlpha( 150 );
+      crossHairPen.setColor( penColor );
       painter->setPen( crossHairPen );
       painter->drawLine( QPointF( mPlotItem->plotArea().left(), crossHairPlotPoint.y() ), QPointF( mPlotItem->plotArea().right(), crossHairPlotPoint.y() ) );
       painter->drawLine( QPointF( crossHairPlotPoint.x(), mPlotItem->plotArea().top() ), QPointF( crossHairPlotPoint.x(), mPlotItem->plotArea().bottom() ) );
@@ -345,14 +350,16 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
         }
       }
 
-      // semi opaque white background
-      painter->setBrush( QBrush( QColor( 255, 255, 255, 220 ) ) );
+      // semi opaque background color brush
+      QColor backgroundColor = mPlotItem->chartBackgroundSymbol()->color();
+      backgroundColor.setAlpha( 220 );
+      painter->setBrush( QBrush( backgroundColor ) );
       painter->setPen( Qt::NoPen );
       painter->drawRect( QRectF( xCoordOrigin.x() - textAxisMargin + 1, xCoordOrigin.y() - textAxisMargin - height + 1, xWidth + 2 * textAxisMargin - 2, height + 2 * textAxisMargin - 2 ) );
       painter->drawRect( QRectF( yCoordOrigin.x() - textAxisMargin + 1, yCoordOrigin.y() - textAxisMargin - height + 1, yWidth + 2 * textAxisMargin - 2, height + 2 * textAxisMargin - 2 ) );
 
       painter->setBrush( Qt::NoBrush );
-      painter->setPen( Qt::black );
+      painter->setPen( scenePalette.color( QPalette::ColorGroup::Active, QPalette::Text ) );
 
       painter->drawText( xCoordOrigin, xCoordinateText );
       painter->drawText( yCoordOrigin, yCoordinateText );
@@ -374,10 +381,9 @@ QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   mScreenHelper = new QgsScreenHelper( this );
 
   mPlotItem = new QgsElevationProfilePlotItem( this );
-  QgsTextFormat textFormat = mPlotItem->xAxis().textFormat();
-  textFormat.setColor( qApp->palette().color( QPalette::Text ) );
-  mPlotItem->xAxis().setTextFormat( textFormat );
-  mPlotItem->yAxis().setTextFormat( textFormat );
+
+  // follow system color scheme by default
+  setBackgroundColor( QColor() );
 
   mCrossHairsItem = new QgsElevationProfileCrossHairsItem( this, mPlotItem );
   mCrossHairsItem->setZValue( 100 );
@@ -588,6 +594,42 @@ void QgsElevationProfileCanvas::setDistanceUnit( Qgis::DistanceUnit unit )
   mPlotItem->setXMinimum( oldMin / mPlotItem->mXScaleFactor );
   mPlotItem->setXMaximum( oldMax / mPlotItem->mXScaleFactor );
   mPlotItem->updatePlot();
+}
+
+void QgsElevationProfileCanvas::setBackgroundColor( const QColor &color )
+{
+  if ( !color.isValid() )
+  {
+    QPalette customPalette = qApp->palette();
+    const QColor baseColor = qApp->palette().color( QPalette::ColorRole::Base );
+    const QColor windowColor = qApp->palette().color( QPalette::ColorRole::Window );
+    customPalette.setColor( QPalette::ColorRole::Base, windowColor );
+    customPalette.setColor( QPalette::ColorRole::Window, baseColor );
+    setPalette( customPalette );
+    scene()->setPalette( customPalette );
+  }
+  else
+  {
+    // build custom palette
+    const bool isDarkTheme = color.lightnessF() < 0.5;
+    QPalette customPalette = qApp->palette();
+    customPalette.setColor( QPalette::ColorRole::Window, color );
+    if ( isDarkTheme )
+    {
+      customPalette.setColor( QPalette::ColorRole::Text, QColor( 255, 255, 255 ) );
+      customPalette.setColor( QPalette::ColorRole::Base, color.lighter( 120 ) );
+    }
+    else
+    {
+      customPalette.setColor( QPalette::ColorRole::Text, QColor( 0, 0, 0 ) );
+      customPalette.setColor( QPalette::ColorRole::Base, color.darker( 120 ) );
+    }
+
+    setPalette( customPalette );
+    scene()->setPalette( customPalette );
+  }
+
+  updateChartFromPalette();
 }
 
 bool QgsElevationProfileCanvas::lockAxisScales() const
@@ -980,6 +1022,45 @@ void QgsElevationProfileCanvas::refineResults()
     mCurrentJob->setContext( context );
   }
   scheduleDeferredRegeneration();
+}
+
+void QgsElevationProfileCanvas::updateChartFromPalette()
+{
+  const QPalette chartPalette = palette();
+  setBackgroundBrush( QBrush( chartPalette.color( QPalette::ColorRole::Base ) ) );
+  {
+    QgsTextFormat textFormat = mPlotItem->xAxis().textFormat();
+    textFormat.setColor( chartPalette.color( QPalette::ColorGroup::Active, QPalette::Text ) );
+    mPlotItem->xAxis().setTextFormat( textFormat );
+    mPlotItem->yAxis().setTextFormat( textFormat );
+  }
+  {
+    std::unique_ptr< QgsFillSymbol > chartFill( mPlotItem->chartBackgroundSymbol()->clone() );
+    chartFill->setColor( chartPalette.color( QPalette::ColorGroup::Active, QPalette::ColorRole::Window ) );
+    mPlotItem->setChartBackgroundSymbol( chartFill.release() );
+  }
+  {
+    std::unique_ptr< QgsFillSymbol > chartBorder( mPlotItem->chartBorderSymbol()->clone() );
+    chartBorder->setColor( chartPalette.color( QPalette::ColorGroup::Active, QPalette::ColorRole::Text ) );
+    mPlotItem->setChartBorderSymbol( chartBorder.release() );
+  }
+  {
+    std::unique_ptr< QgsLineSymbol > chartMajorSymbol( mPlotItem->xAxis().gridMajorSymbol()->clone() );
+    QColor c = chartPalette.color( QPalette::ColorGroup::Active, QPalette::ColorRole::Text );
+    c.setAlpha( 150 );
+    chartMajorSymbol->setColor( c );
+    mPlotItem->xAxis().setGridMajorSymbol( chartMajorSymbol->clone() );
+    mPlotItem->yAxis().setGridMajorSymbol( chartMajorSymbol.release() );
+  }
+  {
+    std::unique_ptr< QgsLineSymbol > chartMinorSymbol( mPlotItem->xAxis().gridMinorSymbol()->clone() );
+    QColor c = chartPalette.color( QPalette::ColorGroup::Active, QPalette::ColorRole::Text );
+    c.setAlpha( 50 );
+    chartMinorSymbol->setColor( c );
+    mPlotItem->xAxis().setGridMinorSymbol( chartMinorSymbol->clone() );
+    mPlotItem->yAxis().setGridMinorSymbol( chartMinorSymbol.release() );
+  }
+  mPlotItem->updatePlot();
 }
 
 QgsProfilePoint QgsElevationProfileCanvas::canvasPointToPlotPoint( QPointF point ) const

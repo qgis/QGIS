@@ -585,6 +585,17 @@ bool QgsGPXHandler::startElement( const XML_Char *qName, const XML_Char **attr )
     else
       parseModes.push( ParsingUnknown );
   }
+  else if ( !std::strcmp( qName, "time" ) )
+  {
+    if ( parseModes.top() == ParsingWaypoint )
+    {
+      mDateTime = &mWpt.time;
+      mCharBuffer.clear();
+      parseModes.push( ParsingDateTime );
+    }
+    else
+      parseModes.push( ParsingUnknown );
+  }
   else if ( !std::strcmp( qName, "sym" ) )
   {
     if ( parseModes.top() == ParsingWaypoint )
@@ -732,6 +743,11 @@ bool QgsGPXHandler::endElement( const std::string &qName )
   else if ( parseModes.top() == ParsingString )
   {
     *mString = mCharBuffer;
+    mCharBuffer.clear();
+  }
+  else if ( parseModes.top() == ParsingDateTime )
+  {
+    *mDateTime = QDateTime::fromString( mCharBuffer, Qt::ISODateWithMs );
     mCharBuffer.clear();
   }
   parseModes.pop();

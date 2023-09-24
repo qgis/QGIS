@@ -76,6 +76,9 @@ from processing.algs.gdal.slope import slope
 from processing.algs.gdal.rasterize_over import rasterize_over
 from processing.algs.gdal.rasterize_over_fixed_value import rasterize_over_fixed_value
 from processing.algs.gdal.viewshed import viewshed
+from processing.algs.gdal.roughness import roughness
+from processing.algs.gdal.pct2rgb import pct2rgb
+from processing.algs.gdal.rgb2pct import rgb2pct
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
@@ -2863,6 +2866,103 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                               '-overwrite -resolution average -separate -r nearest -overwrite -optim RASTER -vrtnodata -9999 ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
+
+    def testPct2Rgb(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = pct2rgb()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['pct2rgb.py',
+                 source + ' ' + outdir + '/check.tif ' +
+                 '-of GTiff -b 1'])
+
+            # set band
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 3,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['pct2rgb.py',
+                 source + ' ' + outdir + '/check.tif ' +
+                 '-of GTiff -b 3'])
+
+            # set RGBA
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'RGBA': True,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['pct2rgb.py',
+                 source + ' ' + outdir + '/check.tif ' +
+                 '-of GTiff -b 1 -rgba'])
+
+    def testRgb2Pct(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = rgb2pct()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['rgb2pct.py',
+                 '-n 2 -of GTiff ' + source + ' ' + outdir + '/check.tif'])
+
+            # set number of colors
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'NCOLORS': 8,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['rgb2pct.py',
+                 '-n 8 -of GTiff ' + source + ' ' + outdir + '/check.tif'])
+
+    def testRoughness(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = roughness()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'roughness ' + source + ' ' + outdir + '/check.tif ' + '-of GTiff -b 1'])
+
+            # set band
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 3,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'roughness ' + source + ' ' + outdir + '/check.tif ' + '-of GTiff -b 3'])
+
+            # compute edges
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'COMPUTE_EDGES': True,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'roughness ' + source + ' ' + outdir + '/check.tif ' + '-of GTiff -b 1 -compute_edges'])
+
+            # creation options
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'roughness ' + source + ' ' + outdir + '/check.tif ' +
+                 '-of GTiff -b 1 -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9'])
 
 
 if __name__ == '__main__':

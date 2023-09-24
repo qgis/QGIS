@@ -90,36 +90,9 @@ Gets raster value at the given coordinates (from the first band)
         RasterInfo( const QgsAlignRaster::RasterInfo &rh );
     };
 
-
-    enum ResampleAlg
-    {
-      RA_NearestNeighbour,
-      RA_Bilinear,
-      RA_Cubic,
-      RA_CubicSpline,
-      RA_Lanczos,
-      RA_Average,
-      RA_Mode,
-      RA_Max,
-      RA_Min,
-      RA_Median,
-      RA_Q1,
-      RA_Q3,
-    };
-
-    struct Item
-    {
-      Item( const QString &input, const QString &output );
-
-      QString inputFilename;
-      QString outputFilename;
-      QgsAlignRaster::ResampleAlg resampleMethod;
-      bool rescaleValues;
-
-
-      double srcCellSizeInDestCRS;
-    };
-    typedef QList<QgsAlignRaster::Item> List;
+    typedef Qgis::GdalResampleAlgorithm ResampleAlg;
+    typedef QgsAlignRasterData::RasterItem Item;
+    typedef QList<QgsAlignRasterData::RasterItem> List;
 
     struct ProgressHandler
     {
@@ -286,9 +259,7 @@ Determine suggested output of raster warp to a different CRS. Returns ``True`` o
 
 
 
-
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

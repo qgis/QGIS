@@ -208,11 +208,6 @@ if (HDF5_FOUND)
   target_compile_definitions(provider_mdal PRIVATE ${HDF5_DEFINITIONS})
 endif()
 
-if (GDAL_FOUND)
-  target_include_directories(provider_mdal PRIVATE ${GDAL_INCLUDE_DIR})
-  target_link_libraries(provider_mdal ${GDAL_LIBRARY} )
-endif()
-
 if (NETCDF_FOUND)
   target_include_directories(provider_mdal PRIVATE ${NETCDF_INCLUDE_DIR})
   target_link_libraries(provider_mdal ${NETCDF_LIBRARY} )

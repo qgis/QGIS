@@ -11,7 +11,6 @@ set(QGIS_APP_SRCS
   qgisappinterface.cpp
   qgisappstylesheet.cpp
   qgsabout.cpp
-  qgsalignrasterdialog.cpp
   qgsappauthrequesthandler.cpp
   qgsappbrowserproviders.cpp
   qgsappcoordinateoperationhandlers.cpp
@@ -258,6 +257,7 @@ set(QGIS_APP_SRCS
   options/qgsadvancedoptions.cpp
   options/qgscodeeditoroptions.cpp
   options/qgscustomprojectionoptions.cpp
+  options/qgselevationoptions.cpp
   options/qgsfontoptions.cpp
   options/qgsgpsdeviceoptions.cpp
   options/qgsgpsoptions.cpp
@@ -597,15 +597,6 @@ endif()
 
 if (WITH_3D)
   target_link_libraries(qgis_app qgis_3d)
-endif()
-
-if (HAVE_GEOREFERENCER)
-  include_directories(SYSTEM
-    ${GSL_INCLUDE_DIR}
-  )
-  target_link_libraries(qgis_app
-    ${GSL_LIBRARIES}
-  )
 endif()
 
 GENERATE_EXPORT_HEADER(

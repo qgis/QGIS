@@ -19,14 +19,7 @@
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgs3d.h"
-
-#include "qgs3dmapscene.h"
-#include "qgs3dmapsettings.h"
-#include "qgs3dutils.h"
-#include "qgscameracontroller.h"
-#include "qgsoffscreen3dengine.h"
 #include "qgspointcloudlayer.h"
-#include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudextentrenderer.h"
 #include "qgspointcloudattributebyramprenderer.h"
 #include "qgspointcloudrgbrenderer.h"
@@ -58,27 +51,11 @@ class TestQgsPointCloud3DRendering : public QgsTest
 
 
   private:
-    bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
 
     std::unique_ptr<QgsProject> mProject;
     QgsPointCloudLayer *mLayer;
 
 };
-
-bool TestQgsPointCloud3DRendering::renderCheck( const QString &testName, QImage &image, int mismatchCount )
-{
-  const QString myTmpDir = QDir::tempPath() + '/';
-  const QString myFileName = myTmpDir + testName + ".png";
-  image.save( myFileName, "PNG" );
-  QgsMultiRenderChecker myChecker;
-  myChecker.setControlPathPrefix( QStringLiteral( "3d" ) );
-  myChecker.setControlName( "expected_" + testName );
-  myChecker.setRenderedImage( myFileName );
-  myChecker.setColorTolerance( 2 );  // color tolerance < 2 was failing polygon3d_extrusion test
-  const bool myResultFlag = myChecker.runTest( testName, mismatchCount );
-  mReport += myChecker.report();
-  return myResultFlag;
-}
 
 //runs before all tests
 void TestQgsPointCloud3DRendering::initTestCase()

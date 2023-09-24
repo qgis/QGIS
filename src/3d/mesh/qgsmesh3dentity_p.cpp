@@ -54,7 +54,7 @@ void QgsMeshDataset3DEntity::buildGeometry()
     return;
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new QgsMeshDataset3DGeometry( mTriangularMesh, layer(), mMapSettings.temporalRange(), mMapSettings.origin(), mSymbol.get(), mesh ) );
+  mesh->setGeometry( new QgsMeshDataset3DGeometry( mTriangularMesh, layer(), mMapSettings.temporalRange(), mMapSettings.origin(), mMapSettings.extent(), mSymbol.get(), mesh ) );
   addComponent( mesh );
 }
 
@@ -89,7 +89,7 @@ QgsMesh3DTerrainTileEntity::QgsMesh3DTerrainTileEntity(
 void QgsMesh3DTerrainTileEntity::buildGeometry()
 {
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new QgsMeshTerrain3DGeometry( mTriangularMesh, mMapSettings.origin(), mSymbol.get()->verticalScale(), mesh ) );
+  mesh->setGeometry( new QgsMeshTerrain3DGeometry( mTriangularMesh, mMapSettings.origin(), mMapSettings.extent(), mSymbol.get()->verticalScale(), mesh ) );
   addComponent( mesh );
 }
 
@@ -102,4 +102,3 @@ void QgsMesh3DTerrainTileEntity::applyMaterial()
     QgsMesh3DMaterial::ZValue );
   addComponent( material );
 }
-

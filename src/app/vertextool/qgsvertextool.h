@@ -224,7 +224,21 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     void toggleVertexCurve();
 
-    typedef QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > VertexEdits;
+    struct VertexEdit
+    {
+      VertexEdit() {}
+
+      VertexEdit( QgsGeometry lgeom, QgsPoint point )
+        : geom( lgeom )
+      {
+        newPoints << point;
+      }
+
+      QgsGeometry geom;
+      QList<QgsPoint> newPoints; // new points (added or moved)
+    };
+
+    typedef QHash<QgsVectorLayer *, QHash<QgsFeatureId, VertexEdit> > VertexEdits;
 
     void addExtraVerticesToEdits( VertexEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer = nullptr, const QgsPoint &layerPoint = QgsPoint() );
 

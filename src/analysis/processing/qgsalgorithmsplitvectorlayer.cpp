@@ -18,6 +18,7 @@
 #include "qgsalgorithmsplitvectorlayer.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvariantutils.h"
+#include "qgsfileutils.h"
 
 ///@cond PRIVATE
 
@@ -81,7 +82,7 @@ void QgsSplitVectorLayerAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
@@ -139,13 +140,13 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
     }
     else
     {
-      fileName = QStringLiteral( "%1%2.%3" ).arg( baseName ).arg( ( *it ).toString() ).arg( outputFormat );
+      fileName = QStringLiteral( "%1%2.%3" ).arg( baseName ).arg( QgsFileUtils::stringToSafeFilename( ( *it ).toString() ) ).arg( outputFormat );
     }
     feedback->pushInfo( QObject::tr( "Creating layer: %1" ).arg( fileName ) );
 
     sink.reset( QgsProcessingUtils::createFeatureSink( fileName, context, fields, geometryType, crs ) );
     const QString expr = QgsExpression::createFieldEqualityExpression( fieldName, *it );
-    QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setFilterExpression( expr ) );
+    QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setFilterExpression( expr ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
     count = 0;
     while ( features.nextFeature( feat ) )
     {

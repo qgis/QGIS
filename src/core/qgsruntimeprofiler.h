@@ -270,6 +270,13 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
+    /**
+     * Returns the model as a multi-line text string.
+     * \param group A group name to filter the model against.
+     * \since QGIS 3.34
+     */
+    QString asText( const QString &group = QString() );
+
 #ifndef SIP_RUN
     ///@cond PRIVATE
   signals:
@@ -300,6 +307,7 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     QgsRuntimeProfilerNode *pathToNode( const QString &group, const QStringList &path ) const;
     QModelIndex node2index( QgsRuntimeProfilerNode *node ) const;
     QModelIndex indexOfParentNode( QgsRuntimeProfilerNode *parentNode ) const;
+    void extractModelAsText( QStringList &lines, const QString &group, const QModelIndex &parent = QModelIndex(), int level = 0 );
 
     /**
      * Returns node for given index. Returns root node for invalid index.

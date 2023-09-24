@@ -8,9 +8,6 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 include_directories (SYSTEM
-  ${GDAL_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 
@@ -128,6 +125,7 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_dbmibase}
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_dbmiclient}
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gproj}
+	  GDAL::GDAL
       )
     else()
       set(GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}
@@ -139,6 +137,7 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_dbmibase}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_dbmiclient}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gproj}
+	GDAL::GDAL
       )
     endif()
 
@@ -214,14 +213,14 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       target_link_libraries(qgis.d.rast${GRASS_BUILD_VERSION}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
-        ${GDAL_LIBRARY}
+        GDAL::GDAL
       )
     else()
       target_link_libraries(qgis.d.rast${GRASS_BUILD_VERSION}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_raster}
-        ${GDAL_LIBRARY}
+        GDAL::GDAL
       )
     endif()
 
@@ -234,7 +233,7 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gproj}
-        ${GDAL_LIBRARY}
+        GDAL::GDAL
       )
     else()
       target_link_libraries(qgis.g.info${GRASS_BUILD_VERSION}
@@ -242,7 +241,7 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gproj}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_raster}
-        ${GDAL_LIBRARY}
+        GDAL::GDAL
       )
     endif()
     if (UNIX)
@@ -261,7 +260,7 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
         qgisgrass${GRASS_BUILD_VERSION}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
-        ${GDAL_LIBRARY}
+        GDAL::GDAL
         qgis_core
       )
     else()
@@ -270,7 +269,7 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_raster}
-        ${GDAL_LIBRARY}
+        GDAL::GDAL
         qgis_core
       )
     endif()
@@ -289,7 +288,7 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_vect}
       ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_dbmibase}
       ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_dbmiclient}
-      ${GDAL_LIBRARY}
+      GDAL::GDAL
       qgis_core
     )
 

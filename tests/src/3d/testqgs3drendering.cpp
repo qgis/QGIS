@@ -95,6 +95,7 @@ class TestQgs3DRendering : public QgsTest
     void testFilteredFlatTerrain();
     void testFilteredDemTerrain();
     void testFilteredExtrudedPolygons();
+    void testFilteredMesh();
     void testDepthBuffer();
     void testAmbientOcclusion();
     void testDebugMap();
@@ -1456,6 +1457,51 @@ void TestQgs3DRendering::testFilteredExtrudedPolygons()
   QVERIFY( imageCheck( "polygon3d_extrusion_filtered", "polygon3d_extrusion_filtered", img, QString(), 40, QSize( 0, 0 ), 2 ) );
 }
 
+void TestQgs3DRendering::testFilteredMesh()
+{
+  const QgsRectangle fullExtent = mLayerMeshDataset->extent();
+  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(),
+                                      fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
+
+  QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
+  symbolMesh3d->setVerticalDatasetGroupIndex( 0 );
+  symbolMesh3d->setVerticalScale( 10 );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setArrowsEnabled( true );
+  symbolMesh3d->setArrowsSpacing( 300 );
+  QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
+  mLayerMeshDataset->setRenderer3D( meshDatasetRenderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( filteredExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+
+  QVERIFY( imageCheck( "mesh3d_filtered", "mesh3d_filtered", img, QString(), 40, QSize( 0, 0 ), 2 ) );
+}
+
 void TestQgs3DRendering::testAmbientOcclusion()
 {
   // =============================================
@@ -1750,7 +1796,7 @@ void TestQgs3DRendering::do3DSceneExport( int zoomLevelsCount, int expectedObjec
     QVERIFY( o->indexes().size() * 3 <= o->vertexPosition().size() );
     sum += o->indexes().size();
   }
-  QCOMPARE( maxFaceCount, sum );
+  QCOMPARE( sum, maxFaceCount );
   exporter.save( QString( "test3DSceneExporter-%1" ).arg( zoomLevelsCount ), "/tmp/" );
 
   QCOMPARE( exporter.mExportedFeatureIds.size(), 3 );
@@ -1803,8 +1849,12 @@ void TestQgs3DRendering::test3DSceneExporter()
 
   // =========== check with 1 big tile ==> 1 exported object
   do3DSceneExport( 1, 1, 165, scene, symbol3d, layerPoly, &engine );
+  // =========== check with 4 tiles ==> 3 exported objects
+  do3DSceneExport( 2, 1, 165, scene, symbol3d, layerPoly, &engine );
   // =========== check with 9 tiles ==> 3 exported objects
-  do3DSceneExport( 3, 3, 165, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 3, 3, 216, scene, symbol3d, layerPoly, &engine );
+  // =========== check with 16 tiles ==> 3 exported objects
+  do3DSceneExport( 4, 3, 132, scene, symbol3d, layerPoly, &engine );
   // =========== check with 25 tiles ==> 3 exported objects
   do3DSceneExport( 5, 3, 165, scene, symbol3d, layerPoly, &engine );
 

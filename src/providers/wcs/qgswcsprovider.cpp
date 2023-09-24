@@ -957,6 +957,10 @@ QList<QgsColorRampShader::ColorRampItem> QgsWcsProvider::colorTable( int bandNum
 
 Qgis::RasterColorInterpretation QgsWcsProvider::colorInterpretation( int bandNo ) const
 {
+  if ( !mCachedGdalDataset.get() )
+  {
+    return Qgis::RasterColorInterpretation::Undefined;
+  }
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mCachedGdalDataset.get(), bandNo );
   return colorInterpretationFromGdal( GDALGetRasterColorInterpretation( myGdalBand ) );
 }

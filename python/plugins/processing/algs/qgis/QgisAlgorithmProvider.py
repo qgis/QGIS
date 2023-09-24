@@ -74,7 +74,6 @@ from .SetVectorStyle import SetVectorStyle
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
-from .TilesXYZ import TilesXYZAlgorithmDirectory, TilesXYZAlgorithmMBTiles
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .UniqueValues import UniqueValues
@@ -140,8 +139,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
                 TextToFloat(),
-                TilesXYZAlgorithmDirectory(),
-                TilesXYZAlgorithmMBTiles(),
                 TinInterpolation(),
                 TopoColor(),
                 UniqueValues(),

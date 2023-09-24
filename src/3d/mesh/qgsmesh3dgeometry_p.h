@@ -32,6 +32,7 @@
 
 #include "qgsmaplayerref.h"
 #include "qgsmesh3dsymbol.h"
+#include "qgsrectangle.h"
 #include "qgstriangularmesh.h"
 
 ///@cond PRIVATE
@@ -72,6 +73,7 @@ class QgsMesh3DGeometryBuilder: public QObject
   public:
     QgsMesh3DGeometryBuilder( const QgsTriangularMesh &mesh,
                               const QgsVector3D &origin,
+                              const QgsRectangle &extent,
                               float vertScale,
                               QObject *parent );
 
@@ -95,6 +97,7 @@ class QgsMesh3DGeometryBuilder: public QObject
 
     QgsTriangularMesh mMesh;
     QgsVector3D mOrigin;
+    QgsRectangle mExtent;
     float mVertScale;
 
     mutable QMutex mMutex;
@@ -118,6 +121,7 @@ class QgsMesh3DGeometry: public Qt3DCore::QGeometry
     //! Constructor
     explicit QgsMesh3DGeometry( const QgsTriangularMesh &triangularMesh,
                                 const QgsVector3D &origin,
+                                const QgsRectangle &extent,
                                 double verticalScale,
                                 QNode *parent );
 
@@ -134,6 +138,7 @@ class QgsMesh3DGeometry: public Qt3DCore::QGeometry
 #endif
 
     QgsVector3D mOrigin;
+    QgsRectangle mExtent;
     float mVertScale;
     QgsTriangularMesh mTriangulaMesh;
 
@@ -179,6 +184,7 @@ class QgsMeshDataset3DGeometry: public QgsMesh3DGeometry
                                        QgsMeshLayer *layer,
                                        const QgsDateTimeRange &timeRange,
                                        const QgsVector3D &origin,
+                                       const QgsRectangle &extent,
                                        const QgsMesh3DSymbol *symbol,
                                        QNode *parent );
 
@@ -230,6 +236,7 @@ class QgsMeshDataset3DGeometryBuilder: public QgsMesh3DGeometryBuilder
     QgsMeshDataset3DGeometryBuilder( const QgsTriangularMesh &mesh,
                                      const QgsMesh &nativeMesh,
                                      const QgsVector3D &origin,
+                                     const QgsRectangle &extent,
                                      float vertScale,
                                      const QgsMeshDataset3DGeometry::VertexData &vertexData,
                                      QObject *parent );
@@ -253,7 +260,8 @@ class QgsMeshTerrain3DGeometry: public  QgsMesh3DGeometry
     //! Constructs a mesh layer geometry from triangular mesh.
     explicit QgsMeshTerrain3DGeometry( const QgsTriangularMesh &triangularMesh,
                                        const QgsVector3D &origin,
-                                       double verticalSacle,
+                                       const QgsRectangle &extent,
+                                       double verticalScale,
                                        QNode *parent );
 };
 

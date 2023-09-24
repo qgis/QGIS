@@ -23,16 +23,17 @@ Email                : zilolv at gmail dot com
 #include "qgsmeshlayer.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
-#include "qgsmeshmemorydataprovider.h"
 
 Q_DECLARE_METATYPE( QgsMeshCalcNode::Operator )
 
-class TestQgsMeshCalculator : public QObject
+class TestQgsMeshCalculator : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsMeshCalculator() = default;
+    TestQgsMeshCalculator()
+      : QgsTest( QStringLiteral( "Mesh Calculator Tests" ) )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

@@ -17,8 +17,6 @@
 
 #include "qgsgcptransformer.h"
 #include "qgsapplication.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsrectangle.h"
 #include "qgsgcpgeometrytransformer.h"
 #include "qgsgeometry.h"
 
@@ -26,9 +24,14 @@
 
 #include <gdal.h>
 
-class TestQgsGcpTransformer : public QObject
+class TestQgsGcpTransformer : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsGcpTransformer()
+      : QgsTest( QStringLiteral( "GCP Transformer Tests" ) )
+    {}
 
     QString SRC_FILE;
   private slots:

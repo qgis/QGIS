@@ -140,6 +140,22 @@ void QgsModelArrowItem::updatePath()
   // is there a fixed start or end point?
   QPointF startPt;
   bool hasStartPt = false;
+
+  // usually arrows attached to an algorithm have a concept of directional flow -- they are either
+  // "inputs" to the item or "outputs". In this case we need to reflect this in how we draw the linking
+  // arrows, because we always have "inputs" on the left/top side and "outputs" on the right/bottom
+  bool startHasSpecificDirectionalFlow = qobject_cast< QgsModelChildAlgorithmGraphicItem * >( mStartItem );
+  bool endHasSpecificDirectionalFlow = qobject_cast< QgsModelChildAlgorithmGraphicItem * >( mEndItem );
+
+  // some specific exceptions to the above
+  if ( qobject_cast< QgsModelCommentGraphicItem * >( mStartItem )
+       || qobject_cast< QgsModelCommentGraphicItem * >( mEndItem ) )
+  {
+    // comments can be freely attached to any side of an algorithm item without directional flow
+    startHasSpecificDirectionalFlow = false;
+    endHasSpecificDirectionalFlow = false;
+  }
+
   if ( mStartIndex != -1 )
   {
     startPt = mStartItem->linkPoint( mStartEdge, mStartIndex, !mStartIsOutgoing );
@@ -164,13 +180,13 @@ void QgsModelArrowItem::updatePath()
 
     controlPoints.append( pt );
     mStartPoint = pt;
-    controlPoints.append( bezierPointForCurve( pt, startEdge, !mStartIsOutgoing ) );
+    controlPoints.append( bezierPointForCurve( pt, startEdge, !mStartIsOutgoing, startHasSpecificDirectionalFlow ) );
   }
   else
   {
     mStartPoint = mStartItem->pos() + startPt;
     controlPoints.append( mStartItem->pos() + startPt );
-    controlPoints.append( bezierPointForCurve( mStartItem->pos() + startPt, mStartEdge == Qt::BottomEdge ? Qt::RightEdge : Qt::LeftEdge, !mStartIsOutgoing ) );
+    controlPoints.append( bezierPointForCurve( mStartItem->pos() + startPt, mStartEdge == Qt::BottomEdge ? Qt::RightEdge : Qt::LeftEdge, !mStartIsOutgoing, startHasSpecificDirectionalFlow ) );
   }
 
   if ( !hasEndPt )
@@ -182,14 +198,14 @@ void QgsModelArrowItem::updatePath()
     else
       pt = mEndItem->calculateAutomaticLinkPoint( startPt + mStartItem->pos(), endEdge );
 
-    controlPoints.append( bezierPointForCurve( pt, endEdge, mEndIsIncoming ) );
+    controlPoints.append( bezierPointForCurve( pt, endEdge, mEndIsIncoming, endHasSpecificDirectionalFlow ) );
     controlPoints.append( pt );
     mEndPoint = pt;
   }
   else
   {
     mEndPoint = mEndItem->pos() + endPt ;
-    controlPoints.append( bezierPointForCurve( mEndItem->pos() + endPt, mEndEdge == Qt::BottomEdge ? Qt::RightEdge : Qt::LeftEdge, mEndIsIncoming ) );
+    controlPoints.append( bezierPointForCurve( mEndItem->pos() + endPt, mEndEdge == Qt::BottomEdge ? Qt::RightEdge : Qt::LeftEdge, mEndIsIncoming, endHasSpecificDirectionalFlow ) );
     controlPoints.append( mEndItem->pos() + endPt );
   }
 
@@ -199,21 +215,21 @@ void QgsModelArrowItem::updatePath()
   setPath( path );
 }
 
-QPointF QgsModelArrowItem::bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming ) const
+QPointF QgsModelArrowItem::bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming, bool hasSpecificDirectionalFlow ) const
 {
   switch ( edge )
   {
     case Qt::LeftEdge:
-      return point + QPointF( incoming ? -50 : 50, 0 );
+      return point + QPointF( hasSpecificDirectionalFlow ? ( incoming ? -50 : 50 ) : -50, 0 );
 
     case Qt::RightEdge:
-      return point + QPointF( incoming ? -50 : 50, 0 );
+      return point + QPointF( hasSpecificDirectionalFlow ? ( incoming ? -50 : 50 ) : 50, 0 );
 
     case Qt::TopEdge:
-      return point + QPointF( 0, incoming ? -30 : 30 );
+      return point + QPointF( 0, hasSpecificDirectionalFlow ? ( incoming ? -30 : 30 ) : -30 );
 
     case Qt::BottomEdge:
-      return point + QPointF( 0, incoming ? -30 : 30 );
+      return point + QPointF( 0, hasSpecificDirectionalFlow ? ( incoming ? -30 : 30 ) : 30 );
   }
   return QPointF();
 }

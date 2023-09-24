@@ -1384,6 +1384,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool saveDirty();
 
+    /**
+     * Pastes the \a features to the \a pasteVectorLayer and gives feedback to the user
+     * according to \a invalidGeometryCount and \a nTotalFeatures
+     * \note Setting the \a duplicateFeature to TRUE will handle the pasting of features as duplicates of pre-existing features
+     */
+    void pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &features, bool duplicateFeature = false );
+
   public slots:
 
     /**
@@ -1675,8 +1682,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showRasterCalculator();
     //! Calculate new meshes from existing ones
     void showMeshCalculator();
-    //! Open dialog to align raster layers
-    void showAlignRasterTool();
 
     /**
      * Called whenever user wants to embed layers
@@ -2347,13 +2352,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Create the option dialog
     QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
-
-    /**
-     * Pastes the \a features to the \a pasteVectorLayer and gives feedback to the user
-     * according to \a invalidGeometryCount and \a nTotalFeatures
-     * \note Setting the \a duplicateFeature to TRUE will handle the pasting of features as duplicates of pre-existing features
-     */
-    void pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &features, bool duplicateFeature = false );
 
     /**
      * starts/stops for a vector layer \a vlayer

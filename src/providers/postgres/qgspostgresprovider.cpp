@@ -2616,7 +2616,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         }
         else if ( fieldTypeName == QLatin1String( "geography" ) )
         {
-          values += QStringLiteral( "%1st_geographyfromewkt(%2)" )
+          values += QStringLiteral( "%1st_geographyfromtext(%2)" )
                     .arg( delim,
                           quotedValue( v.toString() ) );
         }
@@ -2650,7 +2650,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         }
         else if ( fieldTypeName == QLatin1String( "geography" ) )
         {
-          values += QStringLiteral( "%1st_geographyfromewkt($%2)" )
+          values += QStringLiteral( "%1st_geographyfromtext($%2)" )
                     .arg( delim )
                     .arg( defaultValues.size() + offset );
         }
@@ -3223,7 +3223,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           }
           else if ( fld.typeName() == QLatin1String( "geography" ) )
           {
-            sql += QStringLiteral( "st_geographyfromewkt(%1)" )
+            sql += QStringLiteral( "st_geographyfromtext(%1)" )
                    .arg( quotedValue( siter->toString() ) );
           }
           else if ( fld.typeName() == QLatin1String( "jsonb" ) )
@@ -3588,7 +3588,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
           }
           else if ( fld.typeName() == QLatin1String( "geography" ) )
           {
-            sql += QStringLiteral( "st_geographyfromewkt(%1)" )
+            sql += QStringLiteral( "st_geographyfromtext(%1)" )
                    .arg( quotedValue( siter->toString() ) );
           }
           else if ( fld.typeName() == QLatin1String( "jsonb" ) )

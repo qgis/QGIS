@@ -24,7 +24,6 @@ add_library (wmts MODULE ${WMTS_SRCS} ${WMTS_HDRS})
 target_compile_features(wmts PRIVATE cxx_std_17)
 
 include_directories(SYSTEM
-  ${GDAL_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 

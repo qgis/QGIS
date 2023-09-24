@@ -622,7 +622,8 @@ QString QgsRasterInterface::generateBandName( int bandNumber ) const
   if ( mInput )
     return mInput->generateBandName( bandNumber );
 
-  return tr( "Band" ) + QStringLiteral( " %1" ) .arg( bandNumber, 1 + static_cast< int >( std::log10( static_cast< double >( bandCount() ) ) ), 10, QChar( '0' ) );
+  // For bad layers bandCount is 0, no log!
+  return tr( "Band" ) + QStringLiteral( " %1" ) .arg( bandNumber, 1 + ( bandCount() > 0 ? static_cast< int >( std::log10( static_cast< double >( bandCount() ) ) ) : 0 ), 10, QChar( '0' ) );
 }
 
 QString QgsRasterInterface::colorInterpretationName( int bandNo ) const

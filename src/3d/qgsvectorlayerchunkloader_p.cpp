@@ -15,6 +15,9 @@
 
 #include "qgsvectorlayerchunkloader_p.h"
 #include "qgs3dutils.h"
+#include "qgsline3dsymbol.h"
+#include "qgspoint3dsymbol.h"
+#include "qgspolygon3dsymbol.h"
 #include "qgsraycastingutils_p.h"
 #include "qgsabstractvectorlayer3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
@@ -186,7 +189,10 @@ QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, do
                       new QgsVectorLayerChunkLoaderFactory( map, vl, symbol, tilingSettings.zoomLevelsCount() - 1, zMin, zMax ), true )
 {
   mTransform = new Qt3DCore::QTransform;
-  mTransform->setTranslation( QVector3D( 0.0f, map.terrainElevationOffset(), 0.0f ) );
+  if ( applyTerrainOffset() )
+  {
+    mTransform->setTranslation( QVector3D( 0.0f, map.terrainElevationOffset(), 0.0f ) );
+  }
   this->addComponent( mTransform );
 
   connect( &map, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged );
@@ -200,9 +206,53 @@ QgsVectorLayerChunkedEntity::~QgsVectorLayerChunkedEntity()
   cancelActiveJobs();
 }
 
+// if the AltitudeClamping is `Absolute`, do not apply the offset
+bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
+{
+  QgsVectorLayerChunkLoaderFactory *loaderFactory = static_cast<QgsVectorLayerChunkLoaderFactory *>( mChunkLoaderFactory );
+  if ( loaderFactory )
+  {
+    QString symbolType = loaderFactory->mSymbol.get()->type();
+    if ( symbolType == "line" )
+    {
+      QgsLine3DSymbol *lineSymbol = static_cast<QgsLine3DSymbol *>( loaderFactory->mSymbol.get() );
+      if ( lineSymbol && lineSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+      {
+        return false;
+      }
+    }
+    else if ( symbolType == "point" )
+    {
+      QgsPoint3DSymbol *pointSymbol = static_cast<QgsPoint3DSymbol *>( loaderFactory->mSymbol.get() );
+      if ( pointSymbol && pointSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+      {
+        return false;
+      }
+    }
+    else if ( symbolType == "polygon" )
+    {
+      QgsPolygon3DSymbol *polygonSymbol = static_cast<QgsPolygon3DSymbol *>( loaderFactory->mSymbol.get() );
+      if ( polygonSymbol && polygonSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+      {
+        return false;
+      }
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "QgsVectorLayerChunkedEntity::applyTerrainOffset, unhandled symbol type %1" ).arg( symbolType ), 2 );
+    }
+  }
+
+  return true;
+}
+
 void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged( float newOffset )
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged" ), 2 );
+  if ( !applyTerrainOffset() )
+  {
+    newOffset = 0.0;
+  }
   mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
 }
 

@@ -181,6 +181,11 @@ class TEST_EXPORT QgsTest : public QObject
       const QString renderedFileName = QDir::tempPath() + '/' + name + ".png";
       image.save( renderedFileName );
 
+      return imageCheck( name, referenceImage, renderedFileName, controlName, allowedMismatch, sizeTolerance, colorTolerance );
+    }
+
+    bool imageCheck( const QString &name, const QString &referenceImage, const QString &renderedFileName, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0 )
+    {
       QgsMultiRenderChecker checker;
       checker.setControlPathPrefix( mControlPathPrefix );
       checker.setControlName( controlName.isEmpty() ? "expected_" + referenceImage : controlName );
