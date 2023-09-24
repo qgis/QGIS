@@ -447,7 +447,11 @@
                    <number>0</number>
                   </property>
                   <item>
-                   <widget class="QgsPhongMaterialWidget" name="widgetTerrainMaterial" native="true"/>
+                   <widget class="QgsPhongMaterialWidget" name="widgetTerrainMaterial" native="true">
+                    <property name="hasOpacity">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
