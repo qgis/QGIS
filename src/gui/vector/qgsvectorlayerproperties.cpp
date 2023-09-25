@@ -68,6 +68,7 @@
 #include "qgsnative.h"
 #include "qgssubsetstringeditorproviderregistry.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
+#include "qgsfileutils.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #if WITH_QTWEBKIT
@@ -1275,14 +1276,16 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
           {
             QString message;
             const QString filePath { dlg.outputFilePath() };
-            QString safePath { filePath };
+            const QFileInfo fi { filePath };
+            QString safePath { QString( filePath ).replace( fi.baseName(),
+                               QStringLiteral( "%1_%2" ).arg( fi.baseName(), QgsFileUtils::stringToSafeFilename( styleName ) ) ) };
             if ( styleIndex > 0 && stylesSelected.count( ) > 1 )
             {
               int i = 1;
               while ( QFile::exists( safePath ) )
               {
-                const QFileInfo fi { filePath };
-                safePath = QString( filePath ).replace( '.' + fi.completeSuffix(),
+                const QFileInfo fi { safePath };
+                safePath = QString( safePath ).replace( '.' + fi.completeSuffix(),
                                                         QStringLiteral( "_%1.%2" ).arg( QString::number( i ), fi.completeSuffix() ) );
                 i++;
               }
@@ -1321,6 +1324,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             }
             else
             {
+              name += QStringLiteral( "_%1" ).arg( styleName );
               QStringList ids, names, descriptions;
               mLayer->listStylesInDatabase( ids, names, descriptions, msgError );
               int i = 1;
