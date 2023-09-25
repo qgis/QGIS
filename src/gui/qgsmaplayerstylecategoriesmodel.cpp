@@ -284,7 +284,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return tr( "Elevation properties" );
         case Qt::DecorationRole:
-          return QIcon(); // TODO
+          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/elevationscale.svg" ) );
       }
       break;
 
