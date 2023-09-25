@@ -73,14 +73,17 @@ class TestQgsNominatimGeocoder(QgisTestCase):
     def test_url(self):
         geocoder = QgsNominatimGeocoder('')
         self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham', QgsRectangle(3, 5, 6, 8)).toString(),
-                         'https://nominatim.qgis.org/search?format=json&addressdetails=1&viewbox=3,5,6,8&q=20 green st, twaddlingham')
+                         'https://nominatim.qgis.org/search?format=json&addressdetails=1&viewbox=3.0000000,5.0000000,6.0000000,8.0000000&q=20 green st, twaddlingham')
+
+        self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham', QgsRectangle(4.5112248, -9.01938e-06, 4.5112875, 9.01938e-06)).toString(),
+                         'https://nominatim.qgis.org/search?format=json&addressdetails=1&viewbox=4.5112248,-0.0000090,4.5112875,0.0000090&q=20 green st, twaddlingham')
 
         self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham', QgsRectangle(float('-inf'), float('-inf'), float('inf'), float('inf'))).toString(),
                          'https://nominatim.qgis.org/search?format=json&addressdetails=1&q=20 green st, twaddlingham')
 
         geocoder = QgsNominatimGeocoder(countryCodes='ca,km', endpoint='https://my.server/search')
         self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham', QgsRectangle(3, 5, 6, 8)).toString(),
-                         'https://my.server/search?format=json&addressdetails=1&viewbox=3,5,6,8&countrycodes=ca,km&q=20 green st, twaddlingham')
+                         'https://my.server/search?format=json&addressdetails=1&viewbox=3.0000000,5.0000000,6.0000000,8.0000000&countrycodes=ca,km&q=20 green st, twaddlingham')
 
     def test_json_to_result(self):
         geocoder = QgsNominatimGeocoder()
