@@ -259,7 +259,7 @@ QString QgsCoordinateReferenceSystemUtils::translateProjection( const QString &p
   if ( projection == QLatin1String( "eck6" ) )
     return QObject::tr( "Eckert VI" );
   if ( projection == QLatin1String( "eqc" ) )
-    return QObject::tr( "Equidistant Cylindrical (Plate Caree)" );
+    return QObject::tr( "Equidistant Cylindrical (Plate Carrée)" );
   if ( projection == QLatin1String( "eqdc" ) )
     return QObject::tr( "Equidistant Conic" );
   if ( projection == QLatin1String( "eqearth" ) )
