@@ -2550,9 +2550,10 @@ class CORE_EXPORT QgsGeometry
      *          3 at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
      *          4 if the geometry is not intersected by one of the geometries present in the provided layers.
      * \since QGIS 1.5
+     * \deprecated QGIS 3.34
      */
     Q_DECL_DEPRECATED int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) ) SIP_DEPRECATED;
 
     /**
      * Modifies geometry to avoid intersections with the layers specified in project properties

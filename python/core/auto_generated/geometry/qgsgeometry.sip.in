@@ -2430,7 +2430,7 @@ empty if none of the child geometries match the desired type.
 .. versionadded:: 3.2
 %End
 
- int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
+ int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers ) /Deprecated/;
 
 %Docstring
 Modifies geometry to avoid intersections with the layers specified in project properties
@@ -2444,6 +2444,9 @@ Modifies geometry to avoid intersections with the layers specified in project pr
          4 if the geometry is not intersected by one of the geometries present in the provided layers.
 
 .. versionadded:: 1.5
+
+.. deprecated::
+   QGIS 3.34
 %End
 
     Qgis::GeometryOperationResult avoidIntersectionsV2( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
