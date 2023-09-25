@@ -18,6 +18,10 @@ email                : a.furieri@lqt.it
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryfactory.h"
+#include "qgsgeometrycollection.h"
+#include "qgscompoundcurve.h"
+#include "qgscircularstring.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
@@ -125,6 +129,125 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
   field.setLength( fieldSize );
   field.setPrecision( fieldPrec );
   return true;
+}
+
+QgsGeometry QgsSpatiaLiteProvider::convertToProviderType( const QgsGeometry &geom ) const
+{
+  if ( geom.isNull() )
+  {
+    return QgsGeometry();
+  }
+
+  const QgsAbstractGeometry *geometry = geom.constGet();
+  if ( !geometry )
+  {
+    return QgsGeometry();
+  }
+
+  const Qgis::WkbType providerGeomType = wkbType();
+
+  //geom is already in the provider geometry type
+  if ( geometry->wkbType() == providerGeomType )
+  {
+    return QgsGeometry();
+  }
+
+  std::unique_ptr< QgsAbstractGeometry > outputGeom;
+
+  //convert compoundcurve to circularstring (possible if compoundcurve consists of one circular string)
+  if ( QgsWkbTypes::flatType( providerGeomType ) == Qgis::WkbType::CircularString )
+  {
+    QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( geometry );
+    if ( compoundCurve )
+    {
+      if ( compoundCurve->nCurves() == 1 )
+      {
+        const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( compoundCurve->curveAt( 0 ) );
+        if ( circularString )
+        {
+          outputGeom.reset( circularString->clone() );
+        }
+      }
+    }
+  }
+
+  //convert to curved type if necessary
+  if ( !QgsWkbTypes::isCurvedType( geometry->wkbType() ) && QgsWkbTypes::isCurvedType( providerGeomType ) )
+  {
+    QgsAbstractGeometry *curveGeom = outputGeom ? outputGeom->toCurveType() : geometry->toCurveType();
+    if ( curveGeom )
+    {
+      outputGeom.reset( curveGeom );
+    }
+  }
+
+  //convert to linear type from curved type
+  if ( QgsWkbTypes::isCurvedType( geometry->wkbType() ) && !QgsWkbTypes::isCurvedType( providerGeomType ) )
+  {
+    QgsAbstractGeometry *segmentizedGeom = outputGeom ? outputGeom->segmentize() : geometry->segmentize();
+    if ( segmentizedGeom )
+    {
+      outputGeom.reset( segmentizedGeom );
+    }
+  }
+
+  //convert to multitype if necessary
+  if ( QgsWkbTypes::isMultiType( providerGeomType ) && !QgsWkbTypes::isMultiType( geometry->wkbType() ) )
+  {
+    std::unique_ptr< QgsAbstractGeometry > collGeom( QgsGeometryFactory::geomFromWkbType( providerGeomType ) );
+    QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( collGeom.get() );
+    if ( geomCollection )
+    {
+      if ( geomCollection->addGeometry( outputGeom ? outputGeom->clone() : geometry->clone() ) )
+      {
+        outputGeom.reset( collGeom.release() );
+      }
+    }
+  }
+
+  //convert to single type if there's a single part of compatible type
+  if ( !QgsWkbTypes::isMultiType( providerGeomType ) && QgsWkbTypes::isMultiType( geometry->wkbType() ) )
+  {
+    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry );
+    if ( collection )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        const QgsAbstractGeometry *firstGeom = collection->geometryN( 0 );
+        if ( firstGeom && firstGeom->wkbType() == providerGeomType )
+        {
+          outputGeom.reset( firstGeom->clone() );
+        }
+      }
+    }
+  }
+
+  //set z/m types
+  if ( QgsWkbTypes::hasZ( providerGeomType ) )
+  {
+    if ( !outputGeom )
+    {
+      outputGeom.reset( geometry->clone() );
+    }
+    outputGeom->addZValue();
+  }
+
+  if ( QgsWkbTypes::hasM( providerGeomType ) )
+  {
+    if ( !outputGeom )
+    {
+      outputGeom.reset( geometry->clone() );
+    }
+    outputGeom->addMValue();
+  }
+
+  if ( outputGeom )
+  {
+    return QgsGeometry( outputGeom.release() );
+  }
+
+  return QgsGeometry();
+
 }
 
 
@@ -4230,7 +4353,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           {
             unsigned char *wkb = nullptr;
             int wkb_size;
-            QByteArray featureWkb = feature->geometry().asWkb();
+            const QgsGeometry convertedGeom( convertToProviderType( feature->geometry() ) );
+            const QByteArray featureWkb{ !convertedGeom.isNull() ? convertedGeom.asWkb() : feature->geometry().asWkb() };
             convertFromGeosWKB( reinterpret_cast<const unsigned char *>( featureWkb.constData() ),
                                 featureWkb.length(),
                                 &wkb, &wkb_size, nDims );
