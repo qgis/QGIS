@@ -754,10 +754,10 @@ git clone git://github.com/qgis/QGIS.git
 ## 5.5. Configure the build
 
 CMake supports out of source build so we will create a 'build' dir for the
-build process. OS X uses ${HOME}/Applications as a standard user app folder (it
+build process. OS X uses `${HOME}/Applications` as a standard user app folder (it
 gives it the system app folder icon).  If you have the correct permissions you
-may want to build straight into your /Applications folder. The instructions
-below assume you are building into a ${HOME}/Applications directory.
+may want to build straight into your `/Applications` folder. The instructions
+below assume you are building into a `${HOME}/Applications` directory.
 
 In a Terminal cd to the qgis source folder previously downloaded, then:
 
