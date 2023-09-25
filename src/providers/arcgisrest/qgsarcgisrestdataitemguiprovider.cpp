@@ -169,7 +169,7 @@ void QgsArcGisRestDataItemGuiProvider::deleteConnection( QgsDataItem *item )
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  QgsOwsConnection::deleteConnection( QStringLiteral( "arcgisfeatureserver" ), item->name() );
+  QgsArcGisConnectionSettings::sTreeConnectionArcgis->deleteItem( item->name() );
 
   // the parent should be updated
   if ( item->parent() )
