@@ -113,7 +113,12 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   {
     mWebView = new QgsWebView( pMapCanvas );
     // Make the webwiew transparent
-    mWebView->setStyleSheet( QStringLiteral( "background:transparent;" ) );
+
+    // Setting the background color to 'transparent' does not play nice
+    // with webkit scrollbars, that are rendered as black rectangles (#54683)
+    QColor transparentColor = mWebView->palette().color( QPalette::Window );
+    transparentColor.setAlpha( 0 );
+    mWebView->setStyleSheet( QString( "background:%1;" ).arg( transparentColor.name( QColor::HexArgb ) ) );
 
 
 #if WITH_QTWEBKIT
