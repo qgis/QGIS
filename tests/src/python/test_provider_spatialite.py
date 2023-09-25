@@ -40,7 +40,7 @@ from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
 
 from providertestbase import ProviderTestCase
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, compareWkt
 
 # Pass no_exit=True: for some reason this crashes sometimes on exit on Travis
 start_app(True)
@@ -1866,6 +1866,46 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         layer = QgsVectorLayer(
             f'dbname=\'{self.dbname}\' table="table50523" (position) sql=', 'test', 'spatialite')
         self.assertEqual(len([f for f in layer.getFeatures()]), 1)
+
+    def test_absolute_relative_uri(self):
+        context = QgsReadWriteContext()
+        context.setPathResolver(QgsPathResolver(os.path.join(TEST_DATA_DIR, "project.qgs")))
+
+        absolute_uri = 'dbname=\'{}\' table="somedata" (geom)'.format(os.path.join(TEST_DATA_DIR, 'provider', 'spatialite.db'))
+        relative_uri = 'dbname=\'./provider/spatialite.db\' table="somedata" (geom)'
+
+        meta = QgsProviderRegistry.instance().providerMetadata("spatialite")
+        assert meta is not None
+
+        self.assertEqual(meta.absoluteToRelativeUri(absolute_uri, context), relative_uri)
+        self.assertEqual(meta.relativeToAbsoluteUri(relative_uri, context), absolute_uri)
+
+    def testRegression54622Multisurface(self):
+
+        con = spatialite_connect(self.dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = sql = """CREATE TABLE table54622 (
+            _id INTEGER PRIMARY KEY AUTOINCREMENT)"""
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('table54622', 'geometry', 25832, 'MULTIPOLYGON', 'XY', 0)"
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        layer = QgsVectorLayer(
+            'dbname=\'{}\' table="table54622" (geometry) sql='.format(self.dbname), 'test', 'spatialite')
+
+        self.assertTrue(layer.isValid())
+        feature = QgsFeature(layer.fields())
+        feature.setGeometry(QgsGeometry.fromWkt('MULTISURFACE(CURVEPOLYGON(COMPOUNDCURVE((-0.886 0.135,-0.886 -0.038,-0.448 -0.070,-0.427 0.144,-0.886 0.135))))'))
+        self.assertTrue(layer.dataProvider().addFeatures([feature]))
+
+        layer = QgsVectorLayer(
+            'dbname=\'{}\' table="table54622" (geometry) sql='.format(self.dbname), 'test', 'spatialite')
+        feature = next(layer.getFeatures())
+        self.assertFalse(feature.geometry().isNull())
+        self.assertTrue(compareWkt(feature.geometry().asWkt(), 'MultiPolygon (((-0.886 0.135, -0.886 -0.038, -0.448 -0.070, -0.426 0.143, -0.886 0.135)))', 0.01))
 
 
 if __name__ == '__main__':
