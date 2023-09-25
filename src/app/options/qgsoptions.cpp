@@ -1180,6 +1180,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mOffsetQuadSegSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->defaultValue() );
   mCurveOffsetMiterLimitComboBox->setValue( QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit->value() );
   mCurveOffsetMiterLimitComboBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit->defaultValue() );
+  mOffsetCapStyleComboBox->addItem( tr( "Round" ), static_cast< int >( Qgis::EndCapStyle::Round ) );
+  mOffsetCapStyleComboBox->addItem( tr( "Flat" ), static_cast< int >( Qgis::EndCapStyle::Flat ) );
+  mOffsetCapStyleComboBox->addItem( tr( "Square" ), static_cast< int >( Qgis::EndCapStyle::Square ) );
+  Qgis::EndCapStyle capStyleSetting = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle->value();
+  mOffsetCapStyleComboBox->setCurrentIndex( mOffsetCapStyleComboBox->findData( static_cast< int >( capStyleSetting ) ) );
 
   mTracingConvertToCurveCheckBox->setChecked( QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->value() );
   mTracingCustomAngleToleranceSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->value() );
