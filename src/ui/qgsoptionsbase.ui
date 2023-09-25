@@ -122,7 +122,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>8</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -151,8 +151,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>675</width>
-                <height>963</height>
+                <width>843</width>
+                <height>903</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -937,8 +937,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>578</width>
-                <height>1069</height>
+                <width>522</width>
+                <height>1054</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1476,8 +1476,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>465</height>
+                <width>558</width>
+                <height>435</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1720,8 +1720,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>596</width>
-                <height>105</height>
+                <width>533</width>
+                <height>99</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -1803,8 +1803,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>637</width>
-                <height>746</height>
+                <width>843</width>
+                <height>715</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2185,8 +2185,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>457</width>
-                <height>419</height>
+                <width>415</width>
+                <height>403</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -2406,8 +2406,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>508</width>
-                <height>482</height>
+                <width>482</width>
+                <height>456</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2787,9 +2787,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-210</y>
-                <width>843</width>
-                <height>895</height>
+                <y>0</y>
+                <width>578</width>
+                <height>869</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3451,9 +3451,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>551</width>
-                <height>1000</height>
+                <y>-256</y>
+                <width>843</width>
+                <height>971</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3974,30 +3974,10 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <string>Curve Offset Tool</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout">
-                  <item row="1" column="2">
-                   <widget class="QgsSpinBox" name="mOffsetQuadSegSpinBox"/>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_28">
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_25">
                     <property name="text">
-                     <string>Miter limit</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_26">
-                    <property name="text">
-                     <string>Join style</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QComboBox" name="mOffsetJoinStyleComboBox">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
+                     <string>End cap style</string>
                     </property>
                    </widget>
                   </item>
@@ -4008,11 +3988,31 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
+                  <item row="0" column="1">
+                   <spacer name="horizontalSpacer_29">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                   <item row="2" column="2">
                    <widget class="QgsDoubleSpinBox" name="mCurveOffsetMiterLimitComboBox"/>
                   </item>
-                  <item row="0" column="1">
-                   <spacer name="horizontalSpacer_29">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_28">
+                    <property name="text">
+                     <string>Miter limit</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <spacer name="horizontalSpacer_31">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -4037,8 +4037,31 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </spacer>
                   </item>
-                  <item row="2" column="1">
-                   <spacer name="horizontalSpacer_31">
+                  <item row="1" column="2">
+                   <widget class="QgsSpinBox" name="mOffsetQuadSegSpinBox"/>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_26">
+                    <property name="text">
+                     <string>Join style</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QComboBox" name="mOffsetJoinStyleComboBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="2">
+                   <widget class="QComboBox" name="mOffsetCapStyleComboBox"/>
+                  </item>
+                  <item row="3" column="1">
+                   <spacer name="horizontalSpacer_4">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -4155,8 +4178,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>147</width>
-                <height>251</height>
+                <width>139</width>
+                <height>247</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -4335,8 +4358,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>482</width>
-                <height>539</height>
+                <width>448</width>
+                <height>520</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4667,8 +4690,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>657</width>
-                <height>669</height>
+                <width>595</width>
+                <height>639</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5148,7 +5171,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
@@ -5330,7 +5353,6 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsTreeView</tabstop>
   <tabstop>mOptionsScrollArea_01</tabstop>
   <tabstop>grpLocale</tabstop>
@@ -5480,6 +5502,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mOffsetJoinStyleComboBox</tabstop>
   <tabstop>mOffsetQuadSegSpinBox</tabstop>
   <tabstop>mCurveOffsetMiterLimitComboBox</tabstop>
+  <tabstop>mOffsetCapStyleComboBox</tabstop>
   <tabstop>mTracingConvertToCurveCheckBox</tabstop>
   <tabstop>mTracingCustomAngleToleranceSpinBox</tabstop>
   <tabstop>mTracingCustomDistanceToleranceSpinBox</tabstop>
@@ -5528,6 +5551,18 @@ p, li { white-space: pre-wrap; }
   <tabstop>mGPUInfoTextBrowser</tabstop>
   <tabstop>mAutoClearAccessCache</tabstop>
   <tabstop>mClearAccessCache</tabstop>
+  <tabstop>mLayerTreeInsertionMethod</tabstop>
+  <tabstop>mAlwaysUseDecimalPoint</tabstop>
+  <tabstop>mSeparatorComma</tabstop>
+  <tabstop>mSeparatorSpace</tabstop>
+  <tabstop>mSeparatorColon</tabstop>
+  <tabstop>mSeparatorSemicolon</tabstop>
+  <tabstop>mSeparatorTab</tabstop>
+  <tabstop>mSeparatorOther</tabstop>
+  <tabstop>mSeparatorCustom</tabstop>
+  <tabstop>mIncludeHeader</tabstop>
+  <tabstop>reverseWheelZoom</tabstop>
+  <tabstop>mSearchLineEdit</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
