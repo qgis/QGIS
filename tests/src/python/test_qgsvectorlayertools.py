@@ -96,9 +96,11 @@ class TestQgsVectorLayerTools(QgisTestCase):
         """ Test copy and move features"""
         rqst = QgsFeatureRequest()
         rqst.setFilterFid(4)
+        features_count = self.vl.featureCount()
         self.vl.startEditing()
         (ok, rqst, msg) = self.vltools.copyMoveFeatures(self.vl, rqst, -0.1, 0.2)
         self.assertTrue(ok)
+        self.assertEqual(self.vl.featureCount(), features_count + 1)
         for f in self.vl.getFeatures(rqst):
             geom = f.geometry()
             self.assertAlmostEqual(geom.asPoint().x(), -65.42)
