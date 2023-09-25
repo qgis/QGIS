@@ -3082,7 +3082,8 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
     case Qgis::GeometryOperationResult::InvalidBaseGeometry:
       return 3;
     case Qgis::GeometryOperationResult::NothingHappened:
-      return 4;
+
+    // these should never happen
     case Qgis::GeometryOperationResult::SelectionIsEmpty:
     case Qgis::GeometryOperationResult::SelectionIsGreaterThanOne:
     case Qgis::GeometryOperationResult::GeometryEngineError:
@@ -3094,7 +3095,6 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
     case Qgis::GeometryOperationResult::AddRingCrossesExistingRings:
     case Qgis::GeometryOperationResult::AddRingNotInExistingFeature:
     case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
-      // should never happen
       return 4;
   }
 }
