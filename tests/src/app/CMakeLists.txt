@@ -20,6 +20,7 @@ set(TESTS
   testqgsdwgimportdialog.cpp
   testqgsfieldcalculator.cpp
   testqgsmapcanvasdockwidget.cpp
+  testqgsmaptooladdpart.cpp
   testqgsmaptooleditannotation.cpp
   testqgsmaptoolidentifyaction.cpp
   testqgsmaptoollabel.cpp
