@@ -49,7 +49,8 @@ from qgis.core import (
     QgsSymbol,
     QgsVectorLayer,
     QgsReadWriteContext,
-    QgsTextFormat
+    QgsTextFormat,
+    QgsFeatureRequest,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1128,6 +1129,36 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         self.assertTrue(
             self.render_layout_check(
                 'legend_multiple_filter_maps_different_layers', layout
+            )
+        )
+
+    def test_atlas_legend_clipping(self):
+        """Test issue GH #54654"""
+
+        p = QgsProject()
+        self.assertTrue(p.read(os.path.join(TEST_DATA_DIR, 'layouts', 'atlas_legend_clipping.qgs')))
+
+        layout = p.layoutManager().layoutByName('layout1')
+
+        layer = list(p.mapLayers().values())[0]
+        feature = layer.getFeature(3)
+        req = QgsFeatureRequest()
+        req.setFilterExpression('value = 11')
+        feature = next(layer.getFeatures(req))
+
+        layout.reportContext().setFeature(feature)
+        legend = layout.items()[0]
+        legend.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 20))
+        legend.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 20))
+        legend.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 20))
+        legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 20))
+        legend.setStyleFont(QgsLegendStyle.SymbolLabel,
+                            QgsFontUtils.getStandardTestFont('Bold', 20))
+        legend.refresh()
+
+        self.assertTrue(
+            self.render_layout_check(
+                'atlas_legend_clipping', layout
             )
         )
 
