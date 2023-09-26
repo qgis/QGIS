@@ -6210,6 +6210,95 @@ class TestQgsGeometry(unittest.TestCase):
         print((self.report))
         return result
 
+    def testFixedPrecision(self):
+        a = QgsGeometry.fromWkt('LINESTRING(0 0, 9 0)')
+        b = QgsGeometry.fromWkt('LINESTRING(7 0, 13.2 0)')
+
+        geom_params = QgsGeometryParameters()
+        geom_params.setGridSize(2)
+
+        # Intersection, gridSize = 2
+        intersectionExpected = a.intersection(b, geom_params)
+        self.assertEqual(intersectionExpected.asWkt(), 'LineString (8 0, 10 0)')
+
+        # Difference, gridSize = 2
+        differenceExpected = a.difference(b, geom_params)
+        self.assertEqual(differenceExpected.asWkt(), 'LineString (0 0, 8 0)')
+
+        # symDifference, gridSize = 2
+        symDifferenceExpected = a.symDifference(b, geom_params)
+        self.assertEqual(symDifferenceExpected.asWkt(), 'MultiLineString ((0 0, 8 0),(10 0, 14 0))')
+
+        # For union, add a tiny float offset to the first vertex
+        a = QgsGeometry.fromWkt('LINESTRING(0.5 0, 9 0)')
+        # union, gridSize = 2
+        combineExpected = a.combine(b, geom_params)
+        self.assertEqual(combineExpected.asWkt(), 'LineString (0 0, 8 0, 10 0, 14 0)')
+
+        # Subdivide, gridSize = 1
+        geom_params.setGridSize(1)
+        a = QgsGeometry.fromWkt('POLYGON((0 0,0 10,10 10,10 6,100 5.1, 100 10, 110 10, 110 0, 100 0,100 4.9,10 5,10 0,0 0))')
+        subdivideExpected = a.subdivide(6, geom_params)
+        self.assertEqual(subdivideExpected.asWkt(), 'MultiPolygon (((0 10, 7 10, 7 0, 0 0, 0 10)),((10 0, 7 0, 7 5, 10 5, 10 0)),((10 10, 10 6, 10 5, 7 5, 7 10, 10 10)),((14 6, 14 5, 10 5, 10 6, 14 6)),((28 6, 28 5, 14 5, 14 6, 28 6)),((55 6, 55 5, 28 5, 28 6, 55 6)),((100 5, 55 5, 55 6, 100 5)),((100 10, 110 10, 110 0, 100 0, 100 5, 100 10)))')
+
+    def testIntersectsMultiPolygonEmptyRect(self):
+        """Test intersection between a polygon and an empty rectangle. Fix for GH #51492."""
+
+        ''' ogr failing test
+        poly = ogr.CreateGeometryFromWkt('POLYGON((0 0, 0 2, 2 2, 2 0, 0 0))')
+        multi_poly = ogr.CreateGeometryFromWkt('MULTIPOLYGON(((0 0, 0 2, 2 2, 2 0, 0 0)))')
+        bbox = ogr.CreateGeometryFromWkt('POLYGON((1 1, 1 1, 1 1, 1 1, 1 1))')
+        point = ogr.CreateGeometryFromWkt('POINT(1 1)')
+        assert poly.Intersects(point)
+        assert poly.Intersects(bbox)
+        assert multi_poly.Intersects(point)
+        assert multi_poly.Intersects(bbox)   ## << fails
+        '''
+
+        poly = QgsGeometry.fromWkt('MULTIPOLYGON(((0 0, 0 2, 2 2, 2 0, 0 0)))')
+        point = QgsGeometry.fromWkt('POINT(1 1)')
+        bbox = point.boundingBox()
+        self.assertEqual(bbox.area(), 0)
+
+        self.assertTrue(poly.intersects(point))
+        self.assertTrue(poly.boundingBox().intersects(bbox))
+        self.assertTrue(poly.intersects(bbox))  # was failing here!
+
+    def testSplitGeometry(self):
+        """
+        splitGeometry takes either QVector<QgsPoint> or QVector<QgsPointXY>
+        testing the overloaded methods until the QgsPointXY variant is removed in QGIS 4.0
+        this could be potentially removed in favor of the existing cpp test which will be sufficient
+        """
+        square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")
+        line = [QgsPoint(1, -1), QgsPoint(1, 3)]
+        lineXY = [QgsPointXY(1, -1), QgsPointXY(1, 3)]
+
+        r1 = QgsGeometry.fromWkt("Polygon ((1 2, 1 0, 0 0, 0 2, 1 2))")
+        r2 = QgsGeometry.fromWkt("Polygon ((1 0, 1 2, 2 2, 2 0, 1 0))")
+
+        (result, parts, topo) = square.splitGeometry(lineXY, False)
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+        self.assertGeometriesEqual(square, r2)
+        self.assertEqual(len(parts), 1)
+        self.assertGeometriesEqual(parts[0], r1)
+
+        square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")
+        (result, parts, topo) = square.splitGeometry(line, False)
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+        self.assertGeometriesEqual(square, r2)
+        self.assertGeometriesEqual(parts[0], r1)
+
+        multilinestring = QgsGeometry.fromWkt("MultiLinestring((0 1, 1 0),(0 2, 2 0))")
+        blade = QgsCompoundCurve()
+        blade.addCurve(QgsLineString([QgsPointXY(0.8, 0.8), QgsPointXY(1.2, 1.2)]))
+        result, splitted, _ = multilinestring.splitGeometry(blade, False, False, False)
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+        self.assertEqual(len(splitted), 3)
+        self.assertTrue(compareWkt(splitted[0].asWkt(), 'MultiLineString ((0 2, 1 1))'))
+        self.assertTrue(compareWkt(splitted[1].asWkt(), 'MultiLineString ((1 1, 2 0))'))
+        self.assertTrue(compareWkt(splitted[2].asWkt(), 'MultiLineString ((0 1, 1 0))'))
+
 
 if __name__ == '__main__':
     unittest.main()

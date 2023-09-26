@@ -789,24 +789,91 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
   QgsMultiCurve lines;
 
   //For each part
-  for ( int i = 0; i < multiCurve->numGeometries(); ++i )
+  for ( int geometryIndex = 0; geometryIndex < multiCurve->numGeometries(); ++geometryIndex )
   {
-    const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( multiCurve->geometryN( i ) );
-    if ( line )
+    const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( multiCurve->geometryN( geometryIndex ) );
+    if ( !line )
     {
-      //For each segment
-      QgsLineString newLine;
-      newLine.addVertex( line->pointN( 0 ) );
-      int nVertices = line->numPoints();
-      for ( int j = 1; j < ( nVertices - 1 ); ++j )
+      const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( multiCurve->geometryN( geometryIndex ) );
+      line = curve->curveToLine();
+    }
+    if ( !line )
+    {
+      return nullptr;
+    }
+    // we gather the intersection points and their distance from previous node grouped by segment
+    QMap< int, QVector< QPair< double, QgsPoint > > >pointMap;
+    for ( int splitPointIndex = 0; splitPointIndex < splitPoints->numGeometries(); ++splitPointIndex )
+    {
+      const QgsPoint *intersectionPoint = splitPoints->pointN( splitPointIndex );
+
+      QgsPoint segmentPoint2D;
+      QgsVertexId nextVertex;
+      // With closestSegment we only get a 2D point so we need to interpolate if we
+      // don't want to lose Z data
+      line->closestSegment( *intersectionPoint, segmentPoint2D, nextVertex );
+
+      // The intersection might belong to another part, skip it
+      // Note: cannot test for equality because of Z
+      if ( intersectionPoint->x() != segmentPoint2D.x() || intersectionPoint->y() != segmentPoint2D.y() )
       {
-        QgsPoint currentPoint = line->pointN( j );
-        newLine.addVertex( currentPoint );
-        if ( currentPoint == *splitPoint )
+        continue;
+      }
+
+      const QgsLineString segment = QgsLineString( line->pointN( nextVertex.vertex - 1 ), line->pointN( nextVertex.vertex ) );
+      const double distance = segmentPoint2D.distance( line->pointN( nextVertex.vertex - 1 ) );
+
+      // Due to precision issues, distance can be a tad larger than the actual segment length, making interpolatePoint() return nullptr
+      // In that case we'll use the segment's endpoint instead of interpolating
+      std::unique_ptr< QgsPoint > correctSegmentPoint( distance > segment.length() ? segment.endPoint().clone() : segment.interpolatePoint( distance ) );
+
+      const QPair< double, QgsPoint > pair = qMakePair( distance, *correctSegmentPoint.get() );
+      if ( pointMap.contains( nextVertex.vertex - 1 ) )
+        pointMap[ nextVertex.vertex - 1 ].append( pair );
+      else
+        pointMap[ nextVertex.vertex - 1 ] = QVector< QPair< double, QgsPoint > >() << pair;
+    }
+
+    // When we have more than one intersection point on a segment we need those points
+    // to be sorted by their distance from the previous geometry vertex
+    for ( auto &p : pointMap )
+    {
+      std::sort( p.begin(), p.end(), []( const QPair< double, QgsPoint > &a, const QPair< double, QgsPoint > &b ) { return a.first < b.first; } );
+    }
+
+    //For each segment
+    QgsLineString newLine;
+    int nVertices = line->numPoints();
+    QgsPoint splitPoint;
+    for ( int vertexIndex = 0; vertexIndex < nVertices; ++vertexIndex )
+    {
+      QgsPoint currentPoint = line->pointN( vertexIndex );
+      newLine.addVertex( currentPoint );
+      if ( pointMap.contains( vertexIndex ) )
+      {
+        // For each intersecting point
+        for ( int k = 0; k < pointMap[ vertexIndex ].size(); ++k )
         {
-          lines.addGeometry( newLine.clone() );
-          newLine = QgsLineString();
-          newLine.addVertex( currentPoint );
+          splitPoint = pointMap[ vertexIndex ][k].second;
+          if ( splitPoint == currentPoint )
+          {
+            lines.addGeometry( newLine.clone() );
+            newLine = QgsLineString();
+            newLine.addVertex( currentPoint );
+          }
+          else if ( splitPoint == line->pointN( vertexIndex + 1 ) )
+          {
+            newLine.addVertex( line->pointN( vertexIndex + 1 ) );
+            lines.addGeometry( newLine.clone() );
+            newLine = QgsLineString();
+          }
+          else
+          {
+            newLine.addVertex( splitPoint );
+            lines.addGeometry( newLine.clone() );
+            newLine = QgsLineString();
+            newLine.addVertex( splitPoint );
+          }
         }
       }
       newLine.addVertex( line->pointN( nVertices - 1 ) );
