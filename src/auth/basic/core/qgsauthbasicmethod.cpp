@@ -199,14 +199,14 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
           // If username or password contains comma or double quote we need to quote the string
           if ( username.contains( ',' ) || username.contains( '"' ) )
           {
-            username.replace( '"', QStringLiteral( R"(\")" ) );
+            username.replace( '"', QLatin1String( R"(\")" ) );
             username.prepend( '"' );
             username.append( '"' );
           }
 
           if ( password.contains( ',' ) || password.contains( '"' ) )
           {
-            password.replace( '"', QStringLiteral( R"(\")" ) );
+            password.replace( '"', QLatin1String( R"(\")" ) );
             password.prepend( '"' );
             password.append( '"' );
           }
