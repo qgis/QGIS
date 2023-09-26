@@ -2403,6 +2403,16 @@ void TestQgsGeometry::splitGeometry()
   QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( -63290.25259721936890855, -79165.28533450335089583 ) << QgsPoint( -63290.25259721936890855, -79160.28533450335089583 ), newGeoms, false, testPoints ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 1 );
   QCOMPARE( newGeoms[0].asWkt( 17 ), QStringLiteral( "LineString (-63290.25259721937618451 -79162.78533450335089583, -63290.25259721936890855 -79162.78533450335089583)" ) );
+
+  // Should not split the first part - https://github.com/qgis/QGIS/issues/54155
+  g2 = QgsGeometry::fromWkt( "MultiLinestring((0 1, 1 0),(0 2, 2 0))" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 0.8, 0.8 ) << QgsPoint( 1.2, 1.2 ), newGeoms, false, testPoints, false ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 3 );
+  QCOMPARE( newGeoms[0].asWkt( 0 ), QStringLiteral( "MultiLineString ((0 2, 1 1))" ) );
+  QCOMPARE( newGeoms[1].asWkt( 0 ), QStringLiteral( "MultiLineString ((1 1, 2 0))" ) );
+  QCOMPARE( newGeoms[2].asWkt( 0 ), QStringLiteral( "MultiLineString ((0 1, 1 0))" ) );
 }
 
 void TestQgsGeometry::snappedToGrid()
