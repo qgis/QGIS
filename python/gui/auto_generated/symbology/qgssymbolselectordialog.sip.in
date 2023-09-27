@@ -43,6 +43,8 @@ Symbol selector widget that can be used to select and build a symbol
    The ownership of the symbol is not transferred and must exist for the lifetime of the widget.
 %End
 
+
+
     QMenu *advancedMenu();
 %Docstring
 Returns menu for "advanced" button - create it if doesn't exist and show the advanced button

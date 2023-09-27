@@ -139,23 +139,23 @@ void QgsSymbolButton::showSettingsDialog()
     context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer.data() ) );
   }
 
-  QgsSymbol *newSymbol = nullptr;
+  std::unique_ptr< QgsSymbol > newSymbol;
   if ( mSymbol )
   {
-    newSymbol = mSymbol->clone();
+    newSymbol.reset( mSymbol->clone() );
   }
   else
   {
     switch ( mType )
     {
       case Qgis::SymbolType::Marker:
-        newSymbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+        newSymbol.reset( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
         break;
       case Qgis::SymbolType::Line:
-        newSymbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Line );
+        newSymbol.reset( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) );
         break;
       case Qgis::SymbolType::Fill:
-        newSymbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon );
+        newSymbol.reset( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
         break;
       case Qgis::SymbolType::Hybrid:
         break;
@@ -170,25 +170,20 @@ void QgsSymbolButton::showSettingsDialog()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), mLayer, panel );
-    d->setPanelTitle( mDialogTitle );
-    d->setContext( symbolContext );
-    connect( d, &QgsPanelWidget::widgetChanged, this, &QgsSymbolButton::updateSymbolFromWidget );
-    connect( d, &QgsPanelWidget::panelAccepted, this, &QgsSymbolButton::cleanUpSymbolSelector );
-    panel->openPanel( d );
+    QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( newSymbol ), QgsStyle::defaultStyle(), mLayer, panel );
+    widget->setPanelTitle( mDialogTitle );
+    widget->setContext( symbolContext );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ] { updateSymbolFromWidget( widget ); } );
+    panel->openPanel( widget );
   }
   else
   {
-    QgsSymbolSelectorDialog dialog( newSymbol, QgsStyle::defaultStyle(), mLayer, this );
+    QgsSymbolSelectorDialog dialog( newSymbol.get(), QgsStyle::defaultStyle(), mLayer, this );
     dialog.setWindowTitle( mDialogTitle );
     dialog.setContext( symbolContext );
     if ( dialog.exec() )
     {
-      setSymbol( newSymbol );
-    }
-    else
-    {
-      delete newSymbol;
+      setSymbol( newSymbol.release() );
     }
 
     // reactivate button's window
@@ -196,19 +191,9 @@ void QgsSymbolButton::showSettingsDialog()
   }
 }
 
-void QgsSymbolButton::updateSymbolFromWidget()
+void QgsSymbolButton::updateSymbolFromWidget( QgsSymbolSelectorWidget *widget )
 {
-  if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
-    setSymbol( w->symbol()->clone() );
-}
-
-void QgsSymbolButton::cleanUpSymbolSelector( QgsPanelWidget *container )
-{
-  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( container );
-  if ( !w )
-    return;
-
-  delete w->symbol();
+  setSymbol( widget->symbol()->clone() );
 }
 
 QgsMapCanvas *QgsSymbolButton::mapCanvas() const

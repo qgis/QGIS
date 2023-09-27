@@ -386,6 +386,14 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *>& layers ) > ( &QgsProject::layersWillBeRemoved ), this, &QgsSymbolSelectorWidget::layersAboutToBeRemoved );
 }
 
+QgsSymbolSelectorWidget *QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::unique_ptr<QgsSymbol> symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent )
+{
+  QgsSymbolSelectorWidget *widget = new QgsSymbolSelectorWidget( symbol.get(), style, vl, parent );
+  // transfer ownership of symbol to widget, so that we are guaranteed it will last for the duration of the widget
+  widget->mOwnedSymbol = std::move( symbol );
+  return widget;
+}
+
 QMenu *QgsSymbolSelectorWidget::advancedMenu()
 {
   if ( !mAdvancedMenu )

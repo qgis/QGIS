@@ -30,6 +30,7 @@ class QgsPanelWidget;
 class QgsMessageBar;
 class QMimeData;
 class QgsSymbol;
+class QgsSymbolSelectorWidget;
 
 /**
  * \ingroup gui
@@ -304,8 +305,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
   private slots:
 
     void showSettingsDialog();
-    void updateSymbolFromWidget();
-    void cleanUpSymbolSelector( QgsPanelWidget *container );
+    void updateSymbolFromWidget( QgsSymbolSelectorWidget *widget );
 
     /**
      * Creates the drop-down menu entries

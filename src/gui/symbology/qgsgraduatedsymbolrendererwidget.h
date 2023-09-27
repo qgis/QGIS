@@ -31,6 +31,7 @@
 
 #include "qgis_gui.h"
 
+class QgsSymbolSelectorWidget;
 
 #ifndef SIP_RUN
 /// @cond PRIVATE
@@ -144,8 +145,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void mSizeUnitWidget_changed();
     void methodComboBox_currentIndexChanged( int );
     void updateMethodParameters();
-    void cleanUpSymbolSelector( QgsPanelWidget *container );
-    void updateSymbolsFromWidget();
+    void updateSymbolsFromWidget( QgsSymbolSelectorWidget *widget );
     void dataDefinedSizeLegend();
     void changeGraduatedSymbol();
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );

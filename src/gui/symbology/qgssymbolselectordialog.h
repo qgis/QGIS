@@ -105,6 +105,16 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      */
     QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    // TODO QGIS 4.0 -- remove when normal constructor takes ownership
+
+    /**
+     * Creates a QgsSymbolSelectorWidget which takes ownership of a symbol and maintains
+     * the ownership for the life of the widget.
+     *
+     * \note Not available in Python bindings.
+    */
+    static QgsSymbolSelectorWidget *createWidgetWithSymbolOwnership( std::unique_ptr< QgsSymbol > symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr ) SIP_SKIP;
+
     //! Returns menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu *advancedMenu();
 
@@ -258,6 +268,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
     QgsStyle *mStyle = nullptr;
     QgsSymbol *mSymbol = nullptr;
+    std::unique_ptr< QgsSymbol > mOwnedSymbol;
     QMenu *mAdvancedMenu = nullptr;
     QAction *mLockColorAction = nullptr;
     QAction *mLockSelectionColorAction = nullptr;
