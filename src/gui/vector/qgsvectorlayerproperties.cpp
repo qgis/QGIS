@@ -120,6 +120,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( buttonAddMetadataUrl, &QPushButton::clicked, this, &QgsVectorLayerProperties::addMetadataUrl );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
 
+  mProjectDirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
+
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
@@ -554,6 +556,7 @@ void QgsVectorLayerProperties::syncToLayer()
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
   mBackupCrs = mLayer->crs();
+
   //see if we are dealing with a pg layer here
   mSubsetGroupBox->setEnabled( true );
   txtSubsetSQL->setText( mLayer->subsetString() );
@@ -937,7 +940,10 @@ void QgsVectorLayerProperties::apply()
 
   mLayer->triggerRepaint();
   // notify the project we've made a change
+  mProjectDirtyBlocker.reset();
   QgsProject::instance()->setDirty( true );
+  mProjectDirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
+
 }
 
 void QgsVectorLayerProperties::rollback()
@@ -963,10 +969,15 @@ void QgsVectorLayerProperties::rollback()
     mLayer->setSubsetString( mOriginalSubsetSQL );
   }
 
+  // Store it because QgsLayerPropertiesDialog::rollback() calls syncToLayer() which
+  // resets the backupCrs
+  const QgsCoordinateReferenceSystem backupCrs { mBackupCrs };
+
   QgsLayerPropertiesDialog::rollback();
 
-  if ( mBackupCrs != mLayer->crs() )
-    mLayer->setCrs( mBackupCrs );
+  if ( backupCrs != mLayer->crs() )
+    mLayer->setCrs( backupCrs );
+
 }
 
 void QgsVectorLayerProperties::pbnQueryBuilder_clicked()

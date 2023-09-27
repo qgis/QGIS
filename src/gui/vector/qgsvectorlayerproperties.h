@@ -255,6 +255,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
     QgsCoordinateReferenceSystem mBackupCrs;
 
+    std::unique_ptr<QgsProjectDirtyBlocker> mProjectDirtyBlocker;
+
     void initMapTipPreview();
 
     QgsWebView *mMapTipPreview = nullptr;
