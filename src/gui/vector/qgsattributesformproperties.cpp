@@ -1599,7 +1599,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
 
       connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
-        text->insertText( expressionWidget->expression().prepend( QStringLiteral( "[% " ) ).append( QStringLiteral( " %]" ) ) );
+        text->insertText( expressionWidget->expression().prepend( QStringLiteral( "[%" ) ).append( QStringLiteral( "%]" ) ) );
       } );
 
       layout->addWidget( new QLabel( tr( "Title" ) ) );
