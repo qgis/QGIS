@@ -733,6 +733,16 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
     }
   }
 
+  mIndex = QgsTiledSceneIndex(
+             new QgsCesiumTiledSceneIndex(
+               mTileset,
+               rootUrl,
+               authCfg,
+               headers,
+               transformContext
+             )
+           );
+
   // parse root
   {
     const auto &root = mTileset[ "root" ];
@@ -765,7 +775,11 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
         {
           mBoundingVolume = QgsTiledSceneBoundingVolume( QgsOrientedBox3D::fromBox3D( rootRegion ) );
 
-          mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
+          // only set z range for datasets which aren't too large (ie global datasets)
+          if ( !mIndex.rootTile().boundingVolume().box().isNull() )
+          {
+            mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
+          }
           mLayerCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) );
           mSceneCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) );
 
@@ -795,7 +809,11 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
             QgsCoordinateTransform ct( mSceneCrs, mLayerCrs, transformContext );
             ct.setBallparkTransformsAreAppropriate( true );
             const QgsBox3D rootRegion = mBoundingVolume.bounds( ct );
-            mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
+            // only set z range for datasets which aren't too large (ie global datasets)
+            if ( !mIndex.rootTile().boundingVolume().box().isNull() )
+            {
+              mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
+            }
 
             std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume.as2DGeometry( ct ) );
             mExtent = extent2D->boundingBox();
@@ -830,7 +848,11 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
             QgsCoordinateTransform ct( mSceneCrs, mLayerCrs, transformContext );
             ct.setBallparkTransformsAreAppropriate( true );
             const QgsBox3D rootRegion = mBoundingVolume.bounds( ct );
-            mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
+            // only set z range for datasets which aren't too large (ie global datasets)
+            if ( !mIndex.rootTile().boundingVolume().box().isNull() )
+            {
+              mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
+            }
 
             std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume.as2DGeometry( ct ) );
             mExtent = extent2D->boundingBox();
@@ -854,16 +876,6 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
       layerExtent.setSpatialExtents( {spatialExtent } );
       mLayerMetadata.setExtent( layerExtent );
     }
-
-    mIndex = QgsTiledSceneIndex(
-               new QgsCesiumTiledSceneIndex(
-                 mTileset,
-                 rootUrl,
-                 authCfg,
-                 headers,
-                 transformContext
-               )
-             );
   }
 }
 
