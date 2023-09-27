@@ -1613,6 +1613,50 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             root_tile = index.rootTile()
             self.assertEqual(root_tile.metadata(), {'gltfUpAxis': Qgis.Axis.Z})
 
+    def test_large_dataset(self):
+        """
+        Test a near-global dataset
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmp_file = os.path.join(temp_dir, "tileset.json")
+            with open(tmp_file, "wt", encoding="utf-8") as f:
+                f.write(
+                    """{
+  "asset": {
+    "version": "1.0",
+    "tilesetVersion": "0"
+  },
+  "geometricError": 154134.67955991725,
+  "root": {
+    "geometricError": 77067.33977995862,
+    "boundingVolume": {
+      "region": [
+        -3.1415925942485985,
+        -1.4599681618940228,
+        3.141545370875028,
+        1.4403465997204372,
+        -385.0565011513918,
+        5967.300616082603
+      ]
+    },
+    "content": null,
+    "children": [],
+    "refine": "ADD"
+  }
+}"""
+                )
+            layer = QgsTiledSceneLayer(tmp_file, "my layer", "cesiumtiles")
+            self.assertTrue(layer.dataProvider().isValid())
+
+            index = layer.dataProvider().index()
+            self.assertTrue(index.isValid())
+
+            root_tile = index.rootTile()
+            # large (near global) datasets should have no bounding volume
+            self.assertTrue(root_tile.boundingVolume().box().isNull())
+
+            self.assertTrue(layer.dataProvider().zRange().isInfinite())
+
 
 if __name__ == "__main__":
     unittest.main()
