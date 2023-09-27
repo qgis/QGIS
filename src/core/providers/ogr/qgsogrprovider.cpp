@@ -1364,6 +1364,15 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
     return OGR_G_ForceToMultiLineString( hGeom );
   }
 
+  if ( flattenLayerGeomType == wkbPolygon && flattenGeomType == wkbMultiPolygon &&
+       mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
+  {
+    // Do not force multipolygon to polygon for shapefiles, otherwise it will
+    // cause issues with GDAL 3.7 that does honour the topological intent of
+    // multipolygon
+    return hGeom;
+  }
+
   return OGR_G_ForceTo( hGeom, layerGeomType, nullptr );
 }
 
