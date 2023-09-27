@@ -459,7 +459,7 @@ void QgsGeometryCheckerResultTab::openAttributeTable()
     QStringList expr;
     for ( QgsFeatureId id : it.value() )
     {
-      expr.append( QStringLiteral( "$id = %1 " ).arg( id ) );
+      expr.append( QStringLiteral( "@id = %1 " ).arg( id ) );
     }
     if ( mAttribTableDialogs[layerId] )
     {
