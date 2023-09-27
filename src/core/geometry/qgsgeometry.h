@@ -2561,7 +2561,7 @@ class CORE_EXPORT QgsGeometry
      * \param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
      * \returns Success                  in case of success
      *          InvalidInputGeometryType if geometry is not of polygon type
-     *          GeometryTypeHasChanged   if avoid intersection has changed the geometry type,
+     *          GeometryTypeHasChanged   if avoid intersection has changed the geometry type
      *          InvalidBaseGeometry      at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
      *          NothingHappened          if the geometry is not intersected by one of the geometries present in the provided layers.
      * \since QGIS 3.34
