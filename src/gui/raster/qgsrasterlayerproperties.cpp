@@ -65,6 +65,8 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaptip.h"
 #include "qgswebframe.h"
+#include "qgsexpressionfinder.h"
+#include "qgsexpressionbuilderdialog.h"
 #if WITH_QTWEBKIT
 #include <QWebElement>
 #endif
@@ -288,14 +290,19 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   mContext << QgsExpressionContextUtils::layerScope( mRasterLayer );
 
-  mMapTipExpressionWidget->registerExpressionContextGenerator( this );
-
   connect( mInsertExpressionButton, &QAbstractButton::clicked, this, [ = ]
   {
-    QString expression = QStringLiteral( "[% " );
-    expression += mMapTipExpressionWidget->expression();
-    expression += QLatin1String( " %]" );
-    mMapTipWidget->insertText( expression );
+    // Get the linear indexes if the start and end of the selection
+    int selectionStart = mMapTipWidget->selectionStart();
+    int selectionEnd = mMapTipWidget->selectionEnd();
+    QString expression = QgsExpressionFinder::findAndSelectExpression( mMapTipWidget );
+    QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), mContext );
+
+    exprDlg.setWindowTitle( tr( "Insert Expression" ) );
+    if ( exprDlg.exec() == QDialog::Accepted && !exprDlg.expressionText().trimmed().isEmpty() )
+      mMapTipWidget->insertText( "[%" + exprDlg.expressionText().trimmed() + "%]" );
+    else // Restore the selection
+      mMapTipWidget->setLinearSelection( selectionStart, selectionEnd );
   } );
 
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
