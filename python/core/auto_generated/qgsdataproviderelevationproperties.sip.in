@@ -38,7 +38,33 @@ Base class for handling elevation related properties for a data provider.
 Constructor for QgsDataProviderElevationProperties.
 %End
 
+    virtual bool containsElevationData() const;
+%Docstring
+Returns ``True`` if the data provider definitely contains elevation related data.
+
+.. note::
+
+   Even if this method returns ``False``, the data may still relate to elevation values. ``True`` will only
+   be returned in situations where elevation data is definitively present.
+
+.. seealso:: :py:func:`setContainsElevationData`
+
+.. versionadded:: 3.36
+%End
+
+    virtual void setContainsElevationData( bool contains );
+%Docstring
+Sets whether the data provider definitely contains elevation related data.
+
+.. seealso:: :py:func:`containsElevationData`
+
+.. versionadded:: 3.36
+%End
+
     virtual ~QgsDataProviderElevationProperties();
+
+  protected:
+
 };
 
 /************************************************************************
