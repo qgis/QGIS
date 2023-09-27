@@ -547,6 +547,7 @@ set(QGIS_GUI_SRCS
   qgserrordialog.cpp
   qgsexpressionbuilderdialog.cpp
   qgsexpressionbuilderwidget.cpp
+  qgsexpressionfinder.cpp
   qgsexpressionhighlighter.cpp
   qgsexpressionlineedit.cpp
   qgsexpressionpreviewwidget.cpp
@@ -824,6 +825,7 @@ set(QGIS_GUI_HDRS
   qgsexpressionbuilderdialog.h
   qgsexpressionstoredialog.h
   qgsexpressionbuilderwidget.h
+  qgsexpressionfinder.h
   qgsexpressionhighlighter.h
   qgsexpressionlineedit.h
   qgsexpressionpreviewwidget.h
