@@ -10,6 +10,9 @@ __date__ = '23/08/2023'
 __copyright__ = 'Copyright 2023, The QGIS Project'
 
 import qgis  # NOQA
+import tempfile
+import os
+
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -54,6 +57,59 @@ class TestQgsTiledSceneElevationProperties(QgisTestCase):
         props2 = props.clone()
         self.assertEqual(props2.zScale(), 2)
         self.assertEqual(props2.zOffset(), 0.5)
+
+    def testCalculateZRange(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmp_file = os.path.join(temp_dir, "tileset.json")
+            with open(tmp_file, "wt", encoding="utf-8") as f:
+                f.write(
+                    """
+{
+  "asset": {
+    "version": "1.1",
+    "tilesetVersion": "e575c6f1"
+  },
+  "geometricError": 100,
+  "root": {
+    "boundingVolume": {
+      "region": [
+        -1.3197209591796106,
+        0.6988424218,
+        -1.3196390408203893,
+        0.6989055782,
+        1.2,
+        67.00999999999999
+      ]
+    },
+    "geometricError": 100,
+    "refine": "ADD",
+    "children": []
+  }
+}"""
+                )
+
+            layer = QgsTiledSceneLayer(tmp_file, "my layer", "cesiumtiles")
+            self.assertTrue(layer.dataProvider().isValid())
+            self.assertEqual(layer.dataProvider().zRange().lower(), 1.2)
+            self.assertEqual(layer.dataProvider().zRange().upper(), 67.00999999999999)
+
+            props = QgsTiledSceneLayerElevationProperties(layer)
+            self.assertEqual(props.zScale(), 1.0)
+            self.assertEqual(props.zOffset(), 0.0)
+
+            z_range = props.calculateZRange(layer)
+            self.assertEqual(z_range.lower(), 1.2)
+            self.assertEqual(z_range.upper(), 67.00999999999999)
+
+            props.setZOffset(10)
+            z_range = props.calculateZRange(layer)
+            self.assertEqual(z_range.lower(), 11.2)
+            self.assertEqual(z_range.upper(), 77.00999999999999)
+
+            props.setZScale(2)
+            z_range = props.calculateZRange(layer)
+            self.assertEqual(z_range.lower(), 12.4)
+            self.assertEqual(z_range.upper(), 144.01999999999998)
 
 
 if __name__ == '__main__':
