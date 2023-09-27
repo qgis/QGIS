@@ -70,6 +70,7 @@
 #include "qgsfileutils.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
+#include "qgsexpressionfinder.h"
 #if WITH_QTWEBKIT
 #include <QWebElement>
 #endif
@@ -156,13 +157,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
            << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() )
            << QgsExpressionContextUtils::layerScope( mLayer );
 
-  mMapTipExpressionFieldWidget->setLayer( lyr );
-  mMapTipExpressionFieldWidget->registerExpressionContextGenerator( this );
+  mMapTipFieldComboBox->setLayer( lyr );
   mDisplayExpressionWidget->setLayer( lyr );
   mDisplayExpressionWidget->registerExpressionContextGenerator( this );
   initMapTipPreview();
 
-  connect( mInsertExpressionButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertFieldOrExpression );
+  connect( mMapTipInsertFieldButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertField );
+  connect( mMapTipInsertExpressionButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertOrEditExpression );
 
   if ( !mLayer )
     return;
@@ -503,15 +504,34 @@ void QgsVectorLayerProperties::toggleEditing()
   setPbnQueryBuilderEnabled();
 }
 
-void QgsVectorLayerProperties::insertFieldOrExpression()
+void QgsVectorLayerProperties::insertField()
 {
   // Convert the selected field to an expression and
   // insert it into the action at the cursor position
-  QString expression = QStringLiteral( "[% " );
-  expression += mMapTipExpressionFieldWidget->asExpression();
-  expression += QLatin1String( " %]" );
+  if ( mMapTipFieldComboBox->currentField().isEmpty() )
+    return;
+  QString expression = QStringLiteral( "[%" );
+  expression += mMapTipFieldComboBox->currentField();
+  expression += QLatin1String( "%]" );
 
   mMapTipWidget->insertText( expression );
+}
+
+void QgsVectorLayerProperties::insertOrEditExpression()
+{
+  // Get the linear indexes if the start and end of the selection
+  int selectionStart = mMapTipWidget->selectionStart();
+  int selectionEnd = mMapTipWidget->selectionEnd();
+  QString expression = QgsExpressionFinder::findAndSelectExpression( mMapTipWidget );
+
+  QgsExpressionContext context = createExpressionContext();
+  QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, QStringLiteral( "generic" ), context );
+
+  exprDlg.setWindowTitle( tr( "Insert Expression" ) );
+  if ( exprDlg.exec() == QDialog::Accepted && !exprDlg.expressionText().trimmed().isEmpty() )
+    mMapTipWidget->insertText( "[%" + exprDlg.expressionText().trimmed() + "%]" );
+  else // Restore the selection
+    mMapTipWidget->setLinearSelection( selectionStart, selectionEnd );
 }
 
 void QgsVectorLayerProperties::addMetadataUrl()

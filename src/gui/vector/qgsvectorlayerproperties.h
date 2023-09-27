@@ -72,7 +72,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
   private slots:
 
-    void insertFieldOrExpression();
+    void insertField();
+    void insertOrEditExpression();
 
     //! Gets metadata about the layer in nice formatted html
     QString htmlMetadata();
