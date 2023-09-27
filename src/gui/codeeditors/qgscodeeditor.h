@@ -360,6 +360,45 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void setInterpreter( QgsCodeInterpreter *newInterpreter );
 
+    /**
+     * Convenience function to return the cursor position as a linear index
+     *
+     * \since QGIS 3.36
+     */
+    int linearPosition() const;
+
+    /**
+     * Convenience function to set the cursor position as a linear index
+     *
+     * \since QGIS 3.36
+     */
+    void setLinearPosition( int position );
+
+    /**
+     * Convenience function to return the start of the selection as a linear index
+     * Contrary to the getSelection method, this method returns the cursor position if
+     * no selection is made.
+     *
+     * \since QGIS 3.36
+     */
+    int selectionStart() const;
+
+    /**
+     * Convenience function to return the end of the selection as a linear index
+     * Contrary to the getSelection method, this method returns the cursor position if
+     * no selection is made.
+     *
+     * \since QGIS 3.36
+     */
+    int selectionEnd() const;
+
+    /**
+     * Convenience function to set the selection using linear indexes
+     *
+     * \since QGIS 3.36
+     */
+    void setLinearSelection( int start, int end );
+
   public slots:
 
     /**

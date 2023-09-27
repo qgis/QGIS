@@ -752,13 +752,8 @@ void QgsCodeEditor::reformatCode()
   if ( !( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat ) )
     return;
 
-  int line = 0;
-  int index = 0;
-  getCursorPosition( &line, &index );
-  const QString textBeforeCursor = text( 0, positionFromLineIndex( line, index ) );
-
+  const QString textBeforeCursor = text( 0, linearPosition() );
   const QString originalText = text();
-
   const QString newText = reformatCodeString( originalText );
 
   if ( originalText == newText )
@@ -766,14 +761,13 @@ void QgsCodeEditor::reformatCode()
 
   // try to preserve the cursor position and scroll position
   const int oldScrollValue = verticalScrollBar()->value();
-  const int linearPosition = findMinimalDistanceIndex( newText, textBeforeCursor );
+  const int linearIndex = findMinimalDistanceIndex( newText, textBeforeCursor );
 
   beginUndoAction();
   selectAll();
   removeSelectedText();
   insert( newText );
-  lineIndexFromPosition( linearPosition, &line, &index );
-  setCursorPosition( line, index );
+  setLinearPosition( linearIndex );
   verticalScrollBar()->setValue( oldScrollValue );
   endUndoAction();
 }
@@ -1119,6 +1113,50 @@ void QgsCodeEditor::moveCursorToEnd()
 
   if ( mMode == QgsCodeEditor::Mode::CommandInput )
     updatePrompt();
+}
+
+int QgsCodeEditor::linearPosition() const
+{
+  int line, index;
+  getCursorPosition( &line, &index );
+  return positionFromLineIndex( line, index );
+}
+
+void QgsCodeEditor::setLinearPosition( int linearIndex )
+{
+  int line, index;
+  lineIndexFromPosition( linearIndex, &line, &index );
+  setCursorPosition( line, index );
+}
+
+int QgsCodeEditor::selectionStart() const
+{
+  int startLine, startIndex, _;
+  getSelection( &startLine, &startIndex, &_, &_ );
+  if ( startLine == -1 )
+  {
+    return linearPosition();
+  }
+  return positionFromLineIndex( startLine, startIndex );
+}
+
+int QgsCodeEditor::selectionEnd() const
+{
+  int endLine, endIndex, _;
+  getSelection( &_, &_, &endLine, &endIndex );
+  if ( endLine == -1 )
+  {
+    return linearPosition();
+  }
+  return positionFromLineIndex( endLine, endIndex );
+}
+
+void QgsCodeEditor::setLinearSelection( int start, int end )
+{
+  int startLine, startIndex, endLine, endIndex;
+  lineIndexFromPosition( start, &startLine, &startIndex );
+  lineIndexFromPosition( end, &endLine, &endIndex );
+  setSelection( startLine, startIndex, endLine, endIndex );
 }
 
 QgsCodeInterpreter::~QgsCodeInterpreter() = default;
