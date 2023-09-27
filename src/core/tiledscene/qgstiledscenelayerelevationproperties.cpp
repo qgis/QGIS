@@ -67,7 +67,11 @@ QgsDoubleRange QgsTiledSceneLayerElevationProperties::calculateZRange( QgsMapLay
   {
     if ( QgsTiledSceneDataProvider *dp = tiledSceneLayer->dataProvider() )
     {
-      return dp->zRange();
+      const QgsDoubleRange providerRange = dp->zRange();
+      if ( providerRange.isInfinite() || providerRange.isEmpty() )
+        return QgsDoubleRange();
+
+      return QgsDoubleRange( dp->zRange().lower() * mZScale + mZOffset, dp->zRange().upper() * mZScale + mZOffset );
     }
   }
 
