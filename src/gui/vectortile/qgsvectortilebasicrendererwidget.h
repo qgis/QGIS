@@ -33,6 +33,7 @@ class QgsVectorTileLayer;
 class QgsMapCanvas;
 class QgsMessageBar;
 class QgsVectorTileBasicRendererProxyModel;
+class QgsSymbolSelectorWidget;
 
 /**
  * \ingroup gui
@@ -59,8 +60,7 @@ class GUI_EXPORT QgsVectorTileBasicRendererWidget : public QgsMapLayerConfigWidg
     void editStyleAtIndex( const QModelIndex &index );
     void removeStyle();
 
-    void updateSymbolsFromWidget();
-    void cleanUpSymbolSelector( QgsPanelWidget *container );
+    void updateSymbolsFromWidget( QgsSymbolSelectorWidget *widget );
 
   private:
     QPointer< QgsVectorTileLayer > mVTLayer;

@@ -962,19 +962,9 @@ void QgsGraduatedSymbolRendererWidget::setSymbolLevels( const QgsLegendSymbolLis
   emit widgetChanged();
 }
 
-void QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
+void QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget( QgsSymbolSelectorWidget *widget )
 {
-  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( container );
-  if ( !dlg )
-    return;
-
-  delete dlg->symbol();
-}
-
-void QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget()
-{
-  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
-  mGraduatedSymbol.reset( dlg->symbol()->clone() );
+  mGraduatedSymbol.reset( widget->symbol()->clone() );
 
   applyChangeToSymbol();
 }
@@ -1210,14 +1200,11 @@ void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    // bit tricky here - the widget doesn't take ownership of the symbol. So we need it to last for the duration of the
-    // panel's existence. Accordingly, just kinda give it ownership here, and clean up in cleanUpSymbolSelector
-    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.release(), mStyle, mLayer, panel );
-    dlg->setContext( mContext );
-    dlg->setPanelTitle( range.label() );
-    connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );
-    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector );
-    openPanel( dlg );
+    QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( newSymbol ), mStyle, mLayer, panel );
+    widget->setContext( mContext );
+    widget->setPanelTitle( range.label() );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ] { updateSymbolsFromWidget( widget ); } );
+    openPanel( widget );
   }
   else
   {
