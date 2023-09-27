@@ -1114,6 +1114,24 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
         assert QgsGeometry.compare(vl3_extent.asPolygon()[0], reference.asPolygon()[0],
                                    0.00001), f'Expected {reference.asWkt()}, got {vl3_extent.asWkt()}'
 
+    def testWritingMultiPolygon(self):
+        """Test that a MultiPolygon written to a Shape Polygon layer doesn't get converted to Polygon"""
+
+        tmpfile = os.path.join(self.basetestpath, 'testWritingMultiPolygon.shp')
+        ds = osgeo.ogr.GetDriverByName('ESRI Shapefile').CreateDataSource(tmpfile)
+        ds.CreateLayer('testWritingMultiPolygon', geom_type=osgeo.ogr.wkbPolygon)
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile, 'test')
+        f = QgsFeature()
+        f.setAttributes([200])
+        wkt = "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((10 0, 10 1, 11 1, 10 0)))"
+        f.setGeometry(QgsGeometry.fromWkt(wkt))
+        vl.dataProvider().addFeatures([f])
+
+        f = next(vl.getFeatures())
+        self.assertEqual(f.geometry().constGet().asWkt(), wkt)
+
 
 if __name__ == '__main__':
     unittest.main()
