@@ -444,6 +444,7 @@ void QgsExpressionBuilderWidget::btnNewFile_pressed()
   if ( ok && !text.isEmpty() )
   {
     newFunctionFile( text );
+    btnRemoveFile->setEnabled( cmbFileNames->count() > 0 );
   }
 }
 
