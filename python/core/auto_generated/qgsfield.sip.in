@@ -34,6 +34,15 @@ length, and if applicable, precision.
 
   public:
 
+    enum class ConfigurationFlag
+    {
+      None,
+      NotSearchable,
+      HideFromWms,
+      HideFromWfs,
+    };
+    typedef QFlags<QgsField::ConfigurationFlag> ConfigurationFlags;
+
 
     QgsField( const QString &name = QString(),
               QVariant::Type type = QVariant::Invalid,
@@ -342,13 +351,31 @@ Sets the alias for the field (the friendly displayed name of the field ).
 .. versionadded:: 3.0
 %End
 
+    QgsField::ConfigurationFlags configurationFlags() const;
+%Docstring
+Returns the Flags for the field (searchable, …)
 
+.. versionadded:: 3.16
+%End
+
+    void setConfigurationFlags( QgsField::ConfigurationFlags configurationFlags );
+%Docstring
+Sets the Flags for the field (searchable, …)
+
+.. versionadded:: 3.16
+%End
 
     QString displayString( const QVariant &v ) const;
 %Docstring
 Formats string for display
 %End
 
+    static QString readableConfigurationFlag( QgsField::ConfigurationFlag flag );
+%Docstring
+Returns the readable and translated value of the configuration flag
+
+.. versionadded:: 3.16
+%End
 
 
     bool convertCompatible( QVariant &v ) const;
@@ -475,6 +502,9 @@ be handled during a split operation.
 
 
 }; // class QgsField
+
+
+QFlags<QgsField::ConfigurationFlag> operator|(QgsField::ConfigurationFlag f1, QFlags<QgsField::ConfigurationFlag> f2);
 
 
 
