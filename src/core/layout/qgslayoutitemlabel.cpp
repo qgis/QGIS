@@ -51,7 +51,7 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   if ( !defaultFontString.isEmpty() )
   {
     QFont f = mFormat.font();
-    f.setFamily( defaultFontString );
+    QgsFontUtils::setFontFamily( f, defaultFontString );
     mFormat.setFont( f );
   }
 

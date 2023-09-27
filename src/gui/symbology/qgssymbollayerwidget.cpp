@@ -3590,7 +3590,7 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   // layer type is correct, we can do the cast
   mLayer = static_cast<QgsFontMarkerSymbolLayer *>( layer );
 
-  mRefFont.setFamily( mLayer->fontFamily() );
+  QgsFontUtils::setFontFamily( mRefFont, mLayer->fontFamily() );
   mRefFont.setStyleName( QgsFontUtils::translateNamedStyle( mLayer->fontStyle() ) );
 
   mFontStyleComboBox->blockSignals( true );
@@ -3666,7 +3666,7 @@ void QgsFontMarkerSymbolLayerWidget::setFontFamily( const QFont &font )
   if ( mLayer )
   {
     mLayer->setFontFamily( font.family() );
-    mRefFont.setFamily( font.family() );
+    QgsFontUtils::setFontFamily( mRefFont, font.family() );
     widgetChar->setFont( mRefFont );
     mCharPreview->setFont( mRefFont );
     populateFontStyleComboBox();
@@ -3815,7 +3815,7 @@ void QgsFontMarkerSymbolLayerWidget::populateFontStyleComboBox()
   QString targetStyle = mFontDB.styleString( mRefFont );
   if ( !styles.contains( targetStyle ) )
   {
-    const QFont f = QFont( mRefFont.family() );
+    const QFont f = QgsFontUtils::createFont( mRefFont.family() );
     targetStyle = QFontInfo( f ).styleName();
     mRefFont.setStyleName( targetStyle );
   }

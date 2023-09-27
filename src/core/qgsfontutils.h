@@ -207,6 +207,24 @@ class CORE_EXPORT QgsFontUtils
      * \since QGIS 3.0
      */
     static QStringList recentFontFamilies();
+
+    /**
+     * Sets the \a family for a \a font object.
+     *
+     * Applies some workarounds for specific font quirks.
+     *
+     * \since QGIS 3.34
+     */
+    static void setFontFamily( QFont &font, const QString &family );
+
+    /**
+     * Creates a font with the specified \a family.
+     *
+     * Applies some workarounds for specific font quirks.
+     *
+     * \since QGIS 3.34
+     */
+    static QFont createFont( const QString &family, int pointSize = -1, int weight = -1, bool italic = false );
 };
 
 // clazy:excludeall=qstring-allocations

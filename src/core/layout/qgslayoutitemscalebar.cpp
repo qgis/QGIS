@@ -673,7 +673,7 @@ void QgsLayoutItemScaleBar::applyDefaultSettings()
   QFont f;
   if ( !defaultFontString.isEmpty() )
   {
-    f.setFamily( defaultFontString );
+    QgsFontUtils::setFontFamily( f, defaultFontString );
   }
   format.setFont( f );
   format.setSize( 12.0 );

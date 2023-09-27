@@ -34,7 +34,7 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgssettingsentryimpl.h"
-
+#include "qgsfontutils.h"
 
 #include <QMouseEvent>
 
@@ -511,7 +511,7 @@ QFont QgsMapToolLabel::currentLabelFont()
       int fmIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Family, labelSettings, vlayer );
       if ( fmIndx != -1 )
       {
-        font.setFamily( f.attribute( fmIndx ).toString() );
+        QgsFontUtils::setFontFamily( font, f.attribute( fmIndx ).toString() );
       }
 
       //underline
