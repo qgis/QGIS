@@ -45,6 +45,7 @@
 
 #include "characterwidget.h"
 #include "qgsapplication.h"
+#include "qgsfontutils.h"
 
 #include <QFontDatabase>
 #include <QMouseEvent>
@@ -65,7 +66,7 @@ CharacterWidget::CharacterWidget( QWidget *parent )
 
 void CharacterWidget::setFont( const QFont &font )
 {
-  mDisplayFont.setFamily( font.family() );
+  QgsFontUtils::setFontFamily( mDisplayFont, font.family() );
   mSquareSize = std::max( 34, QFontMetrics( mDisplayFont ).xHeight() * 3 );
   adjustSize();
   update();

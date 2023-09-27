@@ -612,7 +612,7 @@ void QgsFontButton::prepareMenu()
   {
     QAction *fontAction = new QAction( family, recentFontMenu );
     QFont f = fontAction->font();
-    f.setFamily( family );
+    QgsFontUtils::setFontFamily( f, family );
     fontAction->setFont( f );
     fontAction->setToolTip( family );
     recentFontMenu->addAction( fontAction );
@@ -630,7 +630,7 @@ void QgsFontButton::prepareMenu()
         {
           QgsTextFormat newFormat = mFormat;
           QFont f = newFormat.font();
-          f.setFamily( family );
+          QgsFontUtils::setFontFamily( f, family );
           newFormat.setFont( f );
           setTextFormat( newFormat );
           QgsFontUtils::addRecentFontFamily( mFormat.font().family() );
@@ -639,7 +639,7 @@ void QgsFontButton::prepareMenu()
         case ModeQFont:
         {
           QFont font = mFont;
-          font.setFamily( family );
+          QgsFontUtils::setFontFamily( font, family );
           setCurrentFont( font );
           QgsFontUtils::addRecentFontFamily( family );
           break;

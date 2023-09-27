@@ -22,6 +22,7 @@
 #include "qgscodeeditorcolorschemeregistry.h"
 #include "qgscodeeditorhistorydialog.h"
 #include "qgsstringutils.h"
+#include "qgsfontutils.h"
 
 #include <QLabel>
 #include <QWidget>
@@ -363,7 +364,7 @@ QFont QgsCodeEditor::lexerFont() const
 
   const QgsSettings settings;
   if ( !mFontFamily.isEmpty() )
-    font.setFamily( mFontFamily );
+    QgsFontUtils::setFontFamily( font, mFontFamily );
 
 #ifdef Q_OS_MAC
   if ( mFontSize > 0 )
@@ -1019,7 +1020,7 @@ QFont QgsCodeEditor::getMonospaceFont()
 
   const QgsSettings settings;
   if ( !settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString().isEmpty() )
-    font.setFamily( settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString() );
+    QgsFontUtils::setFontFamily( font, settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString() );
 
   const int fontSize = settings.value( QStringLiteral( "codeEditor/fontsize" ), 0, QgsSettings::Gui ).toInt();
 

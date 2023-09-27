@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include "qgsformlabelformatwidget.h"
 #include "qgsguiutils.h"
+#include "qgsfontutils.h"
+
 #include <QGroupBox>
 
 /// @cond private
@@ -73,7 +75,7 @@ QgsAttributeEditorElement::LabelStyle QgsFormLabelFormatWidget::labelStyle() con
   QgsAttributeEditorElement::LabelStyle style;
   style.color = btnTextColor->color();
   QFont currentFont;
-  currentFont.setFamily( mFontFamilyCmbBx->currentFont().family() );
+  QgsFontUtils::setFontFamily( currentFont, mFontFamilyCmbBx->currentFont().family() );
   currentFont.setBold( mFontBoldBtn->isChecked() );
   currentFont.setItalic( mFontItalicBtn->isChecked() );
   currentFont.setUnderline( mFontUnderlineBtn->isChecked() );

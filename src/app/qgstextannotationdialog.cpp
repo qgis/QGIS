@@ -25,6 +25,7 @@
 #include "qgshelp.h"
 #include "qgsfillsymbol.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsfontutils.h"
 
 #include <QColorDialog>
 #include <QGraphicsScene>
@@ -119,7 +120,7 @@ void QgsTextAnnotationDialog::applyTextToItem()
 void QgsTextAnnotationDialog::changeCurrentFormat()
 {
   QFont newFont;
-  newFont.setFamily( mFontComboBox->currentFont().family() );
+  QgsFontUtils::setFontFamily( newFont, mFontComboBox->currentFont().family() );
 
   //bold
   if ( mBoldPushButton->isChecked() )

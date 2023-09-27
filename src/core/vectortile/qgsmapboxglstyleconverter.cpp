@@ -1327,7 +1327,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       QString fontFamily;
       if ( splitFontFamily( fontName, fontFamily, fontStyleName ) )
       {
-        textFont = QFont( fontFamily );
+        textFont = QgsFontUtils::createFont( fontFamily );
         if ( !fontStyleName.isEmpty() )
           textFont.setStyleName( fontStyleName );
         foundFont = true;
@@ -1340,7 +1340,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     if ( QgsFontUtils::fontFamilyHasStyle( QStringLiteral( "Open Sans" ), QStringLiteral( "Regular" ) ) )
     {
       fontName = QStringLiteral( "Open Sans" );
-      textFont = QFont( fontName );
+      textFont = QgsFontUtils::createFont( fontName );
       textFont.setStyleName( QStringLiteral( "Regular" ) );
       fontStyleName = QStringLiteral( "Regular" );
       foundFont = true;
@@ -1348,7 +1348,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     else if ( QgsFontUtils::fontFamilyHasStyle( QStringLiteral( "Arial Unicode MS" ), QStringLiteral( "Regular" ) ) )
     {
       fontName = QStringLiteral( "Arial Unicode MS" );
-      textFont = QFont( fontName );
+      textFont = QgsFontUtils::createFont( fontName );
       textFont.setStyleName( QStringLiteral( "Regular" ) );
       fontStyleName = QStringLiteral( "Regular" );
       foundFont = true;

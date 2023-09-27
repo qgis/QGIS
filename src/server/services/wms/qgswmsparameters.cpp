@@ -20,6 +20,8 @@
 #include "qgsmaplayerserverproperties.h"
 #include "qgsmessagelog.h"
 #include "qgswmsserviceexception.h"
+#include "qgsfontutils.h"
+
 #include <QRegularExpression>
 
 const QString EXTERNAL_LAYER_PREFIX = QStringLiteral( "EXTERNAL_WMS:" );
@@ -1264,7 +1266,7 @@ namespace QgsWms
       font.setPointSizeF( layerFontSizeAsDouble() );
 
     if ( !layerFontFamily().isEmpty() )
-      font.setFamily( layerFontFamily() );
+      QgsFontUtils::setFontFamily( font, layerFontFamily() );
 
     return font;
   }
@@ -1281,7 +1283,7 @@ namespace QgsWms
       font.setPointSizeF( itemFontSizeAsDouble() );
 
     if ( !itemFontFamily().isEmpty() )
-      font.setFamily( itemFontFamily() );
+      QgsFontUtils::setFontFamily( font, itemFontFamily() );
 
     return font;
   }

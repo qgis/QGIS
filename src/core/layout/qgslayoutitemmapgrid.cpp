@@ -195,7 +195,7 @@ QgsLayoutItemMapGrid::QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMa
   if ( !defaultFontString.isEmpty() )
   {
     QFont font;
-    font.setFamily( defaultFontString );
+    QgsFontUtils::setFontFamily( font, defaultFontString );
     mAnnotationFormat.setFont( font );
   }
 

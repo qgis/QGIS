@@ -251,6 +251,24 @@ Returns a list of recently used font families.
 
 .. versionadded:: 3.0
 %End
+
+    static void setFontFamily( QFont &font, const QString &family );
+%Docstring
+Sets the ``family`` for a ``font`` object.
+
+Applies some workarounds for specific font quirks.
+
+.. versionadded:: 3.34
+%End
+
+    static QFont createFont( const QString &family, int pointSize = -1, int weight = -1, bool italic = false );
+%Docstring
+Creates a font with the specified ``family``.
+
+Applies some workarounds for specific font quirks.
+
+.. versionadded:: 3.34
+%End
 };
 
 
