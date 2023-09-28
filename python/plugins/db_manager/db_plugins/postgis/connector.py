@@ -46,12 +46,6 @@ from ..plugin import DbError, Table
 
 import os
 import re
-import psycopg2
-import psycopg2.extensions
-
-# use unicode!
-psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
-psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 
 def classFactory():
@@ -1204,12 +1198,6 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         idx_name = self.quoteId("sidx_%s_%s" % (tablename, geom_column))
         return self.deleteTableIndex(table, idx_name)
-
-    def execution_error_types(self):
-        return psycopg2.Error, psycopg2.ProgrammingError, psycopg2.Warning
-
-    def connection_error_types(self):
-        return psycopg2.InterfaceError, psycopg2.OperationalError
 
     def _execute(self, cursor, sql):
         if cursor is not None:
