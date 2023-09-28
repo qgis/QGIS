@@ -32,6 +32,7 @@
 #include <QMatrix4x4>
 
 #include "qgsrange.h"
+#include "qgssettings.h"
 
 #define SIP_NO_FILE
 
@@ -48,7 +49,10 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     //! Constructs a chunked entity
     Qgs3DMapSceneEntity( Qt3DCore::QNode *parent = nullptr )
       : Qt3DCore::QEntity( parent )
-    {}
+    {
+      const QgsSettings settings;
+      mGpuMemoryLimit = settings.value( QStringLiteral( "map3d/gpuMemoryLimit" ), 500.0, QgsSettings::App ).toDouble();
+    }
 
     //! Records some bits about the scene (context for handleSceneUpdate() method)
     struct SceneState
@@ -71,12 +75,32 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     //! Returns the near to far plane range for the entity using the specified \a viewMatrix
     virtual QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const { Q_UNUSED( viewMatrix ) return QgsRange<float>( 1e9, 0 ); }
 
+
+    //! Sets the limit of the GPU memory used to render the entity
+    void setGpuMemoryLimit( double gpuMemoryLimit ) { mGpuMemoryLimit = gpuMemoryLimit; }
+
+    //! Returns the limit of the GPU memory used to render the entity in megabytes
+    double gpuMemoryLimit() const { return mGpuMemoryLimit; }
+
+    //! Returns whether the entity has reached GPU memory limit
+    bool hasReachedGpuMemoryLimit() const { return mHasReachedGpuMemoryLimit; }
+
+  protected:
+    //! Sets whether the GPU memory limit has been reached
+    void setHasReachedGpuMemoryLimit( bool reached ) { mHasReachedGpuMemoryLimit = reached; }
+
   signals:
     //! Emitted when the number of pending jobs changes (some jobs have finished or some jobs have been just created)
     void pendingJobsCountChanged();
 
     //! Emitted when a new 3D entity has been created. Other components can use that to do extra work
     void newEntityCreated( Qt3DCore::QEntity *entity );
+
+  protected:
+    //! Limit how much GPU memory this entity can use
+    double mGpuMemoryLimit = 500.0; // in megabytes
+    //! Whether the entity is currently over the GPU memory limit (used to report a warning to the user)
+    bool mHasReachedGpuMemoryLimit = false;
 };
 
 /// @endcond

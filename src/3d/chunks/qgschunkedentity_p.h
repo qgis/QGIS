@@ -94,20 +94,6 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     QgsChunkNode *rootNode() const { return mRootNode; }
 
     /**
-     * Sets the limit of the GPU memory used to render the entity
-     * \since QGIS 3.26
-     */
-    void setGpuMemoryLimit( double gpuMemoryLimit ) { mGpuMemoryLimit = gpuMemoryLimit; }
-
-    /**
-     * Returns the limit of the GPU memory used to render the entity in megabytes
-     * \since QGIS 3.26
-     */
-    double gpuMemoryLimit() const { return mGpuMemoryLimit; }
-
-    static double calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity );
-
-    /**
      * Checks if \a ray intersects the entity by using the specified parameters in \a context and returns information about the hits.
      * This method is typically used by map tools that need to identify the exact location on a 3d entity that the mouse cursor points at,
      * as well as properties of the intersected entity (fid for vector layers, point cloud attributes for point cloud layers etc). The camera position
@@ -182,7 +168,6 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     bool mIsValid = true;
 
     int mPrimitivesBudget = std::numeric_limits<int>::max();
-    double mGpuMemoryLimit = 500.0; // in megabytes
 };
 
 /// @endcond

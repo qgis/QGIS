@@ -230,6 +230,13 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      */
     void viewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
 
+    /**
+     *  Emitted when one of the entities reaches its GPU memory limit
+     *  and it is not possible to lower the GPU memory use by unloading
+     *  data that's not currently needed.
+     */
+    void gpuMemoryLimitReached();
+
   public slots:
     //! Updates the temporale entities
     void updateTemporal();

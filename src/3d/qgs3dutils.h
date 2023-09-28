@@ -74,6 +74,13 @@ class _3D_EXPORT Qgs3DUtils
     static QImage captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
     /**
+     * Calculates approximate usage of GPU memory by an entity
+     * \return GPU memory usage in megabytes
+     * \since QGIS 3.34
+     */
+    static double calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity );
+
+    /**
      * Captures 3D animation frames to the selected folder
      *
      * \param animationSettings Settings for keyframes and camera

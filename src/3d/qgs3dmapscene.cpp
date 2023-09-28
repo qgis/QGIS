@@ -371,6 +371,8 @@ void Qgs3DMapScene::updateScene()
   for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
   {
     entity->handleSceneUpdate( sceneState_( mEngine ) );
+    if ( entity->hasReachedGpuMemoryLimit() )
+      emit gpuMemoryLimitReached();
   }
 
   updateSceneState();
@@ -446,6 +448,8 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
     {
       QgsDebugMsgLevel( QStringLiteral( "need for update" ), 2 );
       entity->handleSceneUpdate( sceneState_( mEngine ) );
+      if ( entity->hasReachedGpuMemoryLimit() )
+        emit gpuMemoryLimitReached();
     }
   }
 

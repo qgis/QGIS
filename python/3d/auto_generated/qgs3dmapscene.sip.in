@@ -169,6 +169,13 @@ Emitted when the viewed 2D extent seen by the 3D camera has changed
 .. versionadded:: 3.26
 %End
 
+    void gpuMemoryLimitReached();
+%Docstring
+Emitted when one of the entities reaches its GPU memory limit
+and it is not possible to lower the GPU memory use by unloading
+data that's not currently needed.
+%End
+
   public slots:
     void updateTemporal();
 %Docstring
