@@ -22,6 +22,8 @@
 
 class QgsMessageBar;
 class QgsBrowserWidget;
+class QDialogButtonBox;
+class QAbstractButton;
 
 /**
  * \ingroup gui
@@ -221,6 +223,13 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
      */
     Q_DECL_DEPRECATED void splitterMoved() SIP_DEPRECATED;
 
+    /**
+     * Set button box visibility to \a visible.
+     * \note The button box is hidden by default.
+     * \since QGIS 3.34
+     */
+    void setButtonBoxVisibility( bool visible );
+
   signals:
     //! Emitted when a file needs to be opened
     void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
@@ -229,9 +238,22 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
     //! Connections changed in the browser
     void connectionsChanged();
 
+    /**
+    * Emitted when the help button in the button box is clicked
+    * \since QGIS 3.34
+    */
+    void helpRequested();
+
+    /**
+    * Emitted when the close button in the button box is clicked
+    * \since QGIS 3.34
+    */
+    void rejected();
+
   private:
 
     QgsBrowserWidget *mWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
 };
 
 #endif // QGSBROWSERDOCKWIDGET_H

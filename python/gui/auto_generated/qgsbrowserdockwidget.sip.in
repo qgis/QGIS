@@ -234,6 +234,17 @@ Splitter has been moved.
    no longer used.
 %End
 
+    void setButtonBoxVisibility( bool visible );
+%Docstring
+Set button box visibility to ``visible``.
+
+.. note::
+
+   The button box is hidden by default.
+
+.. versionadded:: 3.34
+%End
+
   signals:
     void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
 %Docstring
@@ -246,6 +257,20 @@ Emitted when drop uri list needs to be handled
     void connectionsChanged();
 %Docstring
 Connections changed in the browser
+%End
+
+    void helpRequested();
+%Docstring
+Emitted when the help button in the button box is clicked
+
+.. versionadded:: 3.34
+%End
+
+    void rejected();
+%Docstring
+Emitted when the close button in the button box is clicked
+
+.. versionadded:: 3.34
 %End
 
 };
