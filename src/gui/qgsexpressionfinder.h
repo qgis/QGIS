@@ -46,8 +46,12 @@ class GUI_EXPORT QgsExpressionFinder
      *
      * Otherwise, start and end are set to startSelectionPos and endSelectionPos
      * and expression is set to the selected text
+     *
+     * Optionally, a custom regex pattern can be used to find the expression.
+     * This pattern must contain a capture group to extract the expression from
+     * the match.
      */
-    static void findExpressionAtPos( const QString &text, int startSelectionPos, int endSelectionPos, int &start, int &end, QString &expression );
+    static void findExpressionAtPos( const QString &text, int startSelectionPos, int endSelectionPos, int &start, int &end, QString &expression, const QString &pattern = QString() );
 
     /**
      * Find the expression under the cursor in the given editor and select it
@@ -55,7 +59,7 @@ class GUI_EXPORT QgsExpressionFinder
      * If an expression is found, it is returned (excluding the surrounding [% %] characters)
      * Otherwise, the selection is kept unchanged and the selected text is returned
      */
-    static QString findAndSelectActiveExpression( QgsCodeEditor *editor );
+    static QString findAndSelectActiveExpression( QgsCodeEditor *editor, const QString &pattern = QString() );
 
     /**
      * Find the expression under the cursor in the given editor and select it
@@ -63,7 +67,7 @@ class GUI_EXPORT QgsExpressionFinder
      * If an expression is found, it is returned (excluding the surrounding [% %] characters)
      * Otherwise, the selection is kept unchanged and the selected text is returned
      */
-    static QString findAndSelectActiveExpression( QTextEdit *editor );
+    static QString findAndSelectActiveExpression( QTextEdit *editor, const QString &pattern = QString() );
 
     /**
      * Find the expression under the cursor in the given editor and select it
@@ -71,7 +75,7 @@ class GUI_EXPORT QgsExpressionFinder
      * If an expression is found, it is returned (excluding the surrounding [% %] characters)
      * Otherwise, the selection is kept unchanged and the selected text is returned
      */
-    static QString findAndSelectActiveExpression( QPlainTextEdit *editor );
+    static QString findAndSelectActiveExpression( QPlainTextEdit *editor, const QString &pattern = QString() );
 
 
 };
