@@ -232,9 +232,10 @@ QgsProcessingExec::QgsProcessingExec()
 
 }
 
-int QgsProcessingExec::run( const QStringList &constArgs )
+int QgsProcessingExec::run( const QStringList &args, bool useJson, QgsProcessingContext::LogLevel logLevel, bool skipPython )
 {
-  QStringList args = constArgs;
+  mSkipPython = skipPython;
+
   QObject::connect( QgsApplication::messageLog(), static_cast < void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level ) >( &QgsMessageLog::messageReceived ), QgsApplication::instance(),
                     [ = ]( const QString & message, const QString &, Qgis::MessageLevel level )
   {
@@ -244,35 +245,6 @@ int QgsProcessingExec::run( const QStringList &constArgs )
         std::cerr << message.toLocal8Bit().constData() << '\n';
     }
   } );
-
-  const int jsonIndex = args.indexOf( QLatin1String( "--json" ) );
-  bool useJson = false;
-  if ( jsonIndex >= 0 )
-  {
-    useJson = true;
-    args.removeAt( jsonIndex );
-  }
-
-  const int verboseIndex = args.indexOf( QLatin1String( "--verbose" ) );
-  QgsProcessingContext::LogLevel logLevel = QgsProcessingContext::DefaultLevel;
-  if ( verboseIndex >= 0 )
-  {
-    logLevel = QgsProcessingContext::Verbose;
-    args.removeAt( verboseIndex );
-  }
-
-  const int noPythonIndex = args.indexOf( QLatin1String( "--no-python" ) );
-  if ( noPythonIndex >= 0 )
-  {
-    mSkipPython = true;
-    args.removeAt( noPythonIndex );
-  }
-
-  if ( args.size() == 1 )
-  {
-    showUsage( args.at( 0 ) );
-    return 0;
-  }
 
   // core providers
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
@@ -299,7 +271,7 @@ int QgsProcessingExec::run( const QStringList &constArgs )
   }
 #endif
 
-  const QString command = args.at( 1 );
+  const QString command = args.value( 1 );
   if ( command == QLatin1String( "plugins" ) )
   {
     if ( args.size() == 2 || ( args.size() == 3 && args.at( 2 ) == QLatin1String( "list" ) ) )
@@ -328,11 +300,6 @@ int QgsProcessingExec::run( const QStringList &constArgs )
   else if ( command == QLatin1String( "--version" ) || command == QLatin1String( "-v" ) )
   {
     std::cout << QgsCommandLineUtils::allVersions().toStdString();
-    return 0;
-  }
-  else if ( command == QLatin1String( "--help" ) || command == QLatin1String( "-h" ) )
-  {
-    showUsage( args.at( 0 ) );
     return 0;
   }
   else if ( command == QLatin1String( "help" ) )
