@@ -56,7 +56,7 @@ void QgsExpressionFinder::findExpressionAtPos( const QString &text, int startSel
   }
 }
 
-QString QgsExpressionFinder::findAndSelectExpression( QgsCodeEditor *editor )
+QString QgsExpressionFinder::findAndSelectActiveExpression( QgsCodeEditor *editor )
 {
   QString res;
 
@@ -72,7 +72,7 @@ QString QgsExpressionFinder::findAndSelectExpression( QgsCodeEditor *editor )
   return res;
 }
 
-QString QgsExpressionFinder::findAndSelectExpression( QTextEdit *editor )
+QString QgsExpressionFinder::findAndSelectActiveExpression( QTextEdit *editor )
 {
   QString res;
 
@@ -91,7 +91,7 @@ QString QgsExpressionFinder::findAndSelectExpression( QTextEdit *editor )
   return res;
 }
 
-QString QgsExpressionFinder::findAndSelectExpression( QPlainTextEdit *editor )
+QString QgsExpressionFinder::findAndSelectActiveExpression( QPlainTextEdit *editor )
 {
   QString res;
 

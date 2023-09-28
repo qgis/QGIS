@@ -109,7 +109,7 @@ void QgsDecorationTitleDialog::buttonBox_rejected()
 
 void QgsDecorationTitleDialog::mInsertExpressionButton_clicked()
 {
-  QString expression = QgsExpressionFinder::findAndSelectExpression( txtTitleText );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( txtTitleText );
   QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
 
   exprDlg.setWindowTitle( QObject::tr( "Insert Expression" ) );

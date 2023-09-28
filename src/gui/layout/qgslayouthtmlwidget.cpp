@@ -343,7 +343,7 @@ void QgsLayoutHtmlWidget::mInsertExpressionButton_clicked()
     return;
   }
 
-  QString expression = QgsExpressionFinder::findAndSelectExpression( mHtmlEditor );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mHtmlEditor );
 
   // use the atlas coverage layer, if any
   QgsVectorLayer *layer = coverageLayer();

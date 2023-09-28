@@ -436,7 +436,7 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
 void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString expression = QgsExpressionFinder::findAndSelectExpression( mTextEdit );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
 
   QgsExpressionContext expressionContext;
   if ( context().expressionContext() )
@@ -585,7 +585,7 @@ bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
 void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString expression = QgsExpressionFinder::findAndSelectExpression( mTextEdit );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
 
   QgsExpressionContext expressionContext;
   if ( context().expressionContext() )

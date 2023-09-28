@@ -100,7 +100,7 @@ void QgsDecorationCopyrightDialog::buttonBox_rejected()
 
 void QgsDecorationCopyrightDialog::mInsertExpressionButton_clicked()
 {
-  QString expression = QgsExpressionFinder::findAndSelectExpression( txtCopyrightText );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( txtCopyrightText );
   QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
 
   exprDlg.setWindowTitle( QObject::tr( "Insert Expression" ) );

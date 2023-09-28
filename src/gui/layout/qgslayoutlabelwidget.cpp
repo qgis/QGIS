@@ -345,7 +345,7 @@ void QgsLayoutLabelWidget::mInsertExpressionButton_clicked()
     return;
   }
 
-  QString expression = QgsExpressionFinder::findAndSelectExpression( mTextEdit );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
 
   // use the atlas coverage layer, if any
   QgsVectorLayer *layer = coverageLayer();

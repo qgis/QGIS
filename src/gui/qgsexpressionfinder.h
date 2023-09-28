@@ -55,7 +55,7 @@ class GUI_EXPORT QgsExpressionFinder
      * If an expression is found, it is returned (excluding the surrounding [% %] characters)
      * Otherwise, the selection is kept unchanged and the selected text is returned
      */
-    static QString findAndSelectExpression( QgsCodeEditor *editor );
+    static QString findAndSelectActiveExpression( QgsCodeEditor *editor );
 
     /**
      * Find the expression under the cursor in the given editor and select it
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsExpressionFinder
      * If an expression is found, it is returned (excluding the surrounding [% %] characters)
      * Otherwise, the selection is kept unchanged and the selected text is returned
      */
-    static QString findAndSelectExpression( QTextEdit *editor );
+    static QString findAndSelectActiveExpression( QTextEdit *editor );
 
     /**
      * Find the expression under the cursor in the given editor and select it
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsExpressionFinder
      * If an expression is found, it is returned (excluding the surrounding [% %] characters)
      * Otherwise, the selection is kept unchanged and the selected text is returned
      */
-    static QString findAndSelectExpression( QPlainTextEdit *editor );
+    static QString findAndSelectActiveExpression( QPlainTextEdit *editor );
 
 
 };
