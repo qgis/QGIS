@@ -19,7 +19,11 @@
 #include "qgscodeeditor.h"
 #include "qgsexpressionfinder.h"
 
-void QgsExpressionFinder::findExpressionAtPos( const QString &text, int startSelectionPos, int endSelectionPos, int &start, int &end, QString &expression )
+
+static const QString EXPRESSION_PATTERN = QStringLiteral( "\\[%\\s*(.*?)\\s*%\\]" );
+
+
+void QgsExpressionFinder::findExpressionAtPos( const QString &text, int startSelectionPos, int endSelectionPos, int &start, int &end, QString &expression, const QString &pattern )
 {
   start = startSelectionPos;
   end = endSelectionPos;
@@ -34,7 +38,7 @@ void QgsExpressionFinder::findExpressionAtPos( const QString &text, int startSel
     endSelectionPos--;
   }
 
-  const QRegularExpression regex( QStringLiteral( "\\[%\\s*(.*?)\\s*%\\]" ) );
+  const QRegularExpression regex( pattern.isEmpty() ? EXPRESSION_PATTERN : pattern );
   QRegularExpressionMatchIterator result = regex.globalMatch( text );
 
   while ( result.hasNext() )
@@ -56,7 +60,7 @@ void QgsExpressionFinder::findExpressionAtPos( const QString &text, int startSel
   }
 }
 
-QString QgsExpressionFinder::findAndSelectActiveExpression( QgsCodeEditor *editor )
+QString QgsExpressionFinder::findAndSelectActiveExpression( QgsCodeEditor *editor, const QString &pattern )
 {
   QString res;
 
@@ -65,14 +69,14 @@ QString QgsExpressionFinder::findAndSelectActiveExpression( QgsCodeEditor *edito
 
   // Find the expression at the cursor position
   int newSelectionStart, newSelectionEnd;
-  findExpressionAtPos( editor->text(), startPosition, endPosition, newSelectionStart, newSelectionEnd, res );
+  findExpressionAtPos( editor->text(), startPosition, endPosition, newSelectionStart, newSelectionEnd, res, pattern );
 
   editor->setLinearSelection( newSelectionStart,  newSelectionEnd );
 
   return res;
 }
 
-QString QgsExpressionFinder::findAndSelectActiveExpression( QTextEdit *editor )
+QString QgsExpressionFinder::findAndSelectActiveExpression( QTextEdit *editor, const QString &pattern )
 {
   QString res;
 
@@ -81,7 +85,7 @@ QString QgsExpressionFinder::findAndSelectActiveExpression( QTextEdit *editor )
 
   // Find the expression at the cursor position
   int newSelectionStart, newSelectionEnd;
-  findExpressionAtPos( editor->toPlainText(), startPosition, endPosition, newSelectionStart, newSelectionEnd, res );
+  findExpressionAtPos( editor->toPlainText(), startPosition, endPosition, newSelectionStart, newSelectionEnd, res, pattern );
 
   QTextCursor cursor = editor->textCursor();
   cursor.setPosition( newSelectionStart, QTextCursor::MoveAnchor );
@@ -91,7 +95,7 @@ QString QgsExpressionFinder::findAndSelectActiveExpression( QTextEdit *editor )
   return res;
 }
 
-QString QgsExpressionFinder::findAndSelectActiveExpression( QPlainTextEdit *editor )
+QString QgsExpressionFinder::findAndSelectActiveExpression( QPlainTextEdit *editor, const QString &pattern )
 {
   QString res;
 
@@ -100,7 +104,7 @@ QString QgsExpressionFinder::findAndSelectActiveExpression( QPlainTextEdit *edit
 
   // Find the expression at the cursor position
   int newSelectionStart, newSelectionEnd;
-  findExpressionAtPos( editor->toPlainText(), startPosition, endPosition, newSelectionStart, newSelectionEnd, res );
+  findExpressionAtPos( editor->toPlainText(), startPosition, endPosition, newSelectionStart, newSelectionEnd, res, pattern );
 
   QTextCursor cursor = editor->textCursor();
   cursor.setPosition( newSelectionStart, QTextCursor::MoveAnchor );
