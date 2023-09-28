@@ -38,6 +38,9 @@
 #include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgscodeeditorexpression.h"
+#include "qgsfieldcombobox.h"
+#include "qgsexpressionfinder.h"
+#include "qgsexpressionbuilderdialog.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -1427,13 +1430,37 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       } );
 
       QgsFieldExpressionWidget *expressionWidget = new QgsFieldExpressionWidget;
+      expressionWidget->setButtonVisible( false );
+      expressionWidget->registerExpressionContextGenerator( this );
       expressionWidget->setLayer( mLayer );
-      QToolButton *addExpressionButton = new QToolButton();
-      addExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
+      QToolButton *addFieldButton = new QToolButton();
+      addFieldButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
 
-      connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
+      QToolButton *editExpressionButton = new QToolButton();
+      editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+      editExpressionButton->setToolTip( tr( "Insert/Edit Expression" ) );
+
+      connect( addFieldButton, &QAbstractButton::clicked, this, [ = ]
       {
-        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->expression().replace( '"', QLatin1String( "\\\"" ) ) ) );
+        QString expression = expressionWidget->expression().trimmed().replace( '"', QLatin1String( "\\\"" ) );
+        if ( !expression.isEmpty() )
+          qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expression ) );
+      } );
+
+      connect( editExpressionButton, &QAbstractButton::clicked, this, [ = ]
+      {
+        QString expression = QgsExpressionFinder::findAndSelectActiveExpression( qmlCode, QStringLiteral( "expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)" ) );
+        expression.replace( QStringLiteral( "\\\"" ), QStringLiteral( "\"" ) );
+        QgsExpressionContext context = createExpressionContext();
+        QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, QStringLiteral( "generic" ), context );
+
+        exprDlg.setWindowTitle( tr( "Insert Expression" ) );
+        if ( exprDlg.exec() == QDialog::Accepted && !exprDlg.expressionText().trimmed().isEmpty() )
+        {
+          QString expression = exprDlg.expressionText().trimmed().replace( '"', QLatin1String( "\\\"" ) );
+          if ( !expression.isEmpty() )
+            qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expression ) );
+        }
       } );
 
       layout->addWidget( new QLabel( tr( "Title" ) ) );
@@ -1445,7 +1472,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       qmlCodeBox->layout()->addWidget( expressionWidgetBox );
       expressionWidgetBox->setLayout( new QHBoxLayout );
       expressionWidgetBox->layout()->addWidget( expressionWidget );
-      expressionWidgetBox->layout()->addWidget( addExpressionButton );
+      expressionWidgetBox->layout()->addWidget( addFieldButton );
+      expressionWidgetBox->layout()->addWidget( editExpressionButton );
       qmlCodeBox->layout()->addWidget( qmlCode );
       layout->addWidget( qmlCodeBox );
       QScrollArea *qmlPreviewBox = new QgsScrollArea();
@@ -1512,14 +1540,37 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       } );
 
       QgsFieldExpressionWidget *expressionWidget = new QgsFieldExpressionWidget;
+      expressionWidget->setButtonVisible( false );
       expressionWidget->registerExpressionContextGenerator( this );
       expressionWidget->setLayer( mLayer );
-      QToolButton *addExpressionButton = new QToolButton();
-      addExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
+      QToolButton *addFieldButton = new QToolButton();
+      addFieldButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
 
-      connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
+      QToolButton *editExpressionButton = new QToolButton();
+      editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+      editExpressionButton->setToolTip( tr( "Insert/Edit Expression" ) );
+
+      connect( addFieldButton, &QAbstractButton::clicked, this, [ = ]
       {
-        htmlCode->insertText( QStringLiteral( "<script>document.write(expression.evaluate(\"%1\"));</script>" ).arg( expressionWidget->expression().replace( '"', QLatin1String( "\\\"" ) ) ) );
+        QString expression = expressionWidget->expression().trimmed().replace( '"', QLatin1String( "\\\"" ) );
+        if ( !expression.isEmpty() )
+          htmlCode->insertText( QStringLiteral( "<script>document.write(expression.evaluate(\"%1\"));</script>" ).arg( expression ) );
+      } );
+
+      connect( editExpressionButton, &QAbstractButton::clicked, this, [ = ]
+      {
+        QString expression = QgsExpressionFinder::findAndSelectActiveExpression( htmlCode, QStringLiteral( "<script>\\s*document\\.write\\(\\s*expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)\\s*\\)\\s*;?\\s*</script>" ) );
+        expression.replace( QStringLiteral( "\\\"" ), QStringLiteral( "\"" ) );
+        QgsExpressionContext context = createExpressionContext();
+        QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, QStringLiteral( "generic" ), context );
+
+        exprDlg.setWindowTitle( tr( "Insert Expression" ) );
+        if ( exprDlg.exec() == QDialog::Accepted && !exprDlg.expressionText().trimmed().isEmpty() )
+        {
+          QString expression = exprDlg.expressionText().trimmed().replace( '"', QLatin1String( "\\\"" ) );
+          if ( !expression.isEmpty() )
+            htmlCode->insertText( QStringLiteral( "<script>document.write(expression.evaluate(\"%1\"));</script>" ).arg( expression ) );
+        }
       } );
 
       layout->addWidget( new QLabel( tr( "Title" ) ) );
@@ -1528,7 +1579,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       layout->addWidget( expressionWidgetBox );
       expressionWidgetBox->setLayout( new QHBoxLayout );
       expressionWidgetBox->layout()->addWidget( expressionWidget );
-      expressionWidgetBox->layout()->addWidget( addExpressionButton );
+      expressionWidgetBox->layout()->addWidget( addFieldButton );
+      expressionWidgetBox->layout()->addWidget( editExpressionButton );
       layout->addWidget( htmlCode );
       QScrollArea *htmlPreviewBox = new QgsScrollArea();
       htmlPreviewBox->setLayout( new QGridLayout );
@@ -1593,13 +1645,36 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       } );
 
       QgsFieldExpressionWidget *expressionWidget = new QgsFieldExpressionWidget;
+      expressionWidget->setButtonVisible( false );
+      expressionWidget->registerExpressionContextGenerator( this );
       expressionWidget->setLayer( mLayer );
-      QToolButton *addExpressionButton = new QToolButton();
-      addExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
+      QToolButton *addFieldButton = new QToolButton();
+      addFieldButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
 
-      connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
+      QToolButton *editExpressionButton = new QToolButton();
+      editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+      editExpressionButton->setToolTip( tr( "Insert/Edit Expression" ) );
+
+      connect( addFieldButton, &QAbstractButton::clicked, this, [ = ]
       {
-        text->insertText( expressionWidget->expression().prepend( QStringLiteral( "[%" ) ).append( QStringLiteral( "%]" ) ) );
+        QString expression = expressionWidget->expression().trimmed();
+        if ( !expression.isEmpty() )
+          text->insertText( QStringLiteral( "[%%1%]" ).arg( expression ) );
+      } );
+      connect( editExpressionButton, &QAbstractButton::clicked, this, [ = ]
+      {
+        QString expression = QgsExpressionFinder::findAndSelectActiveExpression( text );
+
+        QgsExpressionContext context = createExpressionContext();
+        QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, QStringLiteral( "generic" ), context );
+
+        exprDlg.setWindowTitle( tr( "Insert Expression" ) );
+        if ( exprDlg.exec() == QDialog::Accepted && !exprDlg.expressionText().trimmed().isEmpty() )
+        {
+          QString expression = exprDlg.expressionText().trimmed();
+          if ( !expression.isEmpty() )
+            text->insertText( QStringLiteral( "[%%1%]" ).arg( expression ) );
+        }
       } );
 
       layout->addWidget( new QLabel( tr( "Title" ) ) );
@@ -1608,7 +1683,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       layout->addWidget( expressionWidgetBox );
       expressionWidgetBox->setLayout( new QHBoxLayout );
       expressionWidgetBox->layout()->addWidget( expressionWidget );
-      expressionWidgetBox->layout()->addWidget( addExpressionButton );
+      expressionWidgetBox->layout()->addWidget( addFieldButton );
+      expressionWidgetBox->layout()->addWidget( editExpressionButton );
       layout->addWidget( text );
       QScrollArea *textPreviewBox = new QgsScrollArea();
       textPreviewBox->setLayout( new QGridLayout );
