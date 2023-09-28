@@ -317,6 +317,21 @@ void QgsFieldExpressionWidget::setAllowEvalErrors( bool allowEvalErrors )
   emit allowEvalErrorsChanged();
 }
 
+
+bool QgsFieldExpressionWidget::buttonVisible() const
+{
+  return mButton->isVisibleTo( this );
+}
+
+void QgsFieldExpressionWidget::setButtonVisible( bool visible )
+{
+  if ( visible == buttonVisible() )
+    return;
+
+  mButton->setVisible( visible );
+  emit buttonVisibleChanged();
+}
+
 void QgsFieldExpressionWidget::currentFieldChanged()
 {
   updateLineEditStyle();
