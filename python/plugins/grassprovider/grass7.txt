@@ -68,12 +68,12 @@ QgsProcessingParameterFile|[name of GRASS parameter]|[description of parameter t
 
 - A numerical value
 
-QgsProcessingParameterNumber|[name of GRASS parameter]|[description of parameter to show]|QgsProcessingParameterNumber.Integer or QgsProcessingParameterNumber.Double|[min value]|[max value]|[default value]|[True/False, indicating if the parameter is optional or not]
+QgsProcessingParameterNumber|[name of GRASS parameter]|[description of parameter to show]|QgsProcessingParameterNumber.Integer or QgsProcessingParameterNumber.Double|[default value]|[True/False, indicating if the parameter is optional or not]|[min value]|[max value]
 
 "None" can be used for both min and max values to indicate that there is no lower
 or upper limit.
 
-Example: QgsProcessingParameterNumber|levels|levels|QgsProcessingParameterNumber.Integer|1|256|32|False
+Example: QgsProcessingParameterNumber|levels|levels|QgsProcessingParameterNumber.Integer|32|False|1|256
 
 - A numerical range
 
