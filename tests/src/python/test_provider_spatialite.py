@@ -1893,19 +1893,31 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cur.execute("COMMIT")
         con.close()
 
+        def _check_feature():
+            layer = QgsVectorLayer(
+                'dbname=\'{}\' table="table54622" (geometry) sql='.format(self.dbname), 'test', 'spatialite')
+            feature = next(layer.getFeatures())
+            self.assertFalse(feature.geometry().isNull())
+            self.assertTrue(compareWkt(feature.geometry().asWkt(), 'MultiPolygon (((-0.886 0.135, -0.886 -0.038, -0.448 -0.070, -0.426 0.143, -0.886 0.135)))', 0.01))
+
         layer = QgsVectorLayer(
             'dbname=\'{}\' table="table54622" (geometry) sql='.format(self.dbname), 'test', 'spatialite')
 
         self.assertTrue(layer.isValid())
         feature = QgsFeature(layer.fields())
-        feature.setGeometry(QgsGeometry.fromWkt('MULTISURFACE(CURVEPOLYGON(COMPOUNDCURVE((-0.886 0.135,-0.886 -0.038,-0.448 -0.070,-0.427 0.144,-0.886 0.135))))'))
+        geom = QgsGeometry.fromWkt('MULTISURFACE(CURVEPOLYGON(COMPOUNDCURVE((-0.886 0.135,-0.886 -0.038,-0.448 -0.070,-0.427 0.144,-0.886 0.135))))')
+        feature.setGeometry(geom)
         self.assertTrue(layer.dataProvider().addFeatures([feature]))
 
-        layer = QgsVectorLayer(
-            'dbname=\'{}\' table="table54622" (geometry) sql='.format(self.dbname), 'test', 'spatialite')
-        feature = next(layer.getFeatures())
-        self.assertFalse(feature.geometry().isNull())
-        self.assertTrue(compareWkt(feature.geometry().asWkt(), 'MultiPolygon (((-0.886 0.135, -0.886 -0.038, -0.448 -0.070, -0.426 0.143, -0.886 0.135)))', 0.01))
+        _check_feature()
+
+        self.assertTrue(layer.dataProvider().changeFeatures({}, {feature.id(): geom}))
+
+        _check_feature()
+
+        self.assertTrue(layer.dataProvider().changeGeometryValues({feature.id(): geom}))
+
+        _check_feature()
 
 
 if __name__ == '__main__':

@@ -131,124 +131,6 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
   return true;
 }
 
-QgsGeometry QgsSpatiaLiteProvider::convertToProviderType( const QgsGeometry &geom ) const
-{
-  if ( geom.isNull() )
-  {
-    return QgsGeometry();
-  }
-
-  const QgsAbstractGeometry *geometry = geom.constGet();
-  if ( !geometry )
-  {
-    return QgsGeometry();
-  }
-
-  const Qgis::WkbType providerGeomType = wkbType();
-
-  //geom is already in the provider geometry type
-  if ( geometry->wkbType() == providerGeomType )
-  {
-    return QgsGeometry();
-  }
-
-  std::unique_ptr< QgsAbstractGeometry > outputGeom;
-
-  //convert compoundcurve to circularstring (possible if compoundcurve consists of one circular string)
-  if ( QgsWkbTypes::flatType( providerGeomType ) == Qgis::WkbType::CircularString )
-  {
-    QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( geometry );
-    if ( compoundCurve )
-    {
-      if ( compoundCurve->nCurves() == 1 )
-      {
-        const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( compoundCurve->curveAt( 0 ) );
-        if ( circularString )
-        {
-          outputGeom.reset( circularString->clone() );
-        }
-      }
-    }
-  }
-
-  //convert to curved type if necessary
-  if ( !QgsWkbTypes::isCurvedType( geometry->wkbType() ) && QgsWkbTypes::isCurvedType( providerGeomType ) )
-  {
-    QgsAbstractGeometry *curveGeom = outputGeom ? outputGeom->toCurveType() : geometry->toCurveType();
-    if ( curveGeom )
-    {
-      outputGeom.reset( curveGeom );
-    }
-  }
-
-  //convert to linear type from curved type
-  if ( QgsWkbTypes::isCurvedType( geometry->wkbType() ) && !QgsWkbTypes::isCurvedType( providerGeomType ) )
-  {
-    QgsAbstractGeometry *segmentizedGeom = outputGeom ? outputGeom->segmentize() : geometry->segmentize();
-    if ( segmentizedGeom )
-    {
-      outputGeom.reset( segmentizedGeom );
-    }
-  }
-
-  //convert to multitype if necessary
-  if ( QgsWkbTypes::isMultiType( providerGeomType ) && !QgsWkbTypes::isMultiType( geometry->wkbType() ) )
-  {
-    std::unique_ptr< QgsAbstractGeometry > collGeom( QgsGeometryFactory::geomFromWkbType( providerGeomType ) );
-    QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( collGeom.get() );
-    if ( geomCollection )
-    {
-      if ( geomCollection->addGeometry( outputGeom ? outputGeom->clone() : geometry->clone() ) )
-      {
-        outputGeom.reset( collGeom.release() );
-      }
-    }
-  }
-
-  //convert to single type if there's a single part of compatible type
-  if ( !QgsWkbTypes::isMultiType( providerGeomType ) && QgsWkbTypes::isMultiType( geometry->wkbType() ) )
-  {
-    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry );
-    if ( collection )
-    {
-      if ( collection->numGeometries() == 1 )
-      {
-        const QgsAbstractGeometry *firstGeom = collection->geometryN( 0 );
-        if ( firstGeom && firstGeom->wkbType() == providerGeomType )
-        {
-          outputGeom.reset( firstGeom->clone() );
-        }
-      }
-    }
-  }
-
-  //set z/m types
-  if ( QgsWkbTypes::hasZ( providerGeomType ) )
-  {
-    if ( !outputGeom )
-    {
-      outputGeom.reset( geometry->clone() );
-    }
-    outputGeom->addZValue();
-  }
-
-  if ( QgsWkbTypes::hasM( providerGeomType ) )
-  {
-    if ( !outputGeom )
-    {
-      outputGeom.reset( geometry->clone() );
-    }
-    outputGeom->addMValue();
-  }
-
-  if ( outputGeom )
-  {
-    return QgsGeometry( outputGeom.release() );
-  }
-
-  return QgsGeometry();
-
-}
 
 
 Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
@@ -4469,7 +4351,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         }
         else
         {
-          // some unexpected error occurred
+          // some unecompxpected error occurred
           const char *err = sqlite3_errmsg( sqliteHandle( ) );
           errMsg = ( char * ) sqlite3_malloc( ( int ) strlen( err ) + 1 );
           strcpy( errMsg, err );
@@ -4962,7 +4844,8 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry
       // binding GEOMETRY to Prepared Statement
       unsigned char *wkb = nullptr;
       int wkb_size;
-      QByteArray iterWkb = iter->asWkb();
+      const QgsGeometry convertedGeom( convertToProviderType( *iter ) );
+      const QByteArray iterWkb{ !convertedGeom.isNull() ? convertedGeom.asWkb() : iter->asWkb() };
       convertFromGeosWKB( reinterpret_cast<const unsigned char *>( iterWkb.constData() ), iterWkb.length(), &wkb, &wkb_size, nDims );
       if ( !wkb )
         sqlite3_bind_null( stmt, 1 );
