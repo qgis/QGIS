@@ -1748,7 +1748,7 @@ void QgsLayoutLegendNodeWidget::insertExpression()
   if ( !mLegend )
     return;
 
-  QString expression = QgsExpressionFinder::findAndSelectExpression( mLabelEdit );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mLabelEdit );
 
   // use the atlas coverage layer, if any
   QgsVectorLayer *layer = mLegend->layout() ? mLegend->layout()->reportContext().layer() : nullptr;

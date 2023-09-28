@@ -520,7 +520,7 @@ void QgsVectorLayerProperties::insertOrEditExpression()
   // Get the linear indexes if the start and end of the selection
   int selectionStart = mMapTipWidget->selectionStart();
   int selectionEnd = mMapTipWidget->selectionEnd();
-  QString expression = QgsExpressionFinder::findAndSelectExpression( mMapTipWidget );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mMapTipWidget );
 
   QgsExpressionContext context = createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, QStringLiteral( "generic" ), context );

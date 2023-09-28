@@ -295,7 +295,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     // Get the linear indexes if the start and end of the selection
     int selectionStart = mMapTipWidget->selectionStart();
     int selectionEnd = mMapTipWidget->selectionEnd();
-    QString expression = QgsExpressionFinder::findAndSelectExpression( mMapTipWidget );
+    QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mMapTipWidget );
     QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), mContext );
 
     exprDlg.setWindowTitle( tr( "Insert Expression" ) );
