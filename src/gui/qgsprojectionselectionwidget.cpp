@@ -26,7 +26,7 @@
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   : QWidget( parent )
-  , mDialogTitle( tr( "Select CRS" ) )
+  , mDialogTitle( tr( "Coordinate Reference System Selector" ) )
 {
 
   mCrsComboBox = new QgsHighlightableComboBox( this );
