@@ -37,6 +37,7 @@ class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
 class QgsMapCanvas;
 class QgsDockableWidgetHelper;
+class QgsMessageBar;
 class QgsRubberBand;
 
 class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
@@ -92,6 +93,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
     void onViewFrustumVisualizationEnabledChanged();
     void onExtentChanged();
+    void onGpuMemoryLimitReached();
 
   private:
     QString mCanvasName;
@@ -121,6 +123,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QObjectUniquePtr< QgsRubberBand > mViewFrustumHighlight;
     QObjectUniquePtr< QgsRubberBand > mViewExtentHighlight;
     QPointer<QDialog> mConfigureDialog;
+    QgsMessageBar *mMessageBar = nullptr;
+    bool mGpuMemoryLimitReachedReported = false;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H
