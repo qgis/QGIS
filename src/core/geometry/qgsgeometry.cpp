@@ -3097,6 +3097,7 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
     case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
       return 4;
   }
+  return 4;
 }
 
 QgsGeometry QgsGeometry::makeValid( Qgis::MakeValidMethod method, bool keepCollapsed ) const
