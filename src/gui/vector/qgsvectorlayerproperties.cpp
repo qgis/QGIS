@@ -508,9 +508,9 @@ void QgsVectorLayerProperties::insertField()
   // insert it into the action at the cursor position
   if ( mMapTipFieldComboBox->currentField().isEmpty() )
     return;
-  QString expression = QStringLiteral( "[%" );
+  QString expression = QStringLiteral( "[%\"" );
   expression += mMapTipFieldComboBox->currentField();
-  expression += QLatin1String( "%]" );
+  expression += QLatin1String( "\"%]" );
 
   mMapTipWidget->insertText( expression );
 }
