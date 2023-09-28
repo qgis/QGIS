@@ -218,9 +218,6 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     //! Convert a QgsField to work with SL
     static bool convertField( QgsField &field );
 
-    //! Convert a geometry to a compatible type, borrowed from Posgres provider.
-    QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
-
     QString geomParam() const;
 
     //! Gets SpatiaLite version string
