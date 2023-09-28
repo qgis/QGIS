@@ -297,11 +297,6 @@ int QgsProcessingExec::run( const QStringList &args, bool useJson, QgsProcessing
     listAlgorithms( useJson );
     return 0;
   }
-  else if ( command == QLatin1String( "--version" ) || command == QLatin1String( "-v" ) )
-  {
-    std::cout << QgsCommandLineUtils::allVersions().toStdString();
-    return 0;
-  }
   else if ( command == QLatin1String( "help" ) )
   {
     if ( args.size() < 3 )
@@ -526,6 +521,11 @@ void QgsProcessingExec::showUsage( const QString &appName )
       << "\t\t\tWhen passing parameters as a JSON object from STDIN, these extra arguments can be provided as an \"ellipsoid\" and a \"project_path\" key respectively.\n";
 
   std::cout << msg.join( QString() ).toLocal8Bit().constData();
+}
+
+void QgsProcessingExec::showVersionInformation()
+{
+  std::cout << QgsCommandLineUtils::allVersions().toStdString();
 }
 
 void QgsProcessingExec::loadPlugins()
