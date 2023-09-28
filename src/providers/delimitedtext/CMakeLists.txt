@@ -13,21 +13,23 @@ if (WITH_GUI)
   set(DTEXT_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgsdelimitedtextsourceselectbase.ui)
 endif()
 
-# static library
-add_library(provider_delimitedtext_a STATIC ${DTEXT_SRCS})
+if (FORCE_STATIC_LIBS)
+  # static library
+  add_library(provider_delimitedtext_a STATIC ${DTEXT_SRCS})
 
-target_include_directories(provider_delimitedtext_a PUBLIC
-  ${CMAKE_SOURCE_DIR}/src/providers/delimitedtext
-)
+  target_include_directories(provider_delimitedtext_a PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/providers/delimitedtext
+  )
 
-target_link_libraries(provider_delimitedtext_a
-  qgis_core
-)
+  target_link_libraries(provider_delimitedtext_a
+    qgis_core
+  )
 
-# require c++17
-target_compile_features(provider_delimitedtext_a PRIVATE cxx_std_17)
+  # require c++17
+  target_compile_features(provider_delimitedtext_a PRIVATE cxx_std_17)
 
-target_compile_definitions(provider_delimitedtext_a PRIVATE "-DQT_NO_FOREACH")
+  target_compile_definitions(provider_delimitedtext_a PRIVATE "-DQT_NO_FOREACH")
+endif()
 
 if (WITH_GUI)
   if (BUILD_WITH_QT6)
@@ -36,22 +38,24 @@ if (WITH_GUI)
     QT5_WRAP_UI(DTEXT_UIS_H ${DTEXT_UIS})
   endif()
 
-  add_library(provider_delimitedtext_gui_a STATIC ${DTEXT_GUI_SRCS} ${DTEXT_UIS_H})
+  if (FORCE_STATIC_LIBS)
+    add_library(provider_delimitedtext_gui_a STATIC ${DTEXT_GUI_SRCS} ${DTEXT_UIS_H})
 
-  target_include_directories(provider_delimitedtext_gui_a PUBLIC
-    ${CMAKE_BINARY_DIR}/src/providers/delimitedtext
-  )
+    target_include_directories(provider_delimitedtext_gui_a PUBLIC
+      ${CMAKE_BINARY_DIR}/src/providers/delimitedtext
+    )
 
-  target_link_libraries(provider_delimitedtext_gui_a
-    qgis_gui
-  )
+    target_link_libraries(provider_delimitedtext_gui_a
+      qgis_gui
+    )
 
-  # require c++17
-  target_compile_features(provider_delimitedtext_gui_a PRIVATE cxx_std_17)
+    # require c++17
+    target_compile_features(provider_delimitedtext_gui_a PRIVATE cxx_std_17)
 
-  target_compile_definitions(provider_delimitedtext_gui_a PRIVATE "-DQT_NO_FOREACH")
+    target_compile_definitions(provider_delimitedtext_gui_a PRIVATE "-DQT_NO_FOREACH")
 
-  add_dependencies(provider_delimitedtext_gui_a ui)
+    add_dependencies(provider_delimitedtext_gui_a ui)
+  endif()
 endif()
 
 if (FORCE_STATIC_LIBS)
@@ -62,10 +66,10 @@ if (FORCE_STATIC_LIBS)
   endif()
 else()
   add_library(provider_delimitedtext MODULE ${DTEXT_SRCS} ${DTEXT_GUI_SRCS})
-  
+
   # require c++17
   target_compile_features(provider_delimitedtext PRIVATE cxx_std_17)
-  
+
   target_link_libraries(provider_delimitedtext
     qgis_core
   )

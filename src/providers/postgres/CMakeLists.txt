@@ -39,51 +39,55 @@ set(PG_HDRS
 ########################################################
 # Build
 
-# static library
-add_library (provider_postgres_a STATIC ${PG_SRCS} ${PG_HDRS})
-
-target_include_directories(provider_postgres_a SYSTEM PUBLIC
-  ${POSTGRES_INCLUDE_DIR}
-)
-
-target_include_directories(provider_postgres_a PUBLIC
-  ${CMAKE_SOURCE_DIR}/src/providers/postgres
-)
-
-# require c++17
-target_compile_features(provider_postgres_a PRIVATE cxx_std_17)
-
-target_link_libraries (provider_postgres_a
-  qgis_core
-  ${POSTGRES_LIBRARY}
-)
-
 if (WITH_GUI)
   if (BUILD_WITH_QT6)
     QT6_WRAP_UI(PG_UIS_H ${PG_UIS})
   else()
     QT5_WRAP_UI(PG_UIS_H ${PG_UIS})
   endif()
+endif()
 
-  add_library(provider_postgres_gui_a STATIC ${PG_GUI_SRCS} ${PG_UIS_H})
+# static library
+if (FORCE_STATIC_LIBS)
+  add_library (provider_postgres_a STATIC ${PG_SRCS} ${PG_HDRS})
 
-  target_include_directories(provider_postgres_gui_a SYSTEM PRIVATE
+  target_include_directories(provider_postgres_a SYSTEM PUBLIC
     ${POSTGRES_INCLUDE_DIR}
   )
 
-  target_include_directories(provider_postgres_gui_a PUBLIC
-    ${CMAKE_BINARY_DIR}/src/providers/postgres
+  target_include_directories(provider_postgres_a PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/providers/postgres
   )
 
   # require c++17
-  target_compile_features(provider_postgres_gui_a PRIVATE cxx_std_17)
+  target_compile_features(provider_postgres_a PRIVATE cxx_std_17)
 
-  target_link_libraries(provider_postgres_gui_a
-    qgis_gui
-    provider_postgres_a
+  target_link_libraries (provider_postgres_a
+    qgis_core
     ${POSTGRES_LIBRARY}
   )
-  add_dependencies(provider_postgres_gui_a ui)
+
+  if (WITH_GUI)
+    add_library(provider_postgres_gui_a STATIC ${PG_GUI_SRCS} ${PG_UIS_H})
+
+    target_include_directories(provider_postgres_gui_a SYSTEM PRIVATE
+      ${POSTGRES_INCLUDE_DIR}
+    )
+
+    target_include_directories(provider_postgres_gui_a PUBLIC
+      ${CMAKE_BINARY_DIR}/src/providers/postgres
+    )
+
+    # require c++17
+    target_compile_features(provider_postgres_gui_a PRIVATE cxx_std_17)
+
+    target_link_libraries(provider_postgres_gui_a
+      qgis_gui
+      provider_postgres_a
+      ${POSTGRES_LIBRARY}
+    )
+    add_dependencies(provider_postgres_gui_a ui)
+  endif()
 endif()
 
 #################################################################
@@ -99,34 +103,34 @@ set(PGRASTER_SRCS
 )
 
 # static library
-add_library (provider_postgresraster_a STATIC ${PGRASTER_SRCS} ${PG_HDRS})
-
-target_include_directories(provider_postgresraster_a SYSTEM PRIVATE
-  ${POSTGRES_INCLUDE_DIR}
-)
-target_include_directories(provider_postgresraster_a PUBLIC
-  ${CMAKE_SOURCE_DIR}/src/providers/postgres/raster
-)
-
-# require c++17
-target_compile_features(provider_postgresraster_a PRIVATE cxx_std_17)
-
-target_link_libraries (provider_postgresraster_a
-    qgis_core
-    provider_postgres_a
-    ${POSTGRES_LIBRARY}
-)
-
-if (WITH_GUI)
-  target_link_libraries (provider_postgresraster_a
-    qgis_gui
-  )
-  add_dependencies(provider_postgresraster_a ui)
-endif()
-
-#################################################################
-
 if (FORCE_STATIC_LIBS)
+  add_library (provider_postgresraster_a STATIC ${PGRASTER_SRCS} ${PG_HDRS})
+
+  target_include_directories(provider_postgresraster_a SYSTEM PRIVATE
+    ${POSTGRES_INCLUDE_DIR}
+  )
+  target_include_directories(provider_postgresraster_a PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/providers/postgres/raster
+  )
+
+  # require c++17
+  target_compile_features(provider_postgresraster_a PRIVATE cxx_std_17)
+
+  target_link_libraries (provider_postgresraster_a
+      qgis_core
+      provider_postgres_a
+      ${POSTGRES_LIBRARY}
+  )
+
+  if (WITH_GUI)
+    target_link_libraries (provider_postgresraster_a
+      qgis_gui
+    )
+    add_dependencies(provider_postgresraster_a ui)
+  endif()
+
+  #################################################################
+
   # for (external) mobile apps to be able to pick up provider for linking
   install (TARGETS provider_postgres_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   install (TARGETS provider_postgresraster_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})

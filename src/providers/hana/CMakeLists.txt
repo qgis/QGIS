@@ -72,40 +72,38 @@ include_directories (SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
-add_library(provider_hana MODULE ${HANA_SRCS} ${HANA_HDRS})
-add_library(provider_hana_a STATIC ${HANA_SRCS} ${HANA_HDRS})
-
-# require c++17
-target_compile_features(provider_hana PRIVATE cxx_std_17)
-target_compile_features(provider_hana_a PRIVATE cxx_std_17)
-
-target_compile_definitions(provider_hana
-    PRIVATE
-        $<TARGET_PROPERTY:odbccpp_static,INTERFACE_COMPILE_DEFINITIONS>)
-target_compile_definitions(provider_hana_a
-    PRIVATE
-        $<TARGET_PROPERTY:odbccpp_static,INTERFACE_COMPILE_DEFINITIONS>)
-
-target_link_libraries(provider_hana
-  qgis_core
-  odbccpp_static
-  ${ODBC_LIBRARIES}
-)
-
-target_link_libraries(provider_hana_a
-  qgis_core
-  odbccpp_static
-  ${ODBC_LIBRARIES}
-)
-
-if (WITH_GUI)
-  target_link_libraries (provider_hana_a
-    qgis_gui
+if (FORCE_STATIC_LIBS)
+  add_library(provider_hana_a STATIC ${HANA_SRCS} ${HANA_HDRS})
+  target_compile_features(provider_hana_a PRIVATE cxx_std_17)
+  target_compile_definitions(provider_hana_a
+      PRIVATE
+          $<TARGET_PROPERTY:odbccpp_static,INTERFACE_COMPILE_DEFINITIONS>)
+  target_link_libraries(provider_hana_a
+    qgis_core
+    odbccpp_static
+    ${ODBC_LIBRARIES}
   )
-
-  target_link_libraries (provider_hana
-    qgis_gui
+  if (WITH_GUI)
+    target_link_libraries (provider_hana_a
+      qgis_gui
+    )
+  endif()
+else()
+  add_library(provider_hana MODULE ${HANA_SRCS} ${HANA_HDRS})
+  target_compile_features(provider_hana PRIVATE cxx_std_17)
+  target_compile_definitions(provider_hana
+      PRIVATE
+          $<TARGET_PROPERTY:odbccpp_static,INTERFACE_COMPILE_DEFINITIONS>)
+  target_link_libraries(provider_hana
+    qgis_core
+    odbccpp_static
+    ${ODBC_LIBRARIES}
   )
+  if (WITH_GUI)
+    target_link_libraries (provider_hana
+      qgis_gui
+    )
+  endif()
 endif()
 
 # clang-tidy

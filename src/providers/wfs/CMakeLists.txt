@@ -52,24 +52,6 @@ if (WITH_GUI)
   set(WFS_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgswfssourceselectbase.ui)
 endif()
 
-########################################################
-# Static
-add_library(provider_wfs_a STATIC ${WFS_SRCS})
-
-target_include_directories(provider_wfs_a PUBLIC
-  ${CMAKE_SOURCE_DIR}/src/providers/wfs
-  ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
-)
-
-target_link_libraries(provider_wfs_a
-  qgis_core
-)
-
-# require c++17
-target_compile_features(provider_wfs_a PRIVATE cxx_std_17)
-
-target_compile_definitions(provider_wfs_a PRIVATE "-DQT_NO_FOREACH")
-
 if (WITH_GUI)
   if (BUILD_WITH_QT6)
     QT6_WRAP_UI(WFS_UIS_H ${WFS_UIS})
@@ -77,34 +59,55 @@ if (WITH_GUI)
     QT5_WRAP_UI(WFS_UIS_H ${WFS_UIS})
   endif()
 
-  add_library(provider_wfs_gui_a STATIC ${WFS_GUI_SRCS} ${WFS_UIS_H})
-
-  target_include_directories(provider_wfs_gui_a PUBLIC
-    ${CMAKE_SOURCE_DIR}/src/providers/wfs
-    ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
-  )
-
-  target_link_libraries(provider_wfs_a
-    qgis_gui
-  )
-  target_link_libraries(provider_wfs_gui_a
-    qgis_gui
-  )
-
-  # require c++17
-  target_compile_features(provider_wfs_gui_a PRIVATE cxx_std_17)
-
-  target_compile_definitions(provider_wfs_gui_a PRIVATE "-DQT_NO_FOREACH")
-
-  add_dependencies(provider_wfs_gui_a ui)
-
   include_directories(SYSTEM
     ${QSCINTILLA_INCLUDE_DIR}
     ${CMAKE_BINARY_DIR}/src/ui
   )
 endif()
 
+########################################################
+# Static
 if (FORCE_STATIC_LIBS)
+  add_library(provider_wfs_a STATIC ${WFS_SRCS})
+
+  target_include_directories(provider_wfs_a PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/providers/wfs
+    ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
+  )
+
+  target_link_libraries(provider_wfs_a
+    qgis_core
+  )
+
+  # require c++17
+  target_compile_features(provider_wfs_a PRIVATE cxx_std_17)
+
+  target_compile_definitions(provider_wfs_a PRIVATE "-DQT_NO_FOREACH")
+
+  if (WITH_GUI)
+    add_library(provider_wfs_gui_a STATIC ${WFS_GUI_SRCS} ${WFS_UIS_H})
+
+    target_include_directories(provider_wfs_gui_a PUBLIC
+      ${CMAKE_SOURCE_DIR}/src/providers/wfs
+      ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
+    )
+
+    target_link_libraries(provider_wfs_a
+      qgis_gui
+    )
+    target_link_libraries(provider_wfs_gui_a
+      qgis_gui
+    )
+
+    # require c++17
+    target_compile_features(provider_wfs_gui_a PRIVATE cxx_std_17)
+
+    target_compile_definitions(provider_wfs_gui_a PRIVATE "-DQT_NO_FOREACH")
+
+    add_dependencies(provider_wfs_gui_a ui)
+
+  endif()
+
   # for (external) mobile apps to be able to pick up provider for linking
   install (TARGETS provider_wfs_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   if (WITH_GUI)

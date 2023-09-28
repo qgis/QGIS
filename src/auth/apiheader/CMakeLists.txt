@@ -25,26 +25,26 @@ endif()
 
 
 # static library
-add_library(authmethod_apiheader_a STATIC ${AUTH_APIHEADER_SRCS} ${AUTH_APIHEADER_HDRS} ${AUTH_APIHEADER_UIS_H})
-
-target_include_directories(authmethod_apiheader_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/apiheader/core)
-
-# require c++17
-target_compile_features(authmethod_apiheader_a PRIVATE cxx_std_17)
-
-target_link_libraries(authmethod_apiheader_a qgis_core)
-
-if (WITH_GUI)
-  target_include_directories(authmethod_apiheader_a PRIVATE
-    ${CMAKE_SOURCE_DIR}/src/auth/apiheader/gui
-    ${CMAKE_BINARY_DIR}/src/auth/apiheader
-  )
-  target_link_libraries (authmethod_apiheader_a qgis_gui)
-endif()
-
-target_compile_definitions(authmethod_apiheader_a PRIVATE "-DQT_NO_FOREACH")
-
 if (FORCE_STATIC_LIBS)
+  add_library(authmethod_apiheader_a STATIC ${AUTH_APIHEADER_SRCS} ${AUTH_APIHEADER_HDRS} ${AUTH_APIHEADER_UIS_H})
+
+  target_include_directories(authmethod_apiheader_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/apiheader/core)
+
+  # require c++17
+  target_compile_features(authmethod_apiheader_a PRIVATE cxx_std_17)
+
+  target_link_libraries(authmethod_apiheader_a qgis_core)
+
+  if (WITH_GUI)
+    target_include_directories(authmethod_apiheader_a PRIVATE
+      ${CMAKE_SOURCE_DIR}/src/auth/apiheader/gui
+      ${CMAKE_BINARY_DIR}/src/auth/apiheader
+    )
+    target_link_libraries (authmethod_apiheader_a qgis_gui)
+  endif()
+
+  target_compile_definitions(authmethod_apiheader_a PRIVATE "-DQT_NO_FOREACH")
+
   # for (external) mobile apps to be able to pick up provider for linking
   install (TARGETS authmethod_apiheader_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
 else()

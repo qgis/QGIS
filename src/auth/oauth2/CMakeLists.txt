@@ -85,7 +85,7 @@ if (WITH_GUI)
   else()
     QT5_WRAP_UI(AUTH_OAUTH2_UIS_H ${AUTH_OAUTH2_UIS})
   endif()
-  
+
 endif()
 
 ############################################################
@@ -101,41 +101,39 @@ if(WITH_INTERNAL_O2 AND CMAKE_GENERATOR MATCHES "Ninja")
 endif()
 
 # static library
-add_library(authmethod_oauth2_a STATIC ${AUTH_OAUTH2_SRCS} ${AUTH_OAUTH2_HDRS} ${AUTH_OAUTH2_RCCS} ${AUTH_OAUTH2_UIS_H})
-
-target_include_directories(authmethod_oauth2_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/oauth2/core)
-
-# require c++17
-target_compile_features(authmethod_oauth2_a PRIVATE cxx_std_17)
-
-target_link_libraries(authmethod_oauth2_a qgis_core)
-
-if(WITH_INTERNAL_O2)
-  target_include_directories(authmethod_oauth2_a SYSTEM PUBLIC ${O2_INCLUDE_DIR})
-else()
-  if(NOT "${O2_LIBRARY}" STREQUAL "")
-    # prefer dynamic linking
-    target_link_libraries(authmethod_oauth2_a ${O2_LIBRARY})
-  else()
-    target_link_libraries(authmethod_oauth2_a ${O2_LIBRARY_STATIC})
-  endif()
-endif()
-
-target_include_directories(authmethod_oauth2_a PRIVATE
-  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper
-  ${CMAKE_SOURCE_DIR}/src/auth/oauth2/core
-)
-if (WITH_GUI)
-  target_include_directories(authmethod_oauth2_a PRIVATE
-    ${CMAKE_SOURCE_DIR}/src/auth/oauth2/gui
-    ${CMAKE_BINARY_DIR}/src/auth/oauth2
-  )
-  target_link_libraries (authmethod_oauth2_a qgis_gui)
-endif()
-
-
-
 if (FORCE_STATIC_LIBS)
+  add_library(authmethod_oauth2_a STATIC ${AUTH_OAUTH2_SRCS} ${AUTH_OAUTH2_HDRS} ${AUTH_OAUTH2_RCCS} ${AUTH_OAUTH2_UIS_H})
+
+  target_include_directories(authmethod_oauth2_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/oauth2/core)
+
+  # require c++17
+  target_compile_features(authmethod_oauth2_a PRIVATE cxx_std_17)
+
+  target_link_libraries(authmethod_oauth2_a qgis_core)
+
+  if(WITH_INTERNAL_O2)
+    target_include_directories(authmethod_oauth2_a SYSTEM PUBLIC ${O2_INCLUDE_DIR})
+  else()
+    if(NOT "${O2_LIBRARY}" STREQUAL "")
+      # prefer dynamic linking
+      target_link_libraries(authmethod_oauth2_a ${O2_LIBRARY})
+    else()
+      target_link_libraries(authmethod_oauth2_a ${O2_LIBRARY_STATIC})
+    endif()
+  endif()
+
+  target_include_directories(authmethod_oauth2_a PRIVATE
+    ${CMAKE_SOURCE_DIR}/external/qjsonwrapper
+    ${CMAKE_SOURCE_DIR}/src/auth/oauth2/core
+  )
+  if (WITH_GUI)
+    target_include_directories(authmethod_oauth2_a PRIVATE
+      ${CMAKE_SOURCE_DIR}/src/auth/oauth2/gui
+      ${CMAKE_BINARY_DIR}/src/auth/oauth2
+    )
+    target_link_libraries (authmethod_oauth2_a qgis_gui)
+  endif()
+
   # for (external) mobile apps to be able to pick up provider for linking
   install (TARGETS authmethod_oauth2_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
 else()

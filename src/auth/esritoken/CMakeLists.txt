@@ -25,26 +25,26 @@ endif()
 
 
 # static library
-add_library(authmethod_esritoken_a STATIC ${AUTH_ESRITOKEN_SRCS} ${AUTH_ESRITOKEN_HDRS} ${AUTH_ESRITOKEN_UIS_H})
-
-target_include_directories(authmethod_esritoken_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/esritoken/core)
-
-# require c++17
-target_compile_features(authmethod_esritoken_a PRIVATE cxx_std_17)
-
-target_link_libraries(authmethod_esritoken_a qgis_core)
-
-if (WITH_GUI)
-  target_include_directories(authmethod_esritoken_a PRIVATE
-    ${CMAKE_SOURCE_DIR}/src/auth/esritoken/gui
-    ${CMAKE_BINARY_DIR}/src/auth/esritoken
-  )
-  target_link_libraries (authmethod_esritoken_a qgis_gui)
-endif()
-
-target_compile_definitions(authmethod_esritoken_a PRIVATE "-DQT_NO_FOREACH")
-
 if (FORCE_STATIC_LIBS)
+  add_library(authmethod_esritoken_a STATIC ${AUTH_ESRITOKEN_SRCS} ${AUTH_ESRITOKEN_HDRS} ${AUTH_ESRITOKEN_UIS_H})
+
+  target_include_directories(authmethod_esritoken_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/esritoken/core)
+
+  # require c++17
+  target_compile_features(authmethod_esritoken_a PRIVATE cxx_std_17)
+
+  target_link_libraries(authmethod_esritoken_a qgis_core)
+
+  if (WITH_GUI)
+    target_include_directories(authmethod_esritoken_a PRIVATE
+      ${CMAKE_SOURCE_DIR}/src/auth/esritoken/gui
+      ${CMAKE_BINARY_DIR}/src/auth/esritoken
+    )
+    target_link_libraries (authmethod_esritoken_a qgis_gui)
+  endif()
+
+  target_compile_definitions(authmethod_esritoken_a PRIVATE "-DQT_NO_FOREACH")
+
   # for (external) mobile apps to be able to pick up provider for linking
   install (TARGETS authmethod_esritoken_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
 else()

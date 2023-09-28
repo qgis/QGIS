@@ -222,29 +222,13 @@ if (WITH_GUI)
 endif()
 
 # static library
-add_library (provider_pdal_a STATIC ${PDAL_SRCS} ${PDAL_HDRS})
-
-# require c++17
-target_compile_features(provider_pdal_a PRIVATE cxx_std_17)
-
-target_link_libraries (provider_pdal_a
-  ${PDAL_LIBRARIES}
-  ${QT_VERSION_BASE}::Xml
-  ${QT_VERSION_BASE}::Core
-  ${QT_VERSION_BASE}::Svg
-  ${QT_VERSION_BASE}::Network
-  ${QT_VERSION_BASE}::Sql
-  ${QT_VERSION_BASE}::Concurrent
-  qgis_core
-)
-
-if (WITH_GUI)
-  add_library (provider_pdal_gui_a STATIC ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
+if (FORCE_STATIC_LIBS)
+  add_library (provider_pdal_a STATIC ${PDAL_SRCS} ${PDAL_HDRS})
 
   # require c++17
-  target_compile_features(provider_pdal_gui_a PRIVATE cxx_std_17)
+  target_compile_features(provider_pdal_a PRIVATE cxx_std_17)
 
-  target_link_libraries (provider_pdal_gui_a
+  target_link_libraries (provider_pdal_a
     ${PDAL_LIBRARIES}
     ${QT_VERSION_BASE}::Xml
     ${QT_VERSION_BASE}::Core
@@ -252,9 +236,27 @@ if (WITH_GUI)
     ${QT_VERSION_BASE}::Network
     ${QT_VERSION_BASE}::Sql
     ${QT_VERSION_BASE}::Concurrent
-    qgis_gui
+    qgis_core
   )
-  add_dependencies(provider_pdal_gui_a ui)
+
+  if (WITH_GUI)
+    add_library (provider_pdal_gui_a STATIC ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
+
+    # require c++17
+    target_compile_features(provider_pdal_gui_a PRIVATE cxx_std_17)
+
+    target_link_libraries (provider_pdal_gui_a
+      ${PDAL_LIBRARIES}
+      ${QT_VERSION_BASE}::Xml
+      ${QT_VERSION_BASE}::Core
+      ${QT_VERSION_BASE}::Svg
+      ${QT_VERSION_BASE}::Network
+      ${QT_VERSION_BASE}::Sql
+      ${QT_VERSION_BASE}::Concurrent
+      qgis_gui
+    )
+    add_dependencies(provider_pdal_gui_a ui)
+  endif()
 endif()
 
 install(TARGETS provider_pdal
