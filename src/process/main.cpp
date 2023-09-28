@@ -148,7 +148,7 @@ int main( int argc, char *argv[] )
   const QString command = args.value( 1 );
   if ( args.size() == 1 || command == QLatin1String( "--help" ) || command == QLatin1String( "-h" ) )
   {
-    // a shortcut -- if we are showing usage information, we don't need to initialise
+    // a shortcut -- if we are showing usage information, we don't need to initialize
     // QgsApplication at all!
     QgsProcessingExec::showUsage( args.at( 0 ) );
     return 0;
