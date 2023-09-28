@@ -77,21 +77,41 @@ int main( int argc, char *argv[] )
 #endif  // _MSC_VER
 #endif  // Q_OS_WIN
 
-  // a shortcut -- let's see if we are being called without any arguments, or just the usage argument.
+  // a shortcut -- let's see if we are being called without any arguments, or just the usage/version argument.
   // If so, let's skip the startup cost of a QCoreApplication/QgsApplication
   bool hasHelpArgument = false;
+  bool hasVersionArgument = false;
   for ( int i = 1; i < argc; ++i )
   {
     const QString arg( argv[i] );
+    if ( arg == QLatin1String( "--json" )
+         || arg == QLatin1String( "--verbose" )
+         || arg == QLatin1String( "--no-python" ) )
+    {
+      // ignore these arguments
+      continue;
+    }
     if ( arg == QLatin1String( "--help" ) || arg == QLatin1String( "-h" ) )
     {
       hasHelpArgument = true;
       break;
     }
+    else if ( arg == QLatin1String( "--version" ) || arg == QLatin1String( "-v" ) )
+    {
+      hasVersionArgument = true;
+      break;
+    }
+    break;
   }
+
   if ( argc == 1 || hasHelpArgument )
   {
     QgsProcessingExec::showUsage( QString( argv[ 0 ] ) );
+    return 0;
+  }
+  else if ( hasVersionArgument )
+  {
+    QgsProcessingExec::showVersionInformation();
     return 0;
   }
 

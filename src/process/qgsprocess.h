@@ -71,6 +71,7 @@ class QgsProcessingExec
     QgsProcessingExec();
     int run( const QStringList &args, bool useJson, QgsProcessingContext::LogLevel logLevel, bool skipPython );
     static void showUsage( const QString &appName );
+    static void showVersionInformation();
 
   private:
 
