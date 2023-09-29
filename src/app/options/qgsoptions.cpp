@@ -1810,6 +1810,7 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle->setValue( mOffsetJoinStyleComboBox->currentData().value<Qgis::JoinStyle>() );
   QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->setValue( mOffsetQuadSegSpinBox->value() );
   QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit->setValue( mCurveOffsetMiterLimitComboBox->value() );
+  QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle->setValue( mOffsetCapStyleComboBox->currentData().value<Qgis::EndCapStyle>() );
 
   QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->setValue( mTracingConvertToCurveCheckBox->isChecked() );
   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->setValue( mTracingCustomAngleToleranceSpinBox->value() );
