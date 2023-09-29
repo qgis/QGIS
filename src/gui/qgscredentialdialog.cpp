@@ -149,7 +149,7 @@ void QgsCredentialDialog::requestCredentials( const QString &realm, QString *use
   stackedWidget->setCurrentIndex( 0 );
   mIgnoreButton->show();
   chkbxPasswordHelperEnable->setChecked( QgsApplication::authManager()->passwordHelperEnabled() );
-  labelRealm->setText( QgsDataSourceUri::removePassword( realm ) );
+  labelRealm->setText( QgsDataSourceUri::removePassword( realm, true ) );
   mRealm = realm;
   leUsername->setText( *username );
   lePassword->setText( *password );
