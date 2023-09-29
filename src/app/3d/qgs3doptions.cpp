@@ -56,6 +56,7 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   mCameraMovementSpeed->setValue( settings.value( QStringLiteral( "map3d/defaultMovementSpeed" ), 5, QgsSettings::App ).toDouble() );
   spinCameraFieldOfView->setValue( settings.value( QStringLiteral( "map3d/defaultFieldOfView" ), 45, QgsSettings::App ).toInt() );
 
+  mGpuMemoryLimit->setClearValue( 500 );
   mGpuMemoryLimit->setValue( settings.value( QStringLiteral( "map3d/gpuMemoryLimit" ), 500.0, QgsSettings::App ).toDouble() );
 }
 
