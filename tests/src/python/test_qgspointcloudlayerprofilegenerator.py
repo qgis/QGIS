@@ -66,9 +66,9 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
         req.setCrs(pcl.crs())
         # zero tolerance => no points
         generator = pcl.createProfileGenerator(req)
-        self.assertTrue(generator.generateProfile())
+        self.assertFalse(generator.generateProfile())
         results = generator.takeResults()
-        self.assertFalse(results.distanceToHeightMap())
+        self.assertTrue(results is None)
 
         req.setTolerance(0.05)
         generator = pcl.createProfileGenerator(req)
