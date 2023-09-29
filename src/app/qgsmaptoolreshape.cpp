@@ -185,27 +185,21 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
           QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
           ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
 
-          avoidIntersections.apply( vlayer, f.id(), geom, ignoreFeatures );
+          const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, f.id(), geom, ignoreFeatures );
+          if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType )
+          {
+            emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Critical );
+            vlayer->destroyEditCommand();
+            stopCapturing();
+            return;
+          }
 
-          // TODO what do we do with those messages
-          // if ( avoidIntersectionsLayers.size() > 0 )
-          // {
-          //   res = geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures );
-          //   if ( res == 1 )
-          //   {
-          //     emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Critical );
-          //     vlayer->destroyEditCommand();
-          //     stopCapturing();
-          //     return;
-          //   }
-          // }
-
-          // if ( geom.isEmpty() ) //intersection removal might have removed the whole geometry
-          // {
-          //   emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), Qgis::MessageLevel::Critical );
-          //   vlayer->destroyEditCommand();
-          //   return;
-          // }
+          if ( geom.isEmpty() ) //intersection removal might have removed the whole geometry
+          {
+            emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), Qgis::MessageLevel::Critical );
+            vlayer->destroyEditCommand();
+            return;
+          }
         }
 
         vlayer->changeGeometry( f.id(), geom );

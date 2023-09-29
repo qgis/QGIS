@@ -2406,11 +2406,12 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
     for ( auto itFeatEdit = itLayerEdits->begin() ; itFeatEdit != itLayerEdits->end(); ++itFeatEdit )
     {
-      const Qgis::GeometryOperationResult res = avoidIntersections.apply( layer, itFeatEdit.key(), itFeatEdit->geom, ignoreFeatures );
-      // TODO add a static method in avoidintersection that return true if avoidintersection happened or not according to return code
-      // avoid intersection happened, no need to add initial new points
-      if ( res != Qgis::GeometryOperationResult::InvalidInputGeometryType && res != Qgis::GeometryOperationResult::NothingHappened )
+      const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( layer, itFeatEdit.key(), itFeatEdit->geom, ignoreFeatures );
+      if ( res.geometryHasChanged )
+      {
+        // no need to add initial new points, the avoid intersection operation already added topological points
         itFeatEdit->newPoints.clear();
+      }
 
       layer->changeGeometry( itFeatEdit.key(), itFeatEdit->geom );
     }

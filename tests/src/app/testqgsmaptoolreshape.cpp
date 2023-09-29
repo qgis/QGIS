@@ -259,6 +259,12 @@ void TestQgsMapToolReshape::testTopologicalEditing()
   QCOMPARE( mLayerTopo->getFeature( 1 ).geometry().asWkt(), wkt );
   QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), wkt2 );
 
+  mLayerTopo->undoStack()->undo();
+
+  QCOMPARE( mLayerTopo2->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 5, 4 5, 4 7, 0 7))" ) );
+  QCOMPARE( mLayerTopo->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 4 0, 4 4, 0 4))" ) );
+  QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "Polygon ((7 0, 8 0, 8 4, 7 4))" ) );
+
   QgsProject::instance()->setTopologicalEditing( topologicalEditing );
 }
 

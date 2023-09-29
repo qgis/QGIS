@@ -43,10 +43,32 @@ class GUI_EXPORT QgsAvoidIntersectionsOperation : public QObject
      */
     QgsAvoidIntersectionsOperation() = default;
 
-    // TODO cartouche
-    // TODO don't return int, return enum
-    Qgis::GeometryOperationResult apply( QgsVectorLayer *layer, QgsFeatureId fid, QgsGeometry &geom,
-                                         const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+    struct Result
+    {
+      Result()
+        : operationResult( Qgis::GeometryOperationResult::NothingHappened ),
+          geometryHasChanged( false ) {}
+
+      /**
+       * avoid intersection operation result
+       */
+      Qgis::GeometryOperationResult operationResult;
+
+      /**
+       * TRUE if the geometry has changed during the avoid intersection operation
+       */
+      bool geometryHasChanged;
+    };
+
+    /**
+     * Apply the avoid intersection operation to the geometry \a geom associated to the feature \a fid
+     * from the layer \a layer.
+     * \param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
+     * \returns the operation result
+     * \since QGIS 3.34
+     */
+    Result apply( QgsVectorLayer *layer, QgsFeatureId fid, QgsGeometry &geom,
+                  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
 
   signals:
 
