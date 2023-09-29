@@ -249,8 +249,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
         const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
         for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
         {
-          const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( *pit );
-          if ( point )
+          if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( *pit ) )
           {
             allPoints[ groupValue ] << qMakePair( orderValue, *point );
           }
@@ -258,8 +257,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
       }
       else
       {
-        const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom );
-        if ( point )
+        if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom ) )
         {
           allPoints[ groupValue ] << qMakePair( orderValue, *point );
         }
