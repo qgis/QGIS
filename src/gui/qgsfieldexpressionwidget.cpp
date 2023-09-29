@@ -31,7 +31,7 @@
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
-  , mExpressionDialogTitle( tr( "Expression String Builder" ) )
+  , mExpressionDialogTitle( tr( "Expression Builder" ) )
   , mDistanceArea( nullptr )
 
 {
