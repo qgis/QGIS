@@ -1068,7 +1068,7 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
 
       // The intersection might belong to another part, skip it
       // Note: cannot test for equality because of Z
-      if ( intersectionPoint->x() != segmentPoint2D.x() || intersectionPoint->y() != segmentPoint2D.y() )
+      if ( !qgsDoubleNear( intersectionPoint->x(), segmentPoint2D.x() ) || !qgsDoubleNear( intersectionPoint->y(), segmentPoint2D.y() ) )
       {
         continue;
       }
