@@ -920,31 +920,31 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       twWFSLayers->setCellWidget( j, 2, psb );
 
       QCheckBox *cbu = new QCheckBox();
-      cbu->setEnabled(false);
+      cbu->setEnabled( false );
       if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
       {
         if ( ! currentLayer->isSpatial() or ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
         {
-          cbu->setEnabled(true);
+          cbu->setEnabled( true );
           cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
         }
       }
       twWFSLayers->setCellWidget( j, 3, cbu );
 
       QCheckBox *cbi = new QCheckBox();
-      cbi->setEnabled(false);
+      cbi->setEnabled( false );
       if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
       {
-        cbi->setEnabled(true);
+        cbi->setEnabled( true );
         cbi->setChecked( wfstInsertLayerIdList.contains( currentLayer->id() ) );
       }
       twWFSLayers->setCellWidget( j, 4, cbi );
 
       QCheckBox *cbd = new QCheckBox();
-      cbd->setEnabled(false);
+      cbd->setEnabled( false );
       if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
       {
-        cbd->setEnabled(true);
+        cbd->setEnabled( true );
         cbd->setChecked( wfstDeleteLayerIdList.contains( currentLayer->id() ) );
       }
       twWFSLayers->setCellWidget( j, 5, cbd );
