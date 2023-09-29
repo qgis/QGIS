@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsmaptool.h"
 #include "qgsmessagelog.h"
 #include "qgsvertextool.h"
 
