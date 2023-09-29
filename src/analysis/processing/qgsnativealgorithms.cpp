@@ -102,6 +102,7 @@
 #include "qgsalgorithmhillshade.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinbylocation.h"
+#include "qgsalgorithmjoinbylocationsummary.h"
 #include "qgsalgorithmjoinbynearest.h"
 #include "qgsalgorithmjoinwithlines.h"
 #include "qgsalgorithmimportphotos.h"
@@ -377,6 +378,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsIntersectionAlgorithm() );
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
   addAlgorithm( new QgsJoinByLocationAlgorithm() );
+  addAlgorithm( new QgsJoinByLocationSummaryAlgorithm() );
   addAlgorithm( new QgsJoinByNearestAlgorithm() );
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
   addAlgorithm( new QgsKeepNBiggestPartsAlgorithm() );

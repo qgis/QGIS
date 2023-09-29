@@ -122,6 +122,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmintersection.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
   processing/qgsalgorithmjoinbylocation.cpp
+  processing/qgsalgorithmjoinbylocationsummary.cpp
   processing/qgsalgorithmjoinbynearest.cpp
   processing/qgsalgorithmjoinwithlines.cpp
   processing/qgsalgorithmkeepnbiggestparts.cpp
