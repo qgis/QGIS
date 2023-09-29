@@ -132,7 +132,7 @@ QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &p
   QVector< QgsRasterCalculatorEntry > entries;
   for ( QgsMapLayer *layer : mLayers )
   {
-    QgsRasterLayer *rLayer = static_cast<QgsRasterLayer *>( layer );
+    QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
     if ( !rLayer )
     {
       continue;
@@ -271,7 +271,7 @@ QVariantMap QgsRasterCalculatorModelerAlgorithm::processAlgorithm( const QVarian
   int n = 0;
   for ( QgsMapLayer *layer : mLayers )
   {
-    QgsRasterLayer *rLayer = static_cast<QgsRasterLayer *>( layer );
+    QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
     if ( !rLayer )
     {
       continue;

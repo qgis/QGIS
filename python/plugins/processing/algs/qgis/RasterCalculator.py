@@ -90,7 +90,7 @@ class RasterCalculator(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Output')))
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagDeprecated | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
+        return super().flags() | QgsProcessingAlgorithm.FlagDeprecated
 
     def name(self):
         return 'rastercalculator'
