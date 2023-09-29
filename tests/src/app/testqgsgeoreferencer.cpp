@@ -880,7 +880,7 @@ void TestQgsGeoreferencer::testGdalCommands()
 void TestQgsGeoreferencer::testWorldFile()
 {
   QgsGeoreferencerMainWindow window;
-  window.openLayer( Qgis::LayerType::Raster, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  window.openLayer( QgsMapLayerType::RasterLayer, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
   QString worldFileName = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.wld" );
 
   QVERIFY( window.writeWorldFile( QgsPointXY( 0, 0 ), 1.0, 1.0, 0 ) );
