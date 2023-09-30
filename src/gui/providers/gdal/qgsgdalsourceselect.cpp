@@ -243,6 +243,15 @@ void QgsGdalSourceSelect::addButtonClicked()
   emit addRasterLayers( sources );
 }
 
+bool QgsGdalSourceSelect::configureFromUri( const QString &uri )
+{
+  mDataSources.clear();
+  mDataSources.append( uri );
+  const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
+  mFileWidget->setFilePath( decodedUri.value( QStringLiteral( "path" ), QString() ).toString() );
+  return true;
+}
+
 void QgsGdalSourceSelect::computeDataSources()
 {
   mDataSources.clear();
