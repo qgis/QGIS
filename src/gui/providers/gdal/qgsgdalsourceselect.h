@@ -43,6 +43,7 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
+    bool configureFromUri( const QString &uri ) override;
     //! Sets protocol-related widget visibility
     void setProtocolWidgetsVisibility();
 

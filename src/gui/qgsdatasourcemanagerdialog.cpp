@@ -162,6 +162,16 @@ void QgsDataSourceManagerDialog::reset()
   }
 }
 
+bool QgsDataSourceManagerDialog::configureFromUri( const QString &uri, const QString &pagename )
+{
+  openPage( pagename );
+  if ( QgsAbstractDataSourceWidget *dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( ui->mOptionsStackedWidget->currentWidget() ) )
+  {
+    return dataSourceWidget->configureFromUri( uri );
+  }
+  return false;
+}
+
 void QgsDataSourceManagerDialog::rasterLayersAdded( const QStringList &layersList )
 {
   emit addRasterLayers( layersList );

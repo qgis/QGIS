@@ -1170,8 +1170,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \brief dataSourceManager Open the DataSourceManager dialog
      * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
+     * \param layerUri optional layer URI for the source select widget configuration
      */
-    void dataSourceManager( const QString &pageName = QString() );
+    void dataSourceManager( const QString &pageName = QString(), const QString &layerUri = QString() );
 
     //! Add a virtual layer
     void addVirtualLayer();
