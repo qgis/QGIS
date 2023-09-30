@@ -4229,7 +4229,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           {
             unsigned char *wkb = nullptr;
             int wkb_size;
-            const QgsGeometry convertedGeom( convertToProviderType( feature->geometry() ) );
+            const QgsGeometry convertedGeom( QgsVectorDataProvider::convertToProviderType( feature->geometry(), wkbType() ) );
             const QByteArray featureWkb{ !convertedGeom.isNull() ? convertedGeom.asWkb() : feature->geometry().asWkb() };
             convertFromGeosWKB( reinterpret_cast<const unsigned char *>( featureWkb.constData() ),
                                 featureWkb.length(),

@@ -782,21 +782,39 @@ QSet<QgsMapLayerDependency> QgsVectorDataProvider::dependencies() const
 
 QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geom ) const
 {
-  if ( geom.isNull() )
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  // Call the static version
+  return QgsVectorDataProvider::convertToProviderType( geom, wkbType() );
+
+}
+
+void QgsVectorDataProvider::setNativeTypes( const QList<NativeType> &nativeTypes )
+{
+  mNativeTypes = nativeTypes;
+}
+
+QTextCodec *QgsVectorDataProvider::textEncoding() const
+{
+  return mEncoding;
+}
+
+QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geometry, Qgis::WkbType providerGeometryType )
+{
+  if ( geometry.isNull() )
   {
     return QgsGeometry();
   }
 
-  const QgsAbstractGeometry *geometry = geom.constGet();
-  if ( !geometry )
+  const QgsAbstractGeometry *convertedGeometry = geometry.constGet();
+  if ( !convertedGeometry )
   {
     return QgsGeometry();
   }
 
-  const QgsWkbTypes::Type providerGeomType = wkbType();
 
   //geom is already in the provider geometry type
-  if ( geometry->wkbType() == providerGeomType )
+  if ( convertedGeometry->wkbType() == providerGeometryType )
   {
     return QgsGeometry();
   }
@@ -804,9 +822,9 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   std::unique_ptr< QgsAbstractGeometry > outputGeom;
 
   //convert compoundcurve to circularstring (possible if compoundcurve consists of one circular string)
-  if ( QgsWkbTypes::flatType( providerGeomType ) == QgsWkbTypes::CircularString )
+  if ( QgsWkbTypes::flatType( providerGeometryType ) == Qgis::WkbType::CircularString )
   {
-    QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( geometry );
+    QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( convertedGeometry );
     if ( compoundCurve )
     {
       if ( compoundCurve->nCurves() == 1 )
@@ -821,9 +839,9 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   }
 
   //convert to curved type if necessary
-  if ( !QgsWkbTypes::isCurvedType( geometry->wkbType() ) && QgsWkbTypes::isCurvedType( providerGeomType ) )
+  if ( !QgsWkbTypes::isCurvedType( convertedGeometry->wkbType() ) && QgsWkbTypes::isCurvedType( providerGeometryType ) )
   {
-    QgsAbstractGeometry *curveGeom = outputGeom ? outputGeom->toCurveType() : geometry->toCurveType();
+    QgsAbstractGeometry *curveGeom = outputGeom ? outputGeom->toCurveType() : convertedGeometry->toCurveType();
     if ( curveGeom )
     {
       outputGeom.reset( curveGeom );
@@ -831,9 +849,9 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   }
 
   //convert to linear type from curved type
-  if ( QgsWkbTypes::isCurvedType( geometry->wkbType() ) && !QgsWkbTypes::isCurvedType( providerGeomType ) )
+  if ( QgsWkbTypes::isCurvedType( convertedGeometry->wkbType() ) && !QgsWkbTypes::isCurvedType( providerGeometryType ) )
   {
-    QgsAbstractGeometry *segmentizedGeom = outputGeom ? outputGeom->segmentize() : geometry->segmentize();
+    QgsAbstractGeometry *segmentizedGeom = outputGeom ? outputGeom->segmentize() : convertedGeometry->segmentize();
     if ( segmentizedGeom )
     {
       outputGeom.reset( segmentizedGeom );
@@ -841,13 +859,13 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   }
 
   //convert to multitype if necessary
-  if ( QgsWkbTypes::isMultiType( providerGeomType ) && !QgsWkbTypes::isMultiType( geometry->wkbType() ) )
+  if ( QgsWkbTypes::isMultiType( providerGeometryType ) && !QgsWkbTypes::isMultiType( convertedGeometry->wkbType() ) )
   {
-    std::unique_ptr< QgsAbstractGeometry > collGeom( QgsGeometryFactory::geomFromWkbType( providerGeomType ) );
+    std::unique_ptr< QgsAbstractGeometry > collGeom( QgsGeometryFactory::geomFromWkbType( providerGeometryType ) );
     QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( collGeom.get() );
     if ( geomCollection )
     {
-      if ( geomCollection->addGeometry( outputGeom ? outputGeom->clone() : geometry->clone() ) )
+      if ( geomCollection->addGeometry( outputGeom ? outputGeom->clone() : convertedGeometry->clone() ) )
       {
         outputGeom.reset( collGeom.release() );
       }
@@ -855,15 +873,15 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   }
 
   //convert to single type if there's a single part of compatible type
-  if ( !QgsWkbTypes::isMultiType( providerGeomType ) && QgsWkbTypes::isMultiType( geometry->wkbType() ) )
+  if ( !QgsWkbTypes::isMultiType( providerGeometryType ) && QgsWkbTypes::isMultiType( convertedGeometry->wkbType() ) )
   {
-    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry );
+    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( convertedGeometry );
     if ( collection )
     {
       if ( collection->numGeometries() == 1 )
       {
         const QgsAbstractGeometry *firstGeom = collection->geometryN( 0 );
-        if ( firstGeom && firstGeom->wkbType() == providerGeomType )
+        if ( firstGeom && firstGeom->wkbType() == providerGeometryType )
         {
           outputGeom.reset( firstGeom->clone() );
         }
@@ -872,20 +890,20 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   }
 
   //set z/m types
-  if ( QgsWkbTypes::hasZ( providerGeomType ) )
+  if ( QgsWkbTypes::hasZ( providerGeometryType ) )
   {
     if ( !outputGeom )
     {
-      outputGeom.reset( geometry->clone() );
+      outputGeom.reset( convertedGeometry->clone() );
     }
     outputGeom->addZValue();
   }
 
-  if ( QgsWkbTypes::hasM( providerGeomType ) )
+  if ( QgsWkbTypes::hasM( providerGeometryType ) )
   {
     if ( !outputGeom )
     {
-      outputGeom.reset( geometry->clone() );
+      outputGeom.reset( convertedGeometry->clone() );
     }
     outputGeom->addMValue();
   }
@@ -896,16 +914,6 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   }
 
   return QgsGeometry();
-}
-
-void QgsVectorDataProvider::setNativeTypes( const QList<NativeType> &nativeTypes )
-{
-  mNativeTypes = nativeTypes;
-}
-
-QTextCodec *QgsVectorDataProvider::textEncoding() const
-{
-  return mEncoding;
 }
 
 bool QgsVectorDataProvider::cancelReload()
