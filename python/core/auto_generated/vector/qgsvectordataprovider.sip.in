@@ -703,11 +703,11 @@ For general debug information use :py:func:`QgsMessageLog.logMessage()` instead.
 %Docstring
 Converts the geometry to the provider type if possible / necessary
 
+:return: the converted geometry or ``None`` if no conversion was necessary or possible
+
 .. note::
 
    The default implementation simply calls the static version of this function.
-
-:return: the converted geometry or ``None`` if no conversion was necessary or possible
 %End
 
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );
