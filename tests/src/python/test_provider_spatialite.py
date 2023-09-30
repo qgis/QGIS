@@ -45,7 +45,7 @@ from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
 
 from providertestbase import ProviderTestCase
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, compareWkt
 
 # Pass no_exit=True: for some reason this crashes sometimes on exit on Travis
 start_app(True)
@@ -1884,6 +1884,45 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
 
         self.assertEqual(meta.absoluteToRelativeUri(absolute_uri, context), relative_uri)
         self.assertEqual(meta.relativeToAbsoluteUri(relative_uri, context), absolute_uri)
+
+    def testRegression54622Multisurface(self):
+
+        con = spatialite_connect(self.dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = sql = """CREATE TABLE table54622 (
+            _id INTEGER PRIMARY KEY AUTOINCREMENT)"""
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('table54622', 'geometry', 25832, 'MULTIPOLYGON', 'XY', 0)"
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        def _check_feature():
+            layer = QgsVectorLayer(
+                'dbname=\'{}\' table="table54622" (geometry) sql='.format(self.dbname), 'test', 'spatialite')
+            feature = next(layer.getFeatures())
+            self.assertFalse(feature.geometry().isNull())
+            self.assertTrue(compareWkt(feature.geometry().asWkt(), 'MultiPolygon (((-0.886 0.135, -0.886 -0.038, -0.448 -0.070, -0.426 0.143, -0.886 0.135)))', 0.01))
+
+        layer = QgsVectorLayer(
+            'dbname=\'{}\' table="table54622" (geometry) sql='.format(self.dbname), 'test', 'spatialite')
+
+        self.assertTrue(layer.isValid())
+        feature = QgsFeature(layer.fields())
+        geom = QgsGeometry.fromWkt('MULTISURFACE(CURVEPOLYGON(COMPOUNDCURVE((-0.886 0.135,-0.886 -0.038,-0.448 -0.070,-0.427 0.144,-0.886 0.135))))')
+        feature.setGeometry(geom)
+        self.assertTrue(layer.dataProvider().addFeatures([feature]))
+
+        _check_feature()
+
+        self.assertTrue(layer.dataProvider().changeFeatures({}, {feature.id(): geom}))
+
+        _check_feature()
+
+        self.assertTrue(layer.dataProvider().changeGeometryValues({feature.id(): geom}))
+
+        _check_feature()
 
 
 if __name__ == '__main__':

@@ -704,6 +704,10 @@ For general debug information use :py:func:`QgsMessageLog.logMessage()` instead.
 Converts the geometry to the provider type if possible / necessary
 
 :return: the converted geometry or ``None`` if no conversion was necessary or possible
+
+.. note::
+
+   The default implementation simply calls the static version of this function.
 %End
 
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );
@@ -720,6 +724,16 @@ Gets this providers encoding
 
 .. versionadded:: 3.0
 %End
+
+    static QgsGeometry convertToProviderType( const QgsGeometry &geometry,  Qgis::WkbType providerGeometryType );
+%Docstring
+Converts the ``geometry`` to the provider geometry type ``providerGeometryType`` if possible / necessary
+
+:return: the converted geometry or ``None`` if no conversion was necessary or possible
+
+.. versionadded:: 3.34
+%End
+
 
 };
 

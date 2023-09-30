@@ -681,6 +681,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Converts the geometry to the provider type if possible / necessary
      * \returns the converted geometry or NULLPTR if no conversion was necessary or possible
+     * \note The default implementation simply calls the static version of this function.
      */
     QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
 
@@ -698,6 +699,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \since QGIS 3.0
      */
     QTextCodec *textEncoding() const;
+
+    /**
+     * Converts the \a geometry to the provider geometry type \a providerGeometryType if possible / necessary
+     * \returns the converted geometry or NULLPTR if no conversion was necessary or possible
+     * \since QGIS 3.34
+     */
+    static QgsGeometry convertToProviderType( const QgsGeometry &geometry,  Qgis::WkbType providerGeometryType );
+
 
   private:
     mutable bool mCacheMinMaxDirty = true;
