@@ -162,14 +162,20 @@ void QgsDataSourceManagerDialog::reset()
   }
 }
 
-bool QgsDataSourceManagerDialog::configureFromUri( const QString &uri, const QString &pagename )
+void QgsDataSourceManagerDialog::configureFromUri( const QString &uri, const QString &pageName )
 {
-  openPage( pagename );
-  if ( QgsAbstractDataSourceWidget *dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( ui->mOptionsStackedWidget->currentWidget() ) )
+  const int pageIdx = mPageProviderKeys.indexOf( pageName );
+  if ( pageIdx != -1 )
   {
-    return dataSourceWidget->configureFromUri( uri );
+    QTimer::singleShot( 0, this, [ = ]
+    {
+      setCurrentPage( pageIdx );
+      if ( QgsAbstractDataSourceWidget *dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( ui->mOptionsStackedWidget->currentWidget() ) )
+      {
+        dataSourceWidget->configureFromUri( uri );
+      }
+    } );
   }
-  return false;
 }
 
 void QgsDataSourceManagerDialog::rasterLayersAdded( const QStringList &layersList )
