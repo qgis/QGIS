@@ -65,3 +65,9 @@ void QgsAbstractDataSourceWidget::addButtonClicked()
 void QgsAbstractDataSourceWidget::reset()
 {
 }
+
+bool QgsAbstractDataSourceWidget::configureFromUri( const QString &uri )
+{
+  Q_UNUSED( uri );
+  return false;
+}
