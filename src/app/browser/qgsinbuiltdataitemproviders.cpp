@@ -576,14 +576,15 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       }
     }
 
-    if ( !item->providerKey().isEmpty() && !item->providerKey().startsWith( QStringLiteral( "special:" ) ) )
+    if ( const auto layerItem = qobject_cast< QgsLayerItem * >( item ) )
     {
       QAction *openDataSourceManagerAction = new QAction( tr( "Open with datasource manager…" ), menu );
       connect( openDataSourceManagerAction, &QAction::triggered, this, [ = ]
       {
-        QgisApp::instance()->dataSourceManager( item->providerKey() );
+        QgisApp::instance()->dataSourceManager( layerItem->providerKey(), layerItem->uri() );
       } );
       menu->addAction( openDataSourceManagerAction );
+      menu->addSeparator();
     }
   }
 
