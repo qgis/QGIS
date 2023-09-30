@@ -668,8 +668,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Converts the geometry to the provider type if possible / necessary
-     * \note The default implementation simply calls the static version of this function.
      * \returns the converted geometry or NULLPTR if no conversion was necessary or possible
+     * \note The default implementation simply calls the static version of this function.
      */
     QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
 
