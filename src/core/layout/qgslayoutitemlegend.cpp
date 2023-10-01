@@ -1133,14 +1133,29 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
 
     mapSettings.setExpressionContext( createExpressionContext() );
 
-    const QgsGeometry atlasGeometry = mInAtlas ? mLayout->reportContext().currentGeometry( mapSettings.destinationCrs() ) : QgsGeometry();
+    const QgsGeometry atlasGeometry { mLayout->reportContext().currentGeometry( mapSettings.destinationCrs() ) };
 
     QgsLayerTreeFilterSettings filterSettings( mapSettings );
+
+    QList<QgsMapLayer *> layersToClip;
+    if ( !atlasGeometry.isNull() && mMap->atlasClippingSettings()->enabled() )
+    {
+      layersToClip = mMap->atlasClippingSettings()->layersToClip();
+      for ( QgsMapLayer *layer : std::as_const( layersToClip ) )
+      {
+        QList<QgsMapLayer *> mapLayers { filterSettings.mapSettings().layers( true ) };
+        mapLayers.removeAll( layer );
+        filterSettings.mapSettings().setLayers( mapLayers );
+        filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( atlasGeometry, mapSettings.destinationCrs() ) );
+      }
+    }
+
 
     if ( !linkedFilterMaps.empty() )
     {
       for ( QgsLayoutItemMap *map : std::as_const( linkedFilterMaps ) )
       {
+
         if ( map == mMap )
           continue;
 
@@ -1160,7 +1175,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         const QList< QgsMapLayer * > layersForMap = map->layersToRender();
         for ( QgsMapLayer *layer : layersForMap )
         {
-          if ( !atlasGeometry.isNull() )
+          if ( mInAtlas && !atlasGeometry.isNull() )
           {
             mapExtent = mapExtent.intersection( atlasGeometry );
           }

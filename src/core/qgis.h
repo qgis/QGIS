@@ -1483,6 +1483,7 @@ class CORE_EXPORT Qgis
       AddRingNotInExistingFeature, //!< The input ring doesn't have any existing ring to fit into
       // Split features
       SplitCannotSplitPoint, //!< Cannot split points
+      GeometryTypeHasChanged, //!< Operation has changed geometry type
     };
     Q_ENUM( GeometryOperationResult )
 
@@ -3765,6 +3766,7 @@ class CORE_EXPORT Qgis
     {
       Qgis, //!< Native QGIS expression
       PointCloud, //!< Point cloud expression
+      RasterCalculator, //!< Raster calculator expression (since QGIS 3.34)
     };
     Q_ENUM( ExpressionType )
 

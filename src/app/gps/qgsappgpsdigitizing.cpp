@@ -277,18 +277,18 @@ void QgsAppGpsDigitizing::createFeature()
 
   if ( geometryLayerCrs.type() == Qgis::GeometryType::Polygon )
   {
-    const int avoidIntersectionsReturn = geometryLayerCrs.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
-    if ( avoidIntersectionsReturn == 1 )
+    const Qgis::GeometryOperationResult avoidIntersectionsReturn = geometryLayerCrs.avoidIntersectionsV2( QgsProject::instance()->avoidIntersectionsLayers() );
+    if ( avoidIntersectionsReturn == Qgis::GeometryOperationResult::InvalidInputGeometryType )
     {
       //not a polygon type. Impossible to get there
     }
-    else if ( avoidIntersectionsReturn == 2 )
+    else if ( avoidIntersectionsReturn == Qgis::GeometryOperationResult::GeometryTypeHasChanged )
     {
       //bail out...
       QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type." ) );
       return;
     }
-    else if ( avoidIntersectionsReturn == 3 )
+    else if ( avoidIntersectionsReturn == Qgis::GeometryOperationResult::InvalidBaseGeometry )
     {
       QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ) );
       return;
@@ -488,4 +488,3 @@ QVariant QgsAppGpsDigitizing::timestamp( QgsVectorLayer *vlayer, int idx ) const
   }
   return value;
 }
-

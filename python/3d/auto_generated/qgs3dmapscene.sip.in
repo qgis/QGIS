@@ -106,7 +106,7 @@ Returns the scene's elevation range
 
 .. note::
 
-   Only terrain and point cloud layers are taken into account
+   Only some layer types are considered by this method (eg terrain, point cloud and mesh layers)
 
 .. versionadded:: 3.30
 %End
@@ -167,6 +167,13 @@ Emitted when the FPS counter is activated or deactivated
 Emitted when the viewed 2D extent seen by the 3D camera has changed
 
 .. versionadded:: 3.26
+%End
+
+    void gpuMemoryLimitReached();
+%Docstring
+Emitted when one of the entities reaches its GPU memory limit
+and it is not possible to lower the GPU memory use by unloading
+data that's not currently needed.
 %End
 
   public slots:

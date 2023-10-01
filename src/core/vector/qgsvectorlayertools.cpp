@@ -48,10 +48,26 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   {
     browsedFeatureCount++;
 
+    if ( f.hasGeometry() )
+    {
+      QgsGeometry geom = f.geometry();
+      geom.translate( dx, dy );
+      f.setGeometry( geom );
+    }
+
     QgsFeature newFeature;
     if ( mProject )
     {
       newFeature = QgsVectorLayerUtils::duplicateFeature( layer, f, mProject, duplicateFeatureContext );
+      if ( !newFeature.isValid() )
+      {
+        couldNotWriteCount++;
+        QgsDebugError( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( f.id() ) );
+      }
+      else
+      {
+        fidList.insert( newFeature.id() );
+      }
 
       const auto duplicateFeatureContextLayers = duplicateFeatureContext.layers();
       for ( QgsVectorLayer *chl : duplicateFeatureContextLayers )
@@ -69,34 +85,28 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
     else
     {
       newFeature = QgsVectorLayerUtils::createFeature( layer, f.geometry(), f.attributes().toMap() );
+      if ( !layer->addFeature( newFeature ) )
+      {
+        couldNotWriteCount++;
+        QgsDebugError( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( f.id() ) );
+      }
+      else
+      {
+        fidList.insert( newFeature.id() );
+      }
     }
 
     // translate
     if ( newFeature.hasGeometry() )
     {
       QgsGeometry geom = newFeature.geometry();
-      geom.translate( dx, dy );
-      newFeature.setGeometry( geom );
-#ifdef QGISDEBUG
-      const QgsFeatureId fid = newFeature.id();
-#endif
-      // paste feature
-      if ( !layer->addFeature( newFeature ) )
+      if ( topologicalEditing )
       {
-        couldNotWriteCount++;
-        QgsDebugError( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( fid ) );
-      }
-      else
-      {
-        fidList.insert( newFeature.id() );
-        if ( topologicalEditing )
+        if ( topologicalLayer )
         {
-          if ( topologicalLayer )
-          {
-            topologicalLayer->addTopologicalPoints( geom );
-          }
-          layer->addTopologicalPoints( geom );
+          topologicalLayer->addTopologicalPoints( geom );
         }
+        layer->addTopologicalPoints( geom );
       }
     }
     else

@@ -816,13 +816,10 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
   std::unique_ptr<QgsSymbol> newSymbol( mCategorizedSymbol->clone() );
   if ( panel && panel->dockMode() )
   {
-    // bit tricky here - the widget doesn't take ownership of the symbol. So we need it to last for the duration of the
-    // panel's existence. Accordingly, just kinda give it ownership here, and clean up in cleanUpSymbolSelector
-    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.release(), mStyle, mLayer, panel );
-    dlg->setContext( mContext );
-    connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget );
-    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
-    openPanel( dlg );
+    QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( newSymbol ), mStyle, mLayer, panel );
+    widget->setContext( mContext );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ] { updateSymbolsFromWidget( widget ); } );
+    openPanel( widget );
   }
   else
   {
@@ -873,12 +870,11 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( symbol.release(), mStyle, mLayer, panel );
-    dlg->setContext( mContext );
-    dlg->setPanelTitle( category.label() );
-    connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget );
-    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
-    openPanel( dlg );
+    QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( symbol ), mStyle, mLayer, panel );
+    widget->setContext( mContext );
+    widget->setPanelTitle( category.label() );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ] { updateSymbolsFromWidget( widget ); } );
+    openPanel( widget );
   }
   else
   {
@@ -1274,19 +1270,9 @@ void QgsCategorizedSymbolRendererWidget::pasteSymbolToSelection()
   }
 }
 
-void QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
+void QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget( QgsSymbolSelectorWidget *widget )
 {
-  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( container );
-  if ( !dlg )
-    return;
-
-  delete dlg->symbol();
-}
-
-void QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget()
-{
-  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
-  mCategorizedSymbol.reset( dlg->symbol()->clone() );
+  mCategorizedSymbol.reset( widget->symbol()->clone() );
 
   applyChangeToSymbol();
 }

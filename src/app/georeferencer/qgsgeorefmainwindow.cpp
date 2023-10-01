@@ -1730,13 +1730,15 @@ bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, doubl
     pixelYSize *= std::cos( rotation );
   }
 
+  // in world files we need to use center of the upper left pixel, not the corner
+  // see https://github.com/qgis/QGIS/issues/41795
   QTextStream stream( &file );
   stream << qgsDoubleToString( pixelXSize ) << Qt::endl
          << rotationX << Qt::endl
          << rotationY << Qt::endl
          << qgsDoubleToString( -pixelYSize ) << Qt::endl
-         << qgsDoubleToString( origin.x() ) << Qt::endl
-         << qgsDoubleToString( origin.y() ) << Qt::endl;
+         << qgsDoubleToString( origin.x() + pixelXSize / 2.0 ) << Qt::endl
+         << qgsDoubleToString( origin.y() - pixelYSize / 2.0 ) << Qt::endl;
   return true;
 }
 

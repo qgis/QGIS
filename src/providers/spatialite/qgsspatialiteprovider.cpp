@@ -128,6 +128,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 }
 
 
+
 Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     Qgis::WkbType wkbType,
@@ -4230,7 +4231,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           {
             unsigned char *wkb = nullptr;
             int wkb_size;
-            QByteArray featureWkb = feature->geometry().asWkb();
+            const QgsGeometry convertedGeom( QgsVectorDataProvider::convertToProviderType( feature->geometry(), wkbType() ) );
+            const QByteArray featureWkb{ !convertedGeom.isNull() ? convertedGeom.asWkb() : feature->geometry().asWkb() };
             convertFromGeosWKB( reinterpret_cast<const unsigned char *>( featureWkb.constData() ),
                                 featureWkb.length(),
                                 &wkb, &wkb_size, nDims );
@@ -4840,7 +4842,8 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry
       // binding GEOMETRY to Prepared Statement
       unsigned char *wkb = nullptr;
       int wkb_size;
-      QByteArray iterWkb = iter->asWkb();
+      const QgsGeometry convertedGeom( convertToProviderType( *iter ) );
+      const QByteArray iterWkb{ !convertedGeom.isNull() ? convertedGeom.asWkb() : iter->asWkb() };
       convertFromGeosWKB( reinterpret_cast<const unsigned char *>( iterWkb.constData() ), iterWkb.length(), &wkb, &wkb_size, nDims );
       if ( !wkb )
         sqlite3_bind_null( stmt, 1 );

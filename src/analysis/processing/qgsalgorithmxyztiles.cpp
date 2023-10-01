@@ -193,7 +193,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     settings.setDestinationCrs( mMercatorCrs );
     settings.setLayers( mLayers );
     settings.setOutputDpi( mDpi );
-    if ( mTileFormat == QStringLiteral( "PNG" ) )
+    if ( mTileFormat == QLatin1String( "PNG" ) )
     {
       settings.setBackgroundColor( mBackgroundColor );
     }

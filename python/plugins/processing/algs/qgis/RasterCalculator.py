@@ -24,6 +24,7 @@ import math
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 from qgis.core import (QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingUtils,
                        QgsProcessingParameterCrs,
@@ -87,6 +88,9 @@ class RasterCalculator(QgisAlgorithm):
                                                        optional=True))
         self.addParameter(QgsProcessingParameterCrs(self.CRS, 'Output CRS', optional=True))
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Output')))
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagDeprecated
 
     def name(self):
         return 'rastercalculator'

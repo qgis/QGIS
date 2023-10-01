@@ -105,11 +105,9 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
   }
 }
 
-
 Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) const
 {
-  QString path;
-  if ( !index.isValid() || !rowCount( index.parent() ) )
+  if ( !index.isValid() || !rowCount( index.parent() ) || index.row() >= mRecentProjects.size() )
     return Qt::NoItemFlags;
 
   Qt::ItemFlags flags = QAbstractListModel::flags( index );
@@ -122,7 +120,7 @@ Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) cons
     QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( projectData.path );
     if ( storage )
     {
-      path = storage->filePath( projectData.path );
+      QString path = storage->filePath( projectData.path );
       if ( storage->type() == QLatin1String( "geopackage" ) && path.isEmpty() )
         projectData.exists = false;
       else

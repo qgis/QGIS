@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Expression String Builder</string>
+   <string>Expression Builder</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="margin">

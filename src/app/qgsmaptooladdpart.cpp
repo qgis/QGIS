@@ -162,6 +162,7 @@ void QgsMapToolAddPart::finalizeEditCommand( QgsVectorLayer *layer, Qgis::Geomet
     case Qgis::GeometryOperationResult::LayerNotEditable:
     case Qgis::GeometryOperationResult::NothingHappened:
     case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
+    case Qgis::GeometryOperationResult::GeometryTypeHasChanged:
       // Should not reach here
       // Other OperationResults should not be returned by addPart
       errorMessage = tr( "Unexpected OperationResult: %1" ).arg( qgsEnumValueToKey( errorCode ) );
@@ -228,4 +229,3 @@ QgsVectorLayer *QgsMapToolAddPart::getLayerAndCheckSelection()
   else
     return nullptr;
 }
-

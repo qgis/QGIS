@@ -69,11 +69,12 @@ class QgsProcessingExec
   public:
 
     QgsProcessingExec();
-    int run( const QStringList &args );
+    int run( const QStringList &args, bool useJson, QgsProcessingContext::LogLevel logLevel, bool skipPython );
+    static void showUsage( const QString &appName );
+    static void showVersionInformation();
 
   private:
 
-    void showUsage( const QString &appName );
     void loadPlugins();
     void listAlgorithms( bool useJson );
     void listPlugins( bool useJson, bool showLoaded );

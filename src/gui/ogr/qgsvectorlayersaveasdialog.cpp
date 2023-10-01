@@ -432,14 +432,23 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   Q_UNUSED( idx )
 
   mFilename->setEnabled( true );
-  mFilename->setFilter( QgsVectorFileWriter::filterForDriver( format() ) );
+  QString filter = QgsVectorFileWriter::filterForDriver( format() );
+  // A bit of hack to solve https://github.com/qgis/QGIS/issues/54566
+  // to be able to select an existing File Geodatabase, we add in the filter
+  // the "gdb" file that is found in all File Geodatabase .gdb directory
+  // to allow the user to select it. We need to detect this particular case
+  // in QgsFileWidget::openFileDialog() to remove this gdb file from the
+  // selected filename
+  if ( format() == QLatin1String( "OpenFileGDB" ) || format() == QLatin1String( "FileGDB" ) )
+    filter = QStringLiteral( "%1 (*.gdb *.GDB gdb)" ).arg( tr( "ESRI File Geodatabase" ) );
+  mFilename->setFilter( filter );
 
   // if output filename already defined we need to replace old suffix
   // to avoid double extensions like .gpkg.shp
   if ( !mFilename->filePath().isEmpty() )
   {
     const thread_local QRegularExpression rx( "\\.(.*?)[\\s]" );
-    const QString ext = rx.match( QgsVectorFileWriter::filterForDriver( format() ) ).captured( 1 );
+    const QString ext = rx.match( filter ).captured( 1 );
     if ( !ext.isEmpty() )
     {
       QFileInfo fi( mFilename->filePath() );

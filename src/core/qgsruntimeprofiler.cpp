@@ -623,7 +623,7 @@ void QgsRuntimeProfiler::extractModelAsText( QStringList &lines, const QString &
       QModelIndex cellIndex = index( r, c, parent );
       cells << data( cellIndex ).toString();
     }
-    lines << QStringLiteral( "%1 %2" ).arg( QStringLiteral( "-" ).repeated( level + 1 ), cells.join( QStringLiteral( ": " ) ) );
+    lines << QStringLiteral( "%1 %2" ).arg( QStringLiteral( "-" ).repeated( level + 1 ), cells.join( QLatin1String( ": " ) ) );
     extractModelAsText( lines, group, rowIndex, level + 1 );
   }
 }
@@ -640,7 +640,7 @@ QString QgsRuntimeProfiler::asText( const QString &group )
     lines << ( !groupName.isEmpty() ? groupName : g );
     extractModelAsText( lines, g );
   }
-  return lines.join( QStringLiteral( "\r\n" ) );
+  return lines.join( QLatin1String( "\r\n" ) );
 }
 
 

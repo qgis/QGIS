@@ -7363,6 +7363,16 @@ class TestQgsGeometry(QgisTestCase):
         self.assertGeometriesEqual(square, r2)
         self.assertGeometriesEqual(parts[0], r1)
 
+        multilinestring = QgsGeometry.fromWkt("MultiLinestring((0 1, 1 0),(0 2, 2 0))")
+        blade = QgsCompoundCurve()
+        blade.addCurve(QgsLineString([QgsPointXY(0.8, 0.8), QgsPointXY(1.2, 1.2)]))
+        result, parts, _ = multilinestring.splitGeometry(blade, False, False, False)
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+        self.assertEqual(len(parts), 3)
+        self.assertTrue(compareWkt(parts[0].asWkt(), 'MultiLineString ((0 2, 1 1))'))
+        self.assertTrue(compareWkt(parts[1].asWkt(), 'MultiLineString ((1 1, 2 0))'))
+        self.assertTrue(compareWkt(parts[2].asWkt(), 'MultiLineString ((0 1, 1 0))'))
+
 
 if __name__ == '__main__':
     unittest.main()

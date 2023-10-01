@@ -564,9 +564,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Gets a version of the internal layer definition that has sensitive
       *  bits removed (for example, the password). This function should
       * be used when displaying the source name for general viewing.
+      * \param hidePassword False, if the password should be removed or replaced by an arbitrary string, since QGIS 3.34
       * \see source()
      */
-    QString publicSource() const;
+    QString publicSource( bool hidePassword = false ) const;
 
     /**
      * Returns the source for the layer. This source may contain usernames, passwords

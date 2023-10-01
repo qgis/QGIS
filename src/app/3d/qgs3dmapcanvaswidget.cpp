@@ -228,6 +228,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mAnimationWidget = new Qgs3DAnimationWidget( this );
   mAnimationWidget->setVisible( false );
 
+  mMessageBar = new QgsMessageBar( this );
+  mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+
   QHBoxLayout *topLayout = new QHBoxLayout;
   topLayout->setContentsMargins( 0, 0, 0, 0 );
   topLayout->setSpacing( style()->pixelMetric( QStyle::PM_LayoutHorizontalSpacing ) );
@@ -251,6 +254,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
   layout->addLayout( topLayout );
+  layout->addWidget( mMessageBar );
   layout->addWidget( mCanvas );
   layout->addWidget( mAnimationWidget );
 
@@ -366,6 +370,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   mCanvas->setMap( map );
 
   connect( mCanvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, this, &Qgs3DMapCanvasWidget::onTotalPendingJobsCountChanged );
+  connect( mCanvas->scene(), &Qgs3DMapScene::gpuMemoryLimitReached, this, &Qgs3DMapCanvasWidget::onGpuMemoryLimitReached );
 
   mAnimationWidget->setCameraController( mCanvas->scene()->cameraController() );
   mAnimationWidget->setMap( map );
@@ -647,4 +652,18 @@ void Qgs3DMapCanvasWidget::onExtentChanged()
     mViewExtentHighlight->addPoint( QgsPointXY( extent.xMaximum(), extent.yMinimum() ), false );
     mViewExtentHighlight->closePoints();
   }
+}
+
+void Qgs3DMapCanvasWidget::onGpuMemoryLimitReached()
+{
+  // let's report this issue just once, rather than spamming user if this happens repeatedly
+  if ( mGpuMemoryLimitReachedReported )
+    return;
+
+  const QgsSettings settings;
+  double memLimit = settings.value( QStringLiteral( "map3d/gpuMemoryLimit" ), 500.0, QgsSettings::App ).toDouble();
+  mMessageBar->pushMessage( tr( "A map layer has used all graphics memory allowed (%1 MB). "
+                                "You may want to lower the amount of detail in the scene, or increase the limit in the options." )
+                            .arg( memLimit ), Qgis::MessageLevel::Warning );
+  mGpuMemoryLimitReachedReported = true;
 }

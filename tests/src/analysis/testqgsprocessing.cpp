@@ -6741,6 +6741,11 @@ void TestQgsProcessing::parameterExpression()
   def.reset( new QgsProcessingParameterExpression( "non_optional", QString(), QString( "default" ), QString(), false, Qgis::ExpressionType::PointCloud ) );
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('non_optional', '', parentLayerParameterName='', defaultValue='default', type=Qgis.ExpressionType.PointCloud)" ) );
+
+  // set raster calculator expression type
+  def.reset( new QgsProcessingParameterExpression( "non_optional", QString(), QString( "default" ), QString(), false, Qgis::ExpressionType::RasterCalculator ) );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('non_optional', '', parentLayerParameterName='', defaultValue='default', type=Qgis.ExpressionType.RasterCalculator)" ) );
 }
 
 void TestQgsProcessing::parameterField()
@@ -11663,10 +11668,10 @@ void TestQgsProcessing::parameterAlignRasterLayers()
   QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
 
   const QString valueAsPythonString = def->valueAsPythonString( layerList, context );
-  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'inputFile': '%1','outputFile': '%2','resampleMethod': %3,'rescale': False}]" ).arg( rasterLayer->source() ).arg( QStringLiteral( "layer2.tif" ) ).arg( 0 ) );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'inputFile': '%1','outputFile': '%2','resampleMethod': %3,'rescale': False}]" ).arg( rasterLayer->source() ).arg( QLatin1String( "layer2.tif" ) ).arg( 0 ) );
 
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( layerList, context ) ).dump() ),
-            QStringLiteral( "[{\"inputFile\":\"%1\",\"outputFile\":\"%2\"}]" ).arg( rasterLayer->source() ).arg( QStringLiteral( "layer2.tif" ) ) );
+            QStringLiteral( "[{\"inputFile\":\"%1\",\"outputFile\":\"%2\"}]" ).arg( rasterLayer->source() ).arg( QLatin1String( "layer2.tif" ) ) );
   bool ok = false;
   QCOMPARE( def->valueAsString( layerList, context, ok ), QString() );
   QVERIFY( !ok );

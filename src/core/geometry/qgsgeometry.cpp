@@ -3039,11 +3039,11 @@ bool QgsGeometry::deletePart( int partNum )
   return ok;
 }
 
-int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
+Qgis::GeometryOperationResult QgsGeometry::avoidIntersectionsV2( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
 {
   if ( !d->geometry )
   {
-    return 1;
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
   }
 
   Qgis::WkbType geomTypeBeforeModification = wkbType();
@@ -3059,15 +3059,46 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
   }
 
   if ( geomTypeBeforeModification != wkbType() )
-    return 2;
+    return Qgis::GeometryOperationResult::GeometryTypeHasChanged;
   if ( haveInvalidGeometry )
-    return 3;
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   if ( !geomModified )
-    return 4;
+    return Qgis::GeometryOperationResult::NothingHappened;
 
-  return 0;
+  return Qgis::GeometryOperationResult::Success;
 }
 
+int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
+{
+  const Qgis::GeometryOperationResult result = avoidIntersectionsV2( avoidIntersectionsLayers, ignoreFeatures );
+  switch ( result )
+  {
+    case Qgis::GeometryOperationResult::Success:
+      return 0;
+    case Qgis::GeometryOperationResult::InvalidInputGeometryType:
+      return 1;
+    case Qgis::GeometryOperationResult::GeometryTypeHasChanged:
+      return 2;
+    case Qgis::GeometryOperationResult::InvalidBaseGeometry:
+      return 3;
+    case Qgis::GeometryOperationResult::NothingHappened:
+
+    // these should never happen
+    case Qgis::GeometryOperationResult::SelectionIsEmpty:
+    case Qgis::GeometryOperationResult::SelectionIsGreaterThanOne:
+    case Qgis::GeometryOperationResult::GeometryEngineError:
+    case Qgis::GeometryOperationResult::LayerNotEditable:
+    case Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound:
+    case Qgis::GeometryOperationResult::AddPartNotMultiGeometry:
+    case Qgis::GeometryOperationResult::AddRingNotClosed:
+    case Qgis::GeometryOperationResult::AddRingNotValid:
+    case Qgis::GeometryOperationResult::AddRingCrossesExistingRings:
+    case Qgis::GeometryOperationResult::AddRingNotInExistingFeature:
+    case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
+      return 4;
+  }
+  return 4;
+}
 
 QgsGeometry QgsGeometry::makeValid( Qgis::MakeValidMethod method, bool keepCollapsed ) const
 {

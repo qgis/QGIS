@@ -69,8 +69,6 @@ class CORE_EXPORT QgsField
 
   public:
 
-#ifndef SIP_RUN
-
     /**
        * Configuration flags for fields
        * These flags are meant to be user-configurable
@@ -88,7 +86,6 @@ class CORE_EXPORT QgsField
     Q_ENUM( ConfigurationFlag )
     Q_DECLARE_FLAGS( ConfigurationFlags, ConfigurationFlag )
     Q_FLAG( ConfigurationFlags )
-#endif
 
     /**
      * Constructor. Constructs a new QgsField object.
@@ -378,13 +375,13 @@ class CORE_EXPORT QgsField
      * Returns the Flags for the field (searchable, …)
      * \since QGIS 3.16
      */
-    QgsField::ConfigurationFlags configurationFlags() const SIP_SKIP;
+    QgsField::ConfigurationFlags configurationFlags() const;
 
     /**
      * Sets the Flags for the field (searchable, …)
      * \since QGIS 3.16
      */
-    void setConfigurationFlags( QgsField::ConfigurationFlags configurationFlags ) SIP_SKIP;
+    void setConfigurationFlags( QgsField::ConfigurationFlags configurationFlags );
 
     //! Formats string for display
     QString displayString( const QVariant &v ) const;
@@ -393,7 +390,7 @@ class CORE_EXPORT QgsField
      * Returns the readable and translated value of the configuration flag
      * \since QGIS 3.16
      */
-    static QString readableConfigurationFlag( QgsField::ConfigurationFlag flag ) SIP_SKIP;
+    static QString readableConfigurationFlag( QgsField::ConfigurationFlag flag );
 
 #ifndef SIP_RUN
 
@@ -548,7 +545,7 @@ class CORE_EXPORT QgsField
 
 Q_DECLARE_METATYPE( QgsField )
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsField::ConfigurationFlags ) SIP_SKIP
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsField::ConfigurationFlags )
 
 //! Writes the field to stream out. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsField &field );

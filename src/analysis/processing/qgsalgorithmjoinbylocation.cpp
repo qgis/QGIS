@@ -31,16 +31,7 @@ void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
                 QObject::tr( "Join to features in" ), QList< int > () << QgsProcessing::QgsProcessing::TypeVectorAnyGeometry ) );
 
-  QStringList predicates;
-  predicates << QObject::tr( "intersect" )
-             << QObject::tr( "contain" )
-             << QObject::tr( "equal" )
-             << QObject::tr( "touch" )
-             << QObject::tr( "overlap" )
-             << QObject::tr( "are within" )
-             << QObject::tr( "cross" );
-
-  std::unique_ptr< QgsProcessingParameterEnum > predicateParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "PREDICATE" ), QObject::tr( "Features they (geometric predicate)" ), predicates, true, 0 );
+  std::unique_ptr< QgsProcessingParameterEnum > predicateParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "PREDICATE" ), QObject::tr( "Features they (geometric predicate)" ), translatedPredicates(), true, 0 );
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
   widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
@@ -115,6 +106,16 @@ QgsJoinByLocationAlgorithm *QgsJoinByLocationAlgorithm::createInstance() const
   return new QgsJoinByLocationAlgorithm();
 }
 
+QStringList QgsJoinByLocationAlgorithm::translatedPredicates()
+{
+  return { QObject::tr( "intersect" ),
+           QObject::tr( "contain" ),
+           QObject::tr( "equal" ),
+           QObject::tr( "touch" ),
+           QObject::tr( "overlap" ),
+           QObject::tr( "are within" ),
+           QObject::tr( "cross" ) };
+}
 
 QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
@@ -226,11 +227,11 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   return outputs;
 }
 
-bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine, bool comparingToJoinedFeature ) const
+bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine, bool comparingToJoinedFeature, const QList<int> &predicates )
 {
   const QgsAbstractGeometry *geom = feature.geometry().constGet();
   bool ok = false;
-  for ( const int predicate : mPredicates )
+  for ( const int predicate : predicates )
   {
     switch ( predicate )
     {
@@ -462,7 +463,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromJoinSource( QgsFeature &joinF
         joinAttributes.append( joinFeature.attribute( ix ) );
       }
     }
-    if ( featureFilter( baseFeature, engine.get(), false ) )
+    if ( featureFilter( baseFeature, engine.get(), false, mPredicates ) )
     {
       if ( mJoinedFeatures )
       {
@@ -532,7 +533,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
       engine->prepareGeometry();
     }
 
-    if ( featureFilter( joinFeature, engine.get(), true ) )
+    if ( featureFilter( joinFeature, engine.get(), true, mPredicates ) )
     {
       switch ( mJoinMethod )
       {

@@ -2430,7 +2430,7 @@ empty if none of the child geometries match the desired type.
 .. versionadded:: 3.2
 %End
 
-    int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
+ int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers ) /Deprecated/;
 
 %Docstring
 Modifies geometry to avoid intersections with the layers specified in project properties
@@ -2444,6 +2444,25 @@ Modifies geometry to avoid intersections with the layers specified in project pr
          4 if the geometry is not intersected by one of the geometries present in the provided layers.
 
 .. versionadded:: 1.5
+
+.. deprecated::
+   QGIS 3.34
+%End
+
+    Qgis::GeometryOperationResult avoidIntersectionsV2( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
+
+%Docstring
+Modifies geometry to avoid intersections with the layers specified in project properties
+
+:param avoidIntersectionsLayers: list of layers to check for intersections
+
+:return: Success                  in case of success
+         InvalidInputGeometryType if geometry is not of polygon type
+         GeometryTypeHasChanged   if avoid intersection has changed the geometry type
+         InvalidBaseGeometry      at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
+         NothingHappened          if the geometry is not intersected by one of the geometries present in the provided layers.
+
+.. versionadded:: 3.34
 %End
 
     QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const throw( QgsNotSupportedException );

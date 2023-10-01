@@ -961,7 +961,7 @@ Sets the annotation length calculation mode.
 
     TickLengthMode rotatedAnnotationsLengthMode() const;
 %Docstring
-Returns the grid frame style.
+Returns the annotation length calculation mode.
 
 .. seealso:: :py:func:`setRotatedAnnotationsLengthMode`
 
@@ -970,7 +970,7 @@ Returns the grid frame style.
 
     void setRotatedAnnotationsMinimumAngle( const double angle );
 %Docstring
-Sets the ``minimum`` angle (in degrees) below which annotated are not drawn.
+Sets the ``minimum`` angle (in degrees) below which annotations are not drawn.
 
 .. seealso:: :py:func:`rotatedAnnotationsMinimumAngle`
 
@@ -979,7 +979,7 @@ Sets the ``minimum`` angle (in degrees) below which annotated are not drawn.
 
     double rotatedAnnotationsMinimumAngle() const;
 %Docstring
-Gets the ``minimum`` angle (in degrees) below which annotated are not drawn.
+Gets the ``minimum`` angle (in degrees) below which annotations are not drawn.
 
 .. seealso:: :py:func:`setRotatedAnnotationsMinimumAngle`
 
@@ -988,7 +988,7 @@ Gets the ``minimum`` angle (in degrees) below which annotated are not drawn.
 
     void setRotatedAnnotationsMarginToCorner( const double margin );
 %Docstring
-Sets the ``margin`` to corners (in canvas units) below which outwards facing ticks are not drawn.
+Sets the ``margin`` to corners (in canvas units) below which outwards facing annotations are not drawn.
 
 .. seealso:: :py:func:`rotatedAnnotationsMarginToCorner`
 
@@ -997,7 +997,7 @@ Sets the ``margin`` to corners (in canvas units) below which outwards facing tic
 
     double rotatedAnnotationsMarginToCorner() const;
 %Docstring
-Gets the ``margin`` to corners (in canvas units) below which outwards facing ticks are not drawn.
+Gets the ``margin`` to corners (in canvas units) below which outwards facing annotations are not drawn.
 
 .. seealso:: :py:func:`setRotatedAnnotationsMarginToCorner`
 

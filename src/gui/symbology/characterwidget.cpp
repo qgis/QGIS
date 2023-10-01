@@ -212,11 +212,14 @@ void CharacterWidget::mouseMoveEvent( QMouseEvent *event )
   const QPoint widgetPosition = mapFromGlobal( event->globalPos() );
   const uint key = ( widgetPosition.y() / mSquareSize ) * mColumns + widgetPosition.x() / mSquareSize;
 
-  const QString text = tr( "<p>Character: <span style=\"font-size: 24pt; font-family: %1\">%2</span><p>Decimal: %3<p>Hex: 0x%4" )
+  const QString text = QStringLiteral( "<p style=\"text-align: center; font-size: 24pt; font-family: %1\">%2</p><p><table><tr><td>%3</td><td>%2</td></tr><tr><td>%4</td><td>%5</td></tr><tr><td>%6</td><td>0x%7</td></tr></table>" )
                        .arg( mDisplayFont.family() )
                        .arg( QChar( key ) )
+                       .arg( tr( "Character" ),
+                             tr( "Decimal" ) )
                        .arg( key )
-                       .arg( QString::number( key, 16 ) );
+                       .arg( tr( "Hex" ),
+                             QString::number( key, 16 ) );
   QToolTip::showText( event->globalPos(), text, this );
 }
 

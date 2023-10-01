@@ -127,6 +127,7 @@
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinExtent.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPoissonRaster.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomRaster.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRasterCalculator.svg</file>
         <file>themes/default/algorithms/mAlgorithmRegularPoints.svg</file>
         <file>themes/default/algorithms/mAlgorithmRoundRastervalues.svg</file>
         <file>themes/default/algorithms/mAlgorithmSelectLocation.svg</file>

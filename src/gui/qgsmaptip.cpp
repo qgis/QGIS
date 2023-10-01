@@ -113,7 +113,12 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   {
     mWebView = new QgsWebView( pMapCanvas );
     // Make the webwiew transparent
-    mWebView->setStyleSheet( QStringLiteral( "background:transparent;" ) );
+
+    // Setting the background color to 'transparent' does not play nice
+    // with webkit scrollbars, that are rendered as black rectangles (#54683)
+    QColor transparentColor = mWebView->palette().color( QPalette::Window );
+    transparentColor.setAlpha( 0 );
+    mWebView->setStyleSheet( QString( "background:%1;" ).arg( transparentColor.name( QColor::HexArgb ) ) );
 
 
 #if WITH_QTWEBKIT
@@ -169,9 +174,9 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
     cursorOffset = static_cast< int >( std::ceil( scale * 32 ) );
   }
 
-  // Ensures the map tip is never larger than half the map canvas minus the cursor size + margin (cursorOffset)
-  const int MAX_WIDTH = pMapCanvas->width() / 2 - cursorOffset;
-  const int MAX_HEIGHT = pMapCanvas->height() / 2;
+  // Ensures the map tip is never larger than the available space
+  const int MAX_WIDTH = std::max( pixelPosition.x(), pMapCanvas->width() - pixelPosition.x() ) - cursorOffset - 5;
+  const int MAX_HEIGHT = std::max( pixelPosition.y(), pMapCanvas->height() - pixelPosition.y() ) - 5;
 
   mWebView->setMaximumSize( MAX_WIDTH, MAX_HEIGHT );
 

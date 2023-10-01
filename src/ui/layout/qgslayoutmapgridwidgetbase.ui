@@ -1008,7 +1008,7 @@
              <item row="0" column="1">
               <widget class="QComboBox" name="mRotatedAnnotationsLengthModeComboBox">
                <property name="toolTip">
-                <string>Determines how the ticks length is defined when rotated.</string>
+                <string>Determines how the annotations position is defined when the grid is rotated.</string>
                </property>
               </widget>
              </item>
@@ -1022,7 +1022,7 @@
              <item row="1" column="1">
               <widget class="QgsDoubleSpinBox" name="mRotatedAnnotationsThresholdSpinBox">
                <property name="toolTip">
-                <string>Grid lines intersecting the border below this threshold will be ignored.</string>
+                <string>Annotations of grid lines intersecting the border below this threshold will be ignored.</string>
                </property>
                <property name="suffix">
                 <string> °</string>

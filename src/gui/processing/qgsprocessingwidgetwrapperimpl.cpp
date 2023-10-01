@@ -66,6 +66,7 @@
 #include "qgspointcloudattributecombobox.h"
 #include "qgspointcloudlayer.h"
 #include "qgsprocessingpointcloudexpressionlineedit.h"
+#include "qgsprocessingrastercalculatorexpressionlineedit.h"
 #include "qgsunittypes.h"
 #include <QToolButton>
 #include <QLabel>
@@ -2124,10 +2125,12 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
   mDefaultQgisLineEdit->registerExpressionContextGenerator( this );
 
   mDefaultPointCloudLineEdit = new QgsProcessingPointCloudExpressionLineEdit();
+  mDefaultRasterCalculatorLineEdit = new QgsProcessingRasterCalculatorExpressionLineEdit();
 
   QStackedWidget *stackedWidget = new QStackedWidget();
   stackedWidget->addWidget( mDefaultQgisLineEdit );
   stackedWidget->addWidget( mDefaultPointCloudLineEdit );
+  stackedWidget->addWidget( mDefaultRasterCalculatorLineEdit );
   vlayout->addWidget( stackedWidget );
 
   if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
@@ -2146,6 +2149,7 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
   mExpressionTypeComboBox = new QComboBox();
   mExpressionTypeComboBox->addItem( tr( "QGIS" ), static_cast< int >( Qgis::ExpressionType::Qgis ) );
   mExpressionTypeComboBox->addItem( tr( "Point Cloud" ), static_cast< int >( Qgis::ExpressionType::PointCloud ) );
+  mExpressionTypeComboBox->addItem( tr( "Raster Calculator" ), static_cast< int >( Qgis::ExpressionType::RasterCalculator ) );
 
   connect( mExpressionTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
@@ -2166,35 +2170,50 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
       const QMap<QString, QgsProcessingModelParameter> components = model->parameterComponents();
       for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
       {
-        if ( exprType == Qgis::ExpressionType::Qgis )
+        switch ( exprType )
         {
-          if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( model->parameterDefinition( it.value().parameterName() ) ) )
-          {
-            mParentLayerComboBox-> addItem( definition->description(), definition->name() );
-            if ( !initialParent.isEmpty() && initialParent == definition->name() )
+          case Qgis::ExpressionType::Qgis:
+            if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( model->parameterDefinition( it.value().parameterName() ) ) )
             {
-              mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+              mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+              if ( !initialParent.isEmpty() && initialParent == definition->name() )
+              {
+                mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+              }
             }
-          }
-          else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( model->parameterDefinition( it.value().parameterName() ) ) )
-          {
-            mParentLayerComboBox-> addItem( definition->description(), definition->name() );
-            if ( !initialParent.isEmpty() && initialParent == definition->name() )
+            else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( model->parameterDefinition( it.value().parameterName() ) ) )
             {
-              mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+              mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+              if ( !initialParent.isEmpty() && initialParent == definition->name() )
+              {
+                mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+              }
             }
-          }
-        }
-        else
-        {
-          if ( const QgsProcessingParameterPointCloudLayer *definition = dynamic_cast< const QgsProcessingParameterPointCloudLayer * >( model->parameterDefinition( it.value().parameterName() ) ) )
-          {
-            mParentLayerComboBox-> addItem( definition->description(), definition->name() );
-            if ( !initialParent.isEmpty() && initialParent == definition->name() )
+            break;
+          case Qgis::ExpressionType::PointCloud:
+            if ( const QgsProcessingParameterPointCloudLayer *definition = dynamic_cast< const QgsProcessingParameterPointCloudLayer * >( model->parameterDefinition( it.value().parameterName() ) ) )
             {
-              mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+              mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+              if ( !initialParent.isEmpty() && initialParent == definition->name() )
+              {
+                mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+              }
             }
-          }
+            break;
+          case Qgis::ExpressionType::RasterCalculator:
+            if ( const QgsProcessingParameterMultipleLayers *definition = dynamic_cast< const QgsProcessingParameterMultipleLayers * >( model->parameterDefinition( it.value().parameterName() ) ) )
+            {
+              if ( definition->layerType() != QgsProcessing::SourceType::TypeRaster )
+              {
+                continue;
+              }
+              mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+              if ( !initialParent.isEmpty() && initialParent == definition->name() )
+              {
+                mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+              }
+            }
+            break;
         }
       }
     }
@@ -2222,7 +2241,19 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
 QgsProcessingParameterDefinition *QgsProcessingExpressionParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
   Qgis::ExpressionType expressionType = static_cast< Qgis::ExpressionType >( mExpressionTypeComboBox->currentData().toInt() );
-  QString expression = expressionType == Qgis::ExpressionType::Qgis ? mDefaultQgisLineEdit->expression() : mDefaultPointCloudLineEdit->expression();
+  QString expression;
+  switch ( expressionType )
+  {
+    case Qgis::ExpressionType::Qgis:
+      expression = mDefaultQgisLineEdit->expression();
+      break;
+    case Qgis::ExpressionType::PointCloud:
+      expression = mDefaultPointCloudLineEdit->expression();
+      break;
+    case Qgis::ExpressionType::RasterCalculator:
+      expression = mDefaultRasterCalculatorLineEdit->expression();
+      break;
+  }
   auto param = std::make_unique< QgsProcessingParameterExpression >( name, description, expression, mParentLayerComboBox->currentData().toString(), false, expressionType );
   param->setFlags( flags );
   return param.release();
@@ -2266,6 +2297,21 @@ QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
             emit widgetValueHasChanged( this );
           } );
           return mPointCloudExpLineEdit;
+        }
+
+        if ( expParam->expressionType() == Qgis::ExpressionType::RasterCalculator )
+        {
+          mRasterCalculatorExpLineEdit = new QgsProcessingRasterCalculatorExpressionLineEdit();
+          mRasterCalculatorExpLineEdit->setToolTip( parameterDefinition()->toolTip() );
+          if ( type() == QgsProcessingGui::Modeler )
+          {
+            mRasterCalculatorExpLineEdit->setLayers( QVariantList() << "A" << "B" << "C" << "D" << "E" << "F" << "G" );
+          }
+          connect( mRasterCalculatorExpLineEdit, &QgsProcessingRasterCalculatorExpressionLineEdit::expressionChanged, this, [ = ]( const QString & )
+          {
+            emit widgetValueHasChanged( this );
+          } );
+          return mRasterCalculatorExpLineEdit;
         }
 
         // native QGIS expression
@@ -2430,6 +2476,30 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
 
       break;
     }
+    case Qgis::ExpressionType::RasterCalculator:
+    {
+      QList<QgsMapLayer *> layers = QgsProcessingParameters::parameterAsLayerList( parentWrapper->parameterDefinition(), val, *context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+      if ( layers.isEmpty() )
+      {
+        if ( mRasterCalculatorExpLineEdit )
+        {
+          mRasterCalculatorExpLineEdit->setLayers( val.type() == QVariant::List ? val.toList() : QVariantList() << val );
+        }
+        return;
+      }
+
+      if ( mRasterCalculatorExpLineEdit )
+      {
+        QVariantList layersList;
+        for ( QgsMapLayer *layer : layers )
+        {
+          layersList << layer->name();
+        }
+        mRasterCalculatorExpLineEdit->setLayers( layersList );
+      }
+
+      break;
+    }
   }
 }
 
@@ -2444,6 +2514,8 @@ void QgsProcessingExpressionWidgetWrapper::setWidgetValue( const QVariant &value
     mExpLineEdit->setExpression( v );
   else if ( mPointCloudExpLineEdit )
     mPointCloudExpLineEdit->setExpression( v );
+  else if ( mRasterCalculatorExpLineEdit )
+    mRasterCalculatorExpLineEdit->setExpression( v );
 }
 
 QVariant QgsProcessingExpressionWidgetWrapper::widgetValue() const
@@ -2456,6 +2528,8 @@ QVariant QgsProcessingExpressionWidgetWrapper::widgetValue() const
     return mExpLineEdit->expression();
   else if ( mPointCloudExpLineEdit )
     return mPointCloudExpLineEdit->expression();
+  else if ( mRasterCalculatorExpLineEdit )
+    return mRasterCalculatorExpLineEdit->expression();
   else
     return QVariant();
 }

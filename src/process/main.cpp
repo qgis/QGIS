@@ -77,7 +77,83 @@ int main( int argc, char *argv[] )
 #endif  // _MSC_VER
 #endif  // Q_OS_WIN
 
+  // a shortcut -- let's see if we are being called without any arguments, or just the usage/version argument.
+  // If so, let's skip the startup cost of a QCoreApplication/QgsApplication
+  bool hasHelpArgument = false;
+  bool hasVersionArgument = false;
+  for ( int i = 1; i < argc; ++i )
+  {
+    const QString arg( argv[i] );
+    if ( arg == QLatin1String( "--json" )
+         || arg == QLatin1String( "--verbose" )
+         || arg == QLatin1String( "--no-python" ) )
+    {
+      // ignore these arguments
+      continue;
+    }
+    if ( arg == QLatin1String( "--help" ) || arg == QLatin1String( "-h" ) )
+    {
+      hasHelpArgument = true;
+      break;
+    }
+    else if ( arg == QLatin1String( "--version" ) || arg == QLatin1String( "-v" ) )
+    {
+      hasVersionArgument = true;
+      break;
+    }
+    break;
+  }
+
+  if ( argc == 1 || hasHelpArgument )
+  {
+    QgsProcessingExec::showUsage( QString( argv[ 0 ] ) );
+    return 0;
+  }
+  else if ( hasVersionArgument )
+  {
+    QgsProcessingExec::showVersionInformation();
+    return 0;
+  }
+
   QgsApplication app( argc, argv, false, QString(), QStringLiteral( "qgis_process" ) );
+
+  // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
+  // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
+  QStringList args = QCoreApplication::arguments();
+
+  const int jsonIndex = args.indexOf( QLatin1String( "--json" ) );
+  bool useJson = false;
+  if ( jsonIndex >= 0 )
+  {
+    useJson = true;
+    args.removeAt( jsonIndex );
+  }
+
+  const int verboseIndex = args.indexOf( QLatin1String( "--verbose" ) );
+  QgsProcessingContext::LogLevel logLevel = QgsProcessingContext::DefaultLevel;
+  if ( verboseIndex >= 0 )
+  {
+    logLevel = QgsProcessingContext::Verbose;
+    args.removeAt( verboseIndex );
+  }
+
+  const int noPythonIndex = args.indexOf( QLatin1String( "--no-python" ) );
+  bool skipPython = false;
+  if ( noPythonIndex >= 0 )
+  {
+    skipPython = true;
+    args.removeAt( noPythonIndex );
+  }
+
+  const QString command = args.value( 1 );
+  if ( args.size() == 1 || command == QLatin1String( "--help" ) || command == QLatin1String( "-h" ) )
+  {
+    // a shortcut -- if we are showing usage information, we don't need to initialize
+    // QgsApplication at all!
+    QgsProcessingExec::showUsage( args.at( 0 ) );
+    return 0;
+  }
+
   QString myPrefixPath;
   if ( myPrefixPath.isEmpty() )
   {
@@ -99,15 +175,11 @@ int main( int argc, char *argv[] )
 
   ( void ) QgsApplication::resolvePkgPath(); // trigger storing of application path in QgsApplication
 
-  // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
-  // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
-  const QStringList args = QCoreApplication::arguments();
-
   QgsProcessingExec exec;
   int res = 0;
-  QTimer::singleShot( 0, &app, [&exec, args, &res]
+  QTimer::singleShot( 0, &app, [&exec, args, useJson, logLevel, skipPython, &res]
   {
-    res = exec.run( args );
+    res = exec.run( args, useJson, logLevel, skipPython );
     QgsApplication::exitQgis();
     QCoreApplication::exit( res );
   } );

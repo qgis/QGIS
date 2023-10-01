@@ -2550,9 +2550,24 @@ class CORE_EXPORT QgsGeometry
      *          3 at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
      *          4 if the geometry is not intersected by one of the geometries present in the provided layers.
      * \since QGIS 1.5
+     * \deprecated QGIS 3.34
      */
-    int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-                            const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+    Q_DECL_DEPRECATED int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
+        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) ) SIP_DEPRECATED;
+
+    /**
+     * Modifies geometry to avoid intersections with the layers specified in project properties
+     * \param avoidIntersectionsLayers list of layers to check for intersections
+     * \param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
+     * \returns Success                  in case of success
+     *          InvalidInputGeometryType if geometry is not of polygon type
+     *          GeometryTypeHasChanged   if avoid intersection has changed the geometry type
+     *          InvalidBaseGeometry      at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
+     *          NothingHappened          if the geometry is not intersected by one of the geometries present in the provided layers.
+     * \since QGIS 3.34
+     */
+    Qgis::GeometryOperationResult avoidIntersectionsV2( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
+        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
 
     /**
      * Attempts to make an invalid geometry valid without losing vertices.

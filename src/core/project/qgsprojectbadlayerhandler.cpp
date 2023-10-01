@@ -28,7 +28,7 @@ void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 
   for ( const QDomNode &layer : layers )
   {
-    QgsMessageLog::logMessage( QObject::tr( " * %1" ).arg( QgsDataSourceUri::removePassword( dataSource( layer ) ) ) );
+    QgsMessageLog::logMessage( QObject::tr( " * %1" ).arg( QgsDataSourceUri::removePassword( dataSource( layer ), true ) ) );
   }
 }
 

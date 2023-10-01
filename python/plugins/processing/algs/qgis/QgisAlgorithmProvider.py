@@ -71,7 +71,6 @@ from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
-from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
 from .TinInterpolation import TinInterpolation
@@ -136,7 +135,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SelectByExpression(),
                 SetRasterStyle(),
                 SetVectorStyle(),
-                SpatialJoinSummary(),
                 StatisticsByCategories(),
                 TextToFloat(),
                 TinInterpolation(),

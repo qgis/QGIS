@@ -102,6 +102,7 @@
 #include "qgsalgorithmhillshade.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinbylocation.h"
+#include "qgsalgorithmjoinbylocationsummary.h"
 #include "qgsalgorithmjoinbynearest.h"
 #include "qgsalgorithmjoinwithlines.h"
 #include "qgsalgorithmimportphotos.h"
@@ -152,6 +153,7 @@
 #include "qgsalgorithmrandompointsinpolygons.h"
 #include "qgsalgorithmrandompointsonlines.h"
 #include "qgsalgorithmrandomraster.h"
+#include "qgsalgorithmrastercalculator.h"
 #include "qgsalgorithmrasterdtmslopebasedfilter.h"
 #include "qgsalgorithmrasterfrequencybycomparisonoperator.h"
 #include "qgsalgorithmrasterlayerproperties.h"
@@ -221,6 +223,7 @@
 #include "qgsalgorithmunion.h"
 #include "qgsalgorithmuniquevalueindex.h"
 #include "qgsalgorithmvectorize.h"
+#include "qgsalgorithmvirtualrastercalculator.h"
 #include "qgsalgorithmwedgebuffers.h"
 #include "qgsalgorithmwritevectortiles.h"
 #include "qgsalgorithmxyztiles.h"
@@ -377,6 +380,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsIntersectionAlgorithm() );
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
   addAlgorithm( new QgsJoinByLocationAlgorithm() );
+  addAlgorithm( new QgsJoinByLocationSummaryAlgorithm() );
   addAlgorithm( new QgsJoinByNearestAlgorithm() );
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
   addAlgorithm( new QgsKeepNBiggestPartsAlgorithm() );
@@ -440,6 +444,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRandomPointsOnLinesAlgorithm() );
   addAlgorithm( new QgsRandomPoissonRasterAlgorithm() );
   addAlgorithm( new QgsRandomUniformRasterAlgorithm() );
+  addAlgorithm( new QgsRasterCalculatorAlgorithm() );
+  addAlgorithm( new QgsRasterCalculatorModelerAlgorithm() );
   addAlgorithm( new QgsRasterDtmSlopeBasedFilterAlgorithm() );
   addAlgorithm( new QgsRasterFrequencyByEqualOperatorAlgorithm() );
   addAlgorithm( new QgsRasterFrequencyByGreaterThanOperatorAlgorithm() );
@@ -521,6 +527,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTruncateTableAlgorithm() );
   addAlgorithm( new QgsUnionAlgorithm() );
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
+  addAlgorithm( new QgsVirtualRasterCalculatorAlgorithm() );
+  addAlgorithm( new QgsVirtualRasterCalculatorModelerAlgorithm() );
   addAlgorithm( new QgsWedgeBuffersAlgorithm() );
   addAlgorithm( new QgsWriteVectorTilesXyzAlgorithm() );
   addAlgorithm( new QgsWriteVectorTilesMbtilesAlgorithm() );

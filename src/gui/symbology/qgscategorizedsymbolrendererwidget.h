@@ -25,6 +25,7 @@
 
 class QgsCategorizedSymbolRenderer;
 class QgsRendererCategory;
+class QgsSymbolSelectorWidget;
 
 #include "ui_qgscategorizedsymbolrendererwidget.h"
 #include "qgis_gui.h"
@@ -191,8 +192,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
   private slots:
 
-    void cleanUpSymbolSelector( QgsPanelWidget *container );
-    void updateSymbolsFromWidget();
+    void updateSymbolsFromWidget( QgsSymbolSelectorWidget *widget );
     void updateSymbolsFromButton();
     void dataDefinedSizeLegend();
 

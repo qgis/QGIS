@@ -68,6 +68,7 @@
 #include "qgsnative.h"
 #include "qgssubsetstringeditorproviderregistry.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
+#include "qgsfileutils.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #if WITH_QTWEBKIT
@@ -119,6 +120,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( buttonRemoveMetadataUrl, &QPushButton::clicked, this, &QgsVectorLayerProperties::removeSelectedMetadataUrl );
   connect( buttonAddMetadataUrl, &QPushButton::clicked, this, &QgsVectorLayerProperties::addMetadataUrl );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
+
+  mProjectDirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -554,6 +557,7 @@ void QgsVectorLayerProperties::syncToLayer()
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
   mBackupCrs = mLayer->crs();
+
   //see if we are dealing with a pg layer here
   mSubsetGroupBox->setEnabled( true );
   txtSubsetSQL->setText( mLayer->subsetString() );
@@ -937,7 +941,10 @@ void QgsVectorLayerProperties::apply()
 
   mLayer->triggerRepaint();
   // notify the project we've made a change
+  mProjectDirtyBlocker.reset();
   QgsProject::instance()->setDirty( true );
+  mProjectDirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
+
 }
 
 void QgsVectorLayerProperties::rollback()
@@ -963,10 +970,15 @@ void QgsVectorLayerProperties::rollback()
     mLayer->setSubsetString( mOriginalSubsetSQL );
   }
 
+  // Store it because QgsLayerPropertiesDialog::rollback() calls syncToLayer() which
+  // resets the backupCrs
+  const QgsCoordinateReferenceSystem backupCrs { mBackupCrs };
+
   QgsLayerPropertiesDialog::rollback();
 
-  if ( mBackupCrs != mLayer->crs() )
-    mLayer->setCrs( mBackupCrs );
+  if ( backupCrs != mLayer->crs() )
+    mLayer->setCrs( backupCrs );
+
 }
 
 void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
@@ -1275,14 +1287,16 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
           {
             QString message;
             const QString filePath { dlg.outputFilePath() };
-            QString safePath { filePath };
+            const QFileInfo fi { filePath };
+            QString safePath { QString( filePath ).replace( fi.baseName(),
+                               QStringLiteral( "%1_%2" ).arg( fi.baseName(), QgsFileUtils::stringToSafeFilename( styleName ) ) ) };
             if ( styleIndex > 0 && stylesSelected.count( ) > 1 )
             {
               int i = 1;
               while ( QFile::exists( safePath ) )
               {
-                const QFileInfo fi { filePath };
-                safePath = QString( filePath ).replace( '.' + fi.completeSuffix(),
+                const QFileInfo fi { safePath };
+                safePath = QString( safePath ).replace( '.' + fi.completeSuffix(),
                                                         QStringLiteral( "_%1.%2" ).arg( QString::number( i ), fi.completeSuffix() ) );
                 i++;
               }
@@ -1321,6 +1335,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             }
             else
             {
+              name += QStringLiteral( "_%1" ).arg( styleName );
               QStringList ids, names, descriptions;
               mLayer->listStylesInDatabase( ids, names, descriptions, msgError );
               int i = 1;
