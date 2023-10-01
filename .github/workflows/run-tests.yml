@@ -87,7 +87,7 @@ jobs:
           swap-storage: true
           
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set vars
         env:
@@ -336,7 +336,7 @@ jobs:
           swap-storage: true
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set vars
         env:
@@ -432,7 +432,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
