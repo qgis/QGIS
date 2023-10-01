@@ -28,7 +28,7 @@ jobs:
     if: github.repository == 'qgis/QGIS'
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Prepare build cache for pull request
         uses: pat-s/always-upload-cache@v3.0.11
