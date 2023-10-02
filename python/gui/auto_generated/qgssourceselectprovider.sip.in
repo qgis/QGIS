@@ -97,6 +97,8 @@ The default implementation returns no capabilites.
 
 };
 
+QFlags<QgsSourceSelectProvider::Capability> operator|(QgsSourceSelectProvider::Capability f1, QFlags<QgsSourceSelectProvider::Capability> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

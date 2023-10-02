@@ -93,10 +93,11 @@ class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
     void setSearchExpression( const QString &regexp );
 
     void showHelp();
+    bool configureFromUri( const QString &uri ) override;
+    void setSql( const QModelIndex &index ) override;
 
   protected slots:
     void treeviewClicked( const QModelIndex &index ) override;
-    void setSql( const QModelIndex &index ) override;
     void treeviewDoubleClicked( const QModelIndex &index ) override;
 
   private:
@@ -107,6 +108,7 @@ class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
     QString mOgrDriverName;
     QString mName;
     QString mExtension;
+
 };
 
 ///@endcond
