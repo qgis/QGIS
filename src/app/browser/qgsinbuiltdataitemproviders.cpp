@@ -38,6 +38,8 @@
 #include "qgsaddattrdialog.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsprovidermetadata.h"
+#include "qgssourceselectproviderregistry.h"
+#include "qgssourceselectprovider.h"
 #include "qgsnewvectortabledialog.h"
 #include "qgscolordialog.h"
 #include "qgsdirectoryitem.h"
@@ -578,13 +580,17 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
     if ( const auto layerItem = qobject_cast< QgsLayerItem * >( item ) )
     {
-      QAction *openDataSourceManagerAction = new QAction( tr( "Open with datasource manager…" ), menu );
-      connect( openDataSourceManagerAction, &QAction::triggered, this, [ = ]
+      const QList<QgsSourceSelectProvider *> sourceSelectProviders { QgsGui::sourceSelectProviderRegistry()->providersByKey( layerItem->providerKey() ) };
+      if ( ! sourceSelectProviders.isEmpty() && sourceSelectProviders.first()->capabilities().testFlag( QgsSourceSelectProvider::Capability::ConfigureFromUri ) )
       {
-        QgisApp::instance()->dataSourceManager( layerItem->providerKey(), layerItem->uri() );
-      } );
-      menu->addAction( openDataSourceManagerAction );
-      menu->addSeparator();
+        QAction *openDataSourceManagerAction = new QAction( tr( "Open with datasource manager…" ), menu );
+        connect( openDataSourceManagerAction, &QAction::triggered, this, [ = ]
+        {
+          QgisApp::instance()->dataSourceManager( layerItem->providerKey(), layerItem->uri() );
+        } );
+        menu->addAction( openDataSourceManagerAction );
+        menu->addSeparator();
+      }
     }
   }
 
