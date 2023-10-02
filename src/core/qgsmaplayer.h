@@ -58,6 +58,7 @@ class QDomDocument;
 class QKeyEvent;
 class QPainter;
 class QgsRenderContext;
+class QgsBox3D;
 
 /*
  * Constants used to describe copy-paste MIME types
@@ -542,6 +543,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Returns the extent of the layer.
     virtual QgsRectangle extent() const;
+
+    /**
+     * Returns the 3D extent of the layer.
+     * \since QGIS 3.36
+     */
+    virtual QgsBox3D extent3D() const;
 
     /**
      * Returns the WGS84 extent (EPSG:4326) of the layer according to
@@ -2061,6 +2068,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets the extent
     virtual void setExtent( const QgsRectangle &rect );
 
+    /**
+     * Sets the extent
+     * \since QGIS 3.36
+     */
+    virtual void setExtent3D( const QgsBox3D &box );
+
     //! Sets whether layer is valid or not
     void setValid( bool valid );
 
@@ -2278,6 +2291,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     // const method because extents are mutable
     void updateExtent( const QgsRectangle &extent ) const;
+    void updateExtent( const QgsBox3D &extent ) const;
 
     /**
      * This method returns TRUE by default but can be overwritten to specify
@@ -2344,7 +2358,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
     //! Extent of the layer
-    mutable QgsRectangle mExtent;
+    mutable QgsBox3D mExtent;
 
     //! Extent of the layer in EPSG:4326
     mutable QgsRectangle mWgs84Extent;
