@@ -196,7 +196,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
   algorithm.reset( delaunayAlg->create() );
   algorithm->prepare( params, context, &multiStepFeedback );
   QVariantMap results = algorithm->runPrepared( params, context, &multiStepFeedback );
-  QgsVectorLayer *layer = static_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( results["OUTPUT"].toString(), context ) );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( results["OUTPUT"].toString(), context ) );
 
   if ( !layer )
   {
@@ -273,7 +273,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
   algorithm.reset( dissolveAlg->create() );
   algorithm->prepare( params, context, &multiStepFeedback );
   results = algorithm->runPrepared( params, context, &multiStepFeedback );
-  layer = static_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( results["OUTPUT"].toString(), context ) );
+  layer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( results["OUTPUT"].toString(), context ) );
   if ( !layer )
   {
     throw QgsProcessingException( QObject::tr( "Failed to dissolve Delaunay triangles." ) );
