@@ -112,7 +112,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
      * Shows the page \a pageName and configure the source select widget from the layer \a uri.
      * \since QGIS 3.38
      */
-    void configureFromUri( const QString &uri, const QString &pageName );
+    void configureFromUri( const QString &pageName, const QString &uri );
 
 
   protected:

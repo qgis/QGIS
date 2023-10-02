@@ -2738,7 +2738,7 @@ void QgisApp::dataSourceManager( const QString &pageName, const QString &layerUr
 
     if ( ! layerUri.isEmpty() )
     {
-      mDataSourceManagerDialog->configureFromUri( layerUri, pageName );
+      mDataSourceManagerDialog->configureFromUri( pageName, layerUri );
     }
     else
     {

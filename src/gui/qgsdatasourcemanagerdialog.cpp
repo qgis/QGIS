@@ -162,7 +162,7 @@ void QgsDataSourceManagerDialog::reset()
   }
 }
 
-void QgsDataSourceManagerDialog::configureFromUri( const QString &uri, const QString &pageName )
+void QgsDataSourceManagerDialog::configureFromUri( const QString &pageName, const QString &uri )
 {
   const int pageIdx = mPageProviderKeys.indexOf( pageName );
   if ( pageIdx != -1 )
