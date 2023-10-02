@@ -55,7 +55,7 @@ class GUI_EXPORT QgsSourceSelectProvider
     enum class Capability : int
     {
       NoCapabilities  = 0, //!< No capabilities
-      ConfigureFromUri = 1  //!< The source select can be configured from a URI
+      ConfigureFromUri = 1  //!< The source select widget can be configured from a URI
     };
     Q_ENUM( Capability )
     //!
@@ -113,5 +113,6 @@ class GUI_EXPORT QgsSourceSelectProvider
 
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSourceSelectProvider::Capabilities )
 
 #endif // QGSSOURCESELECTPROVIDER_H

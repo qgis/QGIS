@@ -164,7 +164,7 @@ void QgsDataSourceManagerDialog::reset()
 
 void QgsDataSourceManagerDialog::configureFromUri( const QString &pageName, const QString &uri )
 {
-  const int pageIdx = mPageProviderKeys.indexOf( pageName );
+  const int pageIdx = mPageProviderNames.indexOf( pageName );
   if ( pageIdx != -1 )
   {
     QTimer::singleShot( 0, this, [ = ]
