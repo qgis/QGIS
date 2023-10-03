@@ -1272,7 +1272,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     //! Composition blend mode for item
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
-    std::unique_ptr< QgsLayoutEffect > mEffect;
+    QPointer< QgsLayoutEffect > mEffect;
 
     //! Item opacity, between 0 and 1
     double mOpacity = 1.0;
