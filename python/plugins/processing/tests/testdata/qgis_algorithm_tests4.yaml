@@ -269,40 +269,6 @@ tests:
             fid: skip
 
   - algorithm: native:concavehull
-    name: Concave Hull - Points (0.3) (GEOS <= 3.10)
-    condition:
-      geos:
-        less_than: 31100
-    params:
-      ALPHA: 0.3
-      HOLES: true
-      INPUT:
-        name: points.gml
-        type: vector
-      NO_MULTIGEOMETRY: false
-    results:
-      OUTPUT:
-        name: expected/concave_hull_points_03_qgis.gml
-        type: vector
-
-  - algorithm: native:concavehull
-    name: Concave Hull - Points (0.7) (GEOS <= 3.10)
-    condition:
-      geos:
-        less_than: 31100
-    params:
-      ALPHA: 0.7
-      HOLES: true
-      INPUT:
-        name: points.gml
-        type: vector
-      NO_MULTIGEOMETRY: false
-    results:
-      OUTPUT:
-        name: expected/concave_hull_points_07_qgis.gml
-        type: vector
-
-  - algorithm: native:concavehull
     name: Concave Hull - Points (0.3) (GEOS > 3.11)
     condition:
       geos:
@@ -316,16 +282,16 @@ tests:
       NO_MULTIGEOMETRY: false
     results:
       OUTPUT:
-        name: expected/concave_hull_points_03_geos.gml
+        name: expected/concave_hull_points_03.gml
         type: vector
 
   - algorithm: native:concavehull
-    name: Concave Hull - Points (0.7) (GEOS > 3.11)
+    name: Concave Hull - Points (0.9) (GEOS > 3.11)
     condition:
       geos:
         at_least: 31100
     params:
-      ALPHA: 0.7
+      ALPHA: 0.9
       HOLES: true
       INPUT:
         name: points.gml
@@ -333,7 +299,7 @@ tests:
       NO_MULTIGEOMETRY: false
     results:
       OUTPUT:
-        name: expected/concave_hull_points_07_geos.gml
+        name: expected/concave_hull_points_09.gml
         type: vector
 
   - algorithm: qgis:knearestconcavehull

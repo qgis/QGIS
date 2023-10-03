@@ -76,6 +76,8 @@ bool QgsConcaveHullAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
   if ( mSource->featureCount() < 3 )
     throw QgsProcessingException( QObject::tr( "Input layer should contain at least 3 points." ) );
 
+  mStep = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
+
   mPercentage = parameterAsDouble( parameters, QStringLiteral( "ALPHA" ), context );
   mAllowHoles = parameterAsBool( parameters, QStringLiteral( "HOLES" ), context );
   mSplitMultipart = parameterAsBool( parameters, QStringLiteral( "NO_MULTIGEOMETRY" ), context );
@@ -104,7 +106,6 @@ QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parame
 void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr< QgsFeatureSink > &sink, const QVariantMap &parameters, QgsProcessingFeedback *feedback )
 {
   long long i = 0;
-  double step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
 
   QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setNoAttributes(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   QgsFeature f;
@@ -115,7 +116,7 @@ void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr< QgsFeatureSink >
     if ( feedback->isCanceled() )
       return;
 
-    feedback->setProgress( i * step );
+    feedback->setProgress( i * mStep );
 
     if ( !f.hasGeometry() )
       continue;
@@ -139,7 +140,7 @@ void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr< QgsFeatureSink >
   if ( mSplitMultipart && concaveHull.isMultipart() )
   {
     QVector< QgsGeometry > collection = concaveHull.asGeometryCollection();
-    step = collection.length() > 0 ? 50.0 / collection.length() : 1;
+    mStep = collection.length() > 0 ? 50.0 / collection.length() : 1;
     for ( int i = 0; i < collection.length(); i++ )
     {
       if ( feedback->isCanceled() )
@@ -157,7 +158,7 @@ void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr< QgsFeatureSink >
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
-      feedback->setProgress( 50 + i * step );
+      feedback->setProgress( 50 + i * mStep );
     }
   }
   else
@@ -194,8 +195,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
   }
   std::unique_ptr< QgsProcessingAlgorithm > algorithm;
   algorithm.reset( delaunayAlg->create() );
-  algorithm->prepare( params, context, &multiStepFeedback );
-  QVariantMap results = algorithm->runPrepared( params, context, &multiStepFeedback );
+  QVariantMap results = algorithm->run( params, context, &multiStepFeedback );
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( results["OUTPUT"].toString(), context ) );
 
   if ( !layer )
@@ -271,8 +271,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
     feedback->reportError( QObject::tr( "Failed to compute concave hull: Dissolve algorithm not found!" ), true );
   }
   algorithm.reset( dissolveAlg->create() );
-  algorithm->prepare( params, context, &multiStepFeedback );
-  results = algorithm->runPrepared( params, context, &multiStepFeedback );
+  results = algorithm->run( params, context, &multiStepFeedback );
   layer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( results["OUTPUT"].toString(), context ) );
   if ( !layer )
   {
