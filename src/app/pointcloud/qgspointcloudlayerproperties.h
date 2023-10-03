@@ -23,6 +23,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include <QAbstractTableModel>
 
+#include "qgis_app.h"
 #include "qgspointcloudlayer.h"
 
 class QgsMapLayer;
@@ -88,7 +89,7 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     QList<int> mClassifications;
 };
 
-class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::QgsPointCloudLayerPropertiesBase
+class APP_EXPORT QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::QgsPointCloudLayerPropertiesBase
 {
     Q_OBJECT
   public:

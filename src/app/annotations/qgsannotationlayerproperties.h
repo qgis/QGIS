@@ -23,6 +23,7 @@
 #include "qgsmaplayerstylemanager.h"
 
 #include "qgsannotationlayer.h"
+#include "qgis_app.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -33,7 +34,7 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
 
 
-class QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::QgsAnnotationLayerPropertiesBase
+class APP_EXPORT QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::QgsAnnotationLayerPropertiesBase
 {
     Q_OBJECT
   public:
