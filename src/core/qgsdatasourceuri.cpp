@@ -71,6 +71,12 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
       // rest of line is a sql where clause
       skipBlanks( uri, i );
       mSql = uri.mid( i );
+
+      // handle empty sql specified by a empty '' or "" encapsulated value
+      // possibly we should be calling getValue here, but there's a very high risk of regressions
+      // if we change that now...
+      if ( mSql == QLatin1String( "''" ) || mSql == QLatin1String( "\"\"" ) )
+        mSql.clear();
       break;
     }
     else
