@@ -95,7 +95,7 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
 
 QgsLayoutItem::~QgsLayoutItem()
 {
-  cleanup();
+  QgsLayoutItem::cleanup();
 }
 
 void QgsLayoutItem::cleanup()
