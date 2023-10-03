@@ -527,12 +527,13 @@ QString QgsAppFileItemGuiProvider::name()
 void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
 
+  QAction *openDataSourceManagerAction = nullptr;
   if ( const auto layerItem = qobject_cast< QgsLayerItem * >( item ) )
   {
     const QList<QgsSourceSelectProvider *> sourceSelectProviders { QgsGui::sourceSelectProviderRegistry()->providersByKey( layerItem->providerKey() ) };
     if ( ! sourceSelectProviders.isEmpty() && sourceSelectProviders.first()->capabilities().testFlag( QgsSourceSelectProvider::Capability::ConfigureFromUri ) )
     {
-      QAction *openDataSourceManagerAction = new QAction( tr( "Open with datasource manager…" ), menu );
+      openDataSourceManagerAction = new QAction( tr( "Open with Data Source Manager…" ), menu );
       connect( openDataSourceManagerAction, &QAction::triggered, this, [ = ]
       {
         QString pageName { layerItem->providerKey() };
@@ -543,9 +544,42 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
         }
         QgisApp::instance()->dataSourceManager( pageName, layerItem->uri() );
       } );
-      menu->addAction( openDataSourceManagerAction );
-      menu->addSeparator();
     }
+  }
+  else if ( const auto collectionItem = qobject_cast< QgsFileDataCollectionItem * >( item ) )
+  {
+    QSet<QString> providerKeys;
+    const QList<QgsProviderSublayerDetails> sublayers { collectionItem->sublayers() };
+    for ( const auto &sublayer : std::as_const( sublayers ) )
+    {
+      providerKeys.insert( sublayer.providerKey() );
+    }
+
+    if ( providerKeys.count() == 1 )
+    {
+      const QgsProviderSublayerDetails &sublayer {sublayers.first() };
+      openDataSourceManagerAction = new QAction( tr( "Open with Data Source Manager…" ), menu );
+      connect( openDataSourceManagerAction, &QAction::triggered, this, [ = ]
+      {
+        QString pageName { sublayer.providerKey() };
+        // GPKG special handling
+        if ( sublayer.driverName() ==  QStringLiteral( "GeoPackage" ) )
+        {
+          pageName = QStringLiteral( "GeoPackage" );
+        }
+        else if ( sublayer.driverName() ==  QStringLiteral( "SQLite" ) )
+        {
+          pageName = QStringLiteral( "Spatialite" );
+        }
+        QgisApp::instance()->dataSourceManager( pageName, layerItem->uri() );
+      } );
+    }
+  }
+
+  if ( openDataSourceManagerAction )
+  {
+    menu->addAction( openDataSourceManagerAction );
+    menu->addSeparator();
   }
 
   if ( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )

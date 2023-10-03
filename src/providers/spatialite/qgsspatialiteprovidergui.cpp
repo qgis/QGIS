@@ -37,6 +37,11 @@ class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
     {
       return new QgsSpatiaLiteSourceSelect( parent, fl, widgetMode );
     }
+
+    QgsSourceSelectProvider::Capabilities capabilities() override
+    {
+      return QgsSourceSelectProvider::Capability::ConfigureFromUri;
+    }
 };
 
 

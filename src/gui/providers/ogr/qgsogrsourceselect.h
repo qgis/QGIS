@@ -111,6 +111,7 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void cmbConnections_currentIndexChanged( const QString &text );
     void cmbProtocolTypes_currentIndexChanged( const QString &text );
     void showHelp();
+    bool configureFromUri( const QString &uri ) override;
 
   private:
 
@@ -120,6 +121,7 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     std::vector<QWidget *> mOpenOptionsWidgets;
     bool mIsOgcApi = false;
     QString mVectorPath;
+
 
 };
 

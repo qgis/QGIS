@@ -653,6 +653,43 @@ void QgsOgrSourceSelect::showHelp()
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) );
 }
 
+bool QgsOgrSourceSelect::configureFromUri( const QString &uri )
+{
+  mDataSources.clear();
+  mDataSources.append( uri );
+  const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), uri );
+  mFileWidget->setFilePath( decodedUri.value( QStringLiteral( "path" ), QString() ).toString() );
+  const QVariantMap openOptions = decodedUri.value( QStringLiteral( "openOptions" ) ).toMap();
+  if ( ! openOptions.isEmpty() )
+  {
+    for ( auto opt = openOptions.constBegin(); opt != openOptions.constEnd(); ++opt )
+    {
+      const auto widget { std::find_if( mOpenOptionsWidgets.cbegin(), mOpenOptionsWidgets.cend(), [ = ]( QWidget * widget )
+      {
+        return widget->objectName() == opt.key();
+      } ) };
+
+      if ( widget != mOpenOptionsWidgets.cend() )
+      {
+        if ( auto cb = qobject_cast<QComboBox *>( *widget ) )
+        {
+          const auto idx { cb->findText( opt.value().toString() ) };
+          if ( idx >= 0 )
+          {
+            cb->setCurrentIndex( idx );
+          }
+        }
+        else if ( auto le = qobject_cast<QLineEdit *>( *widget ) )
+        {
+          le->setText( opt.value().toString() );
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
 void QgsOgrSourceSelect::clearOpenOptions()
 {
   mOpenOptionsWidgets.clear();
