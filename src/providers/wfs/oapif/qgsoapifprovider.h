@@ -109,8 +109,8 @@ class QgsOapifProvider final: public QgsVectorDataProvider
     //! Layer metadata
     QgsLayerMetadata mLayerMetadata;
 
-    //! Set to true by setSubsetString() if updateFeatureCount is true
-    mutable bool mUpdateFeatureCountAtNextFeatureCountRequest = false;
+    //! Set to true by reloadProviderData()
+    mutable bool mUpdateFeatureCountAtNextFeatureCountRequest = true;
 
     //! Initial requests
     bool init();
@@ -212,7 +212,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
     bool hasServerSideFilter() const override { return false; }
 
-    bool supportsFastFeatureCount() const override { return false; }
+    bool supportsFastFeatureCount() const override { return mURI.filter().isEmpty(); }
 
     QgsRectangle getExtentFromSingleFeatureRequest() const override { return QgsRectangle(); }
 
