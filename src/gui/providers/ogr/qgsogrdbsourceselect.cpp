@@ -395,8 +395,15 @@ bool QgsOgrDbSourceSelect::configureFromUri( const QString &uri )
 
   QFileInfo pathInfo { filePath };
   const QString connectionName { pathInfo.fileName() };
-  const QString connectionText { connectionName + tr( "@" ) + QgsOgrDbConnection( connectionName, ogrDriverName( ) ).path() };
-  const int idx { cmbConnections->findText( connectionText ) };
+  const QString connectionText { connectionName + tr( "@" ) + filePath };
+  int idx { cmbConnections->findText( connectionText ) };
+
+  if ( idx < 0 && QgsOgrProviderUtils::saveConnection( filePath, QStringLiteral( "GPKG" ) ) )
+  {
+    populateConnectionList();
+    idx = cmbConnections->findText( connectionText );
+  }
+
   if ( idx >= 0 )
   {
     cmbConnections->setCurrentIndex( idx );

@@ -525,8 +525,30 @@ bool QgsSpatiaLiteSourceSelect::configureFromUri( const QString &uri )
 
   QFileInfo pathInfo { filePath };
   const QString connectionName { pathInfo.fileName() };
-  const QString connectionText { connectionName + tr( "@" ) + filePath };
-  const int idx { cmbConnections->findText( connectionText ) };
+  QString connectionText { connectionName + tr( "@" ) + filePath };
+
+  const QStringList list = QgsSpatiaLiteConnection::connectionList();
+  for ( const QString &name : std::as_const( list ) )
+  {
+    const QString connectionPath { QgsSpatiaLiteConnection::connectionPath( name ) };
+    if ( connectionPath == filePath )
+    {
+      connectionText = name + tr( "@" ) + connectionPath;
+      break;
+    }
+  }
+
+  int idx { cmbConnections->findText( connectionText ) };
+
+  if ( idx < 0 )
+  {
+    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
+    std::unique_ptr< QgsSpatiaLiteProviderConnection > providerConnection( qgis::down_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( uri, QVariantMap() ) ) );
+    providerMetadata->saveConnection( providerConnection.get(), connectionName );
+    populateConnectionList();
+    idx = cmbConnections->findText( connectionText );
+  }
+
   if ( idx >= 0 )
   {
     cmbConnections->setCurrentIndex( idx );
