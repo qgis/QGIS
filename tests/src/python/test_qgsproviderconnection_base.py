@@ -19,7 +19,7 @@ __revision__ = '$Format:%H$'
 import os
 import time
 
-from qgis.PyQt import QtCore
+from qgis.PyQt import QtCore, QDir
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
@@ -73,6 +73,11 @@ class TestPyQgsProviderConnectionBase():
 
     def setUp(self):
         QgsSettings().clear()
+
+    def tearDown(self):
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
 
     def treat_date_as_string(self):
         """Provider test case can override this to treat DATE type as STRING"""
