@@ -25,6 +25,7 @@ A container for grouping several :py:class:`QgsLayoutItems`.
 %Docstring
 Constructor for QgsLayoutItemGroup, belonging to the specified ``layout``.
 %End
+    ~QgsLayoutItemGroup();
 
     virtual void cleanup();
 

@@ -25,6 +25,11 @@ QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {}
 
+QgsLayoutItemGroup::~QgsLayoutItemGroup()
+{
+  QgsLayoutItemGroup::cleanup();
+}
+
 void QgsLayoutItemGroup::cleanup()
 {
   //loop through group members and remove them from the scene

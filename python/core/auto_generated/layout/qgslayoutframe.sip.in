@@ -27,6 +27,7 @@ Base class for frame items, which form a layout multiframe item.
 Constructor for QgsLayoutFrame, with the specified parent ``layout``
 and belonging to a ``multiFrame``.
 %End
+    ~QgsLayoutFrame();
 
     static QgsLayoutFrame *create( QgsLayout *layout ) /Factory/;
 %Docstring

@@ -39,6 +39,7 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
      * and belonging to a \a multiFrame.
      */
     QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFrame );
+    ~QgsLayoutFrame() override;
 
     /**
      * Creates a new QgsLayoutFrame belonging to the specified \a layout.
