@@ -269,6 +269,34 @@ QgsWkbTypes::Type QgsOapifProvider::wkbType() const
 
 long long QgsOapifProvider::featureCount() const
 {
+  // If no filter is set try the fast way of retrieving the feature count
+  if ( mSubsetString.isEmpty() )
+  {
+    QString url = mShared->mItemsUrl;
+    url += QLatin1String( "?limit=1" );
+    url = mShared->appendExtraQueryParameters( url );
+
+    if ( !mShared->mServerFilter.isEmpty() )
+    {
+      url += QLatin1Char( '&' );
+      url += mShared->mServerFilter;
+    }
+
+    QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), url );
+    if ( !itemsRequest.request( true, false ) )
+      return -1;
+    if ( itemsRequest.errorCode() != QgsBaseNetworkRequest::NoError )
+      return -1;
+
+    const long long featureCount = itemsRequest.numberMatched();
+    if ( featureCount >= 0 )
+    {
+      mShared->setFeatureCount( featureCount, true );
+      return featureCount;
+    }
+  }
+
+  // Retry the slow way by active filter or numberMatched parameter not sent from server
   if ( mUpdateFeatureCountAtNextFeatureCountRequest )
   {
     mUpdateFeatureCountAtNextFeatureCountRequest = false;
