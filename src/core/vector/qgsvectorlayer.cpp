@@ -2504,7 +2504,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       QString fieldName = fieldConfigElement.attribute( QStringLiteral( "name" ) );
 
       if ( categories.testFlag( Fields ) )
-        mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), QgsField::ConfigurationFlag::None );
+        mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), Qgis::FieldConfigurationFlag::NoFlag );
 
       // Load editor widget configuration
       if ( categories.testFlag( Forms ) )
@@ -2527,10 +2527,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   // Attributes excluded from WMS and WFS
   if ( categories.testFlag( Fields ) )
   {
-    const QList<QPair<QString, QgsField::ConfigurationFlag>> legacyConfig
+    const QList<QPair<QString, Qgis::FieldConfigurationFlag>> legacyConfig
     {
-      qMakePair( QStringLiteral( "excludeAttributesWMS" ), QgsField::ConfigurationFlag::HideFromWms ),
-      qMakePair( QStringLiteral( "excludeAttributesWFS" ), QgsField::ConfigurationFlag::HideFromWfs )
+      qMakePair( QStringLiteral( "excludeAttributesWMS" ), Qgis::FieldConfigurationFlag::HideFromWms ),
+      qMakePair( QStringLiteral( "excludeAttributesWFS" ), Qgis::FieldConfigurationFlag::HideFromWfs )
     };
     for ( const auto &config : legacyConfig )
     {
@@ -3440,10 +3440,10 @@ QSet<QString> QgsVectorLayer::excludeAttributesWms() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QSet<QString> excludeList;
-  QMap< QString, QgsField::ConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
+  QMap< QString, Qgis::FieldConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
   for ( ; flagsIt != mFieldConfigurationFlags.constEnd(); ++flagsIt )
   {
-    if ( flagsIt->testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
+    if ( flagsIt->testFlag( Qgis::FieldConfigurationFlag::HideFromWms ) )
     {
       excludeList << flagsIt.key();
     }
@@ -3455,10 +3455,10 @@ void QgsVectorLayer::setExcludeAttributesWms( const QSet<QString> &att )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QMap< QString, QgsField::ConfigurationFlags >::iterator flagsIt = mFieldConfigurationFlags.begin();
+  QMap< QString, Qgis::FieldConfigurationFlags >::iterator flagsIt = mFieldConfigurationFlags.begin();
   for ( ; flagsIt != mFieldConfigurationFlags.end(); ++flagsIt )
   {
-    flagsIt->setFlag( QgsField::ConfigurationFlag::HideFromWms, att.contains( flagsIt.key() ) );
+    flagsIt->setFlag( Qgis::FieldConfigurationFlag::HideFromWms, att.contains( flagsIt.key() ) );
   }
   updateFields();
 }
@@ -3468,10 +3468,10 @@ QSet<QString> QgsVectorLayer::excludeAttributesWfs() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QSet<QString> excludeList;
-  QMap< QString, QgsField::ConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
+  QMap< QString, Qgis::FieldConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
   for ( ; flagsIt != mFieldConfigurationFlags.constEnd(); ++flagsIt )
   {
-    if ( flagsIt->testFlag( QgsField::ConfigurationFlag::HideFromWfs ) )
+    if ( flagsIt->testFlag( Qgis::FieldConfigurationFlag::HideFromWfs ) )
     {
       excludeList << flagsIt.key();
     }
@@ -3483,10 +3483,10 @@ void QgsVectorLayer::setExcludeAttributesWfs( const QSet<QString> &att )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QMap< QString, QgsField::ConfigurationFlags >::iterator flagsIt = mFieldConfigurationFlags.begin();
+  QMap< QString, Qgis::FieldConfigurationFlags >::iterator flagsIt = mFieldConfigurationFlags.begin();
   for ( ; flagsIt != mFieldConfigurationFlags.end(); ++flagsIt )
   {
-    flagsIt->setFlag( QgsField::ConfigurationFlag::HideFromWfs, att.contains( flagsIt.key() ) );
+    flagsIt->setFlag( Qgis::FieldConfigurationFlag::HideFromWfs, att.contains( flagsIt.key() ) );
   }
   updateFields();
 }
@@ -4308,7 +4308,7 @@ void QgsVectorLayer::updateFields()
   }
 
   // Update configuration flags
-  QMap< QString, QgsField::ConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
+  QMap< QString, Qgis::FieldConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
   for ( ; flagsIt != mFieldConfigurationFlags.constEnd(); ++flagsIt )
   {
     int index = mFields.lookupField( flagsIt.key() );
@@ -6160,7 +6160,7 @@ void QgsVectorLayer::setConstraintExpression( int index, const QString &expressi
   updateFields();
 }
 
-void QgsVectorLayer::setFieldConfigurationFlags( int index, QgsField::ConfigurationFlags flags )
+void QgsVectorLayer::setFieldConfigurationFlags( int index, Qgis::FieldConfigurationFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -6171,23 +6171,23 @@ void QgsVectorLayer::setFieldConfigurationFlags( int index, QgsField::Configurat
   updateFields();
 }
 
-void QgsVectorLayer::setFieldConfigurationFlag( int index, QgsField::ConfigurationFlag flag, bool active )
+void QgsVectorLayer::setFieldConfigurationFlag( int index, Qgis::FieldConfigurationFlag flag, bool active )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   if ( index < 0 || index >= mFields.count() )
     return;
-  QgsField::ConfigurationFlags flags = mFields.at( index ).configurationFlags();
+  Qgis::FieldConfigurationFlags flags = mFields.at( index ).configurationFlags();
   flags.setFlag( flag, active );
   setFieldConfigurationFlags( index, flags );
 }
 
-QgsField::ConfigurationFlags QgsVectorLayer::fieldConfigurationFlags( int index ) const
+Qgis::FieldConfigurationFlags QgsVectorLayer::fieldConfigurationFlags( int index ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   if ( index < 0 || index >= mFields.count() )
-    return QgsField::ConfigurationFlag::None;
+    return Qgis::FieldConfigurationFlag::NoFlag;
 
   return mFields.at( index ).configurationFlags();
 }

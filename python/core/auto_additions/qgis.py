@@ -1214,6 +1214,16 @@ Qgis.SublayerPromptMode.__doc__ = "Specifies how to handle layer sources with mu
 # --
 Qgis.SublayerPromptMode.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.FieldConfigurationFlag.NoFlag.__doc__ = "No flag is defined"
+Qgis.FieldConfigurationFlag.NotSearchable.__doc__ = "Defines if the field is searchable (used in the locator search for instance)"
+Qgis.FieldConfigurationFlag.HideFromWms.__doc__ = "Field is not available if layer is served as WMS from QGIS server"
+Qgis.FieldConfigurationFlag.HideFromWfs.__doc__ = "Field is not available if layer is served as WFS from QGIS server"
+Qgis.FieldConfigurationFlag.__doc__ = "Configuration flags for fields\nThese flags are meant to be user-configurable\nand are not describing any information from the data provider.\n\n.. note::\n\n   FieldConfigurationFlag are expressed in the negative forms so that default flags is NoFlag.\n\n.. versionadded:: 3.34\n\n" + '* ``NoFlag``: ' + Qgis.FieldConfigurationFlag.NoFlag.__doc__ + '\n' + '* ``NotSearchable``: ' + Qgis.FieldConfigurationFlag.NotSearchable.__doc__ + '\n' + '* ``HideFromWms``: ' + Qgis.FieldConfigurationFlag.HideFromWms.__doc__ + '\n' + '* ``HideFromWfs``: ' + Qgis.FieldConfigurationFlag.HideFromWfs.__doc__
+# --
+Qgis.FieldConfigurationFlag.baseClass = Qgis
+Qgis.FieldConfigurationFlags.baseClass = Qgis
+FieldConfigurationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.FieldMetadataProperty.GeometryCrs.__doc__ = "Available for geometry field types with a specific associated coordinate reference system (as a QgsCoordinateReferenceSystem value)"
 Qgis.FieldMetadataProperty.GeometryWkbType.__doc__ = "Available for geometry field types which accept geometries of a specific WKB type only (as a QgsWkbTypes.Type value)"
 Qgis.FieldMetadataProperty.CustomProperty.__doc__ = "Starting point for custom user set properties"

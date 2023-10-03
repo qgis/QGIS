@@ -34,16 +34,6 @@ length, and if applicable, precision.
 
   public:
 
-    enum class ConfigurationFlag
-    {
-      None,
-      NotSearchable,
-      HideFromWms,
-      HideFromWfs,
-    };
-    typedef QFlags<QgsField::ConfigurationFlag> ConfigurationFlags;
-
-
     QgsField( const QString &name = QString(),
               QVariant::Type type = QVariant::Invalid,
               const QString &typeName = QString(),
@@ -351,18 +341,22 @@ Sets the alias for the field (the friendly displayed name of the field ).
 .. versionadded:: 3.0
 %End
 
-    QgsField::ConfigurationFlags configurationFlags() const;
+    Qgis::FieldConfigurationFlags configurationFlags() const;
 %Docstring
-Returns the Flags for the field (searchable, …)
+Returns the Flags for the field (searchable, …).
 
-.. versionadded:: 3.16
+.. seealso:: :py:func:`setConfigurationFlags`
+
+.. versionadded:: 3.34
 %End
 
-    void setConfigurationFlags( QgsField::ConfigurationFlags configurationFlags );
+    void setConfigurationFlags( Qgis::FieldConfigurationFlags flags );
 %Docstring
-Sets the Flags for the field (searchable, …)
+Sets the Flags for the field (searchable, …).
 
-.. versionadded:: 3.16
+.. seealso:: :py:func:`configurationFlags`
+
+.. versionadded:: 3.34
 %End
 
     QString displayString( const QVariant &v ) const;
@@ -370,7 +364,7 @@ Sets the Flags for the field (searchable, …)
 Formats string for display
 %End
 
-    static QString readableConfigurationFlag( QgsField::ConfigurationFlag flag );
+    static QString readableConfigurationFlag( Qgis::FieldConfigurationFlag flag );
 %Docstring
 Returns the readable and translated value of the configuration flag
 
@@ -502,9 +496,6 @@ be handled during a split operation.
 
 
 }; // class QgsField
-
-
-QFlags<QgsField::ConfigurationFlag> operator|(QgsField::ConfigurationFlag f1, QFlags<QgsField::ConfigurationFlag> f2);
 
 
 

@@ -277,12 +277,12 @@ void QgsField::setAlias( const QString &alias )
   d->alias = alias;
 }
 
-QgsField::ConfigurationFlags QgsField::configurationFlags() const
+Qgis::FieldConfigurationFlags QgsField::configurationFlags() const
 {
   return d->flags;
 }
 
-void QgsField::setConfigurationFlags( QgsField::ConfigurationFlags flags )
+void QgsField::setConfigurationFlags( Qgis::FieldConfigurationFlags flags )
 {
   d->flags = flags;
 }
@@ -427,17 +427,17 @@ QString QgsField::displayString( const QVariant &v ) const
   return v.toString();
 }
 
-QString QgsField::readableConfigurationFlag( QgsField::ConfigurationFlag flag )
+QString QgsField::readableConfigurationFlag( Qgis::FieldConfigurationFlag flag )
 {
   switch ( flag )
   {
-    case ConfigurationFlag::None:
+    case Qgis::FieldConfigurationFlag::NoFlag:
       return QObject::tr( "None" );
-    case ConfigurationFlag::NotSearchable:
+    case Qgis::FieldConfigurationFlag::NotSearchable:
       return QObject::tr( "Not searchable" );
-    case ConfigurationFlag::HideFromWms:
+    case Qgis::FieldConfigurationFlag::HideFromWms:
       return QObject::tr( "Do not expose via WMS" );
-    case ConfigurationFlag::HideFromWfs:
+    case Qgis::FieldConfigurationFlag::HideFromWfs:
       return QObject::tr( "Do not expose via WFS" );
   }
   return QString();
