@@ -21,6 +21,7 @@
 #include "ui_qgsannotationlayerpropertiesbase.h"
 
 #include "qgsannotationlayer.h"
+#include "qgis_app.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -30,7 +31,7 @@ class QgsMetadataWidget;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
 
-class QgsAnnotationLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsAnnotationLayerPropertiesBase
+class APP_EXPORT QgsAnnotationLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsAnnotationLayerPropertiesBase
 {
     Q_OBJECT
   public:
