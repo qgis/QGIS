@@ -129,7 +129,7 @@ class QgsFieldPrivate : public QSharedData
     QString alias;
 
     //! Flags for the field (searchable, …)
-    QgsField::ConfigurationFlags flags = QgsField::ConfigurationFlag::None;
+    Qgis::FieldConfigurationFlags flags = Qgis::FieldConfigurationFlag::NoFlag;
 
     //! Default value
     QgsDefaultValue defaultValueDefinition;

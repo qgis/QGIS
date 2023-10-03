@@ -464,7 +464,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
           const QgsFields &cFields { vl->fields() };
           for ( const QgsField &field : cFields )
           {
-            if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWfs ) )
+            if ( field.configurationFlags().testFlag( Qgis::FieldConfigurationFlag::HideFromWfs ) )
             {
               ++fieldIdx;
               continue;
