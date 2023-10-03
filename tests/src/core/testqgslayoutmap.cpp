@@ -53,10 +53,13 @@ class TestQgsLayoutMap : public QgsTest
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
+
+    void construct(); //test constructor of QgsLayoutItemMap
     void id();
     void render();
     void uniqueId(); //test if map id is adapted when doing copy paste
     void worldFileGeneration(); // test world file generation
+    void zoomToExtent(); // test zoomToExtent method
 
     void mapPolygonVertices(); // test mapPolygon function with no map rotation
     void dataDefinedLayers(); //test data defined layer string
@@ -130,6 +133,21 @@ void TestQgsLayoutMap::init()
   mComposerMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
   mComposition->addComposerMap( mComposerMap );
 #endif
+}
+
+void TestQgsLayoutMap::construct()
+{
+  QgsLayout l( QgsProject::instance( ) );
+  QgsLayoutItemMap mi( &l );
+  QCOMPARE( mi.type(), QgsLayoutItemRegistry::LayoutMap );
+  QVERIFY( mi.extent().isNull() ); // is this correct to expect ?
+
+  // WARNING: default values are mostly undefined behavior at
+  //          the time of writing, see
+  //          https://github.com/qgis/QGIS/pull/54827#discussion_r1346928192
+  //QVERIFY( mi.rect().isNull() ); // is this correct to expect ?
+  //QCOMPARE( mi.scale(), 0 ); // is this correct ?
+  // TODO: verify defined state
 }
 
 void TestQgsLayoutMap::id()
@@ -252,6 +270,25 @@ void TestQgsLayoutMap::worldFileGeneration()
   QGSCOMPARENEAR( d, 2.4137, 0.001 );
   QGSCOMPARENEAR( e, -4.1798, 0.001 );
   QGSCOMPARENEAR( f, 3.35331e+06, 1e+03 );
+}
+
+void TestQgsLayoutMap::zoomToExtent()
+{
+  QgsLayout l( QgsProject::instance( ) );
+  QgsLayoutItemMap mi( &l );
+  QVERIFY( mi.extent().isEmpty() );
+
+  // Sets extent to new extent, current being empty
+  mi.zoomToExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  QCOMPARE( mi.extent(), QgsRectangle( 0, 0, 10, 10 ) );
+
+  // Sets extent to new extent but keeps current aspect ratio (1)
+  mi.zoomToExtent( QgsRectangle( 1, 2, 9, 8 ) );
+  QCOMPARE( mi.extent(), QgsRectangle( 1, 1, 9, 9 ) );
+
+  // Sets extent to new extent but keeps current aspect ratio (1)
+  mi.zoomToExtent( QgsRectangle( 0, 0, 10, 12 ) );
+  QCOMPARE( mi.extent(), QgsRectangle( -1, 0, 11, 12 ) );
 }
 
 
