@@ -2242,7 +2242,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Sets the configuration flags of the field at given index
-     * \see QgsField::ConfigurationFlag
+     * \see QgsField::configurationFlags()
      * \since QGIS 3.16
      */
     void setFieldConfigurationFlags( int index, Qgis::FieldConfigurationFlags flags ) SIP_SKIP;
@@ -2255,7 +2255,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns the configuration flags of the field at given index
-     * \see QgsField::ConfigurationFlag
+     * \see QgsField::setConfigurationFlags()
      * \since QGIS 3.16
      */
     Qgis::FieldConfigurationFlags fieldConfigurationFlags( int index ) const SIP_SKIP;
