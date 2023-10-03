@@ -130,23 +130,23 @@ void QgsRasterTransparencyWidget::syncToLayer()
 
     cboxTransparencyBand->setShowNotSetOption( true, tr( "None" ) );
     cboxTransparencyBand->setLayer( mRasterLayer );
+
+    if ( provider->sourceHasNoDataValue( 1 ) )
+    {
+      lblSrcNoDataValue->setText( QgsRasterBlock::printValue( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) ) );
+    }
+    else
+    {
+      lblSrcNoDataValue->setText( tr( "not defined" ) );
+    }
+
+    mSrcNoDataValueCheckBox->setChecked( provider->useSourceNoDataValue( 1 ) );
+
+    const bool enableSrcNoData = provider->sourceHasNoDataValue( 1 ) && !std::isnan( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) );
+
+    mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
+    lblSrcNoDataValue->setEnabled( enableSrcNoData );
   }
-
-  if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
-  {
-    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) ) );
-  }
-  else
-  {
-    lblSrcNoDataValue->setText( tr( "not defined" ) );
-  }
-
-  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSourceNoDataValue( 1 ) );
-
-  const bool enableSrcNoData = mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) && !std::isnan( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) );
-
-  mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
-  lblSrcNoDataValue->setEnabled( enableSrcNoData );
 
   if ( renderer )
   {
@@ -160,12 +160,19 @@ void QgsRasterTransparencyWidget::syncToLayer()
     cboxTransparencyBand->setBand( renderer->alphaBand() );
   }
 
-  const QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValues( 1 );
-  QgsDebugMsg( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
-  if ( !noDataRangeList.isEmpty() )
+  if ( provider )
   {
-    const double v = QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ).toDouble();
-    leNoDataValue->setText( QLocale().toString( v ) );
+    const QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValues( 1 );
+    QgsDebugMsg( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
+    if ( !noDataRangeList.isEmpty() )
+    {
+      const double v = QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ).toDouble();
+      leNoDataValue->setText( QLocale().toString( v ) );
+    }
+    else
+    {
+      leNoDataValue->setText( QString() );
+    }
   }
   else
   {
@@ -458,10 +465,13 @@ void QgsRasterTransparencyWidget::apply()
       myNoDataRangeList << myNoDataRange;
     }
   }
-  for ( int bandNo = 1; bandNo <= mRasterLayer->dataProvider()->bandCount(); bandNo++ )
+  if ( QgsRasterDataProvider *provider = mRasterLayer->dataProvider() )
   {
-    mRasterLayer->dataProvider()->setUserNoDataValue( bandNo, myNoDataRangeList );
-    mRasterLayer->dataProvider()->setUseSourceNoDataValue( bandNo, mSrcNoDataValueCheckBox->isChecked() );
+    for ( int bandNo = 1; bandNo <= provider->bandCount(); bandNo++ )
+    {
+      mRasterLayer->dataProvider()->setUserNoDataValue( bandNo, myNoDataRangeList );
+      mRasterLayer->dataProvider()->setUseSourceNoDataValue( bandNo, mSrcNoDataValueCheckBox->isChecked() );
+    }
   }
 
   //transparency settings
@@ -560,7 +570,7 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
   }
 
   //Get the pixel values and add a new entry to the transparency table
-  if ( mMapCanvas && mPixelSelectorTool )
+  if ( mMapCanvas && mPixelSelectorTool && mRasterLayer->dataProvider() )
   {
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
 
@@ -705,10 +715,12 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
 {
   QgsDebugMsg( QStringLiteral( "value = %1" ).arg( value, 0, 'g', 17 ) );
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
-  if ( !provider ) return;
+  if ( !provider )
+    return;
 
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
-  if ( !renderer ) return;
+  if ( !renderer )
+    return;
   const int nBands = renderer->usesBands().size();
 
   QLineEdit *lineEdit = new QLineEdit();
