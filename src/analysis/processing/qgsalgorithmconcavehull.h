@@ -59,6 +59,7 @@ class QgsConcaveHullAlgorithm : public QgsProcessingAlgorithm
     double mPercentage;
     bool mAllowHoles;
     bool mSplitMultipart;
+    double mStep;
 };
 
 ///@endcond PRIVATE
