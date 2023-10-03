@@ -91,7 +91,6 @@ class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
-
     void showHelp();
     bool configureFromUri( const QString &uri ) override;
     void setSql( const QModelIndex &index ) override;

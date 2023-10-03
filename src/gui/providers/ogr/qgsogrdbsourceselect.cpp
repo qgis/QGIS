@@ -408,7 +408,6 @@ bool QgsOgrDbSourceSelect::configureFromUri( const QString &uri )
       if ( !layerName.isEmpty() )
       {
         const QModelIndex parentIndex { mTableModel->index( 0, 0, mTableModel->invisibleRootItem()->index() )};
-        Q_ASSERT( parentIndex.isValid() );
         const QModelIndexList indexList { mTableModel->match( mTableModel->index( 0, 0, parentIndex ), Qt::DisplayRole, layerName, 1, Qt::MatchFlag::MatchExactly ) };
         if ( ! indexList.isEmpty() )
         {
@@ -418,13 +417,14 @@ bool QgsOgrDbSourceSelect::configureFromUri( const QString &uri )
       else if ( layerIndex >= 0 )
       {
         const QModelIndex parentIndex { mTableModel->index( 0, 0, mTableModel->invisibleRootItem()->index() )};
-        Q_ASSERT( parentIndex.isValid() );
-        index = mTableModel->index( layerIndex, 0, parentIndex );
+        index = proxyModel()->mapFromSource( mTableModel->index( layerIndex, 0, parentIndex ) );
       }
 
       if ( index.isValid() )
       {
-        mTablesTreeView->selectionModel()->setCurrentIndex( proxyModel()->mapFromSource( index ), QItemSelectionModel::SelectionFlag::Rows | QItemSelectionModel::SelectionFlag::ClearAndSelect );
+        const QModelIndex proxyIndex { proxyModel()->mapFromSource( index ) };
+        mTablesTreeView->selectionModel()->setCurrentIndex( proxyIndex, QItemSelectionModel::SelectionFlag::Rows | QItemSelectionModel::SelectionFlag::ClearAndSelect );
+        mTablesTreeView->scrollTo( proxyIndex );
         // Set filter
         if ( !subsetString.isEmpty() )
         {

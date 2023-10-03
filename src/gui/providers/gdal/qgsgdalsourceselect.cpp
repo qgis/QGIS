@@ -248,13 +248,20 @@ bool QgsGdalSourceSelect::configureFromUri( const QString &uri )
   mDataSources.clear();
   mDataSources.append( uri );
   const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
+  const QString layerName { decodedUri.value( QStringLiteral( "layerName" ) ).toString() };
   mFileWidget->setFilePath( decodedUri.value( QStringLiteral( "path" ), QString() ).toString() );
-  const QVariantMap openOptions = decodedUri.value( QStringLiteral( "openOptions" ) ).toMap();
+  QVariantMap openOptions = decodedUri.value( QStringLiteral( "openOptions" ) ).toMap();
+  // layerName becomes TABLE in some driver opening options (e.g. GPKG)
+  if ( !layerName.isEmpty() )
+  {
+    openOptions.insert( QStringLiteral( "TABLE" ), layerName );
+  }
+
   if ( ! openOptions.isEmpty() )
   {
     for ( auto opt = openOptions.constBegin(); opt != openOptions.constEnd(); ++opt )
     {
-      const auto widget { std::find_if( mOpenOptionsWidgets.cend(), mOpenOptionsWidgets.cend(), [ = ]( QWidget * widget )
+      const auto widget { std::find_if( mOpenOptionsWidgets.cbegin(), mOpenOptionsWidgets.cend(), [ = ]( QWidget * widget )
       {
         return widget->objectName() == opt.key();
       } ) };
