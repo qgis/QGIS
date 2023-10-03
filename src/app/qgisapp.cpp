@@ -15171,7 +15171,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       if ( !isEditable && mMapCanvas && mMapCanvas->mapTool()
            && ( mMapCanvas->mapTool()->flags() & QgsMapTool::EditTool ) && !mSaveRollbackInProgress )
       {
-        mMapCanvas->setMapTool( mNonEditMapTool );
+        if ( mNonEditMapTool )
+          mMapCanvas->setMapTool( mNonEditMapTool );
+        else
+          mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::Pan ) );
       }
 
       if ( dprovider )
