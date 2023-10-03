@@ -149,7 +149,7 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
     def testClippedMapExtent(self):
         # - we position a map and a triangle in a layout at specific layout/scene coordinates
         # - the map is zoomed to a specific extent, defined in map/crs coordinates
-        # - we use the triangle to clip the map in the layout 
+        # - we use the triangle to clip the map in the layout
         #   and test if the triangle is converted to the correct clipped extent in map/crs coordinates
         p = QgsProject()
         l = QgsPrintLayout(p)
@@ -172,7 +172,7 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
     def testToMapClippingRegion(self):
         # - we position a map and a triangle in a layout at specific layout/scene coordinates
         # - the map is zoomed to a specific extent, defined in map/crs coordinates
-        # - we use the triangle to clip the map in the layout 
+        # - we use the triangle to clip the map in the layout
         #   and test if the triangle is converted to the correct clipping shape in map/crs coordinates
         p = QgsProject()
         l = QgsPrintLayout(p)
