@@ -116,6 +116,7 @@
 #include "options/qgsrasterrenderingoptions.h"
 #include "options/qgsrenderingoptions.h"
 #include "options/qgsvectorrenderingoptions.h"
+#include "qgsbrowserdockwidget_p.h"
 
 #include "raster/qgsrasterelevationpropertieswidget.h"
 #include "vector/qgsvectorelevationpropertieswidget.h"
@@ -1981,6 +1982,13 @@ QgisApp::~QgisApp()
 
   deleteLayoutDesigners();
   removeAnnotationItems();
+
+  // these need to be gracefully cleaned up before QgsApplication::exitQgis()
+  const QList<QgsBrowserPropertiesDialog *> browserPropertyDialogs = findChildren< QgsBrowserPropertiesDialog * >();
+  for ( QgsBrowserPropertiesDialog *widget : browserPropertyDialogs )
+  {
+    delete widget;
+  }
 
   // cancel request for FileOpen events
   QgsApplication::setFileOpenEventReceiver( nullptr );
