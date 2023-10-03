@@ -81,7 +81,7 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   }
 
   // Setup layout effect
-  mEffect.reset( new QgsLayoutEffect() );
+  mEffect = new QgsLayoutEffect();
   if ( mLayout )
   {
     mEffect->setEnabled( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
@@ -90,7 +90,7 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
       mEffect->setEnabled( flags & QgsLayoutRenderContext::FlagUseAdvancedEffects );
     } );
   }
-  setGraphicsEffect( mEffect.get() );
+  setGraphicsEffect( mEffect.data() );
 }
 
 QgsLayoutItem::~QgsLayoutItem()
@@ -1558,6 +1558,7 @@ void QgsLayoutItem::refreshBlendMode()
   }
 
   // Update the item effect to use the new blend mode
-  mEffect->setCompositionMode( blendMode );
+  if ( mEffect )
+    mEffect->setCompositionMode( blendMode );
 }
 
