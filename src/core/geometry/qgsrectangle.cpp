@@ -34,19 +34,24 @@
 QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
 {
   const QgsGeometry geom = QgsGeometry::fromWkt( wkt );
-  if ( geom.isMultipart() )
+  if ( geom.isEmpty() )
     return QgsRectangle();
 
-  const QgsPolygonXY poly = geom.asPolygon();
+  if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( geom.constGet()->simplifiedTypeRef() ) )
+  {
+    if ( polygon->numInteriorRings() > 0 )
+      return QgsRectangle();
 
-  if ( poly.size() != 1 )
-    return QgsRectangle();
-
-  const QgsPolylineXY polyline = geom.asPolygon().at( 0 );
-  if ( polyline.size() == 5 && polyline.at( 0 ) == polyline.at( 4 ) && geom.isGeosValid() )
-    return QgsRectangle( polyline.at( 0 ).x(), polyline.at( 0 ).y(), polyline.at( 2 ).x(), polyline.at( 2 ).y() );
-  else
-    return QgsRectangle();
+    if ( const QgsLineString *exterior = qgsgeometry_cast< QgsLineString * >( polygon->exteriorRing() ) )
+    {
+      if ( exterior->numPoints() == 5
+           && qgsDoubleNear( exterior->xAt( 0 ), exterior->xAt( 4 ) )
+           && qgsDoubleNear( exterior->yAt( 0 ), exterior->yAt( 4 ) )
+           && geom.isGeosValid() )
+        return QgsRectangle( exterior->xAt( 0 ), exterior->yAt( 0 ), exterior->xAt( 2 ), exterior->yAt( 2 ) );
+    }
+  }
+  return QgsRectangle();
 }
 
 QgsRectangle QgsRectangle::fromCenterAndSize( const QgsPointXY &center, double width, double height )
