@@ -674,6 +674,10 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
     // Break on errors
     for ( QgsAttributeMap::const_iterator it2 = attrs.constBegin(); it2 != attrs.constEnd(); ++it2 )
     {
+      const int fieldIndex = it2.key();
+      if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
+        continue;
+
       QVariant attrValue = it2.value();
       // Check attribute conversion
       const bool conversionError { ! QgsVariantUtils::isNull( attrValue )
