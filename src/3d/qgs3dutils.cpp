@@ -890,3 +890,15 @@ void Qgs3DUtils::computeBoundingBoxNearFarPlanes( const QgsAABB &bbox, const QMa
     ffar = std::max( ffar, dst );
   }
 }
+
+Qt3DRender::QCullFace::CullingMode Qgs3DUtils::qt3DcullingMode( Qgs3DTypes::CullingMode mode )
+{
+  switch ( mode )
+  {
+    case Qgs3DTypes::NoCulling:    return Qt3DRender::QCullFace::NoCulling;
+    case Qgs3DTypes::Front:        return Qt3DRender::QCullFace::Front;
+    case Qgs3DTypes::Back:         return Qt3DRender::QCullFace::Back;
+    case Qgs3DTypes::FrontAndBack: return Qt3DRender::QCullFace::FrontAndBack;
+  }
+  return Qt3DRender::QCullFace::NoCulling;
+}

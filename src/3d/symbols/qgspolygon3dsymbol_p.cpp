@@ -286,19 +286,6 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
 // cppcheck-suppress memleak
 }
 
-
-static Qt3DRender::QCullFace::CullingMode _qt3DcullingMode( Qgs3DTypes::CullingMode mode )
-{
-  switch ( mode )
-  {
-    case Qgs3DTypes::NoCulling:    return Qt3DRender::QCullFace::NoCulling;
-    case Qgs3DTypes::Front:        return Qt3DRender::QCullFace::Front;
-    case Qgs3DTypes::Back:         return Qt3DRender::QCullFace::Back;
-    case Qgs3DTypes::FrontAndBack: return Qt3DRender::QCullFace::FrontAndBack;
-  }
-  return Qt3DRender::QCullFace::NoCulling;
-}
-
 // front/back side culling
 static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, Qt3DRender::QMaterial *material )
 {
@@ -309,7 +296,7 @@ static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, Qt3DRender::Q
     for ( auto rpit = renderPasses.begin(); rpit != renderPasses.end(); ++rpit )
     {
       Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-      cullFace->setMode( _qt3DcullingMode( cullingMode ) );
+      cullFace->setMode( Qgs3DUtils::qt3DcullingMode( cullingMode ) );
       ( *rpit )->addRenderState( cullFace );
     }
   }
