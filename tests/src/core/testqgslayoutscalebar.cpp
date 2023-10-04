@@ -17,7 +17,6 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsmultirenderchecker.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgsfontutils.h"
@@ -41,7 +40,7 @@ class TestQgsLayoutScaleBar : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutScaleBar() : QgsTest( QStringLiteral( "Layout Scalebar Tests" ) ) {}
+    TestQgsLayoutScaleBar() : QgsTest( QStringLiteral( "Layout Scalebar Tests" ), QStringLiteral( "layout_scalebar" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -117,9 +116,7 @@ void TestQgsLayoutScaleBar::singleBox()
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Single Box" ) );
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_singlebox" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::singleBoxLineSymbol()
@@ -161,9 +158,7 @@ void TestQgsLayoutScaleBar::singleBoxLineSymbol()
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Single Box" ) );
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox_linesymbol" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_singlebox_linesymbol" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::singleBoxFillSymbol()
@@ -204,9 +199,7 @@ void TestQgsLayoutScaleBar::singleBoxFillSymbol()
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Single Box" ) );
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox_fillsymbol" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_singlebox_fillsymbol" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::singleBoxLabelBelowSegment()
@@ -236,9 +229,7 @@ void TestQgsLayoutScaleBar::singleBoxLabelBelowSegment()
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Single Box" ) );
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox_labelbelowsegment" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_singlebox_labelbelowsegment" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::singleBoxAlpha()
@@ -277,9 +268,7 @@ void TestQgsLayoutScaleBar::singleBoxAlpha()
   Q_NOWARN_DEPRECATED_POP
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox_alpha" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_singlebox_alpha" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::doubleBox()
@@ -315,9 +304,7 @@ void TestQgsLayoutScaleBar::doubleBox()
   scalebar->setStyle( QStringLiteral( "Double Box" ) );
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_doublebox" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_doublebox" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::doubleBoxLineSymbol()
@@ -359,9 +346,7 @@ void TestQgsLayoutScaleBar::doubleBoxLineSymbol()
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Double Box" ) );
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_doublebox_linesymbol" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_doublebox_linesymbol" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::doubleBoxFillSymbol()
@@ -402,9 +387,7 @@ void TestQgsLayoutScaleBar::doubleBoxFillSymbol()
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Double Box" ) );
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_doublebox_fillsymbol" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_doublebox_fillsymbol" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::doubleBoxLabelCenteredSegment()
@@ -443,9 +426,7 @@ void TestQgsLayoutScaleBar::doubleBoxLabelCenteredSegment()
   scalebar->setUnitLabel( QStringLiteral( "units" ) );
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_doublebox_labelcenteredsegment" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_doublebox_labelcenteredsegment" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::numeric()
@@ -481,10 +462,7 @@ void TestQgsLayoutScaleBar::numeric()
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setNumberDecimalPlaces( 0 );
 
   scalebar->setStyle( QStringLiteral( "Numeric" ) );
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_numeric" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  const bool result = checker.testLayout( mReport, 0, 0 );
-  QVERIFY( result );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_numeric" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::tick()
@@ -516,9 +494,7 @@ void TestQgsLayoutScaleBar::tick()
   Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineWidth( 1.0 );
   Q_NOWARN_DEPRECATED_POP
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_tick" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_tick" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::tickLineSymbol()
@@ -564,9 +540,7 @@ void TestQgsLayoutScaleBar::tickLineSymbol()
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Line Ticks Up" ) );
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_tick_linesymbol" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_tick_linesymbol" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::dataDefined()
@@ -638,9 +612,7 @@ void TestQgsLayoutScaleBar::dataDefined()
   QCOMPARE( scalebar->subdivisionsHeight(), 30.0 );
   QCOMPARE( scalebar->numberOfSubdivisions(), 40 );
 
-  QgsLayoutChecker checker2( QStringLiteral( "layoutscalebar_datadefined" ), &l );
-  checker2.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker2.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_datadefined" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::oldDataDefinedProject()
@@ -697,9 +669,7 @@ void TestQgsLayoutScaleBar::textFormat()
   format.dataDefinedProperties().setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "case when @scale_value = 2000 then '#ff00ff' else '#ffff00' end" ) ) );
   scalebar->setTextFormat( format );
 
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_textformat" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_textformat" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::numericFormat()
@@ -733,9 +703,7 @@ void TestQgsLayoutScaleBar::numericFormat()
   newFont.setPointSizeF( 12 );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( newFont ) );
 
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_numericformat" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_numericformat" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::steppedLine()
@@ -778,9 +746,7 @@ void TestQgsLayoutScaleBar::steppedLine()
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "stepped" ) );
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_stepped" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_stepped" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::hollow()
@@ -837,16 +803,14 @@ void TestQgsLayoutScaleBar::hollow()
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "hollow" ) );
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_hollow" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_hollow" ), &l ) );
 }
 
 void TestQgsLayoutScaleBar::hollowDefaults()
 {
   QgsLayout l( QgsProject::instance() );
 
-  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+  std::unique_ptr< QgsLayoutItemScaleBar > scalebar = std::make_unique< QgsLayoutItemScaleBar >( &l );
 
   // apply random symbols
   std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
@@ -939,9 +903,7 @@ void TestQgsLayoutScaleBar::tickSubdivisions()
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Line Ticks Middle" ) );
-  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_tick_subdivisions" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutscalebar_tick_subdivisions" ), &l ) );
 }
 
 

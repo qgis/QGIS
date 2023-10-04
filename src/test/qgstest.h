@@ -201,10 +201,14 @@ class TEST_EXPORT QgsTest : public QObject
       return result;
     }
 
-    bool layoutCheck( const QString &name, QgsLayout *layout, int page = 0, int allowedMismatch = 0 )
+    bool layoutCheck( const QString &name, QgsLayout *layout, int page = 0, int allowedMismatch = 0, const QSize size = QSize(), int colorTolerance = 0 )
     {
       QgsLayoutChecker checker( name, layout );
       checker.setControlPathPrefix( mControlPathPrefix );
+      if ( size.isValid() )
+        checker.setSize( size );
+      if ( colorTolerance > 0 )
+        checker.setColorTolerance( colorTolerance );
 
       QString report;
       const bool result = checker.testLayout( report, page, allowedMismatch );
