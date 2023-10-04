@@ -40,6 +40,7 @@ namespace Qt3DExtras
 
 #include <QSize>
 #include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCullFace>
 
 #include <memory>
 
@@ -295,6 +296,15 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.34
      */
     static void computeBoundingBoxNearFarPlanes( const QgsAABB &bbox, const QMatrix4x4 &viewMatrix, float &fnear, float &ffar );
+
+    /**
+     * Converts Qgs3DTypes::CullingMode \a mode into its Qt3D equivalent.
+     *
+     * \param mode culling mode
+     *
+     * \since QGIS 3.34
+     */
+    static Qt3DRender::QCullFace::CullingMode qt3DcullingMode( Qgs3DTypes::CullingMode mode );
 };
 
 #endif // QGS3DUTILS_H
