@@ -18,11 +18,9 @@
 #include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
-#include "qgsmultirenderchecker.h"
 #include "qgstest.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgslayoutitemundocommand.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemshape.h"
@@ -139,6 +137,7 @@ class TestQgsLayoutItem: public QgsTest
     TestQgsLayoutItem() : QgsTest( QStringLiteral( "Layout Item Tests" ) ) {}
 
   private slots:
+    void cleanupTestCase();
     void creation(); //test creation of QgsLayoutItem
     void uuid();
     void id();
@@ -179,11 +178,14 @@ class TestQgsLayoutItem: public QgsTest
 
   private:
 
-    bool renderCheck( QString testName, QImage &image, int mismatchCount );
-
     std::unique_ptr< QgsLayoutItem > createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original );
 
 };
+
+void TestQgsLayoutItem::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsLayoutItem::creation()
 {
@@ -331,8 +333,8 @@ void TestQgsLayoutItem::debugRect()
   l.render( &painter );
   painter.end();
 
-  const bool result = renderCheck( QStringLiteral( "layoutitem_debugrect" ), image, 0 );
-  QVERIFY( result );
+  mControlPathPrefix = QStringLiteral( "layouts" );
+  QVERIFY( imageCheck( QStringLiteral( "layoutitem_debugrect" ), QStringLiteral( "layoutitem_debugrect" ), image, QString(), 0 ) );
 }
 
 void TestQgsLayoutItem::draw()
@@ -350,22 +352,8 @@ void TestQgsLayoutItem::draw()
   QPainter painter( &image );
   l.render( &painter );
   painter.end();
-  const bool result = renderCheck( QStringLiteral( "layoutitem_draw" ), image, 0 );
-  QVERIFY( result );
-}
-
-bool TestQgsLayoutItem::renderCheck( QString testName, QImage &image, int mismatchCount )
-{
-  const QString myTmpDir = QDir::tempPath() + QDir::separator();
-  const QString myFileName = myTmpDir + testName + ".png";
-  image.save( myFileName, "PNG" );
-  QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( QStringLiteral( "layouts" ) );
-  myChecker.setControlName( "expected_" + testName );
-  myChecker.setRenderedImage( myFileName );
-  const bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
-  mReport += myChecker.report();
-  return myResultFlag;
+  mControlPathPrefix = QStringLiteral( "layouts" );
+  QVERIFY( imageCheck( QStringLiteral( "layoutitem_draw" ), QStringLiteral( "layoutitem_draw" ), image, QString(), 0 ) );
 }
 
 void TestQgsLayoutItem::positionWithUnits()
@@ -1425,19 +1413,19 @@ void TestQgsLayoutItem::variables()
 {
   QgsLayout l( QgsProject::instance() );
 
-  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
-  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::layoutItemScope( map ) );
+  std::unique_ptr< QgsLayoutItemMap > map = std::make_unique< QgsLayoutItemMap >( &l );
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::layoutItemScope( map.get() ) );
   const int before = scope->variableCount();
 
-  QgsExpressionContextUtils::setLayoutItemVariable( map, QStringLiteral( "var" ), 5 );
-  scope.reset( QgsExpressionContextUtils::layoutItemScope( map ) );
+  QgsExpressionContextUtils::setLayoutItemVariable( map.get(), QStringLiteral( "var" ), 5 );
+  scope.reset( QgsExpressionContextUtils::layoutItemScope( map.get() ) );
   QCOMPARE( scope->variableCount(), before + 1 );
   QCOMPARE( scope->variable( QStringLiteral( "var" ) ).toInt(), 5 );
 
   QVariantMap vars;
   vars.insert( QStringLiteral( "var2" ), 7 );
-  QgsExpressionContextUtils::setLayoutItemVariables( map, vars );
-  scope.reset( QgsExpressionContextUtils::layoutItemScope( map ) );
+  QgsExpressionContextUtils::setLayoutItemVariables( map.get(), vars );
+  scope.reset( QgsExpressionContextUtils::layoutItemScope( map.get() ) );
   QCOMPARE( scope->variableCount(), before + 1 );
   QVERIFY( !scope->hasVariable( QStringLiteral( "var" ) ) );
   QCOMPARE( scope->variable( QStringLiteral( "var2" ) ).toInt(), 7 );
@@ -1670,9 +1658,8 @@ void TestQgsLayoutItem::rotation()
   l.render( &painter );
   painter.end();
 
-  const bool result = renderCheck( QStringLiteral( "layoutitem_rotation" ), image, 0 );
+  QVERIFY( imageCheck( QStringLiteral( "layoutitem_rotation" ), QStringLiteral( "layoutitem_rotation" ), image, QString(), 0 ) );
   delete item;
-  QVERIFY( result );
 }
 
 //TODO rotation tests:
@@ -1988,9 +1975,8 @@ void TestQgsLayoutItem::blendMode()
 
   mComposerRect2->setBlendMode( QPainter::CompositionMode_Multiply );
 
-  QgsLayoutChecker checker( QStringLiteral( "composereffects_blend" ), &l2 );
-  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
-  QVERIFY( checker.testLayout( mReport ) );
+  mControlPathPrefix = QStringLiteral( "composer_effects" );
+  QVERIFY( layoutCheck( QStringLiteral( "composereffects_blend" ), &l2 ) );
 }
 
 void TestQgsLayoutItem::opacity()
@@ -2008,7 +1994,7 @@ void TestQgsLayoutItem::opacity()
   QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   item->setShapeType( QgsLayoutItemShape::Rectangle );
   item->attemptSetSceneRect( QRectF( 50, 50, 150, 100 ) );
-  item->setSymbol( fillSymbol->clone() );
+  item->setSymbol( fillSymbol );
 
   l.addLayoutItem( item );
 
@@ -2018,18 +2004,15 @@ void TestQgsLayoutItem::opacity()
   // we handle opacity ourselves, so QGraphicsItem opacity should never be set
   QCOMPARE( item->opacity(), 1.0 );
 
-  QgsLayoutChecker checker( QStringLiteral( "composereffects_transparency75" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
-  QVERIFY( checker.testLayout( mReport ) );
+  mControlPathPrefix = QStringLiteral( "composer_effects" );
+  QVERIFY( layoutCheck( QStringLiteral( "composereffects_transparency75" ), &l ) );
 
   item->dataDefinedProperties().setProperty( QgsLayoutObject::Opacity, QgsProperty::fromExpression( "35" ) );
   item->refreshDataDefinedProperty();
   QCOMPARE( item->itemOpacity(), 0.75 ); // should not change
   QCOMPARE( item->opacity(), 1.0 );
 
-  checker = QgsLayoutChecker( QStringLiteral( "composereffects_transparency35" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
-  QVERIFY( checker.testLayout( mReport ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composereffects_transparency35" ), &l ) );
 
   // with background and frame
   l.removeLayoutItem( item );
@@ -2042,16 +2025,14 @@ void TestQgsLayoutItem::opacity()
   labelItem->setFrameEnabled( true );
   labelItem->setFrameStrokeColor( QColor( 40, 30, 20 ) );
   labelItem->setItemOpacity( 0.5 );
-  checker = QgsLayoutChecker( QStringLiteral( "composereffects_transparency_bgframe" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
-  QVERIFY( checker.testLayout( mReport ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composereffects_transparency_bgframe" ), &l ) );
 
   QgsLayout l2( QgsProject::instance() );
   l2.initializeDefaults();
   QgsLayoutItemShape *mComposerRect1 = new QgsLayoutItemShape( &l2 );
   mComposerRect1->attemptSetSceneRect( QRectF( 20, 20, 150, 100 ) );
   mComposerRect1->setShapeType( QgsLayoutItemShape::Rectangle );
-  mComposerRect1->setSymbol( fillSymbol->clone() );
+  mComposerRect1->setSymbol( fillSymbol );
   delete fillSymbol;
 
   l2.addLayoutItem( mComposerRect1 );
@@ -2069,9 +2050,7 @@ void TestQgsLayoutItem::opacity()
 
   mComposerRect2->setItemOpacity( 0.5 );
 
-  checker = QgsLayoutChecker( QStringLiteral( "composereffects_transparency" ), &l2 );
-  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
-  QVERIFY( checker.testLayout( mReport ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composereffects_transparency" ), &l2 ) );
 }
 
 void TestQgsLayoutItem::excludeFromExports()
@@ -2107,10 +2086,8 @@ void TestQgsLayoutItem::excludeFromExports()
   item->attemptResize( QgsLayoutSize( 200, 200 ) );
   l.updateBounds();
 
-  QgsLayoutChecker checker( QStringLiteral( "layoutitem_excluded" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "layouts" ) );
-  checker.setSize( QSize( 400, 400 ) );
-  QVERIFY( checker.testLayout( mReport ) );
+  mControlPathPrefix = QStringLiteral( "layouts" );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutitem_excluded" ), &l, 0, 0, QSize( 400, 400 ) ) );
 }
 
 std::unique_ptr<QgsLayoutItem> TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )

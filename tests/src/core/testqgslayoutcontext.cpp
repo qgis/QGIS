@@ -37,6 +37,7 @@ class TestQgsLayoutContext: public QgsTest
 
   private slots:
 
+    void cleanupTestCase();
     void creation(); //test creation of QgsLayout
     void flags(); //test QgsLayout flags
     void feature();
@@ -50,6 +51,11 @@ class TestQgsLayoutContext: public QgsTest
     void simplifyMethod();
 
 };
+
+void TestQgsLayoutContext::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsLayoutContext::creation()
 {

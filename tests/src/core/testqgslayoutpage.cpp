@@ -23,7 +23,6 @@
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"
-#include "qgsmultirenderchecker.h"
 #include "qgslayoutpagecollection.h"
 #include <QObject>
 #include "qgstest.h"
@@ -35,9 +34,10 @@ class TestQgsLayoutPage : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutPage() : QgsTest( QStringLiteral( "Layout Page Tests" ) ) {}
+    TestQgsLayoutPage() : QgsTest( QStringLiteral( "Layout Page Tests" ), QStringLiteral( "composer_paper" ) ) {}
 
   private slots:
+    void cleanupTestCase();
 
     void itemType();
     void pageSize();
@@ -53,6 +53,11 @@ class TestQgsLayoutPage : public QgsTest
     void pageLayout(); //test page layout
 
 };
+
+void TestQgsLayoutPage::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsLayoutPage::itemType()
 {
@@ -152,9 +157,7 @@ void TestQgsLayoutPage::defaultPaper()
   page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpaper_default" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
-  QVERIFY( checker.testLayout( mReport ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpaper_default" ), &l ) );
 }
 
 void TestQgsLayoutPage::transparentPaper()
@@ -172,9 +175,7 @@ void TestQgsLayoutPage::transparentPaper()
   simpleFill->setStrokeColor( Qt::transparent );
   l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpaper_transparent" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
-  QVERIFY( checker.testLayout( mReport ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpaper_transparent" ), &l ) );
 }
 
 void TestQgsLayoutPage::borderedPaper()
@@ -193,9 +194,7 @@ void TestQgsLayoutPage::borderedPaper()
   simpleFill->setStrokeWidth( 6 );
   l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpaper_bordered" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
-  QVERIFY( checker.testLayout( mReport ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpaper_bordered" ), &l ) );
 }
 
 void TestQgsLayoutPage::markerLinePaper()
@@ -212,9 +211,7 @@ void TestQgsLayoutPage::markerLinePaper()
   markerLineSymbol->changeSymbolLayer( 0, markerLine );
   l.pageCollection()->setPageStyleSymbol( markerLineSymbol.get() );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpaper_markerborder" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpaper_markerborder" ), &l ) );
 }
 
 void TestQgsLayoutPage::hiddenPages()
@@ -234,11 +231,7 @@ void TestQgsLayoutPage::hiddenPages()
 
   l.renderContext().setPagesVisible( false );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpaper_hidden" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
-  const bool result = checker.testLayout( mReport );
-  QVERIFY( result );
-
+  QVERIFY( layoutCheck( QStringLiteral( "composerpaper_hidden" ), &l ) );
 }
 
 void TestQgsLayoutPage::pageLayout()

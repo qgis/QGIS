@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsmultirenderchecker.h"
 #include "qgslayoutitempicture.h"
 #include "qgsproject.h"
 #include "qgsproperty.h"
@@ -34,7 +33,7 @@ class TestQgsLayoutPicture : public QgsTest
 
   public:
 
-    TestQgsLayoutPicture() : QgsTest( QStringLiteral( "Layout Picture Tests" ) ) {}
+    TestQgsLayoutPicture() : QgsTest( QStringLiteral( "Layout Picture Tests" ), QStringLiteral( "composer_picture" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -127,9 +126,7 @@ void TestQgsLayoutPicture::pictureRender()
   //test picture rotation
   mLayout->addLayoutItem( mPicture );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_render" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_render" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
 }
@@ -145,9 +142,7 @@ void TestQgsLayoutPicture::pictureRaster()
 
   l.addLayoutItem( p );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_render" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_render" ), &l ) );
 }
 
 void TestQgsLayoutPicture::pictureSvg()
@@ -162,9 +157,7 @@ void TestQgsLayoutPicture::pictureSvg()
 
   l.addLayoutItem( p );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_svg_zoom" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_svg_zoom" ), &l ) );
 }
 
 void TestQgsLayoutPicture::pictureRotation()
@@ -173,9 +166,7 @@ void TestQgsLayoutPicture::pictureRotation()
   mLayout->addLayoutItem( mPicture );
   mPicture->setPictureRotation( 45 );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_rotation" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_rotation" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setPictureRotation( 0 );
@@ -187,9 +178,7 @@ void TestQgsLayoutPicture::pictureItemRotation()
   mLayout->addLayoutItem( mPicture );
   mPicture->setItemRotation( 45, true );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_itemrotation" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_itemrotation" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setItemRotation( 0, true );
@@ -201,9 +190,7 @@ void TestQgsLayoutPicture::pictureResizeZoom()
   mLayout->addLayoutItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_resize_zoom" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_resize_zoom" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
 }
@@ -214,9 +201,7 @@ void TestQgsLayoutPicture::pictureResizeStretch()
   mLayout->addLayoutItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Stretch );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_resize_stretch" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_resize_stretch" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
@@ -229,9 +214,7 @@ void TestQgsLayoutPicture::pictureResizeClip()
   mPicture->setResizeMode( QgsLayoutItemPicture::Clip );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 30, 50 ) );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_resize_clip" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_resize_clip" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
@@ -245,9 +228,7 @@ void TestQgsLayoutPicture::pictureResizeZoomAndResize()
   mPicture->setResizeMode( QgsLayoutItemPicture::ZoomResizeFrame );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 50, 300 ) );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_resize_zoomresize" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_resize_zoomresize" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
@@ -261,9 +242,7 @@ void TestQgsLayoutPicture::pictureResizeFrameToImage()
   mPicture->setResizeMode( QgsLayoutItemPicture::FrameToImageSize );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 50, 300 ) );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_resize_frametoimage" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_resize_frametoimage" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
@@ -278,9 +257,7 @@ void TestQgsLayoutPicture::pictureClipAnchor()
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 30, 50 ) );
   mPicture->setPictureAnchor( QgsLayoutItem::LowerRight );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_clip_anchor" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_clip_anchor" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
@@ -296,9 +273,7 @@ void TestQgsLayoutPicture::pictureClipAnchorOversize()
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 150, 120 ) );
   mPicture->setPictureAnchor( QgsLayoutItem::LowerMiddle );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_clip_anchoroversize" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_clip_anchoroversize" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
@@ -314,9 +289,7 @@ void TestQgsLayoutPicture::pictureZoomAnchor()
   mPicture->attemptSetSceneRect( QRectF( 70, 10, 30, 100 ) );
   mPicture->setPictureAnchor( QgsLayoutItem::LowerMiddle );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_zoom_anchor" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_zoom_anchor" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setPictureAnchor( QgsLayoutItem::UpperLeft );
@@ -330,9 +303,7 @@ void TestQgsLayoutPicture::pictureSvgZoom()
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
   mPicture->setPicturePath( mSvgImage );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_svg_zoom" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_svg_zoom" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setPicturePath( mPngImage );
@@ -346,9 +317,7 @@ void TestQgsLayoutPicture::pictureSvgStretch()
   mPicture->setPicturePath( mSvgImage );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 20, 100 ) );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_svg_stretch" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_svg_stretch" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
@@ -364,9 +333,7 @@ void TestQgsLayoutPicture::pictureSvgZoomAndResize()
   mPicture->setPicturePath( mSvgImage );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 50, 300 ) );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_svg_zoomresize" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_svg_zoomresize" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
@@ -381,9 +348,7 @@ void TestQgsLayoutPicture::pictureSvgFrameToImage()
   mPicture->setResizeMode( QgsLayoutItemPicture::FrameToImageSize );
   mPicture->setPicturePath( mSvgImage );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_svg_frametoimage" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_svg_frametoimage" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
@@ -401,9 +366,7 @@ void TestQgsLayoutPicture::svgParameters()
   mPicture->setSvgStrokeColor( QColor( 255, 45, 20, 200 ) );
   mPicture->setSvgStrokeWidth( 2.2 );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_svg_params" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_svg_params" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
@@ -424,9 +387,7 @@ void TestQgsLayoutPicture::dynamicSvgParameters()
 
   mPicture->setSvgDynamicParameters( parametersProperties );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_svg_dynamic_params" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_svg_dynamic_params" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
@@ -440,9 +401,7 @@ void TestQgsLayoutPicture::issue_14644()
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
   mPicture->setPicturePath( QStringLiteral( TEST_DATA_DIR ) + "/svg/issue_14644.svg" );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_issue_14644" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_issue_14644" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
@@ -459,9 +418,7 @@ void TestQgsLayoutPicture::pictureExpression()
   mPicture->refreshPicture();
   QVERIFY( !mPicture->isMissingImage() );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerpicture_expression" ), mLayout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerpicture_expression" ), mLayout ) );
 
   mLayout->removeItem( mPicture );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty() );

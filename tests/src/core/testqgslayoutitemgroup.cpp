@@ -18,23 +18,21 @@
 #include "qgslayoutitemgroup.h"
 #include "qgslayout.h"
 #include "qgslayoutitemshape.h"
-#include "qgsmultirenderchecker.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
-#include "qgsfillsymbollayer.h"
 #include "qgslayoutundostack.h"
 
 #include <QObject>
 #include <QtTest/QSignalSpy>
 #include "qgstest.h"
 
-class TestQgsLayoutItemGroup : public QObject
+class TestQgsLayoutItemGroup : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutItemGroup() = default;
+    TestQgsLayoutItemGroup() : QgsTest( QStringLiteral( "Layout Group Item" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

@@ -17,7 +17,6 @@
 
 #include "qgsapplication.h"
 #include "qgslayout.h"
-#include "qgsmultirenderchecker.h"
 #include "qgslayoutitemmap.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
@@ -48,7 +47,7 @@ class TestQgsLayoutMap : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutMap() : QgsTest( QStringLiteral( "Layout Map Tests" ) ) {}
+    TestQgsLayoutMap() : QgsTest( QStringLiteral( "Layout Map Tests" ), QStringLiteral( "composer_map" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -152,9 +151,7 @@ void TestQgsLayoutMap::id()
   QgsLayoutItemMap *map3 = new QgsLayoutItemMap( &l );
   QCOMPARE( map3->displayName(), QStringLiteral( "Map 1" ) );
   l.addLayoutItem( map3 );
-
 }
-
 
 void TestQgsLayoutMap::render()
 {
@@ -167,10 +164,7 @@ void TestQgsLayoutMap::render()
   l.addLayoutItem( map );
 
   map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  QgsLayoutChecker checker( QStringLiteral( "composermap_render" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
-
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composermap_render" ), &l ) );
 }
 
 void TestQgsLayoutMap::uniqueId()
@@ -384,9 +378,7 @@ void TestQgsLayoutMap::dataDefinedLayers()
         QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mPointsLayer->name() ) ) );
   map->setExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
-  QgsLayoutChecker checker( QStringLiteral( "composermap_ddlayers" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composermap_ddlayers" ), &l ) );
 }
 
 void TestQgsLayoutMap::dataDefinedStyles()
@@ -448,9 +440,7 @@ void TestQgsLayoutMap::dataDefinedStyles()
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );
   map->setExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
-  QgsLayoutChecker checker( QStringLiteral( "composermap_ddstyles" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composermap_ddstyles" ), &l ) );
 }
 
 void TestQgsLayoutMap::dataDefinedCrs()
@@ -554,16 +544,14 @@ void TestQgsLayoutMap::rasterized()
 
   QVERIFY( map->containsAdvancedEffects() );
 
-  QgsLayoutChecker checker( QStringLiteral( "layoutmap_rasterized" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutmap_rasterized" ), &l ) );
 
   // try rendering again, without requiring rasterization, for comparison
   // (we can use the same test image, because CompositionMode_Darken doesn't actually have any noticeable
   // rendering differences for the black grid!)
   grid->setBlendMode( QPainter::CompositionMode_SourceOver );
   QVERIFY( !map->containsAdvancedEffects() );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutmap_rasterized" ), &l ) );
 }
 
 void TestQgsLayoutMap::layersToRender()
@@ -610,9 +598,9 @@ void TestQgsLayoutMap::mapRotation()
   map->setMapRotation( 90 );
   map->setLayers( QList<QgsMapLayer *>() << layer );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerrotation_maprotation" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 200 ) );
+  mControlPathPrefix = QStringLiteral( "composer_items" );
+  QVERIFY( layoutCheck( QStringLiteral( "composerrotation_maprotation" ), &l, 0, 200 ) );
+  mControlPathPrefix = QStringLiteral( "composer_map" );
 
   // test that rotation correctly applies to restored items
   QDomDocument doc;
@@ -646,9 +634,9 @@ void TestQgsLayoutMap::mapItemRotation()
   map->setItemRotation( 90 );
   map->setLayers( QList<QgsMapLayer *>() << layer );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerrotation_mapitemrotation" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 200 ) );
+  mControlPathPrefix = QStringLiteral( "composer_items" );
+  QVERIFY( layoutCheck( QStringLiteral( "composerrotation_mapitemrotation" ), &l, 0, 200 ) );
+  mControlPathPrefix = QStringLiteral( "composer_map" );
 }
 
 void TestQgsLayoutMap::expressionContext()
@@ -1911,7 +1899,7 @@ void TestQgsLayoutMap::testLayeredExportLabelsByLayer()
 void TestQgsLayoutMap::testTemporal()
 {
   QgsLayout l( QgsProject::instance( ) );
-  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  std::unique_ptr< QgsLayoutItemMap > map = std::make_unique< QgsLayoutItemMap >( &l );
   const QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ), Qt::UTC );
   const QDateTime end = begin.addSecs( 3600 );
 
