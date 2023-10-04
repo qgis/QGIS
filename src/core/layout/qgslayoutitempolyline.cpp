@@ -467,10 +467,10 @@ void QgsLayoutItemPolyline::updateBoundingRect()
     margin += 0.5 * mArrowHeadWidth;
   }
   br.adjust( -margin, -margin, margin, margin );
+  prepareGeometryChange();
   mCurrentRectangle = br;
 
   // update
-  prepareGeometryChange();
   update();
 }
 

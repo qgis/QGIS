@@ -344,10 +344,10 @@ void QgsLayoutNodesItem::updateBoundingRect()
 {
   QRectF br = rect();
   br.adjust( -mMaxSymbolBleed, -mMaxSymbolBleed, mMaxSymbolBleed, mMaxSymbolBleed );
+  prepareGeometryChange();
   mCurrentRectangle = br;
 
   // update
-  prepareGeometryChange();
   update();
 }
 
