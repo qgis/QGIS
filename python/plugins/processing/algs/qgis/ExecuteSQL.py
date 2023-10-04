@@ -83,7 +83,7 @@ class ExecuteSQL(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMultipleLayers(name=self.INPUT_DATASOURCES,
-                                                               description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
+                                                               description=self.tr('Input data sources (called input1, .., inputN in the query)'),
                                                                optional=True))
 
         self.addParameter(ParameterExecuteSql(name=self.INPUT_QUERY, description=self.tr('SQL query')))
