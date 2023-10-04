@@ -208,7 +208,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << false // estimatedmetadata
       << "" // srid
-      << Qgis::WkbType::Unknown // type
+      << QgsWkbTypes::Unknown // type
       << false // selectatid
       << "" // service
       << "" // user
@@ -231,7 +231,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << false // estimatedmetadata
       << "" // srid
-      << Qgis::WkbType::Unknown // type
+      << QgsWkbTypes::Unknown // type
       << false // selectatid
       << "" // service
       << "" // user
@@ -254,7 +254,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // key
       << false // estimatedmetadata
       << "" // srid
-      << Qgis::WkbType::Unknown // type
+      << QgsWkbTypes::Unknown // type
       << false // selectatid
       << "" // service
       << "" // user
