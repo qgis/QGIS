@@ -629,6 +629,22 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
             self.assertEqual(layer.fields()[i].length(), fields[i].length())
             self.assertEqual(layer.fields()[i].precision(), fields[i].precision())
 
+    def testChangeAttributeValuesInvalidFieldIndex(self):
+        """
+        Test there's no crash when changeAttributeValues is called with a non existing field index  (https://github.com/qgis/QGIS/issues/54817)
+        """
+        layer = QgsVectorLayer(
+            'Point?crs=epsg:4326&index=yes&field=pk:integer', 'test', 'memory')
+        provider = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes([0])
+        self.assertTrue(provider.addFeatures([f]))
+
+        saved_feature = next(provider.getFeatures())
+        self.assertTrue(provider.changeAttributeValues({saved_feature.id(): {-1: 42}}))
+        self.assertTrue(provider.changeAttributeValues({saved_feature.id(): {42: 42}}))
+        self.assertTrue(provider.changeAttributeValues({saved_feature.id(): {'fortytwo': 42}}))
+
     def testAddChangeFeatureConvertAttribute(self):
         """
         Test add features with attribute values which require conversion
