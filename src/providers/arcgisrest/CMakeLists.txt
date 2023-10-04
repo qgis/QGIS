@@ -118,12 +118,11 @@ if (FORCE_STATIC_LIBS)
     ${QCA_LIBRARY}
   )
 
-target_link_libraries (provider_arcgismapserver_a
-  qgis_core
-  ${QCA_LIBRARY}
-)
+  target_link_libraries (provider_arcgismapserver_a
+    qgis_core
+    ${QCA_LIBRARY}
+  )
 
-if (FORCE_STATIC_LIBS)
   # for (external) mobile apps to be able to pick up provider for linking
   install (TARGETS provider_arcgismapserver_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
 else()
