@@ -201,6 +201,75 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // myparam
       << "public" // schema
       ;
+
+  QTest::newRow( "arcgis rest sql" )
+      << "crs='EPSG:2154' filter='' url='https://carto.isogeo.net/server/rest/services/scan_services_1/EMS_EFS_WMS_WFS/FeatureServer/2' table='' sql=abc='def'"
+      << "" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << Qgis::WkbType::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "" // user
+      << "" // password
+      << "" // authcfg
+      << "" // dbname
+      << "" // host
+      << "" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "abc='def'" // sql
+      << "" // myparam
+      << "public" // schema
+      ;
+
+  QTest::newRow( "arcgis rest empty sql" )
+      << "crs='EPSG:2154' filter='' url='https://carto.isogeo.net/server/rest/services/scan_services_1/EMS_EFS_WMS_WFS/FeatureServer/2' table='' sql=''"
+      << "" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << Qgis::WkbType::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "" // user
+      << "" // password
+      << "" // authcfg
+      << "" // dbname
+      << "" // host
+      << "" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "" // myparam
+      << "public" // schema
+      ;
+
+  QTest::newRow( "arcgis rest empty sql 2" )
+      << "crs='EPSG:2154' filter='' url='https://carto.isogeo.net/server/rest/services/scan_services_1/EMS_EFS_WMS_WFS/FeatureServer/2' table='' sql=\"\""
+      << "" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << Qgis::WkbType::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "" // user
+      << "" // password
+      << "" // authcfg
+      << "" // dbname
+      << "" // host
+      << "" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "" // myparam
+      << "public" // schema
+      ;
 }
 
 void TestQgsDataSourceUri::checkparser()
