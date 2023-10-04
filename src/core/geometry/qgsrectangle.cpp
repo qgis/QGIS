@@ -112,6 +112,11 @@ QString QgsRectangle::asWktCoordinates() const
 
 QString QgsRectangle::asWktPolygon() const
 {
+  if ( isNull() )
+  {
+    return "POLYGON EMPTY";
+  }
+
   QString rep =
     QLatin1String( "POLYGON((" ) +
     qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + QLatin1String( ", " ) +
