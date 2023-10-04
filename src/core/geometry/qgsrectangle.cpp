@@ -114,7 +114,7 @@ QString QgsRectangle::asWktPolygon() const
 {
   if ( isNull() )
   {
-    return "POLYGON EMPTY";
+    return QStringLiteral( "POLYGON EMPTY" );
   }
 
   QString rep =
@@ -163,7 +163,7 @@ QString QgsRectangle::asPolygon() const
 {
   if ( isNull() )
   {
-    return "EMPTY";
+    return QStringLiteral( "EMPTY" );
   }
 
   QString rep;
