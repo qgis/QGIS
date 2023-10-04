@@ -102,7 +102,7 @@ class ExecuteSQL(QgisAlgorithm):
             'MultiLineString',
             'MultiPolygon']
         self.addParameter(QgsProcessingParameterEnum(self.INPUT_GEOMETRY_TYPE,
-                                                     self.tr('Geometry type'), options=self.geometryTypes, optional=True))
+                                                     self.tr('Geometry type'), options=self.geometryTypes, defaultValue=0))
 
         self.addParameter(QgsProcessingParameterCrs(self.INPUT_GEOMETRY_CRS,
                                                     self.tr('CRS'), optional=True))
