@@ -122,16 +122,12 @@ QString QgsRectangle::asWktPolygon() const
     return QStringLiteral( "POLYGON EMPTY" );
   }
 
-  QString rep =
-    QLatin1String( "POLYGON((" ) +
-    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + QLatin1String( ", " ) +
-    qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmin ) + QLatin1String( ", " ) +
-    qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmax ) + QLatin1String( ", " ) +
-    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmax ) + QLatin1String( ", " ) +
-    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) +
-    QStringLiteral( "))" );
-
-  return rep;
+  return QStringLiteral( "POLYGON((%1 %2, %3 %2, %3 %4, %1 %4, %1 %2))" ).arg(
+           qgsDoubleToString( mXmin ),
+           qgsDoubleToString( mYmin ),
+           qgsDoubleToString( mXmax ),
+           qgsDoubleToString( mYmax )
+         );
 }
 
 QString QgsRectangle::toString( int precision ) const
