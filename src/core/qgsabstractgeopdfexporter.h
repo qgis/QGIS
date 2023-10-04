@@ -231,7 +231,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
        * TRUE if ISO32000 extension format georeferencing should be used.
        *
        * This is a recommended setting which results in Geospatial PDF files
-       * that uses PDF 2.0 Geospatial Features (ISO 32000-2:2017).
+       * that use PDF 2.0 Geospatial Features (ISO 32000-2:2017).
        * Compatible with the built-in Acrobat geospatial tools
        */
       bool useIso32000ExtensionFormatGeoreferencing = true;
