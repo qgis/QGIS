@@ -35,6 +35,8 @@ from qgis.core import (Qgis,
                        QgsFeatureRequest,
                        QgsRectangle,
                        QgsVectorLayerExporter,
+                       QgsReadWriteContext,
+                       QgsPathResolver,
                        QgsWkbTypes)
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
