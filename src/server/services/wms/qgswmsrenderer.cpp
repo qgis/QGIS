@@ -1655,7 +1655,7 @@ namespace QgsWms
       }
     }
 
-    if ( featuresRect )
+    if ( featuresRect && ! featuresRect->isNull() )
     {
       if ( infoFormat == QgsWmsParameters::Format::GML )
       {
