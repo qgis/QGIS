@@ -17,6 +17,7 @@
 
 #include "qgsproxyprogresstask.h"
 #include "qgsapplication.h"
+#include <QThreadPool>
 
 QgsProxyProgressTask::QgsProxyProgressTask( const QString &description, bool canCancel )
   : QgsTask( description, canCancel ? QgsTask::CanCancel : QgsTask::Flags() )
@@ -34,6 +35,10 @@ void QgsProxyProgressTask::finalize( bool result )
 
 bool QgsProxyProgressTask::run()
 {
+  // don't reserve this stalled thread while waiting for task to finish
+  // instead release it so that it can be used by other operations from the thread pool in the meantime
+  QThreadPool::globalInstance()->releaseThread();
+
   mNotFinishedMutex.lock();
   if ( !mAlreadyFinished )
   {
@@ -41,6 +46,7 @@ bool QgsProxyProgressTask::run()
   }
   mNotFinishedMutex.unlock();
 
+  QThreadPool::globalInstance()->reserveThread();
   return mResult;
 }
 
