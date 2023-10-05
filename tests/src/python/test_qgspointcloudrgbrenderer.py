@@ -44,16 +44,8 @@ start_app()
 class TestQgsPointCloudRgbRenderer(QgisTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = "<h1>Python QgsPointCloudRgbRenderer Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return 'pointcloudrenderer'
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testSetLayer(self):
@@ -200,13 +192,9 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_rgb_render')
-        result = renderchecker.runTest('expected_rgb_render')
-        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('rgb_render', 'rgb_render', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderCircles(self):
@@ -224,13 +212,9 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_rgb_circle_render')
-        result = renderchecker.runTest('expected_rgb_circle_render')
-        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('rgb_circle_render', 'rgb_circle_render', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderCrsTransform(self):
@@ -246,13 +230,10 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         mapsettings.setExtent(QgsRectangle(152.977434544, -26.663017454, 152.977424882, -26.663009624))
         mapsettings.setLayers([layer])
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_rgb_render_crs_transform')
-        result = renderchecker.runTest('expected_rgb_render_crs_transform')
-        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+
+        self.assertTrue(
+            self.render_map_settings_check('rgb_render_crs_transform', 'rgb_render_crs_transform', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderWithContrast(self):
@@ -287,13 +268,9 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_rgb_contrast')
-        result = renderchecker.runTest('expected_rgb_contrast')
-        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('rgb_contrast', 'rgb_contrast', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderOpacity(self):
@@ -312,13 +289,9 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_opacity')
-        result = renderchecker.runTest('expected_opacity')
-        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('opacity', 'opacity', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderBlendMode(self):
@@ -337,13 +310,9 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_blendmode')
-        result = renderchecker.runTest('expected_blendmode')
-        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('blendmode', 'blendmode', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderPointSize(self):
@@ -360,13 +329,9 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_pointsize')
-        result = renderchecker.runTest('expected_pointsize')
-        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('pointsize', 'pointsize', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderZRange(self):
@@ -384,13 +349,9 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         mapsettings.setLayers([layer])
         mapsettings.setZRange(QgsDoubleRange(1.1, 1.2))
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_zfilter')
-        result = renderchecker.runTest('expected_zfilter')
-        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('zfilter', 'zfilter', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderClipRegion(self):
@@ -416,13 +377,9 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         mapsettings.addClippingRegion(region)
         mapsettings.addClippingRegion(region2)
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_clip_region')
-        result = renderchecker.runTest('expected_clip_region')
-        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('clip_region', 'clip_region', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderOrderedTopToBottom(self):
@@ -440,13 +397,9 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_rgb_top_to_bottom')
-        result = renderchecker.runTest('expected_rgb_top_to_bottom')
-        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('rgb_top_to_bottom', 'rgb_top_to_bottom', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderOrderedBottomToTop(self):
@@ -464,13 +417,9 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_rgb_bottom_to_top')
-        result = renderchecker.runTest('expected_rgb_bottom_to_top')
-        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('rgb_bottom_to_top', 'rgb_bottom_to_top', mapsettings)
+        )
 
 
 if __name__ == '__main__':

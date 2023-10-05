@@ -16,8 +16,8 @@ import os
 import subprocess
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QDir, QRectF, QSize, Qt, QUrl, QUuid
-from qgis.PyQt.QtGui import QColor, QImage, QPainter, QDesktopServices
+from qgis.PyQt.QtCore import QRectF, QSize, Qt, QUuid
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -39,7 +39,6 @@ from qgis.core import (
     QgsProjectFileTransform,
     QgsProperty,
     QgsRectangle,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsSingleSymbolRenderer,
     QgsSymbolLayerId,
@@ -55,8 +54,6 @@ from qgis.testing import start_app, QgisTestCase
 from utilities import getTempfilePath, getTestFont, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
-
-REPORT_TITLE = "<h1>Python Selective Masking Tests</h1>\n"
 
 
 def renderMapToImageWithTime(mapsettings, parallel=False, cache=None):
@@ -80,17 +77,11 @@ def renderMapToImageWithTime(mapsettings, parallel=False, cache=None):
 
 class TestSelectiveMasking(QgisTestCase):
 
-    report = None
-
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = REPORT_TITLE
+    def control_path_prefix(cls):
+        return "selective_masking"
 
     def setUp(self):
-
-        self.checker = QgsRenderChecker()
-        self.checker.setControlPathPrefix("selective_masking")
 
         self.map_settings = QgsMapSettings()
         crs = QgsCoordinateReferenceSystem('epsg:4326')
@@ -139,17 +130,6 @@ class TestSelectiveMasking(QgisTestCase):
         # order layers for rendering
         self.map_settings.setLayers([self.points_layer, self.lines_layer, self.polys_layer])
 
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'w') as report_file:
-            report_file.write(cls.report)
-
-        if (os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', None) != "true" and
-                cls.report != REPORT_TITLE):
-            QDesktopServices.openUrl(QUrl(f"file:///{report_file_path}"))
-        super().tearDownClass()
-
     def get_symbollayer(self, layer, ruleId, symbollayer_ids):
         """
         Returns the symbol layer according to given layer, ruleId (None if no rule) and the path
@@ -189,23 +169,22 @@ class TestSelectiveMasking(QgisTestCase):
         for do_parallel in [False, True]:
             for use_cache in [False, True]:
                 print("=== parallel", do_parallel, "cache", use_cache)
-                tmp = getTempfilePath('png')
                 cache = None
                 if use_cache:
                     cache = QgsMapRendererCache()
                     # render a first time to fill the cache
                     renderMapToImageWithTime(map_settings, parallel=do_parallel, cache=cache)
                 img, t = renderMapToImageWithTime(map_settings, parallel=do_parallel, cache=cache)
-                img.save(tmp)
-                print(f"Image rendered in {tmp}")
 
-                self.checker.setControlName(control_name)
-                self.checker.setRenderedImage(tmp)
                 suffix = ("_parallel" if do_parallel else "_sequential") + ("_cache" if use_cache else "_nocache")
-                res = self.checker.compareImages(control_name + suffix)
-
-                if not res:
-                    TestSelectiveMasking.report += f"<h2>{control_name}</h2>\n" + self.checker.report()
+                res = self.image_check(
+                    control_name + suffix,
+                    control_name,
+                    img,
+                    control_name,
+                    allowed_mismatch=0,
+                    color_tolerance=0
+                )
 
                 self.assertTrue(res)
 
@@ -258,12 +237,13 @@ class TestSelectiveMasking(QgisTestCase):
                         os.path.splitext(image_result_filename)[0],
                         "-png", "-r", "300", "-singlefile"])
 
-        self.checker.setControlName(control_name)
-        self.checker.setRenderedImage(image_result_filename)
-        res = self.checker.compareImages(control_name)
-
-        if not res:
-            TestSelectiveMasking.report += f"<h2>{control_name}</h2>\n" + self.checker.report()
+        rendered_image = QImage(image_result_filename)
+        res = self.image_check(control_name,
+                               control_name,
+                               rendered_image,
+                               control_name,
+                               allowed_mismatch=0,
+                               color_tolerance=0)
 
         self.assertTrue(res)
 
@@ -748,12 +728,17 @@ class TestSelectiveMasking(QgisTestCase):
         ]:
             tmp = getTempfilePath('png')
             render_function()
-            self.checker.setControlName(control_name)
-            self.checker.setRenderedImage(tmp)
-            res = self.checker.compareImages(control_name, 90)
 
-            if not res:
-                TestSelectiveMasking.report += self.checker.report()
+            rendered_image = QImage(tmp)
+
+            res = self.image_check(
+                control_name,
+                control_name,
+                rendered_image,
+                control_name,
+                allowed_mismatch=90,
+                color_tolerance=0
+            )
 
             self.assertTrue(res)
 
@@ -1098,17 +1083,16 @@ class TestSelectiveMasking(QgisTestCase):
         job.start()
         job.waitForFinished()
         pImg.end()
-        tmp = getTempfilePath('png')
-        image.save(tmp)
 
         control_name = "different_dpi_target_vector"
-        self.checker.setControlName(control_name)
-        self.checker.setRenderedImage(tmp)
-        res = self.checker.compareImages(control_name)
-
-        if not res:
-            TestSelectiveMasking.report += self.checker.report()
-
+        res = self.image_check(
+            control_name,
+            control_name,
+            image,
+            control_name,
+            allowed_mismatch=0,
+            color_tolerance=0
+        )
         self.assertTrue(res)
 
         # Same test with high dpi
@@ -1124,17 +1108,16 @@ class TestSelectiveMasking(QgisTestCase):
         job.start()
         job.waitForFinished()
         pImg.end()
-        tmp = getTempfilePath('png')
-        image.save(tmp)
 
         control_name = "different_dpi_target_vector_hdpi"
-        self.checker.setControlName(control_name)
-        self.checker.setRenderedImage(tmp)
-        res = self.checker.compareImages(control_name)
-
-        if not res:
-            TestSelectiveMasking.report += self.checker.report()
-
+        res = self.image_check(
+            control_name,
+            control_name,
+            image,
+            control_name,
+            allowed_mismatch=0,
+            color_tolerance=0
+        )
         self.assertTrue(res)
 
     def test_layout_export_2_sources_masking(self):

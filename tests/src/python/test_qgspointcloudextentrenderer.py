@@ -36,16 +36,8 @@ start_app()
 class TestQgsPointCloudExtentRenderer(QgisTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = "<h1>Python QgsPointCloudExtentRenderer Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return "pointcloudrenderer"
 
     def testBasic(self):
         renderer = QgsPointCloudExtentRenderer(QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': 'black'}))
@@ -89,13 +81,9 @@ class TestQgsPointCloudExtentRenderer(QgisTestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_extent_render')
-        result = renderchecker.runTest('expected_extent_render')
-        TestQgsPointCloudExtentRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('extent_render', 'extent_render', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderCrsTransform(self):
@@ -112,13 +100,10 @@ class TestQgsPointCloudExtentRenderer(QgisTestCase):
         mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         mapsettings.setExtent(QgsRectangle(152.980508492, -26.662023491, 152.980586020, -26.662071137).buffered(0.00001))
         mapsettings.setLayers([layer])
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_extent_render_crs_transform')
-        result = renderchecker.runTest('expected_extent_render_crs_transform')
-        TestQgsPointCloudExtentRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+
+        self.assertTrue(
+            self.render_map_settings_check('extent_render_crs_transform', 'extent_render_crs_transform', mapsettings)
+        )
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ __date__ = '2015-08'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QDir, QSize, QSizeF, Qt
+from qgis.PyQt.QtCore import QSize, QSizeF, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -25,7 +25,6 @@ from qgis.core import (
     QgsLegendSettings,
     QgsLegendStyle,
     QgsMapSettings,
-    QgsMultiRenderChecker,
     QgsReadWriteContext,
     QgsRectangle,
     QgsRenderContext,
@@ -54,16 +53,8 @@ class TestColorRampLegend(QgsColorRampLegendNode):
 class TestQgsColorRampLegendNode(QgisTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = "<h1>Python QgsColorRampLegendNode Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return "color_ramp_legend_node"
 
     def test_settings(self):
         settings = QgsColorRampLegendNodeSettings()
@@ -167,7 +158,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         p.drawPixmap(0, 0, pixmap)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_icon', 'color_ramp_legend_node_icon', im, 10))
+        self.assertTrue(self.image_check('color_ramp_legend_node_icon', 'color_ramp_legend_node_icon', im, size_tolerance=10))
 
     def test_icon_with_settings(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -193,7 +184,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         p.drawPixmap(0, 0, pixmap)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_settings_icon', 'color_ramp_legend_node_settings_icon', im, 10))
+        self.assertTrue(self.image_check('color_ramp_legend_node_settings_icon', 'color_ramp_legend_node_settings_icon', im, size_tolerance=10))
 
     def test_icon_prefix_suffix(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -216,7 +207,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         p.drawPixmap(0, 0, pixmap)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_prefix_suffix_icon', 'color_ramp_legend_node_prefix_suffix_icon', im, 10))
+        self.assertTrue(self.image_check('color_ramp_legend_node_prefix_suffix_icon', 'color_ramp_legend_node_prefix_suffix_icon', im, size_tolerance=10))
 
     def test_icon_horizontal(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -238,7 +229,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         p.drawPixmap(0, 0, pixmap)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_horizontal_icon', 'color_ramp_legend_node_horizontal_icon', im, 10))
+        self.assertTrue(self.image_check('color_ramp_legend_node_horizontal_icon', 'color_ramp_legend_node_horizontal_icon', im, size_tolerance=10))
 
     def test_icon_horizontal_flipped(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -261,7 +252,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         p.drawPixmap(0, 0, pixmap)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_flipped_horizontal_icon', 'color_ramp_legend_node_flipped_horizontal_icon', im, 10))
+        self.assertTrue(self.image_check('color_ramp_legend_node_flipped_horizontal_icon', 'color_ramp_legend_node_flipped_horizontal_icon', im, size_tolerance=10))
 
     def test_draw(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -304,7 +295,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         node.drawSymbolText(ls, item_context, symbol_size)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_draw', 'color_ramp_legend_node_draw', image))
+        self.assertTrue(self.image_check('color_ramp_legend_node_draw', 'color_ramp_legend_node_draw', image))
 
     def test_draw_settings(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -354,7 +345,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         node.drawSymbolText(ls, item_context, symbol_size)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_settings_draw', 'color_ramp_legend_node_settings_draw', image))
+        self.assertTrue(self.image_check('color_ramp_legend_node_settings_draw', 'color_ramp_legend_node_settings_draw', image))
 
     def test_draw_prefix_suffix(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -400,7 +391,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         node.drawSymbolText(ls, item_context, symbol_size)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_prefix_suffix_draw', 'color_ramp_legend_node_prefix_suffix_draw', image))
+        self.assertTrue(self.image_check('color_ramp_legend_node_prefix_suffix_draw', 'color_ramp_legend_node_prefix_suffix_draw', image))
 
     def test_draw_text_format(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -449,7 +440,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         node.drawSymbolText(ls, item_context, symbol_size)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_text_format_draw', 'color_ramp_legend_node_text_format_draw', image))
+        self.assertTrue(self.image_check('color_ramp_legend_node_text_format_draw', 'color_ramp_legend_node_text_format_draw', image))
 
     def test_draw_horizontal(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -494,7 +485,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         node.drawSymbolText(ls, item_context, symbol_size)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_horizontal_draw', 'color_ramp_legend_node_horizontal_draw', image))
+        self.assertTrue(self.image_check('color_ramp_legend_node_horizontal_draw', 'color_ramp_legend_node_horizontal_draw', image))
 
     def test_draw_horizontal_reversed(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -540,22 +531,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         node.drawSymbolText(ls, item_context, symbol_size)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_flipped_horizontal_draw', 'color_ramp_legend_node_flipped_horizontal_draw', image))
-
-    def imageCheck(self, name, reference_image, image, size_tolerance=0):
-        TestQgsColorRampLegendNode.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsMultiRenderChecker()
-        checker.setControlPathPrefix("color_ramp_legend_node")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        checker.setSizeTolerance(size_tolerance, size_tolerance)
-        result = checker.runTest(name, 20)
-        TestQgsColorRampLegendNode.report += checker.report()
-        return result
+        self.assertTrue(self.image_check('color_ramp_legend_node_flipped_horizontal_draw', 'color_ramp_legend_node_flipped_horizontal_draw', image))
 
 
 if __name__ == '__main__':

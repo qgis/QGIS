@@ -25,7 +25,6 @@ from qgis.core import (
     QgsMarkerLineSymbolLayer,
     QgsMarkerSymbol,
     QgsProperty,
-    QgsRenderChecker,
     QgsShapeburstFillSymbolLayer,
     QgsSimpleFillSymbolLayer,
     QgsSimpleLineSymbolLayer,
@@ -44,16 +43,8 @@ start_app()
 class PyQgsSymbolLayerUtils(QgisTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = "<h1>Python QgsPointCloudRgbRenderer Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return "symbol_layer_utils"
 
     def testEncodeDecodeSize(self):
         s = QSizeF()
@@ -508,35 +499,35 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
 
         pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(200, 100))
         img = QImage(pix)
-        self.assertTrue(self.imageCheck('color_ramp_horizontal', 'color_ramp_horizontal', img))
+        self.assertTrue(self.image_check('color_ramp_horizontal', 'color_ramp_horizontal', img))
 
     def testPreviewColorRampHorizontalNoCheckboard(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
         pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(200, 100), drawTransparentBackground=False)
         img = QImage(pix)
-        self.assertTrue(self.imageCheck('color_ramp_no_check', 'color_ramp_no_check', img))
+        self.assertTrue(self.image_check('color_ramp_no_check', 'color_ramp_no_check', img))
 
     def testPreviewColorRampHorizontalFlipped(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
         pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(200, 100), flipDirection=True)
         img = QImage(pix)
-        self.assertTrue(self.imageCheck('color_ramp_horizontal_flipped', 'color_ramp_horizontal_flipped', img))
+        self.assertTrue(self.image_check('color_ramp_horizontal_flipped', 'color_ramp_horizontal_flipped', img))
 
     def testPreviewColorRampVertical(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
         pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Vertical)
         img = QImage(pix)
-        self.assertTrue(self.imageCheck('color_ramp_vertical', 'color_ramp_vertical', img))
+        self.assertTrue(self.image_check('color_ramp_vertical', 'color_ramp_vertical', img))
 
     def testPreviewColorRampVerticalFlipped(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
         pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Vertical, flipDirection=True)
         img = QImage(pix)
-        self.assertTrue(self.imageCheck('color_ramp_vertical_flipped', 'color_ramp_vertical_flipped', img))
+        self.assertTrue(self.image_check('color_ramp_vertical_flipped', 'color_ramp_vertical_flipped', img))
 
     def testCondenseFillAndOutline(self):
         """
@@ -641,20 +632,6 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         s.animationSettings().setFrameRate(30)
         renderer = QgsSingleSymbolRenderer(s.clone())
         self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 30)
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol_layer_utils")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        PyQgsSymbolLayerUtils.report += checker.report()
-        return result
 
     def testTileSize(self):
 
