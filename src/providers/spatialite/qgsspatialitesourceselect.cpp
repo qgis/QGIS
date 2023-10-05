@@ -557,14 +557,11 @@ bool QgsSpatiaLiteSourceSelect::configureFromUri( const QString &uri )
       btnConnect_clicked();
       // Find table/layer
       QModelIndex index;
-      if ( !layerName.isEmpty() )
+      const QModelIndex parentIndex { mTableModel->index( 0, 0, mTableModel->invisibleRootItem()->index() )};
+      const QModelIndexList indexList { mTableModel->match( mTableModel->index( 0, 0, parentIndex ), Qt::DisplayRole, layerName, 1, Qt::MatchFlag::MatchExactly ) };
+      if ( ! indexList.isEmpty() )
       {
-        const QModelIndex parentIndex { mTableModel->index( 0, 0, mTableModel->invisibleRootItem()->index() )};
-        const QModelIndexList indexList { mTableModel->match( mTableModel->index( 0, 0, parentIndex ), Qt::DisplayRole, layerName, 1, Qt::MatchFlag::MatchExactly ) };
-        if ( ! indexList.isEmpty() )
-        {
-          index = indexList.first();
-        }
+        index = indexList.first();
       }
 
       if ( index.isValid() )

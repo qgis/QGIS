@@ -407,7 +407,7 @@ bool QgsOgrDbSourceSelect::configureFromUri( const QString &uri )
   if ( idx >= 0 )
   {
     cmbConnections->setCurrentIndex( idx );
-    if ( ! layerName.isEmpty() )
+    if ( ! layerName.isEmpty() || layerIndex >= 0 )
     {
       btnConnect_clicked();
       // Find table/layer
