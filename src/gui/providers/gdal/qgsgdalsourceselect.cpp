@@ -459,18 +459,13 @@ void QgsGdalSourceSelect::fillOpenOptions()
       int idx = cb->findData( QVariant( QVariant::String ) );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,8,0)
-      bool isVrBag { false };
-      if ( QString( GDALGetDriverShortName( hDriver ) ).compare( QLatin1String( "BAG" ) ) == 0 )
+      if ( QString( GDALGetDriverShortName( hDriver ) ).compare( QLatin1String( "BAG" ) ) == 0 && label->text() == QLatin1String( "MODE" ) && options.contains( QLatin1String( "INTERPOLATED" ) ))
       {
         gdal::dataset_unique_ptr hSrcDS( GDALOpen( firstDataSource.toUtf8().constData(), GA_ReadOnly ) );
-        if ( hSrcDS )
+        if ( hSrcDS && QString{ GDALGetMetadataItem( hSrcDS.get(), "HAS_SUPERGRIDS", nullptr ) } == QLatin1String( "TRUE" ) )
         {
-          isVrBag = QString{ GDALGetMetadataItem( hSrcDS.get(), "HAS_SUPERGRIDS", nullptr ) } == QLatin1String( "TRUE" ) ;
+          idx = cb->findText( QLatin1String( "INTERPOLATED" ) );          
         }
-      }
-      if ( isVrBag && label->text() == QLatin1String( "MODE" ) && options.contains( QLatin1String( "INTERPOLATED" ) ) )
-      {
-        idx = cb->findText( QLatin1String( "INTERPOLATED" ) );
       }
 #endif
 
