@@ -86,11 +86,11 @@ Configure the widget from a layer ``uri`` by selecting the layer path or connect
 The base implementation does nothing and returns ``False``: providers with ConfigureSourceSelectFromUri capability
 must override to implement this functionality.
 
+:return: ``True`` on success.
+
 .. note::
 
    Not all data providers may be able to configure the widget from the provided uri, in that case this method returns ``False``.
-
-:return: ``True`` on success.
 
 .. versionadded:: 3.38
 %End
