@@ -103,7 +103,7 @@ class GUI_EXPORT QgsSourceSelectProvider
 
     /**
      * Returns the source select provider capabilities.
-     * The default implementation returns no capabilites.
+     * The default implementation returns no capabilities.
      * \since QGIS 3.38
      */
     virtual Capabilities capabilities()

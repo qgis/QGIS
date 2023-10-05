@@ -90,7 +90,7 @@ Caller takes responsibility of deleting created.
     virtual Capabilities capabilities();
 %Docstring
 Returns the source select provider capabilities.
-The default implementation returns no capabilites.
+The default implementation returns no capabilities.
 
 .. versionadded:: 3.38
 %End
