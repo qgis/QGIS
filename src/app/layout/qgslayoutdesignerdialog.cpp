@@ -1372,7 +1372,15 @@ void QgsLayoutDesignerDialog::open()
   activate();
   if ( mView )
   {
-    mView->zoomFull(); // zoomFull() does not work properly until we have called show()
+    mView->setPaintingEnabled( false );
+    // zoomFull() does not work properly until window has fully shown.
+    // It's not enough to just call show on it, because the view widget won't be fully
+    // resized to its final size until a little later...!
+    QTimer::singleShot( 100, this, [ = ]
+    {
+      mView->zoomFull();
+      mView->setPaintingEnabled( true );
+    } );
   }
 
   if ( mMasterLayout && mMasterLayout->layoutType() == QgsMasterLayoutInterface::Report )
