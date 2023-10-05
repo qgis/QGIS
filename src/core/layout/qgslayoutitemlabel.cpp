@@ -337,6 +337,7 @@ void QgsLayoutItemLabel::setFont( const QFont &f )
   mFormat.setFont( f );
   if ( f.pointSizeF() > 0 )
     mFormat.setSize( f.pointSizeF() );
+  invalidateCache();
 }
 
 QgsTextFormat QgsLayoutItemLabel::textFormat() const
@@ -347,6 +348,7 @@ QgsTextFormat QgsLayoutItemLabel::textFormat() const
 void QgsLayoutItemLabel::setTextFormat( const QgsTextFormat &format )
 {
   mFormat = format;
+  invalidateCache();
 }
 
 void QgsLayoutItemLabel::setMargin( const double m )
