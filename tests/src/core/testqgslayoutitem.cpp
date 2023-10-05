@@ -1935,17 +1935,17 @@ void TestQgsLayoutItem::blendMode()
 
   item->setBlendMode( QPainter::CompositionMode_Darken );
   QCOMPARE( item->blendMode(), QPainter::CompositionMode_Darken );
-  QVERIFY( item->mEffect->isEnabled() );
+  QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Darken );
 
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, false );
-  QVERIFY( !item->mEffect->isEnabled() );
+  QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_SourceOver );
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
-  QVERIFY( item->mEffect->isEnabled() );
+  QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Darken );
 
   item->dataDefinedProperties().setProperty( QgsLayoutObject::BlendMode, QgsProperty::fromExpression( "'lighten'" ) );
   item->refreshDataDefinedProperty();
   QCOMPARE( item->blendMode(), QPainter::CompositionMode_Darken ); // should not change
-  QCOMPARE( item->mEffect->compositionMode(), QPainter::CompositionMode_Lighten );
+  QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Lighten );
 
   QgsLayout l2( QgsProject::instance() );
   l2.initializeDefaults();

@@ -244,6 +244,7 @@ void QgsLayoutItemLabel::updateBoundingRect()
     prepareGeometryChange();
     mCurrentRectangle = rectangle;
   }
+  invalidateCache();
 }
 
 QString QgsLayoutItemLabel::currentText() const
