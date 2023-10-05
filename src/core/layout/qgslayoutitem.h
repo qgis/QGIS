@@ -1316,7 +1316,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     //! Composition blend mode for item
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
-    QPointer< QgsLayoutEffect > mEffect;
+    //! Evaluated blend mode, including evaluated overrides for data defined blending
+    QPainter::CompositionMode mEvaluatedBlendMode = QPainter::CompositionMode_SourceOver;
+
+    QPainter::CompositionMode blendModeForRender() const;
 
     //! Item opacity, between 0 and 1
     double mOpacity = 1.0;

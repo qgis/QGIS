@@ -23,7 +23,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemgroup.h"
 #include "qgspainting.h"
-#include "qgslayouteffect.h"
 #include "qgslayoutundostack.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutitempage.h"
@@ -79,19 +78,6 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   {
     mLayoutManagesZValue = false;
   }
-
-  // Setup layout effect
-  mEffect = new QgsLayoutEffect();
-  if ( mLayout )
-  {
-    mEffect->setEnabled( ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects )
-                         && !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) );
-    connect( &mLayout->renderContext(), &QgsLayoutRenderContext::flagsChanged, this, [ = ]( QgsLayoutRenderContext::Flags flags )
-    {
-      mEffect->setEnabled( ( flags & QgsLayoutRenderContext::FlagUseAdvancedEffects ) && !( flags & QgsLayoutRenderContext::FlagForceVectorOutput ) );
-    } );
-  }
-  setGraphicsEffect( mEffect.data() );
 }
 
 QgsLayoutItem::~QgsLayoutItem()
@@ -306,7 +292,19 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   const bool previewRender = !mLayout || mLayout->renderContext().isPreviewRender();
   double destinationDpi = previewRender ? QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter ) * 25.4 : mLayout->renderContext().dpi();
   const bool useImageCache = false;
-  const bool forceRasterOutput = containsAdvancedEffects() && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) );
+  bool forceRasterOutput = containsAdvancedEffects();
+  QPainter::CompositionMode blendMode = blendModeForRender();
+  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput )
+  {
+    // the FlagForceVectorOutput flag overrides everything, and absolutely DISABLES rasterisation
+    // even when we need it to get correct rendering of opacity/blend modes/etc
+    forceRasterOutput = false;
+  }
+  else if ( blendMode != QPainter::CompositionMode_SourceOver )
+  {
+    // we have to rasterise content in order to show it with alternative blend modes
+    forceRasterOutput = true;
+  }
 
   if ( useImageCache || forceRasterOutput )
   {
@@ -352,6 +350,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       preparePainter( painter );
       const double cacheScale = destinationDpi / mItemCacheDpi;
       painter->scale( cacheScale / context.scaleFactor(), cacheScale / context.scaleFactor() );
+      painter->setCompositionMode( blendMode );
       painter->drawImage( boundingRect().x() * context.scaleFactor() / cacheScale,
                           boundingRect().y() * context.scaleFactor() / cacheScale, mItemCachedImage );
       return;
@@ -387,6 +386,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       const QgsScopedQPainterState painterState( painter );
       // scale painter from mm to dots
       painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
+      painter->setCompositionMode( blendMode );
       painter->drawImage( boundingRect().x() * context.scaleFactor(),
                           boundingRect().y() * context.scaleFactor(), image );
 
@@ -913,6 +913,7 @@ void QgsLayoutItem::setBlendMode( const QPainter::CompositionMode mode )
   mBlendMode = mode;
   // Update the item effect to use the new blend mode
   refreshBlendMode();
+  update();
 }
 
 void QgsLayoutItem::setItemOpacity( double opacity )
@@ -1076,6 +1077,24 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
   applyDataDefinedOrientation( evaluatedWidth, evaluatedHeight, context );
 
   return QgsLayoutSize( evaluatedWidth, evaluatedHeight, size.units() );
+}
+
+QPainter::CompositionMode QgsLayoutItem::blendModeForRender() const
+{
+  QPainter::CompositionMode mode = mEvaluatedBlendMode;
+  if ( !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects ) )
+  {
+    // advanced effects disabled, reset blend mode
+    mode = QPainter::CompositionMode_SourceOver;
+  }
+
+  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput )
+  {
+    // the FlagForceVectorOutput flag overrides everything, and absolutely DISABLES rasterisation
+    // even when we need it to get correct rendering of opacity/blend modes/etc
+    mode = QPainter::CompositionMode_SourceOver;
+  }
+  return mode;
 }
 
 double QgsLayoutItem::applyDataDefinedRotation( const double rotation )
@@ -1556,8 +1575,15 @@ void QgsLayoutItem::refreshBlendMode()
     blendMode = blendModeD;
   }
 
-  // Update the item effect to use the new blend mode
-  if ( mEffect )
-    mEffect->setCompositionMode( blendMode );
+  mEvaluatedBlendMode = blendMode;
+
+  // we can only enable caching if no blend mode is set -- otherwise
+  // we need to redraw the item every time it is painted
+  if ( mEvaluatedBlendMode == QPainter::CompositionMode_Source )
+    setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+  else
+    setCacheMode( QGraphicsItem::NoCache );
+
+  update();
 }
 
