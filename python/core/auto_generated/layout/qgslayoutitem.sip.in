@@ -280,6 +280,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
     {
       FlagOverridesPaint,
       FlagProvidesClipPath,
+      FlagDisableSceneCaching,
     };
     typedef QFlags<QgsLayoutItem::Flag> Flags;
 

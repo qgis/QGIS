@@ -334,6 +334,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     {
       FlagOverridesPaint = 1 << 1,  //!< Item overrides the default layout item painting method
       FlagProvidesClipPath = 1 << 2, //!< Item can act as a clipping path provider (see clipPath())
+      FlagDisableSceneCaching = 1 << 3, //!< Item should not have QGraphicsItem caching enabled
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

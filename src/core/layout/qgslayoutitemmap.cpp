@@ -113,7 +113,7 @@ QIcon QgsLayoutItemMap::icon() const
 
 QgsLayoutItem::Flags QgsLayoutItemMap::itemFlags() const
 {
-  return QgsLayoutItem::FlagOverridesPaint;
+  return QgsLayoutItem::FlagOverridesPaint | QgsLayoutItem::FlagDisableSceneCaching;
 }
 
 void QgsLayoutItemMap::assignFreeId()

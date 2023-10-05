@@ -1579,7 +1579,7 @@ void QgsLayoutItem::refreshBlendMode()
 
   // we can only enable caching if no blend mode is set -- otherwise
   // we need to redraw the item every time it is painted
-  if ( mEvaluatedBlendMode == QPainter::CompositionMode_Source )
+  if ( mEvaluatedBlendMode == QPainter::CompositionMode_Source && !( itemFlags() & QgsLayoutItem::FlagDisableSceneCaching ) )
     setCacheMode( QGraphicsItem::DeviceCoordinateCache );
   else
     setCacheMode( QGraphicsItem::NoCache );
