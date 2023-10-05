@@ -67,12 +67,6 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgsDataSourceManagerDialog::openFile );
   connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
   connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget->browserWidget(), &QgsBrowserWidget::updateProjectHome );
-  connect( mBrowserWidget, &QgsBrowserDockWidget::helpRequested, this, [ = ]()
-  {
-    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#the-browser-panel" ) );
-  } );
-  connect( mBrowserWidget, &QgsBrowserDockWidget::rejected, this, &QgsDataSourceManagerDialog::reject );
-  mBrowserWidget->setButtonBoxVisibility( true );
 
   // Add registered source select dialogs
   const QList<QgsSourceSelectProvider *> sourceSelectProviders = QgsGui::sourceSelectProviderRegistry()->providers( );
