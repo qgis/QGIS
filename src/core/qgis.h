@@ -3691,6 +3691,21 @@ class CORE_EXPORT Qgis
     Q_FLAG( DatabaseProviderConnectionCapabilities2 )
 
     /**
+     * The StorageCapability enum represents the style storage operations supported by the provider.
+     *
+     * \since QGIS 3.34
+     */
+    enum class ProviderStyleStorageCapability
+    {
+      SaveToDatabase = 1 << 1,
+      LoadFromDatabase = 1 << 2,
+      DeleteFromDatabase = 1 << 3
+    };
+    Q_ENUM( ProviderStyleStorageCapability );
+    Q_DECLARE_FLAGS( ProviderStyleStorageCapabilities, ProviderStyleStorageCapability )
+    Q_FLAG( ProviderStyleStorageCapabilities )
+
+    /**
      * User profile selection policy.
      *
      * \since QGIS 3.32

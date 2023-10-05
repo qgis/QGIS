@@ -15,6 +15,7 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, QVariant
 from qgis.core import (
     NULL,
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsDataSourceUri,
@@ -403,8 +404,8 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
 
         vl = self.getSource()
         self.assertTrue(vl.isValid())
-        self.assertTrue(
-            vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, Qgis.ProviderStyleStorageCapability.LoadFromDatabase)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, Qgis.ProviderStyleStorageCapability.SaveToDatabase)
 
         # table layer_styles does not exist
 
