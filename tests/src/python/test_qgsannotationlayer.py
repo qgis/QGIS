@@ -12,7 +12,7 @@ __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QDir, QSize, QTemporaryDir
+from qgis.PyQt.QtCore import QSize, QTemporaryDir
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -38,7 +38,6 @@ from qgis.core import (
     QgsProject,
     QgsReadWriteContext,
     QgsRectangle,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsVertexId,
 )
@@ -54,16 +53,8 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsAnnotationLayer(QgisTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = "<h1>Python QgsAnnotationLayer Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return 'annotation_layer'
 
     def testItems(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
@@ -357,7 +348,7 @@ class TestQgsAnnotationLayer(QgisTestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.imageCheck('layer_render', 'layer_render', image))
+        self.assertTrue(self.image_check('layer_render', 'layer_render', image))
 
         # also check details of rendered items
         item_details = renderer.takeRenderedItemDetails()
@@ -417,7 +408,7 @@ class TestQgsAnnotationLayer(QgisTestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.imageCheck('layer_render_transform', 'layer_render_transform', image))
+        self.assertTrue(self.image_check('layer_render_transform', 'layer_render_transform', image))
 
         # also check details of rendered items
         item_details = renderer.takeRenderedItemDetails()
@@ -482,7 +473,7 @@ class TestQgsAnnotationLayer(QgisTestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.imageCheck('layer_render_reference_scale', 'layer_render_reference_scale', image))
+        self.assertTrue(self.image_check('layer_render_reference_scale', 'layer_render_reference_scale', image))
 
         # also check details of rendered items
         item_details = renderer.takeRenderedItemDetails()
@@ -606,20 +597,6 @@ class TestQgsAnnotationLayer(QgisTestCase):
         result = [QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i3_id][0]
         self.assertTrue(compareWkt(result, expected, tol=1000), "mismatch Expected:\n{}\nGot:\n{}\n".format(expected,
                                                                                                             result))
-
-    def imageCheck(self, name, reference_image, image):
-        TestQgsAnnotationLayer.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'patch_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("annotation_layer")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        TestQgsAnnotationLayer.report += checker.report()
-        return result
 
 
 if __name__ == '__main__':

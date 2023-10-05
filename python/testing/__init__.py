@@ -115,7 +115,9 @@ class QgisTestCase(unittest.TestCase):
                     image: QImage,
                     control_name=None,
                     color_tolerance: int = 2,
-                    allowed_mismatch: int = 20) -> bool:
+                    allowed_mismatch: int = 20,
+                    size_tolerance: Optional[int] = None,
+                    expect_fail: bool = False) -> bool:
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -125,8 +127,13 @@ class QgisTestCase(unittest.TestCase):
         checker.setControlName(control_name or "expected_" + reference_image)
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(color_tolerance)
+        checker.setExpectFail(expect_fail)
+        if size_tolerance is not None:
+            checker.setSizeTolerance(size_tolerance, size_tolerance)
+
         result = checker.runTest(name, allowed_mismatch)
-        if not result:
+        if (not expect_fail and not result) or \
+                (expect_fail and result):
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
 

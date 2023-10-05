@@ -79,6 +79,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     checker.setControlPathSuffix( suffix );
     checker.setControlName( mControlName );
     checker.setMapSettings( mMapSettings );
+    checker.setExpectFail( mExpectFail );
 
     if ( !mRenderedImage.isNull() )
     {

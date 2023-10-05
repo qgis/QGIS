@@ -59,7 +59,7 @@ void QgsRenderChecker::setControlImagePath( const QString &path )
 
 QString QgsRenderChecker::report( bool ignoreSuccess ) const
 {
-  return ( ignoreSuccess && mResult ) ? QString() : mReport;
+  return ( ( ignoreSuccess && mResult ) || ( mExpectFail && !mResult ) ) ? QString() : mReport;
 }
 
 void QgsRenderChecker::setControlName( const QString &name )

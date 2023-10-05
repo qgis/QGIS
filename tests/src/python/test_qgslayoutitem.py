@@ -14,8 +14,7 @@ import os
 import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     Qt,
-    QRectF,
-    QDir
+    QRectF
 )
 from qgis.PyQt.QtGui import (
     QColor,
@@ -38,8 +37,6 @@ from qgis.core import (
     QgsUnitTypes,
     QgsFillSymbol,
     QgsSimpleFillSymbolLayer,
-    QgsLayoutChecker,
-    QgsRenderChecker,
     QgsLayoutRenderContext
 )
 import unittest
@@ -73,6 +70,10 @@ class LayoutItemTestCase:
 
 
 class TestQgsLayoutItem(QgisTestCase):
+
+    @classmethod
+    def control_path_prefix(cls):
+        return 'composer_effects'
 
     def testDataDefinedFrameColor(self):
         layout = QgsLayout(QgsProject.instance())
@@ -251,18 +252,6 @@ class TestQgsLayoutItem(QgisTestCase):
         self.assertFalse(map.containsAdvancedEffects())
         self.assertTrue(map.requiresRasterization())
 
-    def image_check(self, name, reference_image, image, control_path_prefix):
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'rendered_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix(control_path_prefix)
-        checker.setControlName("expected_" + reference_image)
-        result = checker.compareImages(name, 0, file_name)
-        if not result:
-            TestQgsLayoutItem.report += checker.report()
-        return result
-
     def test_blend_mode_rendering_designer_preview(self):
         """
         Test rendering of blend modes while in designer dialogs
@@ -314,7 +303,7 @@ class TestQgsLayoutItem(QgisTestCase):
 
         self.assertTrue(self.image_check('blend_modes_preview_mode',
                                          'composereffects_blend',
-                                         im, 'composer_effects'))
+                                         im, allowed_mismatch=0))
 
     def test_blend_mode_rendering_export(self):
         """
@@ -348,12 +337,12 @@ class TestQgsLayoutItem(QgisTestCase):
 
         item2.setBlendMode(QPainter.CompositionMode_Multiply)
 
-        checker = QgsLayoutChecker('composereffects_blend', l)
-        checker.setControlPathPrefix("composer_effects")
-        res, report = checker.testLayout(0, 0)
-        if not res:
-            TestQgsLayoutItem.report += report
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_layout_check(
+                "composereffects_blend",
+                l
+            )
+        )
 
     def test_blend_mode_rendering_export_no_advanced_effects(self):
         """
@@ -391,12 +380,12 @@ class TestQgsLayoutItem(QgisTestCase):
 
         item2.setBlendMode(QPainter.CompositionMode_Multiply)
 
-        checker = QgsLayoutChecker('composereffects_blend_no_advanced_effects', l)
-        checker.setControlPathPrefix("composer_effects")
-        res, report = checker.testLayout(0, 0)
-        if not res:
-            TestQgsLayoutItem.report += report
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_layout_check(
+                "composereffects_blend_no_advanced_effects",
+                l
+            )
+        )
 
     def test_blend_mode_rendering_export_force_vector(self):
         """
@@ -434,12 +423,12 @@ class TestQgsLayoutItem(QgisTestCase):
 
         item2.setBlendMode(QPainter.CompositionMode_Multiply)
 
-        checker = QgsLayoutChecker('composereffects_blend_no_advanced_effects', l)
-        checker.setControlPathPrefix("composer_effects")
-        res, report = checker.testLayout(0, 0)
-        if not res:
-            TestQgsLayoutItem.report += report
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_layout_check(
+                "composereffects_blend_no_advanced_effects",
+                l
+            )
+        )
 
 
 if __name__ == '__main__':

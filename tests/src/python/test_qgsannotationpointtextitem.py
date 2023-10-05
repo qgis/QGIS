@@ -12,7 +12,7 @@ __date__ = '10/08/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
