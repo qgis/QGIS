@@ -58,7 +58,20 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   mBrowserWidget = new QgsBrowserDockWidget( QStringLiteral( "Browser" ), mBrowserModel, this );
   mBrowserWidget->setFeatures( QDockWidget::NoDockWidgetFeatures );
   mBrowserWidget->setTitleBarWidget( new QWidget( mBrowserWidget ) );
-  ui->mOptionsStackedWidget->addWidget( mBrowserWidget );
+
+  QWidget *browserWidgetWrapper = new QWidget( this );
+  browserWidgetWrapper->setLayout( new QVBoxLayout( browserWidgetWrapper ) );
+  browserWidgetWrapper->layout()->addWidget( mBrowserWidget );
+  QDialogButtonBox *browserButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help,  browserWidgetWrapper );
+  browserWidgetWrapper->layout()->addWidget( browserButtonBox );
+
+  connect( browserButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#the-browser-panel" ) );
+  } );
+  connect( browserButtonBox, &QDialogButtonBox::rejected, this, &QgsDataSourceManagerDialog::reject );
+
+  ui->mOptionsStackedWidget->addWidget( browserWidgetWrapper );
   mPageProviderKeys.append( QStringLiteral( "browser" ) );
   mPageProviderNames.append( QStringLiteral( "browser" ) );
 
