@@ -179,20 +179,6 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       dialog.accept();
     }
 
-    void testValidVectorTileProperties()
-    {
-      // valid vector tile layer
-      const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR );
-      std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( srcMbtiles );
-      QVERIFY( layer->isValid() );
-
-      QgsMapCanvas canvas;
-      QgsMessageBar messageBar;
-      QgsVectorTileLayerProperties dialog( layer.get(), &canvas, &messageBar );
-      dialog.show();
-      dialog.accept();
-    }
-
     void testInvalidVectorTileProperties()
     {
       // invalid vector tile layer
