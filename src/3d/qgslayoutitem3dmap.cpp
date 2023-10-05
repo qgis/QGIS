@@ -340,7 +340,9 @@ void QgsLayoutItem3DMap::setCameraPoseFromXml( const QDomElement &elem )
 
 void QgsLayoutItem3DMap::loadProjectSettings()
 {
-  mSettings->setSelectionColor( QgsProject::instance()->selectionColor() );
-  mSettings->setBackgroundColor( QgsProject::instance()->backgroundColor() );
-  mSettings->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
+  QgsProject* project = layout() ? layout()->project() : nullptr;
+  if ( !project )
+    return;
+  mSettings->setSelectionColor( project->selectionColor() );
+  mSettings->setBackgroundColor( project->backgroundColor() );
 }
