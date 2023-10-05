@@ -172,7 +172,7 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         self.assertTrue('GeoPackage' in enabled_entries.keys())
         self.assertTrue('spatialite' in enabled_entries.keys())
 
-       # Test ogr
+        # Test ogr
         test_path = os.path.join(unitTestDataPath(), 'points.shp')
         source_select = enabled_entries['ogr'].createDataSourceWidget()
         self.assertTrue(source_select.configureFromUri(test_path))

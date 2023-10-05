@@ -143,6 +143,13 @@ Set the data source specification.
 .. versionadded:: 3.0
 %End
 
+    void setUri( const QString &uri );
+%Docstring
+Set the data source specification.
+
+.. versionadded:: 3.38
+%End
+
     QgsDataSourceUri uri() const;
 %Docstring
 Gets the data source specification.

@@ -3268,6 +3268,34 @@ bool QgsGdalProvider::initIfNeeded()
     return false;
   }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,8,0)
+  // Set INTERPOLATE option for VR BAG
+  if ( QString( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalBaseDataset ) ) ) == QLatin1String( "BAG" ) && QString{ GDALGetMetadataItem( mGdalBaseDataset, "HAS_SUPERGRIDS", nullptr ) } == QLatin1String( "TRUE" ) )
+  {
+    QVariantMap parts = decodeGdalUri( gdalUri );
+    QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+    bool hasModeOption = false;
+
+    for ( const QString &option : std::as_const( openOptions ) )
+    {
+      if ( option.startsWith( QStringLiteral( "MODE=" ) ) )
+      {
+        hasModeOption = true;
+        break;
+      }
+    }
+
+    if ( ! hasModeOption )
+    {
+      openOptions.append( QStringLiteral( "MODE=INTERPOLATED" ) );
+      parts[QStringLiteral( "openOptions" )] = openOptions;
+      gdalUri = encodeGdalUri( parts );
+      setUri( gdalUri );
+      mGdalBaseDataset = gdalOpen( gdalUri, mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
+    }
+  }
+#endif
+
   QgsDebugMsgLevel( QStringLiteral( "GdalDataset opened" ), 2 );
 
   initBaseDataset();

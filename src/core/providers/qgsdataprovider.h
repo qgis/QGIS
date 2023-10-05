@@ -201,6 +201,16 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
+     * Set the data source specification.
+     *
+     * \since QGIS 3.38
+     */
+    void setUri( const QString &uri )
+    {
+      mDataSourceURI = uri;
+    }
+
+    /**
      * Gets the data source specification.
      *
      * \since QGIS 3.0
