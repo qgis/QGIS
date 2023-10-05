@@ -141,14 +141,14 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
      * \see hAlign()
      * \see setVAlign()
      */
-    void setHAlign( Qt::AlignmentFlag alignment ) { mHAlignment = alignment; }
+    void setHAlign( Qt::AlignmentFlag alignment ) { mHAlignment = alignment; invalidateCache(); }
 
     /**
      * Sets for the vertical \a alignment of the label.
      * \see vAlign()
      * \see setHAlign()
      */
-    void setVAlign( Qt::AlignmentFlag alignment ) { mVAlignment = alignment; }
+    void setVAlign( Qt::AlignmentFlag alignment ) { mVAlignment = alignment; invalidateCache(); }
 
     /**
      * Returns the horizontal margin between the edge of the frame and the label
