@@ -1933,19 +1933,25 @@ void TestQgsLayoutItem::blendMode()
   QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
 
+  QCOMPARE( item->cacheMode(), QGraphicsItem::DeviceCoordinateCache );
+
   item->setBlendMode( QPainter::CompositionMode_Darken );
   QCOMPARE( item->blendMode(), QPainter::CompositionMode_Darken );
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Darken );
+  // can't use caching when blend modes are active
+  QCOMPARE( item->cacheMode(), QGraphicsItem::NoCache );
 
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, false );
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_SourceOver );
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Darken );
+  QCOMPARE( item->cacheMode(), QGraphicsItem::NoCache );
 
   item->dataDefinedProperties().setProperty( QgsLayoutObject::BlendMode, QgsProperty::fromExpression( "'lighten'" ) );
   item->refreshDataDefinedProperty();
   QCOMPARE( item->blendMode(), QPainter::CompositionMode_Darken ); // should not change
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Lighten );
+  QCOMPARE( item->cacheMode(), QGraphicsItem::NoCache );
 
   QgsLayout l2( QgsProject::instance() );
   l2.initializeDefaults();

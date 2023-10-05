@@ -446,7 +446,7 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
 
 QgsLayoutItem::Flags QgsLayoutItemElevationProfile::itemFlags() const
 {
-  return QgsLayoutItem::FlagOverridesPaint;
+  return QgsLayoutItem::FlagOverridesPaint | QgsLayoutItem::FlagDisableSceneCaching;
 }
 
 bool QgsLayoutItemElevationProfile::requiresRasterization() const
