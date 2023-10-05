@@ -23,7 +23,6 @@
 
 #include <QVBoxLayout>
 #include <QFileDialog>
-#include <QDialogButtonBox>
 
 QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent )
   : QgsDockWidget( parent )
@@ -40,15 +39,6 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserGuiMo
   mWidget = new QgsBrowserWidget( browserModel );
   layout->addWidget( mWidget );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help, this );
-  mButtonBox->setVisible( false );
-  layout->addWidget( mButtonBox );
-
-  // Forward signals from button box
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsBrowserDockWidget::helpRequested );
-  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsBrowserDockWidget::rejected );
-
-  // Connect action signals
   connect( mWidget, &QgsBrowserWidget::openFile, this, &QgsBrowserDockWidget::openFile );
   connect( mWidget, &QgsBrowserWidget::handleDropUriList, this, &QgsBrowserDockWidget::handleDropUriList );
   connect( mWidget, &QgsBrowserWidget::connectionsChanged, this, &QgsBrowserDockWidget::connectionsChanged );
@@ -235,9 +225,4 @@ void QgsBrowserDockWidget::setActiveIndex( const QModelIndex &index )
 
 void QgsBrowserDockWidget::splitterMoved()
 {
-}
-
-void QgsBrowserDockWidget::setButtonBoxVisibility( bool visible )
-{
-  mButtonBox->setVisible( visible );
 }
