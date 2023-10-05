@@ -384,14 +384,22 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     return mResult;
   }
 
+  const QString expectedImageString = QStringLiteral( "<a href=\"%1\" style=\"color: inherit\" target=\"_blank\">expected</a> image" ).arg( QUrl::fromLocalFile( referenceImageFile ).toString() );
+  const QString renderedImageString = QStringLiteral( "<a href=\"%2\" style=\"color: inherit\" target=\"_blank\">rendered</a> image" ).arg( QUrl::fromLocalFile( renderedImageFile ).toString() );
+  auto upperFirst = []( const QString & string ) -> QString
+  {
+    const int firstNonTagIndex = string.indexOf( '>' ) + 1;
+    return string.left( firstNonTagIndex ) + string.at( firstNonTagIndex ).toUpper() + string.mid( firstNonTagIndex + 1 );
+  };
+
   QImage myResultImage( mRenderedImageFile );
   if ( myResultImage.isNull() )
   {
     qDebug() << "QgsRenderChecker::runTest failed - Could not load rendered image from " << mRenderedImageFile;
-    mReport = "<table>"
-              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
-              "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
-              "Image File could not be loaded.</td></tr></table>\n";
+    mReport = QStringLiteral( "<table>"
+                              "<tr><td>Test Result:</td><td>%1:</td></tr>\n"
+                              "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
+                              "Image File could not be loaded.</td></tr></table>\n" ).arg( upperFirst( expectedImageString ) );
     performPostTestActions( flags );
     return mResult;
   }
@@ -419,14 +427,15 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   mReport = QStringLiteral( "<script src=\"file://%1/../renderchecker.js\"></script>\n" ).arg( TEST_DATA_DIR );
   mReport += QLatin1String( "<table>" );
   mReport += QLatin1String( "<tr><td colspan=2>" );
-  mReport += QString( "<tr><td colspan=2>"
-                      "Test image and result image for %1<br>"
-                      "Expected size: %2 w x %3 h (%4 pixels)<br>"
-                      "Actual   size: %5 w x %6 h (%7 pixels)"
-                      "</td></tr>" )
+  mReport += QStringLiteral( "<tr><td colspan=2>"
+                             "%8 and %9 for %1<br>"
+                             "Expected size: %2 w x %3 h (%4 pixels)<br>"
+                             "Rendered size: %5 w x %6 h (%7 pixels)"
+                             "</td></tr>" )
              .arg( testName )
              .arg( expectedImage.width() ).arg( expectedImage.height() ).arg( mMatchTarget )
-             .arg( myResultImage.width() ).arg( myResultImage.height() ).arg( myPixelCount );
+             .arg( myResultImage.width() ).arg( myResultImage.height() ).arg( myPixelCount )
+             .arg( upperFirst( expectedImageString ), renderedImageString );
   mReport += QString( "<tr><td colspan=2>\n"
                       "Expected Duration : <= %1 (0 indicates not specified)<br>"
                       "Actual Duration : %2 ms<br></td></tr>" )
@@ -446,7 +455,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   const QString diffImageFileName = QFileInfo( mDiffImageFile ).fileName();
   const QString myImagesString = QString(
                                    "<tr>"
-                                   "<td colspan=2>Compare expected and actual result</td>"
+                                   "<td colspan=2>Compare %10 and %11</td>"
                                    "<td>Difference (all blue is good, any red is bad)</td>"
                                    "</tr>\n<tr>"
                                    "<td colspan=2 id=\"td-%1-%7\"></td>\n"
@@ -463,7 +472,9 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
                                  .arg( imgWidth ).arg( imgHeight )
                                  .arg( QUuid::createUuid().toString().mid( 1, 6 ),
                                        referenceImageFile,
-                                       mRenderedImageFile
+                                       mRenderedImageFile,
+                                       expectedImageString,
+                                       renderedImageString
                                      );
 
   QString prefix;
@@ -486,7 +497,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
 
   if ( mMatchTarget != myPixelCount )
   {
-    qDebug( "Test image and result image for %s are different dimensions", testName.toLocal8Bit().constData() );
+    qDebug( "Expected image and rendered image for %s are different dimensions", testName.toLocal8Bit().constData() );
 
     if ( std::abs( expectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
          std::abs( expectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
@@ -495,12 +506,12 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       emitDashMessage( "Expected Image " + testName + prefix, QgsDartMeasurement::ImagePng, referenceImageFile );
 
       mReport += QLatin1String( "<tr><td colspan=3>" );
-      mReport += "<font color=red>Expected image and result image for " + testName + " are different dimensions - FAILING!</font>";
+      mReport += QStringLiteral( "<font color=red>%1 and %2 for " ).arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are different dimensions - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
 
       const QString diffSizeImagesString = QString(
                                              "<tr>"
-                                             "<td colspan=3>Compare expected and actual result</td>"
+                                             "<td colspan=3>Compare %5 and %6</td>"
                                              "</tr>\n<tr>"
                                              "<td align=center><img src=\"%1\"></td>\n"
                                              "<td align=center><img width=%3 height=%4 src=\"%2\"></td>\n"
@@ -509,7 +520,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
                                            .arg(
                                              renderedImageFileName,
                                              referenceImageFile )
-                                           .arg( imgWidth ).arg( imgHeight );
+                                           .arg( imgWidth ).arg( imgHeight )
+                                           .arg( expectedImageString, renderedImageString );
 
       mReport += diffSizeImagesString;
       performPostTestActions( flags );
@@ -518,7 +530,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     else
     {
       mReport += QLatin1String( "<tr><td colspan=3>" );
-      mReport += "Expected image and result image for " + testName + " are different dimensions, but within tolerance";
+      mReport += QStringLiteral( "%1 and %2 for " ).arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are different dimensions, but within tolerance";
       mReport += QLatin1String( "</td></tr>" );
     }
   }
@@ -530,10 +542,10 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       emitDashMessage( "Rendered Image " + testName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
       emitDashMessage( "Expected Image " + testName + prefix, QgsDartMeasurement::ImagePng, referenceImageFile );
 
-      qDebug() << "Expected image and result image for " << testName << " have different formats (8bit format is expected) - FAILING!";
+      qDebug() << "Expected image and rendered image for " << testName << " have different formats (8bit format is expected) - FAILING!";
 
       mReport += QLatin1String( "<tr><td colspan=3>" );
-      mReport += "<font color=red>Expected image and result image for " + testName + " have different formats (8bit format is expected) - FAILING!</font>";
+      mReport += "<font color=red>Expected image and rendered image for " + testName + " have different formats (8bit format is expected) - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
       performPostTestActions( flags );
@@ -633,7 +645,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   if ( mMismatchCount <= mismatchCount )
   {
     mReport += QLatin1String( "<tr><td colspan = 3>\n" );
-    mReport += "Test image and result image for " + testName + " are matched<br>";
+    mReport += QStringLiteral( "%1 and %2 for " ).arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are matched<br>";
     mReport += QLatin1String( "</td></tr>" );
     if ( mElapsedTimeTarget != 0 && mElapsedTimeTarget < mElapsedTime )
     {
@@ -664,7 +676,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
                    "scripts/generate_test_mask_image.py '" + referenceImageFile + "' '" + mRenderedImageFile + "'\n" );
 
   mReport += QLatin1String( "<tr><td colspan = 3>\n" );
-  mReport += "<font color=red>Test image and result image for " + testName + " are mismatched</font><br>";
+  mReport += QStringLiteral( "<font color=red>%1 and %2 for " ).arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are mismatched</font><br>";
   mReport += QLatin1String( "</td></tr>" );
   mReport += myImagesString;
 
