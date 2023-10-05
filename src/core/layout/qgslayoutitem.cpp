@@ -297,8 +297,6 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     return;
   }
 
-  //TODO - remember to disable saving/restoring on graphics view!!
-
   if ( shouldDrawDebugRect() )
   {
     drawDebugRect( painter );
