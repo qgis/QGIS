@@ -143,12 +143,12 @@ void TestQgsCopcProvider::decodeUri()
 void TestQgsCopcProvider::absoluteRelativeUri()
 {
   QgsReadWriteContext context;
-  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+  context.setPathResolver( QgsPathResolver( testDataPath( QStringLiteral( "/project.qgs" ) ) ) );
 
   QgsProviderMetadata *copcMetadata = QgsProviderRegistry::instance()->providerMetadata( "copc" );
   QVERIFY( copcMetadata );
 
-  QString absoluteUri = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/point_clouds/copc/rgb.copc.laz" );
+  QString absoluteUri = testDataPath( QStringLiteral( "/point_clouds/copc/rgb.copc.laz" ) );
   QString relativeUri = QStringLiteral( "./point_clouds/copc/rgb.copc.laz" );
   QCOMPARE( copcMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
   QCOMPARE( copcMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
@@ -192,21 +192,21 @@ void TestQgsCopcProvider::uriIsBlocklisted()
 void TestQgsCopcProvider::querySublayers()
 {
   // test querying sub layers for a ept layer
-  QgsProviderMetadata *eptMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "copc" ) );
+  QgsProviderMetadata *copcMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "copc" ) );
 
   // invalid uri
-  QList< QgsProviderSublayerDetails >res = eptMetadata->querySublayers( QString() );
+  QList< QgsProviderSublayerDetails >res = copcMetadata->querySublayers( QString() );
   QVERIFY( res.empty() );
 
   // not a copc layer
-  res = eptMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp" );
+  res = copcMetadata->querySublayers( testDataPath( "/lines.shp" ) );
   QVERIFY( res.empty() );
 
   // valid copc layer
   const QString dataPath = mTempDir.filePath( QStringLiteral( "sunshine-coast-layers.copc.laz" ) );
   QFile::copy( mTestDataDir + QStringLiteral( "/point_clouds/copc/sunshine-coast.copc.laz" ), dataPath );
 
-  res = eptMetadata->querySublayers( dataPath );
+  res = copcMetadata->querySublayers( dataPath );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "sunshine-coast-layers.copc" ) );
   QCOMPARE( res.at( 0 ).uri(), dataPath );
