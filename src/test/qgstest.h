@@ -144,6 +144,7 @@ class TEST_EXPORT QgsTest : public QObject
     QgsTest( const QString &name, const QString &controlPathPrefix = QString() )
       : mName( name )
       , mControlPathPrefix( controlPathPrefix )
+      , mTestDataDir( QStringLiteral( TEST_DATA_DIR ) + '/' ) //defined in CmakeLists.txt
     {}
 
     ~QgsTest() override
@@ -152,11 +153,20 @@ class TEST_EXPORT QgsTest : public QObject
         writeLocalHtmlReport( mReport );
     }
 
+    /**
+     * Returns the full path to the test data with the given file path.
+     */
+    QString testDataPath( const QString &filePath ) const
+    {
+      return mTestDataDir.filePath( filePath.startsWith( '/' ) ? filePath.mid( 1 ) : filePath );
+    }
+
   protected:
 
     QString mName;
     QString mReport;
     QString mControlPathPrefix;
+    const QDir mTestDataDir;
 
     bool renderMapSettingsCheck( const QString &name, const QString &referenceImage, const QgsMapSettings &mapSettings, int allowedMismatch = 0, int colorTolerance = 0 )
     {
