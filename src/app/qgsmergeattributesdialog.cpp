@@ -177,6 +177,10 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     mTableWidget->setColumnCount( col + 1 );
     mFieldToColumnMap[ mFields.at( idx ).name() ] = col;
 
+    QTableWidgetItem *item = new QTableWidgetItem( mFields.at( idx ).name() );
+    item->setData( FieldIndex, idx );
+    mTableWidget->setHorizontalHeaderItem( col, item );
+
     QComboBox *cb = createMergeComboBox( mFields.at( idx ).type(), col );
     if ( ! mVectorLayer->dataProvider()->pkAttributeIndexes().contains( mFields.fieldOriginIndex( idx ) ) &&
          mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
@@ -185,9 +189,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     }
     mTableWidget->setCellWidget( 0, col, cb );
 
-    QTableWidgetItem *item = new QTableWidgetItem( mFields.at( idx ).name() );
-    item->setData( FieldIndex, idx );
-    mTableWidget->setHorizontalHeaderItem( col++, item );
+    col++;
   }
 
   //insert the attribute values
