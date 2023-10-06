@@ -2269,18 +2269,6 @@ bool QgsPostgresProvider::isValid() const
   return mValid;
 }
 
-Qgis::ProviderStyleStorageCapabilities QgsPostgresProvider::styleStorageCapabilities() const
-{
-  Qgis::ProviderStyleStorageCapabilities storageCapabilities;
-  if ( isValid() )
-  {
-    storageCapabilities |= Qgis::ProviderStyleStorageCapability::SaveToDatabase;
-    storageCapabilities |= Qgis::ProviderStyleStorageCapability::LoadFromDatabase;
-    storageCapabilities |= Qgis::ProviderStyleStorageCapability::DeleteFromDatabase;
-  }
-  return storageCapabilities;
-}
-
 QString QgsPostgresProvider::defaultValueClause( int fieldId ) const
 {
   QString defVal = mDefaultValues.value( fieldId, QString() );

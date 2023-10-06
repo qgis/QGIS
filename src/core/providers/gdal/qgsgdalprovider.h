@@ -218,8 +218,6 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     bool setZoomedOutResamplingMethod( ResamplingMethod method ) override { mZoomedOutResamplingMethod = method; return true; }
     bool setMaxOversampling( double factor ) override { mMaxOversampling = factor; return true; }
 
-    Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
-
   private:
     QgsGdalProvider( const QgsGdalProvider &other );
     QgsGdalProvider &operator=( const QgsGdalProvider & ) = delete;
@@ -404,17 +402,6 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QStringList sidecarFilesForUri( const QString &uri ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
-
-    int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                    QStringList &descriptions, QString &errCause ) override;
-    bool styleExists( const QString &uri, const QString &styleId, QString &errCause SIP_OUT ) override;
-    QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
-    bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
-    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
-                    const QString &styleName, const QString &styleDescription,
-                    const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
-    QString loadStyle( const QString &uri, QString &errCause ) override;
-    QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
 };
 
 ///@endcond

@@ -1096,8 +1096,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         # First test with invalid URI
         vl = QgsVectorLayer('/idont/exist.sqlite', 'test', 'spatialite')
 
-        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, 0)
-        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, 0)
+        self.assertFalse(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
 
         res, err = QgsProviderRegistry.instance().styleExists('spatialite', '/idont/exist.sqlite', '')
         self.assertFalse(res)
@@ -1151,8 +1150,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         vl = QgsVectorLayer(testPath, 'test', 'spatialite')
         self.assertTrue(vl.isValid())
 
-        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, Qgis.ProviderStyleStorageCapability.LoadFromDatabase)
-        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, Qgis.ProviderStyleStorageCapability.SaveToDatabase)
+        self.assertTrue(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
 
         # style tables don't exist yet
         res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), '')

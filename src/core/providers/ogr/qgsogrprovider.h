@@ -115,7 +115,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     void setEncoding( const QString &e ) override;
     bool enterUpdateMode() override { return _enterUpdateMode(); }
     bool leaveUpdateMode() override;
-    Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
+    bool isSaveAndLoadStyleToDatabaseSupported() const override;
+    bool isDeleteStyleFromDatabaseSupported() const override;
     QString fileVectorFilters() const override;
     bool isValid() const override;
     QVariant minimumValue( int index ) const override;
