@@ -84,10 +84,11 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   mEffect = new QgsLayoutEffect();
   if ( mLayout )
   {
-    mEffect->setEnabled( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
+    mEffect->setEnabled( ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects )
+                         && !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) );
     connect( &mLayout->renderContext(), &QgsLayoutRenderContext::flagsChanged, this, [ = ]( QgsLayoutRenderContext::Flags flags )
     {
-      mEffect->setEnabled( flags & QgsLayoutRenderContext::FlagUseAdvancedEffects );
+      mEffect->setEnabled( ( flags & QgsLayoutRenderContext::FlagUseAdvancedEffects ) && !( flags & QgsLayoutRenderContext::FlagForceVectorOutput ) );
     } );
   }
   setGraphicsEffect( mEffect.data() );
