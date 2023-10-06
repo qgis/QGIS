@@ -331,7 +331,7 @@
      <normaloff>:/images/themes/default/mActionIdentifyByMouseOver.svg</normaloff>:/images/themes/default/mActionIdentifyByMouseOver.svg</iconset>
    </property>
    <property name="text">
-    <string>Identify Feature(s) on mouse over</string>
+    <string>Identify Feature(s) on Mouse Over</string>
    </property>
    <property name="toolTip">
     <string>Identify Features by hovering on a feature with the mouse</string>
@@ -417,8 +417,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
