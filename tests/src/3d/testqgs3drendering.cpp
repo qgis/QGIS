@@ -184,16 +184,15 @@ void TestQgs3DRendering::initTestCase()
 
   mProject.reset( new QgsProject );
 
-  const QString dataDir( TEST_DATA_DIR );
-  mLayerDtm = new QgsRasterLayer( dataDir + "/3d/dtm.tif", "dtm", "gdal" );
+  mLayerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
   QVERIFY( mLayerDtm->isValid() );
   mProject->addMapLayer( mLayerDtm );
 
-  mLayerRgb = new QgsRasterLayer( dataDir + "/3d/rgb.tif", "rgb", "gdal" );
+  mLayerRgb = new QgsRasterLayer( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
   QVERIFY( mLayerRgb->isValid() );
   mProject->addMapLayer( mLayerRgb );
 
-  mLayerBuildings = new QgsVectorLayer( dataDir + "/3d/buildings.shp", "buildings", "ogr" );
+  mLayerBuildings = new QgsVectorLayer( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
   QVERIFY( mLayerBuildings->isValid() );
   mProject->addMapLayer( mLayerBuildings );
 
@@ -209,15 +208,15 @@ void TestQgs3DRendering::initTestCase()
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
 
-  mLayerMeshTerrain = new QgsMeshLayer( dataDir + "/mesh/quad_flower.2dm", "mesh", "mdal" );
+  mLayerMeshTerrain = new QgsMeshLayer( testDataPath( "/mesh/quad_flower.2dm" ), "mesh", "mdal" );
   QVERIFY( mLayerMeshTerrain->isValid() );
   mLayerMeshTerrain->setCrs( mLayerDtm->crs() );  // this testing mesh does not have any CRS defined originally
   mProject->addMapLayer( mLayerMeshTerrain );
 
-  mLayerMeshDataset = new QgsMeshLayer( dataDir + "/mesh/quad_and_triangle.2dm", "mesh", "mdal" );
-  mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_vertex_scalar.dat" );
-  mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_vertex_vector.dat" );
-  mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_els_face_scalar.dat" );
+  mLayerMeshDataset = new QgsMeshLayer( testDataPath( "/mesh/quad_and_triangle.2dm" ), "mesh", "mdal" );
+  mLayerMeshDataset->dataProvider()->addDataset( testDataPath( "/mesh/quad_and_triangle_vertex_scalar.dat" ) );
+  mLayerMeshDataset->dataProvider()->addDataset( testDataPath( "/mesh/quad_and_triangle_vertex_vector.dat" ) );
+  mLayerMeshDataset->dataProvider()->addDataset( testDataPath( "/mesh/quad_and_triangle_els_face_scalar.dat" ) );
   QVERIFY( mLayerMeshDataset->isValid() );
   mLayerMeshDataset->setCrs( mLayerDtm->crs() ); // this testing mesh does not have any CRS defined originally
   mLayerMeshDataset->temporalProperties()->setIsActive( false );
@@ -225,7 +224,7 @@ void TestQgs3DRendering::initTestCase()
   mLayerMeshDataset->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 2, 0 ) );
   mProject->addMapLayer( mLayerMeshDataset );
 
-  mLayerMeshSimplified = new QgsMeshLayer( dataDir + "/mesh/trap_steady_05_3D.nc", "mesh", "mdal" );
+  mLayerMeshSimplified = new QgsMeshLayer( testDataPath( "/mesh/trap_steady_05_3D.nc" ), "mesh", "mdal" );
   mLayerMeshSimplified->setCrs( mProject->crs() );
   QVERIFY( mLayerMeshSimplified->isValid() );
   mProject->addMapLayer( mLayerMeshSimplified );
@@ -764,7 +763,7 @@ void TestQgs3DRendering::testBufferedLineRendering()
 {
   const QgsRectangle fullExtent = mLayerDtm->extent();
 
-  QgsVectorLayer *layerLines = new QgsVectorLayer( QString( TEST_DATA_DIR ) + "/3d/lines.shp", "lines", "ogr" );
+  QgsVectorLayer *layerLines = new QgsVectorLayer( testDataPath( "/3d/lines.shp" ), "lines", "ogr" );
   QVERIFY( layerLines->isValid() );
 
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
@@ -811,7 +810,7 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
 {
   const QgsRectangle fullExtent = mLayerDtm->extent();
 
-  QgsVectorLayer *layerLines = new QgsVectorLayer( QString( TEST_DATA_DIR ) + "/3d/lines.shp", "lines", "ogr" );
+  QgsVectorLayer *layerLines = new QgsVectorLayer( testDataPath( "/3d/lines.shp" ), "lines", "ogr" );
   QVERIFY( layerLines->isValid() );
 
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
@@ -1280,7 +1279,7 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   QgsCoordinateReferenceSystem newCrs( QStringLiteral( "EPSG:4978" ) );
   p.setCrs( newCrs );
 
-  QgsVectorLayer *layerLines = new QgsVectorLayer( QString( TEST_DATA_DIR ) + "/3d/earth_size_sphere_4978.gpkg", "lines", "ogr" );
+  QgsVectorLayer *layerLines = new QgsVectorLayer( testDataPath( "/3d/earth_size_sphere_4978.gpkg" ), "lines", "ogr" );
 
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setRenderAsSimpleLines( true );
@@ -1506,8 +1505,7 @@ void TestQgs3DRendering::testAmbientOcclusion()
 {
   // =============================================
   // =========== creating Qgs3DMapSettings
-  const QString dataDir( TEST_DATA_DIR );
-  QgsRasterLayer *layerDtm = new QgsRasterLayer( dataDir + "/3d/dtm.tif", "dtm", "gdal" );
+  QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
   QVERIFY( layerDtm->isValid() );
 
   const QgsRectangle fullExtent = layerDtm->extent();
@@ -1568,8 +1566,7 @@ void TestQgs3DRendering::testDepthBuffer()
 {
   // =============================================
   // =========== creating Qgs3DMapSettings
-  const QString dataDir( TEST_DATA_DIR );
-  QgsRasterLayer *layerDtm = new QgsRasterLayer( dataDir + "/3d/dtm.tif", "dtm", "gdal" );
+  QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
   QVERIFY( layerDtm->isValid() );
   QgsProject project;
   project.addMapLayer( layerDtm );
@@ -1713,8 +1710,7 @@ void TestQgs3DRendering::testDebugMap()
 {
   // =============================================
   // =========== creating Qgs3DMapSettings
-  const QString dataDir( TEST_DATA_DIR );
-  QgsRasterLayer *layerDtm = new QgsRasterLayer( dataDir + "/3d/dtm.tif", "dtm", "gdal" );
+  QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
   QVERIFY( layerDtm->isValid() );
 
   const QgsRectangle fullExtent = layerDtm->extent();
@@ -1807,8 +1803,7 @@ void TestQgs3DRendering::test3DSceneExporter()
 {
   // =============================================
   // =========== creating Qgs3DMapSettings
-  const QString dataDir( TEST_DATA_DIR );
-  QgsVectorLayer *layerPoly = new QgsVectorLayer( dataDir + "/3d/polygons.gpkg.gz", "polygons", "ogr" );
+  QgsVectorLayer *layerPoly = new QgsVectorLayer( testDataPath( "/3d/polygons.gpkg.gz" ), "polygons", "ogr" );
   QVERIFY( layerPoly->isValid() );
 
   const QgsRectangle fullExtent = layerPoly->extent();
