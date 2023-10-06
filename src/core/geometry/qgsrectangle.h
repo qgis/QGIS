@@ -521,6 +521,8 @@ class CORE_EXPORT QgsRectangle
      */
     bool operator==( const QgsRectangle &r1 ) const
     {
+      if ( isNull() ) return r1.isNull();
+
       return qgsDoubleNear( r1.xMaximum(), xMaximum() ) &&
              qgsDoubleNear( r1.xMinimum(), xMinimum() ) &&
              qgsDoubleNear( r1.yMaximum(), yMaximum() ) &&
