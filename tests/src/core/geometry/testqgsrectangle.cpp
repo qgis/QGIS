@@ -81,7 +81,7 @@ void TestQgsRectangle::isNull()
 void TestQgsRectangle::fromWkt()
 {
   QgsRectangle rect = QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 0))" ) );
-  QVERIFY( ! rect.isEmpty() );
+  QVERIFY( ! rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
   QCOMPARE( rect.xMaximum(), 1.0 );
@@ -90,7 +90,7 @@ void TestQgsRectangle::fromWkt()
   QVERIFY( rect == QgsRectangle::fromWkt( rect.asWktPolygon() ) );
 
   rect = QgsRectangle::fromWkt( QStringLiteral( "POLYGONZ((0 0 2,1 0 2,1 1 2,0 1 2,0 0 2))" ) );
-  QVERIFY( ! rect.isEmpty() );
+  QVERIFY( ! rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
   QCOMPARE( rect.xMaximum(), 1.0 );
@@ -100,7 +100,7 @@ void TestQgsRectangle::fromWkt()
 
   // this is ok, a single rectangular polygon in a multipolygon object
   rect = QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0)))" ) );
-  QVERIFY( ! rect.isEmpty() );
+  QVERIFY( ! rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
   QCOMPARE( rect.xMaximum(), 1.0 );
@@ -109,22 +109,22 @@ void TestQgsRectangle::fromWkt()
 
   // this is ok, a single rectangular polygon in a collection
   rect = QgsRectangle::fromWkt( QStringLiteral( "GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0))))" ) );
-  QVERIFY( ! rect.isEmpty() );
+  QVERIFY( ! rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
   QCOMPARE( rect.xMaximum(), 1.0 );
   QCOMPARE( rect.yMaximum(), 1.0 );
   QVERIFY( rect == QgsRectangle::fromWkt( rect.asWktPolygon() ) );
 
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "xxx" ) ).isEmpty() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "LINESTRING ()" ) ).isEmpty() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON()" ) ).isEmpty() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "LINESTRING (0 0,1 0,1 1,0 1,0 0)" ) ).isEmpty() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0)),((1 1, 1 2, 2 2, 2 1)))" ) ).isEmpty() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0), (10 10,13 10,13 13,10 13,10 10)))" ) ).isEmpty() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isEmpty() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isEmpty() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1))" ) ).isEmpty() );
+  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "xxx" ) ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "LINESTRING ()" ) ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON()" ) ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "LINESTRING (0 0,1 0,1 1,0 1,0 0)" ) ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0)),((1 1, 1 2, 2 2, 2 1)))" ) ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0), (10 10,13 10,13 13,10 13,10 10)))" ) ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1))" ) ).isNull() );
 }
 
 void TestQgsRectangle::constructor()
