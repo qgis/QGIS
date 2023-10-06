@@ -115,7 +115,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     bool isValid() const override;
 
-    Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
+    bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 

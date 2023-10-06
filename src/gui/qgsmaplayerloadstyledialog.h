@@ -54,9 +54,9 @@ class GUI_EXPORT QgsMapLayerLoadStyleDialog : public QDialog, private Ui::QgsVec
     QgsMapLayer::StyleCategories styleCategories() const;
 
     /**
-     * Returns the selected style type.
+     * Returns the selected vector style type, for vector layers only.
      */
-    QgsLayerPropertiesDialog::StyleType currentStyleType() const;
+    QgsVectorLayerProperties::StyleType currentStyleType() const;
 
     /**
      * Returns the file extension for the selected layer style source file.

@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsmaplayersavestyledialog.h
+  qgsvectorlayersavestyledialog.h
   --------------------------------------
   Date                 : September 2018
   Copyright            : (C) 2018 by Denis Rouzaud
@@ -13,31 +13,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAPLAYERSAVESTYLEDIALOG_H
-#define QGSMAPLAYERSAVESTYLEDIALOG_H
+#ifndef QGSVECTORLAYERSAVESTYLEDIALOG_H
+#define QGSVECTORLAYERSAVESTYLEDIALOG_H
 
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
 #include <QDialog>
-#include "ui_qgsmaplayersavestyledialog.h"
-#include "qgsmaplayer.h"
-#include "qgslayerpropertiesdialog.h"
+#include "ui_qgsvectorlayersavestyledialog.h"
+#include "qgsvectorlayerproperties.h"
 #include "qgis_gui.h"
 
+class QgsVectorLayer;
 class QgsMapLayerStyleCategoriesModel;
 
 /**
  * \ingroup gui
- * \class QgsMapLayerSaveStyleDialog
+ * \class QgsVectorLayerSaveStyleDialog
  *
- * \brief The QgsMapLayerSaveStyleDialog class provides the UI to save the current style
+ * \brief The QgsVectorLayerSaveStyleDialog class provides the UI to save the current style
  * or multiple styles into different storage containers (QML, SLD and DB).
  * The user can select what categories must be saved.
- *
- * \since QGIS 3.34
  */
-class GUI_EXPORT QgsMapLayerSaveStyleDialog : public QDialog, private Ui::QgsMapLayerSaveStyleDialog
+class GUI_EXPORT QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayerSaveStyleDialog
 {
     Q_OBJECT
 
@@ -52,48 +50,17 @@ class GUI_EXPORT QgsMapLayerSaveStyleDialog : public QDialog, private Ui::QgsMap
         bool isDefault;
     };
 
-    /**
-     * Constructor
-     */
-    explicit QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWidget *parent = nullptr );
+    explicit QgsVectorLayerSaveStyleDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-    /**
-     * Returns the database settings for saving the style in the DB.
-     */
     SaveToDbSettings saveToDbSettings() const;
-
-    /**
-     * Returns the selected file output path.
-     */
     QString outputFilePath() const;
-
-    /**
-     * Returns the available style categories.
-     */
     QgsMapLayer::StyleCategories styleCategories() const;
 
-    /**
-     * Returns the selected style storage type.
-     */
-    QgsLayerPropertiesDialog::StyleType currentStyleType() const;
+    QgsVectorLayerProperties::StyleType currentStyleType() const;
 
-    /**
-     * Returns whether the user only allowed to save the current style.
-     *
-     * \see setSaveOnlyCurrentStyle()
-     */
     bool saveOnlyCurrentStyle() const;
-
-    /**
-     * Sets whether the user only allowed to save the current style.
-     *
-     * \see saveOnlyCurrentStyle()
-     */
     void setSaveOnlyCurrentStyle( bool saveCurrentStyle );
 
-    /**
-     * Returns the styles list widget.
-     */
     const QListWidget *stylesWidget( );
 
     /**
@@ -113,10 +80,10 @@ class GUI_EXPORT QgsMapLayerSaveStyleDialog : public QDialog, private Ui::QgsMap
   private:
     void setupMultipleStyles();
     void populateStyleComboBox();
-    QgsMapLayer *mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     QgsMapLayerStyleCategoriesModel *mModel;
     QString mUiFileContent;
     bool mSaveOnlyCurrentStyle = true;
 };
 
-#endif // QGSMAPLAYERSAVESTYLEDIALOG_H
+#endif // QGSVECTORLAYERSAVESTYLE_H

@@ -3781,15 +3781,9 @@ bool QgsSpatiaLiteProvider::isValid() const
   return mValid;
 }
 
-Qgis::ProviderStyleStorageCapabilities QgsSpatiaLiteProvider::styleStorageCapabilities() const
+bool QgsSpatiaLiteProvider::isSaveAndLoadStyleToDatabaseSupported() const
 {
-  Qgis::ProviderStyleStorageCapabilities storageCapabilities;
-  if ( isValid() )
-  {
-    storageCapabilities |= Qgis::ProviderStyleStorageCapability::SaveToDatabase;
-    storageCapabilities |= Qgis::ProviderStyleStorageCapability::LoadFromDatabase;
-  }
-  return storageCapabilities;
+  return mValid;
 }
 
 QString QgsSpatiaLiteProvider::name() const

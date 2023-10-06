@@ -667,8 +667,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         # First test with invalid URI
         vl = QgsVectorLayer('/idont/exist.gpkg', 'test', 'ogr')
 
-        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, 0)
-        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, 0)
+        self.assertFalse(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
 
         res, err = QgsProviderRegistry.instance().styleExists('ogr', '/idont/exist.gpkg', '')
         self.assertFalse(res)
@@ -717,8 +716,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         vl2 = QgsVectorLayer(f'{tmpfile}|layername=test2', 'test2', 'ogr')
         self.assertTrue(vl2.isValid())
 
-        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, Qgis.ProviderStyleStorageCapability.LoadFromDatabase)
-        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, Qgis.ProviderStyleStorageCapability.SaveToDatabase)
+        self.assertTrue(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
 
         # style tables don't exist yet
         res, err = QgsProviderRegistry.instance().styleExists('ogr', vl.source(), '')
@@ -1157,8 +1155,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         if count > 0:
             # We should have just 1 but for obscure reasons
             # uniqueFields() (sometimes?) leaves one behind
-            # Even more obscure reasons a third FD remains open
-            self.assertIn(count, (1, 2, 3))
+            self.assertIn(count, (1, 2))
 
         for i in range(70):
             got = [feat for feat in vl.getFeatures()]
@@ -1169,7 +1166,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         # one shared by the feature iterators
         count = count_opened_filedescriptors(tmpfile)
         if count > 0:
-            self.assertIn(count, (2, 3))
+            self.assertEqual(count, 2)
 
         # Re-open an already opened layers. We should get a new handle
         layername = 'layer%d' % 0

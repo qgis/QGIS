@@ -4083,16 +4083,17 @@ bool QgsOgrProvider::leaveUpdateMode()
   return true;
 }
 
-Qgis::ProviderStyleStorageCapabilities QgsOgrProvider::styleStorageCapabilities() const
+bool QgsOgrProvider::isSaveAndLoadStyleToDatabaseSupported() const
 {
-  Qgis::ProviderStyleStorageCapabilities storageCapabilities;
-  if ( isValid() && ( mGDALDriverName == QLatin1String( "GPKG" ) || mGDALDriverName == QLatin1String( "SQLite" ) ) )
-  {
-    storageCapabilities |= Qgis::ProviderStyleStorageCapability::SaveToDatabase;
-    storageCapabilities |= Qgis::ProviderStyleStorageCapability::LoadFromDatabase;
-    storageCapabilities |= Qgis::ProviderStyleStorageCapability::DeleteFromDatabase;
-  }
-  return storageCapabilities;
+  // We could potentially extend support for styling to other drivers
+  // with multiple layer support.
+  return mGDALDriverName == QLatin1String( "GPKG" ) ||
+         mGDALDriverName == QLatin1String( "SQLite" );
+}
+
+bool QgsOgrProvider::isDeleteStyleFromDatabaseSupported() const
+{
+  return isSaveAndLoadStyleToDatabaseSupported();
 }
 
 QString QgsOgrProvider::fileVectorFilters() const
