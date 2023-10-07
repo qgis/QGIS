@@ -923,7 +923,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       cbu->setEnabled( false );
       if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
       {
-        if ( ! currentLayer->isSpatial() or ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+        if ( ! currentLayer->isSpatial() || ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
         {
           cbu->setEnabled( true );
           cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
