@@ -20,7 +20,6 @@
 #include "qgslayoututils.h"
 #include "qgslayoutmodel.h"
 #include "qgsexpression.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsdistancearea.h"
 #include "qgsfontutils.h"
@@ -51,13 +50,18 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   if ( !defaultFontString.isEmpty() )
   {
     QFont f = mFormat.font();
-    f.setFamily( defaultFontString );
+    QgsFontUtils::setFontFamily( f, defaultFontString );
     mFormat.setFont( f );
   }
 
   //default to a 10 point font size
   mFormat.setSize( 10 );
   mFormat.setSizeUnit( Qgis::RenderUnit::Points );
+
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
+  {
+    updateBoundingRect();
+  } );
 
   //default to no background
   setBackgroundEnabled( false );
@@ -219,6 +223,29 @@ void QgsLayoutItemLabel::refreshExpressionContext()
   update();
 }
 
+void QgsLayoutItemLabel::updateBoundingRect()
+{
+  QRectF rectangle = rect();
+  const double frameExtension = frameEnabled() ? pen().widthF() / 2.0 : 0.0;
+  if ( frameExtension > 0 )
+    rectangle.adjust( -frameExtension, -frameExtension, frameExtension, frameExtension );
+
+  if ( mMarginX < 0 )
+  {
+    rectangle.adjust( mMarginX, 0, -mMarginX, 0 );
+  }
+  if ( mMarginY < 0 )
+  {
+    rectangle.adjust( 0, mMarginY, 0, -mMarginY );
+  }
+
+  if ( rectangle != mCurrentRectangle )
+  {
+    prepareGeometryChange();
+    mCurrentRectangle = rectangle;
+  }
+}
+
 QString QgsLayoutItemLabel::currentText() const
 {
   QString displayText = mText;
@@ -259,6 +286,7 @@ void QgsLayoutItemLabel::setFont( const QFont &f )
   mFormat.setFont( f );
   if ( f.pointSizeF() > 0 )
     mFormat.setSize( f.pointSizeF() );
+  invalidateCache();
 }
 
 QgsTextFormat QgsLayoutItemLabel::textFormat() const
@@ -269,25 +297,26 @@ QgsTextFormat QgsLayoutItemLabel::textFormat() const
 void QgsLayoutItemLabel::setTextFormat( const QgsTextFormat &format )
 {
   mFormat = format;
+  invalidateCache();
 }
 
 void QgsLayoutItemLabel::setMargin( const double m )
 {
   mMarginX = m;
   mMarginY = m;
-  prepareGeometryChange();
+  updateBoundingRect();
 }
 
 void QgsLayoutItemLabel::setMarginX( const double margin )
 {
   mMarginX = margin;
-  prepareGeometryChange();
+  updateBoundingRect();
 }
 
 void QgsLayoutItemLabel::setMarginY( const double margin )
 {
   mMarginY = margin;
-  prepareGeometryChange();
+  updateBoundingRect();
 }
 
 void QgsLayoutItemLabel::adjustSizeToText()
@@ -413,6 +442,8 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
     }
   }
 
+  updateBoundingRect();
+
   return true;
 }
 
@@ -452,32 +483,19 @@ QString QgsLayoutItemLabel::displayName() const
 
 QRectF QgsLayoutItemLabel::boundingRect() const
 {
-  QRectF rectangle = rect();
-  const double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
-  rectangle.adjust( -penWidth, -penWidth, penWidth, penWidth );
-
-  if ( mMarginX < 0 )
-  {
-    rectangle.adjust( mMarginX, 0, -mMarginX, 0 );
-  }
-  if ( mMarginY < 0 )
-  {
-    rectangle.adjust( 0, mMarginY, 0, -mMarginY );
-  }
-
-  return rectangle;
+  return mCurrentRectangle;
 }
 
-void QgsLayoutItemLabel::setFrameEnabled( const bool drawFrame )
+void QgsLayoutItemLabel::setFrameEnabled( bool drawFrame )
 {
   QgsLayoutItem::setFrameEnabled( drawFrame );
-  prepareGeometryChange();
+  updateBoundingRect();
 }
 
-void QgsLayoutItemLabel::setFrameStrokeWidth( const QgsLayoutMeasurement strokeWidth )
+void QgsLayoutItemLabel::setFrameStrokeWidth( QgsLayoutMeasurement strokeWidth )
 {
   QgsLayoutItem::setFrameStrokeWidth( strokeWidth );
-  prepareGeometryChange();
+  updateBoundingRect();
 }
 
 void QgsLayoutItemLabel::refresh()

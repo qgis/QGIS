@@ -15,6 +15,7 @@
 
 #include "qgspolygon3dsymbolwidget.h"
 
+#include "qgs3dtypes.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
 
@@ -25,6 +26,14 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   spinHeight->setClearValue( 0.0 );
   spinExtrusion->setClearValue( 0.0 );
   spinEdgeWidth->setClearValue( 1.0 );
+
+  cboCullingMode->addItem( tr( "No Culling" ), Qgs3DTypes::NoCulling );
+  cboCullingMode->addItem( tr( "Front" ), Qgs3DTypes::Front );
+  cboCullingMode->addItem( tr( "Back" ), Qgs3DTypes::Back );
+
+  cboCullingMode->setItemData( 0, tr( "Both sides of the shapes are visible" ), Qt::ToolTipRole );
+  cboCullingMode->setItemData( 1, tr( "Only the back of the shapes is visible" ), Qt::ToolTipRole );
+  cboCullingMode->setItemData( 2, tr( "Only the front of the shapes is visible" ), Qt::ToolTipRole );
 
   QgsPolygon3DSymbol defaultSymbol;
   setSymbol( &defaultSymbol, nullptr );
@@ -62,7 +71,7 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
   spinExtrusion->setValue( polygonSymbol->extrusionHeight() );
   cboAltClamping->setCurrentIndex( static_cast<int>( polygonSymbol->altitudeClamping() ) );
   cboAltBinding->setCurrentIndex( static_cast<int>( polygonSymbol->altitudeBinding() ) );
-  cboCullingMode->setCurrentIndex( static_cast<int>( polygonSymbol->cullingMode() ) );
+  cboCullingMode->setCurrentIndex( cboCullingMode->findData( polygonSymbol->cullingMode() ) );
   cboRenderedFacade->setCurrentIndex( polygonSymbol->renderedFacade() );
 
   chkAddBackFaces->setChecked( polygonSymbol->addBackFaces() );
@@ -85,7 +94,7 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   sym->setExtrusionHeight( spinExtrusion->value() );
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym->setAltitudeBinding( static_cast<Qgis::AltitudeBinding>( cboAltBinding->currentIndex() ) );
-  sym->setCullingMode( static_cast<Qgs3DTypes::CullingMode>( cboCullingMode->currentIndex() ) );
+  sym->setCullingMode( static_cast<Qgs3DTypes::CullingMode>( cboCullingMode->currentData().toInt() ) );
   sym->setRenderedFacade( cboRenderedFacade->currentIndex() );
   sym->setAddBackFaces( chkAddBackFaces->isChecked() );
   sym->setInvertNormals( chkInvertNormals->isChecked() );

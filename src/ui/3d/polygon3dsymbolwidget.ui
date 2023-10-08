@@ -112,23 +112,7 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QComboBox" name="cboCullingMode">
-     <item>
-      <property name="text">
-       <string>No Culling</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Front</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Back</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QComboBox" name="cboCullingMode"/>
    </item>
    <item row="3" column="1">
     <widget class="QComboBox" name="cboAltBinding">

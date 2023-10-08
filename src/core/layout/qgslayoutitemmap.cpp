@@ -242,27 +242,31 @@ void QgsLayoutItemMap::zoomToExtent( const QgsRectangle &extent )
   //Make sure the width/height ratio is the same as the current layout map extent.
   //This is to keep the map item frame size fixed
   double currentWidthHeightRatio = 1.0;
-  if ( !currentExtent.isNull() )
+  if ( !currentExtent.isEmpty() )
     currentWidthHeightRatio = currentExtent.width() / currentExtent.height();
   else
     currentWidthHeightRatio = rect().width() / rect().height();
-  double newWidthHeightRatio = newExtent.width() / newExtent.height();
 
-  if ( currentWidthHeightRatio < newWidthHeightRatio )
+  if ( currentWidthHeightRatio != 0 && ! std::isnan( currentWidthHeightRatio ) && !newExtent.isEmpty() )
   {
-    //enlarge height of new extent, ensuring the map center stays the same
-    double newHeight = newExtent.width() / currentWidthHeightRatio;
-    double deltaHeight = newHeight - newExtent.height();
-    newExtent.setYMinimum( newExtent.yMinimum() - deltaHeight / 2 );
-    newExtent.setYMaximum( newExtent.yMaximum() + deltaHeight / 2 );
-  }
-  else
-  {
-    //enlarge width of new extent, ensuring the map center stays the same
-    double newWidth = currentWidthHeightRatio * newExtent.height();
-    double deltaWidth = newWidth - newExtent.width();
-    newExtent.setXMinimum( newExtent.xMinimum() - deltaWidth / 2 );
-    newExtent.setXMaximum( newExtent.xMaximum() + deltaWidth / 2 );
+    double newWidthHeightRatio = newExtent.width() / newExtent.height();
+
+    if ( currentWidthHeightRatio < newWidthHeightRatio )
+    {
+      //enlarge height of new extent, ensuring the map center stays the same
+      double newHeight = newExtent.width() / currentWidthHeightRatio;
+      double deltaHeight = newHeight - newExtent.height();
+      newExtent.setYMinimum( newExtent.yMinimum() - deltaHeight / 2 );
+      newExtent.setYMaximum( newExtent.yMaximum() + deltaHeight / 2 );
+    }
+    else
+    {
+      //enlarge width of new extent, ensuring the map center stays the same
+      double newWidth = currentWidthHeightRatio * newExtent.height();
+      double deltaWidth = newWidth - newExtent.width();
+      newExtent.setXMinimum( newExtent.xMinimum() - deltaWidth / 2 );
+      newExtent.setXMaximum( newExtent.xMaximum() + deltaWidth / 2 );
+    }
   }
 
   if ( mExtent == newExtent )

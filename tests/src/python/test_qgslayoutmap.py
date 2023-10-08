@@ -69,7 +69,6 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
     def setUpClass(cls):
         super(TestQgsLayoutMap, cls).setUpClass()
         cls.item_class = QgsLayoutItemMap
-        cls.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"
 
     @classmethod
     def tearDownClass(cls):

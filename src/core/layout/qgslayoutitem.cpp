@@ -81,21 +81,22 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   }
 
   // Setup layout effect
-  mEffect.reset( new QgsLayoutEffect() );
+  mEffect = new QgsLayoutEffect();
   if ( mLayout )
   {
-    mEffect->setEnabled( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
+    mEffect->setEnabled( ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects )
+                         && !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) );
     connect( &mLayout->renderContext(), &QgsLayoutRenderContext::flagsChanged, this, [ = ]( QgsLayoutRenderContext::Flags flags )
     {
-      mEffect->setEnabled( flags & QgsLayoutRenderContext::FlagUseAdvancedEffects );
+      mEffect->setEnabled( ( flags & QgsLayoutRenderContext::FlagUseAdvancedEffects ) && !( flags & QgsLayoutRenderContext::FlagForceVectorOutput ) );
     } );
   }
-  setGraphicsEffect( mEffect.get() );
+  setGraphicsEffect( mEffect.data() );
 }
 
 QgsLayoutItem::~QgsLayoutItem()
 {
-  cleanup();
+  QgsLayoutItem::cleanup();
 }
 
 void QgsLayoutItem::cleanup()
@@ -1558,6 +1559,7 @@ void QgsLayoutItem::refreshBlendMode()
   }
 
   // Update the item effect to use the new blend mode
-  mEffect->setCompositionMode( blendMode );
+  if ( mEffect )
+    mEffect->setCompositionMode( blendMode );
 }
 

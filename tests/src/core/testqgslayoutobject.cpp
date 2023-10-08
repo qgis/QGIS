@@ -29,6 +29,7 @@ class TestQgsLayoutObject: public QgsTest
     TestQgsLayoutObject() : QgsTest( QStringLiteral( "Layout Object Tests" ) ) {}
 
   private slots:
+    void cleanupTestCase();
 
     void creation(); //test creation of QgsLayoutObject
     void layout(); //test fetching layout from QgsLayoutObject
@@ -40,6 +41,11 @@ class TestQgsLayoutObject: public QgsTest
 
 };
 
+
+void TestQgsLayoutObject::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsLayoutObject::creation()
 {

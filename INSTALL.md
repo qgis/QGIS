@@ -19,6 +19,7 @@ Building QGIS from source - step by step
        * [3.8.1. Compiling with 3D on old Debian based distributions](#381-compiling-with-3d-on-old-debian-based-distributions)
    * [3.9. Building different branches](#39-building-different-branches)
    * [3.10. Building Debian packages](#310-building-debian-packages)
+       * [3.10.1. Building packages with oracle support](#3101-building-packages-with-oracle-support)
    * [3.11. On Fedora Linux](#311-on-fedora-linux)
        * [3.11.1. Install build dependencies](#3111-install-build-dependencies)
        * [3.11.2. Suggested system tweaks](#3112-suggested-system-tweaks)
@@ -405,11 +406,18 @@ Instead of creating a personal installation as in the previous step you can
 also create debian package. This is done from the QGIS root directory, where
 you'll find a debian directory.
 
-First you need to install the [build dependencies](#33-install-build-dependencies)
-and setup a changelog entry for your distribution. For example for Debian Bookworm:
+First setup a changelog entry for your distribution. For example for Debian Bookworm:
 
 ```bash
 dch -l ~bookworm --force-distribution --distribution bookworm "bookworm build"
+```
+
+You also need to install the [build dependencies](#33-install-build-dependencies).
+Alternatively use:
+
+```bash
+debian/rules templates
+sudo mk-build-deps -i
 ```
 
 The QGIS packages will be created with:
@@ -418,7 +426,7 @@ The QGIS packages will be created with:
 dpkg-buildpackage -us -uc -b
 ```
 
-**Note:** Install `devscripts` to get `dch`.
+**Note:** Install `devscripts` to get `dch` and `mk-build-deps`.
 
 **Note:** If you have `libqgis1-dev` installed, you need to remove it first
 using `dpkg -r libqgis1-dev`.  Otherwise `dpkg-buildpackage` will complain about a
@@ -434,6 +442,28 @@ Install them using `dpkg`.  E.g.:
 
 ```bash
 sudo debi
+```
+
+### 3.10.1. Building packages with Oracle support
+
+To build packages with Oracle support you need the Oracle libraries (currently
+21.11) as additional build dependencies:
+
+```bash
+curl -JLO https://download.oracle.com/otn_software/linux/instantclient/2111000/oracle-instantclient-devel-21.11.0.0.0-1.el8.x86_64.rpm
+curl -JLO https://download.oracle.com/otn_software/linux/instantclient/2111000/oracle-instantclient-basiclite-21.11.0.0.0-1.el8.x86_64.rpm
+sudo apt install alien
+fakeroot alien oracle-instantclient-devel-21.11.0.0.0-1.el8.x86_64.rpm oracle-instantclient-basiclite-21.11.0.0.0-1.el8.x86_64.rpm
+sudo dpkg -i oracle-instantclient-devel_21.11.0.0.0-2_amd64.deb oracle-instantclient-basiclite_21.11.0.0.0-2_amd64.deb
+```
+
+(if the client version changes it's necessary to adapt `ORACLE_INCLUDEDIR` and `ORACLE_LIBDIR` in `debian/rules` accordingly)
+
+The packaging files enable Oracle support if the distribution contains `-oracle`:
+
+```bash
+dch -l ~sid~oracle --force-distribution --distribution sid-oracle "sid build with oracle"                                                                                                                      │
+dpkg-buildpackage -us -uc -b
 ```
 
 ## 3.11. On Fedora Linux

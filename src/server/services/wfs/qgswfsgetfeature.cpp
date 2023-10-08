@@ -306,7 +306,7 @@ namespace QgsWfs
       {
         for ( const QgsField &field : fields )
         {
-          if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWfs ) )
+          if ( field.configurationFlags().testFlag( Qgis::FieldConfigurationFlag::HideFromWfs ) )
           {
             int fieldNameIdx = fields.indexOf( field.name() );
             if ( fieldNameIdx > -1 && attrIndexes.contains( fieldNameIdx ) )

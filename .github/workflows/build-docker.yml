@@ -78,7 +78,7 @@ jobs:
 
       - name: Cache
         id: cache
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v3.3.2
         with:
           path: ~/.ccache
           key: docker-build-${{ matrix.branch }}-${{ github.sha }}
@@ -87,7 +87,7 @@ jobs:
             docker-build-master-
 
       - name: checkout ${{ matrix.branch }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ matrix.branch }}
 

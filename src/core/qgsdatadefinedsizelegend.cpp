@@ -24,6 +24,7 @@
 #include "qgstextrenderer.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsfontutils.h"
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
 {
@@ -397,8 +398,8 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegend::readXml( const QDomElement &
     QDomElement elemFont = elemTextStyle.firstChildElement( QStringLiteral( "font" ) );
     if ( !elemFont.isNull() )
     {
-      ddsLegend->setFont( QFont( elemFont.attribute( QStringLiteral( "family" ) ), elemFont.attribute( QStringLiteral( "size" ) ).toInt(),
-                                 elemFont.attribute( QStringLiteral( "weight" ) ).toInt(), elemFont.attribute( QStringLiteral( "italic" ) ).toInt() ) );
+      ddsLegend->setFont( QgsFontUtils::createFont( elemFont.attribute( QStringLiteral( "family" ) ), elemFont.attribute( QStringLiteral( "size" ) ).toInt(),
+                          elemFont.attribute( QStringLiteral( "weight" ) ).toInt(), elemFont.attribute( QStringLiteral( "italic" ) ).toInt() ) );
     }
     ddsLegend->setTextColor( QgsSymbolLayerUtils::decodeColor( elemTextStyle.attribute( QStringLiteral( "color" ) ) ) );
     ddsLegend->setTextAlignment( static_cast<Qt::AlignmentFlag>( elemTextStyle.attribute( QStringLiteral( "align" ) ).toInt() ) );

@@ -66,9 +66,9 @@ qgis:eliminateselectedpolygons: >
   Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons that are a result of polygon intersection processes where boundaries of the inputs are similar but not identical.
 
 qgis:executesql: >
-  Runs a simple or complex query with SQL syntax on the source layer.
+  Runs a simple or complex query with SQL syntax.
 
-  Input datasources are identified with input1, input2, ..., inputN and a simple query will look like: SELECT * FROM input1
+  Input data sources are identified with input1, input2, ..., inputN and a simple query will look like: SELECT * FROM input1
 
   The result of the query will be added as a new layer.
 

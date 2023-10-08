@@ -197,7 +197,7 @@ void QgsWfsDescribeFeatureTypeGml::setSchemaLayer( QDomElement &parentElement, Q
   {
     const QgsField field = fields.at( idx );
     //skip attribute if excluded from WFS publication
-    if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWfs ) )
+    if ( field.configurationFlags().testFlag( Qgis::FieldConfigurationFlag::HideFromWfs ) )
     {
       continue;
     }

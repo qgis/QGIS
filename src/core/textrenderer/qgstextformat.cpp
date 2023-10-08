@@ -482,7 +482,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
   }
   int fontWeight = layer->customProperty( QStringLiteral( "labeling/fontWeight" ) ).toInt();
   bool fontItalic = layer->customProperty( QStringLiteral( "labeling/fontItalic" ) ).toBool();
-  d->textFont = QFont( fontFamily, d->fontSize, fontWeight, fontItalic );
+  d->textFont = QgsFontUtils::createFont( fontFamily, d->fontSize, fontWeight, fontItalic );
   d->textNamedStyle = QgsFontUtils::translateNamedStyle( layer->customProperty( QStringLiteral( "labeling/namedStyle" ), QVariant( "" ) ).toString() );
   QgsFontUtils::updateFontViaStyle( d->textFont, d->textNamedStyle ); // must come after textFont.setPointSizeF()
   d->capitalization = static_cast< Qgis::Capitalization >( layer->customProperty( QStringLiteral( "labeling/fontCapitals" ), QVariant( 0 ) ).toUInt() );
@@ -604,7 +604,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   }
   int fontWeight = textStyleElem.attribute( QStringLiteral( "fontWeight" ) ).toInt();
   bool fontItalic = textStyleElem.attribute( QStringLiteral( "fontItalic" ) ).toInt();
-  d->textFont = QFont( fontFamily, d->fontSize, fontWeight, fontItalic );
+  d->textFont = QgsFontUtils::createFont( fontFamily, d->fontSize, fontWeight, fontItalic );
   d->textFont.setPointSizeF( d->fontSize ); //double precision needed because of map units
   d->textNamedStyle = QgsFontUtils::translateNamedStyle( textStyleElem.attribute( QStringLiteral( "namedStyle" ) ) );
   QgsFontUtils::updateFontViaStyle( d->textFont, d->textNamedStyle ); // must come after textFont.setPointSizeF()
@@ -953,7 +953,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   if ( ddBold || ddItalic )
   {
     // new font needs built, since existing style needs removed
-    newFont = QFont( !ddFontFamily.isEmpty() ? ddFontFamily : d->textFont.family() );
+    newFont = QgsFontUtils::createFont( !ddFontFamily.isEmpty() ? ddFontFamily : d->textFont.family() );
     newFontBuilt = true;
     newFont.setBold( ddBold );
     newFont.setItalic( ddItalic );
@@ -989,7 +989,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
     }
     else
     {
-      newFont = QFont( ddFontFamily );
+      newFont = QgsFontUtils::createFont( ddFontFamily );
       newFontBuilt = true;
     }
   }

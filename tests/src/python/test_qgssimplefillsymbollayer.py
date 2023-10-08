@@ -29,10 +29,8 @@ from qgis.core import (
     QgsFillSymbol,
     QgsGeometry,
     QgsMapSettings,
-    QgsMultiRenderChecker,
     QgsProperty,
     QgsRectangle,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsSimpleFillSymbolLayer,
     QgsSingleSymbolRenderer,
@@ -52,16 +50,8 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsSimpleFillSymbolLayer(QgisTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = "<h1>Python QgsSimpleFillSymbolLayer Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return "symbol_simplefill"
 
     def testRender(self):
         # rendering test
@@ -69,7 +59,9 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 0))')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simplefill_render', 'simplefill_render', rendered_image)
+        self.assertTrue(
+            self.image_check('simplefill_render', 'simplefill_render', rendered_image)
+        )
 
     def testRenderWithOffset(self):
         # rendering test with offset
@@ -78,7 +70,9 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 0))')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simplefill_offset', 'simplefill_offset', rendered_image)
+        self.assertTrue(
+            self.image_check('simplefill_offset', 'simplefill_offset', rendered_image)
+        )
 
     def testDataDefinedOffset(self):
         """ test that rendering a fill symbol with data defined offset works"""
@@ -110,13 +104,9 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
         ms.setLayers([polys_layer])
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_simplefill')
-        renderchecker.setControlName('expected_simplefill_ddoffset')
-        res = renderchecker.runTest('simplefill_ddoffset')
-        TestQgsSimpleFillSymbolLayer.report += renderchecker.report()
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_map_settings_check('simplefill_ddoffset', 'simplefill_ddoffset', ms)
+        )
 
     def testOpacityWithDataDefinedColor(self):
         poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
@@ -145,13 +135,9 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
         ms.setLayers([poly_layer])
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_simplefill')
-        renderchecker.setControlName('expected_simplefill_opacityddcolor')
-        res = renderchecker.runTest('expected_simplefill_opacityddcolor')
-        self.report += renderchecker.report()
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_map_settings_check('simplefill_opacityddcolor', 'simplefill_opacityddcolor', ms)
+        )
 
     def testDataDefinedOpacity(self):
         poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
@@ -180,13 +166,9 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
         ms.setLayers([poly_layer])
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_simplefill')
-        renderchecker.setControlName('expected_simplefill_ddopacity')
-        res = renderchecker.runTest('expected_simplefill_ddopacity')
-        self.report += renderchecker.report()
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_map_settings_check('simplefill_ddopacity', 'simplefill_ddopacity', ms)
+        )
 
     def renderGeometry(self, symbol, geom):
         f = QgsFeature()
@@ -219,21 +201,6 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
             painter.end()
 
         return image
-
-    def imageCheck(self, name, reference_image, image):
-        TestQgsSimpleFillSymbolLayer.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol_simplefill")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        TestQgsSimpleFillSymbolLayer.report += checker.report()
-        print(TestQgsSimpleFillSymbolLayer.report)
-        return result
 
 
 if __name__ == '__main__':

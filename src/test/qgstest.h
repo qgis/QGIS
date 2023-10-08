@@ -144,6 +144,7 @@ class TEST_EXPORT QgsTest : public QObject
     QgsTest( const QString &name, const QString &controlPathPrefix = QString() )
       : mName( name )
       , mControlPathPrefix( controlPathPrefix )
+      , mTestDataDir( QStringLiteral( TEST_DATA_DIR ) + '/' ) //defined in CmakeLists.txt
     {}
 
     ~QgsTest() override
@@ -152,11 +153,104 @@ class TEST_EXPORT QgsTest : public QObject
         writeLocalHtmlReport( mReport );
     }
 
+    /**
+     * Returns the full path to the test data with the given file path.
+     */
+    QString testDataPath( const QString &filePath ) const
+    {
+      return mTestDataDir.filePath( filePath.startsWith( '/' ) ? filePath.mid( 1 ) : filePath );
+    }
+
+    /**
+     * Copies the test data with the given file path to a
+     * temporary directory and returns the full path to the copy.
+     */
+    QString copyTestData( const QString &filePath )
+    {
+      const QString srcPath = testDataPath( filePath );
+      const QFileInfo srcFileInfo( srcPath );
+
+      // lazy create temporary dir
+      if ( !mTemporaryDir )
+        mTemporaryDir = std::make_unique< QTemporaryDir >();
+
+      // we put all copies into a subdirectory of the temporary dir, so that we isolate clean copies
+      // of the same source file used by different test functions
+      mTemporaryCopyCount++;
+      const QString temporarySubdirectory = QStringLiteral( "test_%1" ).arg( mTemporaryCopyCount );
+      QDir().mkdir( mTemporaryDir->filePath( temporarySubdirectory ) );
+
+      const QString copiedDataPath = mTemporaryDir->filePath( temporarySubdirectory + '/' + srcFileInfo.fileName() );
+
+      QFile::copy( srcPath, copiedDataPath );
+      return copiedDataPath;
+    }
+
+    /**
+     * Recursively copies a whole directory.
+     */
+    void copyDirectory( const QString &source, const QString &destination )
+    {
+      QDir sourceDir( source );
+      if ( !sourceDir.exists() )
+        return;
+
+      QDir destDir( destination );
+      if ( !destDir.exists() )
+      {
+        destDir.mkdir( destination );
+      }
+
+      const QStringList files = sourceDir.entryList( QDir::Files );
+      for ( const QString &file : files )
+      {
+        const QString srcFileName = sourceDir.filePath( file );
+        const QString destFileName = destDir.filePath( file );
+        QFile::copy( srcFileName, destFileName );
+      }
+      const QStringList dirs = sourceDir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot );
+      for ( const QString &dir : dirs )
+      {
+        const QString srcDirName = sourceDir.filePath( dir );
+        const QString destDirName = destDir.filePath( dir );
+        copyDirectory( srcDirName, destDirName );
+      }
+    }
+
+    /**
+     * Copies a complete directory from the test data with the given directory path to a
+     * temporary directory and returns the full path to the copy.
+     */
+    QString copyTestDataDirectory( const QString &dirPath )
+    {
+      const QString srcPath = testDataPath( dirPath );
+      const QFileInfo srcFileInfo( srcPath );
+
+      // lazy create temporary dir
+      if ( !mTemporaryDir )
+        mTemporaryDir = std::make_unique< QTemporaryDir >();
+
+      // we put all copies into a subdirectory of the temporary dir, so that we isolate clean copies
+      // of the same source file used by different test functions
+      mTemporaryCopyCount++;
+      const QString temporarySubdirectory = QStringLiteral( "test_%1" ).arg( mTemporaryCopyCount );
+      QDir().mkdir( mTemporaryDir->filePath( temporarySubdirectory ) );
+
+      const QString copiedDataPath = mTemporaryDir->filePath( temporarySubdirectory + '/' + srcFileInfo.fileName() );
+
+      copyDirectory( srcPath, copiedDataPath );
+      return copiedDataPath;
+    }
+
   protected:
 
     QString mName;
     QString mReport;
     QString mControlPathPrefix;
+    std::unique_ptr< QTemporaryDir > mTemporaryDir;
+    int mTemporaryCopyCount = 0;
+
+    const QDir mTestDataDir;
 
     bool renderMapSettingsCheck( const QString &name, const QString &referenceImage, const QgsMapSettings &mapSettings, int allowedMismatch = 0, int colorTolerance = 0 )
     {
@@ -201,10 +295,14 @@ class TEST_EXPORT QgsTest : public QObject
       return result;
     }
 
-    bool layoutCheck( const QString &name, QgsLayout *layout, int page = 0, int allowedMismatch = 0 )
+    bool layoutCheck( const QString &name, QgsLayout *layout, int page = 0, int allowedMismatch = 0, const QSize size = QSize(), int colorTolerance = 0 )
     {
       QgsLayoutChecker checker( name, layout );
       checker.setControlPathPrefix( mControlPathPrefix );
+      if ( size.isValid() )
+        checker.setSize( size );
+      if ( colorTolerance > 0 )
+        checker.setColorTolerance( colorTolerance );
 
       QString report;
       const bool result = checker.testLayout( report, page, allowedMismatch );

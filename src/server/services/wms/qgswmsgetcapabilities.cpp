@@ -1696,7 +1696,7 @@ namespace QgsWms
           for ( int idx = 0; idx < layerFields.count(); ++idx )
           {
             QgsField field = layerFields.at( idx );
-            if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
+            if ( field.configurationFlags().testFlag( Qgis::FieldConfigurationFlag::HideFromWms ) )
             {
               continue;
             }

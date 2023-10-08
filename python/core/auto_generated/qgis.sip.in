@@ -706,6 +706,17 @@ The development version
       NeverAskLoadAll,
     };
 
+    enum class FieldConfigurationFlag
+    {
+      NoFlag,
+      NotSearchable,
+      HideFromWms,
+      HideFromWfs,
+    };
+
+    typedef QFlags<Qgis::FieldConfigurationFlag> FieldConfigurationFlags;
+
+
     enum class FieldMetadataProperty
     {
       GeometryCrs,
@@ -2427,6 +2438,8 @@ QFlags<Qgis::TiledSceneProviderCapability> operator|(Qgis::TiledSceneProviderCap
 QFlags<Qgis::TiledSceneRequestFlag> operator|(Qgis::TiledSceneRequestFlag f1, QFlags<Qgis::TiledSceneRequestFlag> f2);
 
 QFlags<Qgis::TiledSceneRendererFlag> operator|(Qgis::TiledSceneRendererFlag f1, QFlags<Qgis::TiledSceneRendererFlag> f2);
+
+QFlags<Qgis::FieldConfigurationFlag> operator|(Qgis::FieldConfigurationFlag f1, QFlags<Qgis::FieldConfigurationFlag> f2);
 
 
 

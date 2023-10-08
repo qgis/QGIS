@@ -28,7 +28,7 @@ jobs:
         - ${{ github.workspace }}:/w
     steps:
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # To be removed
       # Workaround a bug where the initial /etc/dnf/dnf.conf file contains

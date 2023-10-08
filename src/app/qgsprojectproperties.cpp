@@ -921,24 +921,35 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       psb->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WFSLayersPrecision" ), "/" + currentLayer->id(), 8 ) );
       twWFSLayers->setCellWidget( j, 2, psb );
 
-      if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+      QCheckBox *cbu = new QCheckBox();
+      cbu->setEnabled( false );
+      if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
       {
-        QCheckBox *cbu = new QCheckBox();
-        cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
-        twWFSLayers->setCellWidget( j, 3, cbu );
+        if ( ! currentLayer->isSpatial() || ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+        {
+          cbu->setEnabled( true );
+          cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
+        }
       }
+      twWFSLayers->setCellWidget( j, 3, cbu );
+
+      QCheckBox *cbi = new QCheckBox();
+      cbi->setEnabled( false );
       if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
       {
-        QCheckBox *cbi = new QCheckBox();
+        cbi->setEnabled( true );
         cbi->setChecked( wfstInsertLayerIdList.contains( currentLayer->id() ) );
-        twWFSLayers->setCellWidget( j, 4, cbi );
       }
+      twWFSLayers->setCellWidget( j, 4, cbi );
+
+      QCheckBox *cbd = new QCheckBox();
+      cbd->setEnabled( false );
       if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
       {
-        QCheckBox *cbd = new QCheckBox();
+        cbd->setEnabled( true );
         cbd->setChecked( wfstDeleteLayerIdList.contains( currentLayer->id() ) );
-        twWFSLayers->setCellWidget( j, 5, cbd );
       }
+      twWFSLayers->setCellWidget( j, 5, cbd );
 
       j++;
     }

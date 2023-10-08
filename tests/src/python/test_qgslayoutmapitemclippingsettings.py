@@ -147,13 +147,17 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
         self.assertEqual(map2.itemClippingSettings().sourceItem(), shape2)
 
     def testClippedMapExtent(self):
+        # - we position a map and a triangle in a layout at specific layout/scene coordinates
+        # - the map is zoomed to a specific extent, defined in map/crs coordinates
+        # - we use the triangle to clip the map in the layout
+        #   and test if the triangle is converted to the correct clipped extent in map/crs coordinates
         p = QgsProject()
         l = QgsPrintLayout(p)
         map = QgsLayoutItemMap(l)
         shape = QgsLayoutItemShape(l)
         l.addLayoutItem(map)
         map.attemptSetSceneRect(QRectF(10, 20, 100, 80))
-        map.zoomToExtent(QgsRectangle(100, 200, 50, 40))
+        map.zoomToExtent(QgsRectangle(50, 40, 100, 200))
         l.addLayoutItem(shape)
         shape.setShapeType(QgsLayoutItemShape.Triangle)
         shape.attemptSetSceneRect(QRectF(20, 30, 70, 50))
@@ -166,6 +170,10 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
         self.assertEqual(geom.asWkt(), 'Polygon ((-5 80, 135 80, 65 180, -5 80))')
 
     def testToMapClippingRegion(self):
+        # - we position a map and a triangle in a layout at specific layout/scene coordinates
+        # - the map is zoomed to a specific extent, defined in map/crs coordinates
+        # - we use the triangle to clip the map in the layout
+        #   and test if the triangle is converted to the correct clipping shape in map/crs coordinates
         p = QgsProject()
         l = QgsPrintLayout(p)
         p.layoutManager().addLayout(l)
@@ -173,7 +181,7 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
         shape = QgsLayoutItemShape(l)
         l.addLayoutItem(map)
         map.attemptSetSceneRect(QRectF(10, 20, 100, 80))
-        map.zoomToExtent(QgsRectangle(100, 200, 50, 40))
+        map.zoomToExtent(QgsRectangle(50, 40, 100, 200))
         l.addLayoutItem(shape)
         shape.setShapeType(QgsLayoutItemShape.Triangle)
         shape.attemptSetSceneRect(QRectF(20, 30, 70, 50))

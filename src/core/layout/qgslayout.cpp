@@ -318,7 +318,7 @@ QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *b
   }
 
   bool foundBelowItem = false;
-  for ( QGraphicsItem *graphicsItem : itemList )
+  for ( QGraphicsItem *graphicsItem : std::as_const( itemList ) )
   {
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( graphicsItem );
     QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( layoutItem );

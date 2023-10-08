@@ -749,7 +749,7 @@ void QgsLabelPropertyDialog::mYCoordSpinBox_valueChanged( double d )
 
 void QgsLabelPropertyDialog::mFontFamilyCmbBx_currentFontChanged( const QFont &f )
 {
-  mLabelFont.setFamily( f.family() );
+  QgsFontUtils::setFontFamily( mLabelFont, f.family() );
   updateFont( mLabelFont );
   insertChangedValue( QgsPalLayerSettings::Family, f.family() );
 }

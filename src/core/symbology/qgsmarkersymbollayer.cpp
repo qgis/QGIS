@@ -3536,7 +3536,7 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 
-  mFont = QFont( QgsApplication::fontManager()->processFontFamilyName( mFontFamily ) );
+  mFont = QgsFontUtils::createFont( QgsApplication::fontManager()->processFontFamilyName( mFontFamily ) );
   if ( !mFontStyle.isEmpty() )
   {
     mFont.setStyleName( QgsFontUtils::translateNamedStyle( mFontStyle ) );
@@ -3744,7 +3744,7 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     context.setOriginalValueVariable( mFontFamily );
     const QString fontFamily = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFontFamily, context.renderContext().expressionContext(), mFontFamily, &ok );
     const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( ok ? fontFamily : mFontFamily );
-    mFont.setFamily( processedFamily );
+    QgsFontUtils::setFontFamily( mFont, processedFamily );
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontStyle ) )
   {

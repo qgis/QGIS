@@ -1128,11 +1128,21 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
         }
         break;
       }
+      case Qgis::LayerType::TiledScene:
+      {
+        QgsTiledSceneLayer *sceneLayer = qobject_cast< QgsTiledSceneLayer *>( layer );
+        const QgsDoubleRange zRange = sceneLayer->elevationProperties()->calculateZRange( sceneLayer );
+        if ( !zRange.isInfinite() && !zRange.isEmpty() )
+        {
+          yMin = std::min( yMin, zRange.lower() );
+          yMax = std::max( yMax, zRange.upper() );
+        }
+        break;
+      }
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::Group:
       case Qgis::LayerType::Plugin:
       case Qgis::LayerType::Raster:
-      case Qgis::LayerType::TiledScene:
       case Qgis::LayerType::Vector:
       case Qgis::LayerType::VectorTile:
         break;

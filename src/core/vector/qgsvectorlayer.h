@@ -2242,23 +2242,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Sets the configuration flags of the field at given index
-     * \see QgsField::ConfigurationFlag
+     * \see QgsField::configurationFlags()
      * \since QGIS 3.16
      */
-    void setFieldConfigurationFlags( int index, QgsField::ConfigurationFlags flags ) SIP_SKIP;
+    void setFieldConfigurationFlags( int index, Qgis::FieldConfigurationFlags flags );
 
     /**
      * Sets the given configuration \a flag for the field at given \a index to be \a active or not.
      * \since QGIS 3.16
      */
-    void setFieldConfigurationFlag( int index, QgsField::ConfigurationFlag flag, bool active ) SIP_SKIP;
+    void setFieldConfigurationFlag( int index, Qgis::FieldConfigurationFlag flag, bool active );
 
     /**
      * Returns the configuration flags of the field at given index
-     * \see QgsField::ConfigurationFlag
+     * \see QgsField::setConfigurationFlags()
      * \since QGIS 3.16
      */
-    QgsField::ConfigurationFlags fieldConfigurationFlags( int index ) const SIP_SKIP;
+    Qgis::FieldConfigurationFlags fieldConfigurationFlags( int index ) const;
 
     /**
      * \copydoc editorWidgetSetup
@@ -2993,7 +2993,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Map which stores expression constraints for fields. Value is a pair of expression/description.
     QMap< QString, QPair< QString, QString > > mFieldConstraintExpressions;
 
-    QMap< QString, QgsField::ConfigurationFlags > mFieldConfigurationFlags;
+    QMap< QString, Qgis::FieldConfigurationFlags > mFieldConfigurationFlags;
     QMap< QString, QgsEditorWidgetSetup > mFieldWidgetSetups;
 
     //! Holds the configuration for the edit form

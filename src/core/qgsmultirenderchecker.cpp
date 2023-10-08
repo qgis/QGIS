@@ -79,6 +79,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     checker.setControlPathSuffix( suffix );
     checker.setControlName( mControlName );
     checker.setMapSettings( mMapSettings );
+    checker.setExpectFail( mExpectFail );
 
     if ( !mRenderedImage.isNull() )
     {
@@ -242,6 +243,9 @@ bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDi
   p.end();
 
   QString renderedFilePath = QDir::tempPath() + '/' + QFileInfo( mTestName ).baseName() + "_rendered.png";
+  if ( QFile::exists( renderedFilePath ) )
+    QFile::remove( renderedFilePath );
+
   outputImage.save( renderedFilePath, "PNG" );
 
   setRenderedImage( renderedFilePath );

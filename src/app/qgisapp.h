@@ -2448,7 +2448,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapToolsDigitizingTechniqueManager *mDigitizingTechniqueManager = nullptr;
     std::unique_ptr< QgsAppMapTools > mMapTools;
 
-    QgsMapTool *mNonEditMapTool = nullptr;
+    QPointer< QgsMapTool > mNonEditMapTool;
 
     QgsTaskManagerStatusBarWidget *mTaskManagerWidget = nullptr;
 

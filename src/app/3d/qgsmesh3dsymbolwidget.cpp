@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmesh3dsymbolwidget.h"
+#include "qgs3dtypes.h"
 #include "qgsmeshlayer.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshdataprovider.h"
@@ -32,9 +33,19 @@ QgsMesh3DSymbolWidget::QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
   mComboBoxTextureType->addItem( tr( "Single Color" ), QgsMesh3DSymbol::SingleColor );
   mComboBoxTextureType->setCurrentIndex( 0 );
 
+  mCullingMode->addItem( tr( "No Culling" ), Qgs3DTypes::NoCulling );
+  mCullingMode->addItem( tr( "Front" ), Qgs3DTypes::Front );
+  mCullingMode->addItem( tr( "Back" ), Qgs3DTypes::Back );
+
+  mCullingMode->setItemData( 0, tr( "Both sides of the mesh are visible" ), Qt::ToolTipRole );
+  mCullingMode->setItemData( 1, tr( "Only the back of the mesh is visible" ), Qt::ToolTipRole );
+  mCullingMode->setItemData( 2, tr( "Only the front of the mesh is visible" ), Qt::ToolTipRole );
+
   mDatasetGroupListModel = new QgsMeshDatasetGroupListModel( this );
   mComboBoxDatasetVertical->setModel( mDatasetGroupListModel );
   setLayer( meshLayer );
+
+  connect( mCullingMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMesh3DSymbolWidget::changed );
 
   connect( mChkSmoothTriangles, &QCheckBox::clicked, this, &QgsMesh3DSymbolWidget::changed );
   connect( mGroupBoxWireframe, &QGroupBox::toggled, this, &QgsMesh3DSymbolWidget::changed );
@@ -77,6 +88,7 @@ QgsMesh3DSymbolWidget::QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
 void QgsMesh3DSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
 {
   mSymbol.reset( symbol->clone() );
+  mCullingMode->setCurrentIndex( mCullingMode->findData( symbol->cullingMode() ) );
   mChkSmoothTriangles->setChecked( symbol->smoothedTriangles() );
   mGroupBoxWireframe->setChecked( symbol->wireframeEnabled() );
   mColorButtonWireframe->setColor( symbol->wireframeLineColor() );
@@ -179,6 +191,7 @@ std::unique_ptr<QgsMesh3DSymbol> QgsMesh3DSymbolWidget::symbol() const
 {
   std::unique_ptr< QgsMesh3DSymbol > sym( mSymbol->clone() );
 
+  sym->setCullingMode( static_cast<Qgs3DTypes::CullingMode>( mCullingMode->currentData().toInt() ) );
   sym->setSmoothedTriangles( mChkSmoothTriangles->isChecked() );
   sym->setWireframeEnabled( mGroupBoxWireframe->isChecked() );
   sym->setWireframeLineColor( mColorButtonWireframe->color() );
@@ -266,5 +279,3 @@ void QgsMesh3DSymbolWidget::enableArrowSettings( bool isEnable )
 {
   mGroupBoxArrowsSettings->setVisible( isEnable );
 }
-
-

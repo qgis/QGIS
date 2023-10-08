@@ -1655,7 +1655,7 @@ namespace QgsWms
       }
     }
 
-    if ( featuresRect )
+    if ( featuresRect && ! featuresRect->isNull() )
     {
       if ( infoFormat == QgsWmsParameters::Format::GML )
       {
@@ -2033,7 +2033,7 @@ namespace QgsWms
     }
 
     //skip attribute if it is explicitly excluded from WMS publication
-    if ( fields.at( attributeIndex ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
+    if ( fields.at( attributeIndex ).configurationFlags().testFlag( Qgis::FieldConfigurationFlag::HideFromWms ) )
     {
       return;
     }
@@ -2863,7 +2863,7 @@ namespace QgsWms
     {
       QString attributeName = fields.at( i ).name();
       //skip attribute if it is explicitly excluded from WMS publication
-      if ( fields.at( i ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
+      if ( fields.at( i ).configurationFlags().testFlag( Qgis::FieldConfigurationFlag::HideFromWms ) )
       {
         continue;
       }

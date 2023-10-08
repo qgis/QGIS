@@ -12,8 +12,15 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import os
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QRectF
-from qgis.PyQt.QtGui import QColor, QPainter
+from qgis.PyQt.QtCore import (
+    Qt,
+    QRectF
+)
+from qgis.PyQt.QtGui import (
+    QColor,
+    QPainter,
+    QImage
+)
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsLayout,
@@ -28,6 +35,9 @@ from qgis.core import (
     QgsProject,
     QgsProperty,
     QgsUnitTypes,
+    QgsFillSymbol,
+    QgsSimpleFillSymbolLayer,
+    QgsLayoutRenderContext
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -60,6 +70,10 @@ class LayoutItemTestCase:
 
 
 class TestQgsLayoutItem(QgisTestCase):
+
+    @classmethod
+    def control_path_prefix(cls):
+        return 'composer_effects'
 
     def testDataDefinedFrameColor(self):
         layout = QgsLayout(QgsProject.instance())
@@ -237,6 +251,184 @@ class TestQgsLayoutItem(QgisTestCase):
         map.refresh()
         self.assertFalse(map.containsAdvancedEffects())
         self.assertTrue(map.requiresRasterization())
+
+    def test_blend_mode_rendering_designer_preview(self):
+        """
+        Test rendering of blend modes while in designer dialogs
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        self.assertTrue(l.renderContext().isPreviewRender())
+
+        l.initializeDefaults()
+        item1 = QgsLayoutItemShape(l)
+        item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
+        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(255, 150, 0))
+        simple_fill.setStrokeColor(Qt.black)
+        item1.setSymbol(fill_symbol)
+
+        l.addLayoutItem(item1)
+        item2 = QgsLayoutItemShape(l)
+        item2.attemptSetSceneRect(QRectF(50, 50, 150, 100))
+        item2.setShapeType(QgsLayoutItemShape.Rectangle)
+        l.addLayoutItem(item2)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(0, 100, 150))
+        simple_fill.setStrokeColor(Qt.black)
+        item2.setSymbol(fill_symbol)
+
+        item2.setBlendMode(QPainter.CompositionMode_Multiply)
+
+        page_item = l.pageCollection().page(0)
+        paper_rect = QRectF(page_item.pos().x(),
+                            page_item.pos().y(),
+                            page_item.rect().width(),
+                            page_item.rect().height())
+
+        im = QImage(1122, 794, QImage.Format_ARGB32)
+        im.fill(Qt.transparent)
+        im.setDotsPerMeterX(int(300 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(300 / 25.4 * 1000))
+        painter = QPainter(im)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+
+        l.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
+        painter.end()
+
+        self.assertTrue(self.image_check('blend_modes_preview_mode',
+                                         'composereffects_blend',
+                                         im, allowed_mismatch=0))
+
+    def test_blend_mode_rendering_export(self):
+        """
+        Test rendering of blend modes when exporting layouts
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        l.initializeDefaults()
+        item1 = QgsLayoutItemShape(l)
+        item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
+        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(255, 150, 0))
+        simple_fill.setStrokeColor(Qt.black)
+        item1.setSymbol(fill_symbol)
+
+        l.addLayoutItem(item1)
+        item2 = QgsLayoutItemShape(l)
+        item2.attemptSetSceneRect(QRectF(50, 50, 150, 100))
+        item2.setShapeType(QgsLayoutItemShape.Rectangle)
+        l.addLayoutItem(item2)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(0, 100, 150))
+        simple_fill.setStrokeColor(Qt.black)
+        item2.setSymbol(fill_symbol)
+
+        item2.setBlendMode(QPainter.CompositionMode_Multiply)
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composereffects_blend",
+                l
+            )
+        )
+
+    def test_blend_mode_rendering_export_no_advanced_effects(self):
+        """
+        Test rendering of blend modes when exporting layouts when advanced
+        effects are disabled.
+
+        Blend mode will be completely disabled in this scenario
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.renderContext().setFlag(QgsLayoutRenderContext.FlagUseAdvancedEffects, False)
+
+        l.initializeDefaults()
+        item1 = QgsLayoutItemShape(l)
+        item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
+        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(255, 150, 0))
+        simple_fill.setStrokeColor(Qt.black)
+        item1.setSymbol(fill_symbol)
+
+        l.addLayoutItem(item1)
+        item2 = QgsLayoutItemShape(l)
+        item2.attemptSetSceneRect(QRectF(50, 50, 150, 100))
+        item2.setShapeType(QgsLayoutItemShape.Rectangle)
+        l.addLayoutItem(item2)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(0, 100, 150))
+        simple_fill.setStrokeColor(Qt.black)
+        item2.setSymbol(fill_symbol)
+
+        item2.setBlendMode(QPainter.CompositionMode_Multiply)
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composereffects_blend_no_advanced_effects",
+                l
+            )
+        )
+
+    def test_blend_mode_rendering_export_force_vector(self):
+        """
+        Test rendering of blend modes when exporting layouts when force
+        vector flag is on.
+
+        Blend mode will be completely disabled in this scenario
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.renderContext().setFlag(QgsLayoutRenderContext.FlagForceVectorOutput, True)
+
+        l.initializeDefaults()
+        item1 = QgsLayoutItemShape(l)
+        item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
+        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(255, 150, 0))
+        simple_fill.setStrokeColor(Qt.black)
+        item1.setSymbol(fill_symbol)
+
+        l.addLayoutItem(item1)
+        item2 = QgsLayoutItemShape(l)
+        item2.attemptSetSceneRect(QRectF(50, 50, 150, 100))
+        item2.setShapeType(QgsLayoutItemShape.Rectangle)
+        l.addLayoutItem(item2)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(0, 100, 150))
+        simple_fill.setStrokeColor(Qt.black)
+        item2.setSymbol(fill_symbol)
+
+        item2.setBlendMode(QPainter.CompositionMode_Multiply)
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composereffects_blend_no_advanced_effects",
+                l
+            )
+        )
 
 
 if __name__ == '__main__':

@@ -38,8 +38,8 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
 
   connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
   {
-    mBoundingRect = QRectF();
     prepareGeometryChange();
+    mBoundingRect = QRectF();
   } );
 
   const QFont font;

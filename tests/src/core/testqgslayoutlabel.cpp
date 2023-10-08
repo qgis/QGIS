@@ -38,7 +38,7 @@ class TestQgsLayoutLabel : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutLabel() : QgsTest( QStringLiteral( "Layout Label Tests" ) ) {}
+    TestQgsLayoutLabel() : QgsTest( QStringLiteral( "Layout Label Tests" ), QStringLiteral( "composer_label" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -284,9 +284,7 @@ void TestQgsLayoutLabel::render()
   label->attemptMove( QgsLayoutPoint( 70, 70 ) );
   label->adjustSizeToText();
 
-  QgsLayoutChecker checker( QStringLiteral( "composerlabel_render" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_label" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerlabel_render" ), &l ) );
 }
 
 void TestQgsLayoutLabel::renderAsHtml()
@@ -312,9 +310,7 @@ void TestQgsLayoutLabel::renderAsHtml()
   label->setMode( QgsLayoutItemLabel::ModeHtml );
   label->update();
 
-  QgsLayoutChecker checker( QStringLiteral( "composerlabel_renderhtml" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_label" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 10 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerlabel_renderhtml" ), &l, 0, 10 ) );
 }
 
 #ifdef WITH_QTWEBKIT
@@ -329,9 +325,7 @@ void TestQgsLayoutLabel::convertToHtml()
   QgsLayoutMultiFrame *html = layout->multiFrames().at( 0 );
   QVERIFY( html );
 
-  QgsLayoutChecker checker( QStringLiteral( "composerlabel_converttohtml" ), layout );
-  checker.setControlPathPrefix( QStringLiteral( "composer_label" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 10 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerlabel_converttohtml" ), layout, 0, 10 ) );
 }
 
 void TestQgsLayoutLabel::renderAsHtmlRelative()
@@ -358,9 +352,7 @@ void TestQgsLayoutLabel::renderAsHtmlRelative()
   label->setMode( QgsLayoutItemLabel::ModeHtml );
   label->update();
 
-  QgsLayoutChecker checker( QStringLiteral( "composerlabel_renderhtmlrelative" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_label" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  QVERIFY( layoutCheck( QStringLiteral( "composerlabel_renderhtmlrelative" ), &l ) );
 }
 #endif
 
@@ -385,9 +377,8 @@ void TestQgsLayoutLabel::labelRotation()
   label->setBackgroundEnabled( true );
   label->setItemRotation( 135 );
 
-  QgsLayoutChecker checker( QStringLiteral( "layoutrotation_label" ), &l );
-  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
-  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+  mControlPathPrefix = QStringLiteral( "composer_items" );
+  QVERIFY( layoutCheck( QStringLiteral( "layoutrotation_label" ), &l ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutLabel )

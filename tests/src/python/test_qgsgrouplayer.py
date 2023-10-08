@@ -26,7 +26,6 @@ from qgis.core import (
     QgsGroupLayer,
     QgsImageOperation,
     QgsMapSettings,
-    QgsMultiRenderChecker,
     QgsPointXY,
     QgsProject,
     QgsRasterLayer,
@@ -45,16 +44,8 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsGroupLayer(QgisTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = "<h1>Python QgsGroupLayer Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return 'group_layer'
 
     def test_children(self):
         options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
@@ -206,13 +197,9 @@ class TestQgsGroupLayer(QgisTestCase):
         mapsettings.setExtent(group_layer.extent())
         mapsettings.setLayers([group_layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('group_layer')
-        renderchecker.setControlName('expected_group_opacity')
-        result = renderchecker.runTest('expected_group_opacity')
-        TestQgsGroupLayer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('group_opacity', 'group_opacity', mapsettings)
+        )
 
     def test_render_group_blend_mode(self):
         """
@@ -235,13 +222,9 @@ class TestQgsGroupLayer(QgisTestCase):
         mapsettings.setExtent(group_layer.extent())
         mapsettings.setLayers([group_layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('group_layer')
-        renderchecker.setControlName('expected_group_child_blend_mode')
-        result = renderchecker.runTest('expected_group_child_blend_mode')
-        TestQgsGroupLayer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('group_child_blend_mode', 'group_child_blend_mode', mapsettings)
+        )
 
     def test_render_paint_effect(self):
         """
@@ -274,13 +257,9 @@ class TestQgsGroupLayer(QgisTestCase):
         mapsettings.setExtent(group_layer.extent())
         mapsettings.setLayers([group_layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('group_layer')
-        renderchecker.setControlName('expected_group_paint_effect')
-        result = renderchecker.runTest('expected_group_paint_effect')
-        TestQgsGroupLayer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('group_paint_effect', 'group_paint_effect', mapsettings)
+        )
 
     def test_render_magnification(self):
         """
@@ -311,13 +290,9 @@ class TestQgsGroupLayer(QgisTestCase):
         mapsettings.setExtent(group_layer.extent())
         mapsettings.setLayers([group_layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('group_layer')
-        renderchecker.setControlName('expected_group_magnification')
-        result = renderchecker.runTest('expected_group_magnification')
-        TestQgsGroupLayer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('group_magnification', 'group_magnification', mapsettings)
+        )
 
 
 if __name__ == '__main__':

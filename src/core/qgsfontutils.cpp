@@ -605,3 +605,28 @@ QStringList QgsFontUtils::recentFontFamilies()
   const QgsSettings settings;
   return settings.value( QStringLiteral( "fonts/recent" ) ).toStringList();
 }
+
+void QgsFontUtils::setFontFamily( QFont &font, const QString &family )
+{
+  font.setFamily( family );
+  if ( !font.exactMatch() )
+  {
+    // some Qt versions struggle with fonts with certain unusual characters
+    // in their names, eg "ESRI Oil, Gas, & Water". Calling "setFamilies"
+    // can workaround these issues... (in some cases!)
+    font.setFamilies( { family } );
+  }
+}
+
+QFont QgsFontUtils::createFont( const QString &family, int pointSize, int weight, bool italic )
+{
+  QFont font( family, pointSize, weight, italic );
+  if ( !font.exactMatch() )
+  {
+    // some Qt versions struggle with fonts with certain unusual characters
+    // in their names, eg "ESRI Oil, Gas, & Water". Calling "setFamilies"
+    // can workaround these issues... (in some cases!)
+    font.setFamilies( { family } );
+  }
+  return font;
+}

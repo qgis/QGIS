@@ -15,6 +15,7 @@
 
 #include "qgstextcharacterformat.h"
 #include "qgsrendercontext.h"
+#include "qgsfontutils.h"
 
 #include <QTextCharFormat>
 
@@ -119,7 +120,7 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
 {
   // important -- MUST set family first
   if ( !mFontFamily.isEmpty() )
-    font.setFamily( mFontFamily );
+    QgsFontUtils::setFontFamily( font, mFontFamily );
 
   if ( mFontPointSize != -1 )
     font.setPixelSize( scaleFactor * context.convertToPainterUnits( mFontPointSize, Qgis::RenderUnit::Points ) );

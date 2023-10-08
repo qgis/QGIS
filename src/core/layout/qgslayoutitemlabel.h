@@ -140,14 +140,14 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
      * \see hAlign()
      * \see setVAlign()
      */
-    void setHAlign( Qt::AlignmentFlag alignment ) { mHAlignment = alignment; }
+    void setHAlign( Qt::AlignmentFlag alignment ) { mHAlignment = alignment; invalidateCache(); }
 
     /**
      * Sets for the vertical \a alignment of the label.
      * \see vAlign()
      * \see setHAlign()
      */
-    void setVAlign( Qt::AlignmentFlag alignment ) { mVAlignment = alignment; }
+    void setVAlign( Qt::AlignmentFlag alignment ) { mVAlignment = alignment; invalidateCache(); }
 
     /**
      * Returns the horizontal margin between the edge of the frame and the label
@@ -211,13 +211,8 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     // In case of negative margins, the bounding rect may be larger than the
     // label's frame
     QRectF boundingRect() const override;
-
-    // Reimplemented to call prepareGeometryChange after toggling frame
     void setFrameEnabled( bool drawFrame ) override;
-
-    // Reimplemented to call prepareGeometryChange after changing stroke width
     void setFrameStrokeWidth( QgsLayoutMeasurement strokeWidth ) override;
-
 
     /**
      * Returns the text format used for drawing text in the label.
@@ -253,6 +248,8 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
   private slots:
 
     void refreshExpressionContext();
+    //! Updates the bounding rect of this item
+    void updateBoundingRect();
 
   private:
     bool mFirstRender = true;
@@ -296,6 +293,8 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     QString createStylesheet() const;
 
     std::unique_ptr< QgsDistanceArea > mDistanceArea;
+
+    QRectF mCurrentRectangle;
 
     friend class QgsLayoutItemHtml;
 };

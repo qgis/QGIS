@@ -228,10 +228,11 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
       QgsAbstractMetadataBase::KeywordMap keywords;
 
       /**
-       * TRUE if ISO3200 extension format georeferencing should be used.
+       * TRUE if ISO32000 extension format georeferencing should be used.
        *
-       * This is a recommended setting which results in Geospatial PDF files compatible
-       * with the built-in Acrobat geospatial tools.
+       * This is a recommended setting which results in Geospatial PDF files
+       * that use PDF 2.0 Geospatial Features (ISO 32000-2:2017).
+       * Compatible with the built-in Acrobat geospatial tools
        */
       bool useIso32000ExtensionFormatGeoreferencing = true;
 

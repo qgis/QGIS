@@ -1176,6 +1176,32 @@ class CORE_EXPORT Qgis
     Q_ENUM( SublayerPromptMode )
 
     /**
+     * Configuration flags for fields
+     * These flags are meant to be user-configurable
+     * and are not describing any information from the data provider.
+     * \note FieldConfigurationFlag are expressed in the negative forms so that default flags is NoFlag.
+     * \since QGIS 3.34
+     */
+    enum class FieldConfigurationFlag : int
+    {
+      NoFlag = 0, //!< No flag is defined
+      NotSearchable = 1 << 1, //!< Defines if the field is searchable (used in the locator search for instance)
+      HideFromWms = 1 << 2, //!< Field is not available if layer is served as WMS from QGIS server
+      HideFromWfs = 1 << 3, //!< Field is not available if layer is served as WFS from QGIS server
+    };
+    Q_ENUM( FieldConfigurationFlag )
+
+    /**
+     * Configuration flags for fields
+     * These flags are meant to be user-configurable
+     * and are not describing any information from the data provider.
+     * \note FieldConfigurationFlag are expressed in the negative forms so that default flags is NoFlag.
+     * \since QGIS 3.34
+     */
+    Q_DECLARE_FLAGS( FieldConfigurationFlags, FieldConfigurationFlag )
+    Q_FLAG( FieldConfigurationFlags )
+
+    /**
      * Standard field metadata values.
      *
      * \since QGIS 3.30
@@ -4126,6 +4152,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRequestFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRendererFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FieldConfigurationFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

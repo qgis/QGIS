@@ -1180,6 +1180,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mOffsetQuadSegSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->defaultValue() );
   mCurveOffsetMiterLimitComboBox->setValue( QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit->value() );
   mCurveOffsetMiterLimitComboBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit->defaultValue() );
+  mOffsetCapStyleComboBox->addItem( tr( "Round" ), QVariant::fromValue( Qgis::EndCapStyle::Round ) );
+  mOffsetCapStyleComboBox->addItem( tr( "Flat" ), QVariant::fromValue( Qgis::EndCapStyle::Flat ) );
+  mOffsetCapStyleComboBox->addItem( tr( "Square" ), QVariant::fromValue( Qgis::EndCapStyle::Square ) );
+  Qgis::EndCapStyle capStyleSetting = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle->value();
+  mOffsetCapStyleComboBox->setCurrentIndex( mOffsetCapStyleComboBox->findData( QVariant::fromValue( capStyleSetting ) ) );
 
   mTracingConvertToCurveCheckBox->setChecked( QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->value() );
   mTracingCustomAngleToleranceSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->value() );
@@ -1805,6 +1810,7 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle->setValue( mOffsetJoinStyleComboBox->currentData().value<Qgis::JoinStyle>() );
   QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->setValue( mOffsetQuadSegSpinBox->value() );
   QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit->setValue( mCurveOffsetMiterLimitComboBox->value() );
+  QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle->setValue( mOffsetCapStyleComboBox->currentData().value<Qgis::EndCapStyle>() );
 
   QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->setValue( mTracingConvertToCurveCheckBox->isChecked() );
   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->setValue( mTracingCustomAngleToleranceSpinBox->value() );

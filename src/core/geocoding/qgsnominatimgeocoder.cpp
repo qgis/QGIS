@@ -152,7 +152,7 @@ QUrl QgsNominatimGeocoder::requestUrl( const QString &address, const QgsRectangl
   query.addQueryItem( QStringLiteral( "addressdetails" ), QStringLiteral( "1" ) );
   if ( !bounds.isNull() && bounds.isFinite() )
   {
-    query.addQueryItem( QStringLiteral( "viewbox" ), bounds.toString( 7 ).replace( QStringLiteral( " : " ), QStringLiteral( "," ) ) );
+    query.addQueryItem( QStringLiteral( "viewbox" ), bounds.toString( 7 ).replace( QLatin1String( " : " ), QLatin1String( "," ) ) );
   }
   if ( !mCountryCodes.isEmpty() )
   {
