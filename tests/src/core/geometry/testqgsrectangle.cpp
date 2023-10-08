@@ -311,6 +311,15 @@ void TestQgsRectangle::operators()
   QCOMPARE( rect2.yMinimum(), 18.0 );
   QCOMPARE( rect2.height(), rect1.height() );
   QCOMPARE( rect2.width(), rect1.width() );
+
+  // Null == Null
+  QVERIFY( QgsRectangle() == QgsRectangle() );
+
+  // Different kind of empties
+  QVERIFY( QgsRectangle( 1, 1, 1, 1 ) != QgsRectangle( 2, 2, 2, 2 ) );
+
+  // Same kind of empty
+  QVERIFY( QgsRectangle( 1, 1, 1, 1 ) == QgsRectangle( 1, 1, 1, 1 ) );
 }
 
 void TestQgsRectangle::asVariant()
