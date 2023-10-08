@@ -412,6 +412,7 @@ QgsTaskManager::~QgsTaskManager()
   }
 
   delete mTaskMutex;
+  mThreadPool->waitForDone();
 }
 
 QThreadPool *QgsTaskManager::threadPool()

@@ -74,6 +74,7 @@ QgsPointCloudLayer::~QgsPointCloudLayer()
   {
     mStatsCalculationTask = 0;
     task->cancel();
+    task->waitForFinished();
   }
 }
 
