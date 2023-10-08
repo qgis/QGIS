@@ -72,6 +72,7 @@ QgsPointCloudLayer::~QgsPointCloudLayer()
 {
   if ( QgsTask *task = QgsApplication::taskManager()->task( mStatsCalculationTask ) )
   {
+    mStatsCalculationTask = 0;
     task->cancel();
   }
 }
@@ -934,8 +935,11 @@ void QgsPointCloudLayer::calculateStatistics()
   // In case the statistics calculation fails, QgsTask::taskTerminated will be called
   connect( task, &QgsTask::taskTerminated, this, [this]()
   {
-    QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
-    mStatsCalculationTask = 0;
+    if ( mStatsCalculationTask )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
+      mStatsCalculationTask = 0;
+    }
   } );
 
   mStatsCalculationTask = QgsApplication::taskManager()->addTask( task );
