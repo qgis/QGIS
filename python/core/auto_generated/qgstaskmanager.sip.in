@@ -345,7 +345,7 @@ but will be transferred to a QgsTaskManager.
 
     QThreadPool *threadPool();
 %Docstring
-Returns the threadpool utilised by the task manager.
+Returns the threadpool utilized by the task manager.
 
 .. versionadded:: 3.34
 %End

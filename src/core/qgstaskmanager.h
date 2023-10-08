@@ -431,7 +431,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     };
 
     /**
-     * Returns the threadpool utilised by the task manager.
+     * Returns the threadpool utilized by the task manager.
      *
      * \since QGIS 3.34
      */
