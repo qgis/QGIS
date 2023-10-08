@@ -359,8 +359,11 @@ if(WITH_CORE)
 
   # required
   find_package(Proj REQUIRED)
+  message(STATUS "Found Proj: ${PROJ_VERSION} ${PROJ_DIR}")
   find_package(GEOS REQUIRED)
+  message(STATUS "Found Geos: ${GEOS_VERSION} ${GEOS_DIR}")
   find_package(GDAL REQUIRED)
+  message(STATUS "Found GDAL: ${GDAL_VERSION} ${GDAL_DIR}")
   find_package(EXPAT REQUIRED)
   find_package(Spatialindex REQUIRED)
   find_package(LibZip REQUIRED)
