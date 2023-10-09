@@ -35,33 +35,11 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
-    Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
+    Q_PROPERTY( Qgis::MapLayerFilters filters READ filters WRITE setFilters )
     Q_PROPERTY( QList<QgsMapLayer *> exceptedLayerList READ exceptedLayerList WRITE setExceptedLayerList )
     Q_PROPERTY( QStringList exceptedLayerIds READ exceptedLayerIds WRITE setExceptedLayerIds )
 
   public:
-    enum Filter
-    {
-      RasterLayer = 1,
-      NoGeometry = 2,
-      PointLayer = 4,
-      LineLayer = 8,
-      PolygonLayer = 16,
-      HasGeometry = PointLayer | LineLayer | PolygonLayer,
-      VectorLayer = NoGeometry | HasGeometry,
-      PluginLayer = 32,
-      WritableLayer = 64,
-      MeshLayer = 128, //!< QgsMeshLayer \since QGIS 3.6
-      VectorTileLayer = 256, //!< QgsVectorTileLayer \since QGIS 3.14
-      PointCloudLayer = 512, //!< QgsPointCloudLayer \since QGIS 3.18
-      AnnotationLayer = 1024, //!< QgsAnnotationLayer \since QGIS 3.22
-      TiledSceneLayer = 2048, //!< QgsTiledSceneLayer \since QGIS 3.34
-      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer,
-      SpatialLayer = RasterLayer | HasGeometry | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer //!< \since QGIS 3.24
-    };
-    Q_DECLARE_FLAGS( Filters, Filter )
-    Q_FLAG( Filters )
-
     /**
      * \brief QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
      * It can be used to filter the layers list in a widget.
@@ -80,7 +58,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      *
      * \since QGIS 2.3
      */
-    QgsMapLayerProxyModel *setFilters( QgsMapLayerProxyModel::Filters filters );
+    QgsMapLayerProxyModel *setFilters( Qgis::MapLayerFilters filters );
 
     /**
      * Returns the filter flags which affect how layers are filtered within the model.
@@ -237,7 +215,5 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     QStringList mExcludedProviders;
     QString mFilterString;
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerProxyModel::Filters )
 
 #endif // QGSMAPLAYERPROXYMODEL_H
