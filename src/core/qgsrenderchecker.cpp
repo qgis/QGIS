@@ -424,7 +424,6 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   //
   // Set the report with the result
   //
-  mReport = QStringLiteral( "<script src=\"file://%1/../renderchecker.js\"></script>\n" ).arg( TEST_DATA_DIR );
   mReport += QLatin1String( "<table>" );
   mReport += QLatin1String( "<tr><td colspan=2>" );
   mReport += QStringLiteral( "<tr><td colspan=2>"

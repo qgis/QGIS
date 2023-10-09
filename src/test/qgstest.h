@@ -345,15 +345,39 @@ class TEST_EXPORT QgsTest : public QObject
       QFile file( reportFile );
 
       QFile::OpenMode mode = QIODevice::WriteOnly;
+      bool fileIsEmpty = true;
       if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" )
            || qgetenv( "QGIS_APPEND_TO_TEST_REPORT" ) == QStringLiteral( "true" ) )
+      {
         mode |= QIODevice::Append;
+        if ( file.open( QIODevice::ReadOnly ) )
+        {
+          fileIsEmpty = file.readAll().isEmpty();
+        }
+      }
       else
+      {
         mode |= QIODevice::Truncate;
+      }
 
       if ( file.open( mode ) )
       {
         QTextStream stream( &file );
+        if ( fileIsEmpty )
+        {
+          // append standard header
+          stream << QStringLiteral( "<h1>Test results</h1>\n" );
+
+          // embed render checker script so that we can run the HTML report from anywhere
+          stream << QStringLiteral( "<script>" );
+          QFile renderCheckerScript( QStringLiteral( TEST_DATA_DIR ) + "/../renderchecker.js" );
+          if ( renderCheckerScript.open( QIODevice::ReadOnly ) )
+          {
+            stream << renderCheckerScript.readAll();
+          }
+          stream << QStringLiteral( "</script>" );
+        }
+
         stream << QStringLiteral( "<h1>%1</h1>\n" ).arg( mName );
         stream << report;
         file.close();
