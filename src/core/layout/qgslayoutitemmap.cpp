@@ -498,15 +498,60 @@ bool QgsLayoutItemMap::containsWmsLayer() const
 
 bool QgsLayoutItemMap::requiresRasterization() const
 {
-  if ( QgsLayoutItem::requiresRasterization() )
+  if ( blendMode() != QPainter::CompositionMode_SourceOver )
     return true;
 
   // we MUST force the whole layout to render as a raster if any map item
   // uses blend modes, and we are not drawing on a solid opaque background
   // because in this case the map item needs to be rendered as a raster, but
   // it also needs to interact with items below it
-  if ( !containsAdvancedEffects() )
+
+  // WARNING -- modifying this logic? Then ALSO update containsAdvancedEffects accordingly!
+
+  // BIG WARNING -- we CANNOT just check containsAdvancedEffects here, as that method MUST
+  // return true if the map item has transparency.
+  // BUT, we **DO NOT HAVE TO** force the WHOLE layout to be rasterized if a map item
+  // is semi-opaque, as we have logic in QgsLayoutItemMap::paint to automatically render the
+  // map to a temporary image surface. I.e, we can get away with just rasterising the map
+  // alone and leaving the rest of the content as vector.
+
+  // SO this logic is a COPY of containsAdvancedEffects, without the opacity check
+
+  auto containsAdvancedEffectsIgnoreItemOpacity = [ = ]()-> bool
+  {
+    if ( QgsLayoutItem::containsAdvancedEffects() )
+      return true;
+
+    //check easy things first
+
+    // WARNING -- modifying this logic? Then ALSO update containsAdvancedEffects accordingly!
+
+    //overviews
+    if ( mOverviewStack->containsAdvancedEffects() )
+    {
+      return true;
+    }
+
+    // WARNING -- modifying this logic? Then ALSO update containsAdvancedEffects accordingly!
+
+    //grids
+    if ( mGridStack->containsAdvancedEffects() )
+    {
+      return true;
+    }
+
+    // WARNING -- modifying this logic? Then ALSO update containsAdvancedEffects accordingly!
+
+    QgsMapSettings ms;
+    ms.setLayers( layersToRender() );
+    return ( !QgsMapSettingsUtils::containsAdvancedEffects( ms ).isEmpty() );
+    // WARNING -- modifying this logic? Then ALSO update requiresRasterization accordingly!
+  };
+
+  if ( !containsAdvancedEffectsIgnoreItemOpacity() )
     return false;
+
+  // WARNING -- modifying this logic? Then ALSO update containsAdvancedEffects accordingly!
 
   if ( hasBackground() && qgsDoubleNear( backgroundColor().alphaF(), 1.0 ) )
     return false;
@@ -516,10 +561,12 @@ bool QgsLayoutItemMap::requiresRasterization() const
 
 bool QgsLayoutItemMap::containsAdvancedEffects() const
 {
-  if ( QgsLayoutItem::containsAdvancedEffects() )
+  if ( QgsLayoutItem::containsAdvancedEffects() || mEvaluatedOpacity < 1.0 )
     return true;
 
   //check easy things first
+
+  // WARNING -- modifying this logic? Then ALSO update requiresRasterization accordingly!
 
   //overviews
   if ( mOverviewStack->containsAdvancedEffects() )
@@ -527,15 +574,20 @@ bool QgsLayoutItemMap::containsAdvancedEffects() const
     return true;
   }
 
+  // WARNING -- modifying this logic? Then ALSO update requiresRasterization accordingly!
+
   //grids
   if ( mGridStack->containsAdvancedEffects() )
   {
     return true;
   }
 
+  // WARNING -- modifying this logic? Then ALSO update requiresRasterization accordingly!
+
   QgsMapSettings ms;
   ms.setLayers( layersToRender() );
   return ( !QgsMapSettingsUtils::containsAdvancedEffects( ms ).isEmpty() );
+  // WARNING -- modifying this logic? Then ALSO update requiresRasterization accordingly!
 }
 
 void QgsLayoutItemMap::setMapRotation( double rotation )

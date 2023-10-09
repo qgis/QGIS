@@ -13,11 +13,16 @@ import os
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import (
+    Qt,
     QFileInfo,
     QRectF,
     QSizeF,
 )
-from qgis.PyQt.QtGui import QColor, QPainter
+from qgis.PyQt.QtGui import (
+    QColor,
+    QPainter,
+    QImage
+)
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -101,6 +106,87 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         self.map.setFrameEnabled(True)
         self.map.setLayers([self.raster_layer])
         self.layout.addLayoutItem(self.map)
+
+    def test_opacity(self):
+        """
+        Test rendering the map with opacity
+        """
+        map_settings = QgsMapSettings()
+        map_settings.setLayers([self.vector_layer])
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(True)
+        map.zoomToExtent(self.vector_layer.extent())
+        map.setLayers([self.vector_layer])
+        layout.addLayoutItem(map)
+
+        map.setItemOpacity(0.3)
+
+        self.assertFalse(
+            map.requiresRasterization()
+        )
+        self.assertTrue(
+            map.containsAdvancedEffects()
+        )
+
+        self.assertTrue(
+            self.render_layout_check('composermap_opacity', layout)
+        )
+
+    def test_opacity_rendering_designer_preview(self):
+        """
+        Test rendering of map opacity while in designer dialogs
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        self.assertTrue(l.renderContext().isPreviewRender())
+
+        l.initializeDefaults()
+
+        map = QgsLayoutItemMap(l)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(True)
+        map.zoomToExtent(self.vector_layer.extent())
+        map.setLayers([self.vector_layer])
+        l.addLayoutItem(map)
+
+        map.setItemOpacity(0.3)
+
+        page_item = l.pageCollection().page(0)
+        paper_rect = QRectF(page_item.pos().x(),
+                            page_item.pos().y(),
+                            page_item.rect().width(),
+                            page_item.rect().height())
+
+        im = QImage(1122, 794, QImage.Format_ARGB32)
+        im.fill(Qt.transparent)
+        im.setDotsPerMeterX(int(300 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(300 / 25.4 * 1000))
+        painter = QPainter(im)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+
+        spy = QSignalSpy(map.previewRefreshed)
+
+        l.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
+        painter.end()
+
+        # we have to wait for the preview image to refresh, then redraw
+        # the map to get the actual content which was generated in the
+        # background thread
+        spy.wait()
+
+        im.fill(Qt.transparent)
+        painter = QPainter(im)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        l.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
+        painter.end()
+
+        self.assertTrue(self.image_check('composermap_opacity',
+                                         'composermap_opacity',
+                                         im, allowed_mismatch=0))
 
     def testMapCrs(self):
         # create layout with layout map
