@@ -19,7 +19,7 @@
 #include <QObject>
 
 #include "qgis.h"
-#include "qgis_gui.h"
+#include "qgis_app.h"
 #include "qgsfeatureid.h"
 #include "qgspoint.h"
 
@@ -28,11 +28,11 @@ class QgsGeometry;
 class QgsMessageBar;
 
 /**
- * \ingroup gui
+ * \ingroup app
  * \brief Helper class to apply the avoid intersection operation on a geometry and treat resulting issues.
  * \since QGIS 3.34
 */
-class GUI_EXPORT QgsAvoidIntersectionsOperation : public QObject
+class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
 {
     Q_OBJECT
 
