@@ -66,12 +66,14 @@ else
   "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"
 fi
 
-# Run shell checker if requirements are met
-if command -v shellcheck > /dev/null; then
-  # TODO: allow passing $MODIFIED
-  ${TOPLEVEL}/tests/code_layout/test_shellcheck.sh || exit 1
-else
-  echo "WARNING: the shellcheck(1) executable was not found, shell checker could not run" >&2
+MODIFIED_SHELLFILES=$(echo "${MODIFIED}" | grep '\.sh$')
+if [ -z "$MODIFIED_SHELLFILES" ]; then
+  # Run shell checker if requirements are met
+  if command -v shellcheck > /dev/null; then
+    ${TOPLEVEL}/tests/code_layout/test_shellcheck.sh "${MODIFIED}" || exit 1
+  else
+    echo "WARNING: the shellcheck(1) executable was not found, shell checker could not run" >&2
+  fi
 fi
 
 FILES_CHANGED=0
