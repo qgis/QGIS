@@ -7108,7 +7108,7 @@ class TestQgsGeometry(unittest.TestCase):
 
     def testSplitGeometry(self):
 
-        square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")        
+        square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")
         lineXY = [QgsPointXY(1, -1), QgsPointXY(1, 3)]
 
         r1 = QgsGeometry.fromWkt("Polygon ((1 2, 1 0, 0 0, 0 2, 1 2))")
