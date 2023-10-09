@@ -188,7 +188,6 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         )
 
     def testDashPatternOffset(self):
-
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.6'})
 
         s.symbolLayer(0).setDashPatternOffset(1.2)
@@ -332,6 +331,17 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
                 allowed_mismatch=20
             )
         )
+
+    def testAlignDashRenderSmallWidth(self):
+        # rendering test
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.1'})
+
+        s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
+        s.symbolLayer(0).setAlignDashPattern(True)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 9.2 0, 9.2 10, 1.3 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('simpleline_aligndashpattern_small_width', 'simpleline_aligndashpattern_small_width', rendered_image)
 
     def testRingNumberVariable(self):
         # test test geometry_ring_num variable
