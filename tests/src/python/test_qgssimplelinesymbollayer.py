@@ -163,7 +163,6 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         assert self.imageCheck('simpleline_trim_distance_percentage', 'simpleline_trim_distance_percentage', rendered_image)
 
     def testDashPatternOffset(self):
-
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.6'})
 
         s.symbolLayer(0).setDashPatternOffset(1.2)
@@ -267,6 +266,17 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         g = QgsGeometry.fromWkt('LineString(0 0, 2 1, 3 1, 10 0, 10 10, 5 5)')
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('simpleline_dashcornertweak', 'simpleline_dashcornertweak', rendered_image)
+
+    def testAlignDashRenderSmallWidth(self):
+        # rendering test
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.1'})
+
+        s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
+        s.symbolLayer(0).setAlignDashPattern(True)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 9.2 0, 9.2 10, 1.3 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('simpleline_aligndashpattern_small_width', 'simpleline_aligndashpattern_small_width', rendered_image)
 
     def testRingNumberVariable(self):
         # test test geometry_ring_num variable
