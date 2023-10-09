@@ -1,5 +1,9 @@
 name: 🧪 QGIS tests
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -85,7 +89,7 @@ jobs:
           large-packages: false
           docker-images: false
           swap-storage: true
-          
+
       - name: Checkout
         uses: actions/checkout@v4
 
