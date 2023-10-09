@@ -198,6 +198,14 @@ Sets the map canvas to ``mapCanvas``
 .. versionadded:: 3.32
 %End
 
+        static QString removeSuffix( const QString &text, Qgis::CadConstraintType constraintType );
+%Docstring
+Removes unit suffix from the constraint text.
+
+.. versionadded:: 3.34
+%End
+
+
     };
 
     explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
