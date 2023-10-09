@@ -55,6 +55,7 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
+    QgsSimpleFillSymbolLayer,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -186,6 +187,106 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
 
         self.assertTrue(self.image_check('composermap_opacity',
                                          'composermap_opacity',
+                                         im, allowed_mismatch=0))
+
+    def test_blend_mode(self):
+        """
+        Test rendering the map with a blend mode
+        """
+        map_settings = QgsMapSettings()
+        map_settings.setLayers([self.vector_layer])
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        item1 = QgsLayoutItemShape(layout)
+        item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
+        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(0, 100, 50))
+        simple_fill.setStrokeColor(Qt.black)
+        item1.setSymbol(fill_symbol)
+        layout.addLayoutItem(item1)
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(True)
+        map.zoomToExtent(self.vector_layer.extent())
+        map.setLayers([self.vector_layer])
+        layout.addLayoutItem(map)
+
+        map.setBlendMode(QPainter.CompositionMode_Darken)
+
+        self.assertTrue(
+            map.requiresRasterization()
+        )
+
+        self.assertTrue(
+            self.render_layout_check('composermap_blend_mode', layout)
+        )
+
+    def test_blend_mode_designer_preview(self):
+        """
+        Test rendering the map with a blend mode
+        """
+        map_settings = QgsMapSettings()
+        map_settings.setLayers([self.vector_layer])
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        self.assertTrue(layout.renderContext().isPreviewRender())
+
+        item1 = QgsLayoutItemShape(layout)
+        item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
+        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(0, 100, 50))
+        simple_fill.setStrokeColor(Qt.black)
+        item1.setSymbol(fill_symbol)
+        layout.addLayoutItem(item1)
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(True)
+        map.zoomToExtent(self.vector_layer.extent())
+        map.setLayers([self.vector_layer])
+        layout.addLayoutItem(map)
+
+        map.setBlendMode(QPainter.CompositionMode_Darken)
+
+        page_item = layout.pageCollection().page(0)
+        paper_rect = QRectF(page_item.pos().x(),
+                            page_item.pos().y(),
+                            page_item.rect().width(),
+                            page_item.rect().height())
+
+        im = QImage(1122, 794, QImage.Format_ARGB32)
+        im.fill(Qt.transparent)
+        im.setDotsPerMeterX(int(300 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(300 / 25.4 * 1000))
+        painter = QPainter(im)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+
+        spy = QSignalSpy(map.previewRefreshed)
+
+        layout.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
+        painter.end()
+
+        # we have to wait for the preview image to refresh, then redraw
+        # the map to get the actual content which was generated in the
+        # background thread
+        spy.wait()
+
+        im.fill(Qt.transparent)
+        painter = QPainter(im)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        layout.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
+        painter.end()
+
+        self.assertTrue(self.image_check('composermap_blend_mode',
+                                         'composermap_blend_mode',
                                          im, allowed_mismatch=0))
 
     def testMapCrs(self):
