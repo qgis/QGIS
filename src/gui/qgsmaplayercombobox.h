@@ -34,7 +34,7 @@ class QgsVectorLayer;
 class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 {
     Q_OBJECT
-    Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
+    Q_PROPERTY( Qgis::LayerFilters filters READ filters WRITE setFilters )
     Q_PROPERTY( bool allowEmptyLayer READ allowEmptyLayer WRITE setAllowEmptyLayer )
     Q_PROPERTY( bool showCrs READ showCrs WRITE setShowCrs )
     Q_PROPERTY( QStringList excludedProviders READ excludedProviders WRITE setExcludedProviders )
@@ -48,10 +48,10 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     explicit QgsMapLayerComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! setFilters allows filtering according to layer type and/or geometry type.
-    void setFilters( QgsMapLayerProxyModel::Filters filters ) { mProxyModel->setFilters( filters ); }
+    void setFilters( Qgis::LayerFilters filters ) { mProxyModel->setFilters( filters ); }
 
     //! currently used filter on list layers
-    QgsMapLayerProxyModel::Filters filters() const { return mProxyModel->filters(); }
+    Qgis::LayerFilters filters() const { return mProxyModel->filters(); }
 
     //! except a list of layers not to be listed
     void setExceptedLayerList( const QList<QgsMapLayer *> &layerList ) { mProxyModel->setExceptedLayerList( layerList );}

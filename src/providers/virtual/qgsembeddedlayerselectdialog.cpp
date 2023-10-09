@@ -28,7 +28,7 @@ QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent )
 
   QgsGui::enableAutoGeometryRestore( this );
 
-  mLayerProxyModel->setFilters( QgsMapLayerProxyModel::Filter::VectorLayer );
+  mLayerProxyModel->setFilters( Qgis::LayerFilter::VectorLayer );
   mLayers->setModel( mLayerProxyModel );
 
   mSearchLineEdit->setShowSearchIcon( true );

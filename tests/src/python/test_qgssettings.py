@@ -432,14 +432,14 @@ class TestQgsSettings(QgisTestCase):
         self.assertEqual(self.settings.enumValue('enum', Qgis.MapToolUnit.Pixels), Qgis.MapToolUnit.Pixels)
 
     def test_flagValue(self):
-        pointAndLine = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.LineLayer)
-        pointAndPolygon = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.PolygonLayer)
+        pointAndLine = Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.LineLayer)
+        pointAndPolygon = Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.PolygonLayer)
 
         self.settings.setValue('flag', 'PointLayer|PolygonLayer')
         self.assertEqual(self.settings.flagValue('flag', pointAndLine), pointAndPolygon)
         self.settings.setValue('flag', 'dummy_setting')
         self.assertEqual(self.settings.flagValue('flag', pointAndLine), pointAndLine)
-        self.assertEqual(type(self.settings.flagValue('enum', pointAndLine)), QgsMapLayerProxyModel.Filters)
+        self.assertEqual(type(self.settings.flagValue('enum', pointAndLine)), Qgis.LayerFilters)
 
     def test_overwriteDefaultValues(self):
         """Test that unchanged values are not stored"""

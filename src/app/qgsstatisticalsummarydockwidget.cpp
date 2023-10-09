@@ -62,7 +62,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
-  mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mLayerComboBox->setFilters( Qgis::LayerFilter::VectorLayer );
   mFieldExpressionWidget->setFilters( QgsFieldProxyModel::Numeric |
                                       QgsFieldProxyModel::String |
                                       QgsFieldProxyModel::Date );

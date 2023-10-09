@@ -24,7 +24,7 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
-  mLayerName->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mLayerName->setFilters( Qgis::LayerFilter::VectorLayer );
   mKeyColumn->setLayer( mLayerName->currentLayer() );
   mValueColumn->setLayer( mLayerName->currentLayer() );
   mDescriptionExpression->setLayer( mLayerName->currentLayer() );

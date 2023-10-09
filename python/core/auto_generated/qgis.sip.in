@@ -87,6 +87,28 @@ The development version
       TiledScene,
     };
 
+    enum class LayerFilter
+      {
+      RasterLayer,
+      NoGeometry,
+      PointLayer,
+      LineLayer,
+      PolygonLayer,
+      HasGeometry,
+      VectorLayer,
+      PluginLayer,
+      WritableLayer,
+      MeshLayer,
+      VectorTileLayer,
+      PointCloudLayer,
+      AnnotationLayer,
+      TiledSceneLayer,
+      All,
+      SpatialLayer
+    };
+    typedef QFlags<Qgis::LayerFilter> LayerFilters;
+
+
     enum class WkbType
       {
       Unknown,

@@ -91,7 +91,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   mDestinationLayerModel = new QgsMapLayerProxyModel( this );
   mDestinationLayerModel->setProject( QgsProject::instance() );
-  mDestinationLayerModel->setFilters( QgsMapLayerProxyModel::Filter::HasGeometry | QgsMapLayerProxyModel::Filter::WritableLayer );
+  mDestinationLayerModel->setFilters( Qgis::LayerFilter::HasGeometry | Qgis::LayerFilter::WritableLayer );
 
   mDestinationLayerMenu = new QMenu( this );
   connect( mDestinationLayerMenu, &QMenu::aboutToShow, this, &QgsGpsToolBar::destinationMenuAboutToShow );

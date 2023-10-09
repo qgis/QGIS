@@ -28,7 +28,7 @@ QgsReportSectionFieldGroupWidget::QgsReportSectionFieldGroupWidget( QgsReportOrg
 {
   setupUi( this );
 
-  mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mLayerComboBox->setFilters( Qgis::LayerFilter::VectorLayer );
   connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, mFieldComboBox, &QgsFieldComboBox::setLayer );
   connect( mButtonEditBody, &QPushButton::clicked, this, &QgsReportSectionFieldGroupWidget::editBody );
   connect( mButtonEditHeader, &QPushButton::clicked, this, &QgsReportSectionFieldGroupWidget::editHeader );

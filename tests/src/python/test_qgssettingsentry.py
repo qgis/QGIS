@@ -415,9 +415,9 @@ class TestQgsSettingsEntry(QgisTestCase):
         settingsKey = "settingsEntryFlag/flagValue"
         settingsKeyComplete = f"plugins/{self.pluginName}/{settingsKey}"
 
-        pointAndLine = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.LineLayer)
-        pointAndPolygon = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.PolygonLayer)
-        hasGeometry = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.HasGeometry)
+        pointAndLine = Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.LineLayer)
+        pointAndPolygon = Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.PolygonLayer)
+        hasGeometry = Qgis.LayerFilters(Qgis.LayerFilter.HasGeometry)
 
         # Make sure settings does not exists
         QgsSettings().remove(settingsKeyComplete)

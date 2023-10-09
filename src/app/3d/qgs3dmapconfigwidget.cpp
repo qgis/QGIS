@@ -92,7 +92,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mDebugDepthMapSizeSpinBox->setClearValue( 0.1 );
 
   cboTerrainLayer->setAllowEmptyLayer( true );
-  cboTerrainLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
+  cboTerrainLayer->setFilters( Qgis::LayerFilter::RasterLayer );
 
   cboTerrainType->addItem( tr( "Flat Terrain" ), QgsTerrainGenerator::Flat );
   cboTerrainType->addItem( tr( "DEM (Raster Layer)" ), QgsTerrainGenerator::Dem );
@@ -109,7 +109,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     spinTerrainResolution->setValue( demTerrainGen->resolution() );
     spinTerrainSkirtHeight->setValue( demTerrainGen->skirtHeight() );
     cboTerrainLayer->setLayer( demTerrainGen->layer() );
-    cboTerrainLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
+    cboTerrainLayer->setFilters( Qgis::LayerFilter::RasterLayer );
   }
   else if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::Online )
   {
@@ -122,7 +122,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Mesh ) );
     QgsMeshTerrainGenerator *meshTerrain = static_cast<QgsMeshTerrainGenerator *>( terrainGen );
-    cboTerrainLayer->setFilters( QgsMapLayerProxyModel::MeshLayer );
+    cboTerrainLayer->setFilters( Qgis::LayerFilter::MeshLayer );
     cboTerrainLayer->setLayer( meshTerrain->meshLayer() );
     mMeshSymbolWidget->setLayer( meshTerrain->meshLayer(), false );
     mMeshSymbolWidget->setSymbol( meshTerrain->symbol() );
@@ -408,11 +408,11 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
   QgsMapLayer *oldTerrainLayer = cboTerrainLayer->currentLayer();
   if ( cboTerrainType->currentData() == QgsTerrainGenerator::Dem )
   {
-    cboTerrainLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
+    cboTerrainLayer->setFilters( Qgis::LayerFilter::RasterLayer );
   }
   else if ( cboTerrainType->currentData() == QgsTerrainGenerator::Mesh )
   {
-    cboTerrainLayer->setFilters( QgsMapLayerProxyModel::MeshLayer );
+    cboTerrainLayer->setFilters( Qgis::LayerFilter::MeshLayer );
   }
 
   if ( cboTerrainLayer->currentLayer() != oldTerrainLayer )

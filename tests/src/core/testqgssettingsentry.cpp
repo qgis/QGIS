@@ -133,21 +133,21 @@ void TestQgsSettingsEntry::enumValue()
 void TestQgsSettingsEntry::flagValue()
 {
   const QString settingsKey( QStringLiteral( "my_flag_value_for_units" ) );
-  const QgsMapLayerProxyModel::Filters pointAndLine = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::LineLayer );
-  const QgsMapLayerProxyModel::Filters pointAndPolygon = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::PolygonLayer );
-  const QgsMapLayerProxyModel::Filters hasGeometry = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::HasGeometry );
+  const Qgis::LayerFilters pointAndLine = Qgis::LayerFilters( Qgis::LayerFilter::PointLayer | Qgis::LayerFilter::LineLayer );
+  const Qgis::LayerFilters pointAndPolygon = Qgis::LayerFilters( Qgis::LayerFilter::PointLayer | Qgis::LayerFilter::PolygonLayer );
+  const Qgis::LayerFilters hasGeometry = Qgis::LayerFilters( Qgis::LayerFilter::HasGeometry );
 
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey );
 
-  const QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, mSettingsSection, QgsMapLayerProxyModel::Filters(), QStringLiteral( "Filters" ) );
+  const QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, mSettingsSection, Qgis::LayerFilters(), QStringLiteral( "Filters" ) );
 
   // Check default value
-  QCOMPARE( settingsEntryFlag.defaultValue(), QgsMapLayerProxyModel::Filters() );
+  QCOMPARE( settingsEntryFlag.defaultValue(), Qgis::LayerFilters() );
 
   // check no value
   QCOMPARE( settingsEntryFlag.exists(), false );
-  QCOMPARE( settingsEntryFlag.value(), QgsMapLayerProxyModel::Filters() );
+  QCOMPARE( settingsEntryFlag.value(), Qgis::LayerFilters() );
 
   QCOMPARE( settingsEntryFlag.valueWithDefaultOverride( pointAndLine ), pointAndLine );
 
@@ -155,7 +155,7 @@ void TestQgsSettingsEntry::flagValue()
   {
     const bool success = settingsEntryFlag.setValue( hasGeometry );
     QCOMPARE( success, true );
-    const QgsMapLayerProxyModel::Filters qgsSettingsValue = QgsSettings().flagValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), pointAndLine );
+    const Qgis::LayerFilters qgsSettingsValue = QgsSettings().flagValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), pointAndLine );
     QCOMPARE( qgsSettingsValue, hasGeometry );
   }
 
@@ -167,7 +167,7 @@ void TestQgsSettingsEntry::flagValue()
   QCOMPARE( settingsEntryFlag.settingsType(), Qgis::SettingsType::EnumFlag );
 
   // check that value is stored as string
-  QCOMPARE( settingsEntryFlag.valueAsVariant().toByteArray(), QMetaEnum::fromType<QgsMapLayerProxyModel::Filters>().valueToKeys( pointAndLine ) );
+  QCOMPARE( settingsEntryFlag.valueAsVariant().toByteArray(), QMetaEnum::fromType<Qgis::LayerFilters>().valueToKeys( pointAndLine ) );
 
   // auto conversion of old settings (int to str)
   QSettings().setValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), static_cast<int>( pointAndPolygon ) );

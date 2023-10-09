@@ -130,7 +130,7 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.34. Prior to 3.34 this was available as QgsMapLayerProxyModel::Filter.
      */
     enum class LayerFilter SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerProxyModel, Filter ) : int
-    {
+      {
       RasterLayer = 1,
       NoGeometry = 2,
       PointLayer = 4,

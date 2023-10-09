@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 class QgsMapLayerModel;
 class QgsMapLayer;
@@ -35,11 +36,12 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
-    Q_PROPERTY( Qgis::MapLayerFilters filters READ filters WRITE setFilters )
+    Q_PROPERTY( Qgis::LayerFilters filters READ filters WRITE setFilters )
     Q_PROPERTY( QList<QgsMapLayer *> exceptedLayerList READ exceptedLayerList WRITE setExceptedLayerList )
     Q_PROPERTY( QStringList exceptedLayerIds READ exceptedLayerIds WRITE setExceptedLayerIds )
 
   public:
+
     /**
      * \brief QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
      * It can be used to filter the layers list in a widget.
@@ -58,7 +60,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      *
      * \since QGIS 2.3
      */
-    QgsMapLayerProxyModel *setFilters( Qgis::MapLayerFilters filters );
+    QgsMapLayerProxyModel *setFilters( Qgis::LayerFilters filters );
 
     /**
      * Returns the filter flags which affect how layers are filtered within the model.
@@ -67,7 +69,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      *
      * \since QGIS 2.3
      */
-    const Filters &filters() const { return mFilters; }
+    const Qgis::LayerFilters &filters() const { return mFilters; }
 
     /**
      * Sets the \a project from which map layers are shown.
@@ -82,7 +84,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * Returns if the \a layer matches the given \a filters
      * \since QGIS 3.14
      */
-    static bool layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters );
+    static bool layerMatchesFilters( const QgsMapLayer *layer, const Qgis::LayerFilters &filters );
 
     /**
      * Sets an allowlist of \a layers to include within the model. Only layers
@@ -208,7 +210,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     void setFilterString( const QString &filter );
 
   private:
-    Filters mFilters;
+    Qgis::LayerFilters mFilters;
     QList<QgsMapLayer *> mExceptList;
     QList<QgsMapLayer *> mLayerAllowlist;
     QgsMapLayerModel *mModel = nullptr;

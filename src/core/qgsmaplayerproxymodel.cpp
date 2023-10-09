@@ -21,7 +21,7 @@
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
-  , mFilters( All )
+  , mFilters( Qgis::LayerFilter::All )
   , mModel( new QgsMapLayerModel( parent ) )
 {
   setSourceModel( mModel );
@@ -31,48 +31,48 @@ QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
   sort( 0 );
 }
 
-QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
+QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Qgis::LayerFilters filters )
 {
   mFilters = filters;
   invalidateFilter();
   return this;
 }
 
-bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters )
+bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const Qgis::LayerFilters &filters )
 {
-  if ( filters.testFlag( All ) )
+  if ( filters.testFlag( Qgis::LayerFilter::All ) )
     return true;
 
   // layer type
-  if ( ( filters.testFlag( RasterLayer ) && layer->type() == Qgis::LayerType::Raster ) ||
-       ( filters.testFlag( VectorLayer ) && layer->type() == Qgis::LayerType::Vector ) ||
-       ( filters.testFlag( MeshLayer ) && layer->type() == Qgis::LayerType::Mesh ) ||
-       ( filters.testFlag( VectorTileLayer ) && layer->type() == Qgis::LayerType::VectorTile ) ||
-       ( filters.testFlag( PointCloudLayer ) && layer->type() == Qgis::LayerType::PointCloud ) ||
-       ( filters.testFlag( AnnotationLayer ) && layer->type() == Qgis::LayerType::Annotation ) ||
-       ( filters.testFlag( TiledSceneLayer ) && layer->type() == Qgis::LayerType::TiledScene ) ||
-       ( filters.testFlag( PluginLayer ) && layer->type() == Qgis::LayerType::Plugin ) )
+  if ( ( filters.testFlag( Qgis::LayerFilter::RasterLayer ) && layer->type() == Qgis::LayerType::Raster ) ||
+       ( filters.testFlag( Qgis::LayerFilter::VectorLayer ) && layer->type() == Qgis::LayerType::Vector ) ||
+       ( filters.testFlag( Qgis::LayerFilter::MeshLayer ) && layer->type() == Qgis::LayerType::Mesh ) ||
+       ( filters.testFlag( Qgis::LayerFilter::VectorTileLayer ) && layer->type() == Qgis::LayerType::VectorTile ) ||
+       ( filters.testFlag( Qgis::LayerFilter::PointCloudLayer ) && layer->type() == Qgis::LayerType::PointCloud ) ||
+       ( filters.testFlag( Qgis::LayerFilter::AnnotationLayer ) && layer->type() == Qgis::LayerType::Annotation ) ||
+       ( filters.testFlag( Qgis::LayerFilter::TiledSceneLayer ) && layer->type() == Qgis::LayerType::TiledScene ) ||
+       ( filters.testFlag( Qgis::LayerFilter::PluginLayer ) && layer->type() == Qgis::LayerType::Plugin ) )
     return true;
 
   // geometry type
-  const bool detectGeometry = filters.testFlag( NoGeometry ) ||
-                              filters.testFlag( PointLayer ) ||
-                              filters.testFlag( LineLayer ) ||
-                              filters.testFlag( PolygonLayer ) ||
-                              filters.testFlag( HasGeometry );
+  const bool detectGeometry = filters.testFlag( Qgis::LayerFilter::NoGeometry ) ||
+                              filters.testFlag( Qgis::LayerFilter::PointLayer ) ||
+                              filters.testFlag( Qgis::LayerFilter::LineLayer ) ||
+                              filters.testFlag( Qgis::LayerFilter::PolygonLayer ) ||
+                              filters.testFlag( Qgis::LayerFilter::HasGeometry );
   if ( detectGeometry && layer->type() == Qgis::LayerType::Vector )
   {
     if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
     {
-      if ( filters.testFlag( HasGeometry ) && vl->isSpatial() )
+      if ( filters.testFlag( Qgis::LayerFilter::HasGeometry ) && vl->isSpatial() )
         return true;
-      if ( filters.testFlag( NoGeometry ) && vl->geometryType() == Qgis::GeometryType::Null )
+      if ( filters.testFlag( Qgis::LayerFilter::NoGeometry ) && vl->geometryType() == Qgis::GeometryType::Null )
         return true;
-      if ( filters.testFlag( PointLayer ) && vl->geometryType() == Qgis::GeometryType::Point )
+      if ( filters.testFlag( Qgis::LayerFilter::PointLayer ) && vl->geometryType() == Qgis::GeometryType::Point )
         return true;
-      if ( filters.testFlag( LineLayer ) && vl->geometryType() == Qgis::GeometryType::Line )
+      if ( filters.testFlag( Qgis::LayerFilter::LineLayer ) && vl->geometryType() == Qgis::GeometryType::Line )
         return true;
-      if ( filters.testFlag( PolygonLayer ) && vl->geometryType() == Qgis::GeometryType::Polygon )
+      if ( filters.testFlag( Qgis::LayerFilter::PolygonLayer ) && vl->geometryType() == Qgis::GeometryType::Polygon )
         return true;
     }
   }
@@ -153,7 +153,7 @@ bool QgsMapLayerProxyModel::acceptsLayer( QgsMapLayer *layer ) const
   if ( layer->dataProvider() && mExcludedProviders.contains( layer->providerType() ) )
     return false;
 
-  if ( mFilters.testFlag( WritableLayer ) && layer->readOnly() )
+  if ( mFilters.testFlag( Qgis::LayerFilter::WritableLayer ) && layer->readOnly() )
     return false;
 
   if ( !layer->name().contains( mFilterString, Qt::CaseInsensitive ) )
@@ -170,7 +170,7 @@ void QgsMapLayerProxyModel::setFilterString( const QString &filter )
 
 bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mLayerAllowlist.isEmpty() && mExcludedProviders.isEmpty() && mFilterString.isEmpty() )
+  if ( mFilters.testFlag( Qgis::LayerFilter::All ) && mExceptList.isEmpty() && mLayerAllowlist.isEmpty() && mExcludedProviders.isEmpty() && mFilterString.isEmpty() )
     return true;
 
   const QModelIndex index = sourceModel()->index( source_row, 0, source_parent );

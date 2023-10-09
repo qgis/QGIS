@@ -99,7 +99,7 @@ class InterpolationDataWidget(BASE, WIDGET):
         self.btnRemove.clicked.connect(self.removeLayer)
 
         self.cmbLayers.layerChanged.connect(self.layerChanged)
-        self.cmbLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.cmbLayers.setFilters(Qgis.LayerFilter.VectorLayer)
         self.cmbFields.setFilters(QgsFieldProxyModel.Numeric)
         self.cmbFields.setLayer(self.cmbLayers.currentLayer())
 

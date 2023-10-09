@@ -104,7 +104,7 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
         mGapCheckAllowExceptionsActivatedCheckBox->setLayout( layout );
         topologyCheckLayout->addWidget( mGapCheckAllowExceptionsActivatedCheckBox );
         mGapCheckAllowExceptionsLayerComboBox = new QgsMapLayerComboBox();
-        mGapCheckAllowExceptionsLayerComboBox->setFilters( QgsMapLayerProxyModel::PolygonLayer );
+        mGapCheckAllowExceptionsLayerComboBox->setFilters( Qgis::LayerFilter::PolygonLayer );
         mGapCheckAllowExceptionsLayerComboBox->setExceptedLayerList( QList<QgsMapLayer *> { vlayer } );
         mGapCheckAllowExceptionsLayerComboBox->setLayer( QgsProject::instance()->mapLayer( gapCheckConfig.value( QStringLiteral( "allowedGapsLayer" ) ).toString() ) );
         layout->addWidget( new QLabel( tr( "Layer" ) ), 0, 0 );
