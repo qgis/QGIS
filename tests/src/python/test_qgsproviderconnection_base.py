@@ -19,8 +19,8 @@ __revision__ = '$Format:%H$'
 import os
 import time
 
-from qgis.PyQt import QtCore, QDir
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt import QtCore
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDir
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
