@@ -366,7 +366,11 @@ class TEST_EXPORT QgsTest : public QObject
         if ( fileIsEmpty )
         {
           // append standard header
-          stream << QStringLiteral( "<h1>Test results</h1>\n" );
+          QFile reportHeader( QStringLiteral( TEST_DATA_DIR ) + "/../test_report_header.html" );
+          if ( reportHeader.open( QIODevice::ReadOnly ) )
+          {
+            stream << reportHeader.readAll();
+          }
 
           // embed render checker script so that we can run the HTML report from anywhere
           stream << QStringLiteral( "<script>" );
