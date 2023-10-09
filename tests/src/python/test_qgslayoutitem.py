@@ -37,7 +37,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsFillSymbol,
     QgsSimpleFillSymbolLayer,
-    QgsLayoutRenderContext
+    QgsLayoutRenderContext,
+    QgsLayoutItemElevationProfile
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -241,16 +242,16 @@ class TestQgsLayoutItem(QgisTestCase):
         self.assertFalse(item.containsAdvancedEffects())
         self.assertTrue(item.requiresRasterization())
 
-        map = QgsLayoutItemMap(layout)
-        # map items are different -- because they override paint, they don't get the auto-flattening and rasterization
-        map.setItemOpacity(0.5)
-        self.assertFalse(map.containsAdvancedEffects())
-        # rather, a map with opacity requires the WHOLE layout to be rasterized
-        self.assertTrue(map.requiresRasterization())
-        map.dataDefinedProperties().setProperty(QgsLayoutObject.Opacity, QgsProperty.fromExpression('100'))
-        map.refresh()
-        self.assertFalse(map.containsAdvancedEffects())
-        self.assertTrue(map.requiresRasterization())
+        elevation_profile = QgsLayoutItemElevationProfile(layout)
+        # elevation profile items are different -- because they override paint, they don't get the auto-flattening and rasterization
+        elevation_profile.setItemOpacity(0.5)
+        self.assertFalse(elevation_profile.containsAdvancedEffects())
+        # rather, a elevation profile with opacity requires the WHOLE layout to be rasterized
+        self.assertTrue(elevation_profile.requiresRasterization())
+        elevation_profile.dataDefinedProperties().setProperty(QgsLayoutObject.Opacity, QgsProperty.fromExpression('100'))
+        elevation_profile.refresh()
+        self.assertFalse(elevation_profile.containsAdvancedEffects())
+        self.assertTrue(elevation_profile.requiresRasterization())
 
     def test_blend_mode_rendering_designer_preview(self):
         """
