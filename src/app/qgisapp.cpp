@@ -6679,12 +6679,8 @@ bool QgisApp::fileSave()
     if ( fileExists && !mProjectLastModified.isNull() && mProjectLastModified != QgsProject::instance()->lastModified() )
     {
       if ( QMessageBox::warning( this,
-                                 tr( "Open a Project" ),
-                                 tr( "The loaded project file on disk was meanwhile changed. Do you want to overwrite the changes?\n"
-                                     "\nLast modification date on load was: %1"
-                                     "\nCurrent last modification date is: %2" )
-                                 .arg( QLocale::system().toString( mProjectLastModified, QLocale::LongFormat ),
-                                       QLocale::system().toString( QgsProject::instance()->lastModified(), QLocale::LongFormat ) ),
+                                 tr( "Project Has Changed on Disk" ),
+                                 tr( "The project file on the disk has been modified externally, saving the current project will overwrite any change. Do you still want to proceed?" ),
                                  QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
         return false;
     }
