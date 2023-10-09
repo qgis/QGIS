@@ -13,7 +13,6 @@ import os
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import (
-    QDir,
     QFileInfo,
     QRectF,
     QSizeF,
@@ -45,7 +44,6 @@ from qgis.core import (
     QgsProperty,
     QgsRasterLayer,
     QgsReadWriteContext,
-    QgsLayoutChecker,
     QgsRectangle,
     QgsSingleSymbolRenderer,
     QgsTextFormat,
@@ -66,16 +64,13 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
+    def control_path_prefix(cls):
+        return "composer_map"
+
+    @classmethod
     def setUpClass(cls):
         super(TestQgsLayoutMap, cls).setUpClass()
         cls.item_class = QgsLayoutItemMap
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super(TestQgsLayoutMap, cls).tearDownClass()
 
     def __init__(self, methodName):
         """Run once on class initialization."""
@@ -132,11 +127,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         self.assertEqual(map.crs().authid(), 'EPSG:3857')
         self.assertEqual(map.presetCrs().authid(), 'EPSG:3857')
 
-        checker = QgsLayoutChecker('composermap_crs3857', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_crs3857', layout)
+        )
 
         # overwrite CRS
         map.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
@@ -144,11 +137,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         self.assertEqual(map.crs().authid(), 'EPSG:4326')
         rectangle = QgsRectangle(-124, 17, -78, 52)
         map.zoomToExtent(rectangle)
-        checker = QgsLayoutChecker('composermap_crs4326', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_crs4326', layout)
+        )
 
         # change back to project CRS
         map.setCrs(QgsCoordinateReferenceSystem())
@@ -230,45 +221,36 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.setLayers([vl])
         layout.addLayoutItem(map)
 
-        checker = QgsLayoutChecker('composermap_label_nomargin', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_label_nomargin', layout)
+        )
 
         map.setLabelMargin(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters))
-        checker = QgsLayoutChecker('composermap_label_margin', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_label_margin', layout)
+        )
 
         map.setLabelMargin(QgsLayoutMeasurement(3, QgsUnitTypes.LayoutCentimeters))
-        checker = QgsLayoutChecker('composermap_label_cm_margin', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_label_cm_margin', layout)
+        )
 
         map.setMapRotation(45)
         map.zoomToExtent(vl.extent())
         map.setScale(map.scale() * 1.2)
-        checker = QgsLayoutChecker('composermap_rotated_label_margin', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        map.setLabelMargin(QgsLayoutMeasurement(3, QgsUnitTypes.LayoutCentimeters))
+        self.assertTrue(
+            self.render_layout_check('composermap_rotated_label_margin', layout)
+        )
 
         # data defined
         map.setMapRotation(0)
         map.zoomToExtent(vl.extent())
         map.dataDefinedProperties().setProperty(QgsLayoutObject.MapLabelMargin, QgsProperty.fromExpression('1+3'))
         map.refresh()
-        checker = QgsLayoutChecker('composermap_dd_label_margin', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_dd_label_margin', layout)
+        )
 
     def testPartialLabels(self):
         """
@@ -319,19 +301,15 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
 
         # hiding partial labels (the default)
         map.setMapFlags(QgsLayoutItemMap.MapItemFlags())
-        checker = QgsLayoutChecker('composermap_label_nomargin', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_label_nomargin', layout)
+        )
 
         # showing partial labels
         map.setMapFlags(QgsLayoutItemMap.ShowPartialLabels)
-        checker = QgsLayoutChecker('composermap_show_partial_labels', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_show_partial_labels', layout)
+        )
 
     def testBlockingItems(self):
         """
@@ -394,11 +372,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.addLabelBlockingItem(map2)
         map.addLabelBlockingItem(map3)
         map.setMapFlags(QgsLayoutItemMap.MapItemFlags())
-        checker = QgsLayoutChecker('composermap_label_blockers', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_label_blockers', layout)
+        )
 
         doc = QDomDocument("testdoc")
         elem = layout.writeXml(doc, QgsReadWriteContext())
@@ -522,11 +498,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.itemClippingSettings().setForceLabelsInsideClipPath(False)
         map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
 
-        checker = QgsLayoutChecker('composermap_itemclip', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_itemclip', layout)
+        )
 
     def testClippingForceLabelsInside(self):
         format = QgsTextFormat()
@@ -582,11 +556,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.itemClippingSettings().setForceLabelsInsideClipPath(True)
         map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
 
-        checker = QgsLayoutChecker('composermap_itemclip_force_labels_inside', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_itemclip_force_labels_inside', layout)
+        )
 
     def testClippingOverview(self):
         format = QgsTextFormat()
@@ -662,11 +634,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.itemClippingSettings().setForceLabelsInsideClipPath(False)
         map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
 
-        checker = QgsLayoutChecker('composermap_itemclip_overview', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_itemclip_overview', layout)
+        )
 
     def testClippingHideClipSource(self):
         """
@@ -722,11 +692,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.itemClippingSettings().setForceLabelsInsideClipPath(False)
         map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
 
-        checker = QgsLayoutChecker('composermap_itemclip_nodrawsource', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_itemclip_nodrawsource', layout)
+        )
 
     def testClippingBackgroundFrame(self):
         """
@@ -770,11 +738,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.itemClippingSettings().setSourceItem(shape)
         map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
 
-        checker = QgsLayoutChecker('composermap_itemclip_background', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_itemclip_background', layout)
+        )
 
     def testMainAnnotationLayer(self):
         """
@@ -807,11 +773,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         self.assertTrue(vl.dataProvider().addFeatures([f]))
 
         # no annotation yet...
-        checker = QgsLayoutChecker('composermap_annotation_empty', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_annotation_empty', layout)
+        )
 
         annotation_layer = p.mainAnnotationLayer()
         annotation_layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
@@ -822,11 +786,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         annotation_layer.addItem(annotation)
 
         # annotation must be drawn above map layers
-        checker = QgsLayoutChecker('composermap_annotation_item', layout)
-        checker.setControlPathPrefix("composer_map")
-        result, message = checker.testLayout()
-        TestQgsLayoutMap.report += checker.report()
-        self.assertTrue(result, message)
+        self.assertTrue(
+            self.render_layout_check('composermap_annotation_item', layout)
+        )
 
     def testCrsChanged(self):
         """
