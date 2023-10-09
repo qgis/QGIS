@@ -39,7 +39,7 @@ class GUI_EXPORT QgsAvoidIntersectionsOperation : public QObject
   public:
 
     /**
-     * Contructor
+     * Constructor
      */
     QgsAvoidIntersectionsOperation() = default;
 
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsAvoidIntersectionsOperation : public QObject
   signals:
 
     /**
-     * emmit a \a message with corresponding \a level
+     * emit a \a message with corresponding \a level
      */
     void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
 };
