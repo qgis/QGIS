@@ -7107,13 +7107,8 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(poly.intersects(bbox))  # was failing here!
 
     def testSplitGeometry(self):
-        """
-        splitGeometry takes either QVector<QgsPoint> or QVector<QgsPointXY>
-        testing the overloaded methods until the QgsPointXY variant is removed in QGIS 4.0
-        this could be potentially removed in favor of the existing cpp test which will be sufficient
-        """
-        square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")
-        line = [QgsPoint(1, -1), QgsPoint(1, 3)]
+
+        square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")        
         lineXY = [QgsPointXY(1, -1), QgsPointXY(1, 3)]
 
         r1 = QgsGeometry.fromWkt("Polygon ((1 2, 1 0, 0 0, 0 2, 1 2))")
@@ -7123,12 +7118,6 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
         self.assertGeometriesEqual(square, r2)
         self.assertEqual(len(parts), 1)
-        self.assertGeometriesEqual(parts[0], r1)
-
-        square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")
-        (result, parts, topo) = square.splitGeometry(line, False)
-        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
-        self.assertGeometriesEqual(square, r2)
         self.assertGeometriesEqual(parts[0], r1)
 
         multilinestring = QgsGeometry.fromWkt("MultiLinestring((0 1, 1 0),(0 2, 2 0))")
