@@ -2846,6 +2846,61 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
             else:
                 self.assertEqual(set(got), set([QVariant()]))
 
+    def testChangeAttributeValuesErrors(self):
+
+        tmpfile = os.path.join(self.basetestpath, 'testChangeAttributeValuesErrors.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('int_field', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('int64_field', ogr.OFTInteger64))
+        lyr.CreateField(ogr.FieldDefn('real_field', ogr.OFTReal))
+        lyr.CreateField(ogr.FieldDefn('datetime_field', ogr.OFTDateTime))
+        lyr.CreateField(ogr.FieldDefn('date_field', ogr.OFTDateTime))
+        lyr.CreateField(ogr.FieldDefn('string_field', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        lyr.CreateFeature(f)
+        ds = None
+
+        vl = QgsVectorLayer(f'{tmpfile}' + "|layername=" + "test", 'test', 'ogr')
+
+        # Changing feature id of feature 1 is not allowed
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1: {0: "asdf"}}))
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1: {0: 2}}))
+
+        # Feature -1 for attribute update not found
+        self.assertFalse(vl.dataProvider().changeAttributeValues({-1: {1: 1}}))
+        self.assertFalse(vl.dataProvider().changeAttributeValues({-1: {2: 1}}))
+
+        # Field 2 of feature 1 doesn't exist
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1: {999: 1}}))
+        # Field -1 of feature 1 doesn't exist
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1: {"invalid": 1}}))
+
+        # wrong data type for attribute ... of feature 1
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1: {1: "not a integer"}}))
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1: {2: "not a integer64"}}))
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1: {3: "not a double"}}))
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1: {4: "not a datetime"}}))
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1: {5: "not a date"}}))
+
+        # OK
+        # int_field
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {1: 1}}))
+        # int64_field
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {2: 1}}))
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {2: 1234567890123}}))
+        # real_field
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {3: 1}}))
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {3: 1234567890123}}))
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {3: 1.5}}))
+        # datetime_field
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {4: QDateTime(2022, 1, 1, 1, 1, 1, 0)}}))
+        # date_field
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {5: QDate(2022, 1, 1)}}))
+        # string_field
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {6: "foo"}}))
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {6: 12345}}))
+
 
 if __name__ == '__main__':
     unittest.main()
