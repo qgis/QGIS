@@ -856,6 +856,15 @@ QString QgsLayoutItemLegend::displayName() const
   }
 }
 
+bool QgsLayoutItemLegend::requiresRasterization() const
+{
+  return blendMode() != QPainter::CompositionMode_SourceOver;
+}
+
+bool QgsLayoutItemLegend::containsAdvancedEffects() const
+{
+  return mEvaluatedOpacity < 1.0;
+}
 
 void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool connectSlots )
 {

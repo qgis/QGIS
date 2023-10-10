@@ -94,6 +94,10 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QString displayName() const;
 
+    virtual bool requiresRasterization() const;
+
+    virtual bool containsAdvancedEffects() const;
+
 
     void adjustBoxSize();
 %Docstring
