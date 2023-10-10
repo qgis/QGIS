@@ -449,6 +449,16 @@ QgsLayoutItem::Flags QgsLayoutItemElevationProfile::itemFlags() const
   return QgsLayoutItem::FlagOverridesPaint;
 }
 
+bool QgsLayoutItemElevationProfile::requiresRasterization() const
+{
+  return blendMode() != QPainter::CompositionMode_SourceOver;
+}
+
+bool QgsLayoutItemElevationProfile::containsAdvancedEffects() const
+{
+  return mEvaluatedOpacity < 1.0;
+}
+
 Qgs2DPlot *QgsLayoutItemElevationProfile::plot()
 {
   return mPlot.get();
@@ -920,6 +930,7 @@ void QgsLayoutItemElevationProfile::profileGenerationFinished()
   mCacheFinalImage = std::move( mCacheRenderingImage );
   emit backgroundTaskCountChanged( 0 );
   update();
+  emit previewRefreshed();
 }
 
 Qgis::DistanceUnit QgsLayoutItemElevationProfile::distanceUnit() const

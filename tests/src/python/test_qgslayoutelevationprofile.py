@@ -12,8 +12,17 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 import os
 import tempfile
 
-from qgis.PyQt.QtCore import QDir, QRectF
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import (
+    Qt,
+    QRectF
+)
+from qgis.PyQt.QtGui import (
+    QColor,
+    QImage,
+    QPainter
+)
+from qgis.PyQt.QtTest import QSignalSpy
+
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -32,7 +41,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsTextFormat,
     QgsVectorLayer,
-    QgsLayoutChecker,
+    QgsSimpleFillSymbolLayer,
+    QgsLayoutItemShape,
     QgsMarkerSymbol
 )
 import unittest
@@ -55,6 +65,317 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
     def setUpClass(cls):
         super(TestQgsLayoutItemElevationProfile, cls).setUpClass()
         cls.item_class = QgsLayoutItemElevationProfile
+
+    def test_opacity(self):
+        """
+        Test rendering the profile with opacity
+        """
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        profile_item = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile_item)
+        profile_item.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (321897.18831187387695536 129916.86947759155009408, 321942.11597351566888392 129924.94403429214435164)')
+
+        profile_item.setProfileCurve(curve)
+        profile_item.setCrs(QgsCoordinateReferenceSystem())
+
+        profile_item.plot().setXMaximum(curve.length())
+        profile_item.plot().setYMaximum(14)
+
+        profile_item.plot().xAxis().setGridIntervalMajor(10)
+        profile_item.plot().xAxis().setGridIntervalMinor(5)
+        profile_item.plot().xAxis().setGridMajorSymbol(QgsLineSymbol.createSimple({'color': '#ffaaff', 'width': 2}))
+        profile_item.plot().xAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({'color': '#ffffaa', 'width': 2}))
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        profile_item.plot().xAxis().setTextFormat(format)
+        profile_item.plot().xAxis().setLabelInterval(20)
+
+        profile_item.plot().yAxis().setGridIntervalMajor(10)
+        profile_item.plot().yAxis().setGridIntervalMinor(5)
+        profile_item.plot().yAxis().setGridMajorSymbol(QgsLineSymbol.createSimple({'color': '#ffffaa', 'width': 2}))
+        profile_item.plot().yAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({'color': '#aaffaa', 'width': 2}))
+
+        profile_item.plot().yAxis().setTextFormat(format)
+        profile_item.plot().yAxis().setLabelInterval(10)
+
+        profile_item.plot().setChartBorderSymbol(
+            QgsFillSymbol.createSimple({'style': 'no', 'color': '#aaffaa', 'width_border': 2}))
+
+        profile_item.setItemOpacity(0.3)
+
+        self.assertFalse(
+            profile_item.requiresRasterization()
+        )
+        self.assertTrue(
+            profile_item.containsAdvancedEffects()
+        )
+
+        self.assertTrue(
+            self.render_layout_check('opacity', layout)
+        )
+
+    def test_opacity_rendering_designer_preview(self):
+        """
+        Test rendering of profile opacity while in designer dialogs
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        self.assertTrue(l.renderContext().isPreviewRender())
+
+        l.initializeDefaults()
+        profile_item = QgsLayoutItemElevationProfile(l)
+        l.addLayoutItem(profile_item)
+        profile_item.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (321897.18831187387695536 129916.86947759155009408, 321942.11597351566888392 129924.94403429214435164)')
+
+        profile_item.setProfileCurve(curve)
+        profile_item.setCrs(QgsCoordinateReferenceSystem())
+
+        profile_item.plot().setXMaximum(curve.length())
+        profile_item.plot().setYMaximum(14)
+
+        profile_item.plot().xAxis().setGridIntervalMajor(10)
+        profile_item.plot().xAxis().setGridIntervalMinor(5)
+        profile_item.plot().xAxis().setGridMajorSymbol(QgsLineSymbol.createSimple({'color': '#ffaaff', 'width': 2}))
+        profile_item.plot().xAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({'color': '#ffffaa', 'width': 2}))
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        profile_item.plot().xAxis().setTextFormat(format)
+        profile_item.plot().xAxis().setLabelInterval(20)
+
+        profile_item.plot().yAxis().setGridIntervalMajor(10)
+        profile_item.plot().yAxis().setGridIntervalMinor(5)
+        profile_item.plot().yAxis().setGridMajorSymbol(QgsLineSymbol.createSimple({'color': '#ffffaa', 'width': 2}))
+        profile_item.plot().yAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({'color': '#aaffaa', 'width': 2}))
+
+        profile_item.plot().yAxis().setTextFormat(format)
+        profile_item.plot().yAxis().setLabelInterval(10)
+
+        profile_item.plot().setChartBorderSymbol(
+            QgsFillSymbol.createSimple({'style': 'no', 'color': '#aaffaa', 'width_border': 2}))
+
+        profile_item.setItemOpacity(0.3)
+
+        page_item = l.pageCollection().page(0)
+        paper_rect = QRectF(page_item.pos().x(),
+                            page_item.pos().y(),
+                            page_item.rect().width(),
+                            page_item.rect().height())
+
+        im = QImage(1122, 794, QImage.Format_ARGB32)
+        im.fill(Qt.transparent)
+        im.setDotsPerMeterX(int(300 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(300 / 25.4 * 1000))
+
+        spy = QSignalSpy(profile_item.previewRefreshed)
+
+        painter = QPainter(im)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+
+        l.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
+        painter.end()
+
+        # we have to wait for the preview image to refresh, then redraw
+        # the item to get the actual content which was generated in the
+        # background thread
+        spy.wait()
+
+        im.fill(Qt.transparent)
+        painter = QPainter(im)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        l.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
+        painter.end()
+
+        self.assertTrue(self.image_check('opacity',
+                                         'opacity',
+                                         im, allowed_mismatch=0))
+
+    def test_blend_mode(self):
+        """
+        Test rendering the profile with a blend mode
+        """
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        item1 = QgsLayoutItemShape(layout)
+        item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
+        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(0, 100, 50))
+        simple_fill.setStrokeColor(Qt.black)
+        item1.setSymbol(fill_symbol)
+        layout.addLayoutItem(item1)
+
+        profile_item = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile_item)
+        profile_item.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (321897.18831187387695536 129916.86947759155009408, 321942.11597351566888392 129924.94403429214435164)')
+
+        profile_item.setProfileCurve(curve)
+        profile_item.setCrs(QgsCoordinateReferenceSystem())
+
+        profile_item.plot().setXMaximum(curve.length())
+        profile_item.plot().setYMaximum(14)
+
+        profile_item.plot().xAxis().setGridIntervalMajor(10)
+        profile_item.plot().xAxis().setGridIntervalMinor(5)
+        profile_item.plot().xAxis().setGridMajorSymbol(QgsLineSymbol.createSimple({'color': '#ffaaff', 'width': 2}))
+        profile_item.plot().xAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({'color': '#ffffaa', 'width': 2}))
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        profile_item.plot().xAxis().setTextFormat(format)
+        profile_item.plot().xAxis().setLabelInterval(20)
+
+        profile_item.plot().yAxis().setGridIntervalMajor(10)
+        profile_item.plot().yAxis().setGridIntervalMinor(5)
+        profile_item.plot().yAxis().setGridMajorSymbol(QgsLineSymbol.createSimple({'color': '#ffffaa', 'width': 2}))
+        profile_item.plot().yAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({'color': '#aaffaa', 'width': 2}))
+
+        profile_item.plot().yAxis().setTextFormat(format)
+        profile_item.plot().yAxis().setLabelInterval(10)
+
+        profile_item.plot().setChartBorderSymbol(
+            QgsFillSymbol.createSimple({'style': 'no', 'color': '#aaffaa', 'width_border': 2}))
+
+        profile_item.setBlendMode(QPainter.CompositionMode_Darken)
+
+        self.assertTrue(profile_item.requiresRasterization())
+
+        self.assertTrue(self.render_layout_check("blendmode", layout))
+
+    def test_blend_mode_designer_preview(self):
+        """
+        Test rendering the profile with a blend mode
+        """
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        self.assertTrue(layout.renderContext().isPreviewRender())
+
+        item1 = QgsLayoutItemShape(layout)
+        item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
+        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(0, 100, 50))
+        simple_fill.setStrokeColor(Qt.black)
+        item1.setSymbol(fill_symbol)
+        layout.addLayoutItem(item1)
+
+        profile_item = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile_item)
+        profile_item.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (321897.18831187387695536 129916.86947759155009408, 321942.11597351566888392 129924.94403429214435164)')
+
+        profile_item.setProfileCurve(curve)
+        profile_item.setCrs(QgsCoordinateReferenceSystem())
+
+        profile_item.plot().setXMaximum(curve.length())
+        profile_item.plot().setYMaximum(14)
+
+        profile_item.plot().xAxis().setGridIntervalMajor(10)
+        profile_item.plot().xAxis().setGridIntervalMinor(5)
+        profile_item.plot().xAxis().setGridMajorSymbol(QgsLineSymbol.createSimple({'color': '#ffaaff', 'width': 2}))
+        profile_item.plot().xAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({'color': '#ffffaa', 'width': 2}))
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        profile_item.plot().xAxis().setTextFormat(format)
+        profile_item.plot().xAxis().setLabelInterval(20)
+
+        profile_item.plot().yAxis().setGridIntervalMajor(10)
+        profile_item.plot().yAxis().setGridIntervalMinor(5)
+        profile_item.plot().yAxis().setGridMajorSymbol(QgsLineSymbol.createSimple({'color': '#ffffaa', 'width': 2}))
+        profile_item.plot().yAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({'color': '#aaffaa', 'width': 2}))
+
+        profile_item.plot().yAxis().setTextFormat(format)
+        profile_item.plot().yAxis().setLabelInterval(10)
+
+        profile_item.plot().setChartBorderSymbol(
+            QgsFillSymbol.createSimple({'style': 'no', 'color': '#aaffaa', 'width_border': 2}))
+
+        profile_item.setBlendMode(QPainter.CompositionMode_Darken)
+
+        page_item = layout.pageCollection().page(0)
+        paper_rect = QRectF(
+            page_item.pos().x(),
+            page_item.pos().y(),
+            page_item.rect().width(),
+            page_item.rect().height(),
+        )
+
+        im = QImage(1122, 794, QImage.Format_ARGB32)
+        im.fill(Qt.transparent)
+        im.setDotsPerMeterX(int(300 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(300 / 25.4 * 1000))
+        spy = QSignalSpy(profile_item.previewRefreshed)
+
+        painter = QPainter(im)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+
+        layout.render(
+            painter,
+            QRectF(0, 0, painter.device().width(), painter.device().height()),
+            paper_rect,
+        )
+        painter.end()
+
+        # we have to wait for the preview image to refresh, then redraw
+        # the item to get the actual content which was generated in the
+        # background thread
+        spy.wait()
+
+        im.fill(Qt.transparent)
+        painter = QPainter(im)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        layout.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
+        painter.end()
+
+        self.assertTrue(
+            self.image_check(
+                "blendmode", "blendmode", im, allowed_mismatch=0
+            )
+        )
 
     def test_layers(self):
         project = QgsProject()

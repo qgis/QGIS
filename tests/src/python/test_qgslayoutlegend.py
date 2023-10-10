@@ -288,7 +288,6 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
             )
         )
 
-
     def testInitialSizeSymbolMapUnits(self):
         """
         Test initial size of legend with a symbol size in map units
