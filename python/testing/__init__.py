@@ -95,13 +95,32 @@ class QgisTestCase(unittest.TestCase):
         report_file = report_dir.filePath('index.html')
 
         # only append to existing reports if running under CI
+        file_is_empty = True
         if cls.is_ci_run() or \
                 os.environ.get("QGIS_APPEND_TO_TEST_REPORT") == 'true':
             file_mode = 'ta'
+            try:
+                with open(report_file, 'rt', encoding="utf-8") as f:
+                    file_is_empty = not(bool(f.read()))
+            except IOError:
+                pass
         else:
             file_mode = 'wt'
 
         with open(report_file, file_mode, encoding='utf-8') as f:
+            if file_is_empty:
+                from .test_data_dir import TEST_DATA_DIR
+
+                # append standard header
+                with open(TEST_DATA_DIR + "/../test_report_header.html", 'rt', encoding='utf-8') as header_file:
+                    f.write(header_file.read())
+
+                # append embedded scripts
+                f.write('<script>\n')
+                with open(TEST_DATA_DIR + "/../renderchecker.js", 'rt', encoding='utf-8') as script_file:
+                    f.write(script_file.read())
+                f.write("</script>\n")
+
             f.write(f"<h1>Python {cls.__name__} Tests</h1>\n")
             f.write(report)
 
