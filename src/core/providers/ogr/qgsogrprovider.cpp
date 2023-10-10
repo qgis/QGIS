@@ -1448,6 +1448,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     OGRFieldType type = OGR_Fld_GetType( fldDef );
 
     QVariant attrVal = attributes.at( qgisAttributeId );
+    const QVariant::Type qType = attrVal.type();
     // The field value is equal to the default (that might be a provider-side expression)
     if ( attributes.isUnsetValue( qgisAttributeId )
          || ( mDefaultValues.contains( qgisAttributeId ) && attrVal.toString() == mDefaultValues.value( qgisAttributeId ) )
@@ -1455,7 +1456,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     {
       OGR_F_UnsetField( feature.get(), ogrAttributeId );
     }
-    else if ( QgsVariantUtils::isNull( attrVal ) || ( type != OFTString && ( ( attrVal.type() != QVariant::List && attrVal.toString().isEmpty() && attrVal.type() != QVariant::StringList && attrVal.toStringList().isEmpty() ) || ( attrVal.type() == QVariant::List && attrVal.toList().empty() ) ) ) )
+    else if ( QgsVariantUtils::isNull( attrVal ) || ( type != OFTString && ( ( qType != QVariant::List && attrVal.toString().isEmpty() && qType != QVariant::StringList && attrVal.toStringList().isEmpty() ) || ( qType == QVariant::List && attrVal.toList().empty() ) ) ) )
     {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -1472,59 +1473,94 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     }
     else
     {
+      bool ok = false;
       switch ( type )
       {
         case OFTInteger:
-          OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, attrVal.toInt() );
+        {
+          if ( qType == QVariant::Int )
+          {
+            ok = true;
+            OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, attrVal.toInt() );
+          }
+          else
+          {
+            // toInt() doesn't detect integer truncation if the type
+            // is a long long.
+            const qlonglong val = attrVal.toLongLong( &ok );
+            if ( ok && val >= std::numeric_limits<int>::min()  && val <= std::numeric_limits<int>::max() )
+            {
+              OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, static_cast<int>( val ) );
+            }
+            else
+            {
+              ok = false;
+            }
+          }
           break;
-
-
+        }
         case OFTInteger64:
-          OGR_F_SetFieldInteger64( feature.get(), ogrAttributeId, attrVal.toLongLong() );
+          OGR_F_SetFieldInteger64( feature.get(), ogrAttributeId, attrVal.toLongLong( &ok ) );
           break;
 
         case OFTReal:
-          OGR_F_SetFieldDouble( feature.get(), ogrAttributeId, attrVal.toDouble() );
+          OGR_F_SetFieldDouble( feature.get(), ogrAttributeId, attrVal.toDouble( &ok ) );
           break;
 
         case OFTDate:
-          OGR_F_SetFieldDateTime( feature.get(), ogrAttributeId,
-                                  attrVal.toDate().year(),
-                                  attrVal.toDate().month(),
-                                  attrVal.toDate().day(),
-                                  0, 0, 0,
-                                  0 );
+        {
+          const QDate date = attrVal.toDate();
+          if ( date.isValid() )
+          {
+            ok = true;
+            OGR_F_SetFieldDateTime( feature.get(), ogrAttributeId,
+                                    date.year(),
+                                    date.month(),
+                                    date.day(),
+                                    0, 0, 0,
+                                    0 );
+          }
           break;
+        }
 
         case OFTTime:
         {
           const QTime time = attrVal.toTime();
-          OGR_F_SetFieldDateTimeEx( feature.get(), ogrAttributeId,
-                                    0, 0, 0,
-                                    time.hour(),
-                                    time.minute(),
-                                    static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
-                                    0 );
+          if ( time.isValid() )
+          {
+            ok = true;
+            OGR_F_SetFieldDateTimeEx( feature.get(), ogrAttributeId,
+                                      0, 0, 0,
+                                      time.hour(),
+                                      time.minute(),
+                                      static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                      0 );
+          }
           break;
         }
         case OFTDateTime:
         {
           const QDateTime dt =  attrVal.toDateTime();
-          const QDate date = dt.date();
-          const QTime time = dt.time();
-          OGR_F_SetFieldDateTimeEx( feature.get(), ogrAttributeId,
-                                    date.year(),
-                                    date.month(),
-                                    date.day(),
-                                    time.hour(),
-                                    time.minute(),
-                                    static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
-                                    QgsOgrUtils::OGRTZFlagFromQt( dt ) );
+          if ( dt.isValid() )
+          {
+            ok = true;
+            const QDate date = dt.date();
+            const QTime time = dt.time();
+            OGR_F_SetFieldDateTimeEx( feature.get(), ogrAttributeId,
+                                      date.year(),
+                                      date.month(),
+                                      date.day(),
+                                      time.hour(),
+                                      time.minute(),
+                                      static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                      QgsOgrUtils::OGRTZFlagFromQt( dt ) );
+          }
           break;
         }
 
         case OFTString:
         {
+          ok = true;
           QString stringValue;
 
           if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
@@ -1543,90 +1579,126 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
         case OFTBinary:
         {
           const QByteArray ba = attrVal.toByteArray();
+          ok = true;
           OGR_F_SetFieldBinary( feature.get(), ogrAttributeId, ba.size(), const_cast< GByte * >( reinterpret_cast< const GByte * >( ba.data() ) ) );
+
           break;
         }
 
         case OFTStringList:
         {
-          QStringList list = attrVal.toStringList();
-          int count = list.count();
-          char **lst = new char *[count + 1];
-          if ( count > 0 )
+          if ( qType == QVariant::List || qType == QVariant::StringList )
           {
-            int pos = 0;
-            for ( const QString &string : list )
+            QStringList list = attrVal.toStringList();
+            ok = true;
+            int count = list.count();
+            char **lst = static_cast<char **>( CPLMalloc( ( count + 1 ) * sizeof( char * ) ) );
+            if ( count > 0 )
             {
-              lst[pos] = CPLStrdup( textEncoding()->fromUnicode( string ).data() );
-              pos++;
+              int pos = 0;
+              for ( const QString &string : list )
+              {
+                lst[pos] = CPLStrdup( textEncoding()->fromUnicode( string ).data() );
+                pos++;
+              }
             }
+            lst[count] = nullptr;
+            OGR_F_SetFieldStringList( feature.get(), ogrAttributeId, lst );
+            CSLDestroy( lst );
           }
-          lst[count] = nullptr;
-          OGR_F_SetFieldStringList( feature.get(), ogrAttributeId, lst );
-          CSLDestroy( lst );
           break;
         }
 
         case OFTIntegerList:
         {
-          const QVariantList list = attrVal.toList();
-          const int count = list.count();
-          int *lst = new int[count];
-          if ( count > 0 )
+          if ( qType == QVariant::List || qType == QVariant::StringList )
           {
-            int pos = 0;
-            for ( const QVariant &value : list )
+            const QVariantList list = attrVal.toList();
+            ok = true;
+            const int count = list.count();
+            int *lst = new int[count];
+            if ( count > 0 )
             {
-              lst[pos] = value.toInt();
-              pos++;
+              int pos = 0;
+              for ( const QVariant &value : list )
+              {
+                lst[pos] = value.toInt( &ok );
+                if ( !ok )
+                  break;
+                pos++;
+              }
             }
+            if ( ok )
+              OGR_F_SetFieldIntegerList( feature.get(), ogrAttributeId, count, lst );
+            delete [] lst;
           }
-          OGR_F_SetFieldIntegerList( feature.get(), ogrAttributeId, count, lst );
-          delete [] lst;
           break;
         }
 
         case OFTRealList:
         {
-          const QVariantList list = attrVal.toList();
-          const int count = list.count();
-          double *lst = new double[count];
-          if ( count > 0 )
+          if ( qType == QVariant::List || qType == QVariant::StringList )
           {
-            int pos = 0;
-            for ( const QVariant &value : list )
+            const QVariantList list = attrVal.toList();
+            ok = true;
+            const int count = list.count();
+            double *lst = new double[count];
+            if ( count > 0 )
             {
-              lst[pos] = value.toDouble();
-              pos++;
+              int pos = 0;
+              for ( const QVariant &value : list )
+              {
+                lst[pos] = value.toDouble( &ok );
+                if ( !ok )
+                  break;
+                pos++;
+              }
             }
+            if ( ok )
+            {
+              OGR_F_SetFieldDoubleList( feature.get(), ogrAttributeId, count, lst );
+            }
+            delete [] lst;
           }
-          OGR_F_SetFieldDoubleList( feature.get(), ogrAttributeId, count, lst );
-          delete [] lst;
           break;
         }
 
         case OFTInteger64List:
         {
-          const QVariantList list = attrVal.toList();
-          const int count = list.count();
-          long long *lst = new long long[count];
-          if ( count > 0 )
+          if ( qType == QVariant::List || qType == QVariant::StringList )
           {
-            int pos = 0;
-            for ( const QVariant &value : list )
+            const QVariantList list = attrVal.toList();
+            const int count = list.count();
+            long long *lst = new long long[count];
+            if ( count > 0 )
             {
-              lst[pos] = value.toLongLong();
-              pos++;
+              int pos = 0;
+              for ( const QVariant &value : list )
+              {
+                lst[pos] = value.toLongLong( &ok );
+                if ( !ok )
+                  break;
+                pos++;
+              }
             }
+            if ( ok )
+            {
+              OGR_F_SetFieldInteger64List( feature.get(), ogrAttributeId, count, lst );
+            }
+            delete [] lst;
           }
-          OGR_F_SetFieldInteger64List( feature.get(), ogrAttributeId, count, lst );
-          delete [] lst;
           break;
         }
 
         default:
           QgsMessageLog::logMessage( tr( "type %1 for attribute %2 not found" ).arg( type ).arg( qgisAttributeId ), tr( "OGR" ) );
           break;
+      }
+
+      if ( !ok )
+      {
+        pushError( tr( "wrong data type for attribute %1 of feature %2: %3" ).arg( qgisAttributeId ) .arg( f.id() ).arg( qType ) );
+        returnValue = false;
       }
     }
   }
@@ -2215,6 +2287,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     if ( !of )
     {
       pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
+      returnValue = false;
       continue;
     }
 
@@ -2249,11 +2322,13 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       if ( !fd )
       {
         pushError( tr( "Field %1 of feature %2 doesn't exist." ).arg( f ).arg( fid ) );
+        returnValue = false;
         continue;
       }
 
       OGRFieldType type = OGR_Fld_GetType( fd );
-      if ( QgsVariantUtils::isNull( *it2 ) || ( type != OFTString && ( ( it2->type() != QVariant::List && it2->type() != QVariant::StringList && it2->toString().isEmpty() ) || ( it2->type() == QVariant::List && it2->toList().empty() ) || ( it2->type() == QVariant::StringList && it2->toStringList().empty() ) ) ) )
+      QVariant::Type qType = it2->type();
+      if ( QgsVariantUtils::isNull( *it2 ) || ( type != OFTString && ( ( qType != QVariant::List && qType != QVariant::StringList && it2->toString().isEmpty() ) || ( qType == QVariant::List && it2->toList().empty() ) || ( qType == QVariant::StringList && it2->toStringList().empty() ) ) ) )
       {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -2270,53 +2345,90 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       }
       else
       {
+        bool ok = false;
         switch ( type )
         {
           case OFTInteger:
-            OGR_F_SetFieldInteger( of.get(), f, it2->toInt() );
+          {
+            if ( qType == QVariant::Int )
+            {
+              ok = true;
+              OGR_F_SetFieldInteger( of.get(), f, it2->toInt() );
+            }
+            else
+            {
+              // toInt() doesn't detect integer truncation if the type
+              // is a long long.
+              const qlonglong val = it2->toLongLong( &ok );
+              if ( ok && val >= std::numeric_limits<int>::min()  && val <= std::numeric_limits<int>::max() )
+              {
+                OGR_F_SetFieldInteger( of.get(), f, static_cast<int>( val ) );
+              }
+              else
+              {
+                ok = false;
+              }
+            }
             break;
+          }
           case OFTInteger64:
-            OGR_F_SetFieldInteger64( of.get(), f, it2->toLongLong() );
+            OGR_F_SetFieldInteger64( of.get(), f, it2->toLongLong( &ok ) );
             break;
           case OFTReal:
-            OGR_F_SetFieldDouble( of.get(), f, it2->toDouble() );
+            OGR_F_SetFieldDouble( of.get(), f, it2->toDouble( &ok ) );
             break;
           case OFTDate:
-            OGR_F_SetFieldDateTime( of.get(), f,
-                                    it2->toDate().year(),
-                                    it2->toDate().month(),
-                                    it2->toDate().day(),
-                                    0, 0, 0,
-                                    0 );
+          {
+            const QDate date = it2->toDate();
+            if ( date.isValid() )
+            {
+              ok = true;
+              OGR_F_SetFieldDateTime( of.get(), f,
+                                      date.year(),
+                                      date.month(),
+                                      date.day(),
+                                      0, 0, 0,
+                                      0 );
+            }
             break;
+          }
           case OFTTime:
           {
             const QTime time = it2->toTime();
-            OGR_F_SetFieldDateTimeEx( of.get(), f,
-                                      0, 0, 0,
-                                      time.hour(),
-                                      time.minute(),
-                                      static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
-                                      0 );
+            if ( time.isValid() )
+            {
+              ok = true;
+              OGR_F_SetFieldDateTimeEx( of.get(), f,
+                                        0, 0, 0,
+                                        time.hour(),
+                                        time.minute(),
+                                        static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                        0 );
+            }
             break;
           }
           case OFTDateTime:
           {
             const QDateTime dt = it2->toDateTime();
-            const QDate date = dt.date();
-            const QTime time = dt.time();
-            OGR_F_SetFieldDateTimeEx( of.get(), f,
-                                      date.year(),
-                                      date.month(),
-                                      date.day(),
-                                      time.hour(),
-                                      time.minute(),
-                                      static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
-                                      QgsOgrUtils::OGRTZFlagFromQt( dt ) );
+            if ( dt.isValid() )
+            {
+              ok = true;
+              const QDate date = dt.date();
+              const QTime time = dt.time();
+              OGR_F_SetFieldDateTimeEx( of.get(), f,
+                                        date.year(),
+                                        date.month(),
+                                        date.day(),
+                                        time.hour(),
+                                        time.minute(),
+                                        static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                        QgsOgrUtils::OGRTZFlagFromQt( dt ) );
+            }
             break;
           }
           case OFTString:
           {
+            ok = true;
             QString stringValue;
             if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
               stringValue = jsonStringValue( it2.value() );
@@ -2328,6 +2440,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
           case OFTBinary:
           {
+            ok = true;
             const QByteArray ba = it2->toByteArray();
             OGR_F_SetFieldBinary( of.get(), f, ba.size(), const_cast< GByte * >( reinterpret_cast< const GByte * >( ba.data() ) ) );
             break;
@@ -2335,84 +2448,122 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
           case OFTStringList:
           {
-            QStringList list = it2->toStringList();
-            int count = list.count();
-            char **lst = new char *[count + 1];
-            if ( count > 0 )
+            if ( qType == QVariant::List || qType == QVariant::StringList )
             {
-              int pos = 0;
-              for ( const QString &string : list )
+              ok = true;
+              QStringList list = it2->toStringList();
+              int count = list.count();
+              char **lst = static_cast<char **>( CPLMalloc( ( count + 1 ) * sizeof( char * ) ) );
+              if ( count > 0 )
               {
-                lst[pos] = CPLStrdup( textEncoding()->fromUnicode( string ).data() );
-                pos++;
+                int pos = 0;
+                for ( const QString &string : list )
+                {
+                  lst[pos] = CPLStrdup( textEncoding()->fromUnicode( string ).data() );
+                  pos++;
+                }
               }
+              lst[count] = nullptr;
+              OGR_F_SetFieldStringList( of.get(), f, lst );
+              CSLDestroy( lst );
             }
-            lst[count] = nullptr;
-            OGR_F_SetFieldStringList( of.get(), f, lst );
-            CSLDestroy( lst );
             break;
           }
 
           case OFTIntegerList:
           {
-            const QVariantList list = it2->toList();
-            const int count = list.count();
-            int *lst = new int[count];
-            if ( count > 0 )
+            if ( qType == QVariant::List || qType == QVariant::StringList )
             {
-              int pos = 0;
-              for ( const QVariant &value : list )
+              ok = true;
+              const QVariantList list = it2->toList();
+              const int count = list.count();
+              int *lst = new int[count];
+              if ( count > 0 )
               {
-                lst[pos] = value.toInt();
-                pos++;
+                int pos = 0;
+                for ( const QVariant &value : list )
+                {
+                  lst[pos] = value.toInt( &ok );
+                  if ( !ok )
+                    break;
+                  pos++;
+                }
               }
+              if ( ok )
+              {
+                OGR_F_SetFieldIntegerList( of.get(), f, count, lst );
+              }
+              delete [] lst;
             }
-            OGR_F_SetFieldIntegerList( of.get(), f, count, lst );
-            delete [] lst;
             break;
           }
 
           case OFTRealList:
           {
-            const QVariantList list = it2->toList();
-            const int count = list.count();
-            double *lst = new double[count];
-            if ( count > 0 )
+            if ( qType == QVariant::List || qType == QVariant::StringList )
             {
-              int pos = 0;
-              for ( const QVariant &value : list )
+              ok = true;
+              const QVariantList list = it2->toList();
+              const int count = list.count();
+              double *lst = new double[count];
+              if ( count > 0 )
               {
-                lst[pos] = value.toDouble();
-                pos++;
+                int pos = 0;
+                for ( const QVariant &value : list )
+                {
+                  lst[pos] = value.toDouble( &ok );
+                  if ( !ok )
+                    break;
+                  pos++;
+                }
               }
+              if ( ok )
+              {
+                OGR_F_SetFieldDoubleList( of.get(), f, count, lst );
+              }
+              delete [] lst;
             }
-            OGR_F_SetFieldDoubleList( of.get(), f, count, lst );
-            delete [] lst;
             break;
           }
 
           case OFTInteger64List:
           {
-            const QVariantList list = it2->toList();
-            const int count = list.count();
-            long long *lst = new long long[count];
-            if ( count > 0 )
+            if ( qType == QVariant::List || qType == QVariant::StringList )
             {
-              int pos = 0;
-              for ( const QVariant &value : list )
+              ok = true;
+              const QVariantList list = it2->toList();
+              const int count = list.count();
+              long long *lst = new long long[count];
+              if ( count > 0 )
               {
-                lst[pos] = value.toLongLong();
-                pos++;
+                int pos = 0;
+                for ( const QVariant &value : list )
+                {
+                  lst[pos] = value.toLongLong( &ok );
+                  if ( !ok )
+                    break;
+                  pos++;
+                }
               }
+              if ( ok )
+              {
+                OGR_F_SetFieldInteger64List( of.get(), f, count, lst );
+              }
+              delete [] lst;
             }
-            OGR_F_SetFieldInteger64List( of.get(), f, count, lst );
-            delete [] lst;
             break;
           }
 
           default:
-            pushError( tr( "Type %1 of attribute %2 of feature %3 unknown." ).arg( type ).arg( fid ).arg( f ) );
+            pushError( tr( "Type %1 of attribute %2 of feature %3 unknown." ).arg( type ).arg( it2.key() ).arg( fid ) );
+            returnValue = false;
             break;
+        }
+
+        if ( !ok )
+        {
+          pushError( tr( "wrong data type for attribute %1 of feature %2: %3" ).arg( it2.key() ) . arg( fid ) .arg( qType ) );
+          returnValue = false;
         }
       }
     }
