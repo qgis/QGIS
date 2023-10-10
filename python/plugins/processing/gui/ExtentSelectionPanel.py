@@ -24,6 +24,7 @@ import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import (
+    Qgis,
     QMenu,
     QAction,
     QDialog,

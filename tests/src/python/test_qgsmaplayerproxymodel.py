@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import (
+    Qgis,
     QgsAnnotationLayer,
     QgsMapLayerProxyModel,
     QgsMeshLayer,

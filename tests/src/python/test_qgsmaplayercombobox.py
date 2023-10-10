@@ -13,7 +13,7 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QEvent
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
-    QgsMapLayerProxyModel,
+    Qgis,
     QgsMeshLayer,
     QgsProject,
     QgsVectorLayer,

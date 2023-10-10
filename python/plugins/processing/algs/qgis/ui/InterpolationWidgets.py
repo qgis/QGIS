@@ -25,16 +25,19 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
                                  QComboBox)
-from qgis.core import (QgsApplication,
-                       QgsMapLayerProxyModel,
-                       QgsWkbTypes,
-                       QgsRectangle,
-                       QgsReferencedRectangle,
-                       QgsCoordinateReferenceSystem,
-                       QgsProcessingUtils,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterDefinition,
-                       QgsFieldProxyModel)
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsMapLayerProxyModel,
+    QgsWkbTypes,
+    QgsRectangle,
+    QgsReferencedRectangle,
+    QgsCoordinateReferenceSystem,
+    QgsProcessingUtils,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterDefinition,
+    QgsFieldProxyModel
+)
 from qgis.gui import QgsDoubleSpinBox
 from qgis.analysis import QgsInterpolator
 
