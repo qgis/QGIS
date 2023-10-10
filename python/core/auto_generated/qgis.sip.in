@@ -90,7 +90,7 @@ The development version
 
 
     enum LayerFilter
-      {
+    {
       RasterLayer,
       NoGeometry,
       PointLayer,

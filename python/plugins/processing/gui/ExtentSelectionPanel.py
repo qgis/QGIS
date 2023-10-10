@@ -24,7 +24,6 @@ import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import (
-    Qgis,
     QMenu,
     QAction,
     QDialog,
@@ -37,7 +36,8 @@ from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 
 from qgis.gui import QgsMapLayerComboBox
 from qgis.utils import iface
-from qgis.core import (QgsProcessingParameterDefinition,
+from qgis.core import (Qgis,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameters,
                        QgsProject,
                        QgsReferencedRectangle,
