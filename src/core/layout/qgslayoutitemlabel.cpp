@@ -338,16 +338,48 @@ QSizeF QgsLayoutItemLabel::sizeForText() const
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
-  const QStringList lines = currentText().split( '\n' );
-  const double textWidth = QgsTextRenderer::textWidth( context, mFormat, lines ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
-  const double fontHeight = QgsTextRenderer::textHeight( context, mFormat, lines ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
-
   const double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
 
-  const double width = textWidth + 2 * mMarginX + 2 * penWidth;
-  const double height = fontHeight + 2 * mMarginY + 2 * penWidth;
+  switch ( mMode )
+  {
+    case ModeFont:
+    {
+      const QStringList lines = currentText().split( '\n' );
+      const double textWidth = QgsTextRenderer::textWidth( context, mFormat, lines ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+      const double fontHeight = QgsTextRenderer::textHeight( context, mFormat, lines ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
 
-  return mLayout->convertToLayoutUnits( QgsLayoutSize( width, height, Qgis::LayoutUnit::Millimeters ) );
+      const double width = textWidth + 2 * mMarginX + 2 * penWidth;
+      const double height = fontHeight + 2 * mMarginY + 2 * penWidth;
+
+      return mLayout->convertToLayoutUnits( QgsLayoutSize( width, height, Qgis::LayoutUnit::Millimeters ) );
+    }
+
+    case ModeHtml:
+    {
+      const double adjustmentFactor = 3.77;
+
+      QTextDocument document;
+      document.setDocumentMargin( 0 );
+      document.setDefaultStyleSheet( createStylesheet() );
+      document.setDefaultFont( createDefaultFont() );
+
+      QTextOption textOption = document.defaultTextOption();
+      textOption.setAlignment( mHAlignment );
+      document.setDefaultTextOption( textOption );
+
+      document.setHtml( QStringLiteral( "<body>%1</body>" ).arg( currentText() ) );
+
+      const QSizeF documentSize = document.size() / adjustmentFactor;
+
+      // x margin already taken into account!
+      // we add 2 pixels here to account for antialiasing effects, and because the rendered size can be a little
+      // unpredictable depending on zoom level/destination paint device
+      const double width = 2 + documentSize.width() + 2 * penWidth;
+      const double height = 2 + documentSize.height() + 2 * mMarginY + 2 * penWidth;
+      return mLayout->convertToLayoutUnits( QgsLayoutSize( width, height, Qgis::LayoutUnit::Millimeters ) );
+    }
+  }
+  return QSizeF();
 }
 
 QFont QgsLayoutItemLabel::font() const
