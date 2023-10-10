@@ -214,6 +214,15 @@ class TestQgsGroupLayer(QgisTestCase):
         group_layer = QgsGroupLayer('group', options)
         group_layer.setChildLayers([vl2, vl1])
         vl1.setBlendMode(QPainter.CompositionMode_DestinationIn)
+        self.assertEqual(vl1.blendMode(), QPainter.CompositionMode_DestinationIn)
+        # temporarily remove layer from group and check blend mode
+        group_layer.setChildLayers([vl2])
+        # blend mode must be reset to a non-clipping mode
+        self.assertEqual(vl1.blendMode(), QPainter.CompositionMode_SourceOver)
+        # readd layer to group
+        group_layer.setChildLayers([vl2, vl1])
+        # group blend mode should be restored
+        self.assertEqual(vl1.blendMode(), QPainter.CompositionMode_DestinationIn)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(600, 400))
