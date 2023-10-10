@@ -133,6 +133,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     QgsLayoutItem::Flags itemFlags() const override;
     //Overridden to show legend title
     QString displayName() const override;
+    bool requiresRasterization() const override;
+    bool containsAdvancedEffects() const override;
 
     /**
      * Sets the legend's item bounds to fit the whole legend content.
