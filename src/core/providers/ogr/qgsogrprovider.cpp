@@ -1409,6 +1409,31 @@ QString QgsOgrProvider::jsonStringValue( const QVariant &value ) const
   return stringValue;
 }
 
+// Stricter version of QVariant::toInt() that addresses the fact that
+// QVariant::toInt() doesn't detect integer truncation if the type
+// is a long long.
+static int strictToInt( const QVariant &v, bool *ok )
+{
+  if ( v.type() == QVariant::Int )
+  {
+    *ok = true;
+    return v.toInt();
+  }
+  else
+  {
+    const qlonglong val = v.toLongLong( ok );
+    if ( *ok && val >= std::numeric_limits<int>::min() && val <= std::numeric_limits<int>::max() )
+    {
+      return static_cast<int>( val );
+    }
+    else
+    {
+      *ok = false;
+    }
+  }
+  return 0;
+}
+
 bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId incrementalFeatureId )
 {
   bool returnValue = true;
@@ -1508,28 +1533,9 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
       switch ( type )
       {
         case OFTInteger:
-        {
-          if ( qType == QVariant::Int )
-          {
-            ok = true;
-            OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, attrVal.toInt() );
-          }
-          else
-          {
-            // toInt() doesn't detect integer truncation if the type
-            // is a long long.
-            const qlonglong val = attrVal.toLongLong( &ok );
-            if ( ok && val >= std::numeric_limits<int>::min()  && val <= std::numeric_limits<int>::max() )
-            {
-              OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, static_cast<int>( val ) );
-            }
-            else
-            {
-              ok = false;
-            }
-          }
+          OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, strictToInt( attrVal, &ok ) );
           break;
-        }
+
         case OFTInteger64:
           OGR_F_SetFieldInteger64( feature.get(), ogrAttributeId, attrVal.toLongLong( &ok ) );
           break;
@@ -1653,7 +1659,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
               int pos = 0;
               for ( const QVariant &value : list )
               {
-                lst[pos] = value.toInt( &ok );
+                lst[pos] = strictToInt( value, &ok );
                 if ( !ok )
                   break;
                 pos++;
@@ -2474,28 +2480,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
         switch ( type )
         {
           case OFTInteger:
-          {
-            if ( qType == QVariant::Int )
-            {
-              ok = true;
-              OGR_F_SetFieldInteger( of.get(), f, it2->toInt() );
-            }
-            else
-            {
-              // toInt() doesn't detect integer truncation if the type
-              // is a long long.
-              const qlonglong val = it2->toLongLong( &ok );
-              if ( ok && val >= std::numeric_limits<int>::min()  && val <= std::numeric_limits<int>::max() )
-              {
-                OGR_F_SetFieldInteger( of.get(), f, static_cast<int>( val ) );
-              }
-              else
-              {
-                ok = false;
-              }
-            }
+            OGR_F_SetFieldInteger( of.get(), f, strictToInt( *it2, &ok ) );
             break;
-          }
           case OFTInteger64:
             OGR_F_SetFieldInteger64( of.get(), f, it2->toLongLong( &ok ) );
             break;
@@ -2608,7 +2594,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                 int pos = 0;
                 for ( const QVariant &value : list )
                 {
-                  lst[pos] = value.toInt( &ok );
+                  lst[pos] = strictToInt( value, &ok );
                   if ( !ok )
                     break;
                   pos++;
