@@ -101,7 +101,7 @@ class QgisTestCase(unittest.TestCase):
             file_mode = 'ta'
             try:
                 with open(report_file, 'rt', encoding="utf-8") as f:
-                    file_is_empty = not(bool(f.read()))
+                    file_is_empty = not bool(f.read())
             except IOError:
                 pass
         else:
