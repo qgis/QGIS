@@ -87,7 +87,9 @@ The development version
       TiledScene,
     };
 
-    enum class LayerFilter
+
+
+    enum LayerFilter
       {
       RasterLayer,
       NoGeometry,
