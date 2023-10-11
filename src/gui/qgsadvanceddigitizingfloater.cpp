@@ -493,7 +493,7 @@ void QgsAdvancedDigitizingFloater::focusOnAngle()
 {
   if ( mActive )
   {
-    const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mDistanceLineEdit->text(), Qgis::CadConstraintType::Angle ) };
+    const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mAngleLineEdit->text(), Qgis::CadConstraintType::Angle ) };
     mAngleLineEdit->setText( cleanedInputValue );
     mAngleLineEdit->setFocus();
     mAngleLineEdit->selectAll();
