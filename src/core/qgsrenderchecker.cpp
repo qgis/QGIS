@@ -62,6 +62,11 @@ QString QgsRenderChecker::report( bool ignoreSuccess ) const
   return ( ( ignoreSuccess && mResult ) || ( mExpectFail && !mResult ) ) ? QString() : mReport;
 }
 
+QString QgsRenderChecker::markdownReport( bool ignoreSuccess ) const
+{
+  return ( ( ignoreSuccess && mResult ) || ( mExpectFail && !mResult ) ) ? QString() : mMarkdownReport;
+}
+
 void QgsRenderChecker::setControlName( const QString &name )
 {
   mControlName = name;
@@ -252,6 +257,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File not set.</td></tr></table>\n";
+    mMarkdownReport = QStringLiteral( "Failed because expected image file not set\n" );
     performPostTestActions( flags );
     return mResult;
   }
@@ -266,6 +272,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File could not be loaded.</td></tr></table>\n";
+    mMarkdownReport = QStringLiteral( "Failed because expected image file (%1) could not be loaded\n" ).arg( mExpectedImageFile );
     performPostTestActions( flags );
     return mResult;
   }
@@ -304,6 +311,8 @@ bool QgsRenderChecker::runTest( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
               "Image File could not be saved.</td></tr></table>\n";
+    mMarkdownReport = QStringLiteral( "Failed because rendered image file could not be saved to %1\n" ).arg( mRenderedImageFile );
+
     performPostTestActions( flags );
     return mResult;
   }
@@ -340,6 +349,8 @@ bool QgsRenderChecker::compareImages( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File not set.</td></tr></table>\n";
+    mMarkdownReport = QStringLiteral( "Failed because expected image file was not set\n" );
+
     performPostTestActions( flags );
     return mResult;
   }
@@ -365,6 +376,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
               "Image File not set.</td></tr></table>\n";
+    mMarkdownReport = QStringLiteral( "Failed because rendered image file was not set\n" );
     performPostTestActions( flags );
     return mResult;
   }
@@ -380,6 +392,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because control "
               "image file could not be loaded.</td></tr></table>\n";
+    mMarkdownReport = QStringLiteral( "Failed because expected image file (%1) could not be loaded\n" ).arg( referenceImageFile );
     performPostTestActions( flags );
     return mResult;
   }
@@ -400,6 +413,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
                               "<tr><td>Test Result:</td><td>%1:</td></tr>\n"
                               "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
                               "Image File could not be loaded.</td></tr></table>\n" ).arg( upperFirst( expectedImageString ) );
+    mMarkdownReport = QStringLiteral( "Failed because rendered image (%1) could not be loaded\n" ).arg( mRenderedImageFile );
     performPostTestActions( flags );
     return mResult;
   }
@@ -508,6 +522,11 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += QLatin1String( "<tr><td colspan=3>" );
       mReport += QStringLiteral( "<font color=red>%1 and %2 for " ).arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are different dimensions - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
+      mMarkdownReport += QStringLiteral( "Failed because rendered image and expected image are different dimensions (%1x%2 v2 %3x%4)\n" )
+                         .arg( myResultImage.width() )
+                         .arg( myResultImage.height() )
+                         .arg( expectedImage.width() )
+                         .arg( expectedImage.height() );
 
       const QString diffSizeImagesString = QString(
                                              "<tr>"
@@ -548,6 +567,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += "<font color=red>Expected image and rendered image for " + testName + " have different formats (8bit format is expected) - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
+
+      mMarkdownReport += QStringLiteral( "Failed because rendered image and expected image have different formats (8bit format is expected)\n" );
       performPostTestActions( flags );
       return mResult;
     }
@@ -655,6 +676,9 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += QLatin1String( "<font color=red>Test failed because render step took too long</font>" );
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
+
+      mMarkdownReport += QStringLiteral( "Test failed because render step took too long\n" );
+
       performPostTestActions( flags );
       return mResult;
     }
@@ -679,6 +703,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   mReport += QStringLiteral( "<font color=red>%1 and %2 for " ).arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are mismatched</font><br>";
   mReport += QLatin1String( "</td></tr>" );
   mReport += myImagesString;
+
+  mMarkdownReport += QStringLiteral( "Rendered image did not match %1 (found %2 pixels different)\n" ).arg( referenceImageFile ).arg( mMismatchCount );
 
   performPostTestActions( flags );
   return mResult;

@@ -151,6 +151,8 @@ class TEST_EXPORT QgsTest : public QObject
     {
       if ( !mReport.isEmpty() )
         writeLocalHtmlReport( mReport );
+      if ( !mMarkdownReport.isEmpty() )
+        writeMarkdownReport( mMarkdownReport );
     }
 
     /**
@@ -264,7 +266,7 @@ class TEST_EXPORT QgsTest : public QObject
       const bool result = checker.runTest( name, allowedMismatch );
       if ( !result )
       {
-        appendToReport( name, checker.report() );
+        appendToReport( name, checker.report(), checker.markdownReport() );
 
       }
       return result;
@@ -290,7 +292,7 @@ class TEST_EXPORT QgsTest : public QObject
       const bool result = checker.runTest( name, allowedMismatch );
       if ( !result )
       {
-        appendToReport( name, checker.report() );
+        appendToReport( name, checker.report(), checker.markdownReport() );
       }
       return result;
     }
@@ -308,28 +310,41 @@ class TEST_EXPORT QgsTest : public QObject
       const bool result = checker.testLayout( report, page, allowedMismatch );
       if ( !result )
       {
-        appendToReport( name, report );
+        appendToReport( name, report, checker.markdownReport() );
       }
       return result;
     }
 
     /**
-     * Appends some \a content to the test report.
+     * Appends some \a html and \a markdown to the test report.
      *
      * This should be used only for appending useful information when a test fails.
      */
-    void appendToReport( const QString &testName, const QString &content )
+    void appendToReport( const QString &testName, const QString &html, const QString &markdown = QString() )
     {
       QString testIdentifier;
       if ( QTest::currentDataTag() )
         testIdentifier = QStringLiteral( "%1 (%2: %3)" ).arg( testName, QTest::currentTestFunction(), QTest::currentDataTag() );
       else
         testIdentifier = QStringLiteral( "%1 (%2)" ).arg( testName, QTest::currentTestFunction() );
-      mReport += QStringLiteral( "<h2>%1</h2>\n" ).arg( testIdentifier );
-      mReport += content;
+
+      if ( !html.isEmpty() )
+      {
+        mReport += QStringLiteral( "<h2>%1</h2>\n" ).arg( testIdentifier );
+        mReport += html;
+      }
+
+      const QString markdownContent = markdown.isEmpty() ? html : markdown;
+      if ( !markdownContent.isEmpty() )
+      {
+        mMarkdownReport += QStringLiteral( "## %1\n\n" ).arg( testIdentifier );
+        mMarkdownReport += markdownContent + QStringLiteral( "\n\n" );
+      }
     }
 
   private:
+
+    QString mMarkdownReport;
 
     /**
      * Writes out a HTML report to a temporary file for visual comparison
@@ -360,6 +375,33 @@ class TEST_EXPORT QgsTest : public QObject
 
         if ( !isCIRun() )
           QDesktopServices::openUrl( QStringLiteral( "file:///%1" ).arg( reportFile ) );
+      }
+    }
+
+    /**
+     * Writes out a markdown report to a temporary file for use on CI runs.
+     */
+    void writeMarkdownReport( const QString &report )
+    {
+      const QDir reportDir = QgsRenderChecker::testReportDir();
+      if ( !reportDir.exists() )
+        QDir().mkpath( reportDir.path() );
+
+      const QString reportFile = reportDir.filePath( "summary.md" );
+      QFile file( reportFile );
+
+      QFile::OpenMode mode = QIODevice::WriteOnly;
+      if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" )
+           || qgetenv( "QGIS_APPEND_TO_TEST_REPORT" ) == QStringLiteral( "true" ) )
+        mode |= QIODevice::Append;
+      else
+        mode |= QIODevice::Truncate;
+
+      if ( file.open( mode ) )
+      {
+        QTextStream stream( &file );
+        stream << report;
+        file.close();
       }
     }
 

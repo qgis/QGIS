@@ -86,8 +86,21 @@ class CORE_EXPORT QgsRenderChecker
      *
      * If \a ignoreSuccess is TRUE then the report will always be empty if
      * the test was successful.
+     *
+     * \see markdownReport()
      */
     QString report( bool ignoreSuccess = true ) const;
+
+    /**
+     * Returns the markdown report describing the results of the test run.
+     *
+     * If \a ignoreSuccess is TRUE then the report will always be empty if
+     * the test was successful.
+     *
+     * \see report()
+     * \since QGIS 3.34
+     */
+    QString markdownReport( bool ignoreSuccess = true ) const;
 
     /**
      * Returns the percent of pixels which matched the control image.
@@ -277,7 +290,10 @@ class CORE_EXPORT QgsRenderChecker
     QVector<QgsDartMeasurement> dartMeasurements() const { return mDashMessages; }
 
   protected:
+    //! HTML format report
     QString mReport;
+    //! Markdown report
+    QString mMarkdownReport;
     unsigned int mMatchTarget = 0;
     int mElapsedTime = 0;
     QString mRenderedImageFile;
