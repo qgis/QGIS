@@ -657,6 +657,17 @@ class CORE_EXPORT QgsTextFormat
     */
     static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0, const QgsScreenProperties &screen = QgsScreenProperties() );
 
+    /**
+     * Returns a CSS string representing the specified text format as closely as possible.
+     * \param pointToPixelMultiplier scaling factor to apply to convert point sizes to pixel font sizes.
+     * The CSS returned by this function will always use pixels for font sizes, so this parameter
+     * should be set to a suitable value to convert point sizes to pixels (e.g., taking into account
+     * destination DPI)
+     * \returns partial CSS string, e.g., "line-height: 120%;"
+     * \since QGIS 3.34
+     */
+    QString asCSS( double pointToPixelMultiplier = 1.0 ) const;
+
   private:
 
     QgsTextBufferSettings mBufferSettings;

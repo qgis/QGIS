@@ -1225,3 +1225,40 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   painter.end();
   return pixmap;
 }
+
+QString QgsTextFormat::asCSS( double pointToPixelMultiplier ) const
+{
+  QString css;
+
+  switch ( lineHeightUnit() )
+  {
+    case Qgis::RenderUnit::Percentage:
+      css += QStringLiteral( "line-height: %1%;" ).arg( lineHeight() * 100 );
+      break;
+    case Qgis::RenderUnit::Pixels:
+      css += QStringLiteral( "line-height: %1px;" ).arg( lineHeight() );
+      break;
+    case Qgis::RenderUnit::Points:
+      // While the Qt documentation states pt unit type is supported, it's ignored, convert to px
+      css += QStringLiteral( "line-height: %1px;" ).arg( lineHeight() * pointToPixelMultiplier );
+      break;
+    case Qgis::RenderUnit::Millimeters:
+      // While the Qt documentation states cm unit type is supported, it's ignored, convert to px
+      css += QStringLiteral( "line-height: %1px;" ).arg( lineHeight() * 2.83464567 * pointToPixelMultiplier );
+      break;
+    case Qgis::RenderUnit::MetersInMapUnits:
+    case Qgis::RenderUnit::MapUnits:
+    case Qgis::RenderUnit::Inches:
+    case Qgis::RenderUnit::Unknown:
+      break;
+  }
+  css += QStringLiteral( "color: rgba(%1,%2,%3,%4);" ).arg( color().red() ).arg( color().green() ).arg( color().blue() ).arg( QString::number( color().alphaF(), 'f', 4 ) );
+  QFont f = toQFont();
+  if ( sizeUnit() == Qgis::RenderUnit::Millimeters )
+  {
+    f.setPointSizeF( size() / 0.352778 );
+  }
+  css += QgsFontUtils::asCSS( toQFont(), pointToPixelMultiplier );
+
+  return css;
+}

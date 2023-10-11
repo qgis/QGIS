@@ -731,6 +731,20 @@ Returns a pixmap preview for a text ``format``.
 .. versionadded:: 3.10
 %End
 
+    QString asCSS( double pointToPixelMultiplier = 1.0 ) const;
+%Docstring
+Returns a CSS string representing the specified text format as closely as possible.
+
+:param pointToPixelMultiplier: scaling factor to apply to convert point sizes to pixel font sizes.
+                               The CSS returned by this function will always use pixels for font sizes, so this parameter
+                               should be set to a suitable value to convert point sizes to pixels (e.g., taking into account
+                               destination DPI)
+
+:return: partial CSS string, e.g., "line-height: 120%;"
+
+.. versionadded:: 3.34
+%End
+
 };
 
 

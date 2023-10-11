@@ -55,6 +55,7 @@ class TestQgsLayoutLabel : public QgsTest
     void marginMethods(); //tests getting/setting margins
     void render();
     void renderAsHtml();
+    void renderAsHtmlLineHeight();
 #ifdef WITH_QTWEBKIT
     void convertToHtml();
     void renderAsHtmlRelative();
@@ -311,6 +312,34 @@ void TestQgsLayoutLabel::renderAsHtml()
   label->update();
 
   QVERIFY( layoutCheck( QStringLiteral( "composerlabel_renderhtml" ), &l, 0, 10 ) );
+}
+
+void TestQgsLayoutLabel::renderAsHtmlLineHeight()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
+  label->setMargin( 1 );
+  l.addLayoutItem( label );
+
+  label->setText( QStringLiteral( "test <i>html</i><br>with <u>line height</u>." ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 48 );
+  format.setSizeUnit( Qgis::RenderUnit::Points );
+  format.setColor( QColor( 200, 40, 60 ) );
+  format.setLineHeight( 2.0 );
+  format.setLineHeightUnit( Qgis::RenderUnit::Percentage );
+  label->setTextFormat( format );
+
+  label->setPos( 70, 70 );
+  label->adjustSizeToText();
+  label->setMode( QgsLayoutItemLabel::ModeHtml );
+  label->update();
+
+  QVERIFY( layoutCheck( QStringLiteral( "composerlabel_renderhtmllineheight" ), &l, 0, 10 ) );
 }
 
 #ifdef WITH_QTWEBKIT
