@@ -24,7 +24,7 @@ from qgis.gui import (
     QgsRasterLayerProperties,
 )
 import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import start_app
 import tempfile
 
 from utilities import unitTestDataPath
