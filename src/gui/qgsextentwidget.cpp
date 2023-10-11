@@ -53,7 +53,7 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   mButtonCalcFromLayer->setMenu( mLayerMenu );
   connect( mLayerMenu, &QMenu::aboutToShow, this, &QgsExtentWidget::layerMenuAboutToShow );
   mMapLayerModel = new QgsMapLayerProxyModel( this );
-  mMapLayerModel->setFilters( QgsMapLayerProxyModel::Filter::SpatialLayer );
+  mMapLayerModel->setFilters( Qgis::LayerFilter::SpatialLayer );
 
   mLayoutMenu = new QMenu( tr( "Calculate from Layout Map" ), this );
   mButtonCalcFromLayout->setMenu( mLayoutMenu );

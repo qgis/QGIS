@@ -46,7 +46,7 @@ QgsProcessingAggregatePanelWidget::QgsProcessingAggregatePanelWidget( QWidget *p
   mModel = mFieldsView->model();
 
   mLayerCombo->setAllowEmptyLayer( true );
-  mLayerCombo->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mLayerCombo->setFilters( Qgis::LayerFilter::VectorLayer );
 
   connect( mResetButton, &QPushButton::clicked, this, &QgsProcessingAggregatePanelWidget::loadFieldsFromLayer );
   connect( mAddButton, &QPushButton::clicked, this, &QgsProcessingAggregatePanelWidget::addField );

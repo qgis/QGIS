@@ -61,7 +61,7 @@ Rerturns the layer tree model
 Sets the layer tree model
 %End
 
-    void setFilters( const QgsMapLayerProxyModel::Filters &filters );
+    void setFilters( Qgis::LayerFilters filters );
 %Docstring
 Defines the type layers (vector, raster, etc) shown in the tree
 If the list is empty, all types are shown.

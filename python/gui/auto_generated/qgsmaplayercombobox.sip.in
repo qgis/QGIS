@@ -30,12 +30,26 @@ QgsMapLayerComboBox creates a combo box to display the list of layers (currently
 The layers can be filtered and/or ordered.
 %End
 
-    void setFilters( QgsMapLayerProxyModel::Filters filters );
+    void setFilters( Qgis::LayerFilters filters );
 %Docstring
-setFilters allows filtering according to layer type and/or geometry type.
+Filters according to layer type and/or geometry type.
 %End
 
-    QgsMapLayerProxyModel::Filters filters() const;
+ void setFilters( int filters ) /Deprecated/;
+%Docstring
+Filters according to layer type and/or geometry type.
+
+.. note::
+
+   for API compatibility
+
+.. versionadded:: 3.34
+
+.. deprecated:: QGIS 3.34
+   use the flag signature instead
+%End
+
+    Qgis::LayerFilters filters() const;
 %Docstring
 currently used filter on list layers
 %End

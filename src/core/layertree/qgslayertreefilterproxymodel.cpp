@@ -107,7 +107,7 @@ void QgsLayerTreeFilterProxyModel::setLayerTreeModel( QgsLayerTreeModel *layerTr
   QSortFilterProxyModel::setSourceModel( layerTreeModel );
 }
 
-void QgsLayerTreeFilterProxyModel::setFilters( const QgsMapLayerProxyModel::Filters &filters )
+void QgsLayerTreeFilterProxyModel::setFilters( Qgis::LayerFilters filters )
 {
   mFilters = filters;
   invalidateFilter();

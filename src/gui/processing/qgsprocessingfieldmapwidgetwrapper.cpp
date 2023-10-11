@@ -46,7 +46,7 @@ QgsProcessingFieldMapPanelWidget::QgsProcessingFieldMapPanelWidget( QWidget *par
   mFieldsView->setDestinationEditable( true );
 
   mLayerCombo->setAllowEmptyLayer( true );
-  mLayerCombo->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mLayerCombo->setFilters( Qgis::LayerFilter::VectorLayer );
 
   connect( mResetButton, &QPushButton::clicked, this, &QgsProcessingFieldMapPanelWidget::loadFieldsFromLayer );
   connect( mAddButton, &QPushButton::clicked, this, &QgsProcessingFieldMapPanelWidget::addField );

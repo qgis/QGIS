@@ -53,7 +53,7 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
   mUpsertOnEditCheckBox->setToolTip( tr( "Automatically adds a matching row to the joined table, but if one already exists then update that matching row instead" ) );
   mDeleteCascadeCheckBox->setToolTip( tr( "Automatically delete the corresponding feature of the linked layer if one exists" ) );
 
-  mJoinLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mJoinLayerComboBox->setFilters( Qgis::LayerFilter::VectorLayer );
   mJoinLayerComboBox->setExceptedLayerList( alreadyJoinedLayers );
   connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, mJoinFieldComboBox, &QgsFieldComboBox::setLayer );
   connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsJoinDialog::joinedLayerChanged );
