@@ -1124,6 +1124,12 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
       {
         if ( label->mode() == QgsLayoutItemLabel::ModeHtml )
         {
+          QgsTextFormat textFormat = label->textFormat();
+          if ( textFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage )
+          {
+            textFormat.setLineHeight( textFormat.lineHeight() + 0.22 );
+            label->setTextFormat( textFormat );
+          }
           QgsLayoutMultiFrame *html = QgsLayoutItemHtml::createFromLabel( label );
           addMultiFrame( html );
           if ( item->isGroupMember() )
