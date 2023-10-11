@@ -5820,52 +5820,61 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
 
 bool QgsSpatiaLiteProvider::getTableSummary()
 {
-  int ret;
-  int i;
-  char **results = nullptr;
-  int rows;
-  int columns;
-  char *errMsg = nullptr;
+  mLayerExtent.setMinimal(); // setNull(), basically
 
-  QString sql = QStringLiteral( "SELECT Count(1)%1 FROM %2" )
-                .arg( mGeometryColumn.isEmpty() ? QString() : QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( QgsSqliteUtils::quotedIdentifier( mGeometryColumn ) ),
-                      mQuery );
+  QString sql = QStringLiteral( "SELECT Count(1)" );
+
+  if ( ! mGeometryColumn.isEmpty() )
+  {
+    sql += QStringLiteral(
+             ", Min(MbrMinX(%1)), Min(MbrMinY(%1)), Max(MbrMaxX(%1)), Max(MbrMaxY(%1))"
+           ).arg( QgsSqliteUtils::quotedIdentifier( mGeometryColumn ) );
+  }
+
+  sql += QStringLiteral( " FROM %1" ) .arg( mQuery );
 
   if ( !mSubsetString.isEmpty() )
   {
     sql += " WHERE ( " + mSubsetString + ')';
   }
 
-  ret = sqlite3_get_table( sqliteHandle( ), sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  char **results = nullptr;
+  int rows;
+  int columns;
+  char *errMsg = nullptr;
+
+  int ret = sqlite3_get_table( sqliteHandle(), sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
   {
     handleError( sql, errMsg, QString() );
     return false;
   }
-  if ( rows < 1 )
-    ;
-  else
+
+  if ( rows != 1 )
   {
-    for ( i = 1; i <= rows; i++ )
-    {
-      QString count = results[( i * columns ) + 0];
-      mNumberFeatures = count.toLongLong();
-
-      if ( mGeometryColumn.isEmpty() )
-      {
-        mLayerExtent.setMinimal();
-      }
-      else
-      {
-        QString minX = results[( i * columns ) + 1];
-        QString minY = results[( i * columns ) + 2];
-        QString maxX = results[( i * columns ) + 3];
-        QString maxY = results[( i * columns ) + 4];
-
-        mLayerExtent.set( minX.toDouble(), minY.toDouble(), maxX.toDouble(), maxY.toDouble() );
-      }
-    }
+    QgsMessageLog::logMessage(
+      tr( "Spatialite: unexpected number of rows (%1) from aggregate query\nSQL: %2" )
+      .arg( rows ) .arg( sql )
+    );
+    // TODO: should we ROLLBACK ?
+    sqlite3_free_table( results );
+    return false;
   }
+
+  // the first row of results contains the column names, so we skip that
+  QString count = results[columns + 0];
+  mNumberFeatures = count.toLongLong();
+
+  if ( mNumberFeatures && ! mGeometryColumn.isEmpty() ) do
+    {
+      const QString minX = results[columns + 1]; if ( minX.isEmpty() ) break;
+      const QString minY = results[columns + 2]; if ( minY.isEmpty() ) break;
+      const QString maxX = results[columns + 3]; if ( maxX.isEmpty() ) break;
+      const QString maxY = results[columns + 4]; if ( maxY.isEmpty() ) break;
+      mLayerExtent.set( minX.toDouble(), minY.toDouble(), maxX.toDouble(), maxY.toDouble() );
+    }
+    while ( 0 );
+
   sqlite3_free_table( results );
   return true;
 }
