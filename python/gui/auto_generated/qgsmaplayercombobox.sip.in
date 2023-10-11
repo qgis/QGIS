@@ -35,7 +35,7 @@ The layers can be filtered and/or ordered.
 Filters according to layer type and/or geometry type.
 %End
 
-    void setFilters( int filters );
+ void setFilters( int filters ) /Deprecated/;
 %Docstring
 Filters according to layer type and/or geometry type.
 

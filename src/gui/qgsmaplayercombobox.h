@@ -56,7 +56,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * \since QGIS 3.34
      * \deprecated since QGIS 3.34 use the flag signature instead
      */
-    void setFilters( int filters ) { setFilters( static_cast<Qgis::LayerFilters>( filters ) ); }
+    Q_DECL_DEPRECATED void setFilters( int filters ) SIP_DEPRECATED { setFilters( static_cast<Qgis::LayerFilters>( filters ) ); }
 
     //! currently used filter on list layers
     Qgis::LayerFilters filters() const { return mProxyModel->filters(); }

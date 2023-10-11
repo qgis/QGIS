@@ -43,7 +43,7 @@ Sets ``filter`` flags which affect how layers are filtered within the model.
 .. versionadded:: 2.3
 %End
 
-    void setFilters( int filters );
+ void setFilters( int filters ) /Deprecated/;
 %Docstring
 Filters according to layer type and/or geometry type.
 
