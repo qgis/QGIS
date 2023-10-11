@@ -47,7 +47,7 @@ class TestQgsMapLayerComboBox(QgisTestCase):
         QgsProject.instance().addMapLayer(l2)
 
         m.setFilters(Qgis.LayerFilter.LineLayer | Qgis.LayerFilter.WritableLayer)
-        self.assertEqual(m.filters(), Qgis.LayerFilter.LineLayer | Qgis.LayerFilter.WritableLayer)
+        self.assertEqual(m.filters(), Qgis.LayerFilters(Qgis.LayerFilter.LineLayer | Qgis.LayerFilter.WritableLayer))
 
         m.setExceptedLayerList([l2])
         self.assertEqual(m.exceptedLayerList(), [l2])

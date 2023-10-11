@@ -47,7 +47,7 @@ class TestQgsMapLayerProxyModel(QgisTestCase):
         QgsProject.instance().addMapLayer(l2)
 
         m.setFilters(Qgis.LayerFilter.LineLayer | Qgis.LayerFilter.WritableLayer)
-        self.assertEqual(m.filters(), Qgis.LayerFilter.LineLayer | Qgis.LayerFilter.WritableLayer)
+        self.assertEqual(m.filters(), Qgis.LayerFilters(Qgis.LayerFilter.LineLayer | Qgis.LayerFilter.WritableLayer))
 
         m.setExceptedLayerIds([l2.id()])
         self.assertEqual(m.exceptedLayerIds(), [l2.id()])
