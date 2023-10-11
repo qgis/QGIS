@@ -11,9 +11,13 @@ by running the prepare commit script **before** issuing `git commit`.
 
     ./scripts/prepare_commit.sh
 
-This can be automated by setting up the pre-commit hook properly.
+This can be automated by adding it to a pre-commit hook, for example:
 
-    ln -s ../../scripts/prepare_commit.sh .git/hooks/pre-commit
+    pushd $(git rev-parse --git-common-dir)/hooks
+    test -e pre-commit && mv pre-commit pre-commit.000
+    echo '$(git rev-parse --show-toplevel)/scripts/prepare_commit.sh' > pre-commit
+    chmod +x pre-commit
+    popd
 
 Getting your pull request merged
 --------------------------------
