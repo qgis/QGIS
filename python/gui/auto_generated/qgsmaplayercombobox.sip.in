@@ -32,7 +32,21 @@ The layers can be filtered and/or ordered.
 
     void setFilters( Qgis::LayerFilters filters );
 %Docstring
-setFilters allows filtering according to layer type and/or geometry type.
+Filters according to layer type and/or geometry type.
+%End
+
+    void setFilters( int filters );
+%Docstring
+Filters according to layer type and/or geometry type.
+
+.. note::
+
+   for API compatibility
+
+.. versionadded:: 3.34
+
+.. deprecated:: QGIS 3.34
+   use the flag signature instead
 %End
 
     Qgis::LayerFilters filters() const;

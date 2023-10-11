@@ -47,8 +47,16 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      */
     explicit QgsMapLayerComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! setFilters allows filtering according to layer type and/or geometry type.
+    //! Filters according to layer type and/or geometry type.
     void setFilters( Qgis::LayerFilters filters ) { mProxyModel->setFilters( filters ); }
+
+    /**
+     * Filters according to layer type and/or geometry type.
+     * \note for API compatibility
+     * \since QGIS 3.34
+     * \deprecated since QGIS 3.34 use the flag signature instead
+     */
+    void setFilters( int filters ) { setFilters( static_cast<Qgis::LayerFilters>( filters ) ); }
 
     //! currently used filter on list layers
     Qgis::LayerFilters filters() const { return mProxyModel->filters(); }

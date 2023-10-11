@@ -124,15 +124,12 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( LayerType )
 
-
-    // TODO QGIS 4: make LayerFilter a scope base enum (sip 6+ allows /BaseType=IntFlag/ annotation)
-
     /**
      * Filter for layers
      *
      * \since QGIS 3.34. Prior to 3.34 this was available as QgsMapLayerProxyModel::Filter.
      */
-    enum LayerFilter SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapLayerProxyModel, Filter )
+    enum class LayerFilter SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerProxyModel, Filter ) : int
     {
       RasterLayer = 1,
       NoGeometry = 2,

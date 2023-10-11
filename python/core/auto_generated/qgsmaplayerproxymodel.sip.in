@@ -43,6 +43,20 @@ Sets ``filter`` flags which affect how layers are filtered within the model.
 .. versionadded:: 2.3
 %End
 
+    void setFilters( int filters );
+%Docstring
+Filters according to layer type and/or geometry type.
+
+.. note::
+
+   for API compatibility
+
+.. versionadded:: 3.34
+
+.. deprecated:: QGIS 3.34
+   use the flag signature instead
+%End
+
     const Qgis::LayerFilters &filters() const;
 %Docstring
 Returns the filter flags which affect how layers are filtered within the model.

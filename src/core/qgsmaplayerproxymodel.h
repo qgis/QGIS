@@ -63,6 +63,14 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     QgsMapLayerProxyModel *setFilters( Qgis::LayerFilters filters );
 
     /**
+     * Filters according to layer type and/or geometry type.
+     * \note for API compatibility
+     * \since QGIS 3.34
+     * \deprecated since QGIS 3.34 use the flag signature instead
+     */
+    void setFilters( int filters ) { setFilters( static_cast<Qgis::LayerFilters>( filters ) ); }
+
+    /**
      * Returns the filter flags which affect how layers are filtered within the model.
      *
      * \see setFilters()
