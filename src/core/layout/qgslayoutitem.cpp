@@ -302,7 +302,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   }
   else if ( blendMode != QPainter::CompositionMode_SourceOver )
   {
-    // we have to rasterise content in order to show it with alternative blend modes
+    // we have to rasterize content in order to show it with alternative blend modes
     forceRasterOutput = true;
   }
 
