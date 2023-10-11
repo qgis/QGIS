@@ -781,6 +781,12 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
     }
   }
 
+  if ( alg->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool )
+  {
+    std::cerr << QStringLiteral( "The \"%1\" algorithm is not available for use outside of the QGIS desktop application\n" ).arg( id ).toLocal8Bit().constData();
+    return 1;
+  }
+
   QVariantMap json;
   if ( !useJson )
   {
