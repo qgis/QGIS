@@ -50,6 +50,7 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
 
   connect( mShowAllButton, &QAbstractButton::clicked, this, &QgsOrganizeTableColumnsDialog::showAll );
   connect( mHideAllButton, &QAbstractButton::clicked, this, &QgsOrganizeTableColumnsDialog::hideAll );
+  connect( mToggleSelectionButton, &QAbstractButton::clicked, this, &QgsOrganizeTableColumnsDialog::toggleSelection );
 
   if ( vl )
   {
@@ -93,10 +94,11 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
     }
   }
 
-  if ( !vl || mConfig.columns().count() < 7 )
+  if ( !vl || mConfig.columns().count() < 5 )
   {
     mShowAllButton->hide();
     mHideAllButton->hide();
+    mToggleSelectionButton->hide();
   }
 }
 
@@ -140,5 +142,27 @@ void QgsOrganizeTableColumnsDialog::hideAll()
   for ( int i = 0; i < mFieldsList->count() ; i++ )
   {
     mFieldsList->item( i )->setCheckState( Qt::Unchecked );
+  }
+}
+
+void QgsOrganizeTableColumnsDialog::toggleSelection()
+{
+  for ( int i = 0; i < mFieldsList->count() ; i++ )
+  {
+    QListWidgetItem *item = mFieldsList->item( i );
+
+    if ( item->isSelected() )
+    {
+      if ( item->checkState() == Qt::Unchecked )
+      {
+        item->setCheckState( Qt::Checked );
+      }
+      else // Qt::Checked
+      {
+        item->setCheckState( Qt::Unchecked );
+      }
+
+    }
+
   }
 }
