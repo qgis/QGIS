@@ -124,9 +124,22 @@ Test using renderer to generate the image to be compared.
 
     QString report() const;
 %Docstring
-Returns a report for this test.
+Returns a HTML report for this test.
 
 The report will be empty if the test was successfully run.
+
+.. seealso:: :py:func:`markdownReport`
+%End
+
+    QString markdownReport() const;
+%Docstring
+Returns a markdown report for this test.
+
+The report will be empty if the test was successfully run.
+
+.. seealso:: :py:func:`report`
+
+.. versionadded:: 3.34
 %End
 
     QString controlImagePath() const;

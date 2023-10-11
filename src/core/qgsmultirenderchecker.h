@@ -128,11 +128,23 @@ class CORE_EXPORT QgsMultiRenderChecker
     bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
 
     /**
-     * Returns a report for this test.
+     * Returns a HTML report for this test.
      *
      * The report will be empty if the test was successfully run.
+     *
+     * \see markdownReport()
      */
     QString report() const;
+
+    /**
+     * Returns a markdown report for this test.
+     *
+     * The report will be empty if the test was successfully run.
+     *
+     * \see report()
+     * \since QGIS 3.34
+     */
+    QString markdownReport() const;
 
     /**
      * Returns the path to the control images.
@@ -148,6 +160,7 @@ class CORE_EXPORT QgsMultiRenderChecker
   private:
     bool mResult = false;
     QString mReport;
+    QString mMarkdownReport;
     QString mRenderedImage;
     QString mControlName;
     QString mControlPathPrefix;
