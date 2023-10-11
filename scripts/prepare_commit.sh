@@ -66,11 +66,11 @@ else
   "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"
 fi
 
-MODIFIED_SHELLFILES=$(echo "${MODIFIED}" | grep '\.sh$')
+MODIFIED_SHELLFILES=$(echo "${MODIFIED}" | grep '\.sh$' || true)
 if [ -n "$MODIFIED_SHELLFILES" ]; then
   # Run shell checker if requirements are met
   if command -v shellcheck > /dev/null; then
-    ${TOPLEVEL}/tests/code_layout/test_shellcheck.sh "${MODIFIED_SHELLFILES}" || exit 1
+    ${TOPLEVEL}/tests/code_layout/test_shellcheck.sh "${MODIFIED_SHELLFILES}"
   else
     echo "WARNING: the shellcheck(1) executable was not found, shell checker could not run" >&2
   fi
