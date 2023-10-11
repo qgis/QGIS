@@ -22,7 +22,6 @@
 #include "qgscompositionconverter.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgsmultirenderchecker.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutitemlabel.h"
@@ -54,7 +53,7 @@ class TestQgsCompositionConverter: public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsCompositionConverter() : QgsTest( QStringLiteral( "Composition Converter Tests" ) ) {}
+    TestQgsCompositionConverter() : QgsTest( QStringLiteral( "Composition Converter Tests" ), QStringLiteral( "compositionconverter" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -711,13 +710,15 @@ void TestQgsCompositionConverter::importComposerAtlas()
 
 void TestQgsCompositionConverter::checkRenderedImage( QgsLayout *layout, const QString &testName, const int pageNumber )
 {
-  QgsLayoutChecker checker( testName + '_' + QString::number( pageNumber ), layout );
-  QSize size( layout->pageCollection()->page( pageNumber )->sizeWithUnits().width() * 3.77, layout->pageCollection()->page( pageNumber )->sizeWithUnits().height() * 3.77 );
-  checker.setSize( size );
-  checker.setControlPathPrefix( QStringLiteral( "compositionconverter" ) );
-  QVERIFY( checker.testLayout( mReport, pageNumber, 0, false ) );
-}
+  const QSize size( layout->pageCollection()->page( pageNumber )->sizeWithUnits().width() * 3.77, layout->pageCollection()->page( pageNumber )->sizeWithUnits().height() * 3.77 );
 
+  QVERIFY(
+    layoutCheck(
+      testName + '_' + QString::number( pageNumber ),
+      layout,
+      pageNumber, 0, size, 0 )
+  );
+}
 
 QDomElement TestQgsCompositionConverter::loadComposer( const QString &name )
 {
