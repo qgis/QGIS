@@ -100,7 +100,7 @@ static void checkFid4( QgsFeature &f, bool hasGeometry, bool hasAttrs, int onlyO
   if ( hasAttrs )
   {
     QCOMPARE( attrs[0].toString(), ( onlyOneAttribute == -1 || onlyOneAttribute == 0 ) ? QString( "Jet" ) : QString() );
-    QCOMPARE( attrs[1].toInt(), ( onlyOneAttribute == -1 || onlyOneAttribute == 1 ) ? 90 : 0 );
+    QCOMPARE( attrs[1].toInt(), ( onlyOneAttribute == -1 || onlyOneAttribute == 1 ) ? 91 : 0 );
     QCOMPARE( attrs[2].toInt(), ( onlyOneAttribute == -1 || onlyOneAttribute == 2 ) ? 3 : 0 );
   }
   else

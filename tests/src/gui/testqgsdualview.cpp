@@ -227,10 +227,10 @@ void TestQgsDualView::testSort()
            <<  QStringLiteral( "0" )
            <<  QStringLiteral( "12" )
            <<  QStringLiteral( "34" )
-           <<  QStringLiteral( "80" )
            <<  QStringLiteral( "85" )
+           <<  QStringLiteral( "89" )
            <<  QStringLiteral( "90" )
-           <<  QStringLiteral( "90" )
+           <<  QStringLiteral( "91" )
            <<  QStringLiteral( "95" )
            <<  QStringLiteral( "100" )
            <<  QStringLiteral( "140" )
@@ -238,8 +238,7 @@ void TestQgsDualView::testSort()
            <<  QStringLiteral( "180" )
            <<  QStringLiteral( "240" )
            <<  QStringLiteral( "270" )
-           <<  QStringLiteral( "300" )
-           <<  QStringLiteral( "340" );
+           <<  QStringLiteral( "300" );
 
   mDualView->setSortExpression( QStringLiteral( "Heading" ) );
 

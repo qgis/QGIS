@@ -1351,11 +1351,11 @@ void TestQgsProcessingAlgsPt1::flattenRelations()
   QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 0LL << 10.0 << 2 << 1 << 3 << QStringLiteral( "Point (-103 23)" ) ) );
   QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 12LL << 10.0 << 1 << 1 << 2 << QStringLiteral( "Point (-103 23)" ) ) );
   QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 34LL << 10.0 << 2 << 1 << 3 << QStringLiteral( "Point (-103 23)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 80LL << 10.0 << 2 << 1 << 3 << QStringLiteral( "Point (-103 23)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "B52" ) << 3 << QStringLiteral( "B52" ) << 89LL << 10.0 << 2 << 1 << 3 << QStringLiteral( "Point (-103 23)" ) ) );
   QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 90LL << 3.0 << 2 << 0 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
   QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 85LL << 3.0 << 1 << 1 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
   QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 95LL << 3.0 << 1 << 1 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
-  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 90LL << 3.0 << 1 << 0 << 1 << QStringLiteral( "Point (-117 37)" ) ) );
+  QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 91LL << 3.0 << 1 << 0 << 1 << QStringLiteral( "Point (-117 37)" ) ) );
   QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 160LL << 4.0 << 2 << 0 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
   QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 180LL << 3.0 << 1 << 0 << 1 << QStringLiteral( "Point (-117 37)" ) ) );
   QVERIFY( res.contains( QgsAttributes() << QStringLiteral( "Jet" ) << 1 << QStringLiteral( "Jet" ) << 140LL << 10.0 << 1 << 1 << 2 << QStringLiteral( "Point (-117 37)" ) ) );
