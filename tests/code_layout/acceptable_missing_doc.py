@@ -1143,7 +1143,8 @@ ACCEPTABLE_MISSING_ADDED_NOTE = [
     'QgsAttributesDnDTree',
     'QgsMeshLayerProperties',
     'QgsMeshVariableStrokeWidthWidget',
-    'QgsMeshStaticDatasetWidget'
+    'QgsMeshStaticDatasetWidget',
+    'QgsLayoutEffect'
 ]
 
 ACCEPTABLE_MISSING_BRIEF = [
