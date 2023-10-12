@@ -654,6 +654,9 @@ from the ``source`` provider.
     virtual QgsVectorDataProviderTemporalCapabilities *temporalCapabilities();
 
 
+    virtual QgsDataProviderElevationProperties *elevationProperties();
+
+
   signals:
 
     void raiseError( const QString &msg ) const;

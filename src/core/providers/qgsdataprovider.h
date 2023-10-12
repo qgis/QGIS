@@ -27,11 +27,11 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgslayermetadata.h"
 #include "qgserror.h"
+#include "qgsdataproviderelevationproperties.h"
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsDataProviderTemporalCapabilities;
-class QgsDataProviderElevationProperties;
 
 
 /**
