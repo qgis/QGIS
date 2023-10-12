@@ -258,9 +258,9 @@ class TestPython__repr__(QgisTestCase):
 
     def testQgsBookmark(self):
         b = QgsBookmark()
-        self.assertEqual(b.__repr__(), "<QgsBookmark: '' (0 0, 0 0 - )>")
+        self.assertEqual(b.__repr__(), "<QgsBookmark: '' (EMPTY)>")
         b.setName('test bookmark')
-        self.assertEqual(b.__repr__(), "<QgsBookmark: 'test bookmark' (0 0, 0 0 - )>")
+        self.assertEqual(b.__repr__(), "<QgsBookmark: 'test bookmark' (EMPTY)>")
         b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
         self.assertEqual(b.__repr__(), "<QgsBookmark: 'test bookmark' (1 2, 3 4 - EPSG:3111)>")
 
