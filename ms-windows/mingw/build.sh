@@ -119,7 +119,7 @@ echo "::endgroup::"
 # export DISPLAY=:99
 
 echo "::group::compile QGIS"
-mingw$bits-make -C"$BUILDDIR" -j"$njobs" DESTDIR="${installroot}" install VERBOSE=1
+mingw$bits-make -C"$BUILDDIR" -j"$njobs" DESTDIR="${installroot}" install # VERBOSE=1
 echo "::endgroup::"
 
 #echo "ccache statistics"
