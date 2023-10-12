@@ -1826,7 +1826,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
 
 void QgsMssqlProvider::updateExtents()
 {
-  mExtent.setMinimal();
+  mExtent.setNull();
 }
 
 QgsVectorDataProvider::Capabilities QgsMssqlProvider::capabilities() const
@@ -2011,7 +2011,7 @@ bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
 
   setDataSourceUri( anUri.uri() );
 
-  mExtent.setMinimal();
+  mExtent.setNull();
 
   emit dataChanged();
 

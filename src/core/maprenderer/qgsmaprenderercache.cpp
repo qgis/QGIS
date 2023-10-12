@@ -35,7 +35,7 @@ void QgsMapRendererCache::clear()
 
 void QgsMapRendererCache::clearInternal()
 {
-  mExtent.setMinimal();
+  mExtent.setNull();
   mScale = 0;
 
   // make sure we are disconnected from all layers

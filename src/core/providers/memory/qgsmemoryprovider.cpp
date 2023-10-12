@@ -337,7 +337,7 @@ QgsRectangle QgsMemoryProvider::extent() const
 {
   if ( mExtent.isEmpty() && !mFeatures.isEmpty() )
   {
-    mExtent.setMinimal();
+    mExtent.setNull();
     if ( mSubsetString.isEmpty() )
     {
       // fast way - iterate through all features
@@ -361,7 +361,7 @@ QgsRectangle QgsMemoryProvider::extent() const
   }
   else if ( mFeatures.isEmpty() )
   {
-    mExtent.setMinimal();
+    mExtent.setNull();
   }
 
   return mExtent;
@@ -758,7 +758,7 @@ bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatu
 
   mSubsetString = theSQL;
   clearMinMaxCache();
-  mExtent.setMinimal();
+  mExtent.setNull();
 
   emit dataChanged();
   return true;
@@ -795,13 +795,13 @@ bool QgsMemoryProvider::truncate()
 {
   mFeatures.clear();
   clearMinMaxCache();
-  mExtent.setMinimal();
+  mExtent.setNull();
   return true;
 }
 
 void QgsMemoryProvider::updateExtents()
 {
-  mExtent.setMinimal();
+  mExtent.setNull();
 }
 
 QString QgsMemoryProvider::name() const

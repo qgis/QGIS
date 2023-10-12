@@ -692,7 +692,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
   // reset the map canvas extent since the extent may now be smaller
   // We can't use a constructor since QgsRectangle normalizes the rectangle upon construction
   QgsRectangle fullExtent;
-  fullExtent.setMinimal();
+  fullExtent.setNull();
 
   // iterate through the map layers and test each layers extent
   // against the current min and max values

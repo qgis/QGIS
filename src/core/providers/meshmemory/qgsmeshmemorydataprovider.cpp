@@ -640,7 +640,7 @@ void QgsMeshMemoryDataProvider::close()
 QgsRectangle QgsMeshMemoryDataProvider::calculateExtent() const
 {
   QgsRectangle rec;
-  rec.setMinimal();
+  rec.setNull();
   for ( const QgsMeshVertex &v : mVertices )
   {
     rec.setXMinimum( std::min( rec.xMinimum(), v.x() ) );

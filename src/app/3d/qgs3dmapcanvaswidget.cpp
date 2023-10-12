@@ -604,7 +604,7 @@ void Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> ex
   if ( mCanvas->map()->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) )
   {
     QgsRectangle extentRect;
-    extentRect.setMinimal();
+    extentRect.setNull();
     for ( QgsPointXY &pt : extent )
     {
       extentRect.include( pt );
