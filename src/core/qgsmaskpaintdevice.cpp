@@ -34,18 +34,17 @@ QPainterPath QgsMaskPaintEngine::maskPainterPath() const
 
 void QgsMaskPaintEngine::drawPath( const QPainterPath &path )
 {
+  QPainterPath realPath = path;
   if ( mUsePathStroker )
   {
     QPen pen = painter()->pen();
     QPainterPathStroker stroker( pen );
     QPainterPath strokedPath = stroker.createStroke( path );
-    strokedPath = painter()->combinedTransform().map( strokedPath );
-    mMaskPainterPath.addPath( strokedPath );
+    realPath = strokedPath;
   }
-  else
-  {
-    mMaskPainterPath.addPath( path );
-  }
+
+  const QTransform transform = painter()->combinedTransform();
+  mMaskPainterPath.addPath( transform.map( realPath ) );
 }
 
 void QgsMaskPaintEngine::drawPolygon( const QPointF *points, int numPoints, QPaintEngine::PolygonDrawMode mode )
@@ -56,7 +55,9 @@ void QgsMaskPaintEngine::drawPolygon( const QPointF *points, int numPoints, QPai
   polygon.reserve( numPoints );
   for ( int i = 0; i < numPoints; ++i )
     polygon << points[i];
-  mMaskPainterPath.addPolygon( polygon );
+
+  const QTransform transform = painter()->transform();
+  mMaskPainterPath.addPolygon( transform.map( polygon ) );
 }
 
 ///@endcond
