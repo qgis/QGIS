@@ -31,6 +31,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
+#include "qgsmaprenderertask.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
@@ -1131,6 +1132,20 @@ namespace QgsWms
     dxf->setFlags( flags );
 
     return dxf;
+  }
+
+  std::unique_ptr<QgsMapRendererTask>  QgsRenderer::getPdf( const QString &tmpFileName )
+  {
+    QgsMapSettings ms;
+    ms.setExtent( mWmsParameters.bboxAsRectangle() );
+    ms.setLayers( mContext.layersToRender() );
+    ms.setDestinationCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( mWmsParameters.crs() ) );
+    ms.setOutputSize( QSize( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() ) );
+    ms.setDpiTarget( mWmsParameters.dpiAsDouble() );
+
+    QgsAbstractGeoPdfExporter::ExportDetails pdfExportDetails = QgsAbstractGeoPdfExporter::ExportDetails();
+    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, true, pdfExportDetails );
+    return pdf;
   }
 
   static void infoPointToMapCoordinates( int i, int j, QgsPointXY *infoPoint, const QgsMapSettings &mapSettings )
