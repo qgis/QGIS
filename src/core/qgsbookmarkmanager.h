@@ -128,7 +128,14 @@ class CORE_EXPORT QgsBookmark
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsBookmark: '%1' (%2 - %3)>" ).arg( sipCpp->name(), sipCpp->extent().asWktCoordinates(), sipCpp->extent().crs().authid() );
+    QString str = QStringLiteral( "<QgsBookmark: '%1' (%2)>" )
+                  .arg( sipCpp->name() )
+                  .arg(
+                    sipCpp->extent().isNull() ?
+                    QStringLiteral( "EMPTY" ) :
+                    QStringLiteral( "%1 - %2" )
+                    .arg( sipCpp->extent().asWktCoordinates(), sipCpp->extent().crs().authid() )
+                  );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
