@@ -209,7 +209,7 @@ class PyProvider(QgsVectorDataProvider):
         self._wkbType = mlayer.wkbType()
         self._features = {}
         self._extent = QgsRectangle()
-        self._extent.setMinimal()
+        self._extent.setNull()
         self._subset_string = ''
         self._crs = mlayer.crs()
         self._spatialindex = None

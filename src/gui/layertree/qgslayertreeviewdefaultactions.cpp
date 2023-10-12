@@ -372,7 +372,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const Q
   QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
 
   QgsRectangle extent;
-  extent.setMinimal();
+  extent.setNull();
 
   if ( !layers.empty() )
   {

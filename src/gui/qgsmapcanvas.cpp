@@ -1790,9 +1790,9 @@ void QgsMapCanvas::zoomToSelected( QgsMapLayer *layer )
 void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
 {
   QgsRectangle rect;
-  rect.setMinimal();
+  rect.setNull();
   QgsRectangle selectionExtent;
-  selectionExtent.setMinimal();
+  selectionExtent.setNull();
 
   for ( QgsMapLayer *mapLayer : layers )
   {
@@ -2054,7 +2054,7 @@ void QgsMapCanvas::panToSelected( QgsMapLayer *layer )
 void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
 {
   QgsRectangle selectionExtent;
-  selectionExtent.setMinimal();
+  selectionExtent.setNull();
 
   for ( QgsMapLayer *mapLayer : layers )
   {

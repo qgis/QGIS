@@ -38,7 +38,7 @@ class TestQgsRectangle: public QObject
     void operators();
     void asVariant();
     void referenced();
-    void minimal();
+    void setNull();
     void grow();
     void include();
     void buffered();
@@ -363,10 +363,10 @@ void TestQgsRectangle::referenced()
   QCOMPARE( rect2.crs().authid(), QStringLiteral( "EPSG:28356" ) );
 }
 
-void TestQgsRectangle::minimal()
+void TestQgsRectangle::setNull()
 {
   QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
-  rect1.setMinimal();
+  rect1.setNull();
   QVERIFY( rect1.isEmpty() );
   QVERIFY( rect1.isNull() );
 }
@@ -430,7 +430,7 @@ void TestQgsRectangle::include()
   QCOMPARE( rect1.xMaximum(), 115.0 );
   QCOMPARE( rect1.yMaximum(), 242.0 );
 
-  rect1.setMinimal();
+  rect1.setNull();
 
   rect1.include( QgsPointXY( 15, 50 ) );
   QCOMPARE( rect1.xMinimum(), 15.0 );
@@ -444,7 +444,7 @@ void TestQgsRectangle::include()
   QCOMPARE( rect1.xMaximum(), 15.0 );
   QCOMPARE( rect1.yMaximum(), 50.0 );
 
-  rect1.setMinimal();
+  rect1.setNull();
 
   rect1.include( QgsPointXY( 5, 30 ) );
   QCOMPARE( rect1.xMinimum(), 5.0 );

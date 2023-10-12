@@ -164,7 +164,7 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
   QgsFeatureIterator features = mLayer->getFeatures( request );
 
   QgsRectangle bbox;
-  bbox.setMinimal();
+  bbox.setNull();
   QgsFeature feat;
   int featureCount = 0;
   while ( features.nextFeature( feat ) )

@@ -830,7 +830,7 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
   }
 
   QgsRectangle r, retval;
-  retval.setMinimal();
+  retval.setNull();
 
   QgsFeature fet;
   if ( mDataProvider->capabilities() & QgsVectorDataProvider::SelectAtId )
@@ -1011,7 +1011,7 @@ QgsRectangle QgsVectorLayer::extent() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsRectangle rect;
-  rect.setMinimal();
+  rect.setNull();
 
   if ( !isSpatial() )
     return rect;

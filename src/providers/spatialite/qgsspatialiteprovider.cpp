@@ -5811,7 +5811,7 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
   }
   else
   {
-    mLayerExtent.setMinimal();
+    mLayerExtent.setNull();
     mNumberFeatures = 0;
   }
 

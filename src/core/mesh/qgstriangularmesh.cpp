@@ -187,7 +187,7 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   // TRANSFORM VERTICES
   mCoordinateTransform = transform;
   mTriangularMesh.vertices.resize( nativeMesh->vertices.size() );
-  mExtent.setMinimal();
+  mExtent.setNull();
   for ( int i = 0; i < nativeMesh->vertices.size(); ++i )
   {
     mTriangularMesh.vertices[i] = nativeToTriangularCoordinates( nativeMesh->vertices.at( i ) );
@@ -316,7 +316,7 @@ QgsRectangle QgsTriangularMesh::extent() const
 {
   if ( !mIsExtentValid )
   {
-    mExtent.setMinimal();
+    mExtent.setNull();
     for ( int i = 0; i < mTriangularMesh.vertices.size(); ++i )
       if ( !mTriangularMesh.vertices.at( i ).isEmpty() )
         mExtent.include( mTriangularMesh.vertices.at( i ) );
