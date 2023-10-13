@@ -1957,7 +1957,7 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
   if ( resultFlag )
   {
     // Try to load all stored styles from DB
-    if ( mLoadAllStoredStyle && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
+    if ( mLoadAllStoredStyle && mDataProvider && mDataProvider->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::LoadFromDatabase ) )
     {
       QStringList ids, names, descriptions;
       QString errorMessage;
@@ -5793,61 +5793,6 @@ void QgsVectorLayer::setWeakRelations( const QList<QgsWeakRelation> &relations )
   mWeakRelations = relations;
 }
 
-int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QgsProviderRegistry::instance()->listStyles( mProviderKey, mDataSource, ids, names, descriptions, msgError );
-}
-
-QString QgsVectorLayer::getStyleFromDatabase( const QString &styleId, QString &msgError )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QgsProviderRegistry::instance()->getStyleById( mProviderKey, mDataSource, styleId, msgError );
-}
-
-bool QgsVectorLayer::deleteStyleFromDatabase( const QString &styleId, QString &msgError )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QgsProviderRegistry::instance()->deleteStyleById( mProviderKey, mDataSource, styleId, msgError );
-}
-
-void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &description,
-    bool useAsDefault, const QString &uiFileContent, QString &msgError, QgsMapLayer::StyleCategories categories )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  QString sldStyle, qmlStyle;
-  QDomDocument qmlDocument, sldDocument;
-  QgsReadWriteContext context;
-  exportNamedStyle( qmlDocument, msgError, context, categories );
-  if ( !msgError.isNull() )
-  {
-    return;
-  }
-  qmlStyle = qmlDocument.toString();
-
-  this->exportSldStyle( sldDocument, msgError );
-  if ( !msgError.isNull() )
-  {
-    return;
-  }
-  sldStyle = sldDocument.toString();
-
-  QgsProviderRegistry::instance()->saveStyle( mProviderKey,
-      mDataSource, qmlStyle, sldStyle, name,
-      description, uiFileContent, useAsDefault, msgError );
-}
-
-QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, QgsMapLayer::StyleCategories categories )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return loadNamedStyle( theURI, resultFlag, false, categories );
-}
-
 bool QgsVectorLayer::loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -5916,43 +5861,6 @@ QgsAuxiliaryLayer *QgsVectorLayer::auxiliaryLayer()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mAuxiliaryLayer.get();
-}
-
-QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB, QgsMapLayer::StyleCategories categories )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  QgsDataSourceUri dsUri( theURI );
-  QString returnMessage;
-  QString qml, errorMsg;
-  QString styleName;
-  if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
-  {
-    qml = QgsProviderRegistry::instance()->loadStoredStyle( mProviderKey, mDataSource, styleName, errorMsg );
-  }
-
-  // Style was successfully loaded from provider storage
-  if ( !qml.isEmpty() )
-  {
-    QDomDocument myDocument( QStringLiteral( "qgis" ) );
-    myDocument.setContent( qml );
-    resultFlag = importNamedStyle( myDocument, errorMsg );
-    returnMessage = QObject::tr( "Loaded from Provider" );
-  }
-  else
-  {
-    returnMessage = QgsMapLayer::loadNamedStyle( theURI, resultFlag, categories );
-  }
-
-  if ( ! styleName.isEmpty() )
-  {
-    styleManager()->renameStyle( styleManager()->currentStyle(), styleName );
-  }
-
-  if ( resultFlag )
-    emit styleLoaded( categories );
-
-  return returnMessage;
 }
 
 QSet<QgsMapLayerDependency> QgsVectorLayer::dependencies() const

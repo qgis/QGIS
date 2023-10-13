@@ -337,6 +337,14 @@ bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, co
   return res;
 }
 
+Qgis::ProviderStyleStorageCapabilities QgsOracleProvider::styleStorageCapabilities() const
+{
+  Qgis::ProviderStyleStorageCapabilities storageCapabilities;
+  storageCapabilities |= Qgis::ProviderStyleStorageCapability::SaveToDatabase;
+  storageCapabilities |= Qgis::ProviderStyleStorageCapability::LoadFromDatabase;
+  return storageCapabilities;
+}
+
 void QgsOracleProvider::setTransaction( QgsTransaction *transaction )
 {
   // static_cast since layers cannot be added to a transaction of a non-matching provider
