@@ -1143,8 +1143,21 @@ namespace QgsWms
     ms.setOutputSize( QSize( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() ) );
     ms.setDpiTarget( mWmsParameters.dpiAsDouble() );
 
-    QgsAbstractGeoPdfExporter::ExportDetails pdfExportDetails = QgsAbstractGeoPdfExporter::ExportDetails();
-    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, true, pdfExportDetails );
+    QgsAbstractGeoPdfExporter::ExportDetails pdfExportDetails;
+    if ( mWmsParameters.pdfExportMetadata() )
+    {
+      pdfExportDetails.author = QgsProject::instance()->metadata().author();
+      pdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+      pdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+      pdfExportDetails.creationDateTime = QDateTime::currentDateTime();
+      pdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
+      pdfExportDetails.title = QgsProject::instance()->metadata().title();
+      pdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
+    }
+    pdfExportDetails.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
+    pdfExportDetails.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
+    bool geoPdf = mWmsParameters.pdfAppendGeoreference();
+    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geoPdf, pdfExportDetails );
     return pdf;
   }
 
