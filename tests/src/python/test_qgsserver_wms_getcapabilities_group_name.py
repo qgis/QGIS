@@ -27,9 +27,9 @@ class TestQgsServerWMSGetCapabilities(QgsServerTestBase):
 
     def setUp(self):
         super().setUp()
-        # First project has "skiping name tag for groups" setting set to false (default)
+        # First project has "skipping name tag for groups" setting set to false (default)
         self.project_with_name = os.path.join(self.testdata_path, "wms_group_test1.qgz")
-        # Second project has "skiping name tag for groups" setting set to true
+        # Second project has "skipping name tag for groups" setting set to true
         self.project_without_name = os.path.join(self.testdata_path, "wms_group_test2.qgz")
 
     def test_wms_getcapabilities_with(self):
