@@ -1,6 +1,6 @@
 """QGIS Unit tests for QgsServer GetCapabilities group name attribute exclusion.
 
-From build dir, run: ctest -R PyQgsServerWMSGetMapSizeProject -V
+From build dir, run: ctest -R PyQgsServerWMSGetCapabilities -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
