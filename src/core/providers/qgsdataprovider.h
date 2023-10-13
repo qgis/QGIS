@@ -275,6 +275,15 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QgsRectangle extent() const = 0;
 
+    /**
+     * Returns the 3D extent of the layer
+     * \returns QgsBox3D containing the 3D extent of the layer
+     * \since QGIS 3.36
+     */
+    virtual QgsBox3D extent3D() const
+    {
+      return extent().toBox3d( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
+    }
 
     /**
      * Returns TRUE if this is a valid layer. It is up to individual providers
