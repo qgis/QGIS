@@ -150,6 +150,14 @@ class CORE_EXPORT QgsFeatureSource
     virtual QgsRectangle sourceExtent() const;
 
     /**
+     * Returns the 3D extent of all geometries from the source.
+     * The base class implementation uses a non-optimised approach of looping through
+     * all features in the source.
+     * \since QGIS 3.36
+     */
+    virtual QgsBox3D sourceExtent3D() const;
+
+    /**
      * Returns a list of all feature IDs for features present in the source.
      */
     virtual QgsFeatureIds allFeatureIds() const;
