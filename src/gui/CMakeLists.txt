@@ -39,7 +39,6 @@ set(QGIS_GUI_SRCS
   vector/qgssourcefieldsproperties.cpp
   vector/qgsvectorlayerlegendwidget.cpp
   vector/qgsvectorlayerproperties.cpp
-  vector/qgsvectorlayersavestyledialog.cpp
   vector/qgswmsdimensiondialog.cpp
 
   symbology/qgs25drendererwidget.cpp
@@ -622,6 +621,7 @@ set(QGIS_GUI_SRCS
   qgsmaplayerconfigwidgetfactory.cpp
   qgsmaplayerloadstyledialog.cpp
   qgsmaplayerrefreshsettingswidget.cpp
+  qgsmaplayersavestyledialog.cpp
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp
@@ -897,6 +897,7 @@ set(QGIS_GUI_HDRS
   qgsmaplayercombobox.h
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
+  qgsmaplayersavestyledialog.h
   qgsmaplayerloadstyledialog.h
   qgsmaplayerrefreshsettingswidget.h
   qgsmaplayerstylecategoriesmodel.h
@@ -1431,7 +1432,6 @@ set(QGIS_GUI_HDRS
   vector/qgssourcefieldsproperties.h
   vector/qgsvectorlayerlegendwidget.h
   vector/qgsvectorlayerproperties.h
-  vector/qgsvectorlayersavestyledialog.h
   vector/qgswmsdimensiondialog.h
 
   symbology/characterwidget.h

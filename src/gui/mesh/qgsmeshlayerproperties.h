@@ -24,7 +24,6 @@
 
 class QgsMapLayer;
 class QgsMapCanvas;
-class QgsMeshLayer;
 class QgsRendererMeshPropertiesWidget;
 class QgsMeshLayer3DRendererWidget;
 class QgsMeshStaticDatasetWidget;

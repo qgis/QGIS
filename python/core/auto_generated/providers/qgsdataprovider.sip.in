@@ -469,6 +469,13 @@ String sequence used for separating components of sublayers strings.
 .. versionadded:: 3.12
 %End
 
+    virtual Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const;
+%Docstring
+Returns the style storage capabilities.
+
+.. versionadded:: 3.34
+%End
+
   signals:
 
     void fullExtentCalculated();

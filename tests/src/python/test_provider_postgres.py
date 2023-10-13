@@ -1941,9 +1941,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
         vl = self.getEditableLayer()
         self.assertTrue(vl.isValid())
-        self.assertTrue(
-            vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
-        self.assertTrue(vl.dataProvider().isDeleteStyleFromDatabaseSupported())
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, Qgis.ProviderStyleStorageCapability.LoadFromDatabase)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, Qgis.ProviderStyleStorageCapability.SaveToDatabase)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.DeleteFromDatabase, Qgis.ProviderStyleStorageCapability.DeleteFromDatabase)
 
         # table layer_styles does not exist
 
@@ -2125,9 +2125,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
         vl = self.getEditableLayer()
         self.assertTrue(vl.isValid())
-        self.assertTrue(
-            vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
-        self.assertTrue(vl.dataProvider().isDeleteStyleFromDatabaseSupported())
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, Qgis.ProviderStyleStorageCapability.LoadFromDatabase)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, Qgis.ProviderStyleStorageCapability.SaveToDatabase)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.DeleteFromDatabase, Qgis.ProviderStyleStorageCapability.DeleteFromDatabase)
 
         mFilePath = QDir.toNativeSeparators(
             f"{unitTestDataPath()}/symbol_layer/fontSymbol.qml")
