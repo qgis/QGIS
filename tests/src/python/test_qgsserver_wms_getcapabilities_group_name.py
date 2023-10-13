@@ -38,7 +38,6 @@ class TestQgsServerWMSGetCapabilities(QgsServerTestBase):
         # attribute <name> should be specified for a layer group
         self.assertGreater(f, 0)
 
-
     def test_wms_getcapabilities_without(self):
         r = make_request(self, self.project_without_name)
         f = str(r).find('<Name>layer group</Name>')
