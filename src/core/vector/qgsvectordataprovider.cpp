@@ -105,6 +105,13 @@ QgsRectangle QgsVectorDataProvider::sourceExtent() const
   return extent();
 }
 
+QgsBox3D QgsVectorDataProvider::sourceExtent3D() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return extent3D();
+}
+
 QString QgsVectorDataProvider::dataComment() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

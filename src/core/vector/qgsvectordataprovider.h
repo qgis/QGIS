@@ -202,6 +202,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     QgsCoordinateReferenceSystem sourceCrs() const override;
     QgsRectangle sourceExtent() const override;
+    QgsBox3D sourceExtent3D() const override;
     QString sourceName() const override { return QString(); }
 
     /**

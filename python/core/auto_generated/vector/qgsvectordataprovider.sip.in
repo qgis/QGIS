@@ -175,6 +175,8 @@ Returns the fields associated with this data provider.
 
     virtual QgsRectangle sourceExtent() const;
 
+    virtual QgsBox3D sourceExtent3D() const;
+
     virtual QString sourceName() const;
 
     virtual QString dataComment() const;
