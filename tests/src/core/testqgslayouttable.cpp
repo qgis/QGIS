@@ -314,7 +314,7 @@ void TestQgsLayoutTable::attributeTableFilterFeatures()
   row << QStringLiteral( "B52" ) << QStringLiteral( "34" ) << QStringLiteral( "10" ) << QStringLiteral( "2" ) << QStringLiteral( "1" ) << QStringLiteral( "3" );
   expectedRows.append( row );
   row.clear();
-  row << QStringLiteral( "B52" ) << QStringLiteral( "80" ) << QStringLiteral( "10" ) << QStringLiteral( "2" ) << QStringLiteral( "1" ) << QStringLiteral( "3" );
+  row << QStringLiteral( "B52" ) << QStringLiteral( "89" ) << QStringLiteral( "10" ) << QStringLiteral( "2" ) << QStringLiteral( "1" ) << QStringLiteral( "3" );
   expectedRows.append( row );
 
   //retrieve rows and check
@@ -467,7 +467,7 @@ void TestQgsLayoutTable::attributeTableInsideAtlasOnly()
   row << QStringLiteral( "Biplane" ) << QStringLiteral( "0" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
   expectedRows.append( row );
   row.clear();
-  row << QStringLiteral( "Jet" ) << QStringLiteral( "90" ) << QStringLiteral( "3" ) << QStringLiteral( "1" ) << QStringLiteral( "0" ) << QStringLiteral( "1" );
+  row << QStringLiteral( "Jet" ) << QStringLiteral( "91" ) << QStringLiteral( "3" ) << QStringLiteral( "1" ) << QStringLiteral( "0" ) << QStringLiteral( "1" );
   expectedRows.append( row );
   row.clear();
   row << QStringLiteral( "Biplane" ) << QStringLiteral( "340" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
@@ -480,7 +480,7 @@ void TestQgsLayoutTable::attributeTableInsideAtlasOnly()
   table->setDisplayOnlyVisibleFeatures( true );
   expectedRows.clear();
   row.clear();
-  row << QStringLiteral( "Jet" ) << QStringLiteral( "90" ) << QStringLiteral( "3" ) << QStringLiteral( "1" ) << QStringLiteral( "0" ) << QStringLiteral( "1" );
+  row << QStringLiteral( "Jet" ) << QStringLiteral( "91" ) << QStringLiteral( "3" ) << QStringLiteral( "1" ) << QStringLiteral( "0" ) << QStringLiteral( "1" );
   expectedRows.append( row );
   row.clear();
   row << QStringLiteral( "Biplane" ) << QStringLiteral( "340" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
