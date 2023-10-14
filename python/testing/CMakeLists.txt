@@ -10,7 +10,7 @@ set(PY_FILES
 file (MAKE_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY}/testing)
 install(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}/testing")
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/test_data_dir.py.in" "${QGIS_PYTHON_DIR}/testing/test_data_dir.py")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/test_data_dir.py.in" "${QGIS_PYTHON_OUTPUT_DIRECTORY}/testing/test_data_dir.py")
 
 add_custom_target(pytesting ALL)
 # stage to output to make available when QGIS is run from build directory
@@ -24,10 +24,4 @@ foreach(pyfile ${PY_FILES})
   PY_COMPILE(pyutils "${QGIS_PYTHON_OUTPUT_DIRECTORY}/testing/${pyfile}")
 endforeach(pyfile)
 
-add_custom_command(TARGET pytesting
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy "testing/test_data_dir.py" "${QGIS_PYTHON_OUTPUT_DIRECTORY}/testing/test_data_dir.py"
-  WORKING_DIRECTORY ${QGIS_PYTHON_DIR}
-  DEPENDS ${pyfile}
-)
 PY_COMPILE(pyutils "${QGIS_PYTHON_OUTPUT_DIRECTORY}/testing/test_data_dir.py")
