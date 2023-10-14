@@ -116,9 +116,9 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.yMaximum(), 41.0)
         self.assertEqual(box.zMaximum(), 42.0)
 
-    def testSetMinimal(self):
+    def testSetNull(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 10.0, 11.0, 12.0)
-        box.setMinimal()
+        box.setNull()
         self.assertEqual(box.xMinimum(), sys.float_info.max)
         self.assertEqual(box.yMinimum(), sys.float_info.max)
         self.assertEqual(box.zMinimum(), sys.float_info.max)
