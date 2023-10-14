@@ -153,7 +153,7 @@ void QgsOrganizeTableColumnsDialog::toggleSelection()
 
     if ( item->isSelected() )
     {
-      if ( item->checkState() == Qt::Unchecked )
+      item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked :  Qt::Checked  );
       {
         item->setCheckState( Qt::Checked );
       }
