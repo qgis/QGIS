@@ -157,7 +157,7 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
     return;
   }
 
-  mLayerExtent.setMinimal();
+  mLayerExtent.setNull();
 
   mOracleVersion = connectionRO()->version();
   if ( mOracleVersion < 0 )
@@ -2499,7 +2499,7 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
   {
     mFeaturesCounted = -1;
   }
-  mLayerExtent.setMinimal();
+  mLayerExtent.setNull();
 
   emit dataChanged();
 
@@ -2788,7 +2788,7 @@ QgsRectangle QgsOracleProvider::extent() const
 
 void QgsOracleProvider::updateExtents()
 {
-  mLayerExtent.setMinimal();
+  mLayerExtent.setNull();
 }
 
 bool QgsOracleProvider::getGeometryDetails()

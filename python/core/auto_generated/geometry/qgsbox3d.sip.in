@@ -220,11 +220,9 @@ Returns the maximum z value.
 .. seealso:: :py:func:`zMinimum`
 %End
 
-    void setMinimal() /HoldGIL/;
+    void setNull() /HoldGIL/;
 %Docstring
-Set a box so that min corner is at std.numeric_limits<double>.max()
-and max corner is at -std.numeric_limits<double>.max().
-It is NOT normalized.
+Mark a box as being null (holding no spatial information).
 
 .. versionadded:: 3.34
 %End
@@ -369,8 +367,11 @@ Scale the rectangle around a center coordinates.
 
     bool isNull() const /HoldGIL/;
 %Docstring
-Test if the box is null (all coordinates NaN or after call to :py:func:`~QgsBox3D.setMinimal`).
+Test if the box is null (holding no spatial information).
+
 A null box is also an empty box.
+
+.. seealso:: :py:func:`setNull`
 
 .. versionadded:: 3.34
 %End
@@ -378,7 +379,9 @@ A null box is also an empty box.
     bool isEmpty() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the box is empty.
-An empty box may still be non-null if it contains valid information (e.g. bounding box of a point).
+An empty box may still be non-null if it contains valid
+spatial information (e.g. bounding box of a point or of a vertical
+or horizontal segment).
 
 .. versionadded:: 3.34
 %End

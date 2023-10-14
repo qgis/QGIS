@@ -226,13 +226,11 @@ class CORE_EXPORT QgsBox3D
     double zMaximum() const SIP_HOLDGIL { return mZmax; }
 
     /**
-     * Set a box so that min corner is at std::numeric_limits<double>::max()
-     * and max corner is at -std::numeric_limits<double>::max().
-     * It is NOT normalized.
+     * Mark a box as being null (holding no spatial information).
      *
      * \since QGIS 3.34
      */
-    void setMinimal() SIP_HOLDGIL;
+    void setNull() SIP_HOLDGIL;
 
     /**
      * Normalize the box so it has non-negative width/height/depth.
@@ -367,8 +365,11 @@ class CORE_EXPORT QgsBox3D
     void scale( double scaleFactor, double centerX, double centerY, double centerZ ) SIP_HOLDGIL;
 
     /**
-     * Test if the box is null (all coordinates NaN or after call to setMinimal()).
+     * Test if the box is null (holding no spatial information).
+     *
      * A null box is also an empty box.
+     *
+     * \see setNull()
      *
      * \since QGIS 3.34
      */
@@ -376,7 +377,9 @@ class CORE_EXPORT QgsBox3D
 
     /**
      * Returns TRUE if the box is empty.
-     * An empty box may still be non-null if it contains valid information (e.g. bounding box of a point).
+     * An empty box may still be non-null if it contains valid
+     * spatial information (e.g. bounding box of a point or of a vertical
+     * or horizontal segment).
      *
      * \since QGIS 3.34
      */
