@@ -2641,6 +2641,39 @@ QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly
   return result;
 }
 
+Qgis::CoverageValidityResult QgsGeometry::validateCoverage( double gapWidth, QgsGeometry *invalidEdges ) const
+{
+  if ( !d->geometry )
+  {
+    return Qgis::CoverageValidityResult::Error;
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  std::unique_ptr< QgsAbstractGeometry > invalidEdgesGeom;
+
+  const Qgis::CoverageValidityResult result = geos.validateCoverage( gapWidth, invalidEdges ? &invalidEdgesGeom : nullptr, &mLastError );
+
+  if ( invalidEdges && invalidEdgesGeom )
+    *invalidEdges = QgsGeometry( std::move( invalidEdgesGeom ) );
+
+  return result;
+}
+
+QgsGeometry QgsGeometry::simplifyCoverageVW( double tolerance, bool preserveBoundary ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  QgsGeometry result( geos.simplifyCoverageVW( tolerance, preserveBoundary, &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
 QgsGeometry QgsGeometry::node() const
 {
   if ( !d->geometry )
