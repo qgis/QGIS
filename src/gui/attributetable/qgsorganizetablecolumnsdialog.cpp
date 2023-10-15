@@ -147,22 +147,8 @@ void QgsOrganizeTableColumnsDialog::hideAll()
 
 void QgsOrganizeTableColumnsDialog::toggleSelection()
 {
-  for ( int i = 0; i < mFieldsList->count() ; i++ )
+  for ( QListWidgetItem *item : mFieldsList->selectedItems() )
   {
-    QListWidgetItem *item = mFieldsList->item( i );
-
-    if ( item->isSelected() )
-    {
-      item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked :  Qt::Checked  );
-      {
-        item->setCheckState( Qt::Checked );
-      }
-      else // Qt::Checked
-      {
-        item->setCheckState( Qt::Unchecked );
-      }
-
-    }
-
+    item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked :  Qt::Checked );
   }
 }
