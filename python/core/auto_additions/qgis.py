@@ -1607,6 +1607,13 @@ Qgis.JoinStyle.__doc__ = "Join styles for buffers.\n\n.. versionadded:: 3.22\n\n
 # --
 Qgis.JoinStyle.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.CoverageValidityResult.Invalid.__doc__ = "Coverage is invalid. Invalidity includes polygons that overlap, that have gaps smaller than the gap width, or non-polygonal entries in the input collection."
+Qgis.CoverageValidityResult.Valid.__doc__ = "Coverage is valid"
+Qgis.CoverageValidityResult.Error.__doc__ = "An exception occurred while determining validity"
+Qgis.CoverageValidityResult.__doc__ = "Coverage validity results.\n\n.. versionadded:: 3.36\n\n" + '* ``Invalid``: ' + Qgis.CoverageValidityResult.Invalid.__doc__ + '\n' + '* ``Valid``: ' + Qgis.CoverageValidityResult.Valid.__doc__ + '\n' + '* ``Error``: ' + Qgis.CoverageValidityResult.Error.__doc__
+# --
+Qgis.CoverageValidityResult.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.MakeValidMethod.Linework.__doc__ = "Combines all rings into a set of noded lines and then extracts valid polygons from that linework."
 Qgis.MakeValidMethod.Structure.__doc__ = "Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+."
 Qgis.MakeValidMethod.__doc__ = "Algorithms to use when repairing invalid geometries.\n\n.. versionadded:: 3.28\n\n" + '* ``Linework``: ' + Qgis.MakeValidMethod.Linework.__doc__ + '\n' + '* ``Structure``: ' + Qgis.MakeValidMethod.Structure.__doc__

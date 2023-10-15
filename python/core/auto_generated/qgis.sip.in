@@ -960,6 +960,13 @@ The development version
       Bevel,
     };
 
+    enum class CoverageValidityResult
+    {
+      Invalid,
+      Valid,
+      Error,
+    };
+
     enum class MakeValidMethod
     {
       Linework,

@@ -1604,6 +1604,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( JoinStyle )
 
     /**
+     * Coverage validity results.
+     *
+     * \since QGIS 3.36
+     */
+    enum class CoverageValidityResult : int
+    {
+      Invalid = 0, //!< Coverage is invalid. Invalidity includes polygons that overlap, that have gaps smaller than the gap width, or non-polygonal entries in the input collection.
+      Valid = 1, //!< Coverage is valid
+      Error = 2, //!< An exception occurred while determining validity
+    };
+    Q_ENUM( CoverageValidityResult )
+
+    /**
      * Algorithms to use when repairing invalid geometries.
      *
      * \since QGIS 3.28
