@@ -18,6 +18,7 @@
 
 #include "qgsalgorithmcoveragevalidate.h"
 #include "qgsgeometrycollection.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsgeos.h"
 
 
@@ -35,7 +36,7 @@ QString QgsCoverageValidateAlgorithm::displayName() const
 
 QStringList QgsCoverageValidateAlgorithm::tags() const
 {
-  return QObject::tr( "topological,boundary" ).split( ',' );
+  return QObject::tr( "validity,overlaps,gaps,topological,boundary" ).split( ',' );
 }
 
 QString QgsCoverageValidateAlgorithm::group() const
@@ -55,6 +56,7 @@ void QgsCoverageValidateAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Gap width" ), 0.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "INVALID_EDGES" ), QObject::tr( "Invalid edges" ), QgsProcessing::TypeVectorLine, QVariant(), true, true ) );
+  addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "IS_VALID" ), QObject::tr( "Coverage is valid" ) ) );
 }
 
 QString QgsCoverageValidateAlgorithm::shortHelpString() const
@@ -163,6 +165,7 @@ QVariantMap QgsCoverageValidateAlgorithm::processAlgorithm( const QVariantMap &p
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), sinkId );
+  outputs.insert( QStringLiteral( "IS_VALID" ), result == Qgis::CoverageValidityResult::Valid );
   return outputs;
 }
 
