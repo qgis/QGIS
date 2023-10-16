@@ -1053,6 +1053,33 @@ QDateTime QgsArcGisRestUtils::convertDateTime( const QVariant &value )
     return dt;
 }
 
+QgsRectangle QgsArcGisRestUtils::convertRectangle( const QVariant &value )
+{
+  if ( QgsVariantUtils::isNull( value ) )
+    return QgsRectangle();
+
+  const QVariantMap coords = value.toMap();
+  if ( coords.isEmpty() ) return QgsRectangle();
+
+  bool ok;
+
+  const double xmin = coords.value( QStringLiteral( "xmin" ) ).toDouble( &ok );
+  if ( ! ok ) return QgsRectangle();
+
+  const double ymin = coords.value( QStringLiteral( "ymin" ) ).toDouble( &ok );
+  if ( ! ok ) return QgsRectangle();
+
+  const double xmax = coords.value( QStringLiteral( "xmax" ) ).toDouble( &ok );
+  if ( ! ok ) return QgsRectangle();
+
+  const double ymax = coords.value( QStringLiteral( "ymax" ) ).toDouble( &ok );
+  if ( ! ok ) return QgsRectangle();
+
+  return QgsRectangle( xmin, ymin, xmax, ymax );
+
+}
+
+
 QVariantMap QgsArcGisRestUtils::geometryToJson( const QgsGeometry &geometry, const QgsArcGisRestContext &, const QgsCoordinateReferenceSystem &crs )
 {
   QVariantMap res;

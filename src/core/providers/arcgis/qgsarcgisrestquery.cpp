@@ -87,29 +87,7 @@ QgsRectangle QgsArcGisRestQueryUtils::getExtent( const QString &layerurl, const 
     return QgsRectangle();
   }
 
-  QgsRectangle rect;
-  do
-  {
-    const QVariantMap coords = res.value( QStringLiteral( "extent" ) ).toMap();
-    if ( coords.isEmpty() ) break;
-    bool ok;
-    const double xmin = coords.value( QStringLiteral( "xmin" ) ).toDouble( &ok );
-    if ( ! ok ) break;
-    const double ymin = coords.value( QStringLiteral( "ymin" ) ).toDouble( &ok );
-    if ( ! ok ) break;
-    const double xmax = coords.value( QStringLiteral( "xmax" ) ).toDouble( &ok );
-    if ( ! ok ) break;
-    const double ymax = coords.value( QStringLiteral( "ymax" ) ).toDouble( &ok );
-    if ( ! ok ) break;
-
-    rect.setXMinimum( xmin );
-    rect.setYMinimum( ymin );
-    rect.setXMaximum( xmax );
-    rect.setYMaximum( ymax );
-  }
-  while ( 0 );
-
-  return rect;
+  return QgsArcGisRestUtils::convertRectangle( res.value( QStringLiteral( "extent" ) ) );
 }
 
 QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,

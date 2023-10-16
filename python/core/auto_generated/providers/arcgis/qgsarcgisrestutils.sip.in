@@ -168,6 +168,15 @@ Returns an empty map if the ``crs`` is not valid.
 .. versionadded:: 3.28
 %End
 
+    static QgsRectangle convertRectangle( const QVariant &value );
+%Docstring
+Converts a rectangle ``value`` to a :py:class:`QgsRectangle`.
+
+Returns a null rectangle if the value cannot be converted.
+
+.. versionadded:: 3.34
+%End
+
     enum class FeatureToJsonFlag
     {
       IncludeGeometry,
