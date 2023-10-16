@@ -88,11 +88,27 @@ QgsRectangle QgsArcGisRestQueryUtils::getExtent( const QString &layerurl, const 
   }
 
   QgsRectangle rect;
-  const QVariantMap coords = res.value( QStringLiteral( "extent" ) ).toMap();
-  rect.setXMinimum( coords.value( QStringLiteral( "xmin" ) ).toDouble() );
-  rect.setYMinimum( coords.value( QStringLiteral( "ymin" ) ).toDouble() );
-  rect.setXMaximum( coords.value( QStringLiteral( "xmax" ) ).toDouble() );
-  rect.setYMaximum( coords.value( QStringLiteral( "ymax" ) ).toDouble() );
+  do
+  {
+    const QVariantMap coords = res.value( QStringLiteral( "extent" ) ).toMap();
+    if ( coords.isEmpty() ) break;
+    bool ok;
+    const double xmin = coords.value( QStringLiteral( "xmin" ) ).toDouble( &ok );
+    if ( ! ok ) break;
+    const double ymin = coords.value( QStringLiteral( "ymin" ) ).toDouble( &ok );
+    if ( ! ok ) break;
+    const double xmax = coords.value( QStringLiteral( "xmax" ) ).toDouble( &ok );
+    if ( ! ok ) break;
+    const double ymax = coords.value( QStringLiteral( "ymax" ) ).toDouble( &ok );
+    if ( ! ok ) break;
+
+    rect.setXMinimum( xmin );
+    rect.setYMinimum( ymin );
+    rect.setXMaximum( xmax );
+    rect.setYMaximum( ymax );
+  }
+  while ( 0 );
+
   return rect;
 }
 
