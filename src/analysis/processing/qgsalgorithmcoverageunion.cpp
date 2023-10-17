@@ -113,6 +113,23 @@ QVariantMap QgsCoverageUnionAlgorithm::processAlgorithm( const QVariantMap &para
 
   QgsGeos geos( &collection );
   QString error;
+
+  switch ( source->invalidGeometryCheck() )
+  {
+    case QgsFeatureRequest::GeometryNoCheck:
+      break;
+
+    case QgsFeatureRequest::GeometrySkipInvalid:
+    case QgsFeatureRequest::GeometryAbortOnInvalid:
+    {
+      if ( geos.validateCoverage( 0, nullptr, &error ) != Qgis::CoverageValidityResult::Valid )
+      {
+        throw QgsProcessingException( QObject::tr( "Coverage is not valid" ) );
+      }
+      break;
+    }
+  }
+
   std::unique_ptr< QgsAbstractGeometry > dissolved = geos.unionCoverage( &error );
 
   if ( !dissolved )
