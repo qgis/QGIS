@@ -610,6 +610,32 @@ if (ENABLE_TESTS)
 
 endif()
 
+add_custom_target(tags COMMAND
+  cd ${CMAKE_CURRENT_SOURCE_DIR} && ctags
+    --c++-kinds=+p
+    --exclude=build
+    --exclude=.ci
+    --exclude=cmake
+    --exclude=cmake_templates
+    --exclude=debian
+    --exclude=doc
+    --exclude=.docker
+    --exclude=editors
+    --exclude=.github
+    --exclude=i18n
+    --exclude=images
+    --exclude=resources
+    --exclude=rpm
+    --exclude=scripts
+    --exclude=Testing
+    --exclude=tests
+    --exclude=.tx
+    --extras=+q
+    --fields=+iaS
+    --language-force=C++
+    --recurse=yes
+)
+
 if (WITH_CORE)
 # ModelTest
   set(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
