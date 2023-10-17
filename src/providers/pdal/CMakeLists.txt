@@ -2,7 +2,6 @@
 # Files
 
 if(MSVC)
-  add_definitions(-DWIN32_LEAN_AND_MEAN)
   set(PDAL_LIBRARIES ${PDAL_LIBRARIES} ws2_32)
 endif(MSVC)
 

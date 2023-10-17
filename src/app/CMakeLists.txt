@@ -482,10 +482,6 @@ if(HAVE_OPENCL)
     include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
-if (WITH_PDAL AND MSVC)
-  add_definitions(-DWIN32_LEAN_AND_MEAN)
-endif()
-
 if(ENABLE_MODELTEST)
   include_directories(../../tests/qt_modeltest)
 endif()

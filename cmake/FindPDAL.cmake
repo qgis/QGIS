@@ -28,6 +28,12 @@ if(PDAL_FOUND)
     message(FATAL_ERROR "PDAL version is too old (${PDAL_VERSION}). Use 1.7 or higher.")
   endif()
 
+  if(MSVC)
+    foreach(PDAL_TARG ${PDAL_LIBRARIES})
+      target_compile_definitions(${PDAL_TARG} INTERFACE WIN32_LEAN_AND_MEAN)
+    endforeach()
+  endif()
+
   return()
 endif()
 
@@ -95,6 +101,11 @@ IF (PDAL_FOUND)
    target_link_libraries(pdal_util INTERFACE ${PDAL_UTIL_LIBRARY})
    target_include_directories(pdal_util INTERFACE ${PDAL_INCLUDE_DIR})
    set_target_properties(pdal_util PROPERTIES IMPORTED_LOCATION ${PDAL_UTIL_LIBRARY})
+
+   if(MSVC)
+     target_compile_definitions(pdalcpp INTERFACE WIN32_LEAN_AND_MEAN)
+     target_compile_definitions(pdal_util INTERFACE WIN32_LEAN_AND_MEAN)
+   endif()
 
 ELSE (PDAL_FOUND)
    IF (PDAL_FIND_REQUIRED)

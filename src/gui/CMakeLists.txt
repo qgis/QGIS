@@ -1599,10 +1599,6 @@ if (BUILD_WITH_QT6)
   )
 endif()
 
-if (WITH_PDAL AND MSVC)
-  add_definitions(-DWIN32_LEAN_AND_MEAN)
-endif()
-
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/actions
