@@ -416,6 +416,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void backgroundTaskCountChanged( int total );
     void onMapPreviewRefreshed();
     void onItemAdded( QgsLayoutItem *item );
+    void onItemDestroyed( QObject *item );
 
   private:
 
@@ -587,4 +588,3 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H
-
