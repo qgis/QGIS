@@ -334,6 +334,8 @@ class CORE_EXPORT QgsRectangle
     */
     QgsRectangle buffered( double width ) const
     {
+      if ( isNull() )
+        return QgsRectangle();
       return QgsRectangle( mXmin - width, mYmin - width, mXmax + width, mYmax + width );
     }
 

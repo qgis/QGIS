@@ -461,19 +461,23 @@ void TestQgsRectangle::include()
 
 void TestQgsRectangle::buffered()
 {
-  QgsRectangle rect = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
-  const QgsRectangle rect1 = rect.buffered( 11 );
-  QCOMPARE( rect1.xMinimum(), -1.0 );
-  QCOMPARE( rect1.yMinimum(), 9.0 );
-  QCOMPARE( rect1.xMaximum(), 121.0 );
-  QCOMPARE( rect1.yMaximum(), 231.0 );
+  QgsRectangle rectIn = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
+  QgsRectangle rectOut = rectIn.buffered( 11 );
+  QCOMPARE( rectOut.xMinimum(), -1.0 );
+  QCOMPARE( rectOut.yMinimum(), 9.0 );
+  QCOMPARE( rectOut.xMaximum(), 121.0 );
+  QCOMPARE( rectOut.yMaximum(), 231.0 );
 
-  rect = QgsRectangle( -110.0, -220.0, -10.0, -20.0 );
-  const QgsRectangle rect2 = rect.buffered( 11 );
-  QCOMPARE( rect2.xMinimum(), -121.0 );
-  QCOMPARE( rect2.yMinimum(), -231.0 );
-  QCOMPARE( rect2.xMaximum(), 1.0 );
-  QCOMPARE( rect2.yMaximum(), -9.0 );
+  rectIn = QgsRectangle( -110.0, -220.0, -10.0, -20.0 );
+  rectOut = rectIn.buffered( 11 );
+  QCOMPARE( rectOut.xMinimum(), -121.0 );
+  QCOMPARE( rectOut.yMinimum(), -231.0 );
+  QCOMPARE( rectOut.xMaximum(), 1.0 );
+  QCOMPARE( rectOut.yMaximum(), -9.0 );
+
+  rectIn.setMinimal();
+  rectOut = rectIn.buffered( 11 );
+  QVERIFY( rectOut.isNull() );
 }
 
 void TestQgsRectangle::isFinite()
