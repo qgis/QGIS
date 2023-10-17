@@ -407,7 +407,7 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
   sl.index()->load( sl.uri() );
 
   // if expression is broken or index is missing a required field, set to "false" so it returns no points
-  if ( !sl.index()->setSubsetString( mSubsetString ) )
+  if ( !mSubsetString.isEmpty() && !sl.index()->setSubsetString( mSubsetString ) )
     sl.index()->setSubsetString( QStringLiteral( "false" ) );
 
   emit subIndexLoaded( i );
