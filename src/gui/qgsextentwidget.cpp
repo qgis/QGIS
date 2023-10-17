@@ -525,8 +525,17 @@ void QgsExtentWidget::mapToolDeactivated()
 
 QgsRectangle QgsExtentWidget::outputExtent() const
 {
-  return QgsRectangle( QgsDoubleValidator::toDouble( mXMinLineEdit->text() ), QgsDoubleValidator::toDouble( mYMinLineEdit->text() ),
-                       QgsDoubleValidator::toDouble( mXMaxLineEdit->text() ), QgsDoubleValidator::toDouble( mYMaxLineEdit->text() ) );
+  bool ok;
+  const double xmin = QgsDoubleValidator::toDouble( mXMinLineEdit->text(), &ok );
+  if ( ! ok ) return QgsRectangle();
+  const double ymin = QgsDoubleValidator::toDouble( mYMinLineEdit->text(), &ok );
+  if ( ! ok ) return QgsRectangle();
+  const double xmax = QgsDoubleValidator::toDouble( mXMaxLineEdit->text(), &ok );
+  if ( ! ok ) return QgsRectangle();
+  const double ymax = QgsDoubleValidator::toDouble( mYMaxLineEdit->text(), &ok );
+  if ( ! ok ) return QgsRectangle();
+
+  return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
 void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption )
