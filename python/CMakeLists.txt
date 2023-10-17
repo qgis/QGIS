@@ -106,10 +106,6 @@ if (WITH_GUI)
   )
 endif()
 
-if (WITH_PDAL)
-  include_directories(SYSTEM "${PDAL_INCLUDE_DIR}")
-endif()
-
 if(NOT ENABLE_TESTS)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} TESTS)
 endif()

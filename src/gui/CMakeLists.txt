@@ -1599,11 +1599,8 @@ if (BUILD_WITH_QT6)
   )
 endif()
 
-if (WITH_PDAL)
-  include_directories(SYSTEM ${PDAL_INCLUDE_DIR})
-  if(MSVC)
-    add_definitions(-DWIN32_LEAN_AND_MEAN)
-  endif()
+if (WITH_PDAL AND MSVC)
+  add_definitions(-DWIN32_LEAN_AND_MEAN)
 endif()
 
 target_include_directories(qgis_gui PUBLIC

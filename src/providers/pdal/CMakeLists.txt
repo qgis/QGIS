@@ -149,10 +149,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/external/untwine/api
 )
 
-include_directories(SYSTEM
-  ${PDAL_INCLUDE_DIR}
-)
-
 add_executable(untwine ${UNTWINE_SRCS} ${UNTWINE_HDRS})
 target_compile_features(untwine PRIVATE cxx_std_17)
 
@@ -182,7 +178,6 @@ if (PDAL_2_5_OR_HIGHER)
   )
 
   target_include_directories(pdal_wrench PRIVATE
-    ${PDAL_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/external
   )
 
