@@ -373,6 +373,10 @@ void TestQgsRectangle::minimal()
 
 void TestQgsRectangle::grow()
 {
+  QgsRectangle rect_null;
+  rect_null.grow( 11 ); // grow has no effect on null rectangle
+  QCOMPARE( rect_null, QgsRectangle() );
+
   QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
   rect1.grow( 11 );
   QCOMPARE( rect1.xMinimum(), -1.0 );
@@ -390,6 +394,10 @@ void TestQgsRectangle::grow()
 
 void TestQgsRectangle::include()
 {
+  QgsRectangle rect_null;
+  rect_null.include( QgsPoint( 20, 20 ) ); // wraps the included geometry
+  QCOMPARE( rect_null, QgsRectangle( 20, 20, 20, 20 ) );
+
   QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
   // inside
   rect1.include( QgsPointXY( 15, 50 ) );
