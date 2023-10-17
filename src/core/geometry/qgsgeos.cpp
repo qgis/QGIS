@@ -2087,7 +2087,7 @@ Qgis::CoverageValidityResult QgsGeos::validateCoverage( double gapWidth, std::un
 #endif
 }
 
-QgsAbstractGeometry *QgsGeos::simplifyCoverageVW( double tolerance, bool preserveBoundary, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::simplifyCoverageVW( double tolerance, bool preserveBoundary, QString *errorMsg ) const
 {
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<12
   ( void )tolerance;
@@ -2106,10 +2106,28 @@ QgsAbstractGeometry *QgsGeos::simplifyCoverageVW( double tolerance, bool preserv
   {
     geos::unique_ptr simplified( GEOSCoverageSimplifyVW_r( geosinit()->ctxt, mGeos.get(), tolerance, preserveBoundary ? 1 : 0 ) );
     std::unique_ptr< QgsAbstractGeometry > simplifiedGeom = fromGeos( simplified.get() );
-    return simplifiedGeom.release();
+    return simplifiedGeom;
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 #endif
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::unionCoverage( QString *errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    if ( errorMsg )
+      *errorMsg = QStringLiteral( "Input geometry was not set" );
+    return nullptr;
+  }
+
+  try
+  {
+    geos::unique_ptr unioned( GEOSCoverageUnion_r( geosinit()->ctxt, mGeos.get() ) );
+    std::unique_ptr< QgsAbstractGeometry > result = fromGeos( unioned.get() );
+    return result;
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
 bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, QgsGeometry *errorLoc ) const

@@ -1856,6 +1856,20 @@ This method requires a QGIS build based on GEOS 3.12 or later.
 .. versionadded:: 3.36
 %End
 
+    QgsGeometry unionCoverage() const;
+%Docstring
+Optimized union algorithm for polygonal inputs that are correctly noded and do not overlap.
+It may generate an error (returning a null geometry) for inputs that do not satisfy this constraint,
+however this is not guaranteed.
+
+The input geometry is the polygonal coverage to union, stored in a geometry collection.
+All members must be POLYGON or MULTIPOLYGON.
+
+.. seealso:: :py:func:`validateCoverage`
+
+.. versionadded:: 3.36
+%End
+
     QgsGeometry node() const;
 %Docstring
 Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.

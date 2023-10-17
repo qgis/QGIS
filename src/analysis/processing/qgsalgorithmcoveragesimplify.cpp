@@ -40,12 +40,12 @@ QStringList QgsCoverageSimplifyAlgorithm::tags() const
 
 QString QgsCoverageSimplifyAlgorithm::group() const
 {
-  return QObject::tr( "Vector geometry" );
+  return QObject::tr( "Vector coverage" );
 }
 
 QString QgsCoverageSimplifyAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return QStringLiteral( "vectorcoverage" );
 }
 
 void QgsCoverageSimplifyAlgorithm::initAlgorithm( const QVariantMap & )
@@ -130,7 +130,7 @@ QVariantMap QgsCoverageSimplifyAlgorithm::processAlgorithm( const QVariantMap &p
   std::unique_ptr< QgsAbstractGeometry > simplified;
   try
   {
-    simplified.reset( geos.simplifyCoverageVW( tolerance, preserveBoundary, &error ) );
+    simplified = geos.simplifyCoverageVW( tolerance, preserveBoundary, &error );
   }
   catch ( QgsNotSupportedException &e )
   {

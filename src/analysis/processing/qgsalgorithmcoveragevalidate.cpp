@@ -41,12 +41,12 @@ QStringList QgsCoverageValidateAlgorithm::tags() const
 
 QString QgsCoverageValidateAlgorithm::group() const
 {
-  return QObject::tr( "Vector geometry" );
+  return QObject::tr( "Vector coverage" );
 }
 
 QString QgsCoverageValidateAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return QStringLiteral( "vectorcoverage" );
 }
 
 void QgsCoverageValidateAlgorithm::initAlgorithm( const QVariantMap & )
