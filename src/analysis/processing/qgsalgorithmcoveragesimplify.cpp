@@ -123,10 +123,26 @@ QVariantMap QgsCoverageSimplifyAlgorithm::processAlgorithm( const QVariantMap &p
     current++;
   }
 
+  QString error;
+  QgsGeos geos( &collection );
+  switch ( source->invalidGeometryCheck() )
+  {
+    case QgsFeatureRequest::GeometryNoCheck:
+      break;
+
+    case QgsFeatureRequest::GeometrySkipInvalid:
+    case QgsFeatureRequest::GeometryAbortOnInvalid:
+    {
+      if ( geos.validateCoverage( 0, nullptr, &error ) != Qgis::CoverageValidityResult::Valid )
+      {
+        throw QgsProcessingException( QObject::tr( "Coverage is not valid" ) );
+      }
+      break;
+    }
+  }
+
   feedback->pushInfo( QObject::tr( "Simplifying coverage" ) );
 
-  QgsGeos geos( &collection );
-  QString error;
   std::unique_ptr< QgsAbstractGeometry > simplified;
   try
   {

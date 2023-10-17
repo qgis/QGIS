@@ -711,7 +711,18 @@ Returns an expression context scope suitable for this source.
 %Docstring
 Overrides the default geometry check method for the source.
 
+.. seealso:: :py:func:`invalidGeometryCheck`
+
 .. versionadded:: 3.14
+%End
+
+    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
+%Docstring
+Returns the geometry check method for the source.
+
+.. seealso:: :py:func:`setInvalidGeometryCheck`
+
+.. versionadded:: 3.36
 %End
 
 };
