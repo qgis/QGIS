@@ -1320,7 +1320,8 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
 
   if ( auto widget = qobject_cast< QgsLayoutItemBaseWidget * >( mItemPropertiesStack->mainPanel() ) )
   {
-    if ( widget->layoutObject() == item )
+    const QgsLayoutObject *currentItem = widget->layoutObject();
+    if ( currentItem == item )
     {
       // already showing properties for this item - we don't want to create a new panel
       if ( bringPanelToFront )
@@ -1335,6 +1336,9 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
       {
         if ( bringPanelToFront )
           mItemDock->setUserVisible( true );
+
+        disconnect( currentItem, &QgsLayoutItem::destroyed, this, &QgsLayoutDesignerDialog::onItemDestroyed );
+        connect( item, &QgsLayoutItem::destroyed, this, &QgsLayoutDesignerDialog::onItemDestroyed );
 
         return;
       }
@@ -1355,10 +1359,7 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
     connect( ppWidget, &QgsLayoutPagePropertiesWidget::pageOrientationChanged, this, &QgsLayoutDesignerDialog::pageOrientationChanged );
 
   widget->setDockMode( true );
-  connect( item, &QgsLayoutItem::destroyed, widget.get(), [this]
-  {
-    delete mItemPropertiesStack->takeMainPanel();
-  } );
+  connect( item, &QgsLayoutItem::destroyed, this, &QgsLayoutDesignerDialog::onItemDestroyed );
 
   mItemPropertiesStack->setMainPanel( widget.release() );
   if ( bringPanelToFront )
@@ -5034,4 +5035,13 @@ void QgsLayoutDesignerDialog::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "LayoutDesigner/atlasExportAction" ), 3 );
 
   bt->setDefaultAction( action );
+}
+
+void QgsLayoutDesignerDialog::onItemDestroyed( QObject *item )
+{
+  if ( QgsLayoutItemBaseWidget *widget = qobject_cast< QgsLayoutItemBaseWidget * >( mItemPropertiesStack->mainPanel() ) )
+  {
+    if ( widget->layoutObject() == item )
+      delete mItemPropertiesStack->takeMainPanel();
+  }
 }
