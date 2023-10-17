@@ -295,7 +295,8 @@ class CORE_EXPORT QgsRectangle
      */
     void grow( double delta )
     {
-      if ( isNull() ) return;
+      if ( isNull() )
+        return;
       mXmin -= delta;
       mXmax += delta;
       mYmin -= delta;
