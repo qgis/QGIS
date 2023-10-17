@@ -2459,6 +2459,10 @@ QFlags<Qgis::TiledSceneProviderCapability> operator|(Qgis::TiledSceneProviderCap
 
 QFlags<Qgis::TiledSceneRendererFlag> operator|(Qgis::TiledSceneRendererFlag f1, QFlags<Qgis::TiledSceneRendererFlag> f2);
 
+QFlags<Qgis::FieldConfigurationFlag> operator|(Qgis::FieldConfigurationFlag f1, QFlags<Qgis::FieldConfigurationFlag> f2);
+
+QFlags<Qgis::LayerFilter> operator|(Qgis::LayerFilter f1, QFlags<Qgis::LayerFilter> f2);
+
 QFlags<Qgis::TiledSceneRequestFlag> operator|(Qgis::TiledSceneRequestFlag f1, QFlags<Qgis::TiledSceneRequestFlag> f2);
 
 QFlags<Qgis::VectorDataProviderAttributeEditCapability> operator|(Qgis::VectorDataProviderAttributeEditCapability f1, QFlags<Qgis::VectorDataProviderAttributeEditCapability> f2);
@@ -2471,10 +2475,6 @@ QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCap
 
 QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
 
-
-QFlags<Qgis::FieldConfigurationFlag> operator|(Qgis::FieldConfigurationFlag f1, QFlags<Qgis::FieldConfigurationFlag> f2);
-
-QFlags<Qgis::LayerFilter> operator|(Qgis::LayerFilter f1, QFlags<Qgis::LayerFilter> f2);
 
 
 
