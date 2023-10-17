@@ -253,7 +253,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
   }
 
   QList<QgsLayerTreeNode *> children = parentNode->children();
-  for ( int i = start; i <= end; ++i )
+  for ( int i = start; i <= end && i < children.count(); ++i )
   {
     updateExpandedStateFromNode( children[i] );
   }
