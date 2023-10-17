@@ -1127,6 +1127,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
           QgsTextFormat textFormat = label->textFormat();
           if ( textFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage )
           {
+            // The line-height property handles height differently in webkit, adjust accordingly
             textFormat.setLineHeight( textFormat.lineHeight() + 0.22 );
             label->setTextFormat( textFormat );
           }
