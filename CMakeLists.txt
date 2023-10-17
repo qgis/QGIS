@@ -783,7 +783,7 @@ if(ENABLE_COVERAGE)
   SETUP_TARGET_FOR_COVERAGE(qgis_coverage ctest coverage)
 endif()
 
-if(USE_ALTERNATE_LINKER)
+if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
   include("cmake/modules/linker.cmake")
 endif()
 
