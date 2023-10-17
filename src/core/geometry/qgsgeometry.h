@@ -1875,6 +1875,19 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry simplifyCoverageVW( double tolerance, bool preserveBoundary ) const SIP_THROW( QgsNotSupportedException );
 
     /**
+     * Optimized union algorithm for polygonal inputs that are correctly noded and do not overlap.
+     * It may generate an error (returning a null geometry) for inputs that do not satisfy this constraint,
+     * however this is not guaranteed.
+     *
+     * The input geometry is the polygonal coverage to union, stored in a geometry collection.
+     * All members must be POLYGON or MULTIPOLYGON.
+     *
+     * \see validateCoverage()
+     * \since QGIS 3.36
+     */
+    QgsGeometry unionCoverage() const;
+
+    /**
      * Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
      *
      * The noding preserves all of the input nodes, and introduces the least possible number of new nodes.
