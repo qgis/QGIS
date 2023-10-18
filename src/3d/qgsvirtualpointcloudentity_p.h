@@ -75,6 +75,9 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
     //! If \a asBbox is TRUE only the bounding box will be rendered for the sub index \a i. If it is FALSE, the sub index will be rendered as a chunked entity.
     void setRenderSubIndexAsBbox( int i, bool asBbox );
 
+  signals:
+    void subIndexNeedsLoading( int i );
+
   private:
     //! Updates the Bbox child entity to display the sub indexes set with setRenderSubIndexAsBbox()
     void updateBboxEntity();
