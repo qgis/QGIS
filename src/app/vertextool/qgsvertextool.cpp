@@ -971,7 +971,7 @@ QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e
   {
     if ( currentVlayer->isEditable() && currentVlayer->geometryType() == Qgis::GeometryType::Polygon )
     {
-      QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( currentVlayer )->pointInPolygon( mapPoint, true );
+      QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( currentVlayer )->pointInPolygon( mapPoint, nullptr, true );
       if ( !matchList.isEmpty() )
       {
         m = matchList.first();
@@ -991,7 +991,7 @@ QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e
 
       if ( vlayer->isEditable() && vlayer->geometryType() == Qgis::GeometryType::Polygon )
       {
-        QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( vlayer )->pointInPolygon( mapPoint, true );
+        QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( vlayer )->pointInPolygon( mapPoint, nullptr, true );
         if ( !matchList.isEmpty() )
         {
           m = matchList.first();
@@ -1023,7 +1023,7 @@ QList<QgsPointLocator::Match> QgsVertexTool::findEditableLayerMatches( const Qgs
 
   if ( layer->geometryType() == Qgis::GeometryType::Polygon )
   {
-    matchList << locator->pointInPolygon( mapPoint, true );
+    matchList << locator->pointInPolygon( mapPoint, nullptr, true );
   }
 
   double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );

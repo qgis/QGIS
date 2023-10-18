@@ -302,7 +302,20 @@ This method is either blocking or non blocking according to ``relaxed`` paramete
 
 
 
-    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false );
+ MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false ) /Deprecated/;
+%Docstring
+find out if the ``point`` is in any polygons
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+%End
+
+    MatchList pointInPolygon( const QgsPointXY &point, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false ) /PyName=pointInPolygonV2/;
+%Docstring
+Find out if the ``point`` is in any polygons
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+Optional filter may discard unwanted matches.
+
+.. versionadded:: 3.34
+%End
 
     int cachedGeometryCount() const;
 %Docstring

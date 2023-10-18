@@ -447,8 +447,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * find out if the \a point is in any polygons
      * This method is either blocking or non blocking according to \a relaxed parameter passed
      */
-    //!
-    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false );
+    Q_DECL_DEPRECATED MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false ) SIP_DEPRECATED;
+
+    /**
+     * Find out if the \a point is in any polygons
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
+     * Optional filter may discard unwanted matches.
+     * \since QGIS 3.34
+     */
+    MatchList pointInPolygon( const QgsPointXY &point, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false ) SIP_PYNAME( pointInPolygonV2 );
 
     /**
      * Returns how many geometries are cached in the index
