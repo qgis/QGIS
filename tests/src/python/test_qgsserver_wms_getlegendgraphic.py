@@ -1379,7 +1379,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         project.addMapLayers([layer])
 
         server = QgsServer()
-        request = QgsBufferServerRequest("/?SERVICE=WMS&VERION=1.30&REQUEST=GetLegendGraphic" +
+        request = QgsBufferServerRequest("/?SERVICE=WMS&VERSION=1.30&REQUEST=GetLegendGraphic" +
                                          "&LAYERS=layer1" +
                                          "&FORMAT=application/json" +
                                          "&SHOWRULEDETAILS=1")
