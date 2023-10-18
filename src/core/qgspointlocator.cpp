@@ -426,9 +426,10 @@ class QgsPointLocator_VisitorArea : public IVisitor
 {
   public:
     //! constructor
-    QgsPointLocator_VisitorArea( QgsPointLocator *pl, const QgsPointXY &origPt, QgsPointLocator::MatchList &list )
+    QgsPointLocator_VisitorArea( QgsPointLocator *pl, const QgsPointXY &origPt, QgsPointLocator::MatchList &list, QgsPointLocator::MatchFilter *filter = nullptr )
       : mLocator( pl )
       , mList( list )
+      , mFilter( filter )
       , mGeomPt( QgsGeometry::fromPointXY( origPt ) )
     {}
 
@@ -443,11 +444,17 @@ class QgsPointLocator_VisitorArea : public IVisitor
         return; // should not happen, but be safe
 
       if ( g->intersects( mGeomPt ) )
-        mList << QgsPointLocator::Match( QgsPointLocator::Area, mLocator->mLayer, id, 0, mGeomPt.asPoint() );
+      {
+        const QgsPointLocator::Match m( QgsPointLocator::Area, mLocator->mLayer, id, 0, mGeomPt.asPoint() );
+        if ( mFilter && !mFilter->acceptMatch( m ) )
+          return;
+        mList << m;
+      }
     }
   private:
     QgsPointLocator *mLocator = nullptr;
     QgsPointLocator::MatchList &mList;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
     QgsGeometry mGeomPt;
 };
 
@@ -1400,7 +1407,7 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
   if ( !prepare( relaxed ) )
     return Match();
 
-  const MatchList mlist = pointInPolygon( point );
+  const MatchList mlist = pointInPolygon( point, filter );
   if ( !mlist.isEmpty() && mlist.at( 0 ).isValid() )
   {
     return mlist.at( 0 );
@@ -1467,6 +1474,11 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &po
 
 QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point, bool relaxed )
 {
+  return QgsPointLocator::pointInPolygon( point, nullptr, relaxed );
+}
+
+QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point, QgsPointLocator::MatchFilter *filter, bool relaxed )
+{
   if ( !prepare( relaxed ) )
     return MatchList();
 
@@ -1475,7 +1487,7 @@ QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &po
     return MatchList();
 
   MatchList lst;
-  QgsPointLocator_VisitorArea visitor( this, point, lst );
+  QgsPointLocator_VisitorArea visitor( this, point, lst, filter );
   mRTree->intersectsWithQuery( point2point( point ), visitor );
   return lst;
 }
