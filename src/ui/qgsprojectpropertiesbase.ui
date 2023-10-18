@@ -2866,6 +2866,9 @@
                      </item>
                      <item row="9" column="0">
                       <widget class="QCheckBox" name="mSkipNameForGroupCheckBox">
+                       <property name="toolTip">
+                         <string>GetCapabilities response would skip name attribute for group items while leaving title attribute as is, thus showing the group but making it impossible to include the whole group (rather than it's elements) in subsequent GetMap request LAYERS parameter.</string>
+                       </property>
                        <property name="text">
                         <string>Skip name attribute for groups</string>
                        </property>
@@ -3350,7 +3353,7 @@
             </spacer>
            </item>
           </layout>
-         </widget>        
+         </widget>
         </widget>
        </item>
       </layout>
