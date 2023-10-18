@@ -56,7 +56,9 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *laye
   }
 
   updateBboxEntity();
+  connect( this, &QgsVirtualPointCloudEntity::subIndexNeedsLoading, provider(), &QgsVirtualPointCloudProvider::loadSubIndex, Qt::QueuedConnection );
   connect( provider(), &QgsVirtualPointCloudProvider::subIndexLoaded, this, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
+
 }
 
 QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
@@ -120,7 +122,7 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneState &state )
     // then once the camera changes we display as bbox depending on screen space error
     const bool displayAsBbox = state.cameraPos.isNull() || sse < THRESHOLD;
     if ( !displayAsBbox && !subIndexes.at( i ).index() )
-      provider()->loadSubIndex( i );
+      emit subIndexNeedsLoading( i );
 
     setRenderSubIndexAsBbox( i, displayAsBbox );
     if ( !displayAsBbox && mChunkedEntitiesMap.contains( i ) )
