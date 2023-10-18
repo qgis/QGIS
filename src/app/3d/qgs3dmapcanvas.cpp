@@ -149,11 +149,17 @@ QgsCameraController *Qgs3DMapCanvas::cameraController()
 
 void Qgs3DMapCanvas::resetView()
 {
+  if ( !mScene )
+    return;
+
   mScene->viewZoomFull();
 }
 
 void Qgs3DMapCanvas::setViewFromTop( const QgsPointXY &center, float distance, float rotation )
 {
+  if ( !mScene )
+    return;
+
   const float worldX = center.x() - mMap->origin().x();
   const float worldY = center.y() - mMap->origin().y();
   mScene->cameraController()->setViewFromTop( worldX, -worldY, distance, rotation );
@@ -161,26 +167,29 @@ void Qgs3DMapCanvas::setViewFromTop( const QgsPointXY &center, float distance, f
 
 void Qgs3DMapCanvas::saveAsImage( const QString &fileName, const QString &fileFormat )
 {
-  if ( !fileName.isEmpty() )
+  if ( !mScene || fileName.isEmpty() )
+    return;
+
+  mCaptureFileName = fileName;
+  mCaptureFileFormat = fileFormat;
+  mEngine->setRenderCaptureEnabled( true );
+  // Setup a frame action that is used to wait until next frame
+  Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
+  mScene->addComponent( screenCaptureFrameAction );
+  // Wait to have the render capture enabled in the next frame
+  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [ = ]( float )
   {
-    mCaptureFileName = fileName;
-    mCaptureFileFormat = fileFormat;
-    mEngine->setRenderCaptureEnabled( true );
-    // Setup a frame action that is used to wait until next frame
-    Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
-    mScene->addComponent( screenCaptureFrameAction );
-    // Wait to have the render capture enabled in the next frame
-    connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [ = ]( float )
-    {
-      mEngine->requestCaptureImage();
-      mScene->removeComponent( screenCaptureFrameAction );
-      screenCaptureFrameAction->deleteLater();
-    } );
-  }
+    mEngine->requestCaptureImage();
+    mScene->removeComponent( screenCaptureFrameAction );
+    screenCaptureFrameAction->deleteLater();
+  } );
 }
 
 void Qgs3DMapCanvas::captureDepthBuffer()
 {
+  if ( !mScene )
+    return;
+
   // Setup a frame action that is used to wait until next frame
   Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
   mScene->addComponent( screenCaptureFrameAction );
@@ -195,6 +204,9 @@ void Qgs3DMapCanvas::captureDepthBuffer()
 
 void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
 {
+  if ( !mScene )
+    return;
+
   if ( tool == mMapTool )
     return;
 
@@ -281,6 +293,9 @@ void Qgs3DMapCanvas::setTemporalController( QgsTemporalController *temporalContr
 
 void Qgs3DMapCanvas::updateTemporalRange( const QgsDateTimeRange &temporalrange )
 {
+  if ( !mScene )
+    return;
+
   mMap->setTemporalRange( temporalrange );
   mScene->updateTemporal();
 }
@@ -297,10 +312,13 @@ void Qgs3DMapCanvas::onNavigationModeChanged( Qgis::NavigationMode mode )
 
 void Qgs3DMapCanvas::setViewFrom2DExtent( const QgsRectangle &extent )
 {
+  if ( !mScene )
+    return;
+
   mScene->setViewFrom2DExtent( extent );
 }
 
 QVector<QgsPointXY> Qgs3DMapCanvas::viewFrustum2DExtent()
 {
-  return mScene->viewFrustum2DExtent();
+  return mScene ? mScene->viewFrustum2DExtent() : QVector<QgsPointXY>();
 }
