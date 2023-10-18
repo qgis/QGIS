@@ -28,6 +28,7 @@ set(TESTS
   testqgsgltf3dutils.cpp
   testqgslayout3dmap.cpp
   testqgsmaterialregistry.cpp
+  testqgsmesh3drendering.cpp
   testqgspointcloud3drendering.cpp
   testqgstessellator.cpp
   testqgstilingscheme.cpp
