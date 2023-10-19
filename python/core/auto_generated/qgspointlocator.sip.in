@@ -306,6 +306,9 @@ This method is either blocking or non blocking according to ``relaxed`` paramete
 %Docstring
 find out if the ``point`` is in any polygons
 This method is either blocking or non blocking according to ``relaxed`` parameter passed
+
+.. deprecated::
+   QGIS 3.34 - use the overloaded pointInPolygon accepting a QgsPointLocator.MatchFilter parameter (pointInPolygonV2 in python)
 %End
 
     MatchList pointInPolygon( const QgsPointXY &point, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false ) /PyName=pointInPolygonV2/;
