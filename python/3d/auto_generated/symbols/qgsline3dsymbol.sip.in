@@ -80,13 +80,34 @@ Returns width of the line symbol (in map units)
 Sets width of the line symbol (in map units)
 %End
 
-    float height() const;
+ float height() const /Deprecated/;
 %Docstring
 Returns height (altitude) of the symbol (in map units)
+
+.. deprecated:: QGIS 3.36.
+   Use :py:func:`~QgsLine3DSymbol.offset` instead.
 %End
-    void setHeight( float height );
+
+ void setHeight( float height ) /Deprecated/;
 %Docstring
 Sets height (altitude) of the symbol (in map units)
+
+.. deprecated:: QGIS 3.36.
+   Use :py:func:`~QgsLine3DSymbol.setOffset` instead.
+%End
+
+    float offset() const;
+%Docstring
+Returns vertical offset of the symbol (in map units)
+
+.. versionadded:: 3.36
+%End
+
+    void setOffset( float offset );
+%Docstring
+Sets vertical offset of the symbol (in map units)
+
+.. versionadded:: 3.36
 %End
 
     float extrusionHeight() const;

@@ -735,7 +735,7 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setWidth( 20 );
   lineSymbol->setExtrusionHeight( 30 );
-  lineSymbol->setHeight( 10 );
+  lineSymbol->setOffset( 10 );
   QgsPhongMaterialSettings matSettings;
   matSettings.setAmbient( Qt::red );
   lineSymbol->setMaterialSettings( matSettings.clone() );
