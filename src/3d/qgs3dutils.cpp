@@ -351,7 +351,7 @@ Qgs3DTypes::CullingMode Qgs3DUtils::cullingModeFromString( const QString &str )
     return Qgs3DTypes::NoCulling;
 }
 
-float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float height, const QgsPoint &centroid, const Qgs3DMapSettings &map )
+float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const QgsPoint &centroid, const Qgs3DMapSettings &map )
 {
   float terrainZ = 0;
   switch ( altClamp )
@@ -383,11 +383,11 @@ float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altCl
     }
   }
 
-  const float z = ( terrainZ + geomZ ) * map.terrainVerticalScale() + height;
+  const float z = ( terrainZ + geomZ ) * static_cast<float>( map.terrainVerticalScale() ) + offset;
   return z;
 }
 
-void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map )
+void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, const QgsPoint &centroid, float offset, const Qgs3DMapSettings &map )
 {
   for ( int i = 0; i < lineString->nCoordinates(); ++i )
   {
@@ -431,13 +431,13 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClampi
         break;
     }
 
-    const float z = ( terrainZ + geomZ ) * map.terrainVerticalScale() + height;
+    const float z = ( terrainZ + geomZ ) * static_cast<float>( map.terrainVerticalScale() ) + offset;
     lineString->setZAt( i, z );
   }
 }
 
 
-bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float height, const Qgs3DMapSettings &map )
+bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const Qgs3DMapSettings &map )
 {
   if ( !polygon->is3D() )
     polygon->addZValue( 0 );
@@ -458,7 +458,7 @@ bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping alt
   if ( !lineString )
     return false;
 
-  clampAltitudes( lineString, altClamp, altBind, centroid, height, map );
+  clampAltitudes( lineString, altClamp, altBind, centroid, offset, map );
 
   for ( int i = 0; i < polygon->numInteriorRings(); ++i )
   {
@@ -467,7 +467,7 @@ bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping alt
     if ( !lineString )
       return false;
 
-    clampAltitudes( lineString, altClamp, altBind, centroid, height, map );
+    clampAltitudes( lineString, altClamp, altBind, centroid, offset, map );
   }
   return true;
 }
