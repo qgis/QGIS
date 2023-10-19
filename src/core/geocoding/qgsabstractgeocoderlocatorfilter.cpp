@@ -72,7 +72,7 @@ QgsGeocoderInterface *QgsAbstractGeocoderLocatorFilter::geocoder() const
 
 QgsGeocoderResult QgsAbstractGeocoderLocatorFilter::locatorResultToGeocoderResult( const QgsLocatorResult &result ) const
 {
-  const QVariantMap attrs = result.userData.toMap();
+  const QVariantMap attrs = result.getUserData().toMap();
   QgsGeocoderResult geocodeResult( attrs.value( QStringLiteral( "identifier" ) ).toString(),
                                    attrs.value( QStringLiteral( "geom" ) ).value< QgsGeometry >(),
                                    attrs.value( QStringLiteral( "crs" ) ).value< QgsCoordinateReferenceSystem >() );
@@ -96,4 +96,3 @@ QgsLocatorResult QgsAbstractGeocoderLocatorFilter::geocoderResultToLocatorResult
   res.group = result.group();
   return res;
 }
-
