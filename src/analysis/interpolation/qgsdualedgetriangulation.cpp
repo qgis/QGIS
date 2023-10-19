@@ -1434,8 +1434,8 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
         p3 = mHalfEdge[mHalfEdge[actEdge]->getNext()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[actEdge]->getNext()]->getDual()]->getPoint();
         MathUtils::lineIntersection( point1, point2, mPointVector[p3], mPointVector[p4], &crosspoint );
-        const double dista = std::sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
-        const double distb = std::sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
+        const double dista = crosspoint.distance( *mPointVector[p3] );
+        const double distb = crosspoint.distance( *mPointVector[p4] );
         if ( dista <= distb )
         {
           insertForcedSegment( p1, p3, segmentType );
@@ -1457,8 +1457,8 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
         p3 = mHalfEdge[mHalfEdge[actEdge]->getNext()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[actEdge]->getNext()]->getDual()]->getPoint();
         MathUtils::lineIntersection( mPointVector[p1], mPointVector[p2], mPointVector[p3], mPointVector[p4], &crosspoint );
-        const double distpart = std::sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
-        const double disttot = std::sqrt( ( mPointVector[p3]->x() - mPointVector[p4]->x() ) * ( mPointVector[p3]->x() - mPointVector[p4]->x() ) + ( mPointVector[p3]->y() - mPointVector[p4]->y() ) * ( mPointVector[p3]->y() - mPointVector[p4]->y() ) );
+        const double distpart = crosspoint.distance( *mPointVector[p4] );
+        const double disttot = mPointVector[p3]->distance( *mPointVector[p4] );
         const float frac = distpart / disttot;
 
         if ( frac == 0 || frac == 1 )//just in case MathUtils::lineIntersection does not work as expected
@@ -1530,8 +1530,8 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
         p3 = mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint();
         MathUtils::lineIntersection( point1, point2, mPointVector[p3], mPointVector[p4], &crosspoint );
-        const double dista = std::sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
-        const double distb = std::sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
+        const double dista = crosspoint.distance( *mPointVector[p3] );
+        const double distb = crosspoint.distance( *mPointVector[p4] );
         if ( dista <= distb )
         {
           insertForcedSegment( p1, p3, segmentType );
@@ -1552,8 +1552,8 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
         p3 = mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint();
         MathUtils::lineIntersection( point1, point2, mPointVector[p3], mPointVector[p4], &crosspoint );
-        const double distpart = std::sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
-        const double disttot = std::sqrt( ( mPointVector[p3]->x() - mPointVector[p4]->x() ) * ( mPointVector[p3]->x() - mPointVector[p4]->x() ) + ( mPointVector[p3]->y() - mPointVector[p4]->y() ) * ( mPointVector[p3]->y() - mPointVector[p4]->y() ) );
+        const double distpart = crosspoint.distance( *mPointVector[p3] );
+        const double disttot = mPointVector[p3]->distance( *mPointVector[p4] );
         const float frac = distpart / disttot;
         if ( frac == 0 || frac == 1 )
         {
@@ -1577,8 +1577,8 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
         p3 = mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getPoint();
         MathUtils::lineIntersection( mPointVector[p1], mPointVector[p2], mPointVector[p3], mPointVector[p4], &crosspoint );
-        const double dista = std::sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
-        const double distb = std::sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
+        const double dista = crosspoint.distance( *mPointVector[p3] );
+        const double distb = crosspoint.distance( *mPointVector[p4] );
         if ( dista <= distb )
         {
           insertForcedSegment( p1, p3, segmentType );
@@ -1599,8 +1599,8 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
         p3 = mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getPoint();
         MathUtils::lineIntersection( point1, point2, mPointVector[p3], mPointVector[p4], &crosspoint );
-        const double distpart = std::sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
-        const double disttot = std::sqrt( ( mPointVector[p3]->x() - mPointVector[p4]->x() ) * ( mPointVector[p3]->x() - mPointVector[p4]->x() ) + ( mPointVector[p3]->y() - mPointVector[p4]->y() ) * ( mPointVector[p3]->y() - mPointVector[p4]->y() ) );
+        const double distpart = crosspoint.distance( *mPointVector[p3] );
+        const double disttot = mPointVector[p3]->distance( *mPointVector[p4] );
         const float frac = distpart / disttot;
         if ( frac == 0 || frac == 1 )
         {
