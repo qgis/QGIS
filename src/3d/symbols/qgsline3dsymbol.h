@@ -69,10 +69,33 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
     //! Sets width of the line symbol (in map units)
     void setWidth( float width ) { mWidth = width; }
 
-    //! Returns height (altitude) of the symbol (in map units)
-    float height() const { return mHeight; }
-    //! Sets height (altitude) of the symbol (in map units)
-    void setHeight( float height ) { mHeight = height; }
+    /**
+     * Returns height (altitude) of the symbol (in map units)
+     *
+     * \deprecated since QGIS 3.36. Use offset() instead.
+     */
+    Q_DECL_DEPRECATED float height() const SIP_DEPRECATED { return mOffset; }
+
+    /**
+     * Sets height (altitude) of the symbol (in map units)
+     *
+     * \deprecated since QGIS 3.36. Use setOffset() instead.
+     */
+    Q_DECL_DEPRECATED void setHeight( float height ) SIP_DEPRECATED { mOffset = height; }
+
+    /**
+     * Returns vertical offset of the symbol (in map units)
+     *
+     * \since QGIS 3.36
+     */
+    float offset() const { return mOffset; }
+
+    /**
+     * Sets vertical offset of the symbol (in map units)
+     *
+     * \since QGIS 3.36
+     */
+    void setOffset( float offset ) { mOffset = offset; }
 
     //! Returns extrusion height (in map units)
     float extrusionHeight() const { return mExtrusionHeight; }
@@ -107,7 +130,7 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
     Qgis::AltitudeBinding mAltBinding = Qgis::AltitudeBinding::Centroid;
 
     float mWidth = 2.0f;            //!< Line width (horizontally)
-    float mHeight = 0.0f;           //!< Base height of polygons
+    float mOffset = 0.0f;           //!< Base height of polygons
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
     bool mRenderAsSimpleLines = false;   //!< Whether to render data with simple lines (otherwise it uses buffer)
     std::unique_ptr< QgsAbstractMaterialSettings > mMaterialSettings;  //!< Defines appearance of objects

@@ -150,7 +150,7 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &f, const 
   if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::Polygon )
   {
     QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( buffered );
-    processPolygon( polyBuffered, f.id(), mSymbol->height(), mSymbol->extrusionHeight(), context, out );
+    processPolygon( polyBuffered, f.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, out );
   }
   else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::MultiPolygon )
   {
@@ -158,7 +158,7 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &f, const 
     for ( int i = 0; i < mpolyBuffered->numGeometries(); ++i )
     {
       QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( mpolyBuffered->polygonN( i ) )->clone(); // need to clone individual geometry parts
-      processPolygon( polyBuffered, f.id(), mSymbol->height(), mSymbol->extrusionHeight(), context, out );
+      processPolygon( polyBuffered, f.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, out );
     }
     delete buffered;
   }
@@ -262,8 +262,8 @@ bool QgsSimpleLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, Q
 {
   Q_UNUSED( attributeNames )
 
-  outNormal.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->height(), &context.map() );
-  outSelected.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->height(), &context.map() );
+  outNormal.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), &context.map() );
+  outSelected.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), &context.map() );
 
   return true;
 }
@@ -377,8 +377,8 @@ bool QgsThickLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QS
 
   outNormal.withAdjacency = true;
   outSelected.withAdjacency = true;
-  outNormal.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->height(), &context.map() );
-  outSelected.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->height(), &context.map() );
+  outNormal.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), &context.map() );
+  outSelected.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), &context.map() );
 
   return true;
 }
