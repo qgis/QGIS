@@ -59,7 +59,7 @@ void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVec
     return;
 
   spinWidth->setValue( lineSymbol->width() );
-  spinHeight->setValue( lineSymbol->height() );
+  spinHeight->setValue( lineSymbol->offset() );
   spinExtrusion->setValue( lineSymbol->extrusionHeight() );
   cboAltClamping->setCurrentIndex( cboAltClamping->findData( static_cast< int >( lineSymbol->altitudeClamping() ) ) );
   cboAltBinding->setCurrentIndex( static_cast<int>( lineSymbol->altitudeBinding() ) );
@@ -74,7 +74,7 @@ QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
 {
   std::unique_ptr< QgsLine3DSymbol > sym = std::make_unique< QgsLine3DSymbol >();
   sym->setWidth( spinWidth->value() );
-  sym->setHeight( spinHeight->value() );
+  sym->setOffset( spinHeight->value() );
   sym->setExtrusionHeight( spinExtrusion->value() );
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentData().toInt() ) );
   sym->setAltitudeBinding( static_cast<Qgis::AltitudeBinding>( cboAltBinding->currentIndex() ) );
