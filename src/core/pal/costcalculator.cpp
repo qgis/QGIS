@@ -19,6 +19,7 @@
 #include "labelposition.h"
 #include "util.h"
 #include "costcalculator.h"
+#include "qgsgeometryutils_base.h"
 #include <cmath>
 #include <cfloat>
 
@@ -154,7 +155,7 @@ void CostCalculator::calculateCandidatePolygonCentroidDistanceCosts( pal::Featur
     const double lPosX = ( pos->x[0] + pos->x[2] ) / 2.0;
     const double lPosY = ( pos->y[0] + pos->y[2] ) / 2.0;
 
-    const double candidatePolygonCentroidDistance = std::sqrt( ( cx - lPosX ) * ( cx - lPosX ) + ( cy - lPosY ) * ( cy - lPosY ) );
+    const double candidatePolygonCentroidDistance = QgsGeometryUtilsBase::distance2D( cx, cy, lPosX, lPosY );
 
     minCandidateCentroidDistance  = std::min( minCandidateCentroidDistance, candidatePolygonCentroidDistance );
     maxCandidateCentroidDistance = std::max( maxCandidateCentroidDistance, candidatePolygonCentroidDistance );
