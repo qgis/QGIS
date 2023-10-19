@@ -18,7 +18,6 @@
 //header for class being tested
 #include <qgsrectangle.h>
 #include <qgspoint.h>
-#include "qgslogger.h"
 #include "qgsreferencedgeometry.h"
 
 class TestQgsRectangle: public QObject
@@ -475,7 +474,7 @@ void TestQgsRectangle::buffered()
   QCOMPARE( rectOut.xMaximum(), 1.0 );
   QCOMPARE( rectOut.yMaximum(), -9.0 );
 
-  rectIn.setMinimal();
+  rectIn.setNull();
   rectOut = rectIn.buffered( 11 );
   QVERIFY( rectOut.isNull() );
 }
