@@ -448,13 +448,18 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
 
   // rect for clipping
   QgsRectangle r1 = mapSettings.visibleExtent();
+  QgsDebugMsgLevel( QStringLiteral( "Visible extent: %1" ).arg( r1.toString() ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "mapSetting extentBuffer: %1" ).arg( mapSettings.extentBuffer() ), 2 );
   r1.grow( mapSettings.extentBuffer() );
+  QgsDebugMsgLevel( QStringLiteral( "Grown visible extent: %1" ).arg( r1.toString() ), 2 );
   extentGeom = QgsGeometry::fromRect( r1 );
+  QgsDebugMsgLevel( QStringLiteral( "Extent geom  %1" ).arg( extentGeom.asWkt() ), 2 );
 
   if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
     extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
+    QgsDebugMsgLevel( QStringLiteral( "Rotated extent geom  %1" ).arg( extentGeom.asWkt() ), 2 );
   }
 
   mFeatsSendingToPal = 0;
