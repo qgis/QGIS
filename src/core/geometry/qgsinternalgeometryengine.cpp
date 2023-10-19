@@ -730,7 +730,7 @@ QgsLineString *doDensify( const QgsLineString *ring, int extraNodesPerSegment = 
     if ( extraNodesPerSegment < 0 )
     {
       // distance mode
-      extraNodesThisSegment = std::floor( std::sqrt( ( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) ) / distance );
+      extraNodesThisSegment = std::floor( QgsGeometryUtils::distance2D( x2, y2, x1, y1 ) / distance );
       if ( extraNodesThisSegment >= 1 )
         multiplier = 1.0 / ( extraNodesThisSegment + 1 );
     }
@@ -1736,7 +1736,7 @@ std::unique_ptr< QgsLineString > triangularWavesAlongLine( const QgsLineString *
     double thisY = *y++;
 
     const double segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
-    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    const double segmentLength = QgsGeometryUtils::distance2D( thisX, thisY, prevX, prevY );
     while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
@@ -1804,7 +1804,7 @@ std::unique_ptr< QgsLineString > triangularWavesRandomizedAlongLine( const QgsLi
     double thisY = *y++;
 
     const double segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
-    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    const double segmentLength = QgsGeometryUtils::distance2D( thisX, thisY, prevX, prevY );
     while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
@@ -2019,7 +2019,7 @@ std::unique_ptr< QgsLineString > squareWavesAlongLine( const QgsLineString *line
     double thisY = *y++;
 
     const double segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
-    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    const double segmentLength = QgsGeometryUtils::distance2D( thisX, thisY, prevX, prevY );
     while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
@@ -2096,7 +2096,7 @@ std::unique_ptr< QgsLineString > squareWavesRandomizedAlongLine( const QgsLineSt
     double thisY = *y++;
 
     segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
-    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    const double segmentLength = QgsGeometryUtils::distance2D( thisX, thisY, prevX, prevY );
     while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
@@ -2316,7 +2316,7 @@ std::unique_ptr< QgsLineString > roundWavesAlongLine( const QgsLineString *line,
     double thisY = *y++;
 
     segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
-    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    const double segmentLength = QgsGeometryUtils::distance2D( thisX, thisY, prevX, prevY );
     while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
@@ -2445,7 +2445,7 @@ std::unique_ptr< QgsLineString > roundWavesRandomizedAlongLine( const QgsLineStr
     double thisY = *y++;
 
     segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
-    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    const double segmentLength = QgsGeometryUtils::distance2D( thisX, thisY, prevX, prevY );
     while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
@@ -2880,7 +2880,7 @@ std::unique_ptr< QgsMultiLineString > dashPatternAlongLine( const QgsLineString 
     double thisX = *x++;
     double thisY = *y++;
 
-    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    const double segmentLength = QgsGeometryUtils::distance2D( thisX, thisY, prevX, prevY );
     while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
