@@ -1411,7 +1411,7 @@ void QgsLineString::visitPointsByRegularDistance( const double distance, const s
     double thisZ = z ? *z++ : 0.0;
     double thisM = m ? *m++ : 0.0;
 
-    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    const double segmentLength = QgsGeometryUtils::distance2D( thisX, thisY, prevX, prevY );
     while ( nextPointDistance < distanceTraversed + segmentLength || qgsDoubleNear( nextPointDistance, distanceTraversed + segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
@@ -1497,7 +1497,7 @@ QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDi
     double thisZ = z ? *z++ : 0.0;
     double thisM = m ? *m++ : 0.0;
 
-    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    const double segmentLength = QgsGeometryUtils::distance2D( thisX, thisY, prevX, prevY );
 
     if ( distanceTraversed <= startDistance && startDistance < distanceTraversed + segmentLength )
     {
