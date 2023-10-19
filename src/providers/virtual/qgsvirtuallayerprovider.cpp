@@ -50,6 +50,7 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri,
   : QgsVectorDataProvider( uri, options, flags )
 {
   mError.clear();
+  mExtent.setNull(); // ideally not needed
 
   const QUrl url = QUrl::fromEncoded( uri.toUtf8() );
   if ( !url.isValid() )
