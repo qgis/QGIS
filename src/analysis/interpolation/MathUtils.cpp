@@ -18,6 +18,7 @@
 #include "qgslogger.h"
 #include "qgspoint.h"
 #include "Vector3D.h"
+#include "qgsgeometryutils_base.h"
 
 bool MathUtils::calcBarycentricCoordinates( double x, double y, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *result )
 {
@@ -117,8 +118,8 @@ bool MathUtils::circumcenter( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint
 {
   if ( p1 && p2 && p3 && result )
   {
-    const double distp1p2 = std::sqrt( ( p1->x() - p2->x() ) * ( p1->x() - p2->x() ) + ( p1->y() - p2->y() ) * ( p1->y() - p2->y() ) );
-    const double distp2p3 = std::sqrt( ( p2->x() - p3->x() ) * ( p2->x() - p3->x() ) + ( p2->y() - p3->y() ) * ( p2->y() - p3->y() ) );
+    const double distp1p2 = p1->distance( *p2 );
+    const double distp2p3 = p2->distance( *p3 );
     if ( distp1p2 > distp2p3 )
     {
       //swap p1 and p3 to avoid round-off errors
@@ -140,9 +141,9 @@ bool MathUtils::circumcenter( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint
 
 #if 0
       //debugging: test, if the distances from p1, p2, p3 to result are equal
-      double dist1 = std::sqrt( ( p1->getX() - result->getX() ) * ( p1->getX() - result->getX() ) + ( p1->getY() - result->getY() ) * ( p1->getY() - result->getY() ) );
-      double dist2 = std::sqrt( ( p2->getX() - result->getX() ) * ( p2->getX() - result->getX() ) + ( p2->getY() - result->getY() ) * ( p2->getY() - result->getY() ) );
-      double dist3 = std::sqrt( ( p3->getX() - result->getX() ) * ( p3->getX() - result->getX() ) + ( p3->getY() - result->getY() ) * ( p3->getY() - result->getY() ) );
+      double dist1 = p1.distance( result );
+      double dist2 = p2.distance( result );
+      double dist3 = p3.distance( result );
 
       if ( dist1 - dist2 > 1 || dist2 - dist1 > 1 || dist1 - dist3 > 1 || dist3 - dist1 > 1 )
       {
@@ -178,9 +179,9 @@ bool MathUtils::circumcenter( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint
     MathUtils::lineIntersection( &midpoint12, &helppoint1, &midpoint23, &helppoint2, result );
 
     //debugging: test, if the distances from p1, p2, p3 to result are equal
-    double dist1 = std::sqrt( ( p1->getX() - result->getX() ) * ( p1->getX() - result->getX() ) + ( p1->getY() - result->getY() ) * ( p1->getY() - result->getY() ) );
-    double dist2 = std::sqrt( ( p2->getX() - result->getX() ) * ( p2->getX() - result->getX() ) + ( p2->getY() - result->getY() ) * ( p2->getY() - result->getY() ) );
-    double dist3 = std::sqrt( ( p3->getX() - result->getX() ) * ( p3->getX() - result->getX() ) + ( p3->getY() - result->getY() ) * ( p3->getY() - result->getY() ) );
+    double dist1 = p1.distance( result );
+    double dist2 = p2.distance( result );
+    double dist3 = p3.distance( result );
 
     if ( dist1 - dist2 > 1 || dist2 - dist1 > 1 || dist1 - dist3 > 1 || dist3 - dist1 > 1 )
     {
@@ -740,8 +741,8 @@ bool MathUtils::normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D
     zg1 = -sqrt( zgalpha1 ) * ( yt * yw * zt - yt * yt * zw + xw * zt * xt - xt * xt * zw );
     zg2 = std::sqrt( zgalpha1 ) * ( yt * yw * zt - yt * yt * zw + xw * zt * xt - xt * xt * zw );
 
-    const double distance1 = std::sqrt( ( xw - xg1 ) * ( xw - xg1 ) + ( yw - yg1 ) * ( yw - yg1 ) + ( zw - zg1 ) * ( zw - zg1 ) );
-    const double distance2 = std::sqrt( ( xw - xg2 ) * ( xw - xg2 ) + ( yw - yg2 ) * ( yw - yg2 ) + ( zw - zg2 ) * ( zw - zg2 ) );
+    const double distance1 = QgsGeometryUtilsBase::distance2D( xw, yw, xg1, yg1 );
+    const double distance2 = QgsGeometryUtilsBase::distance2D( xw, yw, xg2, yg2 );
 
     if ( distance1 <= distance2 )//find out, which solution is the maximum and which the minimum
     {
