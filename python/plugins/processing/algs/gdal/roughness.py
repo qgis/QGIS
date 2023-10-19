@@ -91,12 +91,16 @@ class roughness(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
+        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        if not output_format:
+            raise QgsProcessingException(self.tr('Output format is invalid'))
+
         arguments = [
             'roughness',
             inLayer.source(),
             out,
             '-of',
-            QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]),
+            output_format,
             '-b',
             str(self.parameterAsInt(parameters, self.BAND, context))
         ]

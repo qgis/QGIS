@@ -115,8 +115,13 @@ class sieve(GdalAlgorithm):
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
+
+        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        if not output_format:
+            raise QgsProcessingException(self.tr('Output format is invalid'))
+
         arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+        arguments.append(output_format)
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)

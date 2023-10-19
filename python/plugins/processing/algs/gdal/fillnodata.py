@@ -143,8 +143,12 @@ class fillnodata(GdalAlgorithm):
             arguments.append('-mask')
             arguments.append(mask.source())
 
+        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        if not output_format:
+            raise QgsProcessingException(self.tr('Output format is invalid'))
+
         arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+        arguments.append(output_format)
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
