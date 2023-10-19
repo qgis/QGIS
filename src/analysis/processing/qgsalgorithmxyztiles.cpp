@@ -182,7 +182,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
 void QgsXyzTilesBaseAlgorithm::startJobs()
 {
-  while ( mRendererJobs.size() < mThreadsNumber )
+  while ( mRendererJobs.size() < mThreadsNumber && !mMetaTiles.empty() )
   {
     MetaTile metaTile = mMetaTiles.takeFirst();
 
