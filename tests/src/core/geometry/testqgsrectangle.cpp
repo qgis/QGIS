@@ -311,6 +311,15 @@ void TestQgsRectangle::operators()
   QCOMPARE( rect2.yMinimum(), 18.0 );
   QCOMPARE( rect2.height(), rect1.height() );
   QCOMPARE( rect2.width(), rect1.width() );
+
+  // Null == Null
+  QVERIFY( QgsRectangle() == QgsRectangle() );
+
+  // Different kind of empties
+  QVERIFY( QgsRectangle( 1, 1, 1, 1 ) != QgsRectangle( 2, 2, 2, 2 ) );
+
+  // Same kind of empty
+  QVERIFY( QgsRectangle( 1, 1, 1, 1 ) == QgsRectangle( 1, 1, 1, 1 ) );
 }
 
 void TestQgsRectangle::asVariant()
@@ -364,6 +373,10 @@ void TestQgsRectangle::minimal()
 
 void TestQgsRectangle::grow()
 {
+  QgsRectangle rectNull;
+  rectNull.grow( 11 ); // grow has no effect on null rectangle
+  QCOMPARE( rectNull, QgsRectangle() );
+
   QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
   rect1.grow( 11 );
   QCOMPARE( rect1.xMinimum(), -1.0 );
@@ -381,6 +394,10 @@ void TestQgsRectangle::grow()
 
 void TestQgsRectangle::include()
 {
+  QgsRectangle rectNull;
+  rectNull.include( QgsPoint( 20, 20 ) ); // wraps the included geometry
+  QCOMPARE( rectNull, QgsRectangle( 20, 20, 20, 20 ) );
+
   QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
   // inside
   rect1.include( QgsPointXY( 15, 50 ) );

@@ -22,6 +22,7 @@
 #include <QPainter>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 /**
  * \ingroup core
@@ -30,7 +31,7 @@
  * \brief A QGraphicsEffect subclass used for rendering layout items
  * onto a scene with custom composition modes.
  *
- * \since QGIS 3.0
+ * \deprecated since QGIS 3.34 -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
  */
 class CORE_EXPORT QgsLayoutEffect : public QGraphicsEffect
 {
@@ -40,22 +41,28 @@ class CORE_EXPORT QgsLayoutEffect : public QGraphicsEffect
 
     /**
      * Constructor for QgsLayoutEffect.
+     *
+     * \deprecated since QGIS 3.34 -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
      */
-    QgsLayoutEffect() = default;
+    Q_DECL_DEPRECATED QgsLayoutEffect() SIP_DEPRECATED = default;
 
     /**
      * Sets the composition (blending) \a mode used for rendering
      * the item.
      * \see compositionMode()
+     *
+     * \deprecated since QGIS 3.34 -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
      */
-    void setCompositionMode( QPainter::CompositionMode mode );
+    Q_DECL_DEPRECATED void setCompositionMode( QPainter::CompositionMode mode ) SIP_DEPRECATED;
 
     /**
      * Returns the composition (blending) mode used for rendering
      * the item.
      * \see setCompositionMode()
+     *
+     * \deprecated since QGIS 3.34 -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
      */
-    QPainter::CompositionMode compositionMode() const { return mCompositionMode; }
+    Q_DECL_DEPRECATED QPainter::CompositionMode compositionMode() const SIP_DEPRECATED { return mCompositionMode; }
 
   protected:
 

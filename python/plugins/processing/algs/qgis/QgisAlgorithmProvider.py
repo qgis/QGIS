@@ -32,9 +32,7 @@ from .BasicStatistics import BasicStatisticsForField
 from .BoxPlot import BoxPlot
 from .CheckValidity import CheckValidity
 from .Climb import Climb
-from .ConcaveHull import ConcaveHull
 from .DefineProjection import DefineProjection
-from .Delaunay import Delaunay
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -80,7 +78,6 @@ from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorLayerHistogram import VectorLayerHistogram
 from .VectorLayerScatterplot import VectorLayerScatterplot
 from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
-from .VoronoiPolygons import VoronoiPolygons
 
 
 class QgisAlgorithmProvider(QgsProcessingProvider):
@@ -96,9 +93,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 BoxPlot(),
                 CheckValidity(),
                 Climb(),
-                ConcaveHull(),
                 DefineProjection(),
-                Delaunay(),
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
@@ -144,7 +139,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 VectorLayerHistogram(),
                 VectorLayerScatterplot(),
                 VectorLayerScatterplot3D(),
-                VoronoiPolygons(),
                 ]
 
         return algs

@@ -431,6 +431,13 @@ class CORE_EXPORT QgsTaskManager : public QObject
     };
 
     /**
+     * Returns the threadpool utilized by the task manager.
+     *
+     * \since QGIS 3.34
+     */
+    QThreadPool *threadPool();
+
+    /**
      * Adds a task to the manager. Ownership of the task is transferred
      * to the manager, and the task manager will be responsible for starting
      * the task. The priority argument can be used to control the run queue's
@@ -599,6 +606,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
       int priority;
       QgsTaskRunnableWrapper *runnable = nullptr;
     };
+
+    QThreadPool *mThreadPool = nullptr;
 
     bool mInitialized = false;
 

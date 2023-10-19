@@ -123,7 +123,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   mExtentGroupBox->setCollapsed( true );
 
   // polygon layer filter group box
-  mFilterGeometryLayerComboBox->setFilters( QgsMapLayerProxyModel::PolygonLayer );
+  mFilterGeometryLayerComboBox->setFilters( Qgis::LayerFilter::PolygonLayer );
 
   // ZRange group box
   mMinimumZSpinBox->setRange( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max() );

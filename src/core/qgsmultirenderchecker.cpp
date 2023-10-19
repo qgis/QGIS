@@ -44,6 +44,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
   mResult = false;
 
   mReport += "<h2>" + testName + "</h2>\n";
+  mMarkdownReport += QStringLiteral( "### %1\n\n" ).arg( testName );
 
   const QString baseDir = controlImagePath();
   if ( !QFile::exists( baseDir ) )
@@ -97,6 +98,10 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     dartMeasurements << checker.dartMeasurements();
 
     mReport += checker.report( false );
+    if ( subDirs.count() > 1 )
+      mMarkdownReport += QStringLiteral( "* " ) + checker.markdownReport( false );
+    else
+      mMarkdownReport += checker.markdownReport( false );
 
     if ( !mResult && diffImageFile.isEmpty() )
     {
@@ -171,6 +176,11 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 QString QgsMultiRenderChecker::report() const
 {
   return !mResult ? mReport : QString();
+}
+
+QString QgsMultiRenderChecker::markdownReport() const
+{
+  return !mResult ? mMarkdownReport : QString();
 }
 
 QString QgsMultiRenderChecker::controlImagePath() const

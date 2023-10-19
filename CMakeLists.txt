@@ -359,8 +359,11 @@ if(WITH_CORE)
 
   # required
   find_package(Proj REQUIRED)
+  message(STATUS "Found Proj: ${PROJ_VERSION} ${PROJ_DIR}")
   find_package(GEOS REQUIRED)
+  message(STATUS "Found Geos: ${GEOS_VERSION} ${GEOS_DIR}")
   find_package(GDAL REQUIRED)
+  message(STATUS "Found GDAL: ${GDAL_VERSION} ${GDAL_DIR}")
   find_package(EXPAT REQUIRED)
   find_package(Spatialindex REQUIRED)
   find_package(LibZip REQUIRED)
@@ -607,6 +610,32 @@ if (ENABLE_TESTS)
 
 endif()
 
+add_custom_target(tags COMMAND
+  cd ${CMAKE_CURRENT_SOURCE_DIR} && ctags
+    --c++-kinds=+p
+    --exclude=build
+    --exclude=.ci
+    --exclude=cmake
+    --exclude=cmake_templates
+    --exclude=debian
+    --exclude=doc
+    --exclude=.docker
+    --exclude=editors
+    --exclude=.github
+    --exclude=i18n
+    --exclude=images
+    --exclude=resources
+    --exclude=rpm
+    --exclude=scripts
+    --exclude=Testing
+    --exclude=tests
+    --exclude=.tx
+    --extras=+q
+    --fields=+iaS
+    --language-force=C++
+    --recurse=yes
+)
+
 if (WITH_CORE)
 # ModelTest
   set(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
@@ -754,7 +783,7 @@ if(ENABLE_COVERAGE)
   SETUP_TARGET_FOR_COVERAGE(qgis_coverage ctest coverage)
 endif()
 
-if(USE_ALTERNATE_LINKER)
+if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
   include("cmake/modules/linker.cmake")
 endif()
 

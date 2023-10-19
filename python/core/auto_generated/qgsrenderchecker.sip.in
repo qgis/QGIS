@@ -72,6 +72,20 @@ Returns the HTML report describing the results of the test run.
 
 If ``ignoreSuccess`` is ``True`` then the report will always be empty if
 the test was successful.
+
+.. seealso:: :py:func:`markdownReport`
+%End
+
+    QString markdownReport( bool ignoreSuccess = true ) const;
+%Docstring
+Returns the markdown report describing the results of the test run.
+
+If ``ignoreSuccess`` is ``True`` then the report will always be empty if
+the test was successful.
+
+.. seealso:: :py:func:`report`
+
+.. versionadded:: 3.34
 %End
 
     float matchPercent() const;

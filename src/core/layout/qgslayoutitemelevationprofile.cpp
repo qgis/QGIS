@@ -446,7 +446,17 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
 
 QgsLayoutItem::Flags QgsLayoutItemElevationProfile::itemFlags() const
 {
-  return QgsLayoutItem::FlagOverridesPaint;
+  return QgsLayoutItem::FlagOverridesPaint | QgsLayoutItem::FlagDisableSceneCaching;
+}
+
+bool QgsLayoutItemElevationProfile::requiresRasterization() const
+{
+  return blendMode() != QPainter::CompositionMode_SourceOver;
+}
+
+bool QgsLayoutItemElevationProfile::containsAdvancedEffects() const
+{
+  return mEvaluatedOpacity < 1.0;
 }
 
 Qgs2DPlot *QgsLayoutItemElevationProfile::plot()
@@ -600,6 +610,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
       QgsScopedQPainterState rotatedPainterState( painter );
 
       painter->scale( scale, scale );
+      painter->setCompositionMode( blendModeForRender() );
       painter->drawImage( 0, 0, *mCacheFinalImage );
     }
 
@@ -625,62 +636,129 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
     if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering )
       painter->setRenderHint( QPainter::LosslessImageRendering, true );
 
-    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
-    rc.setExpressionContext( createExpressionContext() );
-
-    // Fill with background color
-    if ( hasBackground() )
-    {
-      QgsLayoutItem::drawBackground( rc );
-    }
-
-    QgsScopedQPainterState painterState( painter );
+    mPlot->xScale = QgsUnitTypes::fromUnitToUnitFactor( mDistanceUnit, mCrs.mapUnits() );
 
     if ( !qgsDoubleNear( layoutSize.width(), 0.0 ) && !qgsDoubleNear( layoutSize.height(), 0.0 ) )
     {
-      QgsScopedQPainterState stagedPainterState( painter );
-      double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
-      layoutSize *= dotsPerMM; // output size will be in dots (pixels)
-      painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-
-      mPlot->xScale = QgsUnitTypes::fromUnitToUnitFactor( mDistanceUnit, mCrs.mapUnits() );
-
-      const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
-      rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
-
-      QList< QgsAbstractProfileSource * > sources;
-      for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
+      if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
+           && ( !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
       {
-        if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
-          sources.append( source );
+        // rasterize
+        double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter ) * 25.4;
+        double layoutUnitsInInches = mLayout ? mLayout->convertFromLayoutUnits( 1, Qgis::LayoutUnit::Inches ).length() : 1;
+        int widthInPixels = static_cast< int >( std::round( boundingRect().width() * layoutUnitsInInches * destinationDpi ) );
+        int heightInPixels = static_cast< int >( std::round( boundingRect().height() * layoutUnitsInInches * destinationDpi ) );
+        QImage image = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
+
+        image.fill( Qt::transparent );
+        image.setDotsPerMeterX( static_cast< int >( std::round( 1000 * destinationDpi / 25.4 ) ) );
+        image.setDotsPerMeterY( static_cast< int >( std::round( 1000 * destinationDpi / 25.4 ) ) );
+        double dotsPerMM = destinationDpi / 25.4;
+        layoutSize *= dotsPerMM; // output size will be in dots (pixels)
+        QPainter p( &image );
+        preparePainter( &p );
+
+        QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( mLayout, &p );
+        rc.setExpressionContext( createExpressionContext() );
+
+        p.scale( dotsPerMM, dotsPerMM );
+        if ( hasBackground() )
+        {
+          QgsLayoutItem::drawBackground( rc );
+        }
+
+        p.scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
+
+        const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
+        rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
+
+        QList< QgsAbstractProfileSource * > sources;
+        for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
+        {
+          if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
+            sources.append( source );
+        }
+
+        QgsProfilePlotRenderer renderer( sources, profileRequest() );
+
+        renderer.generateSynchronously();
+        mPlot->setRenderer( &renderer );
+
+        // size must be in pixels, not layout units
+        mPlot->setSize( layoutSize );
+
+        mPlot->render( rc );
+
+        mPlot->setRenderer( nullptr );
+
+        p.scale( dotsPerMM, dotsPerMM );
+
+        if ( frameEnabled() )
+        {
+          QgsLayoutItem::drawFrame( rc );
+        }
+
+        QgsScopedQPainterState painterState( painter );
+        painter->setCompositionMode( blendModeForRender() );
+        painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+        painter->drawImage( 0, 0, image );
+        painter->scale( dotsPerMM, dotsPerMM );
       }
+      else
+      {
+        QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+        rc.setExpressionContext( createExpressionContext() );
 
-      QgsProfilePlotRenderer renderer( sources, profileRequest() );
+        // Fill with background color
+        if ( hasBackground() )
+        {
+          QgsLayoutItem::drawBackground( rc );
+        }
+
+        QgsScopedQPainterState painterState( painter );
+        QgsScopedQPainterState stagedPainterState( painter );
+        double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
+        layoutSize *= dotsPerMM; // output size will be in dots (pixels)
+        painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+
+        const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
+        rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
+
+        QList< QgsAbstractProfileSource * > sources;
+        for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
+        {
+          if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
+            sources.append( source );
+        }
+
+        QgsProfilePlotRenderer renderer( sources, profileRequest() );
 
 
-      // TODO
-      // we should be able to call renderer.start()/renderer.waitForFinished() here and
-      // benefit from parallel source generation. BUT
-      // for some reason the QtConcurrent::map call in start() never triggers
-      // the actual background thread execution.
-      // So for now just generate the results one by one
-      renderer.generateSynchronously();
-      mPlot->setRenderer( &renderer );
+        // TODO
+        // we should be able to call renderer.start()/renderer.waitForFinished() here and
+        // benefit from parallel source generation. BUT
+        // for some reason the QtConcurrent::map call in start() never triggers
+        // the actual background thread execution.
+        // So for now just generate the results one by one
+        renderer.generateSynchronously();
+        mPlot->setRenderer( &renderer );
 
-      // size must be in pixels, not layout units
-      mPlot->setSize( layoutSize );
+        // size must be in pixels, not layout units
+        mPlot->setSize( layoutSize );
 
-      mPlot->render( rc );
+        mPlot->render( rc );
 
-      mPlot->setRenderer( nullptr );
+        mPlot->setRenderer( nullptr );
 
-      painter->setClipRect( thisPaintRect, Qt::NoClip );
+        painter->setClipRect( thisPaintRect, Qt::NoClip );
+
+        if ( frameEnabled() )
+        {
+          QgsLayoutItem::drawFrame( rc );
+        }
+      }
     }
 
-    if ( frameEnabled() )
-    {
-      QgsLayoutItem::drawFrame( rc );
-    }
     mDrawing = false;
   }
 }
@@ -920,6 +998,7 @@ void QgsLayoutItemElevationProfile::profileGenerationFinished()
   mCacheFinalImage = std::move( mCacheRenderingImage );
   emit backgroundTaskCountChanged( 0 );
   update();
+  emit previewRefreshed();
 }
 
 Qgis::DistanceUnit QgsLayoutItemElevationProfile::distanceUnit() const

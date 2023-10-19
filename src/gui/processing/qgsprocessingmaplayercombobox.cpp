@@ -110,7 +110,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   vl->setSpacing( 6 );
   vl->addLayout( layout );
 
-  QgsMapLayerProxyModel::Filters filters = QgsMapLayerProxyModel::Filters();
+  Qgis::LayerFilters filters = Qgis::LayerFilters();
 
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == QgsProcessingGui::Standard )
   {
@@ -129,27 +129,27 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
       dataTypes = static_cast< QgsProcessingParameterVectorLayer *>( mParameter.get() )->dataTypes();
 
     if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.isEmpty() )
-      filters = QgsMapLayerProxyModel::HasGeometry;
+      filters = Qgis::LayerFilter::HasGeometry;
     if ( dataTypes.contains( QgsProcessing::TypeVectorPoint ) )
-      filters |= QgsMapLayerProxyModel::PointLayer;
+      filters |= Qgis::LayerFilter::PointLayer;
     if ( dataTypes.contains( QgsProcessing::TypeVectorLine ) )
-      filters |= QgsMapLayerProxyModel::LineLayer;
+      filters |= Qgis::LayerFilter::LineLayer;
     if ( dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
-      filters |= QgsMapLayerProxyModel::PolygonLayer;
+      filters |= Qgis::LayerFilter::PolygonLayer;
     if ( !filters )
-      filters = QgsMapLayerProxyModel::VectorLayer;
+      filters = Qgis::LayerFilter::VectorLayer;
   }
   else if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName() )
   {
-    filters = QgsMapLayerProxyModel::RasterLayer;
+    filters = Qgis::LayerFilter::RasterLayer;
   }
   else if ( mParameter->type() == QgsProcessingParameterMeshLayer::typeName() )
   {
-    filters = QgsMapLayerProxyModel::MeshLayer;
+    filters = Qgis::LayerFilter::MeshLayer;
   }
   else if ( mParameter->type() == QgsProcessingParameterPointCloudLayer::typeName() )
   {
-    filters = QgsMapLayerProxyModel::PointCloudLayer;
+    filters = Qgis::LayerFilter::PointCloudLayer;
   }
   else if ( mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
   {
@@ -157,21 +157,21 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     dataTypes = static_cast< QgsProcessingParameterMapLayer *>( mParameter.get() )->dataTypes();
 
     if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) )
-      filters |= QgsMapLayerProxyModel::HasGeometry;
+      filters |= Qgis::LayerFilter::HasGeometry;
     if ( dataTypes.contains( QgsProcessing::TypeVectorPoint ) )
-      filters |= QgsMapLayerProxyModel::PointLayer;
+      filters |= Qgis::LayerFilter::PointLayer;
     if ( dataTypes.contains( QgsProcessing::TypeVectorLine ) )
-      filters |= QgsMapLayerProxyModel::LineLayer;
+      filters |= Qgis::LayerFilter::LineLayer;
     if ( dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
-      filters |= QgsMapLayerProxyModel::PolygonLayer;
+      filters |= Qgis::LayerFilter::PolygonLayer;
     if ( dataTypes.contains( QgsProcessing::TypeRaster ) )
-      filters |= QgsMapLayerProxyModel::RasterLayer;
+      filters |= Qgis::LayerFilter::RasterLayer;
     if ( dataTypes.contains( QgsProcessing::TypeMesh ) )
-      filters |= QgsMapLayerProxyModel::MeshLayer;
+      filters |= Qgis::LayerFilter::MeshLayer;
     if ( dataTypes.contains( QgsProcessing::TypePointCloud ) )
-      filters |= QgsMapLayerProxyModel::PointCloudLayer;
+      filters |= Qgis::LayerFilter::PointCloudLayer;
     if ( !filters )
-      filters = QgsMapLayerProxyModel::All;
+      filters = Qgis::LayerFilter::All;
   }
 
   QgsSettings settings;

@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 class QgsMapLayerModel;
 class QgsMapLayer;
@@ -35,32 +36,11 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
-    Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
+    Q_PROPERTY( Qgis::LayerFilters filters READ filters WRITE setFilters )
     Q_PROPERTY( QList<QgsMapLayer *> exceptedLayerList READ exceptedLayerList WRITE setExceptedLayerList )
     Q_PROPERTY( QStringList exceptedLayerIds READ exceptedLayerIds WRITE setExceptedLayerIds )
 
   public:
-    enum Filter
-    {
-      RasterLayer = 1,
-      NoGeometry = 2,
-      PointLayer = 4,
-      LineLayer = 8,
-      PolygonLayer = 16,
-      HasGeometry = PointLayer | LineLayer | PolygonLayer,
-      VectorLayer = NoGeometry | HasGeometry,
-      PluginLayer = 32,
-      WritableLayer = 64,
-      MeshLayer = 128, //!< QgsMeshLayer \since QGIS 3.6
-      VectorTileLayer = 256, //!< QgsVectorTileLayer \since QGIS 3.14
-      PointCloudLayer = 512, //!< QgsPointCloudLayer \since QGIS 3.18
-      AnnotationLayer = 1024, //!< QgsAnnotationLayer \since QGIS 3.22
-      TiledSceneLayer = 2048, //!< QgsTiledSceneLayer \since QGIS 3.34
-      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer,
-      SpatialLayer = RasterLayer | HasGeometry | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer //!< \since QGIS 3.24
-    };
-    Q_DECLARE_FLAGS( Filters, Filter )
-    Q_FLAG( Filters )
 
     /**
      * \brief QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
@@ -80,7 +60,15 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      *
      * \since QGIS 2.3
      */
-    QgsMapLayerProxyModel *setFilters( QgsMapLayerProxyModel::Filters filters );
+    QgsMapLayerProxyModel *setFilters( Qgis::LayerFilters filters );
+
+    /**
+     * Filters according to layer type and/or geometry type.
+     * \note for API compatibility
+     * \since QGIS 3.34
+     * \deprecated since QGIS 3.34 use the flag signature instead
+     */
+    Q_DECL_DEPRECATED void setFilters( int filters ) SIP_DEPRECATED { setFilters( static_cast<Qgis::LayerFilters>( filters ) ); }
 
     /**
      * Returns the filter flags which affect how layers are filtered within the model.
@@ -89,7 +77,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      *
      * \since QGIS 2.3
      */
-    const Filters &filters() const { return mFilters; }
+    const Qgis::LayerFilters &filters() const { return mFilters; }
 
     /**
      * Sets the \a project from which map layers are shown.
@@ -104,7 +92,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * Returns if the \a layer matches the given \a filters
      * \since QGIS 3.14
      */
-    static bool layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters );
+    static bool layerMatchesFilters( const QgsMapLayer *layer, const Qgis::LayerFilters &filters );
 
     /**
      * Sets an allowlist of \a layers to include within the model. Only layers
@@ -230,14 +218,12 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     void setFilterString( const QString &filter );
 
   private:
-    Filters mFilters;
+    Qgis::LayerFilters mFilters;
     QList<QgsMapLayer *> mExceptList;
     QList<QgsMapLayer *> mLayerAllowlist;
     QgsMapLayerModel *mModel = nullptr;
     QStringList mExcludedProviders;
     QString mFilterString;
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerProxyModel::Filters )
 
 #endif // QGSMAPLAYERPROXYMODEL_H

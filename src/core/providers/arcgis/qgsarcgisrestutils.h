@@ -212,6 +212,15 @@ class CORE_EXPORT QgsArcGisRestUtils
     static QVariantMap crsToJson( const QgsCoordinateReferenceSystem &crs );
 
     /**
+     * Converts a rectangle \a value to a QgsRectangle.
+     *
+     * Returns a null rectangle if the value cannot be converted.
+     *
+     * \since QGIS 3.34
+     */
+    static QgsRectangle convertRectangle( const QVariant &value );
+
+    /**
      * Flags which control the behavior of converting features to JSON.
      *
      * \since QGIS 3.28

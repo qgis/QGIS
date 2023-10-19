@@ -157,11 +157,18 @@ void QgsFilteredTableWidget::populate( QgsValueRelationFieldFormatter::ValueRela
 
 void QgsFilteredTableWidget::setIndeterminateState()
 {
-  for ( int j = 0; j < mTableWidget->rowCount(); j++ )
+  for ( int rowIndex = 0; rowIndex < mTableWidget->rowCount(); rowIndex++ )
   {
-    for ( int i = 0; i < mColumnCount; ++i )
+    for ( int columnIndex = 0; columnIndex < mColumnCount; ++columnIndex )
     {
-      whileBlocking( mTableWidget )->item( j, i )->setCheckState( Qt::PartiallyChecked );
+      if ( item( rowIndex, columnIndex ) )
+      {
+        whileBlocking( mTableWidget )->item( rowIndex, columnIndex )->setCheckState( Qt::PartiallyChecked );
+      }
+      else
+      {
+        break;
+      }
     }
   }
 }

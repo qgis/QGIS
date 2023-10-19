@@ -37,7 +37,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsFillSymbol,
     QgsSimpleFillSymbolLayer,
-    QgsLayoutRenderContext
+    QgsLayoutRenderContext,
+    QgsLayoutItemElevationProfile
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -240,17 +241,6 @@ class TestQgsLayoutItem(QgisTestCase):
         item.setBlendMode(QPainter.CompositionMode_DestinationAtop)
         self.assertFalse(item.containsAdvancedEffects())
         self.assertTrue(item.requiresRasterization())
-
-        map = QgsLayoutItemMap(layout)
-        # map items are different -- because they override paint, they don't get the auto-flattening and rasterization
-        map.setItemOpacity(0.5)
-        self.assertFalse(map.containsAdvancedEffects())
-        # rather, a map with opacity requires the WHOLE layout to be rasterized
-        self.assertTrue(map.requiresRasterization())
-        map.dataDefinedProperties().setProperty(QgsLayoutObject.Opacity, QgsProperty.fromExpression('100'))
-        map.refresh()
-        self.assertFalse(map.containsAdvancedEffects())
-        self.assertTrue(map.requiresRasterization())
 
     def test_blend_mode_rendering_designer_preview(self):
         """

@@ -22,27 +22,6 @@ The :py:class:`QgsMapLayerProxyModel` class provides an easy to use model to dis
 #include "qgsmaplayerproxymodel.h"
 %End
   public:
-    enum Filter
-    {
-      RasterLayer,
-      NoGeometry,
-      PointLayer,
-      LineLayer,
-      PolygonLayer,
-      HasGeometry,
-      VectorLayer,
-      PluginLayer,
-      WritableLayer,
-      MeshLayer,
-      VectorTileLayer,
-      PointCloudLayer,
-      AnnotationLayer,
-      TiledSceneLayer,
-      All,
-      SpatialLayer
-    };
-    typedef QFlags<QgsMapLayerProxyModel::Filter> Filters;
-
 
     explicit QgsMapLayerProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
@@ -55,7 +34,7 @@ It can be used to filter the layers list in a widget.
 layerModel returns the :py:class:`QgsMapLayerModel` used in this QSortFilterProxyModel
 %End
 
-    QgsMapLayerProxyModel *setFilters( QgsMapLayerProxyModel::Filters filters );
+    QgsMapLayerProxyModel *setFilters( Qgis::LayerFilters filters );
 %Docstring
 Sets ``filter`` flags which affect how layers are filtered within the model.
 
@@ -64,7 +43,21 @@ Sets ``filter`` flags which affect how layers are filtered within the model.
 .. versionadded:: 2.3
 %End
 
-    const Filters &filters() const;
+ void setFilters( int filters ) /Deprecated/;
+%Docstring
+Filters according to layer type and/or geometry type.
+
+.. note::
+
+   for API compatibility
+
+.. versionadded:: 3.34
+
+.. deprecated:: QGIS 3.34
+   use the flag signature instead
+%End
+
+    const Qgis::LayerFilters &filters() const;
 %Docstring
 Returns the filter flags which affect how layers are filtered within the model.
 
@@ -82,7 +75,7 @@ If ``project`` is ``None`` then :py:func:`QgsProject.instance()` will be used.
 .. versionadded:: 3.24
 %End
 
-    static bool layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters );
+    static bool layerMatchesFilters( const QgsMapLayer *layer, const Qgis::LayerFilters &filters );
 %Docstring
 Returns if the ``layer`` matches the given ``filters``
 
@@ -237,9 +230,6 @@ specified string will be shown.
 %End
 
 };
-
-QFlags<QgsMapLayerProxyModel::Filter> operator|(QgsMapLayerProxyModel::Filter f1, QFlags<QgsMapLayerProxyModel::Filter> f2);
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

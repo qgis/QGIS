@@ -5,33 +5,29 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Matthias Kuhn'
-__date__ = '8.11.2017'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+__author__ = "Matthias Kuhn"
+__date__ = "8.11.2017"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
-import shutil
-import tempfile
+import unittest
+from typing import Optional
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QDir, QSize, Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter, QResizeEvent
+from qgis.PyQt.QtCore import QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
+    QgsMapLayer,
     QgsCoordinateReferenceSystem,
     QgsFillSymbol,
     QgsGeometryGeneratorSymbolLayer,
-    QgsMultiRenderChecker,
-    QgsProject,
     QgsRectangle,
-    QgsRenderChecker,
     QgsSingleSymbolRenderer,
     QgsSymbol,
     QgsVectorLayer,
 )
 from qgis.gui import QgsHighlight, QgsMapCanvas
-import unittest
 from qgis.testing import start_app, QgisTestCase
-from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
 
@@ -40,101 +36,156 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsHighlight(QgisTestCase):
+    @classmethod
+    def control_path_prefix(cls):
+        return "highlight"
 
-    def setUp(self):
-        self.iface = get_iface()
+    def run_test_for_layer(
+        self,
+        layer: QgsMapLayer,
+        testname: str,
+        use_feature: bool = False,
+        highlight_color: Optional[QColor] = None,
+    ):
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(layer.crs())
+        canvas.setFrameStyle(0)
+        canvas.resize(400, 400)
+        self.assertEqual(canvas.width(), 400)
+        self.assertEqual(canvas.height(), 400)
 
-        self.iface.mapCanvas().viewport().resize(400, 400)
-        # For some reason the resizeEvent is not delivered, fake it
-        self.iface.mapCanvas().resizeEvent(QResizeEvent(QSize(400, 400), self.iface.mapCanvas().size()))
-        self.report = "<h1>Python QgsMapCanvas Tests</h1>\n"
+        canvas.setExtent(layer.extent())
+        canvas.show()
 
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+        # need to wait until first redraw can occur (note that we first need to wait till drawing starts!)
+        app.processEvents()
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
 
-        QgsProject.instance().removeAllMapLayers()
+        feature = next(layer.getFeatures())
+        geom = feature.geometry()
 
-    def runTestForLayer(self, layer, testname):
-        tempdir = tempfile.mkdtemp()
+        if use_feature:
+            highlight = QgsHighlight(canvas, feature, layer)
+        else:
+            highlight = QgsHighlight(canvas, geom, layer)
 
-        layer = QgsVectorLayer(layer, 'Layer', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
-        self.iface.mapCanvas().setExtent(layer.extent())
+        if highlight_color:
+            highlight.setColor(highlight_color)
+            highlight.setFillColor(highlight_color)
+        else:
+            color = QColor(Qt.red)
+            highlight.setColor(color)
+            color.setAlpha(50)
+            highlight.setFillColor(color)
 
-        geom = next(layer.getFeatures()).geometry()
-
-        highlight = QgsHighlight(self.iface.mapCanvas(), geom, layer)
-        color = QColor(Qt.red)
-        highlight.setColor(color)
         highlight.setWidth(2)
-        color.setAlpha(50)
-        highlight.setFillColor(color)
         highlight.show()
 
         image = QImage(QSize(400, 400), QImage.Format_ARGB32)
         image.fill(Qt.white)
         painter = QPainter()
         painter.begin(image)
-        self.iface.mapCanvas().render(painter)
+        canvas.render(painter)
         painter.end()
-        control_image = os.path.join(tempdir, f'highlight_{testname}.png')
-        image.save(control_image)
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("highlight")
-        checker.setControlName(f"expected_highlight_{testname}")
-        checker.setRenderedImage(control_image)
-        self.assertTrue(checker.compareImages(f"highlight_{testname}"))
-        shutil.rmtree(tempdir)
+
+        return self.image_check(f"highlight_{testname}", f"highlight_{testname}", image)
 
     def testLine(self):
-        lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
-        self.runTestForLayer(lines_shp, 'lines')
+        lines_shp = os.path.join(TEST_DATA_DIR, "lines.shp")
+        layer = QgsVectorLayer(lines_shp, "test", "ogr")
+        self.assertTrue(layer.isValid())
+        self.assertTrue(self.run_test_for_layer(layer, "lines"))
 
     def testPolygon(self):
-        polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
-        self.runTestForLayer(polys_shp, 'polygons')
+        polys_shp = os.path.join(TEST_DATA_DIR, "polys.shp")
+        layer = QgsVectorLayer(polys_shp, "test", "ogr")
+        self.assertTrue(layer.isValid())
+        self.assertTrue(self.run_test_for_layer(layer, "polygons"))
+
+    def test_polygon_very_transparent(self):
+        """
+        Test that highlighting a layer with a very transparent style works
+        """
+        polys_shp = os.path.join(TEST_DATA_DIR, "polys.shp")
+        layer = QgsVectorLayer(polys_shp, "test", "ogr")
+
+        symbol = QgsFillSymbol.createSimple(
+            {"color": "255,255,0", "outline_style": "no"}
+        )
+        symbol.setOpacity(0.3)
+        layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+        self.assertTrue(layer.isValid())
+        self.assertTrue(
+            self.run_test_for_layer(layer, "polygons", use_feature=False)
+        )
+        self.assertTrue(
+            self.run_test_for_layer(
+                layer,
+                "very_transparent",
+                use_feature=True,
+                highlight_color=QColor(255, 0, 0, 128),
+            )
+        )
 
     def testBugfix48471(self):
-        """ Test scenario of https://github.com/qgis/QGIS/issues/48471 """
+        """Test scenario of https://github.com/qgis/QGIS/issues/48471"""
 
-        lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
-        layer = QgsVectorLayer(lines_shp, 'Layer', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
-        self.iface.mapCanvas().setExtent(layer.extent())
+        lines_shp = os.path.join(TEST_DATA_DIR, "lines.shp")
+        layer = QgsVectorLayer(lines_shp, "Layer", "ogr")
+        self.assertTrue(layer.isValid())
+
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(layer.crs())
+        canvas.setFrameStyle(0)
+        canvas.resize(400, 400)
+        self.assertEqual(canvas.width(), 400)
+        self.assertEqual(canvas.height(), 400)
+
+        canvas.setLayers([layer])
+        canvas.setExtent(layer.extent())
+        canvas.show()
+
+        # need to wait until first redraw can occur (note that we first need to wait till drawing starts!)
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
 
         geom = next(layer.getFeatures()).geometry()
 
-        highlight = QgsHighlight(self.iface.mapCanvas(), geom, layer)
+        highlight = QgsHighlight(canvas, geom, layer)
         highlight.setBuffer(12345)
 
         try:
             found = False
-            for item in self.iface.mapCanvas().scene().items():
+            for item in canvas.scene().items():
                 if isinstance(item, QgsHighlight):
                     if item.buffer() == 12345:
                         found = True
             self.assertTrue(found)
         finally:
-            self.iface.mapCanvas().scene().removeItem(highlight)
+            canvas.scene().removeItem(highlight)
 
     def test_feature_transformation(self):
-        poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
-        layer = QgsVectorLayer(poly_shp, 'Layer', 'ogr')
+        poly_shp = os.path.join(TEST_DATA_DIR, "polys.shp")
+        layer = QgsVectorLayer(poly_shp, "Layer", "ogr")
 
-        sub_symbol = QgsFillSymbol.createSimple({'color': '#8888ff', 'outline_style': 'no'})
+        sub_symbol = QgsFillSymbol.createSimple(
+            {"color": "#8888ff", "outline_style": "no"}
+        )
 
         sym = QgsFillSymbol()
         buffer_layer = QgsGeometryGeneratorSymbolLayer.create(
-            {'geometryModifier': 'buffer($geometry, -0.4)'})
+            {"geometryModifier": "buffer($geometry, -0.4)"}
+        )
         buffer_layer.setSymbolType(QgsSymbol.Fill)
         buffer_layer.setSubSymbol(sub_symbol)
         sym.changeSymbolLayer(0, buffer_layer)
         layer.setRenderer(QgsSingleSymbolRenderer(sym))
 
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         self.assertEqual(canvas.width(), 600)
@@ -160,29 +211,20 @@ class TestQgsHighlight(QgisTestCase):
         highlight.show()
         highlight.show()
 
-        self.assertTrue(self.canvasImageCheck('highlight_transform', 'highlight_transform', canvas))
+        self.assertTrue(
+            self.canvas_image_check(
+                "highlight_transform", "highlight_transform", canvas
+            )
+        )
 
-    def canvasImageCheck(self, name, reference_image, canvas):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'rendered_' + name + ".png"
-
+    def canvas_image_check(self, name, reference_image, canvas):
         image = QImage(canvas.size(), QImage.Format_ARGB32)
         painter = QPainter(image)
         canvas.render(painter)
         painter.end()
-        image.save(file_name)
 
-        checker = QgsMultiRenderChecker()
-        checker.setControlPathPrefix("highlight")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.runTest(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
+        return self.image_check(name, reference_image, image)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

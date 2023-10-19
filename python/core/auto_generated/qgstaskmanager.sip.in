@@ -343,6 +343,13 @@ but will be transferred to a QgsTaskManager.
 
     };
 
+    QThreadPool *threadPool();
+%Docstring
+Returns the threadpool utilized by the task manager.
+
+.. versionadded:: 3.34
+%End
+
     long addTask( QgsTask *task /Transfer/, int priority = 0 );
 %Docstring
 Adds a task to the manager. Ownership of the task is transferred

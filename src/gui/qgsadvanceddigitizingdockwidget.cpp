@@ -125,8 +125,18 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   //also watch for focus out events on these widgets
   QgsFocusWatcher *angleWatcher = new QgsFocusWatcher( mAngleLineEdit );
   connect( angleWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
+  connect( angleWatcher, &QgsFocusWatcher::focusIn, this, [ = ]()
+  {
+    const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mAngleLineEdit->text(), Qgis::CadConstraintType::Angle ) };
+    whileBlocking( mAngleLineEdit )->setText( cleanedInputValue );
+  } );
   QgsFocusWatcher *distanceWatcher = new QgsFocusWatcher( mDistanceLineEdit );
   connect( distanceWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
+  connect( distanceWatcher, &QgsFocusWatcher::focusIn, this, [ = ]()
+  {
+    const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mDistanceLineEdit->text(), Qgis::CadConstraintType::Distance ) };
+    whileBlocking( mDistanceLineEdit )->setText( cleanedInputValue );
+  } );
   QgsFocusWatcher *xWatcher = new QgsFocusWatcher( mXLineEdit );
   connect( xWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
   QgsFocusWatcher *yWatcher = new QgsFocusWatcher( mYLineEdit );
@@ -818,17 +828,7 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValu
 {
   ok = false;
 
-  QString cleanedInputValue { inputValue };
-
-  // Remove angle suffix
-  if ( type == Qgis::CadConstraintType::Angle )
-    cleanedInputValue.remove( tr( "°" ) );
-
-  // Remove distance unit suffix
-  const Qgis::DistanceUnit distanceUnit { QgsProject::instance()->distanceUnits() };
-  if ( type == Qgis::CadConstraintType::Distance )
-    cleanedInputValue.remove( QgsUnitTypes::toAbbreviatedString( distanceUnit ) );
-
+  const QString cleanedInputValue { CadConstraint::removeSuffix( inputValue, type ) };
   double value = qgsPermissiveToDouble( cleanedInputValue, ok );
 
   if ( ! ok )
@@ -1944,6 +1944,10 @@ void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPoint &point 
 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::setLockMode( LockMode mode )
 {
+  if ( mode == mLockMode )
+  {
+    return;
+  }
   mLockMode = mode;
   mLockerButton->setChecked( mode == HardLock );
   if ( mRepeatingLockButton )
@@ -2053,6 +2057,37 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::setCadConstraintType( Qgis:
 void QgsAdvancedDigitizingDockWidget::CadConstraint::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
   mMapCanvas = mapCanvas;
+}
+
+QString QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( const QString &text, Qgis::CadConstraintType constraintType )
+{
+  QString value { text.trimmed() };
+  switch ( constraintType )
+  {
+    case Qgis::CadConstraintType::Distance:
+    {
+      // Remove distance unit suffix
+      const QString distanceUnit { QgsUnitTypes::toAbbreviatedString( QgsProject::instance()->distanceUnits() ) };
+      if ( value.endsWith( distanceUnit ) )
+      {
+        value.chop( distanceUnit.length() );
+      }
+      break;
+    }
+    case Qgis::CadConstraintType::Angle:
+    {
+      // Remove angle suffix
+      const QString angleUnit { tr( "°" ) };
+      if ( value.endsWith( angleUnit ) )
+      {
+        value.chop( angleUnit.length() );
+      }
+      break;
+    }
+    default:
+      break;
+  }
+  return value.trimmed();
 }
 
 QgsPoint QgsAdvancedDigitizingDockWidget::currentPointV2( bool *exist ) const

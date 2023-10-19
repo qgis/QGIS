@@ -125,6 +125,33 @@ class CORE_EXPORT Qgis
     Q_ENUM( LayerType )
 
     /**
+     * Filter for layers
+     *
+     * \since QGIS 3.34. Prior to 3.34 this was available as QgsMapLayerProxyModel::Filter.
+     */
+    enum class LayerFilter SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerProxyModel, Filter ) : int
+      {
+      RasterLayer = 1,
+      NoGeometry = 2,
+      PointLayer = 4,
+      LineLayer = 8,
+      PolygonLayer = 16,
+      HasGeometry = PointLayer | LineLayer | PolygonLayer,
+      VectorLayer = NoGeometry | HasGeometry,
+      PluginLayer = 32,
+      WritableLayer = 64,
+      MeshLayer = 128, //!< QgsMeshLayer \since QGIS 3.6
+      VectorTileLayer = 256, //!< QgsVectorTileLayer \since QGIS 3.14
+      PointCloudLayer = 512, //!< QgsPointCloudLayer \since QGIS 3.18
+      AnnotationLayer = 1024, //!< QgsAnnotationLayer \since QGIS 3.22
+      TiledSceneLayer = 2048, //!< QgsTiledSceneLayer \since QGIS 3.34
+      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer,
+      SpatialLayer = RasterLayer | HasGeometry | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer //!< \since QGIS 3.24
+    };
+    Q_DECLARE_FLAGS( LayerFilters, LayerFilter )
+    Q_FLAG( LayerFilters )
+
+    /**
      * The WKB type describes the number of dimensions a geometry has
      *
      * - Point
@@ -4153,6 +4180,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRequestFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FieldConfigurationFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayerFilters )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

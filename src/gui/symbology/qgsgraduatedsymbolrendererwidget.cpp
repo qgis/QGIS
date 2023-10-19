@@ -925,9 +925,10 @@ void QgsGraduatedSymbolRendererWidget::clearParameterWidgets()
     for ( QLayoutItem *item : {row.labelItem, row.fieldItem} )
       if ( item )
       {
-        if ( item->widget() )
-          item->widget()->deleteLater();
+        QWidget *widget = item->widget();
         delete item;
+        if ( widget )
+          delete widget;
       }
   }
   mParameterWidgetWrappers.clear();

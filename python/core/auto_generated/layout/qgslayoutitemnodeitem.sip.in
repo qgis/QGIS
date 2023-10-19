@@ -127,6 +127,7 @@ Constructor for a QgsLayoutNodesItem with the given ``polygon`` nodes, attached 
 
     virtual void draw( QgsLayoutItemRenderContext &context );
 
+    virtual QgsLayoutItem::Flags itemFlags() const;
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 

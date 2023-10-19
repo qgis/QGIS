@@ -44,6 +44,10 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QgsLayoutItem::Flags itemFlags() const;
 
+    virtual bool requiresRasterization() const;
+
+    virtual bool containsAdvancedEffects() const;
+
 
     Qgs2DPlot *plot();
 %Docstring
@@ -176,6 +180,15 @@ Sets the ``unit`` for the distance axis.
 
     virtual void invalidateCache();
 
+
+  signals:
+
+    void previewRefreshed();
+%Docstring
+Emitted whenever the item's preview has been refreshed.
+
+.. versionadded:: 3.34
+%End
 
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );

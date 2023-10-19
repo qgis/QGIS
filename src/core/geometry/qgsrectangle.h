@@ -295,6 +295,8 @@ class CORE_EXPORT QgsRectangle
      */
     void grow( double delta )
     {
+      if ( isNull() )
+        return;
       mXmin -= delta;
       mXmax += delta;
       mYmin -= delta;
@@ -306,6 +308,14 @@ class CORE_EXPORT QgsRectangle
      */
     void include( const QgsPointXY &p )
     {
+      if ( isNull() )
+      {
+        setXMinimum( p.x() );
+        setXMaximum( p.x() );
+        setYMinimum( p.y() );
+        setYMaximum( p.y() );
+        return;
+      }
       if ( p.x() < xMinimum() )
         setXMinimum( p.x() );
       if ( p.x() > xMaximum() )
@@ -521,6 +531,8 @@ class CORE_EXPORT QgsRectangle
      */
     bool operator==( const QgsRectangle &r1 ) const
     {
+      if ( isNull() ) return r1.isNull();
+
       return qgsDoubleNear( r1.xMaximum(), xMaximum() ) &&
              qgsDoubleNear( r1.xMinimum(), xMinimum() ) &&
              qgsDoubleNear( r1.yMaximum(), yMaximum() ) &&

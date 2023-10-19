@@ -40,11 +40,11 @@ QgsCreateRelationDialog::QgsCreateRelationDialog( QWidget *parent )
   setupUi( this );
 
   mReferencedLayerCombobox = new QgsMapLayerComboBox( this );
-  mReferencedLayerCombobox->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mReferencedLayerCombobox->setFilters( Qgis::LayerFilter::VectorLayer );
   mFieldsMappingTable->setCellWidget( 0, 0, mReferencedLayerCombobox );
 
   mReferencingLayerCombobox = new QgsMapLayerComboBox( this );
-  mReferencingLayerCombobox->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mReferencingLayerCombobox->setFilters( Qgis::LayerFilter::VectorLayer );
   mFieldsMappingTable->setCellWidget( 0, 1, mReferencingLayerCombobox );
 
   mRelationStrengthComboBox->addItem( tr( "Association" ), static_cast< int >( Qgis::RelationshipStrength::Association ) );

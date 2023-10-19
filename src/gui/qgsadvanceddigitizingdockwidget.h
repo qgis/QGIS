@@ -225,6 +225,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         void setMapCanvas( QgsMapCanvas *mapCanvas );
 
+        /**
+         * Removes unit suffix from the constraint text.
+         * \since QGIS 3.34
+         */
+        static QString removeSuffix( const QString &text, Qgis::CadConstraintType constraintType );
+
+
       private:
         QLineEdit *mLineEdit = nullptr;
         QToolButton *mLockerButton = nullptr;

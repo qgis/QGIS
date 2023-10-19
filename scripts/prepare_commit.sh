@@ -57,7 +57,24 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
-if [[ -n "$QGIS_CHECK_SPELLING" && -x "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh ]]; then "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"; fi
+# Run spell checker if requirements are met
+if ! command -v ag > /dev/null; then
+  echo "WARNING: the ag(1) executable was not found, spell checker could not run" >&2
+elif ! command -v unbuffer > /dev/null; then
+  echo "WARNING: the unbuffer(1) executable was not found, spell checker could not run" >&2
+else
+  "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"
+fi
+
+MODIFIED_SHELLFILES=$(echo "${MODIFIED}" | grep '\.sh$' || true)
+if [ -n "$MODIFIED_SHELLFILES" ]; then
+  # Run shell checker if requirements are met
+  if command -v shellcheck > /dev/null; then
+    ${TOPLEVEL}/tests/code_layout/test_shellcheck.sh "${MODIFIED_SHELLFILES}"
+  else
+    echo "WARNING: the shellcheck(1) executable was not found, shell checker could not run" >&2
+  fi
+fi
 
 FILES_CHANGED=0
 

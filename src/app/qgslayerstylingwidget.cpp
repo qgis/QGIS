@@ -106,14 +106,14 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
   connect( mLayerCombo, &QgsMapLayerComboBox::layerChanged, this, &QgsLayerStylingWidget::setLayer );
   connect( mLiveApplyCheck, &QAbstractButton::toggled, this, &QgsLayerStylingWidget::liveApplyToggled );
 
-  mLayerCombo->setFilters( QgsMapLayerProxyModel::Filter::HasGeometry
-                           | QgsMapLayerProxyModel::Filter::RasterLayer
-                           | QgsMapLayerProxyModel::Filter::PluginLayer
-                           | QgsMapLayerProxyModel::Filter::MeshLayer
-                           | QgsMapLayerProxyModel::Filter::VectorTileLayer
-                           | QgsMapLayerProxyModel::Filter::PointCloudLayer
-                           | QgsMapLayerProxyModel::Filter::TiledSceneLayer
-                           | QgsMapLayerProxyModel::Filter::AnnotationLayer );
+  mLayerCombo->setFilters( Qgis::LayerFilter::HasGeometry
+                           | Qgis::LayerFilter::RasterLayer
+                           | Qgis::LayerFilter::PluginLayer
+                           | Qgis::LayerFilter::MeshLayer
+                           | Qgis::LayerFilter::VectorTileLayer
+                           | Qgis::LayerFilter::PointCloudLayer
+                           | Qgis::LayerFilter::TiledSceneLayer
+                           | Qgis::LayerFilter::AnnotationLayer );
   mLayerCombo->setAdditionalLayers( { QgsProject::instance()->mainAnnotationLayer() } );
 
   mStackedWidget->setCurrentIndex( 0 );

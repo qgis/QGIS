@@ -7568,7 +7568,7 @@ void QgsProcessingAnnotationLayerWidgetWrapper::setWidgetContext( const QgsProce
 QWidget *QgsProcessingAnnotationLayerWidgetWrapper::createWidget()
 {
   mComboBox = new QgsMapLayerComboBox( );
-  mComboBox->setFilters( QgsMapLayerProxyModel::AnnotationLayer );
+  mComboBox->setFilters( Qgis::LayerFilter::AnnotationLayer );
 
   switch ( type() )
   {

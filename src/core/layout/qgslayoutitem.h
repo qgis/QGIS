@@ -334,6 +334,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     {
       FlagOverridesPaint = 1 << 1,  //!< Item overrides the default layout item painting method
       FlagProvidesClipPath = 1 << 2, //!< Item can act as a clipping path provider (see clipPath())
+      FlagDisableSceneCaching = 1 << 3, //!< Item should not have QGraphicsItem caching enabled
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -1316,7 +1317,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     //! Composition blend mode for item
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
-    QPointer< QgsLayoutEffect > mEffect;
+    //! Evaluated blend mode, including evaluated overrides for data defined blending
+    QPainter::CompositionMode mEvaluatedBlendMode = QPainter::CompositionMode_SourceOver;
+
+    QPainter::CompositionMode blendModeForRender() const;
 
     //! Item opacity, between 0 and 1
     double mOpacity = 1.0;
@@ -1365,6 +1369,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     friend class TestQgsLayoutView;
     friend class QgsLayout;
     friend class QgsLayoutItemGroup;
+    friend class QgsLayoutItemMap;
+    friend class QgsLayoutItemLegend;
+    friend class QgsLayoutItemElevationProfile;
     friend class QgsCompositionConverter;
 };
 

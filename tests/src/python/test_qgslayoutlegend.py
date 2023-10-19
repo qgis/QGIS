@@ -12,8 +12,15 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import os
 from time import sleep
 
-from qgis.PyQt.QtCore import QDir, QRectF
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import (
+    Qt,
+    QRectF
+)
+from qgis.PyQt.QtGui import (
+    QColor,
+    QImage,
+    QPainter
+)
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (
@@ -51,6 +58,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsTextFormat,
     QgsFeatureRequest,
+    QgsLayoutItemShape,
+    QgsSimpleFillSymbolLayer
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -72,6 +81,212 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
     @classmethod
     def control_path_prefix(cls):
         return "composer_legend"
+
+    def test_opacity(self):
+        """
+        Test rendering the legend with opacity
+        """
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        layout.addLayoutItem(legend)
+
+        text_format = QgsTextFormat()
+        text_format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        text_format.setSize(16)
+
+        for legend_item in [QgsLegendStyle.Title, QgsLegendStyle.Group, QgsLegendStyle.Subgroup,
+                            QgsLegendStyle.Symbol, QgsLegendStyle.SymbolLabel]:
+            style = legend.style(legend_item)
+            style.setTextFormat(text_format)
+            legend.setStyle(legend_item, style)
+
+        legend.setItemOpacity(0.3)
+
+        self.assertFalse(
+            legend.requiresRasterization()
+        )
+        self.assertTrue(
+            legend.containsAdvancedEffects()
+        )
+
+        self.assertTrue(
+            self.render_layout_check('composerlegend_opacity', layout)
+        )
+
+    def test_opacity_rendering_designer_preview(self):
+        """
+        Test rendering of legend opacity while in designer dialogs
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        self.assertTrue(l.renderContext().isPreviewRender())
+
+        l.initializeDefaults()
+        legend = QgsLayoutItemLegend(l)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        l.addLayoutItem(legend)
+
+        text_format = QgsTextFormat()
+        text_format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        text_format.setSize(16)
+
+        for legend_item in [QgsLegendStyle.Title, QgsLegendStyle.Group, QgsLegendStyle.Subgroup,
+                            QgsLegendStyle.Symbol, QgsLegendStyle.SymbolLabel]:
+            style = legend.style(legend_item)
+            style.setTextFormat(text_format)
+            legend.setStyle(legend_item, style)
+
+        legend.setItemOpacity(0.3)
+
+        page_item = l.pageCollection().page(0)
+        paper_rect = QRectF(page_item.pos().x(),
+                            page_item.pos().y(),
+                            page_item.rect().width(),
+                            page_item.rect().height())
+
+        im = QImage(1122, 794, QImage.Format_ARGB32)
+        im.fill(Qt.transparent)
+        im.setDotsPerMeterX(int(300 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(300 / 25.4 * 1000))
+        painter = QPainter(im)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+
+        l.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
+        painter.end()
+
+        self.assertTrue(self.image_check('composerlegend_opacity',
+                                         'composerlegend_opacity',
+                                         im, allowed_mismatch=0))
+
+    def test_blend_mode(self):
+        """
+        Test rendering the legend with a blend mode
+        """
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        item1 = QgsLayoutItemShape(layout)
+        item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
+        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(0, 100, 50))
+        simple_fill.setStrokeColor(Qt.black)
+        item1.setSymbol(fill_symbol)
+        layout.addLayoutItem(item1)
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        layout.addLayoutItem(legend)
+
+        text_format = QgsTextFormat()
+        text_format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        text_format.setSize(16)
+
+        for legend_item in [
+            QgsLegendStyle.Title,
+            QgsLegendStyle.Group,
+            QgsLegendStyle.Subgroup,
+            QgsLegendStyle.Symbol,
+            QgsLegendStyle.SymbolLabel,
+        ]:
+            style = legend.style(legend_item)
+            style.setTextFormat(text_format)
+            legend.setStyle(legend_item, style)
+
+        legend.setBlendMode(QPainter.CompositionMode_Darken)
+
+        self.assertTrue(legend.requiresRasterization())
+
+        self.assertTrue(self.render_layout_check("composerlegend_blendmode", layout))
+
+    def test_blend_mode_designer_preview(self):
+        """
+        Test rendering the legend with a blend mode
+        """
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        self.assertTrue(layout.renderContext().isPreviewRender())
+
+        item1 = QgsLayoutItemShape(layout)
+        item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
+        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        simple_fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, simple_fill)
+        simple_fill.setColor(QColor(0, 100, 50))
+        simple_fill.setStrokeColor(Qt.black)
+        item1.setSymbol(fill_symbol)
+        layout.addLayoutItem(item1)
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        layout.addLayoutItem(legend)
+
+        text_format = QgsTextFormat()
+        text_format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        text_format.setSize(16)
+
+        for legend_item in [
+            QgsLegendStyle.Title,
+            QgsLegendStyle.Group,
+            QgsLegendStyle.Subgroup,
+            QgsLegendStyle.Symbol,
+            QgsLegendStyle.SymbolLabel,
+        ]:
+            style = legend.style(legend_item)
+            style.setTextFormat(text_format)
+            legend.setStyle(legend_item, style)
+
+        legend.setBlendMode(QPainter.CompositionMode_Darken)
+
+        page_item = layout.pageCollection().page(0)
+        paper_rect = QRectF(
+            page_item.pos().x(),
+            page_item.pos().y(),
+            page_item.rect().width(),
+            page_item.rect().height(),
+        )
+
+        im = QImage(1122, 794, QImage.Format_ARGB32)
+        im.fill(Qt.transparent)
+        im.setDotsPerMeterX(int(300 / 25.4 * 1000))
+        im.setDotsPerMeterY(int(300 / 25.4 * 1000))
+        painter = QPainter(im)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+
+        layout.render(
+            painter,
+            QRectF(0, 0, painter.device().width(), painter.device().height()),
+            paper_rect,
+        )
+        painter.end()
+
+        self.assertTrue(
+            self.image_check(
+                "composerlegend_blendmode", "composerlegend_blendmode", im, allowed_mismatch=0
+            )
+        )
 
     def testInitialSizeSymbolMapUnits(self):
         """

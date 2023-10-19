@@ -85,6 +85,11 @@ void QgsLayoutNodesItem::draw( QgsLayoutItemRenderContext &context )
     drawNodes( context );
 }
 
+QgsLayoutItem::Flags QgsLayoutNodesItem::itemFlags() const
+{
+  return QgsLayoutItem::FlagDisableSceneCaching;
+}
+
 double QgsLayoutNodesItem::computeDistance( QPointF pt1,
     QPointF pt2 ) const
 {

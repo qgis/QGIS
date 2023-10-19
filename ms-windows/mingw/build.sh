@@ -118,12 +118,20 @@ echo "::endgroup::"
 # Xvfb :99 &
 # export DISPLAY=:99
 
-echo "::group::compile QGIS"
-mingw$bits-make -C"$BUILDDIR" -j"$njobs" DESTDIR="${installroot}" install VERBOSE=1
+echo "::group::build"
+mingw$bits-make -C"$BUILDDIR" -j"$njobs" #VERBOSE=1
+echo "::endgroup::"
+
+echo "::group::install"
+mingw$bits-make -C"$BUILDDIR" -j"$njobs" DESTDIR="${installroot}" install # VERBOSE=1
 echo "::endgroup::"
 
 #echo "ccache statistics"
+echo "::group::ccache stats"
 ccache -s
+echo "::endgroup::"
+
+echo "::group::link dependenceis"
 
 # Remove plugins with missing dependencies
 rm -rf "${installroot}/share/qgis/python/plugins/{MetaSearch,processing}"
@@ -207,7 +215,6 @@ IFS=$SAVEIFS
 mkdir -p "$installprefix/lib/"
 cp -a "$MINGWROOT/lib/gdalplugins" "$installprefix/lib/gdalplugins"
 
-echo "Linking dependencies..."
 binaries=$(find "$installprefix" -name '*.exe' -or -name '*.dll' -or -name '*.pyd')
 for binary in $binaries; do
     autoLinkDeps $binary
@@ -248,6 +255,7 @@ linkDep lib/qt5/plugins/crypto/libqca-gnupg.dll bin/crypto
 linkDep lib/qt5/plugins/crypto/libqca-ossl.dll bin/crypto
 
 linkDep lib/ossl-modules/legacy.dll lib/ossl-modules
+echo "::endgroup::"
 
 mkdir -p "$installprefix/share/qt5/translations/"
 #cp -a "$MINGWROOT/share/qt5/translations/qt_"*.qm  "$installprefix/share/qt5/translations"

@@ -43,3 +43,61 @@ function addComparison(id,rendered,expected,w,h) {
 	img.addEventListener( "mousemove", trackLocation, false );
 	div0.addEventListener( "mousemove", trackLocation, false );
 }
+// get just the directory, not the .html file part
+const match = unescape(window.location.href).match(/(file:\/\/\/.*\/)([^/]+)$/);
+const localPath = match[1];
+
+function updatePathsToLocalGit(val, localGitFolder) {
+  return val.replace(/^.*\/tests\/testdata\//, localGitFolder + '/tests/testdata/');
+}
+
+function updateLocalGitFolder() {
+  // Get the value from the input
+  const localGitFolder = document.getElementById('localGitFolder').value;
+  
+  // Loop through all links on the page
+  const links = document.querySelectorAll('a');
+  links.forEach((link) => {
+      // store original link href, then replace with path to local file
+      const originalHref = link.originalHref ? link.originalHref : link.href;
+      link.originalHref = originalHref;
+      link.href = localGitFolder ? updatePathsToLocalGit(originalHref, localGitFolder) : originalHref;
+  });
+
+  // Loop through all code on the page
+  const codes = document.querySelectorAll('code');
+  codes.forEach((code) => {
+      // store original code, then update with path to local file
+      const originalCode = code.originalCode ? code.originalCode : code.innerHTML;
+      code.originalCode = originalCode;
+      if (localGitFolder)
+      {
+          const matchPaths = originalCode.match(/(.*")(.*?)" "(.*)"/);
+          code.innerHTML = matchPaths[1] + updatePathsToLocalGit(matchPaths[2], localGitFolder) + '" "' + matchPaths[3].replace('/tmp', localPath) + '"';
+      }
+      else
+      {
+         code.innerHTML = originalCode;
+      }
+  });
+
+  // Loop through all divs on the page
+  const divs = document.querySelectorAll('div');
+  divs.forEach((div) => {
+      // Extract original style
+      const originalStyle = div.originalStyle ? div.originalStyle : div.style.cssText;
+      div.originalStyle = originalStyle;
+      if (localGitFolder)
+      {
+          const matchPaths = originalStyle.match(/(.*url\(\"file:\/\/)(.*?)(\".*)/);
+          if (matchPaths)
+          {
+              div.style.cssText = matchPaths[1] + updatePathsToLocalGit(matchPaths[2], localGitFolder) + matchPaths[3];
+          }
+      }
+      else
+      {
+          div.style.cssText = originalStyle;
+      }
+  });
+}

@@ -31,12 +31,10 @@ macro(set_alternate_linker linker)
   endif()
 endmacro()
 
-if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
-  set(USE_ALTERNATE_LINKER "" CACHE STRING "Use alternate linker. Leave empty for system default; potential alternatives are 'gold', 'lld', 'bfd', 'mold'")
-  if(NOT "${USE_ALTERNATE_LINKER}" STREQUAL "")
-    set_alternate_linker(${USE_ALTERNATE_LINKER})
-  endif()
-  set(USE_ALTERNATE_LINKER_OLD_CACHED
-      ${USE_ALTERNATE_LINKER}
-      CACHE INTERNAL "Previous value of USE_ALTERNATE_LINKER")
+set(USE_ALTERNATE_LINKER "" CACHE STRING "Use alternate linker. Leave empty for system default; potential alternatives are 'gold', 'lld', 'bfd', 'mold'")
+if(NOT "${USE_ALTERNATE_LINKER}" STREQUAL "")
+  set_alternate_linker(${USE_ALTERNATE_LINKER})
 endif()
+set(USE_ALTERNATE_LINKER_OLD_CACHED
+    ${USE_ALTERNATE_LINKER}
+    CACHE INTERNAL "Previous value of USE_ALTERNATE_LINKER")
