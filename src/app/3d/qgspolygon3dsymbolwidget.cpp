@@ -67,7 +67,7 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
   if ( !polygonSymbol )
     return;
 
-  spinHeight->setValue( polygonSymbol->height() );
+  spinHeight->setValue( polygonSymbol->offset() );
   spinExtrusion->setValue( polygonSymbol->extrusionHeight() );
   cboAltClamping->setCurrentIndex( static_cast<int>( polygonSymbol->altitudeClamping() ) );
   cboAltBinding->setCurrentIndex( static_cast<int>( polygonSymbol->altitudeBinding() ) );
@@ -90,7 +90,7 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
 QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
 {
   std::unique_ptr< QgsPolygon3DSymbol > sym = std::make_unique< QgsPolygon3DSymbol >();
-  sym->setHeight( spinHeight->value() );
+  sym->setOffset( spinHeight->value() );
   sym->setExtrusionHeight( spinExtrusion->value() );
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym->setAltitudeBinding( static_cast<Qgis::AltitudeBinding>( cboAltBinding->currentIndex() ) );

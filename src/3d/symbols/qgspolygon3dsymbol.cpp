@@ -39,7 +39,7 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbol::clone() const
   std::unique_ptr< QgsPolygon3DSymbol > result = std::make_unique< QgsPolygon3DSymbol >();
   result->mAltClamping = mAltClamping;
   result->mAltBinding = mAltBinding;
-  result->mHeight = mHeight;
+  result->mOffset = mOffset;
   result->mExtrusionHeight = mExtrusionHeight;
   result->mMaterialSettings.reset( mMaterialSettings->clone() );
   result->mCullingMode = mCullingMode;
@@ -62,7 +62,7 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   QDomElement elemDataProperties = doc.createElement( QStringLiteral( "data" ) );
   elemDataProperties.setAttribute( QStringLiteral( "alt-clamping" ), Qgs3DUtils::altClampingToString( mAltClamping ) );
   elemDataProperties.setAttribute( QStringLiteral( "alt-binding" ), Qgs3DUtils::altBindingToString( mAltBinding ) );
-  elemDataProperties.setAttribute( QStringLiteral( "height" ), mHeight );
+  elemDataProperties.setAttribute( QStringLiteral( "offset" ), mOffset );
   elemDataProperties.setAttribute( QStringLiteral( "extrusion-height" ), mExtrusionHeight );
   elemDataProperties.setAttribute( QStringLiteral( "culling-mode" ), Qgs3DUtils::cullingModeToString( mCullingMode ) );
   elemDataProperties.setAttribute( QStringLiteral( "invert-normals" ), mInvertNormals ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
@@ -93,7 +93,7 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   const QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
   mAltBinding = Qgs3DUtils::altBindingFromString( elemDataProperties.attribute( QStringLiteral( "alt-binding" ) ) );
-  mHeight = elemDataProperties.attribute( QStringLiteral( "height" ) ).toFloat();
+  mOffset = elemDataProperties.attribute( QStringLiteral( "offset" ) ).toFloat();
   mExtrusionHeight = elemDataProperties.attribute( QStringLiteral( "extrusion-height" ) ).toFloat();
   mCullingMode = Qgs3DUtils::cullingModeFromString( elemDataProperties.attribute( QStringLiteral( "culling-mode" ) ) );
   mInvertNormals = elemDataProperties.attribute( QStringLiteral( "invert-normals" ) ).toInt();
@@ -148,7 +148,7 @@ void QgsPolygon3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *la
   {
     mDataDefinedProperties.setProperty( PropertyHeight, QgsProperty() );
   }
-  mHeight = static_cast< float >( props->zOffset() );
+  mOffset = static_cast< float >( props->zOffset() );
 }
 
 QgsAbstract3DSymbol *QgsPolygon3DSymbol::create()

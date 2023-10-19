@@ -522,7 +522,7 @@ void TestQgs3DRendering::testPolygonsEdges()
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
   symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
-  symbol3d->setHeight( 20.f );
+  symbol3d->setOffset( 20.f );
   symbol3d->setEdgesEnabled( true );
   symbol3d->setEdgeWidth( 8 );
   symbol3d->setEdgeColor( QColor( 255, 0, 0 ) );
