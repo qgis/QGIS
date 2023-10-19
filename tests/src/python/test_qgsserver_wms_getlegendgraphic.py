@@ -1415,7 +1415,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         project.addMapLayers([layer])
 
         server = QgsServer()
-        request = QgsBufferServerRequest("/?SERVICE=WMS&VERION=1.30&REQUEST=GetLegendGraphic" +
+        request = QgsBufferServerRequest("/?SERVICE=WMS&VERSION=1.30&REQUEST=GetLegendGraphic" +
                                          "&LAYERS=layer1" +
                                          "&FORMAT=application/json" +
                                          "&RULE=label2" +
@@ -1429,7 +1429,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         self.assertEqual(node['rule'], "(fldtxt = 'two') AND (@map_scale <= 1000) AND (@map_scale >= 10000)")
 
         icon = node['icon']
-        request = QgsBufferServerRequest("/?SERVICE=WMS&VERION=1.30&REQUEST=GetLegendGraphic" +
+        request = QgsBufferServerRequest("/?SERVICE=WMS&VERSION=1.30&REQUEST=GetLegendGraphic" +
                                          "&LAYERS=layer1" +
                                          "&FORMAT=application/json" +
                                          "&RULE=label2")
