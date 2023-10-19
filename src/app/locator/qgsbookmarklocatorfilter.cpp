@@ -48,7 +48,7 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
     QgsLocatorResult result;
     result.filter = this;
     result.displayString = name;
-    result.userData = index;
+    result.setUserData( index );
     result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) );
 
     if ( context.usingPrefix && string.isEmpty() )
@@ -66,6 +66,6 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
 
 void QgsBookmarkLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  const QModelIndex index = qvariant_cast<QModelIndex>( result.userData );
+  const QModelIndex index = qvariant_cast<QModelIndex>( result.getUserData() );
   QgisApp::instance()->zoomToBookmarkIndex( index );
 }

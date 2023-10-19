@@ -50,9 +50,8 @@ class CORE_EXPORT QgsLocatorResult
     QgsLocatorResult( QgsLocatorFilter *filter, const QString &displayString, const QVariant &userData = QVariant() )
       : filter( filter )
       , displayString( displayString )
-      , userData( userData )
+      , mUserData( userData )
     {}
-
 
     /**
      * Returns the ``userData``.
@@ -60,6 +59,13 @@ class CORE_EXPORT QgsLocatorResult
      * \since QGIS 3.18
      */
     QVariant getUserData() const;
+
+    /**
+     * Set \a userData for the locator result
+     *
+     * \since QGIS 3.34
+     */
+    void setUserData( QVariant userData );
 
     /**
      * Filter from which the result was obtained. This is automatically set.
@@ -75,11 +81,6 @@ class CORE_EXPORT QgsLocatorResult
      * Descriptive text for result.
      */
     QString description;
-
-    /**
-     * Custom reference or other data set by the filter.
-     */
-    QVariant userData;
 
     /**
      * Icon for result.
@@ -135,6 +136,19 @@ class CORE_EXPORT QgsLocatorResult
       * \since QGIS 3.6
       */
     QList<QgsLocatorResult::ResultAction> actions;
+
+#ifdef SIP_RUN
+    SIP_PROPERTY( name = userData, get = getUserData, set = setUserData )
+#endif
+
+  private:
+
+    /**
+     * Custom reference or other data set by the filter.
+     */
+    QVariant mUserData;
+
+
 };
 
 Q_DECLARE_METATYPE( QgsLocatorResult::ResultAction )
@@ -402,5 +416,3 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLocatorFilter::Flags )
 
 
 #endif // QGSLOCATORFILTER_H
-
-

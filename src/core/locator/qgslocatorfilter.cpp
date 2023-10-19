@@ -103,5 +103,10 @@ void QgsLocatorFilter::logMessage( const QString &message, Qgis::MessageLevel le
 
 QVariant QgsLocatorResult::getUserData() const
 {
-  return userData;
+  return mUserData;
+}
+
+void QgsLocatorResult::setUserData( QVariant userData )
+{
+  mUserData = userData;
 }

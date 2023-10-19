@@ -120,7 +120,7 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
 
       result.displayString = preparedLayer->expression.evaluate( &( preparedLayer->context ) ).toString();
 
-      result.userData = ResultData( f.id(), preparedLayer->layerId, preparedLayer->layerIsSpatial ).toVariant();
+      result.setUserData( ResultData( f.id(), preparedLayer->layerId, preparedLayer->layerIsSpatial ).toVariant() );
       foundFeatureIds << f.id();
       result.icon = preparedLayer->layerIcon;
       result.score = static_cast< double >( string.length() ) / result.displayString.size();
@@ -154,7 +154,7 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
 
       result.displayString = preparedLayer->expression.evaluate( &( preparedLayer->context ) ).toString();
 
-      result.userData = ResultData( f.id(), preparedLayer->layerId, preparedLayer->layerIsSpatial ).toVariant();
+      result.setUserData( ResultData( f.id(), preparedLayer->layerId, preparedLayer->layerIsSpatial ).toVariant() );
       result.icon = preparedLayer->layerIcon;
       result.score = static_cast< double >( string.length() ) / result.displayString.size();
 
@@ -179,7 +179,7 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &r
 
 void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
 {
-  ResultData data = ResultData::fromVariant( result.userData );
+  ResultData data = ResultData::fromVariant( result.getUserData() );
   QgsFeatureId fid = data.id();
   QString layerId = data.layerId();
   bool layerIsSpatial = data.layerIsSpatial();

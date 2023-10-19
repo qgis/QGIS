@@ -175,9 +175,9 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
     QgsLocatorResult result;
     result.displayString = QStringLiteral( "@%1" ).arg( field );
     result.description = tr( "Limit the search to the field '%1'" ).arg( field );
-    result.userData = QVariantMap( {{QStringLiteral( "type" ), QVariant::fromValue( ResultType::FieldRestriction )},
+    result.setUserData( QVariantMap( {{QStringLiteral( "type" ), QVariant::fromValue( ResultType::FieldRestriction )},
       {QStringLiteral( "search_text" ), QStringLiteral( "%1 @%2 " ).arg( prefix(), field ) }
-    } );
+    } ) );
     result.score = 1;
     emit resultFetched( result );
   }
@@ -195,13 +195,13 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       QgsLocatorResult result;
 
       result.displayString =  mDispExpression.evaluate( &mContext ).toString();
-      result.userData = QVariantMap(
+      result.setUserData( QVariantMap(
       {
         {QStringLiteral( "type" ), QVariant::fromValue( ResultType::Feature )},
         {QStringLiteral( "feature_id" ), f.id()},
         {QStringLiteral( "layer_id" ), mLayerId},
         {QStringLiteral( "layer_is_spatial" ), mLayerIsSpatial}
-      } );
+      } ) );
       result.icon = mLayerIcon;
       result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
       if ( mLayerIsSpatial )
@@ -250,13 +250,13 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       continue; //not sure how this result slipped through...
 
     result.description = mDispExpression.evaluate( &mContext ).toString();
-    result.userData = QVariantMap(
+    result.setUserData( QVariantMap(
     {
       {QStringLiteral( "type" ), QVariant::fromValue( ResultType::Feature )},
       {QStringLiteral( "feature_id" ), f.id()},
       {QStringLiteral( "layer_id" ), mLayerId},
       {QStringLiteral( "layer_is_spatial" ), mLayerIsSpatial}
-    } );
+    } ) );
     result.icon = mLayerIcon;
     result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
     if ( mLayerIsSpatial )
@@ -278,7 +278,7 @@ void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult 
 
 void QgsActiveLayerFeaturesLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
 {
-  QVariantMap data = result.userData.value<QVariantMap>();
+  QVariantMap data = result.getUserData().value<QVariantMap>();
   switch ( data.value( QStringLiteral( "type" ) ).value<ResultType>() )
   {
     case ResultType::Feature:

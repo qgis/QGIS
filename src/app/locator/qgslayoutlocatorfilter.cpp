@@ -42,7 +42,7 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
 
     QgsLocatorResult result;
     result.displayString = layout->name();
-    result.userData = layout->name();
+    result.setUserData( layout->name() );
 
     if ( context.usingPrefix && string.isEmpty() )
     {
@@ -59,7 +59,7 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
 
 void QgsLayoutLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  const QString layoutName = result.userData.toString();
+  const QString layoutName = result.getUserData().toString();
   QgsMasterLayoutInterface *layout = QgsProject::instance()->layoutManager()->layoutByName( layoutName );
   if ( !layout )
     return;

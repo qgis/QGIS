@@ -47,7 +47,7 @@ void QgsLayerMetadataLocatorFilter::fetchResults( const QString &string, const Q
       result.displayString = metadata.identifier();
       result.description = metadata.title();
       result.icon = QgsIconUtils::iconForGeometryType( metadata.geometryType() );
-      result.userData = QVariant::fromValue( metadata );
+      result.setUserData( QVariant::fromValue( metadata ) );
       emit resultFetched( result );
     }
   }
@@ -55,7 +55,7 @@ void QgsLayerMetadataLocatorFilter::fetchResults( const QString &string, const Q
 
 void QgsLayerMetadataLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  QgsLayerMetadataProviderResult metadataResult { result.userData.value<QgsLayerMetadataProviderResult>() };
+  QgsLayerMetadataProviderResult metadataResult { result.getUserData().value<QgsLayerMetadataProviderResult>() };
   switch ( metadataResult.layerType() )
   {
     case Qgis::LayerType::Raster:
