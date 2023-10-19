@@ -446,6 +446,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     /**
      * find out if the \a point is in any polygons
      * This method is either blocking or non blocking according to \a relaxed parameter passed
+     * \deprecated QGIS 3.34 - use the overloaded pointInPolygon accepting a QgsPointLocator::MatchFilter parameter (pointInPolygonV2 in python)
      */
     Q_DECL_DEPRECATED MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false ) SIP_DEPRECATED;
 
