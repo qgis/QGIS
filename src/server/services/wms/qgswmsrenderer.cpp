@@ -234,7 +234,7 @@ namespace QgsWms
     return renderer.exportLegendToJson( renderContext );
   }
 
-  QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModelLegendNode &nodeModel, const Qgis::LegendJsonRenderFlags &jsonRenderFlags )
+  QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModelLegendNode &legendNode, const Qgis::LegendJsonRenderFlags &jsonRenderFlags )
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
@@ -250,7 +250,27 @@ namespace QgsWms
 
     // rendering
     QgsRenderContext renderContext;
-    return nodeModel.exportSymbolToJson( settings, renderContext );
+    QJsonObject jsonSymbol { legendNode.exportSymbolToJson( settings, renderContext ) };
+
+    if ( jsonRenderFlags.testFlag( Qgis::LegendJsonRenderFlag::ShowRuleDetails ) )
+    {
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( legendNode.layerNode() );
+      if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+      {
+        if ( vLayer->renderer() )
+        {
+          const QString ruleKey { legendNode.data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
+          bool ok;
+          const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
+          if ( ok )
+          {
+            jsonSymbol[ QStringLiteral( "rule" ) ] = ruleExp;
+          }
+        }
+      }
+    }
+
+    return jsonSymbol;
   }
 
   void QgsRenderer::runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const
