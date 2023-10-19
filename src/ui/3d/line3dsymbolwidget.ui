@@ -29,14 +29,14 @@
    <item>
     <layout class="QFormLayout" name="formLayout">
      <item row="1" column="0">
-      <widget class="QLabel" name="labelHeight">
+      <widget class="QLabel" name="labelOffset">
        <property name="text">
-        <string>Height</string>
+        <string>Offset</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QgsDoubleSpinBox" name="spinHeight">
+      <widget class="QgsDoubleSpinBox" name="spinOffset">
        <property name="minimum">
         <double>-99999.000000000000000</double>
        </property>
@@ -167,7 +167,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>spinWidth</tabstop>
-  <tabstop>spinHeight</tabstop>
+  <tabstop>spinOffset</tabstop>
   <tabstop>spinExtrusion</tabstop>
   <tabstop>cboAltClamping</tabstop>
   <tabstop>cboAltBinding</tabstop>
