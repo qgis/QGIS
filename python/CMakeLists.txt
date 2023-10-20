@@ -174,7 +174,7 @@ GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp
 BUILD_SIP_PYTHON_MODULE(qgis._core core/core.sip ${cpp_files} "" qgis_core)
 set(SIP_CORE_CPP_FILES ${cpp_files})
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
   # Bad hack to fix compilation with gcc 11 - for some reason it's ignoring
   # the c++ standard version set for the target in BUILD_SIP_PYTHON_MODULE!
   add_definitions(-std=c++14)
