@@ -516,7 +516,7 @@ class CORE_EXPORT QgsRectangle
      */
     bool isEmpty() const
     {
-      return mXmax < mXmin || mYmax < mYmin || qgsDoubleNear( mXmax, mXmin ) || qgsDoubleNear( mYmax, mYmin );
+      return isNull() || mXmax <= mXmin || mYmax <= mYmin || qgsDoubleNear( mXmax, mXmin ) || qgsDoubleNear( mYmax, mYmin );
     }
 
     /**
@@ -533,7 +533,6 @@ class CORE_EXPORT QgsRectangle
       // rectangle created QgsRectangle() or with rect.setNull() or
       // otherwise having NaN ordinates
       return ( std::isnan( mXmin )  && std::isnan( mXmax ) && std::isnan( mYmin ) && std::isnan( mYmax ) ) ||
-             ( qgsDoubleNear( mXmin, 0.0 ) && qgsDoubleNear( mXmax, 0.0 ) && qgsDoubleNear( mYmin, 0.0 ) && qgsDoubleNear( mYmax, 0.0 ) ) ||
              ( qgsDoubleNear( mXmin, std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmin, std::numeric_limits<double>::max() ) &&
                qgsDoubleNear( mXmax, -std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmax, -std::numeric_limits<double>::max() ) );
     }
@@ -665,10 +664,10 @@ class CORE_EXPORT QgsRectangle
 
   private:
 
-    double mXmin = 0.0;
-    double mYmin = 0.0;
-    double mXmax = 0.0;
-    double mYmax = 0.0;
+    double mXmin = std::numeric_limits<double>::max();
+    double mYmin = std::numeric_limits<double>::max();
+    double mXmax = -std::numeric_limits<double>::max();
+    double mYmax = -std::numeric_limits<double>::max();
 
 };
 
