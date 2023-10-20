@@ -33,6 +33,7 @@
 #include "labelposition.h"
 #include "geomfunction.h"
 #include "qgsgeos.h"
+#include "qgsgeometryutils_base.h"
 #include "qgsmessagelog.h"
 #include <cmath>
 #include <cfloat>
@@ -622,7 +623,7 @@ double LabelPosition::getDistanceToPoint( double xp, double yp, bool useOuterBou
           else
           {
             ( void )GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
-            distance = GeomFunction::dist_euc2d_sq( xp, yp, nx, ny );
+            distance = QgsGeometryUtilsBase::sqrDistance2D( xp, yp, nx, ny );
           }
         }
         catch ( GEOSException &e )

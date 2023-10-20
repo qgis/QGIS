@@ -40,6 +40,7 @@
 #include "qgstextlabelfeature.h"
 #include "qgsmessagelog.h"
 #include "qgsgeometryutils.h"
+#include "qgsgeometryutils_base.h"
 #include "qgslabeling.h"
 #include "qgspolygon.h"
 #include "qgstextrendererutils.h"
@@ -801,7 +802,7 @@ std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::u
     else
       distanceToSegment[i] = distanceToSegment[i - 1] + segmentLengths[i - 1];
 
-    segmentLengths[i] = GeomFunction::dist_euc2d( x[i], y[i], x[i + 1], y[i + 1] );
+    segmentLengths[i] = QgsGeometryUtilsBase::distance2D( x[i], y[i], x[i + 1], y[i + 1] );
     totalLineLength += segmentLengths[i];
   }
   distanceToSegment[line->nbPoints - 1] = totalLineLength;
@@ -933,7 +934,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
     else
       distanceToSegment[i] = distanceToSegment[i - 1] + segmentLengths[i - 1];
 
-    segmentLengths[i] = GeomFunction::dist_euc2d( x[i], y[i], x[i + 1], y[i + 1] );
+    segmentLengths[i] = QgsGeometryUtilsBase::distance2D( x[i], y[i], x[i + 1], y[i + 1] );
     totalLineLength += segmentLengths[i];
     if ( extremeAngleNodes.contains( i ) )
     {
@@ -1002,7 +1003,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
       line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine, &candidateStartX, &candidateStartY );
       line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine + labelWidth, &candidateEndX, &candidateEndY );
 
-      candidateLength = QgsGeometryUtils::distance2D( candidateEndX, candidateEndY, candidateStartX, candidateStartY );
+      candidateLength = QgsGeometryUtilsBase::distance2D( candidateEndX, candidateEndY, candidateStartX, candidateStartY );
 
 
       // LOTS OF DIFFERENT COSTS TO BALANCE HERE - feel free to tweak these, but please add a unit test
@@ -1150,7 +1151,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
     else
       distanceToSegment[i] = distanceToSegment[i - 1] + segmentLengths[i - 1];
 
-    segmentLengths[i] = GeomFunction::dist_euc2d( x[i], y[i], x[i + 1], y[i + 1] );
+    segmentLengths[i] = QgsGeometryUtilsBase::distance2D( x[i], y[i], x[i + 1], y[i + 1] );
     totalLineLength += segmentLengths[i];
   }
   distanceToSegment[line->nbPoints - 1] = totalLineLength;
@@ -1223,11 +1224,11 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
     if ( currentDistanceAlongLine < 0 )
     {
       // label is bigger than line, use whole available line
-      candidateLength = QgsGeometryUtils::distance2D( x[nbPoints - 1], y[nbPoints - 1], x[0], y[0] );
+      candidateLength = QgsGeometryUtilsBase::distance2D( x[nbPoints - 1], y[nbPoints - 1], x[0], y[0] );
     }
     else
     {
-      candidateLength = QgsGeometryUtils::distance2D( candidateEndX, candidateEndY, candidateStartX, candidateStartY );
+      candidateLength = QgsGeometryUtilsBase::distance2D( candidateEndX, candidateEndY, candidateStartX, candidateStartY );
     }
 
     cost = candidateLength / labelWidth;
