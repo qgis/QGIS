@@ -153,7 +153,7 @@ QgsRectangle QgsMeshLayer::extent() const
   else
   {
     QgsRectangle rec;
-    rec.setMinimal();
+    rec.setNull();
     return rec;
   }
 }

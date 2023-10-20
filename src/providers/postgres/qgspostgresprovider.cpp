@@ -213,7 +213,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     }
   }
 
-  mLayerExtent.setMinimal();
+  mLayerExtent.setNull();
 
   // Try to load metadata
   const QString schemaQuery = QStringLiteral( "SELECT table_schema FROM information_schema.tables WHERE table_name = 'qgis_layer_metadata'" );
@@ -369,7 +369,7 @@ void QgsPostgresProvider::handlePostCloneOperations( QgsVectorDataProvider *sour
 void QgsPostgresProvider::reloadProviderData()
 {
   mShared->setFeaturesCounted( -1 );
-  mLayerExtent.setMinimal();
+  mLayerExtent.setNull();
 }
 
 QgsPostgresConn *QgsPostgresProvider::connectionRW()
@@ -3777,7 +3777,7 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
   }
   else
   {
-    mLayerExtent.setMinimal();
+    mLayerExtent.setNull();
     emit dataChanged();
   }
 
@@ -3969,7 +3969,7 @@ QgsRectangle QgsPostgresProvider::extent() const
 
 void QgsPostgresProvider::updateExtents()
 {
-  mLayerExtent.setMinimal();
+  mLayerExtent.setNull();
 }
 
 bool QgsPostgresProvider::getGeometryDetails()

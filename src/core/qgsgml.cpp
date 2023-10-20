@@ -61,7 +61,7 @@ QgsGml::QgsGml(
 int QgsGml::getFeatures( const QString &uri, Qgis::WkbType *wkbType, QgsRectangle *extent, const QString &userName, const QString &password, const QString &authcfg )
 {
   //start with empty extent
-  mExtent.setMinimal();
+  mExtent.setNull();
 
   QNetworkRequest request( uri );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGml" ) );
@@ -178,7 +178,7 @@ int QgsGml::getFeatures( const QString &uri, Qgis::WkbType *wkbType, QgsRectangl
 
 int QgsGml::getFeatures( const QByteArray &data, Qgis::WkbType *wkbType, QgsRectangle *extent )
 {
-  mExtent.setMinimal();
+  mExtent.setNull();
 
   QString errorMsg;
   if ( !mParser.processData( data, true /* atEnd */, errorMsg ) )

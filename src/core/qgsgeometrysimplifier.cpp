@@ -28,7 +28,7 @@ bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const Qg
 bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QVector<QPointF> &points, float mapToPixelTol )
 {
   QgsRectangle r;
-  r.setMinimal();
+  r.setNull();
 
   for ( int i = 0, numPoints = points.size(); i < numPoints; ++i )
   {

@@ -18,7 +18,6 @@
 //header for class being tested
 #include <qgsrectangle.h>
 #include <qgspoint.h>
-#include "qgslogger.h"
 #include "qgsreferencedgeometry.h"
 
 class TestQgsRectangle: public QObject
@@ -38,7 +37,7 @@ class TestQgsRectangle: public QObject
     void operators();
     void asVariant();
     void referenced();
-    void minimal();
+    void setNull();
     void grow();
     void include();
     void buffered();
@@ -363,10 +362,10 @@ void TestQgsRectangle::referenced()
   QCOMPARE( rect2.crs().authid(), QStringLiteral( "EPSG:28356" ) );
 }
 
-void TestQgsRectangle::minimal()
+void TestQgsRectangle::setNull()
 {
   QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
-  rect1.setMinimal();
+  rect1.setNull();
   QVERIFY( rect1.isEmpty() );
   QVERIFY( rect1.isNull() );
 }
@@ -430,7 +429,7 @@ void TestQgsRectangle::include()
   QCOMPARE( rect1.xMaximum(), 115.0 );
   QCOMPARE( rect1.yMaximum(), 242.0 );
 
-  rect1.setMinimal();
+  rect1.setNull();
 
   rect1.include( QgsPointXY( 15, 50 ) );
   QCOMPARE( rect1.xMinimum(), 15.0 );
@@ -444,7 +443,7 @@ void TestQgsRectangle::include()
   QCOMPARE( rect1.xMaximum(), 15.0 );
   QCOMPARE( rect1.yMaximum(), 50.0 );
 
-  rect1.setMinimal();
+  rect1.setNull();
 
   rect1.include( QgsPointXY( 5, 30 ) );
   QCOMPARE( rect1.xMinimum(), 5.0 );
@@ -461,19 +460,23 @@ void TestQgsRectangle::include()
 
 void TestQgsRectangle::buffered()
 {
-  QgsRectangle rect = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
-  const QgsRectangle rect1 = rect.buffered( 11 );
-  QCOMPARE( rect1.xMinimum(), -1.0 );
-  QCOMPARE( rect1.yMinimum(), 9.0 );
-  QCOMPARE( rect1.xMaximum(), 121.0 );
-  QCOMPARE( rect1.yMaximum(), 231.0 );
+  QgsRectangle rectIn = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
+  QgsRectangle rectOut = rectIn.buffered( 11 );
+  QCOMPARE( rectOut.xMinimum(), -1.0 );
+  QCOMPARE( rectOut.yMinimum(), 9.0 );
+  QCOMPARE( rectOut.xMaximum(), 121.0 );
+  QCOMPARE( rectOut.yMaximum(), 231.0 );
 
-  rect = QgsRectangle( -110.0, -220.0, -10.0, -20.0 );
-  const QgsRectangle rect2 = rect.buffered( 11 );
-  QCOMPARE( rect2.xMinimum(), -121.0 );
-  QCOMPARE( rect2.yMinimum(), -231.0 );
-  QCOMPARE( rect2.xMaximum(), 1.0 );
-  QCOMPARE( rect2.yMaximum(), -9.0 );
+  rectIn = QgsRectangle( -110.0, -220.0, -10.0, -20.0 );
+  rectOut = rectIn.buffered( 11 );
+  QCOMPARE( rectOut.xMinimum(), -121.0 );
+  QCOMPARE( rectOut.yMinimum(), -231.0 );
+  QCOMPARE( rectOut.xMaximum(), 1.0 );
+  QCOMPARE( rectOut.yMaximum(), -9.0 );
+
+  rectIn.setNull();
+  rectOut = rectIn.buffered( 11 );
+  QVERIFY( rectOut.isNull() );
 }
 
 void TestQgsRectangle::isFinite()

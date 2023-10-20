@@ -5811,7 +5811,7 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
   }
   else
   {
-    mLayerExtent.setMinimal();
+    mLayerExtent.setNull();
     mNumberFeatures = 0;
   }
 
@@ -5820,7 +5820,7 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
 
 bool QgsSpatiaLiteProvider::getTableSummary()
 {
-  mLayerExtent.setMinimal(); // setNull(), basically
+  mLayerExtent.setNull();
 
   QString sql = QStringLiteral( "SELECT Count(1)" );
 

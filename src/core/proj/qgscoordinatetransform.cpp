@@ -616,7 +616,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   const int nYPoints = std::min( static_cast< int >( std::ceil( ( yMax - yMin ) / dst ) ) + 1, 1000 );
 
   QgsRectangle bb_rect;
-  bb_rect.setMinimal();
+  bb_rect.setNull();
 
   // We're interfacing with C-style vectors in the
   // end, so let's do C-style vectors here too.

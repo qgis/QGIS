@@ -166,15 +166,30 @@ class CORE_EXPORT QgsRectangle
     void setYMaximum( double y ) SIP_HOLDGIL { mYmax = y; }
 
     /**
+     * Mark a rectangle as being null (holding no spatial information).
+     *
+     * A null rectangle is also empty by definition.
+     *
+     * \see isNull()
+     * \see isEmpty()
+     *
+     * \since QGIS 3.34
+     */
+    void setNull() SIP_HOLDGIL
+    {
+      mXmin = mYmin = std::numeric_limits<double>::max();
+      mXmax = mYmax = -std::numeric_limits<double>::max();
+    }
+
+    /**
      * Set a rectangle so that min corner is at max
      * and max corner is at min. It is NOT normalized.
+     *
+     * \deprecated since QGIS 3.34 - will be removed in QGIS 4.0. Use setNull().
      */
-    void setMinimal() SIP_HOLDGIL
+    Q_DECL_DEPRECATED void setMinimal() SIP_DEPRECATED
     {
-      mXmin = std::numeric_limits<double>::max();
-      mYmin = std::numeric_limits<double>::max();
-      mXmax = -std::numeric_limits<double>::max();
-      mYmax = -std::numeric_limits<double>::max();
+      setNull();
     }
 
     /**
@@ -334,6 +349,8 @@ class CORE_EXPORT QgsRectangle
     */
     QgsRectangle buffered( double width ) const
     {
+      if ( isNull() )
+        return QgsRectangle();
       return QgsRectangle( mXmin - width, mYmin - width, mXmax + width, mYmax + width );
     }
 
@@ -473,8 +490,13 @@ class CORE_EXPORT QgsRectangle
     QgsRectangle &operator+=( QgsVector v );
 
     /**
-     * Returns TRUE if the rectangle is empty.
-     * An empty rectangle may still be non-null if it contains valid information (e.g. bounding box of a point).
+     * Returns TRUE if the rectangle has no area.
+     *
+     * An empty rectangle may still be non-null if it contains valid
+     * spatial information (e.g. bounding box of a point or of a vertical
+     * or horizontal segment).
+     *
+     * \see isNull()
      */
     bool isEmpty() const
     {
@@ -482,13 +504,18 @@ class CORE_EXPORT QgsRectangle
     }
 
     /**
-     * Test if the rectangle is null (all coordinates zero or after call to setMinimal()).
+     * Test if the rectangle is null (holding no spatial information).
+     *
      * A null rectangle is also an empty rectangle.
+     *
+     * \see setNull()
+     *
      * \since QGIS 2.4
      */
     bool isNull() const
     {
-      // rectangle created QgsRectangle() or with rect.setMinimal() ?
+      // rectangle created QgsRectangle() or with rect.setNull() or
+      // otherwise having NaN ordinates
       return ( std::isnan( mXmin )  && std::isnan( mXmax ) && std::isnan( mYmin ) && std::isnan( mYmax ) ) ||
              ( qgsDoubleNear( mXmin, 0.0 ) && qgsDoubleNear( mXmax, 0.0 ) && qgsDoubleNear( mYmin, 0.0 ) && qgsDoubleNear( mYmax, 0.0 ) ) ||
              ( qgsDoubleNear( mXmin, std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmin, std::numeric_limits<double>::max() ) &&
