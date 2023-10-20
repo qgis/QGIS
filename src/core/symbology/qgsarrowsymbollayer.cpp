@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryutils_base.h"
 #include "qgsarrowsymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsfillsymbol.h"
@@ -224,7 +225,7 @@ void QgsArrowSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 
 inline qreal euclidean_distance( QPointF po, QPointF pd )
 {
-  return std::sqrt( ( po.x() - pd.x() ) * ( po.x() - pd.x() ) + ( po.y() - pd.y() ) * ( po.y() - pd.y() ) );
+  return QgsGeometryUtilsBase::distance2D( po.x(), po.y(), pd.x(), pd.y() );
 }
 
 QPolygonF straightArrow( QPointF po, QPointF pd,
@@ -400,7 +401,7 @@ bool pointsToCircle( QPointF a, QPointF b, QPointF c, QPointF &center, qreal &ra
     cy = bc2.y() - ( cx - bc2.x() ) * bc.x() / bc.y();
   }
   // Radius
-  radius = std::sqrt( ( a.x() - cx ) * ( a.x() - cx ) + ( a.y() - cy ) * ( a.y() - cy ) );
+  radius = QgsGeometryUtilsBase::distance2D( a.x(), a.y(), cx, cy );
   // Center
   center.setX( cx );
   center.setY( cy );
