@@ -191,7 +191,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
   const QgsProcessingAlgorithm *delaunayAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:delaunaytriangulation" ) );
   if ( !delaunayAlg )
   {
-    feedback->reportError( QObject::tr( "Failed to compute concave hull: Delaunay triangualation algorithm not found!" ), true );
+    feedback->reportError( QObject::tr( "Failed to compute concave hull: Delaunay triangulation algorithm not found!" ), true );
   }
   std::unique_ptr< QgsProcessingAlgorithm > algorithm;
   algorithm.reset( delaunayAlg->create() );
