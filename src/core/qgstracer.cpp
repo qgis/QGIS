@@ -57,7 +57,7 @@ double distance2D( const QgsPolylineXY &coords )
   {
     x1 = coords[i].x();
     y1 = coords[i].y();
-    dist += std::sqrt( ( x1 - x0 ) * ( x1 - x0 ) + ( y1 - y0 ) * ( y1 - y0 ) );
+    dist += QgsGeometryUtils::distance2D( x1, y1, x0, y0 );
     x0 = x1;
     y0 = y1;
   }
