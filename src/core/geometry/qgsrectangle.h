@@ -100,6 +100,22 @@ class CORE_EXPORT QgsRectangle
     ~QgsRectangle() = default;
 
     /**
+    * Creates a null rectangle.
+    *
+    * This is a temporary method to use while the default
+    * constructor is still not constructing a null rectangle.
+    *
+    * \since QGIS 3.34
+    */
+    static QgsRectangle createNull() SIP_SKIP
+    {
+      // TODO: remove this method once the default constructor gives a null
+      QgsRectangle rectNull;
+      rectNull.setNull(); // TODO: have setNull() return *this ?
+      return rectNull;
+    }
+
+    /**
     * Creates a new rectangle from a \a wkt string.
     * The WKT must contain only 5 vertices, representing a rectangle aligned with X and Y axes.
     * \since QGIS 3.0
