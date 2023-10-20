@@ -33,6 +33,7 @@
 #include "qgsgeos.h"
 #include "qgsmessagelog.h"
 #include "qgsgeometryutils.h"
+#include "qgsgeometryutils_base.h"
 #include <qglobal.h>
 
 using namespace pal;
@@ -357,13 +358,13 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
         if ( pt  != -1 )
         {
           // compute the ihs->ihn->pt triangle's area
-          const double base = GeomFunction::dist_euc2d( x[shape->convexHull[ihs]], y[shape->convexHull[ihs]],
+          const double base = QgsGeometryUtilsBase::distance2D( x[shape->convexHull[ihs]], y[shape->convexHull[ihs]],
                               x[shape->convexHull[ihn]], y[shape->convexHull[ihn]] );
 
-          b = GeomFunction::dist_euc2d( x[shape->convexHull[ihs]], y[shape->convexHull[ihs]],
-                                        x[pt], y[pt] );
+          b = QgsGeometryUtilsBase::distance2D( x[shape->convexHull[ihs]], y[shape->convexHull[ihs]],
+                                                x[pt], y[pt] );
 
-          const double c = GeomFunction::dist_euc2d( x[shape->convexHull[ihn]], y[shape->convexHull[ihn]],
+          const double c = QgsGeometryUtilsBase::distance2D( x[shape->convexHull[ihn]], y[shape->convexHull[ihn]],
                            x[pt], y[pt] );
 
           const double s = ( base + b + c ) / 2; // s = half perimeter
@@ -406,7 +407,7 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
         // compute distance between retainedPoint and segment
         // whether perpendicular distance (if retaindPoint is fronting segment i->j)
         // or distance between retainedPt and i or j (choose the nearest)
-        seg_length = GeomFunction::dist_euc2d( x[i], y[i], x[j], y[j] );
+        seg_length = QgsGeometryUtilsBase::distance2D( x[i], y[i], x[j], y[j] );
         cx = ( x[i] + x[j] ) / 2.0;
         cy = ( y[i] + y[j] ) / 2.0;
         dx = cy - y[i];
@@ -419,7 +420,7 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
 
         if ( seg_length < EPSILON || std::fabs( ( b = GeomFunction::cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )   // retainedPt is not fronting i->j
         {
-          if ( ( ex = GeomFunction::dist_euc2d_sq( x[i], y[i], x[retainedPt], y[retainedPt] ) ) < ( ey = GeomFunction::dist_euc2d_sq( x[j], y[j], x[retainedPt], y[retainedPt] ) ) )
+          if ( ( ex = QgsGeometryUtilsBase::sqrDistance2D( x[i], y[i], x[retainedPt], y[retainedPt] ) ) < ( ey = QgsGeometryUtilsBase::sqrDistance2D( x[j], y[j], x[retainedPt], y[retainedPt] ) ) )
           {
             b = ex;
             ps = i;
@@ -904,7 +905,7 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
     if ( ry )
       *ry = ny;
 
-    return GeomFunction::dist_euc2d_sq( px, py, nx, ny );
+    return QgsGeometryUtilsBase::sqrDistance2D( px, py, nx, ny );
   }
   catch ( GEOSException &e )
   {
