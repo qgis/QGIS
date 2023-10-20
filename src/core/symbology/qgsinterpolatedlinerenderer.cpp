@@ -15,6 +15,7 @@
 
 #include <QPainter>
 
+#include "qgsgeometryutils_base.h"
 #include "qgsinterpolatedlinerenderer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyle.h"
@@ -1187,7 +1188,7 @@ void QgsInterpolatedLineSymbolLayer::render( const QVector< QPolygonF > &parts, 
 
       const double v1c = startValColor + variationPerMapUnitColor * lengthFromStart;
       const double v1w = startValWidth + variationPerMapUnitWidth * lengthFromStart;
-      lengthFromStart += std::sqrt( ( p1.x() - p2.x() ) * ( p1.x() - p2.x() ) + ( p1.y() - p2.y() ) * ( p1.y() - p2.y() ) );
+      lengthFromStart += QgsGeometryUtilsBase::distance2D( p1.x(), p1.y(), p2.x(), p2.y() );
       const double v2c = startValColor + variationPerMapUnitColor * lengthFromStart;
       const double v2w = startValWidth + variationPerMapUnitWidth * lengthFromStart;
       mLineRender.renderInDeviceCoordinates( v1c, v2c, v1w, v2w, p1, p2, context );
