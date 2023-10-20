@@ -325,30 +325,26 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
 
   QPolygonF currentLine;
   double prevDistance = std::numeric_limits< double >::quiet_NaN();
-  double prevHeight = std::numeric_limits< double >::quiet_NaN();
   double currentPartStartDistance = 0;
   for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
   {
-    if ( std::isnan( prevDistance ) )
+    if ( currentLine.empty() ) // new part
     {
+      if ( std::isnan( pointIt.value() ) ) // skip emptiness
+        continue;
       currentPartStartDistance = pointIt.key();
-    }
-    else if ( currentLine.empty() )
-    {
-      currentPartStartDistance = prevDistance;
-      currentLine.append( context.worldTransform().map( QPointF( prevDistance, prevHeight ) ) );
     }
 
     if ( std::isnan( pointIt.value() ) )
     {
       checkLine( currentLine, context, minZ, maxZ, prevDistance, currentPartStartDistance );
       currentLine.clear();
-      continue;
     }
-
-    currentLine.append( context.worldTransform().map( QPointF( pointIt.key(), pointIt.value() ) ) );
-    prevDistance = pointIt.key();
-    prevHeight = pointIt.value();
+    else
+    {
+      currentLine.append( context.worldTransform().map( QPointF( pointIt.key(), pointIt.value() ) ) );
+      prevDistance = pointIt.key();
+    }
   }
 
   checkLine( currentLine, context, minZ, maxZ, prevDistance, currentPartStartDistance );

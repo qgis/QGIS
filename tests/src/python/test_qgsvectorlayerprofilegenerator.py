@@ -1783,6 +1783,54 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         res = plot_renderer.renderToImage(400, 400, 0, curve.length(), 0, 14)
         self.assertTrue(self.image_check('vector_lines_as_surface_with_markers', 'vector_lines_as_surface_with_markers', res))
 
+    def testRenderProfileAsLineWithHoledDtm(self):
+        rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm_with_holes.tif'), 'DTM')
+        self.assertTrue(rl.isValid())
+
+        rl.elevationProperties().setEnabled(True)
+        rl.elevationProperties().setProfileSymbology(Qgis.ProfileSurfaceSymbology.Line)
+        line_symbol = QgsLineSymbol.createSimple({'color': '#ff00ff', 'width': '0.8'})
+        rl.elevationProperties().setProfileLineSymbol(line_symbol)
+
+        curve = QgsLineString()
+        curve.fromWkt('LineString (320900 129000, 322900 129000)')
+        req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
+
+        req.setCrs(QgsCoordinateReferenceSystem())
+
+        plot_renderer = QgsProfilePlotRenderer([rl], req)
+        plot_renderer.startGeneration()
+        plot_renderer.waitForFinished()
+
+        res = plot_renderer.renderToImage(1600, 800, 0, curve.length(), 0, 90)
+        self.assertTrue(self.image_check('vector_lines_as_line_with_holed_dtm', 'vector_lines_as_line_with_holed_dtm', res))
+
+    def testRenderProfileAsSurfaceFillBelowWithHoledDtm(self):
+        rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm_with_holes.tif'), 'DTM')
+        self.assertTrue(rl.isValid())
+
+        rl.elevationProperties().setEnabled(True)
+        rl.elevationProperties().setProfileSymbology(Qgis.ProfileSurfaceSymbology.FillBelow)
+        fill_symbol = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_style': 'no'})
+        rl.elevationProperties().setProfileFillSymbol(fill_symbol)
+        line_symbol = QgsLineSymbol.createSimple({'color': '#ff00ff', 'width': '0.8'})
+        rl.elevationProperties().setProfileLineSymbol(line_symbol)
+
+        curve = QgsLineString()
+        curve.fromWkt('LineString (320900 129000, 322900 129000)')
+        req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
+
+        req.setCrs(QgsCoordinateReferenceSystem())
+
+        plot_renderer = QgsProfilePlotRenderer([rl], req)
+        plot_renderer.startGeneration()
+        plot_renderer.waitForFinished()
+
+        res = plot_renderer.renderToImage(1600, 800, 0, curve.length(), 0, 90)
+        self.assertTrue(self.image_check('vector_lines_as_fill_below_surface_with_holed_dtm', 'vector_lines_as_fill_below_surface_with_holed_dtm', res))
+
     def testRenderProfileAsSurfaceFillBelow(self):
         vl = QgsVectorLayer('LineStringZ?crs=EPSG:27700', 'lines', 'memory')
         vl.setCrs(QgsCoordinateReferenceSystem())
