@@ -16,6 +16,7 @@
 #include "qgstessellator.h"
 
 #include "qgscurve.h"
+#include "qgsgeometryutils_base.h"
 #include "qgsgeometry.h"
 #include "qgsmessagelog.h"
 #include "qgsmultipolygon.h"
@@ -453,7 +454,7 @@ double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
     {
       const double x1 = *srcXData++;
       const double y1 = *srcYData++;
-      const double d = ( x0 - x1 ) * ( x0 - x1 ) + ( y0 - y1 ) * ( y0 - y1 );
+      const double d = QgsGeometryUtilsBase::sqrDistance2D( x0, y0, x1, y1 );
       if ( d < min_d )
         min_d = d;
       x0 = x1;
