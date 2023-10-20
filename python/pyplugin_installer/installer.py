@@ -46,7 +46,7 @@ import qgis
 from qgis.core import Qgis, QgsApplication, QgsMessageLog, QgsNetworkAccessManager, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
 from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin, OverrideCursor,
-                        reloadPlugin, updateAvailablePlugins, plugins_metadata_parser)
+                        reloadPlugin, updateAvailablePlugins, plugins_metadata_parser, isPluginLoaded)
 from .installer_data import (repositories, plugins, officialRepo,
                              reposGroup, removeDir)
 from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
@@ -315,6 +315,11 @@ class QgsPluginInstaller(QObject):
             if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!"), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
                 return
 
+        # if plugin is active, unload it before update, see https://github.com/qgis/QGIS/issues/54968
+        pluginWasLoaded = isPluginLoaded(plugin["id"])
+        if pluginWasLoaded:
+            unloadPlugin(plugin["id"])
+
         dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin, stable=stable)
         dlg.exec_()
 
@@ -322,6 +327,9 @@ class QgsPluginInstaller(QObject):
         if dlg.result():
             error = True
             infoString = (self.tr("Plugin installation failed"), dlg.result())
+            # download failed or aborted. If plugin was active before the update, let's try to load it back
+            if pluginWasLoaded and loadPlugin(plugin["id"]):
+                startPlugin(plugin["id"])
         elif not QDir(plugin_path).exists():
             error = True
             infoString = (
@@ -609,6 +617,10 @@ class QgsPluginInstaller(QObject):
             QDir().mkpath(pluginsDirectory)
 
         pluginDirectory = QDir.cleanPath(os.path.join(pluginsDirectory, pluginName))
+
+        # if plugin is active, unload it before update, see https://github.com/qgis/QGIS/issues/54968
+        if isPluginLoaded(pluginName):
+            unloadPlugin(pluginName)
 
         # If the target directory already exists as a link,
         # remove the link without resolving
