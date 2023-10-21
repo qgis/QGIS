@@ -233,6 +233,9 @@ QgsGeometry QgsGeometry::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly 
 
 QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
 {
+  if ( rect.isNull() )
+    return QgsGeometry();
+
   std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >(
       QVector< double >() << rect.xMinimum()
       << rect.xMaximum()
