@@ -137,7 +137,7 @@ community of GIS professionals and enthusiasts as well as geospatial data publis
 
 ### Versions and release cycle
 
-QGIS development and releases follow a [time based schedule/roadmap](https://www.qgis.org/en/site/getinvolved/development/roadmap.html). There are three main branches of QGIS that users can install. These are the **Long Term Release (LTR)** branch, **Latest Release (LR)** branch, and the **Development (Nightly)** branch. 
+QGIS development and releases follow a [time based schedule/roadmap](https://www.qgis.org/en/site/getinvolved/development/roadmap.html). There are three main branches of QGIS that users can install. These are the **Long Term Release (LTR)** branch, the **Latest Release (LR)** branch, and the **Development (Nightly)** branch. 
 
 Every month, there is a **Point Release** that provides bug-fixes to the LTR and LR.
 
@@ -216,4 +216,4 @@ The [translation](https://qgis.org/en/site/getinvolved/translate.html) process i
 
 ### Other ways to contribute
 
-If you are not a developer, there are many other possibilities which do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](https://qgis.org/en/site/getinvolved/index.html).
+If you are not a developer, there are many other possibilities that do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](https://qgis.org/en/site/getinvolved/index.html).
