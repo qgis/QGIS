@@ -938,9 +938,8 @@ void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
   QgsCoordinateReferenceSystem tgtCrs;
   tgtCrs.createFromString( QStringLiteral( "EPSG:3857" ) );
   mapSettings.setDestinationCrs( tgtCrs );
-
   mapSettings.setOutputSize( size );
-  mapSettings.setExtent( vl2->extent() );
+  mapSettings.setExtent( tgtCrs.bounds() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
