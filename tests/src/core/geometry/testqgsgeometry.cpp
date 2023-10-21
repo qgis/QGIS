@@ -155,6 +155,7 @@ class TestQgsGeometry : public QgsTest
     void createCollectionOfType();
 
     void orientedMinimumBoundingBox( );
+    void boundingBox();
     void boundingBox3D();
     void minimalEnclosingCircle( );
     void splitGeometry();
@@ -2165,6 +2166,16 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
   resultTestWKT = QStringLiteral( "Polygon ((-57 -30, -55.5 -30, -55.5 -29, -57 -29, -57 -30))" );
   QCOMPARE( result.asWkt( 2 ), resultTestWKT );
 
+}
+
+void TestQgsGeometry::boundingBox()
+{
+  QgsGeometry geomTest;
+  QgsRectangle nullRect = QgsRectangle::createNull();
+  QCOMPARE( geomTest.boundingBox(), nullRect );
+
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(-1 -2, 4 5)" ) );
+  QCOMPARE( geomTest.boundingBox3D(), QgsRectangle( -1, -2, 4, 5 ) );
 }
 
 void TestQgsGeometry::boundingBox3D()
