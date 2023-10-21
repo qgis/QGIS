@@ -96,6 +96,7 @@ class TestQgsGeometry : public QgsTest
     void fromQPoint();
     void fromQPolygonF();
     void fromPolyline();
+    void fromRect();
     void asQPointF();
     void asQPolygonF();
 
@@ -832,6 +833,17 @@ void TestQgsGeometry::fromPolyline()
   polylineZM << QgsPoint( Qgis::WkbType::PointZM, 10, 20, 4, 100 ) << QgsPoint( Qgis::WkbType::PointZM, 30, 40, 5, 200 );
   fromPolyline = QgsGeometry::fromPolyline( polylineZM );
   QCOMPARE( fromPolyline.asWkt(), QStringLiteral( "LineStringZM (10 20 4 100, 30 40 5 200)" ) );
+}
+
+void TestQgsGeometry::fromRect()
+{
+  QgsRectangle rectNull = QgsRectangle::createNull();
+
+  QgsGeometry fromRect = QgsGeometry::fromRect( rectNull );
+  QVERIFY( fromRect.isNull() );
+
+  fromRect = QgsGeometry::fromRect( QgsRectangle( 1, 2, 3, 4 ) );
+  QCOMPARE( fromRect.asWkt(), QStringLiteral( "Polygon ((1 2, 3 2, 3 4, 1 4, 1 2))" ) );
 }
 
 void TestQgsGeometry::asQPointF()
