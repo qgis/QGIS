@@ -928,7 +928,7 @@ void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
   QgsFeature f( vl2->fields(), 1 );
 
-  const QString wkt1 = QStringLiteral( "POLYGON((0 0,8 0,8 -90,0 0))" );
+  const QString wkt1 = QStringLiteral( "POLYGON((0 0,8 0,8 -91,0 0))" );
   f.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
 
   // make a fake render context
