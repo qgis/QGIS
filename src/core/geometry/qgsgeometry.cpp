@@ -1204,7 +1204,7 @@ QgsRectangle QgsGeometry::boundingBox() const
   {
     return d->geometry->boundingBox();
   }
-  return QgsRectangle::createNull();
+  return QgsRectangle();
 }
 
 QgsBox3D QgsGeometry::boundingBox3D() const

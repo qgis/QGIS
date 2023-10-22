@@ -837,7 +837,7 @@ void TestQgsGeometry::fromPolyline()
 
 void TestQgsGeometry::fromRect()
 {
-  QgsRectangle rectNull = QgsRectangle::createNull();
+  QgsRectangle rectNull;
 
   QgsGeometry fromRect = QgsGeometry::fromRect( rectNull );
   QVERIFY( fromRect.isNull() );
@@ -2183,7 +2183,7 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
 void TestQgsGeometry::boundingBox()
 {
   QgsGeometry geomTest;
-  QgsRectangle nullRect = QgsRectangle::createNull();
+  QgsRectangle nullRect;
   QCOMPARE( geomTest.boundingBox(), nullRect );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(-1 -2, 4 5)" ) );
