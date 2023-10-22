@@ -59,7 +59,6 @@ Copy constructor
 
     ~QgsRectangle();
 
-
     static QgsRectangle fromWkt( const QString &wkt );
 %Docstring
 Creates a new rectangle from a ``wkt`` string.

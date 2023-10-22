@@ -83,7 +83,7 @@ void TestQgsVirtualLayerProvider::testConstructor()
   QString uri;
   std::unique_ptr<QgsVectorDataProvider> prov( new QgsVirtualLayerProvider( uri, opts ) );
 
-  const QgsRectangle rectNull = QgsRectangle::createNull();
+  const QgsRectangle rectNull;
   QCOMPARE( prov->sourceExtent(), rectNull );
 }
 
