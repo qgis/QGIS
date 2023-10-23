@@ -514,10 +514,8 @@ class CORE_EXPORT QgsRectangle
     bool isNull() const
     {
       // rectangle created QgsRectangle() or with rect.setNull() or
-      // otherwise having NaN ordinates
-      return ( std::isnan( mXmin )  && std::isnan( mXmax ) && std::isnan( mYmin ) && std::isnan( mYmax ) ) ||
-             ( qgsDoubleNear( mXmin, std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmin, std::numeric_limits<double>::max() ) &&
-               qgsDoubleNear( mXmax, -std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmax, -std::numeric_limits<double>::max() ) );
+      // otherwise having all NaN ordinates
+      return std::isnan( mXmin ) && std::isnan( mXmax ) && std::isnan( mYmin ) && std::isnan( mYmax );
     }
 
     /**
