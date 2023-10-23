@@ -124,6 +124,7 @@ public:
         int max_threads;
         std::string outputFormat;   // las or laz (for now)
         bool buildVpc = false;
+        std::string inputFileList; // file list with input files
     } opts;
 
     pdal::BOX3D trueBounds;
@@ -434,6 +435,7 @@ void addArgs(pdal::ProgramArgs& programArgs, BaseInfo::Options& options, pdal::A
 {
     programArgs.add("output,o", "Output directory/filename", options.outputDir);
     programArgs.add("files,i", "Input files/directory", options.inputFiles).setPositional();
+    programArgs.add("input-file-list", "Read input files from a text file", options.inputFileList);
     programArgs.add("length,l", "Tile length", options.tileLength, 1000.);
     tempArg = &(programArgs.add("temp_dir", "Temp directory", options.tempDir));
     programArgs.add("output-format", "Output format (las/laz)", options.outputFormat);
@@ -461,7 +463,7 @@ bool handleOptions(pdal::StringList& arglist, BaseInfo::Options& options)
     addArgs(programArgs, options, tempArg, threadsArg);
     try
     {
-        programArgs.parse(arglist);
+        programArgs.parseSimple(arglist);
     }
     catch (const pdal::arg_error& err)
     {
@@ -497,6 +499,22 @@ bool handleOptions(pdal::StringList& arglist, BaseInfo::Options& options)
         if (options.outputFormat != "las" && options.outputFormat != "laz")
             throw FatalError("Unknown output format: " + options.outputFormat);
     }
+
+    if (!options.inputFileList.empty())
+    {
+        std::ifstream inputFile(options.inputFileList);
+        std::string line;
+        if(!inputFile)
+        {
+            throw FatalError("Failed to open input file list: " + options.inputFileList);
+        }
+
+        while (std::getline(inputFile, line))
+        {
+            options.inputFiles.push_back(line);
+        }
+    }
+
 
     return true;
 }

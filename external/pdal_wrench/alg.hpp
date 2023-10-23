@@ -206,6 +206,7 @@ struct Merge : public Alg
     // parameters from the user
     std::string outputFile;
     std::vector<std::string> inputFiles;
+    std::string inputFileList;
 
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
