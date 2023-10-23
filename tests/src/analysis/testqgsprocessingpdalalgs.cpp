@@ -58,6 +58,8 @@ class TestQgsProcessingPdalAlgs: public QgsTest
     void tile();
 
   private:
+    void updateFileListArg( QStringList &args, const QString &fileName );
+
     QString mPointCloudLayerPath;
 };
 
@@ -87,6 +89,26 @@ void TestQgsProcessingPdalAlgs::cleanupTestCase()
 
 void TestQgsProcessingPdalAlgs::init()
 {
+}
+
+void TestQgsProcessingPdalAlgs::updateFileListArg( QStringList &args, const QString &fileName )
+{
+  int i = 0;
+  bool found = false;
+  for ( const QString &arg : args )
+  {
+    if ( arg.contains( fileName, Qt::CaseInsensitive ) )
+    {
+      found = true;
+      break;
+    }
+    i++;
+  }
+
+  if ( found )
+  {
+    args[ i ] = QStringLiteral( "--input-file-list=%1" ).arg( fileName );
+  }
 }
 
 void TestQgsProcessingPdalAlgs::info()
@@ -998,64 +1020,65 @@ void TestQgsProcessingPdalAlgs::buildVpc()
   parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << pointCloud1
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // multiple layers
   parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << pointCloud1 << pointCloud2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // calculate exact boundaries
   parameters.insert( QStringLiteral( "BOUNDARY" ), true );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--boundary" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // calculate statistics
   parameters.insert( QStringLiteral( "STATISTICS" ), true );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--boundary" )
             << QStringLiteral( "--stats" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // build overview
   parameters.insert( QStringLiteral( "OVERVIEW" ), true );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--boundary" )
             << QStringLiteral( "--stats" )
             << QStringLiteral( "--overview" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--boundary" )
             << QStringLiteral( "--stats" )
             << QStringLiteral( "--overview" )
             << QStringLiteral( "--threads=2" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 }
 
