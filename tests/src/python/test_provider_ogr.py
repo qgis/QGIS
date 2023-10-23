@@ -3433,6 +3433,59 @@ class PyQgsOGRProvider(QgisTestCase):
             self.assertFalse(
                 exporter.attributeEditCapabilities() & Qgis.VectorDataProviderAttributeEditCapability.EditComment)
 
+    def testGeoJsonMapType(self):
+        """Test issue GH #54966: Geojson and maps attribute not working"""
+
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        json_path = os.path.join(temp_path, 'test.json')
+
+        data = """
+        {
+          "type": "FeatureCollection",
+          "features": [
+            { "type": "Feature",
+              "properties": {
+                "style": {
+                    "color": "red"
+                }
+              },
+              "geometry": {
+                "type": "Point",
+                "coordinates": [ 13.318741, 38.106645 ]
+              }
+            }
+          ]
+        }"""
+
+        with open(json_path, 'w+') as f:
+            f.write(data)
+
+        vl = QgsVectorLayer(json_path, 'vl')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields()[0].type(), QVariant.Map)
+
+        f = next(vl.getFeatures())
+        fid = f.id()
+        self.assertEqual(fid, 0)
+
+        self.assertTrue(vl.dataProvider().changeAttributeValues({fid: {0: {"style": {"color": "green"}}}}))
+        vl = QgsVectorLayer(json_path, 'vl')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields()[0].type(), QVariant.Map)
+        f = next(vl.getFeatures())
+        self.assertEqual(f.attributes()[0], {'style': {'color': 'green'}})
+
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('POINT(15 40)'))
+        f.setAttribute(0, {'style': {'color': 'yellow'}})
+        self.assertTrue(vl.dataProvider().addFeatures([f]))
+        vl = QgsVectorLayer(json_path, 'vl')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields()[0].type(), QVariant.Map)
+        f = vl.getFeature(1)
+        self.assertEqual(f.attributes()[0], {'style': {'color': 'yellow'}})
+
 
 if __name__ == '__main__':
     unittest.main()
