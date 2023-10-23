@@ -2007,7 +2007,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::Point25D:
       case Qgis::WkbType::PointZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::Point:
         g.srid  = mSrid;
@@ -2022,7 +2022,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::LineStringZ:
       case Qgis::WkbType::MultiLineStringZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::LineString:
       case Qgis::WkbType::MultiLineString:
@@ -2061,7 +2061,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::PolygonZ:
       case Qgis::WkbType::MultiPolygonZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::Polygon:
       case Qgis::WkbType::MultiPolygon:
@@ -2131,7 +2131,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::MultiPoint25D:
       case Qgis::WkbType::MultiPointZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::MultiPoint:
       {
@@ -2157,7 +2157,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::CompoundCurveZ:
       case Qgis::WkbType::MultiCurveZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::CircularString:
       case Qgis::WkbType::CompoundCurve:
@@ -2234,7 +2234,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::CurvePolygonZ:
       case Qgis::WkbType::MultiSurfaceZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::CurvePolygon:
       case Qgis::WkbType::MultiSurface:

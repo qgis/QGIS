@@ -299,7 +299,7 @@ int QgsGrassNewMapset::nextId() const
         id = MapSet;
         break;
       }
-      FALLTHROUGH
+      [[fallthrough]];
     case Database:
     case Crs:
     case Region:

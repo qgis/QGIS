@@ -1305,7 +1305,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
       case Qgis::WkbType::MultiPoint25D:
         hasZValue = true;
         //intentional fall-through
-        FALLTHROUGH
+        [[fallthrough]];
       case Qgis::WkbType::MultiPoint:
       {
         QDomElement multiPointElem = doc.createElement( QStringLiteral( "gml:MultiPoint" ) );
@@ -1350,7 +1350,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
       case Qgis::WkbType::LineString25D:
         hasZValue = true;
         //intentional fall-through
-        FALLTHROUGH
+        [[fallthrough]];
       case Qgis::WkbType::LineString:
       {
         QDomElement lineStringElem = doc.createElement( QStringLiteral( "gml:LineString" ) );
@@ -1393,7 +1393,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
       case Qgis::WkbType::MultiLineString25D:
         hasZValue = true;
         //intentional fall-through
-        FALLTHROUGH
+        [[fallthrough]];
       case Qgis::WkbType::MultiLineString:
       {
         QDomElement multiLineStringElem = doc.createElement( QStringLiteral( "gml:MultiLineString" ) );
@@ -1451,7 +1451,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
       case Qgis::WkbType::Polygon25D:
         hasZValue = true;
         //intentional fall-through
-        FALLTHROUGH
+        [[fallthrough]];
       case Qgis::WkbType::Polygon:
       {
         QDomElement polygonElem = doc.createElement( QStringLiteral( "gml:Polygon" ) );
@@ -1513,7 +1513,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
       case Qgis::WkbType::MultiPolygon25D:
         hasZValue = true;
         //intentional fall-through
-        FALLTHROUGH
+        [[fallthrough]];
       case Qgis::WkbType::MultiPolygon:
       {
         QDomElement multiPolygonElem = doc.createElement( QStringLiteral( "gml:MultiPolygon" ) );

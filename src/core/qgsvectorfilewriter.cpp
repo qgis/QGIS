@@ -733,7 +733,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
 
             //intentional fall-through
-          FALLTHROUGH
+          [[fallthrough]];
 
           case QVariant::List:
             // handle GPKG conversion to JSON
@@ -806,7 +806,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
               break;
             }
             //intentional fall-through
-            FALLTHROUGH
+            [[fallthrough]];
 
           default:
             //assert(0 && "invalid variant type!");
@@ -2996,7 +2996,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           break;
         }
         //intentional fall-through
-        FALLTHROUGH
+        [[fallthrough]];
 
       case QVariant::Map:
       {
@@ -3017,7 +3017,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       }
 
         //intentional fall-through
-      FALLTHROUGH
+      [[fallthrough]];
 
 
       default:

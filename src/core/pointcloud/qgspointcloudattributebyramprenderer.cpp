@@ -193,7 +193,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::creat
                                            mColorRampShader.maximumValue() );
         break;
       }
-      Q_FALLTHROUGH();
+      [[fallthrough]];
     case QgsColorRampShader::Discrete:
     case QgsColorRampShader::Exact:
     {

@@ -68,7 +68,7 @@ QVector<QgsAbstractProfileResults::Feature> QgsVectorLayerProfileResults::asFeat
       if ( type != Qgis::ProfileExportType::DistanceVsElevationTable )
         return asIndividualFeatures( type, feedback );
       // distance vs elevation table results are always handled like a continuous surface
-      FALLTHROUGH
+      [[fallthrough]];
 
     case Qgis::VectorProfileType::ContinuousSurface:
       return QgsAbstractProfileSurfaceResults::asFeatures( type, feedback );

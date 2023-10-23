@@ -1914,7 +1914,7 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
       // other lists are supported at this moment, fall through to default for other types
 
       //intentional fall-through
-      FALLTHROUGH
+      [[fallthrough]];
 
     default:
       pushError( tr( "type %1 for field %2 not found" ).arg( field.typeName(), field.name() ) );

@@ -388,7 +388,7 @@ double QgsRenderContext::convertToPainterUnits( double size, Qgis::RenderUnit un
         size = convertMetersToMapUnits( size );
       unit = Qgis::RenderUnit::MapUnits;
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
-      FALLTHROUGH
+      [[fallthrough]];
     }
     case Qgis::RenderUnit::MapUnits:
     {
@@ -484,7 +484,7 @@ double QgsRenderContext::convertToMapUnits( double size, Qgis::RenderUnit unit, 
     {
       size = convertMetersToMapUnits( size );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
-      FALLTHROUGH
+      [[fallthrough]];
     }
     case Qgis::RenderUnit::MapUnits:
     {

@@ -1301,7 +1301,7 @@ bool QgsLayoutItemMap::nextExportPart()
         mCurrentExportPart = Background;
         return true;
       }
-      FALLTHROUGH
+      [[fallthrough]];
 
     case Background:
       mCurrentExportPart = Layer;
@@ -1330,7 +1330,7 @@ bool QgsLayoutItemMap::nextExportPart()
         mCurrentExportPart = Grid;
         return true;
       }
-      FALLTHROUGH
+      [[fallthrough]];
 
     case Grid:
       for ( int i = 0; i < mOverviewStack->size(); ++i )
@@ -1342,7 +1342,7 @@ bool QgsLayoutItemMap::nextExportPart()
           return true;
         }
       }
-      FALLTHROUGH
+      [[fallthrough]];
 
     case OverviewMapExtent:
       if ( frameEnabled() )
@@ -1351,7 +1351,7 @@ bool QgsLayoutItemMap::nextExportPart()
         return true;
       }
 
-      FALLTHROUGH
+      [[fallthrough]];
 
     case Frame:
       if ( isSelected() && !mLayout->renderContext().isPreviewRender() )
@@ -1359,7 +1359,7 @@ bool QgsLayoutItemMap::nextExportPart()
         mCurrentExportPart = SelectionBoxes;
         return true;
       }
-      FALLTHROUGH
+      [[fallthrough]];
 
     case SelectionBoxes:
       mCurrentExportPart = End;
