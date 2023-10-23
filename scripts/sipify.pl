@@ -1155,6 +1155,7 @@ while ($LINE_IDX < $LINE_COUNT){
                     # replace :: with . (changes c++ style namespace/class directives to Python style)
                     $comment =~ s/::/./g;
                     $comment =~ s/\"/\\"/g;
+                    $comment =~ s/\\since .*?([\d\.]+)/\\n.. versionadded:: $1\\n/i;
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
                     if ($is_scope_based eq "1" and $enum_member ne "") {
                         if ( $monkeypatch eq 1 and $enum_mk_base ne ""){
