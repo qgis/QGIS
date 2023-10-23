@@ -952,51 +952,52 @@ void TestQgsProcessingPdalAlgs::merge()
   parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << pointCloud1
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // multiple layers
   parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << pointCloud1 << pointCloud2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // filter expression
   parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--filter=Intensity > 50" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // filter extent
   parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--filter=Intensity > 50" )
             << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--filter=Intensity > 50" )
             << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 }
 
