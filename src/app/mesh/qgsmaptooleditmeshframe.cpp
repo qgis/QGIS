@@ -688,7 +688,7 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
     case Digitizing:
       if ( !mCadDockWidget->cadEnabled() || !mSelectedVertices.isEmpty() || mCurrentFaceIndex != -1 )
         return QgsMapTool::Flags() | QgsMapTool::ShowContextMenu;
-      FALLTHROUGH
+      [[fallthrough]];
     case AddingNewFace:
     case Selecting:
     case MovingSelection:

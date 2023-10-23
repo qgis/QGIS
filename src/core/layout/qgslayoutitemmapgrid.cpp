@@ -641,7 +641,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
         break;
       }
 
-      FALLTHROUGH
+      [[fallthrough]];
     case CM:
     case MM:
       drawGridNoTransform( context, dotsPerMM );
@@ -2217,7 +2217,7 @@ void QgsLayoutItemMapGrid::calculateMaxExtension( double &top, double &right, do
         break;
       }
     }
-    FALLTHROUGH
+    [[fallthrough]];
     case CM:
     case MM:
       drawGridNoTransform( context, 0, true );

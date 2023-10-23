@@ -4556,7 +4556,7 @@ QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const
         uniqueValues = mDataProvider->uniqueValues( index, limit );
         return uniqueValues;
       }
-      FALLTHROUGH
+      [[fallthrough]];
     //we need to go through each feature
     case QgsFields::OriginJoin:
     case QgsFields::OriginExpression:
@@ -4655,7 +4655,7 @@ QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString &sub
       {
         return mDataProvider->uniqueStringsMatching( index, substring, limit, feedback );
       }
-      FALLTHROUGH
+      [[fallthrough]];
     //we need to go through each feature
     case QgsFields::OriginJoin:
     case QgsFields::OriginExpression:
@@ -4789,7 +4789,7 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant *minimum, QVaria
         return;
       }
     }
-    FALLTHROUGH
+    [[fallthrough]];
     // no choice but to go through all features
     case QgsFields::OriginExpression:
     case QgsFields::OriginJoin:

@@ -1545,7 +1545,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint * >( processedGeometry );
         markers.reserve( mp->numGeometries() );
       }
-      FALLTHROUGH
+      [[fallthrough]];
       case Qgis::WkbType::MultiCurve:
       case Qgis::WkbType::MultiLineString:
       case Qgis::WkbType::GeometryCollection:

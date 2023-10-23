@@ -232,7 +232,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         return QVariant( sL + sR );
       }
       //intentional fall-through
-      FALLTHROUGH
+      [[fallthrough]];
     case boMinus:
     case boMul:
     case boDiv:

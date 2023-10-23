@@ -279,7 +279,7 @@ void QgsLayoutItemMapItemStack::drawItems( QPainter *painter, bool ignoreStackin
         if ( !ignoreStacking )
           break;
 
-        FALLTHROUGH
+        [[fallthrough]];
       case QgsLayoutItemMapItem::StackAboveMapLabels:
         item->draw( painter );
         break;

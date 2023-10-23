@@ -120,12 +120,12 @@ void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &proper
   {
     case QgsPropertyDefinition::DataTypeBoolean:
       ts << tr( "boolean" );
-      FALLTHROUGH
+      [[fallthrough]];
 
     case QgsPropertyDefinition::DataTypeNumeric:
       ts << tr( "int" );
       ts << tr( "double" );
-      FALLTHROUGH
+      [[fallthrough]];
 
     case QgsPropertyDefinition::DataTypeString:
       ts << tr( "string" );

@@ -111,7 +111,7 @@ void QgsScaleCalculator::calculateMetrics( const QgsRectangle &mapExtent, double
 
     case Qgis::DistanceUnit::Unknown:
       // assume degrees to maintain old API
-      FALLTHROUGH
+      [[fallthrough]];
 
     case Qgis::DistanceUnit::Degrees:
       // degrees require conversion to meters first

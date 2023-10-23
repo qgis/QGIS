@@ -216,7 +216,7 @@ std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBack
         layer.reset( static_cast< QgsMarkerSymbolLayer * >( settings.markerSymbol()->symbolLayer( 0 )->clone() ) );
         break;
       }
-      FALLTHROUGH // not set, just go with the default
+      [[fallthrough]]; // not set, just go with the default
     }
     case QgsTextBackgroundSettings::ShapeCircle:
     case QgsTextBackgroundSettings::ShapeEllipse:

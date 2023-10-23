@@ -2653,7 +2653,6 @@ typedef unsigned long long qgssize;
 
 
 
-
 QString geoWkt();
 %Docstring
 Wkt string that represents a geographic coord sys
