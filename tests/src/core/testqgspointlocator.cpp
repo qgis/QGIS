@@ -159,7 +159,7 @@ class TestQgsPointLocator : public QObject
     void testPointInPolygon()
     {
       QgsPointLocator loc( mVL );
-      QgsPointLocator::MatchList mValid = loc.pointInPolygon( QgsPointXY( 0.8, 0.8 ), nullptr, false );
+      QgsPointLocator::MatchList mValid = loc.pointInPolygon( QgsPointXY( 0.8, 0.8 ) );
       QCOMPARE( mValid.count(), 1 );
       const QgsPointLocator::Match m = mValid[0];
       QVERIFY( m.isValid() );
@@ -167,7 +167,7 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( m.layer(), mVL );
       QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
 
-      const QgsPointLocator::MatchList mInvalid = loc.pointInPolygon( QgsPointXY( 0, 0 ), nullptr, false );
+      const QgsPointLocator::MatchList mInvalid = loc.pointInPolygon( QgsPointXY( 0, 0 ) );
       QCOMPARE( mInvalid.count(), 0 );
     }
 
@@ -259,7 +259,7 @@ class TestQgsPointLocator : public QObject
       const QgsPointLocator::Match mAddE = loc.nearestEdge( QgsPointXY( 11.1, 10.5 ), 999 );
       QVERIFY( mAddE.isValid() );
       QCOMPARE( mAddE.point(), QgsPointXY( 11, 10.5 ) );
-      const QgsPointLocator::MatchList mAddA = loc.pointInPolygon( QgsPointXY( 10.8, 10.8 ), nullptr, false );
+      const QgsPointLocator::MatchList mAddA = loc.pointInPolygon( QgsPointXY( 10.8, 10.8 ) );
       QVERIFY( mAddA.count() == 1 );
 
       // change geometry

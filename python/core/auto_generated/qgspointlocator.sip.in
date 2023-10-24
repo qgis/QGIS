@@ -302,22 +302,16 @@ This method is either blocking or non blocking according to ``relaxed`` paramete
 
 
 
- MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false ) /Deprecated/;
-%Docstring
-find out if the ``point`` is in any polygons
-This method is either blocking or non blocking according to ``relaxed`` parameter passed
-
-.. deprecated::
-   QGIS 3.34 - use the overloaded pointInPolygon accepting a QgsPointLocator.MatchFilter parameter (pointInPolygonV2 in python)
-%End
-
-    MatchList pointInPolygon( const QgsPointXY &point, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false ) /PyName=pointInPolygonV2/;
+    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
 Find out if the ``point`` is in any polygons
-This method is either blocking or non blocking according to ``relaxed`` parameter passed
-Optional filter may discard unwanted matches.
 
-.. versionadded:: 3.34
+:param relaxed: ``True`` if index build has to be non blocking
+:param filter: since QGIS 3.34, Optional filter may discard unwanted matches.
+
+.. note::
+
+   Parameters ``filter`` and ``relaxed`` are in reversed order compared to the rest of MatchList returning methods.
 %End
 
     int cachedGeometryCount() const;
