@@ -4,109 +4,301 @@
 # feedback, reviews and/or many other things that have aided the development of
 # QGIS:
 #
-Alessandro Pasotti
-Alexandre Neto
-Andrea Giudiceandrea
-Andreas Neumann
-Andres Manz
-Anita Graser
-Arnaud Morvan
-Arthur Nanni
-Arunmozhi
-Baba Yoshihiko
-Belgacem Nedjima
-Benoit De Mezzo
-Bernhard Ströbl
-Björn Hinkeldey
-Brent Wood
-Brook Milligan
-Carl Anderson
-Carlos Dávila
-Carson J. Q. Farmer
-Christian Ferreira
-Clemens Raffler
-Cédric Möri
-Daniel Vaz
-Daniele Viganò
-David Adler
-David Nguyen
-Denis Rouzaud
-Diego Moreira
-Duarte Carreira
-Etienne Tourigny
-Etienne Trimaille
-Even Rouault
-Fernando Pacheco
-Florian El Ahdab
-Florian Hof
-Frank Warmerdam
-Germán Carrillo
-Giovanni Manghi
-Giuseppe Sucameli
-Harrissou Sant-anna
-Horst Duester
-Hyao (IRC nickname)
-Ismail Sunni
-Ivan Lucena
-Ivan Mincik
-Jacky Volpes
+Nyall Dawson (nyalldawson)
+Jürgen Fischer (jef-n)
+Matthias Kuhn (m-kuhn)
+Alessandro Pasotti (elpaso)
+mhugent (mhugent)
+Denis Rouzaud (3nids)
+Tim Sutton (timlinux)
+Alexander Bruy (alexbruy)
+Martin Dobias (wonder-sk)
+Mathieu Pellerin (nirvn)
+Víctor Olaya (volaya)
+Paul Blottiere (pblottiere)
+Werner Macho (mach0)
+Radim Blazek (blazek)
+Gary Sherman (g-sherman)
+Even Rouault (rouault)
+Nathan Woodrow (NathanW2)
+Harrissou Sant-anna (DelazJ)
+rldhont (rldhont)
+Loïc Bartoletti (lbartoletti)
+signedav (signedav)
+Larry Shaffer (dakcarto)
+Nedjima Belgacem (NEDJIMAbelgacem)
+Julien Cabieces (troopa81)
+Salvatore Larosa (slarosa)
+Sandro Santilli (strk)
+Sandro Mani (manisandro)
+Vincent Cloarec (vcloarec)
+Paolo Cavallini (pcav)
+Stefanos Natsis (uclaros)
+Peter Petrik (PeterPetrik)
+Giuseppe Sucameli (brushtyler)
+Damiano Lombardi (domi4484)
+Etienne Tourigny (etiennesky)
+Borys Jurgiel (borysiasty)
+Andrea Giudiceandrea (agiudiceandrea)
+Yoann Quenach de Quivillic (YoannQDQ)
+Olivier Dalang (olivierdalang)
+Étienne Trimaille (Gustry)
+Ivan Ivanov (suricactus)
+Alvaro Huarte (ahuarte47)
+Samweli Mwakisambwe (Samweli)
+Marco Bernasocchi (mbernasocchi)
+Richard Duivenvoorde (rduivenvoorde)
+Clemens Raffler (root676)
+Antoine Facchini (Koyaani)
+Jean Felder (ptitjano)
+Chris Crook (ccrook)
+Luigi Pirelli (luipir)
+Maxim Rylov (mrylov)
+Alex (roya0045)
+Ismail Sunni (ismailsunni)
+Arnaud Morvan (arnaud-morvan)
+Sebastian Dietrich (SebDieBln)
+Tom Kralidis (tomkralidis)
+Magnus Homann (homann)
+Matteo Ghetta (ghtmtt)
+Benoit D.-M. - oslandia (benoitdm-oslandia)
+Björn (pathmapper)
+Robert Szczepanek (Cracert)
+Germap (gacarrillor)
+Alexandre Neto (SrNetoChan)
+Jorge Gustavo Rocha (jgrocha)
+David Marteau (dmarteau)
+William Kyngesburye (kyngchaos)
+Pirmin Kalberer (pka)
+dependabot[bot] (dependabot[bot])
+Vincent Mora (vmora)
+Daniele Viganò (daniviga)
+José de Paula Rodrigues N. Assis (espinafre)
+Nicolas Godet (nicogodet)
+Giovanni Manghi (gioman)
+Tudor Barascu (tudorbarascu)
+Jean-Roc Morreale (Jean-Roc)
+Stéphane Brunner (sbrunner)
+Bas Couwenberg (sebastic)
+stopa85milk (stopa85milk)
+Tamas Szekeres (szekerest)
+Martin Pergler (Houska1)
+MorriganR (MorriganR)
+Anita Graser (anitagraser)
+jakimowb (jakimowb)
+Håvard Tveite (havatv)
+leyan (leyan)
+AlisterH (AlisterH)
+Jacky Volpes (Djedouas)
+grandMaster (vinayan)
+Tomas Mizera (tomasMizera)
+Jürnjakob Dugge (jdugge)
+Stephen Knox (stev-0)
+Minoru Akagi (minorua)
+YK (yoichigmf)
+Raymond Nijssen (raymondnijssen)
 Jaka Kranjc (lynxlynxlynx)
-James Shaeffer
-Jean-Denis Giguere
-Jeremy Palmer
-Jerrit Collord
-José de Paula R. N. Assis
-Julien Cabieces
-Luiz Motta
-Magnus Homann
-Marcel Dancak
-Marco Bernasocchi
-Marco Lechner
-Marco Pasetti
-Mario Baranzini
-Mark Baas
-Markus Neteler
-Martin Pergler
-Mathias Walker
-Mathieu Pellerin
-Matt Amos
-Matteo Ghetta
-Matteo Nastasi
-Matthias Kuhn
-Maurizio Napolitano
-Mayeul Kauffmann
-Michael Douchin
-Milena Nowotarska
-Minoru Akagi
-Nicolas Godet
-Nikos Alexandris
-Paolo Cavallini
-Patrice Pineault
-Paul Blottiere
-Paul Ramsey
-Peter Petrik
-Pierre Auckenthaler
-Raymond Nijssen
-Richard Duivenvoorde
-Richard Kostecky
-Robert Szczepanek
-Salvatore Larosa
-Samweli Mwakisambwe
-Sebastian Dietrich
-Shirley Xiao
-Shiva Reddy Koti
-Stefanie Tellex
-Stefanos Natsis
-Steven Mizuno
-Tamas Szekeres
-Tim Tisler
-Tom Russo
-Tomas Johansson
-Tyler Mitchell
-Vincent Cloarec
-Vita Cizek
-Yann Chemin
-Yoann Quenach de Quivillic
-Yves Jacolin
-
-Includes Map icons CC-0 from SJJB Management
+Co Flc (Ailurupoda)
+Piers Titus van der Torren (pierstitus)
+Stefan Uhrig (stefanuhrig)
+Artem Popov (artfwo)
+Rudi von Staden (rudivs)
+Tomas Straupis (tomass)
+Pedro Venancio (PedroVenancio)
+Daniel Minor (dminor)
+t0b3 (t0b3)
+Stefan Blumentrath (ninsbl)
+Patrice Pineault (TurboGraphxBeige)
+Ariadni-Karolina Alexiou  (carolinux)
+Nic (spono)
+Chris Mayo (cjmayo)
+Daniel Vaz (ddanielvaz)
+Evan D (dericke)
+Giovanni Allegri (giohappy)
+Hannes (kannes)
+Carl Simonson (simonsonc)
+DiGro (DiGro)
+Ivan Mincik (imincik)
+Jan Caha (JanCaha)
+Long Huan (longhuan2018)
+Basil Eric Rabi (basilrabi)
+Alexia Mondot (amondot)
+Cody Martin (Codym48)
+Tom Chadwin (tomchadwin)
+Markus Neteler (neteler)
+Mauro Bettella (bettellam)
+jbp35 (jbp35)
+M Yarjuna Rohmat (myarjunar)
+enrico ferreguti (enricofer)
+Mario Baranzini (marioba)
+Tom Vijlbrief (tomtor)
+Alexander Lisovenko (alisovenko)
+Pierre (pierreloicq)
+Jeremy Palmer (palmerj)
+Andreas Neumann (andreasneumann)
+Tobias Schmetzer (tschmetzer)
+CodeBardian (CodeBardian)
+Ethan Snyder (esnyder-rve)
+Jochen Topf (joto)
+Ludovic Hirlimann (lhirlimann)
+IGUCHI Kanahiro (Kanahiro)
+Andrea Aime (aaime)
+Matteo Nastasi (nastasi-oq)
+Kirill (sept-en)
+Jo (doublebyte1)
+Salvatore Fiandaca (pigreco)
+Andreas Steffens (andreassteffens)
+Daan Goedkoop (dgoedkoop)
+MrChebur (MrChebur)
+ZayneTomlins (ZayneTomlins)
+Thibault Coupin (tcoupin)
+Yves Jacolin (yjacolin)
+luzpaz (luzpaz)
+Michael Kirk (michaelkirk)
+Dmitry Shachnev (mitya57)
+Mie Winstrup (MieWinstrup)
+Tom Elwertowski (telwertowski)
+Will Cohen (willcohen)
+sklencar (sklencar)
+Martina Savarese (stra2da)
+Peillet Sebastien (SebastienPeillet)
+mdouchin (mdouchin)
+Uroš Preložnik (uprel)
+Landry Breuil (landryb)
+Aleix Pol (aleixpol)
+Anatoliy Golubev (naihil)
+Benoît Blanc (benoitblanc)
+Manuel Grizonnet (grizonnetm)
+Mathias Walker (mwa)
+pmav99 (pmav99)
+Patrick Valsecchi (pvalsecc)
+Stelios Vitalis (liberostelios)
+Tom Cummins (mo-tomcummins-roweit)
+Asier Sarasua Garmendia (asiersarasua)
+iona5 (iona5)
+Thodoris Vakkas (thodorisvakkas)
+towa (towa)
+Evgeniy Nikulin (yellow-sky)
+Asger Skovbo Petersen (AsgerPetersen)
+Pierre-Eric Pelloux-Prayer (peppsac)
+Mark Johnson (mj10777)
+Björn Harrtell (bjornharrtell)
+Frits van Veen (fritsvanveen)
+James Shaeffer (JamesShaeffer)
+Marcelo Soares Souza (marcelosoaressouza)
+Sam Gillingham (gillins)
+Serhii Dykyi (sdikiy)
+Shaway (ShawayL)
+Steven Mizuno (stevenmizuno)
+BJ Jang (jangbi882)
+Dmitry Kiselev (kiselev-dv)
+Māris Nartišs (marisn)
+Aron Gergely (arongergely)
+Dr. Andrew Annex (AndrewAnnex)
+Wilhelm Berg (wilhelmberg)
+Henry Walshaw (om-henners)
+Ilya Zverev (Zverik)
+Martin Varga (varmar05)
+Sergio Ramírez (seralra96)
+sshuair (sshuair)
+Clément MARCEL (c-marcel)
+Faneva Andriamiadantsoa (Fanevanjanahary)
+Radoslaw Guzinski (radosuav)
+Sebastian Grünewald (fiddlersfan)
+Otto Dassau (dassau)
+audun (audun)
+Benjamin Trigona-Harany (bosth)
+David Adler (dwadler)
+Duncan (duncan-r)
+Ian Turton (ianturton)
+Joshua Arnott (snorfalorpagus)
+João Gaspar (jonnyforestGIS)
+Jürgen Fredriksson (jiargei)
+Kent Porter (KentPorter-Boundless)
+Piotr Pociask (p0cisk)
+Yauhen Kharuzhy (jekhor)
+fsdias (fsdias)
+peterisb (peterisb)
+Ricardo Garcia Silva (ricardogsilva)
+Thomas Gratier (ThomasG77)
+Angelos Tzotsos (kalxas)
+Ari Jolma (ajolma)
+Ben Hur (benhur07b)
+Florent Guiotte (fguiotte)
+Julien (Guts)
+George Shegunov (gshegunov)
+HenningJagd (HenningJagd)
+Hien TRAN-QUANG (tqhien)
+Jakob Hvitnov (Hvitnov)
+Joel Grafström (leojth)
+Keigo Imai (keigoi)
+Luca M (luca76)
+Matteo Mattiuzzi (MatMatt)
+Maxime Liquet (maximlt)
+Milena Nowotarska  (milenanv)
+PhilippeDorelon (PhilippeDorelon)
+Rifa'i M. Hanif (hanreev)
+Roel Huybrechts (Roel)
+Rosa Aguilar (rosaguilar)
+Shiva Reddy (shivareddyiirs)
+xzcvczx (xzcvczx)
+Stefan Conrads (stefancon)
+Stefano Campus (skampus)
+Tom Palan (tpalan)
+Tomas Johansson (TomasJohansson)
+cdavila (cdavila)
+Denis Rykov (drnextgis)
+Stefan Ziegler (edigonzales)
+glebpinigin (glebpinigin)
+Hugh Kelley (HughKelley)
+i-s-o (i-s-o)
+Jean-François Bourdon (jfbourdon)
+nameloCmaS (nameloCmaS)
+مهدي شينون (Mehdi Chinoune) (MehdiChinoune)
+QGIS Koran Translator (Qgis-Tr-kr)
+Nico (ndamiens)
+jdlom (jdlom)
+Guilhem Vellut (gvellut)
+Ákos Seres (AkosSeres)
+Andreas Sturmlechner (a17r)
+Anika Weinmann (anikaweinmann)
+Antonio Locandro (antoniolocandro)
+Brian Kelly (spilth)
+Christian Frugard (frugardc)
+Christian Urich (christianurich)
+Cyrille Médard de Chardon (serialc)
+Eric Daigle (edaigle)
+Francesco Bursi (Franc-Brs)
+Geoff Kimbell (gkimbell)
+GisUsers (GisUsers)
+Guillaume Rischard (grischard)
+Jachym Cepicky (jachym)
+Jonathan Willitts (JonathanWillitts)
+Klavs Pihlkjær (klavspc)
+lsix (lsix)
+Laurențiu Nicola (lnicola)
+Leandro Stanger (LeandroStanger)
+Mario Locati (MarioLocati)
+Nicklas Larsson (nilason)
+Nikolay Korotkiy (sikmir)
+Paul Wicks (pwicks86)
+Pete King (pkinglinz)
+Radek Pasiok (erpas)
+Sebastian Gutwein (baswein)
+Shahzad Lone (shahzadlone)
+Sören Gebbert (huhabla)
+Tarot Osuji (tarot231)
+Timothé Perez (AchilleAsh)
+Tisham Dhar (whatnick)
+Ujaval Gandhi (spatialthoughts)
+ValPinna (ValPinnaSardinia)
+Victor Poughon (vpoughon)
+Vladimir Rutsky (rutsky)
+Yun Lin (kemen209)
+aharfoot (aharfoot)
+beketata (beketata)
+cmoe (cmoe)
+Massimo Endrighi (endmax)
+Massimo Di Stefano (epifanio)
+javicasnov (javicasnov)
+Juanma (juanmpd)
