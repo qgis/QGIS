@@ -110,7 +110,20 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
       continue;
 
     QVector<QgsFeature> layerFeatures;
-    const QgsFields layerFields = perLayerFields[layerName];
+    QgsFields layerFields = perLayerFields[layerName];
+
+    const auto allLayerFields = perLayerFields.find( QString() );
+    if ( allLayerFields != perLayerFields.end() )
+    {
+      // need to add the fields from any "all layer" rules to every layer
+      for ( const QgsField &field : allLayerFields.value() )
+      {
+        if ( layerFields.lookupField( field.name() ) == -1 )
+        {
+          layerFields.append( field );
+        }
+      }
+    }
 
     // figure out how field indexes in MVT encoding map to field indexes in QgsFields (we may not use all available fields)
     QHash<int, int> tagKeyIndexToFieldIndex;
