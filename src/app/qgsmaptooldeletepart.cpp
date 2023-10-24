@@ -141,7 +141,7 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( g.isEmpty() )
   {
-    emit messageEmitted( tr( "All geometry parts deleted from feature with fid %1. Feature has no geometry now!" ).arg( mPressedFid ) );
+    emit messageEmitted( tr( "All geometry parts deleted from feature %1. Feature has no geometry now!" ).arg( mPressedFid ) );
   }
 }
 
