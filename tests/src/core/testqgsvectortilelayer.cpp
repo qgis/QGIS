@@ -77,6 +77,7 @@ class TestQgsVectorTileLayer : public QgsTest
     void test_polygonWithMarker();
 
     void test_styleMinZoomBeyondTileMaxZoom();
+    void test_filterRuleAllLayers();
 };
 
 
@@ -635,6 +636,47 @@ void TestQgsVectorTileLayer::test_styleMinZoomBeyondTileMaxZoom()
   mMapSettings->setDestinationCrs( layer->crs() );
   QVERIFY( renderMapSettingsCheck( QStringLiteral( "render_test_style_min_zoom" ),
                                    QStringLiteral( "render_test_style_min_zoom" ), *mMapSettings, 0, 15 ) );
+}
+
+void TestQgsVectorTileLayer::test_filterRuleAllLayers()
+{
+  // test using a filter with field access for an "all layers" rule
+  QgsDataSourceUri ds;
+  ds.setParam( "type", "mbtiles" );
+  ds.setParam( "url", QString( "/%1/mbtiles_vt.mbtiles" ).arg( mDataDir ) );
+  std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( ds.encodedUri(), "Vector Tiles Test" );
+  QVERIFY( layer->isValid() );
+
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << layer.get() );
+
+  const QColor lineStrokeColor = Qt::blue;
+  const double lineStrokeWidth = DEFAULT_LINE_WIDTH * 4;
+
+  QgsSimpleLineSymbolLayer *lineSymbolLayer = new QgsSimpleLineSymbolLayer;
+  lineSymbolLayer->setColor( lineStrokeColor );
+  lineSymbolLayer->setWidth( lineStrokeWidth );
+  QgsLineSymbol *lineSymbol = new QgsLineSymbol( QgsSymbolLayerList() << lineSymbolLayer );
+
+  QgsVectorTileBasicRendererStyle st( QStringLiteral( "Lines" ), QString(), Qgis::GeometryType::Line );
+  st.setFilterExpression( QStringLiteral( "\"Name\"='Highway'" ) );
+  st.setSymbol( lineSymbol );
+
+  QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer;
+  fillSymbolLayer->setColor( Qt::white );
+  fillSymbolLayer->setStrokeStyle( Qt::NoPen );
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol( QgsSymbolLayerList() << fillSymbolLayer );
+
+  QgsVectorTileBasicRendererStyle bgst( QStringLiteral( "background" ), QStringLiteral( "background" ), Qgis::GeometryType::Polygon );
+  bgst.setSymbol( fillSymbol );
+
+  QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
+  rend->setStyles( QList<QgsVectorTileBasicRendererStyle>() << bgst << st );
+  layer->setRenderer( rend );  // takes ownership
+
+  mMapSettings->setExtent( layer->extent() );
+  mMapSettings->setDestinationCrs( layer->crs() );
+  QVERIFY( renderMapSettingsCheck( QStringLiteral( "render_test_filter_all_layers" ),
+                                   QStringLiteral( "render_test_filter_all_layers" ), *mMapSettings, 0, 15 ) );
 }
 
 
