@@ -3433,6 +3433,7 @@ class PyQgsOGRProvider(QgisTestCase):
             self.assertFalse(
                 exporter.attributeEditCapabilities() & Qgis.VectorDataProviderAttributeEditCapability.EditComment)
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7 required")
     def testGeoJsonMapType(self):
         """Test issue GH #54966: Geojson and maps attribute not working"""
 
