@@ -444,19 +444,12 @@ class CORE_EXPORT QgsPointLocator : public QObject
     // TODO: function to return just the first match?
 
     /**
-     * find out if the \a point is in any polygons
-     * This method is either blocking or non blocking according to \a relaxed parameter passed
-     * \deprecated QGIS 3.34 - use the overloaded pointInPolygon accepting a QgsPointLocator::MatchFilter parameter (pointInPolygonV2 in python)
-     */
-    Q_DECL_DEPRECATED MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false ) SIP_DEPRECATED;
-
-    /**
      * Find out if the \a point is in any polygons
-     * This method is either blocking or non blocking according to \a relaxed parameter passed
-     * Optional filter may discard unwanted matches.
-     * \since QGIS 3.34
+     * \param relaxed TRUE if index build has to be non blocking
+     * \param filter since QGIS 3.34, Optional filter may discard unwanted matches.
+     * \note Parameters \a filter and \a relaxed are in reversed order compared to the rest of MatchList returning methods.
      */
-    MatchList pointInPolygon( const QgsPointXY &point, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false ) SIP_PYNAME( pointInPolygonV2 );
+    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false, QgsPointLocator::MatchFilter *filter = nullptr );
 
     /**
      * Returns how many geometries are cached in the index

@@ -1407,7 +1407,7 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
   if ( !prepare( relaxed ) )
     return Match();
 
-  const MatchList mlist = pointInPolygon( point, filter );
+  const MatchList mlist = pointInPolygon( point, false, filter );
   if ( !mlist.isEmpty() && mlist.at( 0 ).isValid() )
   {
     return mlist.at( 0 );
@@ -1472,13 +1472,9 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &po
   return verticesInRect( rect, filter, relaxed );
 }
 
-QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point, bool relaxed )
+QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point, bool relaxed, QgsPointLocator::MatchFilter *filter )
 {
-  return QgsPointLocator::pointInPolygon( point, nullptr, relaxed );
-}
-
-QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point, QgsPointLocator::MatchFilter *filter, bool relaxed )
-{
+  // TODO QGIS 4: reorder relaxed & filter parameters to match other methods' signatures
   if ( !prepare( relaxed ) )
     return MatchList();
 
