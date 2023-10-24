@@ -3448,7 +3448,8 @@ class PyQgsOGRProvider(QgisTestCase):
               "properties": {
                 "style": {
                     "color": "red"
-                }
+                },
+                "list": [1, 2]
               },
               "geometry": {
                 "type": "Point",
@@ -3464,10 +3465,12 @@ class PyQgsOGRProvider(QgisTestCase):
         vl = QgsVectorLayer(json_path, 'vl')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.fields()[0].type(), QVariant.Map)
+        self.assertEqual(vl.fields()[1].type(), QVariant.List)
 
         f = next(vl.getFeatures())
         fid = f.id()
         self.assertEqual(fid, 0)
+        self.assertEqual(f.attributes()[1], [1, 2])
 
         self.assertTrue(vl.dataProvider().changeAttributeValues({fid: {0: {"style": {"color": "green"}}}}))
         vl = QgsVectorLayer(json_path, 'vl')

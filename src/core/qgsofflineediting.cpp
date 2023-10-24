@@ -820,11 +820,7 @@ void QgsOfflineEditing::convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *d
       QgsAttributes newAttrs( containerType == GPKG ? attrs.count() + 1 : attrs.count() );
       for ( int it = 0; it < attrs.count(); ++it )
       {
-        QVariant attr = attrs.at( it );
-        if ( layer->fields().at( it ).type() == QVariant::StringList || layer->fields().at( it ).type() == QVariant::List )
-        {
-          attr = QgsJsonUtils::encodeValue( attr );
-        }
+        const QVariant attr = attrs.at( it );
         newAttrs[column++] = attr;
       }
       f.setAttributes( newAttrs );
