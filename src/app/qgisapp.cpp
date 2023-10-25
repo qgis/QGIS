@@ -10210,6 +10210,37 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   if ( duplicateFeature )
   {
     pastedFeatures = features;
+
+    for ( auto &feature : pastedFeatures )
+    {
+      QgsGeometry geom = feature.geometry();
+
+      if ( !( geom.isEmpty() || geom.isNull( ) ) )
+      {
+        // avoid intersection if enabled in digitize settings
+        QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+        switch ( QgsProject::instance()->avoidIntersectionsMode() )
+        {
+          case Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+            avoidIntersectionsLayers.append( pasteVectorLayer );
+            break;
+          case Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+            avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+            break;
+          case Qgis::AvoidIntersectionsMode::AllowIntersections:
+            break;
+        }
+        if ( avoidIntersectionsLayers.size() > 0 )
+        {
+          geom.avoidIntersectionsV2( avoidIntersectionsLayers );
+          feature.setGeometry( geom );
+        }
+
+        // count collapsed geometries
+        if ( geom.isEmpty() || geom.isNull( ) )
+          invalidGeometriesCount++;
+      }
+    }
   }
   else
   {
