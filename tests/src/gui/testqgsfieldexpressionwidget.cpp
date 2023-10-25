@@ -49,6 +49,7 @@ class TestQgsFieldExpressionWidget : public QObject
     void testIsValid();
     void testFilters();
     void setNull();
+    void testVeryLongExpression();
 
   private:
     QgsFieldExpressionWidget *mWidget = nullptr;
@@ -371,6 +372,20 @@ void TestQgsFieldExpressionWidget::setNull()
 
   QgsProject::instance()->removeMapLayer( layer );
 }
+
+void TestQgsFieldExpressionWidget::testVeryLongExpression()
+{
+  QString veryLongExpression;
+  for ( int i = 0; i < 32770; i++ )
+  {
+    veryLongExpression += "a";
+  }
+
+  mWidget->setExpression( veryLongExpression );
+  QCOMPARE( veryLongExpression.size(), mWidget->currentText().size() );
+};
+
+
 
 QGSTEST_MAIN( TestQgsFieldExpressionWidget )
 #include "testqgsfieldexpressionwidget.moc"
