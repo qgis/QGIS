@@ -1193,3 +1193,13 @@ QWidget#QgsRasterCalcDialogBase QWidget#mOperatorsGroupBox QPushButton {
 QFrame#mUserInputContainer { 
     background-color: @background;
 }
+
+QgsAttributeFormWidget QComboBox:disabled {
+    border: none;
+    background-color: @itembackground;
+    color: @text;
+}
+
+QgsAttributeFormWidget QComboBox::down-arrow:disabled {
+     image: none;
+}
