@@ -195,6 +195,11 @@ void QgsFieldExpressionWidget::setField( const QString &fieldName )
     return;
   }
 
+  if ( fieldName.size() > mCombo->lineEdit()->maxLength() )
+  {
+    mCombo->lineEdit()->setMaxLength( fieldName.size() );
+  }
+
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
   if ( !idx.isValid() )
   {
