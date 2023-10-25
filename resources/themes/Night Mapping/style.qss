@@ -1235,3 +1235,13 @@ QFrame#mUserInputContainer {
 QgsLayoutRuler {
     color: @textlight;
 }
+
+QgsAttributeFormWidget QComboBox:disabled {
+    border: none;
+    background-color: @itembackground;
+    color: @textlight;
+}
+
+QgsAttributeFormWidget QComboBox::down-arrow:disabled {
+     image: none;
+}
