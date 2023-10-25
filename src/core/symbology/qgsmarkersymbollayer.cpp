@@ -3476,7 +3476,23 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "font" ) ) )
     fontFamily = props[QStringLiteral( "font" )].toString();
   if ( props.contains( QStringLiteral( "chr" ) ) && props[QStringLiteral( "chr" )].toString().length() > 0 )
-    string = props[QStringLiteral( "chr" )].toString();
+  {
+    string = props["chr"].toString();
+    if ( props.contains( QStringLiteral( "chrIsDecimal" ) ) && props["chrIsDecimal"].toBool() )
+    {
+      string = QChar( props["chr"].toString().toUShort() );
+    }
+    else
+    {
+      const thread_local QRegularExpression charRegExp( QStringLiteral( "%1([0-9]+)%1" ).arg( FONTMARKER_CHR_FIX ) );
+      const QRegularExpressionMatch charMatch = charRegExp.match( string );
+      if ( charMatch.hasMatch() )
+      {
+        string = QChar( charMatch.captured( 1 ).toUShort() );
+      }
+    }
+  }
+
   if ( props.contains( QStringLiteral( "size" ) ) )
     pointSize = props[QStringLiteral( "size" )].toDouble();
   if ( props.contains( QStringLiteral( "color" ) ) )
@@ -3799,7 +3815,16 @@ QVariantMap QgsFontMarkerSymbolLayer::properties() const
   QVariantMap props;
   props[QStringLiteral( "font" )] = mFontFamily;
   props[QStringLiteral( "font_style" )] = mFontStyle;
-  props[QStringLiteral( "chr" )] = mString;
+  if ( mString.size() == 1 )
+  {
+    props[QStringLiteral( "chr" )] = QString::number( mString.at( 0 ).unicode() );
+    props[QStringLiteral( "chrIsDecimal" )] = true;
+  }
+  else
+  {
+    props[QStringLiteral( "chr" )] = mString;
+    props["chrIsDecimal"] = false;
+  }
   props[QStringLiteral( "size" )] = QString::number( mSize );
   props[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( mSizeUnit );
   props[QStringLiteral( "size_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );
