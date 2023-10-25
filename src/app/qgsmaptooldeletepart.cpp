@@ -28,12 +28,8 @@
  * A filter to limit the matches to selected features, if a selection is present.
  * If there is no selection, any feature can be matched.
  */
-class SelectedMatchFilter : public QgsPointLocator::MatchFilter
+class SelectedOnlyFilter : public QgsPointLocator::MatchFilter
 {
-  public:
-    explicit SelectedMatchFilter()
-    {}
-
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
       // If there is a selection, we limit matches to selected features
@@ -155,7 +151,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
     case Qgis::GeometryType::Point:
     case Qgis::GeometryType::Line:
     {
-      SelectedMatchFilter filter;
+      SelectedOnlyFilter filter;
       const QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Types( QgsPointLocator::Vertex | QgsPointLocator::Edge ), &filter );
       if ( !match.isValid() )
         return geomPart;
@@ -192,7 +188,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
     }
     case Qgis::GeometryType::Polygon:
     {
-      SelectedMatchFilter filter;
+      SelectedOnlyFilter filter;
       const QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Area, &filter );
       if ( !match.isValid() )
         return geomPart;
