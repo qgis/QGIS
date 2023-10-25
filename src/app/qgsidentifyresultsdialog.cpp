@@ -1289,7 +1289,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorTileLayer *layer,
     attrItem->setData( 0, Qt::UserRole, fields.at( i ).name() );
     attrItem->setData( 0, Qt::UserRole + 1, i );
 
-    attrItem->setData( 1, Qt::UserRole, value );
+    attrItem->setData( 1, REPRESENTED_VALUE_ROLE, value );
     attrItem->setSortData( 1, value );
     attrItem->setToolTip( 1, value );
     bool foundLinks = false;
