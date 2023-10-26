@@ -318,9 +318,7 @@ class QgsPostgresConn : public QObject
 
     QString uniqueCursorName();
 
-#if 0
     PGconn *pgConnection() { return mConn; }
-#endif
 
     //
     // libpq wrapper
