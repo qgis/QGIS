@@ -19,14 +19,13 @@
 #include "qgsdatasourceuri.h"
 #include "qgscredentials.h"
 #include "qgslogger.h"
+#include "qgspostgresconn.h"
 
 #ifdef Q_OS_WIN
 #include <winsock.h>
 #else
 #include <sys/select.h>
 #endif
-
-const int PG_CONNECT_TIMEOUT = 30;
 
 extern "C"
 {
@@ -37,17 +36,27 @@ std::unique_ptr< QgsPostgresListener > QgsPostgresListener::create( const QStrin
 {
   std::unique_ptr< QgsPostgresListener > res( new QgsPostgresListener( connString ) );
   QgsDebugMsgLevel( QStringLiteral( "starting notification listener" ), 2 );
-  res->start();
-  res->mMutex.lock();
-  res->mIsReadyCondition.wait( &res->mMutex );
-  res->mMutex.unlock();
 
+  res->start();
   return res;
 }
 
 QgsPostgresListener::QgsPostgresListener( const QString &connString )
-  : mConnString( connString )
 {
+  mConn = QgsPostgresConn::connectDb( connString, true, false );
+  if ( mConn )
+  {
+    mConn->moveToThread( this );
+
+    QgsPostgresResult result( mConn->LoggedPQexec( "QgsPostgresListener", QStringLiteral( "LISTEN qgis" ) ) );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      QgsDebugError( QStringLiteral( "error in listen" ) );
+
+      mConn->unref();
+      mConn = nullptr;
+    }
+  }
 }
 
 QgsPostgresListener::~QgsPostgresListener()
@@ -56,73 +65,27 @@ QgsPostgresListener::~QgsPostgresListener()
   QgsDebugMsgLevel( QStringLiteral( "stopping the loop" ), 2 );
   wait();
   QgsDebugMsgLevel( QStringLiteral( "notification listener stopped" ), 2 );
+
+  if ( mConn )
+    mConn->unref();
 }
 
 void QgsPostgresListener::run()
 {
-  PGconn *conn = nullptr;
-  QString connectString = mConnString;
-
-  connectString += QStringLiteral( " connect_timeout=%1" ).arg( PG_CONNECT_TIMEOUT );
-  conn = PQconnectdb( connectString.toUtf8() );
-
-  if ( PQstatus( conn ) != CONNECTION_OK )
-  {
-    QgsDataSourceUri uri( connectString );
-    QString username = uri.username();
-    QString password = uri.password();
-
-    PQfinish( conn );
-
-    QgsCredentials::instance()->lock();
-
-    if ( QgsCredentials::instance()->get( mConnString, username, password, PQerrorMessage( conn ) ) )
-    {
-      uri.setUsername( username );
-      uri.setPassword( password );
-      connectString = uri.connectionInfo( false );
-      connectString += QStringLiteral( " connect_timeout=%1" ).arg( PG_CONNECT_TIMEOUT );
-
-      conn = PQconnectdb( connectString.toUtf8() );
-      if ( PQstatus( conn ) == CONNECTION_OK )
-        QgsCredentials::instance()->put( mConnString, username, password );
-    }
-
-    QgsCredentials::instance()->unlock();
-
-    if ( PQstatus( conn ) != CONNECTION_OK )
-    {
-      PQfinish( conn );
-      QgsDebugMsgLevel( QStringLiteral( "LISTENer not started" ), 2 );
-      return;
-    }
-  }
-
-
-  PGresult *res = PQexec( conn, "LISTEN qgis" );
-  if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
+  if ( !mConn )
   {
     QgsDebugError( QStringLiteral( "error in listen" ) );
-    PQclear( res );
-    PQfinish( conn );
-    mMutex.lock();
-    mIsReadyCondition.wakeOne();
-    mMutex.unlock();
     return;
   }
-  PQclear( res );
-  mMutex.lock();
-  mIsReadyCondition.wakeOne();
-  mMutex.unlock();
 
-  const int sock = PQsocket( conn );
+  const int sock = PQsocket( mConn->pgConnection() );
   if ( sock < 0 )
   {
     QgsDebugError( QStringLiteral( "error in socket" ) );
-    PQfinish( conn );
     return;
   }
 
+  PGconn *pgconn = mConn->pgConnection();
   forever
   {
     fd_set input_mask;
@@ -139,8 +102,8 @@ void QgsPostgresListener::run()
       break;
     }
 
-    PQconsumeInput( conn );
-    PGnotify *n = PQnotifies( conn );
+    PQconsumeInput( pgconn );
+    PGnotify *n = PQnotifies( pgconn );
     if ( n )
     {
       const QString msg( n->extra );
@@ -155,7 +118,4 @@ void QgsPostgresListener::run()
       break;
     }
   }
-  PQfinish( conn );
 }
-
-
