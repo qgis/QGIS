@@ -306,6 +306,7 @@ This method is either blocking or non blocking according to ``relaxed`` paramete
 %Docstring
 Find out if the ``point`` is in any polygons
 
+:param point: The point to check polygons against, in map coordinates
 :param relaxed: ``True`` if index build has to be non blocking
 :param filter: since QGIS 3.34, Optional filter may discard unwanted matches.
 
