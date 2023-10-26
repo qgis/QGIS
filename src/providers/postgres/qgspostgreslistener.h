@@ -24,6 +24,9 @@
 #include <QWaitCondition>
 #include <QMutex>
 
+class QgsPostgresConn;
+
+
 /**
  * \class QgsPostgresListener
  * \brief Launch a thread to listen on postgres notifications on the "qgis" channel, the notify signal is emitted on postgres notify.
@@ -51,9 +54,8 @@ class QgsPostgresListener : public QThread
 
   private:
     volatile bool mStop = false;
-    const QString mConnString;
-    QWaitCondition mIsReadyCondition;
-    QMutex mMutex;
+
+    QgsPostgresConn *mConn = nullptr;
 
     QgsPostgresListener( const QString &connString );
 
