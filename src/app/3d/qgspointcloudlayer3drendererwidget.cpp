@@ -91,7 +91,6 @@ void QgsPointCloudLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
   if ( r && r->type() == QLatin1String( "pointcloud" ) )
   {
     pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( r );
-    pointCloudRenderer->setSymbol( mWidgetPointCloudSymbol->symbol() );
   }
   setRenderer( pointCloudRenderer );
   mWidgetPointCloudSymbol->setEnabled( true );
