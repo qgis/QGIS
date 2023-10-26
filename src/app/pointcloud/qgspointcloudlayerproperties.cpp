@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgspointcloudattributemodel.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgspointcloudquerybuilder.h"
@@ -70,6 +71,7 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
 
   // update based on lyr's current state
   syncToLayer();
+  connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsPointCloudLayerProperties::syncToLayer );
 
   QgsSettings settings;
   if ( !settings.contains( QStringLiteral( "/Windows/PointCloudLayerProperties/tab" ) ) )

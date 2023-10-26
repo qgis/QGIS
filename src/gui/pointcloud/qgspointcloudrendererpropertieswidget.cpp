@@ -149,7 +149,14 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     const QString rendererName = mLayer->renderer()->type();
 
     const int rendererIdx = cboRenderers->findData( rendererName );
-    cboRenderers->setCurrentIndex( rendererIdx );
+    if ( cboRenderers->currentIndex() != rendererIdx )
+    {
+      cboRenderers->setCurrentIndex( rendererIdx );
+    }
+    else
+    {
+      rendererChanged();
+    }
 
     // no renderer found... this mustn't happen
     Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
