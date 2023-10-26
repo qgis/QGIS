@@ -306,20 +306,24 @@ void QgsTextBackgroundSettings::setBlendMode( QPainter::CompositionMode mode )
 
 QColor QgsTextBackgroundSettings::fillColor() const
 {
-  return d->fillColor;
+  return d->fillSymbol ? d->fillSymbol->color() : d->fillColor;
 }
 
 void QgsTextBackgroundSettings::setFillColor( const QColor &color )
 {
   d->fillColor = color;
-  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
+  if ( d->fillSymbol )
   {
-    qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setColor( color );
+    d->fillSymbol->setColor( color );
   }
 }
 
 QColor QgsTextBackgroundSettings::strokeColor() const
 {
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
+  {
+    return qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->strokeColor();
+  }
   return d->strokeColor;
 }
 
@@ -334,6 +338,10 @@ void QgsTextBackgroundSettings::setStrokeColor( const QColor &color )
 
 double QgsTextBackgroundSettings::strokeWidth() const
 {
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
+  {
+    return qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->strokeWidth();
+  }
   return d->strokeWidth;
 }
 
@@ -350,6 +358,10 @@ void QgsTextBackgroundSettings::setStrokeWidth( double width )
 
 Qgis::RenderUnit QgsTextBackgroundSettings::strokeWidthUnit() const
 {
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
+  {
+    return qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->strokeWidthUnit();
+  }
   return d->strokeWidthUnits;
 }
 
@@ -364,6 +376,10 @@ void QgsTextBackgroundSettings::setStrokeWidthUnit( Qgis::RenderUnit units )
 
 QgsMapUnitScale QgsTextBackgroundSettings::strokeWidthMapUnitScale() const
 {
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
+  {
+    return qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->strokeWidthMapUnitScale();
+  }
   return d->strokeWidthMapUnitScale;
 }
 
@@ -378,6 +394,10 @@ void QgsTextBackgroundSettings::setStrokeWidthMapUnitScale( const QgsMapUnitScal
 
 Qt::PenJoinStyle QgsTextBackgroundSettings::joinStyle() const
 {
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
+  {
+    return qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->penJoinStyle();
+  }
   return d->joinStyle;
 }
 
@@ -899,23 +919,22 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
     }
   }
 
-  // for non-SVG background types, those data defined properties will not having an impact,
-  // instead use data defined properties within symbols
+  // for non-SVG background types, using data defined properties within the fill symbol is preferable
   if ( properties.isActive( QgsPalLayerSettings::ShapeFillColor ) )
   {
     context.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( d->fillColor ) );
-    d->fillColor = properties.valueAsColor( QgsPalLayerSettings::ShapeFillColor, context.expressionContext(), d->fillColor );
+    setFillColor( properties.valueAsColor( QgsPalLayerSettings::ShapeFillColor, context.expressionContext(), d->fillColor ) );
   }
   if ( properties.isActive( QgsPalLayerSettings::ShapeStrokeColor ) )
   {
     context.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( d->strokeColor ) );
-    d->strokeColor = properties.valueAsColor( QgsPalLayerSettings::ShapeStrokeColor, context.expressionContext(), d->strokeColor );
+    setStrokeColor( properties.valueAsColor( QgsPalLayerSettings::ShapeStrokeColor, context.expressionContext(), d->strokeColor ) );
   }
 
   if ( properties.isActive( QgsPalLayerSettings::ShapeStrokeWidth ) )
   {
     context.expressionContext().setOriginalValueVariable( d->strokeWidth );
-    d->strokeWidth = properties.valueAsDouble( QgsPalLayerSettings::ShapeStrokeWidth, context.expressionContext(), d->strokeWidth );
+    setStrokeWidth( properties.valueAsDouble( QgsPalLayerSettings::ShapeStrokeWidth, context.expressionContext(), d->strokeWidth ) );
   }
   exprVal = properties.value( QgsPalLayerSettings::ShapeStrokeWidthUnits, context.expressionContext() );
   if ( !QgsVariantUtils::isNull( exprVal ) )
@@ -926,7 +945,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
       bool ok;
       const Qgis::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
       if ( ok )
-        d->strokeWidthUnits = res;
+        setStrokeWidthUnit( res );
     }
   }
 
@@ -944,7 +963,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
     const QString joinstr = exprVal.toString().trimmed();
     if ( !joinstr.isEmpty() )
     {
-      d->joinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( joinstr );
+      setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( joinstr ) );
     }
   }
 }
