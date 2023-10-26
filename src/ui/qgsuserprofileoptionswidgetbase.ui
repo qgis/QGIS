@@ -90,7 +90,7 @@
        <widget class="QComboBox" name="mIconSize">
         <property name="maximumSize">
          <size>
-          <width>50</width>
+          <width>200</width>
           <height>16777215</height>
          </size>
         </property>
