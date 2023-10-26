@@ -43,6 +43,7 @@ class TestQgisApp : public QObject
     void addVectorLayerGeopackageSingleLayerAlreadyLayername();
     void addVectorLayerInvalid();
     void addEmbeddedGroup();
+    void pasteFeature();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -151,6 +152,37 @@ void TestQgisApp::addEmbeddedGroup()
 
   // cleanup
   QgsProject::instance()->clear();
+}
+
+void TestQgisApp::pasteFeature()
+{
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:4326" ), QStringLiteral( "polygons" ), QStringLiteral( "memory" ) );
+
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))" ) ) );
+  vl->startEditing();
+  vl->addFeature( f );
+  vl->commitChanges();
+
+  QgsProject::instance()->addMapLayer( vl );
+  QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
+
+  vl->selectByIds( QgsFeatureIds() << 1 );
+
+  // Copy feature with the initial polygon
+  mQgisApp->copySelectionToClipboard( vl );
+
+  vl->startEditing();
+  QgsGeometry geom = QgsGeometry::fromWkt( QStringLiteral( "POLYGON((5 0, 10 0, 10 10, 5 10, 5 0))" ) );
+  vl->changeGeometry( 1, geom );
+  vl->commitChanges();
+
+  vl->startEditing();
+  mQgisApp->pasteFromClipboard( vl );
+  vl->commitChanges();
+
+  f = vl->getFeature( 2 );
+  QCOMPARE( f.geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 0 10, 5 10, 5 0, 0 0))" ) );
 }
 
 
