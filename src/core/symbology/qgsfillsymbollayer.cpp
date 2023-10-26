@@ -4797,6 +4797,7 @@ void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, const Q
     // in the middle of rendering a possibly multi-part feature, so we collect all the parts and defer the actual rendering
     // until after we've received the final part
     mFeatureSymbolOpacity = context.opacity();
+    mUseSelectedColor = shouldRenderUsingSelectionColor( context );
     mCurrentParts << part;
   }
   else
@@ -4825,8 +4826,9 @@ void QgsCentroidFillSymbolLayer::stopFeatureRender( const QgsFeature &feature, Q
   const double prevOpacity = mMarker->opacity();
   mMarker->setOpacity( mMarker->opacity() * mFeatureSymbolOpacity );
 
-  render( context, mCurrentParts, feature, false );
+  render( context, mCurrentParts, feature, mUseSelectedColor );
   mFeatureSymbolOpacity = 1;
+  mUseSelectedColor = false;
   mMarker->setOpacity( prevOpacity );
 
   removeMasks( context, true );
