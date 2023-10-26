@@ -36,6 +36,7 @@ from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsEllipseSymbolLayer,
+    QgsFillSymbol,
     QgsFontMarkerSymbolLayer,
     QgsLinePatternFillSymbolLayer,
     QgsLineSymbol,
@@ -1053,6 +1054,26 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
                 self.assertEqual("36 36", self.assertVendorOption(ts, 'graphic-margin').text())
         else:
             self.assertIsNone(self.assertVendorOption(ts, 'graphic-margin', True))
+
+    def testLabelBackgroundSymbol(self):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "polygonLabel")
+        settings = layer.labeling().settings()
+        background = QgsTextBackgroundSettings()
+        background.setEnabled(True)
+        background.setType(QgsTextBackgroundSettings.ShapeRectangle)
+        fill_symbol = QgsFillSymbol.createSimple({'color': '#00ffff', 'outline_color': '#00ff00', 'outline_width': 2})
+        background.setFillSymbol(fill_symbol)
+        format = settings.format()
+        format.setBackground(background)
+        settings.setFormat(format)
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        graphic = self.assertElement(ts, "se:Graphic", 0)
+        self.assertWellKnownMark(graphic, 0, 'square', '#00ffff', '#00ff00', 7)
 
     def testRuleBasedLabels(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
