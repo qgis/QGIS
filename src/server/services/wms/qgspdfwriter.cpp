@@ -35,6 +35,7 @@ namespace QgsWms
     std::unique_ptr<QgsMapRendererTask> pdfTask = renderer.getPdf( tmpFile.fileName() );
     QgsApplication::taskManager()->addTask( pdfTask.get() );
     pdfTask->waitForFinished();
+    response.setHeader( "Content-Type", "application/pdf" );
     response.write( tmpFile.readAll() );
     tmpFile.close();
   }
