@@ -1,5 +1,43 @@
 Change history for the QGIS Project
 
+# What's new in Version 3.34 'Prizren'?
+
+This release has following new features:
+
+- Map Tools: Optional enforcement of "dot" as decimal separator for measure tool
+- Map Tools: Show a highlight on identified raster pixels when using identify tool
+- Map Tools: Show raster row/column of clicked point in identify results
+- Symbology: Settings for overriding selection color and selection symbol for vector layers
+- Labelling: Toggle labels for Vector Tile Layers
+- Rendering: "Sticky" Map Decorations
+- Rendering: Add map render profiler
+- Rendering: Add choice of two different modes for "Refresh Layer at Interval"
+- 3D Features: Allow GPU memory limit configuration
+- 3D Features: Add support for boundingbox3d
+- Print Layouts: Select multiple layout items
+- Print Layouts: Layout Page number reflected in page properties
+- Print Layouts: Automatically open exported layouts
+- Expressions: Add bearing expression function
+- Expressions: Add "layer_crs_ellipsoid"
+- Digitising: Improve "avoid overlap" type awareness
+- Data Management: Improve save vector features handling for pre-existing files
+- Data Management: Maintain relations for copied features
+- Analysis Tools: Support raster band description
+- Processing: Antialias setting for raster tile processing plugin
+- Processing: Create Grid row_index and col_index fields
+- Processing: New 'Calculate expression' algorithm for use in models
+- Processing: Add algorithm to convert content from a GLTF/GLB file to standard vector layer features
+- Processing: Port SAGA "DTM Filter (slope-based)" tool to a native QGIS algorithm
+- Application and Project Options: Clear recently opened project list
+- Application and Project Options: OAUTH2 PKCE Authorization Code
+- Application and Project Options: Set processing defaults from QGIS configuration file
+- Profile Plots: Add setting to control background color for elevation profile charts
+- Data Providers: Discover relations for Oracle provider
+- Plugins: Drop interactive shell from GRASS C++ Plugin
+- Programmability: Function to export runtime profiler model content as text
+-
+
+
 # What's new in Version 3.32 'Lima'?
 
 This release has following new features:
