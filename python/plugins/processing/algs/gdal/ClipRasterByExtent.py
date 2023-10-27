@@ -155,8 +155,12 @@ class ClipRasterByExtent(GdalAlgorithm):
 
             arguments.append('-ot ' + self.TYPES[data_type])
 
+        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        if not output_format:
+            raise QgsProcessingException(self.tr('Output format is invalid'))
+
         arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+        arguments.append(output_format)
 
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))

@@ -116,6 +116,10 @@ class pansharp(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
+        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        if not output_format:
+            raise QgsProcessingException(self.tr('Output format is invalid'))
+
         arguments = [
             panchromatic.source(),
             spectral.source(),
@@ -123,7 +127,7 @@ class pansharp(GdalAlgorithm):
             '-r',
             self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1],
             '-of',
-            QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+            output_format
         ]
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
