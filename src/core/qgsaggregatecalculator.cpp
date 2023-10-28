@@ -198,9 +198,9 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
     return CountDistinct;
   else if ( normalized == QLatin1String( "count_missing" ) )
     return CountMissing;
-  else if ( normalized == QLatin1String( "min" ) )
+  else if ( normalized == QLatin1String( "min" ) ||  normalized == QLatin1String( "minimum" ) )
     return Min;
-  else if ( normalized == QLatin1String( "max" ) )
+  else if ( normalized == QLatin1String( "max" ) ||  normalized == QLatin1String( "maximum" ) )
     return Max;
   else if ( normalized == QLatin1String( "sum" ) )
     return Sum;
