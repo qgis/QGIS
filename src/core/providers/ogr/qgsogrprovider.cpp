@@ -37,6 +37,8 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsvariantutils.h"
+#include "qgsjsonutils.h"
+#include <nlohmann/json.hpp>
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -1601,7 +1603,9 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
           QString stringValue;
 
           if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
-            stringValue = jsonStringValue( attrVal );
+          {
+            stringValue = QString::fromStdString( QgsJsonUtils::jsonFromVariant( attrVal ).dump() );
+          }
           else
           {
             stringValue = attrVal.toString();
@@ -2542,9 +2546,13 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             ok = true;
             QString stringValue;
             if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
-              stringValue = jsonStringValue( it2.value() );
+            {
+              stringValue = QString::fromStdString( QgsJsonUtils::jsonFromVariant( it2.value() ).dump() );
+            }
             else
-              stringValue = it2->toString();
+            {
+              stringValue = jsonStringValue( it2.value() );
+            }
             OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( stringValue ).constData() );
             break;
           }
