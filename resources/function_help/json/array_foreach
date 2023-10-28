@@ -8,7 +8,7 @@
     "description": "an array"
   }, {
     "arg": "expression",
-    "description": "an expression to evaluate on each item. The variable `@element` will be replaced by the current value and the variable `@counter` by the current counter (starting with 0)."
+    "description": "an expression to evaluate on each item. The variable `@element` will be replaced by the current value and the variable `@counter` by the current index (starting with 0)."
   }],
   "examples": [{
     "expression": "array_foreach(array('a','b','c'),upper(@element))",
