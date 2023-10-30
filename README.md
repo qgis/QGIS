@@ -76,7 +76,7 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 ### 3. Advanced and robust geospatial analysis
 - Powerful processing framework with 200+ native processing algorithms
 - Access to 1000+ processing algorithms via providers such as GDAL, SAGA, GRASS, OrfeoToolbox, as well as custom models and processing scripts
-- Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as possible 
+- Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as much as possible.
 - Immediate visualization of geospatial query and geoprocessing results
 - Model designer and batch processing
 
