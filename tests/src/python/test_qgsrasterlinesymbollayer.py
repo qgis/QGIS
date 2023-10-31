@@ -24,6 +24,7 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
+    Qgis,
     QgsFeature,
     QgsGeometry,
     QgsLineSymbol,
@@ -210,6 +211,90 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
             painter.end()
 
         return image
+
+    def testRenderBrushPath(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        raster_line = QgsRasterLineSymbolLayer()
+        raster_line.setPath(TEST_DATA_DIR + '/raster_brush.png')
+        raster_line.setWidth(8)
+        raster_line.setMode(Qgis.RasterLineSymbolLayerMode.BrushPath)
+
+        s.appendSymbolLayer(raster_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.image_check('rasterline_brush_path', 'rasterline_brush_path', rendered_image))
+
+    def testRenderBrushPathViewport(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        raster_line = QgsRasterLineSymbolLayer()
+        raster_line.setPath(TEST_DATA_DIR + '/raster_brush.png')
+        raster_line.setWidth(8)
+        raster_line.setMode(Qgis.RasterLineSymbolLayerMode.BrushPath)
+        raster_line.setCoordinateMode(Qgis.SymbolCoordinateReference.Viewport)
+
+        s.appendSymbolLayer(raster_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.image_check('rasterline_brush_path_viewport', 'rasterline_brush_path_viewport', rendered_image))
+
+    def testRenderBrushPathWidth(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        raster_line = QgsRasterLineSymbolLayer()
+        raster_line.setPath(TEST_DATA_DIR + '/raster_brush.png')
+        raster_line.setWidth(8)
+        raster_line.setMode(Qgis.RasterLineSymbolLayerMode.BrushPath)
+        raster_line.setImageWidth(20)
+        raster_line.setImageWidthUnit(Qgis.RenderUnit.Millimeters)
+
+        s.appendSymbolLayer(raster_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.image_check('rasterline_brush_path_width', 'rasterline_brush_path_width', rendered_image))
+
+    def testRenderBrushPathHeight(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        raster_line = QgsRasterLineSymbolLayer()
+        raster_line.setPath(TEST_DATA_DIR + '/raster_brush.png')
+        raster_line.setWidth(8)
+        raster_line.setMode(Qgis.RasterLineSymbolLayerMode.BrushPath)
+        raster_line.setImageHeight(10)
+        raster_line.setImageHeightUnit(Qgis.RenderUnit.Millimeters)
+
+        s.appendSymbolLayer(raster_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.image_check('rasterline_brush_path_height', 'rasterline_brush_path_height', rendered_image))
+
+    def testRenderBrushPathWidthHeight(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        raster_line = QgsRasterLineSymbolLayer()
+        raster_line.setPath(TEST_DATA_DIR + '/raster_brush.png')
+        raster_line.setWidth(8)
+        raster_line.setMode(Qgis.RasterLineSymbolLayerMode.BrushPath)
+        raster_line.setImageWidth(30)
+        raster_line.setImageWidthUnit(Qgis.RenderUnit.Millimeters)
+        raster_line.setImageHeight(10)
+        raster_line.setImageHeightUnit(Qgis.RenderUnit.Millimeters)
+
+        s.appendSymbolLayer(raster_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.image_check('rasterline_brush_path_width_height', 'rasterline_brush_path_width_height', rendered_image))
 
 
 if __name__ == '__main__':

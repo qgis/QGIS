@@ -1222,6 +1222,22 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
     /**
+     * Returns the rendering mode for the symbol layer.
+     *
+     * \see setMode()
+     * \since QGIS 3.36
+     */
+    Qgis::RasterLineSymbolLayerMode mode() const;
+
+    /**
+     * Sets the rendering \a mode for the symbol layer.
+     *
+     * \see mode()
+     * \since QGIS 3.36
+     */
+    void setMode( Qgis::RasterLineSymbolLayerMode mode );
+
+    /**
      * Returns the raster image path.
      * \see setPath()
      */
@@ -1247,6 +1263,192 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
      */
     void setOpacity( double opacity ) { mOpacity = opacity; }
 
+    // texture scale
+
+    /**
+     * Set the coordinate \a mode for line fills.
+     *
+     * Controls how the top left corner of the line fill is positioned relative to the feature.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see coordinateMode()
+     * \since QGIS 3.36
+     */
+    void setCoordinateMode( Qgis::SymbolCoordinateReference mode );
+
+    /**
+     * Returns the coordinate mode for line fills.
+     *
+     * Controls how the top left corner of the line fill is positioned relative to the feature.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see setCoordinateMode()
+     * \since QGIS 3.36
+     */
+    Qgis::SymbolCoordinateReference coordinateMode() const { return mCoordinateMode; }
+
+    /**
+     * Sets the width for scaling the image.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see setImageHeight()
+     * \see imageWidth()
+     * \see setImageWidthUnit()
+     * \see setImageWidthMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    void setImageWidth( const double width ) { mImageWidth = width; }
+
+    /**
+     * Returns the width used for scaling the image.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see setImageWidth()
+     * \see imageHeight()
+     * \see imageWidthUnit()
+     * \see imageWidthMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    double imageWidth() const { return mImageWidth; }
+
+    /**
+     * Sets the height for scaling the image.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see setImageWidth()
+     * \see imageHeight()
+     * \see setImageHeightUnit()
+     * \see setImageHeightMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    void setImageHeight( const double height ) { mImageHeight = height; }
+
+    /**
+     * Returns the height used for scaling the image.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see setImageHeight()
+     * \see imageWidth()
+     * \see imageHeightUnit()
+     * \see imageHeightMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    double imageHeight() const { return mImageHeight; }
+
+    /**
+     * Sets the units for the image's width.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see imageWidthUnit()
+     * \see setImageWidth()
+     * \see setImageWidthMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    void setImageWidthUnit( Qgis::RenderUnit unit ) { mImageWidthUnit = unit; }
+
+    /**
+     * Returns the units for the image's width.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see setImageWidthUnit()
+     * \see imageWidth()
+     * \see imageWidthMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    Qgis::RenderUnit imageWidthUnit() const { return mImageWidthUnit; }
+
+    /**
+     * Sets the units for the image's height.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see imageHeightUnit()
+     * \see setImageHeight()
+     * \see setImageHeightMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    void setImageHeightUnit( Qgis::RenderUnit unit ) { mImageHeightUnit = unit; }
+
+    /**
+     * Returns the units for the image's height.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see setImageHeightUnit()
+     * \see imageHeight()
+     * \see imageHeightMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    Qgis::RenderUnit imageHeightUnit() const { return mImageHeightUnit; }
+
+    /**
+     * Sets the map unit \a scale for the image's width.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see imageWidthMapUnitScale()
+     * \see setImageWidth()
+     * \see setImageWidthUnit()
+     *
+     * \since QGIS 3.36
+     */
+    void setImageWidthMapUnitScale( const QgsMapUnitScale &scale ) { mImageWidthMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the image's width.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see setImageWidthMapUnitScale()
+     * \see imageWidth()
+     * \see imageWidthUnit()
+     *
+     * \since QGIS 3.36
+     */
+    const QgsMapUnitScale &imageWidthMapUnitScale() const { return mImageWidthMapUnitScale; }
+
+    /**
+     * Sets the map unit \a scale for the image's height.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see imageHeightMapUnitScale()
+     * \see setImageHeight()
+     * \see setImageHeightUnit()
+     *
+     * \since QGIS 3.36
+     */
+    void setImageHeightMapUnitScale( const QgsMapUnitScale &scale ) { mImageHeightMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the image's height.
+     *
+     * \note This setting only has an effect when mode() is Qgis::RasterLineSymbolLayerMode::BrushPath.
+     *
+     * \see setImageHeightMapUnitScale()
+     * \see imageHeight()
+     * \see imageHeightUnit()
+     *
+     * \since QGIS 3.36
+     */
+    const QgsMapUnitScale &imageHeightMapUnitScale() const { return mImageHeightMapUnitScale; }
+
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
@@ -1262,9 +1464,19 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
     QColor color() const override;
 
   protected:
+    Qgis::RasterLineSymbolLayerMode mMode = Qgis::RasterLineSymbolLayerMode::StrokePath;
     QString mPath;
     double mOpacity = 1.0;
     QImage mLineImage;
+
+    Qgis::SymbolCoordinateReference mCoordinateMode = Qgis::SymbolCoordinateReference::Feature;
+
+    double mImageWidth = 100.0;
+    Qgis::RenderUnit mImageWidthUnit = Qgis::RenderUnit::Percentage;
+    QgsMapUnitScale mImageWidthMapUnitScale;
+    double mImageHeight = 100.0;
+    Qgis::RenderUnit mImageHeightUnit = Qgis::RenderUnit::Percentage;
+    QgsMapUnitScale mImageHeightMapUnitScale;
 
 };
 

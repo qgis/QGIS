@@ -4715,12 +4715,49 @@ QgsRasterLineSymbolLayerWidget::QgsRasterLineSymbolLayerWidget( QgsVectorLayer *
   mLayer = nullptr;
   setupUi( this );
 
+  mComboMode->addItem( tr( "Follow Path" ), QVariant::fromValue( Qgis::RasterLineSymbolLayerMode::StrokePath ) );
+  mComboMode->addItem( tr( "Filled Stroke" ), QVariant::fromValue( Qgis::RasterLineSymbolLayerMode::BrushPath ) );
+
+  mComboCoordMode->addItem( tr( "Object" ), QVariant::fromValue( Qgis::SymbolCoordinateReference::Feature ) );
+  mComboCoordMode->addItem( tr( "Viewport" ), QVariant::fromValue( Qgis::SymbolCoordinateReference::Viewport ) );
+
   mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastRasterMarkerImageDir" ) );
 
   mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
                                  << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
                                << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+
+  mImageHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                    << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
+  mImageWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                   << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
+
+  connect( mComboMode, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setMode( mComboMode->currentData().value< Qgis::RasterLineSymbolLayerMode >() );
+      emit changed();
+    }
+
+    const bool visible = mComboMode->currentData().value< Qgis::RasterLineSymbolLayerMode >() == Qgis::RasterLineSymbolLayerMode::BrushPath;
+    mCoordModeLabel->setVisible( visible );
+    mComboCoordMode->setVisible( visible );
+    mTextureWidthLabel->setVisible( visible );
+    mTextureWidthWidget->setVisible( visible );
+    mTextureHeightLabel->setVisible( visible );
+    mTextureHeightWidget->setVisible( visible );
+  } );
+
+  connect( mComboCoordMode, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setCoordinateMode( mComboCoordMode->currentData().value< Qgis::SymbolCoordinateReference >() );
+      emit changed();
+    }
+  } );
 
   connect( mPenWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
   {
@@ -4779,6 +4816,42 @@ QgsRasterLineSymbolLayerWidget::QgsRasterLineSymbolLayerWidget( QgsVectorLayer *
     }
   } );
 
+  connect( mImageWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setImageWidthUnit( mImageWidthUnitWidget->unit() );
+      mLayer->setImageWidthMapUnitScale( mImageWidthUnitWidget->getMapUnitScale() );
+      emit changed();
+    }
+  } );
+  connect( mImageHeightUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setImageHeightUnit( mImageHeightUnitWidget->unit() );
+      mLayer->setImageHeightMapUnitScale( mImageHeightUnitWidget->getMapUnitScale() );
+      emit changed();
+    }
+  } );
+
+  connect( mImageWidthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setImageWidth( mImageWidthSpinBox->value() );
+      emit changed();
+    }
+  } );
+  connect( mImageHeightSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setImageHeight( mImageHeightSpinBox->value() );
+      emit changed();
+    }
+  } );
+
   connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsRasterLineSymbolLayerWidget::imageSourceChanged );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, [ = ]( double opacity )
   {
@@ -4789,6 +4862,14 @@ QgsRasterLineSymbolLayerWidget::QgsRasterLineSymbolLayerWidget( QgsVectorLayer *
       emit changed();
     }
   } );
+
+  const bool visible = mComboMode->currentData().value< Qgis::RasterLineSymbolLayerMode >() == Qgis::RasterLineSymbolLayerMode::BrushPath;
+  mCoordModeLabel->setVisible( visible );
+  mComboCoordMode->setVisible( visible );
+  mTextureWidthLabel->setVisible( visible );
+  mTextureWidthWidget->setVisible( visible );
+  mTextureHeightLabel->setVisible( visible );
+  mTextureHeightWidget->setVisible( visible );
 }
 
 void QgsRasterLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -4809,6 +4890,9 @@ void QgsRasterLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     return;
   }
 
+  whileBlocking( mComboMode )->setCurrentIndex( mComboMode->findData( QVariant::fromValue( mLayer->mode() ) ) );
+  whileBlocking( mComboCoordMode )->setCurrentIndex( mComboCoordMode->findData( QVariant::fromValue( mLayer->coordinateMode() ) ) );
+
   whileBlocking( mImageSourceLineEdit )->setSource( mLayer->path() );
   whileBlocking( mOpacityWidget )->setOpacity( mLayer->opacity() );
 
@@ -4822,6 +4906,14 @@ void QgsRasterLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mOffsetUnitWidget )->setMapUnitScale( mLayer->offsetMapUnitScale() );
   whileBlocking( spinOffset )->setValue( mLayer->offset() );
 
+  whileBlocking( mImageWidthUnitWidget )->setUnit( mLayer->imageWidthUnit() );
+  whileBlocking( mImageWidthUnitWidget )->setMapUnitScale( mLayer->imageWidthMapUnitScale() );
+  whileBlocking( mImageWidthSpinBox )->setValue( mLayer->imageWidth() );
+
+  whileBlocking( mImageHeightUnitWidget )->setUnit( mLayer->imageHeightUnit() );
+  whileBlocking( mImageHeightUnitWidget )->setMapUnitScale( mLayer->imageHeightMapUnitScale() );
+  whileBlocking( mImageHeightSpinBox )->setValue( mLayer->imageHeight() );
+
   updatePreviewImage();
 
   registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyFile );
@@ -4830,6 +4922,14 @@ void QgsRasterLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
   registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
   registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
+
+  const bool visible = mComboMode->currentData().value< Qgis::RasterLineSymbolLayerMode >() == Qgis::RasterLineSymbolLayerMode::BrushPath;
+  mCoordModeLabel->setVisible( visible );
+  mComboCoordMode->setVisible( visible );
+  mTextureWidthLabel->setVisible( visible );
+  mTextureWidthWidget->setVisible( visible );
+  mTextureHeightLabel->setVisible( visible );
+  mTextureHeightWidget->setVisible( visible );
 }
 
 QgsSymbolLayer *QgsRasterLineSymbolLayerWidget::symbolLayer()

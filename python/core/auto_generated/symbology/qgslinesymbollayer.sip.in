@@ -1324,6 +1324,24 @@ Turns relative paths in properties map to absolute when reading and vice versa w
 Used internally when reading/writing symbols.
 %End
 
+    Qgis::RasterLineSymbolLayerMode mode() const;
+%Docstring
+Returns the rendering mode for the symbol layer.
+
+.. seealso:: :py:func:`setMode`
+
+.. versionadded:: 3.36
+%End
+
+    void setMode( Qgis::RasterLineSymbolLayerMode mode );
+%Docstring
+Sets the rendering ``mode`` for the symbol layer.
+
+.. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.36
+%End
+
     QString path() const;
 %Docstring
 Returns the raster image path.
@@ -1356,6 +1374,261 @@ Set the line opacity.
 .. seealso:: :py:func:`opacity`
 %End
 
+
+    void setCoordinateMode( Qgis::SymbolCoordinateReference mode );
+%Docstring
+Set the coordinate ``mode`` for line fills.
+
+Controls how the top left corner of the line fill is positioned relative to the feature.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`coordinateMode`
+
+.. versionadded:: 3.36
+%End
+
+    Qgis::SymbolCoordinateReference coordinateMode() const;
+%Docstring
+Returns the coordinate mode for line fills.
+
+Controls how the top left corner of the line fill is positioned relative to the feature.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`setCoordinateMode`
+
+.. versionadded:: 3.36
+%End
+
+    void setImageWidth( const double width );
+%Docstring
+Sets the width for scaling the image.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`setImageHeight`
+
+.. seealso:: :py:func:`imageWidth`
+
+.. seealso:: :py:func:`setImageWidthUnit`
+
+.. seealso:: :py:func:`setImageWidthMapUnitScale`
+
+
+.. versionadded:: 3.36
+%End
+
+    double imageWidth() const;
+%Docstring
+Returns the width used for scaling the image.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`setImageWidth`
+
+.. seealso:: :py:func:`imageHeight`
+
+.. seealso:: :py:func:`imageWidthUnit`
+
+.. seealso:: :py:func:`imageWidthMapUnitScale`
+
+
+.. versionadded:: 3.36
+%End
+
+    void setImageHeight( const double height );
+%Docstring
+Sets the height for scaling the image.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`setImageWidth`
+
+.. seealso:: :py:func:`imageHeight`
+
+.. seealso:: :py:func:`setImageHeightUnit`
+
+.. seealso:: :py:func:`setImageHeightMapUnitScale`
+
+
+.. versionadded:: 3.36
+%End
+
+    double imageHeight() const;
+%Docstring
+Returns the height used for scaling the image.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`setImageHeight`
+
+.. seealso:: :py:func:`imageWidth`
+
+.. seealso:: :py:func:`imageHeightUnit`
+
+.. seealso:: :py:func:`imageHeightMapUnitScale`
+
+
+.. versionadded:: 3.36
+%End
+
+    void setImageWidthUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the units for the image's width.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`imageWidthUnit`
+
+.. seealso:: :py:func:`setImageWidth`
+
+.. seealso:: :py:func:`setImageWidthMapUnitScale`
+
+
+.. versionadded:: 3.36
+%End
+
+    Qgis::RenderUnit imageWidthUnit() const;
+%Docstring
+Returns the units for the image's width.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`setImageWidthUnit`
+
+.. seealso:: :py:func:`imageWidth`
+
+.. seealso:: :py:func:`imageWidthMapUnitScale`
+
+
+.. versionadded:: 3.36
+%End
+
+    void setImageHeightUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the units for the image's height.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`imageHeightUnit`
+
+.. seealso:: :py:func:`setImageHeight`
+
+.. seealso:: :py:func:`setImageHeightMapUnitScale`
+
+
+.. versionadded:: 3.36
+%End
+
+    Qgis::RenderUnit imageHeightUnit() const;
+%Docstring
+Returns the units for the image's height.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`setImageHeightUnit`
+
+.. seealso:: :py:func:`imageHeight`
+
+.. seealso:: :py:func:`imageHeightMapUnitScale`
+
+
+.. versionadded:: 3.36
+%End
+
+    void setImageWidthMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the image's width.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`imageWidthMapUnitScale`
+
+.. seealso:: :py:func:`setImageWidth`
+
+.. seealso:: :py:func:`setImageWidthUnit`
+
+
+.. versionadded:: 3.36
+%End
+
+    const QgsMapUnitScale &imageWidthMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the image's width.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`setImageWidthMapUnitScale`
+
+.. seealso:: :py:func:`imageWidth`
+
+.. seealso:: :py:func:`imageWidthUnit`
+
+
+.. versionadded:: 3.36
+%End
+
+    void setImageHeightMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the image's height.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`imageHeightMapUnitScale`
+
+.. seealso:: :py:func:`setImageHeight`
+
+.. seealso:: :py:func:`setImageHeightUnit`
+
+
+.. versionadded:: 3.36
+%End
+
+    const QgsMapUnitScale &imageHeightMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the image's height.
+
+.. note::
+
+   This setting only has an effect when :py:func:`~QgsRasterLineSymbolLayer.mode` is :py:class:`Qgis`.RasterLineSymbolLayerMode.BrushPath.
+
+.. seealso:: :py:func:`setImageHeightMapUnitScale`
+
+.. seealso:: :py:func:`imageHeight`
+
+.. seealso:: :py:func:`imageHeightUnit`
+
+
+.. versionadded:: 3.36
+%End
+
     virtual QString layerType() const;
 
     virtual void startRender( QgsSymbolRenderContext &context );
@@ -1384,6 +1657,8 @@ Set the line opacity.
 
 
   protected:
+
+
 
 };
 

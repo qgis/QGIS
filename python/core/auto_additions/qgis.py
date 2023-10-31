@@ -606,6 +606,12 @@ Qgis.SymbolLayerUserFlag.__doc__ = "User-specified flags controlling behavior of
 Qgis.SymbolLayerUserFlag.baseClass = Qgis
 Qgis.SymbolLayerUserFlags.baseClass = Qgis
 SymbolLayerUserFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.RasterLineSymbolLayerMode.StrokePath.__doc__ = "Apply raster image curved along the stroke path"
+Qgis.RasterLineSymbolLayerMode.BrushPath.__doc__ = "Apply raster image as a brush filling the stroked path"
+Qgis.RasterLineSymbolLayerMode.__doc__ = "Modes for rendering raster line symbol layers.\n\n.. versionadded:: 3.36\n\n" + '* ``StrokePath``: ' + Qgis.RasterLineSymbolLayerMode.StrokePath.__doc__ + '\n' + '* ``BrushPath``: ' + Qgis.RasterLineSymbolLayerMode.BrushPath.__doc__
+# --
+Qgis.RasterLineSymbolLayerMode.baseClass = Qgis
 QgsDataItem.Type = Qgis.BrowserItemType
 # monkey patching scoped based enum
 QgsDataItem.Collection = Qgis.BrowserItemType.Collection

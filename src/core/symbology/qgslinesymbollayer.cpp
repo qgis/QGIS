@@ -3358,6 +3358,40 @@ QgsSymbolLayer *QgsRasterLineSymbolLayer::create( const QVariantMap &properties 
     res->setOpacity( properties[QStringLiteral( "alpha" )].toDouble() );
   }
 
+  if ( properties.contains( QStringLiteral( "mode" ) ) )
+  {
+    res->setMode( qgsEnumKeyToValue( properties[QStringLiteral( "mode" )].toString(), Qgis::RasterLineSymbolLayerMode::StrokePath ) );
+  }
+  if ( properties.contains( QStringLiteral( "coordinate_mode" ) ) )
+  {
+    res->setCoordinateMode( qgsEnumKeyToValue( properties[QStringLiteral( "coordinate_mode" )].toString(), Qgis::SymbolCoordinateReference::Feature ) );
+  }
+
+  if ( properties.contains( QStringLiteral( "image_width" ) ) )
+  {
+    res->setImageWidth( properties[QStringLiteral( "image_width" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "image_width_unit" ) ) )
+  {
+    res->setImageWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "image_width_unit" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "image_width_map_unit_scale" ) ) )
+  {
+    res->setImageWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "image_width_map_unit_scale" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "image_height" ) ) )
+  {
+    res->setImageHeight( properties[QStringLiteral( "image_height" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "image_height_unit" ) ) )
+  {
+    res->setImageHeightUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "image_height_unit" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "image_height_map_unit_scale" ) ) )
+  {
+    res->setImageHeightMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "image_height_map_unit_scale" )].toString() ) );
+  }
+
   return res.release();
 }
 
@@ -3379,6 +3413,16 @@ QVariantMap QgsRasterLineSymbolLayer::properties() const
   map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
 
   map[QStringLiteral( "alpha" )] = QString::number( mOpacity );
+  map[QStringLiteral( "mode" )] = qgsEnumValueToKey( mMode );
+  map[QStringLiteral( "coordinate_mode" )] = qgsEnumValueToKey( mCoordinateMode );
+
+  map[QStringLiteral( "image_width" )] = QString::number( mImageWidth );
+  map[QStringLiteral( "image_width_unit" )] = QgsUnitTypes::encodeUnit( mImageWidthUnit );
+  map[QStringLiteral( "image_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mImageWidthMapUnitScale );
+
+  map[QStringLiteral( "image_height" )] = QString::number( mImageHeight );
+  map[QStringLiteral( "image_height_unit" )] = QgsUnitTypes::encodeUnit( mImageHeightUnit );
+  map[QStringLiteral( "image_height_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mImageHeightMapUnitScale );
 
   return map;
 }
@@ -3395,6 +3439,16 @@ QgsRasterLineSymbolLayer *QgsRasterLineSymbolLayer::clone() const
   res->setOffsetMapUnitScale( mOffsetMapUnitScale );
   res->setOffset( mOffset );
   res->setOpacity( mOpacity );
+  res->setMode( mMode );
+  res->setCoordinateMode( mCoordinateMode );
+
+  res->setImageWidth( mImageWidth );
+  res->setImageWidthUnit( mImageWidthUnit );
+  res->setImageWidthMapUnitScale( mImageWidthMapUnitScale );
+  res->setImageHeight( mImageHeight );
+  res->setImageHeightUnit( mImageHeightUnit );
+  res->setImageHeightMapUnitScale( mImageHeightMapUnitScale );
+
   copyDataDefinedProperties( res.get() );
   copyPaintEffect( res.get() );
   return res.release();
@@ -3408,13 +3462,18 @@ void QgsRasterLineSymbolLayer::resolvePaths( QVariantMap &properties, const QgsP
     if ( saving )
       it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value().toString(), pathResolver );
     else
-      it.value() =  QgsSymbolLayerUtils::svgSymbolNameToPath( it.value().toString(), pathResolver );
+      it.value() = QgsSymbolLayerUtils::svgSymbolNameToPath( it.value().toString(), pathResolver );
   }
 }
 
 void QgsRasterLineSymbolLayer::setPath( const QString &path )
 {
   mPath = path;
+}
+
+void QgsRasterLineSymbolLayer::setCoordinateMode( Qgis::SymbolCoordinateReference mode )
+{
+  mCoordinateMode = mode;
 }
 
 QString QgsRasterLineSymbolLayer::layerType() const
@@ -3424,16 +3483,68 @@ QString QgsRasterLineSymbolLayer::layerType() const
 
 void QgsRasterLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  double scaledHeight = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
-
+  const double opacity = mOpacity * context.opacity();
   const QSize originalSize = QgsApplication::imageCache()->originalSize( mPath, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
 
-  double opacity = mOpacity * context.opacity();
   bool cached = false;
-  mLineImage = QgsApplication::imageCache()->pathAsImage( mPath,
-               QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ),
-                      static_cast< int >( std::ceil( scaledHeight ) ) ),
-               true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+  switch ( mMode )
+  {
+    case Qgis::RasterLineSymbolLayerMode::StrokePath:
+    {
+      double scaledHeight = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
+      mLineImage = QgsApplication::imageCache()->pathAsImage( mPath,
+                   QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ),
+                          static_cast< int >( std::ceil( scaledHeight ) ) ),
+                   true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+      break;
+    }
+    case Qgis::RasterLineSymbolLayerMode::BrushPath:
+    {
+      double width = 0;
+      double height = 0;
+      if ( mImageWidth > 0 )
+      {
+        if ( mImageWidthUnit != Qgis::RenderUnit::Percentage )
+        {
+          width = context.renderContext().convertToPainterUnits( mImageWidth, mImageWidthUnit, mImageWidthMapUnitScale );
+        }
+        else
+        {
+          // RenderPercentage Unit Type takes original image size
+          width = ( mImageWidth * originalSize.width() ) / 100.0;
+        }
+      }
+      if ( mImageHeight > 0 )
+      {
+        if ( mImageHeightUnit != Qgis::RenderUnit::Percentage )
+        {
+          height = context.renderContext().convertToPainterUnits( mImageHeight, mImageHeightUnit, mImageHeightMapUnitScale );
+        }
+        else
+        {
+          // RenderPercentage Unit Type takes original image size
+          height = ( mImageHeight * originalSize.height() ) / 100.0;
+        }
+      }
+      if ( mImageWidth == 0 && height > 0 )
+      {
+        width = height * originalSize.width() / originalSize.height();
+      }
+      else if ( mImageHeight == 0 && width > 0 )
+      {
+        height = width * originalSize.height() / originalSize.width();
+      }
+      if ( width == 0 || height == 0 )
+      {
+        width = originalSize.width();
+        height = originalSize.height();
+      }
+
+      mLineImage = QgsApplication::imageCache()->pathAsImage( mPath, QSize( width, height ),
+                   false, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+      break;
+    }
+  }
 }
 
 void QgsRasterLineSymbolLayer::stopRender( QgsSymbolRenderContext & )
@@ -3442,10 +3553,12 @@ void QgsRasterLineSymbolLayer::stopRender( QgsSymbolRenderContext & )
 
 void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
-  if ( !context.renderContext().painter() )
+  QPainter *painter = context.renderContext().painter();
+  if ( !painter )
     return;
 
   QImage sourceImage = mLineImage;
+  double strokeWidth = mWidth;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth )
        || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile )
        || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOpacity ) )
@@ -3457,7 +3570,6 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
       path = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), path );
     }
 
-    double strokeWidth = mWidth;
     if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
     {
       context.setOriginalValueVariable( strokeWidth );
@@ -3475,10 +3587,64 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     opacity *= context.opacity();
 
     bool cached = false;
-    sourceImage = QgsApplication::imageCache()->pathAsImage( path,
-                  QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ),
-                         static_cast< int >( std::ceil( scaledHeight ) ) ),
-                  true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+
+    switch ( mMode )
+    {
+      case Qgis::RasterLineSymbolLayerMode::StrokePath:
+      {
+        sourceImage = QgsApplication::imageCache()->pathAsImage( path,
+                      QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ),
+                             static_cast< int >( std::ceil( scaledHeight ) ) ),
+                      true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+        break;
+      }
+      case Qgis::RasterLineSymbolLayerMode::BrushPath:
+      {
+        double width = 0;
+        double height = 0;
+        if ( mImageWidth > 0 )
+        {
+          if ( mImageWidthUnit != Qgis::RenderUnit::Percentage )
+          {
+            width = context.renderContext().convertToPainterUnits( mImageWidth, mImageWidthUnit, mImageWidthMapUnitScale );
+          }
+          else
+          {
+            // RenderPercentage Unit Type takes original image size
+            width = ( mImageWidth * originalSize.width() ) / 100.0;
+          }
+        }
+        if ( mImageHeight > 0 )
+        {
+          if ( mImageHeightUnit != Qgis::RenderUnit::Percentage )
+          {
+            height = context.renderContext().convertToPainterUnits( mImageHeight, mImageHeightUnit, mImageHeightMapUnitScale );
+          }
+          else
+          {
+            // RenderPercentage Unit Type takes original image size
+            height = ( mImageHeight * originalSize.height() ) / 100.0;
+          }
+        }
+        if ( mImageWidth == 0 && height > 0 )
+        {
+          width = height * originalSize.width() / originalSize.height();
+        }
+        else if ( mImageHeight == 0 && width > 0 )
+        {
+          height = width * originalSize.height() / originalSize.width();
+        }
+        if ( width == 0 || height == 0 )
+        {
+          width = originalSize.width();
+          height = originalSize.height();
+        }
+
+        sourceImage = QgsApplication::imageCache()->pathAsImage( path, QSize( width, height ),
+                      false, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+        break;
+      }
+    }
   }
 
   const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
@@ -3487,9 +3653,79 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     QgsImageOperation::overlayColor( sourceImage, context.renderContext().selectionColor() );
   }
 
-  const QBrush brush( sourceImage );
+  QBrush brush( sourceImage );
 
-  renderPolylineUsingBrush( points, context, brush, sourceImage.height(), sourceImage.width() );
+  switch ( mMode )
+  {
+    case Qgis::RasterLineSymbolLayerMode::StrokePath:
+      renderPolylineUsingBrush( points, context, brush, sourceImage.height(), sourceImage.width() );
+      break;
+
+    case Qgis::RasterLineSymbolLayerMode::BrushPath:
+    {
+      painter->setBrush( Qt::NoBrush );
+      const double penWidth = context.renderContext().convertToPainterUnits( strokeWidth, mWidthUnit, mWidthMapUnitScale );
+
+      if ( mCoordinateMode == Qgis::SymbolCoordinateReference::Feature )
+      {
+        QRectF boundingRect = points.boundingRect();
+        brush.setTransform( brush.transform().translate( boundingRect.left() - brush.transform().dx(),
+                            boundingRect.top() - brush.transform().dy() ) );
+      }
+
+      QPen pen( brush, penWidth );
+
+      double offset = mOffset;
+      if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
+      {
+        context.setOriginalValueVariable( offset );
+        offset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), offset );
+      }
+
+      Qt::PenJoinStyle join = mPenJoinStyle;
+      if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyJoinStyle ) )
+      {
+        context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( join ) );
+        QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext() );
+        if ( !QgsVariantUtils::isNull( exprVal ) )
+          join = QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() );
+      }
+      pen.setJoinStyle( join );
+
+      Qt::PenCapStyle cap = mPenCapStyle;
+      if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCapStyle ) )
+      {
+        context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( cap ) );
+        QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyCapStyle, context.renderContext().expressionContext() );
+        if ( !QgsVariantUtils::isNull( exprVal ) )
+          cap = QgsSymbolLayerUtils::decodePenCapStyle( exprVal.toString() );
+      }
+      pen.setCapStyle( cap );
+
+      painter->setPen( pen );
+
+      QPolygonF offsetPoints;
+      if ( qgsDoubleNear( offset, 0 ) )
+      {
+        QPainterPath path;
+        path.addPolygon( points );
+        painter->drawPath( path );
+      }
+      else
+      {
+        const double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
+        const QList<QPolygonF> offsetLine = ::offsetLine( points, scaledOffset, context.originalGeometryType() != Qgis::GeometryType::Unknown ? context.originalGeometryType() : Qgis::GeometryType::Line );
+        for ( const QPolygonF &part : offsetLine )
+        {
+          QPainterPath path;
+          path.addPolygon( part );
+          painter->drawPath( path );
+        }
+      }
+      break;
+    }
+  }
+
 }
 
 void QgsRasterLineSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
@@ -3539,6 +3775,16 @@ double QgsRasterLineSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) co
 QColor QgsRasterLineSymbolLayer::color() const
 {
   return QColor();
+}
+
+Qgis::RasterLineSymbolLayerMode QgsRasterLineSymbolLayer::mode() const
+{
+  return mMode;
+}
+
+void QgsRasterLineSymbolLayer::setMode( Qgis::RasterLineSymbolLayerMode mode )
+{
+  mMode = mode;
 }
 
 

@@ -598,6 +598,18 @@ class CORE_EXPORT Qgis
     Q_FLAG( SymbolLayerUserFlags )
 
     /**
+     * Modes for rendering raster line symbol layers.
+     *
+     * \since QGIS 3.36
+     */
+    enum class RasterLineSymbolLayerMode
+    {
+      StrokePath, //!< Apply raster image curved along the stroke path
+      BrushPath, //!< Apply raster image as a brush filling the stroked path
+    };
+    Q_ENUM( RasterLineSymbolLayerMode )
+
+    /**
      * Browser item types.
      *
      * \since QGIS 3.20

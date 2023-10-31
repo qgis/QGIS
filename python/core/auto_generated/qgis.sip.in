@@ -371,6 +371,12 @@ The development version
     typedef QFlags<Qgis::SymbolLayerUserFlag> SymbolLayerUserFlags;
 
 
+    enum class RasterLineSymbolLayerMode
+    {
+      StrokePath,
+      BrushPath,
+    };
+
     enum class BrowserItemType
       {
       Collection,
