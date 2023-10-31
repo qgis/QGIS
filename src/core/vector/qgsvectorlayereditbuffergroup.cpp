@@ -306,10 +306,10 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
     if ( ! modifiedLayersOnProviderSide.isEmpty() )
     {
       if ( modifiedLayersOnProviderSide.size() == 1 )
-        commitErrors << tr( "WARNING: changes to layer '%1' where already sent to data provider and cannot be rolled back." ).arg( ( *modifiedLayersOnProviderSide.begin() )->name() );
+        commitErrors << tr( "WARNING: changes to layer '%1' were already sent to data provider and cannot be rolled back." ).arg( ( *modifiedLayersOnProviderSide.begin() )->name() );
       else
       {
-        commitErrors << tr( "WARNING: changes to following layers where already sent to data provider and cannot be rolled back:" );
+        commitErrors << tr( "WARNING: changes to following layers were already sent to data provider and cannot be rolled back:" );
         for ( QgsVectorLayer *layer : std::as_const( modifiedLayersOnProviderSide ) )
           commitErrors << tr( "- '%1'" ).arg( layer->name() );
       }
