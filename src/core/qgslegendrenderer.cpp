@@ -117,6 +117,22 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
       {
         QJsonObject group = legendNodes.at( 0 )->exportToJson( mSettings, context );
         group[ QStringLiteral( "type" ) ] = QStringLiteral( "layer" );
+        if ( mSettings.jsonRenderFlags().testFlag( Qgis::LegendJsonRenderFlag::ShowRuleDetails ) )
+        {
+          if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+          {
+            if ( vLayer->renderer() )
+            {
+              const QString ruleKey { legendNodes.at( 0 )->data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
+              bool ok;
+              const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
+              if ( ok )
+              {
+                group[ QStringLiteral( "rule" ) ] = ruleExp;
+              }
+            }
+          }
+        }
         nodes.append( group );
       }
       else if ( legendNodes.count() > 1 )

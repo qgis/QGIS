@@ -1829,6 +1829,14 @@ The development version
     typedef QFlags<Qgis::LayerTreeFilterFlag> LayerTreeFilterFlags;
 
 
+
+    enum class LegendJsonRenderFlag
+    {
+      ShowRuleDetails,
+    };
+    typedef QFlags<Qgis::LegendJsonRenderFlag> LegendJsonRenderFlags;
+
+
     enum class ActionType
     {
       Invalid,
@@ -2368,111 +2376,114 @@ GEOS string version linked
 };
 
 
-QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
-
-QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
-
-QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
-
-QFlags<Qgis::SymbolLayerFlag> operator|(Qgis::SymbolLayerFlag f1, QFlags<Qgis::SymbolLayerFlag> f2);
-
-QFlags<Qgis::SymbolLayerUserFlag> operator|(Qgis::SymbolLayerUserFlag f1, QFlags<Qgis::SymbolLayerUserFlag> f2);
-
-QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
-
-QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
-
-QFlags<Qgis::SublayerFlag> operator|(Qgis::SublayerFlag f1, QFlags<Qgis::SublayerFlag> f2);
-
-QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCapability f1, QFlags<Qgis::SqlLayerDefinitionCapability> f2);
-
-QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QFlags<Qgis::BabelFormatCapability> f2);
-
-QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
-
-QFlags<Qgis::GeometryValidityFlag> operator|(Qgis::GeometryValidityFlag f1, QFlags<Qgis::GeometryValidityFlag> f2);
-
-QFlags<Qgis::FileOperationFlag> operator|(Qgis::FileOperationFlag f1, QFlags<Qgis::FileOperationFlag> f2);
-
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
 
 QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QFlags<Qgis::AnnotationItemGuiFlag> f2);
 
-QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
+QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
 
-QFlags<Qgis::MapLayerRendererFlag> operator|(Qgis::MapLayerRendererFlag f1, QFlags<Qgis::MapLayerRendererFlag> f2);
+QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QFlags<Qgis::BabelFormatCapability> f2);
 
-QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
-
-QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
-
-QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags<Qgis::MarkerLinePlacement> f2);
-
-QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
-
-QFlags<Qgis::HistoryProviderBackend> operator|(Qgis::HistoryProviderBackend f1, QFlags<Qgis::HistoryProviderBackend> f2);
-
-QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis::MapLayerProperty> f2);
-
-QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
-
-QFlags<Qgis::VectorDataProviderAttributeEditCapability> operator|(Qgis::VectorDataProviderAttributeEditCapability f1, QFlags<Qgis::VectorDataProviderAttributeEditCapability> f2);
-
-QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
-
-QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToolFlag> f2);
-
-QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
-
-QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::ProjectReadFlag> f2);
-
-QFlags<Qgis::ProjectCapability> operator|(Qgis::ProjectCapability f1, QFlags<Qgis::ProjectCapability> f2);
+QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 
 QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
 
-QFlags<Qgis::RasterTemporalCapabilityFlag> operator|(Qgis::RasterTemporalCapabilityFlag f1, QFlags<Qgis::RasterTemporalCapabilityFlag> f2);
+QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
 
-QFlags<Qgis::SelectionFlag> operator|(Qgis::SelectionFlag f1, QFlags<Qgis::SelectionFlag> f2);
+QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
 
-QFlags<Qgis::RasterRendererFlag> operator|(Qgis::RasterRendererFlag f1, QFlags<Qgis::RasterRendererFlag> f2);
+QFlags<Qgis::FileOperationFlag> operator|(Qgis::FileOperationFlag f1, QFlags<Qgis::FileOperationFlag> f2);
 
-QFlags<Qgis::LabelingFlag> operator|(Qgis::LabelingFlag f1, QFlags<Qgis::LabelingFlag> f2);
+QFlags<Qgis::GeometryValidityFlag> operator|(Qgis::GeometryValidityFlag f1, QFlags<Qgis::GeometryValidityFlag> f2);
 
 QFlags<Qgis::GpsInformationComponent> operator|(Qgis::GpsInformationComponent f1, QFlags<Qgis::GpsInformationComponent> f2);
 
-QFlags<Qgis::MapLayerActionTarget> operator|(Qgis::MapLayerActionTarget f1, QFlags<Qgis::MapLayerActionTarget> f2);
+QFlags<Qgis::HistoryProviderBackend> operator|(Qgis::HistoryProviderBackend f1, QFlags<Qgis::HistoryProviderBackend> f2);
 
-QFlags<Qgis::MapLayerActionFlag> operator|(Qgis::MapLayerActionFlag f1, QFlags<Qgis::MapLayerActionFlag> f2);
-
-QFlags<Qgis::RelationshipCapability> operator|(Qgis::RelationshipCapability f1, QFlags<Qgis::RelationshipCapability> f2);
-
-QFlags<Qgis::SettingsTreeNodeOption> operator|(Qgis::SettingsTreeNodeOption f1, QFlags<Qgis::SettingsTreeNodeOption> f2);
-
-QFlags<Qgis::ScriptLanguageCapability> operator|(Qgis::ScriptLanguageCapability f1, QFlags<Qgis::ScriptLanguageCapability> f2);
-
-QFlags<Qgis::LayerTreeFilterFlag> operator|(Qgis::LayerTreeFilterFlag f1, QFlags<Qgis::LayerTreeFilterFlag> f2);
+QFlags<Qgis::LabelingFlag> operator|(Qgis::LabelingFlag f1, QFlags<Qgis::LabelingFlag> f2);
 
 QFlags<Qgis::LabelLinePlacementFlag> operator|(Qgis::LabelLinePlacementFlag f1, QFlags<Qgis::LabelLinePlacementFlag> f2);
 
 QFlags<Qgis::LabelPolygonPlacementFlag> operator|(Qgis::LabelPolygonPlacementFlag f1, QFlags<Qgis::LabelPolygonPlacementFlag> f2);
 
-QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
+QFlags<Qgis::LayerTreeFilterFlag> operator|(Qgis::LayerTreeFilterFlag f1, QFlags<Qgis::LayerTreeFilterFlag> f2);
 
-QFlags<Qgis::VectorFileWriterCapability> operator|(Qgis::VectorFileWriterCapability f1, QFlags<Qgis::VectorFileWriterCapability> f2);
+QFlags<Qgis::LegendJsonRenderFlag> operator|(Qgis::LegendJsonRenderFlag f1, QFlags<Qgis::LegendJsonRenderFlag> f2);
 
-QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
+QFlags<Qgis::MapLayerActionFlag> operator|(Qgis::MapLayerActionFlag f1, QFlags<Qgis::MapLayerActionFlag> f2);
 
-QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCapability f1, QFlags<Qgis::VectorTileProviderCapability> f2);
+QFlags<Qgis::MapLayerActionTarget> operator|(Qgis::MapLayerActionTarget f1, QFlags<Qgis::MapLayerActionTarget> f2);
+
+QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis::MapLayerProperty> f2);
+
+QFlags<Qgis::MapLayerRendererFlag> operator|(Qgis::MapLayerRendererFlag f1, QFlags<Qgis::MapLayerRendererFlag> f2);
+
+QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
+
+QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags<Qgis::MarkerLinePlacement> f2);
+
+QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToolFlag> f2);
+
+QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
+
+QFlags<Qgis::ProjectCapability> operator|(Qgis::ProjectCapability f1, QFlags<Qgis::ProjectCapability> f2);
+
+QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::ProjectReadFlag> f2);
+
+QFlags<Qgis::RasterRendererFlag> operator|(Qgis::RasterRendererFlag f1, QFlags<Qgis::RasterRendererFlag> f2);
+
+QFlags<Qgis::RasterTemporalCapabilityFlag> operator|(Qgis::RasterTemporalCapabilityFlag f1, QFlags<Qgis::RasterTemporalCapabilityFlag> f2);
+
+QFlags<Qgis::RelationshipCapability> operator|(Qgis::RelationshipCapability f1, QFlags<Qgis::RelationshipCapability> f2);
+
+QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
+
+QFlags<Qgis::ScriptLanguageCapability> operator|(Qgis::ScriptLanguageCapability f1, QFlags<Qgis::ScriptLanguageCapability> f2);
+
+QFlags<Qgis::SelectionFlag> operator|(Qgis::SelectionFlag f1, QFlags<Qgis::SelectionFlag> f2);
+
+QFlags<Qgis::SettingsTreeNodeOption> operator|(Qgis::SettingsTreeNodeOption f1, QFlags<Qgis::SettingsTreeNodeOption> f2);
+
+QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
+
+QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCapability f1, QFlags<Qgis::SqlLayerDefinitionCapability> f2);
+
+QFlags<Qgis::SublayerFlag> operator|(Qgis::SublayerFlag f1, QFlags<Qgis::SublayerFlag> f2);
+
+QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
+
+QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
+
+QFlags<Qgis::SymbolLayerFlag> operator|(Qgis::SymbolLayerFlag f1, QFlags<Qgis::SymbolLayerFlag> f2);
+
+QFlags<Qgis::SymbolLayerUserFlag> operator|(Qgis::SymbolLayerUserFlag f1, QFlags<Qgis::SymbolLayerUserFlag> f2);
+
+QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
+
+QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
+
+QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
 
 QFlags<Qgis::TiledSceneProviderCapability> operator|(Qgis::TiledSceneProviderCapability f1, QFlags<Qgis::TiledSceneProviderCapability> f2);
-
-QFlags<Qgis::TiledSceneRequestFlag> operator|(Qgis::TiledSceneRequestFlag f1, QFlags<Qgis::TiledSceneRequestFlag> f2);
 
 QFlags<Qgis::TiledSceneRendererFlag> operator|(Qgis::TiledSceneRendererFlag f1, QFlags<Qgis::TiledSceneRendererFlag> f2);
 
 QFlags<Qgis::FieldConfigurationFlag> operator|(Qgis::FieldConfigurationFlag f1, QFlags<Qgis::FieldConfigurationFlag> f2);
 
 QFlags<Qgis::LayerFilter> operator|(Qgis::LayerFilter f1, QFlags<Qgis::LayerFilter> f2);
+
+QFlags<Qgis::TiledSceneRequestFlag> operator|(Qgis::TiledSceneRequestFlag f1, QFlags<Qgis::TiledSceneRequestFlag> f2);
+
+QFlags<Qgis::VectorDataProviderAttributeEditCapability> operator|(Qgis::VectorDataProviderAttributeEditCapability f1, QFlags<Qgis::VectorDataProviderAttributeEditCapability> f2);
+
+QFlags<Qgis::VectorFileWriterCapability> operator|(Qgis::VectorFileWriterCapability f1, QFlags<Qgis::VectorFileWriterCapability> f2);
+
+QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
+
+QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCapability f1, QFlags<Qgis::VectorTileProviderCapability> f2);
+
+QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
+
 
 
 

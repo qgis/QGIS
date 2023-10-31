@@ -1360,6 +1360,85 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Legend_Placeholder_Icon")
 
+    def test_wms_GetLegendGraphic_JSON_rule_details(self):
+
+        project = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+
+        symbol = QgsMarkerSymbol.createSimple(
+            {'name': 'square', 'color': 'red'})
+
+        scale_min = 10000
+        scale_max = 1000
+        rule = QgsRuleBasedRenderer.Rule(symbol, scale_min, scale_max, "fldtxt = 'one'", 'label1', 'description1')
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(rule)
+        layer.setRenderer(QgsRuleBasedRenderer(rootrule))
+
+        project.addMapLayers([layer])
+
+        server = QgsServer()
+        request = QgsBufferServerRequest("/?SERVICE=WMS&VERSION=1.30&REQUEST=GetLegendGraphic" +
+                                         "&LAYERS=layer1" +
+                                         "&FORMAT=application/json" +
+                                         "&SHOWRULEDETAILS=1")
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        j = json.loads(bytes(response.body()))
+        node = j['nodes'][0]
+        self.assertEqual(node['scaleMaxDenom'], 1000)
+        self.assertEqual(node['scaleMinDenom'], 10000)
+        self.assertEqual(node['rule'], "(fldtxt = 'one') AND (@map_scale <= 1000) AND (@map_scale >= 10000)")
+
+    def test_wms_GetLegendGraphic_JSON_rule_filter(self):
+
+        project = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+
+        symbol1 = QgsMarkerSymbol.createSimple(
+            {'name': 'square', 'color': 'red'})
+        symbol2 = QgsMarkerSymbol.createSimple(
+            {'name': 'square', 'color': 'green'})
+
+        scale_min = 10000
+        scale_max = 1000
+
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rule1 = QgsRuleBasedRenderer.Rule(symbol1, scale_min, scale_max, "fldtxt = 'one'", 'label1', 'description1')
+        rootrule.appendChild(rule1)
+        rule2 = QgsRuleBasedRenderer.Rule(symbol2, scale_min, scale_max, "fldtxt = 'two'", 'label2', 'description2')
+        rootrule.appendChild(rule2)
+        layer.setRenderer(QgsRuleBasedRenderer(rootrule))
+
+        project.addMapLayers([layer])
+
+        server = QgsServer()
+        request = QgsBufferServerRequest("/?SERVICE=WMS&VERSION=1.30&REQUEST=GetLegendGraphic" +
+                                         "&LAYERS=layer1" +
+                                         "&FORMAT=application/json" +
+                                         "&RULE=label2" +
+                                         "&SHOWRULEDETAILS=1")
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        j = json.loads(bytes(response.body()))
+        node = j
+        self.assertEqual(node['scaleMaxDenom'], 1000)
+        self.assertEqual(node['scaleMinDenom'], 10000)
+        self.assertEqual(node['rule'], "(fldtxt = 'two') AND (@map_scale <= 1000) AND (@map_scale >= 10000)")
+
+        icon = node['icon']
+        request = QgsBufferServerRequest("/?SERVICE=WMS&VERSION=1.30&REQUEST=GetLegendGraphic" +
+                                         "&LAYERS=layer1" +
+                                         "&FORMAT=application/json" +
+                                         "&RULE=label2")
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        j = json.loads(bytes(response.body()))
+        node = j
+        self.assertEqual(node['icon'], icon)
+
 
 if __name__ == '__main__':
     unittest.main()

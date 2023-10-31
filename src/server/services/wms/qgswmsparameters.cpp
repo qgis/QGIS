@@ -380,6 +380,11 @@ namespace QgsWms
                                       QVariant( true ) );
     save( pRuleLabel );
 
+    const QgsWmsParameter pShowRuleDetails( QgsWmsParameter::SHOWRULEDETAILS,
+                                            QVariant::Bool,
+                                            QVariant( false ) );
+    save( pShowRuleDetails );
+
     const QgsWmsParameter pScale( QgsWmsParameter::SCALE,
                                   QVariant::Double,
                                   QVariant( -1 ) );
@@ -988,6 +993,11 @@ namespace QgsWms
   QString QgsWmsParameters::rule() const
   {
     return mWmsParameters.value( QgsWmsParameter::RULE ).toString();
+  }
+
+  bool QgsWmsParameters::showRuleDetailsAsBool() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::SHOWRULEDETAILS ).toBool();
   }
 
   QString QgsWmsParameters::ruleLabel() const

@@ -2928,6 +2928,13 @@ Qgis.LayerTreeFilterFlag.baseClass = Qgis
 Qgis.LayerTreeFilterFlags.baseClass = Qgis
 LayerTreeFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__ = "If set, the rule expression of a rule based renderer legend item will be added to the JSON"
+Qgis.LegendJsonRenderFlag.__doc__ = "Legend JSON export flags.\n\nFlags to control JSON attributes when exporting a legend in JSON format.\n\n.. versionadded:: 3.36\n\n" + '* ``ShowRuleDetails``: ' + Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__
+# --
+Qgis.LegendJsonRenderFlag.baseClass = Qgis
+Qgis.LegendJsonRenderFlags.baseClass = Qgis
+LegendJsonRenderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.ActionType.Invalid.__doc__ = "Invalid"
 Qgis.ActionType.MapLayerAction.__doc__ = "Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class."
 Qgis.ActionType.AttributeAction.__doc__ = "Custom actions (manually defined in layer properties), corresponds to QgsAction class."
