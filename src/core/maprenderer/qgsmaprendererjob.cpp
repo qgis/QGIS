@@ -516,13 +516,13 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     if ( ct.isValid() )
     {
       haveExtentInLayerCrs = reprojectToLayerExtent( ml, ct, r1, r2 );
+      if ( !r1.isFinite() )
+      {
+        mErrors.append( Error( ml->id(), tr( "There was a problem transforming the layer's extent. Layer skipped." ) ) );
+        continue;
+      }
     }
     QgsDebugMsgLevel( "extent: " + r1.toString(), 3 );
-    if ( !r1.isFinite() || !r2.isFinite() )
-    {
-      mErrors.append( Error( ml->id(), tr( "There was a problem transforming the layer's extent. Layer skipped." ) ) );
-      continue;
-    }
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
 
