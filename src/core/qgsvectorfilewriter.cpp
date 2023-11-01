@@ -3856,13 +3856,11 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
       }
 
       GDALDriverH gdalDriver = GDALGetDriverByName( drvName.toLocal8Bit().constData() );
-      char **metadata = nullptr;
+      bool nonSpatialFormat = false;
       if ( gdalDriver )
       {
-        metadata = GDALGetMetadata( gdalDriver, nullptr );
+        nonSpatialFormat = GDALGetMetadataItem( gdalDriver, GDAL_DCAP_NONSPATIAL, nullptr ) != nullptr;
       }
-
-      bool nonSpatialFormat = CSLFetchBoolean( metadata, GDAL_DCAP_NONSPATIAL, false );
 
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
