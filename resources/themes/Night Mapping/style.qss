@@ -66,7 +66,7 @@ QAbstractSpinBox {
     border: 1px solid @itemdarkbackground;
     background-color: @itembackground;
     selection-background-color: @selection;
-    selection-color: @text;
+    selection-color: @textlight;
     color: @textlight;
 }
 
@@ -227,7 +227,7 @@ QLineEdit
     border: 1px solid @itemdarkbackground;
     background-color: @itembackground;
     selection-background-color: @selection;
-    selection-color: @text;
+    selection-color: @textlight;
 }
 
 QLineEdit:read-only
@@ -458,7 +458,7 @@ QComboBox:editable {
     border: 1px solid @itemdarkbackground;
     background-color: @itembackground;
     selection-background-color: @selection;
-    selection-color: @text;
+    selection-color: @textlight;
     color: @textlight;
 }
 
@@ -876,12 +876,18 @@ QAbstractItemView, QListView
 {
   background-color: @itembackground;
   alternate-background-color: @background;
-  color: @text;
+  color: @textlight;
   border: 1px solid @itemdarkbackground;
   border-radius: 0px;
   padding: 1px;
-  selection-color: @text;
+  selection-color: @textlight;
   selection-background-color: @selection;
+}
+
+QAbstractItemView::item:selected, QListView::item:selected
+{
+    background-color: @selection;
+    color: @textlight;
 }
 
 QAbstractItemView:disabled, QListView:disabled
@@ -897,22 +903,24 @@ QAbstractItemView::selected, QListView::selected {
 }
 
 QAbstractItemView::indicator:checked, QListView::indicator:checked {
-    border: 1px solid @background;
+    background-color: @toggleon;
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
 }
 QAbstractItemView::indicator:checked:disabled, QListView::indicator:checked:disabled {
-    image: url(@theme_path/icons/qcheckbox-checked.svg);
-    border-color: @itemdarkbackground;
+    border: 1px solid @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
+    image: url(@theme_path/icons/qcheckbox-checked.svg);
 }
 QAbstractItemView::indicator:unchecked, QListView::indicator:unchecked {
-    border: 1px solid @background;
+    background-color: @toggleoff;
+    image: none;
 }
 QAbstractItemView::indicator:unchecked:disabled, QListView::indicator:unchecked:disabled {
-    border-color: @itemdarkbackground;
+    border: 1px solid @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
-    background-color: rgba(0, 0, 0, 0);
+    image: none;
 }
+
 
 /* ==================================================================================== */
 /* TREE VIEW                                                                            */
