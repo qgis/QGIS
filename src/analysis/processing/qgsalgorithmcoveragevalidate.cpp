@@ -52,16 +52,27 @@ QString QgsCoverageValidateAlgorithm::groupId() const
 void QgsCoverageValidateAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "GAP_WIDTH" ),
-                QObject::tr( "Gap width" ), 0.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 ) );
+  std::unique_ptr< QgsProcessingParameterDistance> gapWidthParam = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "GAP_WIDTH" ),
+      QObject::tr( "Gap width" ), 0.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
+  gapWidthParam->setHelp( QObject::tr( "The maximum width of gaps to detect" ) );
+  addParameter( gapWidthParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "INVALID_EDGES" ), QObject::tr( "Invalid edges" ), QgsProcessing::TypeVectorLine, QVariant(), true, true ) );
   addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "IS_VALID" ), QObject::tr( "Coverage is valid" ) ) );
 }
 
+QString QgsCoverageValidateAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Analyzes a coverage of polygon features to find places where the assumption of exactly matching edges is not met" );
+}
+
 QString QgsCoverageValidateAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "" );
+  return QObject::tr( "This algorithm analyzes a coverage (represented as a set of polygon features "
+                      "with exactly matching edge geometry) to find places where the "
+                      "assumption of exactly matching edges is not met.\n\n"
+                      "Invalidity includes polygons that overlap "
+                      "or that have gaps smaller than the specified gap width." );
 }
 
 QgsCoverageValidateAlgorithm *QgsCoverageValidateAlgorithm::createInstance() const
@@ -126,11 +137,6 @@ QVariantMap QgsCoverageValidateAlgorithm::processAlgorithm( const QVariantMap &p
   catch ( QgsNotSupportedException &e )
   {
     throw QgsProcessingException( e.what() );
-  }
-
-  if ( result == Qgis::CoverageValidityResult::Error )
-  {
-
   }
 
   switch ( result )

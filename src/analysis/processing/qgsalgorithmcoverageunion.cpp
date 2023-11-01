@@ -54,9 +54,17 @@ void QgsCoverageUnionAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ), QgsProcessing::TypeVectorPolygon ) );
 }
 
+QString QgsCoverageUnionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Dissolves a coverage of polygon features" );
+}
+
 QString QgsCoverageUnionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "" );
+  return QObject::tr( "This algorithm operates on a coverage (represented as a set of polygon features "
+                      "with exactly matching edge geometry) to dissolve (union) the geometries.\n\n"
+                      "It provides a heavily optimized approach for unioning these features compared with "
+                      "the standard Dissolve tools." );
 }
 
 QgsCoverageUnionAlgorithm *QgsCoverageUnionAlgorithm::createInstance() const

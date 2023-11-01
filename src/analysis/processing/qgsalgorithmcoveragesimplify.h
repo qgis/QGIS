@@ -30,7 +30,7 @@
  */
 class QgsCoverageSimplifyAlgorithm : public QgsProcessingAlgorithm
 {
-public:
+  public:
     QgsCoverageSimplifyAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -38,13 +38,14 @@ public:
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
+    QString shortDescription() const override;
     QString shortHelpString() const override;
     QgsCoverageSimplifyAlgorithm *createInstance() const override SIP_FACTORY;
 
-protected:
+  protected:
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                 QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 
