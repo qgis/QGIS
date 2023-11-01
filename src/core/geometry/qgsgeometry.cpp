@@ -2648,6 +2648,11 @@ QgsGeometry QgsGeometry::unionCoverage() const
     return QgsGeometry();
   }
 
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection &&
+       QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::Polygon )
+    return QgsGeometry();
+
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   const QgsGeometry result = QgsGeometry( geos.unionCoverage( &mLastError ) );

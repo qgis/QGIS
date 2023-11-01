@@ -200,3 +200,33 @@ tests:
       OUTPUT_NONGROUND:
         hash: cec23a44e0a5da2c9d0be68a13cdb1e851492061e64d81b564e5a269
         type: rasterhash
+
+  - algorithm: native:coverageunion
+    name: Coverage union
+    condition:
+      geos:
+        at_least: 31200
+    params:
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/coverage_dissolve.gml
+        type: vector
+
+  - algorithm: native:coveragesimplify
+    name: Simplify coverage
+    condition:
+      geos:
+        at_least: 31200
+    params:
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+      PRESERVE_BOUNDARY: false
+      TOLERANCE: 3.0
+    results:
+      OUTPUT:
+        name: expected/simplify_coverage.gml
+        type: vector
