@@ -23,7 +23,7 @@ namespace QgsWms
 {
 
   /**
-   * Output GetMap response in DXF format
+   * Output GetMap response in PDF format
    */
   void writeAsPdf( QgsServerInterface *serverIface, const QgsProject *project,
                    const QgsWmsRequest &request,
