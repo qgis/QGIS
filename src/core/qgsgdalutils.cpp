@@ -39,9 +39,8 @@ bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
     // it supports Create() but only for vector side
     return false;
   }
-  char **driverMetadata = GDALGetMetadata( driver, nullptr );
-  return  CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) &&
-          CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false );
+  return GDALGetMetadataItem( driver, GDAL_DCAP_CREATE, nullptr ) &&
+         GDALGetMetadataItem( driver, GDAL_DCAP_RASTER, nullptr );
 }
 
 gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandMemoryDataset( GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
