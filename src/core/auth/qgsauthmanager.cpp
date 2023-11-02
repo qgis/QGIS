@@ -35,6 +35,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QRegularExpression>
+#include <QCoreApplication>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QRandomGenerator>
@@ -50,7 +51,6 @@
 #include "keychain.h"
 
 // QGIS includes
-#include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthcrypto.h"
 #include "qgsauthmethod.h"
@@ -75,7 +75,7 @@ const QString QgsAuthManager::AUTH_MAN_TAG = QObject::tr( "Authentication Manage
 const QString QgsAuthManager::AUTH_CFG_REGEX = QStringLiteral( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
 
 
-const QLatin1String QgsAuthManager::AUTH_PASSWORD_HELPER_KEY_NAME( "QGIS-Master-Password" );
+const QLatin1String QgsAuthManager::AUTH_PASSWORD_HELPER_KEY_NAME_BASE( "QGIS-Master-Password" );
 const QLatin1String QgsAuthManager::AUTH_PASSWORD_HELPER_FOLDER_NAME( "QGIS" );
 
 
@@ -131,7 +131,7 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
     authdb = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), connectionName );
     authdb.setDatabaseName( authenticationDatabasePath() );
     // for background threads, remove database when current thread finishes
-    if ( QThread::currentThread() != qApp->thread() )
+    if ( QThread::currentThread() != QCoreApplication::instance()->thread() )
     {
       QgsDebugMsgLevel( QStringLiteral( "Scheduled auth db remove on thread close" ), 2 );
 
@@ -3207,7 +3207,7 @@ bool QgsAuthManager::passwordHelperDelete()
   QgsSettings settings;
   job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool() );
   job.setAutoDelete( false );
-  job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
+  job.setKey( authPasswordHelperKeyName() );
   QEventLoop loop;
   connect( &job, &QKeychain::Job::finished, &loop, &QEventLoop::quit );
   job.start();
@@ -3239,7 +3239,7 @@ QString QgsAuthManager::passwordHelperRead()
   QgsSettings settings;
   job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool() );
   job.setAutoDelete( false );
-  job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
+  job.setKey( authPasswordHelperKeyName() );
   QEventLoop loop;
   connect( &job, &QKeychain::Job::finished, &loop, &QEventLoop::quit );
   job.start();
@@ -3281,7 +3281,7 @@ bool QgsAuthManager::passwordHelperWrite( const QString &password )
   QgsSettings settings;
   job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool() );
   job.setAutoDelete( false );
-  job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
+  job.setKey( authPasswordHelperKeyName() );
   job.setTextData( password );
   QEventLoop loop;
   connect( &job, &QKeychain::Job::finished, &loop, &QEventLoop::quit );
@@ -3955,4 +3955,13 @@ void QgsAuthManager::insertCaCertInCache( QgsAuthCertUtils::CaCertSource source,
     mCaCertsCache.insert( QgsAuthCertUtils::shaHexForCert( cert ),
                           QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>( source, cert ) );
   }
+}
+
+QString QgsAuthManager::authPasswordHelperKeyName() const
+{
+  const QFileInfo info( mAuthDbPath );
+  const QString dbProfilePath = info.dir().dirName();
+
+  // if not running from the default profile, ensure that a different key is used
+  return AUTH_PASSWORD_HELPER_KEY_NAME_BASE + ( dbProfilePath.compare( QLatin1String( "default" ), Qt::CaseInsensitive ) == 0 ? QString() : dbProfilePath );
 }
