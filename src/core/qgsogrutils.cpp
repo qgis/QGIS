@@ -2672,14 +2672,14 @@ int QgsOgrUtils::listStyles( GDALDatasetH hDS, const QString &layerName, const Q
   OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
   if ( !hLayer )
   {
-    QgsMessageLog::logMessage( QObject::tr( "No styles available on DB" ) );
+    QgsDebugMsgLevel( QStringLiteral( "No styles available on DB" ), 2 );
     errCause = QObject::tr( "No styles available on DB" );
     return 0;
   }
 
   if ( OGR_L_GetFeatureCount( hLayer, TRUE ) == 0 )
   {
-    QgsMessageLog::logMessage( QObject::tr( "No styles available on DB" ) );
+    QgsDebugMsgLevel( QStringLiteral( "No styles available on DB" ), 2 );
     errCause = QObject::tr( "No styles available on DB" );
     return 0;
   }
@@ -2790,7 +2790,7 @@ QString QgsOgrUtils::getStyleById( GDALDatasetH hDS, const QString &styleId, QSt
   OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
   if ( !hLayer )
   {
-    QgsMessageLog::logMessage( QObject::tr( "No styles available on DB" ) );
+    QgsDebugMsgLevel( QStringLiteral( "No styles available on DB" ), 2 );
     errCause = QObject::tr( "No styles available on DB" );
     return QString();
   }
@@ -2851,7 +2851,7 @@ QString QgsOgrUtils::loadStoredStyle( GDALDatasetH hDS, const QString &layerName
   OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
   if ( !hLayer )
   {
-    QgsMessageLog::logMessage( QObject::tr( "No styles available on DB" ) );
+    QgsDebugMsgLevel( QStringLiteral( "No styles available on DB" ), 2 );
     errCause = QObject::tr( "No styles available on DB" );
     return QString();
   }
