@@ -87,16 +87,28 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   else
     lst = expression->referencedColumns();
 
-  request.setFlags( ( expression && expression->needsGeometry() ) ?
+  bool expressionNeedsGeometry {  expression &&expression->needsGeometry() };
+
+  if ( !mOrderBy.empty() )
+  {
+    request.setOrderBy( mOrderBy );
+    for ( const QgsFeatureRequest::OrderByClause &orderBy : std::as_const( mOrderBy ) )
+    {
+      if ( orderBy.expression().needsGeometry() )
+      {
+        expressionNeedsGeometry = true;
+        break;
+      }
+    }
+  }
+
+  request.setFlags( expressionNeedsGeometry ?
                     QgsFeatureRequest::NoFlags :
                     QgsFeatureRequest::NoGeometry )
   .setSubsetOfAttributes( lst, mLayer->fields() );
 
   if ( mFidsSet )
     request.setFilterFids( mFidsFilter );
-
-  if ( !mOrderBy.empty() )
-    request.setOrderBy( mOrderBy );
 
   if ( !mFilterExpression.isEmpty() )
     request.setFilterExpression( mFilterExpression );
