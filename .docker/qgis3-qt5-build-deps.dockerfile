@@ -110,9 +110,11 @@ RUN  apt-get update \
   && apt-get clean
 
 # Node.js and Yarn for server landingpage webapp
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
-RUN apt-get install -y nodejs
-RUN corepack enable
+# !!!! Needs updating -- see https://github.com/nodesource/distributions
+
+# RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+# RUN apt-get install -y nodejs
+# RUN corepack enable
 
 # Oracle : client side
 RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-basic-linux.x64-19.9.0.0.0dbru.zip > instantclient-basic-linux.x64-19.9.0.0.0dbru.zip
