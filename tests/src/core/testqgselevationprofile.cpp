@@ -43,9 +43,9 @@ class TestQgsElevationProfile : public QgsTest
     QgsVectorLayerProfileResults *mProfileResults = nullptr;
     std::unique_ptr< QgsRasterDemTerrainProvider > mDemTerrain;
 
-    void doCheckPoint( QgsProfileRequest &request, int tolerance, QgsVectorLayer *layer,
+    void doCheckPoint( QgsProfileRequest &request, double tolerance, QgsVectorLayer *layer,
                        const QList<QgsFeatureId> &expectedFeatures );
-    void doCheckLine( QgsProfileRequest &request, int tolerance, QgsVectorLayer *layer,
+    void doCheckLine( QgsProfileRequest &request, double tolerance, QgsVectorLayer *layer,
                       const QList<QgsFeatureId> &expectedFeatures, const QList<int> &nbSubGeomPerFeature );
 
     QgsVectorLayer *createVectorLayer( const QString &fileName );
@@ -122,8 +122,6 @@ void TestQgsElevationProfile::initTestCase()
                  << QgsPoint( Qgis::WkbType::Point, -346550, 6632030 )
                  << QgsPoint( Qgis::WkbType::Point, -346440, 6632140 )
                  << QgsPoint( Qgis::WkbType::Point, -347830, 6632930 ) ;
-
-
 }
 
 void TestQgsElevationProfile::cleanupTestCase()
@@ -131,11 +129,11 @@ void TestQgsElevationProfile::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgsElevationProfile::doCheckPoint( QgsProfileRequest &request, int tolerance, QgsVectorLayer *layer,
+void TestQgsElevationProfile::doCheckPoint( QgsProfileRequest &request, double tolerance, QgsVectorLayer *layer,
     const QList<QgsFeatureId> &expectedFeatures )
 {
 #if DEBUG
-  qDebug() << "===== checking =====";
+  qWarning() << "===== checking =====";
 #endif
   request.setTolerance( tolerance );
 
@@ -152,7 +150,7 @@ void TestQgsElevationProfile::doCheckPoint( QgsProfileRequest &request, int tole
   QList<QgsFeatureId> actual = mProfileResults->features.keys();
   std::sort( actual.begin(), actual.end() );
 #if DEBUG
-  qDebug() << "actual sorted fid" << actual;
+  qWarning() << "actual sorted fid" << actual;
 #endif
 
   QCOMPARE( actual, expected );
@@ -163,7 +161,7 @@ void TestQgsElevationProfile::doCheckPoint( QgsProfileRequest &request, int tole
     for ( const QgsVectorLayerProfileResults::Feature &feat : it.value() )
     {
 #if DEBUG
-      qDebug() << "feat point:" << feat.featureId << "geom:" << feat.geometry.asWkt();
+      qWarning() << "feat point:" << feat.featureId << "geom:" << feat.geometry.asWkt();
 #endif
       if ( QgsWkbTypes::hasZ( feat.geometry.wkbType() ) )
       {
@@ -187,7 +185,7 @@ void TestQgsElevationProfile::doCheckPoint( QgsProfileRequest &request, int tole
 
 }
 
-void TestQgsElevationProfile::doCheckLine( QgsProfileRequest &request, int tolerance, QgsVectorLayer *layer,
+void TestQgsElevationProfile::doCheckLine( QgsProfileRequest &request, double tolerance, QgsVectorLayer *layer,
     const QList<QgsFeatureId> &expectedFeatures, const QList<int> &nbSubGeomPerFeature )
 {
   doCheckPoint( request, tolerance, layer, expectedFeatures );
@@ -195,7 +193,7 @@ void TestQgsElevationProfile::doCheckLine( QgsProfileRequest &request, int toler
   // check in how many geometry the feature intersects the profile curve
   int i = 0;
 #if DEBUG
-  qDebug() << "distanceToHeightMap:" << mProfileResults->distanceToHeightMap();
+  qWarning() << "distanceToHeightMap:" << mProfileResults->distanceToHeightMap();
 #endif
   QList<QgsFeatureId> actual = mProfileResults->features.keys();
   std::sort( actual.begin(), actual.end() );
@@ -216,7 +214,11 @@ void TestQgsElevationProfile::testVectorLayerProfileForPoint()
   request.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 3857 ) );
   request.setTerrainProvider( mDemTerrain->clone() );
 
-  doCheckPoint( request, 15, mpPointsLayer, { 5, 11, 12, 13, 14, 15, 18, 45, 46 } );
+  if ( ( Qgis::geosVersionMajor() == 3 && Qgis::geosVersionMinor() <= 10 ) || ( Qgis::geosVersionMajor() == 3 && Qgis::geosVersionMinor() >= 12 ) )
+    doCheckPoint( request, 15, mpPointsLayer, { 5, 11, 12, 13, 14, 15, 18, 45, 46 } );
+  else if ( Qgis::geosVersionMajor() == 3 && Qgis::geosVersionMinor() == 11 )
+    doCheckPoint( request, 16, mpPointsLayer, { 5, 11, 12, 13, 14, 15, 18, 45, 46 } );
+
   doCheckPoint( request, 70, mpPointsLayer, { 0, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 38, 45, 46, 48 } );
 }
 
@@ -301,8 +303,17 @@ void TestQgsElevationProfile::testVectorLayerProfileForPolygon()
   request.setTerrainProvider( mDemTerrain->clone() );
 
   doCheckLine( request, 1, mpPolygonsLayer, { 168, 206, 210, 284, 306, 321 }, { 1, 1, 1, 1, 1, 1 } );
-  doCheckLine( request, 10, mpPolygonsLayer, { 168, 172, 206, 210, 231, 267, 275, 282, 284, 306, 307, 319, 321 }, { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } );
-  doCheckLine( request, 11, mpPolygonsLayer, { 168, 172, 206, 210, 231, 255, 267, 275, 282, 283, 284, 306, 307, 319, 321 }, { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } );
+
+  if ( ( Qgis::geosVersionMajor() == 3 && Qgis::geosVersionMinor() <= 10 ) || ( Qgis::geosVersionMajor() == 3 && Qgis::geosVersionMinor() >= 12 ) )
+  {
+    doCheckLine( request, 10, mpPolygonsLayer, { 168, 172, 206, 210, 231, 267, 275, 282, 284, 306, 307, 319, 321 }, { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } );
+    doCheckLine( request, 11, mpPolygonsLayer, { 168, 172, 206, 210, 231, 255, 267, 275, 282, 283, 284, 306, 307, 319, 321 }, { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } );
+  }
+  else if ( Qgis::geosVersionMajor() == 3 && Qgis::geosVersionMinor() == 11 )
+  {
+    doCheckLine( request, 9, mpPolygonsLayer, { 168, 172, 206, 210, 231, 267, 275, 282, 284, 306, 307, 319, 321 }, { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } );
+    doCheckLine( request, 10, mpPolygonsLayer, { 168, 172, 206, 210, 231, 267, 275, 282, 283, 284, 306, 307, 319, 321 }, { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } );
+  }
 }
 
 
