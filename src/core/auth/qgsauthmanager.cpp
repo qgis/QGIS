@@ -57,6 +57,8 @@
 #include "qgsvariantutils.h"
 #include "qgssettings.h"
 #include "qgsruntimeprofiler.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 QgsAuthManager *QgsAuthManager::sInstance = nullptr;
 
@@ -69,7 +71,7 @@ const QString QgsAuthManager::AUTH_CFG_REGEX = QStringLiteral( "authcfg=([a-z]|[
 const QLatin1String QgsAuthManager::AUTH_PASSWORD_HELPER_KEY_NAME_BASE( "QGIS-Master-Password" );
 const QLatin1String QgsAuthManager::AUTH_PASSWORD_HELPER_FOLDER_NAME( "QGIS" );
 
-
+const QgsSettingsEntryBool *QgsAuthManager::settingsGenerateRandomPasswordForPasswordHelper = new QgsSettingsEntryBool( QStringLiteral( "generate-random-password-for-keychain" ), QgsSettingsTree::sTreeAuthentication, true, QStringLiteral( "Whether a random password should be automatically generated for the authentication database and stored in the system keychain." ) );
 
 Q_NOWARN_DEPRECATED_PUSH
 #if defined(Q_OS_MAC)
@@ -382,6 +384,19 @@ void QgsAuthManager::setup( const QString &pluginPath, const QString &authDataba
   }
 }
 
+QString QgsAuthManager::generatePassword()
+{
+  QRandomGenerator generator = QRandomGenerator::securelySeeded();
+  QString pw;
+  pw.resize( 32 );
+  static const QString sPwChars = QStringLiteral( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-{}[]" );
+  for ( int i = 0; i < pw.size(); ++i )
+  {
+    pw[i] = sPwChars.at( generator.bounded( 0, sPwChars.length() ) );
+  }
+  return pw;
+}
+
 bool QgsAuthManager::isDisabled() const
 {
   ensureInitialized();
@@ -398,6 +413,43 @@ const QString QgsAuthManager::disabledMessage() const
   ensureInitialized();
 
   return tr( "Authentication system is DISABLED:\n%1" ).arg( mAuthDisabledMessage );
+}
+
+bool QgsAuthManager::createAndStoreRandomMasterPasswordInKeyChain()
+{
+  QMutexLocker locker( mMasterPasswordMutex.get() );
+  if ( isDisabled() )
+    return false;
+
+  if ( mScheduledDbErase )
+    return false;
+
+  if ( !passwordHelperEnabled() )
+    return false;
+
+  if ( !mMasterPass.isEmpty() )
+  {
+    QgsDebugError( QStringLiteral( "Master password is already set!" ) );
+    return false;
+  }
+
+  const QString newPassword = generatePassword();
+  if ( passwordHelperWrite( newPassword ) )
+  {
+    emit passwordHelperMessageLog( tr( "Master password has been successfully written to your %1" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), Qgis::MessageLevel::Warning );
+    mMasterPass = newPassword;
+  }
+  else
+  {
+    emit passwordHelperMessageLog( tr( "Master password could not be written to your %1" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), Qgis::MessageLevel::Warning );
+    return false;
+  }
+
+  if ( !verifyMasterPassword() )
+    return false;
+
+  QgsDebugMsgLevel( QStringLiteral( "Master password is set and verified" ), 2 );
+  return true;
 }
 
 

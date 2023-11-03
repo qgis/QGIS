@@ -27,6 +27,7 @@ and to utilize configurations through various authentication method plugins
 %End
   public:
 
+
     enum MessageLevel
     {
       INFO,
@@ -160,6 +161,7 @@ Returns the authentication database connection URI with the password stripped.
 
 .. versionadded:: 3.40
 %End
+
 
     bool setMasterPassword( bool verify = false );
 %Docstring
