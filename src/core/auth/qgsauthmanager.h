@@ -54,6 +54,7 @@ class QgsAuthMethod;
 class QgsAuthMethodEdit;
 class QgsAuthProvider;
 class QgsAuthMethodMetadata;
+class QgsSettingsEntryBool;
 class QTimer;
 class QgsAuthConfigurationStorage;
 class QgsAuthConfigurationStorageDb;
@@ -72,6 +73,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     Q_OBJECT
 
   public:
+
+    static const QgsSettingsEntryBool *settingsGenerateRandomPasswordForPasswordHelper SIP_SKIP;
 
     //! Message log level (mirrors that of QgsMessageLog, so it can also output there)
     enum MessageLevel
@@ -185,6 +188,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \since QGIS 3.40
      */
     const QString authenticationDatabaseUriStripped() const;
+
+    /**
+     * Creates a new securely seeded random password and stores it in the
+     * system keychain as the new master password.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.42
+     */
+    bool createAndStoreRandomMasterPasswordInKeyChain() SIP_SKIP;
 
     /**
      * Main call to initially set or continually check master password is set
@@ -919,6 +931,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * access denied or no backend, reset error flags at the end
      */
     void passwordHelperProcessError();
+
+    static QString generatePassword();
 
     bool masterPasswordInput();
 

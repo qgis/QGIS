@@ -16689,6 +16689,13 @@ void QgisApp::masterPasswordSetup()
   connect( QgsApplication::authManager(), &QgsAuthManager::messageLog, this, &QgisApp::authMessageLog );
   connect( QgsApplication::authManager(), &QgsAuthManager::passwordHelperMessageLog, this, &QgisApp::authMessageLog );
   connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseEraseRequested, this, &QgisApp::eraseAuthenticationDatabase );
+
+  if ( QgsAuthManager::settingsGenerateRandomPasswordForPasswordHelper->value()
+       && !QgsApplication::authManager()->masterPasswordHashInDatabase() && QgsApplication::authManager()->passwordHelperEnabled() )
+  {
+    // if no master password set by user yet, just generate a new one and store it in the system keychain
+    QgsApplication::authManager()->createAndStoreRandomMasterPasswordInKeyChain();
+  }
 }
 
 void QgisApp::eraseAuthenticationDatabase()
