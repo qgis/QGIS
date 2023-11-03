@@ -169,19 +169,19 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   catItemData = DnDTreeItemData( DnDTreeItemData::WidgetType, QStringLiteral( "Other" ), tr( "Other Widgets" ) );
   catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
-  DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, QStringLiteral( "QmlWidget" ), tr( "QML Widget" ) );
+  DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, QStringLiteral( "QML Widget" ), tr( "QML Widget" ) );
   itemData.setShowLabel( true );
   mAvailableWidgetsTree->addItem( catitem, itemData );
 
-  auto itemDataHtml { DnDTreeItemData( DnDTreeItemData::HtmlWidget, QStringLiteral( "HtmlWidget" ), tr( "HTML Widget" ) ) };
+  auto itemDataHtml { DnDTreeItemData( DnDTreeItemData::HtmlWidget, QStringLiteral( "HTML Widget" ), tr( "HTML Widget" ) ) };
   itemDataHtml.setShowLabel( true );
   mAvailableWidgetsTree->addItem( catitem, itemDataHtml );
 
-  auto itemDataText { DnDTreeItemData( DnDTreeItemData::TextWidget, QStringLiteral( "TextWidget" ), tr( "Text Widget" ) ) };
+  auto itemDataText { DnDTreeItemData( DnDTreeItemData::TextWidget, QStringLiteral( "Text Widget" ), tr( "Text Widget" ) ) };
   itemDataText.setShowLabel( true );
   mAvailableWidgetsTree->addItem( catitem, itemDataText );
 
-  auto itemDataSpacer { DnDTreeItemData( DnDTreeItemData::SpacerWidget, QStringLiteral( "SpacerWidget" ), tr( "Spacer Widget" ) ) };
+  auto itemDataSpacer { DnDTreeItemData( DnDTreeItemData::SpacerWidget, QStringLiteral( "Spacer Widget" ), tr( "Spacer Widget" ) ) };
   itemDataSpacer.setShowLabel( false );
   mAvailableWidgetsTree->addItem( catitem, itemDataSpacer );
 
