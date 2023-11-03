@@ -90,14 +90,14 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     checkSelection();
 
     // set up utility actions menu
-    mActionImportAuthenticationConfigs = new QAction( tr( "Import authentication configurations from file" ), this );
-    mActionExportSelectedAuthenticationConfigs = new QAction( tr( "Export selected authentication configurations to file" ), this );
-    mActionSetMasterPassword = new QAction( QStringLiteral( "Input master password" ), this );
-    mActionClearCachedMasterPassword = new QAction( QStringLiteral( "Clear cached master password" ), this );
-    mActionResetMasterPassword = new QAction( QStringLiteral( "Reset master password" ), this );
-    mActionClearCachedAuthConfigs = new QAction( QStringLiteral( "Clear cached authentication configurations" ), this );
-    mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all authentication configurations" ), this );
-    mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase authentication database" ), this );
+    mActionImportAuthenticationConfigs = new QAction( tr( "Import Authentication Configurations from File…" ), this );
+    mActionExportSelectedAuthenticationConfigs = new QAction( tr( "Export Selected Authentication Configurations to File…" ), this );
+    mActionSetMasterPassword = new QAction( QStringLiteral( "Input Master Password…" ), this );
+    mActionClearCachedMasterPassword = new QAction( QStringLiteral( "Clear Cached Master Password" ), this );
+    mActionResetMasterPassword = new QAction( QStringLiteral( "Reset Master Password…" ), this );
+    mActionClearCachedAuthConfigs = new QAction( QStringLiteral( "Clear Cached Authentication Configurations" ), this );
+    mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all Authentication Configurations…" ), this );
+    mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase Authentication Database…" ), this );
 
     connect( mActionImportAuthenticationConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::importAuthenticationConfigs );
     connect( mActionExportSelectedAuthenticationConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::exportSelectedAuthenticationConfigs );
