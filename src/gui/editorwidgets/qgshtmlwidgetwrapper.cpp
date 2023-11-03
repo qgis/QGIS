@@ -19,6 +19,7 @@
 #include "qgswebframe.h"
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgsattributeform.h"
+
 #include <QScreen>
 
 QgsHtmlWidgetWrapper::QgsHtmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
@@ -34,7 +35,6 @@ bool QgsHtmlWidgetWrapper::valid() const
 
 QWidget *QgsHtmlWidgetWrapper::createWidget( QWidget *parent )
 {
-
   QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
 
   if ( form )
