@@ -35,10 +35,10 @@
         <item>
          <widget class="QgsFileWidget" name="mDatabaseFileWidget" native="true">
           <property name="dialogTitle" stdset="0">
-           <string>Select DWG/DXF file</string>
+           <string>Select GeoPackage Database</string>
           </property>
           <property name="filter" stdset="0">
-           <string notr="true">*.dwg;;*.DWG;;*.dxf;;*.DXF</string>
+           <string notr="true">*.gpkg;;*.GPKG</string>
           </property>
          </widget>
         </item>
@@ -83,10 +83,10 @@
         <item>
          <widget class="QgsFileWidget" name="mSourceDrawingFileWidget" native="true">
           <property name="dialogTitle" stdset="0">
-           <string>Select GeoPackage Database</string>
+           <string>Select DWG/DXF file</string>
           </property>
           <property name="filter" stdset="0">
-           <string notr="true">*.gpkg;;*.GPKG</string>
+           <string notr="true">*.dwg;;*.DWG;;*.dxf;;*.DXF</string>
           </property>
          </widget>
         </item>
