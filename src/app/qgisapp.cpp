@@ -10230,7 +10230,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
           case Qgis::AvoidIntersectionsMode::AllowIntersections:
             break;
         }
-        if ( avoidIntersectionsLayers.size() > 0 )
+        if ( !avoidIntersectionsLayers.empty() )
         {
           geom.avoidIntersectionsV2( avoidIntersectionsLayers );
           feature.setGeometry( geom );
