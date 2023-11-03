@@ -193,6 +193,7 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   connect( mActionClearAccessCacheNow, &QAction::triggered, this, [ = ]
   {
     QgsNetworkAccessManager::instance()->clearAccessCache();
+    messageBar()->clearWidgets();
     messageBar()->pushSuccess( tr( "Auth cache cleared" ), tr( "Network authentication cache has been cleared" ) );
   } );
   connect( mActionAutoClearAccessCache, &QAction::triggered, this, [ ]( bool checked )
@@ -270,6 +271,7 @@ void QgsAuthEditorWidgets::eraseAuthenticationDatabase()
 void QgsAuthEditorWidgets::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
   const int levelint = static_cast<int>( level );
+  messageBar()->clearWidgets();
   messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint );
 }
 
