@@ -25,6 +25,7 @@
 #include "qgsqmlwidgetwrapper.h"
 #include "qgshtmlwidgetwrapper.h"
 #include "qgsapplication.h"
+#include "qgscodeeditor.h"
 #include "qgscodeeditorhtml.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsattributeeditoraction.h"
@@ -1335,17 +1336,17 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       QLineEdit *title = new QLineEdit( itemData.name() );
 
       //qmlCode
-      QPlainTextEdit *qmlCode = new QPlainTextEdit( itemData.qmlElementEditorConfiguration().qmlCode );
-      qmlCode->setPlaceholderText( tr( "Insert QML code here…" ) );
+      QgsCodeEditor *qmlCode = new QgsCodeEditor( this );
+      qmlCode->setText( itemData.qmlElementEditorConfiguration().qmlCode );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       QgsFeature previewFeature;
       mLayer->getFeatures().nextFeature( previewFeature );
 
       //update preview on text change
-      connect( qmlCode, &QPlainTextEdit::textChanged, this, [ = ]
+      connect( qmlCode, &QsciScintilla::textChanged, this, [ = ]
       {
-        qmlWrapper->setQmlCode( qmlCode->toPlainText() );
+        qmlWrapper->setQmlCode( qmlCode->text() );
         qmlWrapper->reinitWidget();
         qmlWrapper->setFeature( previewFeature );
       } );
@@ -1363,65 +1364,65 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
         {
           case 0:
           {
-            qmlCode->setPlaceholderText( tr( "Insert QML code here…" ) );
+            qmlCode->setText( QString() );
             break;
           }
           case 1:
           {
-            qmlCode->insertPlainText( QStringLiteral( "import QtQuick 2.0\n"
-                                      "\n"
-                                      "Rectangle {\n"
-                                      "    width: 100\n"
-                                      "    height: 100\n"
-                                      "    color: \"steelblue\"\n"
-                                      "    Text{ text: \"A rectangle\" }\n"
-                                      "}\n" ) );
+            qmlCode->setText( QStringLiteral( "import QtQuick 2.0\n"
+                                              "\n"
+                                              "Rectangle {\n"
+                                              "    width: 100\n"
+                                              "    height: 100\n"
+                                              "    color: \"steelblue\"\n"
+                                              "    Text{ text: \"A rectangle\" }\n"
+                                              "}\n" ) );
             break;
           }
           case 2:
           {
-            qmlCode->insertPlainText( QStringLiteral( "import QtQuick 2.0\n"
-                                      "import QtCharts 2.0\n"
-                                      "\n"
-                                      "ChartView {\n"
-                                      "    width: 400\n"
-                                      "    height: 400\n"
-                                      "\n"
-                                      "    PieSeries {\n"
-                                      "        id: pieSeries\n"
-                                      "        PieSlice { label: \"First slice\"; value: 25 }\n"
-                                      "        PieSlice { label: \"Second slice\"; value: 45 }\n"
-                                      "        PieSlice { label: \"Third slice\"; value: 30 }\n"
-                                      "    }\n"
-                                      "}\n" ) );
+            qmlCode->setText( QStringLiteral( "import QtQuick 2.0\n"
+                                              "import QtCharts 2.0\n"
+                                              "\n"
+                                              "ChartView {\n"
+                                              "    width: 400\n"
+                                              "    height: 400\n"
+                                              "\n"
+                                              "    PieSeries {\n"
+                                              "        id: pieSeries\n"
+                                              "        PieSlice { label: \"First slice\"; value: 25 }\n"
+                                              "        PieSlice { label: \"Second slice\"; value: 45 }\n"
+                                              "        PieSlice { label: \"Third slice\"; value: 30 }\n"
+                                              "    }\n"
+                                              "}\n" ) );
             break;
           }
           case 3:
           {
-            qmlCode->insertPlainText( QStringLiteral( "import QtQuick 2.0\n"
-                                      "import QtCharts 2.0\n"
-                                      "\n"
-                                      "ChartView {\n"
-                                      "    title: \"Bar series\"\n"
-                                      "    width: 600\n"
-                                      "    height:400\n"
-                                      "    legend.alignment: Qt.AlignBottom\n"
-                                      "    antialiasing: true\n"
-                                      "    ValueAxis{\n"
-                                      "        id: valueAxisY\n"
-                                      "        min: 0\n"
-                                      "        max: 15\n"
-                                      "    }\n"
-                                      "\n"
-                                      "    BarSeries {\n"
-                                      "        id: mySeries\n"
-                                      "        axisY: valueAxisY\n"
-                                      "        axisX: BarCategoryAxis { categories: [\"2007\", \"2008\", \"2009\", \"2010\", \"2011\", \"2012\" ] }\n"
-                                      "        BarSet { label: \"Bob\"; values: [2, 2, 3, 4, 5, 6] }\n"
-                                      "        BarSet { label: \"Susan\"; values: [5, 1, 2, 4, 1, 7] }\n"
-                                      "        BarSet { label: \"James\"; values: [3, 5, 8, 13, 5, 8] }\n"
-                                      "    }\n"
-                                      "}\n" ) );
+            qmlCode->setText( QStringLiteral( "import QtQuick 2.0\n"
+                                              "import QtCharts 2.0\n"
+                                              "\n"
+                                              "ChartView {\n"
+                                              "    title: \"Bar series\"\n"
+                                              "    width: 600\n"
+                                              "    height:400\n"
+                                              "    legend.alignment: Qt.AlignBottom\n"
+                                              "    antialiasing: true\n"
+                                              "    ValueAxis{\n"
+                                              "        id: valueAxisY\n"
+                                              "        min: 0\n"
+                                              "        max: 15\n"
+                                              "    }\n"
+                                              "\n"
+                                              "    BarSeries {\n"
+                                              "        id: mySeries\n"
+                                              "        axisY: valueAxisY\n"
+                                              "        axisX: BarCategoryAxis { categories: [\"2007\", \"2008\", \"2009\", \"2010\", \"2011\", \"2012\" ] }\n"
+                                              "        BarSet { label: \"Bob\"; values: [2, 2, 3, 4, 5, 6] }\n"
+                                              "        BarSet { label: \"Susan\"; values: [5, 1, 2, 4, 1, 7] }\n"
+                                              "        BarSet { label: \"James\"; values: [3, 5, 8, 13, 5, 8] }\n"
+                                              "    }\n"
+                                              "}\n" ) );
             break;
           }
           default:
@@ -1444,7 +1445,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       {
         QString expression = expressionWidget->expression().trimmed().replace( '"', QLatin1String( "\\\"" ) );
         if ( !expression.isEmpty() )
-          qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expression ) );
+          qmlCode->insertText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expression ) );
       } );
 
       connect( editExpressionButton, &QAbstractButton::clicked, this, [ = ]
@@ -1459,23 +1460,25 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
         {
           QString expression = exprDlg.expressionText().trimmed().replace( '"', QLatin1String( "\\\"" ) );
           if ( !expression.isEmpty() )
-            qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expression ) );
+            qmlCode->insertText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expression ) );
         }
       } );
 
       layout->addWidget( new QLabel( tr( "Title" ) ) );
       layout->addWidget( title );
       QGroupBox *qmlCodeBox = new QGroupBox( tr( "QML Code" ) );
-      qmlCodeBox->setLayout( new QGridLayout );
+      qmlCodeBox->setLayout( new QVBoxLayout );
       qmlCodeBox->layout()->addWidget( qmlObjectTemplate );
-      QGroupBox *expressionWidgetBox = new QGroupBox();
+      QWidget *expressionWidgetBox = new QWidget();
       qmlCodeBox->layout()->addWidget( expressionWidgetBox );
       expressionWidgetBox->setLayout( new QHBoxLayout );
+      expressionWidgetBox->layout()->setContentsMargins( 0, 0, 0, 0 );
       expressionWidgetBox->layout()->addWidget( expressionWidget );
       expressionWidgetBox->layout()->addWidget( addFieldButton );
       expressionWidgetBox->layout()->addWidget( editExpressionButton );
-      qmlCodeBox->layout()->addWidget( qmlCode );
+      expressionWidgetBox->layout()->addWidget( editExpressionButton );
       layout->addWidget( qmlCodeBox );
+      layout->addWidget( qmlCode );
       QScrollArea *qmlPreviewBox = new QgsScrollArea();
       qmlPreviewBox->setLayout( new QGridLayout );
       qmlPreviewBox->setMinimumWidth( 400 );
@@ -1494,7 +1497,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       if ( dlg.exec() )
       {
         QgsAttributesFormProperties::QmlElementEditorConfiguration qmlEdCfg;
-        qmlEdCfg.qmlCode = qmlCode->toPlainText();
+        qmlEdCfg.qmlCode = qmlCode->text();
         itemData.setName( title->text() );
         itemData.setQmlElementEditorConfiguration( qmlEdCfg );
         itemData.setShowLabel( showLabelCheckbox->isChecked() );
