@@ -52,8 +52,8 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
     const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
     for ( const QModelIndex index : selectedIndexes )
     {
-      QTableWidgetItem *item = mRulesTable->item( index.row(), 0 );
-      item->setCheckState( Qt::Checked );
+      if ( QTableWidgetItem *item = mRulesTable->item( index.row(), 0 ) )
+        item->setCheckState( Qt::Checked );
     }
   } );
   mContextMenu->addAction( enableAction );
@@ -63,8 +63,8 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
     const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
     for ( const QModelIndex index : selectedIndexes )
     {
-      QTableWidgetItem *item = mRulesTable->item( index.row(), 0 );
-      item->setCheckState( Qt::Unchecked );
+      if ( QTableWidgetItem *item = mRulesTable->item( index.row(), 0 ) )
+        item->setCheckState( Qt::Unchecked );
     }
   } );
   mContextMenu->addAction( disableAction );
@@ -74,8 +74,8 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
     const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
     for ( const QModelIndex index : selectedIndexes )
     {
-      QTableWidgetItem *item = mRulesTable->item( index.row(), 0 );
-      item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
+      if ( QTableWidgetItem *item = mRulesTable->item( index.row(), 0 ) )
+        item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
     }
   } );
   mContextMenu->addAction( toggleAction );
