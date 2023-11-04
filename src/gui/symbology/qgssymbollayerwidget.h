@@ -915,6 +915,50 @@ class GUI_EXPORT QgsLineburstSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
 };
 
+
+///////////
+
+#include "ui_widget_filledline.h"
+
+class QgsFilledLineSymbolLayer;
+
+/**
+ * \ingroup gui
+ * \class QgsFilledLineSymbolLayerWidget
+ * A widget for configuring QgsFilledLineSymbolLayer.
+ * \since QGIS 3.36
+ */
+class GUI_EXPORT QgsFilledLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetFilledLine
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsFilledLineSymbolLayerWidget.
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsFilledLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    ~QgsFilledLineSymbolLayerWidget() override;
+
+    /**
+     * Creates a new QgsFilledLineSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsFilledLineSymbolLayerWidget( vl ); }
+
+    void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    QgsSymbolLayer *symbolLayer() override;
+
+  private:
+
+    QgsFilledLineSymbolLayer *mLayer = nullptr;
+
+};
+
+
 ///////////
 
 #include "ui_widget_svgfill.h"
