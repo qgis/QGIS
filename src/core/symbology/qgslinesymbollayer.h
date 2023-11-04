@@ -28,6 +28,7 @@ class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsPathResolver;
 class QgsColorRamp;
+class QgsFillSymbol;
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(35,35,35)
 #define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
@@ -1360,6 +1361,97 @@ class CORE_EXPORT QgsLineburstSymbolLayer : public QgsAbstractBrushedLineSymbolL
     Qgis::GradientColorSource mGradientColorType = Qgis::GradientColorSource::SimpleTwoColor;
     QColor mColor2;
     std::unique_ptr< QgsColorRamp > mGradientRamp;
+
+};
+
+
+/**
+ * \ingroup core
+ * \class QgsFilledLineSymbolLayer
+ *
+ * \brief A line symbol layer type which fills a stroked line with a QgsFillSymbol.
+ *
+ * \since QGIS 3.36
+ */
+class CORE_EXPORT QgsFilledLineSymbolLayer : public QgsLineSymbolLayer
+{
+  public:
+
+    /**
+     * Constructor for QgsFilledLineSymbolLayer.
+     *
+     * If a \a fillSymbol is specified, it will be transferred to the symbol layer and used
+     * to fill the inside of the stroked line. If no \a fillSymbol is specified then a default
+     * symbol will be used.
+     */
+    QgsFilledLineSymbolLayer( double width = DEFAULT_SIMPLELINE_WIDTH, QgsFillSymbol *fillSymbol SIP_TRANSFER = nullptr );
+    ~QgsFilledLineSymbolLayer() override;
+
+    /**
+     * Creates a new QgsFilledLineSymbolLayer, using the settings
+     * serialized in the \a properties map (corresponding to the output from
+     * QgsFilledLineSymbolLayer::properties() ).
+     */
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+
+    QString layerType() const override;
+    void startRender( QgsSymbolRenderContext &context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
+    QVariantMap properties() const override;
+    QgsFilledLineSymbolLayer *clone() const override SIP_FACTORY;
+    QgsSymbol *subSymbol() override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
+    bool hasDataDefinedProperties() const override;
+    void setColor( const QColor &c ) override;
+    QColor color() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+    double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+
+    /**
+     * Returns the pen join style used to render the line (e.g. miter, bevel, round, etc).
+     *
+     * \see setPenJoinStyle()
+     */
+    Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+
+    /**
+     * Sets the pen join \a style used to render the line (e.g. miter, bevel, round, etc).
+     *
+     * \see penJoinStyle()
+     */
+    void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
+
+    /**
+     * Returns the pen cap style used to render the line (e.g. flat, square, round, etc).
+     *
+     * \see setPenCapStyle()
+     */
+    Qt::PenCapStyle penCapStyle() const { return mPenCapStyle; }
+
+    /**
+     * Sets the pen cap \a style used to render the line (e.g. flat, square, round, etc).
+     *
+     * \see penCapStyle()
+     */
+    void setPenCapStyle( Qt::PenCapStyle style ) { mPenCapStyle = style; }
+
+  private:
+
+#ifdef SIP_RUN
+    QgsFilledLineSymbolLayer( const QgsFilledLineSymbolLayer & );
+#endif
+
+    //! Fill subsymbol
+    std::unique_ptr< QgsFillSymbol > mFill;
+    Qt::PenJoinStyle mPenJoinStyle = DEFAULT_SIMPLELINE_JOINSTYLE;
+    Qt::PenCapStyle mPenCapStyle = DEFAULT_SIMPLELINE_CAPSTYLE;
+
 
 };
 

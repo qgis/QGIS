@@ -42,6 +42,8 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
                       QgsRasterLineSymbolLayer::create, nullptr, QgsRasterLineSymbolLayer::resolvePaths ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "Lineburst" ), QObject::tr( "Lineburst" ), Qgis::SymbolType::Line,
                       QgsLineburstSymbolLayer::create ) );
+  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "FilledLine" ), QObject::tr( "Filled Line" ), Qgis::SymbolType::Line,
+                      QgsFilledLineSymbolLayer::create ) );
 
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SimpleMarker" ), QObject::tr( "Simple Marker" ), Qgis::SymbolType::Marker,
                       QgsSimpleMarkerSymbolLayer::create, QgsSimpleMarkerSymbolLayer::createFromSld ) );
