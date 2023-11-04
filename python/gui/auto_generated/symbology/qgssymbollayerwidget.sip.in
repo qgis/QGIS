@@ -703,6 +703,48 @@ Creates a new QgsLineburstSymbolLayerWidget.
 
 
 
+
+class QgsFilledLineSymbolLayerWidget : QgsSymbolLayerWidget
+{
+%Docstring(signature="appended")
+A widget for configuring :py:class:`QgsFilledLineSymbolLayer`.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+
+    QgsFilledLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFilledLineSymbolLayerWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    ~QgsFilledLineSymbolLayerWidget();
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Creates a new QgsFilledLineSymbolLayerWidget.
+
+:param vl: associated vector layer
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+
+};
+
+
+
+
+
 class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
 
