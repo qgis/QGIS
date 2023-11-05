@@ -243,6 +243,50 @@ void QgsGdalSourceSelect::addButtonClicked()
   emit addRasterLayers( sources );
 }
 
+bool QgsGdalSourceSelect::configureFromUri( const QString &uri )
+{
+  mDataSources.clear();
+  mDataSources.append( uri );
+  const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
+  const QString layerName { decodedUri.value( QStringLiteral( "layerName" ) ).toString() };
+  mFileWidget->setFilePath( decodedUri.value( QStringLiteral( "path" ), QString() ).toString() );
+  QVariantMap openOptions = decodedUri.value( QStringLiteral( "openOptions" ) ).toMap();
+  // layerName becomes TABLE in some driver opening options (e.g. GPKG)
+  if ( !layerName.isEmpty() )
+  {
+    openOptions.insert( QStringLiteral( "TABLE" ), layerName );
+  }
+
+  if ( ! openOptions.isEmpty() )
+  {
+    for ( auto opt = openOptions.constBegin(); opt != openOptions.constEnd(); ++opt )
+    {
+      const auto widget { std::find_if( mOpenOptionsWidgets.cbegin(), mOpenOptionsWidgets.cend(), [ = ]( QWidget * widget )
+      {
+        return widget->objectName() == opt.key();
+      } ) };
+
+      if ( widget != mOpenOptionsWidgets.cend() )
+      {
+        if ( auto cb = qobject_cast<QComboBox *>( *widget ) )
+        {
+          const auto idx { cb->findText( opt.value().toString() ) };
+          if ( idx >= 0 )
+          {
+            cb->setCurrentIndex( idx );
+          }
+        }
+        else if ( auto le = qobject_cast<QLineEdit *>( *widget ) )
+        {
+          le->setText( opt.value().toString() );
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
 void QgsGdalSourceSelect::computeDataSources()
 {
   mDataSources.clear();
@@ -413,6 +457,18 @@ void QgsGdalSourceSelect::fillOpenOptions()
       }
       cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
       int idx = cb->findData( QVariant( QVariant::String ) );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,8,0)
+      if ( QString( GDALGetDriverShortName( hDriver ) ).compare( QLatin1String( "BAG" ) ) == 0 && label->text() == QLatin1String( "MODE" ) && options.contains( QLatin1String( "INTERPOLATED" ) ) )
+      {
+        gdal::dataset_unique_ptr hSrcDS( GDALOpen( firstDataSource.toUtf8().constData(), GA_ReadOnly ) );
+        if ( hSrcDS && QString{ GDALGetMetadataItem( hSrcDS.get(), "HAS_SUPERGRIDS", nullptr ) } == QLatin1String( "TRUE" ) )
+        {
+          idx = cb->findText( QLatin1String( "INTERPOLATED" ) );
+        }
+      }
+#endif
+
       cb->setCurrentIndex( idx );
       control = cb;
     }

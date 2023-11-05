@@ -506,6 +506,11 @@ Qgis::DatabaseProviderConnectionCapabilities2 QgsFileDataCollectionItem::databas
   return mCachedCapabilities2;
 }
 
+QList<QgsProviderSublayerDetails> QgsFileDataCollectionItem::sublayers() const
+{
+  return mSublayers;
+}
+
 //
 // QgsFileBasedDataItemProvider
 //

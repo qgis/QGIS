@@ -71,25 +71,25 @@ QgsMapLayerProxyModel.WritableLayer.is_monkey_patched = True
 QgsMapLayerProxyModel.WritableLayer.__doc__ = ""
 QgsMapLayerProxyModel.MeshLayer = Qgis.LayerFilter.MeshLayer
 QgsMapLayerProxyModel.MeshLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.MeshLayer.__doc__ = "QgsMeshLayer \since QGIS 3.6"
+QgsMapLayerProxyModel.MeshLayer.__doc__ = "QgsMeshLayer \n.. versionadded:: 3.6\n"
 QgsMapLayerProxyModel.VectorTileLayer = Qgis.LayerFilter.VectorTileLayer
 QgsMapLayerProxyModel.VectorTileLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.VectorTileLayer.__doc__ = "QgsVectorTileLayer \since QGIS 3.14"
+QgsMapLayerProxyModel.VectorTileLayer.__doc__ = "QgsVectorTileLayer \n.. versionadded:: 3.14\n"
 QgsMapLayerProxyModel.PointCloudLayer = Qgis.LayerFilter.PointCloudLayer
 QgsMapLayerProxyModel.PointCloudLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.PointCloudLayer.__doc__ = "QgsPointCloudLayer \since QGIS 3.18"
+QgsMapLayerProxyModel.PointCloudLayer.__doc__ = "QgsPointCloudLayer \n.. versionadded:: 3.18\n"
 QgsMapLayerProxyModel.AnnotationLayer = Qgis.LayerFilter.AnnotationLayer
 QgsMapLayerProxyModel.AnnotationLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.AnnotationLayer.__doc__ = "QgsAnnotationLayer \since QGIS 3.22"
+QgsMapLayerProxyModel.AnnotationLayer.__doc__ = "QgsAnnotationLayer \n.. versionadded:: 3.22\n"
 QgsMapLayerProxyModel.TiledSceneLayer = Qgis.LayerFilter.TiledSceneLayer
 QgsMapLayerProxyModel.TiledSceneLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.TiledSceneLayer.__doc__ = "QgsTiledSceneLayer \since QGIS 3.34"
+QgsMapLayerProxyModel.TiledSceneLayer.__doc__ = "QgsTiledSceneLayer \n.. versionadded:: 3.34\n"
 QgsMapLayerProxyModel.All = Qgis.LayerFilter.All
 QgsMapLayerProxyModel.All.is_monkey_patched = True
 QgsMapLayerProxyModel.All.__doc__ = ""
 QgsMapLayerProxyModel.SpatialLayer = Qgis.LayerFilter.SpatialLayer
 QgsMapLayerProxyModel.SpatialLayer.is_monkey_patched = True
-QgsMapLayerProxyModel.SpatialLayer.__doc__ = "\since QGIS 3.24"
+QgsMapLayerProxyModel.SpatialLayer.__doc__ = "\n.. versionadded:: 3.24\n"
 Qgis.LayerFilter.__doc__ = "Filter for layers\n\n.. versionadded:: 3.34.\n\n" + '* ``RasterLayer``: ' + Qgis.LayerFilter.RasterLayer.__doc__ + '\n' + '* ``NoGeometry``: ' + Qgis.LayerFilter.NoGeometry.__doc__ + '\n' + '* ``PointLayer``: ' + Qgis.LayerFilter.PointLayer.__doc__ + '\n' + '* ``LineLayer``: ' + Qgis.LayerFilter.LineLayer.__doc__ + '\n' + '* ``PolygonLayer``: ' + Qgis.LayerFilter.PolygonLayer.__doc__ + '\n' + '* ``HasGeometry``: ' + Qgis.LayerFilter.HasGeometry.__doc__ + '\n' + '* ``VectorLayer``: ' + Qgis.LayerFilter.VectorLayer.__doc__ + '\n' + '* ``PluginLayer``: ' + Qgis.LayerFilter.PluginLayer.__doc__ + '\n' + '* ``WritableLayer``: ' + Qgis.LayerFilter.WritableLayer.__doc__ + '\n' + '* ``MeshLayer``: ' + Qgis.LayerFilter.MeshLayer.__doc__ + '\n' + '* ``VectorTileLayer``: ' + Qgis.LayerFilter.VectorTileLayer.__doc__ + '\n' + '* ``PointCloudLayer``: ' + Qgis.LayerFilter.PointCloudLayer.__doc__ + '\n' + '* ``AnnotationLayer``: ' + Qgis.LayerFilter.AnnotationLayer.__doc__ + '\n' + '* ``TiledSceneLayer``: ' + Qgis.LayerFilter.TiledSceneLayer.__doc__ + '\n' + '* ``All``: ' + Qgis.LayerFilter.All.__doc__ + '\n' + '* ``SpatialLayer``: ' + Qgis.LayerFilter.SpatialLayer.__doc__
 # --
 Qgis.LayerFilters.baseClass = Qgis
@@ -1607,6 +1607,13 @@ Qgis.JoinStyle.__doc__ = "Join styles for buffers.\n\n.. versionadded:: 3.22\n\n
 # --
 Qgis.JoinStyle.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.CoverageValidityResult.Invalid.__doc__ = "Coverage is invalid. Invalidity includes polygons that overlap, that have gaps smaller than the gap width, or non-polygonal entries in the input collection."
+Qgis.CoverageValidityResult.Valid.__doc__ = "Coverage is valid"
+Qgis.CoverageValidityResult.Error.__doc__ = "An exception occurred while determining validity"
+Qgis.CoverageValidityResult.__doc__ = "Coverage validity results.\n\n.. versionadded:: 3.36\n\n" + '* ``Invalid``: ' + Qgis.CoverageValidityResult.Invalid.__doc__ + '\n' + '* ``Valid``: ' + Qgis.CoverageValidityResult.Valid.__doc__ + '\n' + '* ``Error``: ' + Qgis.CoverageValidityResult.Error.__doc__
+# --
+Qgis.CoverageValidityResult.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.MakeValidMethod.Linework.__doc__ = "Combines all rings into a set of noded lines and then extracts valid polygons from that linework."
 Qgis.MakeValidMethod.Structure.__doc__ = "Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+."
 Qgis.MakeValidMethod.__doc__ = "Algorithms to use when repairing invalid geometries.\n\n.. versionadded:: 3.28\n\n" + '* ``Linework``: ' + Qgis.MakeValidMethod.Linework.__doc__ + '\n' + '* ``Structure``: ' + Qgis.MakeValidMethod.Structure.__doc__
@@ -2928,6 +2935,13 @@ Qgis.LayerTreeFilterFlag.baseClass = Qgis
 Qgis.LayerTreeFilterFlags.baseClass = Qgis
 LayerTreeFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__ = "If set, the rule expression of a rule based renderer legend item will be added to the JSON"
+Qgis.LegendJsonRenderFlag.__doc__ = "Legend JSON export flags.\n\nFlags to control JSON attributes when exporting a legend in JSON format.\n\n.. versionadded:: 3.36\n\n" + '* ``ShowRuleDetails``: ' + Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__
+# --
+Qgis.LegendJsonRenderFlag.baseClass = Qgis
+Qgis.LegendJsonRenderFlags.baseClass = Qgis
+LegendJsonRenderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.ActionType.Invalid.__doc__ = "Invalid"
 Qgis.ActionType.MapLayerAction.__doc__ = "Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class."
 Qgis.ActionType.AttributeAction.__doc__ = "Custom actions (manually defined in layer properties), corresponds to QgsAction class."
@@ -2973,10 +2987,10 @@ QgsAction.OpenUrl.is_monkey_patched = True
 QgsAction.OpenUrl.__doc__ = "Open URL action"
 QgsAction.SubmitUrlEncoded = Qgis.AttributeActionType.SubmitUrlEncoded
 QgsAction.SubmitUrlEncoded.is_monkey_patched = True
-QgsAction.SubmitUrlEncoded.__doc__ = "POST data to an URL, using \"application/x-www-form-urlencoded\" or \"application/json\" if the body is valid JSON \since QGIS 3.24"
+QgsAction.SubmitUrlEncoded.__doc__ = "POST data to an URL, using \"application/x-www-form-urlencoded\" or \"application/json\" if the body is valid JSON \n.. versionadded:: 3.24\n"
 QgsAction.SubmitUrlMultipart = Qgis.AttributeActionType.SubmitUrlMultipart
 QgsAction.SubmitUrlMultipart.is_monkey_patched = True
-QgsAction.SubmitUrlMultipart.__doc__ = "POST data to an URL using \"multipart/form-data\"  \since QGIS 3.24"
+QgsAction.SubmitUrlMultipart.__doc__ = "POST data to an URL using \"multipart/form-data\"  \n.. versionadded:: 3.24\n"
 Qgis.AttributeActionType.__doc__ = "Attribute action types.\n\nPrior to QGIS 3.30 this was available as :py:class:`QgsAction`.ActionType\n\n.. versionadded:: 3.30\n\n" + '* ``Generic``: ' + Qgis.AttributeActionType.Generic.__doc__ + '\n' + '* ``GenericPython``: ' + Qgis.AttributeActionType.GenericPython.__doc__ + '\n' + '* ``Mac``: ' + Qgis.AttributeActionType.Mac.__doc__ + '\n' + '* ``Windows``: ' + Qgis.AttributeActionType.Windows.__doc__ + '\n' + '* ``Unix``: ' + Qgis.AttributeActionType.Unix.__doc__ + '\n' + '* ``OpenUrl``: ' + Qgis.AttributeActionType.OpenUrl.__doc__ + '\n' + '* ``SubmitUrlEncoded``: ' + Qgis.AttributeActionType.SubmitUrlEncoded.__doc__ + '\n' + '* ``SubmitUrlMultipart``: ' + Qgis.AttributeActionType.SubmitUrlMultipart.__doc__
 # --
 Qgis.AttributeActionType.baseClass = Qgis
@@ -3713,6 +3727,15 @@ Qgis.DatabaseProviderConnectionCapability2.__doc__ = "The Capability enum repres
 Qgis.DatabaseProviderConnectionCapability2.baseClass = Qgis
 Qgis.DatabaseProviderConnectionCapabilities2.baseClass = Qgis
 DatabaseProviderConnectionCapabilities2 = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.ProviderStyleStorageCapability.SaveToDatabase.__doc__ = ""
+Qgis.ProviderStyleStorageCapability.LoadFromDatabase.__doc__ = ""
+Qgis.ProviderStyleStorageCapability.DeleteFromDatabase.__doc__ = ""
+Qgis.ProviderStyleStorageCapability.__doc__ = "The StorageCapability enum represents the style storage operations supported by the provider.\n\n.. versionadded:: 3.34\n\n" + '* ``SaveToDatabase``: ' + Qgis.ProviderStyleStorageCapability.SaveToDatabase.__doc__ + '\n' + '* ``LoadFromDatabase``: ' + Qgis.ProviderStyleStorageCapability.LoadFromDatabase.__doc__ + '\n' + '* ``DeleteFromDatabase``: ' + Qgis.ProviderStyleStorageCapability.DeleteFromDatabase.__doc__
+# --
+Qgis.ProviderStyleStorageCapability.baseClass = Qgis
+Qgis.ProviderStyleStorageCapabilities.baseClass = Qgis
+ProviderStyleStorageCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.UserProfileSelectionPolicy.LastProfile.__doc__ = "Open the last closed profile (only mode supported prior to QGIS 3.32)"
 Qgis.UserProfileSelectionPolicy.DefaultProfile.__doc__ = "Open a specific profile"

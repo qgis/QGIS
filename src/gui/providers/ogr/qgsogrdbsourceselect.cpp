@@ -108,7 +108,7 @@ void QgsOgrDbSourceSelect::populateConnectionList()
   for ( const QString &name : QgsOgrDbConnection::connectionList( ogrDriverName( ) ) )
   {
     // retrieving the SQLite DB name and full path
-    QString text = name + tr( "@" ) + QgsOgrDbConnection( name, ogrDriverName( ) ).path();
+    const QString text = name + tr( "@" ) + QgsOgrDbConnection( name, ogrDriverName( ) ).path();
     cmbConnections->addItem( text );
   }
 
@@ -375,6 +375,77 @@ void QgsOgrDbSourceSelect::treeWidgetSelectionChanged( const QItemSelection &sel
 void QgsOgrDbSourceSelect::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#GeoPackage-layers" ) );
+}
+
+bool QgsOgrDbSourceSelect::configureFromUri( const QString &uri )
+{
+  bool isSubLayer;
+  int layerIndex;
+  QString layerName;
+  QString subsetString;
+  OGRwkbGeometryType ogrGeometryType;
+  QStringList openOptions;
+  const QString filePath = QgsOgrProviderUtils::analyzeURI( uri,
+                           isSubLayer,
+                           layerIndex,
+                           layerName,
+                           subsetString,
+                           ogrGeometryType,
+                           openOptions );
+
+  QFileInfo pathInfo { filePath };
+  const QString connectionName { pathInfo.fileName() };
+  const QString connectionText { connectionName + tr( "@" ) + filePath };
+  int idx { cmbConnections->findText( connectionText ) };
+
+  if ( idx < 0 && QgsOgrProviderUtils::saveConnection( filePath, QStringLiteral( "GPKG" ) ) )
+  {
+    populateConnectionList();
+    idx = cmbConnections->findText( connectionText );
+  }
+
+  if ( idx >= 0 )
+  {
+    cmbConnections->setCurrentIndex( idx );
+    if ( ! layerName.isEmpty() || layerIndex >= 0 )
+    {
+      btnConnect_clicked();
+      // Find table/layer
+      QModelIndex index;
+      if ( !layerName.isEmpty() )
+      {
+        const QModelIndex parentIndex { mTableModel->index( 0, 0, mTableModel->invisibleRootItem()->index() )};
+        const QModelIndexList indexList { mTableModel->match( mTableModel->index( 0, 0, parentIndex ), Qt::DisplayRole, layerName, 1, Qt::MatchFlag::MatchExactly ) };
+        if ( ! indexList.isEmpty() )
+        {
+          index = indexList.first();
+        }
+      }
+      else if ( layerIndex >= 0 )
+      {
+        const QModelIndex parentIndex { mTableModel->index( 0, 0, mTableModel->invisibleRootItem()->index() )};
+        index = proxyModel()->mapFromSource( mTableModel->index( layerIndex, 0, parentIndex ) );
+      }
+
+      if ( index.isValid() )
+      {
+        const QModelIndex proxyIndex { proxyModel()->mapFromSource( index ) };
+        mTablesTreeView->selectionModel()->setCurrentIndex( proxyIndex, QItemSelectionModel::SelectionFlag::Rows | QItemSelectionModel::SelectionFlag::ClearAndSelect );
+        mTablesTreeView->scrollTo( proxyIndex );
+        // Set filter
+        if ( !subsetString.isEmpty() )
+        {
+          mTableModel->setSql( index, subsetString );
+        }
+      }
+
+    }
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 ///@endcond

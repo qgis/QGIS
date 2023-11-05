@@ -733,7 +733,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
 
             //intentional fall-through
-          FALLTHROUGH
+          [[fallthrough]];
 
           case QVariant::List:
             // handle GPKG conversion to JSON
@@ -806,7 +806,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
               break;
             }
             //intentional fall-through
-            FALLTHROUGH
+            [[fallthrough]];
 
           default:
             //assert(0 && "invalid variant type!");
@@ -2996,7 +2996,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           break;
         }
         //intentional fall-through
-        FALLTHROUGH
+        [[fallthrough]];
 
       case QVariant::Map:
       {
@@ -3017,7 +3017,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       }
 
         //intentional fall-through
-      FALLTHROUGH
+      [[fallthrough]];
 
 
       default:
@@ -3856,13 +3856,11 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
       }
 
       GDALDriverH gdalDriver = GDALGetDriverByName( drvName.toLocal8Bit().constData() );
-      char **metadata = nullptr;
+      bool nonSpatialFormat = false;
       if ( gdalDriver )
       {
-        metadata = GDALGetMetadata( gdalDriver, nullptr );
+        nonSpatialFormat = GDALGetMetadataItem( gdalDriver, GDAL_DCAP_NONSPATIAL, nullptr ) != nullptr;
       }
-
-      bool nonSpatialFormat = CSLFetchBoolean( metadata, GDAL_DCAP_NONSPATIAL, false );
 
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {

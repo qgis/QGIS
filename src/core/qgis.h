@@ -1604,6 +1604,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( JoinStyle )
 
     /**
+     * Coverage validity results.
+     *
+     * \since QGIS 3.36
+     */
+    enum class CoverageValidityResult : int
+    {
+      Invalid = 0, //!< Coverage is invalid. Invalidity includes polygons that overlap, that have gaps smaller than the gap width, or non-polygonal entries in the input collection.
+      Valid = 1, //!< Coverage is valid
+      Error = 2, //!< An exception occurred while determining validity
+    };
+    Q_ENUM( CoverageValidityResult )
+
+    /**
      * Algorithms to use when repairing invalid geometries.
      *
      * \since QGIS 3.28
@@ -3173,6 +3186,22 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( LayerTreeFilterFlags, LayerTreeFilterFlag )
     Q_FLAG( LayerTreeFilterFlags )
 
+
+    /**
+     * Legend JSON export flags.
+     *
+     * Flags to control JSON attributes when exporting a legend in JSON format.
+     *
+     * \since QGIS 3.36
+     */
+    enum class LegendJsonRenderFlag : int
+    {
+      ShowRuleDetails = 1 << 0, //!< If set, the rule expression of a rule based renderer legend item will be added to the JSON
+    };
+    Q_ENUM( LegendJsonRenderFlag )
+    Q_DECLARE_FLAGS( LegendJsonRenderFlags, LegendJsonRenderFlag )
+    Q_FLAG( LegendJsonRenderFlags )
+
     /**
      * Action types.
      *
@@ -3718,6 +3747,21 @@ class CORE_EXPORT Qgis
     Q_FLAG( DatabaseProviderConnectionCapabilities2 )
 
     /**
+     * The StorageCapability enum represents the style storage operations supported by the provider.
+     *
+     * \since QGIS 3.34
+     */
+    enum class ProviderStyleStorageCapability
+    {
+      SaveToDatabase = 1 << 1,
+      LoadFromDatabase = 1 << 2,
+      DeleteFromDatabase = 1 << 3
+    };
+    Q_ENUM( ProviderStyleStorageCapability );
+    Q_DECLARE_FLAGS( ProviderStyleStorageCapabilities, ProviderStyleStorageCapability )
+    Q_FLAG( ProviderStyleStorageCapabilities )
+
+    /**
      * User profile selection policy.
      *
      * \since QGIS 3.32
@@ -4128,59 +4172,61 @@ class CORE_EXPORT Qgis
 QHASH_FOR_CLASS_ENUM( Qgis::CaptureTechnique )
 QHASH_FOR_CLASS_ENUM( Qgis::RasterAttributeTableFieldUsage )
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerUserFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GeometryValidityFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FileOperationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapSettingsFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerRendererFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RenderContextFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MarkerLinePlacements )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::HistoryProviderBackends )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerProperties )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorDataProviderAttributeEditCapabilities )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectReadFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterTemporalCapabilityFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SelectionFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterRendererFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelingFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FileOperationFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GeometryValidityFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GpsInformationComponents )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionTargets )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RelationshipCapabilities )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SettingsTreeNodeOptions )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ScriptLanguageCapabilities )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayerTreeFilterFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::HistoryProviderBackends )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelingFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelLinePlacementFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelPolygonPlacementFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayerTreeFilterFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LegendJsonRenderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionTargets )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerProperties )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerRendererFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapSettingsFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MarkerLinePlacements )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectReadFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterRendererFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterTemporalCapabilityFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RelationshipCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RenderContextFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ScriptLanguageCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SelectionFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SettingsTreeNodeOptions )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerUserFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneProviderCapabilities )
-Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRequestFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FieldConfigurationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayerFilters )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRequestFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorDataProviderAttributeEditCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
+
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
@@ -4916,16 +4962,6 @@ typedef unsigned long long qgssize;
 #  endif
 #endif
 #endif
-#endif
-
-#if __cplusplus >= 201500
-#define FALLTHROUGH [[fallthrough]];
-#elif defined(__clang__)
-#define FALLTHROUGH [[clang::fallthrough]];
-#elif defined(__GNUC__) && __GNUC__ >= 7
-#define FALLTHROUGH [[gnu::fallthrough]];
-#else
-#define FALLTHROUGH
 #endif
 
 // see https://infektor.net/posts/2017-01-19-using-cpp17-attributes-today.html#using-the-nodiscard-attribute

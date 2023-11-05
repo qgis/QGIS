@@ -728,6 +728,74 @@ Read all custom properties from layer. Properties are stored in a map and saved 
 .. versionadded:: 3.14
 %End
 
+    virtual int listStylesInDatabase( QStringList &ids /Out/, QStringList &names /Out/,
+                                      QStringList &descriptions /Out/, QString &msgError /Out/ );
+%Docstring
+Lists all the style in db split into related to the layer and not related to
+
+:param ids: the list in which will be stored the style db ids
+:param names: the list in which will be stored the style names
+
+:return: - the number of styles related to current layer (-1 on not implemented)
+         - descriptions: the list in which will be stored the style descriptions
+         - msgError: will be set to a descriptive error message if any occurs
+
+.. note::
+
+   Since QGIS 3.2 Styles related to the layer are ordered with the default style first then by update time for Postgres, MySQL and Spatialite.
+%End
+
+    virtual QString getStyleFromDatabase( const QString &styleId, QString &msgError /Out/ );
+%Docstring
+Returns the named style corresponding to style id provided
+%End
+
+    virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError /Out/ );
+%Docstring
+Deletes a style from the database
+
+:param styleId: the provider's layer_styles table id of the style to delete
+
+:return: - ``True`` in case of success
+         - msgError: will be set to a descriptive error message if any occurs
+
+.. versionadded:: 3.0
+%End
+
+    virtual void saveStyleToDatabase( const QString &name, const QString &description,
+                                      bool useAsDefault, const QString &uiFileContent,
+                                      QString &msgError /Out/,
+                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+%Docstring
+Saves named and sld style of the layer to the style table in the db.
+
+:param name: Style name
+:param description: A description of the style
+:param useAsDefault: Set to ``True`` if style should be used as the default style for the layer
+:param uiFileContent:
+:param msgError: will be set to a descriptive error message if any occurs
+:param categories: the style categories to be saved.
+
+.. note::
+
+   Prior to QGIS 3.24, this method would show a message box warning when a
+   style with the same ``styleName`` already existed to confirm replacing the style with the user.
+   Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
+   Use :py:func:`QgsProviderRegistry.styleExists()` to test in advance if a style already exists and handle this appropriately
+   in your client code.
+%End
+
+    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb,
+                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+%Docstring
+Loads a named style from file/local db/datasource db
+
+:param theURI: the URI of the style or the URI of the layer
+:param resultFlag: will be set to ``True`` if a named style is correctly loaded
+:param loadFromLocalDb: if ``True`` forces to load from local db instead of datasource one
+:param categories: the style categories to be loaded.
+%End
+
 
 
     void removeCustomProperty( const QString &key );

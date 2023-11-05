@@ -47,6 +47,9 @@
 #include "qgsalgorithmconstantraster.h"
 #include "qgsalgorithmconverttocurves.h"
 #include "qgsalgorithmconvexhull.h"
+#include "qgsalgorithmcoveragesimplify.h"
+#include "qgsalgorithmcoverageunion.h"
+#include "qgsalgorithmcoveragevalidate.h"
 #include "qgsalgorithmcreatedirectory.h"
 #include "qgsalgorithmdbscanclustering.h"
 #include "qgsalgorithmdelaunaytriangulation.h"
@@ -313,6 +316,9 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsConstantRasterAlgorithm() );
   addAlgorithm( new QgsConvertToCurvesAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
+  addAlgorithm( new QgsCoverageSimplifyAlgorithm() );
+  addAlgorithm( new QgsCoverageUnionAlgorithm() );
+  addAlgorithm( new QgsCoverageValidateAlgorithm() );
   addAlgorithm( new QgsCreateDirectoryAlgorithm() );
   addAlgorithm( new QgsDbscanClusteringAlgorithm() );
   addAlgorithm( new QgsDelaunayTriangulationAlgorithm() );

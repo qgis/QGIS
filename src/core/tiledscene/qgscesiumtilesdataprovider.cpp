@@ -1004,12 +1004,26 @@ bool QgsCesiumTilesDataProvider::init()
       const QgsNetworkReplyContent content = networkRequest.reply();
       const json tileAccessJson = json::parse( content.content().toStdString() );
 
-      tileSetUri = QString::fromStdString( tileAccessJson["url"].get<std::string>() );
+      if ( tileAccessJson.contains( "url" ) )
+      {
+        tileSetUri = QString::fromStdString( tileAccessJson["url"].get<std::string>() );
+      }
+      else if ( tileAccessJson.contains( "options" ) )
+      {
+        const auto &optionsJson = tileAccessJson["options"];
+        if ( optionsJson.contains( "url" ) )
+        {
+          tileSetUri = QString::fromStdString( optionsJson["url"].get<std::string>() );
+        }
+      }
 
-      // The tileset accessToken is NOT the same as the token we use to access the asset details -- ie we can't
-      // use the same authentication as we got from the providers auth cfg!
-      mHeaders.insert( QStringLiteral( "Authorization" ),
-                       QStringLiteral( "Bearer %1" ).arg( QString::fromStdString( tileAccessJson["accessToken"].get<std::string>() ) ) );
+      if ( tileAccessJson.contains( "accessToken" ) )
+      {
+        // The tileset accessToken is NOT the same as the token we use to access the asset details -- ie we can't
+        // use the same authentication as we got from the providers auth cfg!
+        mHeaders.insert( QStringLiteral( "Authorization" ),
+                         QStringLiteral( "Bearer %1" ).arg( QString::fromStdString( tileAccessJson["accessToken"].get<std::string>() ) ) );
+      }
       mAuthCfg.clear();
     }
   }

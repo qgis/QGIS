@@ -302,7 +302,18 @@ This method is either blocking or non blocking according to ``relaxed`` paramete
 
 
 
-    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false );
+    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Find out if the ``point`` is in any polygons
+
+:param point: The point to check polygons against, in map coordinates
+:param relaxed: ``True`` if index build has to be non blocking
+:param filter: since QGIS 3.36, Optional filter may discard unwanted matches.
+
+.. note::
+
+   Parameters ``filter`` and ``relaxed`` are in reversed order compared to the rest of MatchList returning methods.
+%End
 
     int cachedGeometryCount() const;
 %Docstring

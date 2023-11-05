@@ -190,6 +190,11 @@ void QgsFieldExpressionWidget::setField( const QString &fieldName )
     return;
   }
 
+  if ( fieldName.size() > mCombo->lineEdit()->maxLength() )
+  {
+    mCombo->lineEdit()->setMaxLength( fieldName.size() );
+  }
+
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
   if ( !idx.isValid() )
   {
@@ -315,6 +320,21 @@ void QgsFieldExpressionWidget::setAllowEvalErrors( bool allowEvalErrors )
 
   mAllowEvalErrors = allowEvalErrors;
   emit allowEvalErrorsChanged();
+}
+
+
+bool QgsFieldExpressionWidget::buttonVisible() const
+{
+  return mButton->isVisibleTo( this );
+}
+
+void QgsFieldExpressionWidget::setButtonVisible( bool visible )
+{
+  if ( visible == buttonVisible() )
+    return;
+
+  mButton->setVisible( visible );
+  emit buttonVisibleChanged();
 }
 
 void QgsFieldExpressionWidget::currentFieldChanged()

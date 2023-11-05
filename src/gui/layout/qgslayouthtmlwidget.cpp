@@ -21,6 +21,7 @@
 #include "qgscodeeditorcss.h"
 #include "qgssettings.h"
 #include "qgslayoutundostack.h"
+#include "qgsexpressionfinder.h"
 
 #include <QFileDialog>
 #include <QUrl>
@@ -342,43 +343,22 @@ void QgsLayoutHtmlWidget::mInsertExpressionButton_clicked()
     return;
   }
 
-  int line = 0;
-  int index = 0;
-  QString selText;
-  if ( mHtmlEditor->hasSelectedText() )
-  {
-    selText = mHtmlEditor->selectedText();
-
-    // edit the selected expression if there's one
-    if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
-      selText = selText.mid( 2, selText.size() - 4 );
-  }
-  else
-  {
-    mHtmlEditor->getCursorPosition( &line, &index );
-  }
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mHtmlEditor );
 
   // use the atlas coverage layer, if any
   QgsVectorLayer *layer = coverageLayer();
 
   const QgsExpressionContext context = mHtml->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( layer, selText, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, expression, this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    const QString expression = exprDlg.expressionText();
+    expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       blockSignals( true );
       mHtml->beginCommand( tr( "Change HTML Source" ) );
-      if ( mHtmlEditor->hasSelectedText() )
-      {
-        mHtmlEditor->replaceSelectedText( "[%" + expression + "%]" );
-      }
-      else
-      {
-        mHtmlEditor->insertAt( "[%" + expression + "%]", line, index );
-      }
+      mHtmlEditor->insertText( "[%" + expression.trimmed() + "%]" );
       mHtml->setHtml( mHtmlEditor->text() );
       mHtml->endCommand();
       blockSignals( false );

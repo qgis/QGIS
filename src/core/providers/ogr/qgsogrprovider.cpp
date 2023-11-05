@@ -37,6 +37,8 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsvariantutils.h"
+#include "qgsjsonutils.h"
+#include <nlohmann/json.hpp>
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -1601,7 +1603,9 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
           QString stringValue;
 
           if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
-            stringValue = jsonStringValue( attrVal );
+          {
+            stringValue = QString::fromStdString( QgsJsonUtils::jsonFromVariant( attrVal ).dump() );
+          }
           else
           {
             stringValue = attrVal.toString();
@@ -1914,7 +1918,7 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
       // other lists are supported at this moment, fall through to default for other types
 
       //intentional fall-through
-      FALLTHROUGH
+      [[fallthrough]];
 
     default:
       pushError( tr( "type %1 for field %2 not found" ).arg( field.typeName(), field.name() ) );
@@ -2542,9 +2546,13 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             ok = true;
             QString stringValue;
             if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
-              stringValue = jsonStringValue( it2.value() );
+            {
+              stringValue = QString::fromStdString( QgsJsonUtils::jsonFromVariant( it2.value() ).dump() );
+            }
             else
-              stringValue = it2->toString();
+            {
+              stringValue = jsonStringValue( it2.value() );
+            }
             OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( stringValue ).constData() );
             break;
           }
@@ -4220,17 +4228,16 @@ bool QgsOgrProvider::leaveUpdateMode()
   return true;
 }
 
-bool QgsOgrProvider::isSaveAndLoadStyleToDatabaseSupported() const
+Qgis::ProviderStyleStorageCapabilities QgsOgrProvider::styleStorageCapabilities() const
 {
-  // We could potentially extend support for styling to other drivers
-  // with multiple layer support.
-  return mGDALDriverName == QLatin1String( "GPKG" ) ||
-         mGDALDriverName == QLatin1String( "SQLite" );
-}
-
-bool QgsOgrProvider::isDeleteStyleFromDatabaseSupported() const
-{
-  return isSaveAndLoadStyleToDatabaseSupported();
+  Qgis::ProviderStyleStorageCapabilities storageCapabilities;
+  if ( isValid() && ( mGDALDriverName == QLatin1String( "GPKG" ) || mGDALDriverName == QLatin1String( "SQLite" ) ) )
+  {
+    storageCapabilities |= Qgis::ProviderStyleStorageCapability::SaveToDatabase;
+    storageCapabilities |= Qgis::ProviderStyleStorageCapability::LoadFromDatabase;
+    storageCapabilities |= Qgis::ProviderStyleStorageCapability::DeleteFromDatabase;
+  }
+  return storageCapabilities;
 }
 
 QString QgsOgrProvider::fileVectorFilters() const

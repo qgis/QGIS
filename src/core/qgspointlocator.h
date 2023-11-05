@@ -444,11 +444,13 @@ class CORE_EXPORT QgsPointLocator : public QObject
     // TODO: function to return just the first match?
 
     /**
-     * find out if the \a point is in any polygons
-     * This method is either blocking or non blocking according to \a relaxed parameter passed
+     * Find out if the \a point is in any polygons
+     * \param point The point to check polygons against, in map coordinates
+     * \param relaxed TRUE if index build has to be non blocking
+     * \param filter since QGIS 3.36, Optional filter may discard unwanted matches.
+     * \note Parameters \a filter and \a relaxed are in reversed order compared to the rest of MatchList returning methods.
      */
-    //!
-    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false );
+    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false, QgsPointLocator::MatchFilter *filter = nullptr );
 
     /**
      * Returns how many geometries are cached in the index

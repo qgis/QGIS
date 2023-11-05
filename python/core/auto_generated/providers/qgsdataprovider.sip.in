@@ -143,6 +143,13 @@ Set the data source specification.
 .. versionadded:: 3.0
 %End
 
+    void setUri( const QString &uri );
+%Docstring
+Set the data source specification.
+
+.. versionadded:: 3.38
+%End
+
     QgsDataSourceUri uri() const;
 %Docstring
 Gets the data source specification.
@@ -467,6 +474,13 @@ String sequence used for separating components of sublayers strings.
 .. seealso:: :py:func:`subLayers`
 
 .. versionadded:: 3.12
+%End
+
+    virtual Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const;
+%Docstring
+Returns the style storage capabilities.
+
+.. versionadded:: 3.34
 %End
 
   signals:

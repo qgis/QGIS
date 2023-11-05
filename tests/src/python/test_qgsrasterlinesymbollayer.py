@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    test_qgshashlinesymbollayer.py
+    test_qgsrasterlinesymbollayer.py
     ---------------------
     Date                 : March 2019
     Copyright            : (C) 2019 by Nyall Dawson
@@ -19,8 +19,9 @@ __author__ = 'Nyall Dawson'
 __date__ = 'March 2019'
 __copyright__ = '(C) 2019, Nyall Dawson'
 
+
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QDir, Qt
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     QgsFeature,
@@ -28,7 +29,6 @@ from qgis.core import (
     QgsLineSymbol,
     QgsMapSettings,
     QgsRasterLineSymbolLayer,
-    QgsRenderChecker,
     QgsRenderContext,
 )
 import unittest
@@ -42,13 +42,9 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsRasterLineSymbolLayer(QgisTestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsRasterLineSymbolLayer Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return "symbol_rasterline"
 
     def testRender(self):
         s = QgsLineSymbol()
@@ -62,7 +58,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('rasterline_render', 'rasterline_render', rendered_image))
+        self.assertTrue(self.image_check('rasterline_render', 'rasterline_render', rendered_image))
 
     def testRenderHairline(self):
         s = QgsLineSymbol()
@@ -76,7 +72,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('rasterline_hairline', 'rasterline_hairline', rendered_image))
+        self.assertTrue(self.image_check('rasterline_hairline', 'rasterline_hairline', rendered_image))
 
     def testRenderClosedRing(self):
         s = QgsLineSymbol()
@@ -90,7 +86,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10, 0 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('rasterline_closed', 'rasterline_closed', rendered_image))
+        self.assertTrue(self.image_check('rasterline_closed', 'rasterline_closed', rendered_image))
 
     def testRenderOpacity(self):
         s = QgsLineSymbol()
@@ -105,7 +101,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('rasterline_opacity', 'rasterline_opacity', rendered_image))
+        self.assertTrue(self.image_check('rasterline_opacity', 'rasterline_opacity', rendered_image))
 
     def testRenderFlatCap(self):
         s = QgsLineSymbol()
@@ -120,7 +116,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('rasterline_flatcap', 'rasterline_flatcap', rendered_image))
+        self.assertTrue(self.image_check('rasterline_flatcap', 'rasterline_flatcap', rendered_image))
 
     def testRenderSquareCap(self):
         s = QgsLineSymbol()
@@ -135,7 +131,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(2 2, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('rasterline_squarecap', 'rasterline_squarecap', rendered_image))
+        self.assertTrue(self.image_check('rasterline_squarecap', 'rasterline_squarecap', rendered_image))
 
     def testRenderMiterJoin(self):
         s = QgsLineSymbol()
@@ -150,7 +146,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 15, 0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('rasterline_miterjoin', 'rasterline_miterjoin', rendered_image))
+        self.assertTrue(self.image_check('rasterline_miterjoin', 'rasterline_miterjoin', rendered_image))
 
     def testRenderBevelJoin(self):
         s = QgsLineSymbol()
@@ -165,7 +161,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(2 2, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('rasterline_beveljoin', 'rasterline_beveljoin', rendered_image))
+        self.assertTrue(self.image_check('rasterline_beveljoin', 'rasterline_beveljoin', rendered_image))
 
     def testLineOffset(self):
         s = QgsLineSymbol()
@@ -180,7 +176,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(2 2, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('rasterline_offset', 'rasterline_offset', rendered_image))
+        self.assertTrue(self.image_check('rasterline_offset', 'rasterline_offset', rendered_image))
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
@@ -214,21 +210,6 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
             painter.end()
 
         return image
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol_rasterline")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
 
 
 if __name__ == '__main__':

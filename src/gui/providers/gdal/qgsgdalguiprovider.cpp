@@ -178,6 +178,10 @@ class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
     {
       return new QgsGdalSourceSelect( parent, fl, widgetMode );
     }
+    QgsSourceSelectProvider::Capabilities capabilities() override
+    {
+      return QgsSourceSelectProvider::Capability::ConfigureFromUri;
+    };
 };
 
 //

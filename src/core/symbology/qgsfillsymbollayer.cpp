@@ -3148,7 +3148,7 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context
   // if we are using a vector based output, we need to render points as vectors
   // (OR if the line has data defined symbology, in which case we need to evaluate this line-by-line)
   mRenderUsingLines = context.renderContext().forceVectorOutput()
-                      || mFillLineSymbol->hasDataDefinedProperties()
+                      || ( mFillLineSymbol && mFillLineSymbol->hasDataDefinedProperties() )
                       || mClipMode != Qgis::LineClipMode::ClipPainterOnly
                       || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineClipping );
 
@@ -3159,28 +3159,36 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context
     mRenderUsingLines = !applyPattern( context, mBrush, mLineAngle, mDistance );
   }
 
-  if ( mRenderUsingLines )
+  if ( mRenderUsingLines && mFillLineSymbol )
   {
-    if ( mFillLineSymbol )
-      mFillLineSymbol->startRender( context.renderContext(), context.fields() );
+    mFillLineSymbol->startRender( context.renderContext(), context.fields() );
+    mFillLineSymbolRenderStarted = true;
   }
 }
 
 void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  if ( mRenderUsingLines && mFillLineSymbol )
+  if ( mFillLineSymbolRenderStarted )
   {
     mFillLineSymbol->stopRender( context.renderContext() );
+    mFillLineSymbolRenderStarted = false;
   }
 }
 
 void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
-  if ( !mRenderUsingLines )
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  if ( !useSelectedColor && !mRenderUsingLines )
   {
     // use image based brush for speed
     QgsImageFillSymbolLayer::renderPolygon( points, rings, context );
     return;
+  }
+
+  if ( !mFillLineSymbolRenderStarted && mFillLineSymbol )
+  {
+    mFillLineSymbol->startRender( context.renderContext(), context.fields() );
+    mFillLineSymbolRenderStarted = true;
   }
 
   // vector based output - so draw line by line!
@@ -3215,14 +3223,6 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
     outputPixelOffset -= outputPixelDistance;
 
   p->setPen( QPen( Qt::NoPen ) );
-
-  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
-  if ( useSelectedColor )
-  {
-    QColor selColor = context.renderContext().selectionColor();
-    p->setBrush( QBrush( selColor ) );
-    _renderPolygon( p, points, rings, context );
-  }
 
   // if invalid parameters, skip out
   if ( qgsDoubleNear( distance, 0 ) )
@@ -3354,13 +3354,13 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
       {
         if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( *it ) )
         {
-          mFillLineSymbol->renderPolyline( ls->asQPolygonF(), context.feature(), context.renderContext() );
+          mFillLineSymbol->renderPolyline( ls->asQPolygonF(), context.feature(), context.renderContext(), -1, useSelectedColor );
         }
       }
     }
     else
     {
-      mFillLineSymbol->renderPolyline( QPolygonF() << QPointF( x1, y1 ) << QPointF( x2, y2 ), context.feature(), context.renderContext() );
+      mFillLineSymbol->renderPolyline( QPolygonF() << QPointF( x1, y1 ) << QPointF( x2, y2 ), context.feature(), context.renderContext(), -1, useSelectedColor );
     }
   }
 
@@ -3923,7 +3923,7 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &contex
   // if we are using a vector based output, we need to render points as vectors
   // (OR if the marker has data defined symbology, in which case we need to evaluate this point-by-point)
   mRenderUsingMarkers = context.renderContext().forceVectorOutput()
-                        || mMarkerSymbol->hasDataDefinedProperties()
+                        || ( mMarkerSymbol && mMarkerSymbol->hasDataDefinedProperties() )
                         || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyMarkerClipping )
                         || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomOffsetX )
                         || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomOffsetY )
@@ -3940,17 +3940,19 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &contex
     mRenderUsingMarkers = !applyPattern( context, mBrush, mDistanceX, mDistanceY, mDisplacementX, mDisplacementY, mOffsetX, mOffsetY );
   }
 
-  if ( mRenderUsingMarkers )
+  if ( mRenderUsingMarkers && mMarkerSymbol )
   {
     mMarkerSymbol->startRender( context.renderContext() );
+    mMarkerSymbolRenderStarted = true;
   }
 }
 
 void QgsPointPatternFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  if ( mRenderUsingMarkers )
+  if ( mMarkerSymbolRenderStarted )
   {
     mMarkerSymbol->stopRender( context.renderContext() );
+    mMarkerSymbolRenderStarted = false;
   }
 }
 
@@ -3974,11 +3976,18 @@ void QgsPointPatternFillSymbolLayer::stopFeatureRender( const QgsFeature &, QgsR
 
 void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
-  if ( !mRenderUsingMarkers )
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  if ( !useSelectedColor && !mRenderUsingMarkers )
   {
     // use image based brush for speed
     QgsImageFillSymbolLayer::renderPolygon( points, rings, context );
     return;
+  }
+
+  if ( !mMarkerSymbolRenderStarted && mMarkerSymbol )
+  {
+    mMarkerSymbol->startRender( context.renderContext() );
+    mMarkerSymbolRenderStarted = true;
   }
 
   // vector based output - so draw dot by dot!
@@ -4056,14 +4065,6 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
                                     : context.renderContext().convertToPainterUnits( displacementY, mDisplacementYUnit, mDisplacementYMapUnitScale );
 
   p->setPen( QPen( Qt::NoPen ) );
-
-  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
-  if ( useSelectedColor )
-  {
-    QColor selColor = context.renderContext().selectionColor();
-    p->setBrush( QBrush( selColor ) );
-    _renderPolygon( p, points, rings, context );
-  }
 
   // if invalid parameters, skip out
   if ( qgsDoubleNear( width, 0 ) || qgsDoubleNear( height, 0 ) || width < 0 || height < 0 )
@@ -4297,7 +4298,7 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
           continue;
       }
 
-      mMarkerSymbol->renderPoint( QPointF( x, y ), context.feature(), context.renderContext() );
+      mMarkerSymbol->renderPoint( QPointF( x, y ), context.feature(), context.renderContext(), -1, useSelectedColor );
     }
   }
 
@@ -4797,6 +4798,7 @@ void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, const Q
     // in the middle of rendering a possibly multi-part feature, so we collect all the parts and defer the actual rendering
     // until after we've received the final part
     mFeatureSymbolOpacity = context.opacity();
+    mUseSelectedColor = shouldRenderUsingSelectionColor( context );
     mCurrentParts << part;
   }
   else
@@ -4825,8 +4827,9 @@ void QgsCentroidFillSymbolLayer::stopFeatureRender( const QgsFeature &feature, Q
   const double prevOpacity = mMarker->opacity();
   mMarker->setOpacity( mMarker->opacity() * mFeatureSymbolOpacity );
 
-  render( context, mCurrentParts, feature, false );
+  render( context, mCurrentParts, feature, mUseSelectedColor );
   mFeatureSymbolOpacity = 1;
+  mUseSelectedColor = false;
   mMarker->setOpacity( prevOpacity );
 
   removeMasks( context, true );

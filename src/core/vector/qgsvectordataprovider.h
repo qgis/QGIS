@@ -533,18 +533,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QStringList errors() const;
 
     /**
-     * It returns FALSE by default.
-     * Must be implemented by providers that support saving and loading styles to db returning TRUE
-     */
-    virtual bool isSaveAndLoadStyleToDatabaseSupported() const;
-
-    /**
-     * It returns FALSE by default.
-     * Must be implemented by providers that support delete styles from db returning TRUE
-     */
-    virtual bool isDeleteStyleFromDatabaseSupported() const;
-
-    /**
      * Creates a new vector layer feature renderer, using provider backend specific information.
      *
      * The \a configuration map can be used to pass provider-specific configuration maps to the provider to

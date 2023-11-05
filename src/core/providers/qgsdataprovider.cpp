@@ -134,3 +134,8 @@ QString QgsDataProvider::sublayerSeparator()
 {
   return SUBLAYER_SEPARATOR;
 }
+
+Qgis::ProviderStyleStorageCapabilities QgsDataProvider::styleStorageCapabilities() const
+{
+  return Qgis::ProviderStyleStorageCapabilities();
+}

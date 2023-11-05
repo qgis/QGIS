@@ -175,6 +175,22 @@ void QgsDataSourceManagerDialog::reset()
   }
 }
 
+void QgsDataSourceManagerDialog::configureFromUri( const QString &pageName, const QString &uri )
+{
+  const int pageIdx = mPageProviderNames.indexOf( pageName );
+  if ( pageIdx != -1 )
+  {
+    QTimer::singleShot( 0, this, [ = ]
+    {
+      setCurrentPage( pageIdx );
+      if ( QgsAbstractDataSourceWidget *dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( ui->mOptionsStackedWidget->currentWidget() ) )
+      {
+        dataSourceWidget->configureFromUri( uri );
+      }
+    } );
+  }
+}
+
 void QgsDataSourceManagerDialog::rasterLayersAdded( const QStringList &layersList )
 {
   emit addRasterLayers( layersList );

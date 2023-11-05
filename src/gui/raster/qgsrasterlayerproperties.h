@@ -94,20 +94,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
      */
     Q_DECL_DEPRECATED void saveDefaultStyle() SIP_DEPRECATED;
 
-    /**
-     * Loads a saved style when appropriate button is pressed
-     *
-     * \deprecated use loadStyleFromFile() instead.
-     */
-    Q_DECL_DEPRECATED void loadStyle() SIP_DEPRECATED;
-
-    /**
-     * Saves a style when appriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void saveStyleAs();
-
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) FINAL;
     void apply() FINAL;

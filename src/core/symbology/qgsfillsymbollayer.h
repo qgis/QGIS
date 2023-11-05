@@ -1666,6 +1666,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     //! Fill line
     std::unique_ptr< QgsLineSymbol > mFillLineSymbol;
+    bool mFillLineSymbolRenderStarted = false;
 
     Qgis::LineClipMode mClipMode = Qgis::LineClipMode::ClipPainterOnly;
 };
@@ -2179,6 +2180,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
   protected:
     std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
+    bool mMarkerSymbolRenderStarted = false;
     double mDistanceX = 15;
     Qgis::RenderUnit mDistanceXUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mDistanceXMapUnitScale;
@@ -2516,6 +2518,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     bool mRenderingFeature = false;
     double mFeatureSymbolOpacity = 1;
+    bool mUseSelectedColor = false;
 
   private:
 #ifdef SIP_RUN

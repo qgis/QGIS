@@ -1849,6 +1849,11 @@ void QgsProcessingFeatureSource::setInvalidGeometryCheck( QgsFeatureRequest::Inv
   }
 }
 
+QgsFeatureRequest::InvalidGeometryCheck QgsProcessingFeatureSource::invalidGeometryCheck() const
+{
+  return mInvalidGeometryCheck;
+}
+
 
 //
 // QgsProcessingFeatureSink

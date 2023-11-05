@@ -11,6 +11,7 @@
  ****************************************************************************/
 
 #include <iostream>
+#include <fstream>
 #include <filesystem>
 #include <thread>
 namespace fs = std::filesystem;
@@ -23,7 +24,6 @@ namespace fs = std::filesystem;
 #include <pdal/util/ProgramArgs.hpp>
 
 #include "nlohmann/json.hpp"
-
 
 
 using json = nlohmann::json;
@@ -368,8 +368,18 @@ std::string dateTimeStringFromYearAndDay(int year, int dayOfYear)
 {
     bool leapYear = isLeapYear(year);
 
-    if (year < 0) return "";  // Year is negative
-    if ((dayOfYear < 1) || (dayOfYear > (leapYear ? 366 : 365))) return ""; // Day of year is out of range
+    if (year < 0)  // Year is negative
+    {
+        std::cerr << "Warning: year(" << year <<
+            ") is not valid. Defualting to 1970." << std::endl;
+        year = 1970;
+    }
+    if ((dayOfYear < 1) || (dayOfYear > (leapYear ? 366 : 365)))
+    {
+        std::cerr << "Warning: DayOfYear(" << year <<
+            ") is out of range. Defualting to 1." << std::endl;
+        dayOfYear = 1;
+    }
 
     // Figure out month and day of month, from day of year.
     int daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
@@ -395,16 +405,20 @@ std::string dateTimeStringFromYearAndDay(int year, int dayOfYear)
 void buildVpc(std::vector<std::string> args)
 {
     std::string outputFile;
+    std::string inputFileList;
     std::vector<std::string> inputFiles;
     bool boundaries = false;
     bool stats = false;
     bool overview = false;
     int max_threads = -1;
     bool verbose = false;
+    bool help = false;
 
     ProgramArgs programArgs;
+    programArgs.add("help,h", "Output command help.", help);
     programArgs.add("output,o", "Output virtual point cloud file", outputFile);
     programArgs.add("files,f", "input files", inputFiles).setPositional();
+    programArgs.add("input-file-list", "Read input files from a txt file, one file per line.", inputFileList);
     programArgs.add("boundary", "Calculate boundary polygons from data", boundaries);
     programArgs.add("stats", "Calculate statistics from data", stats);
     programArgs.add("overview", "Create overview point cloud from source data", overview);
@@ -420,6 +434,32 @@ void buildVpc(std::vector<std::string> args)
     {
         std::cerr << "failed to parse arguments: " << err.what() << std::endl;
         return;
+    }
+
+    if (help)
+    {
+
+        std::cout << "usage: pdal_wrench build_vpc [<args>]" << std::endl;
+        programArgs.dump(std::cerr, 2, Utils::screenWidth());
+        return;
+    }
+
+    if (!inputFileList.empty())
+    {
+        std::ifstream inputFile(inputFileList);
+        std::string line;
+
+        if(!inputFile)
+        {
+            std::cerr << "failed to open input file list: " << inputFileList << std::endl;
+            return;
+        }
+
+        while (std::getline(inputFile, line))
+        {
+            inputFiles.push_back(line);
+        }
+
     }
 
 //    std::cout << "input " << inputFiles.size() << std::endl;

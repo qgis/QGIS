@@ -96,6 +96,16 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     virtual void reset();
 
+    /**
+     * Configure the widget from a layer \a uri by selecting the layer path or connection options.
+     * The base implementation does nothing and returns FALSE: providers with ConfigureSourceSelectFromUri capability
+     * must override to implement this functionality.
+     * \return TRUE on success.
+     * \note Not all data providers may be able to configure the widget from the provided uri, in that case this method returns FALSE.
+     * \since 3.38
+     */
+    virtual bool configureFromUri( const QString &uri );
+
   signals:
 
     /**

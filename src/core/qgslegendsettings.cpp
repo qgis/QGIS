@@ -258,3 +258,13 @@ double QgsLegendSettings::fontDescentMillimeters( const QFont &font ) const
   return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
 }
 
+Qgis::LegendJsonRenderFlags QgsLegendSettings::jsonRenderFlags() const
+{
+  return mJsonRenderFlags;
+}
+
+void QgsLegendSettings::setJsonRenderFlags( const Qgis::LegendJsonRenderFlags &jsonRenderFlags )
+{
+  mJsonRenderFlags = jsonRenderFlags;
+}
+

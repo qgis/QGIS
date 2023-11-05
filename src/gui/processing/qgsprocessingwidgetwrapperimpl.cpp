@@ -2917,7 +2917,7 @@ QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
         return mCheckboxPanel;
       }
     }
-    FALLTHROUGH
+    [[fallthrough]];
     case QgsProcessingGui::Modeler:
     case QgsProcessingGui::Batch:
     {

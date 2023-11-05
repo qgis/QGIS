@@ -19,6 +19,7 @@
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
+#include "qgsexpressionfinder.h"
 
 //qt includes
 #include <QColorDialog>
@@ -99,18 +100,13 @@ void QgsDecorationCopyrightDialog::buttonBox_rejected()
 
 void QgsDecorationCopyrightDialog::mInsertExpressionButton_clicked()
 {
-  QString selText = txtCopyrightText->textCursor().selectedText();
-
-  // edit the selected expression if there's one
-  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
-    selText = selText.mid( 2, selText.size() - 4 );
-
-  QgsExpressionBuilderDialog exprDlg( nullptr, selText, this, QStringLiteral( "generic" ), QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( txtCopyrightText );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
 
   exprDlg.setWindowTitle( QObject::tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    const QString expression = exprDlg.expressionText();
+    expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
       txtCopyrightText->insertPlainText( "[%" + expression + "%]" );

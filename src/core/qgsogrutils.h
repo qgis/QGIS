@@ -484,6 +484,53 @@ class CORE_EXPORT QgsOgrUtils
 #endif
 #endif
 
+    /**
+     * Helper function for listing styles in ogr/gdal database datasources.
+     *
+     * \since QGIS 3.34
+     */
+    static int listStyles( GDALDatasetH hDS, const QString &layerName,
+                           const QString &geomColumn, QStringList &ids, QStringList &names,
+                           QStringList &descriptions, QString &errCause );
+
+    /**
+     * Helper function for checking whether a style exists in ogr/gdal database datasources.
+     *
+     * \since QGIS 3.34
+     */
+    static bool styleExists( GDALDatasetH hDS, const QString &layerName, const QString &geomColumn, const QString &styleId, QString &errorCause );
+
+    /**
+     * Helper function for getting a style by ID from ogr/gdal database datasources.
+     *
+     * \since QGIS 3.34
+     */
+    static QString getStyleById( GDALDatasetH hDS, const QString &styleId, QString &errCause );
+
+    /**
+     * Helper function for saving a style to ogr/gdal database datasources.
+     *
+     * \since QGIS 3.34
+     */
+    static bool saveStyle( GDALDatasetH hDS, const QString &layerName,
+                           const QString &geomColumn, const QString &qmlStyle, const QString &sldStyle,
+                           const QString &styleName, const QString &styleDescription,
+                           const QString &uiFileContent, bool useAsDefault, QString &errCause
+                         );
+
+    /**
+     * Helper function for deleting a style by id from ogr/gdal database datasources.
+     *
+     * \since QGIS 3.34
+     */
+    static bool deleteStyleById( GDALDatasetH hDS, const QString &styleId, QString &errCause );
+
+    /**
+     * Helper function for loading a stored styles in ogr/gdal database datasources.
+     *
+     * \since QGIS 3.34
+     */
+    static QString loadStoredStyle( GDALDatasetH hDS, const QString &layerName, const QString &geomColumn, QString &styleName, QString &errCause );
 };
 
 #endif // QGSOGRUTILS_H

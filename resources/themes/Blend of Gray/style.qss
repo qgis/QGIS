@@ -902,8 +902,14 @@ QAbstractItemView::selected, QListView::selected {
 QAbstractItemView::indicator:checked, QListView::indicator:checked {
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
 }
+QAbstractItemView::indicator:checked:disabled, QListView::indicator:checked:disabled {
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
+}
 QAbstractItemView::indicator:unchecked, QListView::indicator:unchecked {
     image: url(@theme_path/icons/qcheckbox-unchecked.svg);
+}
+QAbstractItemView::indicator:unchecked:disabled, QListView::indicator:unchecked:disabled {
+    image: url(@theme_path/icons/qcheckbox-unchecked-disabled.svg);
 }
 
 /* ==================================================================================== */
@@ -951,10 +957,16 @@ QTreeView::indicator:intermediary {
     image: url(@theme_path/icons/qcheckbox-intermediary.svg);
 }
 QTreeView::indicator:checked {
-    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+    image: url(@theme_path/icons/qcheckbox-checked.svg);
+}
+QTreeView::indicator:checked:disabled {
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
 }
 QTreeView::indicator:unchecked {
     image: url(@theme_path/icons/qcheckbox-unchecked.svg);
+}
+QTreeView::indicator:unchecked:disabled {
+    image: url(@theme_path/icons/qcheckbox-unchecked-disabled.svg);
 }
 
 QgsLayerTreeView::item,
@@ -1009,8 +1021,14 @@ QTableView::indicator:intermediary {
 QTableView::indicator:checked {
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
 }
+QTableView::indicator:checked:disabled {
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
+}
 QTableView::indicator:unchecked {
     image: url(@theme_path/icons/qcheckbox-unchecked.svg);
+}
+QTableView::indicator:unchecked:disabled {
+    image: url(@theme_path/icons/qcheckbox-unchecked-disabled.svg);
 }
 
 QTableView QTableCornerButton::section {
@@ -1192,4 +1210,14 @@ QWidget#QgsRasterCalcDialogBase QWidget#mOperatorsGroupBox QPushButton {
 
 QFrame#mUserInputContainer { 
     background-color: @background;
+}
+
+QgsAttributeFormWidget QComboBox:disabled {
+    border: none;
+    background-color: @itembackground;
+    color: @text;
+}
+
+QgsAttributeFormWidget QComboBox::down-arrow:disabled {
+     image: none;
 }

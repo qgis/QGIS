@@ -584,9 +584,7 @@ bool QgsCodeEditorPython::loadScript( const QString &script )
 
 bool QgsCodeEditorPython::isCursorInsideStringLiteralOrComment() const
 {
-  int line, index;
-  getCursorPosition( &line, &index );
-  int position = positionFromLineIndex( line, index );
+  int position = linearPosition();
 
   // Special case: cursor at the end of the document. Style will always be Default,
   // so  we have to  check the style of the previous character.
@@ -621,9 +619,7 @@ bool QgsCodeEditorPython::isCursorInsideStringLiteralOrComment() const
 
 QString QgsCodeEditorPython::characterBeforeCursor() const
 {
-  int line, index;
-  getCursorPosition( &line, &index );
-  int position = positionFromLineIndex( line, index );
+  int position = linearPosition();
   if ( position <= 0 )
   {
     return QString();
@@ -633,9 +629,7 @@ QString QgsCodeEditorPython::characterBeforeCursor() const
 
 QString QgsCodeEditorPython::characterAfterCursor() const
 {
-  int line, index;
-  getCursorPosition( &line, &index );
-  int position = positionFromLineIndex( line, index );
+  int position = linearPosition();
   if ( position >= length() )
   {
     return QString();

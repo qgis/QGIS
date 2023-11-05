@@ -511,3 +511,76 @@ void QgsSpatiaLiteSourceSelect::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#spatialite-layers" ) );
 }
+
+bool QgsSpatiaLiteSourceSelect::configureFromUri( const QString &uri )
+{
+
+  const QgsDataSourceUri dsUri { uri };
+  const QString filePath { dsUri.database() };
+  const QString layerName { dsUri.table() };
+  const QString subsetString { dsUri.sql() };
+
+  // I'm not sure we can make use of this:
+  // const QString geometryColumn { dsUri.geometryColumn() };
+
+  QFileInfo pathInfo { filePath };
+  const QString connectionName { pathInfo.fileName() };
+  QString connectionText { connectionName + tr( "@" ) + filePath };
+
+  const QStringList list = QgsSpatiaLiteConnection::connectionList();
+  for ( const QString &name : std::as_const( list ) )
+  {
+    const QString connectionPath { QgsSpatiaLiteConnection::connectionPath( name ) };
+    if ( connectionPath == filePath )
+    {
+      connectionText = name + tr( "@" ) + connectionPath;
+      break;
+    }
+  }
+
+  int idx { cmbConnections->findText( connectionText ) };
+
+  if ( idx < 0 )
+  {
+    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
+    std::unique_ptr< QgsSpatiaLiteProviderConnection > providerConnection( qgis::down_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( uri, QVariantMap() ) ) );
+    providerMetadata->saveConnection( providerConnection.get(), connectionName );
+    populateConnectionList();
+    idx = cmbConnections->findText( connectionText );
+  }
+
+  if ( idx >= 0 )
+  {
+    cmbConnections->setCurrentIndex( idx );
+    if ( ! layerName.isEmpty() )
+    {
+      btnConnect_clicked();
+      // Find table/layer
+      QModelIndex index;
+      const QModelIndex parentIndex { mTableModel->index( 0, 0, mTableModel->invisibleRootItem()->index() )};
+      const QModelIndexList indexList { mTableModel->match( mTableModel->index( 0, 0, parentIndex ), Qt::DisplayRole, layerName, 1, Qt::MatchFlag::MatchExactly ) };
+      if ( ! indexList.isEmpty() )
+      {
+        index = indexList.first();
+      }
+
+      if ( index.isValid() )
+      {
+        const QModelIndex proxyIndex { proxyModel()->mapFromSource( index ) };
+        mTablesTreeView->selectionModel()->setCurrentIndex( proxyIndex, QItemSelectionModel::SelectionFlag::Rows | QItemSelectionModel::SelectionFlag::ClearAndSelect );
+        mTablesTreeView->scrollTo( proxyIndex );
+        // Set filter
+        if ( !subsetString.isEmpty() )
+        {
+          mTableModel->setSql( index, subsetString );
+        }
+      }
+
+    }
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}

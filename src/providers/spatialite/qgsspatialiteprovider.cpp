@@ -267,7 +267,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
         case Qgis::WkbType::Point25D:
         case Qgis::WkbType::PointZ:
           dim = 3;
-          FALLTHROUGH
+          [[fallthrough]];
         case Qgis::WkbType::Point:
           geometryType = QStringLiteral( "POINT" );
           break;
@@ -275,7 +275,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
         case Qgis::WkbType::LineString25D:
         case Qgis::WkbType::LineStringZ:
           dim = 3;
-          FALLTHROUGH
+          [[fallthrough]];
         case Qgis::WkbType::LineString:
           geometryType = QStringLiteral( "LINESTRING" );
           break;
@@ -283,7 +283,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
         case Qgis::WkbType::Polygon25D:
         case Qgis::WkbType::PolygonZ:
           dim = 3;
-          FALLTHROUGH
+          [[fallthrough]];
         case Qgis::WkbType::Polygon:
           geometryType = QStringLiteral( "POLYGON" );
           break;
@@ -291,7 +291,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
         case Qgis::WkbType::MultiPoint25D:
         case Qgis::WkbType::MultiPointZ:
           dim = 3;
-          FALLTHROUGH
+          [[fallthrough]];
         case Qgis::WkbType::MultiPoint:
           geometryType = QStringLiteral( "MULTIPOINT" );
           break;
@@ -299,7 +299,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
         case Qgis::WkbType::MultiLineString25D:
         case Qgis::WkbType::MultiLineStringZ:
           dim = 3;
-          FALLTHROUGH
+          [[fallthrough]];
         case Qgis::WkbType::MultiLineString:
           geometryType = QStringLiteral( "MULTILINESTRING" );
           break;
@@ -307,7 +307,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
         case Qgis::WkbType::MultiPolygon25D:
         case Qgis::WkbType::MultiPolygonZ:
           dim = 3;
-          FALLTHROUGH
+          [[fallthrough]];
         case Qgis::WkbType::MultiPolygon:
           geometryType = QStringLiteral( "MULTIPOLYGON" );
           break;
@@ -3781,9 +3781,15 @@ bool QgsSpatiaLiteProvider::isValid() const
   return mValid;
 }
 
-bool QgsSpatiaLiteProvider::isSaveAndLoadStyleToDatabaseSupported() const
+Qgis::ProviderStyleStorageCapabilities QgsSpatiaLiteProvider::styleStorageCapabilities() const
 {
-  return mValid;
+  Qgis::ProviderStyleStorageCapabilities storageCapabilities;
+  if ( isValid() )
+  {
+    storageCapabilities |= Qgis::ProviderStyleStorageCapability::SaveToDatabase;
+    storageCapabilities |= Qgis::ProviderStyleStorageCapability::LoadFromDatabase;
+  }
+  return storageCapabilities;
 }
 
 QString QgsSpatiaLiteProvider::name() const

@@ -65,6 +65,8 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaptip.h"
 #include "qgswebframe.h"
+#include "qgsexpressionfinder.h"
+#include "qgsexpressionbuilderdialog.h"
 #if WITH_QTWEBKIT
 #include <QWebElement>
 #endif
@@ -288,14 +290,19 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   mContext << QgsExpressionContextUtils::layerScope( mRasterLayer );
 
-  mMapTipExpressionWidget->registerExpressionContextGenerator( this );
-
   connect( mInsertExpressionButton, &QAbstractButton::clicked, this, [ = ]
   {
-    QString expression = QStringLiteral( "[% " );
-    expression += mMapTipExpressionWidget->expression();
-    expression += QLatin1String( " %]" );
-    mMapTipWidget->insertText( expression );
+    // Get the linear indexes if the start and end of the selection
+    int selectionStart = mMapTipWidget->selectionStart();
+    int selectionEnd = mMapTipWidget->selectionEnd();
+    QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mMapTipWidget );
+    QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), mContext );
+
+    exprDlg.setWindowTitle( tr( "Insert Expression" ) );
+    if ( exprDlg.exec() == QDialog::Accepted && !exprDlg.expressionText().trimmed().isEmpty() )
+      mMapTipWidget->insertText( "[%" + exprDlg.expressionText().trimmed() + "%]" );
+    else // Restore the selection
+      mMapTipWidget->setLinearSelection( selectionStart, selectionEnd );
   } );
 
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
@@ -527,7 +534,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   setMetadataWidget( mMetadataWidget, mOptsPage_Metadata );
 
   QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyleFromFile );
+  menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyle );
   menuStyle->addAction( tr( "Save Style…" ), this, &QgsRasterLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), this, &QgsRasterLayerProperties::saveStyleAsDefault );
@@ -1598,66 +1605,6 @@ void QgsRasterLayerProperties::removeSelectedMetadataUrl()
 void QgsRasterLayerProperties::saveDefaultStyle()
 {
   saveStyleAsDefault();
-}
-
-void QgsRasterLayerProperties::loadStyle()
-{
-  loadStyleFromFile();
-}
-
-void QgsRasterLayerProperties::saveStyleAs()
-{
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  QString selectedFilter;
-  QString outputFileName = QFileDialog::getSaveFileName(
-                             this,
-                             tr( "Save layer properties as style file" ),
-                             lastUsedDir,
-                             tr( "QGIS Layer Style File" ) + " (*.qml)" + ";;" + tr( "Styled Layer Descriptor" ) + " (*.sld)",
-                             &selectedFilter );
-  if ( outputFileName.isEmpty() )
-    return;
-
-  StyleType type;
-  // use selectedFilter to set style type
-  if ( selectedFilter.contains( QStringLiteral( ".qml" ), Qt::CaseInsensitive ) )
-  {
-    outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
-    type = StyleType::QML;
-  }
-  else
-  {
-    outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "sld" ) );
-    type = StyleType::SLD;
-  }
-
-  apply(); // make sure the style to save is up-to-date
-
-  // then export style
-  bool defaultLoadedFlag = false;
-  QString message;
-  switch ( type )
-  {
-    case QML:
-    {
-      message = mRasterLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
-      break;
-    }
-    case SLD:
-    {
-      message = mRasterLayer->saveSldStyle( outputFileName, defaultLoadedFlag );
-      break;
-    }
-  }
-  if ( defaultLoadedFlag )
-  {
-    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
-    sync();
-  }
-  else
-    QMessageBox::information( this, tr( "Save Style" ), message );
 }
 
 void QgsRasterLayerProperties::restoreWindowModality()

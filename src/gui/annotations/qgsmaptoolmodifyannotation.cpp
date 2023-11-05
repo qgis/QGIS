@@ -537,7 +537,7 @@ void QgsMapToolModifyAnnotation::keyPressEvent( QKeyEvent *event )
         event->ignore(); // disable default shortcut handling (delete vector feature)
         break;
       }
-      FALLTHROUGH
+      [[fallthrough]];
     }
 
     case Action::MoveItem:

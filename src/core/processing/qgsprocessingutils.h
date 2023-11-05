@@ -730,9 +730,18 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     /**
      * Overrides the default geometry check method for the source.
      *
+     * \see invalidGeometryCheck()
      * \since QGIS 3.14
      */
     void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method );
+
+    /**
+     * Returns the geometry check method for the source.
+     *
+     * \see setInvalidGeometryCheck()
+     * \since QGIS 3.36
+     */
+    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 
   private:
 

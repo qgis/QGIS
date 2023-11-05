@@ -7373,6 +7373,71 @@ class TestQgsGeometry(QgisTestCase):
         self.assertTrue(compareWkt(parts[1].asWkt(), 'MultiLineString ((1 1, 2 0))'))
         self.assertTrue(compareWkt(parts[2].asWkt(), 'MultiLineString ((0 1, 1 0))'))
 
+    @unittest.skipIf(Qgis.geosVersionInt() < 31200, "GEOS 3.12 required")
+    def testCoverageValidate(self):
+        """
+        Test QgsGeometry.validateCoverage
+        """
+        g1 = QgsGeometry()
+        valid, edges = g1.validateCoverage(0)
+        self.assertEqual(valid, Qgis.CoverageValidityResult.Error)
+        self.assertFalse(edges)
+
+        g1 = QgsGeometry.fromWkt('Point(1 2)')
+        valid, edges = g1.validateCoverage(0)
+        self.assertEqual(valid, Qgis.CoverageValidityResult.Error)
+        self.assertFalse(edges)
+
+        g1 = QgsGeometry.fromWkt('MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)), ((10 0,20 0,20 10,10 10,10.1 5,10 0)))')
+        valid, edges = g1.validateCoverage(0)
+        self.assertEqual(valid, Qgis.CoverageValidityResult.Valid)
+        self.assertFalse(edges)
+
+        g1 = QgsGeometry.fromWkt('MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)), ((9 0,20 0,20 10,10 10,10.1 5,9 0)))')
+        valid, edges = g1.validateCoverage(0)
+        self.assertEqual(valid, Qgis.CoverageValidityResult.Invalid)
+        self.assertEqual(edges.asWkt(0), 'GeometryCollection (LineString (0 0, 10 0, 10 5),LineString (10 5, 9 0, 20 0))')
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 31200, "GEOS 3.12 required")
+    def testCoverageDissolve(self):
+        """
+        Test QgsGeometry.unionCoverage
+        """
+        g1 = QgsGeometry()
+        res = g1.unionCoverage()
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt('Point(1 2)')
+        res = g1.unionCoverage()
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt('MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)), ((10 0,20 0,20 10,10 10,10.1 5,10 0)))')
+        res = g1.unionCoverage()
+        self.assertEqual(res.asWkt(0), 'Polygon ((0 0, 0 10, 10 10, 20 10, 20 0, 10 0, 0 0))')
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 31200, "GEOS 3.12 required")
+    def testCoverageSimplify(self):
+        """
+        Test QgsGeometry.simplifyCoverageVW
+        """
+        g1 = QgsGeometry()
+        res = g1.unionCoverage()
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt('Point(1 2)')
+        res = g1.simplifyCoverageVW(3, False)
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt('MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)), ((10 0,20 0,20 10,10 10,10.1 5,10 0)))')
+        res = g1.simplifyCoverageVW(3, False)
+        self.assertEqual(res.asWkt(0), 'GeometryCollection (Polygon ((10 0, 10 10, 0 10, 0 0, 10 0)),Polygon ((10 0, 20 0, 20 10, 10 10, 10 0)))')
+
+        res = g1.simplifyCoverageVW(10, False)
+        self.assertEqual(res.asWkt(0), 'GeometryCollection (Polygon ((10 0, 10 10, 0 0, 10 0)),Polygon ((10 0, 20 10, 10 10, 10 0)))')
+
+        res = g1.simplifyCoverageVW(10, True)
+        self.assertEqual(res.asWkt(0), 'GeometryCollection (Polygon ((10 0, 10 10, 0 10, 0 0, 10 0)),Polygon ((10 0, 20 0, 20 10, 10 10, 10 0)))')
+
 
 if __name__ == '__main__':
     unittest.main()

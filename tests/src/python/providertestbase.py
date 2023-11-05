@@ -249,6 +249,10 @@ class ProviderTestCase(FeatureSourceTestCase):
             The WFS provider might not always be able to have that guarantee. """
         return True
 
+    def referenceExtent(self):
+        """ Extent of the reference dataset """
+        return QgsRectangle(-71.123, 66.33, -65.32, 78.3)
+
     def getSubsetString(self):
         """Individual providers may need to override this depending on their subset string formats"""
         return '"cnt" > 100 and "cnt" < 410'
@@ -256,6 +260,10 @@ class ProviderTestCase(FeatureSourceTestCase):
     def getSubsetString2(self):
         """Individual providers may need to override this depending on their subset string formats"""
         return '"cnt" > 100 and "cnt" < 400'
+
+    def referenceSubsetString3Extent(self):
+        """ Extent of the data selected by subset string 3 """
+        return QgsRectangle(-68.2, 70.8, -68.2, 70.8)
 
     def getSubsetString3(self):
         """Individual providers may need to override this depending on their subset string formats"""
@@ -422,13 +430,12 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertEqual(max_value, 300)
 
     def testExtent(self):
-        reference = QgsGeometry.fromRect(
-            QgsRectangle(-71.123, 66.33, -65.32, 78.3))
+        reference_extent = self.referenceExtent()
         provider_extent = self.source.extent()
-        self.assertAlmostEqual(provider_extent.xMinimum(), -71.123, 3)
-        self.assertAlmostEqual(provider_extent.xMaximum(), -65.32, 3)
-        self.assertAlmostEqual(provider_extent.yMinimum(), 66.33, 3)
-        self.assertAlmostEqual(provider_extent.yMaximum(), 78.3, 3)
+        self.assertAlmostEqual(provider_extent.xMinimum(), reference_extent.xMinimum())
+        self.assertAlmostEqual(provider_extent.xMaximum(), reference_extent.xMaximum())
+        self.assertAlmostEqual(provider_extent.yMinimum(), reference_extent.yMinimum())
+        self.assertAlmostEqual(provider_extent.yMaximum(), reference_extent.yMaximum())
 
     def testExtentSubsetString(self):
         if self.source.supportsSubsetString():
@@ -437,12 +444,13 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.source.setSubsetString(subset)
             count = self.source.featureCount()
             provider_extent = self.source.extent()
+            subset_extent = self.referenceSubsetString3Extent()
             self.source.setSubsetString(None)
             self.assertEqual(count, 1)
-            self.assertAlmostEqual(provider_extent.xMinimum(), -68.2, 3)
-            self.assertAlmostEqual(provider_extent.xMaximum(), -68.2, 3)
-            self.assertAlmostEqual(provider_extent.yMinimum(), 70.8, 3)
-            self.assertAlmostEqual(provider_extent.yMaximum(), 70.8, 3)
+            self.assertAlmostEqual(provider_extent.xMinimum(), subset_extent.xMinimum(), 3)
+            self.assertAlmostEqual(provider_extent.xMaximum(), subset_extent.xMaximum(), 3)
+            self.assertAlmostEqual(provider_extent.yMinimum(), subset_extent.yMinimum(), 3)
+            self.assertAlmostEqual(provider_extent.yMaximum(), subset_extent.yMaximum(), 3)
 
             # with no points
             subset = self.getSubsetStringNoMatching()
@@ -451,7 +459,7 @@ class ProviderTestCase(FeatureSourceTestCase):
             provider_extent = self.source.extent()
             self.source.setSubsetString(None)
             self.assertEqual(count, 0)
-            self.assertTrue(provider_extent.isNull())
+            self.assertEqual(provider_extent, QgsRectangle())
             self.assertEqual(self.source.featureCount(), 5)
 
     def testUnique(self):

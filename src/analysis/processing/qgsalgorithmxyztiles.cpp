@@ -152,6 +152,10 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mMaxZoom = parameterAsInt( parameters, QStringLiteral( "ZOOM_MAX" ), context );
   mDpi = parameterAsInt( parameters, QStringLiteral( "DPI" ), context );
   mBackgroundColor = parameterAsColor( parameters, QStringLiteral( "BACKGROUND_COLOR" ), context );
+  if ( mTileFormat != QLatin1String( "PNG" ) && mBackgroundColor.alpha() != 255 )
+  {
+    feedback->pushWarning( QObject::tr( "Background color setting ignored, the JPG format only supports fully opaque colors" ) );
+  }
   mAntialias = parameterAsBool( parameters, QStringLiteral( "ANTIALIAS" ), context );
   mTileFormat = parameterAsEnum( parameters, QStringLiteral( "TILE_FORMAT" ), context ) ? QStringLiteral( "JPG" ) : QStringLiteral( "PNG" );
   mJpgQuality = parameterAsInt( parameters, QStringLiteral( "QUALITY" ), context );
@@ -182,7 +186,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
 void QgsXyzTilesBaseAlgorithm::startJobs()
 {
-  while ( mRendererJobs.size() < mThreadsNumber )
+  while ( mRendererJobs.size() < mThreadsNumber && !mMetaTiles.empty() )
   {
     MetaTile metaTile = mMetaTiles.takeFirst();
 
@@ -193,7 +197,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     settings.setDestinationCrs( mMercatorCrs );
     settings.setLayers( mLayers );
     settings.setOutputDpi( mDpi );
-    if ( mTileFormat == QLatin1String( "PNG" ) )
+    if ( mTileFormat == QLatin1String( "PNG" ) || mBackgroundColor.alpha() == 255 )
     {
       settings.setBackgroundColor( mBackgroundColor );
     }

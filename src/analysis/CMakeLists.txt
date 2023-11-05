@@ -66,6 +66,9 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmconstantraster.cpp
   processing/qgsalgorithmconverttocurves.cpp
   processing/qgsalgorithmconvexhull.cpp
+  processing/qgsalgorithmcoveragesimplify.cpp
+  processing/qgsalgorithmcoverageunion.cpp
+  processing/qgsalgorithmcoveragevalidate.cpp
   processing/qgsalgorithmcreatedirectory.cpp
   processing/qgsalgorithmdbscanclustering.cpp
   processing/qgsalgorithmdelaunaytriangulation.cpp

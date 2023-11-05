@@ -21,6 +21,9 @@ This is the interface for those who want to add entries to the :py:class:`QgsDat
 #include "qgssourceselectprovider.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum Ordering
     {
@@ -30,6 +33,14 @@ This is the interface for those who want to add entries to the :py:class:`QgsDat
       OrderSearchProvider,
       OrderOtherProvider,
     };
+
+    enum class Capability
+    {
+      NoCapabilities,
+      ConfigureFromUri
+    };
+    typedef QFlags<QgsSourceSelectProvider::Capability> Capabilities;
+
 
     virtual ~QgsSourceSelectProvider();
 
@@ -75,7 +86,18 @@ the source selects (ascending) using this integer value
 Create a new instance of :py:class:`QgsAbstractDataSourceWidget` (or ``None``).
 Caller takes responsibility of deleting created.
 %End
+
+    virtual Capabilities capabilities();
+%Docstring
+Returns the source select provider capabilities.
+The default implementation returns no capabilities.
+
+.. versionadded:: 3.38
+%End
+
 };
+
+QFlags<QgsSourceSelectProvider::Capability> operator|(QgsSourceSelectProvider::Capability f1, QFlags<QgsSourceSelectProvider::Capability> f2);
 
 
 /************************************************************************

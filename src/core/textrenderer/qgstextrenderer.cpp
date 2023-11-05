@@ -478,7 +478,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextH
       if ( !format.buffer().enabled() )
         break;
     }
-    FALLTHROUGH
+    [[fallthrough]];
     case Qgis::TextComponent::Text:
     case Qgis::TextComponent::Shadow:
     {
@@ -528,7 +528,7 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, Qgis::TextHoriz
       if ( !format.buffer().enabled() )
         break;
     }
-    FALLTHROUGH
+    [[fallthrough]];
     case Qgis::TextComponent::Text:
     case Qgis::TextComponent::Shadow:
     {

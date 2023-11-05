@@ -520,6 +520,18 @@ class CORE_EXPORT QgsLegendSettings
     //! Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
     double fontDescentMillimeters( const QFont &font ) const;
 
+    /**
+     * Returns the JSON export flags.
+     * \since QGIS 3.36
+     */
+    Qgis::LegendJsonRenderFlags jsonRenderFlags() const;
+
+    /**
+     * Sets the  the JSON export flags to \a jsonRenderFlags.
+     * \since QGIS 3.36
+     */
+    void setJsonRenderFlags( const Qgis::LegendJsonRenderFlags &jsonRenderFlags );
+
   private:
 
     QString mTitle;
@@ -582,6 +594,9 @@ class CORE_EXPORT QgsLegendSettings
 
     //! Symbol alignment
     Qt::AlignmentFlag mSymbolAlignment = Qt::AlignLeft;
+
+    //! JSON export flags
+    Qgis::LegendJsonRenderFlags mJsonRenderFlags;
 };
 
 

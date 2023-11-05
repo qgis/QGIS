@@ -36,6 +36,71 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
 
   mQgisIface = qgisIface;
 
+  mContextMenu = new QMenu( this );
+
+  QAction *selectAllAction = new QAction( tr( "Select All" ), this );
+  connect( selectAllAction, &QAction::triggered, this, [ = ]
+  {
+    mRulesTable->setRangeSelected( QTableWidgetSelectionRange( 0, 0, mRulesTable->rowCount() - 1, mRulesTable->columnCount() - 1 ), true );
+  } );
+  mContextMenu->addAction( selectAllAction );
+  mContextMenu->addSeparator();
+
+  QAction *enableAction = new QAction( tr( "Activate" ), this );
+  connect( enableAction, &QAction::triggered, this, [ = ]
+  {
+    const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
+    for ( const QModelIndex index : selectedIndexes )
+    {
+      if ( QTableWidgetItem *item = mRulesTable->item( index.row(), 0 ) )
+        item->setCheckState( Qt::Checked );
+    }
+  } );
+  mContextMenu->addAction( enableAction );
+  QAction *disableAction = new QAction( tr( "Deactivate" ), this );
+  connect( disableAction, &QAction::triggered, this, [ = ]
+  {
+    const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
+    for ( const QModelIndex index : selectedIndexes )
+    {
+      if ( QTableWidgetItem *item = mRulesTable->item( index.row(), 0 ) )
+        item->setCheckState( Qt::Unchecked );
+    }
+  } );
+  mContextMenu->addAction( disableAction );
+  QAction *toggleAction = new QAction( tr( "Toggle Activation" ), this );
+  connect( toggleAction, &QAction::triggered, this, [ = ]
+  {
+    const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
+    for ( const QModelIndex index : selectedIndexes )
+    {
+      if ( QTableWidgetItem *item = mRulesTable->item( index.row(), 0 ) )
+        item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
+    }
+  } );
+  mContextMenu->addAction( toggleAction );
+  mContextMenu->addSeparator();
+
+  QAction *deleteAction = new QAction( tr( "Delete" ), this );
+  connect( deleteAction, &QAction::triggered, this, &rulesDialog::deleteTests );
+  mContextMenu->addAction( deleteAction );
+
+  connect( mContextMenu, &QMenu::aboutToShow, this, [ = ]
+  {
+    selectAllAction->setEnabled( mRulesTable->rowCount() > 0 );
+    const bool hasSelectedItems = !mRulesTable->selectionModel()->selectedIndexes().isEmpty();
+    enableAction->setEnabled( hasSelectedItems );
+    disableAction->setEnabled( hasSelectedItems );
+    toggleAction->setEnabled( hasSelectedItems );
+    deleteAction->setEnabled( hasSelectedItems );
+  } );
+
+  mRulesTable->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mRulesTable, &QTableWidget::customContextMenuRequested, this, [ = ]
+  {
+    mContextMenu->exec( QCursor::pos() );
+  } );
+
   //setHorizontalHeaderItems();
   mRulesTable->hideColumn( 3 );
   mRulesTable->hideColumn( 4 );
@@ -56,7 +121,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
     mDeleteTestButton->setEnabled( enabled );
   } );
   mDeleteTestButton->setEnabled( !mRulesTable->selectionModel()->selectedIndexes().isEmpty() );
-  connect( mDeleteTestButton, &QAbstractButton::clicked, this, &rulesDialog::deleteTest );
+  connect( mDeleteTestButton, &QAbstractButton::clicked, this, &rulesDialog::deleteTests );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &rulesDialog::showHelp );
 
@@ -261,7 +326,7 @@ void rulesDialog::addRule()
   mLayer2Box->setCurrentIndex( 0 );
 }
 
-void rulesDialog::deleteTest()
+void rulesDialog::deleteTests()
 {
   std::set<int, std::greater<int>> selectedRows;
   const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();

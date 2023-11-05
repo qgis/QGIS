@@ -1365,7 +1365,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag, QgsMa
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return loadNamedProperty( uri, PropertyType::Style, resultFlag, categories );
+  return loadNamedStyle( uri, resultFlag, false, categories );
 }
 
 QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag, StyleCategories categories )
@@ -2348,6 +2348,90 @@ void QgsMapLayer::removeCustomProperty( const QString &key )
     mCustomProperties.remove( key );
     emit customPropertyChanged( key );
   }
+}
+
+int QgsMapLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsProviderRegistry::instance()->listStyles( mProviderKey, mDataSource, ids, names, descriptions, msgError );
+}
+
+QString QgsMapLayer::getStyleFromDatabase( const QString &styleId, QString &msgError )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsProviderRegistry::instance()->getStyleById( mProviderKey, mDataSource, styleId, msgError );
+}
+
+bool QgsMapLayer::deleteStyleFromDatabase( const QString &styleId, QString &msgError )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsProviderRegistry::instance()->deleteStyleById( mProviderKey, mDataSource, styleId, msgError );
+}
+
+void QgsMapLayer::saveStyleToDatabase( const QString &name, const QString &description,
+                                       bool useAsDefault, const QString &uiFileContent, QString &msgError, QgsMapLayer::StyleCategories categories )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QString sldStyle, qmlStyle;
+  QDomDocument qmlDocument, sldDocument;
+  QgsReadWriteContext context;
+  exportNamedStyle( qmlDocument, msgError, context, categories );
+  if ( !msgError.isNull() )
+  {
+    return;
+  }
+  qmlStyle = qmlDocument.toString();
+
+  this->exportSldStyle( sldDocument, msgError );
+  if ( !msgError.isNull() )
+  {
+    return;
+  }
+  sldStyle = sldDocument.toString();
+
+  QgsProviderRegistry::instance()->saveStyle( mProviderKey,
+      mDataSource, qmlStyle, sldStyle, name,
+      description, uiFileContent, useAsDefault, msgError );
+}
+
+QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB, QgsMapLayer::StyleCategories categories )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QString returnMessage;
+  QString qml, errorMsg;
+  QString styleName;
+  if ( !loadFromLocalDB && dataProvider() && dataProvider()->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::LoadFromDatabase ) )
+  {
+    qml = QgsProviderRegistry::instance()->loadStoredStyle( mProviderKey, mDataSource, styleName, errorMsg );
+  }
+
+  // Style was successfully loaded from provider storage
+  if ( !qml.isEmpty() )
+  {
+    QDomDocument myDocument( QStringLiteral( "qgis" ) );
+    myDocument.setContent( qml );
+    resultFlag = importNamedStyle( myDocument, errorMsg );
+    returnMessage = QObject::tr( "Loaded from Provider" );
+  }
+  else
+  {
+    returnMessage = loadNamedProperty( theURI, PropertyType::Style, resultFlag, categories );
+  }
+
+  if ( ! styleName.isEmpty() )
+  {
+    styleManager()->renameStyle( styleManager()->currentStyle(), styleName );
+  }
+
+  if ( resultFlag )
+    emit styleLoaded( categories );
+
+  return returnMessage;
 }
 
 QgsError QgsMapLayer::error() const

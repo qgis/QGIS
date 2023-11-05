@@ -22,6 +22,7 @@
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
+#include "qgsexpressionfinder.h"
 
 #include <QColorDialog>
 #include <QColor>
@@ -108,20 +109,13 @@ void QgsDecorationTitleDialog::buttonBox_rejected()
 
 void QgsDecorationTitleDialog::mInsertExpressionButton_clicked()
 {
-  QString selText = txtTitleText->textCursor().selectedText();
-
-  // edit the selected expression if there's one
-  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
-    selText = selText.mid( 2, selText.size() - 4 );
-
-  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
-
-  QgsExpressionBuilderDialog exprDlg( nullptr, selText, this, QStringLiteral( "generic" ), QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( txtTitleText );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
 
   exprDlg.setWindowTitle( QObject::tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    const QString expression = exprDlg.expressionText();
+    expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
       txtTitleText->insertPlainText( "[%" + expression + "%]" );

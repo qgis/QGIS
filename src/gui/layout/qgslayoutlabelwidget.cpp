@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsprojoperation.h"
 #include "qgslayoutreportcontext.h"
+#include "qgsexpressionfinder.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -79,7 +80,7 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
       buildInsertDynamicTextMenu( mLabel->layout(), mDynamicTextMenu, [ = ]( const QString & expression )
       {
         mLabel->beginCommand( tr( "Insert dynamic text" ) );
-        mTextEdit->insertPlainText( "[%" + expression + "%]" );
+        mTextEdit->insertPlainText( "[%" + expression.trimmed() + "%]" );
         mLabel->endCommand();
       } );
     }
@@ -344,29 +345,22 @@ void QgsLayoutLabelWidget::mInsertExpressionButton_clicked()
     return;
   }
 
-  QString selText = mTextEdit->textCursor().selectedText();
-
-  // html editor replaces newlines with Paragraph Separator characters - see https://github.com/qgis/QGIS/issues/27568
-  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
-
-  // edit the selected expression if there's one
-  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
-    selText = selText.mid( 2, selText.size() - 4 );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
 
   // use the atlas coverage layer, if any
   QgsVectorLayer *layer = coverageLayer();
 
   QgsExpressionContext context = mLabel->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( layer, selText, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, expression, this, QStringLiteral( "generic" ), context );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       mLabel->beginCommand( tr( "Insert expression" ) );
-      mTextEdit->insertPlainText( "[%" + expression + "%]" );
+      mTextEdit->insertPlainText( "[%" + expression.trimmed() + "%]" );
       mLabel->endCommand();
     }
   }

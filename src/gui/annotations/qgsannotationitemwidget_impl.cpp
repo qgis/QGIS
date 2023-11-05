@@ -28,6 +28,7 @@
 #include "qgstextformatwidget.h"
 #include "qgsapplication.h"
 #include "qgsrecentstylehandler.h"
+#include "qgsexpressionfinder.h"
 
 ///@cond PRIVATE
 
@@ -435,14 +436,7 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
 void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString selText = mTextEdit->textCursor().selectedText();
-
-  // html editor replaces newlines with Paragraph Separator characters - see https://github.com/qgis/QGIS/issues/27568
-  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
-
-  // edit the selected expression if there's one
-  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
-    selText = selText.mid( 2, selText.size() - 4 );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
 
   QgsExpressionContext expressionContext;
   if ( context().expressionContext() )
@@ -450,12 +444,12 @@ void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
   else
     expressionContext = QgsProject::instance()->createExpressionContext();
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, selText, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), expressionContext );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
       mTextEdit->insertPlainText( "[%" + expression + "%]" );
@@ -591,14 +585,7 @@ bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
 void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString selText = mTextEdit->textCursor().selectedText();
-
-  // html editor replaces newlines with Paragraph Separator characters - see https://github.com/qgis/QGIS/issues/27568
-  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
-
-  // edit the selected expression if there's one
-  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
-    selText = selText.mid( 2, selText.size() - 4 );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
 
   QgsExpressionContext expressionContext;
   if ( context().expressionContext() )
@@ -606,12 +593,12 @@ void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
   else
     expressionContext = QgsProject::instance()->createExpressionContext();
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, selText, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), expressionContext );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
       mTextEdit->insertPlainText( "[%" + expression + "%]" );

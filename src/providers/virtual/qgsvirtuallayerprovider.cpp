@@ -41,11 +41,6 @@ const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY = QStringLiteral( "virt
 const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_DESCRIPTION = QStringLiteral( "Virtual layer data provider" );
 const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_QUERY_VIEW = QStringLiteral( "_query" );
 
-static QString quotedColumn( QString name )
-{
-  return "\"" + name.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) + "\"";
-}
-
 #define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY ); QgsDebugError( msg ); } while(0)
 
 
@@ -55,6 +50,7 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri,
   : QgsVectorDataProvider( uri, options, flags )
 {
   mError.clear();
+  mExtent.setNull(); // ideally not needed
 
   const QUrl url = QUrl::fromEncoded( uri.toUtf8() );
   if ( !url.isValid() )
@@ -560,11 +556,24 @@ QgsRectangle QgsVirtualLayerProvider::extent() const
 void QgsVirtualLayerProvider::updateStatistics() const
 {
   const bool hasGeometry = mDefinition.geometryWkbType() != Qgis::WkbType::NoGeometry;
-  const QString subset = mSubset.isEmpty() ? QString() : " WHERE " + mSubset;
-  const QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
-                      .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
-                            mTableName,
-                            subset );
+
+  QString sql = QStringLiteral( "SELECT Count(1)" );
+
+  if ( hasGeometry )
+  {
+    sql += QStringLiteral(
+             ", Min(MbrMinX(%1)), Min(MbrMinY(%1)), Max(MbrMaxX(%1)), Max(MbrMaxY(%1))"
+           ).arg( QgsSqliteUtils::quotedIdentifier( mDefinition.geometryField() ) );
+  }
+
+  sql += QStringLiteral( " FROM %1" ) .arg( mTableName );
+
+  if ( !mSubset.isEmpty() )
+  {
+    sql += " WHERE ( " + mSubset + ')';
+  }
+
+  mExtent.setNull();
 
   try
   {
@@ -572,7 +581,7 @@ void QgsVirtualLayerProvider::updateStatistics() const
     if ( q.step() == SQLITE_ROW )
     {
       mFeatureCount = q.columnInt64( 0 );
-      if ( hasGeometry )
+      if ( mFeatureCount && hasGeometry )
       {
         double x1, y1, x2, y2;
         x1 = q.columnDouble( 1 );

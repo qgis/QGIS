@@ -146,8 +146,8 @@ QString QgsRectangle::toString( int precision ) const
     }
   }
 
-  if ( isEmpty() )
-    rep = QStringLiteral( "Empty" );
+  if ( isNull() )
+    rep = QStringLiteral( "Null" );
   else
     rep = QStringLiteral( "%1,%2 : %3,%4" )
           .arg( mXmin, 0, 'f', precision )

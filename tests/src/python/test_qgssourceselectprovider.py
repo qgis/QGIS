@@ -11,20 +11,23 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import (
     QgsAbstractDataSourceWidget,
     QgsGui,
     QgsSourceSelectProvider,
     QgsSourceSelectProviderRegistry,
 )
+from qgis.core import QgsDataSourceUri, QgsSettings
 import unittest
+import os
 from qgis.testing import start_app, QgisTestCase
+from utilities import unitTestDataPath
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '01/09/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-
-start_app()
 
 
 class ConcreteDataSourceWidget(QgsAbstractDataSourceWidget):
@@ -73,13 +76,18 @@ class ConcreteSourceSelectProvider2(QgsSourceSelectProvider):
         return 2
 
 
-class TestQgsSourceSelectProvider(QgisTestCase):
+class TestQgsSourceSelectProvider(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain(cls.__name__)
+        QCoreApplication.setApplicationName(cls.__name__)
+        start_app()
 
     def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
+        QgsSettings().clear()
 
     def testConcreteClass(self):
         provider = ConcreteSourceSelectProvider()
@@ -152,6 +160,64 @@ class TestQgsSourceSelectProvider(QgisTestCase):
         # Check that at least OGR and GDAL are here
         self.assertTrue(registry.providersByKey('ogr'))
         self.assertTrue(registry.providersByKey('gdal'))
+
+    def testSourceSelectProvidersConfigureFromUri(self):
+        """
+        Test configure from URI
+        """
+        registry = QgsGui.sourceSelectProviderRegistry()
+        enabled_entries = {reg_entry.name(): reg_entry for reg_entry in registry.providers() if reg_entry.capabilities() & QgsSourceSelectProvider.Capability.ConfigureFromUri}
+        self.assertTrue('ogr' in enabled_entries.keys())
+        self.assertTrue('gdal' in enabled_entries.keys())
+        self.assertTrue('GeoPackage' in enabled_entries.keys())
+        self.assertTrue('spatialite' in enabled_entries.keys())
+
+        # Test ogr
+        test_path = os.path.join(unitTestDataPath(), 'points.shp')
+        source_select = enabled_entries['ogr'].createDataSourceWidget()
+        self.assertTrue(source_select.configureFromUri(test_path))
+        spy = QSignalSpy(source_select.addVectorLayers)
+        source_select.addButtonClicked()
+        self.assertEqual(len(spy), 1)
+        arg_path, _, arg_type = spy[0]
+        self.assertEqual(arg_path[0], test_path)
+
+        # Test GDAL
+        test_path = os.path.join(unitTestDataPath(), 'raster_layer.tiff')
+        source_select = enabled_entries['gdal'].createDataSourceWidget()
+        spy = QSignalSpy(source_select.addRasterLayers)
+        self.assertTrue(source_select.configureFromUri(test_path))
+        source_select.addButtonClicked()
+        self.assertEqual(len(spy), 1)
+        arg_path = spy[0][0]
+        self.assertEqual(arg_path[0], test_path)
+
+        # Test vector GPKG
+        test_path = os.path.join(unitTestDataPath(), 'mixed_layers.gpkg|layername=points')
+        source_select = enabled_entries['GeoPackage'].createDataSourceWidget()
+        self.assertTrue(source_select.configureFromUri(test_path))
+        spy = QSignalSpy(source_select.addLayer)
+        source_select.addButtonClicked()
+        self.assertEqual(len(spy), 1)
+        _, arg_path, arg_name, arg_key = spy[0]
+        self.assertEqual(arg_path, test_path)
+        self.assertEqual(arg_name, 'points')
+        self.assertEqual(arg_key, 'ogr')
+
+        # Test vector spatialite
+        test_path = os.path.join(unitTestDataPath(), 'provider', 'spatialite.db')
+        uri = QgsDataSourceUri()
+        uri.setDatabase(test_path)
+        uri.setTable('some data')
+        uri.setGeometryColumn('geom')
+        uri.setSql('pk > 0')
+        source_select = enabled_entries['spatialite'].createDataSourceWidget()
+        self.assertTrue(source_select.configureFromUri(uri.uri()))
+        spy = QSignalSpy(source_select.addDatabaseLayers)
+        source_select.addButtonClicked()
+        self.assertEqual(len(spy), 1)
+        arg_tables, arg_key = spy[0]
+        self.assertEqual(arg_tables[0], uri.uri())
 
 
 if __name__ == '__main__':

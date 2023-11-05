@@ -24,6 +24,7 @@ RUN  apt-get update \
     dh-python \
     git \
     gdal-bin \
+    gnupg \
     gpsbabel \
     graphviz \
     libaio1 \
@@ -110,7 +111,10 @@ RUN  apt-get update \
   && apt-get clean
 
 # Node.js and Yarn for server landingpage webapp
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+RUN mkdir -p /etc/apt/keyrings
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+RUN apt-get update
 RUN apt-get install -y nodejs
 RUN corepack enable
 

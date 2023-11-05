@@ -1834,6 +1834,60 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
 
     /**
+     * Analyze a coverage (represented as a collection of polygonal geometry with exactly matching edge
+     * geometry) to find places where the assumption of exactly matching edges is not met.
+     *
+     * The input geometry is the polygonal coverage to access, stored in a geometry collection. All members must be POLYGON
+     * or MULTIPOLYGON.
+     *
+     * \param gapWidth The maximum width of gaps to detect.
+     * \param invalidEdges When there are invalidities in the coverage, will be set with a geometry collection of the same length as the input, with a MULTILINESTRING of the error edges for each invalid polygon, or an EMPTY where the polygon is a valid participant in the coverage.
+     * \returns validity check result
+     *
+     * This method requires a QGIS build based on GEOS 3.12 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.11 or earlier.
+     * \see simplifyCoverageVW()
+     * \since QGIS 3.36
+     */
+    Qgis::CoverageValidityResult validateCoverage( double gapWidth, QgsGeometry *invalidEdges SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Operates on a coverage (represented as a list of polygonal geometry with exactly matching edge geometry) to apply
+     * a Visvalingam–Whyatt simplification to the edges, reducing complexity in proportion with the provided tolerance,
+     * while retaining a valid coverage (no edges will cross or touch after the simplification).
+     *
+     * Geometries never disappear, but they may be simplified down to just a triangle. Also, some invalid geoms
+     * (such as Polygons which have too few non-repeated points) will be returned unchanged.
+     *
+     * If the input dataset is not a valid coverage due to overlaps, it will still be simplified, but invalid topology
+     * such as crossing edges will still be invalid.
+     *
+     * \param tolerance A tolerance parameter in linear units.
+     * \param preserveBoundary Set to TRUE to preserve the outside edges of the coverage without simplification, or FALSE to allow them to be simplified.
+     *
+     * This method requires a QGIS build based on GEOS 3.12 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.11 or earlier.
+     * \see validateCoverage()
+     * \since QGIS 3.36
+     */
+    QgsGeometry simplifyCoverageVW( double tolerance, bool preserveBoundary ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Optimized union algorithm for polygonal inputs that are correctly noded and do not overlap.
+     * It may generate an error (returning a null geometry) for inputs that do not satisfy this constraint,
+     * however this is not guaranteed.
+     *
+     * The input geometry is the polygonal coverage to union, stored in a geometry collection.
+     * All members must be POLYGON or MULTIPOLYGON.
+     *
+     * \see validateCoverage()
+     * \since QGIS 3.36
+     */
+    QgsGeometry unionCoverage() const;
+
+    /**
      * Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
      *
      * The noding preserves all of the input nodes, and introduces the least possible number of new nodes.

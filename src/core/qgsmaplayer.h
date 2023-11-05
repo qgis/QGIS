@@ -722,6 +722,63 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     const QgsObjectCustomProperties &customProperties() const;
 
+    /**
+     * Lists all the style in db split into related to the layer and not related to
+     * \param ids the list in which will be stored the style db ids
+     * \param names the list in which will be stored the style names
+     * \param descriptions the list in which will be stored the style descriptions
+     * \param msgError will be set to a descriptive error message if any occurs
+     * \returns the number of styles related to current layer (-1 on not implemented)
+     * \note Since QGIS 3.2 Styles related to the layer are ordered with the default style first then by update time for Postgres, MySQL and Spatialite.
+     */
+    virtual int listStylesInDatabase( QStringList &ids SIP_OUT, QStringList &names SIP_OUT,
+                                      QStringList &descriptions SIP_OUT, QString &msgError SIP_OUT );
+
+    /**
+     * Returns the named style corresponding to style id provided
+     */
+    virtual QString getStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
+
+    /**
+     * Deletes a style from the database
+     * \param styleId the provider's layer_styles table id of the style to delete
+     * \param msgError will be set to a descriptive error message if any occurs
+     * \returns TRUE in case of success
+     * \since QGIS 3.0
+     */
+    virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
+
+    /**
+     * Saves named and sld style of the layer to the style table in the db.
+     * \param name Style name
+     * \param description A description of the style
+     * \param useAsDefault Set to TRUE if style should be used as the default style for the layer
+     * \param uiFileContent
+     * \param msgError will be set to a descriptive error message if any occurs
+     * \param categories the style categories to be saved.
+     *
+     *
+     * \note Prior to QGIS 3.24, this method would show a message box warning when a
+     * style with the same \a styleName already existed to confirm replacing the style with the user.
+     * Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
+     * Use QgsProviderRegistry::styleExists() to test in advance if a style already exists and handle this appropriately
+     * in your client code.
+     */
+    virtual void saveStyleToDatabase( const QString &name, const QString &description,
+                                      bool useAsDefault, const QString &uiFileContent,
+                                      QString &msgError SIP_OUT,
+                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+    /**
+     * Loads a named style from file/local db/datasource db
+     * \param theURI the URI of the style or the URI of the layer
+     * \param resultFlag will be set to TRUE if a named style is correctly loaded
+     * \param loadFromLocalDb if TRUE forces to load from local db instead of datasource one
+     * \param categories the style categories to be loaded.
+     */
+    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb,
+                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
 #ifndef SIP_RUN
 
     /**

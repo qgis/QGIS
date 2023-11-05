@@ -76,6 +76,12 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
      */
     void hideAll();
 
+    /**
+     * Toggle the check state of selected fields to hide or show them in the attribute table
+     * \since QGIS 3.36
+     */
+    void toggleSelection();
+
   private:
     QgsAttributeTableConfig mConfig;
 

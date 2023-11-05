@@ -96,6 +96,7 @@ class TestQgsGeometry : public QgsTest
     void fromQPoint();
     void fromQPolygonF();
     void fromPolyline();
+    void fromRect();
     void asQPointF();
     void asQPolygonF();
 
@@ -155,6 +156,7 @@ class TestQgsGeometry : public QgsTest
     void createCollectionOfType();
 
     void orientedMinimumBoundingBox( );
+    void boundingBox();
     void boundingBox3D();
     void minimalEnclosingCircle( );
     void splitGeometry();
@@ -831,6 +833,17 @@ void TestQgsGeometry::fromPolyline()
   polylineZM << QgsPoint( Qgis::WkbType::PointZM, 10, 20, 4, 100 ) << QgsPoint( Qgis::WkbType::PointZM, 30, 40, 5, 200 );
   fromPolyline = QgsGeometry::fromPolyline( polylineZM );
   QCOMPARE( fromPolyline.asWkt(), QStringLiteral( "LineStringZM (10 20 4 100, 30 40 5 200)" ) );
+}
+
+void TestQgsGeometry::fromRect()
+{
+  QgsRectangle rectNull;
+
+  QgsGeometry fromRect = QgsGeometry::fromRect( rectNull );
+  QVERIFY( fromRect.isNull() );
+
+  fromRect = QgsGeometry::fromRect( QgsRectangle( 1, 2, 3, 4 ) );
+  QCOMPARE( fromRect.asWkt(), QStringLiteral( "Polygon ((1 2, 3 2, 3 4, 1 4, 1 2))" ) );
 }
 
 void TestQgsGeometry::asQPointF()
@@ -2165,6 +2178,16 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
   resultTestWKT = QStringLiteral( "Polygon ((-57 -30, -55.5 -30, -55.5 -29, -57 -29, -57 -30))" );
   QCOMPARE( result.asWkt( 2 ), resultTestWKT );
 
+}
+
+void TestQgsGeometry::boundingBox()
+{
+  QgsGeometry geomTest;
+  QgsRectangle nullRect;
+  QCOMPARE( geomTest.boundingBox(), nullRect );
+
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(-1 -2, 4 5)" ) );
+  QCOMPARE( geomTest.boundingBox3D(), QgsRectangle( -1, -2, 4, 5 ) );
 }
 
 void TestQgsGeometry::boundingBox3D()

@@ -35,12 +35,14 @@ from qgis.core import (
     QgsMaskMarkerSymbolLayer,
     QgsOuterGlowEffect,
     QgsPalLayerSettings,
+    QgsPathResolver,
     QgsProject,
     QgsProjectFileTransform,
     QgsProperty,
     QgsRectangle,
     QgsRenderContext,
     QgsSingleSymbolRenderer,
+    QgsSvgMarkerSymbolLayer,
     QgsSymbolLayerId,
     QgsSymbolLayerReference,
     QgsSymbolLayerUtils,
@@ -1314,6 +1316,34 @@ class TestSelectiveMasking(QgisTestCase):
         map_settings.setLayers([layer])
 
         self.check_layout_export("layout_export_random_generator_fill", 0, [layer], extent=extent)
+
+    def test_layout_export_svg_marker_masking(self):
+        """Test layout export with a svg marker symbol masking"""
+
+        svgPath = QgsSymbolLayerUtils.svgSymbolNameToPath('gpsicons/plane.svg', QgsPathResolver())
+
+        sl = QgsSvgMarkerSymbolLayer(svgPath, 5)
+        sl.setFillColor(QColor("blue"))
+
+        p = QgsMarkerSymbol()
+        p.changeSymbolLayer(0, sl)
+
+        self.points_layer.setRenderer(QgsSingleSymbolRenderer(p))
+
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        maskSl = QgsSvgMarkerSymbolLayer(svgPath, 8)
+        pSl = QgsMarkerSymbol()
+        pSl.changeSymbolLayer(0, maskSl)
+        mask_layer.setSubSymbol(pSl)
+        mask_layer.setMasks([
+            # the black part of roads
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
+        ])
+        # add this mask layer to the point layer
+        self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
+
+        # no rasters
+        self.check_layout_export("layout_export_svg_marker_masking", 0, [self.points_layer, self.lines_layer])
 
 
 if __name__ == '__main__':

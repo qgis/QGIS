@@ -61,6 +61,13 @@ showAll checks all the  fields to show them all in the attribute table
 hideAll unchecks all the fields to hide them all in the attribute table
 %End
 
+    void toggleSelection();
+%Docstring
+Toggle the check state of selected fields to hide or show them in the attribute table
+
+.. versionadded:: 3.36
+%End
+
 };
 
 /************************************************************************

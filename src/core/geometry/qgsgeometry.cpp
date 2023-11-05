@@ -233,6 +233,9 @@ QgsGeometry QgsGeometry::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly 
 
 QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
 {
+  if ( rect.isNull() )
+    return QgsGeometry();
+
   std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >(
       QVector< double >() << rect.xMinimum()
       << rect.xMaximum()
@@ -2634,6 +2637,58 @@ QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometry result = geos.delaunayTriangulation( tolerance, edgesOnly );
+  result.mLastError = mLastError;
+  return result;
+}
+
+QgsGeometry QgsGeometry::unionCoverage() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection &&
+       QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::Polygon )
+    return QgsGeometry();
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  const QgsGeometry result = QgsGeometry( geos.unionCoverage( &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
+Qgis::CoverageValidityResult QgsGeometry::validateCoverage( double gapWidth, QgsGeometry *invalidEdges ) const
+{
+  if ( !d->geometry )
+  {
+    return Qgis::CoverageValidityResult::Error;
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  std::unique_ptr< QgsAbstractGeometry > invalidEdgesGeom;
+
+  const Qgis::CoverageValidityResult result = geos.validateCoverage( gapWidth, invalidEdges ? &invalidEdgesGeom : nullptr, &mLastError );
+
+  if ( invalidEdges && invalidEdgesGeom )
+    *invalidEdges = QgsGeometry( std::move( invalidEdgesGeom ) );
+
+  return result;
+}
+
+QgsGeometry QgsGeometry::simplifyCoverageVW( double tolerance, bool preserveBoundary ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  QgsGeometry result( geos.simplifyCoverageVW( tolerance, preserveBoundary, &mLastError ) );
   result.mLastError = mLastError;
   return result;
 }

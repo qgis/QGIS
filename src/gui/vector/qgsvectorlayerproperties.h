@@ -59,48 +59,10 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     Q_OBJECT
 
   public:
-#ifndef SIP_RUN
-    enum StyleType
-    {
-      QML,
-      SLD,
-      DB,
-      Local,
-    };
-    Q_ENUM( StyleType )
-#endif
 
     QgsVectorLayerProperties( QgsMapCanvas *canvas, QgsMessageBar *messageBar, QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     bool eventFilter( QObject *obj, QEvent *ev ) override;
-
-    /**
-     * Loads the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadDefaultStyle();
-
-    /**
-     * Saves the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void saveDefaultStyle();
-
-    /**
-     * Loads a saved style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadStyle();
-
-    /**
-     * Saves a style when appriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void saveStyleAs();
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) final;
@@ -110,7 +72,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
   private slots:
 
-    void insertFieldOrExpression();
+    void insertField();
+    void insertOrEditExpression();
 
     //! Gets metadata about the layer in nice formatted html
     QString htmlMetadata();

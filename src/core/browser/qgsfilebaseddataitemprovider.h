@@ -171,6 +171,12 @@ class CORE_EXPORT QgsFileDataCollectionItem final: public QgsDataCollectionItem
      */
     Qgis::DatabaseProviderConnectionCapabilities2 databaseConnectionCapabilities2() const;
 
+    /**
+     * Returns the sublayers.
+     * \since QGIS 3.38
+     */
+    QList<QgsProviderSublayerDetails> sublayers() const;
+
   private:
 
     QList< QgsProviderSublayerDetails> mSublayers;

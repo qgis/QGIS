@@ -80,6 +80,21 @@ This should clear any selection that has previously been done.
 .. versionadded:: 3.10
 %End
 
+    virtual bool configureFromUri( const QString &uri );
+%Docstring
+Configure the widget from a layer ``uri`` by selecting the layer path or connection options.
+The base implementation does nothing and returns ``False``: providers with ConfigureSourceSelectFromUri capability
+must override to implement this functionality.
+
+:return: ``True`` on success.
+
+.. note::
+
+   Not all data providers may be able to configure the widget from the provided uri, in that case this method returns ``False``.
+
+.. versionadded:: 3.38
+%End
+
   signals:
 
     void connectionsChanged();

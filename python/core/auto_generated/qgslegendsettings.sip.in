@@ -584,6 +584,20 @@ Returns the font ascent in Millimeters (considers upscaling and downscaling with
 Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
 %End
 
+    Qgis::LegendJsonRenderFlags jsonRenderFlags() const;
+%Docstring
+Returns the JSON export flags.
+
+.. versionadded:: 3.36
+%End
+
+    void setJsonRenderFlags( const Qgis::LegendJsonRenderFlags &jsonRenderFlags );
+%Docstring
+Sets the  the JSON export flags to ``jsonRenderFlags``.
+
+.. versionadded:: 3.36
+%End
+
 };
 
 

@@ -1436,7 +1436,7 @@ QgsMeshRendererSettings QgsMeshLayer::accordSymbologyWithGroupName( const QgsMes
 
   if ( !activeScalarName.isEmpty() )
     consistentSettings.setActiveScalarDatasetGroup( mDatasetGroupStore->indexFromGroupName( activeScalarName ) );
-  if ( activeVectorName.isEmpty() )
+  if ( !activeVectorName.isEmpty() )
     consistentSettings.setActiveVectorDatasetGroup( mDatasetGroupStore->indexFromGroupName( activeVectorName ) );
 
   return consistentSettings;

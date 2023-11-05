@@ -2659,7 +2659,7 @@ QgsDockWidget *QgisApp::logDock()
   return mLogDock;
 }
 
-void QgisApp::dataSourceManager( const QString &pageName )
+void QgisApp::dataSourceManager( const QString &pageName, const QString &layerUri )
 {
   if ( ! mDataSourceManagerDialog )
   {
@@ -2743,7 +2743,15 @@ void QgisApp::dataSourceManager( const QString &pageName )
   // Try to open the dialog on a particular page
   if ( ! pageName.isEmpty() )
   {
-    mDataSourceManagerDialog->openPage( pageName );
+
+    if ( ! layerUri.isEmpty() )
+    {
+      mDataSourceManagerDialog->configureFromUri( pageName, layerUri );
+    }
+    else
+    {
+      mDataSourceManagerDialog->openPage( pageName );
+    }
   }
 
   mDataSourceManagerDialog->show();

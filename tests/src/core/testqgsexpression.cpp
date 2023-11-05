@@ -4340,6 +4340,7 @@ class TestQgsExpression: public QObject
       QVariantList foreachExpected;
       foreachExpected << 10 << 20 << 40;
       QCOMPARE( QgsExpression( "array_foreach(array(1, 2, 4), @element * 10)" ).evaluate( &context ), QVariant( foreachExpected ) );
+      QCOMPARE( QgsExpression( "array_foreach(array(10, 19, 38), @element + @counter)" ).evaluate( &context ), QVariant( foreachExpected ) );
 
       QVariantList filterExpected = QVariantList() << 1 << 2;
       QCOMPARE( QgsExpression( "array_filter(array(1, 2, 4), @element < 3)" ).evaluate( &context ), QVariant( filterExpected ) );

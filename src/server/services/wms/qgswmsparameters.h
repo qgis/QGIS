@@ -156,6 +156,7 @@ namespace QgsWms
         RULELABEL,
         SCALE,
         SELECTION,
+        SHOWRULEDETAILS,
         HIGHLIGHT_GEOM,
         HIGHLIGHT_SYMBOL,
         HIGHLIGHT_LABELSTRING,
@@ -450,6 +451,13 @@ namespace QgsWms
        * \throws QgsBadRequestException
        */
       int heightAsInt() const;
+
+      /**
+       * Returns SHOWRULEDETAILS as a bool. An exception is raised if an invalid
+       * parameter is found.
+       * \since QGIS 3.36
+       */
+      bool showRuleDetailsAsBool() const;
 
       /**
        * Returns SRCWIDTH parameter or an empty string if not defined.

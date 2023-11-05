@@ -461,7 +461,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
         }
         break;
       }
-      Q_FALLTHROUGH();
+      [[fallthrough]];
     case QgsColorRampShader::Discrete:
     case QgsColorRampShader::Exact:
     {
