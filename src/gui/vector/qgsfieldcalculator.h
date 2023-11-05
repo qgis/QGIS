@@ -44,7 +44,7 @@ class GUI_EXPORT QgsFieldCalculator : public QDialog, private Ui::QgsFieldCalcul
 {
     Q_OBJECT
   public:
-    QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = nullptr, int fieldIndex = -1 );
 
     /**
      * \brief Returns the field index of the field for which new attribute values were calculated.
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsFieldCalculator : public QDialog, private Ui::QgsFieldCalcul
     //! default constructor forbidden
     QgsFieldCalculator();
     //! Inserts existing fields into the combo box
-    void populateFields();
+    void populateFields( const int &fieldIndex );
     //! Inserts the types supported by the provider into the combo box
     void populateOutputFieldTypes();
 
