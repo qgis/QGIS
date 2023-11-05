@@ -1,0 +1,33 @@
+{
+  "name": "format_interval",
+  "type": "function",
+  "groups": ["String", "Date and Time"],
+  "description": "Formats an interval into a custom string format.",
+  "arguments": [{
+    "arg": "interval",
+    "description": "interval value, such as that returned by make_interval()."
+  }, {
+    "arg": "format",
+    "description": "String template used to format the string. <table><thead><tr><th>Expression</th><th>Output</th></tr></thead><tr valign=\"top\"><td><code>%Y</code></td><td>the number of years</td></tr><tr valign=\"top\"><td><code>%M</code></td><td>the number of months</td></tr><tr valign=\"top\"><td><code>%W</code></td><td>the number of weeks</td></tr><tr valign=\"top\"><td>%D</td><td>the number of days</td></tr><tr valign=\"top\"><td>%h</td><td>the number of hours</td></tr><tr valign=\"top\"><td>%m</td><td>the number of minutes</td></tr><tr valign=\"top\"><td>%s</td><td>the number of seconds</td></tr><tr valign=\"top\"><td>%z</td><td>the number of milliseconds</td></tr></table>A single zero can be inserted before the specifier (e.g. <code>%0m</code>) to add a leading zero if the value would be less than two digits.  Milliseconds can be padded to three digits (<code>%00z</code>) and years up to four digits (<code>%000Y</code>).  This is useful for formats like <code>%h:%0m:%0s.%00z</code> to display as <code>2:04:06.008</code> rather than <code>2:4:6.8</code>.<br/>The interval is only broken down to the largest specifier.  So for an interval of 65 seconds, only using the <code>%s</code> specifier will show 65 as the value for the seconds field, however if the <code>%m</code> specifier is also used, the value will be broken down into minutes instead, so the same interval will show as 1 minute 5 seconds.  This means you do not have to specify all placeholders - if you omit <code>%h</code> for hours, the result is that <code>%m</code> for minutes will increase above 59 if needed.<br/>The least significant placeholder specified (with the year being the most significant and milliseconds the least) will be rounded up or down as appropriate.  This way an interval of 90 seconds will show as 2 minutes if only <code>%m</code> is used, or 1 minute 30 seconds if both <code>%m</code> and <code>%s</code> are used together."
+  }],
+  "examples": [{
+    "expression": "format_interval(make_interval(minutes:=91),'%m min')",
+    "returns": "'91 min'"
+  }, {
+    "expression": "format_interval(make_interval(minutes:=91),'%h hr %m min')",
+    "returns": "'1 hr 31 min'"
+  }, {
+    "expression": "format_interval(make_interval(minutes:=91),'%h hr')",
+    "returns": "'2 hr'"
+  }, {
+    "expression": "format_interval(make_interval(minutes:=62),'%h:%0m')",
+    "returns": "'1:02'"
+  }, {
+    "expression": "format_interval(make_interval(seconds:=3724.008),'%h:%0m:%0s.%00z')",
+    "returns": "'1:02:04.008'"
+  }, {
+    "expression": "format_interval(make_interval(minutes:=1560),'%Dd %mm')",
+    "returns": "'1d 120m'"
+  }],
+  "tags": ["custom", "type", "uses", "format", "strings", "time", "date", "formats", "see", "interval", "tostring"]
+}

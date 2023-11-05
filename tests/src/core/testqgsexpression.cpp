@@ -1871,6 +1871,16 @@ class TestQgsExpression: public QObject
       QTest::newRow( "time from format and language" ) << "to_time('12:34:56','HH:mm:ss','fr')" << false << QVariant( QTime( 12, 34, 56 ) );
       QTest::newRow( "formatted string from date" ) << "format_date('2019-06-29','MMMM d, yyyy')" << false << QVariant( QString( "June 29, 2019" ) );
       QTest::newRow( "formatted string from date with language" ) << "format_date('2019-06-29','d MMMM yyyy','fr')" << false << QVariant( QString( "29 juin 2019" ) );
+      QTest::newRow( "formatted string from interval, simple" ) << "format_interval(make_interval(seconds:=62.003),'%m:%0s.%00z')" << false << QVariant( QString( "1:02.003" ) );
+      QTest::newRow( "formatted string from interval, all as int" ) << "format_interval(make_interval(seconds:=38919967), '%Yy %Mm %Ww %Dd %hh %mm %ss')" << false << QVariant( QString( "1y 2m 3w 4d 5h 6m 7s" ) );
+      QTest::newRow( "formatted string from interval, year" ) << "format_interval(make_interval(seconds:=31557600), '%Yy %Mm %Ww %Dd %hh %mm %ss %zms')" << false << QVariant( QString( "1y 0m 0w 0d 0h 0m 0s 0ms" ) );
+      QTest::newRow( "formatted string from interval, month" ) << "format_interval(make_interval(seconds:=31557600), '%Mm %Ww %Dd %hh %mm %ss %zms')" << false << QVariant( QString( "12m 0w 0d 0h 0m 0s 0ms" ) );
+      QTest::newRow( "formatted string from interval, week" ) << "format_interval(make_interval(seconds:=31557600), '%Ww %Dd %hh %mm %ss %zms')" << false << QVariant( QString( "52w 1d 6h 0m 0s 0ms" ) );
+      QTest::newRow( "formatted string from interval, day" ) << "format_interval(make_interval(seconds:=31557600), '%Dd %hh %mm %ss %zms')" << false << QVariant( QString( "365d 6h 0m 0s 0ms" ) );
+      QTest::newRow( "formatted string from interval, hour" ) << "format_interval(make_interval(seconds:=31557600), '%hh %mm %ss %zms')" << false << QVariant( QString( "8766h 0m 0s 0ms" ) );
+      QTest::newRow( "formatted string from interval, minute" ) << "format_interval(make_interval(seconds:=31557600), '%mm %ss %zms')" << false << QVariant( QString( "525960m 0s 0ms" ) );
+      QTest::newRow( "formatted string from interval, second" ) << "format_interval(make_interval(seconds:=31557600), '%ss %zms')" << false << QVariant( QString( "31557600s 0ms" ) );
+      QTest::newRow( "formatted string from interval, millisecond" ) << "format_interval(make_interval(seconds:=31557600), '%zms')" << false << QVariant( QString( "31557600000ms" ) );
 
       // Color functions
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)

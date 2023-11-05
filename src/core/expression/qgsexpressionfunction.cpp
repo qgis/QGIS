@@ -5815,6 +5815,219 @@ static QVariant fcnFormatDate( const QVariantList &values, const QgsExpressionCo
   return locale.toString( datetime, format );
 }
 
+static QVariant fcnFormatInterval( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsInterval interval = QgsExpressionUtils::getInterval( values.at( 0 ), parent, true );
+  QString format = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+
+  qlonglong outstanding = interval.seconds() * 1000;
+
+  bool has_Y = format.contains( "%Y" ) || format.contains( "%0Y" )
+               || format.contains( "%00Y" ) || format.contains( "%000Y" );
+  bool has_M = format.contains( "%M" ) || format.contains( "%0M" );
+  bool has_W = format.contains( "%W" ) || format.contains( "%0W" );
+  bool has_D = format.contains( "%D" ) || format.contains( "%0D" );
+  bool has_h = format.contains( "%h" ) || format.contains( "%0h" );
+  bool has_m = format.contains( "%m" ) || format.contains( "%0m" );
+  bool has_s = format.contains( "%s" ) || format.contains( "%0s" );
+  bool has_z = format.contains( "%z" ) || format.contains( "%0z" )
+               || format.contains( "%00z" );
+
+  // Work out which field is the least significant, so we know which one to
+  // round.
+  bool isLeastSignificant_Y = has_Y && !has_M && !has_W && !has_D && !has_h && !has_m && !has_s && !has_z;
+  bool isLeastSignificant_M =           has_M && !has_W && !has_D && !has_h && !has_m && !has_s && !has_z;
+  bool isLeastSignificant_W =                     has_W && !has_D && !has_h && !has_m && !has_s && !has_z;
+  bool isLeastSignificant_D =                               has_D && !has_h && !has_m && !has_s && !has_z;
+  bool isLeastSignificant_h =                                         has_h && !has_m && !has_s && !has_z;
+  bool isLeastSignificant_m =                                                   has_m && !has_s && !has_z;
+  bool isLeastSignificant_s =                                                             has_s && !has_z;
+
+  const qlonglong ms_s = QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Seconds, Qgis::TemporalUnit::Milliseconds );
+  const qlonglong ms_m = QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Minutes, Qgis::TemporalUnit::Milliseconds );
+  const qlonglong ms_h = QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Hours, Qgis::TemporalUnit::Milliseconds );
+  const qlonglong ms_D = QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Days, Qgis::TemporalUnit::Milliseconds );
+  const qlonglong ms_W = QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Weeks, Qgis::TemporalUnit::Milliseconds );
+  const qlonglong ms_M = QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Months, Qgis::TemporalUnit::Milliseconds );
+  const qlonglong ms_Y = QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Years, Qgis::TemporalUnit::Milliseconds );
+
+  if ( has_Y )
+  {
+    qlonglong value;
+    if ( isLeastSignificant_Y )
+    {
+      value = std::round( double( outstanding ) / ms_Y );
+    }
+    else
+    {
+      qlonglong remainder = outstanding % ms_Y;
+      value = ( outstanding - remainder ) / ms_Y;
+      outstanding = remainder;
+    }
+
+    QString strValue;
+    strValue.setNum( value );
+    format.replace( "%Y", strValue );
+    format.replace( "%0Y", strValue.rightJustified( 2, '0' ) );
+    format.replace( "%00Y", strValue.rightJustified( 3, '0' ) );
+    format.replace( "%000Y", strValue.rightJustified( 4, '0' ) );
+  }
+
+  if ( has_M )
+  {
+    qlonglong value;
+    if ( isLeastSignificant_M )
+    {
+      value = std::round( double( outstanding ) / ms_M );
+    }
+    else
+    {
+      value = 0;
+      if ( outstanding >= ms_Y )
+      {
+        // We have more than 12 months, so first calculate in terms of years as
+        // this is more accurate due to the differing number of days in a month.
+        // (If we use the monthly calculation we only get 360 days in a year,
+        // instead of 365.25 with the yearly calculation).
+        qlonglong remainder = outstanding % ms_Y;
+        value += ( outstanding - remainder ) / ms_Y * 12;
+        outstanding = remainder;
+      }
+
+      if ( outstanding >= ms_Y / 3 )
+      {
+        // We have more than 3 months, so use a more accurate calculation here
+        // too, to better average out the difference in 30/31 days in a month.
+        qlonglong remainder = outstanding % ( ms_Y / 3 );
+        value += ( outstanding - remainder ) / ( ms_Y / 3 ) * 3;
+        outstanding = remainder;
+      }
+
+      // Now proceed with the less accurate month length, for < 3 month values.
+      qlonglong remainder = outstanding % ms_M;
+      value += ( outstanding - remainder ) / ms_M;
+      outstanding = remainder;
+    }
+
+    QString strValue;
+    strValue.setNum( value );
+    format.replace( "%M", strValue );
+    format.replace( "%0M", strValue.rightJustified( 2, '0' ) );
+  }
+
+  if ( has_W )
+  {
+    qlonglong value;
+    if ( isLeastSignificant_W )
+    {
+      value = std::round( double( outstanding ) / ms_W );
+    }
+    else
+    {
+      qlonglong remainder = outstanding % ms_W;
+      value = ( outstanding - remainder ) / ms_W;
+      outstanding = remainder;
+    }
+
+    QString strValue;
+    strValue.setNum( value );
+    format.replace( "%W", strValue );
+  }
+
+  if ( has_D )
+  {
+    qlonglong value;
+    if ( isLeastSignificant_D )
+    {
+      value = std::round( double( outstanding ) / ms_D );
+    }
+    else
+    {
+      qlonglong remainder = outstanding % ms_D;
+      value = ( outstanding - remainder ) / ms_D;
+      outstanding = remainder;
+    }
+
+    QString strValue;
+    strValue.setNum( value );
+    format.replace( "%D", strValue );
+    format.replace( "%0D", strValue.rightJustified( 2, '0' ) );
+  }
+
+  if ( has_h )
+  {
+    qlonglong value;
+    if ( isLeastSignificant_h )
+    {
+      value = std::round( double( outstanding ) / ms_h );
+    }
+    else
+    {
+      qlonglong remainder = outstanding % ms_h;
+      value = ( outstanding - remainder ) / ms_h;
+      outstanding = remainder;
+    }
+
+    QString strValue;
+    strValue.setNum( value );
+    format.replace( "%h", strValue );
+    format.replace( "%0h", strValue.rightJustified( 2, '0' ) );
+  }
+
+  if ( has_m )
+  {
+    qlonglong value;
+    if ( isLeastSignificant_m )
+    {
+      value = std::round( double( outstanding ) / ms_m );
+    }
+    else
+    {
+      qlonglong remainder = outstanding % ms_m;
+      value = ( outstanding - remainder ) / ms_m;
+      outstanding = remainder;
+    }
+
+    QString strValue;
+    strValue.setNum( value );
+    format.replace( "%m", strValue );
+    format.replace( "%0m", strValue.rightJustified( 2, '0' ) );
+  }
+
+  if ( has_s )
+  {
+    qlonglong value;
+    if ( isLeastSignificant_s )
+    {
+      value = std::round( double( outstanding ) / ms_s );
+    }
+    else
+    {
+      qlonglong remainder = outstanding % ms_s;
+      value = ( outstanding - remainder ) / ms_s;
+      outstanding = remainder;
+    }
+
+    QString strValue;
+    strValue.setNum( value );
+    format.replace( "%s", strValue );
+    format.replace( "%0s", strValue.rightJustified( 2, '0' ) );
+  }
+
+  if ( has_z )
+  {
+    qlonglong value = outstanding;
+
+    QString strValue;
+    strValue.setNum( value );
+    format.replace( "%z", strValue );
+    format.replace( "%0z", strValue.rightJustified( 2, '0' ) );
+    format.replace( "%00z", strValue.rightJustified( 3, '0' ) );
+  }
+
+  return format;
+}
+
 static QVariant fcnColorGrayscaleAverage( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
@@ -8341,6 +8554,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "omit_group_separators" ), true, false )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "trim_trailing_zeroes" ), true, false ), fcnFormatNumber, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatDate, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "format_interval" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "interval" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ) ), fcnFormatInterval, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_grayscale_average" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color" ) ), fcnColorGrayscaleAverage, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_mix_rgb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color1" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "color2" ) )
