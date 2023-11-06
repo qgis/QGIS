@@ -3807,6 +3807,9 @@ QgsSymbolLayer *QgsFilledLineSymbolLayer::create( const QVariantMap &props )
 {
   double width = DEFAULT_SIMPLELINE_WIDTH;
 
+  // throughout the history of QGIS and different layer types, we've used
+  // a huge range of different strings for the same property. The logic here
+  // is designed to be forgiving to this and accept a range of string keys:
   if ( props.contains( QStringLiteral( "line_width" ) ) )
   {
     width = props[QStringLiteral( "line_width" )].toDouble();
@@ -3817,7 +3820,6 @@ QgsSymbolLayer *QgsFilledLineSymbolLayer::create( const QVariantMap &props )
   }
   else if ( props.contains( QStringLiteral( "width" ) ) )
   {
-    //pre 2.5 projects used "width"
     width = props[QStringLiteral( "width" )].toDouble();
   }
 
@@ -3833,7 +3835,6 @@ QgsSymbolLayer *QgsFilledLineSymbolLayer::create( const QVariantMap &props )
   }
   else if ( props.contains( QStringLiteral( "width_unit" ) ) )
   {
-    //pre 2.5 projects used "width_unit"
     l->setWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "width_unit" )].toString() ) );
   }
 
