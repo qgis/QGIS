@@ -123,7 +123,7 @@ void TestQgsRasterFill::init()
   mRasterFill->setWidthUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
   mRasterFill->setOpacity( 1.0 );
-  mRasterFill->setOffset( QPointF( 0, 0 ) );
+  mRasterFill->setOffset( QPointF() );
 }
 
 void TestQgsRasterFill::cleanup()
@@ -175,7 +175,7 @@ void TestQgsRasterFill::offset()
                         QStringLiteral( "rasterfill_offset" ), QStringLiteral( "rasterfill_offset" ),
                         mMapSettings, 500, 20 );
 
-  mRasterFill->setOffset( QPointF( 0, 0 ) );
+  mRasterFill->setOffset( QPointF() );
 
   QVERIFY( result );
 }
@@ -241,7 +241,7 @@ void TestQgsRasterFill::percentageOffset()
   mRasterFill->setWidthUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setWidth( 0 );
   mRasterFill->setOffsetUnit( Qgis::RenderUnit::Millimeters );
-  mRasterFill->setOffset( QPointF( 0, 0 ) );
+  mRasterFill->setOffset( QPointF() );
 
   QVERIFY( result );
 }
