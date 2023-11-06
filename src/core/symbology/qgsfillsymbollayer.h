@@ -1024,60 +1024,144 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     /**
-     * Sets the width for scaling the image used in the fill. The image's height will also be
-     * scaled to maintain the image's aspect ratio.
-     * \param width width for scaling the image
-     * \see width
-     * \see setWidthUnit
-     * \see setWidthMapUnitScale
+     * Sets the \a width for scaling the image used in the fill.
+     *
+     * If \a width is 0 then the width will be calculated automatically based on the image's height().
+     *
+     * \see width()
+     * \see height()
+     * \see setHeight()
+     * \see setWidthUnit()
+     * \see setWidthMapUnitScale()
      */
-    void setWidth( const double width ) { mWidth = width; }
+    void setWidth( double width ) { mWidth = width; }
 
     /**
-     * Returns the width used for scaling the image used in the fill. The image's height is
-     * scaled to maintain the image's aspect ratio.
-     * \returns width used for scaling the image
-     * \see setWidth
-     * \see widthUnit
-     * \see widthMapUnitScale
+     * Returns the width used for scaling the image used in the fill.
+     *
+     * If the width is 0 then the width will be calculated automatically based on the image's height().
+     *
+     * \see height()
+     * \see setWidth()
+     * \see widthUnit()
+     * \see widthMapUnitScale()
      */
     double width() const { return mWidth; }
 
     /**
-     * Sets the units for the image's width.
-     * \param unit units for width
-     * \see widthUnit
-     * \see setWidth
-     * \see setWidthMapUnitScale
+     * Sets the \a height for scaling the image.
+     *
+     * If \a height is 0 then the height will be calculated automatically based on the image's width().
+     *
+     * \see setWidth()
+     * \see height()
+     * \see width()
+     * \see setHeightUnit()
+     * \see setHeightMapUnitScale()
+     *
+     * \since QGIS 3.36
      */
-    void setWidthUnit( const Qgis::RenderUnit unit ) { mWidthUnit = unit; }
+    void setHeight( double height ) { mHeight = height; }
+
+    /**
+     * Returns the height used for scaling the image used in the fill.
+     *
+     * If the height is 0 then the height will be calculated automatically based on the image's width().
+     *
+     * \see width()
+     * \see setHeight()
+     * \see heightUnit()
+     * \see heightMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    double height() const { return mHeight; }
+
+    /**
+     * Sets the \a unit for the image's width.
+     *
+     * \see setHeightUnit()
+     * \see widthUnit()
+     * \see setWidth()
+     * \see setWidthMapUnitScale()
+     */
+    void setWidthUnit( Qgis::RenderUnit unit ) { mWidthUnit = unit; }
 
     /**
      * Returns the units for the image's width.
-     * \returns units for width
-     * \see setWidthUnit
-     * \see width
-     * \see widthMapUnitScale
+     *
+     * \see heightUnit()
+     * \see setWidthUnit()
+     * \see width()
+     * \see widthMapUnitScale()
      */
     Qgis::RenderUnit widthUnit() const { return mWidthUnit; }
 
     /**
-     * Sets the map unit scale for the image's width.
-     * \param scale map unit scale for width
-     * \see widthMapUnitScale
-     * \see setWidth
-     * \see setWidthUnit
+     * Sets the \a unit for the image's height.
+     *
+     * \see setWidthUnit()
+     * \see heightUnit()
+     * \see setHeight()
+     * \see setHeightMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    void setHeightUnit( Qgis::RenderUnit unit ) { mHeightUnit = unit; }
+
+    /**
+     * Returns the units for the image's height.
+     *
+     * \see widthUnit()
+     * \see setHeightUnit()
+     * \see height()
+     * \see heightMapUnitScale()
+     */
+    Qgis::RenderUnit heightUnit() const { return mHeightUnit; }
+
+    /**
+     * Sets the map unit \a scale for the image's width.
+     *
+     * \see setHeightMapUnitScale()
+     * \see widthMapUnitScale()
+     * \see setWidth()
+     * \see setWidthUnit()
      */
     void setWidthMapUnitScale( const QgsMapUnitScale &scale ) { mWidthMapUnitScale = scale; }
 
     /**
      * Returns the map unit scale for the image's width.
-     * \returns map unit scale for width
-     * \see setWidthMapUnitScale
-     * \see width
-     * \see widthUnit
+     *
+     * \see heightMapUnitScale()
+     * \see setWidthMapUnitScale()
+     * \see width()
+     * \see widthUnit()
      */
     const QgsMapUnitScale &widthMapUnitScale() const { return mWidthMapUnitScale; }
+
+    /**
+     * Sets the map unit \a scale for the image's height.
+     *
+     * \see setWidthMapUnitScale()
+     * \see heightMapUnitScale()
+     * \see setHeight()
+     * \see setHeightUnit()
+     *
+     * \since QGIS 3.36
+     */
+    void setHeightMapUnitScale( const QgsMapUnitScale &scale ) { mHeightMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the image's height.
+     *
+     * \see widthMapUnitScale()
+     * \see setHeightMapUnitScale()
+     * \see height()
+     * \see heightUnit()
+     *
+     * \since QGIS 3.36
+     */
+    const QgsMapUnitScale &heightMapUnitScale() const { return mHeightMapUnitScale; }
 
   protected:
 
@@ -1098,8 +1182,12 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     Qgis::RenderUnit mWidthUnit = Qgis::RenderUnit::Pixels;
     QgsMapUnitScale mWidthMapUnitScale;
 
+    double mHeight = 0.0;
+    Qgis::RenderUnit mHeightUnit = Qgis::RenderUnit::Pixels;
+    QgsMapUnitScale mHeightMapUnitScale;
+
     //! Applies the image pattern to the brush
-    void applyPattern( QBrush &brush, const QString &imageFilePath, double width, double opacity,
+    void applyPattern( QBrush &brush, const QString &imageFilePath, double width, double height, double opacity,
                        const QgsSymbolRenderContext &context );
 };
 

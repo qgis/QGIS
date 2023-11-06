@@ -820,8 +820,6 @@ class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void offsetChanged();
     void mOffsetUnitWidget_changed();
     void mRotationSpinBox_valueChanged( double d );
-    void mWidthUnitWidget_changed();
-    void mWidthSpinBox_valueChanged( double d );
 
   private:
     void updatePreviewImage();
