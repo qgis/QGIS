@@ -16,8 +16,8 @@
 """
 
 __author__ = 'Nyall Dawson'
-__date__ = 'October 2021'
-__copyright__ = '(C) 2021, Nyall Dawson'
+__date__ = 'November 2023'
+__copyright__ = '(C) 2023, Nyall Dawson'
 
 from typing import Optional
 
