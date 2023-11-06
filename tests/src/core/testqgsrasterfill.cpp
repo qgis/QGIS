@@ -55,6 +55,9 @@ class TestQgsRasterFill : public QgsTest
     void alpha();
     void offset();
     void width();
+    void widthAndHeight();
+    void widthForHeight();
+    void percentageHeight();
 
     // Tests for percentage value of size unit.
     void percentage();
@@ -191,6 +194,69 @@ void TestQgsRasterFill::width()
 
   mRasterFill->setWidthUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setWidth( 0 );
+
+  QVERIFY( result );
+}
+
+void TestQgsRasterFill::widthAndHeight()
+{
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Millimeters );
+  mRasterFill->setWidth( 5.0 );
+
+  mRasterFill->setHeightUnit( Qgis::RenderUnit::Millimeters );
+  mRasterFill->setHeight( 15.0 );
+
+  const bool result = renderMapSettingsCheck(
+                        QStringLiteral( "rasterfill_width_and_height" ), QStringLiteral( "rasterfill_width_and_height" ),
+                        mMapSettings, 500, 20 );
+
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Pixels );
+  mRasterFill->setWidth( 0 );
+
+  mRasterFill->setHeightUnit( Qgis::RenderUnit::Pixels );
+  mRasterFill->setHeight( 0 );
+
+  QVERIFY( result );
+}
+
+void TestQgsRasterFill::widthForHeight()
+{
+  // width should match height respecting aspect ratio
+  mRasterFill->setWidth( 0.0 );
+
+  mRasterFill->setHeightUnit( Qgis::RenderUnit::Millimeters );
+  mRasterFill->setHeight( 15.0 );
+
+  const bool result = renderMapSettingsCheck(
+                        QStringLiteral( "rasterfill_height" ), QStringLiteral( "rasterfill_height" ),
+                        mMapSettings, 500, 20 );
+
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Pixels );
+  mRasterFill->setWidth( 0 );
+
+  mRasterFill->setHeightUnit( Qgis::RenderUnit::Pixels );
+  mRasterFill->setHeight( 0 );
+
+  QVERIFY( result );
+}
+
+void TestQgsRasterFill::percentageHeight()
+{
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Millimeters );
+  mRasterFill->setWidth( 5.0 );
+
+  mRasterFill->setHeightUnit( Qgis::RenderUnit::Percentage );
+  mRasterFill->setHeight( 10 );
+
+  const bool result = renderMapSettingsCheck(
+                        QStringLiteral( "rasterfill_height_percentage" ), QStringLiteral( "rasterfill_height_percentage" ),
+                        mMapSettings, 500, 20 );
+
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Pixels );
+  mRasterFill->setWidth( 0 );
+
+  mRasterFill->setHeightUnit( Qgis::RenderUnit::Pixels );
+  mRasterFill->setHeight( 0 );
 
   QVERIFY( result );
 }
