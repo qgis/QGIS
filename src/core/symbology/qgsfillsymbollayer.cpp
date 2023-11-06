@@ -5128,6 +5128,19 @@ QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QVariantMap &properties 
     symbolLayer->setWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "width_map_unit_scale" )].toString() ) );
   }
 
+  if ( properties.contains( QStringLiteral( "height" ) ) )
+  {
+    symbolLayer->setHeight( properties[QStringLiteral( "height" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "height_unit" ) ) )
+  {
+    symbolLayer->setHeightUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "height_unit" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "height_map_unit_scale" ) ) )
+  {
+    symbolLayer->setHeightMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "height_map_unit_scale" )].toString() ) );
+  }
+
   symbolLayer->restoreOldDataDefinedProperties( properties );
 
   return symbolLayer.release();
@@ -5228,7 +5241,7 @@ void QgsRasterFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
 
 void QgsRasterFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  applyPattern( mBrush, mImageFilePath, mWidth, mOpacity * context.opacity(), context );
+  applyPattern( mBrush, mImageFilePath, mWidth, mHeight, mOpacity * context.opacity(), context );
 }
 
 void QgsRasterFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
@@ -5246,9 +5259,14 @@ QVariantMap QgsRasterFillSymbolLayer::properties() const
   map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
   map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
   map[QStringLiteral( "angle" )] = QString::number( mAngle );
+
   map[QStringLiteral( "width" )] = QString::number( mWidth );
   map[QStringLiteral( "width_unit" )] = QgsUnitTypes::encodeUnit( mWidthUnit );
   map[QStringLiteral( "width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mWidthMapUnitScale );
+
+  map[QStringLiteral( "height" )] = QString::number( mHeight );
+  map[QStringLiteral( "height_unit" )] = QgsUnitTypes::encodeUnit( mHeightUnit );
+  map[QStringLiteral( "height_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mHeightMapUnitScale );
   return map;
 }
 
@@ -5264,6 +5282,10 @@ QgsRasterFillSymbolLayer *QgsRasterFillSymbolLayer::clone() const
   sl->setWidth( mWidth );
   sl->setWidthUnit( mWidthUnit );
   sl->setWidthMapUnitScale( mWidthMapUnitScale );
+  sl->setHeight( mHeight );
+  sl->setHeightUnit( mHeightUnit );
+  sl->setHeightMapUnitScale( mHeightMapUnitScale );
+
   copyDataDefinedProperties( sl.get() );
   copyPaintEffect( sl.get() );
   return sl.release();
@@ -5277,6 +5299,7 @@ double QgsRasterFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &conte
 bool QgsRasterFillSymbolLayer::usesMapUnits() const
 {
   return mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+         || mHeightUnit == Qgis::RenderUnit::MapUnits || mHeightUnit == Qgis::RenderUnit::MetersInMapUnits
          || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
@@ -5290,6 +5313,7 @@ void QgsRasterFillSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
   QgsImageFillSymbolLayer::setOutputUnit( unit );
   mOffsetUnit = unit;
   mWidthUnit = unit;
+  mHeightUnit = unit;
 }
 
 void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )
@@ -5312,12 +5336,13 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
   if ( !dataDefinedProperties().hasActiveProperties() )
     return; // shortcut
 
-  bool hasWidthExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth );
-  bool hasFileExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile );
-  bool hasOpacityExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOpacity );
-  bool hasAngleExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle );
+  const bool hasWidthExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth );
+  const bool hasHeightExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight );
+  const bool hasFileExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile );
+  const bool hasOpacityExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOpacity );
+  const bool hasAngleExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle );
 
-  if ( !hasWidthExpression && !hasAngleExpression && !hasOpacityExpression && !hasFileExpression )
+  if ( !hasWidthExpression && !hasHeightExpression && !hasAngleExpression && !hasOpacityExpression && !hasFileExpression )
   {
     return; //no data defined settings
   }
@@ -5331,7 +5356,7 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
       mNextAngle = nextAngle;
   }
 
-  if ( !hasWidthExpression && !hasOpacityExpression && !hasFileExpression )
+  if ( !hasWidthExpression && !hasHeightExpression && !hasOpacityExpression && !hasFileExpression )
   {
     return; //nothing further to do
   }
@@ -5341,6 +5366,12 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
   {
     context.setOriginalValueVariable( mWidth );
     width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), width );
+  }
+  double height = mHeight;
+  if ( hasHeightExpression )
+  {
+    context.setOriginalValueVariable( mHeight );
+    height = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyHeight, context.renderContext().expressionContext(), height );
   }
   double opacity = mOpacity;
   if ( hasOpacityExpression )
@@ -5354,7 +5385,7 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
     context.setOriginalValueVariable( mImageFilePath );
     file = context.renderContext().pathResolver().readPath( mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), file ) );
   }
-  applyPattern( mBrush, file, width, opacity, context );
+  applyPattern( mBrush, file, width, height, opacity, context );
 }
 
 bool QgsRasterFillSymbolLayer::applyBrushTransformFromContext( QgsSymbolRenderContext * ) const
@@ -5362,34 +5393,82 @@ bool QgsRasterFillSymbolLayer::applyBrushTransformFromContext( QgsSymbolRenderCo
   return false;
 }
 
-void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &imageFilePath, const double width, const double alpha, const QgsSymbolRenderContext &context )
+void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &imageFilePath, const double width, const double height, const double alpha, const QgsSymbolRenderContext &context )
 {
-  QSize size;
+  double imageWidth = 0;
+  double imageHeight = 0;
+
+  // defer retrieval of original size till we actually NEED it
+  QSize originalSize;
+
   if ( width > 0 )
   {
     if ( mWidthUnit != Qgis::RenderUnit::Percentage )
     {
-      size.setWidth( context.renderContext().convertToPainterUnits( width, mWidthUnit, mWidthMapUnitScale ) );
+      imageWidth = context.renderContext().convertToPainterUnits( width, mWidthUnit, mWidthMapUnitScale );
     }
     else
     {
       // RenderPercentage Unit Type takes original image size
-      size = QgsApplication::imageCache()->originalSize( imageFilePath );
-      if ( size.isEmpty() )
+      originalSize = QgsApplication::imageCache()->originalSize( imageFilePath );
+      if ( originalSize.isEmpty() )
         return;
 
-      size.setWidth( ( width * size.width() ) / 100.0 );
+      imageWidth = ( width * originalSize.width() ) / 100.0;
 
       // don't render symbols with size below one or above 10,000 pixels
-      if ( static_cast< int >( size.width() ) < 1 || 10000.0 < size.width() )
+      if ( static_cast< int >( imageWidth ) < 1 || 10000.0 < imageWidth )
         return;
     }
+  }
+  if ( height > 0 )
+  {
+    if ( mHeightUnit != Qgis::RenderUnit::Percentage )
+    {
+      imageHeight = context.renderContext().convertToPainterUnits( height, mHeightUnit, mHeightMapUnitScale );
+    }
+    else
+    {
+      // RenderPercentage Unit Type takes original image size
+      if ( !originalSize.isValid() )
+        originalSize = QgsApplication::imageCache()->originalSize( imageFilePath );
 
-    size.setHeight( 0 );
+      if ( originalSize.isEmpty() )
+        return;
+
+      imageHeight = ( height * originalSize.height() ) / 100.0;
+
+      // don't render symbols with size below one or above 10,000 pixels
+      if ( static_cast< int >( imageHeight ) < 1 || 10000.0 < imageHeight )
+        return;
+    }
+  }
+
+  if ( width == 0 && imageHeight > 0 )
+  {
+    if ( !originalSize.isValid() )
+      originalSize = QgsApplication::imageCache()->originalSize( imageFilePath );
+
+    imageWidth = imageHeight * originalSize.width() / originalSize.height();
+  }
+  else if ( height == 0 && imageWidth > 0 )
+  {
+    if ( !originalSize.isValid() )
+      originalSize = QgsApplication::imageCache()->originalSize( imageFilePath );
+
+    imageHeight = imageWidth * originalSize.height() / originalSize.width();
+  }
+  if ( imageWidth == 0 || imageHeight == 0 )
+  {
+    if ( !originalSize.isValid() )
+      originalSize = QgsApplication::imageCache()->originalSize( imageFilePath );
+
+    imageWidth = originalSize.width();
+    imageHeight = originalSize.height();
   }
 
   bool cached;
-  QImage img = QgsApplication::imageCache()->pathAsImage( imageFilePath, size, true, alpha, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+  QImage img = QgsApplication::imageCache()->pathAsImage( imageFilePath, QSize( imageWidth, imageHeight ), false, alpha, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
   if ( img.isNull() )
     return;
 

@@ -4503,11 +4503,53 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *
 
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterFillSymbolLayerWidget::mOffsetUnitWidget_changed );
   connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::mRotationSpinBox_valueChanged );
-  connect( mWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterFillSymbolLayerWidget::mWidthUnitWidget_changed );
-  connect( mWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::mWidthSpinBox_valueChanged );
+
+  connect( mWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( !mLayer )
+    {
+      return;
+    }
+    mLayer->setWidthUnit( mWidthUnitWidget->unit() );
+    mLayer->setWidthMapUnitScale( mWidthUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+         );
+  connect( mWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]( double d )
+  {
+    if ( !mLayer )
+    {
+      return;
+    }
+    mLayer->setWidth( d );
+    emit changed();
+  } );
+
+  connect( mHeightUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( !mLayer )
+    {
+      return;
+    }
+    mLayer->setHeightUnit( mHeightUnitWidget->unit() );
+    mLayer->setHeightMapUnitScale( mHeightUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+         );
+  connect( mHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]( double d )
+  {
+    if ( !mLayer )
+    {
+      return;
+    }
+    mLayer->setHeight( d );
+    emit changed();
+  } );
 
   mWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits
                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
+  mHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits
+                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
                                << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
@@ -4570,12 +4612,19 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mWidthUnitWidget->setMapUnitScale( mLayer->widthMapUnitScale() );
   mWidthUnitWidget->blockSignals( false );
 
+  whileBlocking( mHeightSpinBox )->setValue( mLayer->height() );
+  mHeightUnitWidget->blockSignals( true );
+  mHeightUnitWidget->setUnit( mLayer->heightUnit() );
+  mHeightUnitWidget->setMapUnitScale( mLayer->heightMapUnitScale() );
+  mHeightUnitWidget->blockSignals( false );
+
   updatePreviewImage();
 
   registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyFile );
   registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
   registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
+  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::PropertyHeight );
   registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
 }
 
@@ -4644,27 +4693,6 @@ void QgsRasterFillSymbolLayerWidget::mRotationSpinBox_valueChanged( double d )
     mLayer->setAngle( d );
     emit changed();
   }
-}
-
-void QgsRasterFillSymbolLayerWidget::mWidthUnitWidget_changed()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-  mLayer->setWidthUnit( mWidthUnitWidget->unit() );
-  mLayer->setWidthMapUnitScale( mWidthUnitWidget->getMapUnitScale() );
-  emit changed();
-}
-
-void QgsRasterFillSymbolLayerWidget::mWidthSpinBox_valueChanged( double d )
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-  mLayer->setWidth( d );
-  emit changed();
 }
 
 void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
