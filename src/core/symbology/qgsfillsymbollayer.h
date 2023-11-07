@@ -1031,8 +1031,8 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see width()
      * \see height()
      * \see setHeight()
-     * \see setWidthUnit()
-     * \see setWidthMapUnitScale()
+     * \see setSizeUnit()
+     * \see setSizeMapUnitScale()
      */
     void setWidth( double width ) { mWidth = width; }
 
@@ -1043,8 +1043,8 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      *
      * \see height()
      * \see setWidth()
-     * \see widthUnit()
-     * \see widthMapUnitScale()
+     * \see sizeUnit()
+     * \see sizeMapUnitScale()
      */
     double width() const { return mWidth; }
 
@@ -1056,8 +1056,6 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setWidth()
      * \see height()
      * \see width()
-     * \see setHeightUnit()
-     * \see setHeightMapUnitScale()
      *
      * \since QGIS 3.36
      */
@@ -1070,8 +1068,6 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      *
      * \see width()
      * \see setHeight()
-     * \see heightUnit()
-     * \see heightMapUnitScale()
      *
      * \since QGIS 3.36
      */
@@ -1080,88 +1076,93 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     /**
      * Sets the \a unit for the image's width.
      *
-     * \see setHeightUnit()
      * \see widthUnit()
      * \see setWidth()
      * \see setWidthMapUnitScale()
+     *
+     * \deprecated use setSizeUnit() instead.
      */
-    void setWidthUnit( Qgis::RenderUnit unit ) { mWidthUnit = unit; }
+    Q_DECL_DEPRECATED void setWidthUnit( Qgis::RenderUnit unit ) SIP_DEPRECATED { mSizeUnit = unit; }
+
+    /**
+     * Sets the \a unit for the image's width and height.
+     *
+     * \see widthUnit()
+     * \see setWidth()
+     * \see setWidthMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    void setSizeUnit( Qgis::RenderUnit unit ) { mSizeUnit = unit; }
 
     /**
      * Returns the units for the image's width.
      *
-     * \see heightUnit()
      * \see setWidthUnit()
      * \see width()
      * \see widthMapUnitScale()
+     *
+     * \deprecated use sizeUnit() instead.
      */
-    Qgis::RenderUnit widthUnit() const { return mWidthUnit; }
+    Q_DECL_DEPRECATED Qgis::RenderUnit widthUnit() const SIP_DEPRECATED { return mSizeUnit; }
 
     /**
-     * Sets the \a unit for the image's height.
+     * Returns the units for the image's width and height.
      *
-     * \see setWidthUnit()
-     * \see heightUnit()
-     * \see setHeight()
-     * \see setHeightMapUnitScale()
+     * \see setSizeUnit()
+     * \see width()
+     * \see height()
+     * \see sizeMapUnitScale()
      *
      * \since QGIS 3.36
      */
-    void setHeightUnit( Qgis::RenderUnit unit ) { mHeightUnit = unit; }
-
-    /**
-     * Returns the units for the image's height.
-     *
-     * \see widthUnit()
-     * \see setHeightUnit()
-     * \see height()
-     * \see heightMapUnitScale()
-     */
-    Qgis::RenderUnit heightUnit() const { return mHeightUnit; }
+    Qgis::RenderUnit sizeUnit() const { return mSizeUnit; }
 
     /**
      * Sets the map unit \a scale for the image's width.
      *
-     * \see setHeightMapUnitScale()
      * \see widthMapUnitScale()
      * \see setWidth()
      * \see setWidthUnit()
+     *
+     * \deprecated use setSizeMapUnitScale() instead.
      */
-    void setWidthMapUnitScale( const QgsMapUnitScale &scale ) { mWidthMapUnitScale = scale; }
+    Q_DECL_DEPRECATED void setWidthMapUnitScale( const QgsMapUnitScale &scale ) SIP_DEPRECATED { mSizeMapUnitScale = scale; }
+
+    /**
+     * Sets the map unit \a scale for the image's width and height.
+     *
+     * \see sizeMapUnitScale()
+     * \see setWidth()
+     * \see setHeight()
+     * \see setSizeUnit()
+     *
+     * \since QGIS 3.36
+     */
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale ) { mSizeMapUnitScale = scale; }
 
     /**
      * Returns the map unit scale for the image's width.
      *
-     * \see heightMapUnitScale()
      * \see setWidthMapUnitScale()
      * \see width()
      * \see widthUnit()
+     *
+     * \deprecated use sizeMapUnitScale() instead.
      */
-    const QgsMapUnitScale &widthMapUnitScale() const { return mWidthMapUnitScale; }
+    Q_DECL_DEPRECATED const QgsMapUnitScale &widthMapUnitScale() const SIP_DEPRECATED { return mSizeMapUnitScale; }
 
     /**
-     * Sets the map unit \a scale for the image's height.
+     * Returns the map unit scale for the image's width and height.
      *
-     * \see setWidthMapUnitScale()
-     * \see heightMapUnitScale()
-     * \see setHeight()
-     * \see setHeightUnit()
-     *
-     * \since QGIS 3.36
-     */
-    void setHeightMapUnitScale( const QgsMapUnitScale &scale ) { mHeightMapUnitScale = scale; }
-
-    /**
-     * Returns the map unit scale for the image's height.
-     *
-     * \see widthMapUnitScale()
-     * \see setHeightMapUnitScale()
+     * \see setSizeMapUnitScale()
+     * \see width()
      * \see height()
-     * \see heightUnit()
+     * \see sizeUnit()
      *
      * \since QGIS 3.36
      */
-    const QgsMapUnitScale &heightMapUnitScale() const { return mHeightMapUnitScale; }
+    const QgsMapUnitScale &sizeMapUnitScale() const { return mSizeMapUnitScale; }
 
   protected:
 
@@ -1179,12 +1180,10 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mOffsetMapUnitScale;
 
     double mWidth = 0.0;
-    Qgis::RenderUnit mWidthUnit = Qgis::RenderUnit::Pixels;
-    QgsMapUnitScale mWidthMapUnitScale;
+    Qgis::RenderUnit mSizeUnit = Qgis::RenderUnit::Pixels;
+    QgsMapUnitScale mSizeMapUnitScale;
 
     double mHeight = 0.0;
-    Qgis::RenderUnit mHeightUnit = Qgis::RenderUnit::Pixels;
-    QgsMapUnitScale mHeightMapUnitScale;
 
     //! Applies the image pattern to the brush
     void applyPattern( QBrush &brush, const QString &imageFilePath, double width, double height, double opacity,

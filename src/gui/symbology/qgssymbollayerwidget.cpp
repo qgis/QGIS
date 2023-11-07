@@ -4504,14 +4504,14 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterFillSymbolLayerWidget::mOffsetUnitWidget_changed );
   connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::mRotationSpinBox_valueChanged );
 
-  connect( mWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
   {
     if ( !mLayer )
     {
       return;
     }
-    mLayer->setWidthUnit( mWidthUnitWidget->unit() );
-    mLayer->setWidthMapUnitScale( mWidthUnitWidget->getMapUnitScale() );
+    mLayer->setSizeUnit( mSizeUnitWidget->unit() );
+    mLayer->setSizeMapUnitScale( mSizeUnitWidget->getMapUnitScale() );
     emit changed();
   }
          );
@@ -4525,17 +4525,6 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *
     emit changed();
   } );
 
-  connect( mHeightUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
-  {
-    if ( !mLayer )
-    {
-      return;
-    }
-    mLayer->setHeightUnit( mHeightUnitWidget->unit() );
-    mLayer->setHeightMapUnitScale( mHeightUnitWidget->getMapUnitScale() );
-    emit changed();
-  }
-         );
   connect( mHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]( double d )
   {
     if ( !mLayer )
@@ -4546,10 +4535,8 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *
     emit changed();
   } );
 
-  mWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits
-                              << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
-  mHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits
-                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
+  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits
+                             << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
                                << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
@@ -4607,16 +4594,12 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mOffsetUnitWidget->blockSignals( false );
 
   whileBlocking( mWidthSpinBox )->setValue( mLayer->width() );
-  mWidthUnitWidget->blockSignals( true );
-  mWidthUnitWidget->setUnit( mLayer->widthUnit() );
-  mWidthUnitWidget->setMapUnitScale( mLayer->widthMapUnitScale() );
-  mWidthUnitWidget->blockSignals( false );
+  mSizeUnitWidget->blockSignals( true );
+  mSizeUnitWidget->setUnit( mLayer->sizeUnit() );
+  mSizeUnitWidget->setMapUnitScale( mLayer->sizeMapUnitScale() );
+  mSizeUnitWidget->blockSignals( false );
 
   whileBlocking( mHeightSpinBox )->setValue( mLayer->height() );
-  mHeightUnitWidget->blockSignals( true );
-  mHeightUnitWidget->setUnit( mLayer->heightUnit() );
-  mHeightUnitWidget->setMapUnitScale( mLayer->heightMapUnitScale() );
-  mHeightUnitWidget->blockSignals( false );
 
   updatePreviewImage();
 
