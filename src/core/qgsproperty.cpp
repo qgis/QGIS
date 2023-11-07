@@ -16,12 +16,9 @@
 #include "qgsproperty.h"
 #include "qgsproperty_p.h"
 
-#include "qgslogger.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
-#include "qgscolorramp.h"
-#include "qgsexpressionnodeimpl.h"
 
 #include <QRegularExpression>
 
@@ -272,9 +269,9 @@ bool QgsProperty::operator==( const QgsProperty &other ) const
 {
   return d->active == other.d->active
          && d->type == other.d->type
-         && ( d->type != StaticProperty || d->staticValue == other.d->staticValue )
-         && ( d->type != FieldBasedProperty || d->fieldName == other.d->fieldName )
-         && ( d->type != ExpressionBasedProperty || d->expressionString == other.d->expressionString )
+         && ( d->type != Qgis::PropertyType::Static || d->staticValue == other.d->staticValue )
+         && ( d->type != Qgis::PropertyType::Field || d->fieldName == other.d->fieldName )
+         && ( d->type != Qgis::PropertyType::Expression || d->expressionString == other.d->expressionString )
          && ( ( !d->transformer && !other.d->transformer ) || ( d->transformer && other.d->transformer && d->transformer->toExpression( QString() ) == other.d->transformer->toExpression( QString() ) ) );
 }
 
@@ -283,14 +280,14 @@ bool QgsProperty::operator!=( const QgsProperty &other ) const
   return ( !( ( *this ) == other ) );
 }
 
-QgsProperty::Type QgsProperty::propertyType() const
+Qgis::PropertyType QgsProperty::propertyType() const
 {
-  return static_cast< Type >( d->type );
+  return d->type;
 }
 
 bool QgsProperty::isActive() const
 {
-  return d->type != InvalidProperty && d->active;
+  return d->type != Qgis::PropertyType::Invalid && d->active;
 }
 
 bool QgsProperty::isStaticValueInContext( const QgsExpressionContext &context, QVariant &staticValue ) const
@@ -298,17 +295,17 @@ bool QgsProperty::isStaticValueInContext( const QgsExpressionContext &context, Q
   staticValue = QVariant();
   switch ( d->type )
   {
-    case InvalidProperty:
+    case Qgis::PropertyType::Invalid:
       return true;
 
-    case StaticProperty:
+    case Qgis::PropertyType::Static:
       staticValue = d->staticValue;
       return true;
 
-    case FieldBasedProperty:
+    case Qgis::PropertyType::Field:
       return false;
 
-    case ExpressionBasedProperty:
+    case Qgis::PropertyType::Expression:
     {
       QgsExpression exp = d->expression;
       if ( exp.prepare( &context ) && exp.rootNode() )
@@ -334,13 +331,13 @@ void QgsProperty::setActive( bool active )
 void QgsProperty::setStaticValue( const QVariant &value )
 {
   d.detach();
-  d->type = StaticProperty;
+  d->type = Qgis::PropertyType::Static;
   d->staticValue = value;
 }
 
 QVariant QgsProperty::staticValue() const
 {
-  if ( d->type != StaticProperty )
+  if ( d->type != Qgis::PropertyType::Static )
     return QVariant();
 
   return d->staticValue;
@@ -349,14 +346,14 @@ QVariant QgsProperty::staticValue() const
 void QgsProperty::setField( const QString &field )
 {
   d.detach();
-  d->type = FieldBasedProperty;
+  d->type = Qgis::PropertyType::Field;
   d->fieldName = field;
   d->cachedFieldIdx = -1;
 }
 
 QString QgsProperty::field() const
 {
-  if ( d->type != FieldBasedProperty )
+  if ( d->type != Qgis::PropertyType::Field )
     return QString();
 
   return d->fieldName;
@@ -364,7 +361,7 @@ QString QgsProperty::field() const
 
 QgsProperty::operator bool() const
 {
-  return d->type != InvalidProperty;
+  return d->type != Qgis::PropertyType::Invalid;
 }
 
 void QgsProperty::setExpressionString( const QString &expression )
@@ -378,17 +375,17 @@ void QgsProperty::setExpressionString( const QString &expression )
   if ( d->expressionString.isEmpty() )
   {
     d->active = false;
-    d->type = InvalidProperty;
+    d->type = Qgis::PropertyType::Invalid;
   }
   else
   {
-    d->type = ExpressionBasedProperty;
+    d->type = Qgis::PropertyType::Expression;
   }
 }
 
 QString QgsProperty::expressionString() const
 {
-  if ( d->type != ExpressionBasedProperty )
+  if ( d->type != Qgis::PropertyType::Expression )
     return QString();
 
   return d->expressionString;
@@ -400,19 +397,19 @@ QString QgsProperty::asExpression() const
   QString exp;
   switch ( d->type )
   {
-    case StaticProperty:
+    case Qgis::PropertyType::Static:
       exp = QgsExpression::quotedValue( d->staticValue );
       break;
 
-    case FieldBasedProperty:
+    case Qgis::PropertyType::Field:
       exp = QgsExpression::quotedColumnRef( d->fieldName );
       break;
 
-    case ExpressionBasedProperty:
+    case Qgis::PropertyType::Expression:
       exp = d->expressionString;
       break;
 
-    case InvalidProperty:
+    case Qgis::PropertyType::Invalid:
       exp = QString();
       break;
   }
@@ -426,10 +423,10 @@ bool QgsProperty::prepare( const QgsExpressionContext &context ) const
 
   switch ( d->type )
   {
-    case StaticProperty:
+    case Qgis::PropertyType::Static:
       return true;
 
-    case FieldBasedProperty:
+    case Qgis::PropertyType::Field:
     {
       d.detach();
       // cache field index to avoid subsequent lookups
@@ -438,7 +435,7 @@ bool QgsProperty::prepare( const QgsExpressionContext &context ) const
       return true;
     }
 
-    case ExpressionBasedProperty:
+    case Qgis::PropertyType::Expression:
     {
       d.detach();
       if ( !d->expression.prepare( &context ) )
@@ -455,7 +452,7 @@ bool QgsProperty::prepare( const QgsExpressionContext &context ) const
       return true;
     }
 
-    case InvalidProperty:
+    case Qgis::PropertyType::Invalid:
       return true;
 
   }
@@ -470,11 +467,11 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
 
   switch ( d->type )
   {
-    case StaticProperty:
-    case InvalidProperty:
+    case Qgis::PropertyType::Static:
+    case Qgis::PropertyType::Invalid:
       return QSet<QString>();
 
-    case FieldBasedProperty:
+    case Qgis::PropertyType::Field:
     {
       QSet< QString > fields;
       if ( !d->fieldName.isEmpty() )
@@ -482,7 +479,7 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
       return fields;
     }
 
-    case ExpressionBasedProperty:
+    case Qgis::PropertyType::Expression:
     {
       if ( ignoreContext )
       {
@@ -509,7 +506,7 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
 bool QgsProperty::isProjectColor() const
 {
   const thread_local QRegularExpression rx( QStringLiteral( "^project_color\\('.*'\\)$" ) );
-  return d->type == QgsProperty::ExpressionBasedProperty && !d->expressionString.isEmpty()
+  return d->type == Qgis::PropertyType::Expression && !d->expressionString.isEmpty()
          && rx.match( d->expressionString ).hasMatch();
 }
 
@@ -523,14 +520,14 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const 
 
   switch ( d->type )
   {
-    case StaticProperty:
+    case Qgis::PropertyType::Static:
     {
       if ( ok )
         *ok = true;
       return d->staticValue;
     }
 
-    case FieldBasedProperty:
+    case Qgis::PropertyType::Field:
     {
       const QgsFeature f = context.feature();
       if ( !f.isValid() )
@@ -552,7 +549,7 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const 
       return f.attribute( d->cachedFieldIdx );
     }
 
-    case ExpressionBasedProperty:
+    case Qgis::PropertyType::Expression:
     {
       if ( d->expressionIsInvalid )
         return defaultValue;
@@ -573,7 +570,7 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const 
       }
     }
 
-    case InvalidProperty:
+    case Qgis::PropertyType::Invalid:
       return defaultValue;
 
   }
@@ -767,24 +764,24 @@ QVariant QgsProperty::toVariant() const
   QVariantMap propertyMap;
 
   propertyMap.insert( QStringLiteral( "active" ), d->active );
-  propertyMap.insert( QStringLiteral( "type" ), d->type );
+  propertyMap.insert( QStringLiteral( "type" ), static_cast< int >( d->type ) );
 
   switch ( d->type )
   {
-    case StaticProperty:
+    case Qgis::PropertyType::Static:
       // propertyMap.insert( QStringLiteral( "valType" ), d->staticValue.typeName() );
       propertyMap.insert( QStringLiteral( "val" ), d->staticValue.toString() );
       break;
 
-    case FieldBasedProperty:
+    case Qgis::PropertyType::Field:
       propertyMap.insert( QStringLiteral( "field" ), d->fieldName );
       break;
 
-    case ExpressionBasedProperty:
+    case Qgis::PropertyType::Expression:
       propertyMap.insert( QStringLiteral( "expression" ), d->expressionString );
       break;
 
-    case InvalidProperty:
+    case Qgis::PropertyType::Invalid:
       break;
   }
 
@@ -806,22 +803,22 @@ bool QgsProperty::loadVariant( const QVariant &property )
 
   d.detach();
   d->active = propertyMap.value( QStringLiteral( "active" ) ).toBool();
-  d->type = static_cast< Type >( propertyMap.value( QStringLiteral( "type" ), InvalidProperty ).toInt() );
+  d->type = static_cast< Qgis::PropertyType >( propertyMap.value( QStringLiteral( "type" ), static_cast< int >( Qgis::PropertyType::Invalid ) ).toInt() );
 
   switch ( d->type )
   {
-    case StaticProperty:
+    case Qgis::PropertyType::Static:
       d->staticValue = propertyMap.value( QStringLiteral( "val" ) );
       // d->staticValue.convert( QVariant::nameToType( propertyElem.attribute( "valType", "QString" ).toLocal8Bit().constData() ) );
       break;
 
-    case FieldBasedProperty:
+    case Qgis::PropertyType::Field:
       d->fieldName = propertyMap.value( QStringLiteral( "field" ) ).toString();
       if ( d->fieldName.isEmpty() )
         d->active = false;
       break;
 
-    case ExpressionBasedProperty:
+    case Qgis::PropertyType::Expression:
       d->expressionString = propertyMap.value( QStringLiteral( "expression" ) ).toString();
       if ( d->expressionString.isEmpty() )
         d->active = false;
@@ -832,7 +829,7 @@ bool QgsProperty::loadVariant( const QVariant &property )
       d->expressionReferencedCols.clear();
       break;
 
-    case InvalidProperty:
+    case Qgis::PropertyType::Invalid:
       break;
 
   }
@@ -875,7 +872,7 @@ const QgsPropertyTransformer *QgsProperty::transformer() const
 
 bool QgsProperty::convertToTransformer()
 {
-  if ( d->type != ExpressionBasedProperty )
+  if ( d->type != Qgis::PropertyType::Expression )
     return false;
 
   if ( d->transformer )

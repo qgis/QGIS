@@ -117,7 +117,7 @@ bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QS
 {
   const QVariant val = parameters.value( name );
   if ( val.userType() == QMetaType::type( "QgsProperty" ) )
-    return val.value< QgsProperty >().propertyType() != QgsProperty::StaticProperty;
+    return val.value< QgsProperty >().propertyType() != Qgis::PropertyType::Static;
   else
     return false;
 }
@@ -880,7 +880,7 @@ QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParam
     val = fromVar.sink;
   }
 
-  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == Qgis::PropertyType::Static )
   {
     val = val.value< QgsProperty >().staticValue();
   }
@@ -1124,7 +1124,7 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
     val = fromVar.sink;
   }
 
-  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == Qgis::PropertyType::Static )
   {
     val = val.value< QgsProperty >().staticValue();
   }
@@ -1239,7 +1239,7 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
     val = fromVar.sink;
   }
 
-  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == Qgis::PropertyType::Static )
   {
     val = val.value< QgsProperty >().staticValue();
   }
@@ -1348,7 +1348,7 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( cons
     val = fromVar.sink;
   }
 
-  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == Qgis::PropertyType::Static )
   {
     val = val.value< QgsProperty >().staticValue();
   }
@@ -1382,7 +1382,7 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( cons
     val = fromVar.sink;
   }
 
-  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == Qgis::PropertyType::Static )
   {
     val = val.value< QgsProperty >().staticValue();
   }
@@ -2567,13 +2567,13 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
       const QgsProperty prop = value.value< QgsProperty >();
       switch ( prop.propertyType() )
       {
-        case QgsProperty::InvalidProperty:
+        case Qgis::PropertyType::Invalid:
           return QVariant();
-        case QgsProperty::StaticProperty:
+        case Qgis::PropertyType::Static:
           return valueAsJsonObject( prop.staticValue(), context );
-        case QgsProperty::FieldBasedProperty:
+        case Qgis::PropertyType::Field:
           return QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "field" ), prop.field() }} );
-        case QgsProperty::ExpressionBasedProperty:
+        case Qgis::PropertyType::Expression:
           return QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "expression" ), prop.expressionString() }} );
       }
     }
@@ -2751,13 +2751,13 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
     const QgsProperty prop = value.value< QgsProperty >();
     switch ( prop.propertyType() )
     {
-      case QgsProperty::InvalidProperty:
+      case Qgis::PropertyType::Invalid:
         return QString();
-      case QgsProperty::StaticProperty:
+      case Qgis::PropertyType::Static:
         return valueAsString( prop.staticValue(), context, ok );
-      case QgsProperty::FieldBasedProperty:
+      case Qgis::PropertyType::Field:
         return QStringLiteral( "field:%1" ).arg( prop.field() );
-      case QgsProperty::ExpressionBasedProperty:
+      case Qgis::PropertyType::Expression:
         return QStringLiteral( "expression:%1" ).arg( prop.expressionString() );
     }
   }
@@ -5557,7 +5557,7 @@ bool QgsProcessingParameterVectorLayer::checkValueIsAcceptable( const QVariant &
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -5709,7 +5709,7 @@ bool QgsProcessingParameterMeshLayer::checkValueIsAcceptable( const QVariant &v,
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -6131,7 +6131,7 @@ bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -6197,7 +6197,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     if ( !flags.empty() )
       flagString = flags.join( QLatin1String( " | " ) );
 
-    if ( fromVar.source.propertyType() == QgsProperty::StaticProperty )
+    if ( fromVar.source.propertyType() == Qgis::PropertyType::Static )
     {
       QString layerString = fromVar.source.staticValue().toString();
       // prefer to use layer source instead of id if possible (since it's persistent)
@@ -6415,7 +6415,7 @@ bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -6445,7 +6445,7 @@ QString QgsProcessingParameterFeatureSink::valueAsPythonString( const QVariant &
   if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
     const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
-    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    if ( fromVar.sink.propertyType() == Qgis::PropertyType::Static )
     {
       return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
     }
@@ -6704,7 +6704,7 @@ bool QgsProcessingParameterRasterDestination::checkValueIsAcceptable( const QVar
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -6734,7 +6734,7 @@ QString QgsProcessingParameterRasterDestination::valueAsPythonString( const QVar
   if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
     const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
-    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    if ( fromVar.sink.propertyType() == Qgis::PropertyType::Static )
     {
       return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
     }
@@ -6833,7 +6833,7 @@ bool QgsProcessingParameterFileDestination::checkValueIsAcceptable( const QVaria
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -6865,7 +6865,7 @@ QString QgsProcessingParameterFileDestination::valueAsPythonString( const QVaria
   if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
     const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
-    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    if ( fromVar.sink.propertyType() == Qgis::PropertyType::Static )
     {
       return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
     }
@@ -6985,7 +6985,7 @@ bool QgsProcessingParameterFolderDestination::checkValueIsAcceptable( const QVar
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -7144,7 +7144,7 @@ bool QgsProcessingParameterVectorDestination::checkValueIsAcceptable( const QVar
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -7174,7 +7174,7 @@ QString QgsProcessingParameterVectorDestination::valueAsPythonString( const QVar
   if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
     const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
-    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    if ( fromVar.sink.propertyType() == Qgis::PropertyType::Static )
     {
       return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
     }
@@ -8980,7 +8980,7 @@ bool QgsProcessingParameterPointCloudLayer::checkValueIsAcceptable( const QVaria
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -9073,7 +9073,7 @@ bool QgsProcessingParameterAnnotationLayer::checkValueIsAcceptable( const QVaria
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -9162,7 +9162,7 @@ bool QgsProcessingParameterPointCloudDestination::checkValueIsAcceptable( const 
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -9192,7 +9192,7 @@ QString QgsProcessingParameterPointCloudDestination::valueAsPythonString( const 
   if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
     const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
-    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    if ( fromVar.sink.propertyType() == Qgis::PropertyType::Static )
     {
       return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
     }
@@ -9520,7 +9520,7 @@ bool QgsProcessingParameterVectorTileDestination::checkValueIsAcceptable( const 
   if ( var.userType() == QMetaType::type( "QgsProperty" ) )
   {
     const QgsProperty p = var.value< QgsProperty >();
-    if ( p.propertyType() == QgsProperty::StaticProperty )
+    if ( p.propertyType() == Qgis::PropertyType::Static )
     {
       var = p.staticValue();
     }
@@ -9550,7 +9550,7 @@ QString QgsProcessingParameterVectorTileDestination::valueAsPythonString( const 
   if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
     const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
-    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    if ( fromVar.sink.propertyType() == Qgis::PropertyType::Static )
     {
       return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
     }

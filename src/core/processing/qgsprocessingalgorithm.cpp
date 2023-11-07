@@ -912,7 +912,7 @@ QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameter
     if ( var.userType() == QMetaType::type( "QgsProperty" ) )
     {
       QgsProperty p = var.value< QgsProperty >();
-      if ( p.propertyType() == QgsProperty::StaticProperty )
+      if ( p.propertyType() == Qgis::PropertyType::Static )
       {
         var = p.staticValue();
       }
@@ -934,7 +934,7 @@ QString QgsProcessingAlgorithm::invalidRasterError( const QVariantMap &parameter
     if ( var.userType() == QMetaType::type( "QgsProperty" ) )
     {
       QgsProperty p = var.value< QgsProperty >();
-      if ( p.propertyType() == QgsProperty::StaticProperty )
+      if ( p.propertyType() == Qgis::PropertyType::Static )
       {
         var = p.staticValue();
       }
@@ -961,7 +961,7 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
     if ( var.userType() == QMetaType::type( "QgsProperty" ) )
     {
       QgsProperty p = var.value< QgsProperty >();
-      if ( p.propertyType() == QgsProperty::StaticProperty )
+      if ( p.propertyType() == Qgis::PropertyType::Static )
       {
         var = p.staticValue();
       }
@@ -983,7 +983,7 @@ QString QgsProcessingAlgorithm::invalidPointCloudError( const QVariantMap &param
     if ( var.userType() == QMetaType::type( "QgsProperty" ) )
     {
       QgsProperty p = var.value< QgsProperty >();
-      if ( p.propertyType() == QgsProperty::StaticProperty )
+      if ( p.propertyType() == Qgis::PropertyType::Static )
       {
         var = p.staticValue();
       }

@@ -430,6 +430,22 @@ class CORE_EXPORT Qgis
     Q_FLAG( SettingsTreeNodeOptions )
 
     /**
+     * Property types
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProperty::Type
+     *
+     * \since QGIS 3.36
+     */
+    enum class PropertyType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProperty, Type ): int
+      {
+      Invalid SIP_MONKEYPATCH_COMPAT_NAME( InvalidProperty ), //!< Invalid (not set) property
+      Static SIP_MONKEYPATCH_COMPAT_NAME( StaticProperty ), //!< Static property
+      Field SIP_MONKEYPATCH_COMPAT_NAME( FieldBasedProperty ), //!< Field based property
+      Expression SIP_MONKEYPATCH_COMPAT_NAME( ExpressionBasedProperty ), //!< Expression based property
+    };
+    Q_ENUM( PropertyType )
+
+    /**
      * \brief SLD export options
      *
      * \since QGIS 3.30

@@ -301,15 +301,15 @@ int QgsLabelPropertyDialog::dataDefinedColumnIndex( QgsPalLayerSettings::Propert
   QString fieldName;
   switch ( property.propertyType() )
   {
-    case QgsProperty::InvalidProperty:
-    case QgsProperty::StaticProperty:
+    case Qgis::PropertyType::Invalid:
+    case Qgis::PropertyType::Static:
       break;
 
-    case QgsProperty::FieldBasedProperty:
+    case Qgis::PropertyType::Field:
       fieldName = property.field();
       break;
 
-    case QgsProperty::ExpressionBasedProperty:
+    case Qgis::PropertyType::Expression:
     {
       // an expression based property may still be a effectively a single field reference in the map canvas context.
       // e.g. if it is a expression like '"some_field"', or 'case when @some_project_var = 'a' then "field_a" else "field_b" end'

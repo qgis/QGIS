@@ -429,7 +429,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     /**
      * Removes all collections from the stack.
      */
-    void clear() override;
+    void clear() FINAL;
 
     /**
      * Appends a collection to the end of the stack, and transfers ownership of the collection to the stack. Properties
