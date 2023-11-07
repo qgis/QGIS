@@ -1881,6 +1881,7 @@ class CORE_EXPORT Qgis
       Disabled SIP_MONKEYPATCH_COMPAT_NAME( NavigationOff ), //!< Temporal navigation is disabled
       Animated, //!< Temporal navigation relies on frames within a datetime range
       FixedRange, //!< Temporal navigation relies on a fixed datetime range
+      Movie, //!< Movie mode -- behaves like a video player, with a fixed frame duration and no temporal range (since QGIS 3.36)
     };
     Q_ENUM( TemporalNavigationMode )
 

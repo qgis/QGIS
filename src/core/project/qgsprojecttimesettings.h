@@ -155,6 +155,28 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      */
     bool isTemporalRangeCumulative() const;
 
+    /**
+     * Returns the total number of frames for the project's movie.
+     *
+     * \note This is only used when the navigation mode is set to Qgis::TemporalNavigationMode::Movie.
+     *
+     * \see setTotalMovieFrames()
+     *
+     * \since QGIS 3.36
+     */
+    long long totalMovieFrames() const;
+
+    /**
+     * Sets the total number of \a frames for the movie.
+     *
+     * \note This is only used when the navigationm mode is set to Qgis::TemporalNavigationMode::Movie.
+     *
+     * \see totalMovieFrames()
+     *
+     * \since QGIS 3.36
+     */
+    void setTotalMovieFrames( long long frames );
+
   signals:
 
     /**
@@ -172,6 +194,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
     double mTimeStep = 1;
     double mFrameRate = 1;
     bool mCumulativeTemporalRange = false;
+    long long mTotalMovieFrames = 100;
 };
 
 

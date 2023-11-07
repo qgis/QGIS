@@ -44,13 +44,21 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   mFixedRangeEndDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTime->maximumDateTime() );
 
   connect( mForwardButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePlayForward );
+  connect( mForwardButton_2, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePlayForward );
   connect( mBackButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePlayBackward );
+  connect( mBackButton_2, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePlayBackward );
   connect( mStopButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePause );
+  connect( mStopButton_2, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePause );
   connect( mNextButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::next );
+  connect( mNextButton_2, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::next );
   connect( mPreviousButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::previous );
+  connect( mPreviousButton_2, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::previous );
   connect( mFastForwardButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::skipToEnd );
+  connect( mFastForwardButton_2, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::skipToEnd );
   connect( mRewindButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::rewindToStart );
-  connect( mLoopingCheckBox, &QCheckBox::toggled, this, [ = ]( bool state ) { mNavigationObject->setLooping( state ); } );
+  connect( mRewindButton_2, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::rewindToStart );
+  connect( mLoopingCheckBox, &QCheckBox::toggled, this, [ = ]( bool state ) { mNavigationObject->setLooping( state ); mLoopingCheckBox_2->setChecked( state ); } );
+  connect( mLoopingCheckBox_2, &QCheckBox::toggled, this, [ = ]( bool state ) { mNavigationObject->setLooping( state );  mLoopingCheckBox->setChecked( state ); } );
 
   setWidgetStateFromNavigationMode( mNavigationObject->navigationMode() );
   connect( mNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsTemporalControllerWidget::setWidgetStateFromNavigationMode );
@@ -67,12 +75,17 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( mNavigationOff, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationOff_clicked );
   connect( mNavigationFixedRange, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationFixedRange_clicked );
   connect( mNavigationAnimated, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationAnimated_clicked );
+  connect( mNavigationMovie, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationMovie_clicked );
 
   connect( mNavigationObject, &QgsTemporalNavigationObject::stateChanged, this, [ = ]( Qgis::AnimationState state )
   {
     mForwardButton->setChecked( state == Qgis::AnimationState::Forward );
     mBackButton->setChecked( state == Qgis::AnimationState::Reverse );
     mStopButton->setChecked( state == Qgis::AnimationState::Idle );
+
+    mForwardButton_2->setChecked( state == Qgis::AnimationState::Forward );
+    mBackButton_2->setChecked( state == Qgis::AnimationState::Reverse );
+    mStopButton_2->setChecked( state == Qgis::AnimationState::Idle );
   } );
 
   connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::startEndDateTime_changed );
@@ -82,10 +95,17 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( mStepSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
   connect( mTimeStepsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
   connect( mSlider, &QSlider::valueChanged, this, &QgsTemporalControllerWidget::timeSlider_valueChanged );
+  connect( mSlider_2, &QSlider::valueChanged, this, &QgsTemporalControllerWidget::timeSlider_valueChanged );
+
+  connect( mTotalFramesSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [ = ]( int frames )
+  {
+    mNavigationObject->setTotalMovieFrames( frames );
+  } );
 
   mStepSpinBox->setClearValue( 1 );
 
   connect( mNavigationObject, &QgsTemporalNavigationObject::updateTemporalRange, this, &QgsTemporalControllerWidget::updateSlider );
+  connect( mNavigationObject, &QgsTemporalNavigationObject::totalMovieFramesChanged, this, &QgsTemporalControllerWidget::totalMovieFramesChanged );
 
   connect( mSettings, &QPushButton::clicked, this, &QgsTemporalControllerWidget::settings_clicked );
 
@@ -117,6 +137,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   mFixedRangeSetRangeButton->setDefaultAction( mRangeSetToAllLayersAction );
 
   connect( mExportAnimationButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::exportAnimation );
+  connect( mExportAnimationButton_2, &QPushButton::clicked, this, &QgsTemporalControllerWidget::exportAnimation );
 
   QgsDateTimeRange range;
 
@@ -167,6 +188,13 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   mStopButton->setToolTip( tr( "Pause" ) );
   mRewindButton->setToolTip( tr( "Rewind to start" ) );
   mFastForwardButton->setToolTip( tr( "Fast forward to end" ) );
+  mForwardButton_2->setToolTip( tr( "Play" ) );
+  mBackButton_2->setToolTip( tr( "Reverse" ) );
+  mNextButton_2->setToolTip( tr( "Go to next frame" ) );
+  mPreviousButton_2->setToolTip( tr( "Go to previous frame" ) );
+  mStopButton_2->setToolTip( tr( "Pause" ) );
+  mRewindButton_2->setToolTip( tr( "Rewind to start" ) );
+  mFastForwardButton_2->setToolTip( tr( "Fast forward to end" ) );
 
   updateFrameDuration();
 
@@ -182,7 +210,7 @@ bool QgsTemporalControllerWidget::applySizeConstraintsToStack() const
 
 void QgsTemporalControllerWidget::keyPressEvent( QKeyEvent *e )
 {
-  if ( mSlider->hasFocus() && e->key() == Qt::Key_Space )
+  if ( ( mSlider->hasFocus() || mSlider_2->hasFocus() ) && e->key() == Qt::Key_Space )
   {
     togglePause();
   }
@@ -230,12 +258,21 @@ void QgsTemporalControllerWidget::togglePlayForward()
     mStopButton->setChecked( false );
     mBackButton->setChecked( false );
     mForwardButton->setChecked( true );
+
+    mStopButton_2->setChecked( false );
+    mBackButton_2->setChecked( false );
+    mForwardButton_2->setChecked( true );
+
     mNavigationObject->playForward();
   }
   else
   {
     mBackButton->setChecked( true );
     mForwardButton->setChecked( false );
+
+    mBackButton_2->setChecked( true );
+    mForwardButton_2->setChecked( false );
+
     mNavigationObject->pause();
   }
 }
@@ -249,12 +286,19 @@ void QgsTemporalControllerWidget::togglePlayBackward()
     mStopButton->setChecked( false );
     mBackButton->setChecked( true );
     mForwardButton->setChecked( false );
+    mStopButton_2->setChecked( false );
+    mBackButton_2->setChecked( true );
+    mForwardButton_2->setChecked( false );
+
     mNavigationObject->playBackward();
   }
   else
   {
     mBackButton->setChecked( true );
     mBackButton->setChecked( false );
+    mBackButton_2->setChecked( true );
+    mBackButton_2->setChecked( false );
+
     mNavigationObject->pause();
   }
 }
@@ -266,12 +310,19 @@ void QgsTemporalControllerWidget::togglePause()
     mStopButton->setChecked( true );
     mBackButton->setChecked( false );
     mForwardButton->setChecked( false );
+
+    mStopButton_2->setChecked( true );
+    mBackButton_2->setChecked( false );
+    mForwardButton_2->setChecked( false );
+
     mNavigationObject->pause();
   }
   else
   {
     mBackButton->setChecked( mPlayingForward ? false : true );
     mForwardButton->setChecked( mPlayingForward ? false : true );
+    mBackButton_2->setChecked( mPlayingForward ? false : true );
+    mForwardButton_2->setChecked( mPlayingForward ? false : true );
     if ( mPlayingForward )
     {
       mNavigationObject->playForward();
@@ -295,6 +346,8 @@ void QgsTemporalControllerWidget::updateTemporalExtent()
   mNavigationObject->setTemporalExtents( temporalExtent );
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
   mSlider->setValue( mNavigationObject->currentFrameNumber() );
+  mSlider_2->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
+  mSlider_2->setValue( mNavigationObject->currentFrameNumber() );
 }
 
 void QgsTemporalControllerWidget::updateFrameDuration()
@@ -316,6 +369,8 @@ void QgsTemporalControllerWidget::updateFrameDuration()
   }
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
   mSlider->setValue( mNavigationObject->currentFrameNumber() );
+  mSlider_2->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
+  mSlider_2->setValue( mNavigationObject->currentFrameNumber() );
 
   if ( unit == Qgis::TemporalUnit::IrregularStep )
   {
@@ -352,6 +407,9 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
     mNavigationObject->setNavigationMode( Qgis::TemporalNavigationMode::Disabled );
     setWidgetStateFromNavigationMode( Qgis::TemporalNavigationMode::Disabled );
   }
+
+  mNavigationObject->setTotalMovieFrames( QgsProject::instance()->timeSettings()->totalMovieFrames() );
+  mTotalFramesSpinBox->setValue( QgsProject::instance()->timeSettings()->totalMovieFrames() );
 
   const QString startString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/StartDateTime" ) );
   const QString endString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/EndDateTime" ) );
@@ -400,11 +458,21 @@ void QgsTemporalControllerWidget::mNavigationAnimated_clicked()
   setWidgetStateFromNavigationMode( Qgis::TemporalNavigationMode::Animated );
 }
 
+void QgsTemporalControllerWidget::mNavigationMovie_clicked()
+{
+  QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/NavigationMode" ),
+                                      static_cast<int>( Qgis::TemporalNavigationMode::Movie ) );
+
+  mNavigationObject->setNavigationMode( Qgis::TemporalNavigationMode::Movie );
+  setWidgetStateFromNavigationMode( Qgis::TemporalNavigationMode::Movie );
+}
+
 void QgsTemporalControllerWidget::setWidgetStateFromNavigationMode( const Qgis::TemporalNavigationMode mode )
 {
   mNavigationOff->setChecked( mode == Qgis::TemporalNavigationMode::Disabled );
   mNavigationFixedRange->setChecked( mode  == Qgis::TemporalNavigationMode::FixedRange );
   mNavigationAnimated->setChecked( mode  == Qgis::TemporalNavigationMode::Animated );
+  mNavigationMovie->setChecked( mode  == Qgis::TemporalNavigationMode::Movie );
 
   switch ( mode )
   {
@@ -416,6 +484,9 @@ void QgsTemporalControllerWidget::setWidgetStateFromNavigationMode( const Qgis::
       break;
     case Qgis::TemporalNavigationMode::Animated:
       mNavigationModeStackedWidget->setCurrentIndex( 2 );
+      break;
+    case Qgis::TemporalNavigationMode::Movie:
+      mNavigationModeStackedWidget->setCurrentIndex( 3 );
       break;
   }
 }
@@ -500,7 +571,15 @@ void QgsTemporalControllerWidget::onProjectCleared()
 void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
 {
   whileBlocking( mSlider )->setValue( mNavigationObject->currentFrameNumber() );
+  whileBlocking( mSlider_2 )->setValue( mNavigationObject->currentFrameNumber() );
   updateRangeLabel( range );
+}
+
+void QgsTemporalControllerWidget::totalMovieFramesChanged( long long frames )
+{
+  QgsProject::instance()->timeSettings()->setTotalMovieFrames( frames );
+  mTotalFramesSpinBox->setValue( frames );
+  mCurrentRangeLabel->setText( tr( "Current frame: %1/%2" ).arg( mNavigationObject->currentFrameNumber() ).arg( frames ) );
 }
 
 void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &range )
@@ -523,6 +602,9 @@ void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &rang
       break;
     case Qgis::TemporalNavigationMode::Disabled:
       mCurrentRangeLabel->setText( tr( "Temporal navigation disabled" ) );
+      break;
+    case Qgis::TemporalNavigationMode::Movie:
+      mCurrentRangeLabel->setText( tr( "Current frame: %1/%2" ).arg( mNavigationObject->currentFrameNumber() ).arg( mNavigationObject->totalMovieFrames() ) );
       break;
   }
 }

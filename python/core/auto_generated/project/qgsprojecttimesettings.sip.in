@@ -151,6 +151,34 @@ Returns the value of cumulative temporal range in animation settings.
 .. seealso:: :py:func:`setIsTemporalRangeCumulative`
 %End
 
+    long long totalMovieFrames() const;
+%Docstring
+Returns the total number of frames for the project's movie.
+
+.. note::
+
+   This is only used when the navigation mode is set to :py:class:`Qgis`.TemporalNavigationMode.Movie.
+
+.. seealso:: :py:func:`setTotalMovieFrames`
+
+
+.. versionadded:: 3.36
+%End
+
+    void setTotalMovieFrames( long long frames );
+%Docstring
+Sets the total number of ``frames`` for the movie.
+
+.. note::
+
+   This is only used when the navigationm mode is set to :py:class:`Qgis`.TemporalNavigationMode.Movie.
+
+.. seealso:: :py:func:`totalMovieFrames`
+
+
+.. versionadded:: 3.36
+%End
+
   signals:
 
     void temporalRangeChanged();

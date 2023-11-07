@@ -1124,6 +1124,7 @@ The development version
       Disabled,
       Animated,
       FixedRange,
+      Movie,
     };
 
     enum class AnimationState

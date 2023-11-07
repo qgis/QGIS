@@ -216,6 +216,30 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
 
     QgsExpressionContextScope *createExpressionContextScope() const override SIP_FACTORY;
 
+    /**
+     * Returns the total number of frames for the movie.
+     *
+     * \note This is only used when the navigationMode() is set to Qgis::TemporalNavigationMode::Movie.
+     *
+     * \see setTotalMovieFrames()
+     * \see totalMovieFramesChanged()
+     *
+     * \since QGIS 3.36
+     */
+    long long totalMovieFrames() const;
+
+    /**
+     * Sets the total number of \a frames for the movie.
+     *
+     * \note This is only used when the navigationMode() is set to Qgis::TemporalNavigationMode::Movie.
+     *
+     * \see totalMovieFrames()
+     * \see totalMovieFramesChanged()
+     *
+     * \since QGIS 3.36
+     */
+    void setTotalMovieFrames( long long frames );
+
   signals:
 
     /**
@@ -238,6 +262,17 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      */
     void temporalFrameDurationChanged( const QgsInterval &interval );
 
+    /**
+     * Emitted whenever the total number of \a frames in the movie is changed.
+     *
+     * \note This is only used when the navigationMode() is set to Qgis::TemporalNavigationMode::Movie.
+     *
+     * \see setTotalMovieFrames()
+     * \see totalMovieFrames()
+     *
+     * \since QGIS 3.36
+     */
+    void totalMovieFramesChanged( long long frames );
 
   public slots:
 
@@ -329,6 +364,9 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     bool mCumulativeTemporalRange = false;
 
     int mBlockUpdateTemporalRangeSignal = 0;
+
+    //! Total frame count, for Movie mode only
+    long long mTotalMovieFrames = 100;
 
     QgsTemporalNavigationObject( const QgsTemporalNavigationObject & ) = delete;
     QgsTemporalNavigationObject &operator= ( const QgsTemporalNavigationObject & ) = delete;

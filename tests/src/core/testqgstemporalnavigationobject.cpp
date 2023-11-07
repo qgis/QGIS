@@ -46,6 +46,8 @@ class TestQgsTemporalNavigationObject : public QObject
     void expressionContext();
     void testIrregularStep();
 
+    void testMovieMode();
+
   private:
     QgsTemporalNavigationObject *navigationObject = nullptr;
 };
@@ -399,6 +401,32 @@ void TestQgsTemporalNavigationObject::testIrregularStep()
   QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 3, 2 ), QTime( 0, 0, 0 ) ) ), 2LL );
   QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 4, 5 ), QTime( 0, 0, 0 ) ) ), 2LL );
   QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 5, 6 ), QTime( 0, 0, 0 ) ) ), 2LL );
+}
+
+void TestQgsTemporalNavigationObject::testMovieMode()
+{
+  QgsTemporalNavigationObject object;
+  object.setNavigationMode( Qgis::TemporalNavigationMode::Movie );
+  object.setTotalMovieFrames( 1000 );
+  QCOMPARE( object.totalMovieFrames(), 1000LL );
+
+  QSignalSpy spy( &object, &QgsTemporalNavigationObject::totalMovieFramesChanged );
+  object.setTotalMovieFrames( 1000 );
+
+  QCOMPARE( spy.count(), 0 );
+  object.setTotalMovieFrames( 500 );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toLongLong(), 500LL );
+
+  QCOMPARE( object.totalFrameCount(), 500LL );
+
+  object.setCurrentFrameNumber( 17 );
+  object.setFramesPerSecond( 30 );
+
+  std::unique_ptr< QgsExpressionContextScope > scope( object.createExpressionContextScope() );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_rate" ) ).toDouble(), 30.0 );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_number" ) ).toInt(), 17 );
+  QCOMPARE( scope->variable( QStringLiteral( "total_frame_count" ) ).toInt(), 500 );
 }
 
 QGSTEST_MAIN( TestQgsTemporalNavigationObject )

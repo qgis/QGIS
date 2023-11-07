@@ -66,6 +66,8 @@ bool QgsProjectTimeSettings::readXml( const QDomElement &element, const QgsReadW
   mFrameRate = element.attribute( QStringLiteral( "frameRate" ), "1" ).toDouble();
   mCumulativeTemporalRange = element.attribute( QStringLiteral( "cumulativeTemporalRange" ), "0" ).toInt();
 
+  mTotalMovieFrames = element.attribute( QStringLiteral( "totalMovieFrames" ), "100" ).toLongLong();
+
   return true;
 }
 
@@ -95,6 +97,7 @@ QDomElement QgsProjectTimeSettings::writeXml( QDomDocument &document, const QgsR
   element.setAttribute( QStringLiteral( "timeStep" ), qgsDoubleToString( mTimeStep ) );
   element.setAttribute( QStringLiteral( "frameRate" ), qgsDoubleToString( mFrameRate ) );
   element.setAttribute( QStringLiteral( "cumulativeTemporalRange" ),  mCumulativeTemporalRange ? 1 : 0 );
+  element.setAttribute( QStringLiteral( "totalMovieFrames" ),  mTotalMovieFrames );
 
   return element;
 }
@@ -133,8 +136,19 @@ void QgsProjectTimeSettings::setIsTemporalRangeCumulative( bool state )
 {
   mCumulativeTemporalRange = state;
 }
+
 bool QgsProjectTimeSettings::isTemporalRangeCumulative() const
 {
   return mCumulativeTemporalRange;
+}
+
+long long QgsProjectTimeSettings::totalMovieFrames() const
+{
+  return mTotalMovieFrames;
+}
+
+void QgsProjectTimeSettings::setTotalMovieFrames( long long frames )
+{
+  mTotalMovieFrames = frames;
 }
 
