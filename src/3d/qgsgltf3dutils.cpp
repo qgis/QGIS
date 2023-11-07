@@ -482,7 +482,16 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
 
 static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors )
 {
-  tinygltf::Scene &scene = model.scenes[model.defaultScene];
+  bool sceneOk = false;
+  const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
+  if ( !sceneOk )
+  {
+    if ( errors )
+      *errors << "No scenes present in the gltf data!";
+    return nullptr;
+  }
+
+  tinygltf::Scene &scene = model.scenes[sceneIndex];
 
   if ( scene.nodes.size() == 0 )
   {
