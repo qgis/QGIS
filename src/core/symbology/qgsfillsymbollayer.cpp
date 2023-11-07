@@ -5121,24 +5121,16 @@ QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QVariantMap &properties 
   }
   if ( properties.contains( QStringLiteral( "width_unit" ) ) )
   {
-    symbolLayer->setWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "width_unit" )].toString() ) );
+    symbolLayer->setSizeUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "width_unit" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "width_map_unit_scale" ) ) )
   {
-    symbolLayer->setWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "width_map_unit_scale" )].toString() ) );
+    symbolLayer->setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "width_map_unit_scale" )].toString() ) );
   }
 
   if ( properties.contains( QStringLiteral( "height" ) ) )
   {
     symbolLayer->setHeight( properties[QStringLiteral( "height" )].toDouble() );
-  }
-  if ( properties.contains( QStringLiteral( "height_unit" ) ) )
-  {
-    symbolLayer->setHeightUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "height_unit" )].toString() ) );
-  }
-  if ( properties.contains( QStringLiteral( "height_map_unit_scale" ) ) )
-  {
-    symbolLayer->setHeightMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "height_map_unit_scale" )].toString() ) );
   }
 
   symbolLayer->restoreOldDataDefinedProperties( properties );
@@ -5261,12 +5253,10 @@ QVariantMap QgsRasterFillSymbolLayer::properties() const
   map[QStringLiteral( "angle" )] = QString::number( mAngle );
 
   map[QStringLiteral( "width" )] = QString::number( mWidth );
-  map[QStringLiteral( "width_unit" )] = QgsUnitTypes::encodeUnit( mWidthUnit );
-  map[QStringLiteral( "width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mWidthMapUnitScale );
-
   map[QStringLiteral( "height" )] = QString::number( mHeight );
-  map[QStringLiteral( "height_unit" )] = QgsUnitTypes::encodeUnit( mHeightUnit );
-  map[QStringLiteral( "height_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mHeightMapUnitScale );
+  map[QStringLiteral( "width_unit" )] = QgsUnitTypes::encodeUnit( mSizeUnit );
+  map[QStringLiteral( "width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );
+
   return map;
 }
 
@@ -5280,11 +5270,9 @@ QgsRasterFillSymbolLayer *QgsRasterFillSymbolLayer::clone() const
   sl->setOffsetMapUnitScale( mOffsetMapUnitScale );
   sl->setAngle( mAngle );
   sl->setWidth( mWidth );
-  sl->setWidthUnit( mWidthUnit );
-  sl->setWidthMapUnitScale( mWidthMapUnitScale );
   sl->setHeight( mHeight );
-  sl->setHeightUnit( mHeightUnit );
-  sl->setHeightMapUnitScale( mHeightMapUnitScale );
+  sl->setSizeUnit( mSizeUnit );
+  sl->setSizeMapUnitScale( mSizeMapUnitScale );
 
   copyDataDefinedProperties( sl.get() );
   copyPaintEffect( sl.get() );
@@ -5298,8 +5286,7 @@ double QgsRasterFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &conte
 
 bool QgsRasterFillSymbolLayer::usesMapUnits() const
 {
-  return mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mHeightUnit == Qgis::RenderUnit::MapUnits || mHeightUnit == Qgis::RenderUnit::MetersInMapUnits
+  return mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits
          || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
@@ -5312,8 +5299,7 @@ void QgsRasterFillSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 {
   QgsImageFillSymbolLayer::setOutputUnit( unit );
   mOffsetUnit = unit;
-  mWidthUnit = unit;
-  mHeightUnit = unit;
+  mSizeUnit = unit;
 }
 
 void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )
@@ -5403,9 +5389,9 @@ void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &image
 
   if ( width > 0 )
   {
-    if ( mWidthUnit != Qgis::RenderUnit::Percentage )
+    if ( mSizeUnit != Qgis::RenderUnit::Percentage )
     {
-      imageWidth = context.renderContext().convertToPainterUnits( width, mWidthUnit, mWidthMapUnitScale );
+      imageWidth = context.renderContext().convertToPainterUnits( width, mSizeUnit, mSizeMapUnitScale );
     }
     else
     {
@@ -5423,9 +5409,9 @@ void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &image
   }
   if ( height > 0 )
   {
-    if ( mHeightUnit != Qgis::RenderUnit::Percentage )
+    if ( mSizeUnit != Qgis::RenderUnit::Percentage )
     {
-      imageHeight = context.renderContext().convertToPainterUnits( height, mHeightUnit, mHeightMapUnitScale );
+      imageHeight = context.renderContext().convertToPainterUnits( height, mSizeUnit, mSizeMapUnitScale );
     }
     else
     {
