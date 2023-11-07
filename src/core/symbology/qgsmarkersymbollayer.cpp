@@ -3478,18 +3478,13 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "chr" ) ) && props[QStringLiteral( "chr" )].toString().length() > 0 )
   {
     string = props["chr"].toString();
-    if ( props.contains( QStringLiteral( "chrIsDecimal" ) ) && props["chrIsDecimal"].toBool() )
+    const thread_local QRegularExpression charRegExp( QStringLiteral( "%1([0-9]+)%1" ).arg( FONTMARKER_CHR_FIX ) );
+    QRegularExpressionMatch match = charRegExp.match( string );
+    while ( match.hasMatch() )
     {
-      string = QChar( props["chr"].toString().toUShort() );
-    }
-    else
-    {
-      const thread_local QRegularExpression charRegExp( QStringLiteral( "%1([0-9]+)%1" ).arg( FONTMARKER_CHR_FIX ) );
-      const QRegularExpressionMatch charMatch = charRegExp.match( string );
-      if ( charMatch.hasMatch() )
-      {
-        string = QChar( charMatch.captured( 1 ).toUShort() );
-      }
+      QChar replacement = QChar( match.captured( 1 ).toUShort() );
+      string = string.mid( 0, match.capturedStart( 0 ) ) + replacement + string.mid( match.capturedEnd( 0 ) );
+      match = charRegExp.match( string );
     }
   }
 
@@ -3815,16 +3810,16 @@ QVariantMap QgsFontMarkerSymbolLayer::properties() const
   QVariantMap props;
   props[QStringLiteral( "font" )] = mFontFamily;
   props[QStringLiteral( "font_style" )] = mFontStyle;
-  if ( mString.size() == 1 )
+  QString chr = mString;
+  for ( int i = 0; i < 32; i++ )
   {
-    props[QStringLiteral( "chr" )] = QString::number( mString.at( 0 ).unicode() );
-    props[QStringLiteral( "chrIsDecimal" )] = true;
+    if ( i == 9 || i == 10 || i == 13 )
+    {
+      continue;
+    }
+    chr.replace( QChar( i ), QStringLiteral( "%1%2%1" ).arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
   }
-  else
-  {
-    props[QStringLiteral( "chr" )] = mString;
-    props["chrIsDecimal"] = false;
-  }
+  props[QStringLiteral( "chr" )] = chr;
   props[QStringLiteral( "size" )] = QString::number( mSize );
   props[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( mSizeUnit );
   props[QStringLiteral( "size_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );
