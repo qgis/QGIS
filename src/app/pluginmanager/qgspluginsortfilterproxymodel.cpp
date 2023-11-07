@@ -109,7 +109,7 @@ bool QgsPluginSortFilterProxyModel::filterByPhrase( QModelIndex &index ) const
         {
           for ( const QString &tag : tags )
           {
-            if ( tag.contains( regExPart ) )
+            if ( tag.contains( regExPart, Qt::CaseInsensitive ) )
             {
               termFound = true;
               break;
