@@ -254,7 +254,7 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
 
   if ( val.userType() == QMetaType::type( "QgsProperty" ) )
   {
-    if ( val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+    if ( val.value< QgsProperty >().propertyType() == Qgis::PropertyType::Static )
     {
       val = val.value< QgsProperty >().staticValue();
     }

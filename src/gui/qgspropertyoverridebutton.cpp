@@ -273,15 +273,15 @@ void QgsPropertyOverrideButton::setToProperty( const QgsProperty &property )
   {
     switch ( property.propertyType() )
     {
-      case QgsProperty::StaticProperty:
-      case QgsProperty::InvalidProperty:
+      case Qgis::PropertyType::Static:
+      case Qgis::PropertyType::Invalid:
         break;
-      case QgsProperty::FieldBasedProperty:
+      case Qgis::PropertyType::Field:
       {
         mFieldName = property.field();
         break;
       }
-      case QgsProperty::ExpressionBasedProperty:
+      case Qgis::PropertyType::Expression:
       {
         mExpressionString = property.expressionString();
         break;
@@ -316,13 +316,13 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
   ddTitleAct->setEnabled( false );
 
   bool addActiveAction = false;
-  if ( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && hasExp )
+  if ( mProperty.propertyType() == Qgis::PropertyType::Expression && hasExp )
   {
     QgsExpression exp( mExpressionString );
     // whether expression is parse-able
     addActiveAction = !exp.hasParserError();
   }
-  else if ( mProperty.propertyType() == QgsProperty::FieldBasedProperty )
+  else if ( mProperty.propertyType() == Qgis::PropertyType::Field )
   {
     // whether field exists
     addActiveAction = mFieldNameList.contains( mFieldName );
@@ -330,7 +330,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
 
   if ( addActiveAction )
   {
-    ddTitleAct->setText( ddTitle + " (" + ( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty ? tr( "expression" ) : tr( "field" ) ) + ')' );
+    ddTitleAct->setText( ddTitle + " (" + ( mProperty.propertyType() == Qgis::PropertyType::Expression ? tr( "expression" ) : tr( "field" ) ) + ')' );
     mDefineMenu->addAction( mActionActive );
     mActionActive->setText( mProperty.isActive() ? tr( "Deactivate" ) : tr( "Activate" ) );
     mActionActive->setData( QVariant( !mProperty.isActive() ) );
@@ -385,8 +385,8 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
         if ( mFieldName == fldname )
         {
           act->setCheckable( true );
-          act->setChecked( mProperty.propertyType() == QgsProperty::FieldBasedProperty );
-          fieldActive = mProperty.propertyType() == QgsProperty::FieldBasedProperty;
+          act->setChecked( mProperty.propertyType() == Qgis::PropertyType::Field );
+          fieldActive = mProperty.propertyType() == Qgis::PropertyType::Field;
         }
       }
     }
@@ -400,7 +400,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
   }
 
   mFieldsMenu->menuAction()->setCheckable( true );
-  mFieldsMenu->menuAction()->setChecked( fieldActive && mProperty.propertyType() == QgsProperty::FieldBasedProperty && !mProperty.transformer() );
+  mFieldsMenu->menuAction()->setChecked( fieldActive && mProperty.propertyType() == Qgis::PropertyType::Field && !mProperty.transformer() );
 
   bool colorActive = false;
   mColorsMenu->clear();
@@ -426,7 +426,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
         QPixmap icon = QgsColorButton::createMenuIcon( color.first, mDefinition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha );
         QAction *act = mColorsMenu->addAction( color.second );
         act->setIcon( icon );
-        if ( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && hasExp && mExpressionString == QStringLiteral( "project_color('%1')" ).arg( color.second ) )
+        if ( mProperty.propertyType() == Qgis::PropertyType::Expression && hasExp && mExpressionString == QStringLiteral( "project_color('%1')" ).arg( color.second ) )
         {
           act->setCheckable( true );
           act->setChecked( true );
@@ -470,7 +470,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
       QAction *act = mVariablesMenu->addAction( variable );
       act->setData( QVariant( variable ) );
 
-      if ( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && hasExp && mExpressionString == '@' + variable )
+      if ( mProperty.propertyType() == Qgis::PropertyType::Expression && hasExp && mExpressionString == '@' + variable )
       {
         act->setCheckable( true );
         act->setChecked( true );
@@ -510,7 +510,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
       mActionExpression->setText( expString );
     }
     mDefineMenu->addAction( mActionExpression );
-    mActionExpression->setChecked( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && !variableActive && !colorActive && !mProperty.transformer() );
+    mActionExpression->setChecked( mProperty.propertyType() == Qgis::PropertyType::Expression && !variableActive && !colorActive && !mProperty.transformer() );
 
     mDefineMenu->addAction( mActionExpDialog );
     mDefineMenu->addAction( mActionCopyExpr );
@@ -658,7 +658,7 @@ void QgsPropertyOverrideButton::showExpressionDialog()
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : QgsExpressionContext();
 
   // build sensible initial expression text - see https://github.com/qgis/QGIS/issues/26526
-  QString currentExpression = ( mProperty.propertyType() == QgsProperty::StaticProperty && !mProperty.staticValue().isValid() ) ? QString()
+  QString currentExpression = ( mProperty.propertyType() == Qgis::PropertyType::Static && !mProperty.staticValue().isValid() ) ? QString()
                               : mProperty.asExpression();
 
   QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer *>( mVectorLayer ), currentExpression, this, QStringLiteral( "generic" ), context );
@@ -752,7 +752,7 @@ void QgsPropertyOverrideButton::updateGui()
   QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefine.svg" ) );
   QString deftip = tr( "undefined" );
   QString deftype;
-  if ( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && hasExp )
+  if ( mProperty.propertyType() == Qgis::PropertyType::Expression && hasExp )
   {
     icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpressionOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpression.svg" ) );
 
@@ -778,7 +778,7 @@ void QgsPropertyOverrideButton::updateGui()
       }
     }
   }
-  else if ( mProperty.propertyType() != QgsProperty::ExpressionBasedProperty && hasField )
+  else if ( mProperty.propertyType() != Qgis::PropertyType::Expression && hasField )
   {
     icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefine.svg" ) );
 
@@ -817,7 +817,7 @@ void QgsPropertyOverrideButton::updateGui()
 
   if ( deftype.isEmpty() && deftip != tr( "undefined" ) )
   {
-    deftype = mProperty.propertyType() == QgsProperty::ExpressionBasedProperty ? tr( "expression" ) : tr( "field" );
+    deftype = mProperty.propertyType() == Qgis::PropertyType::Expression ? tr( "expression" ) : tr( "field" );
   }
 
   // truncate long expressions, or tool tip may be too wide for screen

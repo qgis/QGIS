@@ -483,6 +483,27 @@ Qgis.SettingsTreeNodeOption.__doc__ = "Options for named list nodes\n\n.. versio
 Qgis.SettingsTreeNodeOption.baseClass = Qgis
 Qgis.SettingsTreeNodeOptions.baseClass = Qgis
 SettingsTreeNodeOptions = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsProperty.Type = Qgis.PropertyType
+# monkey patching scoped based enum
+QgsProperty.InvalidProperty = Qgis.PropertyType.Invalid
+QgsProperty.Type.InvalidProperty = Qgis.PropertyType.Invalid
+QgsProperty.InvalidProperty.is_monkey_patched = True
+QgsProperty.InvalidProperty.__doc__ = "Invalid (not set) property"
+QgsProperty.StaticProperty = Qgis.PropertyType.Static
+QgsProperty.Type.StaticProperty = Qgis.PropertyType.Static
+QgsProperty.StaticProperty.is_monkey_patched = True
+QgsProperty.StaticProperty.__doc__ = "Static property"
+QgsProperty.FieldBasedProperty = Qgis.PropertyType.Field
+QgsProperty.Type.FieldBasedProperty = Qgis.PropertyType.Field
+QgsProperty.FieldBasedProperty.is_monkey_patched = True
+QgsProperty.FieldBasedProperty.__doc__ = "Field based property"
+QgsProperty.ExpressionBasedProperty = Qgis.PropertyType.Expression
+QgsProperty.Type.ExpressionBasedProperty = Qgis.PropertyType.Expression
+QgsProperty.ExpressionBasedProperty.is_monkey_patched = True
+QgsProperty.ExpressionBasedProperty.__doc__ = "Expression based property"
+Qgis.PropertyType.__doc__ = "Property types\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProperty`.Type\n\n.. versionadded:: 3.36\n\n" + '* ``InvalidProperty``: ' + Qgis.PropertyType.Invalid.__doc__ + '\n' + '* ``StaticProperty``: ' + Qgis.PropertyType.Static.__doc__ + '\n' + '* ``FieldBasedProperty``: ' + Qgis.PropertyType.Field.__doc__ + '\n' + '* ``ExpressionBasedProperty``: ' + Qgis.PropertyType.Expression.__doc__
+# --
+Qgis.PropertyType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SldExportOption.NoOptions.__doc__ = "Default SLD export"
 Qgis.SldExportOption.Svg.__doc__ = "Export complex styles to separate SVG files for better compatibility with OGC servers"

@@ -196,7 +196,7 @@ void TestQgsLayoutObject::writeRetrieveDDProperty()
   dd = readObject->dataDefinedProperties().property( QgsLayoutObject::TestProperty );
   QVERIFY( dd );
   QVERIFY( dd.isActive() );
-  QCOMPARE( dd.propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( dd.propertyType(), Qgis::PropertyType::Expression );
 
   delete object;
   delete readObject;

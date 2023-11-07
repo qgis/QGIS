@@ -140,7 +140,7 @@ bool QgsMapToolRotatePointSymbols::checkSymbolCompatibility( QgsMarkerSymbol *ma
 {
   bool ok = false;
   const QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
-  if ( ddAngle && ddAngle.isActive() && ddAngle.propertyType() == QgsProperty::FieldBasedProperty )
+  if ( ddAngle && ddAngle.isActive() && ddAngle.propertyType() == Qgis::PropertyType::Field )
   {
     mCurrentRotationAttributes << mActiveLayer->fields().indexFromName( ddAngle.field() );
     ok = true;

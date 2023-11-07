@@ -491,7 +491,7 @@ Copy constructor
 Returns the number of collections contained within the stack.
 %End
 
-    virtual void clear();
+    virtual void clear() ${SIP_FINAL};
 
 %Docstring
 Removes all collections from the stack.

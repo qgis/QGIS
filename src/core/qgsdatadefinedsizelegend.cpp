@@ -106,7 +106,7 @@ void QgsDataDefinedSizeLegend::updateFromSymbolAndProperty( const QgsMarkerSymbo
   mSizeScaleTransformer.reset( sizeTransformer ? sizeTransformer->clone() : nullptr );
 
   if ( mTitleLabel.isEmpty() )
-    mTitleLabel = ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString() : ddSize.field();
+    mTitleLabel = ddSize.propertyType() == Qgis::PropertyType::Expression ? ddSize.expressionString() : ddSize.field();
 
   // automatically generate classes if no classes are defined
   if ( sizeTransformer && mSizeClasses.isEmpty() )

@@ -507,19 +507,19 @@ void QgsFieldMappingModel::setFieldPropertyMap( const QMap<QString, QgsProperty>
       const QgsProperty prop = map.value( f.field.name() );
       switch ( prop.propertyType() )
       {
-        case QgsProperty::StaticProperty:
+        case Qgis::PropertyType::Static:
           f.expression = QgsExpression::quotedValue( prop.staticValue() );
           break;
 
-        case QgsProperty::FieldBasedProperty:
+        case Qgis::PropertyType::Field:
           f.expression = prop.field();
           break;
 
-        case QgsProperty::ExpressionBasedProperty:
+        case Qgis::PropertyType::Expression:
           f.expression = prop.expressionString();
           break;
 
-        case QgsProperty::InvalidProperty:
+        case Qgis::PropertyType::Invalid:
           f.expression.clear();
           break;
       }
