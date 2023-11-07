@@ -418,6 +418,12 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
             renderPrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform.get(), contentUri, context );
           }
         }
+        else if ( scene.nodes.size() == 1 )
+        {
+          const QString error = QObject::tr( "No mesh found in scene" );
+          mErrors.append( error );
+          QgsDebugError( QStringLiteral( "Error raised reading %1: %2" ).arg( contentUri, error ) );
+        }
       }
     }
   }
