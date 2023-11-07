@@ -92,11 +92,42 @@ bool QgsPluginSortFilterProxyModel::filterByPhrase( QModelIndex &index ) const
     case 0:
     {
       const QRegularExpression regEx = filterRegularExpression();
-      // full search: name + description + tags + author
-      return sourceModel()->data( index, PLUGIN_DESCRIPTION_ROLE ).toString().contains( regEx )
-             || sourceModel()->data( index, PLUGIN_AUTHOR_ROLE ).toString().contains( regEx )
-             || sourceModel()->data( index, Qt::DisplayRole ).toString().contains( regEx )
-             || sourceModel()->data( index, PLUGIN_TAGS_ROLE ).toString().contains( regEx );
+      // full search: name + description + author
+      bool match = sourceModel()->data( index, PLUGIN_DESCRIPTION_ROLE ).toString().contains( regEx )
+                   || sourceModel()->data( index, PLUGIN_AUTHOR_ROLE ).toString().contains( regEx )
+                   || sourceModel()->data( index, Qt::DisplayRole ).toString().contains( regEx );
+
+      if ( !match )
+      {
+        // Let's search for tag combinations
+        const QStringList regExParts = regEx.pattern().split( ' ' ); // Get individual search words
+        const QStringList tags = sourceModel()->data( index, PLUGIN_TAGS_ROLE ).toString().split( ',' );
+
+        bool allFound = true;
+        bool termFound = false;
+        for ( const QString &regExPart : regExParts )
+        {
+          for ( const QString &tag : tags )
+          {
+            if ( tag.contains( regExPart ) )
+            {
+              termFound = true;
+              break;
+            }
+          }
+          if ( !termFound )
+          {
+            allFound = false;
+            break;
+          }
+          else
+          {
+            termFound = false;  // Restart to check another term
+          }
+        }
+        match = allFound;
+      }
+      return match;
     }
     default:
       // unknown filter mode, return nothing
