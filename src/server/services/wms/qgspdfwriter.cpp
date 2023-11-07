@@ -21,6 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspdfwriter.h"
 #include "qgswmsrenderer.h"
 
+
 namespace QgsWms
 {
   void writeAsPdf( QgsServerInterface *serverIface, const QgsProject *project,
