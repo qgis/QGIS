@@ -764,8 +764,7 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
  <layer pass="0" id="{2aefc556-4eb1-4f56-b96b-e1dea6b58f69}" locked="0" class="FontMarker" enabled="1">
   <Option type="Map">
    <Option value="0" type="QString" name="angle"/>
-   <Option value="14" type="int" name="chr"/>
-   <Option value="true" type="bool" name="chrIsDecimal"/>
+   <Option value="~!_#!#_!~14~!_#!#_!~" type="QString" name="chr"/>
    <Option value="0,0,255,255" type="QString" name="color"/>
    <Option value="Arial" type="QString" name="font"/>
    <Option value="Italic" type="QString" name="font_style"/>
@@ -797,7 +796,7 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
  <layer pass="0" id="{2aefc556-4eb1-4f56-b96b-e1dea6b58f69}" locked="0" class="FontMarker" enabled="1">
   <Option type="Map">
    <Option value="0" type="QString" name="angle"/>
-   <Option value="~!_#!#_!~14~!_#!#_!~" type="QString" name="chr"/>
+   <Option value="~!_#!#_!~40~!_#!#_!~~!_#!#_!~41~!_#!#_!~" type="QString" name="chr"/>
    <Option value="0,0,255,255" type="QString" name="color"/>
    <Option value="Arial" type="QString" name="font"/>
    <Option value="Italic" type="QString" name="font_style"/>
@@ -821,7 +820,7 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         doc.setContent(font_marker_xml_string)
         elem = doc.documentElement()
         font_marker = QgsSymbolLayerUtils.loadSymbol(elem, QgsReadWriteContext())
-        self.assertEqual(font_marker.symbolLayers()[0].character(), chr(14))
+        self.assertEqual(font_marker.symbolLayers()[0].character(), "()")
 
 
 if __name__ == '__main__':
