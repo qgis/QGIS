@@ -147,6 +147,8 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
      */
     void updateSlider( const QgsDateTimeRange &range );
 
+    void totalMovieFramesChanged( long long frames );
+
     /**
      * Updates the current range label
      */
@@ -167,6 +169,7 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
     void mNavigationOff_clicked();
     void mNavigationFixedRange_clicked();
     void mNavigationAnimated_clicked();
+    void mNavigationMovie_clicked();
     void setWidgetStateFromNavigationMode( Qgis::TemporalNavigationMode mode );
 
     void onLayersAdded( const QList<QgsMapLayer *> &layers );

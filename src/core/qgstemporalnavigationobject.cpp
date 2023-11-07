@@ -61,6 +61,22 @@ void QgsTemporalNavigationObject::timerTimeout()
   }
 }
 
+long long QgsTemporalNavigationObject::totalMovieFrames() const
+{
+  return mTotalMovieFrames;
+}
+
+void QgsTemporalNavigationObject::setTotalMovieFrames( long long frames )
+{
+  if ( frames == mTotalMovieFrames )
+    return;
+
+  mTotalMovieFrames = frames;
+
+  emit totalMovieFramesChanged( mTotalMovieFrames );
+  emit temporalExtentsChanged( mTemporalExtents );
+}
+
 bool QgsTemporalNavigationObject::isLooping() const
 {
   return mLoopAnimation;
@@ -83,6 +99,7 @@ QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextS
   scope->setVariable( QStringLiteral( "animation_start_time" ), mTemporalExtents.begin(), true );
   scope->setVariable( QStringLiteral( "animation_end_time" ), mTemporalExtents.end(), true );
   scope->setVariable( QStringLiteral( "animation_interval" ), QgsInterval( mTemporalExtents.end() - mTemporalExtents.begin() ), true );
+  scope->setVariable( QStringLiteral( "total_frame_count" ), totalFrameCount() );
 
   scope->addHiddenVariable( QStringLiteral( "frame_timestep_unit" ) );
 
@@ -140,6 +157,7 @@ void QgsTemporalNavigationObject::setNavigationMode( const Qgis::TemporalNavigat
         emit updateTemporalRange( mTemporalExtents );
         break;
       case Qgis::TemporalNavigationMode::Disabled:
+      case Qgis::TemporalNavigationMode::Movie:
         emit updateTemporalRange( QgsDateTimeRange() );
         break;
     }
@@ -173,6 +191,7 @@ void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &te
         emit updateTemporalRange( mTemporalExtents );
       break;
     case Qgis::TemporalNavigationMode::Disabled:
+    case Qgis::TemporalNavigationMode::Movie:
       break;
   }
 
@@ -317,6 +336,9 @@ void QgsTemporalNavigationObject::skipToEnd()
 
 long long QgsTemporalNavigationObject::totalFrameCount() const
 {
+  if ( mNavigationMode == Qgis::TemporalNavigationMode::Movie )
+    return mTotalMovieFrames;
+
   if ( mFrameDuration.originalUnit() == Qgis::TemporalUnit::IrregularStep )
   {
     return mAllRanges.count();

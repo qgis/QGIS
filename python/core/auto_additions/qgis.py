@@ -1790,7 +1790,10 @@ QgsTemporalNavigationObject.Animated.__doc__ = "Temporal navigation relies on fr
 QgsTemporalNavigationObject.FixedRange = Qgis.TemporalNavigationMode.FixedRange
 QgsTemporalNavigationObject.FixedRange.is_monkey_patched = True
 QgsTemporalNavigationObject.FixedRange.__doc__ = "Temporal navigation relies on a fixed datetime range"
-Qgis.TemporalNavigationMode.__doc__ = "Temporal navigation modes.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsTemporalNavigationObject`.NavigationMode\n\n.. versionadded:: 3.36\n\n" + '* ``NavigationOff``: ' + Qgis.TemporalNavigationMode.Disabled.__doc__ + '\n' + '* ``Animated``: ' + Qgis.TemporalNavigationMode.Animated.__doc__ + '\n' + '* ``FixedRange``: ' + Qgis.TemporalNavigationMode.FixedRange.__doc__
+QgsTemporalNavigationObject.Movie = Qgis.TemporalNavigationMode.Movie
+QgsTemporalNavigationObject.Movie.is_monkey_patched = True
+QgsTemporalNavigationObject.Movie.__doc__ = "Movie mode -- behaves like a video player, with a fixed frame duration and no temporal range (since QGIS 3.36)"
+Qgis.TemporalNavigationMode.__doc__ = "Temporal navigation modes.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsTemporalNavigationObject`.NavigationMode\n\n.. versionadded:: 3.36\n\n" + '* ``NavigationOff``: ' + Qgis.TemporalNavigationMode.Disabled.__doc__ + '\n' + '* ``Animated``: ' + Qgis.TemporalNavigationMode.Animated.__doc__ + '\n' + '* ``FixedRange``: ' + Qgis.TemporalNavigationMode.FixedRange.__doc__ + '\n' + '* ``Movie``: ' + Qgis.TemporalNavigationMode.Movie.__doc__
 # --
 Qgis.TemporalNavigationMode.baseClass = Qgis
 QgsTemporalNavigationObject.AnimationState = Qgis.AnimationState

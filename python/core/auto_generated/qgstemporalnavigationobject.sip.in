@@ -206,6 +206,38 @@ Returns the best suited frame number for the specified datetime, based on the st
     virtual QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
 
 
+    long long totalMovieFrames() const;
+%Docstring
+Returns the total number of frames for the movie.
+
+.. note::
+
+   This is only used when the :py:func:`~QgsTemporalNavigationObject.navigationMode` is set to :py:class:`Qgis`.TemporalNavigationMode.Movie.
+
+.. seealso:: :py:func:`setTotalMovieFrames`
+
+.. seealso:: :py:func:`totalMovieFramesChanged`
+
+
+.. versionadded:: 3.36
+%End
+
+    void setTotalMovieFrames( long long frames );
+%Docstring
+Sets the total number of ``frames`` for the movie.
+
+.. note::
+
+   This is only used when the :py:func:`~QgsTemporalNavigationObject.navigationMode` is set to :py:class:`Qgis`.TemporalNavigationMode.Movie.
+
+.. seealso:: :py:func:`totalMovieFrames`
+
+.. seealso:: :py:func:`totalMovieFramesChanged`
+
+
+.. versionadded:: 3.36
+%End
+
   signals:
 
     void stateChanged( Qgis::AnimationState state );
@@ -228,6 +260,21 @@ Emitted whenever the temporalExtent ``extent`` changes.
 Emitted whenever the frameDuration ``interval`` of the controller changes.
 %End
 
+    void totalMovieFramesChanged( long long frames );
+%Docstring
+Emitted whenever the total number of ``frames`` in the movie is changed.
+
+.. note::
+
+   This is only used when the :py:func:`~QgsTemporalNavigationObject.navigationMode` is set to :py:class:`Qgis`.TemporalNavigationMode.Movie.
+
+.. seealso:: :py:func:`setTotalMovieFrames`
+
+.. seealso:: :py:func:`totalMovieFrames`
+
+
+.. versionadded:: 3.36
+%End
 
   public slots:
 
