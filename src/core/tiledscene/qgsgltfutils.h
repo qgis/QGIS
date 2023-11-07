@@ -157,6 +157,15 @@ class CORE_EXPORT QgsGltfUtils
      */
     static bool loadGltfModel( const QByteArray &data, tinygltf::Model &model, QString *errors, QString *warnings );
 
+    /**
+     * Returns the index for the scene to load from a \a model.
+     *
+     * This will be the model's default scene, unless the default scene is invalid in which case
+     * it will just be the first scene found in the model.
+     *
+     * If no scene is available, \a ok will be set to FALSE.
+     */
+    static std::size_t sourceSceneForModel( const tinygltf::Model &model, bool &ok );
 };
 
 ///@endcond
