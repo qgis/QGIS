@@ -160,8 +160,10 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
   if ( !LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, QStringLiteral( "alter session set nls_date_format = 'yyyy-mm-dd\"T\"HH24:MI:ss'" ),
                            QVariantList() ) )
   {
+    mDatabase.close();
     const QString error { tr( "Error: Failed to switch the default format date to ISO" ) };
     QgsMessageLog::logMessage( error, tr( "Oracle" ) );
+    mRef = 0;
     return;
   }
 
