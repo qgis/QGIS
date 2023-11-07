@@ -99,8 +99,9 @@ class HeatmapPixelSizeWidget(BASE, WIDGET):
 
     def pixelSizeChanged(self):
         cell_size = self.mCellXSpinBox.value()
-        if cell_size <= 0:
+        if cell_size <= 0 or self.raster_bounds.isNull():
             return
+
         self.mCellYSpinBox.blockSignals(True)
         self.mCellYSpinBox.setValue(cell_size)
         self.mCellYSpinBox.blockSignals(False)
@@ -115,8 +116,9 @@ class HeatmapPixelSizeWidget(BASE, WIDGET):
 
     def rowsChanged(self):
         rows = self.mRowsSpinBox.value()
-        if rows <= 0:
+        if rows <= 0 or self.raster_bounds.isNull():
             return
+
         cell_size = self.raster_bounds.height() / rows
         cols = max(round(self.raster_bounds.width() / cell_size) + 1, 1)
         self.mColumnsSpinBox.blockSignals(True)
@@ -129,8 +131,9 @@ class HeatmapPixelSizeWidget(BASE, WIDGET):
 
     def columnsChanged(self):
         cols = self.mColumnsSpinBox.value()
-        if cols < 2:
+        if cols < 2 or self.raster_bounds.isNull():
             return
+
         cell_size = self.raster_bounds.width() / (cols - 1)
         rows = max(round(self.raster_bounds.height() / cell_size), 1)
         self.mRowsSpinBox.blockSignals(True)
