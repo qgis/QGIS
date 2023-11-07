@@ -637,7 +637,7 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJso
   std::unique_ptr< QgsRasterFillSymbolLayer > fillLayer = std::make_unique< QgsRasterFillSymbolLayer >( symbolPath );
   fillLayer->setWidth( widthInPixels );
   fillLayer->setAngle( angleCW );
-  fillLayer->setWidthUnit( Qgis::RenderUnit::Points );
+  fillLayer->setSizeUnit( Qgis::RenderUnit::Points );
   fillLayer->setOffset( QPointF( xOffset, yOffset ) );
   fillLayer->setOffsetUnit( Qgis::RenderUnit::Points );
   layers.append( fillLayer.release() );
