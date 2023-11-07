@@ -23,6 +23,8 @@ from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD
 from processing.tools import dataobjects
 
 import os
+from typing import Optional
+
 from qgis.PyQt import uic
 from qgis.gui import QgsDoubleSpinBox
 from qgis.core import (QgsRectangle,
@@ -39,11 +41,11 @@ class HeatmapPixelSizeWidget(BASE, WIDGET):
         super().__init__(None)
         self.setupUi(self)
 
-        self.layer_bounds = QgsRectangle()
+        self.layer_bounds: QgsRectangle = QgsRectangle()
         self.source = None
-        self.raster_bounds = QgsRectangle()
-        self.radius = 100
-        self.radius_field = None
+        self.raster_bounds: QgsRectangle = QgsRectangle()
+        self.radius: float = 100
+        self.radius_field: Optional[str] = None
 
         self.mCellXSpinBox.setShowClearButton(False)
         self.mCellYSpinBox.setShowClearButton(False)
@@ -55,11 +57,11 @@ class HeatmapPixelSizeWidget(BASE, WIDGET):
         self.mRowsSpinBox.valueChanged.connect(self.rowsChanged)
         self.mColumnsSpinBox.valueChanged.connect(self.columnsChanged)
 
-    def setRadius(self, radius):
+    def setRadius(self, radius: float):
         self.radius = radius
         self.recalculate_bounds()
 
-    def setRadiusField(self, radius_field):
+    def setRadiusField(self, radius_field: Optional[str]):
         self.radius_field = radius_field
         self.recalculate_bounds()
 
@@ -199,13 +201,13 @@ class HeatmapPixelSizeWidgetWrapper(WidgetWrapper):
     def radiusChanged(self, wrapper):
         self.setRadius(wrapper.parameterValue())
 
-    def setRadius(self, radius):
+    def setRadius(self, radius: float):
         self.widget.setRadius(radius)
 
     def radiusFieldChanged(self, wrapper):
         self.setRadiusField(wrapper.parameterValue())
 
-    def setRadiusField(self, radius_field):
+    def setRadiusField(self, radius_field: Optional[str]):
         self.widget.setRadiusField(radius_field)
 
     def setValue(self, value):
