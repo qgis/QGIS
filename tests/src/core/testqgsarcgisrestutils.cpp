@@ -387,7 +387,7 @@ void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
   QVERIFY( fillLayer );
   QCOMPARE( fillLayer->imageFilePath(), QString( "base64:abcdef" ) );
   QCOMPARE( fillLayer->width(), 20.0 );
-  QCOMPARE( fillLayer->widthUnit(), Qgis::RenderUnit::Points );
+  QCOMPARE( fillLayer->sizeUnit(), Qgis::RenderUnit::Points );
   QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast< QgsSimpleLineSymbolLayer * >( fill->symbolLayer( 1 ) );
   QVERIFY( lineLayer );
   QCOMPARE( lineLayer->color(), QColor( 110, 120, 130, 215 ) );
