@@ -431,6 +431,10 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
           }
         }
       }
+      else
+      {
+        feedback->reportError( QObject::tr( "No mesh found in scene node [%1]." ).arg( nodeIndex ) );
+      }
     }
   }
 
