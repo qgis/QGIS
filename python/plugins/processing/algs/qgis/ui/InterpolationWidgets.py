@@ -280,11 +280,7 @@ class PixelSizeWidget(BASE, WIDGET):
             layer = QgsProcessingUtils.variantToSource(v[0], self.context)
             if layer:
                 self.layers.append(layer)
-                bbox = layer.sourceExtent()
-                if self.extent.isEmpty():
-                    self.extent = bbox
-                else:
-                    self.extent.combineExtentWith(bbox)
+                self.extent.combineExtentWith(layer.sourceExtent())
 
         self.pixelSizeChanged()
 
@@ -307,7 +303,7 @@ class PixelSizeWidget(BASE, WIDGET):
 
     def pixelSizeChanged(self):
         cell_size = self.mCellXSpinBox.value()
-        if cell_size <= 0:
+        if cell_size <= 0 or self.extent.isNull():
             return
 
         self.mCellYSpinBox.blockSignals(True)
@@ -324,8 +320,9 @@ class PixelSizeWidget(BASE, WIDGET):
 
     def rowsChanged(self):
         rows = self.mRowsSpinBox.value()
-        if rows <= 0:
+        if rows <= 0 or self.extent.isNull():
             return
+
         cell_size = self.extent.height() / rows
         cols = max(round(self.extent.width() / cell_size) + 1, 1)
         self.mColumnsSpinBox.blockSignals(True)
@@ -338,8 +335,9 @@ class PixelSizeWidget(BASE, WIDGET):
 
     def columnsChanged(self):
         cols = self.mColumnsSpinBox.value()
-        if cols < 2:
+        if cols < 2 or self.extent.isNull():
             return
+
         cell_size = self.extent.width() / (cols - 1)
         rows = max(round(self.extent.height() / cell_size), 1)
         self.mRowsSpinBox.blockSignals(True)
