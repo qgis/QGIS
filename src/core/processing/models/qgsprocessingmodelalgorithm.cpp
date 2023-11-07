@@ -1939,7 +1939,7 @@ void QgsProcessingModelAlgorithm::changeParameterName( const QString &oldName, c
             if ( valueIt->staticValue().userType() == QMetaType::type( "QgsProperty" ) )
             {
               QgsProperty property = valueIt->staticValue().value< QgsProperty >();
-              if ( property.propertyType() == QgsProperty::ExpressionBasedProperty )
+              if ( property.propertyType() == Qgis::PropertyType::Expression )
               {
                 bool updatedExpression = false;
                 QString newExpression;

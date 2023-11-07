@@ -825,7 +825,7 @@ bool QgsMapToolMoveLabel::canModifyCallout( const QgsCalloutPosition &pos, bool 
       return QString();
 
     const QgsProperty prop = callout->dataDefinedProperties().property( p );
-    if ( prop.propertyType() != QgsProperty::FieldBasedProperty )
+    if ( prop.propertyType() != Qgis::PropertyType::Field )
       return QString();
 
     return prop.field();

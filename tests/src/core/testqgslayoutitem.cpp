@@ -1751,7 +1751,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   const QgsProperty dd = copy->dataDefinedProperties().property( QgsLayoutObject::TestProperty );
   QVERIFY( dd );
   QVERIFY( dd.isActive() );
-  QCOMPARE( dd.propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( dd.propertyType(), Qgis::PropertyType::Expression );
   QCOMPARE( copy->referencePoint(), original->referencePoint() );
   QCOMPARE( copy->sizeWithUnits(), original->sizeWithUnits() );
   QGSCOMPARENEAR( copy->positionWithUnits().x(), original->positionWithUnits().x(), 0.001 );

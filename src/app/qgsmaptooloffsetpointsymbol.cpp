@@ -135,7 +135,7 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol *mar
       continue;
 
     const QgsProperty p = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
-    if ( p.propertyType() != QgsProperty::FieldBasedProperty )
+    if ( p.propertyType() != Qgis::PropertyType::Field )
       continue;
 
     ok = true;
@@ -208,7 +208,7 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
       continue;
 
     const QgsProperty ddOffset = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
-    if ( ddOffset.propertyType() != QgsProperty::FieldBasedProperty )
+    if ( ddOffset.propertyType() != Qgis::PropertyType::Field )
       continue;
 
     QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer * >( layer );

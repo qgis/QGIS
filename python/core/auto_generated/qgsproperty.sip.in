@@ -187,14 +187,6 @@ can be grouped using a :py:class:`QgsPropertyCollection` for easier bulk storage
 %End
   public:
 
-    enum Type
-    {
-      InvalidProperty,
-      StaticProperty,
-      FieldBasedProperty,
-      ExpressionBasedProperty,
-    };
-
     static QVariantMap propertyMapToVariantMap( const QMap<QString, QgsProperty> &propertyMap );
 %Docstring
 Convert a map of QgsProperty to a map of QVariant
@@ -245,7 +237,7 @@ Copy constructor
     bool operator==( const QgsProperty &other ) const;
     bool operator!=( const QgsProperty &other ) const;
 
-    Type propertyType() const;
+    Qgis::PropertyType propertyType() const;
 %Docstring
 Returns the property type.
 %End
@@ -574,27 +566,27 @@ be called in non-performance critical code.
     QString definitionString;
     switch ( sipCpp->propertyType() )
     {
-      case QgsProperty::StaticProperty:
+      case Qgis::PropertyType::Static:
         typeString = QStringLiteral( "static" );
         definitionString = sipCpp->staticValue().toString();
         break;
 
-      case QgsProperty::FieldBasedProperty:
+      case Qgis::PropertyType::Field:
         typeString = QStringLiteral( "field" );
         definitionString = sipCpp->field();
         break;
 
-      case QgsProperty::ExpressionBasedProperty:
+      case Qgis::PropertyType::Expression:
         typeString = QStringLiteral( "expression" );
         definitionString = sipCpp->expressionString();
         break;
 
-      case QgsProperty::InvalidProperty:
+      case Qgis::PropertyType::Invalid:
         typeString = QStringLiteral( "invalid" );
         break;
     }
 
-    QString str = QStringLiteral( "<QgsProperty: %1%2%3>" ).arg( !sipCpp->isActive() && sipCpp->propertyType() != QgsProperty::InvalidProperty ? QStringLiteral( "INACTIVE " ) : QString(),
+    QString str = QStringLiteral( "<QgsProperty: %1%2%3>" ).arg( !sipCpp->isActive() && sipCpp->propertyType() != Qgis::PropertyType::Invalid ? QStringLiteral( "INACTIVE " ) : QString(),
                   typeString,
                   definitionString.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( definitionString ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );

@@ -583,7 +583,7 @@ QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &v
     val = fromVar.sink;
   }
 
-  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == Qgis::PropertyType::Static )
   {
     val = val.value< QgsProperty >().staticValue();
   }

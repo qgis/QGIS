@@ -24,7 +24,6 @@
 #include <QToolButton>
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
-#include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextgenerator.h"
 
 class QgsVectorLayer;

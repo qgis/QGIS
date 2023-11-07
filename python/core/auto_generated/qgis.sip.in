@@ -284,6 +284,14 @@ The development version
     typedef QFlags<Qgis::SettingsTreeNodeOption> SettingsTreeNodeOptions;
 
 
+    enum class PropertyType
+      {
+      Invalid,
+      Static,
+      Field,
+      Expression,
+    };
+
     enum class SldExportOption
     {
       NoOptions,
