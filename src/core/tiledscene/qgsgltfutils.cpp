@@ -217,7 +217,14 @@ std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( const tinygltf::No
 
 QgsVector3D QgsGltfUtils::extractTileTranslation( tinygltf::Model &model, Qgis::Axis upAxis )
 {
-  const tinygltf::Scene &scene = model.scenes[model.defaultScene];
+  bool sceneOk = false;
+  const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
+  if ( !sceneOk )
+  {
+    return QgsVector3D();
+  }
+
+  const tinygltf::Scene &scene = model.scenes[sceneIndex];
 
   QgsVector3D tileTranslationEcef;
   auto it = model.extensions.find( "CESIUM_RTC" );
@@ -368,6 +375,25 @@ bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model
   }
 
   return res;
+}
+
+std::size_t QgsGltfUtils::sourceSceneForModel( const tinygltf::Model &model, bool &ok )
+{
+  ok = false;
+  if ( model.scenes.empty() )
+  {
+    return 0;
+  }
+
+  ok = true;
+  int index = model.defaultScene;
+  if ( index >= 0 && static_cast< std::size_t>( index ) < model.scenes.size() )
+  {
+    return index;
+  }
+
+  // just return first scene
+  return 0;
 }
 
 ///@endcond
