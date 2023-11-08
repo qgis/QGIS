@@ -22,6 +22,7 @@
 #include "qgsblockingnetworkrequest.h"
 #include "qgsthreadingutils.h"
 #include "qgsreadwritelocker.h"
+#include "qgssensorthingsfeatureiterator.h"
 
 #include <QIcon>
 #include <QNetworkRequest>
@@ -111,18 +112,14 @@ QgsAbstractFeatureSource *QgsSensorThingsProvider::featureSource() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-#if 0
   return new QgsSensorThingsFeatureSource( mSharedData );
-#endif
 }
 
 QgsFeatureIterator QgsSensorThingsProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-#if 0
-  return new QgsAfsFeatureIterator( new QgsAfsFeatureSource( mSharedData ), true, request );
-#endif
+  return new QgsSensorThingsFeatureIterator( new QgsSensorThingsFeatureSource( mSharedData ), true, request );
 }
 
 Qgis::WkbType QgsSensorThingsProvider::wkbType() const
