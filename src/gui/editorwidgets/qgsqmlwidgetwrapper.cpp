@@ -46,9 +46,7 @@ QWidget *QgsQmlWidgetWrapper::createWidget( QWidget *parent )
     {
       if ( attributeChanged )
       {
-        const thread_local QRegularExpression expRe { QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption };
-        const QRegularExpressionMatch match { expRe.match( mQmlCode ) };
-        if ( match.hasMatch() && QgsValueRelationFieldFormatter::expressionRequiresFormScope( match.captured( 1 ) ) )
+        if ( mRequiresFormScope )
         {
           mFormFeature.setAttribute( attribute, newValue );
           setQmlContext();
@@ -98,6 +96,17 @@ void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
   }
 
   mQmlCode = qmlCode;
+
+  bool ok = false;
+  const thread_local QRegularExpression expRe( QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption );
+  QRegularExpressionMatchIterator matchIt = expRe.globalMatch( mQmlCode );
+  while ( !ok && matchIt.hasNext() )
+  {
+    const QRegularExpressionMatch match = matchIt.next();
+    const QgsExpression exp = match.captured( 1 );
+    ok = QgsValueRelationFieldFormatter::expressionRequiresFormScope( exp );
+  }
+  mRequiresFormScope = ok;
 
   if ( !mQmlFile.open() )
   {

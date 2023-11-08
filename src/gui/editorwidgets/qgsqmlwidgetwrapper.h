@@ -67,6 +67,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     QQuickWidget *mWidget = nullptr;
     QgsFeature mFeature;
     QgsFeature mFormFeature;
+    bool mRequiresFormScope = false;
 };
 
 
