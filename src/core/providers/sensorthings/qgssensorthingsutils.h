@@ -23,8 +23,6 @@
  * \ingroup core
  * \brief Utility functions for working with OGC SensorThings API services.
  *
- * - 
- *
  * \since QGIS 3.36
  */
 class CORE_EXPORT QgsSensorThingsUtils
@@ -34,8 +32,17 @@ class CORE_EXPORT QgsSensorThingsUtils
 
     /**
      * Converts a string value to a Qgis::SensorThingsEntity type.
+     *
+     * Returns Qgis::SensorThingsEntity::Invalid if the string could not be converted to a known entity type.
      */
     static Qgis::SensorThingsEntity stringToEntity( const QString &type );
+
+    /**
+    * Converts a string value corresponding to a SensorThings entity set to a Qgis::SensorThingsEntity type.
+    *
+    * Returns Qgis::SensorThingsEntity::Invalid if the string could not be converted to a known entity set type.
+    */
+    static Qgis::SensorThingsEntity entitySetStringToEntity( const QString &type );
 
 };
 

@@ -12,8 +12,6 @@ class QgsSensorThingsUtils
 %Docstring(signature="appended")
 Utility functions for working with OGC SensorThings API services.
 
-- 
-
 .. versionadded:: 3.36
 %End
 
@@ -25,6 +23,15 @@ Utility functions for working with OGC SensorThings API services.
     static Qgis::SensorThingsEntity stringToEntity( const QString &type );
 %Docstring
 Converts a string value to a :py:class:`Qgis`.SensorThingsEntity type.
+
+Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could not be converted to a known entity type.
+%End
+
+    static Qgis::SensorThingsEntity entitySetStringToEntity( const QString &type );
+%Docstring
+Converts a string value corresponding to a SensorThings entity set to a :py:class:`Qgis`.SensorThingsEntity type.
+
+Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could not be converted to a known entity set type.
 %End
 
 };
