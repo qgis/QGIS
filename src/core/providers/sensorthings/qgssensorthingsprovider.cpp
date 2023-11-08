@@ -20,6 +20,8 @@
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgsthreadingutils.h"
+#include "qgsreadwritelocker.h"
 
 #include <QIcon>
 #include <QNetworkRequest>
@@ -100,11 +102,15 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
 
 QString QgsSensorThingsProvider::storageType() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QStringLiteral( "OGC SensorThings API" );
 }
 
 QgsAbstractFeatureSource *QgsSensorThingsProvider::featureSource() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
 #if 0
   return new QgsSensorThingsFeatureSource( mSharedData );
 #endif
@@ -112,6 +118,8 @@ QgsAbstractFeatureSource *QgsSensorThingsProvider::featureSource() const
 
 QgsFeatureIterator QgsSensorThingsProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
 #if 0
   return new QgsAfsFeatureIterator( new QgsAfsFeatureSource( mSharedData ), true, request );
 #endif
@@ -119,28 +127,54 @@ QgsFeatureIterator QgsSensorThingsProvider::getFeatures( const QgsFeatureRequest
 
 Qgis::WkbType QgsSensorThingsProvider::wkbType() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSharedData->mGeometryType;
 }
 
 long long QgsSensorThingsProvider::featureCount() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
 #if 0
   return mSharedData->featureCount();
 #endif
+
+  return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
 }
 
 QgsFields QgsSensorThingsProvider::fields() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSharedData->mFields;
 }
 
 QgsLayerMetadata QgsSensorThingsProvider::layerMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayerMetadata;
+}
+
+QString QgsSensorThingsProvider::htmlMetadata() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QString metadata;
+
+  QgsReadWriteLocker locker( mSharedData->mReadWriteLock, QgsReadWriteLocker::Read );
+
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Entity Type" ) % QStringLiteral( "</td><td>%1" ).arg( qgsEnumValueToKey( mSharedData->mEntityType ) ) % QStringLiteral( "</td></tr>\n" );
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Endpoint" ) % QStringLiteral( "</td><td><a href=\"%1\">%1</a>" ).arg( mSharedData->mEntityBaseUri ) % QStringLiteral( "</td></tr>\n" );
+
+  return metadata;
 }
 
 QgsVectorDataProvider::Capabilities QgsSensorThingsProvider::capabilities() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId
                                           | QgsVectorDataProvider::ReadLayerMetadata
                                           | QgsVectorDataProvider::Capability::ReloadData;
@@ -161,18 +195,26 @@ void QgsSensorThingsProvider::setDataSourceUri( const QString &uri )
 
 QgsCoordinateReferenceSystem QgsSensorThingsProvider::crs() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSharedData->mSourceCRS;
 }
 
 QgsRectangle QgsSensorThingsProvider::extent() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
 #if 0
   return mSharedData->extent();
 #endif
+
+  return QgsRectangle();
 }
 
 QString QgsSensorThingsProvider::name() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return SENSORTHINGS_PROVIDER_KEY;
 }
 
@@ -189,13 +231,6 @@ void QgsSensorThingsProvider::handlePostCloneOperations( QgsVectorDataProvider *
 QString QgsSensorThingsProvider::description() const
 {
   return SENSORTHINGS_PROVIDER_DESCRIPTION;
-}
-
-QString QgsSensorThingsProvider::dataComment() const
-{
-#if 0
-  return mLayerDescription;
-#endif
 }
 
 void QgsSensorThingsProvider::reloadProviderData()

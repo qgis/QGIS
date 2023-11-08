@@ -163,17 +163,15 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             base_path = temp_dir.replace("\\", "/")
             endpoint = base_path + "/fake_qgis_http_endpoint"
             with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
-                f.write("""
+                f.write(
+                    """
     {
       "value": ["""
-                        )
+                )
 
             vl = QgsVectorLayer(f"url='http://{endpoint}'", "test", "sensorthings")
             self.assertFalse(vl.isValid())
-            self.assertIn(
-                'parse error',
-                vl.dataProvider().error().summary()
-            )
+            self.assertIn("parse error", vl.dataProvider().error().summary())
 
     def test_layer(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -228,9 +226,13 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     )
                 )
 
-            vl = QgsVectorLayer(f"url='http://{endpoint}'", "test", "sensorthings")
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' entity='Location'", "test", "sensorthings"
+            )
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
+            self.assertIn(f'href="{endpoint}/Locations"', vl.htmlMetadata())
 
     def testDecodeUri(self):
         """
