@@ -227,43 +227,148 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 )
 
             vl = QgsVectorLayer(
-                f"url='http://{endpoint}' entity='Location'", "test", "sensorthings"
+                f"url='http://{endpoint}' type=PointZ entity='Location'",
+                "test",
+                "sensorthings",
             )
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
             self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
             self.assertIn(f'href="{endpoint}/Locations"', vl.htmlMetadata())
+
+            # As multipoint
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=MultiPointZ entity='Location'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiPointZ)
+
+            # As line
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=MultiLineStringZ entity='Location'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiLineStringZ)
+
+            # As polygon
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=MultiPolygonZ entity='Location'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiPolygonZ)
 
     def testDecodeUri(self):
         """
         Test decoding a SensorThings uri
         """
-        uri = "url='https://sometest.com/api' authcfg='abc' entity='Locations'"
+        uri = "url='https://sometest.com/api' type=MultiPointZ authcfg='abc' entity='Locations'"
         parts = QgsProviderRegistry.instance().decodeUri("sensorthings", uri)
         self.assertEqual(
             parts,
-            {"url": "https://sometest.com/api", "entity": "Location", "authcfg": "abc"},
+            {
+                "url": "https://sometest.com/api",
+                "entity": "Location",
+                "geometryType": "multipoint",
+                "authcfg": "abc",
+            },
         )
         # should be forgiving to entity vs entity set strings
-        uri = "url='https://sometest.com/api' authcfg='abc' entity='Location'"
+        uri = (
+            "url='https://sometest.com/api' type=PointZ authcfg='abc' entity='Location'"
+        )
         parts = QgsProviderRegistry.instance().decodeUri("sensorthings", uri)
         self.assertEqual(
             parts,
-            {"url": "https://sometest.com/api", "entity": "Location", "authcfg": "abc"},
+            {
+                "url": "https://sometest.com/api",
+                "entity": "Location",
+                "geometryType": "point",
+                "authcfg": "abc",
+            },
+        )
+
+        uri = "url='https://sometest.com/api' type=MultiLineStringZ authcfg='abc' entity='Location'"
+        parts = QgsProviderRegistry.instance().decodeUri("sensorthings", uri)
+        self.assertEqual(
+            parts,
+            {
+                "url": "https://sometest.com/api",
+                "entity": "Location",
+                "geometryType": "line",
+                "authcfg": "abc",
+            },
+        )
+
+        uri = "url='https://sometest.com/api' type=MultiPolygonZ authcfg='abc' entity='Location'"
+        parts = QgsProviderRegistry.instance().decodeUri("sensorthings", uri)
+        self.assertEqual(
+            parts,
+            {
+                "url": "https://sometest.com/api",
+                "entity": "Location",
+                "geometryType": "polygon",
+                "authcfg": "abc",
+            },
         )
 
     def testEncodeUri(self):
         """
         Test encoding a SensorThings uri
         """
-        parts = {"url": "http://blah.com", "authcfg": "aaaaa", "entity": "locations"}
+        parts = {
+            "url": "http://blah.com",
+            "authcfg": "aaaaa",
+            "entity": "locations",
+            "geometryType": "multipoint",
+        }
         uri = QgsProviderRegistry.instance().encodeUri("sensorthings", parts)
-        self.assertEqual(uri, "authcfg=aaaaa entity='Location' url='http://blah.com'")
+        self.assertEqual(
+            uri,
+            "authcfg=aaaaa type=MultiPointZ entity='Location' url='http://blah.com'",
+        )
 
         # should be forgiving to entity vs entity set strings
-        parts = {"url": "http://blah.com", "authcfg": "aaaaa", "entity": "location"}
+        parts = {
+            "url": "http://blah.com",
+            "authcfg": "aaaaa",
+            "entity": "location",
+            "geometryType": "point",
+        }
         uri = QgsProviderRegistry.instance().encodeUri("sensorthings", parts)
-        self.assertEqual(uri, "authcfg=aaaaa entity='Location' url='http://blah.com'")
+        self.assertEqual(
+            uri, "authcfg=aaaaa type=PointZ entity='Location' url='http://blah.com'"
+        )
+
+        parts = {
+            "url": "http://blah.com",
+            "authcfg": "aaaaa",
+            "entity": "location",
+            "geometryType": "line",
+        }
+        uri = QgsProviderRegistry.instance().encodeUri("sensorthings", parts)
+        self.assertEqual(
+            uri,
+            "authcfg=aaaaa type=MultiLineStringZ entity='Location' url='http://blah.com'",
+        )
+
+        parts = {
+            "url": "http://blah.com",
+            "authcfg": "aaaaa",
+            "entity": "location",
+            "geometryType": "polygon",
+        }
+        uri = QgsProviderRegistry.instance().encodeUri("sensorthings", parts)
+        self.assertEqual(
+            uri,
+            "authcfg=aaaaa type=MultiPolygonZ entity='Location' url='http://blah.com'",
+        )
 
 
 if __name__ == "__main__":

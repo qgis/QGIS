@@ -28,6 +28,24 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
 
   mEntityType = qgsEnumKeyToValue( uriParts.value( QStringLiteral( "entity" ) ).toString(), Qgis::SensorThingsEntity::Invalid );
 
+  const QString geometryType = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
+  if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mGeometryType = Qgis::WkbType::PointZ;
+  }
+  else if ( geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mGeometryType = Qgis::WkbType::MultiPointZ;
+  }
+  else if ( geometryType.compare( QLatin1String( "line" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mGeometryType = Qgis::WkbType::MultiLineStringZ;
+  }
+  else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mGeometryType = Qgis::WkbType::MultiPolygonZ;
+  }
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
   mAuthCfg = dsUri.authConfigId();
