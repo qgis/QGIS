@@ -1831,19 +1831,30 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     return false;
   }
 
+  QTextStream textStream( &projectFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  textStream.setCodec( "UTF-8" );
+#endif
+  QString projectString = textStream.readAll();
+  projectFile.close();
+
+  for ( int i = 0; i < 32; i++ )
+  {
+    if ( i == 9 || i == 10 || i == 13 )
+    {
+      continue;
+    }
+    projectString.replace( QChar( i ), QStringLiteral( "%1%2%1" ).arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
+  }
+
   // location of problem associated with errorMsg
   int line, column;
   QString errorMsg;
-
-  if ( !doc->setContent( &projectFile, &errorMsg, &line, &column ) )
+  if ( !doc->setContent( projectString, &errorMsg, &line, &column ) )
   {
     const QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" )
                                 .arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
-
     QgsDebugError( errorString );
-
-    projectFile.close();
-
     setError( errorString );
 
     return false;

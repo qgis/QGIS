@@ -13,6 +13,7 @@ import math
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QSize, QSizeF, Qt
+from qgis.PyQt.QtXml import QDomDocument, QDomElement
 from qgis.PyQt.QtGui import QColor, QImage, QPolygonF
 from qgis.core import (
     Qgis,
@@ -25,6 +26,7 @@ from qgis.core import (
     QgsMarkerLineSymbolLayer,
     QgsMarkerSymbol,
     QgsProperty,
+    QgsReadWriteContext,
     QgsShapeburstFillSymbolLayer,
     QgsSimpleFillSymbolLayer,
     QgsSimpleLineSymbolLayer,
@@ -752,6 +754,73 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
 
         QgsSymbolLayerUtils.clearSymbolLayerIds(fill_symbol)
         self.assertFalse(child_sl.id())
+
+    def test_font_marker_load(self):
+        """
+        Test the loading of font marker from XML
+        """
+
+        font_marker_xml_string = """<symbol clip_to_extent="1" type="marker" is_animated="0" alpha="1" name="symbol" frame_rate="10" force_rhr="0">
+ <layer pass="0" id="{2aefc556-4eb1-4f56-b96b-e1dea6b58f69}" locked="0" class="FontMarker" enabled="1">
+  <Option type="Map">
+   <Option value="0" type="QString" name="angle"/>
+   <Option value="~!_#!#_!~14~!_#!#_!~" type="QString" name="chr"/>
+   <Option value="0,0,255,255" type="QString" name="color"/>
+   <Option value="Arial" type="QString" name="font"/>
+   <Option value="Italic" type="QString" name="font_style"/>
+   <Option value="1" type="QString" name="horizontal_anchor_point"/>
+   <Option value="miter" type="QString" name="joinstyle"/>
+   <Option value="0,0" type="QString" name="offset"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="offset_map_unit_scale"/>
+   <Option value="Point" type="QString" name="offset_unit"/>
+   <Option value="255,255,255,255" type="QString" name="outline_color"/>
+   <Option value="0" type="QString" name="outline_width"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="outline_width_map_unit_scale"/>
+   <Option value="MM" type="QString" name="outline_width_unit"/>
+   <Option value="42.4" type="QString" name="size"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="size_map_unit_scale"/>
+   <Option value="Point" type="QString" name="size_unit"/>
+   <Option value="1" type="QString" name="vertical_anchor_point"/>
+  </Option>
+ </layer>
+</symbol>"""
+
+        doc = QDomDocument()
+        elem = QDomElement()
+        doc.setContent(font_marker_xml_string)
+        elem = doc.documentElement()
+        font_marker = QgsSymbolLayerUtils.loadSymbol(elem, QgsReadWriteContext())
+        self.assertEqual(font_marker.symbolLayers()[0].character(), chr(14))
+
+        font_marker_xml_string = """<symbol clip_to_extent="1" type="marker" is_animated="0" alpha="1" name="symbol" frame_rate="10" force_rhr="0">
+ <layer pass="0" id="{2aefc556-4eb1-4f56-b96b-e1dea6b58f69}" locked="0" class="FontMarker" enabled="1">
+  <Option type="Map">
+   <Option value="0" type="QString" name="angle"/>
+   <Option value="~!_#!#_!~40~!_#!#_!~~!_#!#_!~41~!_#!#_!~" type="QString" name="chr"/>
+   <Option value="0,0,255,255" type="QString" name="color"/>
+   <Option value="Arial" type="QString" name="font"/>
+   <Option value="Italic" type="QString" name="font_style"/>
+   <Option value="1" type="QString" name="horizontal_anchor_point"/>
+   <Option value="miter" type="QString" name="joinstyle"/>
+   <Option value="0,0" type="QString" name="offset"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="offset_map_unit_scale"/>
+   <Option value="Point" type="QString" name="offset_unit"/>
+   <Option value="255,255,255,255" type="QString" name="outline_color"/>
+   <Option value="0" type="QString" name="outline_width"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="outline_width_map_unit_scale"/>
+   <Option value="MM" type="QString" name="outline_width_unit"/>
+   <Option value="42.4" type="QString" name="size"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="size_map_unit_scale"/>
+   <Option value="Point" type="QString" name="size_unit"/>
+   <Option value="1" type="QString" name="vertical_anchor_point"/>
+  </Option>
+ </layer>
+</symbol>"""
+
+        doc.setContent(font_marker_xml_string)
+        elem = doc.documentElement()
+        font_marker = QgsSymbolLayerUtils.loadSymbol(elem, QgsReadWriteContext())
+        self.assertEqual(font_marker.symbolLayers()[0].character(), "()")
 
 
 if __name__ == '__main__':

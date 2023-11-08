@@ -2119,41 +2119,6 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         ids = styles[1]
         self.assertEqual(len(ids), 0)
 
-    def testSaveStyleInvalidXML(self):
-
-        self.execSQLCommand('DROP TABLE IF EXISTS layer_styles CASCADE')
-
-        vl = self.getEditableLayer()
-        self.assertTrue(vl.isValid())
-        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, Qgis.ProviderStyleStorageCapability.LoadFromDatabase)
-        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, Qgis.ProviderStyleStorageCapability.SaveToDatabase)
-        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.DeleteFromDatabase, Qgis.ProviderStyleStorageCapability.DeleteFromDatabase)
-
-        mFilePath = QDir.toNativeSeparators(
-            f"{unitTestDataPath()}/symbol_layer/fontSymbol.qml")
-        status = vl.loadNamedStyle(mFilePath)
-        self.assertTrue(status)
-
-        errorMsg = vl.saveStyleToDatabase(
-            "fontSymbol", "font with invalid utf8 char", False, "")
-        self.assertEqual(errorMsg, "")
-
-        qml, errmsg = vl.getStyleFromDatabase("1")
-        self.assertEqual(errmsg, "")
-
-        found = False
-        for line in qml.split('\n'):
-            found = 'value="\u001E"' in qml and 'name="chr"' in qml
-            if found:
-                break
-        self.assertTrue(found, f"record separator character (\u001E) not found in qml: {qml}")
-
-        # Test loadStyle from metadata
-        md = QgsProviderRegistry.instance().providerMetadata('postgres')
-        qml = md.loadStyle(self.dbconn + " type=POINT table=\"qgis_test\".\"editData\" (geom)", 'fontSymbol')
-        self.assertTrue(qml.startswith('<!DOCTYPE qgi'), qml)
-        self.assertTrue('value="\u001E"' in qml)
-
     def testHasMetadata(self):
         # views don't have metadata
         vl = QgsVectorLayer(f"{self.dbconn} table=\"qgis_test\".\"bikes_view\" key=\"pk\" sql=", "bikes_view",
