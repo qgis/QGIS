@@ -48,6 +48,7 @@ class QgsSensorThingsProvider : public QgsVectorDataProvider
     long long featureCount() const override;
     QgsFields fields() const override;
     QgsLayerMetadata layerMetadata() const override;
+    QString htmlMetadata() const override;
 
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
@@ -58,7 +59,6 @@ class QgsSensorThingsProvider : public QgsVectorDataProvider
 
     QString name() const override;
     QString description() const override;
-    QString dataComment() const override;
 
     static QString providerKey();
 
