@@ -18,15 +18,42 @@
 #include "qgssensorthingsprovider.h"
 #include "qgssensorthingsutils.h"
 #include "qgsapplication.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsblockingnetworkrequest.h"
 
 #include <QIcon>
+#include <QNetworkRequest>
 
 ///@cond PRIVATE
 
 QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
-  mSharedData = std::make_shared< QgsSensorThingsSharedData >( QgsDataSourceUri( uri ) );
+  mSharedData = std::make_shared< QgsSensorThingsSharedData >( uri );
+
+  const QUrl url( QgsSensorThingsSharedData::parseUrl( mSharedData->mRootUri ) );
+
+  QNetworkRequest request = QNetworkRequest( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsProvider" ) )
+  mSharedData->mHeaders.updateNetworkRequest( request );
+
+  QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( mSharedData->mAuthCfg );
+
+  switch ( networkRequest.get( request ) )
+  {
+    case QgsBlockingNetworkRequest::NoError:
+      break;
+
+    case QgsBlockingNetworkRequest::NetworkError:
+    case QgsBlockingNetworkRequest::TimeoutError:
+    case QgsBlockingNetworkRequest::ServerExceptionError:
+      // TODO -- error reporting
+      return;
+  }
+
+  const QgsNetworkReplyContent content = networkRequest.reply();
+
 
   mValid = true;
 }
@@ -88,7 +115,7 @@ QgsVectorDataProvider::Capabilities QgsSensorThingsProvider::capabilities() cons
 
 void QgsSensorThingsProvider::setDataSourceUri( const QString &uri )
 {
-  mSharedData->mDataSource = QgsDataSourceUri( uri );
+  mSharedData = std::make_shared< QgsSensorThingsSharedData >( uri );
   QgsDataProvider::setDataSourceUri( uri );
 }
 
