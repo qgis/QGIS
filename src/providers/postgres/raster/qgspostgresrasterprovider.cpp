@@ -812,7 +812,7 @@ static inline QString dumpVariantMap( const QVariantMap &variantMap, const QStri
   return result;
 }
 
-QString QgsPostgresRasterProvider::htmlMetadata()
+QString QgsPostgresRasterProvider::htmlMetadata() const
 {
   // This must return the content of a HTML table starting by tr and ending by tr
   QVariantMap overviews;
@@ -2260,7 +2260,7 @@ void QgsPostgresRasterProvider::determinePrimaryKeyFromUriKeyColumn()
 }
 
 
-QString QgsPostgresRasterProvider::pkSql()
+QString QgsPostgresRasterProvider::pkSql() const
 {
   switch ( mPrimaryKeyType )
   {

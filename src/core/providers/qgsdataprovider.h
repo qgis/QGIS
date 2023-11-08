@@ -189,6 +189,12 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QString dataComment() const { return QString(); };
 
+    /**
+     * Obtain a formatted HTML string containing assorted metadata for this data provider.
+     *
+     * \since QGIS 3.36
+     */
+    virtual QString htmlMetadata() const;
 
     /**
      * Set the data source specification.

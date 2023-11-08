@@ -58,7 +58,7 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
     int ySize() const override;
 
     // QgsRasterDataProvider interface
-    virtual QString htmlMetadata() override;
+    virtual QString htmlMetadata() const override;
     virtual QString lastErrorTitle() override;
     virtual QString lastError() override;
     int capabilities() const override;

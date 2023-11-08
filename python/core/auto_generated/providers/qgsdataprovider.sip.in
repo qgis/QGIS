@@ -135,6 +135,12 @@ providing access to (e.g. the comment for postgres table).
 
 .. versionadded:: 3.14
 %End
+    virtual QString htmlMetadata() const;
+%Docstring
+Obtain a formatted HTML string containing assorted metadata for this data provider.
+
+.. versionadded:: 3.36
+%End
 
     void setUri( const QgsDataSourceUri &uri );
 %Docstring
