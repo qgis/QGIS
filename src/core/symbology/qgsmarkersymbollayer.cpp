@@ -3476,7 +3476,18 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "font" ) ) )
     fontFamily = props[QStringLiteral( "font" )].toString();
   if ( props.contains( QStringLiteral( "chr" ) ) && props[QStringLiteral( "chr" )].toString().length() > 0 )
-    string = props[QStringLiteral( "chr" )].toString();
+  {
+    string = props["chr"].toString();
+    const thread_local QRegularExpression charRegExp( QStringLiteral( "%1([0-9]+)%1" ).arg( FONTMARKER_CHR_FIX ) );
+    QRegularExpressionMatch match = charRegExp.match( string );
+    while ( match.hasMatch() )
+    {
+      QChar replacement = QChar( match.captured( 1 ).toUShort() );
+      string = string.mid( 0, match.capturedStart( 0 ) ) + replacement + string.mid( match.capturedEnd( 0 ) );
+      match = charRegExp.match( string );
+    }
+  }
+
   if ( props.contains( QStringLiteral( "size" ) ) )
     pointSize = props[QStringLiteral( "size" )].toDouble();
   if ( props.contains( QStringLiteral( "color" ) ) )
@@ -3799,7 +3810,16 @@ QVariantMap QgsFontMarkerSymbolLayer::properties() const
   QVariantMap props;
   props[QStringLiteral( "font" )] = mFontFamily;
   props[QStringLiteral( "font_style" )] = mFontStyle;
-  props[QStringLiteral( "chr" )] = mString;
+  QString chr = mString;
+  for ( int i = 0; i < 32; i++ )
+  {
+    if ( i == 9 || i == 10 || i == 13 )
+    {
+      continue;
+    }
+    chr.replace( QChar( i ), QStringLiteral( "%1%2%1" ).arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
+  }
+  props[QStringLiteral( "chr" )] = chr;
   props[QStringLiteral( "size" )] = QString::number( mSize );
   props[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( mSizeUnit );
   props[QStringLiteral( "size_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );

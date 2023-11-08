@@ -31,6 +31,8 @@
 
 #include <QFile>
 
+#define FONTMARKER_CHR_FIX  "~!_#!#_!~"
+
 class QgsExpression;
 class QgsPathResolver;
 class QgsReadWriteContext;
