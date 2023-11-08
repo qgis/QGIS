@@ -158,6 +158,23 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             vl.dataProvider().error().summary()[-25:], "No such file or directory"
         )
 
+    def test_layer_invalid_json(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write("""
+    {
+      "value": ["""
+                        )
+
+            vl = QgsVectorLayer(f"url='http://{endpoint}'", "test", "sensorthings")
+            self.assertFalse(vl.isValid())
+            self.assertIn(
+                'parse error',
+                vl.dataProvider().error().summary()
+            )
+
     def test_layer(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
