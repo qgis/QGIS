@@ -147,8 +147,16 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         )
 
     def test_invalid_layer(self):
-        vl = QgsVectorLayer(f"url='http://fake.com/fake_qgis_http_endpoint'", "test", "sensorthings")
+        vl = QgsVectorLayer(
+            f"url='http://fake.com/fake_qgis_http_endpoint'", "test", "sensorthings"
+        )
         self.assertFalse(vl.isValid())
+        self.assertEqual(
+            vl.dataProvider().error().summary()[:32], "Connection failed: Error opening"
+        )
+        self.assertEqual(
+            vl.dataProvider().error().summary()[-25:], "No such file or directory"
+        )
 
     def test_layer(self):
         with tempfile.TemporaryDirectory() as temp_dir:
