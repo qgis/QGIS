@@ -146,6 +146,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             Qgis.SensorThingsEntity.FeatureOfInterest,
         )
 
+    def test_invalid_layer(self):
+        vl = QgsVectorLayer(f"url='http://fake.com/fake_qgis_http_endpoint'", "test", "sensorthings")
+        self.assertFalse(vl.isValid())
+
     def test_layer(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             base_path = temp_dir.replace("\\", "/")
