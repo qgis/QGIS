@@ -12,12 +12,13 @@
 #
 
 
-set(QWT_LIBRARY_NAMES qwt-${QT_VERSION_BASE_LOWER} qwt qwt6)
+set(QWT_LIBRARY_NAMES qwt-${QT_VERSION_BASE_LOWER} qwt qwt6 qwt6-${QT_VERSION_BASE_LOWER})
 
 find_library(QWT_LIBRARY
   NAMES ${QWT_LIBRARY_NAMES}
   PATHS
     /usr/lib
+    /usr/lib64
     /usr/local/lib
     /usr/local/lib/${QT_VERSION_BASE_LOWER}
     "$ENV{LIB_DIR}/lib"
