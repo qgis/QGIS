@@ -19,7 +19,7 @@ from qgis.PyQt.QtCore import (
 )
 from qgis.core import (
     QgsProviderRegistry,
-    QgsRectangle,
+    QgsVectorLayer,
     QgsSettings,
 )
 from qgis.testing import start_app, QgisTestCase
@@ -65,6 +65,59 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         # shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
         super().tearDownClass()
+
+    def test_layer(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace('\\', '/')
+            endpoint = base_path + '/fake_qgis_http_endpoint'
+            with open(sanitize(endpoint, ''), 'wt', encoding='utf8') as f:
+                f.write("""
+{
+  "value": [
+    {
+      "name": "Datastreams",
+      "url": "endpoint/Datastreams"
+    },
+    {
+      "name": "MultiDatastreams",
+      "url": "endpoint/MultiDatastreams"
+    },
+    {
+      "name": "FeaturesOfInterest",
+      "url": "endpoint/FeaturesOfInterest"
+    },
+    {
+      "name": "HistoricalLocations",
+      "url": "endpoint/HistoricalLocations"
+    },
+    {
+      "name": "Locations",
+      "url": "endpoint/Locations"
+    },
+    {
+      "name": "Observations",
+      "url": "endpoint/Observations"
+    },
+    {
+      "name": "ObservedProperties",
+      "url": "endpoint/ObservedProperties"
+    },
+    {
+      "name": "Sensors",
+      "url": "endpoint/Sensors"
+    },
+    {
+      "name": "Things",
+      "url": "endpointThings"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace('endpoint', endpoint))
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}'", 'test', 'sensorthings')
+            self.assertTrue(vl.isValid())
 
     def testDecodeUri(self):
         """
