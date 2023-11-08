@@ -1244,7 +1244,7 @@ int QgsWcsProvider::capabilities() const
   return capability;
 }
 
-QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage )
+QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage ) const
 {
   QString metadata;
 
@@ -1313,7 +1313,7 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
   return metadata;
 }
 
-QString QgsWcsProvider::htmlMetadata()
+QString QgsWcsProvider::htmlMetadata() const
 {
   QString metadata;
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "WCS Info" ) + QStringLiteral( "</td><td><div>" );
@@ -1377,7 +1377,7 @@ QString QgsWcsProvider::htmlMetadata()
 
   // Dialog takes too long to open if there are too many coverages (1000 for example)
   int count = 0;
-  const auto constCoverages = mCapabilities.coverages();
+  const QList< QgsWcsCoverageSummary> constCoverages = mCapabilities.coverages();
   for ( const QgsWcsCoverageSummary &c : constCoverages )
   {
     metadata += coverageMetadata( c );

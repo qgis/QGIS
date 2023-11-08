@@ -49,12 +49,6 @@ Returns flags containing the supported capabilities for the data provider.
 Returns a clone of the data provider.
 %End
 
-    virtual QString htmlMetadata() const;
-%Docstring
-Returns metadata in a format suitable for feeding directly
-into a subset of the GUI properties "Metadata" tab.
-%End
-
     virtual const QgsCoordinateReferenceSystem sceneCrs() const = 0;
 %Docstring
 Returns the original coordinate reference system for the tiled scene data.

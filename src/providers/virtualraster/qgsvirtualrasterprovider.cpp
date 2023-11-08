@@ -337,7 +337,7 @@ QString QgsVirtualRasterProvider::lastError()
   return QStringLiteral( "Not implemented" );
 }
 
-QString QgsVirtualRasterProvider::htmlMetadata()
+QString QgsVirtualRasterProvider::htmlMetadata() const
 {
   //only test
   return "Virtual Raster data provider";

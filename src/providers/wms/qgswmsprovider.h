@@ -297,7 +297,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
-    QString htmlMetadata() override;
+    QString htmlMetadata() const override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     double sample( const QgsPointXY &point, int band, bool *ok = nullptr, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
@@ -488,7 +488,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     //QStringList identifyAs( const QgsPointXY &point, QString format );
 
-    QString layerMetadata( QgsWmsLayerProperty &layer );
+    QString layerMetadata( const QgsWmsLayerProperty &layer ) const;
 
     //! remove query item and replace it with a new value
     void setQueryItem( QUrlQuery &url, const QString &key, const QString &value );

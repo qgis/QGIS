@@ -201,12 +201,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     // void buildSupportedRasterFileFilter( QString & fileFiltersString );
 
-    /**
-     * Gets metadata in a format suitable for feeding directly
-     * into a subset of the GUI raster properties "Metadata" tab.
-     */
-    QString htmlMetadata() override;
-
+    QString htmlMetadata() const override;
     QDateTime dataTimestamp() const override;
 
     // used by GRASS tools

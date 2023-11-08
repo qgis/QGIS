@@ -159,7 +159,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     double bandScale( int bandNo ) const override;
     double bandOffset( int bandNo ) const override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
-    QString htmlMetadata() override;
+    QString htmlMetadata() const override;
     QString bandDescription( int bandNumber ) override;
     QStringList subLayers() const override;
 
@@ -300,7 +300,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     GDALDatasetH mGdalDataset = nullptr;
 
     //! \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform
-    double mGeoTransform[6];
+    mutable double mGeoTransform[6];
 
     QgsCoordinateReferenceSystem mCrs;
 

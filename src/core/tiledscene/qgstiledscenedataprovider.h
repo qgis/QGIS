@@ -66,12 +66,6 @@ class CORE_EXPORT QgsTiledSceneDataProvider: public QgsDataProvider
     virtual QgsTiledSceneDataProvider *clone() const = 0 SIP_FACTORY;
 
     /**
-     * Returns metadata in a format suitable for feeding directly
-     * into a subset of the GUI properties "Metadata" tab.
-     */
-    virtual QString htmlMetadata() const;
-
-    /**
      * Returns the original coordinate reference system for the tiled scene data.
      *
      * This may differ from the QgsDataProvider::crs(), which is the best CRS representation

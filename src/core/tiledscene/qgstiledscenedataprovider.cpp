@@ -41,13 +41,6 @@ Qgis::TiledSceneProviderCapabilities QgsTiledSceneDataProvider::capabilities() c
   return Qgis::TiledSceneProviderCapabilities();
 }
 
-QString QgsTiledSceneDataProvider::htmlMetadata() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QString();
-}
-
 QgsDoubleRange QgsTiledSceneDataProvider::zRange() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

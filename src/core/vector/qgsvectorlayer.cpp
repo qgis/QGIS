@@ -5593,10 +5593,10 @@ QString QgsVectorLayer::htmlMetadata() const
   }
 
   // encoding
-  const QgsVectorDataProvider *provider = dataProvider();
-  if ( provider )
+  if ( const QgsVectorDataProvider *provider = dataProvider() )
   {
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Encoding" ) + QStringLiteral( "</td><td>" ) + provider->encoding() + QStringLiteral( "</td></tr>\n" );
+    myMetadata += provider->htmlMetadata();
   }
 
   if ( isSpatial() )
