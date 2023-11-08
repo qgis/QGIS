@@ -47,49 +47,33 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
       */
     QgsTemporalNavigationObject( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Represents the current temporal navigation mode.
-    enum NavigationMode
-    {
-      NavigationOff, //!< Temporal navigation is disabled
-      Animated, //!< Temporal navigation relies on frames within a datetime range
-      FixedRange, //!< Temporal navigation relies on a fixed datetime range
-    };
-
-    //! Represents the current animation state.
-    enum AnimationState
-    {
-      Forward, //!< Animation is playing forward.
-      Reverse, //!< Animation is playing in reverse.
-      Idle, //!< Animation is paused.
-    };
-
     /**
      * Sets the current animation \a state.
      *
      * \see animationState()
      */
-    void setAnimationState( AnimationState state );
+    void setAnimationState( Qgis::AnimationState state );
 
     /**
      * Returns the current animation state.
      *
      * \see setAnimationState()
      */
-    AnimationState animationState() const;
+    Qgis::AnimationState animationState() const;
 
     /**
      * Sets the temporal navigation \a mode.
      *
      * \see navigationMode()
      */
-    void setNavigationMode( const NavigationMode mode );
+    void setNavigationMode( const Qgis::TemporalNavigationMode mode );
 
     /**
      * Returns the current temporal navigation mode.
      *
      * \see setNavigationMode()
      */
-    NavigationMode navigationMode() const { return mNavigationMode; }
+    Qgis::TemporalNavigationMode navigationMode() const { return mNavigationMode; }
 
     /**
      * Sets the navigation temporal \a extents, which dictate the earliest
@@ -237,12 +221,12 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     /**
      * Emitted whenever the animation \a state changes.
      */
-    void stateChanged( QgsTemporalNavigationObject::AnimationState state );
+    void stateChanged( Qgis::AnimationState state );
 
     /**
      * Emitted whenever the navigation \a mode changes.
      */
-    void navigationModeChanged( QgsTemporalNavigationObject::NavigationMode mode );
+    void navigationModeChanged( Qgis::TemporalNavigationMode mode );
 
     /**
      * Emitted whenever the temporalExtent \a extent changes.
@@ -323,7 +307,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     //! Complete list of time ranges with data available
     QList< QgsDateTimeRange > mAllRanges;
 
-    NavigationMode mNavigationMode = NavigationOff;
+    Qgis::TemporalNavigationMode mNavigationMode = Qgis::TemporalNavigationMode::Disabled;
 
     //! The current set frame value
     long long mCurrentFrameNumber = 0;
@@ -338,7 +322,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     QTimer *mNewFrameTimer = nullptr;
 
     //! Navigation playback mode member
-    AnimationState mPlayBackMode = Idle;
+    Qgis::AnimationState mPlayBackMode = Qgis::AnimationState::Idle;
 
     bool mLoopAnimation = false;
 

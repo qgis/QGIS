@@ -577,13 +577,13 @@ void QgsMapCanvas::temporalControllerModeChanged()
   {
     switch ( temporalNavigationObject->navigationMode() )
     {
-      case QgsTemporalNavigationObject::Animated:
+      case Qgis::TemporalNavigationMode::Animated:
         mSettings.setFrameRate( temporalNavigationObject->framesPerSecond() );
         mSettings.setCurrentFrame( temporalNavigationObject->currentFrameNumber() );
         break;
 
-      case QgsTemporalNavigationObject::NavigationOff:
-      case QgsTemporalNavigationObject::FixedRange:
+      case Qgis::TemporalNavigationMode::Disabled:
+      case Qgis::TemporalNavigationMode::FixedRange:
         // clear any existing animation settings from map settings. We don't do this on every render, as a 3rd party plugin
         // might be in control of these!
         mSettings.setFrameRate( -1 );
@@ -762,13 +762,13 @@ void QgsMapCanvas::refreshMap()
   {
     switch ( temporalNavigationObject->navigationMode() )
     {
-      case QgsTemporalNavigationObject::Animated:
+      case Qgis::TemporalNavigationMode::Animated:
         mSettings.setFrameRate( temporalNavigationObject->framesPerSecond() );
         mSettings.setCurrentFrame( temporalNavigationObject->currentFrameNumber() );
         break;
 
-      case QgsTemporalNavigationObject::NavigationOff:
-      case QgsTemporalNavigationObject::FixedRange:
+      case Qgis::TemporalNavigationMode::Disabled:
+      case Qgis::TemporalNavigationMode::FixedRange:
         break;
     }
   }

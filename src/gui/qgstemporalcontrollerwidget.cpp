@@ -68,11 +68,11 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( mNavigationFixedRange, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationFixedRange_clicked );
   connect( mNavigationAnimated, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationAnimated_clicked );
 
-  connect( mNavigationObject, &QgsTemporalNavigationObject::stateChanged, this, [ = ]( QgsTemporalNavigationObject::AnimationState state )
+  connect( mNavigationObject, &QgsTemporalNavigationObject::stateChanged, this, [ = ]( Qgis::AnimationState state )
   {
-    mForwardButton->setChecked( state == QgsTemporalNavigationObject::Forward );
-    mBackButton->setChecked( state == QgsTemporalNavigationObject::Reverse );
-    mStopButton->setChecked( state == QgsTemporalNavigationObject::Idle );
+    mForwardButton->setChecked( state == Qgis::AnimationState::Forward );
+    mBackButton->setChecked( state == Qgis::AnimationState::Reverse );
+    mStopButton->setChecked( state == Qgis::AnimationState::Idle );
   } );
 
   connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::startEndDateTime_changed );
@@ -225,7 +225,7 @@ void QgsTemporalControllerWidget::togglePlayForward()
 {
   mPlayingForward = true;
 
-  if ( mNavigationObject->animationState() != QgsTemporalNavigationObject::Forward )
+  if ( mNavigationObject->animationState() != Qgis::AnimationState::Forward )
   {
     mStopButton->setChecked( false );
     mBackButton->setChecked( false );
@@ -244,7 +244,7 @@ void QgsTemporalControllerWidget::togglePlayBackward()
 {
   mPlayingForward = false;
 
-  if ( mNavigationObject->animationState() != QgsTemporalNavigationObject::Reverse )
+  if ( mNavigationObject->animationState() != Qgis::AnimationState::Reverse )
   {
     mStopButton->setChecked( false );
     mBackButton->setChecked( true );
@@ -261,7 +261,7 @@ void QgsTemporalControllerWidget::togglePlayBackward()
 
 void QgsTemporalControllerWidget::togglePause()
 {
-  if ( mNavigationObject->animationState() != QgsTemporalNavigationObject::Idle )
+  if ( mNavigationObject->animationState() != Qgis::AnimationState::Idle )
   {
     mStopButton->setChecked( true );
     mBackButton->setChecked( false );
@@ -291,7 +291,7 @@ void QgsTemporalControllerWidget::updateTemporalExtent()
   const QDateTime end = mEndDateTime->dateTime();
   const bool isTimeInstant = start == end;
   const QgsDateTimeRange temporalExtent = QgsDateTimeRange( start, end,
-                                          true, !isTimeInstant && mNavigationObject->navigationMode() == QgsTemporalNavigationObject::FixedRange ? false : true );
+                                          true, !isTimeInstant && mNavigationObject->navigationMode() == Qgis::TemporalNavigationMode::FixedRange ? false : true );
   mNavigationObject->setTemporalExtents( temporalExtent );
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
   mSlider->setValue( mNavigationObject->currentFrameNumber() );
@@ -340,7 +340,7 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
   mBlockSettingUpdates--;
 
   bool ok = false;
-  const QgsTemporalNavigationObject::NavigationMode mode = static_cast< QgsTemporalNavigationObject::NavigationMode>( QgsProject::instance()->readNumEntry( QStringLiteral( "TemporalControllerWidget" ),
+  const Qgis::TemporalNavigationMode mode = static_cast< Qgis::TemporalNavigationMode>( QgsProject::instance()->readNumEntry( QStringLiteral( "TemporalControllerWidget" ),
       QStringLiteral( "/NavigationMode" ), 0, &ok ) );
   if ( ok )
   {
@@ -349,8 +349,8 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
   }
   else
   {
-    mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
-    setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+    mNavigationObject->setNavigationMode( Qgis::TemporalNavigationMode::Disabled );
+    setWidgetStateFromNavigationMode( Qgis::TemporalNavigationMode::Disabled );
   }
 
   const QString startString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/StartDateTime" ) );
@@ -376,45 +376,45 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
 void QgsTemporalControllerWidget::mNavigationOff_clicked()
 {
   QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/NavigationMode" ),
-                                      static_cast<int>( QgsTemporalNavigationObject::NavigationOff ) );
+                                      static_cast<int>( Qgis::TemporalNavigationMode::Disabled ) );
 
-  mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
-  setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+  mNavigationObject->setNavigationMode( Qgis::TemporalNavigationMode::Disabled );
+  setWidgetStateFromNavigationMode( Qgis::TemporalNavigationMode::Disabled );
 }
 
 void QgsTemporalControllerWidget::mNavigationFixedRange_clicked()
 {
   QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/NavigationMode" ),
-                                      static_cast<int>( QgsTemporalNavigationObject::FixedRange ) );
+                                      static_cast<int>( Qgis::TemporalNavigationMode::FixedRange ) );
 
-  mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::FixedRange );
-  setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::FixedRange );
+  mNavigationObject->setNavigationMode( Qgis::TemporalNavigationMode::FixedRange );
+  setWidgetStateFromNavigationMode( Qgis::TemporalNavigationMode::FixedRange );
 }
 
 void QgsTemporalControllerWidget::mNavigationAnimated_clicked()
 {
   QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/NavigationMode" ),
-                                      static_cast<int>( QgsTemporalNavigationObject::Animated ) );
+                                      static_cast<int>( Qgis::TemporalNavigationMode::Animated ) );
 
-  mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::Animated );
-  setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::Animated );
+  mNavigationObject->setNavigationMode( Qgis::TemporalNavigationMode::Animated );
+  setWidgetStateFromNavigationMode( Qgis::TemporalNavigationMode::Animated );
 }
 
-void QgsTemporalControllerWidget::setWidgetStateFromNavigationMode( const QgsTemporalNavigationObject::NavigationMode mode )
+void QgsTemporalControllerWidget::setWidgetStateFromNavigationMode( const Qgis::TemporalNavigationMode mode )
 {
-  mNavigationOff->setChecked( mode == QgsTemporalNavigationObject::NavigationOff );
-  mNavigationFixedRange->setChecked( mode  == QgsTemporalNavigationObject::FixedRange );
-  mNavigationAnimated->setChecked( mode  == QgsTemporalNavigationObject::Animated );
+  mNavigationOff->setChecked( mode == Qgis::TemporalNavigationMode::Disabled );
+  mNavigationFixedRange->setChecked( mode  == Qgis::TemporalNavigationMode::FixedRange );
+  mNavigationAnimated->setChecked( mode  == Qgis::TemporalNavigationMode::Animated );
 
   switch ( mode )
   {
-    case QgsTemporalNavigationObject::NavigationOff:
+    case Qgis::TemporalNavigationMode::Disabled:
       mNavigationModeStackedWidget->setCurrentIndex( 0 );
       break;
-    case QgsTemporalNavigationObject::FixedRange:
+    case Qgis::TemporalNavigationMode::FixedRange:
       mNavigationModeStackedWidget->setCurrentIndex( 1 );
       break;
-    case QgsTemporalNavigationObject::Animated:
+    case Qgis::TemporalNavigationMode::Animated:
       mNavigationModeStackedWidget->setCurrentIndex( 2 );
       break;
   }
@@ -478,8 +478,8 @@ void QgsTemporalControllerWidget::onProjectCleared()
 {
   mHasTemporalLayersLoaded = false;
 
-  mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
-  setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+  mNavigationObject->setNavigationMode( Qgis::TemporalNavigationMode::Disabled );
+  setWidgetStateFromNavigationMode( Qgis::TemporalNavigationMode::Disabled );
 
   // default to showing the last 24 hours, ending at the current date's hour, in one hour blocks...
   // it's COMPLETELY arbitrary, but better than starting with a "zero length" duration!
@@ -511,17 +511,17 @@ void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &rang
     timeFrameFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss.zzz" );
   switch ( mNavigationObject->navigationMode() )
   {
-    case QgsTemporalNavigationObject::Animated:
+    case Qgis::TemporalNavigationMode::Animated:
       mCurrentRangeLabel->setText( tr( "Current frame: %1 ≤ <i>t</i> &lt; %2" ).arg(
                                      range.begin().toString( timeFrameFormat ),
                                      range.end().toString( timeFrameFormat ) ) );
       break;
-    case QgsTemporalNavigationObject::FixedRange:
+    case Qgis::TemporalNavigationMode::FixedRange:
       mCurrentRangeLabel->setText( tr( "Range: %1 ≤ <i>t</i> &lt; %2" ).arg(
                                      range.begin().toString( timeFrameFormat ),
                                      range.end().toString( timeFrameFormat ) ) );
       break;
-    case QgsTemporalNavigationObject::NavigationOff:
+    case Qgis::TemporalNavigationMode::Disabled:
       mCurrentRangeLabel->setText( tr( "Temporal navigation disabled" ) );
       break;
   }

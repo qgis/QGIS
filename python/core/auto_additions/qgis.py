@@ -1778,6 +1778,35 @@ Qgis.AnnotationItemEditOperationResult.ItemCleared.__doc__ = "The operation resu
 Qgis.AnnotationItemEditOperationResult.__doc__ = "Results from an edit operation on an annotation item.\n\n.. versionadded:: 3.22\n\n" + '* ``Success``: ' + Qgis.AnnotationItemEditOperationResult.Success.__doc__ + '\n' + '* ``Invalid``: ' + Qgis.AnnotationItemEditOperationResult.Invalid.__doc__ + '\n' + '* ``ItemCleared``: ' + Qgis.AnnotationItemEditOperationResult.ItemCleared.__doc__
 # --
 Qgis.AnnotationItemEditOperationResult.baseClass = Qgis
+QgsTemporalNavigationObject.NavigationMode = Qgis.TemporalNavigationMode
+# monkey patching scoped based enum
+QgsTemporalNavigationObject.NavigationOff = Qgis.TemporalNavigationMode.Disabled
+QgsTemporalNavigationObject.NavigationMode.NavigationOff = Qgis.TemporalNavigationMode.Disabled
+QgsTemporalNavigationObject.NavigationOff.is_monkey_patched = True
+QgsTemporalNavigationObject.NavigationOff.__doc__ = "Temporal navigation is disabled"
+QgsTemporalNavigationObject.Animated = Qgis.TemporalNavigationMode.Animated
+QgsTemporalNavigationObject.Animated.is_monkey_patched = True
+QgsTemporalNavigationObject.Animated.__doc__ = "Temporal navigation relies on frames within a datetime range"
+QgsTemporalNavigationObject.FixedRange = Qgis.TemporalNavigationMode.FixedRange
+QgsTemporalNavigationObject.FixedRange.is_monkey_patched = True
+QgsTemporalNavigationObject.FixedRange.__doc__ = "Temporal navigation relies on a fixed datetime range"
+Qgis.TemporalNavigationMode.__doc__ = "Temporal navigation modes.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsTemporalNavigationObject`.NavigationMode\n\n.. versionadded:: 3.36\n\n" + '* ``NavigationOff``: ' + Qgis.TemporalNavigationMode.Disabled.__doc__ + '\n' + '* ``Animated``: ' + Qgis.TemporalNavigationMode.Animated.__doc__ + '\n' + '* ``FixedRange``: ' + Qgis.TemporalNavigationMode.FixedRange.__doc__
+# --
+Qgis.TemporalNavigationMode.baseClass = Qgis
+QgsTemporalNavigationObject.AnimationState = Qgis.AnimationState
+# monkey patching scoped based enum
+QgsTemporalNavigationObject.Forward = Qgis.AnimationState.Forward
+QgsTemporalNavigationObject.Forward.is_monkey_patched = True
+QgsTemporalNavigationObject.Forward.__doc__ = "Animation is playing forward."
+QgsTemporalNavigationObject.Reverse = Qgis.AnimationState.Reverse
+QgsTemporalNavigationObject.Reverse.is_monkey_patched = True
+QgsTemporalNavigationObject.Reverse.__doc__ = "Animation is playing in reverse."
+QgsTemporalNavigationObject.Idle = Qgis.AnimationState.Idle
+QgsTemporalNavigationObject.Idle.is_monkey_patched = True
+QgsTemporalNavigationObject.Idle.__doc__ = "Animation is paused."
+Qgis.AnimationState.__doc__ = "Animation states.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsTemporalNavigationObject`.AnimationState\n\n.. versionadded:: 3.36\n\n" + '* ``Forward``: ' + Qgis.AnimationState.Forward.__doc__ + '\n' + '* ``Reverse``: ' + Qgis.AnimationState.Reverse.__doc__ + '\n' + '* ``Idle``: ' + Qgis.AnimationState.Idle.__doc__
+# --
+Qgis.AnimationState.baseClass = Qgis
 QgsVectorLayerTemporalProperties.TemporalMode = Qgis.VectorTemporalMode
 # monkey patching scoped based enum
 QgsVectorLayerTemporalProperties.ModeFixedTemporalRange = Qgis.VectorTemporalMode.FixedTemporalRange
