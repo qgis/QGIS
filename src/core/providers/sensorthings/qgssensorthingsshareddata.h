@@ -25,6 +25,7 @@
 class QgsFeedback;
 
 #define SIP_NO_FILE
+///@cond PRIVATE
 
 /**
  * \brief This class holds data shared between QgsSensorThingsProvider and QgsSensorThingsFeatureSource instances.
@@ -46,5 +47,7 @@ class QgsSensorThingsSharedData
     QgsFields mFields;
     QgsCoordinateReferenceSystem mSourceCRS;
 };
+
+///@endcond PRIVATE
 
 #endif // QGSSENSORTHINGSSHAREDDATA_H

@@ -23,6 +23,7 @@
 #include "qgsprovidermetadata.h"
 
 #define SIP_NO_FILE
+///@cond PRIVATE
 
 /**
  * \brief A vector data provider reading features from an OGC SensorThings data source.
@@ -86,4 +87,5 @@ class QgsSensorThingsProviderMetadata: public QgsProviderMetadata
     QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
+///@endcond PRIVATE
 #endif // QGSSENSORTHINGSPROVIDER_H

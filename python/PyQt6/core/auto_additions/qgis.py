@@ -4859,3 +4859,16 @@ Qgis.RasterBandStatistic.baseClass = Qgis
 Qgis.RasterBandStatistics = lambda flags=0: Qgis.RasterBandStatistic(flags)
 Qgis.RasterBandStatistics.baseClass = Qgis
 RasterBandStatistics = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.SensorThingsEntity.Invalid.__doc__ = "An invalid/unknown entity"
+Qgis.SensorThingsEntity.Thing.__doc__ = "A Thing is an object of the physical world (physical things) or the information world (virtual things) that is capable of being identified and integrated into communication networks"
+Qgis.SensorThingsEntity.Location.__doc__ = "A Location entity locates the Thing or the Things it associated with. A Thing’s Location entity is defined as the last known location of the Thing"
+Qgis.SensorThingsEntity.HistoricalLocation.__doc__ = "A Thing’s HistoricalLocation entity set provides the times of the current (i.e., last known) and previous locations of the Thing"
+Qgis.SensorThingsEntity.Datastream.__doc__ = "A Datastream groups a collection of Observations measuring the same ObservedProperty and produced by the same Sensor"
+Qgis.SensorThingsEntity.Sensor.__doc__ = "A Sensor is an instrument that observes a property or phenomenon with the goal of producing an estimate of the value of the property"
+Qgis.SensorThingsEntity.ObservedProperty.__doc__ = "An ObservedProperty specifies the phenomenon of an Observation"
+Qgis.SensorThingsEntity.Observation.__doc__ = "An Observation is the act of measuring or otherwise determining the value of a property"
+Qgis.SensorThingsEntity.FeatureOfInterest.__doc__ = "In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed"
+Qgis.SensorThingsEntity.__doc__ = "OGC SensorThings API entity types.\n\n.. versionadded:: 3.36\n\n" + '* ``Invalid``: ' + Qgis.SensorThingsEntity.Invalid.__doc__ + '\n' + '* ``Thing``: ' + Qgis.SensorThingsEntity.Thing.__doc__ + '\n' + '* ``Location``: ' + Qgis.SensorThingsEntity.Location.__doc__ + '\n' + '* ``HistoricalLocation``: ' + Qgis.SensorThingsEntity.HistoricalLocation.__doc__ + '\n' + '* ``Datastream``: ' + Qgis.SensorThingsEntity.Datastream.__doc__ + '\n' + '* ``Sensor``: ' + Qgis.SensorThingsEntity.Sensor.__doc__ + '\n' + '* ``ObservedProperty``: ' + Qgis.SensorThingsEntity.ObservedProperty.__doc__ + '\n' + '* ``Observation``: ' + Qgis.SensorThingsEntity.Observation.__doc__ + '\n' + '* ``FeatureOfInterest``: ' + Qgis.SensorThingsEntity.FeatureOfInterest.__doc__
+# --
+Qgis.SensorThingsEntity.baseClass = Qgis

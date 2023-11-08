@@ -1,8 +1,8 @@
 /***************************************************************************
-      qgssensorthingsshareddata.h
-      ----------------
+    qgssensorthingsutils.h
+    --------------------
     begin                : November 2023
-    copyright            : (C) 2013 Nyall Dawson
+    copyright            : (C) 2023 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
@@ -12,14 +12,31 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef QGSSENSORTHINGSUTILS_H
+#define QGSSENSORTHINGSUTILS_H
 
-#include "qgssensorthingsshareddata.h"
+#include "qgis_sip.h"
+#include "qgis_core.h"
+#include "qgis.h"
 
-///@cond PRIVATE
-
-QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QgsDataSourceUri &uri )
-  : mDataSource( uri )
+/**
+ * \ingroup core
+ * \brief Utility functions for working with OGC SensorThings API services.
+ *
+ * - 
+ *
+ * \since QGIS 3.36
+ */
+class CORE_EXPORT QgsSensorThingsUtils
 {
-}
 
-///@endcond PRIVATE
+  public:
+
+    /**
+     * Converts a string value to a Qgis::SensorThingsEntity type.
+     */
+    static Qgis::SensorThingsEntity stringToEntity( const QString &type );
+
+};
+
+#endif // QGSSENSORTHINGSUTILS_H

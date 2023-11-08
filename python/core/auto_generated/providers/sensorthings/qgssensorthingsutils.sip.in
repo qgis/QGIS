@@ -1,0 +1,38 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/sensorthings/qgssensorthingsutils.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsSensorThingsUtils
+{
+%Docstring(signature="appended")
+Utility functions for working with OGC SensorThings API services.
+
+- 
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgssensorthingsutils.h"
+%End
+  public:
+
+    static Qgis::SensorThingsEntity stringToEntity( const QString &type );
+%Docstring
+Converts a string value to a :py:class:`Qgis`.SensorThingsEntity type.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/sensorthings/qgssensorthingsutils.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

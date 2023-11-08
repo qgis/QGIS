@@ -118,6 +118,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}'", 'test', 'sensorthings')
             self.assertTrue(vl.isValid())
+            self.assertEqual(vl.storageType(), 'OGC SensorThings API')
 
     def testDecodeUri(self):
         """
