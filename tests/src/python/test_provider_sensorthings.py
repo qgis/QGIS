@@ -76,57 +76,74 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             QgsSensorThingsUtils.stringToEntity("x"), Qgis.SensorThingsEntity.Invalid
         )
         self.assertEqual(
-            QgsSensorThingsUtils.stringToEntity(" thing "), Qgis.SensorThingsEntity.Thing
+            QgsSensorThingsUtils.stringToEntity(" thing "),
+            Qgis.SensorThingsEntity.Thing,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.stringToEntity(" LOCATION "), Qgis.SensorThingsEntity.Location
+            QgsSensorThingsUtils.stringToEntity(" LOCATION "),
+            Qgis.SensorThingsEntity.Location,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.stringToEntity(" HistoricalLocation "), Qgis.SensorThingsEntity.HistoricalLocation
+            QgsSensorThingsUtils.stringToEntity(" HistoricalLocation "),
+            Qgis.SensorThingsEntity.HistoricalLocation,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.stringToEntity(" datastream "), Qgis.SensorThingsEntity.Datastream
+            QgsSensorThingsUtils.stringToEntity(" datastream "),
+            Qgis.SensorThingsEntity.Datastream,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.stringToEntity(" Sensor "), Qgis.SensorThingsEntity.Sensor
+            QgsSensorThingsUtils.stringToEntity(" Sensor "),
+            Qgis.SensorThingsEntity.Sensor,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.stringToEntity(" ObservedProperty "), Qgis.SensorThingsEntity.ObservedProperty
+            QgsSensorThingsUtils.stringToEntity(" ObservedProperty "),
+            Qgis.SensorThingsEntity.ObservedProperty,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.stringToEntity(" Observation "), Qgis.SensorThingsEntity.Observation
+            QgsSensorThingsUtils.stringToEntity(" Observation "),
+            Qgis.SensorThingsEntity.Observation,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.stringToEntity(" FeatureOfInterest "), Qgis.SensorThingsEntity.FeatureOfInterest
+            QgsSensorThingsUtils.stringToEntity(" FeatureOfInterest "),
+            Qgis.SensorThingsEntity.FeatureOfInterest,
         )
 
     def test_utils_string_to_entityset(self):
         self.assertEqual(
-            QgsSensorThingsUtils.entitySetStringToEntity("x"), Qgis.SensorThingsEntity.Invalid
+            QgsSensorThingsUtils.entitySetStringToEntity("x"),
+            Qgis.SensorThingsEntity.Invalid,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.entitySetStringToEntity(" things "), Qgis.SensorThingsEntity.Thing
+            QgsSensorThingsUtils.entitySetStringToEntity(" things "),
+            Qgis.SensorThingsEntity.Thing,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.entitySetStringToEntity(" LOCATIONs "), Qgis.SensorThingsEntity.Location
+            QgsSensorThingsUtils.entitySetStringToEntity(" LOCATIONs "),
+            Qgis.SensorThingsEntity.Location,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.entitySetStringToEntity(" HistoricalLocations "), Qgis.SensorThingsEntity.HistoricalLocation
+            QgsSensorThingsUtils.entitySetStringToEntity(" HistoricalLocations "),
+            Qgis.SensorThingsEntity.HistoricalLocation,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.entitySetStringToEntity(" datastreams "), Qgis.SensorThingsEntity.Datastream
+            QgsSensorThingsUtils.entitySetStringToEntity(" datastreams "),
+            Qgis.SensorThingsEntity.Datastream,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.entitySetStringToEntity(" Sensors "), Qgis.SensorThingsEntity.Sensor
+            QgsSensorThingsUtils.entitySetStringToEntity(" Sensors "),
+            Qgis.SensorThingsEntity.Sensor,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.entitySetStringToEntity(" ObservedProperties "), Qgis.SensorThingsEntity.ObservedProperty
+            QgsSensorThingsUtils.entitySetStringToEntity(" ObservedProperties "),
+            Qgis.SensorThingsEntity.ObservedProperty,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.entitySetStringToEntity(" Observations "), Qgis.SensorThingsEntity.Observation
+            QgsSensorThingsUtils.entitySetStringToEntity(" Observations "),
+            Qgis.SensorThingsEntity.Observation,
         )
         self.assertEqual(
-            QgsSensorThingsUtils.entitySetStringToEntity(" FeaturesOfInterest "), Qgis.SensorThingsEntity.FeatureOfInterest
+            QgsSensorThingsUtils.entitySetStringToEntity(" FeaturesOfInterest "),
+            Qgis.SensorThingsEntity.FeatureOfInterest,
         )
 
     def test_layer(self):
@@ -190,17 +207,32 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         """
         Test decoding a SensorThings uri
         """
-        uri = "url='https://sometest.com/api' authcfg='abc'"
+        uri = "url='https://sometest.com/api' authcfg='abc' entity='Locations'"
         parts = QgsProviderRegistry.instance().decodeUri("sensorthings", uri)
-        self.assertEqual(parts, {"url": "https://sometest.com/api", "authcfg": "abc"})
+        self.assertEqual(
+            parts,
+            {"url": "https://sometest.com/api", "entity": "Location", "authcfg": "abc"},
+        )
+        # should be forgiving to entity vs entity set strings
+        uri = "url='https://sometest.com/api' authcfg='abc' entity='Location'"
+        parts = QgsProviderRegistry.instance().decodeUri("sensorthings", uri)
+        self.assertEqual(
+            parts,
+            {"url": "https://sometest.com/api", "entity": "Location", "authcfg": "abc"},
+        )
 
     def testEncodeUri(self):
         """
         Test encoding a SensorThings uri
         """
-        parts = {"url": "http://blah.com", "authcfg": "aaaaa"}
+        parts = {"url": "http://blah.com", "authcfg": "aaaaa", "entity": "locations"}
         uri = QgsProviderRegistry.instance().encodeUri("sensorthings", parts)
-        self.assertEqual(uri, "authcfg=aaaaa url='http://blah.com'")
+        self.assertEqual(uri, "authcfg=aaaaa entity='Location' url='http://blah.com'")
+
+        # should be forgiving to entity vs entity set strings
+        parts = {"url": "http://blah.com", "authcfg": "aaaaa", "entity": "location"}
+        uri = QgsProviderRegistry.instance().encodeUri("sensorthings", parts)
+        self.assertEqual(uri, "authcfg=aaaaa entity='Location' url='http://blah.com'")
 
 
 if __name__ == "__main__":

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssensorthingsprovider.h"
+#include "qgssensorthingsutils.h"
 #include "qgsapplication.h"
 
 #include <QIcon>
@@ -175,6 +176,15 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
   {
     components.insert( QStringLiteral( "authcfg" ), dsUri.authConfigId() );
   }
+
+  const QString entityParam = dsUri.param( QStringLiteral( "entity" ) );
+  Qgis::SensorThingsEntity entity = QgsSensorThingsUtils::entitySetStringToEntity( entityParam );
+  if ( entity == Qgis::SensorThingsEntity::Invalid )
+    entity = QgsSensorThingsUtils::stringToEntity( entityParam );
+
+  if ( entity != Qgis::SensorThingsEntity::Invalid )
+    components.insert( QStringLiteral( "entity" ), qgsEnumValueToKey( entity ) );
+
   return components;
 }
 
@@ -187,6 +197,18 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
   {
     dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
   }
+
+  Qgis::SensorThingsEntity entity = QgsSensorThingsUtils::entitySetStringToEntity(
+                                      parts.value( QStringLiteral( "entity" ) ).toString() );
+  if ( entity == Qgis::SensorThingsEntity::Invalid )
+    entity = QgsSensorThingsUtils::stringToEntity( parts.value( QStringLiteral( "entity" ) ).toString() );
+
+  if ( entity != Qgis::SensorThingsEntity::Invalid )
+  {
+    dsUri.setParam( QStringLiteral( "entity" ),
+                    qgsEnumValueToKey( entity ) );
+  }
+
   return dsUri.uri( false );
 }
 
