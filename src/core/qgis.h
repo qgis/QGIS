@@ -1870,6 +1870,36 @@ class CORE_EXPORT Qgis
     Q_ENUM( AnnotationItemEditOperationResult )
 
     /**
+     * Temporal navigation modes.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsTemporalNavigationObject::NavigationMode
+     *
+     * \since QGIS 3.36
+     */
+    enum class TemporalNavigationMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTemporalNavigationObject, NavigationMode ) : int
+      {
+      Disabled SIP_MONKEYPATCH_COMPAT_NAME( NavigationOff ), //!< Temporal navigation is disabled
+      Animated, //!< Temporal navigation relies on frames within a datetime range
+      FixedRange, //!< Temporal navigation relies on a fixed datetime range
+    };
+    Q_ENUM( TemporalNavigationMode )
+
+    /**
+     * Animation states.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsTemporalNavigationObject::AnimationState
+     *
+     * \since QGIS 3.36
+     */
+    enum class AnimationState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTemporalNavigationObject, AnimationState ) : int
+      {
+      Forward, //!< Animation is playing forward.
+      Reverse, //!< Animation is playing in reverse.
+      Idle, //!< Animation is paused.
+    };
+    Q_ENUM( AnimationState )
+
+    /**
      * Vector layer temporal feature modes
      *
      * \since QGIS 3.22

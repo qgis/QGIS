@@ -1119,6 +1119,20 @@ The development version
       ItemCleared,
     };
 
+    enum class TemporalNavigationMode
+      {
+      Disabled,
+      Animated,
+      FixedRange,
+    };
+
+    enum class AnimationState
+      {
+      Forward,
+      Reverse,
+      Idle,
+    };
+
     enum class VectorTemporalMode
       {
       FixedTemporalRange,
