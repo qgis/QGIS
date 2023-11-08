@@ -58,6 +58,36 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
   try
   {
     auto rootContent = json::parse( content.content().toStdString() );
+    if ( !rootContent.contains( "value" ) )
+    {
+      appendError( QgsErrorMessage( tr( "No 'value' array in response" ), QStringLiteral( "SensorThings" ) ) );
+      return;
+    }
+
+    bool foundMatchingEntity = false;
+    for ( const auto &valueJson : rootContent["value"] )
+    {
+      if ( valueJson.contains( "name" ) && valueJson.contains( "url" ) )
+      {
+        const QString name = QString::fromStdString( valueJson["name"].get<std::string>() );
+        Qgis::SensorThingsEntity entityType = QgsSensorThingsUtils::entitySetStringToEntity( name );
+        if ( entityType == mSharedData->mEntityType )
+        {
+          const QString url = QString::fromStdString( valueJson["url"].get<std::string>() );
+          if ( !url.isEmpty() )
+          {
+            foundMatchingEntity = true;
+            mSharedData->mEntityBaseUri = url;
+          }
+        }
+      }
+    }
+
+    if ( !foundMatchingEntity )
+    {
+      appendError( QgsErrorMessage( tr( "Could not find url for %1" ).arg( qgsEnumValueToKey( mSharedData->mEntityType ) ), QStringLiteral( "SensorThings" ) ) );
+      return;
+    }
   }
   catch ( const json::parse_error &ex )
   {

@@ -50,6 +50,8 @@ class QgsSensorThingsSharedData
     QgsHttpHeaders mHeaders;
     QString mRootUri;
 
+    QString mEntityBaseUri;
+
     Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
 
     Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;
