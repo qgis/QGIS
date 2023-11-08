@@ -323,6 +323,9 @@ set(QGIS_CORE_SRCS
   providers/ogr/qgsogrproviderconnection.cpp
   providers/ogr/qgsogrtransaction.cpp
 
+  providers/sensorthings/qgssensorthingsprovider.cpp
+  providers/sensorthings/qgssensorthingsshareddata.cpp
+
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgshollowscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
@@ -1811,6 +1814,9 @@ set(QGIS_CORE_HDRS
   providers/ogr/qgsogrprovidermetadata.h
   providers/ogr/qgsogrproviderutils.h
   providers/ogr/qgsogrtransaction.h
+
+  providers/sensorthings/qgssensorthingsprovider.h
+  providers/sensorthings/qgssensorthingsshareddata.h
 
   raster/qgsrasterattributetable.h
   raster/qgsbilinearrasterresampler.h

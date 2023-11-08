@@ -32,6 +32,7 @@
 #include "providers/ogr/qgsogrprovidermetadata.h"
 #include "providers/ogr/qgsogrprovider.h"
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
+#include "providers/sensorthings/qgssensorthingsprovider.h"
 
 #include "qgsmbtilesvectortiledataprovider.h"
 #include "qgsarcgisvectortileservicedataprovider.h"
@@ -194,6 +195,10 @@ void QgsProviderRegistry::init()
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Create OGR provider" ) );
     mProviders[ QgsOgrProvider::providerKey() ] = new QgsOgrProviderMetadata();
+  }
+  {
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create OGC SensorThings API provider" ) );
+    mProviders[ QgsSensorThingsProvider::providerKey() ] = new QgsSensorThingsProviderMetadata();
   }
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Create vector tile providers" ) );
