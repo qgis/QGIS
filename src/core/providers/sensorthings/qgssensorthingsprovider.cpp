@@ -23,6 +23,7 @@
 
 #include <QIcon>
 #include <QNetworkRequest>
+#include <nlohmann/json.hpp>
 
 ///@cond PRIVATE
 
@@ -54,6 +55,15 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
 
   const QgsNetworkReplyContent content = networkRequest.reply();
 
+  try
+  {
+    auto rootContent = json::parse( content.content().toStdString() );
+  }
+  catch ( const json::parse_error &ex )
+  {
+    appendError( QgsErrorMessage( tr( "Error parsing response: %1" ).arg( ex.what() ), QStringLiteral( "SensorThings" ) ) );
+    return;
+  }
 
   mValid = true;
 }
