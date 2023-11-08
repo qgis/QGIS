@@ -16,7 +16,6 @@
 #ifndef QGSAFSSHAREDDATA_H
 #define QGSAFSSHAREDDATA_H
 
-#include <QObject>
 #include <QMutex>
 #include "qgsfields.h"
 #include "qgsfeature.h"
@@ -29,9 +28,9 @@ class QgsFeedback;
 /**
  * \brief This class holds data, shared between QgsAfsProvider and QgsAfsFeatureIterator
  */
-class QgsAfsSharedData : public QObject
+class QgsAfsSharedData
 {
-    Q_OBJECT
+
   public:
     QgsAfsSharedData( const QgsDataSourceUri &uri );
 
