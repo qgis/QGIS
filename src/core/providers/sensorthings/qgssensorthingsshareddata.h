@@ -16,9 +16,9 @@
 #ifndef QGSSENSORTHINGSSHAREDDATA_H
 #define QGSSENSORTHINGSSHAREDDATA_H
 
-#include "qgsdatasourceuri.h"
 #include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgshttpheaders.h"
 
 #include <QReadWriteLock>
 
@@ -34,14 +34,23 @@ class QgsSensorThingsSharedData
 {
 
   public:
-    QgsSensorThingsSharedData( const QgsDataSourceUri &uri );
+    QgsSensorThingsSharedData( const QString &uri );
+
+    /**
+    * Parses and processes a \a url.
+    */
+    static QUrl parseUrl( const QUrl &url, bool *isTestEndpoint = nullptr );
 
   private:
 
     friend class QgsSensorThingsProvider;
     mutable QReadWriteLock mReadWriteLock{ QReadWriteLock::Recursive };
 
-    QgsDataSourceUri mDataSource;
+    QString mAuthCfg;
+    QgsHttpHeaders mHeaders;
+    QString mRootUri;
+
+    Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
 
     Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;
     QgsFields mFields;
