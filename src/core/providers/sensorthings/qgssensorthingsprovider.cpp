@@ -48,7 +48,7 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
     case QgsBlockingNetworkRequest::NetworkError:
     case QgsBlockingNetworkRequest::TimeoutError:
     case QgsBlockingNetworkRequest::ServerExceptionError:
-      // TODO -- error reporting
+      appendError( QgsErrorMessage( tr( "Connection failed: %1" ).arg( networkRequest.errorMessage() ), QStringLiteral( "SensorThings" ) ) );
       return;
   }
 
