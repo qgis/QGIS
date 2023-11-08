@@ -94,12 +94,12 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
                              errorTitle, error, mDataSource.httpHeaders(), mLimitBBox ? mExtent : QgsRectangle(), mDataSource.sql() );
   if ( objectIdData.isEmpty() )
   {
-    errorMessage = tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, error );
+    errorMessage = QObject::tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, error );
     return false;
   }
   if ( !objectIdData[QStringLiteral( "objectIdFieldName" )].isValid() || !objectIdData[QStringLiteral( "objectIds" )].isValid() )
   {
-    errorMessage = tr( "Failed to determine objectIdFieldName and/or objectIds" );
+    errorMessage = QObject::tr( "Failed to determine objectIdFieldName and/or objectIds" );
     return false;
   }
   mObjectIdFieldName = objectIdData[QStringLiteral( "objectIdFieldName" )].toString();
