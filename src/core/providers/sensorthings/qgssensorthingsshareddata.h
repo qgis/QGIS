@@ -41,6 +41,8 @@ class QgsSensorThingsSharedData
     */
     static QUrl parseUrl( const QUrl &url, bool *isTestEndpoint = nullptr );
 
+    QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
+
   private:
 
     friend class QgsSensorThingsProvider;

@@ -323,6 +323,7 @@ set(QGIS_CORE_SRCS
   providers/ogr/qgsogrproviderconnection.cpp
   providers/ogr/qgsogrtransaction.cpp
 
+  providers/sensorthings/qgssensorthingsfeatureiterator.cpp
   providers/sensorthings/qgssensorthingsprovider.cpp
   providers/sensorthings/qgssensorthingsshareddata.cpp
   providers/sensorthings/qgssensorthingsutils.cpp
@@ -1816,6 +1817,7 @@ set(QGIS_CORE_HDRS
   providers/ogr/qgsogrproviderutils.h
   providers/ogr/qgsogrtransaction.h
 
+  providers/sensorthings/qgssensorthingsfeatureiterator.h
   providers/sensorthings/qgssensorthingsprovider.h
   providers/sensorthings/qgssensorthingsshareddata.h
   providers/sensorthings/qgssensorthingsutils.h
