@@ -42,17 +42,7 @@ QWidget *QgsTextWidgetWrapper::createWidget( QWidget *parent )
     {
       if ( attributeChanged )
       {
-        bool ok { false };
-        const thread_local QRegularExpression sRegEx{ QStringLiteral( "\\[%(.*?)%\\]" ),  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
-        QRegularExpressionMatchIterator matchIt { sRegEx.globalMatch( mText ) };
-        while ( !ok && matchIt.hasNext() )
-        {
-          const QRegularExpressionMatch match { matchIt.next() };
-          const QgsExpression exp { match.captured( 1 ) };
-          ok = QgsValueRelationFieldFormatter::expressionRequiresFormScope( exp );
-        }
-
-        if ( ok )
+        if ( mRequiresFormScope )
         {
           mFormFeature.setAttribute( attribute, newValue );
           updateTextContext();
@@ -99,6 +89,18 @@ void QgsTextWidgetWrapper::reinitWidget( )
 void QgsTextWidgetWrapper::setText( const QString &text )
 {
   mText = text;
+
+  bool ok = false;
+  const thread_local QRegularExpression sRegEx( QStringLiteral( "\\[%(.*?)%\\]" ),  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption );
+  QRegularExpressionMatchIterator matchIt = sRegEx.globalMatch( mText );
+  while ( !ok && matchIt.hasNext() )
+  {
+    const QRegularExpressionMatch match = matchIt.next();
+    const QgsExpression exp = match.captured( 1 );
+    ok = QgsValueRelationFieldFormatter::expressionRequiresFormScope( exp );
+  }
+  mRequiresFormScope = ok;
+
   reinitWidget();
 }
 
