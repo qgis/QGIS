@@ -295,12 +295,6 @@ pyramid layers.
 .. seealso:: :py:func:`buildPyramids`
 %End
 
-    virtual QString htmlMetadata() = 0;
-%Docstring
-Returns metadata in a format suitable for feeding directly
-into a subset of the GUI raster properties "Metadata" tab.
-%End
-
     virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 %Docstring
 Identify raster value(s) found on the point position. The context

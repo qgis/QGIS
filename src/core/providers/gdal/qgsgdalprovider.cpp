@@ -511,10 +511,10 @@ void QgsGdalProvider::loadMetadata()
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
 }
 
-QString QgsGdalProvider::htmlMetadata()
+QString QgsGdalProvider::htmlMetadata() const
 {
   QMutexLocker locker( mpMutex );
-  if ( !initIfNeeded() )
+  if ( !const_cast< QgsGdalProvider * >( this )->initIfNeeded() )
     return QString();
 
   GDALDriverH hDriver = GDALGetDriverByName( mDriverName.toLocal8Bit().constData() );

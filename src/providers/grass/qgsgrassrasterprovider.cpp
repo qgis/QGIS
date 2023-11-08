@@ -509,7 +509,7 @@ Qgis::RasterColorInterpretation QgsGrassRasterProvider::colorInterpretation( int
   return Qgis::RasterColorInterpretation::GrayIndex;
 }
 
-QString QgsGrassRasterProvider::htmlMetadata()
+QString QgsGrassRasterProvider::htmlMetadata() const
 {
   QString myMetadata;
   QStringList myList;
@@ -518,10 +518,9 @@ QString QgsGrassRasterProvider::htmlMetadata()
   myList.append( "MAPSET: " + mMapset );
   myList.append( "MAP: " + mMapName );
 
-  QHash<QString, QString>::iterator i;
-  for ( i = mInfo.begin(); i != mInfo.end(); ++i )
+  for ( auto it = mInfo.constBegin(); it != mInfo.constEnd(); ++it )
   {
-    myList.append( i.key() + " : " + i.value() );
+    myList.append( it.key() + " : " + it.value() );
   }
   myMetadata += QgsHtmlUtils::buildBulletList( myList );
   return myMetadata;

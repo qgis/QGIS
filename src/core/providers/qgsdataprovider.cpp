@@ -28,6 +28,13 @@ QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::Pro
   mReadFlags = flags;
 }
 
+QString QgsDataProvider::htmlMetadata() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QString();
+}
+
 Qgis::DataProviderFlags QgsDataProvider::flags() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

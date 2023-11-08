@@ -122,7 +122,7 @@ QString QgsWcsCapabilities::prepareUri( QString uri )
   return uri;
 }
 
-QgsWcsCapabilitiesProperty QgsWcsCapabilities::capabilities()
+const QgsWcsCapabilitiesProperty &QgsWcsCapabilities::capabilities() const
 {
   return mCapabilities;
 }
@@ -1327,12 +1327,12 @@ QgsWcsCoverageSummary *QgsWcsCapabilities::coverageSummary( QString const &ident
   return nullptr;
 }
 
-QList<QgsWcsCoverageSummary> QgsWcsCapabilities::coverages()
+QList<QgsWcsCoverageSummary> QgsWcsCapabilities::coverages() const
 {
   return coverageSummaries();
 }
 
-QList<QgsWcsCoverageSummary> QgsWcsCapabilities::coverageSummaries( QgsWcsCoverageSummary *parent )
+QList<QgsWcsCoverageSummary> QgsWcsCapabilities::coverageSummaries( const QgsWcsCoverageSummary *parent ) const
 {
   QList<QgsWcsCoverageSummary> list;
   if ( !parent )
@@ -1340,7 +1340,7 @@ QList<QgsWcsCoverageSummary> QgsWcsCapabilities::coverageSummaries( QgsWcsCovera
     parent = &( mCapabilities.contents );
   }
 
-  for ( QVector<QgsWcsCoverageSummary>::iterator c = parent->coverageSummary.begin(); c != parent->coverageSummary.end(); ++c )
+  for ( QVector<QgsWcsCoverageSummary>::const_iterator c = parent->coverageSummary.constBegin(); c != parent->coverageSummary.constEnd(); ++c )
   {
     list.append( *c );
     list.append( coverageSummaries( c ) );

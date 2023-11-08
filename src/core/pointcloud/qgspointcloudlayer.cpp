@@ -578,6 +578,12 @@ QString QgsPointCloudLayer::htmlMetadata() const
                 + tr( "Point count" ) + QStringLiteral( "</td><td>" )
                 + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) )
                 + QStringLiteral( "</td></tr>\n" );
+
+  if ( const QgsPointCloudDataProvider *provider = dataProvider() )
+  {
+    myMetadata += provider->htmlMetadata();
+  }
+
   myMetadata += QLatin1String( "</table>\n<br><br>" );
 
   // CRS

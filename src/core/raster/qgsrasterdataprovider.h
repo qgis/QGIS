@@ -382,12 +382,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     bool hasPyramids();
 
     /**
-     * Returns metadata in a format suitable for feeding directly
-     * into a subset of the GUI raster properties "Metadata" tab.
-     */
-    virtual QString htmlMetadata() = 0;
-
-    /**
      * Identify raster value(s) found on the point position. The context
      * parameters extent, width and height are important to identify
      * on the same zoom level as a displayed map and to do effective

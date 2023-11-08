@@ -2366,7 +2366,7 @@ int QgsWmsProvider::capabilities() const
   return capability;
 }
 
-QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
+QString QgsWmsProvider::layerMetadata( const QgsWmsLayerProperty &layer ) const
 {
   QString metadata =
     // Layer Properties section
@@ -2590,7 +2590,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   return metadata;
 }
 
-QString QgsWmsProvider::htmlMetadata()
+QString QgsWmsProvider::htmlMetadata() const
 {
   QString metadata;
 

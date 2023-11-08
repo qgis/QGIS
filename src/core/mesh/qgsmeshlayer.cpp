@@ -1994,7 +1994,7 @@ QString QgsMeshLayer::htmlMetadata() const
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
 
-  if ( dataProvider() )
+  if ( const QgsMeshDataProvider *provider = dataProvider() )
   {
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
                   + tr( "Vertex count" ) + QStringLiteral( "</td><td>" )
@@ -2012,6 +2012,7 @@ QString QgsMeshLayer::htmlMetadata() const
                   + tr( "Dataset groups count" ) + QStringLiteral( "</td><td>" )
                   + ( locale.toString( static_cast<qlonglong>( datasetGroupCount() ) ) )
                   + QStringLiteral( "</td></tr>\n" );
+    myMetadata += provider->htmlMetadata();
   }
 
   // End Provider section
