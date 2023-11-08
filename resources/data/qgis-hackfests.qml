@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis styleCategories="LayerConfiguration|Symbology|Labeling" version="3.35.0-Master" readOnly="0" labelsEnabled="1">
+<qgis styleCategories="LayerConfiguration|Symbology|Labeling|MapTips" version="3.35.0-Master" readOnly="0" labelsEnabled="1">
   <flags>
     <Identifiable>1</Identifiable>
     <Removable>1</Removable>
@@ -501,18 +501,18 @@
     <effect type="effectStack" enabled="1">
       <effect type="dropShadow">
         <Option type="Map">
-          <Option type="QString" name="blend_mode" value="13"/>
-          <Option type="QString" name="blur_level" value="0.7935"/>
+          <Option type="QString" name="blend_mode" value="16"/>
+          <Option type="QString" name="blur_level" value="1.1935"/>
           <Option type="QString" name="blur_unit" value="MM"/>
           <Option type="QString" name="blur_unit_scale" value="3x:0,0,0,0,0,0"/>
           <Option type="QString" name="color" value="0,0,0,255"/>
           <Option type="QString" name="draw_mode" value="2"/>
           <Option type="QString" name="enabled" value="1"/>
           <Option type="QString" name="offset_angle" value="135"/>
-          <Option type="QString" name="offset_distance" value="2"/>
+          <Option type="QString" name="offset_distance" value="1"/>
           <Option type="QString" name="offset_unit" value="MM"/>
           <Option type="QString" name="offset_unit_scale" value="3x:0,0,0,0,0,0"/>
-          <Option type="QString" name="opacity" value="0.5"/>
+          <Option type="QString" name="opacity" value="0.538"/>
         </Option>
       </effect>
       <effect type="outerGlow">
@@ -755,6 +755,7 @@
   </labeling>
   <blendMode>0</blendMode>
   <featureBlendMode>0</featureBlendMode>
-  <previewExpression>"year"</previewExpression>
+  <previewExpression>"notes"</previewExpression>
+  <mapTip enabled="1">[%"notes"%]</mapTip>
   <layerGeometryType>0</layerGeometryType>
 </qgis>
