@@ -179,11 +179,6 @@ QgsVectorDataProvider::Capabilities QgsSensorThingsProvider::capabilities() cons
                                           | QgsVectorDataProvider::ReadLayerMetadata
                                           | QgsVectorDataProvider::Capability::ReloadData;
 
-#if 0
-  if ( mServerSupportsCurves )
-    c |= QgsVectorDataProvider::CircularGeometries;
-#endif
-
   return c;
 }
 
@@ -287,6 +282,26 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
   if ( entity != Qgis::SensorThingsEntity::Invalid )
     components.insert( QStringLiteral( "entity" ), qgsEnumValueToKey( entity ) );
 
+  switch ( QgsWkbTypes::geometryType( dsUri.wkbType() ) )
+  {
+    case Qgis::GeometryType::Point:
+      if ( QgsWkbTypes::isMultiType( dsUri.wkbType() ) )
+        components.insert( QStringLiteral( "geometryType" ), QStringLiteral( "multipoint" ) );
+      else
+        components.insert( QStringLiteral( "geometryType" ), QStringLiteral( "point" ) );
+      break;
+    case Qgis::GeometryType::Line:
+      components.insert( QStringLiteral( "geometryType" ), QStringLiteral( "line" ) );
+      break;
+    case Qgis::GeometryType::Polygon:
+      components.insert( QStringLiteral( "geometryType" ), QStringLiteral( "polygon" ) );
+      break;
+
+    case Qgis::GeometryType::Unknown:
+    case Qgis::GeometryType::Null:
+      break;
+  }
+
   return components;
 }
 
@@ -309,6 +324,24 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
   {
     dsUri.setParam( QStringLiteral( "entity" ),
                     qgsEnumValueToKey( entity ) );
+  }
+
+  const QString geometryType = parts.value( QStringLiteral( "geometryType" ) ).toString();
+  if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 )
+  {
+    dsUri.setWkbType( Qgis::WkbType::PointZ );
+  }
+  else if ( geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
+  {
+    dsUri.setWkbType( Qgis::WkbType::MultiPointZ );
+  }
+  else if ( geometryType.compare( QLatin1String( "line" ), Qt::CaseInsensitive ) == 0 )
+  {
+    dsUri.setWkbType( Qgis::WkbType::MultiLineStringZ );
+  }
+  else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
+  {
+    dsUri.setWkbType( Qgis::WkbType::MultiPolygonZ );
   }
 
   return dsUri.uri( false );
