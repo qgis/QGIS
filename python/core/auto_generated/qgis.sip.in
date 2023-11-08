@@ -2707,6 +2707,19 @@ The development version
     typedef QFlags<Qgis::RasterBandStatistic> RasterBandStatistics;
 
 
+    enum class SensorThingsEntity
+    {
+      Invalid,
+      Thing,
+      Location,
+      HistoricalLocation,
+      Datastream,
+      Sensor,
+      ObservedProperty,
+      Observation,
+      FeatureOfInterest,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

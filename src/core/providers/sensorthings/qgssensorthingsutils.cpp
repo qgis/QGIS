@@ -1,8 +1,8 @@
 /***************************************************************************
-      qgssensorthingsshareddata.h
-      ----------------
+    qgssensorthingsutils.cpp
+    --------------------
     begin                : November 2023
-    copyright            : (C) 2013 Nyall Dawson
+    copyright            : (C) 2023 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
@@ -13,13 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssensorthingsshareddata.h"
+#include "qgssensorthingsutils.h"
 
-///@cond PRIVATE
-
-QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QgsDataSourceUri &uri )
-  : mDataSource( uri )
+Qgis::SensorThingsEntity QgsSensorThingsUtils::stringToEntity( const QString &type )
 {
-}
 
-///@endcond PRIVATE
+}

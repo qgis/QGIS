@@ -20,6 +20,8 @@
 
 #include <QIcon>
 
+///@cond PRIVATE
+
 QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
@@ -197,3 +199,5 @@ QList<Qgis::LayerType> QgsSensorThingsProviderMetadata::supportedLayerTypes() co
 {
   return { Qgis::LayerType::Vector };
 }
+
+///@endcond

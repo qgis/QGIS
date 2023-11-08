@@ -325,6 +325,7 @@ set(QGIS_CORE_SRCS
 
   providers/sensorthings/qgssensorthingsprovider.cpp
   providers/sensorthings/qgssensorthingsshareddata.cpp
+  providers/sensorthings/qgssensorthingsutils.cpp
 
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgshollowscalebarrenderer.cpp
@@ -1817,6 +1818,7 @@ set(QGIS_CORE_HDRS
 
   providers/sensorthings/qgssensorthingsprovider.h
   providers/sensorthings/qgssensorthingsshareddata.h
+  providers/sensorthings/qgssensorthingsutils.h
 
   raster/qgsrasterattributetable.h
   raster/qgsbilinearrasterresampler.h
@@ -2327,6 +2329,7 @@ target_include_directories(qgis_core PUBLIC
   providers/gdal
   providers/ogr
   providers/meshmemory
+  providers/sensorthings
   raster
   renderer
   scalebar

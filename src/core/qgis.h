@@ -4795,6 +4795,25 @@ class CORE_EXPORT Qgis
     Q_FLAG( RasterBandStatistics )
 
     /**
+     * OGC SensorThings API entity types.
+     *
+     * \since QGIS 3.36
+     */
+    enum class SensorThingsEntity : int
+    {
+      Invalid, //!< An invalid/unknown entity
+      Thing, //!< A Thing is an object of the physical world (physical things) or the information world (virtual things) that is capable of being identified and integrated into communication networks
+      Location, //!< A Location entity locates the Thing or the Things it associated with. A Thing’s Location entity is defined as the last known location of the Thing
+      HistoricalLocation, //!< A Thing’s HistoricalLocation entity set provides the times of the current (i.e., last known) and previous locations of the Thing
+      Datastream, //!< A Datastream groups a collection of Observations measuring the same ObservedProperty and produced by the same Sensor
+      Sensor, //!< A Sensor is an instrument that observes a property or phenomenon with the goal of producing an estimate of the value of the property
+      ObservedProperty, //!< An ObservedProperty specifies the phenomenon of an Observation
+      Observation, //!< An Observation is the act of measuring or otherwise determining the value of a property
+      FeatureOfInterest, //!< In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed
+    };
+    Q_ENUM( SensorThingsEntity )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
