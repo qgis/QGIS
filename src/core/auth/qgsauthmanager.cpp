@@ -802,6 +802,17 @@ bool QgsAuthManager::resetMasterPassword( const QString &newpass, const QString 
   return true;
 }
 
+bool QgsAuthManager::resetMasterPasswordUsingStoredPasswordHelper( const QString &newpass, bool keepbackup, QString *backuppath )
+{
+  if ( !verifyStoredPasswordHelperPassword() )
+  {
+    emit passwordHelperMessageOut( tr( "Master password stored in your %1 is not valid" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), WARNING );
+    return false;
+  }
+
+  return resetMasterPassword( newpass, passwordHelperRead(), keepbackup, backuppath );
+}
+
 void QgsAuthManager::setScheduledAuthDatabaseErase( bool scheduleErase )
 {
   ensureInitialized();
