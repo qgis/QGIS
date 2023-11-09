@@ -19,6 +19,7 @@
 #include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgshttpheaders.h"
+#include "qgsfeature.h"
 
 #include <QReadWriteLock>
 
@@ -43,6 +44,8 @@ class QgsSensorThingsSharedData
 
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
 
+    void clearCache();
+
   private:
 
     friend class QgsSensorThingsProvider;
@@ -59,6 +62,9 @@ class QgsSensorThingsSharedData
     Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;
     QgsFields mFields;
     QgsCoordinateReferenceSystem mSourceCRS;
+
+    QHash<QString, QgsFeatureId> mIotIdToFeatureId;
+    QMap<QgsFeatureId, QgsFeature> mCachedFeatures;
 };
 
 ///@endcond PRIVATE
