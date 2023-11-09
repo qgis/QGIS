@@ -878,6 +878,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     std::unique_ptr< QgsNetworkAuthenticationHandler > mAuthHandler;
     // Used by worker threads to wait for authentication handler run in main thread
     QSemaphore mAuthRequestHandlerSemaphore;
+
+    friend class TestQgsNetworkAccessManager;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H
