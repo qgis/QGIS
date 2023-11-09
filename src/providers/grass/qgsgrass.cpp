@@ -489,23 +489,9 @@ bool QgsGrass::isValidGrassBaseDir( const QString &gisbase )
     return false;
   }
 
-  /* TODO: G_is_gisbase() was added to GRASS 6.1 06-05-24,
-           enable its use after some period (others do update) */
-#if 0
-  if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
-  {
-    if ( G_is_gisbase( gisbase.toUtf8().constData() ) )
-      return true;
-  }
-  else
-  {
-#endif
-    QFileInfo gbi( gisbase + "/etc/element_list" );
-    if ( gbi.exists() )
-      return true;
-#if 0
-  }
-#endif
+  if ( G_is_gisbase( gisbase.toUtf8().constData() ) )
+    return true;
+
   return false;
 }
 
