@@ -3137,6 +3137,19 @@ bool QgsAuthManager::passwordHelperSync()
   return false;
 }
 
+bool QgsAuthManager::verifyStoredPasswordHelperPassword()
+{
+  if ( !passwordHelperEnabled() )
+    return false;
+
+  const QString currentPass = passwordHelperRead();
+  if ( !currentPass.isEmpty() && ( mPasswordHelperErrorCode == QKeychain::NoError ) )
+  {
+    return verifyMasterPassword( currentPass );
+  }
+  return false;
+}
+
 QString QgsAuthManager::passwordHelperDisplayName( bool titleCase )
 {
 #if defined(Q_OS_MAC)

@@ -768,6 +768,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool passwordHelperSync();
 
+    /**
+     * Verify the password stored in the password helper.
+     *
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.42
+     */
+    bool verifyStoredPasswordHelperPassword() SIP_SKIP;
+
     // TODO QGIS 4.0 -- remove
 
     /**
