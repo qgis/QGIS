@@ -1312,12 +1312,12 @@ QgsWcsCoverageSummary *QgsWcsCapabilities::coverageSummary( QString const &ident
   {
     if ( c->identifier == identifier )
     {
-      return c;
+      return &( *c );
     }
     else
     {
       // search sub coverages
-      QgsWcsCoverageSummary *subCoverage = coverageSummary( identifier, c );
+      QgsWcsCoverageSummary *subCoverage = coverageSummary( identifier, &( *c ) );
       if ( subCoverage )
       {
         return subCoverage;
@@ -1343,7 +1343,7 @@ QList<QgsWcsCoverageSummary> QgsWcsCapabilities::coverageSummaries( QgsWcsCovera
   for ( QVector<QgsWcsCoverageSummary>::iterator c = parent->coverageSummary.begin(); c != parent->coverageSummary.end(); ++c )
   {
     list.append( *c );
-    list.append( coverageSummaries( c ) );
+    list.append( coverageSummaries( &( *c ) ) );
   }
   return list;
 }

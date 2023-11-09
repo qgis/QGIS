@@ -24,8 +24,11 @@
 #include <QFile>
 #include <QDir>
 #include <QTimer>
-#include <QSharedMemory>
 #include <QDateTime>
+
+#if not defined( Q_OS_ANDROID )
+#include <QSharedMemory>
+#endif
 
 // -------------------------
 
@@ -79,11 +82,13 @@ QString QgsCacheDirectoryManager::getCacheDirectory( bool createIfNotExisting )
       QgsDebugMsgLevel( QStringLiteral( "Creating our cache dir %1/%2" ).arg( baseDirectory, processPath ), 2 );
       QDir( baseDirectory ).mkpath( processPath );
     }
+#if not defined( Q_OS_ANDROID )
     if ( mCounter == 0 && mKeepAliveWorks )
     {
       mThread = new QgsCacheDirectoryManagerKeepAlive( createAndAttachSHM() );
       mThread->start();
     }
+#endif
     mCounter ++;
   }
   return QDir( baseDirectory ).filePath( processPath );
@@ -154,6 +159,7 @@ bool QgsCacheDirectoryManager::removeDir( const QString &dirName )
   return dir.rmdir( dirName );
 }
 
+#if not defined( Q_OS_ANDROID )
 std::unique_ptr<QSharedMemory> QgsCacheDirectoryManager::createAndAttachSHM()
 {
   std::unique_ptr<QSharedMemory> sharedMemory;
@@ -179,12 +185,17 @@ std::unique_ptr<QSharedMemory> QgsCacheDirectoryManager::createAndAttachSHM()
   }
   return nullptr;
 }
+#endif
 
 void QgsCacheDirectoryManager::init()
 {
+#if not defined( Q_OS_ANDROID )
   auto sharedMemory = createAndAttachSHM();
   mKeepAliveWorks = sharedMemory.get() != nullptr;
   sharedMemory.reset();
+#else
+  mKeepAliveWorks = false;
+#endif
 
   if ( mKeepAliveWorks )
   {
@@ -214,6 +225,7 @@ void QgsCacheDirectoryManager::init()
         {
           canDelete = true;
         }
+#if not defined( Q_OS_ANDROID )
         else if ( mKeepAliveWorks )
         {
           canDelete = true;
@@ -248,6 +260,7 @@ void QgsCacheDirectoryManager::init()
             QgsDebugError( QStringLiteral( "Cannot attach to shared memory segment of process %1. It must be ghost" ).arg( pid ) );
           }
         }
+#endif
         else
         {
           // Fallback to a file timestamp based method, if for some reason,
@@ -277,6 +290,7 @@ void QgsCacheDirectoryManager::init()
 
 // -------------------------
 
+#if not defined( Q_OS_ANDROID )
 // We use a keep alive mechanism where every KEEP_ALIVE_DELAY ms we update
 // a shared memory segment with the current timestamp. This way, other QGIS
 // processes can check if the temporary directories of other process correspond
@@ -310,3 +324,4 @@ void QgsCacheDirectoryManagerKeepAlive::run()
   connect( &timer, &QTimer::timeout, this, &QgsCacheDirectoryManagerKeepAlive::updateTimestamp );
   QThread::exec();
 }
+#endif
