@@ -19,6 +19,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
+class QgsFields;
+
 /**
  * \ingroup core
  * \brief Utility functions for working with OGC SensorThings API services.
@@ -43,6 +45,11 @@ class CORE_EXPORT QgsSensorThingsUtils
     * Returns Qgis::SensorThingsEntity::Invalid if the string could not be converted to a known entity set type.
     */
     static Qgis::SensorThingsEntity entitySetStringToEntity( const QString &type );
+
+    /**
+     * Returns the fields which correspond to a specified entity \a type.
+     */
+    static QgsFields fieldsForEntityType( Qgis::SensorThingsEntity type );
 
 };
 

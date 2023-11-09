@@ -76,6 +76,7 @@ QgsSensorThingsFeatureIterator::QgsSensorThingsFeatureIterator( QgsSensorThingsF
     requestIds.insert( mRequest.filterFid() );
   }
 
+#if 0
   if ( !mFilterRect.isNull() && !mSource->sharedData()->hasCachedAllFeatures() )
   {
     // defer request to find features in filter rect until first feature is requested
@@ -87,6 +88,7 @@ QgsSensorThingsFeatureIterator::QgsSensorThingsFeatureIterator( QgsSensorThingsF
     // firing off another request to the server)
     mDeferredFeaturesInFilterRectCheck = true;
   }
+#endif
 
   // prepare spatial filter geometries for optimal speed
   switch ( mRequest.spatialFilterType() )
@@ -126,7 +128,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
     return false;
-
+#if 0
   if ( mFeatureIterator >= mSource->sharedData()->objectIdCount() )
     return false;
 
@@ -253,6 +255,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
       return false;
     }
   }
+#endif
   return false;
 }
 

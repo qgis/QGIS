@@ -14,7 +14,7 @@ import hashlib
 import tempfile
 import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.core import (
     Qgis,
     QgsProviderRegistry,
@@ -263,6 +263,472 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiPolygonZ)
+
+    def test_thing(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Things",
+      "url": "endpoint/Things"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", endpoint
+                    )
+                )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ entity='Thing'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertIn("Entity Type</td><td>Thing</td>", vl.htmlMetadata())
+            self.assertIn(f'href="{endpoint}/Things"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "navigationLink",
+                    "name",
+                    "description",
+                    "properties",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+    def test_location(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Locations",
+      "url": "endpoint/Locations"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", endpoint
+                    )
+                )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ entity='Location'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
+            self.assertIn(f'href="{endpoint}/Locations"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "navigationLink",
+                    "name",
+                    "description",
+                    "properties",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+    def test_historical_location(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "HistoricalLocations",
+      "url": "endpoint/HistoricalLocations"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", endpoint
+                    )
+                )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ entity='HistoricalLocation'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertIn(
+                "Entity Type</td><td>HistoricalLocation</td>", vl.htmlMetadata()
+            )
+            self.assertIn(f'href="{endpoint}/HistoricalLocations"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "navigationLink",
+                    "time",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.DateTime,
+                ],
+            )
+
+    def test_datastream(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Datastreams",
+      "url": "endpoint/Datastreams"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", endpoint
+                    )
+                )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ entity='Datastream'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertIn("Entity Type</td><td>Datastream</td>", vl.htmlMetadata())
+            self.assertIn(f'href="{endpoint}/Datastreams"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "navigationLink",
+                    "name",
+                    "description",
+                    "unitOfMeasurement",
+                    "observationType",
+                    "properties",
+                    "phenomenonTimeStart",
+                    "phenomenonTimeEnd",
+                    "resultTimeStart",
+                    "resultTimeEnd",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                ],
+            )
+
+    def test_sensor(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Sensors",
+      "url": "endpoint/Sensors"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", endpoint
+                    )
+                )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ entity='Sensor'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertIn("Entity Type</td><td>Sensor</td>", vl.htmlMetadata())
+            self.assertIn(f'href="{endpoint}/Sensors"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "navigationLink",
+                    "name",
+                    "description",
+                    "metadata",
+                    "properties",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+    def test_observed_property(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "ObservedProperties",
+      "url": "endpoint/ObservedProperties"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", endpoint
+                    )
+                )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ entity='ObservedProperty'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertIn(
+                "Entity Type</td><td>ObservedProperty</td>", vl.htmlMetadata()
+            )
+            self.assertIn(f'href="{endpoint}/ObservedProperties"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "navigationLink",
+                    "name",
+                    "definition",
+                    "description",
+                    "properties",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+    def test_observation(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Observations",
+      "url": "endpoint/Observations"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", endpoint
+                    )
+                )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ entity='Observation'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertIn("Entity Type</td><td>Observation</td>", vl.htmlMetadata())
+            self.assertIn(f'href="{endpoint}/Observations"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "navigationLink",
+                    "phenomenonTimeStart",
+                    "phenomenonTimeEnd",
+                    "result",
+                    "resultTime",
+                    "resultQuality",
+                    "validTimeStart",
+                    "validTimeEnd",
+                    "parameters",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.String,
+                    QVariant.DateTime,
+                    QVariant.StringList,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.Map,
+                ],
+            )
+
+    def test_feature_of_interest(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "FeaturesOfInterest",
+      "url": "endpoint/FeaturesOfInterest"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", endpoint
+                    )
+                )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ entity='FeatureOfInterest'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertIn("Entity Type</td><td>FeatureOfInterest</td>", vl.htmlMetadata())
+            self.assertIn(f'href="{endpoint}/FeaturesOfInterest"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "navigationLink",
+                    "name",
+                    "description",
+                    "properties",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
 
     def testDecodeUri(self):
         """

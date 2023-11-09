@@ -15,7 +15,9 @@
 
 #include "qgssensorthingsshareddata.h"
 #include "qgssensorthingsprovider.h"
+#include "qgssensorthingsutils.h"
 #include "qgslogger.h"
+#include "qgsreadwritelocker.h"
 
 #include <QCryptographicHash>
 #include <QFile>
@@ -27,6 +29,7 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
   const QVariantMap uriParts = QgsSensorThingsProviderMetadata().decodeUri( uri );
 
   mEntityType = qgsEnumKeyToValue( uriParts.value( QStringLiteral( "entity" ) ).toString(), Qgis::SensorThingsEntity::Invalid );
+  mFields = QgsSensorThingsUtils::fieldsForEntityType( mEntityType );
 
   const QString geometryType = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
   if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 )
@@ -108,6 +111,14 @@ QUrl QgsSensorThingsSharedData::parseUrl( const QUrl &url, bool *isTestEndpoint 
   }
 
   return modifiedUrl;
+}
+
+void QgsSensorThingsSharedData::clearCache()
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
+
+  mCachedFeatures.clear();
+  mIotIdToFeatureId.clear();
 }
 
 ///@endcond PRIVATE
