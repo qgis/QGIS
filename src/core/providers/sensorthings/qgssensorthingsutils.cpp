@@ -150,3 +150,23 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
 
   return fields;
 }
+
+bool QgsSensorThingsUtils::entityTypeHasGeometry( Qgis::SensorThingsEntity type )
+{
+  switch ( type )
+  {
+    case Qgis::SensorThingsEntity::Invalid:
+    case Qgis::SensorThingsEntity::Thing:
+    case Qgis::SensorThingsEntity::HistoricalLocation:
+    case Qgis::SensorThingsEntity::Datastream:
+    case Qgis::SensorThingsEntity::Sensor:
+    case Qgis::SensorThingsEntity::Observation:
+    case Qgis::SensorThingsEntity::ObservedProperty:
+      return false;
+
+    case Qgis::SensorThingsEntity::Location:
+    case Qgis::SensorThingsEntity::FeatureOfInterest:
+      return true;
+  }
+  BUILTIN_UNREACHABLE
+}

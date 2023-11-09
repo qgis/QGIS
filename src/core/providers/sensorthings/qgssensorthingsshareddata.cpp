@@ -31,22 +31,29 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
   mEntityType = qgsEnumKeyToValue( uriParts.value( QStringLiteral( "entity" ) ).toString(), Qgis::SensorThingsEntity::Invalid );
   mFields = QgsSensorThingsUtils::fieldsForEntityType( mEntityType );
 
-  const QString geometryType = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
-  if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 )
+  if ( QgsSensorThingsUtils::entityTypeHasGeometry( mEntityType ) )
   {
-    mGeometryType = Qgis::WkbType::PointZ;
+    const QString geometryType = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
+    if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 )
+    {
+      mGeometryType = Qgis::WkbType::PointZ;
+    }
+    else if ( geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
+    {
+      mGeometryType = Qgis::WkbType::MultiPointZ;
+    }
+    else if ( geometryType.compare( QLatin1String( "line" ), Qt::CaseInsensitive ) == 0 )
+    {
+      mGeometryType = Qgis::WkbType::MultiLineStringZ;
+    }
+    else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
+    {
+      mGeometryType = Qgis::WkbType::MultiPolygonZ;
+    }
   }
-  else if ( geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
+  else
   {
-    mGeometryType = Qgis::WkbType::MultiPointZ;
-  }
-  else if ( geometryType.compare( QLatin1String( "line" ), Qt::CaseInsensitive ) == 0 )
-  {
-    mGeometryType = Qgis::WkbType::MultiLineStringZ;
-  }
-  else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
-  {
-    mGeometryType = Qgis::WkbType::MultiPolygonZ;
+    mGeometryType = Qgis::WkbType::NoGeometry;
   }
 
   QgsDataSourceUri dsUri;
