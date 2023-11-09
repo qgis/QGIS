@@ -40,6 +40,11 @@ Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could not be c
 Returns the fields which correspond to a specified entity ``type``.
 %End
 
+    static bool entityTypeHasGeometry( Qgis::SensorThingsEntity type );
+%Docstring
+Returns ``True`` if the specified entity ``type`` can have geometry attached.
+%End
+
 };
 
 /************************************************************************
