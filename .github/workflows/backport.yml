@@ -1,0 +1,18 @@
+name: ♻ Backport
+on:
+  pull_request_target:
+    types:
+      - closed
+      - labeled
+
+jobs:
+  backport:
+    runs-on: ubuntu-22.04
+    name: Backport
+    steps:
+      - name: Backport Bot
+        id: backport
+        if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( join( github.event.pull_request.labels.*.name ), 'backport') ) || contains( github.event.label.name, 'backport' ) )
+        uses: m-kuhn/backport@v1.2.7
+        with:
+          github_token: ${{ secrets.GH_TOKEN_BOT }}

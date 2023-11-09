@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>ukmo</dir>
+  <name>Meteorological schemes from the UK Met Office</name>
+  <full>
+    Schemes for meteorological maps from the UK Met Office.
+  </full>
+  <date>01/08/2012</date>
+</description>

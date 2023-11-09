@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Tom Patterson</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Public domain</informal>
+    <year>2011</year>
+    <text href="http://www.shadedrelief.com/physical/pages/use.html"/>
+  </license>
+  <src>
+    <format>PNG image</format>
+    <link href="http://en.wikipedia.org/wiki/File:USPhysical-Web5.jpg">Wikipedia page</link>
+    <link href="http://www.shadedrelief.com/physical/pages/download.html">Various maps using the scheme</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://soliton.vm.bytemark.co.uk/pub/jjg/">
+      <name>J.J. Green</name>
+    </author>
+  </authors>
+  <license>
+    <informal>GPLv2</informal>
+    <year>2004</year>
+    <text href="http://www.gnu.org/licenses/gpl-2.0.html"/>
+  </license>
+  <src>
+    <format>GMT colour palette (cpt)</format>
+    <remark>Derived from GMT_haxby.cpt in the GMT collection</remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="gplv2"/>
+  </distribute>
+</copying>

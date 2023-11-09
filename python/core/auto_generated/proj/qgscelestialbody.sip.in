@@ -1,0 +1,71 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgscelestialbody.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsCelestialBody
+{
+%Docstring(signature="appended")
+Contains information about a celestial body.
+
+.. note::
+
+   Only used in builds based on on PROJ 8.1 or later
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgscelestialbody.h"
+%End
+  public:
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the body is a valid object, or ``False`` if it is a null/invalid
+object.
+%End
+
+    QString name() const;
+%Docstring
+Name of celestial body.
+%End
+
+    QString authority() const;
+%Docstring
+Authority name, e.g. EPSG.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str;
+    if ( !sipCpp->isValid() )
+    {
+      str = QStringLiteral( "<QgsCelestialBody: invalid>" );
+    }
+    else
+    {
+      QString id;
+      if ( !sipCpp->authority().isEmpty() )
+        id = QStringLiteral( "%1 (%2)" ).arg( sipCpp->name(), sipCpp->authority() );
+      else
+        id = sipCpp->name();
+      str = QStringLiteral( "<QgsCelestialBody: %1>" ).arg( id );
+    }
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgscelestialbody.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

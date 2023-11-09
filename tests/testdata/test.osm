@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="hand">
+ <bounds minlat="49" minlon="2" maxlat="50" maxlon="3"/>
+ <node id="1" lat="49" lon="2" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z"/>
+ <node id="2" lat="50" lon="3" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z"/>
+ <node id="3" lat="49.5" lon="3" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <tag k="name" v="Some interesting point"/>
+  <tag k="foo" v="bar"/>
+  <tag k="bar" v="baz"/>
+ </node>
+ <node id="4" lat="49" lon="3" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z"/>
+ <node id="5" lat="50" lon="2" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z"/>
+ <node id="6" lat="49.1" lon="2.1" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z"/>
+ <node id="7" lat="49.1" lon="2.2" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z"/>
+ <node id="8" lat="49.2" lon="2.2" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z"/>
+ <node id="9" lat="49.2" lon="2.1" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z"/>
+ <way id="1" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <nd ref="1"/>
+  <nd ref="2"/>
+  <tag k="highway" v="motorway"/>
+  <tag k="foo" v="bar"/>
+ </way>
+ <way id="2" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <tag k="area" v="yes"/>
+  <tag k="natural" v="wood"/>
+  <nd ref="1"/>
+  <nd ref="4"/>
+  <nd ref="2"/>
+  <nd ref="5"/>
+  <nd ref="1"/>
+ </way>
+ <way id="3" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <tag k="area" v="yes"/>
+  <nd ref="6"/>
+  <nd ref="7"/>
+  <nd ref="8"/>
+  <nd ref="9"/>
+  <nd ref="6"/>
+ </way>
+ <way id="4" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <tag k="name" v="id_4"/>
+<!-- all nodes missing : skipped way -->
+  <nd ref="600"/>
+  <nd ref="700"/>
+  <nd ref="800"/>
+  <nd ref="900"/>
+ </way>
+ <way id="5" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <tag k="name" v="id_5"/>
+<!-- only one node : skipped way -->
+  <nd ref="1"/>
+ </way>
+ <way id="6" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <tag k="name" v="id_6"/>
+  <nd ref="1"/>
+  <nd ref="4"/>
+  <nd ref="2"/>
+  <nd ref="5"/>
+  <nd ref="900"/> <!-- unexisting node -->
+  <nd ref="1"/>
+ </way>
+ <!-- no tag: will not be reported in lines layer -->
+ <way id="7" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <nd ref="1"/>
+  <nd ref="2"/>
+ </way>
+
+ <way id="8" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <tag k="area" v="yes"/>
+  <tag k="name" v="standalone_polygon"/>
+  <nd ref="1"/>
+  <nd ref="4"/>
+  <nd ref="2"/>
+  <nd ref="5"/>
+  <nd ref="1"/>
+ </way>
+
+ <relation id="1" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <member type="way" ref="2" role="outer"/>
+  <member type="way" ref="3" role="inner"/>
+  <tag k="type" v="multipolygon"/>
+  <tag k="natural" v="forest"/>
+ </relation>
+ <relation id="2" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <member type="way" ref="2" role="outer"/>
+<!-- at least, one missing way : skipped whole relation -->
+  <member type="way" ref="300" role="inner"/>
+  <tag k="type" v="multipolygon"/>
+ </relation>
+ <relation id="3" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <member type="way" ref="1" role=""/>
+  <tag k="type" v="route"/>
+ </relation>
+ <relation id="4" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <member type="node" ref="1" role=""/>
+  <member type="way" ref="1" role=""/>
+  <tag k="type" v="other_type"/>
+ </relation>
+<!-- inherit tags from outer way -->
+ <relation id="5" user="some_user" uid="1" version="1" changeset="1" timestamp="2012-07-10T00:00:00Z">
+  <member type="way" ref="2" role="outer"/>
+  <member type="way" ref="3" role="inner"/>
+  <tag k="type" v="multipolygon"/>
+ </relation>
+</osm>

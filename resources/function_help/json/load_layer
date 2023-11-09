@@ -1,0 +1,19 @@
+{
+  "name": "load_layer",
+  "type": "function",
+  "groups": ["Map Layers"],
+  "description": "Loads a layer by source URI and provider name.",
+  "arguments": [{
+    "arg": "uri",
+    "description": "layer source URI string"
+  },
+  { 
+    "arg": "provider",
+    "description": "layer data provider name"
+  }],
+  "examples": [{
+    "expression": "layer_property(load_layer('c:/data/roads.shp', 'ogr'), 'feature_count')",
+    "returns": "count of features from the c:/data/roads.shp vector layer"
+  }],
+  "tags": ["layer", "vector", "raster", "mesh", "point", "cloud"]
+}

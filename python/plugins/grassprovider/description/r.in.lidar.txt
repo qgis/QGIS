@@ -1,0 +1,25 @@
+r.in.lidar
+Creates a raster map from LAS LiDAR points using univariate statistics.
+Raster (r.*)
+QgsProcessingParameterFile|input|LAS input file|QgsProcessingParameterFile.File|las|None|False
+QgsProcessingParameterEnum|method|Statistic to use for raster values|n;min;max;range;sum;mean;stddev;variance;coeff_var;median;percentile;skewness;trimmean|False|5|True
+QgsProcessingParameterEnum|type|Storage type for resultant raster map|CELL;FCELL;DCELL|False|1|True
+QgsProcessingParameterRasterLayer|base_raster|Subtract raster values from the Z coordinates|None|True
+QgsProcessingParameterRange|zrange|Filter range for z data (min, max)|QgsProcessingParameterNumber.Double|None|True
+QgsProcessingParameterNumber|zscale|Scale to apply to z data|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
+QgsProcessingParameterRange|intensity_range|Filter range for intensity values (min, max)|QgsProcessingParameterNumber.Double|None|True
+QgsProcessingParameterNumber|intensity_scale|Scale to apply to intensity values|QgsProcessingParameterNumber.Double|1.0|True|1.0|None
+QgsProcessingParameterNumber|percent|Percent of map to keep in memory|QgsProcessingParameterNumber.Integer|100|True|1|100
+QgsProcessingParameterNumber|pth|pth percentile of the values (between 1 and 100)|QgsProcessingParameterNumber.Integer|None|True|1|100
+QgsProcessingParameterNumber|trim|Discard <trim> percent of the smallest and <trim> percent of the largest observations (0-50)|QgsProcessingParameterNumber.Double|None|True|0.0|50.0
+QgsProcessingParameterNumber|resolution|Output raster resolution|QgsProcessingParameterNumber.Double|None|True|1.0|None
+QgsProcessingParameterString|return_filter|Only import points of selected return type Options: first, last, mid|None|False|True
+QgsProcessingParameterString|class_filter|Only import points of selected class(es) (comma separated integers)|None|False|True
+*QgsProcessingParameterBoolean|-e|Use the extent of the input for the raster extent|False
+*QgsProcessingParameterBoolean|-n|Set computation region to match the new raster map|False
+*QgsProcessingParameterBoolean|-o|Override projection check (use current location's projection)|False
+*QgsProcessingParameterBoolean|-i|Use intensity values rather than Z values|False
+*QgsProcessingParameterBoolean|-j|Use Z values for filtering, but intensity values for statistics|False
+*QgsProcessingParameterBoolean|-d|Use base raster resolution instead of computational region|False
+*QgsProcessingParameterBoolean|-v|Use only valid points|False
+QgsProcessingParameterRasterDestination|output|Lidar Raster

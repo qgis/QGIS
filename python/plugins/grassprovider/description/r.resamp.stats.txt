@@ -1,0 +1,9 @@
+r.resamp.stats
+Resamples raster layers to a coarser grid using aggregation.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterEnum|method|Aggregation method|average;median;mode;minimum;maximum;quart1;quart3;perc90;sum;variance;stddev;quantile|False|0|True
+QgsProcessingParameterNumber|quantile|Quantile to calculate for method=quantile|QgsProcessingParameterNumber.Double|0.5|True|0.0|1.0
+QgsProcessingParameterBoolean|-n|Propagate NULLs|False
+QgsProcessingParameterBoolean|-w|Weight according to area (slower)|False
+QgsProcessingParameterRasterDestination|output|Resampled aggregated

@@ -1,0 +1,7 @@
+i.gensigset
+Generates statistics for i.smap from raster map.
+Imagery (i.*)
+QgsProcessingParameterRasterLayer|trainingmap|Ground truth training map|None|False
+QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
+QgsProcessingParameterNumber|maxsig|Maximum number of sub-signatures in any class|QgsProcessingParameterNumber.Integer|5|True|0|None
+QgsProcessingParameterFileDestination|signaturefile|Signature File|Txt files (*.txt)|None|False

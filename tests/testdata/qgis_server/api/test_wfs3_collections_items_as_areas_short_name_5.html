@@ -1,0 +1,692 @@
+<!-- template for the WFS3 API getFeatures page -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+            integrity="sha384-o/2yZuJZWGJ4s/adjxVW71R+EO/LyCwdQfP5UWSgX/w87iiTXuvDZaejd3TsN7mf"
+            crossorigin=""/>
+    <link rel="stylesheet" href="/wfs3/static/style.css" />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/wfs3/static/jsonFormatter/jsonFormatter.min.css" crossorigin="anonymous">
+    <script src="/wfs3/static/jsonFormatter/jsonFormatter.min.js" crossorigin="anonymous"></script>
+
+    <!-- template for the WFS3 API links list, to be included in HEAD -->
+
+    <link rel="alternate" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.geojson?offset=24&limit=6" title="Retrieve the features of the collection as GEOJSON" type="application/geo+json">
+
+    <link rel="self" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=24&limit=6" title="Retrieve the features of the collection as HTML" type="text/html">
+
+    <link rel="prev" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=18&limit=6" title="Previous page" type="text/html">
+
+    <link rel="next" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=30&limit=6" title="Next page" type="text/html">
+
+    <link rel="first" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=6" title="First page" type="text/html">
+
+    <link rel="last" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=36&limit=6" title="Last page" type="text/html">
+
+
+
+    <title>Features in layer as_areas</title>
+  </head>
+  <body>
+  <nav class="navbar navbar-light bg-light navbar-expand-sm">
+      <div class="container">
+          <div id="navbar" class="navbar-collapse collapse d-flex justify-content-between align-items-center">
+              <ol class="breadcrumb bg-light my-0 pl-0">
+              
+                  <li class="breadcrumb-item"><a href="http://server.qgis.org/wfs3/" >Landing page</a></li>
+              
+                  <li class="breadcrumb-item"><a href="http://server.qgis.org/wfs3/collections/" >Collections</a></li>
+              
+                  <li class="breadcrumb-item"><a href="http://server.qgis.org/wfs3/collections/as-areas-short-name/" >as_areas</a></li>
+              
+                  <li class="breadcrumb-item active">
+                     Features in layer as_areas
+                  </li>
+              </ol>
+              <ul class="list-unstyled list-separated m-0 p-0 text-muted">
+              
+                  <li><a rel="alternate" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.geojson?offset=24&limit=6" target="_blank">GEOJSON</a></li>
+              
+              </ul>
+          </div>
+
+
+      </div>
+  </nav>
+  <div class="container pt-4">
+  <!-- END HEADER TEMPLATE header.html -->
+
+
+    <div class="row">
+      <p>
+        <b>Number of matching items:</b> 38
+        &nbsp;
+        <b>Number of returned items:</b> 6
+      </p>
+    </div>
+
+    <div class="row">
+        
+        <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Page size
+          </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              
+              
+              <a class="dropdown-item" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=1">1</a>
+              
+              
+              <a class="dropdown-item" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=10">10</a>
+              
+              
+              <a class="dropdown-item" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=20">20</a>
+              
+              
+              <div class="dropdown-divider"></div>
+              
+              <a class="dropdown-item" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=10000">All</a>
+              
+            </div>
+        </div>
+        
+        
+        &nbsp;
+        <nav aria-label="Page navigation">
+          <ul class="pagination" style="margin:0px">
+            
+            <li class="page-item"><a class="page-link" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=18&limit=6">Previous page</a></li>
+            
+            
+            <li class="page-item"><a class="page-link" 
+                href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=6">1</a>
+            </li>
+            
+            <li class="page-item disabled"><a class="page-link" >…</a>
+            </li>
+            
+            <li class="page-item"><a class="page-link" 
+                href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=18&limit=6">4</a>
+            </li>
+            
+            <li class="page-item active"><a class="page-link" 
+                href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=24&limit=6">5</a>
+            </li>
+            
+            <li class="page-item"><a class="page-link" 
+                href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=30&limit=6">6</a>
+            </li>
+            
+            <li class="page-item"><a class="page-link" 
+                href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=36&limit=6">7</a>
+            </li>
+            
+            
+            <li class="page-item"><a class="page-link" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=30&limit=6">Next page</a></li>
+            
+          </ul>
+        </nav>
+        
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Features in layer as_areas</h1>
+
+            
+                <h2><a href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items/25.html?offset=24&limit=6">as_areas 25</a></h2>
+                <dl class="row">
+                
+                    <dt class="col-sm-12">bearbeiter</dt>
+                    <dd class="col-sm-12">scholle-b</dd>
+                
+                    <dt class="col-sm-12">bemerkung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">beschriftung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">datum</dt>
+                    <dd class="col-sm-12">2015-08-05</dd>
+                
+                    <dt class="col-sm-12">farbe</dt>
+                    <dd class="col-sm-12">0 0 255</dd>
+                
+                    <dt class="col-sm-12">fid</dt>
+                    <dd class="col-sm-12">25</dd>
+                
+                    <dt class="col-sm-12">flaeche</dt>
+                    <dd class="col-sm-12">46900.0</dd>
+                
+                    <dt class="col-sm-12">flaechentyp</dt>
+                    <dd class="col-sm-12">Schraffur</dd>
+                
+                    <dt class="col-sm-12">gid</dt>
+                    <dd class="col-sm-12">42</dd>
+                
+                    <dt class="col-sm-12">last_change</dt>
+                    <dd class="col-sm-12">2015-08-05 11:31:08.829984+02</dd>
+                
+                    <dt class="col-sm-12">name</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">schraff_size</dt>
+                    <dd class="col-sm-12">10</dd>
+                
+                    <dt class="col-sm-12">schraff_size_prt</dt>
+                    <dd class="col-sm-12">30.00</dd>
+                
+                    <dt class="col-sm-12">schraff_width</dt>
+                    <dd class="col-sm-12">2</dd>
+                
+                    <dt class="col-sm-12">schraff_width_prt</dt>
+                    <dd class="col-sm-12">6.00</dd>
+                
+                    <dt class="col-sm-12">schraff_winkel</dt>
+                    <dd class="col-sm-12">45</dd>
+                
+                    <dt class="col-sm-12">umfang</dt>
+                    <dd class="col-sm-12">842.1024</dd>
+                
+                    <dt class="col-sm-12">umrissfarbe</dt>
+                    <dd class="col-sm-12">0 0 0</dd>
+                
+                    <dt class="col-sm-12">umrissstaerke</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">umrissstaerke_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">umrisstyp</dt>
+                    <dd class="col-sm-12">durchgezogen</dd>
+                
+                    <dt class="col-sm-12">veranstaltung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                </dl>
+            
+                <h2><a href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items/26.html?offset=24&limit=6">as_areas 26</a></h2>
+                <dl class="row">
+                
+                    <dt class="col-sm-12">bearbeiter</dt>
+                    <dd class="col-sm-12">scholle-b</dd>
+                
+                    <dt class="col-sm-12">bemerkung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">beschriftung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">datum</dt>
+                    <dd class="col-sm-12">2015-08-29</dd>
+                
+                    <dt class="col-sm-12">farbe</dt>
+                    <dd class="col-sm-12">0 255 0</dd>
+                
+                    <dt class="col-sm-12">fid</dt>
+                    <dd class="col-sm-12">26</dd>
+                
+                    <dt class="col-sm-12">flaeche</dt>
+                    <dd class="col-sm-12">7319.5</dd>
+                
+                    <dt class="col-sm-12">flaechentyp</dt>
+                    <dd class="col-sm-12">Schraffur</dd>
+                
+                    <dt class="col-sm-12">gid</dt>
+                    <dd class="col-sm-12">43</dd>
+                
+                    <dt class="col-sm-12">last_change</dt>
+                    <dd class="col-sm-12">2015-08-29 19:28:51.203869+02</dd>
+                
+                    <dt class="col-sm-12">name</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">schraff_size</dt>
+                    <dd class="col-sm-12">10</dd>
+                
+                    <dt class="col-sm-12">schraff_size_prt</dt>
+                    <dd class="col-sm-12">30.00</dd>
+                
+                    <dt class="col-sm-12">schraff_width</dt>
+                    <dd class="col-sm-12">2</dd>
+                
+                    <dt class="col-sm-12">schraff_width_prt</dt>
+                    <dd class="col-sm-12">6.00</dd>
+                
+                    <dt class="col-sm-12">schraff_winkel</dt>
+                    <dd class="col-sm-12">45</dd>
+                
+                    <dt class="col-sm-12">umfang</dt>
+                    <dd class="col-sm-12">341.4407</dd>
+                
+                    <dt class="col-sm-12">umrissfarbe</dt>
+                    <dd class="col-sm-12">0 0 0</dd>
+                
+                    <dt class="col-sm-12">umrissstaerke</dt>
+                    <dd class="col-sm-12">2</dd>
+                
+                    <dt class="col-sm-12">umrissstaerke_prt</dt>
+                    <dd class="col-sm-12">6.00</dd>
+                
+                    <dt class="col-sm-12">umrisstyp</dt>
+                    <dd class="col-sm-12">durchgezogen</dd>
+                
+                    <dt class="col-sm-12">veranstaltung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                </dl>
+            
+                <h2><a href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items/27.html?offset=24&limit=6">as_areas 27</a></h2>
+                <dl class="row">
+                
+                    <dt class="col-sm-12">bearbeiter</dt>
+                    <dd class="col-sm-12">scholle-b</dd>
+                
+                    <dt class="col-sm-12">bemerkung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">beschriftung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">datum</dt>
+                    <dd class="col-sm-12">2016-03-09</dd>
+                
+                    <dt class="col-sm-12">farbe</dt>
+                    <dd class="col-sm-12">255 170 0</dd>
+                
+                    <dt class="col-sm-12">fid</dt>
+                    <dd class="col-sm-12">27</dd>
+                
+                    <dt class="col-sm-12">flaeche</dt>
+                    <dd class="col-sm-12">5432.7491</dd>
+                
+                    <dt class="col-sm-12">flaechentyp</dt>
+                    <dd class="col-sm-12">Vollflächig</dd>
+                
+                    <dt class="col-sm-12">gid</dt>
+                    <dd class="col-sm-12">45</dd>
+                
+                    <dt class="col-sm-12">last_change</dt>
+                    <dd class="col-sm-12">2016-03-09 08:11:41.787773+01</dd>
+                
+                    <dt class="col-sm-12">name</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">schraff_size</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">schraff_size_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_width</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">schraff_width_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_winkel</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">umfang</dt>
+                    <dd class="col-sm-12">298.1537</dd>
+                
+                    <dt class="col-sm-12">umrissfarbe</dt>
+                    <dd class="col-sm-12">0 0 0</dd>
+                
+                    <dt class="col-sm-12">umrissstaerke</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">umrissstaerke_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">umrisstyp</dt>
+                    <dd class="col-sm-12">durchgezogen</dd>
+                
+                    <dt class="col-sm-12">veranstaltung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                </dl>
+            
+                <h2><a href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items/28.html?offset=24&limit=6">as_areas 28</a></h2>
+                <dl class="row">
+                
+                    <dt class="col-sm-12">bearbeiter</dt>
+                    <dd class="col-sm-12">scholle-b</dd>
+                
+                    <dt class="col-sm-12">bemerkung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">beschriftung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">datum</dt>
+                    <dd class="col-sm-12">2016-03-10</dd>
+                
+                    <dt class="col-sm-12">farbe</dt>
+                    <dd class="col-sm-12">255 170 0</dd>
+                
+                    <dt class="col-sm-12">fid</dt>
+                    <dd class="col-sm-12">28</dd>
+                
+                    <dt class="col-sm-12">flaeche</dt>
+                    <dd class="col-sm-12">18206.2949</dd>
+                
+                    <dt class="col-sm-12">flaechentyp</dt>
+                    <dd class="col-sm-12">Vollflächig</dd>
+                
+                    <dt class="col-sm-12">gid</dt>
+                    <dd class="col-sm-12">46</dd>
+                
+                    <dt class="col-sm-12">last_change</dt>
+                    <dd class="col-sm-12">2016-03-10 07:13:00.881358+01</dd>
+                
+                    <dt class="col-sm-12">name</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">schraff_size</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">schraff_size_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_width</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">schraff_width_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_winkel</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">umfang</dt>
+                    <dd class="col-sm-12">651.7758</dd>
+                
+                    <dt class="col-sm-12">umrissfarbe</dt>
+                    <dd class="col-sm-12">0 0 0</dd>
+                
+                    <dt class="col-sm-12">umrissstaerke</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                    <dt class="col-sm-12">umrissstaerke_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">umrisstyp</dt>
+                    <dd class="col-sm-12">durchgezogen</dd>
+                
+                    <dt class="col-sm-12">veranstaltung</dt>
+                    <dd class="col-sm-12"></dd>
+                
+                </dl>
+            
+                <h2><a href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items/29.html?offset=24&limit=6">as_areas 29</a></h2>
+                <dl class="row">
+                
+                    <dt class="col-sm-12">bearbeiter</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">bemerkung</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">beschriftung</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">datum</dt>
+                    <dd class="col-sm-12">2017-02-08</dd>
+                
+                    <dt class="col-sm-12">farbe</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">fid</dt>
+                    <dd class="col-sm-12">29</dd>
+                
+                    <dt class="col-sm-12">flaeche</dt>
+                    <dd class="col-sm-12">154717.4346</dd>
+                
+                    <dt class="col-sm-12">flaechentyp</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">gid</dt>
+                    <dd class="col-sm-12">51</dd>
+                
+                    <dt class="col-sm-12">last_change</dt>
+                    <dd class="col-sm-12">2017-02-08 11:30:36.965061+01</dd>
+                
+                    <dt class="col-sm-12">name</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_size</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_size_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_width</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_width_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_winkel</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">umfang</dt>
+                    <dd class="col-sm-12">1537.0502</dd>
+                
+                    <dt class="col-sm-12">umrissfarbe</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">umrissstaerke</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">umrissstaerke_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">umrisstyp</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">veranstaltung</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                </dl>
+            
+                <h2><a href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items/30.html?offset=24&limit=6">as_areas 30</a></h2>
+                <dl class="row">
+                
+                    <dt class="col-sm-12">bearbeiter</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">bemerkung</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">beschriftung</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">datum</dt>
+                    <dd class="col-sm-12">2017-02-08</dd>
+                
+                    <dt class="col-sm-12">farbe</dt>
+                    <dd class="col-sm-12">0 0 255</dd>
+                
+                    <dt class="col-sm-12">fid</dt>
+                    <dd class="col-sm-12">30</dd>
+                
+                    <dt class="col-sm-12">flaeche</dt>
+                    <dd class="col-sm-12">124017.7984</dd>
+                
+                    <dt class="col-sm-12">flaechentyp</dt>
+                    <dd class="col-sm-12">vollflächig</dd>
+                
+                    <dt class="col-sm-12">gid</dt>
+                    <dd class="col-sm-12">52</dd>
+                
+                    <dt class="col-sm-12">last_change</dt>
+                    <dd class="col-sm-12">2017-02-08 11:33:12.5725+01</dd>
+                
+                    <dt class="col-sm-12">name</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_size</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_size_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_width</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_width_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">schraff_winkel</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">umfang</dt>
+                    <dd class="col-sm-12">1365.7077</dd>
+                
+                    <dt class="col-sm-12">umrissfarbe</dt>
+                    <dd class="col-sm-12">0 0 0</dd>
+                
+                    <dt class="col-sm-12">umrissstaerke</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">umrissstaerke_prt</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                    <dt class="col-sm-12">umrisstyp</dt>
+                    <dd class="col-sm-12">durchgezogen</dd>
+                
+                    <dt class="col-sm-12">veranstaltung</dt>
+                    <dd class="col-sm-12">null</dd>
+                
+                </dl>
+            
+        </div>
+
+        <!-- template for the WFS3 API leaflet map -->
+<div class="col-md-6">
+    <div id="mapid" class="small"></div>
+
+    <script type="text/javascript">
+    jQuery( document ).ready(function( $ ) {
+        var map = L.map( 'mapid', { attributionControl: false } ).setView( [0, 0], 13 );
+        L.control.attribution( {  prefix: false } ).addTo( map );
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map)
+        $.get( "http://server.qgis.org/wfs3/collections/as-areas-short-name/items.geojson?offset=24&limit=6", function( data ) {
+          var jl = L.geoJSON( data, {
+              onEachFeature: function (feature, layer) {
+                    layer.bindPopup('<h1>'+feature.id +'</h1>');
+              }
+          }).addTo(map);
+          map.setView(jl.getBounds().getCenter());
+          if ( jl.getBounds().getEast() != jl.getBounds().getWest() && jl.getBounds().getNorth() != jl.getBounds().getSouth() )
+          {
+            map.fitBounds(jl.getBounds());
+          }
+        });
+    });
+
+    </script>
+</div>
+
+
+    </div>
+
+    <div class="row">
+      
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Page size
+        </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            
+            
+            <a class="dropdown-item" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=1">1</a>
+            
+            
+            <a class="dropdown-item" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=10">10</a>
+            
+            
+            <a class="dropdown-item" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=20">20</a>
+            
+            
+            <div class="dropdown-divider"></div>
+            
+            <a class="dropdown-item" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=10000">All</a>
+            
+          </div>
+      </div>
+      
+      
+      &nbsp;
+      <nav aria-label="Page navigation">
+        <ul class="pagination" style="margin:0px">
+          
+          <li class="page-item"><a class="page-link" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=18&limit=6">Previous page</a></li>
+          
+          
+          <li class="page-item"><a class="page-link" 
+              href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=0&limit=6">1</a>
+          </li>
+          
+          <li class="page-item disabled"><a class="page-link" >…</a>
+          </li>
+          
+          <li class="page-item"><a class="page-link" 
+              href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=18&limit=6">4</a>
+          </li>
+          
+          <li class="page-item active"><a class="page-link" 
+              href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=24&limit=6">5</a>
+          </li>
+          
+          <li class="page-item"><a class="page-link" 
+              href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=30&limit=6">6</a>
+          </li>
+          
+          <li class="page-item"><a class="page-link" 
+              href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=36&limit=6">7</a>
+          </li>
+          
+          
+          <li class="page-item"><a class="page-link" href="http://server.qgis.org/wfs3/collections/as-areas-short-name/items.html?offset=30&limit=6">Next page</a></li>
+          
+        </ul>
+      </nav>
+      
+    </div>
+    <br>
+
+    <!-- FOOTER TEMPLATE footer.html -->
+    </div> <!-- //container -->
+
+    <footer class="footer bg-light py-4 d-flex flex-column justify-content-around align-items-center">
+        <div class="container d-flex flex-row justify-content-between align-items-center w-100">
+                <span><span class="text-muted small mr-2">powered by</span><a class="navbar-brand" href="https://www.qgis.org/" target="_blank">QGIS Server</a></span>
+        </div>
+    </footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+       integrity="sha384-okbbMvvx/qfQkmiQKfd5VifbKZ/W8p1qIsWvE1ROPUfHWsDcC8/BnHohF7vPg2T6"
+       crossorigin=""></script>
+    <script>
+      jQuery('.jref').jsonFormatter();
+    </script>
+  </body>
+</html>
+

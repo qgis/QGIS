@@ -1,0 +1,48 @@
+PRE.jsonFormatter-codeContainer {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-objectBrace {
+    color: #00AA00;
+    font-weight: bold;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-arrayBrace {
+    color: #0033FF;
+    font-weight: bold;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-propertyName {
+    color: #CC0000;
+    font-weight: bold;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-string {
+    color: #007777;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-number {
+    color: #AA00AA;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-boolean {
+    color: #0000FF;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-function {
+    color: #AA6633;
+    font-style: italic;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-null {
+    color: #0000FF;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-coma {
+    color: #000000;
+    font-weight: bold;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-expander {
+    display: inline-block;
+    width: 28px;
+    height: 11px;
+    cursor: pointer;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-expanded {
+    background: url('Expanded.gif') no-repeat;
+}
+PRE.jsonFormatter-codeContainer .jsonFormatter-collapsed {
+    background: url('Collapsed.gif') no-repeat;
+}

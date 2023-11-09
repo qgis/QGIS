@@ -1,0 +1,6 @@
+r.surf.fractal
+Creates a fractal surface of a given fractal dimension.
+Raster (r.*)
+QgsProcessingParameterNumber|dimension|Fractal dimension of surface (2 < D < 3)|QgsProcessingParameterNumber.Double|2.05|True|2.0|3.0
+QgsProcessingParameterNumber|number|Number of intermediate images to produce|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterRasterDestination|output|Fractal Surface

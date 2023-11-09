@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Arctic Ice Studio</name>
+    </author>
+    <author>
+      <name>Sven Greb</name>
+    </author>
+  </authors>
+  <license>
+    <informal>MIT</informal>
+    <year>2020</year>
+    <text href="https://github.com/arcticicestudio/nord/blob/develop/LICENSE.md"/>
+  </license>
+  <src>
+    <format>Gnuplot Palette</format>
+    <link href="https://github.com/arcticicestudio/nord/tree/develop/src/swatches/">Source</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

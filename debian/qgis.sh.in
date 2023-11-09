@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if dpkg -s qgis-plugin-grass >/dev/null 2>&1; then
+	if [ "$LD_LIBRARY_PATH" = "" ]; then
+		LD_LIBRARY_PATH=/usr/lib/{GRASS}/lib
+	else
+		LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/{GRASS}/lib
+	fi
+fi
+
+if dpkg -s qgis-oracle-provider >/dev/null 2>&1; then
+	if [ "$LD_LIBRARY_PATH" = "" ]; then
+		LD_LIBRARY_PATH={ORACLE_LIBDIR}
+	else
+		LD_LIBRARY_PATH=$LD_LIBRARY_PATH:{ORACLE_LIBDIR}
+	fi
+fi
+
+export LD_LIBRARY_PATH
+
+exec $0.bin "$@"

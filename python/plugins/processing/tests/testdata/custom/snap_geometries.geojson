@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "snap_geometries",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::3857" } },
+"features": [
+{ "type": "Feature", "properties": { }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 20.123, 10.123 ], [ 20.123, 20.456 ], [ 20.2, 20.456 ], [ 20.2, 20.5 ], [ 30.0, 20.5 ], [ 30.0, 10.123 ], [ 29.8, 10.123 ], [ 21.0, 10.123 ], [ 20.123, 10.123 ] ] ] } },
+{ "type": "Feature", "properties": { }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 31.0, 10.0 ], [ 20.0, 10.0 ], [ 20.0, 5.0 ], [ 31.0, 10.0 ] ] ] } }
+]
+}

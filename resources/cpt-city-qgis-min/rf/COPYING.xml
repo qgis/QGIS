@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://r0k.us/">
+      <name>Rich Franzen</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Credit requested</informal>
+    <year>1999</year>
+    <text href="http://r0k.us/source/pgTest.java">
+      May be used without restriction, but I would appreciate
+      credit if you implement this technique in your own code.
+    </text>
+  </license>
+  <src>
+    <format>Java program</format>
+    <link href="http://r0k.us/graphics/pseudoGrey.html">PseudoGrey homepage</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

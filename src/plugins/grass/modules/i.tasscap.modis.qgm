@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Tasseled Cap (Kauth Thomas) transformation for MODIS raster" module="i.tasscap">
+	<option key="input" label="MODIS bands 1, 2, 3, 4, 5, 6, 7"/>
+	<option key="output"/>
+	<option key="sensor" answer="modis" hidden="yes"/>
+</qgisgrassmodule>

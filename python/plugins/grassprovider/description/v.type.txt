@@ -1,0 +1,7 @@
+v.type
+Change the type of geometry elements.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Name of existing vector map|-1|None|False
+QgsProcessingParameterEnum|from_type|Feature type to convert from|point;line;boundary;centroid;face;kernel|False|1|False
+QgsProcessingParameterEnum|to_type|Feature type to convert to|point;line;boundary;centroid;face;kernel|False|2|False
+QgsProcessingParameterVectorDestination|output|Typed

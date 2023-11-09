@@ -1,0 +1,6 @@
+i.cca
+Canonical components analysis (CCA) program for image processing.
+Imagery (i.*)
+QgsProcessingParameterMultipleLayers|input|Input rasters (2 to 8)|3|None|False
+QgsProcessingParameterFile|signature|File containing spectral signatures|QgsProcessingParameterFile.File|txt|None|False
+QgsProcessingParameterFolderDestination|output|Output Directory

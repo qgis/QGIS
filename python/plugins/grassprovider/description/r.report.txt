@@ -1,0 +1,18 @@
+r.report
+Reports statistics for raster layers.
+Raster (r.*)
+QgsProcessingParameterMultipleLayers|map|Raster layer(s) to report on|3|None|False
+QgsProcessingParameterEnum|units|Units|mi;me;k;a;h;c;p|False|1|True
+QgsProcessingParameterString|null_value|Character representing no data cell value|*|False|True
+QgsProcessingParameterNumber|page_length|Page length|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterNumber|page_width|Page width|QgsProcessingParameterNumber.Integer|79|True|0|None
+QgsProcessingParameterNumber|nsteps|Number of fp subranges to collect stats from|QgsProcessingParameterNumber.Integer|255|True|1|None
+QgsProcessingParameterEnum|sort|Sort output statistics by cell counts|asc;desc|False|0|True
+QgsProcessingParameterBoolean|-h|Suppress page headers|False|True
+QgsProcessingParameterBoolean|-f|Use formfeeds between pages|False|True
+QgsProcessingParameterBoolean|-e|Scientific format|False|True
+QgsProcessingParameterBoolean|-n|Do not report no data cells|False|True
+QgsProcessingParameterBoolean|-a|Do not report cells where all maps have no data|False|True
+QgsProcessingParameterBoolean|-c|Report for cats floating-point ranges (floating-point maps only)|False|True
+QgsProcessingParameterBoolean|-i|Read floating-point map as integer (use map's quant rules)|False|True
+QgsProcessingParameterFileDestination|output|Name for output file to hold the report|Txt files (*.txt)|None|True

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="greens">Greens</name>
+  <synopsis>Predominantly green gradients</synopsis>
+  <description>As Kermit the frog says, it's not 
+  easy being green.</description>
+  <seealsocollects>
+    <collect dir="es/emerald_dragon">ElvenSword's 
+    Emerald dragon series</collect>
+  </seealsocollects>
+  <gradients>
+    <gradient dir="occ/1" file="occ040"/>
+    <gradient dir="rc" file="girlcat"/>
+    <gradient dir="saga" file="saga-08"/>
+    <gradient dir="jjg/ccolo/evad" file="fava_bean"/>
+    <gradient dir="jjg/ccolo/katiekat013" file="Lovely_Liz"/>
+    <gradient dir="jjg/ccolo/laleh1979" file="contagious_delusion"/>
+    <gradient dir="jjg/ccolo/phill" file="moldy_bread"/>
+    <gradient dir="jjg/ccolo/smorin2002" file="All_kinds_of_green"/>
+    <gradient dir="h5" file="summer"/>
+    <gradient dir="gps" file="GPS-Nature-Grass"/>
+    <gradient dir="go2/webtwo" file="green-g1-2"/>
+    <gradient dir="es/emerald_dragon" file="es_emerald_dragon_12"/>
+    <gradient dir="es/emerald_dragon" file="es_emerald_dragon_10"/>
+    <gradient dir="cw/2" file="cw2-033"/>
+    <gradient dir="colo/smorin2002" file="All_kinds_of_green"/>
+    <gradient dir="colo/angelafaye" file="organic_vegetation"/>
+    <gradient dir="colo/Skyblue2u" file="Adrift_in_Dreams"/>
+    <gradient dir="ds9" file="he"/>
+    <gradient dir="cb/seq" file="YlGn_09"/>
+    <gradient dir="cb/seq" file="Greens_09"/>
+    <gradient dir="cb/seq" file="BuGn_09"/>
+    <gradient dir="ncl" file="WhiteGreen"/>
+    <gradient dir="ncl" file="GreenYellow"/>
+    <gradient dir="jjg/neo10/liht" file="frozen-in-time"/>
+    <gradient dir="jjg/neo10/flor" file="tropical-green"/>
+    <gradient dir="jjg/neo10/flor" file="apple-green"/>
+    <gradient dir="jjg/neo10/faun" file="radioactive-slime"/>
+    <gradient dir="jjg/neo10/env" file="green-crystal"/>
+  </gradients>
+</selection>

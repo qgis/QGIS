@@ -1,0 +1,9 @@
+v.proj
+Re-projects a vector layer to another coordinate reference system
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input vector to reproject|-1|None|False
+QgsProcessingParameterCrs|crs|New coordinate reference system|None|False
+QgsProcessingParameterNumber|smax|Maximum segment length in meters in output vector map|QgsProcessingParameterNumber.Double|10000.0|True|0.0|None
+*QgsProcessingParameterBoolean|-z|Assume z coordinate is ellipsoidal height and transform if possible|False|True
+*QgsProcessingParameterBoolean|-w|Disable wrapping to -180,180 for latlon output|False|True
+QgsProcessingParameterVectorDestination|output|Output vector map

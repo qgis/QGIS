@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"name": "test_lines",
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "name": "éù%@ > 1", "comment": "Accents, sup" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.8, 43.5 ], [ 3.8, 43.6 ] ] } },
+{ "type": "Feature", "properties": { "id": 2, "name": "Line > 2", "comment": "Normal, sup" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.8, 43.6 ], [ 3.9, 43.6 ] ] } },
+{ "type": "Feature", "properties": { "id": 3, "name": "Line < 3", "comment": "Normal, inf" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.9, 43.6 ], [ 3.9, 43.5 ] ] } },
+{ "type": "Feature", "properties": { "id": 4, "name": "05200", "comment": "Trailing 0" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.9, 43.5 ], [ 3.8, 43.5 ] ] } },
+{ "type": "Feature", "properties": { "id": 5, "name": "Line & 2", "comment": "And sign" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.8, 43.5 ], [ 3.9, 43.6 ] ] } }
+]
+}

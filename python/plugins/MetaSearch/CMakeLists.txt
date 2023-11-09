@@ -1,0 +1,13 @@
+file(GLOB PY_FILES __init__.py link_types.py plugin.py search_backend.py util.py)
+PLUGIN_INSTALL(MetaSearch . ${PY_FILES} metadata.txt LICENSE.txt)
+
+foreach(dir ui dialogs images resources resources/templates)
+  file(GLOB _items ${dir}/*)
+  set(_files)
+  foreach(_item ${_items})
+    if(NOT IS_DIRECTORY ${_item})
+      list(APPEND _files ${_item})
+    endif()
+  endforeach(_item)
+  PLUGIN_INSTALL(MetaSearch ${dir} ${_files})
+endforeach(dir)

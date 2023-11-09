@@ -1,0 +1,100 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscolorramp.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsColorRamp
+{
+%Docstring(signature="appended")
+Abstract base class for color ramps
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgscolorramp.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->type() == QgsGradientColorRamp::typeString() )
+      sipType = sipType_QgsGradientColorRamp;
+    else if ( sipCpp->type() == QgsLimitedRandomColorRamp::typeString() )
+      sipType = sipType_QgsLimitedRandomColorRamp;
+    else if ( sipCpp->type() == QgsRandomColorRamp::typeString() )
+      sipType = sipType_QgsRandomColorRamp;
+    else if ( sipCpp->type() == QgsPresetSchemeColorRamp::typeString() )
+      sipType = sipType_QgsPresetSchemeColorRamp;
+    else if ( sipCpp->type() == QgsColorBrewerColorRamp::typeString() )
+      sipType = sipType_QgsColorBrewerColorRamp;
+    else if ( sipCpp->type() == QgsCptCityColorRamp::typeString() )
+      sipType = sipType_QgsCptCityColorRamp;
+    else
+      sipType = 0;
+%End
+  public:
+
+    virtual ~QgsColorRamp();
+
+    virtual int count() const = 0;
+%Docstring
+Returns number of defined colors, or -1 if undefined
+%End
+
+    virtual double value( int index ) const = 0;
+%Docstring
+Returns relative value between [0,1] of color at specified index
+%End
+
+    virtual QColor color( double value ) const = 0;
+%Docstring
+Returns the color corresponding to a specified value.
+
+:param value: value between [0, 1] inclusive
+
+:return: color for value
+%End
+
+    virtual QString type() const = 0;
+%Docstring
+Returns a string representing the color ramp type.
+%End
+
+
+    virtual void invert();
+%Docstring
+Inverts the ordering of the color ramp.
+%End
+
+    virtual QgsColorRamp *clone() const = 0 /Factory/;
+%Docstring
+Creates a clone of the color ramp.
+%End
+
+    virtual QVariantMap properties() const = 0;
+%Docstring
+Returns a string map containing all the color ramp's properties.
+%End
+
+    static QList< QPair< QString, QString > > rampTypes();
+%Docstring
+Returns a list of available ramp types, where the first value in each item is the :py:func:`QgsColorRamp.type()` string
+and the second is a user friendly, translated name for the color ramp type.
+
+The ramp types are returned in a order of precedence for exposing in UI, with more commonly used types
+listed first.
+
+.. versionadded:: 3.16
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscolorramp.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

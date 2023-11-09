@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   height="24"
+   viewBox="0 0 24 24"
+   width="24"
+   version="1.1"
+   id="svg842"
+   sodipodi:docname="mActionDigitizeShape.svg"
+   inkscape:version="1.1 (c4e8f9e, 2021-05-24)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs846" />
+  <sodipodi:namedview
+     id="namedview844"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="9.8333333"
+     inkscape:cx="12"
+     inkscape:cy="12"
+     inkscape:window-width="1827"
+     inkscape:window-height="1038"
+     inkscape:window-x="1948"
+     inkscape:window-y="338"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg842" />
+  <path
+     d="m18.756051 5.9746749.243949 10.0878251-9.5187069 3.349318-6.1268337-8.017831 5.7321154-8.3046117z"
+     fill="none"
+     stroke="#8cbe8c"
+     stroke-width="3.139"
+     id="path824"
+     style="stroke-width:3.14078736;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:31.40787315" />
+  <g
+     fill="#bebebe"
+     stroke="#8c8c8c"
+     id="g840">
+    <path
+       d="m1.9959781 9.9343162h3v2.9999998h-3z"
+       id="path836" />
+    <path
+       d="m7.6796248 1.7305629h3.0000002v3.0000005h-3.0000002z"
+       id="path838" />
+  </g>
+</svg>

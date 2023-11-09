@@ -1,0 +1,426 @@
+<?xml version="1.0"?>
+<!--<!DOCTYPE metadata SYSTEM "http://www.esri.com/metadata/esriprof80.dtd">-->
+<metadata xml:lang="en">
+    <Esri>
+        <CreaDate>20120705</CreaDate>
+        <CreaTime>09212200</CreaTime>
+        <SyncOnce>FALSE</SyncOnce>
+        <SyncDate>20120709</SyncDate>
+        <SyncTime>12392200</SyncTime>
+        <ModDate>20120709</ModDate>
+        <ModTime>12392200</ModTime>
+        <DataProperties>
+            <lineage>
+                <Process
+                        ToolSource="C:\Program Files (x86)\ArcGIS\ArcToolbox\Toolboxes\Data Management Tools.tbx\CopyFeatures"
+                        Date="20111019" Time="082559">CopyFeatures
+                    N:\rlane\w.queenslandgeology2012_final\qld_geology_2nd_ga\w.qld_geol_s_frame\qg_sfmw_data\arc
+                    N:\rlane\w.queenslandgeology2012_final\qld_geology_2nd_ga\w.qld_geol_s_frame\qg_sfmw_data_arc.shp #
+                    0 0 0
+                </Process>
+                <Process
+                        ToolSource="C:\Program Files (x86)\ArcGIS\ArcToolbox\Toolboxes\Data Management Tools.tbx\RepairGeometry"
+                        Date="20120821" Time="145239">RepairGeometry
+                    D:\Jobs\IRTM\Geology\Qld_2M\Framework\QLD_STRUCTURAL_FRAMEWORK_OUTLINE.shp DELETE_NULL
+                    D:\Jobs\IRTM\Geology\Qld_2M\Framework\QLD_STRUCTURAL_FRAMEWORK_OUTLINE.shp
+                </Process>
+            </lineage>
+        </DataProperties>
+        <MetaID>{B6E3704C-6BFD-4A71-BA58-A23FC39D1AE0}</MetaID>
+    </Esri>
+    <idinfo>
+        <native Sync="TRUE">Microsoft Windows Vista Version 6.1 (Build 7601) Service Pack 1; ESRI ArcCatalog
+            9.3.1.4000
+        </native>
+        <descript>
+            <langdata Sync="TRUE">en</langdata>
+            <abstract>abstract pt 1
+            </abstract>
+            <purpose>purpose pt 1</purpose>
+            <supplinf>supp info pt 1</supplinf>
+        </descript>
+        <citation>
+            <citeinfo>
+                <origin>Geological Survey of Queensland</origin>
+                <pubdate>July 2012</pubdate>
+                <title Sync="TRUE">QLD_STRUCTURAL_FRAMEWORK_OUTLINE</title>
+                <ftname Sync="TRUE">QLD_STRUCTURAL_FRAMEWORK_OUTLINE</ftname>
+                <geoform Sync="TRUE">vector digital data</geoform>
+                <edition>July 2012</edition>
+                <serinfo>
+                    <sername>Digital Geoscience Vector Data</sername>
+                    <issue>Queensland geological mapping (polygonised vector) Digital Data - July 2012 DVD</issue>
+                </serinfo>
+                <pubinfo>
+                    <pubplace>Brisbane, Queensland</pubplace>
+                    <publish>Geological Survey of Queensland</publish>
+                </pubinfo>
+                <onlink Sync="TRUE">\\spolsrvpr10\gsu1\rlane\DVD DATA\QUEENSLAND_STRUCTURAL_FRAMEWORK\ESRI
+                    Shapefile\QLD_STRUCTURAL_FRAMEWORK_OUTLINE.shp
+                </onlink>
+            </citeinfo>
+        </citation>
+        <timeperd>
+            <current>publication date</current>
+            <timeinfo>
+                <sngdate>
+                    <caldate>July 2012</caldate>
+                </sngdate>
+            </timeinfo>
+        </timeperd>
+        <status>
+            <progress>Planned</progress>
+            <update>Irregular</update>
+        </status>
+        <spdom>
+            <bounding>
+                <westbc Sync="TRUE">137.994700</westbc>
+                <eastbc Sync="TRUE">153.551830</eastbc>
+                <northbc Sync="TRUE">-9.229600</northbc>
+                <southbc Sync="TRUE">-29.178490</southbc>
+            </bounding>
+            <lboundng>
+                <leftbc Sync="TRUE">137.994700</leftbc>
+                <rightbc Sync="TRUE">153.551830</rightbc>
+                <bottombc Sync="TRUE">-29.178490</bottombc>
+                <topbc Sync="TRUE">-9.229600</topbc>
+            </lboundng>
+        </spdom>
+        <keywords>
+            <theme>
+                <themekt>geoscientific information</themekt>
+                <themekey>GEOSCIENCES Geology</themekey>
+            </theme>
+            <place>
+                <placekt>ANSLIC GEN</placekt>
+                <placekey>Queensland</placekey>
+            </place>
+        </keywords>
+        <accconst>Unrestricted to all levels of government and community.
+        </accconst>
+        <useconst>Creative Commons Attribution 3.0 Australia (CC BY)</useconst>
+        <natvform Sync="TRUE">Shapefile</natvform>
+        <ptcontac>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>org</cntorg>
+                </cntorgp>
+                <cntaddr>
+                    <addrtype>mailing address</addrtype>
+                    <address>PO BOX 111</address>
+                    <city>BRISBANE CITY EAST</city>
+                    <state>QLD</state>
+                    <postal>4002</postal>
+                    <postal>4002</postal>
+                    <country>AUSTRALIA</country>
+                </cntaddr>
+                <cntvoice>777</cntvoice>
+                <cntfax>888</cntfax>
+                <cntemail>someone@gov.au</cntemail>
+                <cntaddr>
+                    <address>LEVEL10</address>
+                    <addrtype>physical address</addrtype>
+                    <address>PO BOX 111</address>
+                    <city>BRISBANE CITY EAST</city>
+                    <state>QLD</state>
+                    <postal>4002</postal>
+                    <country>AUSTRALIA</country>
+                </cntaddr>
+            </cntinfo>
+        </ptcontac>
+    </idinfo>
+    <dataIdInfo>
+        <envirDesc Sync="TRUE">Microsoft Windows Vista Version 6.1 (Build 7601) Service Pack 1; ESRI ArcCatalog
+            9.3.1.4000
+        </envirDesc>
+        <dataLang>
+            <languageCode Sync="TRUE" value="en"></languageCode>
+        </dataLang>
+        <idCitation>
+            <resTitle Sync="TRUE">QLD_STRUCTURAL_FRAMEWORK_OUTLINE</resTitle>
+            <presForm>
+                <PresFormCd Sync="TRUE" value="005"></PresFormCd>
+            </presForm>
+        </idCitation>
+        <spatRpType>
+            <SpatRepTypCd Sync="TRUE" value="001"></SpatRepTypCd>
+        </spatRpType>
+        <dataExt>
+            <geoEle>
+                <GeoBndBox esriExtentType="native">
+                    <westBL Sync="TRUE">137.9947</westBL>
+                    <eastBL Sync="TRUE">153.55183</eastBL>
+                    <northBL Sync="TRUE">-9.2296</northBL>
+                    <southBL Sync="TRUE">-29.17849</southBL>
+                    <exTypeCode Sync="TRUE">1</exTypeCode>
+                </GeoBndBox>
+            </geoEle>
+        </dataExt>
+        <geoBox esriExtentType="decdegrees">
+            <westBL Sync="TRUE">137.9947</westBL>
+            <eastBL Sync="TRUE">153.55183</eastBL>
+            <northBL Sync="TRUE">-9.2296</northBL>
+            <southBL Sync="TRUE">-29.17849</southBL>
+            <exTypeCode Sync="TRUE">1</exTypeCode>
+        </geoBox>
+    </dataIdInfo>
+    <metainfo>
+        <langmeta Sync="TRUE">en</langmeta>
+        <metstdn Sync="TRUE">FGDC Content Standards for Digital Geospatial Metadata</metstdn>
+        <metstdv Sync="TRUE">FGDC-STD-001-1998</metstdv>
+        <mettc Sync="TRUE">local time</mettc>
+        <metc>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>Sales Centre, Geoscience Information, Geological Survey of Queensland</cntorg>
+                </cntorgp>
+                <cntaddr>
+                    <addrtype>mailing address</addrtype>
+                    <city>BRISBANE CITY EAST</city>
+                    <state>QLD</state>
+                    <postal>4002</postal>
+                    <address>PO BOX 15216</address>
+                    <country>AUSTRALIA</country>
+                </cntaddr>
+                <cntvoice>777</cntvoice>
+                <cntfax>888</cntfax>
+                <cntemail>someone@gov.au</cntemail>
+            </cntinfo>
+        </metc>
+        <metd Sync="TRUE">20120709</metd>
+        <metextns>
+            <onlink Sync="TRUE">http://www.esri.com/metadata/esriprof80.html</onlink>
+            <metprof Sync="TRUE">ESRI Metadata Profile</metprof>
+        </metextns>
+    </metainfo>
+    <mdLang>
+        <languageCode Sync="TRUE" value="en"></languageCode>
+    </mdLang>
+    <mdStanName Sync="TRUE">ISO 19115 Geographic Information - Metadata</mdStanName>
+    <mdStanVer Sync="TRUE">DIS_ESRI1.0</mdStanVer>
+    <mdChar>
+        <CharSetCd Sync="TRUE" value="004"></CharSetCd>
+    </mdChar>
+    <mdHrLv>
+        <ScopeCd Sync="TRUE" value="005"></ScopeCd>
+    </mdHrLv>
+    <mdHrLvName Sync="TRUE">dataset</mdHrLvName>
+    <distinfo>
+        <resdesc>GEOSCIENCE DATA Queensland Mapping Data GEOLDATA DVD 2</resdesc>
+        <stdorder>
+            <digform>
+                <digtinfo>
+                    <transize Sync="TRUE">1.220</transize>
+                    <dssize Sync="TRUE">1.220</dssize>
+                </digtinfo>
+            </digform>
+        </stdorder>
+        <distrib>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>Sales Centre, Geoscience Information, Geological Survey of Queensland</cntorg>
+                </cntorgp>
+                <cntaddr>
+                    <addrtype>mailing address</addrtype>
+                    <address>PO BOX 15216 City Eas</address>
+                    <city>Brisbane</city>
+                    <state>QLD</state>
+                    <postal>4002</postal>
+                    <country>Australia</country>
+                </cntaddr>
+                <cntvoice>777</cntvoice>
+                <cntfax>888</cntfax>
+                <cntemail>someone@gov.au</cntemail>
+                <hours>8:30 AM- 4:30 PM AUSTRALIAN EST</hours>
+            </cntinfo>
+        </distrib>
+        <availabl>
+            <timeinfo>
+                <sngdate>
+                    <caldate>July 2012</caldate>
+                </sngdate>
+            </timeinfo>
+        </availabl>
+    </distinfo>
+    <distInfo>
+        <distributor>
+            <distorTran>
+                <onLineSrc>
+                    <orDesc Sync="TRUE">002</orDesc>
+                    <linkage Sync="TRUE">file://some.shp</linkage>
+                    <protocol Sync="TRUE">Local Area Network</protocol>
+                </onLineSrc>
+                <transSize Sync="TRUE">1.220</transSize>
+            </distorTran>
+            <distorFormat>
+                <formatName Sync="TRUE">Shapefile</formatName>
+            </distorFormat>
+        </distributor>
+    </distInfo>
+    <spdoinfo>
+        <direct Sync="TRUE">Vector</direct>
+        <ptvctinf>
+            <esriterm Name="QLD_STRUCTURAL_FRAMEWORK_OUTLINE">
+                <efeatyp Sync="TRUE">Simple</efeatyp>
+                <efeageom Sync="TRUE">Polyline</efeageom>
+                <esritopo Sync="TRUE">FALSE</esritopo>
+                <efeacnt Sync="TRUE">465</efeacnt>
+                <spindex Sync="TRUE">TRUE</spindex>
+                <linrefer Sync="TRUE">FALSE</linrefer>
+            </esriterm>
+            <sdtsterm Name="QLD_STRUCTURAL_FRAMEWORK_OUTLINE">
+                <sdtstype Sync="TRUE">String</sdtstype>
+                <ptvctcnt Sync="TRUE">465</ptvctcnt>
+            </sdtsterm>
+        </ptvctinf>
+    </spdoinfo>
+    <spref>
+        <horizsys>
+            <cordsysn>
+                <geogcsn Sync="TRUE">GCS_GDA_1994</geogcsn>
+            </cordsysn>
+            <geograph>
+                <geogunit Sync="TRUE">Decimal degrees</geogunit>
+                <latres Sync="TRUE">0.000000</latres>
+                <longres Sync="TRUE">0.000000</longres>
+            </geograph>
+            <geodetic>
+                <horizdn Sync="TRUE">D_GDA_1994</horizdn>
+                <ellips Sync="TRUE">Geodetic Reference System 80</ellips>
+                <semiaxis Sync="TRUE">6378137.000000</semiaxis>
+                <denflat Sync="TRUE">298.257222</denflat>
+            </geodetic>
+        </horizsys>
+    </spref>
+    <refSysInfo>
+        <RefSystem>
+            <refSysID>
+                <identCode Sync="TRUE">GCS_GDA_1994</identCode>
+            </refSysID>
+        </RefSystem>
+    </refSysInfo>
+    <spatRepInfo>
+        <VectSpatRep>
+            <topLvl>
+                <TopoLevCd Sync="TRUE" value="001"></TopoLevCd>
+            </topLvl>
+            <geometObjs Name="QLD_STRUCTURAL_FRAMEWORK_OUTLINE">
+                <geoObjTyp>
+                    <GeoObjTypCd Sync="TRUE" value="001"></GeoObjTypCd>
+                </geoObjTyp>
+                <geoObjCnt Sync="TRUE">465</geoObjCnt>
+            </geometObjs>
+        </VectSpatRep>
+    </spatRepInfo>
+    <eainfo>
+        <detailed Name="QLD_STRUCTURAL_FRAMEWORK_OUTLINE">
+            <enttyp>
+                <enttypl Sync="TRUE">QLD_STRUCTURAL_FRAMEWORK_OUTLINE</enttypl>
+                <enttypt Sync="TRUE">Feature Class</enttypt>
+                <enttypc Sync="TRUE">465</enttypc>
+            </enttyp>
+            <attr>
+                <attrlabl Sync="TRUE">FID</attrlabl>
+                <attalias Sync="TRUE">FID</attalias>
+                <attrtype Sync="TRUE">OID</attrtype>
+                <attwidth Sync="TRUE">4</attwidth>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+                <attrdef Sync="TRUE">Internal feature number.</attrdef>
+                <attrdefs Sync="TRUE">ESRI</attrdefs>
+                <attrdomv>
+                    <udom Sync="TRUE">Sequential unique whole numbers that are automatically generated.</udom>
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">Shape</attrlabl>
+                <attalias Sync="TRUE">Shape</attalias>
+                <attrtype Sync="TRUE">Geometry</attrtype>
+                <attwidth Sync="TRUE">0</attwidth>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+                <attrdef Sync="TRUE">Feature geometry.</attrdef>
+                <attrdefs Sync="TRUE">ESRI</attrdefs>
+                <attrdomv>
+                    <udom Sync="TRUE">Coordinates defining the features.</udom>
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">FEAT_CODE</attrlabl>
+                <attalias Sync="TRUE">FEAT_CODE</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">12</attwidth>
+                <attrdef>Type of boundary or line</attrdef>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">NAME</attrlabl>
+                <attalias Sync="TRUE">NAME</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">32</attwidth>
+                <attrdef>Name of one of the structural units bounded by the arc</attrdef>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">Shape_Leng</attrlabl>
+                <attalias Sync="TRUE">Shape_Leng</attalias>
+                <attrtype Sync="TRUE">Float</attrtype>
+                <attwidth Sync="TRUE">19</attwidth>
+                <attrdef>Geometry length of feature</attrdef>
+                <atnumdec Sync="TRUE">11</atnumdec>
+            </attr>
+        </detailed>
+    </eainfo>
+    <mdDateSt Sync="TRUE">20120709</mdDateSt>
+    <dataqual>
+        <lineage>
+            <procstep>
+                <procdesc Sync="TRUE">Dataset copied.</procdesc>
+                <procdate>20120701</procdate>
+                <proctime Sync="TRUE">06250000</proctime>
+            </procstep>
+            <procstep>
+                <procdesc Sync="TRUE">Dataset copied.</procdesc>
+                <srcused Sync="TRUE">I:\rlane\Qld_SFramework_for_DVD\qg_sfmw_data_arc</srcused>
+                <procdate Sync="TRUE">20111124</procdate>
+                <proctime Sync="TRUE">11300400</proctime>
+            </procstep>
+            <procstep>
+                <procdesc Sync="TRUE">Dataset copied.</procdesc>
+                <srcused Sync="TRUE"></srcused>
+                <procdate Sync="TRUE">20111124</procdate>
+                <proctime Sync="TRUE">11353600</proctime>
+            </procstep>
+            <procstep>
+                <procdesc Sync="TRUE">Metadata imported.</procdesc>
+                <srcused Sync="TRUE">D:\QUEENSLAND_STRUCTURAL_FRAMEWORK\OLD_ESRI
+                    Shapefile\QLD_STRUCTURAL_FRAMEWORK_OUTLINE.shp.xml
+                </srcused>
+                <procdate Sync="TRUE">20111206</procdate>
+                <proctime Sync="TRUE">11272800</proctime>
+            </procstep>
+            <procstep>
+                <procdesc Sync="TRUE">Metadata imported.</procdesc>
+                <srcused Sync="TRUE">I:\pickerm\Extract 2011\FINAL VERSION\DVD
+                    Data\orig_QUEENSLAND_STRUCTURAL_FRAMEWORK\ESRI Shapefile\QLD_STRUCTURAL_FRAMEWORK_OUTLINE.shp.xml
+                </srcused>
+                <procdate Sync="TRUE">20111208</procdate>
+                <proctime Sync="TRUE">07403800</proctime>
+            </procstep>
+            <procstep>
+                <procdesc Sync="TRUE">Metadata imported.</procdesc>
+                <srcused Sync="TRUE">I:\pickerm\Extract 2012\Test\QLD_STRUCTURAL_FRAMEWORK_OUTLINE.xml</srcused>
+                <procdate Sync="TRUE">20120705</procdate>
+                <proctime Sync="TRUE">09212200</proctime>
+            </procstep>
+        </lineage>
+        <posacc>
+            <horizpa>
+                <horizpar>The map has been compiled in part using boundaries modified and generalised from the 1:2 000
+                    000 Queensland Geology map (2012) for display at scales of 1:5 000 000 or less. Therefore the
+                    boundaries may only be accurate to within a few kilometres in some places. The subsurface boundaries
+                    are likely to be less accurate or reliable depending on the density of drilling or seismic surveys
+                    or reliability of gravity or magnetic characterisation.
+                </horizpar>
+            </horizpa>
+        </posacc>
+    </dataqual>
+</metadata>

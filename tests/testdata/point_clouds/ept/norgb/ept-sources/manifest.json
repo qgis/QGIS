@@ -1,0 +1,16 @@
+[
+  {
+    "bounds": [
+      1.1824941528320352,
+      32.94006787109376,
+      -1.9833798454284666,
+      1.5105941528320344,
+      33.30966787109375,
+      -1.9225798454284666
+    ],
+    "inserted": true,
+    "metadataPath": "file-cropped.json",
+    "path": "/shared/GIS/Data/Point Clouds/Nodebo/Campus/file-cropped.las",
+    "points": 22
+  }
+]

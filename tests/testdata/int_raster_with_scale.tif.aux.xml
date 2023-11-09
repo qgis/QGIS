@@ -1,0 +1,30 @@
+<PAMDataset>
+  <Metadata>
+    <MDI key="AOD Source">MODIS (MOD08_D3)</MDI>
+    <MDI key="AOD Value">0.069</MDI>
+    <MDI key="GIPPY Version">1.0.2</MDI>
+    <MDI key="GIPS Version">0.7.1</MDI>
+    <MDI key="GIPS-landsat Version">0.9.0</MDI>
+  </Metadata>
+  <PAMRasterBand band="1">
+    <Description>ndvi</Description>
+    <UnitType>other</UnitType>
+    <Scale>9.999999747378752e-05</Scale>
+    <Histograms>
+      <HistItem>
+        <HistMin>7091</HistMin>
+        <HistMax>8573</HistMax>
+        <BucketCount>2</BucketCount>
+        <IncludeOutOfRange>0</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>23|33</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="STATISTICS_MAXIMUM">8326</MDI>
+      <MDI key="STATISTICS_MEAN">7873.3214285714</MDI>
+      <MDI key="STATISTICS_MINIMUM">7338</MDI>
+      <MDI key="STATISTICS_STDDEV">261.16183455194</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>

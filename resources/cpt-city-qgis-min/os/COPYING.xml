@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.ordnancesurvey.co.uk/">
+      <name>UK Ordnance Survey</name>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      Crown Copyright, released under UK Open Government Licence
+      for Public Sector Information v1.0
+    </informal>
+    <year>2011</year>
+    <text href="http://www.nationalarchives.gov.uk/doc/open-government-licence/"/>
+  </license>
+  <src>
+    <format>PDF file</format>
+    <link href="http://www.ordnancesurvey.co.uk/oswebsite/docs/legends/250k-raster-legend.pdf">250K raster legend</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

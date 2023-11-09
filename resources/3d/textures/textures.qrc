@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/textures">
+    <file>arrow.png</file>
+  </qresource>
+</RCC>

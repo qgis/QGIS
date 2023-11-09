@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: COPYING.xml,v 1.2 2012/08/15 16:01:47 jjg Exp $ -->
+<copying>
+  <authors>
+    <author href="http://commons.wikimedia.org/wiki/User:Sting">
+      <name>Eric Gaba</name>
+      <alias>Sting</alias>
+    </author>
+  </authors>
+  <license>
+    <informal>Attribution and share-alike required</informal>
+    <year>2008</year>
+    <text>
+      Any use of this map can be made as long as you credit me 
+      (Eric Gaba, Wikimedia Commons user: Sting) as the author 
+      and distribute the copies and derivative works under the 
+      same license(s) that the one(s) stated below. A message 
+      with a reply address would also be greatly appreciated.
+ 
+      I, the copyright holder of this work, hereby publish it under 
+      the following licenses:
+      
+      Permission is granted to copy, distribute and/or modify this 
+      document under the terms of the GNU Free Documentation License, 
+      Version 1.2 or any later version published by the Free Software 
+      Foundation; with no Invariant Sections, no Front-Cover Texts, 
+      and no Back-Cover Texts. A copy of the license is included in 
+      the section entitled "GNU Free Documentation License".
+   </text>
+  </license>
+  <src>
+    <format>SVG</format>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

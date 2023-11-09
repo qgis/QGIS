@@ -1,0 +1,14 @@
+r.resamp.bspline
+Performs bilinear or bicubic spline interpolation with Tykhonov regularization.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterRasterLayer|mask|Name of raster map to use for masking. Only cells that are not NULL and not zero are interpolated|None|True
+QgsProcessingParameterEnum|method|Sampling interpolation method|bilinear;bicubic|False|1|False
+QgsProcessingParameterNumber|ew_step|Length (float) of each spline step in the east-west direction|QgsProcessingParameterNumber.Double|None|True|0.0|None
+QgsProcessingParameterNumber|ns_step|Length (float) of each spline step in the north-south direction|QgsProcessingParameterNumber.Double|None|True|0.0|None
+QgsProcessingParameterNumber|lambda|Tykhonov regularization parameter (affects smoothing)|QgsProcessingParameterNumber.Double|0.01|True|0.0|None
+QgsProcessingParameterNumber|memory|Maximum memory to be used (in MB). Cache size for raster rows|QgsProcessingParameterNumber.Integer|300|True|10|None
+*QgsProcessingParameterBoolean|-n|Only interpolate null cells in input raster map|False|True
+*QgsProcessingParameterBoolean|-c|Find the best Tykhonov regularizing parameter using a "leave-one-out" cross validation method|False|True
+QgsProcessingParameterRasterDestination|output|Resampled BSpline
+QgsProcessingParameterVectorDestination|grid|Interpolation Grid

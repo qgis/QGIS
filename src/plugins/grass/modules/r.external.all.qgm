@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassdatamodule.dtd">
+<qgisgrassmodule label="Link all GDAL supported rasters in a directory as GRASS rasters" module="r.external.all.py" manual="r.external">
+	<file key="input" type="directory" label="Directory of rasters to be linked"/>
+	<option key="band" advanced="yes"/>
+	<flag key="r" advanced="yes"/>
+	<flag key="o" advanced="yes"/>
+	<flag key="e" advanced="yes"/>
+</qgisgrassmodule>

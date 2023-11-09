@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsRelReferenceConfigDlgBase</class>
+ <widget class="QWidget" name="QgsRelReferenceConfigDlgBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>470</width>
+    <height>601</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string notr="true">Dialog</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Relation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxAllowAddFeatures">
+     <property name="text">
+      <string>Allow adding new features</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxAllowNull">
+     <property name="text">
+      <string>Allow NULL value</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="toolTip">
+      <string>This setting is not saved in the style. It is changing the display name on the referenced layer.</string>
+     </property>
+     <property name="text">
+      <string>Display expression Ⓘ</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxReadOnly">
+     <property name="text">
+      <string>Use a read-only line edit instead of a combobox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxMapIdentification">
+     <property name="text">
+      <string>On map identification (for geometric layers only)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget">
+     <property name="focusPolicy">
+      <enum>Qt::TabFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="mComboRelation">
+     <property name="toolTip">
+      <string>The generated relations for a polymorphic relation cannot be used.</string>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="2">
+    <widget class="QgsCollapsibleGroupBox" name="mFilterGroupBox">
+     <property name="title">
+      <string>Filters</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="1">
+       <widget class="QToolButton" name="mAddFilterButton">
+        <property name="text">
+         <string>…</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" rowspan="4">
+       <widget class="QListWidget" name="mAvailableFieldsList"/>
+      </item>
+      <item row="1" column="2" rowspan="4">
+       <widget class="QListWidget" name="mFilterFieldsList"/>
+      </item>
+      <item row="5" column="0" colspan="3">
+       <widget class="QCheckBox" name="mCbxChainFilters">
+        <property name="toolTip">
+         <string>When activated, filters restrict the option of subsequent filters based on the selection of a previous filter.</string>
+        </property>
+        <property name="text">
+         <string>Chain filters</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="1">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="6" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="topMargin">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Filter expression</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="mEditExpression">
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="1">
+       <widget class="QToolButton" name="mRemoveFilterButton">
+        <property name="text">
+         <string>…</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="3">
+       <widget class="QTextEdit" name="mFilterExpression"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="2">
+    <widget class="QGroupBox" name="mFetchLimitGroupBox">
+     <property name="toolTip">
+      <string>If no limit is set, all entries are loaded.</string>
+     </property>
+     <property name="title">
+      <string>Limit number of entries</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_fetchLimit">
+        <property name="text">
+         <string>Maximum number of entries</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsSpinBox" name="mFetchLimit"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxShowForm">
+     <property name="text">
+      <string>Show embedded form</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxShowOpenFormButton">
+     <property name="text">
+      <string>Show open form button</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mExpressionWidget</tabstop>
+  <tabstop>mComboRelation</tabstop>
+  <tabstop>mCbxAllowNull</tabstop>
+  <tabstop>mCbxShowForm</tabstop>
+  <tabstop>mCbxShowOpenFormButton</tabstop>
+  <tabstop>mCbxMapIdentification</tabstop>
+  <tabstop>mCbxReadOnly</tabstop>
+  <tabstop>mCbxAllowAddFeatures</tabstop>
+  <tabstop>mFilterGroupBox</tabstop>
+  <tabstop>mAvailableFieldsList</tabstop>
+  <tabstop>mAddFilterButton</tabstop>
+  <tabstop>mRemoveFilterButton</tabstop>
+  <tabstop>mFilterFieldsList</tabstop>
+  <tabstop>mCbxChainFilters</tabstop>
+  <tabstop>mEditExpression</tabstop>
+  <tabstop>mFilterExpression</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

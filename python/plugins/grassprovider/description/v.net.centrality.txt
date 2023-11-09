@@ -1,0 +1,18 @@
+v.net.centrality
+Computes degree, centrality, betweenness, closeness and eigenvector centrality measures in the network.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False
+QgsProcessingParameterString|degree|Name of output degree centrality column|degree|False|True
+QgsProcessingParameterString|closeness|Name of output closeness centrality column|closeness|False|True
+QgsProcessingParameterString|betweenness|Name of output betweenness centrality column|betweenness|False|True
+QgsProcessingParameterString|eigenvector|Name of output eigenvector centrality column|eigenvector|False|True
+*QgsProcessingParameterNumber|iterations|Maximum number of iterations to compute eigenvector centrality|QgsProcessingParameterNumber.Integer|1000|True|1|None
+*QgsProcessingParameterNumber|error|Cumulative error tolerance for eigenvector centrality|QgsProcessingParameterNumber.Double|0.1|True|0.0|None
+*QgsProcessingParameterString|cats|Category values|None|False|True
+*QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
+*QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|node_column|Node cost column (number)|None|input|0|False|True
+*QgsProcessingParameterBoolean|-a|Add points on nodes|True|True
+*QgsProcessingParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
+QgsProcessingParameterVectorDestination|output|Network Centrality

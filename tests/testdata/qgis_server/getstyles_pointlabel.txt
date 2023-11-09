@@ -1,0 +1,76 @@
+*****
+Content-Type: text/xml; charset=utf-8
+
+<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:ogc="http://www.opengis.net/ogc" xmlns:se="http://www.opengis.net/se" version="1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <NamedLayer>
+  <se:Name>pointlabel</se:Name>
+  <UserStyle>
+   <se:Name>default</se:Name>
+   <se:FeatureTypeStyle>
+    <se:Rule>
+     <se:Name></se:Name>
+     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:PropertyIsEqualTo>
+       <ogc:Function name="attribute">
+        <ogc:Function name="get_feature">
+         <ogc:Literal>geo_1a4e7b82_a552_467a_b681_c1155fb76f54</ogc:Literal>
+         <ogc:Literal>fid</ogc:Literal>
+         <ogc:Add>
+          <ogc:PropertyName>gid</ogc:PropertyName>
+          <ogc:Literal>1</ogc:Literal>
+         </ogc:Add>
+        </ogc:Function>
+        <ogc:Literal>val</ogc:Literal>
+       </ogc:Function>
+       <ogc:Literal>1.72300000000000009</ogc:Literal>
+      </ogc:PropertyIsEqualTo>
+     </ogc:Filter>
+     <se:PointSymbolizer>
+      <se:Graphic>
+       <se:Mark>
+        <se:WellKnownName>circle</se:WellKnownName>
+        <se:Fill>
+         <se:SvgParameter name="fill">#fffb00</se:SvgParameter>
+        </se:Fill>
+        <se:Stroke>
+         <se:SvgParameter name="stroke">#d711da</se:SvgParameter>
+         <se:SvgParameter name="stroke-width">4</se:SvgParameter>
+        </se:Stroke>
+       </se:Mark>
+       <se:Size>43</se:Size>
+      </se:Graphic>
+     </se:PointSymbolizer>
+    </se:Rule>
+    <se:Rule>
+     <se:TextSymbolizer>
+      <se:Label>
+       <!--SE Export for 'Level is\n' + to_string(attribute(get_feature('geo_1a4e7b82_a552_467a_b681_c1155fb76f54', 'fid', gid + 1), 'val')) + ' m' + '\nat ' + format_date(attribute(get_feature('geo_1a4e7b82_a552_467a_b681_c1155fb76f54', 'fid', gid + 1), 'data'), 'hh:mm dd.MM.yyyy') not implemented yet-->Placeholder</se:Label>
+      <se:Font>
+       <se:SvgParameter name="font-family">QGIS Vera Sans</se:SvgParameter>
+       <se:SvgParameter name="font-size">18</se:SvgParameter>
+       <se:SvgParameter name="font-weight">bold</se:SvgParameter>
+      </se:Font>
+      <se:LabelPlacement>
+       <se:PointPlacement>
+        <se:AnchorPoint>
+         <se:AnchorPointX>1</se:AnchorPointX>
+         <se:AnchorPointY>0</se:AnchorPointY>
+        </se:AnchorPoint>
+       </se:PointPlacement>
+      </se:LabelPlacement>
+      <se:Halo>
+       <se:Radius>3.5</se:Radius>
+       <se:Fill>
+        <se:SvgParameter name="fill">#3ba7a7</se:SvgParameter>
+       </se:Fill>
+      </se:Halo>
+      <se:Fill>
+       <se:SvgParameter name="fill">#ff0000</se:SvgParameter>
+      </se:Fill>
+     </se:TextSymbolizer>
+    </se:Rule>
+   </se:FeatureTypeStyle>
+  </UserStyle>
+ </NamedLayer>
+</StyledLayerDescriptor>

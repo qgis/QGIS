@@ -1,0 +1,9 @@
+r.quantile
+Compute quantiles using two passes.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterNumber|quantiles|Number of quantiles|QgsProcessingParameterNumber.Integer|4|True|2|None
+QgsProcessingParameterString|percentiles|List of percentiles|None|False|True
+QgsProcessingParameterNumber|bins|Number of bins to use|QgsProcessingParameterNumber.Integer|1000000|True|1|None
+*QgsProcessingParameterBoolean|-r|Generate recode rules based on quantile-defined intervals|False
+QgsProcessingParameterFileDestination|file|Quantiles|Html files (*.html)|report.html|False

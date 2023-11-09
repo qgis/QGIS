@@ -1,0 +1,275 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudlayerexporter.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPointCloudLayerExporter /NoDefaultCtors/
+{
+%Docstring(signature="appended")
+
+Handles exporting point cloud layers to memory layers, OGR supported files and PDAL supported files.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudlayerexporter.h"
+%End
+  public:
+
+    enum class ExportFormat
+    {
+      Memory,
+      Las,
+      Gpkg,
+      Shp,
+      Dxf,
+      Csv,
+    };
+
+
+
+    QgsPointCloudLayerExporter( QgsPointCloudLayer *layer );
+%Docstring
+Constructor for QgsPointCloudLayerExporter, associated with the specified ``layer``.
+
+.. note::
+
+   The ``layer`` is safe to be deleted once it's used in the constructor.
+%End
+
+    ~QgsPointCloudLayerExporter();
+
+    void setFileName( const QString &filename );
+%Docstring
+Sets the ``filename`` for the new layer.
+%End
+
+    QString fileName() const;
+%Docstring
+Gets the filename for the new layer.
+%End
+
+    void setLayerName( const QString &name );
+%Docstring
+Sets the ``name`` for the new layer.
+%End
+
+    QString layerName() const;
+%Docstring
+Gets the name for the new layer.
+%End
+
+    void setFilterExtent( const QgsRectangle extent );
+%Docstring
+Sets a filter extent for points to be exported in the target CRS
+Points that fall outside the extent will be skipped.
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+    QgsRectangle filterExtent() const;
+%Docstring
+Gets the filter extent for points to be exported.
+%End
+
+    void setFilterGeometry( const QgsAbstractGeometry *geometry );
+%Docstring
+Sets a spatial filter for points to be exported based on ``geom`` in the point cloud's CRS.
+Points that do not intersect ``geometry`` will be skipped.
+%End
+
+    void setFilterGeometry( QgsMapLayer *layer, bool selectedFeaturesOnly = false );
+%Docstring
+Sets a spatial filter for points to be exported based on the features of ``layer``.
+Points that do not intersect the ``layer``'s features will be skipped.
+%End
+
+    void setZRange( const QgsDoubleRange zRange );
+%Docstring
+Sets an inclusive range for Z values to be exported.
+Points with Z values outside the range will be skipped.
+%End
+
+    QgsDoubleRange zRange() const;
+%Docstring
+Gets the inclusive range for Z values to be exported.
+%End
+
+    void setFeedback( QgsFeedback *feedback );
+%Docstring
+Sets a :py:class:`QgsFeedback` object to allow cancellation / progress reporting.
+
+.. note::
+
+   The ``feedback`` object must exist for the lifetime of the exporter.
+%End
+
+    QgsFeedback *feedback() const;
+%Docstring
+Gets a pointer to the :py:class:`QgsFeedback` object used for cancellation / progress reporting, or None if not set.
+%End
+
+    void setAttributes( const QStringList &attributes );
+%Docstring
+Sets the list of point cloud ``attributes`` that will be exported.
+If never called, all attributes will be exported.
+
+.. note::
+
+   This has no effect when exporting to LAS/LAZ format.
+%End
+
+    void setNoAttributes();
+%Docstring
+Sets that no attributes will be exported.
+
+.. note::
+
+   This has no effect when exporting to LAS/LAZ format.
+%End
+
+    void setAllAttributes();
+%Docstring
+Sets that all attributes will be exported.
+%End
+
+    QStringList attributes() const;
+%Docstring
+Gets the list of point cloud attributes that will be exported.
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() );
+%Docstring
+Sets the ``crs`` for the exported file, and the transform ``context`` that will be used
+for reprojection if different from the point cloud layer's CRS.
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Gets the ``crs`` for the exported file.
+%End
+
+    bool setFormat( const ExportFormat format );
+%Docstring
+Sets the ``format`` for the exported file.
+
+:return: true if the ``format`` is supported, false otherwise.
+
+.. seealso:: ExportFormat
+%End
+
+    ExportFormat format() const;
+%Docstring
+Returns the format for the exported file or layer.
+%End
+
+    void setPointsLimit( qint64 limit );
+%Docstring
+Sets the maximum number of points to be exported. Default value is 0.
+
+.. note::
+
+   Any ``limit`` value <= 0 means no limit.
+%End
+
+    qint64 pointsLimit();
+%Docstring
+Gets the maximum number of points to be exported. 0 means no limit.
+%End
+
+    void setActionOnExistingFile( const QgsVectorFileWriter::ActionOnExistingFile action );
+%Docstring
+Sets whether an existing output vector file should be overwritten on appended to.
+
+.. note::
+
+   Only applies to vector formats
+%End
+
+    void prepareExport();
+%Docstring
+Creates the :py:class:`QgsVectorLayer` for exporting to a memory layer, if necessary.
+This method allows the exported memory layer to be created in the main thread. If not explicitly called, this method
+will be implicitly called by :py:func:`~QgsPointCloudLayerExporter.doExport`.
+%End
+
+    void doExport();
+%Docstring
+Performs the actual exporting operation.
+%End
+
+    QgsMapLayer *takeExportedLayer() /Factory/;
+%Docstring
+Gets a pointer to the exported layer.
+Caller takes ownership of the returned object.
+%End
+
+    QString lastError() const;
+%Docstring
+Gets the last error that occurred during the exporting operation.
+If no error occurred an empty string is returned.
+%End
+
+      public:
+      protected:
+      public:
+      public:
+      public:
+};
+
+
+
+class QgsPointCloudLayerExporterTask : QgsTask
+{
+%Docstring(signature="appended")
+:py:class:`QgsTask` task which performs a :py:class:`QgsPointCloudLayerExporter` layer export operation as a background
+task. This can be used to export a point cloud layer out to a provider without blocking the
+QGIS interface.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudlayerexporter.h"
+%End
+  public:
+
+    QgsPointCloudLayerExporterTask( QgsPointCloudLayerExporter *exporter );
+%Docstring
+Constructor for QgsPointCloudLayerExporterTask. Takes ownership of ``exporter``.
+%End
+
+    virtual void cancel();
+
+
+  signals:
+
+    void exportComplete();
+%Docstring
+Emitted when exporting the layer is successfully completed.
+%End
+
+  protected:
+
+    virtual bool run();
+
+    virtual void finished( bool result );
+
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudlayerexporter.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

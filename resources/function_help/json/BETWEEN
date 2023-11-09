@@ -1,0 +1,31 @@
+{
+  "name": "BETWEEN",
+  "type": "operator",
+  "groups": ["Operators"],
+  "description": "Returns TRUE if value is within the specified range. The range is considered inclusive of the bounds. To test for exclusion NOT BETWEEN can be used.",
+  "arguments": [{
+    "arg": "value",
+    "description": "the value to compare with a range. It can be a string, a number or a date."
+  }, {
+    "arg": "lower_bound AND higher_bound",
+    "description": "range bounds"
+  }],
+  "examples": [{
+    "expression": "'B' BETWEEN 'A' AND 'C'",
+    "returns": "TRUE"
+  }, {
+    "expression": "2 BETWEEN 1 AND 3",
+    "returns": "TRUE"
+  }, {
+    "expression": "2 BETWEEN 2 AND 3",
+    "returns": "TRUE"
+  }, {
+    "expression": "'B' BETWEEN 'a' AND 'c'",
+    "returns": "FALSE"
+  }, {
+    "expression": "lower('B') BETWEEN 'a' AND 'b'",
+    "returns": "TRUE"
+  }],
+  "notes": "<i>value BETWEEN lower_bound AND higher_bound</i> is the same as \"<i>value &gt;= lower_bound AND value &lt;= higher_bound</i>\".",
+  "tags": ["bound", "contained", "found", "include", "range", "within"]
+}

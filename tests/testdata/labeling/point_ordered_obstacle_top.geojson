@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "point_ordered_obstacle_top",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::32613" } },
+"features": [
+{ "type": "Feature", "properties": { "pkuid": 1, "text": null }, "geometry": { "type": "Point", "coordinates": [ 609522.130937098874711, 4825235.13478819001466 ] } }
+]
+}

@@ -1,0 +1,14 @@
+*****
+Content-Type: text/xml; charset=utf-8
+
+<?xml version="1.0" encoding="UTF-8"?>
+<GetFeatureInfoResponse>
+ <Layer name="layer0">
+  <Feature id="2">
+   <Attribute value="3" name="id"/>
+   <Attribute value="three" name="name"/>
+   <Attribute value="three èé↓" name="utf8nameè"/>
+   <BoundingBox maxy="44.9014" maxx="8.2035" miny="44.9014" SRS="EPSG:4326" minx="8.2035"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>

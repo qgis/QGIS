@@ -1,0 +1,7 @@
+r.li.dominance
+r.li.dominance.ascii - Calculates dominance's diversity index on a raster map
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
+QgsProcessingParameterString|config_txt|Landscape structure configuration|None|True|True
+QgsProcessingParameterFile|config|Landscape structure configuration file|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterFileDestination|output_txt|Dominance|Txt files (*.txt)|None|False

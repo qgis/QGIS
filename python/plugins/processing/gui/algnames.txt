@@ -1,0 +1,19 @@
+gdal:executesql,Execute SQL on vector layer
+gdal:rasterinfo,Raster layer information
+gdal:merge,Merge raster layers
+gdal:ogr2ogr,Export vector layer
+gdal:vectorinfo,Vector layer information
+gdal:pcttorgb,PCT to RGB
+gdal:rgbtopct,RGB to PCT
+gdal:sieve,Remove small pixel clumps (nearest neighbour)
+gdal:translate,Export raster layer
+gdal:warpreproject,Reproject raster layer
+gdal:polygonize,Vectorize raster layer
+gdal:gridrasterize,Rasterize vector layer
+gdal:gridnearestneighbor,Interpolate (Nearest Neighbor)
+gdal:griddatametrics,Interpolate (Data metrics)
+gdal:gridinvdist,Interpolate (Inverse distance weighting)
+gdal:gridaverage,Interpolate (Average)
+gdal:contour,Contour lines
+qgis:creategrid,Create graticule
+

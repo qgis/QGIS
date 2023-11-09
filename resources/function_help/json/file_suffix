@@ -1,0 +1,15 @@
+{
+  "name": "file_suffix",
+  "type": "function",
+  "groups": ["Files and Paths"],
+  "description": "Returns the file suffix (extension) from a file path.",
+  "arguments": [{
+    "arg": "path",
+    "description": "a file path or a map layer value. If a map layer value is specified then the file source of the layer will be used."
+  }],
+  "examples": [{
+    "expression": "file_suffix('/home/qgis/data/country_boundaries.shp')",
+    "returns": "'shp'"
+  }],
+  "tags": ["extension", "path", "suffix", "file"]
+}

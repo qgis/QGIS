@@ -1,0 +1,26 @@
+<PAMDataset>
+  <Subdataset name="Band1">
+    <PAMDataset>
+      <PAMRasterBand band="1">
+        <Metadata>
+          <MDI key="STATISTICS_MAXIMUM">130</MDI>
+          <MDI key="STATISTICS_MEAN">126.001725</MDI>
+          <MDI key="STATISTICS_MINIMUM">122</MDI>
+          <MDI key="STATISTICS_STDDEV">1.1294343825008</MDI>
+        </Metadata>
+      </PAMRasterBand>
+    </PAMDataset>
+  </Subdataset>
+  <Subdataset name="Band2">
+    <PAMDataset>
+      <PAMRasterBand band="1">
+        <Metadata>
+          <MDI key="STATISTICS_MAXIMUM">148</MDI>
+          <MDI key="STATISTICS_MEAN">140.388625</MDI>
+          <MDI key="STATISTICS_MINIMUM">133</MDI>
+          <MDI key="STATISTICS_STDDEV">1.880437611136</MDI>
+        </Metadata>
+      </PAMRasterBand>
+    </PAMDataset>
+  </Subdataset>
+</PAMDataset>

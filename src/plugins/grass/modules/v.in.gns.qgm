@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import US-NGA GEOnet Names Server (GNS) country file" module="v.in.gns">
+	<file key="file" type="old" filter="TXT (*.txt)" />
+	<option key="vect" />
+</qgisgrassmodule>

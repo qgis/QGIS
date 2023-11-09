@@ -1,0 +1,9 @@
+v.perturb
+Random location perturbations of GRASS vector points
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Vector points to be spatially perturbed|-1|None|False
+QgsProcessingParameterEnum|distribution|Distribution of perturbation|uniform;normal|False|0|True
+QgsProcessingParameterString|parameters|Parameter(s) of distribution (uniform: maximum; normal: mean and stddev)|None|False|True
+QgsProcessingParameterNumber|minimum|Minimum deviation in map units|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|seed|Seed for random number generation|QgsProcessingParameterNumber.Integer|0|True|None|None
+QgsProcessingParameterVectorDestination|output|Perturbed

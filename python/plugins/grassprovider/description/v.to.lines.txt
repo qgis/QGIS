@@ -1,0 +1,6 @@
+v.to.lines
+Converts vector polygons or points to lines.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False
+QgsProcessingParameterEnum|method|Method used for point interpolation|delaunay|False|0|True
+QgsProcessingParameterVectorDestination|output|Lines

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ShadowRenderingSettingsWidget</class>
+ <widget class="QWidget" name="ShadowRenderingSettingsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>482</width>
+    <height>139</height>
+   </rect>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="labelUsedDirectionalLight">
+     <property name="text">
+      <string>Directional light</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="usedDirectionalLightComboBox"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="labelShadowRenderinMaximumDistance">
+     <property name="text">
+      <string>Shadow rendering maximum distance</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsDoubleSpinBox" name="shadowRenderinMaximumDistanceSpinBox">
+     <property name="suffix">
+      <string> map units</string>
+     </property>
+     <property name="maximum">
+      <double>9999999999.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>500.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelShadowBias">
+     <property name="text">
+      <string>Shadow bias</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QgsDoubleSpinBox" name="shadowBiasSpinBox">
+     <property name="decimals">
+      <number>10</number>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.000010000000000</double>
+     </property>
+     <property name="value">
+      <double>0.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="labelShadowMapResolution">
+     <property name="text">
+      <string>Shadow map resolution</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QgsSpinBox" name="shadowMapResolutionSpinBox">
+     <property name="suffix">
+      <string> px</string>
+     </property>
+     <property name="minimum">
+      <number>128</number>
+     </property>
+     <property name="maximum">
+      <number>8192</number>
+     </property>
+     <property name="value">
+      <number>2048</number>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,40 @@
+body{
+  font-family: trebuchet,arial,helvetica,sans;
+  font-size: 11pt;
+}
+.normal{
+  font-size: 11pt;
+}
+.warning{
+  font-family: trebuchet,arial,helvetica,sans;
+  font-size: 12pt;
+  font-weight: bold;
+  color: #800000;
+} 
+span.header{
+  font-family: trebuchet,arial,helvetica,sans;
+  font-size: 18pt;
+}
+span.subheader{
+  font-family: trebuchet,arial,helvetica,sans;
+  font-size: 14pt;
+  font-weight: normal;
+}
+dt{
+  font-size: 10pt;
+  font-weight: bold;
+}
+ul.small{
+  font-size: 9pt;
+}
+h2{
+  font-size: 14pt;
+  font-family: trebuchet,arial,helvetica,sans;
+  font-weight: normal;
+}
+a.link.bar{
+  font-size: 9pt;
+  font-style: italic;
+}
+  }
+}

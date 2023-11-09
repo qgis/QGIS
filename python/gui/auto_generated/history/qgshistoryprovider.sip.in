@@ -1,0 +1,65 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryprovider.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAbstractHistoryProvider : QObject
+{
+%Docstring(signature="appended")
+Abstract base class for objects which track user history (i.e. operations performed through the GUI).
+
+:py:class:`QgsAbstractHistoryProvider` subclasses are accessible through the :py:class:`QgsHistoryProviderRegistry` class.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgshistoryprovider.h"
+%End
+  public:
+
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
+      sipType = sipType_QgsProcessingHistoryProvider;
+    else
+      sipType = nullptr;
+%End
+
+    virtual ~QgsAbstractHistoryProvider();
+
+    virtual QString id() const = 0;
+%Docstring
+Returns the provider's unique id, which is used to associate existing history entries with the provider.
+%End
+
+    virtual QgsHistoryEntryNode *createNodeForEntry( const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context ) /Factory/;
+%Docstring
+Creates a new history node for the given ``entry``.
+
+.. versionadded:: 3.32
+%End
+
+    virtual void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context );
+%Docstring
+Updates an existing history ``node`` for the given ``entry``.
+
+.. versionadded:: 3.32
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryprovider.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

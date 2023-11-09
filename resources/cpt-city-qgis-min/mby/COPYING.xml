@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.linkedin.com/in/mbyikilmaz">
+      <name>M. Burak YIKILMAZ</name>
+      <org>UC Davis Department of Geology</org>
+    </author>
+  </authors>
+  <license>
+    <informal>GPLv2</informal>
+    <year>2012</year>
+    <text href="http://www.gnu.org/licenses/gpl-2.0.html"/>
+  </license>
+  <src>
+    <format>GMT cpt file</format>
+    <link href="http://idav.ucdavis.edu/~okreylos/ResDev/SARndbox/"
+	  >Augmented reality sandbox</link>
+    <remark>Contributed to the archive May 2012</remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="gplv2"/>
+  </distribute>
+</copying>

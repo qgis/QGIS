@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Observes specific locations in a space time raster dataset over a period of time using vector points" module="t.vect.observe.strds">
+	<option key="input"/>
+	<option key="strds"/>
+	<option key="output"/>
+	<option key="vector_output"/>
+	<option key="columns"/>
+	<option key="where"/>
+	<option key="t_where"/>
+</qgisgrassmodule>

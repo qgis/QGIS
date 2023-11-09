@@ -1,0 +1,183 @@
+<!-- template for the WFS3 API description page -->
+{% include "header.html" %}
+
+   <div class="row">
+       <div class="col">
+           <h1>API description</h1>
+           <h2>Info</h2>
+           <dl class="row">
+               <dt class="col-sm-3">Description</dt>
+               <dd class="col-sm-9">{{ info.description }}</dd>
+               <dt class="col-sm-3">Title</dt>
+               <dd class="col-sm-9">{{ info.title }}</dd>
+               <dt class="col-sm-3">Contact email</dt>
+               <dd class="col-sm-9">{{ info.contact.email }}</dd>
+               <dt class="col-sm-3">Contact name</dt>
+               <dd class="col-sm-9">{{ info.contact.name }}</dd>
+           </dl>
+       </div> <!-- // .col-->
+   </div> <!-- // .row -->
+
+   <div class="row top-buffer">
+       <div class="col">
+           <h2>Paths</h2>
+           <div id="accordion">
+               <div class="card">
+               {% for path, path_info in paths %}
+                   {% for method, method_data in path_info %}
+                   <div class="card-header" id="heading_{{ method_data.operationId }}">
+                       <h5 class="mb-0">
+                           <span class="path-button btn btn-primary btn-{{ method }}" data-toggle="collapse"
+                           data-target="#collapse_{{ method_data.operationId }}"
+                           aria-expanded="true"
+                           aria-controls="collapse_{{ method_data.operationId }}">{{ method }}</span>
+                           <button class="path-path btn btn-link" data-toggle="collapse"
+                               data-target="#collapse_{{ method_data.operationId }}"
+                               aria-expanded="true"
+                               aria-controls="collapse_{{ method_data.operationId }}">
+                              {{ path }}
+                           </button>
+                           <span class="small">{{ method_data.summary }}</span>
+                        </h5>
+                   </div>
+                   <div id="collapse_{{ method_data.operationId }}"
+                       class="collapse"
+                       aria-labelledby="heading_{{ method_data.operationId }}"
+                       data-parent="#accordion">
+                       <div class="card-body">
+                         <dl class="row">
+                             <dt class="col-sm-2">OperationId</dt>
+                             <dd class="col-sm-10">{{ method_data.operationId }}</dt>
+                             <dt class="col-sm-2">Tags</dt>
+                             <dd class="col-sm-10">{{ method_data.tags }}</dt>
+                             <dt class="col-sm-2">Description</dt>
+                             <dd class="col-sm-10">{{ method_data.description }}</dd>
+                             {% if existsIn(method_data, "parameters") %}
+                             <dt class="col-sm-2">Parameters</dt>
+                             <dd class="col-sm-10">
+                                 <table class="table table-sm table-params">
+                                   <thead>
+                                       <tr>
+                                          <th scope="col">Name</th>
+                                          <th scope="col">Description</th>
+                                          <th scope="col">Type</th>
+                                        </tr>
+                                     </thead>
+                                     <tbody>
+                                     {% for param in method_data.parameters %}
+                                     {% if existsIn(param, "name") %}
+                                     <tr>
+                                       <td>{{ param.name }}</td>
+                                       <td class="small">{{ nl2br( param.description ) }}</td>
+                                       <td>{{ param.schema.type }}</td>
+                                    </tr>
+                                    {% else %}
+                                    {% for comp_param in component_parameter( param ) %}
+                                    <tr>
+                                      <td>{{ comp_param.name }}</td>
+                                      <td class="small">{{ nl2br( comp_param.description ) }}</td>
+                                      <td>{{ comp_param.schema.type }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                             </dt>
+                             {% endif %}
+                              <dt class="col-sm-2">Responses</dt>
+                              <dd class="col-sm-10 jref">{{ method_data.responses}}</dd>
+                           </dl>
+                       </div>
+                   </div>
+                   {% endfor %}
+               {% endfor %}
+               </div>
+           </div>
+       </div>
+   </div> <!-- // .row -->
+
+   <div class="row top-buffer">
+       <div class="col">
+           <h2>Models</h2>
+           <div id="accordion">
+               <div class="card">
+               {% for schema_name, schema_model in components.schemas %}
+                   <div class="card-header" id="heading_{{ schema_name }}">
+                       <a name="{{ schema_name }}" />
+                       <h5 class="mb-0">
+                           <button class="model-toggle btn btn-link" data-toggle="collapse"
+                               data-target="#collapse_{{ schema_name }}"
+                               aria-expanded="true"
+                               aria-controls="collapse_{{ schema_name }}">
+                              {{ schema_name }}
+                           </button>
+                        </h5>
+                   </div>
+                   <div id="collapse_{{ schema_name }}"
+                       class="collapse"
+                       aria-labelledby="heading_{{ schema_name }}"
+                       data-parent="#accordion">
+                       <div class="card-body">
+                         <dl class="row">
+                             <dt class="col-sm-3">Type</dt>
+                             <dd class="col-sm-9">{{ schema_model.type }}</dt>
+                             <dt class="col-sm-3">Properties</dt>
+                             <dd class="col-sm-9">
+                               <table class="table table-sm">
+                                 <thead>
+                                   <tr>
+                                     <th scope="col">Name</th>
+                                     <th scope="col">Description</th>
+                                     <th scope="col">Type</th>
+                                     <th scope="col">Example</th>
+                                   </tr>
+                                 </thead>
+                                 <tbody>
+                                 {% for property_name, property_data in schema_model.properties %}
+                                 {% if existsIn(property_data, "example") and existsIn(property_data, "description") %}
+                                 <tr>
+                                   <td>{{ property_name }}</td>
+                                   <td>{{ property_data.description }}</td>
+                                   <td>{{ property_data.type }}</td>
+                                   <td>
+                                   {% if isArray(property_data.example) %}
+                                     <ul>
+                                     {% for example in property_data.example %}
+                                       <li>{{ example }}</li>
+                                     {% endfor %}
+                                     </ul>
+                                   {% else %}
+                                   {{ property_data.example }}
+                                   {% endif %}
+                                   </td>
+                                 </tr>
+                                 {% else %}
+                                 <tr>
+                                   <td>{{ property_name }}</td>
+                                   <td colspan=3 class="jref">
+                                   {{ property_data }}
+                                   </td>
+                                 {% endif %}
+                                 {% endfor %}
+                                 </tbody>
+                               </table>
+                             </dt>
+                             <dt class="col-sm-3">Required</dt>
+                             <dd class="col-sm-9">
+                               <ul>
+                               {% for req in schema_model.required %}
+                                   <li>{{ req }}</li>
+                               {% endfor %}
+                               </ul>
+                             </dd>
+                         </dl>
+                       </div>
+                   </div>
+               {% endfor %}
+               </div>
+           </div>
+       </div>
+   </div>
+
+{% include "footer.html" %}

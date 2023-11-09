@@ -1,0 +1,13 @@
+r.terraflow
+Flow computation for massive grids.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|elevation|Name of elevation raster map|None|False
+QgsProcessingParameterBoolean|-s|SFD (D8) flow (default is MFD)|False
+QgsProcessingParameterNumber|d8cut|Routing using SFD (D8) direction|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|memory|Maximum memory to be used (in MB)|QgsProcessingParameterNumber.Integer|300|True|1|None
+QgsProcessingParameterRasterDestination|filled|Filled (flooded) elevation
+QgsProcessingParameterRasterDestination|direction|Flow direction
+QgsProcessingParameterRasterDestination|swatershed|Sink-watershed
+QgsProcessingParameterRasterDestination|accumulation|Flow accumulation
+QgsProcessingParameterRasterDestination|tci|Topographic convergence index (tci)
+QgsProcessingParameterFileDestination|stats|Runtime statistics|Txt files (*.txt)|None|False

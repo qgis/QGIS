@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:ws1="ws1" elementFormDefault="qualified" targetNamespace="ws1">
+  <xsd:import namespace="http://www.opengis.net/gml" schemaLocation="http://localhost:8600/geoserver/schemas/gml/3.1.1/base/gml.xsd"/>
+  <xsd:complexType name="polygonsType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometry" nillable="true" type="gml:SurfacePropertyType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="name" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="value" nillable="true" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="polygons" substitutionGroup="gml:_Feature" type="ws1:polygonsType"/>
+</xsd:schema>

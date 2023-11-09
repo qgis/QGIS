@@ -1,0 +1,20 @@
+r.slope.aspect
+Generates raster layers of slope, aspect, curvatures and partial derivatives from a elevation raster layer.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|elevation|Elevation|None|False
+QgsProcessingParameterEnum|format|Format for reporting the slope|degrees;percent|False|0|True
+QgsProcessingParameterEnum|precision|Type of output aspect and slope layer|FCELL;CELL;DCELL|False|0|True
+QgsProcessingParameterBoolean|-a|Do not align the current region to the elevation layer|True
+QgsProcessingParameterBoolean|-e|Compute output at edges and near NULL values|False
+QgsProcessingParameterBoolean|-n|Create aspect as degrees clockwise from North (azimuth), with flat = -9999|False
+QgsProcessingParameterNumber|zscale|Multiplicative factor to convert elevation units to meters|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|min_slope|Minimum slope val. (in percent) for which aspect is computed|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterRasterDestination|slope|Slope|None|True
+QgsProcessingParameterRasterDestination|aspect|Aspect|None|True
+QgsProcessingParameterRasterDestination|pcurvature|Profile curvature|None|True
+QgsProcessingParameterRasterDestination|tcurvature|Tangential curvature|None|True
+QgsProcessingParameterRasterDestination|dx|First order partial derivative dx (E-W slope)|None|True
+QgsProcessingParameterRasterDestination|dy|First order partial derivative dy (N-S slope)|None|True
+QgsProcessingParameterRasterDestination|dxx|Second order partial derivative dxx|None|True
+QgsProcessingParameterRasterDestination|dyy|Second order partial derivative dyy|None|True
+QgsProcessingParameterRasterDestination|dxy|Second order partial derivative dxy|None|True

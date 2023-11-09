@@ -1,0 +1,3 @@
+1 test_1 cat $GISDBASE/$LOCATION_NAME/$MAPSET/dbf/ dbf
+2 test_2 cat $GISDBASE/$LOCATION_NAME/$MAPSET/dbf/ dbf
+3 test_3 cat $GISDBASE/$LOCATION_NAME/$MAPSET/dbf/ dbf

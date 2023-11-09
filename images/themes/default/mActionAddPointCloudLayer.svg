@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <ellipse cx="18.5" cy="15.5" rx="4" ry="3.9999" fill="#2f5074" stroke="#2b3b4d" stroke-linecap="square"/>
+ <ellipse cx="7" cy="19" rx="3.5" ry="3.4999" fill="#2f5074" stroke="#2b3b4d" stroke-linecap="square"/>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <linearGradient id="c" x1="7.373" x2="7.449" y1="10" y2="15" gradientTransform="matrix(.65196 0 0 .6516 1.174 1.975)" gradientUnits="userSpaceOnUse">
+  <stop stop-color="#6e97c4" offset="0"/>
+  <stop stop-color="#aec7e2" offset="1"/>
+ </linearGradient>
+ <path d="m2.478 8.49c-.87 9.558-.435 4.779 0 0z" fill="url(#c)"/>
+ <ellipse cx="9" cy="8" rx="6.5" ry="6.5" fill="#6e97c4" stroke="#2b3b4d" stroke-linecap="square"/>
+ <ellipse cx="19.5" cy="5.4999" rx="2" ry="1.9999" fill="#cbd8e7" stroke="#2b3b4d" stroke-linecap="square"/>
+ <g transform="matrix(.69231 0 0 .69231 1.8462 1.8462)">
+  <rect x="19" y="19" width="13" height="13" rx="2.6149" fill="#5a8c5a"/>
+  <g fill-rule="evenodd">
+   <path d="m21.6 25.5h7.8" fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"/>
+   <path d="m25.5 29.4v-7.8" fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"/>
+   <path d="m20.3 25.5h10.4v-2.6c0-2.6-0.65-2.6-5.2-2.6s-5.2 0-5.2 2.6z" fill="#fcffff" opacity=".3"/>
+  </g>
+ </g>
+</svg>

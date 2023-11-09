@@ -1,0 +1,6 @@
+r.resamp.interp
+Resamples raster map to a finer grid using interpolation.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterEnum|method|Sampling interpolation method|nearest;bilinear;bicubic;lanczos|False|1|True
+QgsProcessingParameterRasterDestination|output|Resampled interpolated

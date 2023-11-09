@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/QgsQuick">
+        <file>qmldir</file>
+        <file>qgsquickmapcanvas.qml</file>
+    </qresource>
+</RCC>

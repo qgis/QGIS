@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: COPYING.xml,v 1.3 2013/10/30 23:20:10 jjg Exp $ -->
+<copying>
+  <authors>
+    <author href="http://www.geosci.usyd.edu.au/people/st_heine.shtml">
+      <name>Christian Heine</name>
+      <org>University of Sydney</org>
+    </author>
+  </authors>
+  <license>
+    <informal>Creative Commons Attribution-ShareAlike 3.0 Unported</informal>
+    <year>2013</year>
+    <text href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US"/>
+  </license>
+  <src>
+    <format>GMT cpt files</format>
+    <link href="https://bitbucket.org/chhei/gmt-cpts">Palette respository</link>
+    <link href="http://www.geosci.usyd.edu.au/people/st_heine.shtml"
+	  >Author's departmental page</link>
+    <link href="http://www.earthbyte.org/people/christian"
+	  >Author's personal page</link>
+    <remark>Contributed to the archive by the author, October 2013</remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc3"/>
+  </distribute>
+</copying>

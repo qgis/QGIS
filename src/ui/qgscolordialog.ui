@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsColorDialogBase</class>
+ <widget class="QDialog" name="QgsColorDialogBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>620</width>
+    <height>402</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Color Picker</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QgsCompoundColorWidget" name="mColorWidget" native="true"/>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <action name="mActionImportColors">
+   <property name="text">
+    <string>Import Colors…</string>
+   </property>
+   <property name="toolTip">
+    <string>Import colors from file</string>
+   </property>
+  </action>
+  <action name="mActionExportColors">
+   <property name="text">
+    <string>Export Colors…</string>
+   </property>
+   <property name="toolTip">
+    <string>Export colors to file</string>
+   </property>
+  </action>
+  <action name="mActionPasteColors">
+   <property name="text">
+    <string>Paste Colors</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste colors from clipboard</string>
+   </property>
+  </action>
+  <action name="mActionImportPalette">
+   <property name="text">
+    <string>Import Palette…</string>
+   </property>
+   <property name="toolTip">
+    <string>Import palette from file</string>
+   </property>
+  </action>
+  <action name="mActionRemovePalette">
+   <property name="text">
+    <string>Remove Palette</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove current palette</string>
+   </property>
+  </action>
+  <action name="mActionNewPalette">
+   <property name="text">
+    <string>New Palette…</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new palette</string>
+   </property>
+  </action>
+  <action name="mActionCopyColors">
+   <property name="text">
+    <string>Copy Colors</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy selected colors</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCompoundColorWidget</class>
+   <extends>QWidget</extends>
+   <header>qgscompoundcolorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

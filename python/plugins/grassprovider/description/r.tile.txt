@@ -1,0 +1,8 @@
+r.tile
+Splits a raster map into tiles
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
+QgsProcessingParameterNumber|width|Width of tiles (columns)|QgsProcessingParameterNumber.Integer|1024|False|1|None
+QgsProcessingParameterNumber|height|Height of tiles (rows)|QgsProcessingParameterNumber.Integer|1024|False|1|None
+QgsProcessingParameterNumber|overlap|Overlap of tiles|QgsProcessingParameterNumber.Integer|None|True|0|None
+QgsProcessingParameterFolderDestination|output|Tiles Directory

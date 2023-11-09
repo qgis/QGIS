@@ -1,0 +1,11 @@
+r.random
+Creates a raster layer and vector point map containing randomly located points.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterRasterLayer|cover|Input cover raster layer|None|False
+QgsProcessingParameterNumber|npoints|The number of points to allocate|QgsProcessingParameterNumber.Integer|None|False|0|None
+QgsProcessingParameterBoolean|-z|Generate points also for NULL category|False
+QgsProcessingParameterBoolean|-d|Generate vector points as 3D points|False
+QgsProcessingParameterBoolean|-b|Do not build topology|False
+QgsProcessingParameterRasterDestination|raster|Random raster
+QgsProcessingParameterVectorDestination|vector|Random vector

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>h5</dir>
+  <name>Colour tables from the h5utils package</name>
+  <full>
+    The h5utils package by MIT's Steven G. Johnson is a set of
+    utilities for visualization and conversion of scientific data in
+    the free, portable HDF5 format. Included in the package are a set
+    of colour tables for the h5topng program.
+  </full>
+  <date>01/08/2012</date>
+</description>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  version information for cpt-city packages
+-->
+<archive>
+  <version>2.07</version>
+  <variant>full</variant>
+  <parent>none</parent>
+  <creator>J.J. Green</creator>
+  <created>Thu Apr 11 20:19:13 BST 2013</created>
+</archive>

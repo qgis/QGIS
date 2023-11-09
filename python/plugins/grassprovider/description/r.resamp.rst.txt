@@ -1,0 +1,22 @@
+r.resamp.rst
+Reinterpolates using regularized spline with tension and smoothing.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Raster layer|None|False
+QgsProcessingParameterRasterLayer|smooth|Input raster map containing smoothing|None|True
+QgsProcessingParameterRasterLayer|maskmap|Input raster map to be used as mask|None|True
+QgsProcessingParameterNumber|ew_res|Desired east-west resolution|QgsProcessingParameterNumber.Double|None|False|None|None
+QgsProcessingParameterNumber|ns_res|Desired north-south resolution|QgsProcessingParameterNumber.Double|None|False|None|None
+QgsProcessingParameterNumber|overlap|Rows/columns overlap for segmentation|QgsProcessingParameterNumber.Integer|3|True|0|None
+QgsProcessingParameterNumber|zscale|Multiplier for z-values|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|tension|Spline tension value|QgsProcessingParameterNumber.Double|40.0|True|None|None
+QgsProcessingParameterNumber|theta|Anisotropy angle (in degrees counterclockwise from East)|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|scalex|Anisotropy scaling factor|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterBoolean|-t|Use dnorm independent tension|False
+QgsProcessingParameterBoolean|-d|Output partial derivatives instead of topographic parameters|False
+QgsProcessingParameterRasterDestination|elevation|Resampled RST
+QgsProcessingParameterRasterDestination|slope|Slope raster
+QgsProcessingParameterRasterDestination|aspect|Aspect raster
+QgsProcessingParameterRasterDestination|pcurvature|Profile curvature raster
+QgsProcessingParameterRasterDestination|tcurvature|Tangential curvature raster
+QgsProcessingParameterRasterDestination|mcurvature|Mean curvature raster
+

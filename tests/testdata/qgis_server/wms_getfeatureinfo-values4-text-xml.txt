@@ -1,0 +1,32 @@
+Content-Length: 1400
+Content-Type: text/xml; charset=utf-8
+
+<?xml version="1.0" encoding="UTF-8"?>
+<GetFeatureInfoResponse>
+ <Layer name="layer4">
+  <Feature id="1">
+   <Attribute value="one èé" name="utf8nameè"/>
+   <Attribute value="Id no. 1 value" name="j_value_id"/>
+   <Attribute value="Id no. 1 value" name="id"/>
+   <Attribute value="one_value" name="name"/>
+   <BoundingBox maxy="5606025.2373" maxx="913209.0358" miny="5606025.2373" CRS="EPSG:3857" minx="913209.0358"/>
+   <Attribute type="derived" value="Point (913209.0358 5606025.2373)" name="geometry"/>
+  </Feature>
+  <Feature id="2">
+   <Attribute value="two àò" name="utf8nameè"/>
+   <Attribute value="Id no. 2 value" name="j_value_id"/>
+   <Attribute value="Id no. 2 value" name="id"/>
+   <Attribute value="two_val" name="name"/>
+   <BoundingBox maxy="5606017.8743" maxx="913214.6741" miny="5606017.8743" CRS="EPSG:3857" minx="913214.6741"/>
+   <Attribute type="derived" value="Point (913214.6741 5606017.8743)" name="geometry"/>
+  </Feature>
+  <Feature id="3">
+   <Attribute value="three èé↓" name="utf8nameè"/>
+   <Attribute value="Id número 3 value" name="j_value_id"/>
+   <Attribute value="Id número 3 value" name="id"/>
+   <Attribute value="three_val" name="name"/>
+   <BoundingBox maxy="5606011.4565" maxx="913204.9128" miny="5606011.4565" CRS="EPSG:3857" minx="913204.9128"/>
+   <Attribute type="derived" value="Point (913204.9128 5606011.4565)" name="geometry"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>

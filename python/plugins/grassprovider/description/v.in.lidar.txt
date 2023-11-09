@@ -1,0 +1,17 @@
+v.in.lidar
+Converts LAS LiDAR point clouds to a GRASS vector map with libLAS.
+Vector (v.*)
+QgsProcessingParameterFile|input|LiDAR input files in LAS format (*.las or *.laz)|QgsProcessingParameterFile.File||None|False|Lidar files (*.las *.LAS *.laz *.LAZ)
+QgsProcessingParameterExtent|spatial|Import subregion only|None|True
+QgsProcessingParameterRange|zrange|Filter range for z data|QgsProcessingParameterNumber.Double|None|True
+QgsProcessingParameterEnum|return_filter|Only import points of selected return type|first;last;mid|True|None|True
+QgsProcessingParameterString|class_filter|Only import points of selected class(es) (comma separated integers)|None|False|True
+QgsProcessingParameterNumber|skip|Do not import every n-th point|QgsProcessingParameterNumber.Integer|None|True|1|None
+QgsProcessingParameterNumber|preserve|Import only every n-th point|QgsProcessingParameterNumber.Integer|None|True|1|None
+QgsProcessingParameterNumber|offset|Skip first n points|QgsProcessingParameterNumber.Integer|None|True|1|None
+QgsProcessingParameterNumber|limit|Import only n points|QgsProcessingParameterNumber.Integer|None|True|1|None
+*QgsProcessingParameterBoolean|-t|Do not create attribute table|False
+*QgsProcessingParameterBoolean|-c|Do not automatically add unique ID as category to each point|False
+*QgsProcessingParameterBoolean|-b|Do not build topology|False
+Hardcoded|-o
+QgsProcessingParameterVectorDestination|output|Lidar

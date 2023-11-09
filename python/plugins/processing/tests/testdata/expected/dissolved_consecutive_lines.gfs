@@ -1,0 +1,21 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>dissolved_consecutive_lines</Name>
+    <ElementPath>dissolved_consecutive_lines</ElementPath>
+    <!--MULTILINESTRING-->
+    <GeometryType>5</GeometryType>
+    <SRSName>EPSG:4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>1</FeatureCount>
+      <ExtentXMin>-0.91424</ExtentXMin>
+      <ExtentXMax>0.54111</ExtentXMax>
+      <ExtentYMin>-0.14058</ExtentYMin>
+      <ExtentYMax>0.68700</ExtentYMax>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>id</Name>
+      <ElementPath>id</ElementPath>
+      <Type>Untyped</Type>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

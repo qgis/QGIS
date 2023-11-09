@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Paul Naylor</name>
+      <org>Ordnance Survey</org>
+    </author>
+  </authors>
+  <license>
+    <informal>Open Government Licence v3.0</informal>
+    <year>2019</year>
+    <text href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"/>
+  </license>
+  <src>
+    <format>png</format>
+    <link href="http://www.os.uk">Ordnance Survey</link>
+    <link href="https://www.ordnancesurvey.co.uk/shop/moon-50th-anniversary-map.html">Full sized map</link>
+    <remark>Contributed to the archive by the author, May 2019</remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

@@ -1,0 +1,237 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgspalettedrasterrenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPalettedRasterRenderer: QgsRasterRenderer
+{
+%Docstring(signature="appended")
+Renderer for paletted raster images.
+%End
+
+%TypeHeaderCode
+#include "qgspalettedrasterrenderer.h"
+%End
+  public:
+
+    struct Class
+    {
+      Class( double value, const QColor &color = QColor(), const QString &label = QString() );
+%Docstring
+Constructor for Class
+%End
+
+      double value;
+
+      QColor color;
+      QString label;
+    };
+
+    class MultiValueClass
+{
+%Docstring(signature="appended")
+Properties of a multi value class: a class that contains multiple values.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgspalettedrasterrenderer.h"
+%End
+      public:
+
+        MultiValueClass( const QVector< QVariant > &values, const QColor &color = QColor(), const QString &label = QString() );
+%Docstring
+Constructor for MultiValueClass from a list of values
+%End
+
+        QVector< QVariant > values;
+
+        QColor color;
+
+        QString label;
+    };
+
+
+    typedef QList< QgsPalettedRasterRenderer::Class > ClassData;
+
+    typedef QList< QgsPalettedRasterRenderer::MultiValueClass > MultiValueClassData;
+
+    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes );
+%Docstring
+Constructor for QgsPalettedRasterRenderer.
+%End
+
+
+
+    virtual QgsPalettedRasterRenderer *clone() const /Factory/;
+
+%Docstring
+QgsPalettedRasterRenderer cannot be copied. Use :py:func:`~QgsPalettedRasterRenderer.clone` instead.
+%End
+    virtual Qgis::RasterRendererFlags flags() const;
+
+
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+
+
+    int nColors() const;
+%Docstring
+Returns number of colors
+%End
+
+    ClassData classes() const;
+%Docstring
+Returns a map of value to classes (colors) used by the renderer.
+%End
+
+    MultiValueClassData multiValueClasses( ) const;
+%Docstring
+Returns a map of multi value to classes (colors) used by the renderer.
+
+.. versionadded:: 3.30
+%End
+
+    virtual bool canCreateRasterAttributeTable( ) const;
+
+
+    void setMultiValueClasses( const MultiValueClassData &classes );
+%Docstring
+Sets the multi value classes to ``setMultiValueClasses``.
+
+.. versionadded:: 3.30
+%End
+
+    QString label( double idx ) const;
+%Docstring
+Returns optional category label
+
+.. versionadded:: 2.1
+%End
+
+    void setLabel( double idx, const QString &label );
+%Docstring
+Set category label
+
+.. versionadded:: 2.1
+%End
+
+    int band() const;
+%Docstring
+Returns the raster band used for rendering the raster.
+
+.. versionadded:: 3.0
+%End
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+    virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+    virtual QList<int> usesBands() const;
+
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+
+    void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
+%Docstring
+Set the source color ``ramp``. Ownership is transferred to the renderer.
+
+.. seealso:: :py:func:`sourceColorRamp`
+
+.. versionadded:: 3.0
+%End
+
+    QgsColorRamp *sourceColorRamp() const;
+%Docstring
+Gets the source color ramp
+
+.. seealso:: :py:func:`setSourceColorRamp`
+
+.. versionadded:: 3.0
+%End
+
+    static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
+%Docstring
+Converts a raster color ``table`` to paletted renderer class data.
+
+.. versionadded:: 3.0
+%End
+
+    static QgsPalettedRasterRenderer::MultiValueClassData rasterAttributeTableToClassData( const QgsRasterAttributeTable *attributeTable, int classificationColumn = -1, QgsColorRamp *ramp = 0 );
+%Docstring
+Reads and returns classes from the Raster Attribute Table ``attributeTable``, optionally classifying the attribute table
+by ``classificationColumn`` and setting the colors from ``ramp``.
+The default value of -1 for the classificationColumn uses the first available value column.
+
+.. note::
+
+   The method will return an empty list of classes in case the Raster Attribute Table is not thematic.
+
+.. versionadded:: 3.30
+%End
+
+    static QgsPalettedRasterRenderer::ClassData classDataFromString( const QString &string );
+%Docstring
+Converts a ``string`` containing a color table or class data to to paletted renderer class data.
+
+.. seealso:: :py:func:`classDataFromFile`
+
+.. seealso:: :py:func:`classDataToString`
+
+.. versionadded:: 3.0
+%End
+
+    static QgsPalettedRasterRenderer::ClassData classDataFromFile( const QString &path );
+%Docstring
+Opens a color table file and returns corresponding paletted renderer class data.
+
+.. seealso:: :py:func:`classDataFromString`
+
+.. versionadded:: 3.0
+%End
+
+    static QString classDataToString( const QgsPalettedRasterRenderer::ClassData &classes );
+%Docstring
+Converts classes to a string representation, using the .clr/gdal color table file format.
+
+.. seealso:: :py:func:`classDataFromString`
+
+.. versionadded:: 3.0
+%End
+
+    static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = 0,
+        QgsRasterBlockFeedback *feedback = 0 );
+%Docstring
+Generates class data from a ``raster``, for the specified ``bandNumber``. An optional
+color ``ramp`` can be specified to automatically assign colors from the ramp.
+
+.. versionadded:: 3.0
+%End
+
+
+  private:
+    QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer & );
+    const QgsPalettedRasterRenderer &operator=( const QgsPalettedRasterRenderer & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgspalettedrasterrenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

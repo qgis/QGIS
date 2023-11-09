@@ -1,0 +1,62 @@
+body{  background: white;
+  color: black;
+  font-family: arial,sans-serif;
+}
+pre { margin-left: 2em;
+      border: 1;
+      padding: 4px;
+      background: #ececec; }
+pre, code { font-family: monospace } 
+
+
+.overview{ font: 1.82em; font-weight: bold;}
+
+h1{  background-color: #F6F6F6;
+  color: #8FB171; 
+  font-size: large;  
+  font-weight: bold;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  background: none;
+  padding: 0.75em 0 0;
+  margin: 0;
+  line-height: 1.1em;
+  border-bottom: 5px solid #DCEB5C;
+}
+h2{  background-color: #F6F6F6;
+  color: #8FB171; 
+  font-size: large;  
+  font-weight: normal;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  background: none;
+  padding: 0.75em 0 0;
+  margin: 0;
+  line-height: 1.1em;
+}
+h3{  background-color: #F6F6F6;
+  color: #729FCF;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  font-weight: bold;
+  font-size: medium;
+}
+h4{  background-color: #F6F6F6;
+  color: #729FCF;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  font-weight: normal;
+  font-size: medium;
+}
+h5{    background-color: #F6F6F6;
+   color: #729FCF;
+   font-family: luxi serif, georgia, times new roman, times, serif;
+   font-weight: bold;
+   font-size: small;
+}
+a{  color: #729FCF;
+  font-family: arial,sans-serif;
+  font-size: small;
+}
+label{  background-color: #FFFFCC;
+  border: 1px solid black;
+  margin: 1px;
+  padding: 0px 3px; 
+  font-size: small;
+}

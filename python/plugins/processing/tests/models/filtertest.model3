@@ -1,0 +1,80 @@
+<!DOCTYPE model>
+<Option type="Map">
+  <Option name="children" type="Map">
+    <Option name="native:filter_1" type="Map">
+      <Option name="active" value="true" type="bool"/>
+      <Option name="alg_config" type="Map">
+        <Option name="outputs" type="List">
+          <Option type="Map">
+            <Option name="expression" value="&quot;id2&quot; &lt; 1" type="QString"/>
+            <Option name="isModelOutput" value="true" type="bool"/>
+            <Option name="name" value="small" type="QString"/>
+          </Option>
+          <Option type="Map">
+            <Option name="expression" value="&quot;id2&quot; >= 1" type="QString"/>
+            <Option name="isModelOutput" value="true" type="bool"/>
+            <Option name="name" value="big" type="QString"/>
+          </Option>
+        </Option>
+      </Option>
+      <Option name="alg_id" value="native:filter" type="QString"/>
+      <Option name="component_description" value="Filter" type="QString"/>
+      <Option name="component_pos_x" value="623" type="double"/>
+      <Option name="component_pos_y" value="347" type="double"/>
+      <Option name="dependencies"/>
+      <Option name="id" value="native:filter_1" type="QString"/>
+      <Option name="outputs" type="Map">
+        <Option name="OUTPUT_big" type="Map">
+          <Option name="child_id" value="native:filter_1" type="QString"/>
+          <Option name="component_description" value="OUTPUT_big" type="QString"/>
+          <Option name="component_pos_x" value="823" type="double"/>
+          <Option name="component_pos_y" value="392" type="double"/>
+          <Option name="name" value="OUTPUT_big" type="QString"/>
+          <Option name="output_name" value="OUTPUT_big" type="QString"/>
+        </Option>
+        <Option name="OUTPUT_small" type="Map">
+          <Option name="child_id" value="native:filter_1" type="QString"/>
+          <Option name="component_description" value="OUTPUT_small" type="QString"/>
+          <Option name="component_pos_x" value="823" type="double"/>
+          <Option name="component_pos_y" value="422" type="double"/>
+          <Option name="name" value="OUTPUT_small" type="QString"/>
+          <Option name="output_name" value="OUTPUT_small" type="QString"/>
+        </Option>
+      </Option>
+      <Option name="outputs_collapsed" value="false" type="bool"/>
+      <Option name="parameters_collapsed" value="false" type="bool"/>
+      <Option name="params" type="Map">
+        <Option name="INPUT" type="List">
+          <Option type="Map">
+            <Option name="parameter_name" value="layer" type="QString"/>
+            <Option name="source" value="0" type="int"/>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
+  </Option>
+  <Option name="help"/>
+  <Option name="model_group" value="filter" type="QString"/>
+  <Option name="model_name" value="filtertest" type="QString"/>
+  <Option name="parameterDefinitions" type="Map">
+    <Option name="layer" type="Map">
+      <Option name="data_types" type="List">
+        <Option value="5" type="int"/>
+      </Option>
+      <Option name="default" value="" type="Unknown"/>
+      <Option name="description" value="layer" type="QString"/>
+      <Option name="flags" value="0" type="int"/>
+      <Option name="metadata"/>
+      <Option name="name" value="layer" type="QString"/>
+      <Option name="parameter_type" value="vector" type="QString"/>
+    </Option>
+  </Option>
+  <Option name="parameters" type="Map">
+    <Option name="layer" type="Map">
+      <Option name="component_description" value="layer" type="QString"/>
+      <Option name="component_pos_x" value="208" type="double"/>
+      <Option name="component_pos_y" value="291" type="double"/>
+      <Option name="name" value="layer" type="QString"/>
+    </Option>
+  </Option>
+</Option>

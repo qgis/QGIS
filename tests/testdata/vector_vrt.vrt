@@ -1,0 +1,1 @@
+<OGRVRTDataSource><OGRVRTLayer name="polys"><SrcDataSource>/home/nyall/dev/QGIS/tests/testdata/polys.shp</SrcDataSource><SrcLayer>polys</SrcLayer></OGRVRTLayer></OGRVRTDataSource>

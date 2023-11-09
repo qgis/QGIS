@@ -1,0 +1,25 @@
+v.generalize
+Vector based generalization.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input layer|-1|None|False
+QgsProcessingParameterEnum|type|Input feature type|line;boundary;area|True|0,1,2|True
+QgsProcessingParameterString|cats|Category values|None|False|True
+QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
+QgsProcessingParameterEnum|method|Generalization algorithm|douglas;douglas_reduction;lang;reduction;reumann;boyle;sliding_averaging;distance_weighting;chaiken;hermite;snakes;network;displacement|False|0|False
+QgsProcessingParameterNumber|threshold|Maximal tolerance value|QgsProcessingParameterNumber.Double|1.0|False|0.0|1000000000.0
+QgsProcessingParameterNumber|look_ahead|Look-ahead parameter|QgsProcessingParameterNumber.Integer|7|True|None|None
+QgsProcessingParameterNumber|reduction|Percentage of the points in the output of 'douglas_reduction' algorithm|QgsProcessingParameterNumber.Double|50.0|True|0.0|100.0
+QgsProcessingParameterNumber|slide|Slide of computed point toward the original point|QgsProcessingParameterNumber.Double|0.5|True|0.0|1.0
+QgsProcessingParameterNumber|angle_thresh|Minimum angle between two consecutive segments in Hermite method|QgsProcessingParameterNumber.Double|3.0|True|0.0|180.0
+QgsProcessingParameterNumber|degree_thresh|Degree threshold in network generalization|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterNumber|closeness_thresh|Closeness threshold in network generalization|QgsProcessingParameterNumber.Double|0.0|True|0.0|1.0
+QgsProcessingParameterNumber|betweeness_thresh|Betweenness threshold in network generalization|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|alpha|Snakes alpha parameter|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|beta|Snakes beta parameter|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|iterations|Number of iterations|QgsProcessingParameterNumber.Integer|1|True|1|None
+*QgsProcessingParameterBoolean|-t|Do not copy attributes|False
+*QgsProcessingParameterBoolean|-l|Disable loop support|True
+QgsProcessingParameterVectorDestination|output|Generalized
+QgsProcessingParameterVectorDestination|error|Errors
+
+

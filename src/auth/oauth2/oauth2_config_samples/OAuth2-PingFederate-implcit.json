@@ -1,0 +1,26 @@
+{
+ "accessMethod" : 0,
+ "apiKey" : "",
+ "clientId" : "my_app_id",
+ "clientSecret" : "",
+ "configType" : 1,
+ "description" : "Example PingFederate OAuth2 implicit grant flow configuration",
+ "grantFlow" : 1,
+ "id" : "i6283rp",
+ "name" : "OAuth2 - PingFed - implicit",
+ "password" : "",
+ "persistToken" : true,
+ "queryPairs" :  {
+  
+ },
+ "redirectPort" : 7770,
+ "redirectUrl" : "",
+ "refreshTokenUrl" : "",
+ "requestTimeout" : 30,
+ "requestUrl" : "https://ping-federate.dev.domain.com/as/authorization.oauth2",
+ "scope" : "openid profile",
+ "state" : "",
+ "tokenUrl" : "https://ping-federate.dev.domain.com/as/token.oauth2",
+ "username" : "",
+ "version" : 1
+}

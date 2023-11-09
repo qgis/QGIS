@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg14"
+   sodipodi:docname="mIconPhongMaterial.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)">
+  <metadata
+     id="metadata18">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     inkscape:document-rotation="0"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     id="namedview16"
+     showgrid="false"
+     inkscape:zoom="18.981398"
+     inkscape:cx="-1.0328911"
+     inkscape:cy="10.253336"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg14" />
+  <defs
+     id="defs10">
+    <linearGradient
+       id="a">
+      <stop
+         offset="0"
+         stop-color="#ffebeb"
+         id="stop3" />
+      <stop
+         offset=".516"
+         stop-color="#be0f0f"
+         id="stop5" />
+      <stop
+         offset="1"
+         stop-color="#280000"
+         id="stop7" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#a"
+       id="radialGradient869"
+       cx="6.1088824"
+       cy="6.2365189"
+       fx="6.1088824"
+       fy="6.2365189"
+       r="6"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.1139103,1.0868262,-1.085359,1.1124067,5.3465552,-7.847367)" />
+  </defs>
+  <circle
+     r="7"
+     style="fill:url(#radialGradient869);fill-opacity:1;stroke:none;stroke-width:2.11621;stroke-linecap:round;paint-order:stroke fill markers"
+     id="path843"
+     cx="8"
+     cy="8" />
+</svg>

@@ -1,0 +1,5 @@
+r.out.gridatb
+Exports GRASS raster map to GRIDATB.FOR map file (TOPMODEL)
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
+QgsProcessingParameterFileDestination|output|GRIDATB|Txt files (*.txt)|None|False

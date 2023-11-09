@@ -1,0 +1,314 @@
+{
+  "type": "FeatureCollection",
+  "name": "user_groups_data",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "CO",
+        "name": "Grupo de Usuarios QGIS Colombia",
+        "logo_url": "https:\/\/raw.githubusercontent.com\/qgisco\/material-difusion\/master\/logos\/qgisco_logo_qgis_colombia_347x150.png",
+        "website": "https:\/\/qgisusers.co",
+        "year": 2018
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "BR",
+        "name": "QGIS Brasil (Brazil)",
+        "logo_url": "https:\/\/i1.wp.com\/qgisbrasil.org\/wp-content\/uploads\/2017\/08\/mini_qgis_brasil_original.png",
+        "website": "http:\/\/qgisbrasil.org",
+        "year": 2016
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "FR",
+        "name": "Groupe des Utilisateurs de QGIS - France",
+        "logo_url": "https:\/\/raw.githubusercontent.com\/OSGeo-fr\/QGIS-user-fr\/c778257ef4e01af531d43d2c9c257b30f7b495f5\/marketing\/logos\/qgis-logo-fr_final.svg",
+        "website": "http:\/\/conf.qgis.osgeo.fr",
+        "year": 2017
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "DK",
+        "name": "QGIS Brugergruppe Danmark (Denmark)",
+        "logo_url": "https:\/\/changelog.qgis.org\/media\/images\/projects\/d21940f669c52525e7d73835885f27a570d3c80c.png",
+        "website": "http:\/\/qgis.dk",
+        "year": 2015
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "GB",
+        "name": "QGIS UK (England, Scotland, Wales)",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/864206708272484352\/rqOeGldR_400x400.jpg",
+        "website": "http:\/\/qgis.uk",
+        "year": 2015
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "DE",
+        "name": "QGIS Anwendergruppe Deutschland (Germany)",
+        "logo_url": "https:\/\/qgis.de\/lib\/exe\/fetch.php?w=164&tok=7ed605&media=site:qgis-de3_b.png",
+        "website": "http:\/\/qgis.de",
+        "year": 2015
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "IT",
+        "name": "Gruppo degli utenti italiani di QGIS (Italy)",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1214617887761207301\/SRkxH22U_400x400.jpg",
+        "website": "http:\/\/qgis.it",
+        "year": 2015
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "JP",
+        "name": "QGIS User Group Japan (OSGeo.JP)",
+        "logo_url": "https:\/\/www.qgis.org\/en\/_static\/logo.png",
+        "website": "http:\/\/qgis.jp",
+        "year": 2016
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "PE",
+        "name": "Lima Perú QGIS User Group (Peru)",
+        "logo_url": "https:\/\/avatars0.githubusercontent.com\/u\/68319150?s=200&v=4",
+        "website": "http:\/\/qgis.pe",
+        "year": 2015
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "PL",
+        "name": "Polska Grupa Użytkowników QGIS (Poland)",
+        "logo_url": "http:\/\/qgis.pl\/_static\/logo.png",
+        "website": "http:\/\/qgis.pl",
+        "year": 2016
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "PT",
+        "name": "QGIS Portugal",
+        "logo_url": "https:\/\/www.qgis.pt\/wp-content\/uploads\/2020\/01\/index-1-150x150.jpg",
+        "website": "https:\/\/www.qgis.pt",
+        "year": 2015
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "NO",
+        "name": "QGIS Norge (Norway)",
+        "logo_url": "https:\/\/qgisnorge.github.io\/img\/qgis-nor-icon.svg",
+        "website": "https:\/\/qgisnorge.github.io",
+        "year": 2017
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "ZA",
+        "name": "QGIS ZA (South Africa)",
+        "logo_url": "https:\/\/qgis.org.za\/static\/images\/QGis_Logo_UG.png",
+        "website": "https:\/\/qgis.org.za",
+        "year": 2017
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "SE",
+        "name": "QGIS Sverige (Sweden)",
+        "logo_url": "http:\/\/www.qgis.se\/wp-content\/uploads\/2017\/05\/qgis_sverige_logotyp-1.png",
+        "website": "http:\/\/qgis.se",
+        "year": 2017
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "KE",
+        "name": "QGIS Kenya",
+        "logo_url": "https:\/\/qgis.or.ke\/images\/qgiskenya_logo.png",
+        "website": "https:\/\/qgis.or.ke",
+        "year": 2017
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "AU",
+        "name": "QGIS Australia",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1161058815678136320\/nrj1anrP_400x400.jpg",
+        "website": "https:\/\/www.qgis-au.org",
+        "year": 2017
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "US",
+        "name": "QGIS USA",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/949318914533543936\/lPkMi_Xx_400x400.jpg",
+        "website": "http:\/\/qgis.us",
+        "year": 2017
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "MX",
+        "name": "QGIS México",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1248456549250392065\/4d7uAf5v_400x400.jpg",
+        "website": "http:\/\/qgis.mx",
+        "year": 2017
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "RO",
+        "name": "Asociația Utilizatorilor QGIS (Romania)",
+        "logo_url": "https:\/\/qgis.ro\/content\/images\/size\/w300\/2018\/03\/asociatia_qgis_1200.png",
+        "website": "https:\/\/qgis.ro",
+        "year": 2018
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "ES",
+        "name": "Association of QGIS users in Spain",
+        "logo_url": "http:\/\/qgis.es\/images\/qgis_logo.png",
+        "website": "http:\/\/qgis.es",
+        "year": 2018
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "NL",
+        "name": "QGIS gebruikersgroep (Netherlands)",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1188779173705330688\/VDJW42Jw_400x400.png",
+        "website": "http:\/\/qgis.nl",
+        "year": 2020
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "ID",
+        "name": "Komunitas Pengguna QGIS Indonesia",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1234428372781977601\/KOOccZoG_400x400.jpg",
+        "website": "https:\/\/qgis-id.github.io",
+        "year": 2020
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "CH",
+        "name": "QGIS user group Switzerland",
+        "logo_url": "https:\/\/qgis.ch\/logo.png",
+        "website": "https:\/\/qgis.ch",
+        "year": 2015
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "SK",
+        "name": "QGIS Slovensko (Slovakia)",
+        "logo_url": "https:\/\/raw.githubusercontent.com\/qgis-sk\/qgis-sk.github.io\/master\/images\/qgis_logo.png",
+        "website": "https:\/\/qgis.sk",
+        "year": 2020
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "EC",
+        "name": "Grupo de usuarios QGIS Ecuador",
+        "logo_url": "https:\/\/avatars.githubusercontent.com\/u\/77024709?v=4",
+        "website": "http:\/\/qgis.ec",
+        "year": 2020
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "AT",
+        "name": "QGIS Anwendergruppe Österreich (Austria)",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1006428230033838080\/MlKWhfp__400x400.jpg",
+        "website": "https:\/\/qgis.at",
+        "year": 2021
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "GH",
+        "name": "QGIS Ghana",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1380616469969567750\/lG7Q4Qzn_400x400.jpg",
+        "website": "https:\/\/qgisghana.org",
+        "year": 2021
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "AR",
+        "name": "QGIS Argentina",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1320478408997036032\/f0KZMOOp_400x400.jpg",
+        "website": "http:\/\/qgis.ar",
+        "year": 2022
+      },
+      "geometry": null
+    }
+  ]
+}

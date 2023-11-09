@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Jim Mossman</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Attribution required</informal>
+    <year>2005</year>
+    <text>
+Reservation of Ownership and Grant of Rights 
+
+This is a license agreement (Agreement) and not an agreement for sale. 
+The contributing author (hereinafter referred to as "Author") retains 
+exclusive title and ownership of the copy of the AML, SML, Avenue, 
+AutoLISP, Visual Basic sample scripts (collectively referred to hereinafter 
+as "Script(s)") licensed under this Agreement and grants you (hereinafter 
+referred to as "Developer") a personal, nonexclusive, nontransferable, 
+worldwide, royalty-free license to use, copy, edit, modify, merge, 
+incorporate, and/or prepare derivative work(s) of the Script(s) with 
+any new scripting code and/or data, and thereafter the copyright license 
+to demonstrate, reproduce, redistribute, and publicly display the 
+derivative work(s) embedding the Script(s) to Developer's clients for 
+the client's own internal use. All rights not specifically granted in 
+this Agreement are reserved to the Author. In the event Developer 
+transfers a copy of the unmodified Script(s) to another party, 
+Developer expressly agrees to always include this Agreement file with 
+all copies of the unmodified Scripts.
+
+Copyright The Script(s) are owned by the Author and are protected by 
+United States copyright laws and applicable international laws, 
+treaties, and/or conventions. The following Author attribution information 
+must be given in comment form in the Script(s), in an "Help-About" dialog 
+box, in a supporting digital "Read Me" file, and/or provided in digital 
+form for on-line documentation, and at the beginning or end acknowledgment
+page of any hard-copy documentation:
+
+"Portions of this work include intellectual property of [Insert Name of 
+Author] and are used herein with permission. Copyright (C) 
+[Insert year(s)] [Insert Name of Author]. All rights reserved."
+
+The parties mutually agree that Developer may make an application for 
+copyright registration in the derivative work(s) prepared by Developer 
+based on the preexisting Script(s) so long as Developer identifies 
+and discloses all respective ownership rights in preexisting 
+material(s) that comprise Developer's derivative work(s) in section 
+6, Derivative or Compilation on Form TX and/or any other applicable 
+form(s) of the United States Copyright Office or the applicable forms 
+in other legal jurisdictions.
+
+Disclaimer of Warranty Developer expressly acknowledges that the Script(s) are 
+unsupported scripting code and that no technical support shall be provided to 
+Developer by the Author.
+
+THE SCRIPT(S) ARE PROVIDED "AS-IS," WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, BY STATUTE OR OTHERWISE, INCLUDING, BUT NOT 
+LIMITED TO ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+FOR A PARTICULAR PURPOSE. THE AUTHOR DOES NOT WARRANT THAT THE 
+OPERATION OF THE SCRIPTS SHALL BE UNINTERRUPTED OR ERROR FREE. 
+DEVELOPER BEARS ALL RISK AS TO THE QUALITY AND PERFORMANCE OF THE 
+SCRIPTS.
+
+Exclusive Remedy and Limitation of Liability The parties expressly 
+agree that the Author's liability hereunder for any damages to 
+Developer, regardless of the form of action, shall not exceed the 
+total amount paid for the license granted herein.
+
+IN NO EVENT SHALL THE AUTHOR BE LIABLE TO DEVELOPER FOR COSTS OF 
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOST PROFITS, LOST 
+SALES OR BUSINESS EXPENDITURES, INVESTMENTS, OR COMMITMENTS IN 
+CONNECTION WITH ANY BUSINESS, LOSS OF ANY GOODWILL, OR FOR ANY 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT 
+OF THIS AGREEMENT OR USE OF THE SCRIPT(S), HOWEVER CAUSED, ON ANY 
+THEORY OF LIABILITY, AND WHETHER OR NOT THE AUTHOR HAS BEEN ADVISED 
+OF THE POSSIBILITY OF SUCH DAMAGE. THESE LIMITATIONS SHALL APPLY 
+NOTWITHSTANDING ANY FAILURE OF ESSENTIAL PURPOSE OF ANY LIMITED REMEDY.
+
+Governing Law This license is governed by the laws of the United 
+States of America and the state laws of the Author without reference 
+to conflict of laws principles.
+
+Entire Agreement The parties agree that this Agreement constitutes 
+the sole and entire agreement of the parties as to the matter set 
+forth herein and supersedes any previous agreements, understandings, 
+and arrangements between the parties relating hereto when Developer 
+assents to be bound by these terms and conditions by clicking the 
+"Accept" button below.
+    </text>
+  </license>
+  <src>
+    <format>AVL</format>
+    <link href="http://arcscripts.esri.com/details.asp?dbid=949764256">AVL download</link>
+    <link href="http://www.esri.com/news/arcuser/0101/shademax.html">Shademax part 1</link>
+    <link href="http://www.esri.com/news/arcuser/0401/shademax2.html">Shademax part 2</link>
+    <link href="http://www.esri.com/news/arcuser/0701/shademax3.html">Shademax part 3</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

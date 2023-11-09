@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsExpressionSelectionDialogBase</class>
+ <widget class="QDialog" name="QgsExpressionSelectionDialogBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>863</width>
+    <height>547</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Select by Expression</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
+   <item row="1" column="5">
+    <widget class="QPushButton" name="mPbnClose">
+     <property name="text">
+      <string>&amp;Close</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QToolButton" name="mButtonZoomToFeatures">
+     <property name="text">
+      <string>Zoom to Features</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="3">
+    <widget class="QToolButton" name="mButtonSelect">
+     <property name="text">
+      <string>…</string>
+     </property>
+     <property name="popupMode">
+      <enum>QToolButton::MenuButtonPopup</enum>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextBesideIcon</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="6">
+    <widget class="QgsExpressionBuilderWidget" name="mExpressionBuilder" native="true"/>
+   </item>
+  </layout>
+  <action name="mActionSelect">
+   <property name="text">
+    <string>Select Features</string>
+   </property>
+  </action>
+  <action name="mActionAddToSelection">
+   <property name="text">
+    <string>Add to Current Selection</string>
+   </property>
+  </action>
+  <action name="mActionRemoveFromSelection">
+   <property name="text">
+    <string>Remove from Current Selection</string>
+   </property>
+  </action>
+  <action name="mActionSelectIntersect">
+   <property name="text">
+    <string>Filter Current Selection</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsExpressionBuilderWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsexpressionbuilderwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mButtonZoomToFeatures</tabstop>
+  <tabstop>mButtonSelect</tabstop>
+  <tabstop>mPbnClose</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

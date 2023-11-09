@@ -1,0 +1,7 @@
+v.build.polylines
+Builds polylines from lines or boundaries.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False
+QgsProcessingParameterEnum|cats|Category number mode|no;first;multi;same|False|0|True
+QgsProcessingParameterEnum|type|Input feature type|line;boundary|True|0,1|True
+QgsProcessingParameterVectorDestination|output|Polylines

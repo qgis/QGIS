@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/topology" >
+        <file>mActionTopologyChecker.svg</file>
+        <file>mActionConfigure.svg</file>
+        <file>mActionValidateAll.svg</file>
+        <file>mActionValidateExtent.svg</file>
+    </qresource>
+</RCC>

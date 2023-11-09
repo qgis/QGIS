@@ -1,0 +1,16 @@
+v.surf.bspline
+Bicubic or bilinear spline interpolation with Tykhonov regularization.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input points layer|-1|None|False
+QgsProcessingParameterField|column|Attribute table column with values to interpolate|None|input|-1|False|True
+QgsProcessingParameterFeatureSource|sparse_input|Sparse points layer|-1|None|True
+QgsProcessingParameterNumber|ew_step|Length of each spline step in the east-west direction|QgsProcessingParameterNumber.Double|4.0|True|None|None
+QgsProcessingParameterNumber|ns_step|Length of each spline step in the north-south direction|QgsProcessingParameterNumber.Double|4.0|True|None|None
+QgsProcessingParameterEnum|method|Spline interpolation algorithm|bilinear;bicubic|False|0|True
+QgsProcessingParameterNumber|lambda_i|Tykhonov regularization parameter (affects smoothing)|QgsProcessingParameterNumber.Double|0.01|True|None|None
+QgsProcessingParameterEnum|solver|Type of solver which should solve the symmetric linear equation system|cholesky;cg|False|0|True
+QgsProcessingParameterNumber|maxit|Maximum number of iteration used to solve the linear equation system|QgsProcessingParameterNumber.Integer|10000|True|1|None
+QgsProcessingParameterNumber|error|Error break criteria for iterative solver|QgsProcessingParameterNumber.Double|0.000001|True|0.0|None
+QgsProcessingParameterNumber|memory|Maximum memory to be used (in MB)|QgsProcessingParameterNumber.Integer|300|True|1|None
+QgsProcessingParameterVectorDestination|output|Output vector|QgsProcessing.TypeVectorAnyGeometry|None|True|False
+QgsProcessingParameterRasterDestination|raster_output|Interpolated spline|None|True

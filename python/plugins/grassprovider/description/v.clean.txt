@@ -1,0 +1,11 @@
+v.clean
+Toolset for cleaning topology of vector map.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Layer to clean|-1|None|False
+QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid;area;face;kernel|True|0,1,2,3,4,5,6|True
+QgsProcessingParameterEnum|tool|Cleaning tool|break;snap;rmdangle;chdangle;rmbridge;chbridge;rmdupl;rmdac;bpol;prune;rmarea;rmline;rmsa|True|0|False
+QgsProcessingParameterString|threshold|Threshold (comma separated for each tool)|None|False|True
+*QgsProcessingParameterBoolean|-b|Do not build topology for the output vector|False
+*QgsProcessingParameterBoolean|-c|Combine tools with recommended follow-up tools|False
+QgsProcessingParameterVectorDestination|output|Cleaned
+QgsProcessingParameterVectorDestination|error|Errors

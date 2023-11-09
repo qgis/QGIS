@@ -1,0 +1,175 @@
+<Composer>
+ <Composition resizeToContentsMarginTop="0" numPages="1" resizeToContentsMarginRight="0" gridVisible="0" printResolution="305" smartGuides="1" snapGridOffsetX="0" generateWorldFile="0" worldFileMap="" guidesVisible="1" alignmentSnap="1" snapping="0" printAsRaster="0" paperWidth="297" resizeToContentsMarginLeft="0" name="composer title" paperHeight="210" showPages="1" resizeToContentsMarginBottom="0" snapGridOffsetY="0" snapTolerancePixels="5" snapGridResolution="10">
+  <symbol name="" alpha="1" type="fill" clip_to_extent="1">
+   <layer class="SimpleFill" pass="0" enabled="1" locked="0">
+    <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+    <prop v="241,244,199,255" k="color"/>
+    <prop v="bevel" k="joinstyle"/>
+    <prop v="0,0" k="offset"/>
+    <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+    <prop v="MM" k="offset_unit"/>
+    <prop v="175,179,138,255" k="outline_color"/>
+    <prop v="solid" k="outline_style"/>
+    <prop v="0.26" k="outline_width"/>
+    <prop v="MM" k="outline_width_unit"/>
+    <prop v="solid" k="style"/>
+    <data_defined_properties>
+     <Option type="Map">
+      <Option value="" name="name" type="QString"/>
+      <Option name="properties"/>
+      <Option value="collection" name="type" type="QString"/>
+     </Option>
+    </data_defined_properties>
+   </layer>
+  </symbol>
+  <ComposerMap keepLayerSet="false" followPreset="false" id="0" drawCanvasItems="true" followPresetName="" mapRotation="45">
+   <Extent ymax="75.27752318418149002" xmax="-80.15561877785158629" ymin="-3.49239519835850132" xmin="-120.73406158097826335"/>
+   <LayerSet/>
+   <Grid/>
+   <ComposerMapGrid offsetX="0" topAnnotationDirection="0" show="1" uuid="{f1c52bff-827e-4c0b-9d4a-8b6e005501bd}" leftFrameDivisions="0" annotationFormat="0" frameFillColor2="0,0,0,255" rightFrameDivisions="0" gridFrameSideFlags="15" annotationFontColor="209,35,35,255" blendMode="0" offsetY="0" leftAnnotationDisplay="1" rightAnnotationPosition="0" intervalY="10" leftAnnotationPosition="1" topAnnotationPosition="1" rightAnnotationDisplay="2" gridFrameWidth="2" bottomFrameDivisions="0" name="Grid 1" annotationPrecision="2" leftAnnotationDirection="0" showAnnotation="1" gridFrameStyle="0" gridFramePenColor="0,0,0,255" unit="0" topAnnotationDisplay="3" frameFillColor1="255,255,255,255" intervalX="10" bottomAnnotationDirection="0" rightAnnotationDirection="1" topFrameDivisions="0" bottomAnnotationDisplay="0" frameAnnotationDistance="4" annotationExpression="" gridFramePenThickness="0.29999999999999999" bottomAnnotationPosition="1" crossLength="3" gridStyle="0">
+    <lineStyle>
+     <symbol name="" alpha="1" type="line" clip_to_extent="1">
+      <layer class="SimpleLine" pass="0" enabled="1" locked="0">
+       <prop v="round" k="capstyle"/>
+       <prop v="5;2" k="customdash"/>
+       <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
+       <prop v="MM" k="customdash_unit"/>
+       <prop v="0" k="draw_inside_polygon"/>
+       <prop v="round" k="joinstyle"/>
+       <prop v="122,245,0,255" k="line_color"/>
+       <prop v="solid" k="line_style"/>
+       <prop v="1.56" k="line_width"/>
+       <prop v="MM" k="line_width_unit"/>
+       <prop v="0" k="offset"/>
+       <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+       <prop v="MM" k="offset_unit"/>
+       <prop v="0" k="use_custom_dash"/>
+       <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+       <data_defined_properties>
+        <Option type="Map">
+         <Option value="" name="name" type="QString"/>
+         <Option name="properties"/>
+         <Option value="collection" name="type" type="QString"/>
+        </Option>
+       </data_defined_properties>
+      </layer>
+      <layer class="SimpleLine" pass="0" enabled="1" locked="1">
+       <prop v="round" k="capstyle"/>
+       <prop v="5;2" k="customdash"/>
+       <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
+       <prop v="MM" k="customdash_unit"/>
+       <prop v="0" k="draw_inside_polygon"/>
+       <prop v="round" k="joinstyle"/>
+       <prop v="85,170,0,255" k="line_color"/>
+       <prop v="dot" k="line_style"/>
+       <prop v="1.36" k="line_width"/>
+       <prop v="MM" k="line_width_unit"/>
+       <prop v="0" k="offset"/>
+       <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+       <prop v="MM" k="offset_unit"/>
+       <prop v="0" k="use_custom_dash"/>
+       <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+       <data_defined_properties>
+        <Option type="Map">
+         <Option value="" name="name" type="QString"/>
+         <Option name="properties"/>
+         <Option value="collection" name="type" type="QString"/>
+        </Option>
+       </data_defined_properties>
+      </layer>
+     </symbol>
+    </lineStyle>
+    <markerStyle>
+     <symbol name="" alpha="1" type="marker" clip_to_extent="1">
+      <layer class="SimpleMarker" pass="0" enabled="1" locked="0">
+       <prop v="0" k="angle"/>
+       <prop v="0,0,0,255" k="color"/>
+       <prop v="1" k="horizontal_anchor_point"/>
+       <prop v="bevel" k="joinstyle"/>
+       <prop v="circle" k="name"/>
+       <prop v="0,0" k="offset"/>
+       <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+       <prop v="MM" k="offset_unit"/>
+       <prop v="0,0,0,255" k="outline_color"/>
+       <prop v="solid" k="outline_style"/>
+       <prop v="0" k="outline_width"/>
+       <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+       <prop v="MM" k="outline_width_unit"/>
+       <prop v="diameter" k="scale_method"/>
+       <prop v="2" k="size"/>
+       <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+       <prop v="MM" k="size_unit"/>
+       <prop v="1" k="vertical_anchor_point"/>
+       <data_defined_properties>
+        <Option type="Map">
+         <Option value="" name="name" type="QString"/>
+         <Option name="properties"/>
+         <Option value="collection" name="type" type="QString"/>
+        </Option>
+       </data_defined_properties>
+      </layer>
+     </symbol>
+    </markerStyle>
+    <annotationFontProperties style="" description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0"/>
+   </ComposerMapGrid>
+   <AtlasMap atlasDriven="0" margin="0.10000000000000001" scalingMode="2"/>
+   <ComposerItem itemRotation="0" background="true" y="6" width="102" positionLock="false" x="24.1399" uuid="{5c70116e-a26b-4e05-ac30-466c4f893dbb}" zValue="1" height="198" blendMode="0" opacity="0.78" excludeFromExports="0" positionMode="0" lastValidViewScaleFactor="2.47574" page="1" id="my map" pagey="6" visibility="1" pagex="24.1399" frameJoinStyle="round" frame="true" outlineWidth="0.6">
+    <FrameColor red="255" alpha="255" green="190" blue="11"/>
+    <BackgroundColor red="224" alpha="255" green="174" blue="174"/>
+    <dataDefinedProperties>
+     <Option type="Map">
+      <Option value="" name="name" type="QString"/>
+      <Option name="properties" type="Map">
+       <Option name="dataDefinedMapScale" type="Map">
+        <Option value="true" name="active" type="bool"/>
+        <Option value="24126145*1.1" name="expression" type="QString"/>
+        <Option value="3" name="type" type="int"/>
+       </Option>
+      </Option>
+      <Option value="collection" name="type" type="QString"/>
+     </Option>
+    </dataDefinedProperties>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerMap>
+  <dataDefinedProperties>
+   <Option type="Map">
+    <Option value="" name="name" type="QString"/>
+    <Option name="properties" type="Map">
+     <Option name="dataDefinedHeight" type="Map">
+      <Option value="true" name="active" type="bool"/>
+      <Option value="28" name="expression" type="QString"/>
+      <Option value="3" name="type" type="int"/>
+     </Option>
+     <Option name="dataDefinedMapScale" type="Map">
+      <Option value="true" name="active" type="bool"/>
+      <Option value="24126145*1.1" name="expression" type="QString"/>
+      <Option value="3" name="type" type="int"/>
+     </Option>
+     <Option name="dataDefinedPositionX" type="Map">
+      <Option value="true" name="active" type="bool"/>
+      <Option value="200" name="expression" type="QString"/>
+      <Option value="3" name="type" type="int"/>
+     </Option>
+     <Option name="dataDefinedPositionY" type="Map">
+      <Option value="true" name="active" type="bool"/>
+      <Option value="70" name="expression" type="QString"/>
+      <Option value="3" name="type" type="int"/>
+     </Option>
+     <Option name="dataDefinedSource" type="Map">
+      <Option value="false" name="active" type="bool"/>
+      <Option value="" name="expression" type="QString"/>
+      <Option value="3" name="type" type="int"/>
+     </Option>
+     <Option name="dataDefinedWidth" type="Map">
+      <Option value="true" name="active" type="bool"/>
+      <Option value="24" name="expression" type="QString"/>
+      <Option value="3" name="type" type="int"/>
+     </Option>
+    </Option>
+    <Option value="collection" name="type" type="QString"/>
+   </Option>
+  </dataDefinedProperties>
+  <customproperties/>
+ </Composition>
+</Composer>

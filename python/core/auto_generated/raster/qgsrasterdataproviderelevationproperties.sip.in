@@ -1,0 +1,58 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterdataproviderelevationproperties.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRasterDataProviderElevationProperties : QgsDataProviderElevationProperties
+{
+%Docstring(signature="appended")
+Handles elevation related properties for a raster data provider.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsrasterdataproviderelevationproperties.h"
+%End
+  public:
+
+    QgsRasterDataProviderElevationProperties();
+%Docstring
+Constructor for QgsRasterDataProviderElevationProperties.
+%End
+
+    bool containsElevationData() const;
+%Docstring
+Returns ``True`` if the raster data provider definitely contains elevation related data.
+
+.. note::
+
+   Even if this method returns ``False``, the raster data may still relate to elevation values. ``True`` will only
+   be returned in situations where elevation data is definitively present.
+
+.. seealso:: :py:func:`setContainsElevationData`
+%End
+
+    void setContainsElevationData( bool contains );
+%Docstring
+Sets whether the raster data provider definitely contains elevation related data.
+
+.. seealso:: :py:func:`containsElevationData`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterdataproviderelevationproperties.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

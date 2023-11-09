@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>mpl</dir>
+  <name>Matplotlib</name>
+  <full>
+    Perceptually uniform sequential colour-maps for
+    the Python plotting package, matplotlib.
+  </full>
+  <date>02/02/2016</date>
+</description>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>ngdc</dir>
+  <name>The NGDC's global relief palette for ETOPO1</name>
+  <full>
+    A palette used by the US National Geophysical Data Center (NGDC)
+    for relief maps using the ETOPO1 global relief model.
+  </full>
+  <date>01/08/2012</date>
+</description>

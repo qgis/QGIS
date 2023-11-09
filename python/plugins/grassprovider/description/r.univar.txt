@@ -1,0 +1,10 @@
+r.univar
+Calculates univariate statistics from the non-null cells of a raster map.
+Raster (r.*)
+QgsProcessingParameterMultipleLayers|map|Name of raster map(s)|3|None|False
+QgsProcessingParameterRasterLayer|zones|Raster map used for zoning, must be of type CELL|None|True
+QgsProcessingParameterString|percentile|Percentile to calculate (comma separated list if multiple) (requires extended statistics flag)|None|False|True
+QgsProcessingParameterString|separator|Field separator. Special characters: pipe, comma, space, tab, newline|pipe|False|True
+*QgsProcessingParameterBoolean|-e|Calculate extended statistics|False
+Hardcoded|-t
+QgsProcessingParameterFileDestination|output|Univariate results|Txt files (*.txt)|None|False

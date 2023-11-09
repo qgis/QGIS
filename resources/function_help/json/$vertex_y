@@ -1,0 +1,11 @@
+{
+  "name": "$vertex_y",
+  "type": "function",
+  "groups": ["Meshes"],
+  "description": "Returns the Y coordinate of the current mesh vertex.",
+  "examples": [{
+    "expression": "$vertex_y",
+    "returns": "12.24"
+  }],
+  "tags": ["coordinate", "mesh", "vertex", "current"]
+}

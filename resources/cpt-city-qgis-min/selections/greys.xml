@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="greys">Greys</name>
+  <synopsis>A selection of greys and near-greys</synopsis>
+  <description>A selection of greys and near-greys.</description>
+  <seealsocollects>
+    <collect dir="tl">Thomas Lotze</collect>
+    <collect dir="erj">Eric R. Jeschke</collect>
+    <collect dir="ma/gray">Michele Albert</collect>
+    <collect dir="es/platinum">ElvenSword</collect>
+  </seealsocollects>
+  <gradients>
+    <gradient file="Greys_09" dir="cb/seq"/>
+    <gradient file="RdGy_11" dir="cb/div"/>
+    <gradient file="silver_01" dir="erj/bw"/>
+    <gradient file="platinum_palladium_01" dir="erj/browns"/>
+    <gradient file="selenium_brown_01" dir="erj/browns"/>
+    <gradient file="ib12" dir="ing/general"/>
+    <gradient file="pseudogrey" dir="rf"/>
+    <gradient file="grayscale02" dir="ma/gray"/>
+    <gradient file="grayscale02a" dir="ma/gray"/>
+    <gradient file="grayscale10" dir="ma/gray"/>
+    <gradient file="GreyOClock" dir="nd/atmospheric"/>
+    <gradient file="stripes-six" dir="ocal"/>
+    <gradient file="power-0.50" dir="tl"/>
+    <gradient file="grey-g2-3" dir="go2/webtwo"/>
+    <gradient file="es_platinum_16" dir="es/platinum"/>
+    <gradient file="rock" dir="neota/env"/>
+  </gradients>
+</selection>

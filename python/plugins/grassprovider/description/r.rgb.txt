@@ -1,0 +1,7 @@
+r.rgb
+Splits a raster map into red, green and blue maps.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
+QgsProcessingParameterRasterDestination|red|Red
+QgsProcessingParameterRasterDestination|green|Green
+QgsProcessingParameterRasterDestination|blue|Blue

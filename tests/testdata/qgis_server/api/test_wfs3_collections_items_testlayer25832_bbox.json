@@ -1,0 +1,38 @@
+Content-Type: application/geo+json
+
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          7.251915,
+          44.811931
+        ],
+        "type": "Point"
+      },
+      "id": "1",
+      "properties": {
+        "fldint": 1
+      },
+      "type": "Feature"
+    }
+  ],
+  "links": [
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer25832/items.geojson?bbox=7.16305252070271603,44.75906320523620963,7.3418755610416051,44.87555723151492515",
+      "rel": "self",
+      "title": "Retrieve the features of the collection as GEOJSON",
+      "type": "application/geo+json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer25832/items.html?bbox=7.16305252070271603,44.75906320523620963,7.3418755610416051,44.87555723151492515",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as HTML",
+      "type": "text/html"
+    }
+  ],
+  "numberMatched": 1,
+  "numberReturned": 1,
+  "timeStamp": "2019-07-05T12:27:07Z",
+  "type": "FeatureCollection"
+}

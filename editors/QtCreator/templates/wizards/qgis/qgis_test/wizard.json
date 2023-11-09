@@ -1,0 +1,111 @@
+{
+    "version": 1,
+    "supportedProjectTypes": [ ],
+    "id": "B.QGISTest",
+    "category": "O.QGIS",
+    "trDescription": "Creates a C++ QGIS Test",
+    "trDisplayName": "QGIS C++ Test",
+    "trDisplayCategory": "QGIS",
+    "icon": "../qgis_icon.svg",
+    "enabled": "%{JS: [ %{Plugins} ].indexOf('CppEditor') >= 0}",
+    "platformIndependent" : true,
+
+    "options":
+    [
+        { "key": "TargetPath", "value": "Test%{Path}" },
+        { "key": "SrcPath", "value": "%{Path}/%{Area}/%{SrcFileName}" },
+        { "key": "CN", "value": "%{JS: Cpp.className('%{Class}')}" }
+    ],
+
+    "pages":
+    [
+        {
+            "trDisplayName": "Define Tests",
+            "trShortTitle": "Details",
+            "typeId": "Fields",
+            "data" :
+            [
+                {
+                    "name": "Class",
+                    "trDisplayName": "Class name:",
+                    "mandatory": true,
+                    "type": "LineEdit",
+                    "data": { "validator": "(?:(?:[a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*|)" }
+                },
+                {
+                    "name": "Area",
+                    "trDisplayName": "API Area",
+                    "type": "ComboBox",
+                    "data":
+                    {
+                        "items": [
+                            "analysis",
+                            "app",
+                            "core",
+                            "gui",
+                            "providers"
+                        ]
+                    }
+                },
+                {
+                    "name": "Sp1",
+                    "type": "Spacer",
+                    "data": { "factor": 2 }
+                },
+                {
+                    "name": "LabelQQC_1_0",
+                    "type": "Label",
+                    "span": true,
+                    "data":
+                    {
+                        "wordWrap": true,
+                        "trText": "Area selected above will be added to the final path to put the test in the correct location. You shouldn't need to change anything in here generally."
+                    }
+                },
+                {
+                    "name": "SrcFileName",
+                    "type": "LineEdit",
+                    "trDisplayName": "Source file:",
+                    "mandatory": true,
+                    "data": { "trText": "%{JS: Cpp.classToFileName('%{Class}', '%{JS: Util.preferredSuffix('text/x-c++src')}')}" }
+                },
+                {
+                    "name": "Path",
+                    "type": "PathChooser",
+                    "trDisplayName": "Path:",
+                    "mandatory": true,
+                    "data":
+                    {
+                        "kind": "existingDirectory",
+                        "basePath": "%{CurrentProject:Path}/tests/src/",
+                        "path": "%{CurrentProject:Path}/tests/src/"
+                    }
+                }
+            ]
+        },
+        {
+            "trDisplayName": "Project Management",
+            "trShortTitle": "Summary",
+            "typeId": "Summary"
+        }
+    ],
+
+    "generators":
+    [
+        {
+            "typeId": "File",
+            "data":
+            [
+                {
+                    "source": "file.cpp",
+                    "target": "%{SrcPath}",
+                    "openInEditor": true,
+                    "options": [
+                        { "key": "Cpp:License:FileName", "value": "%{SrcFileName}" },
+                        { "key": "Cpp:License:ClassName", "value": "%{CN}" }
+                    ]
+                }
+            ]
+        }
+    ]
+}

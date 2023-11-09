@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsVectorLayerTemporalPropertiesWidgetBase</class>
+ <widget class="QWidget" name="QgsVectorLayerTemporalPropertiesWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>611</width>
+    <height>413</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string notr="true">Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_5">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QgsScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>611</width>
+        <height>413</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="mTemporalGroupBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}
+background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
+         </property>
+         <property name="title">
+          <string>Dynamic Temporal Control</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
+          <item row="0" column="1">
+           <widget class="QComboBox" name="mModeComboBox"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Configuration</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QStackedWidget" name="mStackedWidget">
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="page_3">
+             <layout class="QGridLayout" name="gridLayout_6">
+              <item row="3" column="0">
+               <spacer name="verticalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Start date</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QgsDateTimeEdit" name="mStartTemporalDateTimeEdit">
+                <property name="displayFormat">
+                 <string>M/d/yyyy h:mm AP</string>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QgsDateTimeEdit" name="mEndTemporalDateTimeEdit">
+                <property name="displayFormat">
+                 <string>M/d/yyyy h:mm AP</string>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>End date</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" colspan="2">
+               <widget class="QLabel" name="label_14">
+                <property name="text">
+                 <string>&lt;p&gt;&lt;b&gt;&lt;i&gt;All&lt;/i&gt; features from the layer will be rendered whenever the map's temporal range overlaps the range defined below.&lt;/b&gt;&lt;/p&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="page">
+             <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0">
+              <item row="2" column="2">
+               <widget class="QComboBox" name="mFixedDurationUnitsComboBox"/>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>Event duration</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Field</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" colspan="2">
+               <widget class="QgsFieldComboBox" name="mSingleFieldComboBox"/>
+              </item>
+              <item row="5" column="0">
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="1">
+               <widget class="QgsDoubleSpinBox" name="mFixedDurationSpinBox">
+                <property name="maximum">
+                 <double>9999999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" colspan="3">
+               <widget class="QLabel" name="label_13">
+                <property name="text">
+                 <string>&lt;p&gt;Event durations in &lt;i&gt;Months&lt;/i&gt; assume a fixed 30-day month length, and durations in &lt;i&gt;Years&lt;/i&gt;, &lt;i&gt;Decades&lt;/i&gt; or &lt;i&gt;Centuries&lt;/i&gt; assume a 365.25-day year length.&lt;/p&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" colspan="3">
+               <widget class="QLabel" name="label_28">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Individual features from the layer will be rendered if the field's value falls within the map's temporal range.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;If a duration is set for the events then the event will be considered as occurring from &lt;span style=&quot; font-style:italic;&quot;&gt;Field ≤ t &amp;lt; Field + duration&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0" colspan="3">
+               <widget class="QCheckBox" name="mAccumulateCheckBox">
+                <property name="toolTip">
+                 <string>If checked, then features will be shown whenever their defined temporal value falls within or before the map's temporal range</string>
+                </property>
+                <property name="text">
+                 <string>Accumulate features over time</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="page_2">
+             <layout class="QGridLayout" name="gridLayout_5">
+              <item row="2" column="1">
+               <widget class="QgsFieldComboBox" name="mEndFieldComboBox"/>
+              </item>
+              <item row="1" column="1">
+               <widget class="QgsFieldComboBox" name="mStartFieldComboBox"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Start field</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>End field</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <spacer name="verticalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0" colspan="2">
+               <widget class="QLabel" name="label_29">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Individual features from the layer will be rendered if the range specified by the &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Start&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;End&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; fields overlaps the map's temporal range.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Each event will be considered as occurring from &lt;span style=&quot; font-style:italic;&quot;&gt;Start field ≤ t &amp;lt; End field&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;If the &lt;span style=&quot; font-style:italic;&quot;&gt;Start&lt;/span&gt; field choice is empty, then features will be treated as having no start date. Similarly if the &lt;span style=&quot; font-style:italic;&quot;&gt;End&lt;/span&gt; field choice is empty, then features will be treated as having no end date.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="page_5">
+             <layout class="QGridLayout" name="gridLayout_7">
+              <item row="2" column="1">
+               <widget class="QgsFieldComboBox" name="mDurationFieldComboBox"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Start field</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0" colspan="2">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>&lt;p&gt;Event durations in &lt;i&gt;Months&lt;/i&gt; assume a fixed 30-day month length, and durations in &lt;i&gt;Years&lt;/i&gt;, &lt;i&gt;Decades&lt;/i&gt; or &lt;i&gt;Centuries&lt;/i&gt; assume a 365.25-day year length.&lt;/p&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QgsFieldComboBox" name="mDurationStartFieldComboBox"/>
+              </item>
+              <item row="3" column="1">
+               <widget class="QComboBox" name="mDurationUnitsComboBox"/>
+              </item>
+              <item row="5" column="0">
+               <spacer name="verticalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>Event duration field</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>Event duration units</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" colspan="2">
+               <widget class="QLabel" name="label_30">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Individual features from the layer will be rendered if the temporal range defined by the &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Start&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Event Duration&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; fields overlaps the map's temporal range.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Each event will be considered as occurring from S&lt;span style=&quot; font-style:italic;&quot;&gt;tart field ≤ t &amp;lt; Start field + Event duration&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="page_11">
+             <layout class="QGridLayout" name="gridLayout_12" columnstretch="0,1" columnminimumwidth="0,0">
+              <item row="0" column="0" colspan="2">
+               <widget class="QLabel" name="label_33">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Individual features from the layer will be rendered if the range specified by the &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Start&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;End&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; expressions overlaps the map's temporal range.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Each event will be considered as occurring from S&lt;span style=&quot; font-style:italic;&quot;&gt;tart expression ≤ t &amp;lt; End expression&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;If the &lt;span style=&quot; font-style:italic;&quot;&gt;Start&lt;/span&gt; expression choice is empty, then features will be treated as having no start date. Similarly if the &lt;span style=&quot; font-style:italic;&quot;&gt;End&lt;/span&gt; expression choice is empty, then features will be treated as having no end date.&lt;/p&gt;&lt;p&gt;The &lt;span style=&quot; font-style:italic;&quot;&gt;Start&lt;/span&gt; and &lt;span style=&quot; font-style:italic;&quot;&gt;End&lt;/span&gt; expressions must return date or datetime values.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_31">
+                <property name="text">
+                 <string>End expression</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_32">
+                <property name="text">
+                 <string>Start expression</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <spacer name="verticalSpacer_11">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="1">
+               <widget class="QgsFieldExpressionWidget" name="mStartExpressionWidget" native="true"/>
+              </item>
+              <item row="2" column="1">
+               <widget class="QgsFieldExpressionWidget" name="mEndExpressionWidget" native="true"/>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="page_4">
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <item>
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>&lt;p&gt;&lt;b&gt;The layer will automatically be redrawn whenever the temporal range is changed, but no time based filtering will be applied to the features.&lt;b&gt;&lt;/p&gt;&lt;p&gt;This configuration is useful when the layer has symbology settings which vary based on the temporal range. For instance, when it is using time-dependent rule-based renderer expressions or data-defined symbology expressions.&lt;/p&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QFrame" name="mFixedTimeRangeFrame">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+            </layout>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="mLimitsComboBox"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mLimitsLabel">
+            <property name="text">
+             <string>Limits</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mTemporalGroupBox</tabstop>
+  <tabstop>mModeComboBox</tabstop>
+  <tabstop>mStartTemporalDateTimeEdit</tabstop>
+  <tabstop>mEndTemporalDateTimeEdit</tabstop>
+  <tabstop>mSingleFieldComboBox</tabstop>
+  <tabstop>mFixedDurationSpinBox</tabstop>
+  <tabstop>mFixedDurationUnitsComboBox</tabstop>
+  <tabstop>mAccumulateCheckBox</tabstop>
+  <tabstop>mStartFieldComboBox</tabstop>
+  <tabstop>mEndFieldComboBox</tabstop>
+  <tabstop>mDurationStartFieldComboBox</tabstop>
+  <tabstop>mDurationFieldComboBox</tabstop>
+  <tabstop>mDurationUnitsComboBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

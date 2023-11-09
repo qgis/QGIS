@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Lists information about space time datasets and maps" module="t.info">
+	<option key="input"/>
+	<option key="type"/>
+	<flag key="h" hidden="no"/>
+	<flag key="s" hidden="no"/>
+	<flag key="g" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

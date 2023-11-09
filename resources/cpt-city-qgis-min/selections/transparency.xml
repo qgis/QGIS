@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="transparent">Transparency</name>
+  <synopsis>A selection of gradients featuring transparency</synopsis>
+  <description>A selection of gradients featuring transparency.</description>
+  <seealsocollects>
+    <collect dir="tl">Thomas Lotze</collect>
+    <collect dir="gps">GIMP Paint Shop</collect>
+    <collect dir="ocal">Open Clipart Library</collect>
+    <collect dir="ggr">GIMP</collect>
+  </seealsocollects>
+  <gradients>
+    <gradient file="es_platinum_01"  dir="es/platinum"/>
+    <gradient file="es_seadreams_14" dir="es/sea_dreams"/>
+    <gradient file="Aneurism" dir="ggr"/>
+    <gradient file="Flare_Glow_Radial_1" dir="ggr"/>
+    <gradient file="Radial_Rainbow_Hoop" dir="ggr"/>
+    <gradient file="Neon_Orange" dir="nd/other"/>
+    <gradient file="beer-lager" dir="ocal"/>
+    <gradient file="stripes-three" dir="ocal"/>
+    <gradient file="spectrums-rainbow-002" dir="ocal"/>
+    <gradient file="power-0.80" dir="tl"/>
+    <gradient file="GPS-Haze-and-Atmosphere" dir="gps"/>
+    <gradient file="GPS-Simple-Smoke" dir="gps"/>
+  </gradients>
+</selection>

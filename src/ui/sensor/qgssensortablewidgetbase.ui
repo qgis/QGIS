@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsSensorTableWidgetBase</class>
+ <widget class="QgsPanelWidget" name="QgsSensorTableWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>291</width>
+    <height>376</height>
+   </rect>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+  <property name="spacing">
+    <number>3</number>
+  </property>
+  <property name="leftMargin">
+    <number>0</number>
+  </property>
+  <property name="topMargin">
+    <number>0</number>
+  </property>
+  <property name="rightMargin">
+    <number>0</number>
+  </property>
+  <property name="bottomMargin">
+    <number>0</number>
+  </property>
+  <item>
+    <widget class="QTableView" name="mSensorTable">
+    <property name="alternatingRowColors">
+      <bool>true</bool>
+    </property>
+    <attribute name="horizontalHeaderVisible">
+      <bool>true</bool>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+    </attribute>
+    </widget>
+  </item>
+  <item>
+   <layout class="QVBoxLayout" name="actionsLayout">
+    <item>
+     <widget class="QToolButton" name="mActionConnection">
+      <property name="toolTip">
+       <string>Toggle sensor connection status</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/mActionStart.svg</normaloff>:/images/themes/default/mActionStart.svg</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QToolButton" name="mActionAddSensor">
+      <property name="toolTip">
+       <string>Create new sensor</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QToolButton" name="mActionRemoveSensor">
+      <property name="toolTip">
+       <string>Create new sensor</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QToolButton" name="mActionEditSensor">
+      <property name="toolTip">
+       <string>Edit sensor</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/symbologyEdit.svg</normaloff>:/images/themes/default/symbologyEdit.svg</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPanelWidget</class>
+   <extends>QWidget</extends>
+   <header>qgspanelwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

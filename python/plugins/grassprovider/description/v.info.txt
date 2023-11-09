@@ -1,0 +1,10 @@
+v.info
+Outputs basic information about a user-specified vector map.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|map|Name of input vector map|-1|None|False
+QgsProcessingParameterBoolean|-c|Print types/names of table columns for specified layer instead of info|False
+QgsProcessingParameterBoolean|-g|Print map region only|False
+QgsProcessingParameterBoolean|-e|Print extended metadata info in shell script style|False
+QgsProcessingParameterBoolean|-t|Print topology information only|False
+QgsProcessingOutputString|html|Information
+QgsProcessingParameterFileDestination|html|Information report|Html files (*.html)|report.html|False

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ES Rosa 41" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="7.41%" stop-color="rgb(64,64,64)" stop-opacity="1.0000"/>
+        <stop offset="13.99%" stop-color="rgb(128,128,128)" stop-opacity="1.0000"/>
+        <stop offset="26.00%" stop-color="rgb(64,0,0)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(153,13,69)" stop-opacity="1.0000"/>
+        <stop offset="76.00%" stop-color="rgb(64,0,0)" stop-opacity="1.0000"/>
+        <stop offset="87.99%" stop-color="rgb(128,128,128)" stop-opacity="1.0000"/>
+        <stop offset="92.67%" stop-color="rgb(77,69,69)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(26,10,10)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ES Rosa 41)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:38:42 2012"/>
+  </metadata>
+</svg>

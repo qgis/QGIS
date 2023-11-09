@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Auto-balancing of colors for RGB images" module="i.colors.enhance">
+	<option key="red" />
+	<option key="green" />
+	<option key="blue" />
+	<option key="strength" />
+	<flag key="f" advanced="yes"/>
+	<flag key="p" advanced="yes"/>
+	<flag key="r" advanced="yes"/>
+</qgisgrassmodule>

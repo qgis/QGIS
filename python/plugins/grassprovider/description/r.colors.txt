@@ -1,0 +1,15 @@
+r.colors
+Creates/modifies the color table associated with a raster map.
+Raster (r.*)
+QgsProcessingParameterMultipleLayers|map|Name of raster maps(s)|3|None|False
+QgsProcessingParameterEnum|color|Name of color table|not selected;aspect;aspectcolr;bcyr;bgyr;blues;byg;byr;celsius;corine;curvature;differences;elevation;etopo2;evi;fahrenheit;gdd;greens;grey;grey.eq;grey.log;grey1.0;grey255;gyr;haxby;kelvin;ndvi;ndwi;oranges;population;population_dens;precipitation;precipitation_daily;precipitation_monthly;rainbow;ramp;random;reds;rstcurv;ryb;ryg;sepia;slope;srtm;srtm_plus;terrain;wave|False|0|True
+QgsProcessingParameterString|rules_txt|Color rules|None|True|True
+QgsProcessingParameterFile|rules|Color rules file|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterRasterLayer|raster|Raster map from which to copy color table|None|True
+QgsProcessingParameterBoolean|-r|Remove existing color table|False
+QgsProcessingParameterBoolean|-w|Only write new color table if it does not already exist|False
+QgsProcessingParameterBoolean|-n|Invert colors|False
+QgsProcessingParameterBoolean|-g|Logarithmic scaling|False
+QgsProcessingParameterBoolean|-a|Logarithmic-absolute scaling|False
+QgsProcessingParameterBoolean|-e|Histogram equalization|False
+QgsProcessingParameterFolderDestination|output_dir|Output Directory|None|False

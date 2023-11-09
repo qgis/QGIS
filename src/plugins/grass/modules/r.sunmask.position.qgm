@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Calculate shadow maps from exact sun position" module="r.sunmask">
+	<option key="elevation" />
+	<option key="altitude" />
+	<option key="azimuth" />
+	<flag key="z" answer="off"/>
+	<option key="output" />
+</qgisgrassmodule>

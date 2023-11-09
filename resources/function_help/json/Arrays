@@ -1,0 +1,5 @@
+{
+  "name": "Arrays",
+  "type": "group",
+  "description": "This group contains expression functions for the creation and manipulation of arrays (also known as list data structures). The order of values within the array matters, in contrary to the 'map' data structure, where the order of key-value pairs is irrelevant and values are identified by their keys."
+}

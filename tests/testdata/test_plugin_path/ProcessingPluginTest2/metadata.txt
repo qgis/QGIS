@@ -1,0 +1,7 @@
+[general]
+name=processing plugin test 2
+qgisMinimumVersion=3.8
+description=desc
+version=0.1
+author=matt cauthin
+hasProcessingProvider=True

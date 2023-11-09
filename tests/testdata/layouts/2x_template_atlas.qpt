@@ -1,0 +1,41 @@
+<Composer title="composer atlas" visible="1">
+ <Composition resizeToContentsMarginLeft="0" snapping="0" showPages="1" guidesVisible="1" resizeToContentsMarginTop="0" worldFileMap="{8a0c5aee-5f83-4751-8278-590c6d477f6d}" alignmentSnap="1" printResolution="300" paperWidth="297" gridVisible="0" snapGridOffsetX="0" smartGuides="1" snapGridOffsetY="0" resizeToContentsMarginRight="0" snapTolerancePixels="5" printAsRaster="0" generateWorldFile="0" paperHeight="210" numPages="1" snapGridResolution="10" resizeToContentsMarginBottom="0">
+  <symbol alpha="1" clip_to_extent="1" type="fill" name="">
+   <layer pass="0" class="SimpleFill" locked="0">
+    <prop k="border_width_map_unit_scale" v="0,0,0,0,0,0"/>
+    <prop k="color" v="255,255,255,255"/>
+    <prop k="joinstyle" v="miter"/>
+    <prop k="offset" v="0,0"/>
+    <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+    <prop k="offset_unit" v="MM"/>
+    <prop k="outline_color" v="0,0,0,255"/>
+    <prop k="outline_style" v="no"/>
+    <prop k="outline_width" v="0.26"/>
+    <prop k="outline_width_unit" v="MM"/>
+    <prop k="style" v="solid"/>
+   </layer>
+  </symbol>
+  <ComposerLabel valign="32" marginX="1" marginY="1" labelText="Atlas feature id [% @atlas_featureid %]" htmlState="0" halign="1">
+   <LabelFont description="QGIS Vera Sans,20,-1,5,50,0,0,0,0,0" style="Medium Italic"/>
+   <FontColor red="0" blue="0" green="0"/>
+   <ComposerItem pagey="7.03957" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="20.1588" y="7.03957" visibility="1" zValue="3" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="171.19" outlineWidth="0.3" excludeFromExports="0" uuid="{d06c40d5-844d-4042-a77c-7796a0ad452a}" height="17.9189" itemRotation="0" frame="false" pagex="20.1588">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerMap followPreset="false" mapRotation="0" keepLayerSet="false" followPresetName="" id="0" previewMode="Cache" drawCanvasItems="true">
+   <Extent ymin="0.73546975069833564" xmin="-138.93849579032786323" ymax="70.49857261875700942" xmax="-63.77437850667756436"/>
+   <LayerSet/>
+   <Grid/>
+   <AtlasMap scalingMode="2" atlasDriven="1" margin="0.10000000000000001"/>
+   <ComposerItem pagey="29.7597" page="1" id="" lastValidViewScaleFactor="6.25038" positionMode="0" positionLock="false" x="18.7198" y="29.7597" visibility="1" zValue="2" background="true" transparency="0" frameJoinStyle="miter" blendMode="0" width="167" outlineWidth="0.3" excludeFromExports="0" uuid="{8a0c5aee-5f83-4751-8278-590c6d477f6d}" height="155" itemRotation="0" frame="false" pagex="18.7198">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerMap>
+  <customproperties/>
+ </Composition>
+ <Atlas hideCoverage="false" coverageLayer="polys20171212162309844" singleFile="false" filenamePattern="'output_'||@atlas_featurenumber" enabled="true" coverageLayerName="polys" filterFeatures="false" coverageLayerProvider="ogr" sortFeatures="false" pageNameExpression=" @atlas_featureid " coverageLayerSource="/home/ale/dev/QGIS/tests/testdata/polys.shp"/>
+</Composer>

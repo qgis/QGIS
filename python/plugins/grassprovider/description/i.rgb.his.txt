@@ -1,0 +1,9 @@
+i.rgb.his
+Transforms raster maps from RGB (Red-Green-Blue) color space to HIS (Hue-Intensity-Saturation) color space.
+Imagery (i.*)
+QgsProcessingParameterRasterLayer|red|Name for input raster map (red)|None|True
+QgsProcessingParameterRasterLayer|green|Name for input raster map (green)|None|True
+QgsProcessingParameterRasterLayer|blue|Name for input raster map (blue)|None|True
+QgsProcessingParameterRasterDestination|hue|Hue|False
+QgsProcessingParameterRasterDestination|intensity|Intensity|False
+QgsProcessingParameterRasterDestination|saturation|Saturation|False

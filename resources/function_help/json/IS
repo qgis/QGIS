@@ -1,0 +1,33 @@
+{
+  "name": "IS",
+  "type": "operator",
+  "groups": ["Operators"],
+  "description": "Returns TRUE if a is the same as b.",
+  "arguments": [{
+    "arg": "a",
+    "description": "any value"
+  }, {
+    "arg": "b",
+    "description": "any value"
+  }],
+  "examples": [{
+    "expression": "'A' IS 'A'",
+    "returns": "TRUE"
+  }, {
+    "expression": "'A' IS 'a'",
+    "returns": "FALSE"
+  }, {
+    "expression": "4 IS 4",
+    "returns": "TRUE"
+  }, {
+    "expression": "4 IS 2+2",
+    "returns": "TRUE"
+  }, {
+    "expression": "4 IS 2",
+    "returns": "FALSE"
+  }, {
+    "expression": "@geometry IS NULL",
+    "returns": "0, if your geometry is not NULL"
+  }],
+  "tags": ["compare", "same", "equal", "identical"]
+}

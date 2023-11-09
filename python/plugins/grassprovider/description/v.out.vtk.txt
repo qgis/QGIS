@@ -1,0 +1,10 @@
+v.out.vtk
+Converts a vector map to VTK ASCII output.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False
+QgsProcessingParameterEnum|type|Input feature type|point;kernel;centroid;line;boundary;area;face|True|0,1,2,3,4,5,6|True
+QgsProcessingParameterNumber|precision|Number of significant digits (floating point only)|QgsProcessingParameterNumber.Integer|2|True|0|None
+QgsProcessingParameterNumber|zscale|Scale factor for elevation|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
+*QgsProcessingParameterBoolean|-c|Correct the coordinates to fit the VTK-OpenGL precision|False
+*QgsProcessingParameterBoolean|-n|Export numeric attribute table fields as VTK scalar variables|False
+QgsProcessingParameterFileDestination|output|VTK File|Vtk files (*.vtk)|None|False

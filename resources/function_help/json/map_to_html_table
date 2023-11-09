@@ -1,0 +1,15 @@
+{
+  "name": "map_to_html_table",
+  "type": "function",
+  "groups": ["Maps"],
+  "description": "Merge map elements into a HTML table string.",
+  "arguments": [{
+    "arg": "map",
+    "description": "the input map"
+  }],
+  "examples": [{
+    "expression": "map_to_html_table(map('qgis','rocks'))",
+    "returns": "<table><thead><th>qgis</th></thead><tbody><tr><td>rocks</td></tr></tbody></table>"
+  }],
+  "tags": ["formatted", "map", "html"]
+}

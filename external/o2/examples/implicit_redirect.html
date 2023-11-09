@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+// Push any fragment as a query string to redirect server
+// Allows for an implicit flow's returned #token to be seen by o2 as ?token
+window.onload = function hashFunction() {
+    var query = location.hash.substr(1)
+    if (query != "") {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "/?" + query, true);
+        xhttp.send();
+    }
+}
+</script>
+</head>
+<body>
+
+<h2>OAuth2 verification has finished</h2>
+
+<h3>If you have not been returned to your application, bring it to the forefront.</h3>
+
+<p><a href="#" onclick="window.close()">Close window</a></p>
+
+</body>
+</html>

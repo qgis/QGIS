@@ -1,0 +1,46 @@
+/** @defgroup core core library
+
+The CORE library contains all basic GIS functionality.
+
+*/
+
+/** @defgroup gui gui library
+
+The GUI library is build on top of the CORE library and adds reusable GUI widgets.
+
+*/
+
+/** @defgroup analysis analysis library
+
+The ANALYSIS library is built on top of CORE library and provides
+high level tools for carrying out spatial analysis on vector and raster data.
+It also contains high level tools for building network topologies and analysing
+them.
+*/
+
+/** @defgroup server server library
+
+The SERVER library is built on top of the CORE library and adds map server
+components to QGIS.
+
+*/
+
+/** @defgroup 3d 3D library
+
+The 3D library is build on top of the CORE library and Qt 3D framework. It adds support for display of GIS data in 3D scenes.
+
+*/
+
+/** @defgroup plugins plugin classes
+
+Contains classes related to implementation of QGIS plugins.
+
+*/
+
+/** @defgroup quick QgsQuick library
+
+The QgsQuick library is built on top of the CORE library and Qt Quick/QML framework. It adds reusable GUI Quick Components, mainly for mobile devices.
+
+*/
+
+

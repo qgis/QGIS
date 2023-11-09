@@ -1,0 +1,6 @@
+r.covar
+Outputs a covariance/correlation matrix for user-specified raster layer(s).
+Raster (r.*)
+QgsProcessingParameterMultipleLayers|map|Input layers|3|None|False
+QgsProcessingParameterBoolean|-r|Print correlation matrix|True
+QgsProcessingParameterFileDestination|html|Covariance report|Html files (*.html)|report.html|False

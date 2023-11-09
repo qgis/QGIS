@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Shadows 2" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(118,118,118)" stop-opacity="1.0000"/>
+        <stop offset="4.84%" stop-color="rgb(179,169,163)" stop-opacity="1.0000"/>
+        <stop offset="12.69%" stop-color="rgb(240,221,209)" stop-opacity="1.0000"/>
+        <stop offset="36.89%" stop-color="rgb(168,152,134)" stop-opacity="1.0000"/>
+        <stop offset="49.92%" stop-color="rgb(97,84,59)" stop-opacity="1.0000"/>
+        <stop offset="60.27%" stop-color="rgb(119,103,72)" stop-opacity="1.0000"/>
+        <stop offset="73.96%" stop-color="rgb(141,123,86)" stop-opacity="1.0000"/>
+        <stop offset="76.63%" stop-color="rgb(71,62,44)" stop-opacity="1.0000"/>
+        <stop offset="85.48%" stop-color="rgb(2,2,2)" stop-opacity="1.0000"/>
+        <stop offset="86.44%" stop-color="rgb(2,2,2)" stop-opacity="1.0000"/>
+        <stop offset="87.41%" stop-color="rgb(3,3,3)" stop-opacity="1.0000"/>
+        <stop offset="88.38%" stop-color="rgb(4,4,4)" stop-opacity="1.0000"/>
+        <stop offset="89.35%" stop-color="rgb(6,6,6)" stop-opacity="1.0000"/>
+        <stop offset="90.32%" stop-color="rgb(9,9,9)" stop-opacity="1.0000"/>
+        <stop offset="91.29%" stop-color="rgb(15,15,15)" stop-opacity="1.0000"/>
+        <stop offset="92.25%" stop-color="rgb(21,21,21)" stop-opacity="1.0000"/>
+        <stop offset="93.22%" stop-color="rgb(30,30,30)" stop-opacity="1.0000"/>
+        <stop offset="94.19%" stop-color="rgb(41,41,41)" stop-opacity="1.0000"/>
+        <stop offset="95.16%" stop-color="rgb(55,55,55)" stop-opacity="1.0000"/>
+        <stop offset="96.13%" stop-color="rgb(71,71,71)" stop-opacity="1.0000"/>
+        <stop offset="97.10%" stop-color="rgb(91,91,91)" stop-opacity="1.0000"/>
+        <stop offset="98.06%" stop-color="rgb(113,113,113)" stop-opacity="1.0000"/>
+        <stop offset="99.03%" stop-color="rgb(139,139,139)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(168,168,168)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Shadows 2)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:15 2012"/>
+  </metadata>
+</svg>

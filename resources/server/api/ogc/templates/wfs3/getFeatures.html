@@ -1,0 +1,104 @@
+<!-- template for the WFS3 API getFeatures page -->
+{% include "header.html" %}
+
+    <div class="row">
+      <p>
+        <b>Number of matching items:</b> {{ numberMatched }}
+        &nbsp;
+        <b>Number of returned items:</b> {{ numberReturned }}
+      </p>
+    </div>
+
+    <div class="row">
+        {% if metadata.pagesize != [] %}
+        <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Page size
+          </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              {% for pagesizeitem in metadata.pagesize %}
+              {% if pagesizeitem == last(metadata.pagesize) %}
+              <div class="dropdown-divider"></div>
+              {% endif %}
+              <a class="dropdown-item" href="{{ pagesizeitem.href }}">{{ pagesizeitem.title }}</a>
+              {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% if metadata.pagination != [] %}
+        &nbsp;
+        <nav aria-label="Page navigation">
+          <ul class="pagination" style="margin:0px">
+            {% for link in links_filter( links, "rel", "prev" ) %}
+            <li class="page-item"><a class="page-link" href="{{ link.href }}">{{ link.title }}</a></li>
+            {% endfor %}
+            {% for pageitem in metadata.pagination %}
+            <li class="{{ pageitem.class }}"><a class="page-link" {% if existsIn(pageitem, "href" ) %}
+                href="{{ pageitem.href }}"{% endif %}>{{ pageitem.title }}</a>
+            </li>
+            {% endfor %}
+            {% for link in links_filter( links, "rel", "next" ) %}
+            <li class="page-item"><a class="page-link" href="{{ link.href }}">{{ link.title }}</a></li>
+            {% endfor %}
+          </ul>
+        </nav>
+        {% endif %}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <h1>{{ metadata.pageTitle }}</h1>
+
+            {% for feature in features %}
+                <h2><a href="{{ path_append( feature.id ) }}">{{ metadata.layerTitle }} {{ feature.id }}</a></h2>
+                <dl class="row">
+                {% for name, value in feature.properties %}
+                    <dt class="col-sm-12">{{ name }}</dt>
+                    <dd class="col-sm-12">{{ value }}</dd>
+                {% endfor %}
+                </dl>
+            {% endfor %}
+        </div>
+
+        {% include "leaflet_map.html" %}
+
+    </div>
+
+    <div class="row">
+      {% if metadata.pagesize != [] %}
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Page size
+        </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% for pagesizeitem in metadata.pagesize %}
+            {% if pagesizeitem == last(metadata.pagesize) %}
+            <div class="dropdown-divider"></div>
+            {% endif %}
+            <a class="dropdown-item" href="{{ pagesizeitem.href }}">{{ pagesizeitem.title }}</a>
+            {% endfor %}
+          </div>
+      </div>
+      {% endif %}
+      {% if metadata.pagination != [] %}
+      &nbsp;
+      <nav aria-label="Page navigation">
+        <ul class="pagination" style="margin:0px">
+          {% for link in links_filter( links, "rel", "prev" ) %}
+          <li class="page-item"><a class="page-link" href="{{ link.href }}">{{ link.title }}</a></li>
+          {% endfor %}
+          {% for pageitem in metadata.pagination %}
+          <li class="{{ pageitem.class }}"><a class="page-link" {% if existsIn(pageitem, "href" ) %}
+              href="{{ pageitem.href }}"{% endif %}>{{ pageitem.title }}</a>
+          </li>
+          {% endfor %}
+          {% for link in links_filter( links, "rel", "next" ) %}
+          <li class="page-item"><a class="page-link" href="{{ link.href }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </nav>
+      {% endif %}
+    </div>
+    <br>
+
+{% include "footer.html" %}

@@ -1,0 +1,13 @@
+r.composite
+Combines red, green and blue raster maps into a single composite raster map.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|red|Red|None|False
+QgsProcessingParameterRasterLayer|green|Green|None|False
+QgsProcessingParameterRasterLayer|blue|Blue|None|False
+QgsProcessingParameterNumber|levels|Number of levels to be used for each component|QgsProcessingParameterNumber.Integer|32|True|1|256
+QgsProcessingParameterNumber|level_red|Number of levels to be used for <red>|QgsProcessingParameterNumber.Integer|None|True|1|256
+QgsProcessingParameterNumber|level_green|Number of levels to be used for <green>|QgsProcessingParameterNumber.Integer|None|True|1|256
+QgsProcessingParameterNumber|level_blue|Number of levels to be used for <blue>|QgsProcessingParameterNumber.Integer|None|True|1|256
+QgsProcessingParameterBoolean|-d|Dither|False
+QgsProcessingParameterBoolean|-c|Use closest color|False
+QgsProcessingParameterRasterDestination|output|Composite

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Generator: Adobe Illustrator 9.0, SVG Export Plug-In  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000303 Stylable//EN"   "http://www.w3.org/TR/2000/03/WD-SVG-20000303/DTD/svg-20000303-stylable.dtd" [
+	<!ENTITY st0 "fill-rule:nonzero;clip-rule:nonzero;fill:none;stroke:#FF0000;stroke-miterlimit:4;">
+	<!ENTITY st1 "fill:#000400;stroke:#000000;">
+]>
+<svg  width="84.676pt" height="85.03pt" viewBox="0 0 84.676 85.03" xml:space="preserve">
+	<g id="Layer_x0020_1" style="&st0;">
+		<path d="M83.968,7.248H0.708v70.18h83.261V7.248z" stroke="param(outline)" stroke-opacity="255" />
+		<path d="M77.428,0.707H7.248v83.261h70.181V0.707z" stroke="param(outline)" stroke-opacity="255"/>
+		<g style="&st1;">
+			<path d="M77.605,84.323L0.884,7.602l6.364-6.364l76.722,76.721l-6.364,6.364z" fill="param(fill)" fill-opacity="255" stroke="param(outline)" stroke-opacity="255" stroke-width="param(outline-width) 0"/>
+			<path d="M7.248,83.969l-6.541-6.541L77.428,0.707l6.54,6.541L7.248,83.969z" fill="param(fill)" fill-opacity="255" stroke="param(outline)" stroke-opacity="255" stroke-width="param(outline-width) 0"/>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://commons.wikimedia.org/wiki/User:Sting">
+      <name>Eric Gaba</name>
+      <alias>Sting</alias>
+    </author>
+    <author href="http://fr.wikipedia.org/wiki/Utilisateur:Bourrichon">
+      <name>Bourrichon</name>
+    </author>
+    <author href="http://commons.wikimedia.org/wiki/User:PZmaps">
+      <name>PZmaps</name>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0) 
+    </informal>
+    <year>2008, 2011, 2012</year>
+    <text href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr"/>
+  </license>
+  <src>
+    <format>SVG or PNG image</format>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc3"/>
+  </distribute>
+</copying>

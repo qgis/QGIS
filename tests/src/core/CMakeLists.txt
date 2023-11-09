@@ -1,0 +1,242 @@
+#####################################################
+# Don't forget to include output directory, otherwise
+# the UI file won't be wrapped!
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/external/kdbush/include
+  ${CMAKE_SOURCE_DIR}/src/test
+)
+
+if(HAVE_OPENCL)
+    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
+endif()
+
+#############################################################
+# Tests:
+
+set(TESTS
+ testcontrastenhancements.cpp
+ testqgis.cpp
+ testqgs25drenderer.cpp
+ testqgsannotationitemregistry.cpp
+ testqgsapplication.cpp
+ testqgsarcgisrestutils.cpp
+ testqgsattributeeditorelement.cpp
+ testqgsauthcertutils.cpp
+ testqgsauthconfig.cpp
+ testqgsauthcrypto.cpp
+ testqgsauthmanager.cpp
+ testqgsblendmodes.cpp
+ testqgsbrowsermodel.cpp
+ testqgsbrowserproxymodel.cpp
+ testqgscadutils.cpp
+ testqgscallout.cpp
+ testqgscalloutregistry.cpp
+ testqgscentroidfillsymbol.cpp
+ testqgsclipper.cpp
+ testqgscolorscheme.cpp
+ testqgscolorschemeregistry.cpp
+ testqgscompositionconverter.cpp
+ testqgsconnectionpool.cpp
+ testqgscoordinatereferencesystemregistry.cpp
+ testqgscoordinatetransform.cpp
+ testqgscoordinateutils.cpp
+ testqgscopyfiletask.cpp
+ testqgscredentials.cpp
+ testqgscurve.cpp
+ testqgsdatadefinedsizelegend.cpp
+ testqgsdataitem.cpp
+ testqgsdatasourceuri.cpp
+ testqgsdiagram.cpp
+ testqgsdistancearea.cpp
+ testqgsdxfexport.cpp
+ testqgselevationmap.cpp
+ testqgsellipsemarker.cpp
+ testqgsexpression.cpp
+ testqgsexpressioncontext.cpp
+ testqgsfeature.cpp
+ testqgsfeaturerequest.cpp
+ testqgsfield.cpp
+ testqgsfields.cpp
+ testqgsfilledmarker.cpp
+ testqgsfontmarker.cpp
+ testqgsfontutils.cpp
+ testqgsgdalprovider.cpp
+ testqgsgdalutils.cpp
+ testqgsgenericspatialindex.cpp
+ testqgsgeometryimport.cpp
+ testqgsgeopdfexport.cpp
+ testqgsgltfutils.cpp
+ testqgsgml.cpp
+ testqgsgradients.cpp
+ testqgsgraduatedsymbolrenderer.cpp
+ testqgshistogram.cpp
+ testqgshstoreutils.cpp
+ testqgshttpheaders.cpp
+ testqgsimagecache.cpp
+ testqgsimageoperation.cpp
+ testqgsinternalgeometryengine.cpp
+ testqgsinvertedpolygonrenderer.cpp
+ testqgsjsonutils.cpp
+ testqgslabelingengine.cpp
+ testqgslayerdefinition.cpp
+ testqgslayeredsymbollevel.cpp
+ testqgslayertree.cpp
+ testqgslayout.cpp
+ testqgslayoutatlas.cpp
+ testqgslayoutcontext.cpp
+ testqgslayoutexporter.cpp
+ testqgslayoutgeopdfexport.cpp
+ testqgslayoutitem.cpp
+ testqgslayoutitemgroup.cpp
+ testqgslayoutlabel.cpp
+ testqgslayoutmanualtable.cpp
+ testqgslayoutmap.cpp
+ testqgslayoutmapgrid.cpp
+ testqgslayoutmapoverview.cpp
+ testqgslayoutmodel.cpp
+ testqgslayoutmultiframe.cpp
+ testqgslayoutobject.cpp
+ testqgslayoutpage.cpp
+ testqgslayoutpicture.cpp
+ testqgslayoutpolyline.cpp
+ testqgslayoutscalebar.cpp
+ testqgslayoutshapes.cpp
+ testqgslayouttable.cpp
+ testqgslayoutunits.cpp
+ testqgslayoututils.cpp
+ testqgslegendrenderer.cpp
+ testqgslinefillsymbol.cpp
+ testqgsmapdevicepixelratio.cpp
+ testqgsmaplayer.cpp
+ testqgsmaplayerstylemanager.cpp
+ testqgsmaprenderercache.cpp
+ testqgsmaprendererjob.cpp
+ testqgsmaprotation.cpp
+ testqgsmapsettings.cpp
+ testqgsmapsettingsutils.cpp
+ testqgsmapthemecollection.cpp
+ testqgsmaptopixel.cpp
+ testqgsmaptopixelgeometrysimplifier.cpp
+ testqgsmarkerlinesymbol.cpp
+ testqgsmatrix4x4.cpp
+ testqgsmesh3daveraging.cpp
+ testqgsmesheditor.cpp
+ testqgsmeshlayer.cpp
+ testqgsmeshlayerinterpolator.cpp
+ testqgsmeshlayerrenderer.cpp
+ testqgsmimedatautils.cpp
+ testqgsnetworkaccessmanager.cpp
+ testqgsnetworkcontentfetcher.cpp
+ testqgsnewsfeedparser.cpp
+ testqgsnmeaconnection.cpp
+ testqgsofflineediting.cpp
+ testqgsogcutils.cpp
+ testqgsogrprovider.cpp
+ testqgsogrutils.cpp
+ testqgsoverlayexpression.cpp
+ testqgspagesizeregistry.cpp
+ testqgspainteffect.cpp
+ testqgspainteffectregistry.cpp
+ testqgspallabeling.cpp
+ testqgspointcloudattribute.cpp
+ testqgspointcloudexpression.cpp
+ testqgspointcloudlayerexporter.cpp
+ testqgspointcloudrendererregistry.cpp
+ testqgspointlocator.cpp
+ testqgspointpatternfillsymbol.cpp
+ testqgspostgresstringutils.cpp
+ testqgsproject.cpp
+ testqgsprojectstorage.cpp
+ testqgsprojutils.cpp
+ testqgsproperty.cpp
+ testqgsprovidermetadata.cpp
+ testqgsrange.cpp
+ testqgsrasterblock.cpp
+ testqgsrastercontourrenderer.cpp
+ testqgsrasterdataprovidertemporalcapabilities.cpp
+ testqgsrasterfilewriter.cpp
+ testqgsrasterfill.cpp
+ testqgsrasteriterator.cpp
+ testqgsrasterlayer.cpp
+ testqgsrasterlayertemporalproperties.cpp
+ testqgsrastermarker.cpp
+ testqgsrastersublayer.cpp
+ testqgsrelationreferencefieldformatter.cpp
+ testqgsrenderers.cpp
+ testqgsrulebasedrenderer.cpp
+ testqgsruntimeprofiler.cpp
+ testqgssettings.cpp
+ testqgssettingsentry.cpp
+ testqgssettingsregistry.cpp
+ testqgsshapeburst.cpp
+ testqgssimplemarker.cpp
+ testqgssimplifymethod.cpp
+ testqgssnappingutils.cpp
+ testqgsspatialindex.cpp
+ testqgsspatialindexkdbush.cpp
+ testqgssqliteexpressioncompiler.cpp
+ testqgssqliteutils.cpp
+ testqgsrelation.cpp
+ testqgsstatisticalsummary.cpp
+ testqgsstoredexpressionmanager.cpp
+ testqgsstringutils.cpp
+ testqgsstyle.cpp
+ testqgssvgcache.cpp
+ testqgssvgmarker.cpp
+ testqgssymbol.cpp
+ testqgstaskmanager.cpp
+ testqgstemporalnavigationobject.cpp
+ testqgstemporalproperty.cpp
+ testqgstemporalrangeobject.cpp
+ testqgstiledsceneconnection.cpp
+ testqgstiledscenerendererregistry.cpp
+ testqgstiledownloadmanager.cpp
+ testqgstracer.cpp
+ testqgstranslateproject.cpp
+ testqgstriangularmesh.cpp
+ testqgsvaluerelationfieldformatter.cpp
+ testqgsvector.cpp
+ testqgsvectordataprovider.cpp
+ testqgsvectorfilewriter.cpp
+ testqgsvectorlayer.cpp
+ testqgsvectorlayercache.cpp
+ testqgsvectorlayerjoinbuffer.cpp
+ testqgsvectorlayerutils.cpp
+ testqgsvectortilelayer.cpp
+ testqgsvectortileconnection.cpp
+ testqgsvectortileutils.cpp
+ testqgsvectortilewriter.cpp
+ testqgstiles.cpp
+ testqgsweakrelation.cpp
+ testqgsziputils.cpp
+ testqobjectparentuniqueptr.cpp
+ testqobjectuniqueptr.cpp
+ testziplayer.cpp
+)
+
+if(WITH_QTWEBKIT)
+  set(TESTS ${TESTS}
+    testqgslayouthtml.cpp
+  )
+endif()
+
+if(HAVE_OPENCL)
+  set(TESTS ${TESTS}
+    testqgsopenclutils.cpp
+     )
+endif()
+
+foreach(TESTSRC ${TESTS})
+    add_qgis_test( ${TESTSRC} MODULE core LINKEDLIBRARIES qgis_core)
+endforeach(TESTSRC)
+
+add_qgis_test(testqgscoordinatereferencesystem.cpp MODULE core LINKEDLIBRARIES qgis_core DEPENDENCIES synccrsdb )
+
+if (ENABLE_PGTEST)
+  SET_TESTS_PROPERTIES(test_core_vectorlayerjoinbuffer PROPERTIES LABELS "POSTGRES")
+endif()
+
+add_subdirectory(geometry)
+add_subdirectory(vector)

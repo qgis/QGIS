@@ -1,0 +1,254 @@
+{
+  "bounds": [
+    7.3,
+    2.7,
+    -5.8020000000000005,
+    7.599,
+    2.999,
+    -5.774
+  ],
+  "metadata": {
+    "readers.las": {
+      "comp_spatialreference": "",
+      "compressed": false,
+      "count": 318,
+      "creation_doy": 336,
+      "creation_year": 2020,
+      "dataformat_id": 3,
+      "dataoffset": 227,
+      "filesource_id": 55518,
+      "global_encoding": 0,
+      "global_encoding_base64": "AAA=",
+      "header_size": 227,
+      "major_version": 1,
+      "maxx": 7.599,
+      "maxy": 2.999,
+      "maxz": -5.774,
+      "minor_version": 2,
+      "minx": 7.3,
+      "miny": 2.7,
+      "minz": -5.802,
+      "offset_x": 0,
+      "offset_y": 0,
+      "offset_z": 0,
+      "point_length": 34,
+      "project_id": "00000000-0000-0000-0000-000000000000",
+      "scale_x": 0.01,
+      "scale_y": 0.01,
+      "scale_z": 0.01,
+      "software_id": "PDAL 2.1.0 (Releas)",
+      "spatialreference": "",
+      "srs": {
+        "compoundwkt": "",
+        "horizontal": "",
+        "isgeocentric": false,
+        "isgeographic": false,
+        "prettycompoundwkt": "",
+        "prettywkt": "",
+        "proj4": "",
+        "units": {
+          "horizontal": "unknown",
+          "vertical": ""
+        },
+        "vertical": "",
+        "wkt": ""
+      },
+      "system_id": "PDAL"
+    }
+  },
+  "path": "/shared/GIS/Data/Point Clouds/Angkor Wat/file-cropped.las",
+  "pipeline": [
+    {
+      "filename": "/shared/GIS/Data/Point Clouds/Angkor Wat/file-cropped.las"
+    }
+  ],
+  "points": 318,
+  "schema": [
+    {
+      "count": 318,
+      "maximum": 7.6000000000000005,
+      "mean": 7.450440251572326,
+      "minimum": 7.3,
+      "name": "X",
+      "scale": 0.01,
+      "size": 4,
+      "stddev": 0.08822388552594573,
+      "type": "signed",
+      "variance": 0.007783453977295176
+    },
+    {
+      "count": 318,
+      "maximum": 3,
+      "mean": 2.853584905660378,
+      "minimum": 2.7,
+      "name": "Y",
+      "scale": 0.01,
+      "size": 4,
+      "stddev": 0.08760821174907993,
+      "type": "signed",
+      "variance": 0.007675198765871626
+    },
+    {
+      "count": 318,
+      "maximum": -5.7700000000000005,
+      "mean": -5.794622641509432,
+      "minimum": -5.8,
+      "name": "Z",
+      "scale": 0.01,
+      "size": 4,
+      "stddev": 0.00552430791394621,
+      "type": "signed",
+      "variance": 3.0517977928088734e-05
+    },
+    {
+      "count": 318,
+      "maximum": 28928,
+      "mean": 28110.89308176101,
+      "minimum": 27392,
+      "name": "Intensity",
+      "size": 2,
+      "stddev": 176.58103743699866,
+      "type": "unsigned",
+      "variance": 31180.86278232672
+    },
+    {
+      "count": 318,
+      "maximum": 1,
+      "mean": 1,
+      "minimum": 1,
+      "name": "ReturnNumber",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 318,
+      "maximum": 1,
+      "mean": 1,
+      "minimum": 1,
+      "name": "NumberOfReturns",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 318,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "ScanDirectionFlag",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 318,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "EdgeOfFlightLine",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 318,
+      "counts": [
+        {
+          "count": 318,
+          "value": 0
+        }
+      ],
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "Classification",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 318,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "ScanAngleRank",
+      "size": 4,
+      "stddev": 0,
+      "type": "float",
+      "variance": 0
+    },
+    {
+      "count": 318,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "UserData",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 318,
+      "maximum": 28,
+      "mean": 14.58490566037736,
+      "minimum": 1,
+      "name": "PointSourceId",
+      "size": 2,
+      "stddev": 13.499732998427632,
+      "type": "unsigned",
+      "variance": 182.2427910288359
+    },
+    {
+      "count": 318,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "GpsTime",
+      "size": 8,
+      "stddev": 0,
+      "type": "float",
+      "variance": 0
+    },
+    {
+      "count": 318,
+      "maximum": 64768,
+      "mean": 53850.16352201256,
+      "minimum": 38400,
+      "name": "Red",
+      "size": 2,
+      "stddev": 10140.361059326848,
+      "type": "unsigned",
+      "variance": 102826922.41351232
+    },
+    {
+      "count": 318,
+      "maximum": 65024,
+      "mean": 56210.51572327048,
+      "minimum": 40192,
+      "name": "Green",
+      "size": 2,
+      "stddev": 8911.842828615956,
+      "type": "unsigned",
+      "variance": 79420942.60195366
+    },
+    {
+      "count": 318,
+      "maximum": 64512,
+      "mean": 53091.823899371106,
+      "minimum": 38400,
+      "name": "Blue",
+      "size": 2,
+      "stddev": 10385.855803640818,
+      "type": "unsigned",
+      "variance": 107866000.77401964
+    }
+  ],
+  "srs": {}
+}

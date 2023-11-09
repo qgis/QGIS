@@ -1,0 +1,27 @@
+{
+  "name": "is_feature_valid",
+  "type": "function",
+  "groups": ["Record and Attributes"],
+  "description": "Returns TRUE if a feature meets all field constraints.",
+  "arguments": [{
+    "arg": "feature",
+    "description": "A feature. If not set, the current feature will be used.",
+    "optional": true
+  },{
+    "arg": "layer",
+    "description": "A vector layer. If not set, the current layer will be used.",
+    "optional": true
+  },{
+    "arg": "strength",
+    "description": "Set to 'hard' or 'soft' to narrow down to a specific constraint type. If not set, the function will return FALSE if either a hard or a soft constraint fails.",
+    "optional": true
+  }],
+  "examples": [{
+    "expression": "is_feature_valid(strength:='hard')",
+    "returns": "TRUE if all fields from the current feature meet their hard constraints."
+  }, {
+    "expression": "is_feature_valid(get_feature('my_layer', 'FID', 10), 'my_layer')",
+    "returns": "FALSE if all fields from feature with \"FID\"=10 in 'my_layer' fails to meet all constraints."
+  }],
+  "tags": ["constraints", "hard", "soft"]
+}

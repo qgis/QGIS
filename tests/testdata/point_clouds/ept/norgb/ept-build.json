@@ -1,0 +1,6 @@
+{
+  "maxNodeSize": 65536,
+  "minNodeSize": 16384,
+  "software": "Entwine",
+  "version": "2.1.0"
+}

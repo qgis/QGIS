@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>kst</dir>
+  <name>KST colour tables</name>
+  <full>
+    These colour schemes reimplement the colour tables of IDL and
+    follow its naming and numbering scheme. They were taken from the
+    KDE scientific plotting tool KST.
+  </full>
+  <date>01/08/2012</date>
+</description>

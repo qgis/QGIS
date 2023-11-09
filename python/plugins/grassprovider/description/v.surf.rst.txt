@@ -1,0 +1,28 @@
+v.surf.rst
+Performs surface interpolation from vector points map by splines.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input points layer|0|None|False
+QgsProcessingParameterField|zcolumn|Name of the attribute column with values to be used for approximation|None|input|-1|False|True
+QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
+QgsProcessingParameterRasterLayer|mask|Name of the raster map used as mask|None|True
+QgsProcessingParameterNumber|tension|Tension parameter|QgsProcessingParameterNumber.Double|40.0|True|None|None
+QgsProcessingParameterNumber|smooth|Smoothing parameter|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterField|smooth_column|Name of the attribute column with smoothing parameters|None|input|-1|False|True
+QgsProcessingParameterNumber|segmax|Maximum number of points in a segment|QgsProcessingParameterNumber.Integer|40|True|0|None
+QgsProcessingParameterNumber|npmin|Minimum number of points for approximation in a segment (>segmax)|QgsProcessingParameterNumber.Integer|300|True|0|None
+QgsProcessingParameterNumber|dmin|Minimum distance between points (to remove almost identical points)|QgsProcessingParameterNumber.Double|None|True|0.0|None
+QgsProcessingParameterNumber|dmax|Maximum distance between points on isoline (to insert additional points)|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|zscale|Conversion factor for values used for approximation|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|theta|Anisotropy angle (in degrees counterclockwise from East)|QgsProcessingParameterNumber.Double|None|True|0.0|360.0
+QgsProcessingParameterNumber|scalex|Anisotropy scaling factor|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterBoolean|-t|Use scale dependent tension|False
+QgsProcessingParameterBoolean|-d|Output partial derivatives instead of topographic parameters|False
+QgsProcessingParameterRasterDestination|elevation|Interpolated RST|None|True
+QgsProcessingParameterRasterDestination|slope|Slope|None|True
+QgsProcessingParameterRasterDestination|aspect|Aspect|None|True
+QgsProcessingParameterRasterDestination|pcurvature|Profile curvature|None|True
+QgsProcessingParameterRasterDestination|tcurvature|Tangential curvature|None|True
+QgsProcessingParameterRasterDestination|mcurvature|Mean curvature|None|True
+QgsProcessingParameterVectorDestination|deviations|Deviations|QgsProcessing.TypeVectorAnyGeometry|None|True
+QgsProcessingParameterVectorDestination|treeseg|Quadtree Segmentation|QgsProcessing.TypeVectorAnyGeometry|None|True
+QgsProcessingParameterVectorDestination|overwin|Overlapping Windows|QgsProcessing.TypeVectorAnyGeometry|None|True

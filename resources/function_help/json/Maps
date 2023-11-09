@@ -1,0 +1,5 @@
+{
+  "name": "Maps",
+  "type": "group",
+  "description": "This group contains expression functions for the creation and manipulation of 'map' data structures (also known as dictionary objects, key-value pairs, or associative arrays). One can assign values to given keys. The order of the key-value pairs in the map object is not relevant."
+}

@@ -1,0 +1,13 @@
+r.drain
+Traces a flow through an elevation model on a raster map.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Elevation|None|False
+QgsProcessingParameterRasterLayer|direction|Name of input movement direction map associated with the cost surface|None|True
+QgsProcessingParameterPoint|start_coordinates|Map coordinates of starting point(s) (E,N)|None|True
+QgsProcessingParameterFeatureSource|start_points|Vector layer containing starting point(s)|0|None|True
+QgsProcessingParameterBoolean|-c|Copy input cell values on output|False
+QgsProcessingParameterBoolean|-a|Accumulate input values along the path|False
+QgsProcessingParameterBoolean|-n|Count cell numbers along the path|False
+QgsProcessingParameterBoolean|-d|The input raster map is a cost surface (direction surface must also be specified)|False
+QgsProcessingParameterRasterDestination|output|Least cost path
+QgsProcessingParameterVectorDestination|drain|Drain

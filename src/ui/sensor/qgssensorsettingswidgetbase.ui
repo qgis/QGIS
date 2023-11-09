@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsSensorSettingsWidgetBase</class>
+ <widget class="QgsPanelWidget" name="QgsSensorSettingsWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>291</width>
+    <height>376</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="mMainLayout">
+   <property name="spacing">
+     <number>3</number>
+   </property>
+   <property name="leftMargin">
+     <number>0</number>
+   </property>
+   <property name="topMargin">
+     <number>0</number>
+   </property>
+   <property name="rightMargin">
+     <number>0</number>
+   </property>
+   <property name="bottomMargin">
+     <number>0</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="mNameLabel">
+     <property name="text">
+      <string>Sensor name</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="mNameLineEdit"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="mTypeLabel">
+     <property name="text">
+      <string>Sensor type</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="mTypeComboBox"/>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="mTypeGroupBox">
+     <layout class="QVBoxLayout" name="mTypeLayout"/>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPanelWidget</class>
+   <extends>QWidget</extends>
+   <header>qgspanelwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

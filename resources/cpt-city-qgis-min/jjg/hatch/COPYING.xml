@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://soliton.vm.bytemark.co.uk/pub/jjg/">
+      <name>J.J. Green</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Public domain</informal>
+    <year>2004</year>
+  </license>
+  <src>
+    <format>GMT colour palette (cpt)</format>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

@@ -1,0 +1,7 @@
+r.reclass
+Creates a new map layer whose category values are based upon a reclassification of the categories in an existing raster map layer.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterFile|rules|File containing reclass rules|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterString|txtrules|Reclass rules text (if rule file not used)|None|True|True
+QgsProcessingParameterRasterDestination|output|Reclassified

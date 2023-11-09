@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>William Joye</name>
+    </author>
+  </authors>
+  <license>
+    <informal>GPL</informal>
+    <year>2010</year>
+    <text href="http://www.gnu.org/copyleft/gpl.html"/>
+  </license>
+  <src>
+    <format>C++ program source</format>
+    <link href="http://hea-www.harvard.edu/RD/ds9/">DS9 homepage</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="gpl"/>
+  </distribute>
+</copying>

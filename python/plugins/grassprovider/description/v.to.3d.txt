@@ -1,0 +1,10 @@
+v.to.3d
+Performs transformation of 2D vector features to 3D.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False
+QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid|True|0,1,2,3|True
+QgsProcessingParameterNumber|height|Fixed height for 3D vector features|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterField|column|Name of attribute column used for height|None|input|0|False|True
+*QgsProcessingParameterBoolean|-r|Reverse transformation; 3D vector features to 2D|False
+*QgsProcessingParameterBoolean|-t|Do not copy attribute table|False
+QgsProcessingParameterVectorDestination|output|3D

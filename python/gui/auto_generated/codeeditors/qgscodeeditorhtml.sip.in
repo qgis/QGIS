@@ -1,0 +1,65 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditorhtml.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsCodeEditorHTML : QgsCodeEditor
+{
+%Docstring(signature="appended")
+A HTML editor based on QScintilla2. Adds syntax highlighting and
+code autocompletion.
+
+.. note::
+
+   may not be available in Python bindings, depending on platform support
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgscodeeditorhtml.h"
+%End
+  public:
+
+    QgsCodeEditorHTML( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCodeEditorHTML
+%End
+
+    virtual Qgis::ScriptLanguage language() const;
+
+    virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
+
+
+  public slots:
+
+    virtual void toggleComment();
+
+%Docstring
+Toggle comment for the selected text.
+
+.. versionadded:: 3.32
+%End
+
+
+  protected:
+    virtual void initializeLexer();
+
+    virtual QString reformatCodeString( const QString &string );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditorhtml.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

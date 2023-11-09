@@ -1,0 +1,15 @@
+{
+  "name": "item_variables",
+  "type": "function",
+  "groups": ["Layout"],
+  "description": "Returns a map of variables from a layout item inside this print layout.",
+  "arguments": [{
+    "arg": "id",
+    "description": "layout item ID"
+  }],
+  "examples": [{
+    "expression": "map_get( item_variables('Map 0'), 'map_scale')",
+    "returns": "scale of the item 'Map 0' in the current print layout"
+  }],
+  "tags": ["layout", "item", "variables", "print", "map"]
+}

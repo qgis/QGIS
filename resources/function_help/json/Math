@@ -1,0 +1,5 @@
+{
+  "name": "Math",
+  "type": "group",
+  "description": "This group contains math functions e.g square root, sin and cos"
+}

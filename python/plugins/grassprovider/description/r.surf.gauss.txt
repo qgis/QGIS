@@ -1,0 +1,6 @@
+r.surf.gauss
+Creates a raster layer of Gaussian deviates.
+Raster (r.*)
+QgsProcessingParameterNumber|mean|Distribution mean|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|sigma|Standard deviation|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterRasterDestination|output|Gaussian deviates

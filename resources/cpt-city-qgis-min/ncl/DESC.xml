@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>ncl</dir>
+  <name>Colour maps from NCL (NCAR command language)</name>
+  <full>
+    The NCL (NCAR Command Language) is an open-source interpreted
+    language designed specifically for scientific data analysis and
+    visualisation. The source package includes a number of
+    colour-tables, translated into discrete (piecewise constant)
+    gradients.
+  </full>
+  <date>01/08/2012</date>
+</description>

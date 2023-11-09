@@ -1,0 +1,8 @@
+r.transect
+Outputs raster map layer values lying along user defined transect line(s).
+Raster (r.*)
+QgsProcessingParameterRasterLayer|map|Raster map to be queried|None|False
+QgsProcessingParameterString|line|Transect definition: east,north,azimuth,distance[,east,north,azimuth,distance,...]|None|False|False
+QgsProcessingParameterString|null_value|String representing NULL value|*|False|True
+*QgsProcessingParameterBoolean|-g|Output easting and northing in first two columns of four column output|False
+QgsProcessingParameterFileDestination|html|Transect file|HTML files (*.html)|None|False

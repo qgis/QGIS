@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: COPYING.xml,v 1.3 2013/04/05 21:24:38 jjg Exp $ -->
+<copying>
+  <authors>
+    <author>
+      <name>Wayne Rasband</name>
+      <org>Research Services Branch, 
+      National Institute of Mental Health, 
+      Bethesda, Maryland, USA.</org>
+    </author>
+  </authors>
+  <license>
+    <informal>Public domain</informal>
+    <year>2013</year>
+    <text href="http://rsb.info.nih.gov/ij/docs/intro.html">
+      ImageJ is a public domain Java image processing program 
+      inspired by NIH Image for the Macintosh. It runs, either 
+      as an online applet or as a downloadable application, on 
+      any computer with a Java 1.4 or later virtual machine. 
+      Downloadable distributions are available for Windows, 
+      Mac OS, Mac OS X and Linux.
+    </text>
+  </license>
+  <src>
+    <format>CIAO 4.5 LUT files</format>
+    <link href="http://rsb.info.nih.gov/ij/"
+	  >ImageJ homepage</link>
+    <link href="http://cxc.harvard.edu/ciao/threads/auxlut/"
+	  >CIAO LUT page</link>
+    <remark>
+      The CIAO project has converted the ImageJ colour
+      maps to the CIAO LUT format, these file being 
+      particularly easy to convert to the cpt format.
+    </remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

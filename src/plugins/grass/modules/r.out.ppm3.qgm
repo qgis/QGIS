@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region" module="r.out.ppm3">
+	<flag key="c" hidden="yes" />
+	<option key="red" />
+	<option key="green" />
+	<option key="blue" />
+	<file key="output" type="new" />
+</qgisgrassmodule>

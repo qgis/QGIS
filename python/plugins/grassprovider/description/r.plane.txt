@@ -1,0 +1,10 @@
+r.plane
+Creates raster plane layer given dip (inclination), aspect (azimuth) and one point.
+Raster (r.*)
+QgsProcessingParameterNumber|dip|Dip of plane|QgsProcessingParameterNumber.Double|0.0|False|-90.0|90.0
+QgsProcessingParameterNumber|azimuth|Azimuth of the plane|QgsProcessingParameterNumber.Double|0.0|False|0.0|360.0
+QgsProcessingParameterNumber|easting|Easting coordinate of a point on the plane|QgsProcessingParameterNumber.Double|None|False|None|None
+QgsProcessingParameterNumber|northing|Northing coordinate of a point on the plane|QgsProcessingParameterNumber.Double|None|False|None|None
+QgsProcessingParameterNumber|elevation|Elevation coordinate of a point on the plane|QgsProcessingParameterNumber.Double|None|False|None|None
+QgsProcessingParameterEnum|type|Data type of resulting layer|CELL;FCELL;DCELL|False|1|True
+QgsProcessingParameterRasterDestination|output|Plane

@@ -1,0 +1,6 @@
+v.dissolve
+Dissolves boundaries between adjacent areas sharing a common category number or attribute.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input vector layer|2|None|False
+QgsProcessingParameterField|column|Name of column used to dissolve common boundaries|None|input|-1|False|True
+QgsProcessingParameterVectorDestination|output|Dissolved

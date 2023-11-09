@@ -1,0 +1,6 @@
+i.fft
+Fast Fourier Transform (FFT) for image processing.
+Imagery (i.*)
+QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
+QgsProcessingParameterRasterDestination|real|Real part arrays
+QgsProcessingParameterRasterDestination|imaginary|Imaginary part arrays

@@ -1,0 +1,13 @@
+v.extract
+Selects vector objects from a vector layer and creates a new layer containing only the selected objects.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Vector layer|-1|None|False
+QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
+QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid;area;face|True|0,1,3,4,5,6|True
+QgsProcessingParameterFile|file|Input text file with category numbers/number ranges to be extracted|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterNumber|random|Number of random categories matching vector objects to extract|QgsProcessingParameterNumber.Integer|None|True|0|None
+QgsProcessingParameterNumber|new|Desired new category value (enter -1 to keep original categories)|QgsProcessingParameterNumber.Integer|-1|True|-1|None
+*QgsProcessingParameterBoolean|-d|Dissolve common boundaries|True
+*QgsProcessingParameterBoolean|-t|Do not copy attributes|False
+*QgsProcessingParameterBoolean|-r|Reverse selection|False
+QgsProcessingParameterVectorDestination|output|Selected

@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsIdentifyResultsBase</class>
+ <widget class="QDialog" name="QgsIdentifyResultsBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>465</width>
+    <height>490</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Identify Results</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="stackedWidgetPage1">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QToolBar" name="mIdentifyToolbar">
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="floatable">
+          <bool>false</bool>
+         </property>
+         <addaction name="mOpenFormAction"/>
+         <addaction name="separator"/>
+         <addaction name="mExpandAction"/>
+         <addaction name="mCollapseAction"/>
+         <addaction name="mExpandNewAction"/>
+         <addaction name="separator"/>
+         <addaction name="mClearResultsAction"/>
+         <addaction name="separator"/>
+         <addaction name="mActionCopy"/>
+         <addaction name="mActionPrint"/>
+         <addaction name="separator"/>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTreeWidget" name="lstResults">
+         <property name="lineWidth">
+          <number>2</number>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <column>
+          <property name="text">
+           <string notr="true">1</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="stackedWidgetPage2">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QTableWidget" name="tblResults">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
+         </property>
+         <column>
+          <property name="text">
+           <string>Layer</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>FID</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Attribute</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Value</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="stackedWidgetPage3">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QwtPlot" name="mPlot"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="leftMargin">
+      <number>5</number>
+     </property>
+     <property name="topMargin">
+      <number>5</number>
+     </property>
+     <property name="rightMargin">
+      <number>5</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="lblIdentifyMode">
+       <property name="toolTip">
+        <string>Select identify mode</string>
+       </property>
+       <property name="text">
+        <string>Mode</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cmbIdentifyMode">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+       </property>
+       <property name="minimumContentsLength">
+        <number>6</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="leftMargin">
+      <number>5</number>
+     </property>
+     <property name="rightMargin">
+      <number>5</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="lblViewMode">
+       <property name="toolTip">
+        <string>Select view mode for raster layers</string>
+       </property>
+       <property name="text">
+        <string>View</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cmbViewMode"/>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>58</width>
+         <height>38</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <action name="mExpandAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionExpandTree.svg</normaloff>:/images/themes/default/mActionExpandTree.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Expand Tree</string>
+   </property>
+  </action>
+  <action name="mCollapseAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCollapseTree.svg</normaloff>:/images/themes/default/mActionCollapseTree.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Collapse Tree</string>
+   </property>
+   <property name="toolTip">
+    <string>Collapse Tree</string>
+   </property>
+  </action>
+  <action name="mExpandNewAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionExpandNewTree.svg</normaloff>:/images/themes/default/mActionExpandNewTree.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Expand New Results</string>
+   </property>
+   <property name="toolTip">
+    <string>Expand New Results by Default</string>
+   </property>
+  </action>
+  <action name="mOpenFormAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFormView.svg</normaloff>:/images/themes/default/mActionFormView.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Form</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Form</string>
+   </property>
+  </action>
+  <action name="mClearResultsAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Clear Results</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear Results</string>
+   </property>
+  </action>
+  <action name="mActionCopy">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Copy Feature</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy the Identified Feature to Clipboard</string>
+   </property>
+  </action>
+  <action name="mActionPrint">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Print Response</string>
+   </property>
+   <property name="toolTip">
+    <string>Print Selected HTML Response</string>
+   </property>
+  </action>
+  <action name="mActionSelectFeatures">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByRectangle.svg</normaloff>:/images/themes/default/mActionIdentifyByRectangle.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Identify Features by area or single click</string>
+   </property>
+  </action>
+  <action name="mActionSelectFeaturesOnMouseOver">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByMouseOver.svg</normaloff>:/images/themes/default/mActionIdentifyByMouseOver.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Feature(s) on Mouse Over</string>
+   </property>
+   <property name="toolTip">
+    <string>Identify Features by hovering on a feature with the mouse</string>
+   </property>
+  </action>
+  <action name="mActionSelectPolygon">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByPolygon.svg</normaloff>:/images/themes/default/mActionIdentifyByPolygon.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Polygon</string>
+   </property>
+  </action>
+  <action name="mActionSelectFreehand">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByFreehand.svg</normaloff>:/images/themes/default/mActionIdentifyByFreehand.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Freehand</string>
+   </property>
+  </action>
+  <action name="mActionSelectRadius">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByRadius.svg</normaloff>:/images/themes/default/mActionIdentifyByRadius.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Radius</string>
+   </property>
+  </action>
+  <action name="mActionAutoFeatureForm">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Auto open form for single feature results</string>
+   </property>
+  </action>
+  <action name="mActionHideDerivedAttributes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hide Derived Attributes from Results</string>
+   </property>
+   <property name="toolTip">
+    <string>Hide derived attributes from results</string>
+   </property>
+  </action>
+  <action name="mHelpToolAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHelpContents.svg</normaloff>:/images/themes/default/mActionHelpContents.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+   <property name="toolTip">
+    <string>Help</string>
+   </property>
+  </action>
+  <action name="mActionHideNullValues">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hide NULL Values from Results</string>
+   </property>
+   <property name="toolTip">
+    <string>Hide NULL Values from Results</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

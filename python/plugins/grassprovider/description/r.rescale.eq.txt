@@ -1,0 +1,7 @@
+r.rescale.eq
+Rescales histogram equalized the range of category values in a raster  layer.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterRange|from|The input data range to be rescaled|QgsProcessingParameterNumber.Double|None|True
+QgsProcessingParameterRange|to|The output data range|QgsProcessingParameterNumber.Double|None|False
+QgsProcessingParameterRasterDestination|output|Rescaled equalized

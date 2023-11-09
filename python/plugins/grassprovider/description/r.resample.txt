@@ -1,0 +1,5 @@
+r.resample
+GRASS raster map layer data resampling capability using nearest neighbors.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer |None|False
+QgsProcessingParameterRasterDestination|output|Resampled NN

@@ -1,0 +1,5 @@
+v.in.geonames
+Imports geonames.org country files into a GRASS vector points map.
+Vector (v.*)
+QgsProcessingParameterFile|input|Uncompressed geonames file from (with .txt extension)|QgsProcessingParameterFile.File|txt|None|False
+QgsProcessingParameterVectorDestination|output|Geonames

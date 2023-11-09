@@ -1,0 +1,73 @@
+name: Bug/Crash report but not related to a third party plugin, read below for plugins
+description: Create a bug report to help us improve QGIS.
+labels:
+  - 'Bug'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report correctly.
+
+        Please report only issues related to the QGIS application.
+
+        If the issue is related to a plugin, you should file the issue in the plugin code repository.
+        You can find the URL in the QGIS Plugin Manager.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What is the bug or the crash?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce the issue
+      description: |
+        Steps, sample datasets and qgis project file to reproduce the behavior. Screencasts or screenshots are more than welcome, you can drag&drop them in the text box.
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: about-info
+    attributes:
+      label: Versions
+      description: |
+        In the QGIS Help menu -> About, click in the table, Ctrl+A and then Ctrl+C. Finally paste here.
+        Do not make a screenshot.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: qgis-version
+    attributes:
+      label: Supported QGIS version
+      description: |
+        Each month, there is a new release of QGIS. According to the release schedule, you should at least be running a supported QGIS version.
+        You can check the release schedule https://www.qgis.org/en/site/getinvolved/development/roadmap.html#release-schedule
+      options:
+        - label: I'm running a supported QGIS version according to [the roadmap](https://www.qgis.org/en/site/getinvolved/development/roadmap.html#release-schedule).
+
+  - type: checkboxes
+    id: new-profile
+    attributes:
+      label: New profile
+      description: |
+        Did you try with a new QGIS profile? Some issues or crashes might be related to plugins or user configuration.
+        You must try with a new profile to check if the issue remains.
+        Read this link how to create a new profile
+        https://docs.qgis.org/latest/en/docs/user_manual/introduction/qgis_configuration.html#working-with-user-profiles
+      options:
+        - label: I tried with a new [QGIS profile](https://docs.qgis.org/latest/en/docs/user_manual/introduction/qgis_configuration.html#working-with-user-profiles)
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: |
+        Add any other context about the problem here.

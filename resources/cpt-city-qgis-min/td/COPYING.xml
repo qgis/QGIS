@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Thomas Dewez</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2004</year>
+    <text>None specified</text>
+  </license>
+  <src>
+    <format>GMT cpt</format>
+    <remark>Contributed to the archive by the author, 
+      March 2004</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

@@ -1,0 +1,10 @@
+r.relief
+Creates shaded relief from an elevation layer (DEM).
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input elevation layer
+QgsProcessingParameterNumber|altitude|Altitude of the sun in degrees above the horizon|QgsProcessingParameterNumber.Double|30.0|True|0.0|90.0
+QgsProcessingParameterNumber|azimuth|Azimuth of the sun in degrees to the east of north|QgsProcessingParameterNumber.Double|270.0|True|0.0|360.0
+QgsProcessingParameterNumber|zscale|Factor for exaggerating relief|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|scale|Scale factor for converting horizontal units to elevation units|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterEnum|units|Elevation units (overrides scale factor)|intl;survey|False|0|True
+QgsProcessingParameterRasterDestination|output|Output shaded relief layer

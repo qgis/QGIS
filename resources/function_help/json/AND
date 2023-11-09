@@ -1,0 +1,27 @@
+{
+  "name": "AND",
+  "type": "operator",
+  "groups": ["Operators"],
+  "description": "Returns TRUE when conditions a and b are true.",
+  "arguments": [{
+    "arg": "a",
+    "description": "condition"
+  }, {
+    "arg": "b",
+    "description": "condition"
+  }],
+  "examples": [{
+    "expression": "TRUE AND TRUE",
+    "returns": "TRUE"
+  }, {
+    "expression": "TRUE AND FALSE",
+    "returns": "FALSE"
+  }, {
+    "expression": "4 = 2+2 AND 1 = 1",
+    "returns": "TRUE"
+  }, {
+    "expression": "4 = 2+2 AND 1 = 2",
+    "returns": "FALSE"
+  }],
+  "tags": ["condition"]
+}

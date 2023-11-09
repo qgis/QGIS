@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>gery</dir>
+  <name>A seismic amplitude scheme by Gery</name>
+  <full>
+    A scheme for amplitude values from seismic data, created with GMT
+    from a grid file of amplitude values from a SEG-Y file.
+  </full>
+  <date>01/08/2012</date>
+</description>

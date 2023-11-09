@@ -1,0 +1,10 @@
+r.distance
+Locates the closest points between objects in two raster maps.
+Raster (r.*)
+QgsProcessingParameterMultipleLayers|map|Name of two input raster for computing inter-class distances|3|None|False
+QgsProcessingParameterString|separator|Field separator (Special characters: pipe, comma, space, tab, newline)|:|False|True
+QgsProcessingParameterEnum|sort|Sort output by distance|asc;desc|False|0
+*QgsProcessingParameterBoolean|-l|Include category labels in the output|False|True
+*QgsProcessingParameterBoolean|-o|Report zero distance if rasters are overlapping|False|True
+*QgsProcessingParameterBoolean|-n|Report null objects as *|False|True
+QgsProcessingParameterFileDestination|html|Distance|HTML files (*.html)|None|False

@@ -1,0 +1,13 @@
+v.select
+Selects features from vector map (A) by features from other vector map (B).
+Vector (v.*)
+QgsProcessingParameterFeatureSource|ainput|Input layer (A)|-1|None|False
+QgsProcessingParameterEnum|atype|Input layer (A) Type|point;line;boundary;centroid;area|True|0,1,4|True
+QgsProcessingParameterFeatureSource|binput|Input layer (B)|-1|None|False
+QgsProcessingParameterEnum|btype|Input layer (B) Type|point;line;boundary;centroid;area|True|0,1,4|True
+QgsProcessingParameterEnum|operator|Operator to use|overlap;equals;disjoint;intersect;touches;crosses;within;contains;overlaps;relate|False|0|False
+QgsProcessingParameterString|relate|Intersection Matrix Pattern used for 'relate' operator|None|False|True
+QgsProcessingParameterBoolean|-t|Do not create attribute table|False
+QgsProcessingParameterBoolean|-c|Do not skip features without category|False
+QgsProcessingParameterBoolean|-r|Reverse selection|False
+QgsProcessingParameterVectorDestination|output|Selected

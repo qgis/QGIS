@@ -1,0 +1,9 @@
+r.kappa
+Calculate error matrix and kappa parameter for accuracy assessment of classification result.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|classification|Raster layer containing classification result|None|False
+QgsProcessingParameterRasterLayer|reference|Raster layer containing reference classes|None|False
+QgsProcessingParameterString|title|Title for error matrix and kappa|ACCURACY ASSESSMENT
+QgsProcessingParameterBoolean|-h|No header in the report|False
+QgsProcessingParameterBoolean|-w|Wide report (132 columns)|False
+QgsProcessingParameterFileDestination|output|Error matrix and kappa|Txt files (*.txt)|None|False

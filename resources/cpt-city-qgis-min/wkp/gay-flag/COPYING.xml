@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: COPYING.xml,v 1.1 2015/07/02 20:39:21 jjg Exp $ -->
+<copying>
+  <authors>
+    <author href="https://en.wikipedia.org/wiki/Rainbow_flag_%28LGBT_movement%29">
+      <name>Gilbert Baker and various gay activists of the 1970s</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Public Domain</informal>
+    <year>2010</year>
+    <text>
+      Ineligible for copyright and therefore in the public domain
+      because it consists entirely of information that is common
+      property and contains no original authorship.
+    </text>
+  </license>
+  <src>
+    <format>SVG gradient</format>
+    <link href="https://en.wikipedia.org/wiki/File:Gay_flag.svg"
+	  >6-stripe version</link>
+    <link href="https://en.wikipedia.org/wiki/File:Gay_flag_7.svg"
+	  >7-stripe version</link>
+    <link href="https://en.wikipedia.org/wiki/File:Gay_flag_8.svg"
+	  >8-stripe version</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

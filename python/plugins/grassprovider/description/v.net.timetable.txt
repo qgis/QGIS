@@ -1,0 +1,15 @@
+v.net.timetable
+Finds shortest path using timetables.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False
+QgsProcessingParameterFeatureSource|points|Centers point layer (nodes)|0|None|False
+QgsProcessingParameterFeatureSource|walk_layer|Layer number or name with walking connections|-1|None|True
+QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
+*QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|node_column|Node cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|route_id|Name of column with route ids|None|input|0|False|True
+*QgsProcessingParameterField|stop_time|Name of column with stop timestamps|None|walk_layer|-1|False|True
+*QgsProcessingParameterField|to_stop|Name of column with stop ids|None|walk_layer|-1|False|True
+*QgsProcessingParameterField|walk_length|Name of column with walk lengths|None|walk_layer|-1|False|True
+QgsProcessingParameterVectorDestination|output|Network Timetable

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Shrink current region until it meets non-NULL data from raster" module="g.region">
+	<option key="zoom" />
+</qgisgrassmodule>

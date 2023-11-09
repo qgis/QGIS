@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.sandia.gov/~kmorel/">
+      <name>Kenneth Moreland</name>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      Public domain
+    </informal>
+    <year>2012</year>
+    <text>
+      Contributed to the public domain by the author, 
+      April 2012.
+    </text>
+  </license>
+  <src>
+    <format>Output from VTK</format>
+    <link href="http://www.sandia.gov/~kmorel/documents/ColorMaps/">Description of the algorithm</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

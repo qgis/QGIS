@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsdataitemprovider.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsDataItemProvider
+{
+%Docstring(signature="appended")
+This is the interface for those who want to add custom data items to the browser tree.
+
+The method :py:func:`~createDataItem` is ever called only if :py:func:`~capabilities` return non-zero value.
+There are two occasions when :py:func:`~createDataItem` is called:
+
+# to create root items (passed path is empty, parent item is ``None``).
+# to create items in directory structure. For this capabilities have to return at least
+  of the following: :py:class:`QgsDataProvider`.Dir or :py:class:`QgsDataProvider`.File. Passed path is the file
+  or directory being inspected, parent item is a valid :py:class:`QgsDirectoryItem`
+
+.. versionadded:: 2.10
+%End
+
+%TypeHeaderCode
+#include "qgsdataitemprovider.h"
+%End
+  public:
+    virtual ~QgsDataItemProvider();
+
+    virtual QString name() = 0;
+%Docstring
+Human-readable name of the provider name
+%End
+
+    virtual QString dataProviderKey() const;
+%Docstring
+Returns the data provider key (if the data item provider is associated with a data provider),
+the default implementation returns an empty string.
+
+.. versionadded:: 3.14
+%End
+    virtual int capabilities() const = 0;
+%Docstring
+Returns combination of flags from :py:class:`QgsDataProvider`.DataCapabilities
+%End
+
+    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0 /Factory/;
+%Docstring
+Create a new instance of :py:class:`QgsDataItem` (or ``None``) for given path and parent item.
+Caller takes responsibility of deleting created items.
+%End
+
+    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem );
+%Docstring
+Create a vector of instances of :py:class:`QgsDataItem` (or ``None``) for given path and parent item.
+Caller takes responsibility of deleting created items.
+%End
+
+    virtual bool handlesDirectoryPath( const QString &path );
+%Docstring
+Returns ``True`` if the provider will handle the directory at the specified ``path``.
+
+If the provider indicates that it will handle the directory, the default creation and
+population of directory items for the path will be avoided and it is left to the
+provider to correctly populate relevant entries for the path.
+
+The default implementation returns ``False`` for all paths.
+
+.. versionadded:: 3.0
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsdataitemprovider.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

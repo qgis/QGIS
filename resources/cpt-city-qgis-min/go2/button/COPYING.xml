@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.gosquared.com/">
+      <name>Go Squared</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Attribution requested</informal>
+    <year>2009</year>
+    <text href="http://www.gosquared.com/liquidicity/archives/822">
+      As always, they're entirely free for you to download and do 
+      whatever you want with them. We appreciate a link back or 
+      mention wherever possible, because we know you're nice people, 
+      and love sharing stuff. Especially shiny buttons.
+    </text>
+  </license>
+  <src>
+    <format>SVG</format>
+    <link href="http://downloads.gosquared.com/vectors/button_set_02.svg">SVG file</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

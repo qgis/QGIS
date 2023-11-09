@@ -1,0 +1,15 @@
+{
+  "name": "centroid",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns the geometric center of a geometry.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "centroid(@geometry)",
+    "returns": "a point geometry"
+  }],
+  "tags": ["geometric", "center"]
+}

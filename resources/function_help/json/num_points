@@ -1,0 +1,15 @@
+{
+  "name": "num_points",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns the number of vertices in a geometry.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "num_points(@geometry)",
+    "returns": "number of vertices in the current feature's geometry"
+  }],
+  "tags": ["vertices"]
+}

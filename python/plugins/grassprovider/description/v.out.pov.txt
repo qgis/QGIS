@@ -1,0 +1,9 @@
+v.out.pov
+Converts to POV-Ray format, GRASS x,y,z -> POV-Ray x,z,y
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False
+QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid;area;face;kernel|True|0,1,4,5|True
+QgsProcessingParameterNumber|size|Radius of sphere for points and tube for lines|QgsProcessingParameterNumber.Double|10.0|False|0.0|None
+QgsProcessingParameterString|zmod|Modifier for z coordinates, this string is appended to each z coordinate|None|False|True
+QgsProcessingParameterString|objmod|Object modifier (OBJECT_MODIFIER in POV-Ray documentation)|None|False|True
+QgsProcessingParameterFileDestination|output|POV vector|Pov files (*.pov)|None|False

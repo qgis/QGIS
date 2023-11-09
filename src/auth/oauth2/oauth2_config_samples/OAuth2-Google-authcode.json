@@ -1,0 +1,27 @@
+{
+ "accessMethod" : 0,
+ "apiKey" : "",
+ "clientId" : "472500469801-unfr9po4f9b1fthdlvmn7c9fo559n4td.apps.googleusercontent.com",
+ "clientSecret" : "PkDMuT5h04JopN0KWgfH4d54",
+ "configType" : 1,
+ "description" : "Example Google OAuth2 auth code grant flow configuration",
+ "grantFlow" : 0,
+ "id" : "60020rv",
+ "name" : "OAuth2 - Google - authcode",
+ "objectName" : "",
+ "password" : "",
+ "persistToken" : true,
+ "queryPairs" :  {
+
+ },
+ "redirectPort" : 7077,
+ "redirectUrl" : "",
+ "refreshTokenUrl" : "https://www.googleapis.com/oauth2/v4/token",
+ "requestTimeout" : 30,
+ "requestUrl" : "https://accounts.google.com/o/oauth2/v2/auth",
+ "scope" : "https://www.googleapis.com/auth/drive.readonly",
+ "state" : "",
+ "tokenUrl" : "https://www.googleapis.com/oauth2/v4/token",
+ "username" : "",
+ "version" : 1
+}

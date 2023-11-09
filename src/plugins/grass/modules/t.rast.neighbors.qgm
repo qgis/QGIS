@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Performs a neighborhood analysis for each map in a space time raster dataset" module="t.rast.neighbors">
+	<option key="input"/>
+	<option key="output"/>
+	<option key="basename"/>
+	<option key="method"/>
+	<option key="size"/>
+	<option key="where" advanced="yes"/>
+	<option key="nprocs" advanced="yes"/>
+	<flag key="n" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

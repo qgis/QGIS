@@ -1,0 +1,30 @@
+{
+  "name": "is_attribute_valid",
+  "type": "function",
+  "groups": ["Record and Attributes"],
+  "description": "Returns TRUE if a specific feature attribute meets all constraints.",
+  "arguments": [{
+    "arg": "attribute",
+    "description": "an attribute name"
+  },{
+    "arg": "feature",
+    "description": "A feature. If not set, the current feature will be used.",
+    "optional": true
+  },{
+    "arg": "layer",
+    "description": "A vector layer. If not set, the current layer will be used.",
+    "optional": true
+  },{
+    "arg": "strength",
+    "description": "Set to 'hard' or 'soft' to narrow down to a specific constraint type. If not set, the function will return FALSE if either a hard or a soft constraint fails.",
+    "optional": true
+  }],
+  "examples": [{
+    "expression": "is_attribute_valid('HECTARES')",
+    "returns": "TRUE if the current feature's value in the \"HECTARES\" field meets all constraints."
+  }, {
+    "expression": "is_attribute_valid('HOUSES',get_feature('my_layer', 'FID', 10), 'my_layer')",
+    "returns": "FALSE if the value in the \"HOUSES\" field from the feature with \"FID\"=10 in 'my_layer' fails to meet all constraints."
+  }],
+  "tags": ["constraints", "hard", "soft"]
+}

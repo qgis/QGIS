@@ -1,0 +1,10 @@
+v.to.points
+Create points along input lines
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input lines layer|1|None|False
+QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid;area;face;kernel|True|0,1,2,3,5|True
+QgsProcessingParameterEnum|use|Use line nodes or vertices only|node;vertex|False|0|True
+QgsProcessingParameterNumber|dmax|Maximum distance between points in map units|QgsProcessingParameterNumber.Double|100.0|True|0.0|None
+QgsProcessingParameterBoolean|-i|Interpolate points between line vertices|False
+QgsProcessingParameterBoolean|-t|Do not create attribute table|False
+QgsProcessingParameterVectorDestination|output|Points along lines

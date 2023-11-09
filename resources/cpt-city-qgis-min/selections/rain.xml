@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="rain">Precipitation</name>
+  <synopsis>Palettes for precipitation and rainfall</synopsis>
+  <description>Palettes for precipitation and rainfall.</description>
+  <gradients>
+    <gradient file="precipitation" dir="grass"/>
+    <gradient file="rainfall" dir="jjg/misc"/>
+    <gradient file="departure" dir="mjf"/>
+    <gradient file="s3pcpnScale" dir="mjf"/>
+    <gradient file="white-christmas" dir="ncdc"/>
+    <gradient file="wiki-ice-greenland" dir="wkp/ice"/>
+    <gradient file="rain-mmh" dir="ukmo/wow"/>
+    <gradient file="humidity" dir="ukmo/wow"/>
+    <gradient file="precip_11lev" dir="ncl"/>
+    <gradient file="precip2_17lev" dir="ncl"/>
+    <gradient file="wiki-precip-mm" dir="wkp/precip"/>
+  </gradients>
+</selection>

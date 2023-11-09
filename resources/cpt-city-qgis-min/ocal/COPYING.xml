@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Alan Horkan</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Public domain</informal>
+    <year>2004</year>
+  </license>
+  <src>
+    <format>SVG</format>
+    <link href="http://www.openclipart.org/">Open clipart library</link>
+    <remark>See SVG file for licence metadata</remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

@@ -1,0 +1,10 @@
+r.reclass.area
+Reclassifies a raster layer, greater or less than user specified area size (in hectares)
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterNumber|value|Value option that sets the area size limit [hectares]|QgsProcessingParameterNumber.Double|1.0|False|0|None
+QgsProcessingParameterEnum|mode|Lesser or greater than specified value|lesser;greater|False|0|False
+QgsProcessingParameterEnum|method|Method used for reclassification|reclass;rmarea|False|0|True
+*QgsProcessingParameterBoolean|-c|Input map is clumped|False
+*QgsProcessingParameterBoolean|-d|Clumps including diagonal neighbors|False
+QgsProcessingParameterRasterDestination|output|Reclassified

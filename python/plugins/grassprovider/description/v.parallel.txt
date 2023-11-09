@@ -1,0 +1,12 @@
+v.parallel
+Creates parallel line to input vector lines.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input lines|1|None|False
+QgsProcessingParameterNumber|distance|Offset along major axis in map units|QgsProcessingParameterNumber.Double|1.0|False|0.0|100000000.0
+QgsProcessingParameterNumber|minordistance|Offset along minor axis in map units|QgsProcessingParameterNumber.Double|None|True|0.0|100000000.0
+QgsProcessingParameterNumber|angle|Angle of major axis in degrees|QgsProcessingParameterNumber.Double|0.0|True|0.0|360.0
+QgsProcessingParameterEnum|side|Side|left;right;both|False|0|False
+QgsProcessingParameterNumber|tolerance|Tolerance of arc polylines in map units|QgsProcessingParameterNumber.Double|None|True|0.0|100000000.0
+QgsProcessingParameterBoolean|-r|Make outside corners round|False
+QgsProcessingParameterBoolean|-b|Create buffer-like parallel lines|False
+QgsProcessingParameterVectorDestination|output|Parallel lines

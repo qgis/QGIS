@@ -1,0 +1,9 @@
+v.surf.idw
+Surface interpolation from vector point data by Inverse Distance Squared Weighting.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input vector layer|0|None|False
+QgsProcessingParameterNumber|npoints|Number of interpolation points|QgsProcessingParameterNumber.Integer|12|True|0|None
+QgsProcessingParameterNumber|power|Power parameter; greater values assign greater influence to closer points|QgsProcessingParameterNumber.Double|2.0|True|None|None
+QgsProcessingParameterField|column|Attribute table column with values to interpolate|None|input|-1|False|False
+QgsProcessingParameterBoolean|-n|Don't index points by raster cell|False
+QgsProcessingParameterRasterDestination|output|Interpolated IDW

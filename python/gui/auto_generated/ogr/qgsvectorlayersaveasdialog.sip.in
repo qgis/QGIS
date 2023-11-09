@@ -1,0 +1,250 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/ogr/qgsvectorlayersaveasdialog.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsVectorLayerSaveAsDialog : QDialog
+{
+%Docstring(signature="appended")
+Class to select destination file, type and CRS for ogr layers
+
+.. versionadded:: 1.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayersaveasdialog.h"
+%End
+  public:
+
+    enum class Option
+    {
+      Symbology,
+      DestinationCrs,
+      Fields,
+      AddToCanvas,
+      SelectedOnly,
+      GeometryType,
+      Extent,
+      Metadata,
+      AllOptions
+    };
+
+    typedef QFlags<QgsVectorLayerSaveAsDialog::Option> Options;
+
+
+
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, QgsVectorLayerSaveAsDialog::Options options = QgsVectorLayerSaveAsDialog::Option::AllOptions, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
+%Docstring
+Construct a new QgsVectorLayerSaveAsDialog
+%End
+
+    QString format() const;
+%Docstring
+Returns the selected format in which the export should be written.
+
+.. seealso:: :py:func:`QgsVectorFileWriter.filterForDriver`
+%End
+
+    QString encoding() const;
+%Docstring
+Returns the selected encoding for the target file.
+%End
+
+    QString fileName() const;
+%Docstring
+Returns the target filename.
+
+.. seealso:: :py:func:`layerName`
+%End
+
+    QString layerName() const;
+%Docstring
+Returns the target layer name.
+
+.. seealso:: :py:func:`fileName`
+%End
+
+    QStringList datasourceOptions() const;
+%Docstring
+Returns a list of additional data source options which are passed to OGR.
+Refer to the OGR documentation for the target format for available options.
+
+.. seealso:: :py:func:`layerOptions`
+%End
+
+    QStringList layerOptions() const;
+%Docstring
+Returns a list of additional layer options which are passed to OGR.
+Refer to the OGR documentation for the target format for available options.
+
+.. seealso:: :py:func:`datasourceOptions`
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the CRS chosen for export.
+
+.. versionadded:: 3.14
+%End
+
+    QgsAttributeList selectedAttributes() const;
+%Docstring
+Returns a list of attributes which are selected for saving.
+%End
+
+    QgsAttributeList attributesAsDisplayedValues() const;
+%Docstring
+Returns selected attributes that must be exported with their displayed values instead of their raw values.
+
+.. versionadded:: 2.16
+%End
+
+    QStringList attributesExportNames() const;
+%Docstring
+Returns a list of export names for attributes.
+%End
+
+    bool addToCanvas() const;
+%Docstring
+Returns ``True`` if the "add to canvas" checkbox is checked.
+
+.. seealso:: :py:func:`setAddToCanvas`
+%End
+
+    void setAddToCanvas( bool checked );
+%Docstring
+Sets whether the  "add to canvas" checkbox should be ``checked``.
+
+.. seealso:: :py:func:`addToCanvas`
+
+.. versionadded:: 3.6
+%End
+
+    Qgis::FeatureSymbologyExport symbologyExport() const;
+%Docstring
+Returns type of symbology export.
+%End
+
+    double scale() const;
+%Docstring
+Returns the specified map scale.
+The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+%End
+
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+Sets a map ``canvas`` to associate with the dialog.
+%End
+
+    bool hasFilterExtent() const;
+%Docstring
+Determines if filtering the export by an extent is activated.
+
+.. seealso:: :py:func:`filterExtent`
+%End
+
+    QgsRectangle filterExtent() const;
+%Docstring
+Determines the extent to be exported.
+
+.. seealso:: :py:func:`hasFilterExtent`
+%End
+
+    void setOnlySelected( bool onlySelected );
+%Docstring
+Sets whether only selected features will be saved.
+
+.. seealso:: :py:func:`onlySelected`
+%End
+
+    bool onlySelected() const;
+%Docstring
+Returns whether only selected features will be saved.
+
+.. seealso:: :py:func:`setOnlySelected`
+%End
+
+    bool persistMetadata() const;
+%Docstring
+Returns ``True`` if the persist metadata (copy source metadata to destination layer) option is checked.
+
+.. versionadded:: 3.20
+%End
+
+    Qgis::WkbType geometryType() const;
+%Docstring
+Returns the selected flat geometry type for the export.
+
+.. seealso:: :py:func:`automaticGeometryType`
+
+.. seealso:: :py:func:`forceMulti`
+
+.. seealso:: :py:func:`includeZ`
+%End
+
+    bool automaticGeometryType() const;
+%Docstring
+Returns ``True`` if geometry type is set to automatic.
+
+.. seealso:: :py:func:`geometryType`
+%End
+
+    bool forceMulti() const;
+%Docstring
+Returns ``True`` if force multi geometry type is checked.
+
+.. seealso:: :py:func:`includeZ`
+
+.. seealso:: :py:func:`setForceMulti`
+%End
+
+    void setForceMulti( bool checked );
+%Docstring
+Sets whether the force multi geometry checkbox should be checked.
+
+.. seealso:: :py:func:`forceMulti`
+%End
+
+    bool includeZ() const;
+%Docstring
+Returns ``True`` if include z dimension is checked.
+
+.. seealso:: :py:func:`forceMulti`
+
+.. seealso:: :py:func:`setIncludeZ`
+%End
+
+    void setIncludeZ( bool checked );
+%Docstring
+Sets whether the include z dimension checkbox should be checked.
+
+.. seealso:: :py:func:`includeZ`
+%End
+
+    QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
+%Docstring
+Returns the creation action.
+%End
+
+    virtual void accept();
+
+
+};
+
+QFlags<QgsVectorLayerSaveAsDialog::Option> operator|(QgsVectorLayerSaveAsDialog::Option f1, QFlags<QgsVectorLayerSaveAsDialog::Option> f2);
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/ogr/qgsvectorlayersaveasdialog.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

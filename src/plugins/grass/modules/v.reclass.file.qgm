@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<!-- TODO: this is bad -->
+<qgisgrassmodule label="Reclass category values using a rules file" module="v.reclass">
+	<option key="input" typeoption="type" layeroption="layer"/>
+	<file key="rules" type="new" fileoption="olayer" label="Text file" />
+	<option key="output" />
+</qgisgrassmodule>
+ 

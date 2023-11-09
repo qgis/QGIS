@@ -1,0 +1,55 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditortextelement.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAttributeEditorTextElement : QgsAttributeEditorElement
+{
+%Docstring(signature="appended")
+An attribute editor widget that will represent arbitrary text code.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditortextelement.h"
+%End
+  public:
+
+    QgsAttributeEditorTextElement( const QString &name, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which can display text
+
+:param name: The name of the widget
+:param parent: The parent (used as container)
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
+    QString text() const;
+%Docstring
+The Text that will be represented within this widget.
+%End
+
+    void setText( const QString &text );
+%Docstring
+Sets the text that will be represented within this widget to ``text``
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditortextelement.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

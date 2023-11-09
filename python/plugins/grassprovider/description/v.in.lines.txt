@@ -1,0 +1,7 @@
+v.in.lines
+Import ASCII x,y[,z] coordinates as a series of lines.
+Vector (v.*)
+QgsProcessingParameterFile|input|ASCII file to be imported|QgsProcessingParameterFile.File|txt|None|False
+QgsProcessingParameterString|separator|Field separator|pipe|False|True
+*QgsProcessingParameterBoolean|-z|Create 3D vector map|False
+QgsProcessingParameterVectorDestination|output|Lines

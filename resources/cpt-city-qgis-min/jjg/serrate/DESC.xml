@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>serrate</dir>
+  <name>Serrated</name>
+  <full>
+    Serrated versions of Cynthia Brewer's schemes. The constant
+    colours of the original segments are replaced by gradients counter
+    to the sense of the scheme.
+  </full>
+  <date>01/08/2012</date>
+</description>

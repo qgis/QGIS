@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Modifies the metadata of a space time dataset." module="t.support">
+	<option key="input"/>
+	<option key="semantictype"/>
+	<option key="type"/>
+	<option key="title"/>
+	<option key="description"/>
+	<flag key="m" hidden="no" advanced="yes"/>
+	<flag key="u" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

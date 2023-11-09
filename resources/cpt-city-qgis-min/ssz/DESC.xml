@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>ssz</dir>
+  <name>Statistik Stadt Zürich scales</name>
+  <full>
+    A set of scales commissioned by Statistik Stadt Zürich, 
+    implemented by Zürich-based design and technology studio 
+    Interactive Things.  General purpose scales for use in
+    simple line and bar charts, choropleth maps and coordinated 
+    visualizations. 
+  </full>
+  <date>18/02/2015</date>
+</description>

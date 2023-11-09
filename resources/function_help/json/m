@@ -1,0 +1,15 @@
+{
+  "name": "m",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns the m (measure) value of a point geometry.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a point geometry"
+  }],
+  "examples": [{
+    "expression": "m( geom_from_wkt( 'POINTM(2 5 4)' ) )",
+    "returns": "4"
+  }],
+  "tags": ["point", "measure"]
+}

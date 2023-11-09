@@ -1,0 +1,74 @@
+<svg version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="c" x1="10" x2="10" y1="10" y2="310" gradientTransform="matrix(.04 0 0 .0433 1.6 -14.4)" gradientUnits="userSpaceOnUse"><stop stop-color="#7F7F7F" stop-opacity="0" offset="0"/><stop stop-color="#fff" offset="1"/></linearGradient><linearGradient id="d" x1="10" x2="310" y1="10" y2="10" gradientTransform="matrix(.04 0 0 .0433 1.6 -14.4)" gradientUnits="userSpaceOnUse"><stop stop-color="#F00" offset="0"/><stop stop-color="#FF0" offset=".167"/><stop stop-color="#0F0" offset=".333"/><stop stop-color="#0FF" offset=".5"/><stop stop-color="#00F" offset=".667"/><stop stop-color="#F0F" offset=".833"/><stop stop-color="#F00" offset="1"/></linearGradient></defs><script type="text/javascript">var h = 0, s = 100, l = 50, Cr = 255, Cg = 0, Cb = 0;
+var arrastarHS = false, arrastarL = false;
+function $(id) { return document.getElementById(id); }
+function inic() {
+	$("doc").onmousemove = retornar;
+	$("doc").onmousedown = function(event) {
+		var x = event.clientX - 10, y = event.clientY - 10;
+		if(x &gt; 0 &amp;&amp; x &lt; 300 &amp;&amp; y &gt; 0 &amp;&amp; y &lt; 300) arrastarHS = true;
+		if(x &gt; 310 &amp;&amp; x &lt; 350 &amp;&amp; y &gt; 0 &amp;&amp; y &lt; 300) arrastarL = true;
+	}
+	$("doc").onmouseup = function() { arrastarHS = arrastarL = false; }
+	$("doc").onmouseout = function() { arrastarHS = arrastarL = false; }
+}
+function retornar(event) {
+	var x = event.clientX - 10;
+	var y = event.clientY - 10;
+	if(x &gt; 0 &amp;&amp; x &lt; 300 &amp;&amp; y &gt; 0 &amp;&amp; y &lt; 300) $("doc").style.cursor = "crosshair";
+	else $("doc").style.cursor = "auto";
+	if(arrastarHS) {
+		if(x &lt; 0) x = 0;
+		else if(x &gt; 300) x = 300;
+		if(y &lt; 0) y = 0;
+		else if(y &gt; 300) y = 300;
+		h = Math.round(x * 1.2);
+		s = Math.round(-(y / 3) + 100);
+		cor();
+		$("cic").setAttribute("cx", x + 10);
+		$("cic").setAttribute("cy", y + 10);
+	}
+	if(arrastarL) {
+		if(y &lt; 0) y = 0;
+		else if(y &gt; 300) y = 300;
+		l = Math.round(-(y / 3) + 100);
+		quad();
+		$("mar").setAttribute("transform", "translate(0, "+y+")");
+	}
+}
+function cor() {
+	var b = h / 60 - 3;
+	if(b &lt; 0) b = 6 + b;
+	Cr = Math.round((b&lt;1||b&gt;5?1:b&gt;2&amp;&amp;b&lt;4?0:b&lt;3?2-b:b-4) * 255);
+	Cg = Math.round((b&gt;1&amp;&amp;b&lt;3?1:b&gt;4?0:b&lt;2?b:4-b) * 255);
+	Cb = Math.round((b&gt;3&amp;&amp;b&lt;5?1:b&lt;2?0:b&lt;4?b-2:6-b) * 255);
+	Cr = Math.round(127.5 + (127.5 - Cr) * s / 100);
+	Cg = Math.round(127.5 + (127.5 - Cg) * s / 100);
+	Cb = Math.round(127.5 + (127.5 - Cb) * s / 100);
+	$("cic").style.fill = $("cor").style.fill = "#" + hex(Cr) + hex(Cg) + hex(Cb);
+	quad();
+}
+function quad() {
+	var b = h / 60 - 3;
+	if(b &lt; 0) b = 6 + b;
+	Cr = Math.round((b&lt;1||b&gt;5?1:b&gt;2&amp;&amp;b&lt;4?0:b&lt;3?2-b:b-4) * 255);
+	Cg = Math.round((b&gt;1&amp;&amp;b&lt;3?1:b&gt;4?0:b&lt;2?b:4-b) * 255);
+	Cb = Math.round((b&gt;3&amp;&amp;b&lt;5?1:b&lt;2?0:b&lt;4?b-2:6-b) * 255);
+	Cr = Math.round(127.5 + (127.5 - Cr) * s / 100);
+	Cg = Math.round(127.5 + (127.5 - Cg) * s / 100);
+	Cb = Math.round(127.5 + (127.5 - Cb) * s / 100);
+	Cr = Math.round(l &gt; 50 ? Cr + (l / 50 - 1) * (255 - Cr) : l / 50 * Cr);
+	Cg = Math.round(l &gt; 50 ? Cg + (l / 50 - 1) * (255 - Cg) : l / 50 * Cg);
+	Cb = Math.round(l &gt; 50 ? Cb + (l / 50 - 1) * (255 - Cb) : l / 50 * Cb);
+	$("RGB1").firstChild.nodeValue = Cr;
+	$("RGB2").firstChild.nodeValue = Cg;
+	$("RGB3").firstChild.nodeValue = Cb;
+	$("HSL1").firstChild.nodeValue = h + "º";
+	$("HSL2").firstChild.nodeValue = s + "%";
+	$("HSL3").firstChild.nodeValue = l + "%";
+	$("quad").style.fill = $("HEX").firstChild.nodeValue = "#" + hex(Cr) + hex(Cg) + hex(Cb);
+}
+function hex(n) {
+	if(n &lt; 16) return "0" + n.toString(16).toUpperCase();
+	else return n.toString(16).toUpperCase();
+}
+window.onload = inic;</script><rect transform="rotate(90)" x="2" y="-14" width="12" height="13" fill="url(#d)"/><rect transform="rotate(90)" x="2" y="-14" width="12" height="13" fill="url(#c)"/><rect x=".497" y="1.5" width="14" height="13" fill="none" stroke="#f9f9f9" stroke-linecap="round" stroke-width=".993"/><rect x=".502" y=".502" width="15" height="15" fill="none" stroke="#999" stroke-linecap="round"/></svg>

@@ -1,0 +1,599 @@
+Content-Type: application/json
+
+{
+  "links": [],
+  "project": {
+    "capabilities": {
+      "owsServiceAbstract": "",
+      "owsServiceAccessConstraints": "None",
+      "owsServiceCapabilities": false,
+      "owsServiceContactMail": "",
+      "owsServiceContactOrganization": "",
+      "owsServiceContactPerson": "",
+      "owsServiceContactPhone": "",
+      "owsServiceContactPosition": "",
+      "owsServiceFees": "conditions unknown",
+      "owsServiceKeywords": [],
+      "owsServiceOnlineResource": "",
+      "owsServiceTitle": "",
+      "wcsLayerIds": [],
+      "wcsServiceUrl": "",
+      "wfsLayerIds": [],
+      "wfsServiceUrl": "",
+      "wfstDeleteLayerIds": [],
+      "wfstInsertLayerIds": [],
+      "wfstUpdateLayerIds": [],
+      "wmsDefaultMapUnitsPerMm": 1.0,
+      "wmsFeatureInfoAddWktGeometry": false,
+      "wmsFeatureInfoDocumentElement": "",
+      "wmsFeatureInfoDocumentElementNs": "",
+      "wmsFeatureInfoLayerAliasMap": {},
+      "wmsFeatureInfoPrecision": 8,
+      "wmsFeatureInfoSchema": "",
+      "wmsFeatureInfoSegmentizeWktGeometry": false,
+      "wmsImageQuality": 90,
+      "wmsInfoFormatSia2045": false,
+      "wmsInspireActivate": false,
+      "wmsInspireLanguage": "",
+      "wmsInspireMetadataDate": "",
+      "wmsInspireMetadataUrl": "",
+      "wmsInspireMetadataUrlType": "",
+      "wmsInspireTemporalReference": "",
+      "wmsMaxAtlasFeatures": 1,
+      "wmsMaxHeight": -1,
+      "wmsMaxWidth": -1,
+      "wmsOutputCrsList": [
+        "",
+        "EPSG:4326",
+        "EPSG:3857"
+      ],
+      "wmsRestrictedComposers": [],
+      "wmsRestrictedLayers": [],
+      "wmsRootName": "",
+      "wmsServiceUrl": "",
+      "wmsTileBuffer": 0,
+      "wmsUseLayerIds": false,
+      "wmtsServiceUrl": ""
+    },
+    "crs": "EPSG:4326",
+    "description": "",
+    "extent": [
+      -180.0,
+      -89.9,
+      180.0,
+      83.674733
+    ],
+    "geographic_extent": [
+      -180.0,
+      -89.9,
+      180.0,
+      83.674733
+    ],
+    "id": "c404d3c20fdd5e81bf1c8c2ef895901e",
+    "initial_extent": [
+      -36.62660256410257,
+      22.183006511698657,
+      57.87339743589743,
+      67.74637392419882
+    ],
+    "metadata": {
+      "abstract": "",
+      "author": "Alessandro Pasotti",
+      "categories": [],
+      "contacts": [
+        {
+          "addresses": [],
+          "email": "",
+          "fax": "",
+          "name": "",
+          "organization": "",
+          "position": "",
+          "role": "",
+          "voice": ""
+        }
+      ],
+      "creationDateTime": "2020-05-04T16:51:48",
+      "history": [],
+      "identifier": "",
+      "language": "",
+      "links": [],
+      "parentIdentifier": "Parent Identifier",
+      "title": "Metadata Title",
+      "type": "dataset"
+    },
+    "title": "Metadata Title",
+    "toc": {
+      "children": [
+        {
+          "children": [],
+          "expanded": false,
+          "has_scale_based_visibility": false,
+          "id": "world_284d1830_e54e_41af_baf9_22b46cc35310",
+          "is_layer": true,
+          "layer_type": "vector",
+          "name": "spain",
+          "queryable": true,
+          "searchable": true,
+          "title": "spain",
+          "tree_id": "root.world_284d1830_e54e_41af_baf9_22b46cc35310",
+          "tree_id_hash": "ef39b5644c8b7b1c7487c6306c403993",
+          "typename": "spain",
+          "visible": true,
+          "wfs_enabled": false
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "expanded": false,
+              "has_scale_based_visibility": false,
+              "id": "world_ca37b4cd_a7a7_4dc0_bdb7_2ed8ba0a928d",
+              "is_layer": true,
+              "layer_type": "vector",
+              "name": "italy",
+              "queryable": true,
+              "searchable": true,
+              "title": "italy",
+              "tree_id": "root.group1.world_ca37b4cd_a7a7_4dc0_bdb7_2ed8ba0a928d",
+              "tree_id_hash": "b16400d2e0daf653d692a7eb06709906",
+              "typename": "italy",
+              "visible": true,
+              "wfs_enabled": false
+            },
+            {
+              "children": [],
+              "expanded": false,
+              "has_scale_based_visibility": false,
+              "id": "world_e6381455_0d01_4d0d_8745_ec187b19b572",
+              "is_layer": true,
+              "layer_type": "vector",
+              "name": "world",
+              "queryable": true,
+              "searchable": true,
+              "title": "world",
+              "tree_id": "root.group1.world_e6381455_0d01_4d0d_8745_ec187b19b572",
+              "tree_id_hash": "0a1e27d0bf3d18ce2f7f0257a6b7271c",
+              "typename": "world",
+              "visible": true,
+              "wfs_enabled": false
+            }
+          ],
+          "expanded": true,
+          "is_layer": false,
+          "name": "group1",
+          "title": "group1",
+          "tree_id": "root.group1",
+          "tree_id_hash": "b281988a6e4527aef301a779ef43701c",
+          "visible": true
+        }
+      ],
+      "expanded": true,
+      "is_layer": false,
+      "name": "root",
+      "title": "root",
+      "tree_id": "root",
+      "tree_id_hash": "63a9f0ea7bb98050796b649e85481845",
+      "visible": true
+    },
+    "wms_layers": {
+      "world_284d1830_e54e_41af_baf9_22b46cc35310": {
+        "crs": "EPSG:4326",
+        "extent": [
+          -18.26745,
+          27.5218,
+          4.2802,
+          43.739867
+        ],
+        "fields": {
+          "approx": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "approx",
+            "length": -1,
+            "not_null": false,
+            "precision": 0,
+            "type": "int8",
+            "unique": false
+          },
+          "area": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "area",
+            "length": -1,
+            "not_null": false,
+            "precision": -1,
+            "type": "numeric",
+            "unique": false
+          },
+          "capital": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "capital",
+            "length": 64,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "id": {
+            "default": "nextval('world_id_seq'::regclass)",
+            "editable": false,
+            "expression": "",
+            "has_expression": false,
+            "label": "id",
+            "length": -1,
+            "not_null": true,
+            "precision": 0,
+            "type": "int4",
+            "unique": true
+          },
+          "name": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "name",
+            "length": 40,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "sourcethm": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "sourcethm",
+            "length": 16,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "testf": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "testf",
+            "length": 80,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          }
+        },
+        "id": "world_284d1830_e54e_41af_baf9_22b46cc35310",
+        "metadata": {
+          "abstract": "",
+          "categories": [],
+          "constraints": [],
+          "contacts": [
+            {
+              "addresses": [],
+              "email": "",
+              "fax": "",
+              "name": "",
+              "organization": "",
+              "position": "",
+              "role": "",
+              "voice": ""
+            }
+          ],
+          "crs": "EPSG:4326",
+          "encoding": "",
+          "fees": "",
+          "history": [],
+          "identifier": "",
+          "keywordVocabularies": [],
+          "keywords": {},
+          "language": "",
+          "licenses": [],
+          "links": [],
+          "parentIdentifier": "",
+          "rights": [],
+          "title": "",
+          "type": "dataset"
+        },
+        "name": "spain",
+        "pk": [
+          0
+        ],
+        "type": "vector"
+      },
+      "world_ca37b4cd_a7a7_4dc0_bdb7_2ed8ba0a928d": {
+        "crs": "EPSG:4326",
+        "extent": [
+          6.52765,
+          35.532933,
+          18.47165,
+          47.059967
+        ],
+        "fields": {
+          "approx": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "approx",
+            "length": -1,
+            "not_null": false,
+            "precision": 0,
+            "type": "int8",
+            "unique": false
+          },
+          "area": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "area",
+            "length": -1,
+            "not_null": false,
+            "precision": -1,
+            "type": "numeric",
+            "unique": false
+          },
+          "capital": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "capital",
+            "length": 64,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "id": {
+            "default": "nextval('world_id_seq'::regclass)",
+            "editable": false,
+            "expression": "",
+            "has_expression": false,
+            "label": "id",
+            "length": -1,
+            "not_null": true,
+            "precision": 0,
+            "type": "int4",
+            "unique": true
+          },
+          "name": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "name",
+            "length": 40,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "sourcethm": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "sourcethm",
+            "length": 16,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "testf": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "testf",
+            "length": 80,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          }
+        },
+        "id": "world_ca37b4cd_a7a7_4dc0_bdb7_2ed8ba0a928d",
+        "metadata": {
+          "abstract": "",
+          "categories": [],
+          "constraints": [],
+          "contacts": [
+            {
+              "addresses": [],
+              "email": "",
+              "fax": "",
+              "name": "",
+              "organization": "",
+              "position": "",
+              "role": "",
+              "voice": ""
+            }
+          ],
+          "crs": "EPSG:4326",
+          "encoding": "",
+          "fees": "",
+          "history": [],
+          "identifier": "",
+          "keywordVocabularies": [],
+          "keywords": {},
+          "language": "",
+          "licenses": [],
+          "links": [],
+          "parentIdentifier": "",
+          "rights": [],
+          "title": "",
+          "type": "dataset"
+        },
+        "name": "italy",
+        "pk": [
+          0
+        ],
+        "type": "vector"
+      },
+      "world_e6381455_0d01_4d0d_8745_ec187b19b572": {
+        "crs": "EPSG:4326",
+        "extent": [
+          -180.0,
+          -89.9,
+          180.0,
+          83.674733
+        ],
+        "fields": {
+          "approx": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "approx",
+            "length": -1,
+            "not_null": false,
+            "precision": 0,
+            "type": "int8",
+            "unique": false
+          },
+          "area": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "area",
+            "length": -1,
+            "not_null": false,
+            "precision": -1,
+            "type": "numeric",
+            "unique": false
+          },
+          "capital": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "capital",
+            "length": 64,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "id": {
+            "default": "nextval('world_id_seq'::regclass)",
+            "editable": false,
+            "expression": "",
+            "has_expression": false,
+            "label": "id",
+            "length": -1,
+            "not_null": true,
+            "precision": 0,
+            "type": "int4",
+            "unique": true
+          },
+          "name": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "name",
+            "length": 40,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "sourcethm": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "sourcethm",
+            "length": 16,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "testf": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "testf",
+            "length": 80,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          }
+        },
+        "id": "world_e6381455_0d01_4d0d_8745_ec187b19b572",
+        "metadata": {
+          "abstract": "",
+          "categories": [],
+          "constraints": [],
+          "contacts": [
+            {
+              "addresses": [],
+              "email": "",
+              "fax": "",
+              "name": "",
+              "organization": "",
+              "position": "",
+              "role": "",
+              "voice": ""
+            }
+          ],
+          "crs": "EPSG:4326",
+          "encoding": "",
+          "fees": "",
+          "history": [],
+          "identifier": "",
+          "keywordVocabularies": [],
+          "keywords": {},
+          "language": "",
+          "licenses": [],
+          "links": [],
+          "parentIdentifier": "",
+          "rights": [],
+          "title": "",
+          "type": "dataset"
+        },
+        "name": "world",
+        "pk": [
+          0
+        ],
+        "type": "vector"
+      }
+    },
+    "wms_layers_map": {
+      "italy": "italy",
+      "spain": "spain",
+      "world": "world"
+    },
+    "wms_layers_queryable": [
+      "world_284d1830_e54e_41af_baf9_22b46cc35310",
+      "world_ca37b4cd_a7a7_4dc0_bdb7_2ed8ba0a928d",
+      "world_e6381455_0d01_4d0d_8745_ec187b19b572"
+    ],
+    "wms_layers_searchable": [
+      "world_284d1830_e54e_41af_baf9_22b46cc35310",
+      "world_ca37b4cd_a7a7_4dc0_bdb7_2ed8ba0a928d",
+      "world_e6381455_0d01_4d0d_8745_ec187b19b572"
+    ],
+    "wms_layers_typename_id_map": {
+      "italy": "world_ca37b4cd_a7a7_4dc0_bdb7_2ed8ba0a928d",
+      "spain": "world_284d1830_e54e_41af_baf9_22b46cc35310",
+      "world": "world_e6381455_0d01_4d0d_8745_ec187b19b572"
+    },
+    "wms_root_name": "Metadata Title"
+  },
+  "timeStamp": "2019-07-05T12:27:07Z"
+}

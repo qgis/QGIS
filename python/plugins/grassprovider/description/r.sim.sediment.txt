@@ -1,0 +1,24 @@
+r.sim.sediment
+Sediment transport and erosion/deposition simulation using path sampling method (SIMWE).
+Raster (r.*)
+QgsProcessingParameterRasterLayer|elevation|Name of the elevation raster map [m]|None|False
+QgsProcessingParameterRasterLayer|water_depth|Name of the water depth raster map [m]|None|False
+QgsProcessingParameterRasterLayer|dx|Name of the x-derivatives raster map [m/m]|None|False
+QgsProcessingParameterRasterLayer|dy|Name of the y-derivatives raster map [m/m]|None|False
+QgsProcessingParameterRasterLayer|detachment_coeff|Name of the detachment capacity coefficient raster map [s/m]|None|False
+QgsProcessingParameterRasterLayer|transport_coeff|Name of the transport capacity coefficient raster map [s]|None|False
+QgsProcessingParameterRasterLayer|shear_stress|Name of the critical shear stress raster map [Pa]|None|False
+QgsProcessingParameterRasterLayer|man|Name of the Mannings n raster map|None|True
+QgsProcessingParameterNumber|man_value|Name of the Mannings n value|QgsProcessingParameterNumber.Double|0.1|True|None|None
+QgsProcessingParameterFeatureSource|observation|Sampling locations vector points|0|None|True
+QgsProcessingParameterNumber|nwalkers|Number of walkers|QgsProcessingParameterNumber.Integer|None|True|None|None
+QgsProcessingParameterNumber|niterations|Time used for iterations [minutes]|QgsProcessingParameterNumber.Integer|10|True|None|None
+QgsProcessingParameterNumber|output_step|Time interval for creating output maps [minutes]|QgsProcessingParameterNumber.Integer|2|True|None|None
+QgsProcessingParameterNumber|diffusion_coeff|Water diffusion constant|QgsProcessingParameterNumber.Double|0.8|True|None|None
+QgsProcessingParameterRasterDestination|transport_capacity|Transport capacity [kg/ms]
+QgsProcessingParameterRasterDestination|tlimit_erosion_deposition|Transport limited erosion-deposition [kg/m2s]
+QgsProcessingParameterRasterDestination|sediment_concentration|Sediment concentration [particle/m3]
+QgsProcessingParameterRasterDestination|sediment_flux|Sediment flux [kg/ms]
+QgsProcessingParameterRasterDestination|erosion_deposition|Erosion-deposition [kg/m2s]
+QgsProcessingParameterVectorDestination|walkers_output|Name of the output walkers vector points layer|QgsProcessing.TypeVectorAnyGeometry|None|True
+QgsProcessingParameterFileDestination|logfile|Name for sampling points output text file.|Txt files (*.txt)|None|True

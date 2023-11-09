@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Select maps from space time datasets by topological relationships" module="t.select">
+	<option key="type"/>
+	<option key="expression"/>
+	<flag key="s" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

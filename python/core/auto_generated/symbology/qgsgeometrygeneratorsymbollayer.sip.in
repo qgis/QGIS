@@ -1,0 +1,152 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsgeometrygeneratorsymbollayer.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
+{
+
+%TypeHeaderCode
+#include "qgsgeometrygeneratorsymbollayer.h"
+%End
+  public:
+    ~QgsGeometryGeneratorSymbolLayer();
+
+    static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;
+%Docstring
+Creates the symbol layer
+%End
+
+    virtual QString layerType() const;
+
+
+    void setSymbolType( Qgis::SymbolType symbolType );
+%Docstring
+Set the type of symbol which should be created.
+Should match with the return type of the expression.
+
+:param symbolType: The symbol type which shall be used below this symbol.
+%End
+
+    Qgis::SymbolType symbolType() const;
+%Docstring
+Access the symbol type. This defines the type of geometry
+that is created by this generator.
+
+:return: Symbol type
+%End
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual bool usesMapUnits() const;
+
+    virtual QColor color() const;
+
+    virtual Qgis::RenderUnit outputUnit() const;
+
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
+
+    virtual QgsSymbolLayer *clone() const /Factory/;
+
+
+    virtual QVariantMap properties() const;
+
+
+    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
+
+
+    void setGeometryExpression( const QString &exp );
+%Docstring
+Set the expression to generate this geometry.
+%End
+
+    QString geometryExpression() const;
+%Docstring
+Gets the expression to generate this geometry.
+%End
+
+    Qgis::RenderUnit units() const;
+%Docstring
+Returns the unit for the geometry expression.
+
+By default this is :py:class:`QgsUnitTypes`.MapUnits, which means that the :py:func:`~QgsGeometryGeneratorSymbolLayer.geometryExpression`
+will return geometries in the associated layer's CRS.
+
+.. seealso:: :py:func:`setUnits`
+
+.. versionadded:: 3.22
+%End
+
+    void setUnits( Qgis::RenderUnit units );
+%Docstring
+Sets the ``units`` for the geometry expression.
+
+By default this is :py:class:`QgsUnitTypes`.MapUnits, which means that the :py:func:`~QgsGeometryGeneratorSymbolLayer.geometryExpression`
+will return geometries in the associated layer's CRS.
+
+.. seealso:: :py:func:`units`
+
+.. versionadded:: 3.22
+%End
+
+    virtual QgsSymbol *subSymbol();
+
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool hasDataDefinedProperties() const;
+
+
+    virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
+
+%Docstring
+Will always return ``True``.
+This is a hybrid layer, it constructs its own geometry so it does not
+care about the geometry of its parents.
+%End
+
+    void render( QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
+%Docstring
+Will render this symbol layer using the context.
+In comparison to other symbols there is no geometry passed in, since
+the geometry will be created based on information from the context
+which contains a :py:class:`QgsRenderContext` which in turn contains an expression
+context which is available to the evaluated expression.
+
+:param context: The rendering context which will be used to render and to construct a geometry.
+:param geometryType: type of original geometry being rendered by the parent symbol (since QGIS 3.22)
+:param points: optional list of original points which are being rendered by the parent symbol (since QGIS 3.22)
+:param rings: optional list of original rings which are being rendered by the parent symbol (since QGIS 3.22)
+%End
+
+    virtual void setColor( const QColor &color );
+
+
+  private:
+    QgsGeometryGeneratorSymbolLayer( const QgsGeometryGeneratorSymbolLayer &copy );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsgeometrygeneratorsymbollayer.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

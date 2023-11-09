@@ -1,0 +1,5 @@
+i.group
+Regroup multiple mono-band rasters into a single multiband raster.
+Imagery (i.*)
+QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
+QgsProcessingParameterRasterDestination|group|Multiband raster

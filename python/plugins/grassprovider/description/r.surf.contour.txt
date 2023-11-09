@@ -1,0 +1,5 @@
+r.surf.contour
+Surface generation program from rasterized contours.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Raster layer with rasterized contours|None|False
+QgsProcessingParameterRasterDestination|output|DTM from contours

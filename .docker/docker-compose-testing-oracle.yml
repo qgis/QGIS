@@ -1,0 +1,25 @@
+version: '3'
+services:
+
+  oracle:
+    image: oslandia/oracle-slim-for-qgis:18.4.0-xe
+    environment:
+      - ORACLE_SID=XE
+      - ORACLE_PWD=adminpass
+      - ORACLE_PDB=ORCLPDBTEST
+      - ORACLE_CHARACTERSET=AL32UTF8
+    ports:
+      - 1521:1521
+
+  qgis-deps:
+    tty: true
+    image: qgis3-build-deps-binary-image
+    volumes:
+      - ${QGIS_WORKSPACE}:/root/QGIS
+    links:
+      - oracle
+    env_file:
+      - docker-variables.env
+    environment:
+      - LANG=C.UTF-8
+      - LC_ALL=en_US.UTF-8

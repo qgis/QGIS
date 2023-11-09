@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.graphicsfuel.com/">
+      <name>Rafi</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free for commercial and non-commercial use</informal>
+    <year>2014</year>
+    <text>
+      Royalty-free, Free for personal and commercial useNone specified
+    </text>
+  </license>
+  <src>
+    <format>Photoshop gradient</format>
+    <link href="http://www.graphicsfuel.com/2012/11/44-realistic-sky-gradients-for-photoshop/"
+	  >Download page at GraphicsFuel</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

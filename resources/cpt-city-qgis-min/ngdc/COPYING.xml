@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Lester M. Anderson</name>
+      <org>CASP, UK</org>
+    </author>
+    <author>
+      <name>Jesse Varner</name>
+      <org>NOAA/NGDC</org>
+    </author>
+    <author>
+      <name>Elliot Lim</name>
+      <org>NOAA/NGDC</org>
+    </author>
+    <author>
+      <name>Greg Reed</name>
+      <org>Australian Ocean Data Centre Joint Facility</org>
+    </author>
+  </authors>
+  <license>
+    <informal>GPLv2</informal>
+    <year>2009</year>
+    <text href="http://www.gnu.org/licenses/gpl-2.0.html"/>
+  </license>
+  <src>
+    <format>GMT colour palette (cpt)</format>
+    <link href="http://www.ngdc.noaa.gov/mgg/global/global.html">NGDC global relief data site</link>
+    <link href="http://www.africanmarineatlas.org/">African Marine Atlas</link>
+    <remark>
+      Derived from GMT_globe and GMT_haxby which are licensed 
+      under the GPL.
+    </remark>
+    <remark>
+      ETOPO1.cpt contributed to the archive by Jesse Varner, 
+      Feb 2009; ETOPO1-Reed.cpt contributed to the archive 
+      by Greg Reed, April 2012
+    </remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="gplv2"/>
+  </distribute>
+</copying>

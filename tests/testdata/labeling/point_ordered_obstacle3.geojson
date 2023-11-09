@@ -1,0 +1,14 @@
+{
+"type": "FeatureCollection",
+"name": "point_ordered_obstacle3",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::32613" } },
+"features": [
+{ "type": "Feature", "properties": { "pkuid": 1, "text": null }, "geometry": { "type": "Point", "coordinates": [ 606510.0, 4823130.0 ] } },
+{ "type": "Feature", "properties": { "pkuid": 2, "text": null }, "geometry": { "type": "Point", "coordinates": [ 612510.0, 4823130.0 ] } },
+{ "type": "Feature", "properties": { "pkuid": 3, "text": null }, "geometry": { "type": "Point", "coordinates": [ 612510.0, 4827130.0 ] } },
+{ "type": "Feature", "properties": { "pkuid": 4, "text": null }, "geometry": { "type": "Point", "coordinates": [ 606510.0, 4827130.0 ] } },
+{ "type": "Feature", "properties": { "pkuid": 5, "text": null }, "geometry": { "type": "Point", "coordinates": [ 610039.71758664958179, 4825202.785622593015432 ] } },
+{ "type": "Feature", "properties": { "pkuid": 6, "text": null }, "geometry": { "type": "Point", "coordinates": [ 608899.409499358152971, 4825227.047496790997684 ] } },
+{ "type": "Feature", "properties": { "pkuid": 7, "text": null }, "geometry": { "type": "Point", "coordinates": [ 610039.71758664958179, 4824984.428754813969135 ] } }
+]
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ES Landscape 28" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(38,45,51)" stop-opacity="1.0000"/>
+        <stop offset="14.99%" stop-color="rgb(119,123,124)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(202,203,198)" stop-opacity="1.0000"/>
+        <stop offset="26.00%" stop-color="rgb(46,72,87)" stop-opacity="1.0000"/>
+        <stop offset="64.99%" stop-color="rgb(6,22,35)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(1,1,3)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ES Landscape 28)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:38:25 2012"/>
+  </metadata>
+</svg>

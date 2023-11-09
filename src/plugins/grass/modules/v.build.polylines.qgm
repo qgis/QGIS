@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Build polylines from lines" module="v.build.polylines">
+	<option key="input" typemask="line,boundary"/>
+	<option key="cats"/>
+	<option key="output"/>
+</qgisgrassmodule>

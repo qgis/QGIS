@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Exports a space time vector dataset as GRASS GIS specific archive file" module="t.vect.export">
+	<option key="input"/>
+	<option key="output"/>
+	<option key="where"/>
+	<option key="directory" advanced="yes"/>
+	<option key="compression" advanced="yes"/>
+	<option key="format" advanced="yes"/>
+</qgisgrassmodule>

@@ -1,0 +1,15 @@
+<svg viewBox="0 0 22.030079 21.745357" xmlns="http://www.w3.org/2000/svg">
+<g fill="param(fill)" stroke="param(outline)" stroke-linecap="square" stroke-width=".19956166" transform="translate(1.6384771 1.1017831)">
+<path d="m5.1875 8.6757811l-4 1.0625 4 1.0625009c-.080816-.345044-.125-.692756-.125-1.0625009 0-.359049.048664-.7266156.125-1.0625z"/>
+<path d="m9.75 1.1875l-1.0625 3.875c.3430414-.077713.6960088-.125 1.0625-.125.356873 0 .696504.051204 1.03125.125z"/>
+<path d="m8.7109374 14.40625l1.03125 3.875 1.0000006-3.84375c-.32242.06819-.657325.125-1.0000006.125-.3560508 0-.6972151-.08278-1.03125-.15625z"/>
+<path d="m14.40625 8.7070311c.07347.334035.15625.6751991.15625 1.03125 0 .3568739-.08245.6965049-.15625 1.0312509l3.875-1.0312509z"/>
+</g>
+<g fill="param(fill)" fill-opacity="param(fill-opacity)" transform="translate(1.6384771 1.1017831)">
+<path d="m9.7375003 5.6288655c-2.2685344 0-4.1086348 1.8400992-4.1086348 4.1086348 0 2.2685327 1.8400997 4.1086337 4.1086348 4.1086337 2.2685327 0 4.1086337-1.840101 4.1086337-4.1086337 0-2.2685356-1.840101-4.1086348-4.1086337-4.1086348z" fill="none" overflow="visible" stroke="param(outline)" stroke-width=".42714843"/>
+<text font-family="OPEN SANS" font-size="40" letter-spacing="0" line-height="125%" word-spacing="0" x="8.9161758" xml:space="preserve" y=".32985753"><tspan font-family="arial black" font-size="2" x="8.9161758" y=".32985753">N</tspan></text>
+<text font-family="OPEN SANS" font-size="40" letter-spacing="0" line-height="125%" word-spacing="0" x="9.0205507" xml:space="preserve" y="20.61916"><tspan font-family="arial black" font-size="2" x="9.0205507" y="20.61916">S</tspan></text>
+<text font-family="OPEN SANS" font-size="40" letter-spacing="0" line-height="125%" word-spacing="0" x="19.039063" xml:space="preserve" y="10.454102"><tspan font-family="arial black" font-size="2" x="19.039063" y="10.454102">E</tspan></text>
+<text font-family="OPEN SANS" font-size="40" letter-spacing="0" line-height="125%" word-spacing="0" x="-1.6375005" xml:space="preserve" y="10.454102"><tspan font-family="arial black" font-size="2" x="-1.6375005" y="10.454102">W</tspan></text>
+</g>
+</svg>

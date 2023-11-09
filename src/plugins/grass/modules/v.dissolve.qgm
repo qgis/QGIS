@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Dissolves boundaries between adjacent areas sharing a common category number or attribute" module="v.dissolve">
+	<option key="input" layeroption="layer"/>
+	<field key="column" layer="input" type="integer,string" label="Attribute field" />
+	<option key="output" />
+</qgisgrassmodule>

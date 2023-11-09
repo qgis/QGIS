@@ -1,0 +1,6 @@
+r.thin
+Thins non-zero cells that denote linear features in a raster layer.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer to thin|None|False
+QgsProcessingParameterNumber|iterations|Maximum number of iterations|QgsProcessingParameterNumber.Integer|200|True|1|None
+QgsProcessingParameterRasterDestination|output|Thinned

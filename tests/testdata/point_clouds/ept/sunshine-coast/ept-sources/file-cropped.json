@@ -1,0 +1,294 @@
+{
+  "bounds": [
+    498062.0,
+    7050992.84,
+    74.34,
+    498067.39,
+    7050997.04,
+    80.02
+  ],
+  "metadata": {
+    "readers.las": {
+      "comp_spatialreference": "PROJCS[\"GDA94 / MGA zone 56\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",153],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"28356\"]]",
+      "compressed": false,
+      "count": 253,
+      "creation_doy": 309,
+      "creation_year": 2020,
+      "dataformat_id": 3,
+      "dataoffset": 426,
+      "filesource_id": 29296,
+      "global_encoding": 0,
+      "global_encoding_base64": "AAA=",
+      "header_size": 227,
+      "major_version": 1,
+      "maxx": 498067.39,
+      "maxy": 7050997.04,
+      "maxz": 80.02,
+      "minor_version": 2,
+      "minx": 498062,
+      "miny": 7050992.84,
+      "minz": 74.34,
+      "offset_x": 0,
+      "offset_y": 0,
+      "offset_z": 0,
+      "point_length": 34,
+      "project_id": "00000000-0000-0000-0000-000000000000",
+      "scale_x": 0.01,
+      "scale_y": 0.01,
+      "scale_z": 0.01,
+      "software_id": "PDAL 2.1.0 (Releas)",
+      "spatialreference": "PROJCS[\"GDA94 / MGA zone 56\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",153],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"28356\"]]",
+      "srs": {
+        "compoundwkt": "PROJCS[\"GDA94 / MGA zone 56\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",153],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"28356\"]]",
+        "horizontal": "PROJCS[\"GDA94 / MGA zone 56\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",153],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"28356\"]]",
+        "isgeocentric": false,
+        "isgeographic": false,
+        "prettycompoundwkt": "PROJCS[\"GDA94 / MGA zone 56\",\n    GEOGCS[\"GDA94\",\n        DATUM[\"Geocentric_Datum_of_Australia_1994\",\n            SPHEROID[\"GRS 1980\",6378137,298.257222101,\n                AUTHORITY[\"EPSG\",\"7019\"]],\n            AUTHORITY[\"EPSG\",\"6283\"]],\n        PRIMEM[\"Greenwich\",0,\n            AUTHORITY[\"EPSG\",\"8901\"]],\n        UNIT[\"degree\",0.0174532925199433,\n            AUTHORITY[\"EPSG\",\"9122\"]],\n        AUTHORITY[\"EPSG\",\"4283\"]],\n    PROJECTION[\"Transverse_Mercator\"],\n    PARAMETER[\"latitude_of_origin\",0],\n    PARAMETER[\"central_meridian\",153],\n    PARAMETER[\"scale_factor\",0.9996],\n    PARAMETER[\"false_easting\",500000],\n    PARAMETER[\"false_northing\",10000000],\n    UNIT[\"metre\",1,\n        AUTHORITY[\"EPSG\",\"9001\"]],\n    AXIS[\"Easting\",EAST],\n    AXIS[\"Northing\",NORTH],\n    AUTHORITY[\"EPSG\",\"28356\"]]",
+        "prettywkt": "PROJCS[\"GDA94 / MGA zone 56\",\n    GEOGCS[\"GDA94\",\n        DATUM[\"Geocentric_Datum_of_Australia_1994\",\n            SPHEROID[\"GRS 1980\",6378137,298.257222101,\n                AUTHORITY[\"EPSG\",\"7019\"]],\n            AUTHORITY[\"EPSG\",\"6283\"]],\n        PRIMEM[\"Greenwich\",0,\n            AUTHORITY[\"EPSG\",\"8901\"]],\n        UNIT[\"degree\",0.0174532925199433,\n            AUTHORITY[\"EPSG\",\"9122\"]],\n        AUTHORITY[\"EPSG\",\"4283\"]],\n    PROJECTION[\"Transverse_Mercator\"],\n    PARAMETER[\"latitude_of_origin\",0],\n    PARAMETER[\"central_meridian\",153],\n    PARAMETER[\"scale_factor\",0.9996],\n    PARAMETER[\"false_easting\",500000],\n    PARAMETER[\"false_northing\",10000000],\n    UNIT[\"metre\",1,\n        AUTHORITY[\"EPSG\",\"9001\"]],\n    AXIS[\"Easting\",EAST],\n    AXIS[\"Northing\",NORTH],\n    AUTHORITY[\"EPSG\",\"28356\"]]",
+        "proj4": "+proj=utm +zone=56 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
+        "units": {
+          "horizontal": "metre",
+          "vertical": ""
+        },
+        "vertical": "",
+        "wkt": "PROJCS[\"GDA94 / MGA zone 56\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",153],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"28356\"]]"
+      },
+      "system_id": "PDAL",
+      "vlr_0": {
+        "data": "AQABAAAABwAABAAAAQABAAEEAAABAAEAAgSxhxQAAAABCLGHBgAUAAYIAAABAI4jAAwAAAEAxG4EDAAAAQApIw==",
+        "description": "GeoTiff GeoKeyDirectoryTag",
+        "record_id": 34735,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_1": {
+        "data": "R0RBOTQgLyBNR0Egem9uZSA1NnxHREE5NHwA",
+        "description": "GeoTiff GeoAsciiParamsTag",
+        "record_id": 34737,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_2": {
+        "data": "AQABAAAABwAABAAAAQABAAEEAAABAAEAAgSxhxQAAAABCLGHBgAUAAYIAAABAI4jAAwAAAEAxG4EDAAAAQApIw==",
+        "description": "GeoTiff GeoKeyDirectoryTag",
+        "record_id": 34735,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_3": {
+        "data": "R0RBOTQgLyBNR0Egem9uZSA1NnxHREE5NHwA",
+        "description": "GeoTiff GeoAsciiParamsTag",
+        "record_id": 34737,
+        "user_id": "LASF_Projection"
+      }
+    }
+  },
+  "path": "/shared/GIS/Data/Queensland/Point Clouds/SunshineCoast_2014_LGA_SW_498000_7050000_1K_Las/file-cropped.las",
+  "pipeline": [
+    {
+      "filename": "/shared/GIS/Data/Queensland/Point Clouds/SunshineCoast_2014_LGA_SW_498000_7050000_1K_Las/file-cropped.las"
+    }
+  ],
+  "points": 253,
+  "schema": [
+    {
+      "count": 253,
+      "maximum": 498067.39,
+      "mean": 498064.7342292491,
+      "minimum": 498062,
+      "name": "X",
+      "scale": 0.01,
+      "size": 4,
+      "stddev": 1.5636647117681046,
+      "type": "signed",
+      "variance": 2.44504733082883
+    },
+    {
+      "count": 253,
+      "maximum": 7050997.04,
+      "mean": 7050995.062687747,
+      "minimum": 7050992.84,
+      "name": "Y",
+      "scale": 0.01,
+      "size": 4,
+      "stddev": 1.2402023500641837,
+      "type": "signed",
+      "variance": 1.5381018691047241
+    },
+    {
+      "count": 253,
+      "maximum": 80.02,
+      "mean": 74.83335968379447,
+      "minimum": 74.34,
+      "name": "Z",
+      "scale": 0.01,
+      "size": 4,
+      "stddev": 0.5315911095773926,
+      "type": "signed",
+      "variance": 0.2825891077817235
+    },
+    {
+      "count": 253,
+      "maximum": 2086,
+      "mean": 728.521739130435,
+      "minimum": 199,
+      "name": "Intensity",
+      "size": 2,
+      "stddev": 440.9652417017358,
+      "type": "unsigned",
+      "variance": 194450.34438907026
+    },
+    {
+      "count": 253,
+      "maximum": 2,
+      "mean": 1.0079051383399202,
+      "minimum": 1,
+      "name": "ReturnNumber",
+      "size": 1,
+      "stddev": 0.0885587213533916,
+      "type": "unsigned",
+      "variance": 0.007842647127747657
+    },
+    {
+      "count": 253,
+      "maximum": 2,
+      "mean": 1.0197628458498016,
+      "minimum": 1,
+      "name": "NumberOfReturns",
+      "size": 1,
+      "stddev": 0.1391843230170673,
+      "type": "unsigned",
+      "variance": 0.019372275773719326
+    },
+    {
+      "count": 253,
+      "maximum": 1,
+      "mean": 1,
+      "minimum": 1,
+      "name": "ScanDirectionFlag",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 253,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "EdgeOfFlightLine",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 253,
+      "counts": [
+        {
+          "count": 1,
+          "value": 1
+        },
+        {
+          "count": 160,
+          "value": 2
+        },
+        {
+          "count": 89,
+          "value": 3
+        },
+        {
+          "count": 3,
+          "value": 5
+        }
+      ],
+      "maximum": 5,
+      "mean": 2.3833992094861656,
+      "minimum": 1,
+      "name": "Classification",
+      "size": 1,
+      "stddev": 0.5616543768642408,
+      "type": "unsigned",
+      "variance": 0.3154556390507586
+    },
+    {
+      "count": 253,
+      "maximum": -12,
+      "mean": -23.130434782608702,
+      "minimum": -28,
+      "name": "ScanAngleRank",
+      "size": 4,
+      "stddev": 7.3620906047014705,
+      "type": "float",
+      "variance": 54.20037807183367
+    },
+    {
+      "count": 253,
+      "maximum": 17,
+      "mean": 17,
+      "minimum": 17,
+      "name": "UserData",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 253,
+      "maximum": 7042,
+      "mean": 7041.304347826085,
+      "minimum": 7041,
+      "name": "PointSourceId",
+      "size": 2,
+      "stddev": 0.46013066279442233,
+      "type": "unsigned",
+      "variance": 0.2117202268436344
+    },
+    {
+      "count": 253,
+      "maximum": 269160.56172768096,
+      "mean": 268905.08991689375,
+      "minimum": 268793.25796782086,
+      "name": "GpsTime",
+      "size": 8,
+      "stddev": 168.96274380226126,
+      "type": "float",
+      "variance": 28548.408793188573
+    },
+    {
+      "count": 253,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "Red",
+      "size": 2,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 253,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "Green",
+      "size": 2,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 253,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "Blue",
+      "size": 2,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    }
+  ],
+  "srs": {
+    "authority": "EPSG",
+    "horizontal": "28356",
+    "wkt": "PROJCS[\"GDA94 / MGA zone 56\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",153],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"28356\"]]"
+  }
+}

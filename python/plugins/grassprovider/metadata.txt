@@ -1,0 +1,17 @@
+[general]
+name=GRASS GIS provider
+description=GRASS GIS Processing provider
+about=GRASS GIS Processing provider
+category=Analysis
+version=2.12.99
+qgisMinimumVersion=3.0
+
+author=Victor Olaya
+
+icon=:/images/themes/default/providerGrass.svg
+
+homepage=https://qgis.org
+tracker=https://github.com/qgis/QGIS/issues
+repository=https://github.com/qgis/QGIS
+
+hasProcessingProvider=yes

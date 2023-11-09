@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Calculate univariate statistics of vector map features" module="v.univar">
+	<option key="map" typeoption="type"/>
+	<field key="column" layer="map" type="integer,double" label="Attribute field" />
+</qgisgrassmodule>

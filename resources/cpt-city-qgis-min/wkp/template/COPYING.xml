@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://commons.wikimedia.org/wiki/User:Sting">
+      <name>Eric Gaba</name>
+      <alias>Sting</alias>
+    </author>
+  </authors>
+  <license>
+    <informal>Public domain</informal>
+    <year>2008</year>
+  </license>
+  <src>
+    <format>SVG</format>
+    <link href="http://fr.wikipedia.org/wiki/Aide:Cartographie">Description</link>
+    <link href="http://fr.wikipedia.org/wiki/Fichier:Maps_template-fr.svg">SVG template</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

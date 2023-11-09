@@ -1,0 +1,2 @@
+*****
+Content-Type: application/json; charset=utf-8{"features": [{"id": "requires_warped_vrt", "properties": {}, "type": "Feature"}], "type": "FeatureCollection"}

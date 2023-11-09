@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Rebuild topology of a vector in mapset" module="v.build">
+	<option key="map"/>
+	<option key="option" answer="build" hidden="yes"/>
+	<option key="error"/>
+</qgisgrassmodule>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+###############################################################################
+#
+# Copyright (C) 2017 Tom Kralidis (tomkralidis@gmail.com)
+# Copyright (C) 2017 Angelos Tzotsos (gcpp.kalxas@gmail.com)
+#
+# This source is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This code is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+###############################################################################
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rm="http://qgis.org/project-metadata/1.0" targetNamespace="http://qgis.org/project-metadata/1.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<xs:include schemaLocation="qgis-base-metadata.xsd"/>
+	<xs:element name="ProjectMetadata" type="rm:ProjectMetadataType" base="rm:BaseMetadataType">
+		<xs:annotation>
+			<xs:appinfo>QGIS Project Metadata Schema</xs:appinfo>
+			<xs:documentation>Copyright (C) 2017 Tom Kralidis (tomkralidis@gmail.com)</xs:documentation>
+			<xs:documentation>Copyright (C) 2017 Angelos Tzotsos (gcpp.kalxas@gmail.com)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="ProjectMetadataType">
+		<xs:sequence>
+			<xs:element name="author" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Project author.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="creationDateTime" type="xs:dateTime">
+				<xs:annotation>
+					<xs:documentation>Project creation date/time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="version" use="required" fixed="1.0">
+			<xs:annotation>
+				<xs:documentation>Version of QGIS Project Metadata schema used. </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

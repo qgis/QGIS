@@ -1,0 +1,14 @@
+r.stream.extract
+Stream network extraction
+Raster (r.*)
+QgsProcessingParameterRasterLayer|elevation|Input map: elevation map|None|False
+QgsProcessingParameterRasterLayer|accumulation|Input map: accumulation map|None|True
+QgsProcessingParameterRasterLayer|depression|Input map: map with real depressions|None|True
+QgsProcessingParameterNumber|threshold|Minimum flow accumulation for streams|QgsProcessingParameterNumber.Double|1.0|False|0.001|None
+QgsProcessingParameterNumber|mexp|Montgomery exponent for slope|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|stream_length|Delete stream segments shorter than cells|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterNumber|d8cut|Use SFD above this threshold|QgsProcessingParameterNumber.Double|None|True|0|None
+*QgsProcessingParameterNumber|memory|Maximum memory to be used (in MB)|QgsProcessingParameterNumber.Integer|300|True|0|None
+QgsProcessingParameterRasterDestination|stream_raster|Unique stream ids (rast)|None|True
+QgsProcessingParameterVectorDestination|stream_vector|Unique stream ids (vect)|-1|None|True
+QgsProcessingParameterRasterDestination|direction|Flow direction|None|True

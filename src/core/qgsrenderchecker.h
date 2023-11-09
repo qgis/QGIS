@@ -1,0 +1,389 @@
+/***************************************************************************
+     qgsrenderchecker.h - check maprender output against an expected image
+                     --------------------------------------
+               Date                 : 18 Jan 2008
+               Copyright            : (C) 2008 by Tim Sutton
+               email                : tim  @ linfiniti.com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSRENDERCHECKER_H
+#define QGSRENDERCHECKER_H
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include "qgslogger.h"
+#include "qgsmapsettings.h"
+#include "qgsdartmeasurement.h"
+
+#include <QDir>
+#include <QString>
+#include <QRegularExpression>
+#include <QList>
+
+class QImage;
+
+#define DUMP_BASE64_IMAGES 0
+
+/**
+ * \ingroup core
+ * \brief This is a helper class for unit tests that need to
+ * write an image and compare it to an expected result
+ * or render time.
+ */
+class CORE_EXPORT QgsRenderChecker
+{
+    Q_GADGET
+
+  public:
+
+    /**
+     * Constructor for QgsRenderChecker.
+     */
+    QgsRenderChecker();
+
+    /**
+     * Returns the directory to use for generating a test report.
+     *
+     * \since QGIS 3.28
+     */
+    static QDir testReportDir();
+
+    /**
+     * Returns TRUE if a test report should be generated given the
+     * current environment.
+     *
+     * \since QGIS 3.28
+     */
+    static bool shouldGenerateReport();
+
+    /**
+     * Returns the base path containing the reference images.
+     *
+     * This defaults to an internal QGIS test data path, but can be changed via setControlImagePath().
+     *
+     * \see setControlImagePath()
+     */
+    QString controlImagePath() const;
+
+    /**
+     * Sets the base \a path containing the reference images.
+     *
+     * \see controlImagePath()
+     * \since QGIS 3.18
+     */
+    void setControlImagePath( const QString &path );
+
+    /**
+     * Returns the HTML report describing the results of the test run.
+     *
+     * If \a ignoreSuccess is TRUE then the report will always be empty if
+     * the test was successful.
+     *
+     * \see markdownReport()
+     */
+    QString report( bool ignoreSuccess = true ) const;
+
+    /**
+     * Returns the markdown report describing the results of the test run.
+     *
+     * If \a ignoreSuccess is TRUE then the report will always be empty if
+     * the test was successful.
+     *
+     * \see report()
+     * \since QGIS 3.34
+     */
+    QString markdownReport( bool ignoreSuccess = true ) const;
+
+    /**
+     * Returns the percent of pixels which matched the control image.
+     */
+    float matchPercent() const
+    {
+      return static_cast<float>( mMismatchCount ) /
+             static_cast<float>( mMatchTarget ) * 100;
+    }
+
+    /**
+     * Returns the number of pixels which did not match the control image.
+     */
+    unsigned int mismatchCount() const { return mMismatchCount; }
+
+    /**
+     * Returns the total number of pixels in the control image.
+     */
+    unsigned int matchTarget() const { return mMatchTarget; }
+
+    /**
+     * Returns the total elapsed time for the rendering test.
+     *
+     * \note this only records time for actual render part.
+     */
+    int elapsedTime() const { return mElapsedTime; }
+    void setElapsedTimeTarget( int target ) { mElapsedTimeTarget = target; }
+
+    /**
+     * Sets the base directory \a name for the control image (with control image path
+     * suffixed).
+     *
+     * The path to the image will be constructed like this:
+     * controlImagePath() + '/' + control name + '/' + control name + '.' + extension ('png' by default)
+     */
+    void setControlName( const QString &name );
+
+    /**
+     * Sets file extension for the control image. By default it is "png"
+     * \since QGIS 3.20
+     */
+    void setControlExtension( const QString &extension ) { mControlExtension = extension; }
+
+    /**
+     * Sets the path prefix where the control images are kept.
+     * This will be appended to controlImagePath().
+     */
+    void setControlPathPrefix( const QString &name ) { mControlPathPrefix = name + '/'; }
+
+    void setControlPathSuffix( const QString &name );
+
+    //! Gets an md5 hash that uniquely identifies an image
+    QString imageToHash( const QString &imageFile );
+
+    /**
+     * Sets the file name of the rendered image generated by the test.
+     */
+    void setRenderedImage( const QString &imageFileName ) { mRenderedImageFile = imageFileName; }
+
+    /**
+     * Sets whether the comparison is expected to fail.
+     *
+     * \since QGIS 3.28
+     */
+    void setExpectFail( bool expectFail ) { mExpectFail = expectFail; }
+
+    /**
+     * Returns the path of the rendered image generated by the test.
+     *
+     * This method will return either the path set with setRenderedImage() or generated in runTest().
+     */
+    QString renderedImage() const { return mRenderedImageFile; }
+
+    //! \since QGIS 2.4
+    void setMapSettings( const QgsMapSettings &mapSettings );
+
+    /**
+     * Set tolerance for color components used by runTest() and compareImages().
+     * Default value is 0.
+     * \param colorTolerance is maximum difference for each color component
+     * including alpha to be considered correct.
+     * \since QGIS 2.1
+     */
+    void setColorTolerance( unsigned int colorTolerance ) { mColorTolerance = colorTolerance; }
+
+    /**
+     * Sets the largest allowable difference in size between the rendered and the expected image.
+     * \param xTolerance x tolerance in pixels
+     * \param yTolerance y tolerance in pixels
+     * \since QGIS 2.12
+     */
+    void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
+
+    /**
+     * Render checker flags.
+     *
+     * \since QGIS 3.28
+     */
+    enum class Flag : int
+    {
+      AvoidExportingRenderedImage = 1 << 0, //!< Avoids exporting rendered images to reports
+    };
+    Q_ENUM( Flag )
+
+    /**
+     * Render checker flags.
+     *
+     * \since QGIS 3.28
+     */
+    Q_DECLARE_FLAGS( Flags, Flag )
+    Q_FLAG( Flags )
+
+    /**
+     * Test using renderer to generate the image to be compared.
+     * \param testName - to be used as the basis for writing a file to
+     * e.g. /tmp/theTestName.png
+     * \param mismatchCount - defaults to 0 - the number of pixels that
+     * are allowed to be different from the control image. In some cases
+     * rendering may be non-deterministic. This parameter allows you to account
+     * for that by providing a tolerance.
+     * \param flags render checker flags
+     * \note make sure to call setExpectedImage and setMapRenderer first
+     */
+    bool runTest( const QString &testName, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
+
+    /**
+     * Test using two arbitrary images (map renderer will not be used)
+     * \param testName - to be used as the basis for writing a file to
+     * e.g. /tmp/theTestName.png
+     * \param mismatchCount - defaults to 0 - the number of pixels that
+     * are allowed to be different from the control image. In some cases
+     * rendering may be non-deterministic. This parameter allows you to account
+     * for that by providing a tolerance.
+     * \param renderedImageFile to optionally override the output filename
+     * \param flags render checker flags
+     * \note: make sure to call setExpectedImage and setRenderedImage first.
+     */
+    bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString(), QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
+
+    /**
+     * Test using two arbitrary images at the specified paths for equality.
+     *
+     * \since QGIS 3.18
+     */
+    bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
+
+    /**
+     * Gets a list of all the anomalies. An anomaly is a rendered difference
+     * file where there is some red pixel content (indicating a render check
+     * mismatch), but where the output was still acceptable. If the render
+     * diff matches one of these anomalies we will still consider it to be
+     * acceptable.
+     * \returns a bool indicating if the diff matched one of the anomaly files
+     *
+     * \deprecated Use the test mask system instead.
+     */
+    Q_DECL_DEPRECATED bool isKnownAnomaly( const QString &diffImageFile ) SIP_DEPRECATED;
+
+    /**
+     * Draws a checkboard pattern for image backgrounds, so that opacity is visible
+     * without requiring a transparent background for the image
+     */
+    static void drawBackground( QImage *image );
+
+    /**
+     * Returns the path to the expected image file
+     *
+     * \returns Path to the expected image file
+     */
+    QString expectedImageFile() const { return mExpectedImageFile; }
+
+    /**
+     * Call this to enable internal buffering of dash messages. You may later call
+     * dashMessages() to get access to the buffered messages. If disabled (default)
+     * dash messages will be sent immediately.
+     *
+     * \param enable Enable or disable buffering
+     */
+    void enableDashBuffering( bool enable ) { mBufferDashMessages = enable; }
+
+    /**
+     * Gets access to buffered dash messages.
+     * Only will return something if you call enableDashBuffering( TRUE ); before.
+     *
+     * \returns buffered dash messages
+     */
+    QVector<QgsDartMeasurement> dartMeasurements() const { return mDashMessages; }
+
+  protected:
+    //! HTML format report
+    QString mReport;
+    //! Markdown report
+    QString mMarkdownReport;
+    unsigned int mMatchTarget = 0;
+    int mElapsedTime = 0;
+    QString mRenderedImageFile;
+    QString mExpectedImageFile;
+
+  private:
+    void emitDashMessage( const QgsDartMeasurement &dashMessage );
+    void emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value );
+
+#if DUMP_BASE64_IMAGES
+    void dumpRenderedImageAsBase64();
+#endif
+
+    void performPostTestActions( Flags flags );
+
+    bool mResult = false;
+    bool mExpectFail = false;
+
+    QString mBasePath;
+
+    QString mControlName;
+    unsigned int mMismatchCount = 0;
+    unsigned int mColorTolerance = 0;
+    int mMaxSizeDifferenceX = 0;
+    int mMaxSizeDifferenceY = 0;
+    int mElapsedTimeTarget = 0;
+    QgsMapSettings mMapSettings;
+    QString mControlExtension = QStringLiteral( "png" );
+    QString mControlPathPrefix;
+    QString mControlPathSuffix;
+    bool mIsCiRun = false;
+    QVector<QgsDartMeasurement> mDashMessages;
+    bool mBufferDashMessages = false;
+    QString mDiffImageFile;
+
+    friend class QgsMultiRenderChecker;
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderChecker::Flags )
+
+/**
+ * Compare two WKT strings with some tolerance
+ * \param a first WKT string
+ * \param b second WKT string
+ * \param tolerance tolerance to use (optional, defaults to 0.000001)
+ * \returns bool indicating if the WKT are sufficiently equal
+ */
+
+inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0.000001 )
+{
+  QgsDebugMsgLevel( QStringLiteral( "a:%1 b:%2 tol:%3" ).arg( a, b ).arg( tolerance ), 2 );
+  const thread_local QRegularExpression re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
+
+  QString a0( a ), b0( b );
+  a0.replace( re, QStringLiteral( "#" ) );
+  b0.replace( re, QStringLiteral( "#" ) );
+
+  QgsDebugMsgLevel( QStringLiteral( "a0:%1 b0:%2" ).arg( a0, b0 ), 2 );
+
+  if ( a0 != b0 )
+    return false;
+
+  QList<double> al, bl;
+
+  int pos = 0;
+  QRegularExpressionMatch match = re.match( a );
+  while ( match.hasMatch() )
+  {
+    al << match.captured( 0 ).toDouble();
+    pos = match.capturedStart( 0 ) + match.capturedLength( 0 );
+    match = re.match( a, pos );
+  }
+  match = re.match( b );
+  while ( match.hasMatch() )
+  {
+    bl << match.captured( 0 ).toDouble();
+    pos = match.capturedStart( 0 ) + match.capturedLength( 0 );
+    match = re.match( b, pos );
+  }
+
+  if ( al.size() != bl.size() )
+    return false;
+
+  for ( int i = 0; i < al.size(); i++ )
+  {
+    if ( !qgsDoubleNear( al[i], bl[i], tolerance ) )
+      return false;
+  }
+
+  return true;
+}
+
+#endif

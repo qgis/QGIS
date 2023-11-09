@@ -1,0 +1,7 @@
+r.surf.random
+Produces a raster layer of uniform random deviates whose range can be expressed by the user.
+Raster (r.*)
+QgsProcessingParameterNumber|min|Minimum random value|QgsProcessingParameterNumber.Integer|0|True|None|None
+QgsProcessingParameterNumber|max|Maximum random value|QgsProcessingParameterNumber.Integer|100|True|None|None
+QgsProcessingParameterBoolean|-i|Create an integer raster layer|False
+QgsProcessingParameterRasterDestination|output|Random

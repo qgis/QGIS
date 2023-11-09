@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Select features overlapped by features in another map" module="v.select">
+	<option key="ainput" typeoption="atype" layeroption="alayer"/>
+	<option key="binput" typeoption="btype" layeroption="blayer"/>
+	<option key="output" />
+</qgisgrassmodule>

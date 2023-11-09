@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "configure" ] && [ -x /usr/lib/qgis/crssync ]; then
+	cp /usr/share/qgis/resources/srs-template.db /usr/share/qgis/resources/srs.db
+	dpkg-trigger qgis-crssync
+fi
+
+#DEBHELPER#

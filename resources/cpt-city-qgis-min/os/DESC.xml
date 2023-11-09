@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>os</dir>
+  <name>Ordnance Survey 1:250,000 elevation scale</name>
+  <full>
+    The Ordnance Survey, mapping agency of the UK, uses these schemes
+    in its 1:250,000 maps.
+  </full>
+  <date>01/08/2012</date>
+</description>

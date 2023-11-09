@@ -1,0 +1,10 @@
+add_subdirectory(postgis)
+add_subdirectory(spatialite)
+add_subdirectory(gpkg)
+if(WITH_ORACLE)
+  add_subdirectory(oracle)
+endif()
+add_subdirectory(vlayers)
+
+file(GLOB PY_FILES *.py)
+PLUGIN_INSTALL(db_manager db_plugins ${PY_FILES})

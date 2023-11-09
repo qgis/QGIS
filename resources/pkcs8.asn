@@ -1,0 +1,63 @@
+PKCS-8 {iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-8(8)
+         modules(1) pkcs-8(1)}
+
+-- $Revision: 1.5 $
+
+-- This module has been checked for conformance with the ASN.1
+-- standard by the OSS ASN.1 Tools
+
+DEFINITIONS EXPLICIT TAGS ::=
+
+BEGIN
+
+-- EXPORTS All --
+-- All types and values defined in this module is exported for use in
+-- other ASN.1 modules.
+
+-- attribute data types --
+
+Attribute       ::=     SEQUENCE {
+        type            AttributeType,
+        values  SET OF AttributeValue
+                -- at least one value is required --
+}
+
+AttributeType           ::=   OBJECT IDENTIFIER
+
+AttributeValue          ::=   ANY DEFINED BY type
+
+AttributeTypeAndValue           ::=     SEQUENCE {
+        type    AttributeType,
+        value   AttributeValue }
+
+AlgorithmIdentifier  ::=  SEQUENCE  {
+     algorithm               OBJECT IDENTIFIER,
+     parameters              ANY DEFINED BY algorithm OPTIONAL  }
+                                -- contains a value of the type
+                                -- registered for use with the
+                                -- algorithm object identifier value
+
+-- Private-key information syntax
+
+PrivateKeyInfo ::= SEQUENCE {
+  version Version,
+  privateKeyAlgorithm AlgorithmIdentifier,
+  privateKey PrivateKey,
+  attributes [0] Attributes OPTIONAL }
+
+Version ::= INTEGER {v1(0)}
+
+PrivateKey ::= OCTET STRING
+
+Attributes ::= SET OF Attribute
+
+-- Encrypted private-key information syntax
+
+EncryptedPrivateKeyInfo ::= SEQUENCE {
+    encryptionAlgorithm AlgorithmIdentifier,
+    encryptedData EncryptedData
+}
+
+EncryptedData ::= OCTET STRING
+
+END

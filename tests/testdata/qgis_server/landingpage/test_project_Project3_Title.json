@@ -1,0 +1,239 @@
+Content-Type: application/json
+
+{
+  "links": [],
+  "project": {
+    "capabilities": {
+      "owsServiceAbstract": "Service Capabilities Abstract Lorem Ipsum ...",
+      "owsServiceAccessConstraints": "None",
+      "owsServiceCapabilities": true,
+      "owsServiceContactMail": "Service Capabilities Email",
+      "owsServiceContactOrganization": "Service Capabilities Organization",
+      "owsServiceContactPerson": "Service Capabilities Person",
+      "owsServiceContactPhone": "Service Capabilities Phone",
+      "owsServiceContactPosition": "custodian",
+      "owsServiceFees": "no conditions apply",
+      "owsServiceKeywords": [
+        "Service Capabilities Keyword1",
+        "Service Capabilities Keyword2"
+      ],
+      "owsServiceOnlineResource": "Service Capabilities Oline Resource",
+      "owsServiceTitle": "Service Capabilities Title",
+      "wcsLayerIds": [],
+      "wcsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+      "wfsLayerIds": [],
+      "wfsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+      "wfstDeleteLayerIds": [],
+      "wfstInsertLayerIds": [],
+      "wfstUpdateLayerIds": [],
+      "wmsDefaultMapUnitsPerMm": 1.0,
+      "wmsFeatureInfoAddWktGeometry": false,
+      "wmsFeatureInfoDocumentElement": "",
+      "wmsFeatureInfoDocumentElementNs": "",
+      "wmsFeatureInfoLayerAliasMap": {},
+      "wmsFeatureInfoPrecision": 8,
+      "wmsFeatureInfoSchema": "",
+      "wmsFeatureInfoSegmentizeWktGeometry": false,
+      "wmsImageQuality": 90,
+      "wmsInfoFormatSia2045": false,
+      "wmsInspireActivate": false,
+      "wmsInspireLanguage": "",
+      "wmsInspireMetadataDate": "",
+      "wmsInspireMetadataUrl": "",
+      "wmsInspireMetadataUrlType": "",
+      "wmsInspireTemporalReference": "",
+      "wmsMaxAtlasFeatures": 1,
+      "wmsMaxHeight": -1,
+      "wmsMaxWidth": -1,
+      "wmsOutputCrsList": [
+        "EPSG:3857",
+        "EPSG:4326"
+      ],
+      "wmsRestrictedComposers": [],
+      "wmsRestrictedLayers": [
+        "points restricted"
+      ],
+      "wmsRootName": "ShortNameForRootLayer",
+      "wmsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+      "wmsTileBuffer": 0,
+      "wmsUseLayerIds": true,
+      "wmtsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+    },
+    "crs": "EPSG:4326",
+    "description": "Metadata abstract lorem ipsum...",
+    "extent": [
+      -25.49314196409667,
+      41.98773931833632,
+      38.23087034040887,
+      55.95129087846767
+    ],
+    "geographic_extent": [
+      -25.49314196409667,
+      41.98773931833632,
+      38.23087034040887,
+      55.95129087846767
+    ],
+    "id": "0670def8fde4160544521768ad1eee7f",
+    "initial_extent": [
+      -4.550318430316912,
+      41.98773931833632,
+      17.28804680662911,
+      55.95129087846767
+    ],
+    "metadata": {
+      "abstract": "Metadata abstract lorem ipsum...",
+      "author": "Alessandro Pasotti",
+      "categories": [
+        "Boundaries",
+        "Farming"
+      ],
+      "contacts": [
+        {
+          "addresses": [
+            {
+              "address": "a street",
+              "administrativeArea": "Admin area",
+              "city": "Nodebo",
+              "country": "Denmark",
+              "postalCode": "11222",
+              "type": "postal"
+            }
+          ],
+          "email": "Metadata Contact Email",
+          "fax": "Metadata Contact Fax (really?)",
+          "name": "Metadata Contact Name",
+          "organization": "Metadata Contact Organization",
+          "position": "Metadata Contact Position",
+          "role": "custodian",
+          "voice": "Metadata Contact Voice"
+        }
+      ],
+      "creationDateTime": "2020-04-24T14:59:45",
+      "history": [
+        "History1"
+      ],
+      "identifier": "Identifier00001",
+      "language": "ITA",
+      "links": [
+        {
+          "description": "A link",
+          "format": "WTF",
+          "mimeType": "application/octet-stream",
+          "name": "link1",
+          "size": "big",
+          "type": "OpenSearch1.1:Description",
+          "url": "http://url.com"
+        }
+      ],
+      "parentIdentifier": "ParentIdentifier00001",
+      "title": "Project3 Title",
+      "type": "dataset"
+    },
+    "title": "Project3 Title",
+    "toc": {
+      "children": [
+        {
+          "children": [],
+          "expanded": true,
+          "has_scale_based_visibility": false,
+          "id": "points_3857_6c1395a0_1065_41f7_9cf4_8109e268ac84",
+          "is_layer": true,
+          "layer_type": "vector",
+          "name": "points_3857",
+          "queryable": true,
+          "searchable": true,
+          "title": "points_3857",
+          "tree_id": "root.points_3857_6c1395a0_1065_41f7_9cf4_8109e268ac84",
+          "tree_id_hash": "dfb1cd2c3d157baaa2173aaf6c566340",
+          "typename": "points_3857_6c1395a0_1065_41f7_9cf4_8109e268ac84",
+          "visible": true,
+          "wfs_enabled": false
+        }
+      ],
+      "expanded": true,
+      "is_layer": false,
+      "name": "root",
+      "title": "root",
+      "tree_id": "root",
+      "tree_id_hash": "63a9f0ea7bb98050796b649e85481845",
+      "visible": true
+    },
+    "wms_layers": {
+      "points_3857_6c1395a0_1065_41f7_9cf4_8109e268ac84": {
+        "crs": "EPSG:3857",
+        "extent": [
+          -212121.859375,
+          5831559.5,
+          1121598.5,
+          7120824.0
+        ],
+        "fields": {
+          "fid": {
+            "default": "Autogenerate",
+            "editable": false,
+            "expression": "",
+            "has_expression": false,
+            "label": "fid",
+            "length": 0,
+            "not_null": true,
+            "precision": 0,
+            "type": "Integer64",
+            "unique": true
+          },
+          "name": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "name",
+            "length": 0,
+            "not_null": false,
+            "precision": 0,
+            "type": "String",
+            "unique": false
+          }
+        },
+        "id": "points_3857_6c1395a0_1065_41f7_9cf4_8109e268ac84",
+        "metadata": {
+          "abstract": "",
+          "categories": [],
+          "constraints": [],
+          "contacts": [],
+          "crs": "",
+          "encoding": "",
+          "fees": "",
+          "history": [],
+          "identifier": "",
+          "keywordVocabularies": [],
+          "keywords": {},
+          "language": "",
+          "licenses": [],
+          "links": [],
+          "parentIdentifier": "",
+          "rights": [],
+          "title": "",
+          "type": "dataset"
+        },
+        "name": "points_3857",
+        "pk": [
+          0
+        ],
+        "type": "vector"
+      }
+    },
+    "wms_layers_map": {
+      "points_3857": "points_3857_6c1395a0_1065_41f7_9cf4_8109e268ac84"
+    },
+    "wms_layers_queryable": [
+      "points_3857_6c1395a0_1065_41f7_9cf4_8109e268ac84"
+    ],
+    "wms_layers_searchable": [
+      "points_3857_6c1395a0_1065_41f7_9cf4_8109e268ac84"
+    ],
+    "wms_layers_typename_id_map": {
+      "points_3857_6c1395a0_1065_41f7_9cf4_8109e268ac84": "points_3857_6c1395a0_1065_41f7_9cf4_8109e268ac84"
+    },
+    "wms_root_name": "ShortNameForRootLayer"
+  },
+  "timeStamp": "2019-07-05T12:27:07Z"
+}

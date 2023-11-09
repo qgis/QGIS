@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ES Landscape 26" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(255,217,146)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(249,203,118)" stop-opacity="1.0000"/>
+        <stop offset="26.00%" stop-color="rgb(232,244,238)" stop-opacity="1.0000"/>
+        <stop offset="33.14%" stop-color="rgb(209,228,222)" stop-opacity="1.0000"/>
+        <stop offset="39.99%" stop-color="rgb(186,212,205)" stop-opacity="1.0000"/>
+        <stop offset="60.01%" stop-color="rgb(171,190,178)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(149,166,145)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(104,118,105)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ES Landscape 26)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:38:24 2012"/>
+  </metadata>
+</svg>

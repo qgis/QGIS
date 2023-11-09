@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "line_placement_2",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::32613" } },
+"features": [
+{ "type": "Feature", "properties": { "pkuid": 1, "text": "Line" }, "geometry": { "type": "LineString", "coordinates": [ [ 607453.150684931431897, 4823730.0 ], [ 610559.999999931431375, 4823730.0 ], [ 611460.428077493561432, 4826703.506674493663013 ] ] } }
+]
+}

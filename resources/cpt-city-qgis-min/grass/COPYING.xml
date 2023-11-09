@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://grass.osgeo.org/">
+      <name>GRASS Development Team</name>
+    </author>
+  </authors>
+  <license>
+    <informal>GPL</informal>
+    <year>2009</year>
+    <text href="http://www.gnu.org/copyleft/gpl.html"/>
+  </license>
+  <src>
+    <format>ASCII column data</format>
+    <link href="https://svn.osgeo.org/grass/grass/trunk/lib/gis/colors/">ASCII data</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="gpl"/>
+  </distribute>
+</copying>

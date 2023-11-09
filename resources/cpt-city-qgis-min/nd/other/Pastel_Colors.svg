@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Pastel Colors" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(191,183,140)" stop-opacity="1.0000"/>
+        <stop offset="5.00%" stop-color="rgb(223,159,152)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(255,135,164)" stop-opacity="1.0000"/>
+        <stop offset="15.00%" stop-color="rgb(223,180,190)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(191,225,216)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(223,210,204)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(255,195,192)" stop-opacity="1.0000"/>
+        <stop offset="35.00%" stop-color="rgb(223,168,166)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(191,141,140)" stop-opacity="1.0000"/>
+        <stop offset="45.00%" stop-color="rgb(223,186,139)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(255,231,138)" stop-opacity="1.0000"/>
+        <stop offset="55.00%" stop-color="rgb(223,186,139)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(191,141,140)" stop-opacity="1.0000"/>
+        <stop offset="65.00%" stop-color="rgb(223,189,191)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(255,237,242)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(223,192,216)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(191,147,190)" stop-opacity="1.0000"/>
+        <stop offset="85.00%" stop-color="rgb(159,189,191)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(127,231,192)" stop-opacity="1.0000"/>
+        <stop offset="95.00%" stop-color="rgb(159,207,166)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(191,183,140)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Pastel Colors)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:33 2012"/>
+  </metadata>
+</svg>

@@ -1,0 +1,23 @@
+{
+  "name": "concave_hull",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns a possibly concave polygon that contains all the points in the geometry",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a geometry"
+  }, {
+    "arg": "target_percent",
+    "description": "the percentage of area of the convex hull the solution tries to approach. A target_percent of 1 gives the same result as the convex hull. A target_percent between 0 and 0.99 produces a result that should have a smaller area than the convex hull."
+  }, {
+    "arg": "allow_holes",
+    "optional": true,
+    "default": false,
+    "description": "optional argument specifying whether to allow holes within the output geometry. Defaults to FALSE, set to TRUE to avoid including holes in the output geometry."
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(concave_hull(geom_from_wkt('MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,130 62,122 40,156 32,162 76,172 88),(132 178,134 148,128 136,96 128,132 108,150 130,170 142,174 110,156 96,158 90,158 88),(22 64,66 28,94 38,94 68,114 76,112 30,132 10,168 18,178 34,186 52,184 74,190 100,190 122,182 148,178 170,176 184,156 164,146 178,132 186,92 182,56 158,36 150,62 150,76 128,88 118))'), 0.99))",
+    "returns": "'Polygon ((30 112, 36 150, 92 182, 132 186, 176 184, 190 122, 190 100, 186 52, 178 34, 168 18, 132 10, 112 30, 66 28, 22 64, 30 112))'"
+  }],
+  "tags": ["hull", "concave", "represents", "encloses", "set"]
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="https://vorpus.org/index.html">
+      <name>Nathaniel J. Smith</name>
+    </author>
+    <author href="http://bids.berkeley.edu/people/st%C3%A9fan-van-der-walt">
+      <name>Stefan van der Walt</name>
+    </author>
+    <author href="http://www.soest.hawaii.edu/oceanography/faculty/firing.html">
+      <name>Eric Firing</name>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      CC0 with attribution and requested.
+    </informal>
+    <year>2016</year>
+    <text href="https://creativecommons.org/publicdomain/zero/1.0/"/>
+  </license>
+  <src>
+    <format>RGB triples in Python code</format>
+    <link href="https://github.com/BIDS/colormap/blob/master/colormaps.py"
+	  >Python source</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc0"/>
+  </distribute>
+</copying>

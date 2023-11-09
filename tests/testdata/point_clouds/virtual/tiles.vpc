@@ -1,0 +1,3317 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "0-0.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.02818917110639,
+              48.88311785841099,
+              208.82
+            ],
+            [
+              18.028169956897806,
+              48.883259924407014,
+              208.82
+            ],
+            [
+              18.028375181813576,
+              48.883271997245416,
+              211.55
+            ],
+            [
+              18.02839439544506,
+              48.88312993121538,
+              211.55
+            ],
+            [
+              18.02818917110639,
+              48.88311785841099,
+              208.82
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.028169956897806,
+        48.88311785841099,
+        208.82,
+        18.02839439544506,
+        48.883271997245416,
+        211.55
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 2698,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498243.88,
+          -1205469.26,
+          208.82,
+          -498228.77,
+          -1205453.4,
+          211.55
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498243.88,
+                -1205469.26,
+                208.82
+              ],
+              [
+                -498243.88,
+                -1205453.4,
+                208.82
+              ],
+              [
+                -498228.77,
+                -1205453.4,
+                211.55
+              ],
+              [
+                -498228.77,
+                -1205469.26,
+                211.55
+              ],
+              [
+                -498243.88,
+                -1205469.26,
+                208.82
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./0-0.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "0-1.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.027017089427147,
+              48.88319218333174,
+              134.35
+            ],
+            [
+              18.0268959297344,
+              48.884087842691685,
+              134.35
+            ],
+            [
+              18.028254037599602,
+              48.884167749074805,
+              228.87
+            ],
+            [
+              18.028375173214997,
+              48.8832720882924,
+              228.87
+            ],
+            [
+              18.027017089427147,
+              48.88319218333174,
+              134.35
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.0268959297344,
+        48.88319218333174,
+        134.35,
+        18.028375173214997,
+        48.884167749074805,
+        228.87
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 183899,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498328.76,
+          -1205453.39,
+          134.35,
+          -498228.77,
+          -1205353.4,
+          228.87
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498328.76,
+                -1205453.39,
+                134.35
+              ],
+              [
+                -498328.76,
+                -1205353.4,
+                134.35
+              ],
+              [
+                -498228.77,
+                -1205353.4,
+                228.87
+              ],
+              [
+                -498228.77,
+                -1205453.39,
+                228.87
+              ],
+              [
+                -498328.76,
+                -1205453.39,
+                134.35
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./0-1.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "0-2.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.026950940328728,
+              48.88409117494189,
+              206.79
+            ],
+            [
+              18.02682977727356,
+              48.88498683410576,
+              206.79
+            ],
+            [
+              18.028132885183204,
+              48.88506349903119,
+              227.15
+            ],
+            [
+              18.028254025135453,
+              48.88416783850364,
+              227.15
+            ],
+            [
+              18.026950940328728,
+              48.88409117494189,
+              206.79
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.02682977727356,
+        48.88409117494189,
+        206.79,
+        18.028254025135453,
+        48.88506349903119,
+        227.15
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 256289,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498324.71,
+          -1205353.39,
+          206.79,
+          -498228.77,
+          -1205253.4,
+          227.15
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498324.71,
+                -1205353.39,
+                206.79
+              ],
+              [
+                -498324.71,
+                -1205253.4,
+                206.79
+              ],
+              [
+                -498228.77,
+                -1205253.4,
+                227.15
+              ],
+              [
+                -498228.77,
+                -1205353.39,
+                227.15
+              ],
+              [
+                -498324.71,
+                -1205353.39,
+                206.79
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./0-2.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "0-3.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.0273395151909,
+              48.88501691460553,
+              205.72
+            ],
+            [
+              18.027331651358868,
+              48.885075048724495,
+              205.72
+            ],
+            [
+              18.02812500884949,
+              48.885121722234956,
+              220.75
+            ],
+            [
+              18.028132871768555,
+              48.88506358806209,
+              220.75
+            ],
+            [
+              18.0273395151909,
+              48.88501691460553,
+              205.72
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.027331651358868,
+        48.88501691460553,
+        205.72,
+        18.028132871768555,
+        48.885121722234956,
+        220.75
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 12769,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498287.18,
+          -1205253.39,
+          205.72,
+          -498228.77,
+          -1205246.9,
+          220.75
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498287.18,
+                -1205253.39,
+                205.72
+              ],
+              [
+                -498287.18,
+                -1205246.9,
+                205.72
+              ],
+              [
+                -498228.77,
+                -1205246.9,
+                220.75
+              ],
+              [
+                -498228.77,
+                -1205253.39,
+                220.75
+              ],
+              [
+                -498287.18,
+                -1205253.39,
+                205.72
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./0-3.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "1-0.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.02849643208927,
+              48.882376337157766,
+              128.69
+            ],
+            [
+              18.0283753008129,
+              48.88327199819333,
+              128.69
+            ],
+            [
+              18.029733399797657,
+              48.88335189169052,
+              276.7
+            ],
+            [
+              18.029854506997374,
+              48.88245622923185,
+              276.7
+            ],
+            [
+              18.02849643208927,
+              48.882376337157766,
+              128.69
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.0283753008129,
+        48.882376337157766,
+        128.69,
+        18.029854506997374,
+        48.88335189169052,
+        276.7
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 185698,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498228.76,
+          -1205553.39,
+          128.69,
+          -498128.77,
+          -1205453.4,
+          276.7
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498228.76,
+                -1205553.39,
+                128.69
+              ],
+              [
+                -498228.76,
+                -1205453.4,
+                128.69
+              ],
+              [
+                -498128.77,
+                -1205453.4,
+                276.7
+              ],
+              [
+                -498128.77,
+                -1205553.39,
+                276.7
+              ],
+              [
+                -498228.76,
+                -1205553.39,
+                128.69
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./1-0.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "1-1.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.028375291428773,
+              48.88327208891144,
+              142.14
+            ],
+            [
+              18.028254155815706,
+              48.884167749692594,
+              142.14
+            ],
+            [
+              18.029612285917583,
+              48.884247647558816,
+              324.81
+            ],
+            [
+              18.029733397453054,
+              48.88335198535407,
+              324.81
+            ],
+            [
+              18.028375291428773,
+              48.88327208891144,
+              142.14
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.028254155815706,
+        48.88327208891144,
+        142.14,
+        18.029733397453054,
+        48.884247647558816,
+        324.81
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 358544,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498228.76,
+          -1205453.39,
+          142.14,
+          -498128.77,
+          -1205353.4,
+          324.81
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498228.76,
+                -1205453.39,
+                142.14
+              ],
+              [
+                -498228.76,
+                -1205353.4,
+                142.14
+              ],
+              [
+                -498128.77,
+                -1205353.4,
+                324.81
+              ],
+              [
+                -498128.77,
+                -1205453.39,
+                324.81
+              ],
+              [
+                -498228.76,
+                -1205453.39,
+                142.14
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./1-1.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "1-2.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.028254139295438,
+              48.88416783742307,
+              120.44
+            ],
+            [
+              18.028132999345488,
+              48.88506349794898,
+              120.44
+            ],
+            [
+              18.029491146742693,
+              48.88514339439794,
+              269.69
+            ],
+            [
+              18.029612262614165,
+              48.88424773244896,
+              269.69
+            ],
+            [
+              18.028254139295438,
+              48.88416783742307,
+              120.44
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.028132999345488,
+        48.88416783742307,
+        120.44,
+        18.029612262614165,
+        48.88514339439794,
+        269.69
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 344774,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498228.76,
+          -1205353.39,
+          120.44,
+          -498128.77,
+          -1205253.4,
+          269.69
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498228.76,
+                -1205353.39,
+                120.44
+              ],
+              [
+                -498228.76,
+                -1205253.4,
+                120.44
+              ],
+              [
+                -498128.77,
+                -1205253.4,
+                269.69
+              ],
+              [
+                -498128.77,
+                -1205353.39,
+                269.69
+              ],
+              [
+                -498228.76,
+                -1205353.39,
+                120.44
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./1-2.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "1-3.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.028133004885564,
+              48.88506359491796,
+              207.41
+            ],
+            [
+              18.02811312341737,
+              48.88521058748541,
+              207.41
+            ],
+            [
+              18.029471248035726,
+              48.88529047297274,
+              224.98
+            ],
+            [
+              18.029491125552177,
+              48.88514348017211,
+              224.98
+            ],
+            [
+              18.028133004885564,
+              48.88506359491796,
+              207.41
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.02811312341737,
+        48.88506359491796,
+        207.41,
+        18.029491125552177,
+        48.88529047297274,
+        224.98
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 33024,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498228.76,
+          -1205253.39,
+          207.41,
+          -498128.77,
+          -1205236.98,
+          224.98
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498228.76,
+                -1205253.39,
+                207.41
+              ],
+              [
+                -498228.76,
+                -1205236.98,
+                207.41
+              ],
+              [
+                -498128.77,
+                -1205236.98,
+                224.98
+              ],
+              [
+                -498128.77,
+                -1205253.39,
+                224.98
+              ],
+              [
+                -498228.76,
+                -1205253.39,
+                207.41
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./1-3.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "2-0.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.029831603170933,
+              48.882626418696674,
+              142.19
+            ],
+            [
+              18.02973350830865,
+              48.883351888247624,
+              142.19
+            ],
+            [
+              18.03087211314991,
+              48.883418854504974,
+              233.07
+            ],
+            [
+              18.030970191662227,
+              48.88269338398833,
+              233.07
+            ],
+            [
+              18.029831603170933,
+              48.882626418696674,
+              142.19
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.02973350830865,
+        48.882626418696674,
+        142.19,
+        18.030970191662227,
+        48.883418854504974,
+        233.07
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 115985,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498128.76,
+          -1205534.39,
+          142.19,
+          -498044.93,
+          -1205453.4,
+          233.07
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498128.76,
+                -1205534.39,
+                142.19
+              ],
+              [
+                -498128.76,
+                -1205453.4,
+                142.19
+              ],
+              [
+                -498044.93,
+                -1205453.4,
+                233.07
+              ],
+              [
+                -498044.93,
+                -1205534.39,
+                233.07
+              ],
+              [
+                -498128.76,
+                -1205534.39,
+                142.19
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./2-0.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "2-1.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.02973349645842,
+              48.88335197793245,
+              143.48
+            ],
+            [
+              18.029612384925166,
+              48.88424764013433,
+              143.48
+            ],
+            [
+              18.030970512600522,
+              48.88432751915822,
+              292.82
+            ],
+            [
+              18.031091600056055,
+              48.88343185553358,
+              292.82
+            ],
+            [
+              18.02973349645842,
+              48.88335197793245,
+              143.48
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.029612384925166,
+        48.88335197793245,
+        143.48,
+        18.031091600056055,
+        48.88432751915822,
+        292.82
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 381108,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498128.76,
+          -1205453.39,
+          143.48,
+          -498028.77,
+          -1205353.4,
+          292.82
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498128.76,
+                -1205453.39,
+                143.48
+              ],
+              [
+                -498128.76,
+                -1205353.4,
+                143.48
+              ],
+              [
+                -498028.77,
+                -1205353.4,
+                292.82
+              ],
+              [
+                -498028.77,
+                -1205453.39,
+                292.82
+              ],
+              [
+                -498128.76,
+                -1205453.39,
+                143.48
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./2-1.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "2-2.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.029612381934935,
+              48.88424773352854,
+              188.41
+            ],
+            [
+              18.02949126606579,
+              48.88514339547636,
+              188.41
+            ],
+            [
+              18.030849397704145,
+              48.885223267499875,
+              238.67
+            ],
+            [
+              18.030970489494774,
+              48.884327604130995,
+              238.67
+            ],
+            [
+              18.029612381934935,
+              48.88424773352854,
+              188.41
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.02949126606579,
+        48.88424773352854,
+        188.41,
+        18.030970489494774,
+        48.885223267499875,
+        238.67
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 392061,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498128.76,
+          -1205353.39,
+          188.41,
+          -498028.77,
+          -1205253.4,
+          238.67
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498128.76,
+                -1205353.39,
+                188.41
+              ],
+              [
+                -498128.76,
+                -1205253.4,
+                188.41
+              ],
+              [
+                -498028.77,
+                -1205253.4,
+                238.67
+              ],
+              [
+                -498028.77,
+                -1205353.39,
+                238.67
+              ],
+              [
+                -498128.76,
+                -1205353.39,
+                188.41
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./2-2.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "2-3.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.029491256975945,
+              48.88514348631737,
+              203.3
+            ],
+            [
+              18.029453657968354,
+              48.88542152753827,
+              203.3
+            ],
+            [
+              18.03081179225766,
+              48.88550139798219,
+              229.79
+            ],
+            [
+              18.030849383790354,
+              48.88522335632024,
+              229.79
+            ],
+            [
+              18.029491256975945,
+              48.88514348631737,
+              203.3
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.029453657968354,
+        48.88514348631737,
+        203.3,
+        18.030849383790354,
+        48.88550139798219,
+        229.79
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 107452,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498128.76,
+          -1205253.39,
+          203.3,
+          -498028.77,
+          -1205222.35,
+          229.79
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498128.76,
+                -1205253.39,
+                203.3
+              ],
+              [
+                -498128.76,
+                -1205222.35,
+                203.3
+              ],
+              [
+                -498028.77,
+                -1205222.35,
+                229.79
+              ],
+              [
+                -498028.77,
+                -1205253.39,
+                229.79
+              ],
+              [
+                -498128.76,
+                -1205253.39,
+                203.3
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./2-3.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "3-1.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.03107283383145,
+              48.883571501872915,
+              180.0
+            ],
+            [
+              18.030970625514882,
+              48.88432751755546,
+              180.0
+            ],
+            [
+              18.03232873687044,
+              48.88440737192324,
+              227.61
+            ],
+            [
+              18.032430924863274,
+              48.88365135504139,
+              227.61
+            ],
+            [
+              18.03107283383145,
+              48.883571501872915,
+              180.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.030970625514882,
+        48.883571501872915,
+        180.0,
+        18.032430924863274,
+        48.88440737192324,
+        227.61
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 191291,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498028.76,
+          -1205437.8,
+          180.0,
+          -497928.77,
+          -1205353.4,
+          227.61
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498028.76,
+                -1205437.8,
+                180.0
+              ],
+              [
+                -498028.76,
+                -1205353.4,
+                180.0
+              ],
+              [
+                -497928.77,
+                -1205353.4,
+                227.61
+              ],
+              [
+                -497928.77,
+                -1205437.8,
+                227.61
+              ],
+              [
+                -498028.76,
+                -1205437.8,
+                180.0
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./3-1.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "3-2.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.0309706105009,
+              48.88432760591531,
+              165.7
+            ],
+            [
+              18.030849518712607,
+              48.88522326928312,
+              165.7
+            ],
+            [
+              18.03220766551982,
+              48.88530312983159,
+              269.3
+            ],
+            [
+              18.032328733229406,
+              48.884407465042116,
+              269.3
+            ],
+            [
+              18.0309706105009,
+              48.88432760591531,
+              165.7
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.030849518712607,
+        48.88432760591531,
+        165.7,
+        18.032328733229406,
+        48.88530312983159,
+        269.3
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 396348,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498028.76,
+          -1205353.39,
+          165.7,
+          -497928.77,
+          -1205253.4,
+          269.3
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498028.76,
+                -1205353.39,
+                165.7
+              ],
+              [
+                -498028.76,
+                -1205253.4,
+                165.7
+              ],
+              [
+                -497928.77,
+                -1205253.4,
+                269.3
+              ],
+              [
+                -497928.77,
+                -1205353.39,
+                269.3
+              ],
+              [
+                -498028.76,
+                -1205353.39,
+                165.7
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./3-2.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "3-3.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.030849511560817,
+              48.88522336093447,
+              190.12
+            ],
+            [
+              18.030772172342587,
+              48.88579538863076,
+              190.12
+            ],
+            [
+              18.032130321198665,
+              48.88587524450547,
+              228.07
+            ],
+            [
+              18.032207645038266,
+              48.88530321590199,
+              228.07
+            ],
+            [
+              18.030849511560817,
+              48.88522336093447,
+              190.12
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.030772172342587,
+        48.88522336093447,
+        190.12,
+        18.032207645038266,
+        48.88587524450547,
+        228.07
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 164076,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -498028.76,
+          -1205253.39,
+          190.12,
+          -497928.77,
+          -1205189.53,
+          228.07
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -498028.76,
+                -1205253.39,
+                190.12
+              ],
+              [
+                -498028.76,
+                -1205189.53,
+                190.12
+              ],
+              [
+                -497928.77,
+                -1205189.53,
+                228.07
+              ],
+              [
+                -497928.77,
+                -1205253.39,
+                228.07
+              ],
+              [
+                -498028.76,
+                -1205253.39,
+                190.12
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./3-3.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "4-1.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.032345979049644,
+              48.88428071436945,
+              158.77
+            ],
+            [
+              18.032328858713587,
+              48.88440737405704,
+              158.77
+            ],
+            [
+              18.0326513162741,
+              48.884426334812595,
+              214.6
+            ],
+            [
+              18.032668435801725,
+              48.88429967507729,
+              214.6
+            ],
+            [
+              18.032345979049644,
+              48.88428071436945,
+              158.77
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.032328858713587,
+        48.88428071436945,
+        158.77,
+        18.032668435801725,
+        48.884426334812595,
+        214.6
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 6461,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -497928.76,
+          -1205367.54,
+          158.77,
+          -497905.02,
+          -1205353.4,
+          214.6
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -497928.76,
+                -1205367.54,
+                158.77
+              ],
+              [
+                -497928.76,
+                -1205353.4,
+                158.77
+              ],
+              [
+                -497905.02,
+                -1205353.4,
+                214.6
+              ],
+              [
+                -497905.02,
+                -1205367.54,
+                214.6
+              ],
+              [
+                -497928.76,
+                -1205367.54,
+                158.77
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./4-1.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "4-2.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.03232884242615,
+              48.88440746188319,
+              138.19
+            ],
+            [
+              18.032207774718835,
+              48.885303126670635,
+              138.19
+            ],
+            [
+              18.033222153007607,
+              48.88536276622924,
+              264.74
+            ],
+            [
+              18.03334320273098,
+              48.88446710037936,
+              264.74
+            ],
+            [
+              18.03232884242615,
+              48.88440746188319,
+              138.19
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.032207774718835,
+        48.88440746188319,
+        138.19,
+        18.03334320273098,
+        48.88536276622924,
+        264.74
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 197821,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -497928.76,
+          -1205353.39,
+          138.19,
+          -497854.08,
+          -1205253.4,
+          264.74
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -497928.76,
+                -1205353.39,
+                138.19
+              ],
+              [
+                -497928.76,
+                -1205253.4,
+                138.19
+              ],
+              [
+                -497854.08,
+                -1205253.4,
+                264.74
+              ],
+              [
+                -497854.08,
+                -1205353.39,
+                264.74
+              ],
+              [
+                -497928.76,
+                -1205353.39,
+                138.19
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./4-2.copc.laz"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "4-3.copc",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              18.03220777705466,
+              48.88530322229229,
+              209.31
+            ],
+            [
+              18.032149669311966,
+              48.88573309472101,
+              209.31
+            ],
+            [
+              18.032776924049887,
+              48.8857699699966,
+              222.76
+            ],
+            [
+              18.032835026455086,
+              48.885340097253064,
+              222.76
+            ],
+            [
+              18.03220777705466,
+              48.88530322229229,
+              209.31
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        18.032149669311966,
+        48.88530322229229,
+        209.31,
+        18.032835026455086,
+        48.8857699699966,
+        222.76
+      ],
+      "properties": {
+        "datetime": "",
+        "pc:count": 35036,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          -497928.76,
+          -1205253.39,
+          209.31,
+          -497882.58,
+          -1205205.4,
+          222.76
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                -497928.76,
+                -1205253.39,
+                209.31
+              ],
+              [
+                -497928.76,
+                -1205205.4,
+                209.31
+              ],
+              [
+                -497882.58,
+                -1205205.4,
+                222.76
+              ],
+              [
+                -497882.58,
+                -1205253.39,
+                222.76
+              ],
+              [
+                -497928.76,
+                -1205253.39,
+                209.31
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"S-JTSK / Krovak East North\",GEOGCS[\"S-JTSK\",DATUM[\"System_of_the_Unified_Trigonometrical_Cadastral_Network\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6156\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4156\"]],PROJECTION[\"Krovak\"],PARAMETER[\"latitude_of_center\",49.5],PARAMETER[\"longitude_of_center\",24.8333333333333],PARAMETER[\"azimuth\",30.2881397527778],PARAMETER[\"pseudo_standard_parallel_1\",78.5],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"5514\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./4-3.copc.laz"
+        }
+      }
+    }
+  ]
+}

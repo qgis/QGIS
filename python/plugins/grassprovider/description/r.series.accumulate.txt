@@ -1,0 +1,14 @@
+r.series.accumulate
+Makes each output cell value an accumulation function of the values assigned to the corresponding cells in the input raster map layers.
+Raster (r.*)
+QgsProcessingParameterMultipleLayers|input|Input raster layer(s)|3|None|False
+QgsProcessingParameterRasterLayer|lower|Raster map specifying the lower accumulation limit|None|True
+QgsProcessingParameterRasterLayer|upper|Raster map specifying the upper accumulation limit|None|True
+QgsProcessingParameterEnum|method|This method will be applied to compute the accumulative values from the input maps|gdd;bedd;huglin;mean|False|0|False
+QgsProcessingParameterNumber|scale|Scale factor for input|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
+QgsProcessingParameterNumber|shift|Shift factor for input|QgsProcessingParameterNumber.Double|0.0|True|0.0|None
+QgsProcessingParameterRange|range|Ignore values outside this range (min,max)|QgsProcessingParameterNumber.Double|None|True
+QgsProcessingParameterRange|limits|Lower and upper accumulation limits (lower,upper)|QgsProcessingParameterNumber.Integer|10,30|True
+QgsProcessingParameterBoolean|-n|Propagate NULLs|False
+*QgsProcessingParameterBoolean|-f|Create a FCELL map (floating point single precision) as output|False
+QgsProcessingParameterRasterDestination|output|Accumulated

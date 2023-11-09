@@ -1,0 +1,23 @@
+{
+  "name": "shared_paths",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns a collection containing paths shared by the two input geometries. Those going in the same direction are in the first element of the collection, those going in the opposite direction are in the second element. The paths themselves are given in the direction of the first geometry.",
+  "arguments": [{
+    "arg": "geometry1",
+    "description": "a LineString/MultiLineString geometry"
+  },
+  {
+    "arg": "geometry2",
+    "description": "a LineString/MultiLineString geometry"
+  }
+  ],
+  "examples": [{
+    "expression": "geom_to_wkt(shared_paths(geom_from_wkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150)))'),geom_from_wkt('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)')))",
+    "returns": "'GeometryCollection (MultiLineString ((126 156.25, 126 125),(101 150, 90 161),(90 161, 76 175)),MultiLineString EMPTY)'"
+  }, {
+    "expression": "geom_to_wkt(shared_paths(geom_from_wkt('LINESTRING(76 175,90 161,126 125,126 156.25,151 100)'),geom_from_wkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))')))",
+    "returns": "'GeometryCollection (MultiLineString EMPTY,MultiLineString ((76 175, 90 161),(90 161, 101 150),(126 125, 126 156.25)))'"
+  }],
+  "tags": ["linestrings", "paths", "overlapping", "shared", "linestring", "multilinestring"]
+}
