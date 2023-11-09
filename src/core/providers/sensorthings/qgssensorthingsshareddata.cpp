@@ -50,6 +50,8 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
     {
       mGeometryType = Qgis::WkbType::MultiPolygonZ;
     }
+    // geometry is always GeoJSON spec (for now, at least), so CRS will always be WGS84
+    mSourceCRS = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   }
   else
   {
