@@ -293,6 +293,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Thing</td>", vl.htmlMetadata())
             self.assertIn(f'href="{endpoint}/Things"', vl.htmlMetadata())
 
@@ -348,6 +349,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertEqual(vl.crs().authid(), "EPSG:4326")
             self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
             self.assertIn(f'href="{endpoint}/Locations"', vl.htmlMetadata())
 
@@ -403,6 +405,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertFalse(vl.crs().isValid())
             self.assertIn(
                 "Entity Type</td><td>HistoricalLocation</td>", vl.htmlMetadata()
             )
@@ -456,6 +459,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Datastream</td>", vl.htmlMetadata())
             self.assertIn(f'href="{endpoint}/Datastreams"', vl.htmlMetadata())
 
@@ -523,6 +527,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Sensor</td>", vl.htmlMetadata())
             self.assertIn(f'href="{endpoint}/Sensors"', vl.htmlMetadata())
 
@@ -580,6 +585,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertFalse(vl.crs().isValid())
             self.assertIn(
                 "Entity Type</td><td>ObservedProperty</td>", vl.htmlMetadata()
             )
@@ -639,6 +645,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Observation</td>", vl.htmlMetadata())
             self.assertIn(f'href="{endpoint}/Observations"', vl.htmlMetadata())
 
@@ -704,7 +711,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
-            self.assertIn("Entity Type</td><td>FeatureOfInterest</td>", vl.htmlMetadata())
+            self.assertEqual(vl.crs().authid(), 'EPSG:4326')
+            self.assertIn(
+                "Entity Type</td><td>FeatureOfInterest</td>", vl.htmlMetadata()
+            )
             self.assertIn(f'href="{endpoint}/FeaturesOfInterest"', vl.htmlMetadata())
 
             self.assertEqual(
