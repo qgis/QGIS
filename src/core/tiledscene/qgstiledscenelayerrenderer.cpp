@@ -401,10 +401,22 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
     else
     {
       const tinygltf::Scene &scene = model.scenes[sceneIndex];
-      for ( int nodeIndex : scene.nodes )
+
+      std::function< void( int nodeIndex, const QMatrix4x4 &transform ) > traverseNode;
+      traverseNode = [&model, &context, &tileTranslationEcef, &tile, &contentUri, &traverseNode, this]( int nodeIndex, const QMatrix4x4 & parentTransform )
       {
         const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
-        const std::unique_ptr< QMatrix4x4 > gltfLocalTransform = QgsGltfUtils::parseNodeTransform( gltfNode );
+        std::unique_ptr< QMatrix4x4 > gltfLocalTransform = QgsGltfUtils::parseNodeTransform( gltfNode );
+
+        if ( !parentTransform.isIdentity() )
+        {
+          if ( gltfLocalTransform )
+            *gltfLocalTransform = parentTransform * *gltfLocalTransform;
+          else
+          {
+            gltfLocalTransform.reset( new QMatrix4x4( parentTransform ) );
+          }
+        }
 
         if ( gltfNode.mesh >= 0 )
         {
@@ -418,12 +430,16 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
             renderPrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform.get(), contentUri, context );
           }
         }
-        else if ( scene.nodes.size() == 1 )
+
+        for ( int childNode : gltfNode.children )
         {
-          const QString error = QObject::tr( "No mesh found in scene" );
-          mErrors.append( error );
-          QgsDebugError( QStringLiteral( "Error raised reading %1: %2" ).arg( contentUri, error ) );
+          traverseNode( childNode, gltfLocalTransform ? *gltfLocalTransform : QMatrix4x4() );
         }
+      };
+
+      for ( int nodeIndex : scene.nodes )
+      {
+        traverseNode( nodeIndex, QMatrix4x4() );
       }
     }
   }
