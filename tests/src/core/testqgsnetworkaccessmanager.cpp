@@ -15,13 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsnetworkcontentfetcher.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
 #include "qgis.h"
 #include <QObject>
 #include "qgstest.h"
-#include "qgssettings.h"
 #include <QNetworkCookieJar>
 #include <QNetworkReply>
 #include <QAuthenticator>
@@ -164,6 +162,7 @@ class TestQgsNetworkAccessManager : public QObject
     void fetchTimeout();
     void testCookieManagement();
     void testProxyExcludeList();
+    void testHandlers();
 
   private:
 
@@ -226,6 +225,38 @@ void TestQgsNetworkAccessManager::testProxyExcludeList()
   proxies = QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( QNetworkProxyQuery( QUrl( "noProxy/mystuff" ) ) );
   QCOMPARE( proxies.count(), 1 );
   QCOMPARE( proxies.at( 0 ).type(),  QNetworkProxy::NoProxy );
+}
+
+
+class DummySslErrorHandler : public QgsSslErrorHandler
+{
+
+  public:
+
+};
+
+class DummyNetworkAuthenticationHandler : public QgsNetworkAuthenticationHandler
+{
+
+  public:
+
+};
+
+void TestQgsNetworkAccessManager::testHandlers()
+{
+  QgsNetworkAccessManager::instance()->setSslErrorHandler( std::make_unique< DummySslErrorHandler >() );
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< DummyNetworkAuthenticationHandler >() );
+
+  QVERIFY( dynamic_cast< DummySslErrorHandler * >( QgsNetworkAccessManager::instance()->mSslErrorHandler.get() ) );
+  QVERIFY( dynamic_cast< DummyNetworkAuthenticationHandler * >( QgsNetworkAccessManager::instance()->mAuthHandler.get() ) );
+
+  // handlers should NOT be overwritten
+  QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
+  QVERIFY( dynamic_cast< DummySslErrorHandler * >( QgsNetworkAccessManager::instance()->mSslErrorHandler.get() ) );
+  QVERIFY( dynamic_cast< DummyNetworkAuthenticationHandler * >( QgsNetworkAccessManager::instance()->mAuthHandler.get() ) );
+
+  QgsNetworkAccessManager::instance()->setSslErrorHandler( std::make_unique< QgsSslErrorHandler >() );
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< QgsNetworkAuthenticationHandler >() );
 }
 
 void TestQgsNetworkAccessManager::fetchEmptyUrl()
