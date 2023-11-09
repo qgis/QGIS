@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsbackgroundcachedshareddata.h
+    qgsbacckgroundcachedshareddata.h
     ---------------------
     begin                : October 2019
     copyright            : (C) 2016-2019 by Even Rouault
@@ -20,7 +20,7 @@
 #include <QThread>
 #include <QMutex>
 
-#if !defined(Q_OS_ANDROID)
+#if not defined( Q_OS_ANDROID )
 #include <QSharedMemory>
 #endif
 
@@ -59,7 +59,7 @@ class QgsCacheDirectoryManager
     //! Called by constructor
     void init();
 
-#if !defined(Q_OS_ANDROID)
+#if not defined( Q_OS_ANDROID )
     //! Create a shared memory segment for the keep-alive mechanism
     std::unique_ptr<QSharedMemory> createAndAttachSHM();
 #endif
@@ -73,7 +73,7 @@ class QgsCacheDirectoryManager
     static bool removeDir( const QString &dirName );
 };
 
-#if !defined(Q_OS_ANDROID)
+#if not defined( Q_OS_ANDROID )
 //! For internal use of QgsCacheDirectoryManager
 class QgsCacheDirectoryManagerKeepAlive: public QThread
 {
