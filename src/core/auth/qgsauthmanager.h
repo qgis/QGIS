@@ -254,14 +254,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
      *
      * The old password will automatically be retrieved from the password helper.
      *
-     * \param newpass New master password to replace existing
-     * \param keepbackup Whether to keep the generated backup of current database
-     * \param backuppath Where the backup is located, if kept
+     * \param newPassword New master password to replace existing
+     * \param keepBackup Whether to keep the generated backup of current database
+     * \param backupPath Where the backup is located, if kept
      *
      * \note Not available in Python bindings
-     * \since QGIS 3.36
+     * \since QGIS 3.42
      */
-    bool resetMasterPasswordUsingStoredPasswordHelper( const QString &newpass, bool keepbackup, QString *backuppath = nullptr ) SIP_SKIP;
+    bool resetMasterPasswordUsingStoredPasswordHelper( const QString &newPassword, bool keepBackup, QString *backupPath = nullptr ) SIP_SKIP;
 
     /**
      * Whether there is a scheduled opitonal erase of authentication database.
@@ -785,7 +785,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Verify the password stored in the password helper.
-     *
      *
      * \note Not available in Python bindings
      * \since QGIS 3.42

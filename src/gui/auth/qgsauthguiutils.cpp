@@ -197,20 +197,40 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, QWidget *paren
   // get new password via dialog; do current password verification in-dialog
   QString newpass;
   QString oldpass;
+
   bool keepbackup = false;
   QgsMasterPasswordResetDialog dlg( parent );
 
-  if ( !dlg.requestMasterPasswordReset( &newpass, &oldpass, &keepbackup ) )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Master password reset: input canceled by user" ), 2 );
-    return;
-  }
-
   QString backuppath;
-  if ( !QgsApplication::authManager()->resetMasterPassword( newpass, oldpass, keepbackup, &backuppath ) )
+  if ( QgsApplication::authManager()->verifyStoredPasswordHelperPassword()
+       && ( QgsApplication::authManager()->masterPasswordIsSet() || QgsApplication::authManager()->setMasterPassword( true ) ) )
   {
-    msg = QObject::tr( "Master password FAILED to be reset" );
-    level = Qgis::MessageLevel::Warning;
+    dlg.oldPasswordLineEdit()->setText( QStringLiteral( "***************" ) );
+    dlg.oldPasswordLineEdit()->setEnabled( false );
+    dlg.oldPasswordLineEdit()->setToolTip( QObject::tr( "Existing password has been automatically read from the %1" ).arg( QgsAuthManager::passwordHelperDisplayName() ) );
+    if ( !dlg.requestMasterPasswordReset( &newpass, &oldpass, &keepbackup ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Master password reset: input canceled by user" ), 2 );
+      return;
+    }
+    if ( !QgsApplication::authManager()->resetMasterPasswordUsingStoredPasswordHelper( newpass, keepbackup, &backuppath ) )
+    {
+      msg = QObject::tr( "Master password FAILED to be reset" );
+      level = Qgis::MessageLevel::Warning;
+    }
+  }
+  else
+  {
+    if ( !dlg.requestMasterPasswordReset( &newpass, &oldpass, &keepbackup ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Master password reset: input canceled by user" ), 2 );
+      return;
+    }
+    if ( !QgsApplication::authManager()->resetMasterPassword( newpass, oldpass, keepbackup, &backuppath ) )
+    {
+      msg = QObject::tr( "Master password FAILED to be reset" );
+      level = Qgis::MessageLevel::Warning;
+    }
   }
 
   if ( !backuppath.isEmpty() )
