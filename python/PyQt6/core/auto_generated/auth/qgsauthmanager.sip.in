@@ -236,6 +236,7 @@ configs in a new database file, optionally backup current database
 
 
 
+
     void setScheduledAuthDatabaseEraseRequestEmitted( bool emitted );
 %Docstring
 Re-emit a signal to schedule an optional erase of authentication database.
