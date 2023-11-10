@@ -152,8 +152,10 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
             raise ValueError(self.tr("'{}' is not valid. Possible values are '{}'".format(v, ', '.join(allowed_values))))
 
     def validateAppFolders(self, v):
+        # if user has never entered an OTB folder, they probably aren't even using
+        # the plugin. So don't raise any errors here which have no meaning for the user.
         if not v:
-            raise ValueError(self.tr('Cannot activate OTB provider'))
+            return
 
         folder = OtbUtils.otbFolder()
         otb_app_dirs = self.appDirs(v)
@@ -189,7 +191,12 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         return os.path.normpath(os.sep.join(re.split(r'\\|/', p)))
 
     def validateOtbFolder(self, v):
-        if not v or not os.path.exists(v):
+        # if user has never entered an OTB folder, they probably aren't even using
+        # the plugin. So don't raise any errors here which have no meaning for the user.
+        if not v:
+            return
+
+        if not os.path.exists(v):
             raise ValueError(self.tr("Problem with OTB installation: '{}' does not exist.".format(v)))
         path = self.normalize_path(v)
         app_launcher_path = OtbUtils.getExecutableInPath(path, 'otbApplicationLauncherCommandLine')
