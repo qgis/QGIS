@@ -10,17 +10,30 @@ __date__ = '13/3/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QVariant
 from qgis.core import (
     QgsDateTimeRange,
+    QgsFeature,
+    QgsField,
+    QgsGeometry,
     QgsInterval,
+    QgsMeshLayer,
+    QgsTemporalController,
+    QgsTemporalNavigationObject,
+    QgsPointXY,
     QgsProject,
     QgsRasterLayer,
     QgsRasterLayerTemporalProperties,
     QgsTemporalUtils,
     QgsUnitTypes,
+    QgsVectorLayer,
+    QgsVectorLayerTemporalProperties,
+)
+from qgis.gui import (
+    QgsMapCanvas,
 )
 import unittest
+import os
 from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
@@ -292,6 +305,154 @@ class TestQgsTemporalUtils(QgisTestCase):
                                 QDateTime(2021, 3, 24, 12, 0, 0, 0, Qt.TimeSpec(1))])
         self.assertTrue(ok)
         self.assertFalse(exceeded)
+
+    def testVectorLayerFrameCount(self):
+        """
+        Testing the actual framecount here, mostly with instantanous events
+        which fall exactly on the end of a timestep.
+        Besides we test if the temporalExtents() of the navigator includes or
+        excludes te upper limit (because that is used in counting the frames)
+        """
+        tl = createTemporalLayerWithThreePoints()
+        self.assertTrue(tl.isValid())
+
+        project = QgsProject.instance()
+        project.clear()
+        project.addMapLayer(tl)
+
+        props = tl.temporalProperties()
+        props.setIsActive(True)
+
+        canvas = QgsMapCanvas()
+        canvas.setLayers([tl])
+
+        navigator = QgsTemporalNavigationObject()
+        frame_duration = QgsInterval()
+        frame_duration.setSeconds(24 * 60 * 60)
+        navigator.setFrameDuration(frame_duration)
+        canvas.setTemporalController(navigator)
+
+        # 3 features as instantanious times
+        # which exactly fall on the endtimes of the timesteps
+        # because of that we will need 3(!) steps because the end of the
+        # filter is NOT inclusive
+
+        # map range              1----2----3----4--------days
+        # map range              [----)------------------days
+        # map range              -----[----)-------------days
+        # map range              ----------[----)--------days
+
+        # map range              1----2----3----4--------days
+        # features               .    .    .
+        # feature range          [---------]-----------------
+
+        props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+        props.setStartField('start_field')
+        dt_range = QgsTemporalUtils.calculateTemporalRangeForProject(project)
+        navigator.setTemporalExtents(dt_range)
+        self.assertEqual(navigator.totalFrameCount(), 3)
+        self.assertEqual(navigator.temporalExtents(),
+                         QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2020, 1, 3, 0, 0), True, True))
+
+        # same three features, but using the end_field too
+
+        # map range              1----2----3----4--------days
+        # feature                [----)----------------------
+        # feature                -----[----)-----------------
+        # feature                ----------[----)------------
+        # feature range          [--------------)------------
+        props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
+        props.setStartField('start_field')
+        props.setEndField('end_field')
+
+        dt_range = QgsTemporalUtils.calculateTemporalRangeForProject(project)
+        navigator.setTemporalExtents(dt_range)
+        self.assertEqual(navigator.totalFrameCount(), 3)
+        self.assertEqual(navigator.temporalExtents(),
+                         QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2020, 1, 4, 0, 0), True, False))
+
+        # Moving the start_field last feature 12 hours back, so we should have enough on 2 timesteps:
+
+        # map range              1----2----3----4--------days
+        # features               .    .  .
+        # feature range          [-------)-------------------
+        tl.startEditing()
+        tl.changeAttributeValue(3, 0, QDateTime(2020, 1, 2, 12, 0))
+        tl.commitChanges()
+        props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+        props.setStartField('start_field')
+        dt_range = QgsTemporalUtils.calculateTemporalRangeForProject(project)
+        navigator.setTemporalExtents(dt_range)
+        self.assertEqual(navigator.totalFrameCount(), 2)
+        self.assertEqual(navigator.temporalExtents(),
+                         QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2020, 1, 2, 12, 0), True, True))
+
+    def testMeshLayerFrameCount(self):
+        tl = createTemporalMeshLayer()
+        """
+        ncinfo -v time .../temporal/ugrid3timesteps.nc
+        <class 'netCDF4._netCDF4.Variable'>
+        float64 time(time)
+            units: hours since 2020-01-01 00:00:00.0
+            calendar: gregorian
+            standard_name: time
+            axis: T
+        unlimited dimensions: time
+        current shape = (3,)
+        filling on, default _FillValue of 9.969209968386869e+36 used
+        """
+        self.assertTrue(tl.isValid())
+
+        project = QgsProject.instance()
+        project.clear()
+        project.addMapLayer(tl)
+
+        props = tl.temporalProperties()
+        props.setIsActive(True)
+
+        canvas = QgsMapCanvas()
+        canvas.setLayers([tl])
+
+        navigator = QgsTemporalNavigationObject()
+        frame_duration = QgsInterval()
+        frame_duration.setSeconds(24 * 60 * 60)
+        navigator.setFrameDuration(frame_duration)
+        canvas.setTemporalController(navigator)
+
+        navigator.setNavigationMode(QgsTemporalNavigationObject.Animated)  # will show controller
+        navigator.rewindToStart()
+
+        dt_range = QgsTemporalUtils.calculateTemporalRangeForProject(project)
+        navigator.setTemporalExtents(dt_range)
+        self.assertEqual(navigator.totalFrameCount(), 3)
+        self.assertEqual(navigator.temporalExtents(),
+                         #  <QgsDateTimeRange:[2020-01-01T00:00:00Z, 2020-01-03T00:00:00Z]>
+                         QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0, 0, 0, Qt.TimeSpec(Qt.UTC)), QDateTime(2020, 1, 3, 0, 0, 0, 0, Qt.TimeSpec(Qt.UTC)), True, True))
+
+
+def createTemporalLayerWithThreePoints():
+    l = QgsVectorLayer('Point?crs=EPSG:4326&field=start_field:datetime(0,0)&field=end_field:datetime(0,0)&field=id:integer(10,0)', 'spatial_test_vector_layer', "memory")
+    data = [
+        [3.31355770, 47.97473506, '2020-01-01 00:00:00.0', '2020-01-02 00:00:00.0', 1],
+        [3.31368860, 47.97473717, '2020-01-02 00:00:00.0', '2020-01-03 00:00:00.0', 2],
+        [3.31382443, 47.97473365, '2020-01-03 00:00:00.0', '2020-01-04 00:00:00.0', 3],
+    ]
+    for d in data:
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(d[0], d[1])))
+        f.setAttributes([QDateTime.fromString(d[2], Qt.ISODate), QDateTime.fromString(d[3], Qt.ISODate), d[4]])
+        l.dataProvider().addFeature(f)
+    l.commitChanges()
+    return l
+
+
+def createTemporalMeshLayer():
+    p = os.path.join(unitTestDataPath(), 'temporal/ugrid3timesteps.nc')
+    # NOTE!! using NETCDF as type here will NOT return the right framecount
+    # l =QgsMeshLayer(f'NETCDF:"{p}":mesh2d', 'spatial_test_mesh_layer', 'mdal')
+    # you really need
+    l = QgsMeshLayer(f'Ugrid:"{p}":mesh2d', 'spatial_test_mesh_layer', 'mdal')
+    return l
 
 
 if __name__ == '__main__':
