@@ -248,6 +248,7 @@ namespace QgsServerProjectUtils
    * Returns if name attribute should be skipped for groups in WMS capabilities document.
    * \param project the QGIS project
    * \returns if name attribute should be skipped for groups in capabilities
+   * \since QGIS 3.36
    */
   SERVER_EXPORT bool wmsSkipNameForGroup( const QgsProject &project );
 
