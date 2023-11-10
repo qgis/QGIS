@@ -1156,7 +1156,7 @@ namespace QgsWms
     }
     pdfExportDetails.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
     pdfExportDetails.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
-    bool geoPdf = mWmsParameters.pdfAppendGeoreference();
+    const bool geoPdf = mWmsParameters.pdfAppendGeoreference();
     std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geoPdf, pdfExportDetails );
     return pdf;
   }
