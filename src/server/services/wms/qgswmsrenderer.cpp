@@ -1421,6 +1421,12 @@ namespace QgsWms
 
     mapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, mContext.renderMapTiles() );
 
+    // enable profiling
+    if ( mContext.settings().logProfile() )
+    {
+      mapSettings.setFlag( Qgis::MapSettingsFlag::RecordProfile );
+    }
+
     // set selection color
     mapSettings.setSelectionColor( mProject->selectionColor() );
 

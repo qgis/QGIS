@@ -593,8 +593,12 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
 
 
-  // Clear the profiler server section after each request
+  // Clear the profiler content after each request
+  QgsApplication::profiler()->clear( QStringLiteral( "startup" ) );
+  QgsApplication::profiler()->clear( QStringLiteral( "projectload" ) );
+  QgsApplication::profiler()->clear( QStringLiteral( "rendering" ) );
   QgsApplication::profiler()->clear( QStringLiteral( "server" ) );
+
 
 }
 
