@@ -945,7 +945,7 @@ namespace QgsWms
 
       bool siaFormat = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
       const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
-      bool skipNameForGroup = QgsServerProjectUtils::wmsSkipNameForGroup( *project );
+      const bool skipNameForGroup = QgsServerProjectUtils::wmsSkipNameForGroup( *project );
 
       QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();
       for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
