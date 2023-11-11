@@ -263,6 +263,8 @@ Returns if name attribute should be skipped for groups in WMS capabilities docum
 :param project: the QGIS project
 
 :return: if name attribute should be skipped for groups in capabilities
+
+.. versionadded:: 3.36
 %End
 
   int wmsFeatureInfoPrecision( const QgsProject &project );
