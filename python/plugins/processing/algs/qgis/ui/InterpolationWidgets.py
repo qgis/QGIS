@@ -324,6 +324,9 @@ class PixelSizeWidget(BASE, WIDGET):
             return
 
         cell_size = self.extent.height() / rows
+        if cell_size == 0:
+            return
+
         cols = max(round(self.extent.width() / cell_size) + 1, 1)
         self.mColumnsSpinBox.blockSignals(True)
         self.mColumnsSpinBox.setValue(cols)
@@ -339,6 +342,9 @@ class PixelSizeWidget(BASE, WIDGET):
             return
 
         cell_size = self.extent.width() / (cols - 1)
+        if cell_size == 0:
+            return
+
         rows = max(round(self.extent.height() / cell_size), 1)
         self.mRowsSpinBox.blockSignals(True)
         self.mRowsSpinBox.setValue(rows)
