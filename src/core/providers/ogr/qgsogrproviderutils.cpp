@@ -1354,10 +1354,15 @@ QString QgsOgrProviderUtils::cleanSubsetString( const QString &subsetString )
     QChar literalChar { ' ' };
     for ( int i = 0; i < line.length(); ++i )
     {
-      if ( ( ( line[i] == QChar( '\'' ) || line[i] == QChar( '"' ) ) && ( i == 0 || line[i - 1] != QChar( '\\' ) ) ) && ( line[i] != literalChar ) )
+      if ( !inLiteral && ( line[i] == QChar( '\'' ) || line[i] == QChar( '"' ) ) )
       {
-        inLiteral = !inLiteral;
-        literalChar = inLiteral ? line[i] : QChar( ' ' );
+        inLiteral = true;
+        literalChar = line[i];
+      }
+      else if ( inLiteral && line[i] == literalChar && line[i - 1] != QChar( '\\' ) )
+      {
+        inLiteral = false;
+        literalChar = QChar( ' ' );
       }
       if ( !inLiteral && line.mid( i ).startsWith( QLatin1String( "--" ) ) )
       {
