@@ -308,8 +308,6 @@ void QgsStatusBarCoordinatesWidget::hackfests()
       tr( "QGIS Hackfests" ), QStringLiteral( "ogr" ), options );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
-  layer->setAutoRefreshInterval( 500 );
-  layer->setAutoRefreshMode( Qgis::AutoRefreshMode::RedrawOnly );
 }
 
 void QgsStatusBarCoordinatesWidget::userGroups()
