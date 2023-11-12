@@ -133,11 +133,16 @@ long long QgsSensorThingsProvider::featureCount() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-#if 0
-  return mSharedData->featureCount();
-#endif
+  if ( ( mReadFlags & QgsDataProvider::SkipFeatureCount ) != 0 )
+  {
+    return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
+  }
 
-  return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
+  const long long count = mSharedData->featureCount();
+  if ( !mSharedData->error().isEmpty() )
+    pushError( mSharedData->error() );
+
+  return count;
 }
 
 QgsFields QgsSensorThingsProvider::fields() const

@@ -18,9 +18,12 @@
 #include "qgssensorthingsutils.h"
 #include "qgslogger.h"
 #include "qgsreadwritelocker.h"
+#include "qgsblockingnetworkrequest.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QCryptographicHash>
 #include <QFile>
+#include <nlohmann/json.hpp>
 
 ///@cond PRIVATE
 
@@ -93,6 +96,7 @@ QUrl QgsSensorThingsSharedData::parseUrl( const QUrl &url, bool *isTestEndpoint 
     {
       args.replace( QLatin1String( "?" ), QLatin1String( "_" ) );
       args.replace( QLatin1String( "&" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "$" ), QLatin1String( "_" ) );
       args.replace( QLatin1String( "<" ), QLatin1String( "_" ) );
       args.replace( QLatin1String( ">" ), QLatin1String( "_" ) );
       args.replace( QLatin1String( "'" ), QLatin1String( "_" ) );
@@ -122,10 +126,63 @@ QUrl QgsSensorThingsSharedData::parseUrl( const QUrl &url, bool *isTestEndpoint 
   return modifiedUrl;
 }
 
+long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback )
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  if ( mFeatureCount >= 0 )
+    return mFeatureCount;
+
+  locker.changeMode( QgsReadWriteLocker::Write );
+  mError.clear();
+
+  // return no features, just the total count
+  const QUrl url = parseUrl( QUrl( QStringLiteral( "%1?$top=0&$count=true" ).arg( mEntityBaseUri ) ) );
+
+  QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
+  mHeaders.updateNetworkRequest( request );
+
+  QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( mAuthCfg );
+  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.get( request, false, feedback );
+
+  if ( feedback && feedback->isCanceled() )
+    return mFeatureCount;
+
+  // Handle network errors
+  if ( error != QgsBlockingNetworkRequest::NoError )
+  {
+    QgsDebugError( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+    mError = networkRequest.errorMessage();
+  }
+  else
+  {
+    const QgsNetworkReplyContent content = networkRequest.reply();
+    try
+    {
+      auto rootContent = json::parse( content.content().toStdString() );
+      if ( !rootContent.contains( "@iot.count" ) )
+      {
+        mError = QObject::tr( "No '@iot.count' value in response" );
+        return mFeatureCount;
+      }
+
+      mFeatureCount = rootContent["@iot.count"].get<long long>();
+    }
+    catch ( const json::parse_error &ex )
+    {
+      mError = QObject::tr( "Error parsing response: %1" ).arg( ex.what() );
+    }
+  }
+
+  return mFeatureCount;
+}
+
 void QgsSensorThingsSharedData::clearCache()
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
 
+  mFeatureCount = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
   mCachedFeatures.clear();
   mIotIdToFeatureId.clear();
 }
