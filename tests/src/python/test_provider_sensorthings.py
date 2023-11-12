@@ -41,6 +41,8 @@ def sanitize(endpoint, x):
         "/", "_"
     ).replace(
         "\n", "_"
+    ).replace(
+        "$", "_"
     )
 
 
@@ -222,9 +224,17 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", endpoint
+                        "endpoint", 'http://' + endpoint
                     )
                 )
+
+                with open(
+                    sanitize(endpoint, "/Locations?$top=0&$count=true"),
+                    "wt",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """{"@iot.count":4962,"value":[]}""")
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='Location'",
@@ -234,8 +244,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertEqual(vl.featureCount(), 4962)
             self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
-            self.assertIn(f'href="{endpoint}/Locations"', vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Locations"', vl.htmlMetadata())
 
             # As multipoint
             vl = QgsVectorLayer(

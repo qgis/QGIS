@@ -42,7 +42,13 @@ class QgsSensorThingsSharedData
     */
     static QUrl parseUrl( const QUrl &url, bool *isTestEndpoint = nullptr );
 
+    /**
+     * Returns the error message obtained from the last operation.
+     */
+    QString error() const { return mError; }
+
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
+    long long featureCount( QgsFeedback *feedback = nullptr );
 
     void clearCache();
 
@@ -55,6 +61,8 @@ class QgsSensorThingsSharedData
     QgsHttpHeaders mHeaders;
     QString mRootUri;
 
+    QString mError;
+
     QString mEntityBaseUri;
 
     Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
@@ -62,6 +70,8 @@ class QgsSensorThingsSharedData
     Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;
     QgsFields mFields;
     QgsCoordinateReferenceSystem mSourceCRS;
+
+    long long mFeatureCount = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
 
     QHash<QString, QgsFeatureId> mIotIdToFeatureId;
     QMap<QgsFeatureId, QgsFeature> mCachedFeatures;
