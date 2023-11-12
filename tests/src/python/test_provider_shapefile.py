@@ -1132,6 +1132,16 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
         f = next(vl.getFeatures())
         self.assertEqual(f.geometry().constGet().asWkt(), wkt)
 
+    def testFilterWithComment(self):
+        file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
+        uri = f'{file_path}|layerid=0|subset="name" = \'Apple\' -- comment'
+        vl = QgsVectorLayer(uri, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.subsetString(), '"name" = \'Apple\' -- comment')
+        self.assertEqual(vl.featureCount(), 1)
+        f = next(vl.getFeatures())
+        self.assertEqual(f['name'], 'Apple')
+
 
 if __name__ == '__main__':
     unittest.main()

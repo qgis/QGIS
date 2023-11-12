@@ -815,7 +815,7 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   , mShareSameDatasetAmongLayers( p->mShareSameDatasetAmongLayers )
   , mLayerName( p->layerName() )
   , mLayerIndex( p->layerIndex() )
-  , mSubsetString( p->mSubsetString )
+  , mSubsetString( QgsOgrProviderUtils::cleanSubsetString( p->mSubsetString ) )
   , mEncoding( p->textEncoding() ) // no copying - this is a borrowed pointer from Qt
   , mFields( p->mAttributeFields )
   , mFirstFieldIsFid( p->mFirstFieldIsFid )
