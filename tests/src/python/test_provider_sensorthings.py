@@ -292,7 +292,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", endpoint
+                        "endpoint", 'http://' + endpoint
                     )
                 )
 
@@ -306,7 +306,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Thing</td>", vl.htmlMetadata())
-            self.assertIn(f'href="{endpoint}/Things"', vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Things"', vl.htmlMetadata())
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
@@ -348,7 +348,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", endpoint
+                        "endpoint", 'http://' + endpoint
                     )
                 )
 
@@ -362,7 +362,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
             self.assertEqual(vl.crs().authid(), "EPSG:4326")
             self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
-            self.assertIn(f'href="{endpoint}/Locations"', vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Locations"', vl.htmlMetadata())
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
@@ -404,7 +404,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", endpoint
+                        "endpoint", 'http://' + endpoint
                     )
                 )
 
@@ -420,7 +420,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertIn(
                 "Entity Type</td><td>HistoricalLocation</td>", vl.htmlMetadata()
             )
-            self.assertIn(f'href="{endpoint}/HistoricalLocations"', vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/HistoricalLocations"', vl.htmlMetadata())
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
@@ -458,7 +458,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", endpoint
+                        "endpoint", 'http://' + endpoint
                     )
                 )
 
@@ -472,7 +472,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Datastream</td>", vl.htmlMetadata())
-            self.assertIn(f'href="{endpoint}/Datastreams"', vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Datastreams"', vl.htmlMetadata())
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
@@ -526,7 +526,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", endpoint
+                        "endpoint", 'http://' + endpoint
                     )
                 )
 
@@ -540,7 +540,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Sensor</td>", vl.htmlMetadata())
-            self.assertIn(f'href="{endpoint}/Sensors"', vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Sensors"', vl.htmlMetadata())
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
@@ -584,7 +584,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", endpoint
+                        "endpoint", 'http://' + endpoint
                     )
                 )
 
@@ -600,7 +600,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertIn(
                 "Entity Type</td><td>ObservedProperty</td>", vl.htmlMetadata()
             )
-            self.assertIn(f'href="{endpoint}/ObservedProperties"', vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/ObservedProperties"', vl.htmlMetadata())
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
@@ -644,7 +644,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", endpoint
+                        "endpoint", 'http://' + endpoint
                     )
                 )
 
@@ -658,7 +658,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Observation</td>", vl.htmlMetadata())
-            self.assertIn(f'href="{endpoint}/Observations"', vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Observations"', vl.htmlMetadata())
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
@@ -710,7 +710,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", endpoint
+                        "endpoint", 'http://' + endpoint
                     )
                 )
 
@@ -726,7 +726,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertIn(
                 "Entity Type</td><td>FeatureOfInterest</td>", vl.htmlMetadata()
             )
-            self.assertIn(f'href="{endpoint}/FeaturesOfInterest"', vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/FeaturesOfInterest"', vl.htmlMetadata())
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
