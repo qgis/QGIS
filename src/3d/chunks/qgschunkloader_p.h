@@ -31,6 +31,10 @@
 
 #define SIP_NO_FILE
 
+class QgsFeatureRequest;
+class QgsVectorLayer;
+class Qgs3DMapSettings;
+
 /**
  * \ingroup 3d
  * \brief Base class for jobs that load chunks
@@ -50,6 +54,10 @@ class QgsChunkLoader : public QgsChunkQueueJob
      * Returns entity attached to the given parent entity in disabled state
      */
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) = 0;
+
+    //! Common function for vector and rule based chunk loader to build a feature request
+    void buildVectorFeatureRequest( const QgsVectorLayer *layer, const QgsChunkNode *node, const Qgs3DMapSettings &mapSettings, const QSet<QString> &attributeNames, QgsFeatureRequest &request );
+
 };
 
 

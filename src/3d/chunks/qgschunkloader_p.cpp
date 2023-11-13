@@ -15,9 +15,31 @@
 
 #include "qgschunkloader_p.h"
 #include "qgschunknode_p.h"
+#include "qgs3dutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QVector>
 ///@cond PRIVATE
+
+
+// ===============================
+// QgsChunkLoader
+// ===============================
+
+void QgsChunkLoader::buildVectorFeatureRequest( const QgsVectorLayer *layer, const QgsChunkNode *node, const Qgs3DMapSettings &mapSettings, const QSet<QString> &attributeNames, QgsFeatureRequest &request )
+{
+  request.setDestinationCrs( mapSettings.crs(), mapSettings.transformContext() );
+  request.setSubsetOfAttributes( attributeNames, layer->fields() );
+
+  // only a subset of data to be queried
+  const QgsRectangle bboxExtent = Qgs3DUtils::worldToMapExtent( node->bbox(), mapSettings.origin() );
+  request.setFilterRect( bboxExtent );
+}
+
+
+// ===============================
+// QgsQuadtreeChunkLoaderFactory
+// ===============================
 
 QgsQuadtreeChunkLoaderFactory::QgsQuadtreeChunkLoaderFactory() = default;
 
