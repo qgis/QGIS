@@ -2223,7 +2223,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        self._assert_status_code(self, 200, qs)
+        self._assert_status_code(200, qs)
 
 
 if __name__ == '__main__':
