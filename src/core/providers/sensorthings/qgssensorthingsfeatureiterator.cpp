@@ -76,7 +76,6 @@ QgsSensorThingsFeatureIterator::QgsSensorThingsFeatureIterator( QgsSensorThingsF
     requestIds.insert( mRequest.filterFid() );
   }
 
-#if 0
   if ( !mFilterRect.isNull() && !mSource->sharedData()->hasCachedAllFeatures() )
   {
     // defer request to find features in filter rect until first feature is requested
@@ -88,7 +87,6 @@ QgsSensorThingsFeatureIterator::QgsSensorThingsFeatureIterator( QgsSensorThingsF
     // firing off another request to the server)
     mDeferredFeaturesInFilterRectCheck = true;
   }
-#endif
 
   // prepare spatial filter geometries for optimal speed
   switch ( mRequest.spatialFilterType() )
@@ -116,7 +114,7 @@ QgsSensorThingsFeatureIterator::QgsSensorThingsFeatureIterator( QgsSensorThingsF
 
 QgsSensorThingsFeatureIterator::~QgsSensorThingsFeatureIterator()
 {
-  close();
+  QgsSensorThingsFeatureIterator::close();
 }
 
 bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
@@ -128,7 +126,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
     return false;
-#if 0
+
   if ( mFeatureIterator >= mSource->sharedData()->objectIdCount() )
     return false;
 
@@ -175,7 +173,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
       if ( mRemainingFeatureIds.empty() )
         return false;
 
-      bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, QgsRectangle(), mInterruptionChecker );
+      bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, mInterruptionChecker );
       if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
         return false;
 
@@ -202,12 +200,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
         if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )
           return false;
 
-        bool success = false;
-        bool isDeleted = mSource->sharedData()->isDeleted( mFeatureIterator );
-        if ( !isDeleted )
-        {
-          success = mSource->sharedData()->getFeature( mFeatureIterator, f, QgsRectangle(), mInterruptionChecker );
-        }
+        bool success = mSource->sharedData()->getFeature( mFeatureIterator, f, mInterruptionChecker );
 
         if ( !mFeatureIdList.empty() )
         {
@@ -255,7 +248,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
       return false;
     }
   }
-#endif
+
   return false;
 }
 

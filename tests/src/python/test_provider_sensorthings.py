@@ -27,7 +27,7 @@ from qgis.testing import start_app, QgisTestCase
 
 def sanitize(endpoint, x):
     if x.startswith("/query"):
-        x = x[len("/query"):]
+        x = x[len("/query") :]
         endpoint = endpoint + "_query"
 
     if len(endpoint + x) > 150:
@@ -300,7 +300,75 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "wt",
                 encoding="utf8",
             ) as f:
-                f.write("""{"@iot.count":30,"value":[]}""")
+                f.write("""{"@iot.count":3,"value":[]}""")
+
+            with open(
+                sanitize(endpoint, "/Things?$top=2"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "@iot.selfLink": "endpoint/Things(1)",
+      "@iot.id": 1,
+      "name": "Thing 1",
+      "description": "Desc 1",
+      "properties": {
+        "owner": "owner 1",
+      },
+      "Locations@iot.navigationLink": "endpoint/Things(1)/Locations",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Things(1)/HistoricalLocations",
+      "Datastreams@iot.navigationLink": "endpoint/Things(1)/Datastreams",
+      "MultiDatastreams@iot.navigationLink": "endpoint/Things(1)/MultiDatastreams"
+    },
+    {
+      "@iot.selfLink": "endpoint/Things(2)",
+      "@iot.id": 2,
+      "name": "Thing 2",
+      "description": "Desc 2",
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Locations@iot.navigationLink": "endpoint/Things(2)/Locations",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Things(2)/HistoricalLocations",
+      "Datastreams@iot.navigationLink": "endpoint/Things(2)/Datastreams",
+      "MultiDatastreams@iot.navigationLink": "endpoint/Things(2)/MultiDatastreams"
+    }
+  ],
+  "@iot.nextLink": "endpoint/Things?$top=2&$skip=2"
+}
+                """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(endpoint, "/Things?$top=2&$skip=2"),
+                    "wt",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "value": [
+                {
+                  "@iot.selfLink": "endpoint/Things(3)",
+                  "@iot.id": 3,
+                  "name": "Thing 3",
+                  "description": "Desc 3",
+                  "properties": {
+                    "owner": "owner 3",
+                  },
+                  "Locations@iot.navigationLink": "endpoint/Things(3)/Locations",
+                  "HistoricalLocations@iot.navigationLink": "endpoint/Things(3)/HistoricalLocations",
+                  "Datastreams@iot.navigationLink": "endpoint/Things(3)/Datastreams",
+                  "MultiDatastreams@iot.navigationLink": "endpoint/Things(3)/MultiDatastreams"
+                }
+              ]
+            }
+                            """.replace("endpoint", "http://" + endpoint)
+                    )
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='Thing'",
@@ -310,7 +378,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
-            self.assertEqual(vl.featureCount(), 30)
+            self.assertEqual(vl.featureCount(), 3)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Thing</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Things"', vl.htmlMetadata())
@@ -337,6 +405,10 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     QVariant.Map,
                 ],
             )
+
+            features = list(vl.getFeatures())
+            self.assertEqual(len(features), 3)
+
 
     def test_location(self):
         with tempfile.TemporaryDirectory() as temp_dir:
