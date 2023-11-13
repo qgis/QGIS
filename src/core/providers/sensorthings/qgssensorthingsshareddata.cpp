@@ -126,7 +126,7 @@ QUrl QgsSensorThingsSharedData::parseUrl( const QUrl &url, bool *isTestEndpoint 
   return modifiedUrl;
 }
 
-long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback )
+long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   if ( mFeatureCount >= 0 )
@@ -176,6 +176,233 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback )
   }
 
   return mFeatureCount;
+}
+
+bool QgsSensorThingsSharedData::hasCachedAllFeatures() const
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  return mCachedFeatures.count() == featureCount();
+}
+
+bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback )
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+
+  // If cached, return cached feature
+  QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCachedFeatures.constFind( id );
+  if ( it != mCachedFeatures.constEnd() )
+  {
+    f = it.value();
+    return true;
+  }
+
+  const QString authcfg = mAuthCfg;
+  bool featureFetched = false;
+  long long startId = 0;
+  QList<quint32> objectIds;
+
+  // a potential optimisation? We could defer retrieval of total count and include it just in the first request for values?
+  const long long totalFeatures = featureCount( feedback );
+  if ( feedback && feedback->isCanceled() )
+    return false;
+
+  basic_json rootContent;
+
+  while ( !featureFetched )
+  {
+    startId = ( id / mMaximumPageSize ) * mMaximumPageSize;
+    const long long stopId = std::min< long long >( startId + mMaximumPageSize, totalFeatures );
+    objectIds.clear();
+    objectIds.reserve( stopId - startId );
+    for ( size_t i = startId; i < stopId; ++i )
+    {
+      if ( i >= 0 && i < mObjectIds.count() && !mCachedFeatures.contains( i ) )
+        objectIds.append( mObjectIds.at( i ) );
+    }
+
+    if ( objectIds.empty() )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "No valid features IDs to fetch" ), 2 );
+      return false;
+    }
+
+    // don't lock while doing the fetch
+    locker.unlock();
+
+    // query next features
+    QString errorMessage;
+
+    // TODO
+    const QUrl url = parseUrl( QUrl( QStringLiteral( "%1?$top=%2&$count=false" ).arg( mEntityBaseUri ).arg( mMaximumPageSize ) ) );
+
+    QNetworkRequest request( url );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
+    mHeaders.updateNetworkRequest( request );
+
+    QgsBlockingNetworkRequest networkRequest;
+    networkRequest.setAuthCfg( mAuthCfg );
+    const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.get( request, false, feedback );
+    if ( feedback && feedback->isCanceled() )
+    {
+      return false;
+    }
+
+    if ( error != QgsBlockingNetworkRequest::NoError )
+    {
+      QgsDebugError( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+      mError = networkRequest.errorMessage();
+      if ( mMaximumPageSize <= 1 || errorMessage.isEmpty() )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
+        return false;
+      }
+      else
+      {
+        locker.changeMode( QgsReadWriteLocker::Read );
+        mMaximumPageSize = std::max( 1, mMaximumPageSize / 5 );
+      }
+    }
+    else
+    {
+      const QgsNetworkReplyContent content = networkRequest.reply();
+      try
+      {
+        rootContent = json::parse( content.content().toStdString() );
+        if ( !rootContent.contains( "value" ) )
+        {
+          if ( mMaximumPageSize <= 1 || errorMessage.isEmpty() )
+          {
+            QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
+            return false;
+          }
+          else
+          {
+            locker.changeMode( QgsReadWriteLocker::Read );
+            mMaximumPageSize = std::max( 1, mMaximumPageSize / 5 );
+          }
+        }
+        else
+        {
+          featureFetched = true;
+        }
+      }
+      catch ( const json::parse_error &ex )
+      {
+        mError = QObject::tr( "Error parsing response: %1" ).arg( ex.what() );
+        if ( mMaximumPageSize <= 1 || errorMessage.isEmpty() )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
+          return false;
+        }
+        else
+        {
+          locker.changeMode( QgsReadWriteLocker::Read );
+          mMaximumPageSize = std::max( 1, mMaximumPageSize / 5 );
+        }
+      }
+    }
+  }
+
+  // re-lock while updating cache
+  locker.changeMode( QgsReadWriteLocker::Write );
+
+  const auto &values = rootContent["value"];
+  if ( values.empty() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Query returned no features" ), 3 );
+    return false;
+  }
+
+  int i = 0;
+  int n = featuresData.size();
+
+  for ( const auto &featureData : values )
+  {
+    if ( i >= n )
+      break;
+
+    QgsFeature feature( mFields );
+    QgsFeatureId featureId = startId + i;
+
+    // Set attributes
+    QgsAttributes attributes( mFields.size() );
+    for ( int idx = 0; idx < mFields.size(); ++idx )
+    {
+#if 0
+      QVariant attribute = attributesData[mFields.at( idx ).name()];
+      if ( QgsVariantUtils::isNull( attribute ) )
+      {
+        // ensure that null values are mapped correctly for PyQGIS
+        attribute = QVariant( QVariant::Int );
+      }
+
+      // date/datetime fields must be converted
+      if ( mFields.at( idx ).type() == QVariant::DateTime || mFields.at( idx ).type() == QVariant::Date )
+        attribute = QgsArcGisRestUtils::convertDateTime( attribute );
+
+      if ( !mFields.at( idx ).convertCompatible( attribute ) )
+      {
+        QgsDebugError( QStringLiteral( "Invalid value %1 for field %2 of type %3" ).arg( attributesData[mFields.at( idx ).name()].toString(), mFields.at( idx ).name(), mFields.at( idx ).typeName() ) );
+      }
+      attributes[idx] = attribute;
+      if ( mFields.at( idx ).name() == mObjectIdFieldName )
+      {
+        featureId = objectIdToFeatureId( attributesData[mFields.at( idx ).name()].toInt() );
+      }
+#endif
+    }
+    feature.setAttributes( attributes );
+
+    // Set FID
+    feature.setId( featureId );
+
+    // Set geometry
+#if 0
+    const QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
+    std::unique_ptr< QgsAbstractGeometry > geometry( QgsArcGisRestUtils::convertGeometry( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
+        QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) ) );
+    // Above might return 0, which is OK since in theory empty geometries are allowed
+    if ( geometry )
+      feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
+#endif
+
+    mCachedFeatures.insert( feature.id(), feature );
+
+    ++i;
+  }
+
+  // If added to cache, return feature
+  it = mCachedFeatures.constFind( id );
+  if ( it != mCachedFeatures.constEnd() )
+  {
+    f = it.value();
+    return true;
+  }
+
+  return false;
+}
+
+QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback )
+{
+  QgsFeatureIds ids;
+#if 0
+  QString errorTitle;
+  QString errorText;
+
+  const QString authcfg = mDataSource.authConfigId();
+  const QList<quint32> objectIdsInRect = QgsArcGisRestQueryUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
+                                         extent, errorTitle, errorText, authcfg, mDataSource.httpHeaders(), feedback, mDataSource.sql() );
+
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+
+  for ( const quint32 objectId : objectIdsInRect )
+  {
+    const QgsFeatureId featureId = objectIdToFeatureId( objectId );
+    if ( featureId >= 0 )
+      ids.insert( featureId );
+  }
+#endif
+  return ids;
 }
 
 void QgsSensorThingsSharedData::clearCache()

@@ -43,18 +43,19 @@ class QgsSensorThingsFeatureIterator : public QgsAbstractFeatureIteratorFromSour
   public:
     QgsSensorThingsFeatureIterator( QgsSensorThingsFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
     ~QgsSensorThingsFeatureIterator() override;
-    bool rewind() override;
-    bool close() override;
-
-    void setInterruptionChecker( QgsFeedback *interruptionChecker ) override;
+    bool rewind() final;
+    bool close() final;
+    void setInterruptionChecker( QgsFeedback *interruptionChecker ) final;
 
   protected:
-    bool fetchFeature( QgsFeature &f ) override;
+    bool fetchFeature( QgsFeature &f ) final;
 
   private:
     QgsFeatureId mFeatureIterator = 0;
 
+    // All feature IDs to fetch
     QList< QgsFeatureId > mFeatureIdList;
+    // Remaining feature IDs which haven't yet been fetched
     QList< QgsFeatureId > mRemainingFeatureIds;
 
     QgsCoordinateTransform mTransform;

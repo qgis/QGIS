@@ -48,7 +48,11 @@ class QgsSensorThingsSharedData
     QString error() const { return mError; }
 
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
-    long long featureCount( QgsFeedback *feedback = nullptr );
+    long long featureCount( QgsFeedback *feedback = nullptr ) const;
+
+    bool hasCachedAllFeatures() const;
+    bool getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback = nullptr );
+    QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
 
     void clearCache();
 
@@ -61,7 +65,7 @@ class QgsSensorThingsSharedData
     QgsHttpHeaders mHeaders;
     QString mRootUri;
 
-    QString mError;
+    mutable QString mError;
 
     QString mEntityBaseUri;
 
@@ -71,10 +75,12 @@ class QgsSensorThingsSharedData
     QgsFields mFields;
     QgsCoordinateReferenceSystem mSourceCRS;
 
-    long long mFeatureCount = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
+    mutable long long mFeatureCount = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
 
     QHash<QString, QgsFeatureId> mIotIdToFeatureId;
     QMap<QgsFeatureId, QgsFeature> mCachedFeatures;
+
+    int mMaximumPageSize = 100;
 };
 
 ///@endcond PRIVATE
