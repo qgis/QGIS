@@ -33,6 +33,7 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
 
   mEntityType = qgsEnumKeyToValue( uriParts.value( QStringLiteral( "entity" ) ).toString(), Qgis::SensorThingsEntity::Invalid );
   mFields = QgsSensorThingsUtils::fieldsForEntityType( mEntityType );
+  mMaximumPageSize = uriParts.value( QStringLiteral( "pageSize" ), 1000 ).toInt();
 
   if ( QgsSensorThingsUtils::entityTypeHasGeometry( mEntityType ) )
   {
@@ -181,7 +182,7 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
 bool QgsSensorThingsSharedData::hasCachedAllFeatures() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-  return mCachedFeatures.count() == featureCount();
+  return mHasCachedAllFeatures;
 }
 
 bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback )
@@ -196,51 +197,42 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
     return true;
   }
 
+  if ( mHasCachedAllFeatures )
+    return false; // all features are cached, and we didn't find a match
+
   const QString authcfg = mAuthCfg;
   bool featureFetched = false;
-  long long startId = 0;
-  QList<quint32> objectIds;
-
-  // a potential optimisation? We could defer retrieval of total count and include it just in the first request for values?
-  const long long totalFeatures = featureCount( feedback );
-  if ( feedback && feedback->isCanceled() )
-    return false;
 
   basic_json rootContent;
 
+  // copy some members before we unlock the read/write locker
+  QString nextPage = mNextPage;
+  const QString baseUri = mEntityBaseUri;
+  int maximumPageSize = mMaximumPageSize;
+  const QgsFields fields = mFields;
+  const QgsHttpHeaders headers = mHeaders;
+
   while ( !featureFetched )
   {
-    startId = ( id / mMaximumPageSize ) * mMaximumPageSize;
-    const long long stopId = std::min< long long >( startId + mMaximumPageSize, totalFeatures );
-    objectIds.clear();
-    objectIds.reserve( stopId - startId );
-    for ( size_t i = startId; i < stopId; ++i )
-    {
-      if ( i >= 0 && i < mObjectIds.count() && !mCachedFeatures.contains( i ) )
-        objectIds.append( mObjectIds.at( i ) );
-    }
-
-    if ( objectIds.empty() )
-    {
-      QgsDebugMsgLevel( QStringLiteral( "No valid features IDs to fetch" ), 2 );
-      return false;
-    }
-
     // don't lock while doing the fetch
     locker.unlock();
 
     // query next features
-    QString errorMessage;
+    if ( nextPage.isEmpty() )
+      nextPage = QStringLiteral( "%1?$top=%2&$count=false" ).arg( baseUri ).arg( maximumPageSize );
 
-    // TODO
-    const QUrl url = parseUrl( QUrl( QStringLiteral( "%1?$top=%2&$count=false" ).arg( mEntityBaseUri ).arg( mMaximumPageSize ) ) );
+    // from: https://docs.ogc.org/is/18-088/18-088.html#nextLink
+    // "SensorThings clients SHALL treat the URL of the nextLink as opaque, and SHALL NOT append system query options to the URL of a next link"
+    //
+    // ie don't mess with this URL!!
+    const QUrl url = parseUrl( nextPage );
 
     QNetworkRequest request( url );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
-    mHeaders.updateNetworkRequest( request );
+    headers.updateNetworkRequest( request );
 
     QgsBlockingNetworkRequest networkRequest;
-    networkRequest.setAuthCfg( mAuthCfg );
+    networkRequest.setAuthCfg( authcfg );
     const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.get( request, false, feedback );
     if ( feedback && feedback->isCanceled() )
     {
@@ -250,17 +242,10 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
     if ( error != QgsBlockingNetworkRequest::NoError )
     {
       QgsDebugError( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+      locker.changeMode( QgsReadWriteLocker::Write );
       mError = networkRequest.errorMessage();
-      if ( mMaximumPageSize <= 1 || errorMessage.isEmpty() )
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
-        return false;
-      }
-      else
-      {
-        locker.changeMode( QgsReadWriteLocker::Read );
-        mMaximumPageSize = std::max( 1, mMaximumPageSize / 5 );
-      }
+      QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
+      return false;
     }
     else
     {
@@ -270,113 +255,222 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
         rootContent = json::parse( content.content().toStdString() );
         if ( !rootContent.contains( "value" ) )
         {
-          if ( mMaximumPageSize <= 1 || errorMessage.isEmpty() )
-          {
-            QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
-            return false;
-          }
-          else
-          {
-            locker.changeMode( QgsReadWriteLocker::Read );
-            mMaximumPageSize = std::max( 1, mMaximumPageSize / 5 );
-          }
-        }
-        else
-        {
-          featureFetched = true;
-        }
-      }
-      catch ( const json::parse_error &ex )
-      {
-        mError = QObject::tr( "Error parsing response: %1" ).arg( ex.what() );
-        if ( mMaximumPageSize <= 1 || errorMessage.isEmpty() )
-        {
-          QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
+          locker.changeMode( QgsReadWriteLocker::Write );
+          mError = QObject::tr( "No 'value' in response" );
+          QgsDebugMsgLevel( QStringLiteral( "No 'value' in response" ), 2 );
           return false;
         }
         else
         {
-          locker.changeMode( QgsReadWriteLocker::Read );
-          mMaximumPageSize = std::max( 1, mMaximumPageSize / 5 );
+          // all good, got a batch of features
+          const auto &values = rootContent["value"];
+          if ( values.empty() )
+          {
+            locker.changeMode( QgsReadWriteLocker::Write );
+
+            mNextPage.clear();
+            mHasCachedAllFeatures = true;
+
+            return false;
+          }
+          else
+          {
+            locker.changeMode( QgsReadWriteLocker::Write );
+            for ( const auto &featureData : values )
+            {
+              QgsFeature feature( fields );
+              feature.setId( mNextFeatureId++ );
+
+              auto getString = []( const basic_json<> &json, const char *tag ) -> QVariant
+              {
+                if ( !json.contains( tag ) )
+                  return QVariant();
+
+                const auto &jObj = json[tag];
+                if ( jObj.is_number_integer() )
+                {
+                  return QString::number( jObj.get<int>() );
+                }
+                else if ( jObj.is_number_unsigned() )
+                {
+                  return QString::number( jObj.get<unsigned>() );
+                }
+                else if ( jObj.is_boolean() )
+                {
+                  return QString::number( jObj.get<bool>() );
+                }
+                else if ( jObj.is_number_float() )
+                {
+                  return QString::number( jObj.get<double>() );
+                }
+
+                return QString::fromStdString( json[tag].get<std::string >() );
+              };
+
+              // Set attributes
+              const QString iotId = getString( featureData, "@iot.id" ).toString();
+              const QString selfLink = getString( featureData, "@iot.selfLink" ).toString();
+              // TODO!
+              const QVariant properties;
+              switch ( mEntityType )
+              {
+                case Qgis::SensorThingsEntity::Invalid:
+                  break;
+
+                case Qgis::SensorThingsEntity::Thing:
+                  feature.setAttributes(
+                    QgsAttributes()
+                    << iotId
+                    << selfLink
+                    << getString( featureData, "name" )
+                    << getString( featureData, "description" )
+                    << properties
+                  );
+                  break;
+
+                case Qgis::SensorThingsEntity::Location:
+                  feature.setAttributes(
+                    QgsAttributes()
+                    << iotId
+                    << selfLink
+                    << getString( featureData, "name" )
+                    << getString( featureData, "description" )
+                    << properties
+                  );
+                  break;
+
+                case Qgis::SensorThingsEntity::HistoricalLocation:
+                  feature.setAttributes(
+                    QgsAttributes()
+                    << iotId
+                    << selfLink
+                    << QVariant() // TODO -- datetime parsing
+                  );
+                  break;
+
+                case Qgis::SensorThingsEntity::Datastream:
+                  feature.setAttributes(
+                    QgsAttributes()
+                    << iotId
+                    << selfLink
+                    << getString( featureData, "name" )
+                    << getString( featureData, "description" )
+                    << QVariant() // TODO unitOfMeasurement
+                    << getString( featureData, "observationType" )
+                    << properties
+                    << QVariant() // TODO -- datetime parsing
+                    << QVariant() // TODO -- datetime parsing
+                    << QVariant() // TODO -- datetime parsing
+                    << QVariant() // TODO -- datetime parsing
+                  );
+                  break;
+
+                case Qgis::SensorThingsEntity::Sensor:
+                  feature.setAttributes(
+                    QgsAttributes()
+                    << iotId
+                    << selfLink
+                    << getString( featureData, "name" )
+                    << getString( featureData, "description" )
+                    << getString( featureData, "metadata" )
+                    << properties
+                  );
+                  break;
+
+                case Qgis::SensorThingsEntity::ObservedProperty:
+                  feature.setAttributes(
+                    QgsAttributes()
+                    << iotId
+                    << selfLink
+                    << getString( featureData, "name" )
+                    << getString( featureData, "definition" )
+                    << getString( featureData, "description" )
+                    << properties
+                  );
+                  break;
+
+                case Qgis::SensorThingsEntity::Observation:
+                  feature.setAttributes(
+                    QgsAttributes()
+                    << iotId
+                    << selfLink
+                    << QVariant() // TODO -- datetime parsing
+                    << QVariant() // TODO -- datetime parsing
+                    << QVariant() // TODO -- result type handling!
+                    << QVariant() // TODO -- datetime parsing
+                    << QVariant() // TODO -- list parsing
+                    << QVariant() // TODO -- datetime parsing
+                    << QVariant() // TODO -- datetime parsing
+                    << QVariant() // TODO -- parameters parsing
+                  );
+                  break;
+
+                case Qgis::SensorThingsEntity::FeatureOfInterest:
+                  feature.setAttributes(
+                    QgsAttributes()
+                    << iotId
+                    << selfLink
+                    << getString( featureData, "name" )
+                    << getString( featureData, "description" )
+                    << properties
+                  );
+                  break;
+              }
+
+              // Set geometry
+              if ( mGeometryType != Qgis::WkbType::NoGeometry )
+              {
+#if 0
+                const QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
+                std::unique_ptr< QgsAbstractGeometry > geometry( QgsArcGisRestUtils::convertGeometry( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
+                    QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) ) );
+                // Above might return 0, which is OK since in theory empty geometries are allowed
+                if ( geometry )
+                  feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
+#endif
+              }
+
+              mCachedFeatures.insert( feature.id(), feature );
+              mIotIdToFeatureId.insert( iotId, feature.id() );
+
+              if ( feature.id() == id )
+              {
+                f = feature;
+                featureFetched = true;
+                // don't break here -- store all the features we retrieved in this page first!
+              }
+            }
+
+            if ( rootContent.contains( "@iot.nextLink" ) )
+            {
+              mNextPage = QString::fromStdString( rootContent["@iot.nextLink"].get<std::string>() );
+            }
+            else
+            {
+              mNextPage.clear();
+              mHasCachedAllFeatures = true;
+            }
+
+            // if target feature was added to cache, return it
+            if ( featureFetched )
+            {
+              return true;
+            }
+            else if ( mHasCachedAllFeatures )
+            {
+              return false;
+            }
+          }
         }
       }
+      catch ( const json::parse_error &ex )
+      {
+        locker.changeMode( QgsReadWriteLocker::Write );
+        mError = QObject::tr( "Error parsing response: %1" ).arg( ex.what() );
+        QgsDebugMsgLevel( QStringLiteral( "Error parsing response: %1" ).arg( ex.what() ), 2 );
+        return false;
+      }
     }
-  }
-
-  // re-lock while updating cache
-  locker.changeMode( QgsReadWriteLocker::Write );
-
-  const auto &values = rootContent["value"];
-  if ( values.empty() )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Query returned no features" ), 3 );
-    return false;
-  }
-
-  int i = 0;
-  int n = featuresData.size();
-
-  for ( const auto &featureData : values )
-  {
-    if ( i >= n )
-      break;
-
-    QgsFeature feature( mFields );
-    QgsFeatureId featureId = startId + i;
-
-    // Set attributes
-    QgsAttributes attributes( mFields.size() );
-    for ( int idx = 0; idx < mFields.size(); ++idx )
-    {
-#if 0
-      QVariant attribute = attributesData[mFields.at( idx ).name()];
-      if ( QgsVariantUtils::isNull( attribute ) )
-      {
-        // ensure that null values are mapped correctly for PyQGIS
-        attribute = QVariant( QVariant::Int );
-      }
-
-      // date/datetime fields must be converted
-      if ( mFields.at( idx ).type() == QVariant::DateTime || mFields.at( idx ).type() == QVariant::Date )
-        attribute = QgsArcGisRestUtils::convertDateTime( attribute );
-
-      if ( !mFields.at( idx ).convertCompatible( attribute ) )
-      {
-        QgsDebugError( QStringLiteral( "Invalid value %1 for field %2 of type %3" ).arg( attributesData[mFields.at( idx ).name()].toString(), mFields.at( idx ).name(), mFields.at( idx ).typeName() ) );
-      }
-      attributes[idx] = attribute;
-      if ( mFields.at( idx ).name() == mObjectIdFieldName )
-      {
-        featureId = objectIdToFeatureId( attributesData[mFields.at( idx ).name()].toInt() );
-      }
-#endif
-    }
-    feature.setAttributes( attributes );
-
-    // Set FID
-    feature.setId( featureId );
-
-    // Set geometry
-#if 0
-    const QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
-    std::unique_ptr< QgsAbstractGeometry > geometry( QgsArcGisRestUtils::convertGeometry( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
-        QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) ) );
-    // Above might return 0, which is OK since in theory empty geometries are allowed
-    if ( geometry )
-      feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
-#endif
-
-    mCachedFeatures.insert( feature.id(), feature );
-
-    ++i;
-  }
-
-  // If added to cache, return feature
-  it = mCachedFeatures.constFind( id );
-  if ( it != mCachedFeatures.constEnd() )
-  {
-    f = it.value();
-    return true;
   }
 
   return false;

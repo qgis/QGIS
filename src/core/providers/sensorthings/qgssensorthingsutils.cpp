@@ -70,7 +70,6 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
   // common fields: https://docs.ogc.org/is/18-088/18-088.html#common-control-information
   fields.append( QgsField( QStringLiteral( "id" ), QVariant::String ) );
   fields.append( QgsField( QStringLiteral( "selfLink" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "navigationLink" ), QVariant::String ) );
 
   switch ( type )
   {

@@ -127,9 +127,6 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
     return false;
 
-  if ( mFeatureIterator >= mSource->sharedData()->objectIdCount() )
-    return false;
-
   if ( mDeferredFeaturesInFilterRectCheck )
   {
     const QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect, mInterruptionChecker );
@@ -192,7 +189,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
     case QgsFeatureRequest::FilterExpression:
     case QgsFeatureRequest::FilterNone:
     {
-      while ( mFeatureIterator < mSource->sharedData()->objectIdCount() )
+      while ( true )
       {
         if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
           return false;
@@ -210,6 +207,8 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
         }
         else
         {
+          if ( !success )
+            return false;
           ++mFeatureIterator;
         }
 
