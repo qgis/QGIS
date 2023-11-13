@@ -224,7 +224,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", 'http://' + endpoint
+                        "endpoint", "http://" + endpoint
                     )
                 )
 
@@ -233,8 +233,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     "wt",
                     encoding="utf8",
                 ) as f:
-                    f.write(
-                        """{"@iot.count":4962,"value":[]}""")
+                    f.write("""{"@iot.count":4962,"value":[]}""")
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='Location'",
@@ -292,9 +291,16 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", 'http://' + endpoint
+                        "endpoint", "http://" + endpoint
                     )
                 )
+
+            with open(
+                sanitize(endpoint, "/Things?$top=0&$count=true"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":30,"value":[]}""")
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='Thing'",
@@ -304,6 +310,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 30)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Thing</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Things"', vl.htmlMetadata())
@@ -348,9 +355,16 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", 'http://' + endpoint
+                        "endpoint", "http://" + endpoint
                     )
                 )
+
+            with open(
+                sanitize(endpoint, "/Locations?$top=0&$count=true"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":30,"value":[]}""")
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='Location'",
@@ -360,6 +374,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertEqual(vl.featureCount(), 30)
             self.assertEqual(vl.crs().authid(), "EPSG:4326")
             self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Locations"', vl.htmlMetadata())
@@ -404,9 +419,16 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", 'http://' + endpoint
+                        "endpoint", "http://" + endpoint
                     )
                 )
+
+            with open(
+                sanitize(endpoint, "/HistoricalLocations?$top=0&$count=true"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":28,"value":[]}""")
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='HistoricalLocation'",
@@ -416,11 +438,14 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 28)
             self.assertFalse(vl.crs().isValid())
             self.assertIn(
                 "Entity Type</td><td>HistoricalLocation</td>", vl.htmlMetadata()
             )
-            self.assertIn(f'href="http://{endpoint}/HistoricalLocations"', vl.htmlMetadata())
+            self.assertIn(
+                f'href="http://{endpoint}/HistoricalLocations"', vl.htmlMetadata()
+            )
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
@@ -458,9 +483,16 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", 'http://' + endpoint
+                        "endpoint", "http://" + endpoint
                     )
                 )
+
+            with open(
+                sanitize(endpoint, "/Datastreams?$top=0&$count=true"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":27,"value":[]}""")
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='Datastream'",
@@ -470,6 +502,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 27)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Datastream</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Datastreams"', vl.htmlMetadata())
@@ -526,9 +559,16 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", 'http://' + endpoint
+                        "endpoint", "http://" + endpoint
                     )
                 )
+
+            with open(
+                sanitize(endpoint, "/Sensors?$top=0&$count=true"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":27,"value":[]}""")
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='Sensor'",
@@ -538,6 +578,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 27)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Sensor</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Sensors"', vl.htmlMetadata())
@@ -584,9 +625,16 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", 'http://' + endpoint
+                        "endpoint", "http://" + endpoint
                     )
                 )
+
+            with open(
+                sanitize(endpoint, "/ObservedProperties?$top=0&$count=true"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":27,"value":[]}""")
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='ObservedProperty'",
@@ -596,11 +644,14 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 27)
             self.assertFalse(vl.crs().isValid())
             self.assertIn(
                 "Entity Type</td><td>ObservedProperty</td>", vl.htmlMetadata()
             )
-            self.assertIn(f'href="http://{endpoint}/ObservedProperties"', vl.htmlMetadata())
+            self.assertIn(
+                f'href="http://{endpoint}/ObservedProperties"', vl.htmlMetadata()
+            )
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
@@ -644,9 +695,16 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", 'http://' + endpoint
+                        "endpoint", "http://" + endpoint
                     )
                 )
+
+            with open(
+                sanitize(endpoint, "/Observations?$top=0&$count=true"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":27,"value":[]}""")
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='Observation'",
@@ -656,6 +714,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 27)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Observation</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Observations"', vl.htmlMetadata())
@@ -710,9 +769,16 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   "serverSettings": {
   }
 }""".replace(
-                        "endpoint", 'http://' + endpoint
+                        "endpoint", "http://" + endpoint
                     )
                 )
+
+            with open(
+                sanitize(endpoint, "/FeaturesOfInterest?$top=0&$count=true"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":25,"value":[]}""")
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='FeatureOfInterest'",
@@ -722,11 +788,14 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
-            self.assertEqual(vl.crs().authid(), 'EPSG:4326')
+            self.assertEqual(vl.featureCount(), 25)
+            self.assertEqual(vl.crs().authid(), "EPSG:4326")
             self.assertIn(
                 "Entity Type</td><td>FeatureOfInterest</td>", vl.htmlMetadata()
             )
-            self.assertIn(f'href="http://{endpoint}/FeaturesOfInterest"', vl.htmlMetadata())
+            self.assertIn(
+                f'href="http://{endpoint}/FeaturesOfInterest"', vl.htmlMetadata()
+            )
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
