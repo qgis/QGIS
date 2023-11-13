@@ -421,7 +421,7 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.number }}
         run: |
-          echo $PR_NUMBER > qgis_test_report/pr_number
+          echo $PR_NUMBER | sudo tee qgis_test_report/pr_number
 
       - name: Archive test results report
         if: ${{ failure() }}
