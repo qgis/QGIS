@@ -2209,8 +2209,6 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(response.body(), response.headers(), "WMS_GetMap_LabelingOpacities")
 
     def test_get_map_pdf(self):
-        r, h = self._result(self._execute_request(qs))
-
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
