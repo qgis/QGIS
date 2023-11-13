@@ -20,6 +20,7 @@
 #include "qgsreadwritelocker.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsjsonutils.h"
 
 #include <QCryptographicHash>
 #include <QFile>
@@ -418,16 +419,23 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
               }
 
               // Set geometry
-              if ( mGeometryType != Qgis::WkbType::NoGeometry )
+              if ( mGeometryType != Qgis::WkbType::NoGeometry && featureData.contains( "location" ) )
               {
-#if 0
-                const QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
-                std::unique_ptr< QgsAbstractGeometry > geometry( QgsArcGisRestUtils::convertGeometry( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
-                    QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) ) );
-                // Above might return 0, which is OK since in theory empty geometries are allowed
-                if ( geometry )
-                  feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
-#endif
+                const auto &location = featureData["location"];
+                const QgsFeatureList featureList = QgsJsonUtils::stringToFeatureList( QString::fromStdString( location.dump() ) );
+                if ( featureList.size() == 1 )
+                {
+                  const QgsGeometry geom = featureList.at( 0 ).geometry();
+                  if ( QgsWkbTypes::geometryType( geom.wkbType() ) != QgsWkbTypes::geometryType( mGeometryType ) )
+                  {
+                    // invalid feature for this provider -- skip it!
+                    continue;
+                  }
+
+                  const QVector< QgsGeometry> processedGeom = featureList.at( 0 ).geometry().coerceToType( mGeometryType );
+                  if ( processedGeom.size() == 1 )
+                    feature.setGeometry( processedGeom.at( 0 ) );
+                }
               }
 
               mCachedFeatures.insert( feature.id(), feature );
