@@ -133,7 +133,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
                 self.cboInputLayer.addItem(layer.name(), layer.id())
 
         # set the current index of the combo box to the active layer in the layer tree (if found in combo box)
-        if iface.activeLayer():
+        if iface is not None and iface.activeLayer():
             index = self.cboInputLayer.findData(iface.activeLayer().id())
             if index != -1:
                 self.cboInputLayer.setCurrentIndex(index)
