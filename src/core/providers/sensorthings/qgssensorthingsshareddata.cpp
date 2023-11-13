@@ -201,26 +201,91 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
   if ( mHasCachedAllFeatures )
     return false; // all features are cached, and we didn't find a match
 
-  const QString authcfg = mAuthCfg;
   bool featureFetched = false;
 
-  basic_json rootContent;
+  if ( mNextPage.isEmpty() )
+  {
+    locker.changeMode( QgsReadWriteLocker::Write );
+    mNextPage = QStringLiteral( "%1?$top=%2&$count=false" ).arg( mEntityBaseUri ).arg( mMaximumPageSize );
+  }
 
+  locker.unlock();
+
+  processFeatureRequest( mNextPage, feedback, [id, &f, &featureFetched]( const QgsFeature & feature )
+  {
+    if ( feature.id() == id )
+    {
+      f = feature;
+      featureFetched = true;
+      // don't break here -- store all the features we retrieved in this page first!
+    }
+  }, [&featureFetched, this]
+  {
+    return !featureFetched && !mHasCachedAllFeatures;
+  }, [this]
+  {
+    mNextPage.clear();
+    mHasCachedAllFeatures = true;
+  } );
+
+  return featureFetched;
+}
+
+QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback )
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  if ( mHasCachedAllFeatures )
+  {
+    // all features cached locally, rely on local spatial index
+    return qgis::listToSet( mSpatialIndex.intersects( extent ) );
+  }
+
+  // otherwise, ask the server nicely
+
+  // TODO -- is using 'geography' always correct here?
+  QString queryUrl = QStringLiteral( "%1?$filter=geo.intersects(location, geography'%2')&$top=%3&$count=false" ).arg( mEntityBaseUri, extent.asWktPolygon() ).arg( mMaximumPageSize );
+  locker.unlock();
+
+  QgsFeatureIds ids;
+
+  bool noMoreFeatures = false;
+  processFeatureRequest( queryUrl, feedback, [&ids]( const QgsFeature & feature )
+  {
+    ids.insert( feature.id() );
+  }, [&noMoreFeatures]
+  {
+    return !noMoreFeatures;
+  }, [&noMoreFeatures]
+  {
+    noMoreFeatures = true;
+  } );
+
+  return ids;
+}
+
+void QgsSensorThingsSharedData::clearCache()
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
+
+  mFeatureCount = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
+  mCachedFeatures.clear();
+  mIotIdToFeatureId.clear();
+  mSpatialIndex = QgsSpatialIndex();
+}
+
+bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFeedback *feedback, const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback, const std::function<bool ()> &continueFetchingCallback, const std::function<void ()> &onNoMoreFeaturesCallback )
+{
   // copy some members before we unlock the read/write locker
-  QString nextPage = mNextPage;
-  const QString baseUri = mEntityBaseUri;
-  int maximumPageSize = mMaximumPageSize;
-  const QgsFields fields = mFields;
-  const QgsHttpHeaders headers = mHeaders;
 
-  while ( !featureFetched )
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  const QString authcfg = mAuthCfg;
+  const QgsHttpHeaders headers = mHeaders;
+  const QgsFields fields = mFields;
+
+  while ( continueFetchingCallback() )
   {
     // don't lock while doing the fetch
     locker.unlock();
-
-    // query next features
-    if ( nextPage.isEmpty() )
-      nextPage = QStringLiteral( "%1?$top=%2&$count=false" ).arg( baseUri ).arg( maximumPageSize );
 
     // from: https://docs.ogc.org/is/18-088/18-088.html#nextLink
     // "SensorThings clients SHALL treat the URL of the nextLink as opaque, and SHALL NOT append system query options to the URL of a next link"
@@ -229,7 +294,7 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
     const QUrl url = parseUrl( nextPage );
 
     QNetworkRequest request( url );
-    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsSharedData" ) );
     headers.updateNetworkRequest( request );
 
     QgsBlockingNetworkRequest networkRequest;
@@ -253,7 +318,7 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
       const QgsNetworkReplyContent content = networkRequest.reply();
       try
       {
-        rootContent = json::parse( content.content().toStdString() );
+        const auto rootContent = json::parse( content.content().toStdString() );
         if ( !rootContent.contains( "value" ) )
         {
           locker.changeMode( QgsReadWriteLocker::Write );
@@ -269,19 +334,15 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
           {
             locker.changeMode( QgsReadWriteLocker::Write );
 
-            mNextPage.clear();
-            mHasCachedAllFeatures = true;
+            onNoMoreFeaturesCallback();
 
-            return false;
+            return true;
           }
           else
           {
             locker.changeMode( QgsReadWriteLocker::Write );
             for ( const auto &featureData : values )
             {
-              QgsFeature feature( fields );
-              feature.setId( mNextFeatureId++ );
-
               auto getString = []( const basic_json<> &json, const char *tag ) -> QVariant
               {
                 if ( !json.contains( tag ) )
@@ -310,6 +371,17 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
 
               // Set attributes
               const QString iotId = getString( featureData, "@iot.id" ).toString();
+              auto existingFeatureIdIt = mIotIdToFeatureId.constFind( iotId );
+              if ( existingFeatureIdIt != mIotIdToFeatureId.constEnd() )
+              {
+                // we've previously fetched and cached this feature, skip it
+                fetchedFeatureCallback( *mCachedFeatures.find( *existingFeatureIdIt ) );
+                continue;
+              }
+
+              QgsFeature feature( fields );
+              feature.setId( mNextFeatureId++ );
+
               const QString selfLink = getString( featureData, "@iot.selfLink" ).toString();
               // TODO!
               const QVariant properties;
@@ -440,33 +512,24 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
 
               mCachedFeatures.insert( feature.id(), feature );
               mIotIdToFeatureId.insert( iotId, feature.id() );
+              mSpatialIndex.addFeature( feature );
 
-              if ( feature.id() == id )
-              {
-                f = feature;
-                featureFetched = true;
-                // don't break here -- store all the features we retrieved in this page first!
-              }
+              fetchedFeatureCallback( feature );
             }
 
             if ( rootContent.contains( "@iot.nextLink" ) )
             {
-              mNextPage = QString::fromStdString( rootContent["@iot.nextLink"].get<std::string>() );
+              nextPage = QString::fromStdString( rootContent["@iot.nextLink"].get<std::string>() );
             }
             else
             {
-              mNextPage.clear();
-              mHasCachedAllFeatures = true;
+              onNoMoreFeaturesCallback();
             }
 
             // if target feature was added to cache, return it
-            if ( featureFetched )
+            if ( !continueFetchingCallback() )
             {
               return true;
-            }
-            else if ( mHasCachedAllFeatures )
-            {
-              return false;
             }
           }
         }
@@ -480,40 +543,7 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
       }
     }
   }
-
   return false;
-}
-
-QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback )
-{
-  QgsFeatureIds ids;
-#if 0
-  QString errorTitle;
-  QString errorText;
-
-  const QString authcfg = mDataSource.authConfigId();
-  const QList<quint32> objectIdsInRect = QgsArcGisRestQueryUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
-                                         extent, errorTitle, errorText, authcfg, mDataSource.httpHeaders(), feedback, mDataSource.sql() );
-
-  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-
-  for ( const quint32 objectId : objectIdsInRect )
-  {
-    const QgsFeatureId featureId = objectIdToFeatureId( objectId );
-    if ( featureId >= 0 )
-      ids.insert( featureId );
-  }
-#endif
-  return ids;
-}
-
-void QgsSensorThingsSharedData::clearCache()
-{
-  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
-
-  mFeatureCount = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
-  mCachedFeatures.clear();
-  mIotIdToFeatureId.clear();
 }
 
 ///@endcond PRIVATE
