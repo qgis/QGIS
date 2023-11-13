@@ -76,15 +76,12 @@ QgsSensorThingsFeatureIterator::QgsSensorThingsFeatureIterator( QgsSensorThingsF
     requestIds.insert( mRequest.filterFid() );
   }
 
-  if ( !mFilterRect.isNull() && !mSource->sharedData()->hasCachedAllFeatures() )
+  if ( !mFilterRect.isNull() )
   {
     // defer request to find features in filter rect until first feature is requested
     // this allows time for a interruption checker to be installed on the iterator
     // and avoids performing this expensive check in the main thread when just
     // preparing iterators
-
-    // (but if we've already cached ALL the features, we skip this -- there's no need for
-    // firing off another request to the server)
     mDeferredFeaturesInFilterRectCheck = true;
   }
 

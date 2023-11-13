@@ -20,6 +20,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgshttpheaders.h"
 #include "qgsfeature.h"
+#include "qgsspatialindex.h"
 
 #include <QReadWriteLock>
 
@@ -58,6 +59,11 @@ class QgsSensorThingsSharedData
 
   private:
 
+    bool processFeatureRequest( QString &nextPage, QgsFeedback *feedback,
+                                const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback,
+                                const std::function< bool() > &continueFetchingCallback,
+                                const std::function< void() > &onNoMoreFeaturesCallback );
+
     friend class QgsSensorThingsProvider;
     mutable QReadWriteLock mReadWriteLock{ QReadWriteLock::Recursive };
 
@@ -84,6 +90,7 @@ class QgsSensorThingsSharedData
 
     int mMaximumPageSize = 1000;
 
+    QgsSpatialIndex mSpatialIndex;
     mutable QString mNextPage;
 };
 
