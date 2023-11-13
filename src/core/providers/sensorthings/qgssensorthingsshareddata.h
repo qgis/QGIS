@@ -79,8 +79,12 @@ class QgsSensorThingsSharedData
 
     QHash<QString, QgsFeatureId> mIotIdToFeatureId;
     QMap<QgsFeatureId, QgsFeature> mCachedFeatures;
+    QgsFeatureId mNextFeatureId = 0;
+    bool mHasCachedAllFeatures = false;
 
-    int mMaximumPageSize = 100;
+    int mMaximumPageSize = 1000;
+
+    mutable QString mNextPage;
 };
 
 ///@endcond PRIVATE

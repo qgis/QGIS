@@ -27,7 +27,7 @@ from qgis.testing import start_app, QgisTestCase
 
 def sanitize(endpoint, x):
     if x.startswith("/query"):
-        x = x[len("/query") :]
+        x = x[len("/query"):]
         endpoint = endpoint + "_query"
 
     if len(endpoint + x) > 150:
@@ -303,7 +303,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 f.write("""{"@iot.count":3,"value":[]}""")
 
             with open(
-                sanitize(endpoint, "/Things?$top=2"),
+                sanitize(endpoint, "/Things?$top=2&$count=false"),
                 "wt",
                 encoding="utf8",
             ) as f:
@@ -317,7 +317,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
       "name": "Thing 1",
       "description": "Desc 1",
       "properties": {
-        "owner": "owner 1",
+        "owner": "owner 1"
       },
       "Locations@iot.navigationLink": "endpoint/Things(1)/Locations",
       "HistoricalLocations@iot.navigationLink": "endpoint/Things(1)/HistoricalLocations",
@@ -340,7 +340,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Things?$top=2&$skip=2"
 }
-                """.replace("endpoint", "http://" + endpoint)
+                """.replace(
+                        "endpoint", "http://" + endpoint
+                    )
                 )
 
                 with open(
@@ -358,7 +360,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                   "name": "Thing 3",
                   "description": "Desc 3",
                   "properties": {
-                    "owner": "owner 3",
+                    "owner": "owner 3"
                   },
                   "Locations@iot.navigationLink": "endpoint/Things(3)/Locations",
                   "HistoricalLocations@iot.navigationLink": "endpoint/Things(3)/HistoricalLocations",
@@ -367,11 +369,13 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace("endpoint", "http://" + endpoint)
+                            """.replace(
+                            "endpoint", "http://" + endpoint
+                        )
                     )
 
             vl = QgsVectorLayer(
-                f"url='http://{endpoint}' type=PointZ entity='Thing'",
+                f"url='http://{endpoint}' type=PointZ pageSize=2 entity='Thing'",
                 "test",
                 "sensorthings",
             )
@@ -388,7 +392,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [
                     "id",
                     "selfLink",
-                    "navigationLink",
                     "name",
                     "description",
                     "properties",
@@ -401,14 +404,18 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     QVariant.String,
                     QVariant.String,
                     QVariant.String,
-                    QVariant.String,
                     QVariant.Map,
                 ],
             )
 
             features = list(vl.getFeatures())
-            self.assertEqual(len(features), 3)
-
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ['1', '2', '3'])
+            self.assertEqual([f["selfLink"][-10:] for f in features], ['/Things(1)', '/Things(2)', '/Things(3)'])
+            self.assertEqual([f["name"] for f in features], ['Thing 1', 'Thing 2', 'Thing 3'])
+            self.assertEqual([f["description"] for f in features], ['Desc 1', 'Desc 2', 'Desc 3'])
+            # TODO!
+            self.assertEqual([f["properties"] for f in features], [None, None, None])
 
     def test_location(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -456,7 +463,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [
                     "id",
                     "selfLink",
-                    "navigationLink",
                     "name",
                     "description",
                     "properties",
@@ -465,7 +471,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f.type() for f in vl.fields()],
                 [
-                    QVariant.String,
                     QVariant.String,
                     QVariant.String,
                     QVariant.String,
@@ -524,14 +529,12 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [
                     "id",
                     "selfLink",
-                    "navigationLink",
                     "time",
                 ],
             )
             self.assertEqual(
                 [f.type() for f in vl.fields()],
                 [
-                    QVariant.String,
                     QVariant.String,
                     QVariant.String,
                     QVariant.DateTime,
@@ -584,7 +587,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [
                     "id",
                     "selfLink",
-                    "navigationLink",
                     "name",
                     "description",
                     "unitOfMeasurement",
@@ -599,7 +601,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f.type() for f in vl.fields()],
                 [
-                    QVariant.String,
                     QVariant.String,
                     QVariant.String,
                     QVariant.String,
@@ -660,7 +661,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [
                     "id",
                     "selfLink",
-                    "navigationLink",
                     "name",
                     "description",
                     "metadata",
@@ -670,7 +670,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f.type() for f in vl.fields()],
                 [
-                    QVariant.String,
                     QVariant.String,
                     QVariant.String,
                     QVariant.String,
@@ -730,7 +729,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [
                     "id",
                     "selfLink",
-                    "navigationLink",
                     "name",
                     "definition",
                     "description",
@@ -740,7 +738,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f.type() for f in vl.fields()],
                 [
-                    QVariant.String,
                     QVariant.String,
                     QVariant.String,
                     QVariant.String,
@@ -796,7 +793,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [
                     "id",
                     "selfLink",
-                    "navigationLink",
                     "phenomenonTimeStart",
                     "phenomenonTimeEnd",
                     "result",
@@ -810,7 +806,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f.type() for f in vl.fields()],
                 [
-                    QVariant.String,
                     QVariant.String,
                     QVariant.String,
                     QVariant.DateTime,
@@ -874,7 +869,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [
                     "id",
                     "selfLink",
-                    "navigationLink",
                     "name",
                     "description",
                     "properties",
@@ -887,7 +881,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     QVariant.String,
                     QVariant.String,
                     QVariant.String,
-                    QVariant.String,
                     QVariant.Map,
                 ],
             )
@@ -896,7 +889,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         """
         Test decoding a SensorThings uri
         """
-        uri = "url='https://sometest.com/api' type=MultiPointZ authcfg='abc' entity='Locations'"
+        uri = "url='https://sometest.com/api' type=MultiPointZ authcfg='abc' pageSize='20' entity='Locations'"
         parts = QgsProviderRegistry.instance().decodeUri("sensorthings", uri)
         self.assertEqual(
             parts,
@@ -905,6 +898,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "entity": "Location",
                 "geometryType": "multipoint",
                 "authcfg": "abc",
+                "pageSize": 20,
             },
         )
         # should be forgiving to entity vs entity set strings
@@ -955,11 +949,12 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             "authcfg": "aaaaa",
             "entity": "locations",
             "geometryType": "multipoint",
+            "pageSize": 20,
         }
         uri = QgsProviderRegistry.instance().encodeUri("sensorthings", parts)
         self.assertEqual(
             uri,
-            "authcfg=aaaaa type=MultiPointZ entity='Location' url='http://blah.com'",
+            "authcfg=aaaaa type=MultiPointZ entity='Location' pageSize='20' url='http://blah.com'",
         )
 
         # should be forgiving to entity vs entity set strings
