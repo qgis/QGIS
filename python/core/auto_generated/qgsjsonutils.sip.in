@@ -11,6 +11,7 @@
 
 
 
+
 class QgsJsonExporter
 {
 %Docstring(signature="appended")
@@ -353,6 +354,15 @@ Parse a simple array (depth=1)
 .. versionadded:: 3.0
 %End
 
+
+    static QgsGeometry geometryFromGeoJson( const QString &geometry );
+%Docstring
+Parses a GeoJSON "geometry" value to a :py:class:`QgsGeometry` object.
+
+Returns a null geometry if the geometry could not be parsed.
+
+.. versionadded:: 3.36
+%End
 
 
 
