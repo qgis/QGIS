@@ -183,7 +183,7 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
 bool QgsSensorThingsSharedData::hasCachedAllFeatures() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-  return mHasCachedAllFeatures;
+  return mHasCachedAllFeatures || ( mFeatureCount > 0 && mCachedFeatures.size() == mFeatureCount );
 }
 
 bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback )
@@ -198,7 +198,7 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
     return true;
   }
 
-  if ( mHasCachedAllFeatures )
+  if ( hasCachedAllFeatures() )
     return false; // all features are cached, and we didn't find a match
 
   bool featureFetched = false;
@@ -221,7 +221,7 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
     }
   }, [&featureFetched, this]
   {
-    return !featureFetched && !mHasCachedAllFeatures;
+    return !featureFetched && !hasCachedAllFeatures();
   }, [this]
   {
     mNextPage.clear();
@@ -236,7 +236,7 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   const QgsGeometry extentGeom = QgsGeometry::fromRect( extent );
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
 
-  if ( mHasCachedAllFeatures || mCachedExtent.contains( extentGeom ) )
+  if ( hasCachedAllFeatures() || mCachedExtent.contains( extentGeom ) )
   {
     // all features cached locally, rely on local spatial index
     return qgis::listToSet( mSpatialIndex.intersects( extent ) );

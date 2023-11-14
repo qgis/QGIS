@@ -81,6 +81,14 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
           {
             foundMatchingEntity = true;
             mSharedData->mEntityBaseUri = url;
+
+            // TODO:
+            // if we always retrieve feature count, is that less expensive then deferring this till we need it?
+            // by retrieving upfront, we can save a lot of requests where we've fetched features from spatial extents
+            // as we'll have a way of determining whether we've fetched all features from the source. Otherwise
+            // we never know if we've got everything yet, and are forced to re-fetched everything when a non-filtered request
+            // comes in...
+            ( void ) mSharedData->featureCount();
           }
         }
       }
