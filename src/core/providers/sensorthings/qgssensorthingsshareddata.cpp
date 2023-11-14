@@ -493,21 +493,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
               // Set geometry
               if ( mGeometryType != Qgis::WkbType::NoGeometry && featureData.contains( "location" ) )
               {
-                const auto &location = featureData["location"];
-                const QgsFeatureList featureList = QgsJsonUtils::stringToFeatureList( QString::fromStdString( location.dump() ) );
-                if ( featureList.size() == 1 )
-                {
-                  const QgsGeometry geom = featureList.at( 0 ).geometry();
-                  if ( QgsWkbTypes::geometryType( geom.wkbType() ) != QgsWkbTypes::geometryType( mGeometryType ) )
-                  {
-                    // invalid feature for this provider -- skip it!
-                    continue;
-                  }
-
-                  const QVector< QgsGeometry> processedGeom = featureList.at( 0 ).geometry().coerceToType( mGeometryType );
-                  if ( processedGeom.size() == 1 )
-                    feature.setGeometry( processedGeom.at( 0 ) );
-                }
+                feature.setGeometry( QgsJsonUtils::geometryFromGeoJson( featureData["location"] ) );
               }
 
               mCachedFeatures.insert( feature.id(), feature );
