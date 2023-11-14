@@ -31,6 +31,8 @@
 #include "qgsstylesavedialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
+#include "qgsmaplayer.h"
+#include "qgsmeshlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsnewauxiliarylayerdialog.h"
@@ -45,7 +47,7 @@
 #include <QButtonGroup>
 #include <QMessageBox>
 
-QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, QgsVectorLayer *layer )
+QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent )
   , mMapCanvas( mapCanvas )
   , mLayer( layer )
@@ -56,7 +58,7 @@ QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCan
   updateWidgetForFormat( format.isValid() ? format : QgsStyle::defaultTextFormatForProject( QgsProject::instance() ) );
 }
 
-QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode, QgsVectorLayer *layer )
+QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode, QgsMapLayer *layer )
   : QWidget( parent )
   , mMapCanvas( mapCanvas )
   , mLayer( layer )
@@ -866,7 +868,13 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
 
 void QgsTextFormatWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )
 {
-  button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), mLayer, true );
+  if ( mLayer->type() !=  Qgis::LayerType::Vector )
+  {
+    return;
+  }
+
+  QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+  button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), vLayer, true );
   if ( !mButtons.contains( key ) )
   {
     connect( button, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::updateProperty );
@@ -1834,15 +1842,21 @@ void QgsTextFormatWidget::createAuxiliaryField()
   if ( !mLayer )
     return;
 
-  // try to create an auxiliary layer if not yet created
-  if ( !mLayer->auxiliaryLayer() )
+  if ( mLayer->type() != Qgis::LayerType::Vector )
   {
-    QgsNewAuxiliaryLayerDialog dlg( mLayer, this );
+    return;
+  }
+
+  QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+  // try to create an auxiliary layer if not yet created
+  if ( !vLayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( vLayer, this );
     dlg.exec();
   }
 
   // return if still not exists
-  if ( !mLayer->auxiliaryLayer() )
+  if ( !vLayer->auxiliaryLayer() )
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
@@ -1850,8 +1864,8 @@ void QgsTextFormatWidget::createAuxiliaryField()
   const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[key];
 
   // create property in auxiliary storage if necessary
-  if ( !mLayer->auxiliaryLayer()->exists( def ) )
-    mLayer->auxiliaryLayer()->addAuxiliaryField( def );
+  if ( !vLayer->auxiliaryLayer()->exists( def ) )
+    vLayer->auxiliaryLayer()->addAuxiliaryField( def );
 
   // update property with join field name from auxiliary storage
   QgsProperty property = button->toProperty();
@@ -2139,8 +2153,8 @@ Qgis::GeometryType QgsTextFormatWidget::labelGeometryType() const
 {
   if ( mGeometryGeneratorGroupBox->isChecked() )
     return mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
-  else if ( mLayer )
-    return mLayer->geometryType();
+  else if ( mLayer && mLayer->type() == Qgis::LayerType::Vector )
+    return qobject_cast< QgsVectorLayer * >( mLayer )->geometryType();
   else
     return mGeomType;
 }
@@ -2150,7 +2164,7 @@ Qgis::GeometryType QgsTextFormatWidget::labelGeometryType() const
 // QgsTextFormatDialog
 //
 
-QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl, QgsVectorLayer *layer )
+QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl, QgsMapLayer *layer )
   : QDialog( parent, fl )
 {
   setWindowTitle( tr( "Text Settings" ) );
@@ -2192,7 +2206,7 @@ QDialogButtonBox *QgsTextFormatDialog::buttonBox() const
   return mButtonBox;
 }
 
-QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, QgsVectorLayer *layer )
+QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, QgsMapLayer *layer )
   : QgsPanelWidgetWrapper( new QgsTextFormatWidget( format, mapCanvas, nullptr, layer ), parent )
 {
   mFormatWidget = qobject_cast< QgsTextFormatWidget * >( widget() );
