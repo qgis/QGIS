@@ -160,6 +160,15 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     void entryAdded( const QgsNewsFeedParser::Entry &entry );
 
     /**
+     * Emitted whenever an existing \a entry is available from the feed (as a result
+     * of a call to fetch()).
+     * \since QGIS 3.36
+     *
+     * \see fetch()
+     */
+    void entryUpdated( const QgsNewsFeedParser::Entry &entry );
+
+    /**
      * Emitted whenever an \a entry is dismissed (as a result of a call
      * to dismissEntry()).
      *

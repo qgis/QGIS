@@ -455,14 +455,21 @@ void TestQgsNewsFeedParser::testUpdatedEntries()
     loop2.quit();
   } );
 
+  const QSignalSpy spyUpdated( &parser2, &QgsNewsFeedParser::entryUpdated );
+  const QSignalSpy spyDismissed( &parser2, &QgsNewsFeedParser::entryDismissed );
+
   parser2.fetch();
   loop2.exec();
+
+  QCOMPARE( spyDismissed.count(), 1 );
+  QCOMPARE( spyUpdated.count(), 1 );
 
   QCOMPARE( entries.count(), 2 );
   QCOMPARE( parser2.entries().count(), 3 );
   QCOMPARE( parser2.entries().at( 0 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
   QCOMPARE( parser2.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
   QCOMPARE( parser2.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting Revisited" ) );
+  QCOMPARE( parser2.entries().at( 2 ).expiry.toSecsSinceEpoch(), 7868426853 );
 
 }
 

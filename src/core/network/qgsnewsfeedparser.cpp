@@ -194,34 +194,64 @@ void QgsNewsFeedParser::onFetch( const QString &content )
   fetchedEntries.reserve( entries.size() );
   for ( const QVariant &e : entries )
   {
-    Entry newEntry;
+    Entry incomingEntry;
     const QVariantMap entryMap = e.toMap();
-    newEntry.key = entryMap.value( QStringLiteral( "pk" ) ).toInt();
-    newEntry.title = entryMap.value( QStringLiteral( "title" ) ).toString();
-    newEntry.imageUrl = entryMap.value( QStringLiteral( "image" ) ).toString();
-    newEntry.content = entryMap.value( QStringLiteral( "content" ) ).toString();
-    newEntry.link = entryMap.value( QStringLiteral( "url" ) ).toString();
-    newEntry.sticky = entryMap.value( QStringLiteral( "sticky" ) ).toBool();
+    incomingEntry.key = entryMap.value( QStringLiteral( "pk" ) ).toInt();
+    incomingEntry.title = entryMap.value( QStringLiteral( "title" ) ).toString();
+    incomingEntry.imageUrl = entryMap.value( QStringLiteral( "image" ) ).toString();
+    incomingEntry.content = entryMap.value( QStringLiteral( "content" ) ).toString();
+    incomingEntry.link = entryMap.value( QStringLiteral( "url" ) ).toString();
+    incomingEntry.sticky = entryMap.value( QStringLiteral( "sticky" ) ).toBool();
     bool ok = false;
-    const uint expiry = entryMap.value( QStringLiteral( "publish_to" ) ).toUInt( &ok );
+    const qlonglong expiry = entryMap.value( QStringLiteral( "publish_to" ) ).toLongLong( &ok );
     if ( ok )
-      newEntry.expiry.setSecsSinceEpoch( expiry );
+      incomingEntry.expiry.setSecsSinceEpoch( expiry );
+
+    fetchedEntries.append( incomingEntry );
 
     // We also need to handle the case of modified/expired entries
-    // So let's try to remove it first
-    dismissEntry( newEntry.key );
-
-    fetchedEntries.append( newEntry );
-
-    if ( !ok || expiry >= mFetchStartTime )
+    const auto entryIter { std::find_if( mEntries.begin(), mEntries.end(), [incomingEntry]( const QgsNewsFeedParser::Entry & candidate )
     {
+      return candidate.key == incomingEntry.key;
+    } )};
+    const bool entryExists { entryIter != mEntries.end() };
 
-      if ( !newEntry.imageUrl.isEmpty() )
-        fetchImageForEntry( newEntry );
+    // case 1: existing entry is now expired, dismiss
+    if ( ok && expiry < mFetchStartTime )
+    {
+      dismissEntry( incomingEntry.key );
+    }
+    // case 2: esisting entry edited
+    else if ( entryExists )
+    {
+      const bool imageNeedsUpdate = ( entryIter->imageUrl != incomingEntry.imageUrl ) && ! incomingEntry.imageUrl.isEmpty();
+      // also remove preview image, if it exists
+      if ( imageNeedsUpdate )
+      {
+        const QString previewDir = QStringLiteral( "%1/previewImages" ).arg( QgsApplication::qgisSettingsDirPath() );
+        const QString imagePath = QStringLiteral( "%1/%2.png" ).arg( previewDir ).arg( entryIter->key );
+        if ( QFile::exists( imagePath ) )
+        {
+          QFile::remove( imagePath );
+        }
+      }
+      *entryIter = incomingEntry;
+      if ( imageNeedsUpdate )
+        fetchImageForEntry( incomingEntry );
 
-      mEntries.append( newEntry );
-      storeEntryInSettings( newEntry );
-      emit entryAdded( newEntry );
+      sTreeNewsFeedEntries->deleteItem( QString::number( incomingEntry.key ), {mFeedKey} );
+      storeEntryInSettings( incomingEntry );
+      emit entryUpdated( incomingEntry );
+    }
+    // else: new entry, not expired
+    else if ( !ok || expiry >= mFetchStartTime )
+    {
+      if ( !incomingEntry.imageUrl.isEmpty() )
+        fetchImageForEntry( incomingEntry );
+
+      mEntries.append( incomingEntry );
+      storeEntryInSettings( incomingEntry );
+      emit entryAdded( incomingEntry );
     }
 
   }
