@@ -574,8 +574,8 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
 
   if ( mCurrentMouseMoveAction == MoveItem )
   {
-    //If Ctrl is pressed, copy the items instead of moving them
-    if ( copyDragEnabled() && event->modifiers() & Qt::ControlModifier )
+    //If Alt is pressed, copy the items instead of moving them
+    if ( copyDragEnabled() && event->modifiers() & Qt::AltModifier )
     {
       copyDrag();
     }

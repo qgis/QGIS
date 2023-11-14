@@ -283,7 +283,7 @@ view.
 %Docstring
 Copies the selected items to the clipboard, and pastes them at the specified ``layoutPoint``
 
-.. versionadded:: 3.32
+.. versionadded:: 3.36
 %End
 
   public slots:

@@ -179,7 +179,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     //! Returns the mouse handle bounds of current selection
     QRectF selectionBounds() const;
 
-    //! Returns whether items can be copied by Ctrl+dragging
+    //! Returns whether items can be copied by Alt+dragging
     virtual bool copyDragEnabled() const { return false; }
 
     virtual void copyDrag() {}

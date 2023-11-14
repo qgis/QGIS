@@ -299,7 +299,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     /**
      * Copies the selected items to the clipboard, and pastes them at the specified \a layoutPoint
      *
-     * \since QGIS 3.32
+     * \since QGIS 3.36
     */
     void copyPasteSelectedItems( const QPointF &layoutPoint );
 

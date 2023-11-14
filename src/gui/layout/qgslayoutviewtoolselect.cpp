@@ -177,8 +177,8 @@ void QgsLayoutViewToolSelect::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
   {
     if ( mMouseHandles->isDragging() )
     {
-      bool ctrlPressed = event->modifiers() & Qt::ControlModifier;
-      if ( ctrlPressed )
+      bool altPressed = event->modifiers() & Qt::AltModifier;
+      if ( altPressed )
       {
         view()->viewport()->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Copy ) );
       }
@@ -321,7 +321,7 @@ void QgsLayoutViewToolSelect::keyPressEvent( QKeyEvent *event )
 {
   if ( mMouseHandles->isDragging() )
   {
-    if ( event->key() == Qt::Key_Control )
+    if ( event->key() == Qt::Key_Alt )
     {
       view()->viewport()->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Copy ) );
     }
@@ -341,7 +341,7 @@ void QgsLayoutViewToolSelect::keyReleaseEvent( QKeyEvent *event )
 {
   if ( mMouseHandles->isDragging() )
   {
-    if ( event->key() == Qt::Key_Control )
+    if ( event->key() == Qt::Key_Alt )
     {
       view()->viewport()->setCursor( Qt::SizeAllCursor );
     }

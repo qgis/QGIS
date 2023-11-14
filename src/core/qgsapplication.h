@@ -409,7 +409,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       CapturePoint, //!< Select and capture a point or a feature
       Select, //!< Select a rectangle
       Sampler, //!< Color/Value picker
-      Copy, //!< Copy cursor \since QGIS 3.32
+      Copy, //!< Copy cursor \since QGIS 3.36
     };
 
     /**
