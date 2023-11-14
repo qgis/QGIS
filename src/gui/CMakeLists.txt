@@ -332,6 +332,7 @@ set(QGIS_GUI_SRCS
   mesh/qgsmeshlayerproperties.cpp
   mesh/qgsrenderermeshpropertieswidget.cpp
   mesh/qgsmeshdatasetgrouptreewidget.cpp
+  mesh/qgsmeshlabelingwidget.cpp
   mesh/qgsmeshrenderer3daveragingwidget.cpp
   mesh/qgsmeshrenderermeshsettingswidget.cpp
   mesh/qgsmeshrendererscalarsettingswidget.cpp
@@ -1288,6 +1289,7 @@ set(QGIS_GUI_HDRS
   mesh/qgsrenderermeshpropertieswidget.h
   mesh/qgsmeshdatasetgrouptreeview.h
   mesh/qgsmeshdatasetgrouptreewidget.h
+  mesh/qgsmeshlabelingwidget.h
   mesh/qgsmeshrenderer3daveragingwidget.h
   mesh/qgsmeshrenderermeshsettingswidget.h
   mesh/qgsmeshrendererscalarsettingswidget.h

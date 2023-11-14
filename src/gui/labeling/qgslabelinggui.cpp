@@ -95,6 +95,13 @@ void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
     return;
   }
 
+  QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+  if ( !vLayer )
+  {
+    mCalloutStackedWidget->setCurrentWidget( pageDummy );
+    return;
+  }
+
   if ( mCalloutStackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
@@ -105,14 +112,14 @@ void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
   QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
   if ( QgsCalloutAbstractMetadata *am = registry->calloutMetadata( callout->type() ) )
   {
-    if ( QgsCalloutWidget *w = am->createCalloutWidget( mLayer ) )
+    if ( QgsCalloutWidget *w = am->createCalloutWidget( vLayer ) )
     {
 
       Qgis::GeometryType geometryType = mGeomType;
       if ( mGeometryGeneratorGroupBox->isChecked() )
         geometryType = mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
-      else if ( mLayer )
-        geometryType = mLayer->geometryType();
+      else if ( vLayer )
+        geometryType = vLayer->geometryType();
       w->setGeometryType( geometryType );
       w->setCallout( callout );
 
@@ -130,16 +137,22 @@ void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
 
 void QgsLabelingGui::showObstacleSettings()
 {
+  QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+  if ( !vLayer )
+  {
+    return;
+  }
+
   QgsExpressionContext context = createExpressionContext();
 
   QgsSymbolWidgetContext symbolContext;
   symbolContext.setExpressionContext( &context );
   symbolContext.setMapCanvas( mMapCanvas );
 
-  QgsLabelObstacleSettingsWidget *widget = new QgsLabelObstacleSettingsWidget( nullptr, mLayer );
+  QgsLabelObstacleSettingsWidget *widget = new QgsLabelObstacleSettingsWidget( nullptr, vLayer );
   widget->setDataDefinedProperties( mDataDefinedProperties );
   widget->setSettings( mObstacleSettings );
-  widget->setGeometryType( mLayer ? mLayer->geometryType() : Qgis::GeometryType::Unknown );
+  widget->setGeometryType( vLayer ? vLayer->geometryType() : Qgis::GeometryType::Unknown );
   widget->setContext( symbolContext );
 
   auto applySettings = [ = ]
@@ -180,16 +193,22 @@ void QgsLabelingGui::showObstacleSettings()
 
 void QgsLabelingGui::showLineAnchorSettings()
 {
+  QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+  if ( !vLayer )
+  {
+    return;
+  }
+
   QgsExpressionContext context = createExpressionContext();
 
   QgsSymbolWidgetContext symbolContext;
   symbolContext.setExpressionContext( &context );
   symbolContext.setMapCanvas( mMapCanvas );
 
-  QgsLabelLineAnchorWidget *widget = new QgsLabelLineAnchorWidget( nullptr, mLayer );
+  QgsLabelLineAnchorWidget *widget = new QgsLabelLineAnchorWidget( nullptr, vLayer );
   widget->setDataDefinedProperties( mDataDefinedProperties );
   widget->setSettings( mLineSettings );
-  widget->setGeometryType( mLayer ? mLayer->geometryType() : Qgis::GeometryType::Unknown );
+  widget->setGeometryType( vLayer ? vLayer->geometryType() : Qgis::GeometryType::Unknown );
   widget->setContext( symbolContext );
 
   auto applySettings = [ = ]
@@ -320,19 +339,19 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   setEnabled( true );
 
-  QgsVectorLayer *layer = static_cast<QgsVectorLayer *>( mapLayer );
-  mLayer = layer;
+  mLayer = mapLayer;
+  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( mapLayer );
 
-  mTextFormatsListWidget->setLayerType( mLayer ? mLayer->geometryType() : mGeomType );
-  mBackgroundMarkerSymbolButton->setLayer( mLayer );
-  mBackgroundFillSymbolButton->setLayer( mLayer );
+  mTextFormatsListWidget->setLayerType( vLayer ? vLayer->geometryType() : mGeomType );
+  mBackgroundMarkerSymbolButton->setLayer( vLayer );
+  mBackgroundFillSymbolButton->setLayer( vLayer );
 
   // load labeling settings from layer
   updateGeometryTypeBasedWidgets();
 
-  mFieldExpressionWidget->setLayer( mLayer );
+  mFieldExpressionWidget->setLayer( vLayer );
   QgsDistanceArea da;
-  if ( mLayer )
+  if ( vLayer )
     da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( da );
@@ -636,7 +655,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
   lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();
 
-  lyr.layerType = mLayer ? mLayer->geometryType() : mGeomType;
+  QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+  lyr.layerType = vLayer ? vLayer->geometryType() : mGeomType;
 
   lyr.zIndex = mZIndexSpinBox->value();
 
@@ -829,10 +849,12 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
 {
   Qgis::GeometryType geometryType = mGeomType;
 
+  QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+
   if ( mGeometryGeneratorGroupBox->isChecked() )
     geometryType = mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
-  else if ( mLayer )
-    geometryType = mLayer->geometryType();
+  else if ( vLayer )
+    geometryType = vLayer->geometryType();
 
   // show/hide options based upon geometry type
   chkMergeLines->setVisible( geometryType == Qgis::GeometryType::Line );
@@ -898,7 +920,8 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
 
 void QgsLabelingGui::showGeometryGeneratorExpressionBuilder()
 {
-  QgsExpressionBuilderDialog expressionBuilder( mLayer );
+  QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+  QgsExpressionBuilderDialog expressionBuilder( vLayer );
 
   expressionBuilder.setExpressionText( mGeometryGenerator->text() );
   expressionBuilder.setExpressionContext( createExpressionContext() );
@@ -913,10 +936,12 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
 {
   bool valid = true;
 
+  QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+
   if ( mGeometryGeneratorGroupBox->isChecked() )
   {
-    if ( !mPreviewFeature.isValid() && mLayer )
-      mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( mPreviewFeature );
+    if ( !mPreviewFeature.isValid() && vLayer )
+      vLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( mPreviewFeature );
 
     QgsExpression expression( mGeometryGenerator->text() );
     QgsExpressionContext context = createExpressionContext();
@@ -962,8 +987,9 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
 
 void QgsLabelingGui::determineGeometryGeneratorType()
 {
-  if ( !mPreviewFeature.isValid() && mLayer )
-    mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( mPreviewFeature );
+  QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+  if ( !mPreviewFeature.isValid() && vLayer )
+    vLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( mPreviewFeature );
 
   QgsExpression expression( mGeometryGenerator->text() );
   QgsExpressionContext context = createExpressionContext();

@@ -33,6 +33,7 @@
 #include "qgssettings.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsmetadatawidget.h"
+#include "qgsmeshlabelingwidget.h"
 
 #include <QDesktopServices>
 #include <QFileDialog>
@@ -98,14 +99,32 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset From Requested Time (After or Before)" ),
       QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
 
-  QVBoxLayout *layout = new QVBoxLayout( metadataFrame );
-  layout->setContentsMargins( 0, 0, 0, 0 );
+  QVBoxLayout *labelingLayout = nullptr;
+
+  if ( mMeshLayer->contains( QgsMesh::ElementType::Face ) )
+  {
+    // Create the Labeling dialog tab
+    labelingLayout = new QVBoxLayout( labelingFrame );
+    labelingLayout->setContentsMargins( 0, 0, 0, 0 );
+    mLabelingDialog = new QgsMeshLabelingWidget( mMeshLayer, mCanvas, labelingFrame );
+    mLabelingDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
+    labelingLayout->addWidget( mLabelingDialog );
+    labelingFrame->setLayout( labelingLayout );
+  }
+  else
+  {
+    mLabelingDialog = nullptr;
+    mOptsPage_Labels->setEnabled( false ); // disable labeling item
+  }
+
+  QVBoxLayout *metadataLayout = new QVBoxLayout( metadataFrame );
+  metadataLayout->setContentsMargins( 0, 0, 0, 0 );
   metadataFrame->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mMeshLayer );
   mMetadataWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget->setMapCanvas( mCanvas );
-  layout->addWidget( mMetadataWidget );
-  metadataFrame->setLayout( layout );
+  metadataLayout->addWidget( mMetadataWidget );
+  metadataFrame->setLayout( metadataLayout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
   mBackupCrs = mMeshLayer->crs();
 
