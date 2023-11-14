@@ -49,6 +49,7 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::SetAccessControl );
     context.setFlag( QgsWmsRenderContext::UseTileBuffer );
     context.setParameters( request.wmsParameters() );
+    context.setSocketFeedback( response.feedback() );
 
     // rendering
     QgsRenderer renderer( context );
