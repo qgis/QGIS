@@ -46,6 +46,8 @@ class TestQgsJsonUtils : public QObject
     void testExportFeatureJson();
     void testExportFeatureJsonCrs();
     void testExportGeomToJson();
+    void testParseNumbers();
+    void testParseNumbers_data();
 };
 
 
@@ -322,6 +324,31 @@ void TestQgsJsonUtils::testExportGeomToJson()
     }
   }
 }
+
+void TestQgsJsonUtils::testParseNumbers()
+{
+  QFETCH( QString, number );
+  QFETCH( int, type );
+
+  qDebug() << number << QgsJsonUtils::parseJson( number ) << QgsJsonUtils::parseJson( number ).type() << type;
+  QCOMPARE( QgsJsonUtils::parseJson( number ).type(), type );
+}
+
+void TestQgsJsonUtils::testParseNumbers_data()
+{
+  QTest::addColumn<QString>( "number" );
+  QTest::addColumn<int>( "type" );
+
+  QTest::newRow( "zero" ) << "0" << static_cast<int>( QVariant::Type::Int );
+  QTest::newRow( "int max" ) << QString::number( std::numeric_limits<int>::max() ) << static_cast<int>( QVariant::Type::Int );
+  QTest::newRow( "int min" ) << QString::number( std::numeric_limits<int>::lowest() ) << static_cast<int>( QVariant::Type::Int );
+  QTest::newRow( "uint max" ) << QString::number( std::numeric_limits<uint>::max() ) << static_cast<int>( QVariant::Type::LongLong );
+  QTest::newRow( "ulong max" ) << QString::number( std::numeric_limits<qulonglong>::max() ) << static_cast<int>( QVariant::Type::ULongLong );
+  QTest::newRow( "longlong max" ) << QString::number( std::numeric_limits<qlonglong>::max() ) << static_cast<int>( QVariant::Type::LongLong );
+  QTest::newRow( "longlong min" ) << QString::number( std::numeric_limits<qlonglong>::lowest() ) << static_cast<int>( QVariant::Type::LongLong );
+}
+
+
 
 QGSTEST_MAIN( TestQgsJsonUtils )
 #include "testqgsjsonutils.moc"
