@@ -706,7 +706,7 @@ QgsGeometry QgsJsonUtils::geometryFromGeoJson( const QString &geometry )
   }
   catch ( json::parse_error &ex )
   {
-    QgsDebugError( QStringLiteral( "Cannot parse json (%1): %2" ).arg( ex.what() ) );
+    QgsDebugError( QStringLiteral( "Cannot parse json (%1): %2" ).arg( geometry, ex.what() ) );
     return QgsGeometry();
   }
 }
