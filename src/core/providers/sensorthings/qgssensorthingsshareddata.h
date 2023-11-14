@@ -85,6 +85,8 @@ class QgsSensorThingsSharedData
 
     QHash<QString, QgsFeatureId> mIotIdToFeatureId;
     QMap<QgsFeatureId, QgsFeature> mCachedFeatures;
+    QgsGeometry mCachedExtent;
+
     QgsFeatureId mNextFeatureId = 0;
     bool mHasCachedAllFeatures = false;
 

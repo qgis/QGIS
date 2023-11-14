@@ -233,8 +233,10 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
 
 QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback )
 {
+  const QgsGeometry extentGeom = QgsGeometry::fromRect( extent );
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-  if ( mHasCachedAllFeatures )
+
+  if ( mHasCachedAllFeatures || mCachedExtent.contains( extentGeom ) )
   {
     // all features cached locally, rely on local spatial index
     return qgis::listToSet( mSpatialIndex.intersects( extent ) );
@@ -249,7 +251,7 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   QgsFeatureIds ids;
 
   bool noMoreFeatures = false;
-  processFeatureRequest( queryUrl, feedback, [&ids]( const QgsFeature & feature )
+  const bool res = processFeatureRequest( queryUrl, feedback, [&ids]( const QgsFeature & feature )
   {
     ids.insert( feature.id() );
   }, [&noMoreFeatures]
@@ -259,6 +261,11 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   {
     noMoreFeatures = true;
   } );
+  if ( res && ( !feedback || !feedback->isCanceled() ) )
+  {
+    locker.changeMode( QgsReadWriteLocker::Write );
+    mCachedExtent = QgsGeometry::unaryUnion( { mCachedExtent, extentGeom } );
+  }
 
   return ids;
 }
