@@ -47,6 +47,7 @@
 #include "qgsthreadingutils.h"
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsmeshlayerlabeling.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -106,6 +107,7 @@ bool QgsMeshLayer::hasSimplifiedMeshes() const
 
 QgsMeshLayer::~QgsMeshLayer()
 {
+  delete mLabeling;
   delete mDataProvider;
 }
 
@@ -1773,6 +1775,16 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   blendModeElement.appendChild( blendModeText );
   node.appendChild( blendModeElement );
 
+  if ( categories.testFlag( Labeling ) )
+  {
+    if ( mLabeling )
+    {
+      QDomElement labelingElement = mLabeling->save( doc, context );
+      elem.appendChild( labelingElement );
+    }
+    elem.setAttribute( QStringLiteral( "labelsEnabled" ), mLabelsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  }
+
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
   {
@@ -2147,4 +2159,29 @@ QgsMapLayerElevationProperties *QgsMeshLayer::elevationProperties()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mElevationProperties;
+}
+
+bool QgsMeshLayer::labelsEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mLabelsEnabled && static_cast< bool >( mLabeling );
+}
+
+void QgsMeshLayer::setLabelsEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mLabelsEnabled = enabled;
+}
+
+void QgsMeshLayer::setLabeling( QgsAbstractMeshLayerLabeling *labeling )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mLabeling == labeling )
+    return;
+
+  delete mLabeling;
+  mLabeling = labeling;
 }
