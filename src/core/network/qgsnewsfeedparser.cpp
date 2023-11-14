@@ -224,9 +224,9 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     // case 2: esisting entry edited
     else if ( entryExists )
     {
-      const bool imageNeedsUpdate = ( entryIter->imageUrl != incomingEntry.imageUrl ) && ! incomingEntry.imageUrl.isEmpty();
+      const bool imageNeedsUpdate = ( entryIter->imageUrl != incomingEntry.imageUrl );
       // also remove preview image, if it exists
-      if ( imageNeedsUpdate )
+      if ( imageNeedsUpdate && ! entryIter->imageUrl.isEmpty() )
       {
         const QString previewDir = QStringLiteral( "%1/previewImages" ).arg( QgsApplication::qgisSettingsDirPath() );
         const QString imagePath = QStringLiteral( "%1/%2.png" ).arg( previewDir ).arg( entryIter->key );
@@ -236,7 +236,7 @@ void QgsNewsFeedParser::onFetch( const QString &content )
         }
       }
       *entryIter = incomingEntry;
-      if ( imageNeedsUpdate )
+      if ( imageNeedsUpdate && ! incomingEntry.imageUrl.isEmpty() )
         fetchImageForEntry( incomingEntry );
 
       sTreeNewsFeedEntries->deleteItem( QString::number( incomingEntry.key ), {mFeedKey} );
