@@ -500,11 +500,33 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString, QString &error 
       {
         if ( jObj.is_number_unsigned() )
         {
-          result = jObj.get<unsigned long long>();
+          // Try signed int and long long first, fall back
+          // onto unsigned long long
+          const qulonglong num { jObj.get<qulonglong>() };
+          if ( num <= std::numeric_limits<int>::max() )
+          {
+            result = static_cast<int>( num );
+          }
+          else if ( num <= std::numeric_limits<qlonglong>::max() )
+          {
+            result = static_cast<qlonglong>( num );
+          }
+          else
+          {
+            result = num;
+          }
         }
         else if ( jObj.is_number_integer() )
         {
-          result = jObj.get<long long>();
+          const qlonglong num { jObj.get<qlonglong>() };
+          if ( num <= std::numeric_limits<int>::max() && num >= std::numeric_limits<int>::lowest() )
+          {
+            result = static_cast<int>( num );
+          }
+          else
+          {
+            result = num;
+          }
         }
         else if ( jObj.is_boolean() )
         {
