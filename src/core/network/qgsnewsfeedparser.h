@@ -145,7 +145,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
   signals:
 
     /**
-     * Emitted when \a entries have fetched from the feed.
+     * Emitted when \a entries have been fetched from the feed.
      *
      * \see fetch()
      */

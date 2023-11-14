@@ -44,7 +44,7 @@
 #include <QRegularExpression>
 #include <QUrl>
 
-#define FEED_URL "https://feed.qgis.org/"
+#define FEED_URL "http://localhost:8000/"
 
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   : QWidget( parent )

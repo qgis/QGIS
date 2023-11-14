@@ -109,7 +109,7 @@ Fetches new entries from the feed's URL.
 
     void fetched( const QList< QgsNewsFeedParser::Entry > &entries );
 %Docstring
-Emitted when ``entries`` have fetched from the feed.
+Emitted when ``entries`` have been fetched from the feed.
 
 .. seealso:: :py:func:`fetch`
 %End

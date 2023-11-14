@@ -115,6 +115,8 @@ int QgsNewsFeedModel::columnCount( const QModelIndex & ) const
 
 void QgsNewsFeedModel::onEntryAdded( const QgsNewsFeedParser::Entry &entry )
 {
+  // Call remove just in case this was an update
+  onEntryRemoved( entry );
   beginInsertRows( QModelIndex(), mEntries.count(), mEntries.count() );
   mEntries.append( entry );
   endInsertRows();

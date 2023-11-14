@@ -190,8 +190,8 @@ void QgsNewsFeedParser::onFetch( const QString &content )
   const QVariant json = QgsJsonUtils::parseJson( content );
 
   const QVariantList entries = json.toList();
-  QList< QgsNewsFeedParser::Entry > newEntries;
-  newEntries.reserve( entries.size() );
+  QList< QgsNewsFeedParser::Entry > fetchedEntries;
+  fetchedEntries.reserve( entries.size() );
   for ( const QVariant &e : entries )
   {
     Entry newEntry;
@@ -206,17 +206,27 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     const uint expiry = entryMap.value( QStringLiteral( "publish_to" ) ).toUInt( &ok );
     if ( ok )
       newEntry.expiry.setSecsSinceEpoch( expiry );
-    newEntries.append( newEntry );
 
-    if ( !newEntry.imageUrl.isEmpty() )
-      fetchImageForEntry( newEntry );
+    // We also need to handle the case of modified/expired entries
+    // So let's try to remove it first
+    dismissEntry( newEntry.key );
 
-    mEntries.append( newEntry );
-    storeEntryInSettings( newEntry );
-    emit entryAdded( newEntry );
+    fetchedEntries.append( newEntry );
+
+    if ( !ok || expiry >= mFetchStartTime )
+    {
+
+      if ( !newEntry.imageUrl.isEmpty() )
+        fetchImageForEntry( newEntry );
+
+      mEntries.append( newEntry );
+      storeEntryInSettings( newEntry );
+      emit entryAdded( newEntry );
+    }
+
   }
 
-  emit fetched( newEntries );
+  emit fetched( fetchedEntries );
 }
 
 void QgsNewsFeedParser::readStoredEntries()
