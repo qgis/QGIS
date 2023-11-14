@@ -498,13 +498,13 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString, QString &error 
       }
       else
       {
-        if ( jObj.is_number_integer() )
+        if ( jObj.is_number_unsigned() )
         {
-          result = jObj.get<int>();
+          result = jObj.get<unsigned long long>();
         }
-        else if ( jObj.is_number_unsigned() )
+        else if ( jObj.is_number_integer() )
         {
-          result = jObj.get<unsigned>();
+          result = jObj.get<long long>();
         }
         else if ( jObj.is_boolean() )
         {
