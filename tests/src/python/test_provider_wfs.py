@@ -2042,6 +2042,122 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         values = [f['INTFIELD'] for f in source.getFeatures(QgsFeatureRequest())]
         self.assertEqual(values, [1])
 
+    def testLayerConstructionNoPrefix(self):
+        """
+        Test that layers can be constructed when the layer name is specified
+        without the prefix, when it's safe to do so.
+        """
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_no_prefix'
+
+        with open(sanitize(endpoint,
+                           '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=2.0.0'),
+                  'wb') as f:
+            f.write(b"""
+<wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:uniquename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-71.123 66.33</LowerCorner>
+        <UpperCorner>-65.32 78.3</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+    <FeatureType>
+      <Name>my:ambiguousname</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-71.123 66.33</LowerCorner>
+        <UpperCorner>-65.32 78.3</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+    <FeatureType>
+      <Name>other:ambiguousname</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-71.123 66.33</LowerCorner>
+        <UpperCorner>-65.32 78.3</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""")
+
+        schema = """
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="uniquenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="id" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:uniquenameType"/>
+</xsd:schema>
+"""
+        with open(sanitize(endpoint,
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:uniquename&TYPENAME=my:uniquename'),
+                  'wb') as f:
+            f.write(schema.encode('UTF-8'))
+
+            schema = """
+        <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+          <xsd:import namespace="http://www.opengis.net/gml"/>
+          <xsd:complexType name="ambiguousnameType">
+            <xsd:complexContent>
+              <xsd:extension base="gml:AbstractFeatureType">
+                <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="id" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
+                </xsd:sequence>
+              </xsd:extension>
+            </xsd:complexContent>
+          </xsd:complexType>
+          <xsd:element name="othertypename" substitutionGroup="gml:_Feature" type="my:ambiguousnameType"/>
+        </xsd:schema>
+        """
+            with open(sanitize(endpoint,
+                               '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:ambiguousname&TYPENAME=my:ambiguousname'),
+                      'wb') as f:
+                f.write(schema.encode('UTF-8'))
+
+        # Explicitly stating namespace for unique layer name
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='my:uniquename' version='2.0.0' skipInitialGetFeature='true'",
+            'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
+        # excluding namespace for unique layer name
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='uniquename' version='2.0.0' skipInitialGetFeature='true'",
+            'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
+        # Explicitly stating namespace for otherwise ambiguous name
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='my:ambiguousname' version='2.0.0' skipInitialGetFeature='true'",
+            'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
+        # excluding namespace for ambiguous name -- is not permitted
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='ambiguousname' version='2.0.0' skipInitialGetFeature='true'",
+            'test', 'WFS')
+        self.assertFalse(vl.isValid())
+
     def testJoins(self):
         """Test SELECT with joins """
 
