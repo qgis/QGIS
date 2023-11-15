@@ -41,6 +41,7 @@ set(TESTS
   testqgsmaptoolsplitfeatures.cpp
   testqgsmeasuretool.cpp
   testqgsmeasurebearingtool.cpp
+  testqgspluginsortfileproxymodel.cpp
   testqgsvertexeditor.cpp
   testqgsvertextool.cpp
   testqgsvectorlayersaveasdialog.cpp
