@@ -36,7 +36,7 @@ class QgsFontOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsFontOpt
      * Constructor for QgsFontOptionsWidget with the specified \a parent widget.
      */
     QgsFontOptionsWidget( QWidget *parent );
-
+    QString helpKey() const override;
     void apply() override;
 
 };
