@@ -61,7 +61,10 @@ class QgsLazDecoder
       Green,
       Blue,
       ScannerChannel,
-      ClassificationFlags,
+      Synthetic,
+      Keypoint,
+      Withheld,
+      Overlap,
       NIR,
       ExtraBytes,
       MissingOrUnknown

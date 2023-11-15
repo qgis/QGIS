@@ -192,6 +192,7 @@ std::vector< QgsLazDecoder::RequestedAttributeDetails > prepareRequestedAttribut
 
   std::vector< QgsLazDecoder::RequestedAttributeDetails > requestedAttributeDetails;
   requestedAttributeDetails.reserve( requestedAttributesVector.size() );
+
   for ( const QgsPointCloudAttribute &requestedAttribute : requestedAttributesVector )
   {
     if ( requestedAttribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 )
@@ -262,9 +263,21 @@ std::vector< QgsLazDecoder::RequestedAttributeDetails > prepareRequestedAttribut
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::ScannerChannel, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "ClassificationFlags" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( QLatin1String( "Synthetic" ), Qt::CaseInsensitive ) == 0 )
     {
-      requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::ClassificationFlags, requestedAttribute.type(), requestedAttribute.size() ) );
+      requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Synthetic, requestedAttribute.type(), requestedAttribute.size() ) );
+    }
+    else if ( requestedAttribute.name().compare( QLatin1String( "Keypoint" ), Qt::CaseInsensitive ) == 0 )
+    {
+      requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Keypoint, requestedAttribute.type(), requestedAttribute.size() ) );
+    }
+    else if ( requestedAttribute.name().compare( QLatin1String( "Withheld" ), Qt::CaseInsensitive ) == 0 )
+    {
+      requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Withheld, requestedAttribute.type(), requestedAttribute.size() ) );
+    }
+    else if ( requestedAttribute.name().compare( QLatin1String( "Overlap" ), Qt::CaseInsensitive ) == 0 )
+    {
+      requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Overlap, requestedAttribute.type(), requestedAttribute.size() ) );
     }
     else if ( requestedAttribute.name().compare( QLatin1String( "Infrared" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -397,8 +410,17 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
       case QgsLazDecoder::LazAttribute::ScannerChannel:
         lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( p14.scannerChannel() ) );
         break;
-      case QgsLazDecoder::LazAttribute::ClassificationFlags:
-        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( p14.classFlags() ) );
+      case QgsLazDecoder::LazAttribute::Synthetic:
+        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( p14.classFlags() & 0x01 ) );
+        break;
+      case QgsLazDecoder::LazAttribute::Keypoint:
+        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( ( p14.classFlags() >> 1 ) & 0x01 ) );
+        break;
+      case QgsLazDecoder::LazAttribute::Withheld:
+        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( ( p14.classFlags() >> 2 ) & 0x01 ) );
+        break;
+      case QgsLazDecoder::LazAttribute::Overlap:
+        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( ( p14.classFlags() >> 3 ) & 0x01 ) );
         break;
       case QgsLazDecoder::LazAttribute::NIR:
       {

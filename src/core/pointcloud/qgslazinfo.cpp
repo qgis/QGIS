@@ -174,7 +174,10 @@ void QgsLazInfo::parseLazAttributes()
   if ( mPointFormat == 6 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 9 || mPointFormat == 10 )
   {
     mAttributes.push_back( QgsPointCloudAttribute( "ScannerChannel", QgsPointCloudAttribute::Char ) );
-    mAttributes.push_back( QgsPointCloudAttribute( "ClassificationFlags", QgsPointCloudAttribute::Char ) );
+    mAttributes.push_back( QgsPointCloudAttribute( "Synthetic", QgsPointCloudAttribute::Char ) );
+    mAttributes.push_back( QgsPointCloudAttribute( "Keypoint", QgsPointCloudAttribute::Char ) );
+    mAttributes.push_back( QgsPointCloudAttribute( "Withheld", QgsPointCloudAttribute::Char ) );
+    mAttributes.push_back( QgsPointCloudAttribute( "Overlap", QgsPointCloudAttribute::Char ) );
   }
   if ( mPointFormat != 0 && mPointFormat != 2 )
   {

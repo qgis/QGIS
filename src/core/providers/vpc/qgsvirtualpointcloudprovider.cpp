@@ -439,8 +439,18 @@ void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> na
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "PointSourceId" ), QgsPointCloudAttribute::UShort ) );
   if ( names.contains( QLatin1String( "ScannerChannel" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "ScannerChannel" ), QgsPointCloudAttribute::Char ) );
-  if ( names.contains( QLatin1String( "ClassificationFlags" ) ) )
-    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "ClassificationFlags" ), QgsPointCloudAttribute::Char ) );
+  if ( names.contains( QLatin1String( "Synthetic" ) ) ||
+       names.contains( QLatin1String( "ClassificationFlags" ) ) )
+    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::Char ) );
+  if ( names.contains( QLatin1String( "Keypoint" ) ) ||
+       names.contains( QLatin1String( "ClassificationFlags" ) ) )
+    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Keypoint" ), QgsPointCloudAttribute::Char ) );
+  if ( names.contains( QLatin1String( "Withheld" ) ) ||
+       names.contains( QLatin1String( "ClassificationFlags" ) ) )
+    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::Char ) );
+  if ( names.contains( QLatin1String( "Overlap" ) ) ||
+       names.contains( QLatin1String( "ClassificationFlags" ) ) )
+    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::Char ) );
   if ( names.contains( QLatin1String( "GpsTime" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "GpsTime" ), QgsPointCloudAttribute::Double ) );
   if ( names.contains( QLatin1String( "Red" ) ) )
@@ -465,6 +475,10 @@ void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> na
                     QLatin1String( "PointSourceId" ),
                     QLatin1String( "ScannerChannel" ),
                     QLatin1String( "ClassificationFlags" ),
+                    QLatin1String( "Synthetic" ),
+                    QLatin1String( "Keypoint" ),
+                    QLatin1String( "Withheld" ),
+                    QLatin1String( "Overlap" ),
                     QLatin1String( "GpsTime" ),
                     QLatin1String( "Red" ),
                     QLatin1String( "Green" ),
