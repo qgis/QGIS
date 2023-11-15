@@ -22,6 +22,7 @@
 #include "qgis_server.h"
 #include "qgis_sip.h"
 #include "qgsserverexception.h"
+#include "qgsfeedback.h"
 
 #include <QString>
 #include <QIODevice>
@@ -195,6 +196,12 @@ class SERVER_EXPORT QgsServerResponse
      * Clear internal buffer
      */
     virtual void truncate() = 0;
+
+    /**
+     * Returns the socket feedback if any
+     * \since 3.36
+     */
+    virtual QgsFeedback *feedback() const;
 };
 
 #endif

@@ -44,7 +44,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             let fs = require('fs');
-            let issue_number = Number(fs.readFileSync('./test-results-qt${{ matrix.qt-version }}'));
+            let issue_number = Number(fs.readFileSync('./pr_number'));
             let body = String(fs.readFileSync('./summary.md'));
             await github.rest.issues.createComment({
               owner: context.repo.owner,

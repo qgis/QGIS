@@ -78,6 +78,8 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     void truncate() override { mResponse.truncate(); }
 
+    QgsFeedback *feedback() const override { return mResponse.feedback(); }
+
   private:
     QgsServerFiltersMap  mFilters;
     QgsServerResponse   &mResponse;

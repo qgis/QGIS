@@ -159,10 +159,19 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
     return;
   }
 
+  QSqlQuery qry( mDatabase );
+  if ( !LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, QStringLiteral( "alter session set nls_date_format = 'yyyy-mm-dd\"T\"HH24:MI:ss'" ),
+                           QVariantList() ) )
+  {
+    mDatabase.close();
+    const QString error { tr( "Error: Failed to switch the default format date to ISO" ) };
+    QgsMessageLog::logMessage( error, tr( "Oracle" ) );
+    mRef = 0;
+    return;
+  }
+
   if ( !workspace.isNull() )
   {
-    QSqlQuery qry( mDatabase );
-
     if ( !qry.prepare( QStringLiteral( "BEGIN\nDBMS_WM.GotoWorkspace(?);\nEND;" ) ) || !( qry.addBindValue( workspace ), qry.exec() ) )
     {
       mDatabase.close();

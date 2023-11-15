@@ -119,7 +119,7 @@ QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
 
 void QgsFormAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size ) const
 {
-  if ( !mDesignerWidget )
+  if ( !mDesignerWidget || !context.painter() || ( context.feedback() && context.feedback()->isCanceled() ) )
     return;
 
   // scale painter back to 96 dpi, so that forms look good even in layout prints

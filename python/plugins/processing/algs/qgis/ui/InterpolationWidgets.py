@@ -20,6 +20,10 @@ __date__ = 'December 2016'
 __copyright__ = '(C) 2016, Alexander Bruy'
 
 import os
+from typing import (
+    Optional,
+    Union
+)
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
@@ -28,7 +32,6 @@ from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsMapLayerProxyModel,
     QgsWkbTypes,
     QgsRectangle,
     QgsReferencedRectangle,
@@ -36,7 +39,8 @@ from qgis.core import (
     QgsProcessingUtils,
     QgsProcessingParameterNumber,
     QgsProcessingParameterDefinition,
-    QgsFieldProxyModel
+    QgsFieldProxyModel,
+    QgsVectorLayer
 )
 from qgis.gui import QgsDoubleSpinBox
 from qgis.analysis import QgsInterpolator
@@ -125,7 +129,7 @@ class InterpolationDataWidget(BASE, WIDGET):
         self.layersTree.invisibleRootItem().removeChild(item)
         self.hasChanged.emit()
 
-    def layerChanged(self, layer):
+    def layerChanged(self, layer: Optional[QgsVectorLayer]):
         self.chkUseZCoordinate.setEnabled(False)
         self.chkUseZCoordinate.setChecked(False)
 
@@ -141,7 +145,7 @@ class InterpolationDataWidget(BASE, WIDGET):
 
         self.cmbFields.setLayer(layer)
 
-    def _addLayerData(self, layerName, attribute):
+    def _addLayerData(self, layerName: str, attribute: str):
         item = QTreeWidgetItem()
         item.setText(0, layerName)
         item.setText(1, attribute)
@@ -154,7 +158,7 @@ class InterpolationDataWidget(BASE, WIDGET):
         comboBox.setCurrentIndex(0)
         self.layersTree.setItemWidget(item, 2, comboBox)
 
-    def setValue(self, value):
+    def setValue(self, value: str):
         self.layersTree.clear()
         rows = value.split('::|::')
         for i, r in enumerate(rows):
@@ -174,7 +178,7 @@ class InterpolationDataWidget(BASE, WIDGET):
 
         self.hasChanged.emit()
 
-    def value(self):
+    def value(self) -> str:
         layers = ''
         context = dataobjects.createContext()
         for i in range(self.layersTree.topLevelItemCount()):
@@ -254,7 +258,7 @@ class PixelSizeWidget(BASE, WIDGET):
         self.setupUi(self)
         self.context = dataobjects.createContext()
 
-        self.extent = QgsRectangle()
+        self.extent: Optional[Union[QgsReferencedRectangle, QgsRectangle]] = QgsRectangle()
         self.layers = []
 
         self.mCellXSpinBox.setShowClearButton(False)
@@ -267,7 +271,7 @@ class PixelSizeWidget(BASE, WIDGET):
         self.mRowsSpinBox.valueChanged.connect(self.rowsChanged)
         self.mColumnsSpinBox.valueChanged.connect(self.columnsChanged)
 
-    def setLayers(self, layersData):
+    def setLayers(self, layersData: str):
         self.extent = QgsRectangle()
         self.layers = []
         for row in layersData.split(';'):
@@ -276,27 +280,30 @@ class PixelSizeWidget(BASE, WIDGET):
             layer = QgsProcessingUtils.variantToSource(v[0], self.context)
             if layer:
                 self.layers.append(layer)
-                bbox = layer.sourceExtent()
-                if self.extent.isEmpty():
-                    self.extent = bbox
-                else:
-                    self.extent.combineExtentWith(bbox)
+                self.extent.combineExtentWith(layer.sourceExtent())
 
         self.pixelSizeChanged()
 
-    def setExtent(self, extent):
+    def setExtent(self, extent: Optional[str]):
         if extent is not None:
             tokens = extent.split(' ')[0].split(',')
-            ext = QgsRectangle(float(tokens[0]), float(tokens[2]), float(tokens[1]), float(tokens[3]))
+            ext = QgsRectangle(
+                float(tokens[0]),
+                float(tokens[2]),
+                float(tokens[1]),
+                float(tokens[3]))
+
             if len(tokens) > 1:
-                self.extent = QgsReferencedRectangle(ext, QgsCoordinateReferenceSystem(tokens[1][1:-1]))
+                self.extent = QgsReferencedRectangle(
+                    ext, QgsCoordinateReferenceSystem(tokens[1][1:-1]))
             else:
                 self.extent = ext
+
         self.pixelSizeChanged()
 
     def pixelSizeChanged(self):
         cell_size = self.mCellXSpinBox.value()
-        if cell_size <= 0:
+        if cell_size <= 0 or self.extent.isNull():
             return
 
         self.mCellYSpinBox.blockSignals(True)
@@ -313,9 +320,13 @@ class PixelSizeWidget(BASE, WIDGET):
 
     def rowsChanged(self):
         rows = self.mRowsSpinBox.value()
-        if rows <= 0:
+        if rows <= 0 or self.extent.isNull():
             return
+
         cell_size = self.extent.height() / rows
+        if cell_size == 0:
+            return
+
         cols = max(round(self.extent.width() / cell_size) + 1, 1)
         self.mColumnsSpinBox.blockSignals(True)
         self.mColumnsSpinBox.setValue(cols)
@@ -327,9 +338,13 @@ class PixelSizeWidget(BASE, WIDGET):
 
     def columnsChanged(self):
         cols = self.mColumnsSpinBox.value()
-        if cols < 2:
+        if cols < 2 or self.extent.isNull():
             return
+
         cell_size = self.extent.width() / (cols - 1)
+        if cell_size == 0:
+            return
+
         rows = max(round(self.extent.height() / cell_size), 1)
         self.mRowsSpinBox.blockSignals(True)
         self.mRowsSpinBox.setValue(rows)
@@ -389,13 +404,13 @@ class PixelSizeWidgetWrapper(WidgetWrapper):
     def layersChanged(self, wrapper):
         self.setLayers(wrapper.parameterValue())
 
-    def setLayers(self, layersData):
+    def setLayers(self, layersData: str):
         self.widget.setLayers(layersData)
 
     def extentChanged(self, wrapper):
         self.setExtent(wrapper.parameterValue())
 
-    def setExtent(self, extent):
+    def setExtent(self, extent: Optional[str]):
         self.widget.setExtent(extent)
 
     def setValue(self, value):

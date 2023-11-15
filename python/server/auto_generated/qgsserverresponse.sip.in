@@ -145,6 +145,13 @@ Truncate data
 
 Clear internal buffer
 %End
+
+    virtual QgsFeedback *feedback() const;
+%Docstring
+Returns the socket feedback if any
+
+.. versionadded:: 3.36
+%End
 };
 
 /************************************************************************
