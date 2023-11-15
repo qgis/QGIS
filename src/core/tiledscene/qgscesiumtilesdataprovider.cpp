@@ -577,11 +577,12 @@ Qgis::TileChildrenAvailability QgsCesiumTiledSceneIndex::childAvailability( long
   // a tile has children or geometry content!
 
   // let's avoid this request if we can get away with it:
-  if ( contentUri.endsWith( QLatin1String( ".json" ), Qt::CaseInsensitive ) )
+  const thread_local QRegularExpression isJsonRx( QStringLiteral( ".*\\.json(?:\\?.*)?$" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+  if ( isJsonRx.match( contentUri ).hasMatch() )
     return Qgis::TileChildrenAvailability::NeedFetching;
 
   // things we know definitely CAN'T be a child tile map:
-  const thread_local QRegularExpression antiCandidateRx( QStringLiteral( ".*\\.(gltf|glb|b3dm|i3dm|pnts|cmpt|bin|glbin|glbuf|png|jpeg|jpg)$" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+  const thread_local QRegularExpression antiCandidateRx( QStringLiteral( ".*\\.(gltf|glb|b3dm|i3dm|pnts|cmpt|bin|glbin|glbuf|png|jpeg|jpg)(?:\\?.*)?$" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
   if ( antiCandidateRx.match( contentUri ).hasMatch() )
     return Qgis::TileChildrenAvailability::NoChildren;
 
