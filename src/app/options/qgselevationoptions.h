@@ -35,7 +35,7 @@ class QgsElevationOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsEl
      * Constructor for QgsElevationOptionsWidget with the specified \a parent widget.
      */
     QgsElevationOptionsWidget( QWidget *parent );
-
+    QString helpKey() const override;
     void apply() override;
 
 };

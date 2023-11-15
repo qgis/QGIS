@@ -25,7 +25,7 @@ class QgsRasterRenderingOptionsWidget : public QgsOptionsPageWidget, private Ui:
   public:
 
     QgsRasterRenderingOptionsWidget( QWidget *parent );
-
+    QString helpKey() const override;
     void apply() override;
   private:
     bool mBlockStoringChanges = false;
