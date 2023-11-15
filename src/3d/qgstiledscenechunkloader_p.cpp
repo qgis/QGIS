@@ -47,23 +47,26 @@ static bool hasLargeBounds( const QgsTiledSceneTile &t )
 
 ///
 
-QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneChunkLoaderFactory &factory, const QgsTiledSceneTile &t, double zValueScale, double zValueOffset )
+QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset )
   : QgsChunkLoader( node )
   , mFactory( factory )
-  , mTile( t )
+  , mIndex( index )
 {
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [this, zValueScale, zValueOffset]
+  const QgsChunkNodeId tileId = node->tileId();
+  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset]
   {
+    const QgsTiledSceneTile tile = mIndex.getTile( tileId.uniqueId );
+
     // we do not load tiles that are too big - at least for the time being
     // the problem is that their 3D bounding boxes with ECEF coordinates are huge
     // and we are unable to turn them into planar bounding boxes
-    if ( hasLargeBounds( mTile ) )
+    if ( hasLargeBounds( tile ) )
       return;
 
-    QString uri = mTile.resources().value( QStringLiteral( "content" ) ).toString();
+    QString uri = tile.resources().value( QStringLiteral( "content" ) ).toString();
     if ( uri.isEmpty() )
     {
       // nothing to show for this tile
@@ -71,7 +74,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
       return;
     }
 
-    uri = mTile.baseUrl().resolved( uri ).toString();
+    uri = tile.baseUrl().resolved( uri ).toString();
     QByteArray content = mFactory.mIndex.retrieveContent( uri );
     if ( content.isEmpty() )
     {
@@ -88,13 +91,13 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     }
 
     QgsGltf3DUtils::EntityTransform entityTransform;
-    entityTransform.tileTransform = ( mTile.transform() ? *mTile.transform() : QgsMatrix4x4() );
+    entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
     entityTransform.tileTransform.translate( tileContent.rtcCenter );
     entityTransform.sceneOriginTargetCrs = mFactory.mMap.origin();
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
     entityTransform.zValueScale = zValueScale;
     entityTransform.zValueOffset = zValueOffset;
-    entityTransform.gltfUpAxis = static_cast< Qgis::Axis >( mTile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() );
+    entityTransform.gltfUpAxis = static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() );
 
     QStringList errors;
     mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
@@ -122,7 +125,6 @@ QgsTiledSceneChunkLoader::~QgsTiledSceneChunkLoader()
   }
 }
 
-
 Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
   if ( !mEntity )
@@ -145,9 +147,7 @@ QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DMap
 
 QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
 {
-  const QgsTiledSceneTile t = mIndex.getTile( node->tileId().uniqueId );
-
-  return new QgsTiledSceneChunkLoader( node, *this, t, mZValueScale, mZValueOffset );
+  return new QgsTiledSceneChunkLoader( node, mIndex, *this, mZValueScale, mZValueOffset );
 }
 
 // converts box from map coordinates to world coords (also flips [X,Y] to [X,-Z])
