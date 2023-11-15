@@ -78,6 +78,11 @@ QgsRasterRenderingOptionsWidget::QgsRasterRenderingOptionsWidget( QWidget *paren
   spnThreeBandStdDev->setClearValue( QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR );
 }
 
+QString QgsRasterRenderingOptionsWidget::helpKey() const
+{
+  return QStringLiteral( "introduction/qgis_configuration.html#raster-rendering-settings" );
+}
+
 void QgsRasterRenderingOptionsWidget::apply()
 {
   QgsSettings settings;

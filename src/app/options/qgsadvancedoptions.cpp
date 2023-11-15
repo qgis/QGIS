@@ -61,6 +61,11 @@ QgsAdvancedSettingsWidget::~QgsAdvancedSettingsWidget()
 {
 }
 
+QString QgsAdvancedSettingsWidget::helpKey() const
+{
+  return QStringLiteral( "introduction/qgis_configuration.html#advanced-settings" );
+}
+
 void QgsAdvancedSettingsWidget::apply()
 {
   // the old settings editor  applies changes immediately

@@ -89,6 +89,11 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
   mGpsBabelFileWidget->setFilePath( QgsSettingsRegistryCore::settingsGpsBabelPath->value() );
 }
 
+QString QgsGpsDeviceOptionsWidget::helpKey() const
+{
+  return QStringLiteral( "introduction/qgis_configuration.html#gpsbabel" );
+}
+
 void QgsGpsDeviceOptionsWidget::apply()
 {
   QgsBabelFormatRegistry::sTreeBabelDevices->deleteAllItems();
