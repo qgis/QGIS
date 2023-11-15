@@ -114,14 +114,14 @@ void TestQgsPluginSortFileProxyModel::testProxyModelFilters()
   QCOMPARE( mModelProxy->rowCount(), 1 );
   QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My Fantastic Plugin 1" );
 
-  filterRegExp = QRegularExpression( "FanTastI", QRegularExpression::CaseInsensitiveOption );
+  filterRegExp = QRegularExpression( "FanTastI", QRegularExpression::CaseInsensitiveOption );  //#spellok
   mModelProxy->setFilterRegularExpression( filterRegExp );
   QCOMPARE( mModelProxy->rowCount(), 2 );
   QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My Fantastic Plugin 1" );
   QCOMPARE( mModelProxy->data( mModelProxy->index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My New Fantastic Plugin" );
 
   // Filter by plugin description
-  filterRegExp = QRegularExpression( "new plUgi", QRegularExpression::CaseInsensitiveOption );
+  filterRegExp = QRegularExpression( "new plUgi", QRegularExpression::CaseInsensitiveOption );  //#spellok
   mModelProxy->setFilterRegularExpression( filterRegExp );
   QCOMPARE( mModelProxy->rowCount(), 1 );
   QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My New Fantastic Plugin" );
@@ -157,7 +157,7 @@ void TestQgsPluginSortFileProxyModel::testProxyModelFilters()
   QCOMPARE( mModelProxy->data( mModelProxy->index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My New Fantastic Plugin" );
 
   // Not found
-  filterRegExp = QRegularExpression( "pluggin", QRegularExpression::CaseInsensitiveOption );
+  filterRegExp = QRegularExpression( "pluggin", QRegularExpression::CaseInsensitiveOption );  //#spellok
   mModelProxy->setFilterRegularExpression( filterRegExp );
   QCOMPARE( mModelProxy->rowCount(), 0 );
 
@@ -171,7 +171,7 @@ void TestQgsPluginSortFileProxyModel::testProxyModelFilters()
   QCOMPARE( mModelProxy->data( mModelProxy->index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My New Fantastic Plugin" );
 
   // Tag not found
-  filterRegExp = QRegularExpression( "tagg", QRegularExpression::CaseInsensitiveOption );
+  filterRegExp = QRegularExpression( "tagg", QRegularExpression::CaseInsensitiveOption );  //#spellok
   mModelProxy->setFilterRegularExpression( filterRegExp );
   QCOMPARE( mModelProxy->rowCount(), 0 );
 
