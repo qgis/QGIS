@@ -109,12 +109,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   toolBar->addSeparator();
 
-  mActionSetSceneExtent = toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ),
-                          tr( "Set 3D Scene extent on 2D canvas" ), this, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
-  mActionSetSceneExtent->setCheckable( true );
-
-  toolBar->addSeparator();
-
   // Map Theme Menu
   mMapThemeMenu = new QMenu( this );
   connect( mMapThemeMenu, &QMenu::aboutToShow, this, &Qgs3DMapCanvasWidget::mapThemeMenuAboutToShow );
@@ -200,6 +194,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     mCanvas->map()->setViewFrustumVisualizationEnabled( enabled );
   } );
   mOptionsMenu->addAction( mShowFrustumPolyogon );
+
+  mActionSetSceneExtent = mOptionsMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ),
+                          tr( "Set 3D Scene extent on 2D canvas" ), this, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
+  mActionSetSceneExtent->setCheckable( true );
 
   mOptionsMenu->addSeparator();
 
@@ -685,11 +683,15 @@ void Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas()
     mMapToolPrevious = mMainCanvas->mapTool();
 
   mMainCanvas->setMapTool( mMapToolExtent.get() );
+  QgisApp::instance()->activateWindow();
+  QgisApp::instance()->raise();
   mMessageBar->pushMessage( tr( "Drag a rectangle on the main 2D canvas to define this 3D scene's extent" ), Qgis::MessageLevel::Info, 5 );
 }
 
 void Qgs3DMapCanvasWidget::setSceneExtent( const QgsRectangle &extent )
 {
+  this->activateWindow();
+  this->raise();
   mMessageBar->clearWidgets();
   if ( !extent.isEmpty() )
     mCanvas->map()->setExtent( extent );
