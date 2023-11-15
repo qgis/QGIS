@@ -256,6 +256,17 @@ Returns if legend groups should be in the legend graphic response if GetLegendGr
 :return: if the GetLegendGraphic response has to contain legend groups
 %End
 
+  bool wmsSkipNameForGroup( const QgsProject &project );
+%Docstring
+Returns if name attribute should be skipped for groups in WMS capabilities document.
+
+:param project: the QGIS project
+
+:return: if name attribute should be skipped for groups in capabilities
+
+.. versionadded:: 3.36
+%End
+
   int wmsFeatureInfoPrecision( const QgsProject &project );
 %Docstring
 Returns the geometry precision for GetFeatureInfo request.
