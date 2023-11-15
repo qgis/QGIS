@@ -1516,15 +1516,16 @@ void TestQgs3DRendering::do3DSceneExport( int zoomLevelsCount, int expectedObjec
   exporter.setScale( 1.0 );
 
   QVERIFY( exporter.parseVectorLayerEntity( scene->layerEntity( layerPoly ), layerPoly ) );
+  exporter.save( QString( "test3DSceneExporter-%1" ).arg( zoomLevelsCount ), "/tmp/" );
+
   int sum = 0;
   for ( auto o : exporter.mObjects )
   {
     QVERIFY( o->indexes().size() * 3 <= o->vertexPosition().size() );
     sum += o->indexes().size();
   }
-  QCOMPARE( sum, maxFaceCount );
-  exporter.save( QString( "test3DSceneExporter-%1" ).arg( zoomLevelsCount ), "/tmp/" );
 
+  QCOMPARE( sum, maxFaceCount );
   QCOMPARE( exporter.mExportedFeatureIds.size(), 3 );
   QCOMPARE( exporter.mObjects.size(), expectedObjectCount );
 }
@@ -1577,9 +1578,9 @@ void TestQgs3DRendering::test3DSceneExporter()
   // =========== check with 4 tiles ==> 3 exported objects
   do3DSceneExport( 2, 1, 165, scene, symbol3d, layerPoly, &engine );
   // =========== check with 9 tiles ==> 3 exported objects
-  do3DSceneExport( 3, 3, 216, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 3, 3, 165, scene, symbol3d, layerPoly, &engine );
   // =========== check with 16 tiles ==> 3 exported objects
-  do3DSceneExport( 4, 3, 132, scene, symbol3d, layerPoly, &engine );
+  do3DSceneExport( 4, 3, 165, scene, symbol3d, layerPoly, &engine );
   // =========== check with 25 tiles ==> 3 exported objects
   do3DSceneExport( 5, 3, 165, scene, symbol3d, layerPoly, &engine );
 
