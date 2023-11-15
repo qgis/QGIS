@@ -183,7 +183,14 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
     //add ring takes ownership of ring, and deletes it if there's an error
     QgsGeometry g = f.geometry();
 
-    addRingReturnCode = g.addRing( static_cast< QgsCurve * >( ring->clone() ) );
+    if ( ring->orientation() == Qgis::AngularDirection::Clockwise )
+    {
+      addRingReturnCode = g.addRing( static_cast< QgsCurve * >( ring->clone() ) );
+    }
+    else
+    {
+      addRingReturnCode = g.addRing( static_cast< QgsCurve * >( ring->reversed() ) );
+    }
     if ( addRingReturnCode == Qgis::GeometryOperationResult::Success )
     {
       layer->changeGeometry( f.id(), g );
