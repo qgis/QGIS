@@ -36,7 +36,7 @@ class APP_EXPORT QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::
      * Constructor for QgsGpsOptionsWidget with the specified \a parent widget.
      */
     QgsGpsOptionsWidget( QWidget *parent );
-
+    QString helpKey() const override;
     void apply() override;
 
   private slots:
