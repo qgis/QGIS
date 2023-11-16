@@ -202,9 +202,9 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     incomingEntry.content = entryMap.value( QStringLiteral( "content" ) ).toString();
     incomingEntry.link = entryMap.value( QStringLiteral( "url" ) ).toString();
     incomingEntry.sticky = entryMap.value( QStringLiteral( "sticky" ) ).toBool();
-    bool ok = false;
-    const qlonglong expiry = entryMap.value( QStringLiteral( "publish_to" ) ).toLongLong( &ok );
-    if ( ok )
+    bool hasExpiry = false;
+    const qlonglong expiry = entryMap.value( QStringLiteral( "publish_to" ) ).toLongLong( &hasExpiry );
+    if ( hasExpiry )
       incomingEntry.expiry.setSecsSinceEpoch( expiry );
 
     fetchedEntries.append( incomingEntry );
@@ -217,7 +217,7 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     const bool entryExists { entryIter != mEntries.end() };
 
     // case 1: existing entry is now expired, dismiss
-    if ( ok && expiry < mFetchStartTime )
+    if ( hasExpiry && expiry < mFetchStartTime )
     {
       dismissEntry( incomingEntry.key );
     }
@@ -244,7 +244,7 @@ void QgsNewsFeedParser::onFetch( const QString &content )
       emit entryUpdated( incomingEntry );
     }
     // else: new entry, not expired
-    else if ( !ok || expiry >= mFetchStartTime )
+    else if ( !hasExpiry || expiry >= mFetchStartTime )
     {
       if ( !incomingEntry.imageUrl.isEmpty() )
         fetchImageForEntry( incomingEntry );
