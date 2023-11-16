@@ -4386,6 +4386,8 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         layer.createMapRenderer(QgsRenderContext())
         layer.extent()
         layer.sourceExtent()
+        layer.extent3D()
+        layer.sourceExtent3D()
         layer.fields()
         layer.attributeList()
         layer.primaryKeyAttributes()

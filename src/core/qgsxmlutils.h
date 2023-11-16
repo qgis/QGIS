@@ -18,6 +18,7 @@
 class QDomDocument;
 
 class QgsRectangle;
+class QgsBox3D;
 
 #include <QDomElement>
 #include <QMetaEnum>
@@ -48,6 +49,14 @@ class CORE_EXPORT QgsXmlUtils
 
     static QgsRectangle readRectangle( const QDomElement &element );
 
+    /**
+     * Decodes a DOM element to a 3D box.
+     * \param element DOM document
+     * \returns decoded 3D box
+     * \since QGIS 3.36
+     */
+    static QgsBox3D readBox3D( const QDomElement &element );
+
     /* writing */
 
     /**
@@ -58,6 +67,16 @@ class CORE_EXPORT QgsXmlUtils
      * \see readMapUnits()
      */
     static QDomElement writeMapUnits( Qgis::DistanceUnit units, QDomDocument &doc );
+
+    /**
+     * Encodes a 3D box to a DOM element.
+     * \param box 3D box to encode
+     * \param doc DOM document
+     * \param elementName name of the DOM element
+     * \returns element containing encoded 3D box
+     * \since QGIS 3.36
+     */
+    static QDomElement writeBox3D( const QgsBox3D &box, QDomDocument &doc, const QString &elementName = QStringLiteral( "extent3D" ) );
 
     /**
      * Encodes a rectangle to a DOM element.

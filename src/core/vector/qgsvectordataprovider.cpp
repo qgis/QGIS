@@ -35,11 +35,13 @@
 #include "qgsogrproxytextcodec.h"
 #include "qgsthreadingutils.h"
 #include <mutex>
+#include "qgsdataproviderelevationproperties.h"
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options,
     QgsDataProvider::ReadFlags flags )
   : QgsDataProvider( uri, options, flags )
   , mTemporalCapabilities( std::make_unique< QgsVectorDataProviderTemporalCapabilities >() )
+  , mElevationProperties( std::make_unique< QgsDataProviderElevationProperties >() )
 {
 }
 
@@ -101,6 +103,13 @@ QgsRectangle QgsVectorDataProvider::sourceExtent() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return extent();
+}
+
+QgsBox3D QgsVectorDataProvider::sourceExtent3D() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return extent3D();
 }
 
 QString QgsVectorDataProvider::dataComment() const
@@ -1055,4 +1064,18 @@ const QgsVectorDataProviderTemporalCapabilities *QgsVectorDataProvider::temporal
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mTemporalCapabilities.get();
+}
+
+QgsDataProviderElevationProperties *QgsVectorDataProvider::elevationProperties()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mElevationProperties.get();
+}
+
+const QgsDataProviderElevationProperties *QgsVectorDataProvider::elevationProperties() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mElevationProperties.get();
 }

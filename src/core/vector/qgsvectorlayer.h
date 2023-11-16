@@ -1677,6 +1677,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsRectangle extent() const FINAL;
     QgsRectangle sourceExtent() const FINAL;
 
+    QgsBox3D extent3D() const FINAL;
+    QgsBox3D sourceExtent3D() const FINAL;
+
     /**
      * Returns the list of fields of this layer.
      * This also includes fields which have not yet been saved to the provider.
@@ -2802,6 +2805,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
   protected:
     //! Sets the extent
     void setExtent( const QgsRectangle &rect ) FINAL;
+    //! Sets the extent
+    void setExtent3D( const QgsBox3D &rect ) FINAL;
 
   private slots:
     void invalidateSymbolCountedFlag();

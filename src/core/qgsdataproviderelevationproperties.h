@@ -52,7 +52,30 @@ class CORE_EXPORT QgsDataProviderElevationProperties
      */
     QgsDataProviderElevationProperties();
 
+    /**
+     * Returns TRUE if the data provider definitely contains elevation related data.
+     *
+     * \note Even if this method returns FALSE, the data may still relate to elevation values. TRUE will only
+     * be returned in situations where elevation data is definitively present.
+     *
+     * \see setContainsElevationData()
+     * \since QGIS 3.36
+     */
+    virtual bool containsElevationData() const;
+
+    /**
+     * Sets whether the data provider definitely contains elevation related data.
+     *
+     * \see containsElevationData()
+     * \since QGIS 3.36
+     */
+    virtual void setContainsElevationData( bool contains );
+
     virtual ~QgsDataProviderElevationProperties();
+
+  protected:
+    bool mContainsElevationData = false;
+
 };
 
 #endif // QGSDATAPROVIDERELEVATIONPROPERTIES_H

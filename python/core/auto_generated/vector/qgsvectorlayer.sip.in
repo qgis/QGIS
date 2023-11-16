@@ -1745,6 +1745,11 @@ Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for re
     virtual QgsRectangle sourceExtent() const ${SIP_FINAL};
 
 
+    virtual QgsBox3D extent3D() const ${SIP_FINAL};
+
+    virtual QgsBox3D sourceExtent3D() const ${SIP_FINAL};
+
+
     virtual QgsFields fields() const ${SIP_FINAL};
 
 %Docstring
@@ -2992,6 +2997,11 @@ Emitted when the feature count for symbols on this layer has been recalculated.
 
   protected:
     virtual void setExtent( const QgsRectangle &rect ) ${SIP_FINAL};
+
+%Docstring
+Sets the extent
+%End
+    virtual void setExtent3D( const QgsBox3D &rect ) ${SIP_FINAL};
 
 %Docstring
 Sets the extent

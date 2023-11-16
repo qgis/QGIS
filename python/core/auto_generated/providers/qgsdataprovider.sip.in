@@ -197,6 +197,14 @@ Returns the extent of the layer
 :return: :py:class:`QgsRectangle` containing the extent of the layer
 %End
 
+    virtual QgsBox3D extent3D() const;
+%Docstring
+Returns the 3D extent of the layer
+
+:return: :py:class:`QgsBox3D` containing the 3D extent of the layer
+
+.. versionadded:: 3.36
+%End
 
     virtual bool isValid() const = 0;
 %Docstring
