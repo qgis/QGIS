@@ -221,7 +221,7 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     {
       dismissEntry( incomingEntry.key );
     }
-    // case 2: esisting entry edited
+    // case 2: existing entry edited
     else if ( entryExists )
     {
       const bool imageNeedsUpdate = ( entryIter->imageUrl != incomingEntry.imageUrl );
