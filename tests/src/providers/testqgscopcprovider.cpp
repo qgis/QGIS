@@ -323,16 +323,22 @@ void TestQgsCopcProvider::attributes()
   QCOMPARE( attributes.at( 11 ).type(), QgsPointCloudAttribute::UShort );
   QCOMPARE( attributes.at( 12 ).name(), QStringLiteral( "ScannerChannel" ) );
   QCOMPARE( attributes.at( 12 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 13 ).name(), QStringLiteral( "ClassificationFlags" ) );
+  QCOMPARE( attributes.at( 13 ).name(), QStringLiteral( "Synthetic" ) );
   QCOMPARE( attributes.at( 13 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 14 ).name(), QStringLiteral( "GpsTime" ) );
-  QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::Double );
-  QCOMPARE( attributes.at( 15 ).name(), QStringLiteral( "Red" ) );
-  QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 16 ).name(), QStringLiteral( "Green" ) );
-  QCOMPARE( attributes.at( 16 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 17 ).name(), QStringLiteral( "Blue" ) );
-  QCOMPARE( attributes.at( 17 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 14 ).name(), QStringLiteral( "Keypoint" ) );
+  QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 15 ).name(), QStringLiteral( "Withheld" ) );
+  QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 16 ).name(), QStringLiteral( "Overlap" ) );
+  QCOMPARE( attributes.at( 16 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 17 ).name(), QStringLiteral( "GpsTime" ) );
+  QCOMPARE( attributes.at( 17 ).type(), QgsPointCloudAttribute::Double );
+  QCOMPARE( attributes.at( 18 ).name(), QStringLiteral( "Red" ) );
+  QCOMPARE( attributes.at( 18 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 19 ).name(), QStringLiteral( "Green" ) );
+  QCOMPARE( attributes.at( 19 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 20 ).name(), QStringLiteral( "Blue" ) );
+  QCOMPARE( attributes.at( 20 ).type(), QgsPointCloudAttribute::UShort );
 }
 
 void TestQgsCopcProvider::calculateZRange()
