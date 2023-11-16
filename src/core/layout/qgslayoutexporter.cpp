@@ -26,6 +26,7 @@
 #include "qgslayoutgeopdfexporter.h"
 #include "qgslinestring.h"
 #include "qgsmessagelog.h"
+#include "qgsprojectstylesettings.h"
 #include "qgslabelingresults.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
@@ -36,6 +37,10 @@
 #include <QBuffer>
 #include <QTimeZone>
 #include <QTextStream>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#include <QColorSpace>
+#include <QPdfOutputIntent>
+#endif
 
 #include "gdal.h"
 #include "cpl_conv.h"
@@ -650,8 +655,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       {
         // copy layout metadata to GeoPDF export settings
         details.author = mLayout->project()->metadata().author();
-        details.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
-        details.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+        details.producer = getCreator();
+        details.creator = getCreator();
         details.creationDateTime = mLayout->project()->metadata().creationDateTime();
         details.subject = mLayout->project()->metadata().abstract();
         details.title = mLayout->project()->metadata().title();
@@ -1275,6 +1280,50 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice 
 
   updatePrinterPageSize( layout, device, firstPageToBeExported( layout ) );
 
+  // force a non empty title to avoid invalid (according to specification) PDF/X-4
+  const QString title = layout->project()->metadata().title().isEmpty() ?
+                        fi.baseName() : layout->project()->metadata().title();
+
+  QPdfWriter *pdfWriter = static_cast<QPdfWriter *>( device );
+  pdfWriter->setTitle( title );
+
+  QPagedPaintDevice::PdfVersion pdfVersion = QPagedPaintDevice::PdfVersion_1_4;
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+
+  const QgsProjectStyleSettings *styleSettings = layout->project() ? layout->project()->styleSettings() : nullptr;
+  if ( styleSettings )
+  {
+    // We don't want to let AUTO color model because we could end up writing RGB colors with a CMYK
+    // output intent color model and vice versa, so we force color conversion
+    switch ( styleSettings->colorModel() )
+    {
+      case Qgis::ColorModel::Cmyk:
+        pdfWriter->setColorModel( QPdfWriter::ColorModel::CMYK );
+        break;
+
+      case Qgis::ColorModel::Rgb:
+        pdfWriter->setColorModel( QPdfWriter::ColorModel::RGB );
+        break;
+    }
+
+    const QColorSpace colorSpace = styleSettings->colorSpace();
+    if ( colorSpace.isValid() )
+    {
+      QPdfOutputIntent outputIntent;
+      outputIntent.setOutputProfile( colorSpace );
+      pdfWriter->setOutputIntent( outputIntent );
+
+      // PDF/X-4 standard allows PDF to be printing ready and is only possible if a color space has been set
+      pdfVersion = QPagedPaintDevice::PdfVersion_X4;
+    }
+  }
+
+#endif
+
+  pdfWriter->setPdfVersion( pdfVersion );
+  setXmpMetadata( pdfWriter, layout );
+
   // TODO: add option for this in layout
   // May not work on Windows or non-X11 Linux. Works fine on Mac using QPrinter::NativeFormat
   //printer.setFontEmbeddingEnabled( true );
@@ -1529,7 +1578,7 @@ void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
   };
 
   addAgentNode( QStringLiteral( "dc:creator" ), metadata.author() );
-  addAgentNode( QStringLiteral( "dc:publisher" ), QStringLiteral( "QGIS %1" ).arg( Qgis::version() ) );
+  addAgentNode( QStringLiteral( "dc:publisher" ), getCreator() );
 
   // keywords
   {
@@ -1714,7 +1763,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
       GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toUtf8().constData(), nullptr );
 
       GDALSetMetadataItem( outputDS.get(), "AUTHOR", mLayout->project()->metadata().author().toUtf8().constData(), nullptr );
-      const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+      const QString creator = getCreator();
       GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toUtf8().constData(), nullptr );
       GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toUtf8().constData(), nullptr );
       GDALSetMetadataItem( outputDS.get(), "SUBJECT", mLayout->project()->metadata().abstract().toUtf8().constData(), nullptr );
@@ -2172,7 +2221,7 @@ bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFile
   if ( projectForMetadata )
   {
     w.setText( QStringLiteral( "Author" ), projectForMetadata->metadata().author() );
-    const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+    const QString creator = getCreator();
     w.setText( QStringLiteral( "Creator" ), creator );
     w.setText( QStringLiteral( "Producer" ), creator );
     w.setText( QStringLiteral( "Subject" ), projectForMetadata->metadata().abstract() );
@@ -2189,4 +2238,53 @@ bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFile
     w.setText( QStringLiteral( "Keywords" ), keywordString );
   }
   return w.write( image );
+}
+
+QString QgsLayoutExporter::getCreator()
+{
+  return QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+}
+
+void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout )
+{
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+  QUuid uuid = pdfWriter->documentId();
+#else
+  QUuid uuid = QUuid::createUuid();
+#endif
+
+  // XMP metadata date format differs from PDF dictionary one
+  const QDateTime creationDateTime = layout->project()->metadata().creationDateTime();
+  const QByteArray creationDateMetadata = creationDateTime.toOffsetFromUtc( creationDateTime.offsetFromUtc() ).toString( Qt::ISODate ).toUtf8();
+
+  const QByteArray author = layout->project()->metadata().author().toUtf8();
+  const QByteArray creator = getCreator().toUtf8();
+  const QByteArray xmpMetadata =
+    "<?xpacket begin='' ?>\n"
+    "<x:xmpmeta xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:pdf=\"http://ns.adobe.com/pdf/1.3/\" xmlns:pdfaid=\"http://www.aiim.org/pdfa/ns/id/\" xmlns:pdfxid=\"http://www.npes.org/pdfx/ns/id/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:x=\"adobe:ns:meta/\" xmlns:xmp=\"http://ns.adobe.com/xap/1.0/\" xmlns:xmpMM=\"http://ns.adobe.com/xap/1.0/mm/\">\n"
+    " <rdf:RDF>\n"
+    "  <rdf:Description rdf:about=\"\">\n"
+    "   <dc:title>\n"
+    "    <rdf:Alt>\n"
+    "     <rdf:li xml:lang=\"x-default\">" + pdfWriter->title().toUtf8() + "</rdf:li>\n"
+    "    </rdf:Alt>\n"
+    "   </dc:title>\n"
+    "   <dc:creator>\n"
+    "    <rdf:Seq>\n"
+    "     <rdf:li>" + author + "</rdf:li>\n"
+    "    </rdf:Seq>\n"
+    "   </dc:creator>\n"
+    "  </rdf:Description>\n"
+    "  <rdf:Description pdf:Producer=\"" + creator + "\" pdf:Trapped=\"False\" rdf:about=\"\"/>\n"
+    "  <rdf:Description rdf:about=\"\" xmp:CreateDate=\"" + creationDateMetadata + "\" xmp:CreatorTool=\"" + creator + "\" xmp:MetadataDate=\"" + creationDateMetadata + "\" xmp:ModifyDate=\"" + creationDateMetadata + "\"/>\n"
+    "  <rdf:Description rdf:about=\"\" xmpMM:DocumentID=\"uuid:" + uuid.toByteArray( QUuid::WithBraces ) + "\" xmpMM:RenditionClass=\"default\" xmpMM:VersionID=\"1\"/>\n"
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    // see qpdf.cpp QPdfEnginePrivate::writeXmpDocumentMetaData
+    + ( pdfWriter->pdfVersion() == QPagedPaintDevice::PdfVersion_X4 ? "  <rdf:Description pdfxid:GTS_PDFXVersion=\"PDF/X-4\" rdf:about=\"\"/>\n" : "" ) +
+#endif
+    " </rdf:RDF>\n"
+    "</x:xmpmeta>\n"
+    "<?xpacket end='w'?>\n";
+
+  pdfWriter->setDocumentXmpMetadata( xmpMetadata );
 }

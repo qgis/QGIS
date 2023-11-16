@@ -12,6 +12,10 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import os
 import subprocess
 import tempfile
+import xml.etree.ElementTree as etree
+from uuid import UUID
+from io import StringIO
+
 from typing import Optional
 
 from osgeo import gdal
@@ -29,6 +33,7 @@ from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgRenderer
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsFillSymbol,
@@ -523,6 +528,57 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertEqual(metadata['KEYWORDS'], 'KWx: kw3,kw4;kw: kw1,kw2')
         self.assertEqual(metadata['SUBJECT'], 'proj abstract')
         self.assertEqual(metadata['TITLE'], 'proj title')
+        qgisId = f"QGIS {Qgis.version()}"
+        self.assertEqual(metadata['CREATOR'], qgisId)
+
+        # check XMP metadata
+        xmpMetadata = d.GetMetadata("xml:XMP")
+        self.assertEqual(len(xmpMetadata), 1)
+        xmp = xmpMetadata[0]
+        self.assertTrue(xmp)
+        xmpDoc = etree.fromstring(xmp)
+        namespaces = dict([node for _, node in etree.iterparse(StringIO(xmp), events=['start-ns'])])
+
+        title = xmpDoc.findall("rdf:RDF/rdf:Description/dc:title/rdf:Alt/rdf:li", namespaces)
+        self.assertEqual(len(title), 1)
+        self.assertEqual(title[0].text, 'proj title')
+
+        creator = xmpDoc.findall("rdf:RDF/rdf:Description/dc:creator/rdf:Seq/rdf:li", namespaces)
+        self.assertEqual(len(creator), 1)
+        self.assertEqual(creator[0].text, 'proj author')
+
+        producer = xmpDoc.findall("rdf:RDF/rdf:Description[@pdf:Producer]", namespaces)
+        self.assertEqual(len(producer), 1)
+        self.assertEqual(producer[0].attrib["{" + namespaces["pdf"] + "}" + "Producer"], qgisId)
+
+        producer2 = xmpDoc.findall("rdf:RDF/rdf:Description[@xmp:CreatorTool]", namespaces)
+        self.assertEqual(len(producer2), 1)
+        self.assertEqual(producer2[0].attrib["{" + namespaces["xmp"] + "}" + "CreatorTool"], qgisId)
+
+        creationDateTags = xmpDoc.findall("rdf:RDF/rdf:Description[@xmp:CreateDate]", namespaces)
+        self.assertEqual(len(creationDateTags), 1)
+        creationDate = creationDateTags[0].attrib["{" + namespaces["xmp"] + "}" + "CreateDate"]
+        self.assertEqual(creationDate, "2011-05-03T09:04:05+10:00")
+
+        metadataDateTags = xmpDoc.findall("rdf:RDF/rdf:Description[@xmp:MetadataDate]", namespaces)
+        self.assertEqual(len(metadataDateTags), 1)
+        metadataDate = metadataDateTags[0].attrib["{" + namespaces["xmp"] + "}" + "MetadataDate"]
+        self.assertEqual(metadataDate, "2011-05-03T09:04:05+10:00")
+
+        modifyDateTags = xmpDoc.findall("rdf:RDF/rdf:Description[@xmp:ModifyDate]", namespaces)
+        self.assertEqual(len(modifyDateTags), 1)
+        modifyDate = modifyDateTags[0].attrib["{" + namespaces["xmp"] + "}" + "ModifyDate"]
+        self.assertEqual(modifyDate, "2011-05-03T09:04:05+10:00")
+
+        docIdTags = xmpDoc.findall("rdf:RDF/rdf:Description[@xmpMM:DocumentID]", namespaces)
+        self.assertEqual(len(docIdTags), 1)
+        docId = docIdTags[0].attrib["{" + namespaces["xmpMM"] + "}" + "DocumentID"]
+        uuidValid = True
+        try:
+            test = UUID(docId)
+        except ValueError:
+            uuidValid = False
+        self.assertTrue(uuidValid)
 
     def testExportToPdfGeoreference(self):
         md = QgsProject.instance().metadata()
