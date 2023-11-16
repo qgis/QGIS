@@ -1158,6 +1158,10 @@ namespace QgsWms
     pdfExportDetails.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
     const bool geoPdf = mWmsParameters.pdfAppendGeoreference();
     std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geoPdf, pdfExportDetails );
+    if ( mWmsParameters.pdfAppendGeoreference() )
+    {
+      pdf->setSaveWorldFile( true );
+    }
     return pdf;
   }
 
