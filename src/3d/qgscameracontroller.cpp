@@ -623,7 +623,33 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
 {
   mKeyboardHandler->setFocus( true );
-  if ( mouse->button() == Qt3DInput::QMouseEvent::LeftButton || mouse->button() == Qt3DInput::QMouseEvent::RightButton )
+
+  if ( mouse->button() == Qt3DInput::QMouseEvent::MiddleButton || ( ( mouse->modifiers() & Qt::ShiftModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton ) )
+  {
+    mMousePos = QPoint( mouse->x(), mouse->y() );
+    mMiddleButtonClickPos = QPoint( mouse->x(), mouse->y() );
+
+    if ( mCaptureFpsMouseMovements )
+      mIgnoreNextMouseMove = true;
+
+    mDepthBufferIsReady = false;
+    mRotationCenterCalculated = false;
+
+    mRotationPitch = mCameraPose.pitchAngle();
+    mRotationYaw = mCameraPose.headingAngle();
+
+    mCameraPose.updateCamera( mCameraBeforeRotation.get() );
+
+    mCameraBeforeRotation->setProjectionMatrix( mCamera->projectionMatrix() );
+    mCameraBeforeRotation->setNearPlane( mCamera->nearPlane() );
+    mCameraBeforeRotation->setFarPlane( mCamera->farPlane() );
+    mCameraBeforeRotation->setAspectRatio( mCamera->aspectRatio() );
+    mCameraBeforeRotation->setFieldOfView( mCamera->fieldOfView() );
+
+    emit requestDepthBufferCapture();
+  }
+
+  else if ( mouse->button() == Qt3DInput::QMouseEvent::LeftButton || mouse->button() == Qt3DInput::QMouseEvent::RightButton )
   {
     mMousePos = QPoint( mouse->x(), mouse->y() );
     mDragButtonClickPos = QPoint( mouse->x(), mouse->y() );
@@ -641,29 +667,6 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
 
     mDepthBufferIsReady = false;
     mDragPointCalculated = false;
-
-    emit requestDepthBufferCapture();
-  }
-
-  if ( mouse->button() == Qt3DInput::QMouseEvent::MiddleButton || ( ( mouse->modifiers() & Qt::ShiftModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton ) )
-  {
-    mMousePos = QPoint( mouse->x(), mouse->y() );
-    mMiddleButtonClickPos = QPoint( mouse->x(), mouse->y() );
-    if ( mCaptureFpsMouseMovements )
-      mIgnoreNextMouseMove = true;
-    mDepthBufferIsReady = false;
-    mRotationCenterCalculated = false;
-
-    mRotationPitch = mCameraPose.pitchAngle();
-    mRotationYaw = mCameraPose.headingAngle();
-
-    mCameraPose.updateCamera( mCameraBeforeRotation.get() );
-
-    mCameraBeforeRotation->setProjectionMatrix( mCamera->projectionMatrix() );
-    mCameraBeforeRotation->setNearPlane( mCamera->nearPlane() );
-    mCameraBeforeRotation->setFarPlane( mCamera->farPlane() );
-    mCameraBeforeRotation->setAspectRatio( mCamera->aspectRatio() );
-    mCameraBeforeRotation->setFieldOfView( mCamera->fieldOfView() );
 
     emit requestDepthBufferCapture();
   }
