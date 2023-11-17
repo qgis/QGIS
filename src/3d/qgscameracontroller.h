@@ -225,6 +225,16 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
     QWindow *window() const;
 
+    enum class MouseOperation
+    {
+      None = 0,
+      Translation,
+      Rotation,
+      Zoom
+    };
+
+    void setMouseParameters( const MouseOperation &newOperation );
+
   signals:
     //! Emitted when camera has been updated
     void cameraChanged();
@@ -312,7 +322,6 @@ class _3D_EXPORT QgsCameraController : public QObject
     QVector3D mDragPoint;
     double mDragDepth;
 
-    bool mIsInZoomInState = false;
     std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeZoom;
     bool mZoomPointCalculated = false;
     QVector3D mZoomPoint;
@@ -329,6 +338,8 @@ class _3D_EXPORT QgsCameraController : public QObject
     QTimer *mFpsNavTimer = nullptr;
 
     double mCumulatedWheelY = 0;
+
+    MouseOperation mCurrentOperation = MouseOperation::None;
 
     friend QgsCameraController4Test;
 };
