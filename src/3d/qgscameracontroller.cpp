@@ -182,11 +182,7 @@ void QgsCameraController::setCameraPose( const QgsCameraPose &camPose )
     return;
 
   mCameraPose = camPose;
-
-  if ( mCamera )
-    mCameraPose.updateCamera( mCamera );
-
-  emit cameraChanged();
+  updateCameraFromPose();
 }
 
 QDomElement QgsCameraController::writeXml( QDomDocument &doc ) const
@@ -260,6 +256,7 @@ void QgsCameraController::updateCameraFromPose()
 {
   if ( mCamera )
     mCameraPose.updateCamera( mCamera );
+
   emit cameraChanged();
 }
 
