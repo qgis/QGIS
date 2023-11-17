@@ -977,7 +977,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
 
   mHorizontalHeaderMenu->addSeparator();
 
-  QAction *fieldCalculator = new QAction( tr( "&Field Calculator..." ), mHorizontalHeaderMenu );
+  QAction *fieldCalculator = new QAction( tr( "Open &Field Calculator..." ), mHorizontalHeaderMenu );
   connect( fieldCalculator, &QAction::triggered, this, &QgsDualView::fieldCalculator );
     fieldCalculator->setData( col );
   mHorizontalHeaderMenu->addAction( fieldCalculator );
