@@ -294,7 +294,6 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     //! Last mouse position recorded
     QPoint mMousePos;
-    bool mMousePressed = false;
 
     bool mDepthBufferIsReady = false;
     QImage mDepthBufferImage;

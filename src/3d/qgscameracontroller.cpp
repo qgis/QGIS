@@ -627,7 +627,6 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
   {
     mMousePos = QPoint( mouse->x(), mouse->y() );
     mDragButtonClickPos = QPoint( mouse->x(), mouse->y() );
-    mMousePressed = true;
 
     if ( mCaptureFpsMouseMovements )
       mIgnoreNextMouseMove = true;
@@ -650,7 +649,6 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
   {
     mMousePos = QPoint( mouse->x(), mouse->y() );
     mMiddleButtonClickPos = QPoint( mouse->x(), mouse->y() );
-    mMousePressed = true;
     if ( mCaptureFpsMouseMovements )
       mIgnoreNextMouseMove = true;
     mDepthBufferIsReady = false;
@@ -674,7 +672,6 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
 void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
 {
   Q_UNUSED( mouse )
-  mMousePressed = false;
 
   mDragPointCalculated = false;
   mRotationCenterCalculated = false;
