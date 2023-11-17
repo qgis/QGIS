@@ -325,6 +325,8 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   {
     // rotate/tilt using mouse (camera moves as it rotates around the clicked point)
 
+    setMouseParameters( MouseOperation::Rotation );
+
     float scale = static_cast<float>( std::max( mScene->engine()->size().width(), mScene->engine()->size().height() ) );
     float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mMiddleButtonClickPos.y() ) / scale;
     float yawDiff = -180.0f * static_cast<float>( mouse->x() - mMiddleButtonClickPos.x() ) / scale;
@@ -386,6 +388,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   else if ( hasLeftButton && !hasShift && !hasCtrl )
   {
     // translation works as if one grabbed a point on the 3D viewer and dragged it
+    setMouseParameters( MouseOperation::Translation );
 
     if ( !mDepthBufferIsReady )
       return;
@@ -444,6 +447,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   }
   else if ( hasRightButton && !hasShift && !hasCtrl )
   {
+    setMouseParameters( MouseOperation::Zoom );
     if ( !mDepthBufferIsReady )
       return;
 
