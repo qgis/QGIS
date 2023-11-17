@@ -570,8 +570,8 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
     mCameraPose.setCenterPoint( newViewCenterWorld );
     updateCameraFromPose();
   }
-  mIsInZoomInState = false;
   mCumulatedWheelY = 0;
+  setMouseParameters( MouseOperation::None );
 }
 
 void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
@@ -594,24 +594,14 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
       // see: https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
       mCumulatedWheelY += scaling * wheel->angleDelta().y();
 
-      if ( !mIsInZoomInState )
+      if ( mCurrentOperation != MouseOperation::Zoom )
       {
-        mCameraPose.updateCamera( mCameraBeforeZoom.get() );
-
-        mCameraBeforeZoom->setProjectionMatrix( mCamera->projectionMatrix() );
-        mCameraBeforeZoom->setNearPlane( mCamera->nearPlane() );
-        mCameraBeforeZoom->setFarPlane( mCamera->farPlane() );
-        mCameraBeforeZoom->setAspectRatio( mCamera->aspectRatio() );
-        mCameraBeforeZoom->setFieldOfView( mCamera->fieldOfView() );
-
-        mZoomPointCalculated = false;
-        mIsInZoomInState = true;
-        mDepthBufferIsReady = false;
-        emit requestDepthBufferCapture();
+        setMouseParameters( MouseOperation::Zoom );
       }
       else
+      {
         handleTerrainNavigationWheelZoom();
-
+      }
       break;
     }
   }
@@ -629,21 +619,10 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
     if ( mCaptureFpsMouseMovements )
       mIgnoreNextMouseMove = true;
 
-    mDepthBufferIsReady = false;
-    mRotationCenterCalculated = false;
-
     mRotationPitch = mCameraPose.pitchAngle();
     mRotationYaw = mCameraPose.headingAngle();
 
-    mCameraPose.updateCamera( mCameraBeforeRotation.get() );
-
-    mCameraBeforeRotation->setProjectionMatrix( mCamera->projectionMatrix() );
-    mCameraBeforeRotation->setNearPlane( mCamera->nearPlane() );
-    mCameraBeforeRotation->setFarPlane( mCamera->farPlane() );
-    mCameraBeforeRotation->setAspectRatio( mCamera->aspectRatio() );
-    mCameraBeforeRotation->setFieldOfView( mCamera->fieldOfView() );
-
-    emit requestDepthBufferCapture();
+    setMouseParameters( MouseOperation::Rotation );
   }
 
   else if ( mouse->button() == Qt3DInput::QMouseEvent::LeftButton || mouse->button() == Qt3DInput::QMouseEvent::RightButton )
@@ -654,18 +633,7 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
     if ( mCaptureFpsMouseMovements )
       mIgnoreNextMouseMove = true;
 
-    mCameraPose.updateCamera( mCameraBeforeDrag.get() );
-
-    mCameraBeforeDrag->setProjectionMatrix( mCamera->projectionMatrix() );
-    mCameraBeforeDrag->setNearPlane( mCamera->nearPlane() );
-    mCameraBeforeDrag->setFarPlane( mCamera->farPlane() );
-    mCameraBeforeDrag->setAspectRatio( mCamera->aspectRatio() );
-    mCameraBeforeDrag->setFieldOfView( mCamera->fieldOfView() );
-
-    mDepthBufferIsReady = false;
-    mDragPointCalculated = false;
-
-    emit requestDepthBufferCapture();
+    setMouseParameters( MouseOperation::Translation );
   }
 }
 
@@ -673,8 +641,7 @@ void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
 {
   Q_UNUSED( mouse )
 
-  mDragPointCalculated = false;
-  mRotationCenterCalculated = false;
+  setMouseParameters( MouseOperation::None );
 }
 
 void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
@@ -1080,6 +1047,56 @@ void QgsCameraController::depthBufferCaptured( const QImage &depthImage )
   mDepthBufferImage = depthImage;
   mDepthBufferIsReady = true;
 
-  if ( mIsInZoomInState )
+  if ( mCurrentOperation == MouseOperation::Zoom )
+  {
     handleTerrainNavigationWheelZoom();
+  }
+}
+
+void QgsCameraController::setMouseParameters( const MouseOperation &newOperation )
+{
+  if ( newOperation == mCurrentOperation )
+  {
+    return;
+  }
+
+  mCurrentOperation = newOperation;
+  mDepthBufferIsReady = false;
+  mRotationCenterCalculated = false;
+  mDragPointCalculated = false;
+  mZoomPointCalculated = false;
+
+  if ( mCurrentOperation != MouseOperation::None )
+  {
+    emit requestDepthBufferCapture();
+  }
+
+  Qt3DRender::QCamera *cameraBefore = nullptr;
+  switch ( mCurrentOperation )
+  {
+    case MouseOperation::None:
+      break;
+
+    case MouseOperation::Rotation:
+      cameraBefore = mCameraBeforeRotation.get();
+      break;
+
+    case MouseOperation::Translation:
+      cameraBefore = mCameraBeforeDrag.get();
+      break;
+
+    case MouseOperation::Zoom:
+      cameraBefore = mCameraBeforeZoom.get();
+      break;
+  }
+
+  if ( cameraBefore )
+  {
+    cameraBefore->setProjectionMatrix( mCamera->projectionMatrix() );
+    cameraBefore->setNearPlane( mCamera->nearPlane() );
+    cameraBefore->setFarPlane( mCamera->farPlane() );
+    cameraBefore->setAspectRatio( mCamera->aspectRatio() );
+    cameraBefore->setFieldOfView( mCamera->fieldOfView() );
+    mCameraPose.updateCamera( cameraBefore );
+  }
 }
