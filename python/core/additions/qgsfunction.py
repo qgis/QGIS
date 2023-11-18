@@ -185,7 +185,7 @@ def qgsfunction(args="auto", group="custom", **kwargs):
         * *usesgeometry* (``bool``) --
           Defines if this expression requires the geometry. By default False.
         * *referenced_columns* (``list``) --
-          An array of field names on which this expression works. By default ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. Can be set to an empty list for slightly faster evaluation.
+          An array of names of fields on which this expression works. By default ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. Specifying a subset of fields or an empty list will result in a faster execution.
         * *handlesnull* (``bool``) --
           Defines if this expression has custom handling for NULL values. If False, the result will always be NULL as soon as any parameter is NULL. False by default.
         * *params_as_list* (``bool``) \since QGIS 3.32 --
