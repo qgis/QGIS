@@ -1526,7 +1526,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
 #ifdef OGRNullMarker
       OGR_F_SetFieldNull( feature.get(), ogrAttributeId );
 #else
-      OGR_F_UnsetField( feature.get(), ogrAttId );
+      OGR_F_UnsetField( feature.get(), ogrAttributeId );
 #endif
     }
     else
