@@ -1,0 +1,42 @@
+# Install miniforge:
+# https://github.com/conda-forge/miniforge#install
+# Create or update the enviroment:
+# mamba env update -n qgis -f conda-deps.yml
+# Use the enviroment:
+# conda activate qgis
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - cxx-compiler
+  - ccache
+  - pkg-config
+  - cmake
+  - make
+  - ninja
+  - flex
+  - bison
+  - cuda-opencl
+  - geos
+  - qt
+  - qca
+  - qtwebkit
+  - qwt
+  - qtkeychain
+  - qscintilla2
+  - sqlite
+  - gdal
+  - exiv2
+  - pdal
+  - mesa-libgl-devel-cos7-x86_64
+  - gsl
+  - sip
+  - libspatialindex
+  - pyqt-builder
+  - jinja2
+  - proj
+  - pyproj
+  - pygments
+  - yaml
+  - owslib
+  - psycopg2
