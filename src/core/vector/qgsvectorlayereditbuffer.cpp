@@ -802,10 +802,6 @@ bool QgsVectorLayerEditBuffer::commitChangesChangeAttributes( bool &attributesCh
       return false;
     }
 
-    // recompute extent for Shapefile
-    if ( L->storageType() == QLatin1String( "ESRI Shapefile" ) )
-      L->extent();
-
     if ( L->dataProvider()->changeGeometryValues( mChangedGeometries ) )
     {
       commitErrors << tr( "SUCCESS: %n geometries were changed.", "changed geometries count", mChangedGeometries.size() );
