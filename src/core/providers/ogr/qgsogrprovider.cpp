@@ -1128,7 +1128,7 @@ QgsRectangle QgsOgrProvider::extent() const
 
     if ( mForceRecomputeExtent && mValid &&
          ( mGDALDriverName == QLatin1String( "GPKG" ) ||
-           ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) && mWriteAccess) ) &&
+           ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) && mWriteAccess ) ) &&
          mOgrOrigLayer )
     {
       // works with unquoted layerName
