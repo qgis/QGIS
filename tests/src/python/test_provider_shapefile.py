@@ -1142,6 +1142,18 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
         f = next(vl.getFeatures())
         self.assertEqual(f['name'], 'Apple')
 
+    def testRecomputeExtent(self):
+        """Test shrink extent correctly"""
+
+        vl = self.getEditableLayer()
+        extent_area = vl.extent().area()
+        vl.startEditing()
+        for fet in vl.getFeatures():
+            vl.translateFeature(fet.id(), -1, -1)
+        vl.commitChanges()
+        self.assertEqual(vl.extent().area(), extent_area)
+        vl = None
+
 
 if __name__ == '__main__':
     unittest.main()
