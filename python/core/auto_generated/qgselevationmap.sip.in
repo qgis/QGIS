@@ -99,6 +99,7 @@ with the unit of the encoded elevation in this elevation map.
 Returns raw elevation image with elevations encoded as color values
 %End
 
+
     QPainter *painter() const;
 %Docstring
 Returns painter to the underlying QImage with elevations

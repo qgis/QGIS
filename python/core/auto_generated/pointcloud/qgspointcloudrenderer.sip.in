@@ -157,6 +157,7 @@ Returns the feedback object used to cancel rendering
 %End
 
 
+
   private:
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
 };
@@ -438,6 +439,110 @@ Sets the ``unit`` for the maximum screen error allowed when rendering the point 
 .. seealso:: :py:func:`maximumScreenErrorUnit`
 %End
 
+    bool renderAsTriangles() const;
+%Docstring
+Returns whether points are triangulated to render solid surface
+
+.. versionadded:: 3.36
+%End
+
+    void setRenderAsTriangles( bool asTriangles );
+%Docstring
+Sets whether points are triangulated to render solid surface
+
+.. versionadded:: 3.36
+%End
+
+    bool horizontalTriangleFilter() const;
+%Docstring
+Returns whether large triangles will get rendered. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles`
+is enabled. When the triangle filtering is enabled, triangles where at least one side is
+horizontally longer than the threshold in :py:func:`~QgsPointCloudRenderer.horizontalTriangleFilterThreshold` do not get rendered.
+
+.. seealso:: :py:func:`horizontalTriangleFilterThreshold`
+
+.. seealso:: :py:func:`horizontalTriangleFilterUnit`
+
+.. seealso:: :py:func:`setHorizontalTriangleFilter`
+
+.. versionadded:: 3.36
+%End
+
+    void setHorizontalTriangleFilter( bool enabled );
+%Docstring
+Sets whether large triangles will get rendered. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles`
+is enabled. When the triangle filtering is enabled, triangles where at least one side is
+horizontally longer than the threshold in :py:func:`~QgsPointCloudRenderer.horizontalTriangleFilterThreshold` do not get rendered.
+
+.. seealso:: :py:func:`setHorizontalTriangleFilterThreshold`
+
+.. seealso:: :py:func:`setHorizontalTriangleFilterUnit`
+
+.. seealso:: :py:func:`horizontalTriangleFilter`
+
+.. versionadded:: 3.36
+%End
+
+    float horizontalTriangleFilterThreshold() const;
+%Docstring
+Returns threshold for filtering of triangles. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles` and
+:py:func:`~QgsPointCloudRenderer.horizontalTriangleFilter` are both enabled. If any edge of a triangle is horizontally longer
+than the threshold, such triangle will not get rendered. Units of the threshold value are
+given by :py:func:`~QgsPointCloudRenderer.horizontalTriangleFilterUnits`.
+
+.. seealso:: :py:func:`horizontalTriangleFilter`
+
+.. seealso:: :py:func:`horizontalTriangleFilterUnit`
+
+.. seealso:: :py:func:`setHorizontalTriangleFilterThreshold`
+
+.. versionadded:: 3.36
+%End
+
+    void setHorizontalTriangleFilterThreshold( float threshold );
+%Docstring
+Sets threshold for filtering of triangles. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles` and
+:py:func:`~QgsPointCloudRenderer.horizontalTriangleFilter` are both enabled. If any edge of a triangle is horizontally longer
+than the threshold, such triangle will not get rendered. Units of the threshold value are
+given by :py:func:`~QgsPointCloudRenderer.horizontalTriangleFilterUnits`.
+
+.. seealso:: :py:func:`horizontalTriangleFilter`
+
+.. seealso:: :py:func:`horizontalTriangleFilterUnit`
+
+.. seealso:: :py:func:`horizontalTriangleFilterThreshold`
+
+.. versionadded:: 3.36
+%End
+
+    Qgis::RenderUnit horizontalTriangleFilterUnit() const;
+%Docstring
+Returns units of the treshold for filtering of triangles. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles` and
+:py:func:`~QgsPointCloudRenderer.horizontalTriangleFilter` are both enabled.
+
+.. seealso:: :py:func:`horizontalTriangleFilter`
+
+.. seealso:: :py:func:`horizontalTriangleFilterThreshold`
+
+.. seealso:: :py:func:`setHorizontalTriangleFilterUnit`
+
+.. versionadded:: 3.36
+%End
+
+    void setHorizontalTriangleFilterUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets units of the treshold for filtering of triangles. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles` and
+:py:func:`~QgsPointCloudRenderer.horizontalTriangleFilter` are both enabled.
+
+.. seealso:: :py:func:`horizontalTriangleFilter`
+
+.. seealso:: :py:func:`horizontalTriangleFilterThreshold`
+
+.. seealso:: :py:func:`horizontalTriangleFilterUnit`
+
+.. versionadded:: 3.36
+%End
+
     virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
 %Docstring
 Creates a set of legend nodes representing the renderer.
@@ -465,6 +570,13 @@ Retrieves the z value for the point at index ``i``.
 Draws a point using a ``color`` at the specified ``x`` and ``y`` (in map coordinates).
 %End
 
+
+    void addPointToTriangulation( double x, double y, double z, const QColor &color, QgsPointCloudRenderContext &context );
+%Docstring
+Adds a point to the list of points to be triangulated (only used when :py:func:`~QgsPointCloudRenderer.renderAsTriangles` is enabled)
+
+.. versionadded:: 3.36
+%End
 
     void copyCommonProperties( QgsPointCloudRenderer *destination ) const;
 %Docstring
