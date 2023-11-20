@@ -287,6 +287,13 @@ static bool E3T_physicalToBarycentric( const QgsPointXY &pA, const QgsPointXY &p
   return true;
 }
 
+bool QgsMeshLayerUtils::calculateBarycentricCoordinates(
+  const QgsPointXY &pA, const QgsPointXY &pB, const QgsPointXY &pC, const QgsPointXY &pP,
+  double &lam1, double &lam2, double &lam3 )
+{
+  return E3T_physicalToBarycentric( pA, pB, pC, pP, lam1, lam2, lam3 );
+}
+
 double QgsMeshLayerUtils::interpolateFromVerticesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
     double val1, double val2, double val3, const QgsPointXY &pt )
 {

@@ -115,11 +115,24 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
                                    Qgis::RenderUnit::Inches } );
   mMaxErrorSpinBox->setClearValue( 0.3 );
 
+  mHorizontalTriangleThresholdSpinBox->setClearValue( 5.0 );
+  mHorizontalTriangleUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters,
+      Qgis::RenderUnit::MetersInMapUnits,
+      Qgis::RenderUnit::MapUnits,
+      Qgis::RenderUnit::Pixels,
+      Qgis::RenderUnit::Points,
+      Qgis::RenderUnit::Inches } );
+
   connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mMaxErrorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   connect( mPointStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mDrawOrderComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
+  connect( mTriangulateGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mHorizontalTriangleCheckBox, &QCheckBox::clicked, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mHorizontalTriangleThresholdSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mHorizontalTriangleUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   syncToLayer( layer );
 }
@@ -170,6 +183,11 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
     mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );
+
+    mTriangulateGroupBox->setChecked( mLayer->renderer()->renderAsTriangles() );
+    mHorizontalTriangleCheckBox->setChecked( mLayer->renderer()->horizontalTriangleFilter() );
+    mHorizontalTriangleThresholdSpinBox->setValue( mLayer->renderer()->horizontalTriangleFilterThreshold() );
+    mHorizontalTriangleUnitWidget->setUnit( mLayer->renderer()->horizontalTriangleFilterUnit() );
   }
 
   mBlockChangedSignal = false;
@@ -204,6 +222,11 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setMaximumScreenError( mMaxErrorSpinBox->value() );
   mLayer->renderer()->setMaximumScreenErrorUnit( mMaxErrorUnitWidget->unit() );
   mLayer->renderer()->setDrawOrder2d( static_cast< Qgis::PointCloudDrawOrder >( mDrawOrderComboBox->currentData().toInt() ) );
+
+  mLayer->renderer()->setRenderAsTriangles( mTriangulateGroupBox->isChecked() );
+  mLayer->renderer()->setHorizontalTriangleFilter( mHorizontalTriangleCheckBox->isChecked() );
+  mLayer->renderer()->setHorizontalTriangleFilterThreshold( mHorizontalTriangleThresholdSpinBox->value() );
+  mLayer->renderer()->setHorizontalTriangleFilterUnit( mHorizontalTriangleUnitWidget->unit() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()
