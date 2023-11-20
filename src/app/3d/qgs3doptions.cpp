@@ -63,7 +63,7 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
 QString Qgs3DOptionsWidget::helpKey() const
 {
   // typo IS correct here!
-  return QStringLiteral( "introduction/qgis_configuration.html#d-settings" );
+  return QStringLiteral( "introduction/qgis_configuration.html#d-options" );
 }
 
 void Qgs3DOptionsWidget::apply()

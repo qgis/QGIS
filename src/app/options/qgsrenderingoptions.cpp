@@ -57,7 +57,7 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
 
 QString QgsRenderingOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#rendering-settings" );
+  return QStringLiteral( "introduction/qgis_configuration.html#rendering-options" );
 }
 
 void QgsRenderingOptionsWidget::apply()
