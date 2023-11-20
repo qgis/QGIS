@@ -63,12 +63,12 @@ QgsAdvancedSettingsWidget::~QgsAdvancedSettingsWidget()
 
 QString QgsAdvancedSettingsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#advanced-settings" );
+  return QStringLiteral( "introduction/qgis_configuration.html#optionsadvanced" );
 }
 
 void QgsAdvancedSettingsWidget::apply()
 {
-  // the old settings editor  applies changes immediately
+  // the old settings editor applies changes immediately
   // new settings tree is performing changes on apply
   if ( mTreeWidget )
     mTreeWidget->applyChanges();
