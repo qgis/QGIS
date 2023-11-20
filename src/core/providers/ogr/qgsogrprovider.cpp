@@ -1128,9 +1128,9 @@ QgsRectangle QgsOgrProvider::extent() const
     // get the extent_ (envelope) of the layer
     QgsDebugMsgLevel( QStringLiteral( "Starting get extent" ), 3 );
 
-    if ( mForceRecomputeExtent && mValid &&
+    if ( mForceRecomputeExtent && mValid && mWriteAccess &&
          ( mGDALDriverName == QLatin1String( "GPKG" ) ||
-           ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) && mWriteAccess ) ) &&
+           mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ) &&
          mOgrOrigLayer )
     {
       // works with unquoted layerName
