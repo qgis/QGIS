@@ -34,7 +34,7 @@ class APP_EXPORT QgsUserProfileOptionsWidget : public QgsOptionsPageWidget, priv
 
     //! Constructor for QgsUserProfileOptionsWidget with the specified \a parent widget.
     QgsUserProfileOptionsWidget( QWidget *parent );
-
+    QString helpKey() const override;
     void apply() override;
 
   private slots:
