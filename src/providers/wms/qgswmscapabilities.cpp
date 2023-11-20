@@ -72,7 +72,17 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mMaxWidth = 0;
     mMaxHeight = 0;
     mHttpUri = uri.param( QStringLiteral( "url" ) );
+
+    // automatically replace outdated references to http OpenStreetMap tiles with correct https URI
+    const thread_local QRegularExpression sRegExOSMTiles( QStringLiteral( "^https?://(?:[a-z]\\.)?tile\\.openstreetmap\\.org" ) );
+    const QRegularExpressionMatch match = sRegExOSMTiles.match( mHttpUri );
+    if ( match.hasMatch() )
+    {
+      mHttpUri = QStringLiteral( "https://tile.openstreetmap.org" ) + mHttpUri.mid( match.captured( 0 ).length() );
+    }
+
     mBaseUrl = mHttpUri;
+
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
     mSmoothPixmapTransform = mInterpretation.isEmpty();
