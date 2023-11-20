@@ -476,15 +476,15 @@ QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyle(
   QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( QgsSymbolLayerList() << markerSymbolLayer );
 
   QgsVectorTileBasicRendererStyle st1( QStringLiteral( "Polygons" ), QString(), Qgis::GeometryType::Polygon );
-  st1.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Polygon'" ) );
+  st1.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Polygon'" ) );
   st1.setSymbol( fillSymbol );
 
   QgsVectorTileBasicRendererStyle st2( QStringLiteral( "Lines" ), QString(), Qgis::GeometryType::Line );
-  st2.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Line'" ) );
+  st2.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Line'" ) );
   st2.setSymbol( lineSymbol );
 
   QgsVectorTileBasicRendererStyle st3( QStringLiteral( "Points" ), QString(), Qgis::GeometryType::Point );
-  st3.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Point'" ) );
+  st3.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Point'" ) );
   st3.setSymbol( markerSymbol );
 
   QList<QgsVectorTileBasicRendererStyle> lst;
