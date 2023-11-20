@@ -106,7 +106,7 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
 
 QString QgsFontOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#fonts-settings" );
+  return QStringLiteral( "introduction/qgis_configuration.html#fonts-options" );
 }
 
 void QgsFontOptionsWidget::apply()
