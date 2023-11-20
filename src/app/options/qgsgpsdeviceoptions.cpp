@@ -91,7 +91,7 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
 
 QString QgsGpsDeviceOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#gpsbabel" );
+  return QStringLiteral( "introduction/qgis_configuration.html#defining-new-device" );
 }
 
 void QgsGpsDeviceOptionsWidget::apply()

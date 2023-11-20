@@ -80,7 +80,7 @@ QgsRasterRenderingOptionsWidget::QgsRasterRenderingOptionsWidget( QWidget *paren
 
 QString QgsRasterRenderingOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#raster-rendering-settings" );
+  return QStringLiteral( "introduction/qgis_configuration.html#raster-rendering-options" );
 }
 
 void QgsRasterRenderingOptionsWidget::apply()

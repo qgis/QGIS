@@ -315,7 +315,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
 QString QgsGpsOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#gps-settings" );
+  return QStringLiteral( "introduction/qgis_configuration.html#gps-options" );
 }
 
 void QgsGpsOptionsWidget::apply()

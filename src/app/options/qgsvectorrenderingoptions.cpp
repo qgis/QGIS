@@ -70,7 +70,7 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
 
 QString QgsVectorRenderingOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#vector-rendering-settings" );
+  return QStringLiteral( "introduction/qgis_configuration.html#vector-rendering-options" );
 }
 
 void QgsVectorRenderingOptionsWidget::apply()
