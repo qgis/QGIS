@@ -80,6 +80,11 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
   mActiveProfileIconLabel->setText( tr( "Active Profile (%1) icon", "Active profile icon" ).arg( manager->userProfile()->name() ) );
 }
 
+QString QgsUserProfileOptionsWidget::helpKey() const
+{
+  return QStringLiteral( "introduction/qgis_configuration.html#user-profiles" );
+}
+
 void QgsUserProfileOptionsWidget::apply()
 {
   QgsUserProfileManager *manager = QgisApp::instance()->userProfileManager();
