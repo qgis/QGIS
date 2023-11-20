@@ -308,21 +308,20 @@ class _3D_EXPORT QgsCameraController : public QObject
     bool mDepthBufferIsReady = false;
     QImage mDepthBufferImage;
 
+    std::unique_ptr< Qt3DRender::QCamera > mCameraBefore;
+
     QPoint mMiddleButtonClickPos;
     bool mRotationCenterCalculated = false;
     QVector3D mRotationCenter;
     double mRotationDistanceFromCenter;
     double mRotationPitch = 0;
     double mRotationYaw = 0;
-    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeRotation;
 
     QPoint mDragButtonClickPos;
-    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeDrag;
     bool mDragPointCalculated = false;
     QVector3D mDragPoint;
     double mDragDepth;
 
-    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeZoom;
     bool mZoomPointCalculated = false;
     QVector3D mZoomPoint;
 

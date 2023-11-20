@@ -123,7 +123,7 @@ class QgsCameraController4Test : public QgsCameraController
     // wraps protected member vars
     QVector3D zoomPoint() { return mZoomPoint; }
     double cumulatedWheelY() { return mCumulatedWheelY; }
-    Qt3DRender::QCamera *cameraBeforeZoom() { return mCameraBeforeZoom.get(); }
+    Qt3DRender::QCamera *cameraBefore() { return mCameraBefore.get(); }
     QgsCameraPose *cameraPose() { return &mCameraPose; }
 };
 
@@ -1357,7 +1357,7 @@ void TestQgs3DRendering::testDepthBuffer()
                           false, Qt::MouseEventSynthesizedByApplication );
   testCam->superOnWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( testCam->cumulatedWheelY(), wheelEvent.angleDelta().y() * 5 );
-  QCOMPARE( testCam->cameraBeforeZoom()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
+  QCOMPARE( testCam->cameraBefore()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   grayImage = convertDepthImageToGray16Image( depthImage );
@@ -1376,7 +1376,7 @@ void TestQgs3DRendering::testDepthBuffer()
                            false, Qt::MouseEventSynthesizedByApplication );
   testCam->superOnWheel( new Qt3DInput::QWheelEvent( wheelEvent2 ) );
   QCOMPARE( testCam->cumulatedWheelY(), wheelEvent2.angleDelta().y() * 5 );
-  QCOMPARE( testCam->cameraBeforeZoom()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
+  QCOMPARE( testCam->cameraBefore()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   grayImage = convertDepthImageToGray16Image( depthImage );
@@ -1395,7 +1395,7 @@ void TestQgs3DRendering::testDepthBuffer()
                            false, Qt::MouseEventSynthesizedByApplication );
   testCam->superOnWheel( new Qt3DInput::QWheelEvent( wheelEvent3 ) );
   QCOMPARE( testCam->cumulatedWheelY(), wheelEvent3.angleDelta().y() * 5 );
-  QCOMPARE( testCam->cameraBeforeZoom()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
+  QCOMPARE( testCam->cameraBefore()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   grayImage = convertDepthImageToGray16Image( depthImage );
@@ -1414,7 +1414,7 @@ void TestQgs3DRendering::testDepthBuffer()
                            false, Qt::MouseEventSynthesizedByApplication );
   testCam->superOnWheel( new Qt3DInput::QWheelEvent( wheelEvent4 ) );
   QCOMPARE( testCam->cumulatedWheelY(), wheelEvent4.angleDelta().y() * 5 );
-  QCOMPARE( testCam->cameraBeforeZoom()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
+  QCOMPARE( testCam->cameraBefore()->viewCenter(), testCam->cameraPose()->centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   grayImage = convertDepthImageToGray16Image( depthImage );
