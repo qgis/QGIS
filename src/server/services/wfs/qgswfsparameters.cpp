@@ -368,10 +368,10 @@ namespace QgsWfs
     const QString vStr = version();
     QgsProjectVersion version;
 
-    if ( vStr.isEmpty() )
-      version = QgsProjectVersion( 1, 1, 0 ); // default value
-    else if ( mVersions.contains( QgsProjectVersion( vStr ) ) )
+    if ( mVersions.contains( QgsProjectVersion( vStr ) ) )
       version = QgsProjectVersion( vStr );
+    else
+      version = QgsProjectVersion( 1, 1, 0 ); // default value
 
     return version;
   }
