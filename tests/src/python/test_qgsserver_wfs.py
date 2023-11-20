@@ -564,6 +564,16 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.wfs_request_compare(
             "GetFeature", '1.1.0', "TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0_srsname')
 
+    def test_get_feature_wrong_version_nomber(self):
+        """Test GetFeature with a wrong version number.
+           This should fall back to the default version: 1.1.0
+        """
+        self.wfs_request_compare(
+            "GetFeature", '2.0.0', "SRSNAME=urn:ogc:def:crs:EPSG::4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0')
+
+        self.wfs_request_compare(
+            "GetFeature", '2.0.0', "TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0_srsname')
+
     def test_getFeature_EXP_FILTER_regression_20927(self):
         """Test expressions with EXP_FILTER"""
 
