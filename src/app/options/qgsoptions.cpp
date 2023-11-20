@@ -2807,13 +2807,65 @@ void QgsOptions::showHelp()
   {
     link = QStringLiteral( "introduction/qgis_configuration.html" );
 
-    if ( activeTab == mOptionsPageAuth )
+    if ( activeTab == mOptionsPageGeneral )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#general-options" );
+    }
+    else if ( activeTab == mOptionsPageSystem )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#env-options" );
+    }
+    else if ( activeTab == mOptionsPageTransformations )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#transformations-options" );
+    }
+    else if ( activeTab == mOptionsPageDataSources )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#datasources-options" );
+    }
+    else if ( activeTab == mOptionsPageGDAL )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#gdal-options" );
+    }
+    else if ( activeTab == mOptionsPageMapCanvas )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#canvas-legend-options" );
+    }
+    else if ( activeTab == mOptionsPageMapTools )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#maptools-options" );
+    }
+    else if ( activeTab == mOptionsPageDigitizing )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#digitizing-options" );
+    }
+    else if ( activeTab == mOptionsPageColors )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#colors-options" );
+    }
+    else if ( activeTab == mOptionsPageComposer )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#layout-options" );
+    }
+    else if ( activeTab == mOptionsPageNetwork )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#network-options" );
+    }
+    else if ( activeTab == mOptionsLocatorSettings )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#locator-options" );
+    }
+    else if ( activeTab == mOptionsPageAcceleration )
+    {
+      link = QStringLiteral( "introduction/qgis_configuration.html#acceleration-options" );
+    }
+    else if ( activeTab == mOptionsPageAuth )
     {
       link = QStringLiteral( "auth_system/index.html" );
     }
     else if ( activeTab == mOptionsPageVariables )
     {
-      link = QStringLiteral( "introduction/general_tools.html#variables" );
+      link = QStringLiteral( "introduction/general_tools.html#general-tools-variables" );
     }
     else if ( activeTab == mOptionsPageCRS )
     {
