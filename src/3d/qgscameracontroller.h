@@ -233,7 +233,7 @@ class _3D_EXPORT QgsCameraController : public QObject
       Zoom
     };
 
-    void setMouseParameters( const MouseOperation &newOperation );
+    void setMouseParameters( const MouseOperation &newOperation, const QPoint &clickPoint = QPoint( 0, 0 ) );
 
   signals:
     //! Emitted when camera has been updated
@@ -305,19 +305,20 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! Last mouse position recorded
     QPoint mMousePos;
 
+    //! click point for a rotation or a translation
+    QPoint mClickPoint = QPoint( 0, 0 );
+
     bool mDepthBufferIsReady = false;
     QImage mDepthBufferImage;
 
     std::unique_ptr< Qt3DRender::QCamera > mCameraBefore;
 
-    QPoint mMiddleButtonClickPos;
     bool mRotationCenterCalculated = false;
     QVector3D mRotationCenter;
     double mRotationDistanceFromCenter;
     double mRotationPitch = 0;
     double mRotationYaw = 0;
 
-    QPoint mDragButtonClickPos;
     bool mDragPointCalculated = false;
     QVector3D mDragPoint;
     double mDragDepth;
