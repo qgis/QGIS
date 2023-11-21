@@ -114,8 +114,8 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, Qgis::TextLayoutMode::Point );
 
   QPaintDevice *device = context.painter()->device();
-  const int deviceHeight = device->height() / device->devicePixelRatioF();
-  const int deviceWidth = device->width() / device->devicePixelRatioF();
+  const float deviceHeight = static_cast<float>( device->height() ) / context.devicePixelRatio();
+  const float deviceWidth = static_cast<float>( device->width() ) / context.devicePixelRatio();
 
   float xOffset( 0 ), yOffset( 0 );
 

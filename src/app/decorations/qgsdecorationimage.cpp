@@ -201,8 +201,8 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
 
   // need width/height of paint device
   QPaintDevice *device = context.painter()->device();
-  const int deviceHeight = device->height() / device->devicePixelRatioF();
-  const int deviceWidth = device->width() / device->devicePixelRatioF();
+  const float deviceHeight = static_cast<float>( device->height() ) / context.devicePixelRatio();
+  const float deviceWidth = static_cast<float>( device->width() ) / context.devicePixelRatio();
 
   // Set  margin according to selected units
   int xOffset = 0;
