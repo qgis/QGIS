@@ -355,6 +355,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void fieldCalculator();
 
+    void updateField();
+
     void resizeColumn();
 
     void resizeAllColumns();
