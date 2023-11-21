@@ -975,18 +975,12 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   connect( sort, &QAction::triggered, this, [this]() { modifySort(); } );
   mHorizontalHeaderMenu->addAction( sort );
 
-  mHorizontalHeaderMenu->addSeparator();
-
-  QAction *fieldCalculator = new QAction( tr( "Open &Field Calculator..." ), mHorizontalHeaderMenu );
-  connect( fieldCalculator, &QAction::triggered, this, &QgsDualView::fieldCalculator );
-    fieldCalculator->setData( col );
-  mHorizontalHeaderMenu->addAction( fieldCalculator );
-
   mConfig.update( mLayer->fields() );
   // get layer field index from column name
   const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( col ).name );
   const int fieldOrigin  = mLayer->fields().fieldOrigin( fieldIndex );
 
+  qDebug() << "THE WHAT " << fieldOrigin;
   bool fieldCalculatorEnabled = false;
 
   mHorizontalHeaderMenu->addSeparator();
