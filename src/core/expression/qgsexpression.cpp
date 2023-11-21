@@ -502,8 +502,13 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
       continue;
     }
 
-    QgsDebugMsgLevel( "Expression result is: " + result.toString(), 3 );
-    expr_action += action.mid( start, pos - start ) + result.toString();
+    QString resultString;
+    if ( !QgsVariantUtils::isNull( result ) )
+      resultString = result.toString();
+
+    QgsDebugMsgLevel( "Expression result is: " + resultString, 3 );
+
+    expr_action += action.mid( start, pos - start ) + resultString;
   }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
