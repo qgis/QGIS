@@ -5324,6 +5324,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "complex2" ) << "some [% 'my text]' %] text" << "some my text] text";
       QTest::newRow( "newline 1" ) << "some \n [% 1 + 2 %] \n text" << "some \n 3 \n text";
       QTest::newRow( "newline 2" ) << "some [% \n 1 \n + \n 2 %] \n text" << "some 3 \n text";
+      QTest::newRow( "field values" ) << "[% \"string_field\" %] - [% \"non_null_int\" %] - [% \"null_int\" %]" << "string value - 5 - ";
     }
 
     void testReplaceExpressionText()
@@ -5332,6 +5333,18 @@ class TestQgsExpression: public QObject
       QFETCH( QString, expected );
 
       QgsExpressionContext context;
+
+      QgsFields fields;
+      fields.append( QgsField( "string_field", QVariant::String ) );
+      fields.append( QgsField( "non_null_int", QVariant::Int ) );
+      fields.append( QgsField( "null_int", QVariant::Int ) );
+
+      QgsFeature feature( fields );
+      feature.setAttributes( QgsAttributes( { QVariant( QStringLiteral( "string value" ) ), QVariant( 5 ), QVariant( QVariant::Int ) } ) );
+
+      context.setFeature( feature );
+      context.setFields( fields );
+
       QCOMPARE( QgsExpression::replaceExpressionText( input, &context ), expected );
     }
 
