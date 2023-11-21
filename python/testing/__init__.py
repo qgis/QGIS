@@ -73,11 +73,14 @@ class QgisTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.report = ''
+        cls.markdown_report = ''
 
     @classmethod
     def tearDownClass(cls):
         if cls.report:
             cls.write_local_html_report(cls.report)
+        if cls.markdown_report:
+            cls.write_local_markdown_report(cls.markdown_report)
 
     @classmethod
     def control_path_prefix(cls) -> Optional[str]:
@@ -128,6 +131,24 @@ class QgisTestCase(unittest.TestCase):
             QDesktopServices.openUrl(QUrl.fromLocalFile(report_file))
 
     @classmethod
+    def write_local_markdown_report(cls, report: str):
+        report_dir = QgsRenderChecker.testReportDir()
+        if not report_dir.exists():
+            QDir().mkpath(report_dir.path())
+
+        report_file = report_dir.filePath('summary.md')
+
+        # only append to existing reports if running under CI
+        if cls.is_ci_run() or \
+                os.environ.get("QGIS_APPEND_TO_TEST_REPORT") == 'true':
+            file_mode = 'ta'
+        else:
+            file_mode = 'wt'
+
+        with open(report_file, file_mode, encoding='utf-8') as f:
+            f.write(report)
+
+    @classmethod
     def image_check(cls,
                     name: str,
                     reference_image: str,
@@ -156,6 +177,11 @@ class QgisTestCase(unittest.TestCase):
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
 
+            markdown = checker.markdownReport()
+            if markdown:
+                cls.markdown_report += "## {}\n\n".format(name)
+                cls.markdown_report += markdown
+
         return result
 
     @classmethod
@@ -178,6 +204,11 @@ class QgisTestCase(unittest.TestCase):
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
 
+            markdown = checker.markdownReport()
+            if markdown:
+                cls.markdown_report += "## {}\n\n".format(name)
+                cls.markdown_report += markdown
+
         return result
 
     @classmethod
@@ -193,6 +224,12 @@ class QgisTestCase(unittest.TestCase):
         if not result:
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
+
+            markdown = checker.markdownReport()
+            if markdown:
+                cls.markdown_report += "## {}\n\n".format(name)
+                cls.markdown_report += markdown
+
         return result
 
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):
