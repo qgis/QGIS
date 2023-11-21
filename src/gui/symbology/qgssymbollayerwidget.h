@@ -294,6 +294,9 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void mStrokeWidthUnitWidget_changed();
     void mOffsetUnitWidget_changed();
 
+  private:
+    void checkNoPenMessage();
+
 };
 
 

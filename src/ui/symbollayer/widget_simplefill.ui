@@ -6,24 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>307</width>
-    <height>303</height>
+    <width>294</width>
+    <height>386</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_8">
-     <property name="text">
-      <string>Join style</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label_7">
      <property name="sizePolicy">
@@ -40,140 +30,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Stroke style</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="3">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Fill style</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0">
-     <item row="0" column="1">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>x</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string>y</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0" rowspan="2">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>Offset</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="5">
-    <widget class="QgsPropertyOverrideButton" name="mFillColorDDBtn">
-     <property name="text">
-      <string>…</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="5">
-    <widget class="QgsPropertyOverrideButton" name="mStrokeWidthDDBtn">
-     <property name="text">
-      <string>…</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="3">
-    <widget class="QgsPenJoinStyleComboBox" name="cboJoinStyle"/>
-   </item>
-   <item row="2" column="5">
-    <widget class="QgsPropertyOverrideButton" name="mStrokeColorDDBtn">
-     <property name="text">
-      <string>…</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Stroke width</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="3">
-    <widget class="QgsPenStyleComboBox" name="cboStrokeStyle"/>
-   </item>
-   <item row="2" column="3">
-    <widget class="QgsColorButton" name="btnChangeStrokeColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="5">
-    <widget class="QgsPropertyOverrideButton" name="mStrokeStyleDDBtn">
-     <property name="text">
-      <string>…</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QgsBrushStyleComboBox" name="cboFillStyle"/>
-   </item>
-   <item row="0" column="3">
+   <item row="0" column="1">
     <widget class="QgsColorButton" name="btnChangeColor">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -198,8 +55,35 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mFillColorDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Fill style</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsBrushStyleComboBox" name="cboFillStyle"/>
+   </item>
+   <item row="1" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mFillStyleDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="label_3">
+    <widget class="QLabel" name="mLblStrokeColor">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -214,14 +98,49 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="5">
-    <widget class="QgsPropertyOverrideButton" name="mFillStyleDDBtn">
+   <item row="2" column="1">
+    <widget class="QgsColorButton" name="btnChangeStrokeColor">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mStrokeColorDDBtn">
      <property name="text">
       <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="3">
+   <item row="3" column="0">
+    <widget class="QLabel" name="mLblStrokeWidth">
+     <property name="text">
+      <string>Stroke width</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QgsDoubleSpinBox" name="spinStrokeWidth">
@@ -263,14 +182,125 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="5">
+   <item row="3" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mStrokeWidthDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
+    <widget class="QFrame" name="mNoPenMessage">
+     <property name="styleSheet">
+      <string notr="true">QFrame { background-color: #ffc800; border: 1px solid #e0aa00; }
+
+QLabel { border: none }</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="../../../images/images.qrc">:/images/themes/default/mIconWarning.svg</pixmap>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="mLblNoPenMessage">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="mLblStrokeStyle">
+     <property name="text">
+      <string>Stroke style</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QgsPenStyleComboBox" name="cboStrokeStyle"/>
+   </item>
+   <item row="5" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mStrokeStyleDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Join style</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QgsPenJoinStyleComboBox" name="cboJoinStyle"/>
+   </item>
+   <item row="6" column="2">
     <widget class="QgsPropertyOverrideButton" name="mJoinStyleDDBtn">
      <property name="text">
       <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="3">
+   <item row="7" column="0">
+    <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0">
+     <item row="0" column="1">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>x</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>y</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" rowspan="2">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Offset</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="1">
     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
      <property name="leftMargin">
       <number>0</number>
@@ -337,12 +367,25 @@
      </item>
     </layout>
    </item>
-   <item row="7" column="5">
+   <item row="7" column="2">
     <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
      <property name="text">
       <string>…</string>
      </property>
     </widget>
+   </item>
+   <item row="8" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
@@ -403,6 +446,9 @@
   <tabstop>spinOffsetY</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="work/QGIS/images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

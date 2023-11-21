@@ -979,6 +979,16 @@ QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( QgsVectorLayer *
 
   mFillColorDDBtn->registerLinkedWidget( btnChangeColor );
   mStrokeColorDDBtn->registerLinkedWidget( btnChangeStrokeColor );
+
+  mLblNoPenMessage->setText(
+    tr( "It seems like you want to disable outlines for polygons, this will lead to visible boundaries "
+        "between neighboring polygons due to Anti-Aliasing. As a workaround, you may prefer to set: "
+        "<ul><li><i>%1</i> to <b>Solid line</b></li>"
+        "<li><i>%2</i> to <b>%3</b></li>"
+        "<li><i>%4</i> to <b>@symbol_color</b> using data defined override</li></ul>" )
+    .arg( mLblStrokeStyle->text() )
+    .arg( mLblStrokeWidth->text() ).arg( spinStrokeWidth->specialValueText() )
+    .arg( mLblStrokeColor->text() ) );
 }
 
 void QgsSimpleFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -1031,6 +1041,8 @@ void QgsSimpleFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mStrokeStyleDDBtn, QgsSymbolLayer::PropertyStrokeStyle );
   registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
   registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+
+  checkNoPenMessage();
 }
 
 QgsSymbolLayer *QgsSimpleFillSymbolLayerWidget::symbolLayer()
@@ -1062,8 +1074,15 @@ void QgsSimpleFillSymbolLayerWidget::strokeWidthChanged()
   emit changed();
 }
 
+void QgsSimpleFillSymbolLayerWidget::checkNoPenMessage()
+{
+  mNoPenMessage->setVisible( cboStrokeStyle->penStyle() == Qt::NoPen );
+}
+
 void QgsSimpleFillSymbolLayerWidget::strokeStyleChanged()
 {
+  checkNoPenMessage();
+
   mLayer->setStrokeStyle( cboStrokeStyle->penStyle() );
   mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
   emit changed();
