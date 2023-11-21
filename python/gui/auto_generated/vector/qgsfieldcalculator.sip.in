@@ -30,7 +30,7 @@ Sample usage of the :py:class:`QgsFieldCalculator` class:
 #include "qgsfieldcalculator.h"
 %End
   public:
-    QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = 0 );
+    QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = 0, int fieldIndex = -1 );
 
     int changedAttributeId() const;
 %Docstring
