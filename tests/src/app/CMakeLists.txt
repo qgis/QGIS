@@ -6,6 +6,9 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+IF(ENABLE_MODELTEST)
+  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/tests/qt_modeltest)
+ENDIF(ENABLE_MODELTEST)
 
 
 set(TESTS

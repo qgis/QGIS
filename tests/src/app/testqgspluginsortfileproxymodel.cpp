@@ -69,7 +69,7 @@ void TestQgsPluginSortFileProxyModel::testProxyModelFilters()
   mModelProxy->setFilterRole( 0 );  // Full text search
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &mModelProxy, this ); // for model validity checking
+  new ModelTest( mModelProxy, this ); // for model validity checking
 #endif
 
   // Add plugin items
