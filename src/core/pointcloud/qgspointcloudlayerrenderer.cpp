@@ -627,7 +627,7 @@ static void renderTriangle( QImage &img, QPointF *pts, QRgb c0, QRgb c1, QRgb c2
   for ( int j = topLim; j <= bottomLim; j++ )
   {
     QRgb *scanLine = ( QRgb * ) img.scanLine( j );
-    QRgb *elevScanLine = elevData ? elevData + ( outputSize.width() * j ) : nullptr;
+    QRgb *elevScanLine = elevData ? elevData + static_cast<size_t>( outputSize.width() * j ) : nullptr;
     for ( int k = leftLim; k <= rightLim; k++ )
     {
       QPointF pt( k, j );
@@ -636,15 +636,15 @@ static void renderTriangle( QImage &img, QPointF *pts, QRgb c0, QRgb c1, QRgb c2
         continue;
 
       // interpolate color
-      int r = red0 * lam1 + red1 * lam2 + red2 * lam3;
-      int g = green0 * lam1 + green1 * lam2 + green2 * lam3;
-      int b = blue0 * lam1 + blue1 * lam2 + blue2 * lam3;
+      int r = static_cast<int>( red0 * lam1 + red1 * lam2 + red2 * lam3 );
+      int g = static_cast<int>( green0 * lam1 + green1 * lam2 + green2 * lam3 );
+      int b = static_cast<int>( blue0 * lam1 + blue1 * lam2 + blue2 * lam3 );
       scanLine[k] = qRgb( r, g, b );
 
       // interpolate elevation - in case we are doing global map shading
       if ( elevScanLine )
       {
-        float z = elev[0] * lam1 + elev[1] * lam2 + elev[2] * lam3;
+        float z = static_cast<float>( elev[0] * lam1 + elev[1] * lam2 + elev[2] * lam3 );
         elevScanLine[k] = QgsElevationMap::encodeElevation( z );
       }
     }
@@ -678,8 +678,8 @@ void QgsPointCloudLayerRenderer::renderTriangulatedSurface( QgsPointCloudRenderC
   float horizontalFilter = 0;
   if ( mRenderer->horizontalTriangleFilter() )
   {
-    horizontalFilter = renderContext()->convertToPainterUnits(
-                         mRenderer->horizontalTriangleFilterThreshold(), mRenderer->horizontalTriangleFilterUnit() );
+    horizontalFilter = static_cast<float>( renderContext()->convertToPainterUnits(
+        mRenderer->horizontalTriangleFilterThreshold(), mRenderer->horizontalTriangleFilterUnit() ) );
   }
 
   QImage img( context.renderContext().deviceOutputSize(), QImage::Format_ARGB32_Premultiplied );

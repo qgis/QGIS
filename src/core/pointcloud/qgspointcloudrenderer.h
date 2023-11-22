@@ -634,7 +634,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see setHorizontalTriangleFilterThreshold()
      * \since QGIS 3.36
      */
-    float horizontalTriangleFilterThreshold() const { return mHorizontalTriangleFilterThreshold; }
+    double horizontalTriangleFilterThreshold() const { return mHorizontalTriangleFilterThreshold; }
 
     /**
      * Sets threshold for filtering of triangles. This only applies when renderAsTriangles() and
@@ -647,10 +647,10 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see horizontalTriangleFilterThreshold()
      * \since QGIS 3.36
      */
-    void setHorizontalTriangleFilterThreshold( float threshold ) { mHorizontalTriangleFilterThreshold = threshold; }
+    void setHorizontalTriangleFilterThreshold( double threshold ) { mHorizontalTriangleFilterThreshold = threshold; }
 
     /**
-     * Returns units of the treshold for filtering of triangles. This only applies when renderAsTriangles() and
+     * Returns units of the threshold for filtering of triangles. This only applies when renderAsTriangles() and
      * horizontalTriangleFilter() are both enabled.
      *
      * \see horizontalTriangleFilter()
@@ -661,7 +661,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     Qgis::RenderUnit horizontalTriangleFilterUnit() const { return mHorizontalTriangleFilterUnit; }
 
     /**
-     * Sets units of the treshold for filtering of triangles. This only applies when renderAsTriangles() and
+     * Sets units of the threshold for filtering of triangles. This only applies when renderAsTriangles() and
      * horizontalTriangleFilter() are both enabled.
      *
      * \see horizontalTriangleFilter()
@@ -754,7 +754,7 @@ class CORE_EXPORT QgsPointCloudRenderer
       triangulation.points.push_back( p.y() );
       triangulation.colors.push_back( color.rgb() );
       if ( context.renderContext().elevationMap() )
-        triangulation.elevations.push_back( z );
+        triangulation.elevations.push_back( static_cast<float>( z ) );
     }
 
     /**
@@ -801,7 +801,7 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     bool mRenderAsTriangles = false;
     bool mHorizontalTriangleFilter = false;
-    float mHorizontalTriangleFilterThreshold = 5.0;
+    double mHorizontalTriangleFilterThreshold = 5.0;
     Qgis::RenderUnit mHorizontalTriangleFilterUnit = Qgis::RenderUnit::Millimeters;
 };
 
