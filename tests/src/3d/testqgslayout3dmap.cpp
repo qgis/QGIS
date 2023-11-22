@@ -19,7 +19,6 @@
 #include "qgsapplication.h"
 #include "qgsflatterraingenerator.h"
 #include "qgslayoutitem3dmap.h"
-#include "qgsfontutils.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgslayout.h"
@@ -105,13 +104,9 @@ void TestQgsLayout3DMap::testBasic()
   l.addLayoutItem( map3dItem );
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  QVERIFY(
-    layoutCheck( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 )
-  );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 );
 #else
-  QVERIFY(
-    layoutCheck( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 )
-  );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 );
 #endif
 
   QVERIFY( !map->isTemporal() );
@@ -123,13 +118,9 @@ void TestQgsLayout3DMap::testBasic()
   map3dItem->refresh();
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  QVERIFY(
-    layoutCheck( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 )
-  );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 );
 #else
-  QVERIFY(
-    layoutCheck( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 )
-  );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 );
 #endif
 
   QVERIFY( map->isTemporal() );

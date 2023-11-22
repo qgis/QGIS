@@ -81,7 +81,7 @@ void TestQgsLayoutShapes::rectangle()
 
   l.addLayoutItem( shape );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composershapes_rectangle" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composershapes_rectangle" ), &l );
 }
 
 void TestQgsLayoutShapes::triangle()
@@ -106,7 +106,7 @@ void TestQgsLayoutShapes::triangle()
 
   l.addLayoutItem( shape );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composershapes_triangle" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composershapes_triangle" ), &l );
 }
 
 void TestQgsLayoutShapes::ellipse()
@@ -131,7 +131,7 @@ void TestQgsLayoutShapes::ellipse()
 
   l.addLayoutItem( shape );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composershapes_ellipse" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composershapes_ellipse" ), &l );
 }
 
 void TestQgsLayoutShapes::roundedRectangle()
@@ -157,7 +157,7 @@ void TestQgsLayoutShapes::roundedRectangle()
 
   shape->setCornerRadius( QgsLayoutMeasurement( 30 ) );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composershapes_roundedrect" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composershapes_roundedrect" ), &l );
 }
 
 void TestQgsLayoutShapes::symbol()
@@ -181,7 +181,7 @@ void TestQgsLayoutShapes::symbol()
   delete fillSymbol;
 
   l.addLayoutItem( shape );
-  QVERIFY( layoutCheck( QStringLiteral( "composershapes_symbol" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composershapes_symbol" ), &l );
 }
 
 void TestQgsLayoutShapes::readWriteXml()
@@ -272,7 +272,7 @@ void TestQgsLayoutShapes::shapeRotation()
 
   l.addLayoutItem( shape );
   mControlPathPrefix = QStringLiteral( "composer_items" );
-  QVERIFY( layoutCheck( QStringLiteral( "composerrotation_shape" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerrotation_shape" ), &l );
   mControlPathPrefix = QStringLiteral( "composer_shape" );
 }
 

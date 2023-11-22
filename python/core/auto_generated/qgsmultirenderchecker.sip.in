@@ -62,7 +62,11 @@ suffixed) the path to the image will be constructed like this:
 controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
 %End
 
+
     void setControlPathPrefix( const QString &prefix );
+%Docstring
+Sets the path ``prefix`` where the control images are kept.
+%End
 
     void setRenderedImage( const QString &renderedImagePath );
 %Docstring

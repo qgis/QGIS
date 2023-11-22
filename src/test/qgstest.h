@@ -119,6 +119,22 @@
   if ( getenv( "QGIS_PGTEST_DB_SKIP" ) ) \
     QSKIP( "Test disabled due to QGIS_PGTEST_DB_SKIP env variable being set" );
 
+// args are:
+// const QString &name, const QString &referenceImage, const QgsMapSettings &mapSettings, int allowedMismatch = 0, int colorTolerance = 0
+#define QGSRENDERMAPSETTINGSCHECK(...) renderMapSettingsCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
+#define QGSVERIFYRENDERMAPSETTINGSCHECK(...) QVERIFY( renderMapSettingsCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__) )
+
+// args are either:
+// const QString &name, const QString &referenceImage, const QImage &image, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0
+// const QString &name, const QString &referenceImage, const QString &renderedFileName, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0
+#define QGSIMAGECHECK(...) imageCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
+#define QGSVERIFYIMAGECHECK(...) QVERIFY( imageCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__) )
+
+// args are:
+// const QString &name, QgsLayout *layout, int page = 0, int allowedMismatch = 0, const QSize size = QSize(), int colorTolerance = 0
+#define QGSLAYOUTCHECK(...) layoutCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
+#define QGSVERIFYLAYOUTCHECK(...) QVERIFY( layoutCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__) )
+
 /**
  * Base class for tests.
  *
@@ -254,11 +270,15 @@ class TEST_EXPORT QgsTest : public QObject
 
     const QDir mTestDataDir;
 
-    bool renderMapSettingsCheck( const QString &name, const QString &referenceImage, const QgsMapSettings &mapSettings, int allowedMismatch = 0, int colorTolerance = 0 )
+    /**
+     * For internal use only -- use QGSRENDERMAPSETTINGSCHECK or QGSVERIFYRENDERMAPSETTINGSCHECK macros instead.
+     */
+    bool renderMapSettingsCheck( const char *file, const char *function, int line, const QString &name, const QString &referenceImage, const QgsMapSettings &mapSettings, int allowedMismatch = 0, int colorTolerance = 0 )
     {
       //use the QgsRenderChecker test utility class to
       //ensure the rendered output matches our control image
       QgsMultiRenderChecker checker;
+      checker.setFileFunctionLine( file, function, line );
       checker.setControlPathPrefix( mControlPathPrefix );
       checker.setControlName( "expected_" + referenceImage );
       checker.setMapSettings( mapSettings );
@@ -272,18 +292,25 @@ class TEST_EXPORT QgsTest : public QObject
       return result;
     }
 
-    bool imageCheck( const QString &name, const QString &referenceImage, const QImage &image, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0 )
+    /**
+     * For internal use only -- use QGSIMAGECHECK or QGSVERIFYIMAGECHECK macros instead.
+     */
+    bool imageCheck( const char *file, const char *function, int line, const QString &name, const QString &referenceImage, const QImage &image, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0 )
     {
       const QString renderedFileName = QDir::tempPath() + '/' + name + ".png";
       image.save( renderedFileName );
 
-      return imageCheck( name, referenceImage, renderedFileName, controlName, allowedMismatch, sizeTolerance, colorTolerance );
+      return imageCheck( file, function, line, name, referenceImage, renderedFileName, controlName, allowedMismatch, sizeTolerance, colorTolerance );
     }
 
-    bool imageCheck( const QString &name, const QString &referenceImage, const QString &renderedFileName, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0 )
+    /**
+     * For internal use only -- use QGSIMAGECHECK or QGSVERIFYIMAGECHECK macros instead.
+     */
+    bool imageCheck( const char *file, const char *function, int line, const QString &name, const QString &referenceImage, const QString &renderedFileName, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0 )
     {
       QgsMultiRenderChecker checker;
       checker.setControlPathPrefix( mControlPathPrefix );
+      checker.setFileFunctionLine( file, function, line );
       checker.setControlName( controlName.isEmpty() ? "expected_" + referenceImage : controlName );
       checker.setRenderedImage( renderedFileName );
       checker.setColorTolerance( colorTolerance );
@@ -297,9 +324,13 @@ class TEST_EXPORT QgsTest : public QObject
       return result;
     }
 
-    bool layoutCheck( const QString &name, QgsLayout *layout, int page = 0, int allowedMismatch = 0, const QSize size = QSize(), int colorTolerance = 0 )
+    /**
+     * For internal use only -- use QGSLAYOUTCHECK or QGSVERIFYLAYOUTCHECK macros instead.
+     */
+    bool layoutCheck( const char *file, const char *function, int line, const QString &name, QgsLayout *layout, int page = 0, int allowedMismatch = 0, const QSize size = QSize(), int colorTolerance = 0 )
     {
       QgsLayoutChecker checker( name, layout );
+      checker.setFileFunctionLine( file, function, line );
       checker.setControlPathPrefix( mControlPathPrefix );
       if ( size.isValid() )
         checker.setSize( size );

@@ -157,7 +157,7 @@ void TestQgsLayoutPage::defaultPaper()
   page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerpaper_default" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerpaper_default" ), &l );
 }
 
 void TestQgsLayoutPage::transparentPaper()
@@ -175,7 +175,7 @@ void TestQgsLayoutPage::transparentPaper()
   simpleFill->setStrokeColor( Qt::transparent );
   l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerpaper_transparent" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerpaper_transparent" ), &l );
 }
 
 void TestQgsLayoutPage::borderedPaper()
@@ -194,7 +194,7 @@ void TestQgsLayoutPage::borderedPaper()
   simpleFill->setStrokeWidth( 6 );
   l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerpaper_bordered" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerpaper_bordered" ), &l );
 }
 
 void TestQgsLayoutPage::markerLinePaper()
@@ -211,7 +211,7 @@ void TestQgsLayoutPage::markerLinePaper()
   markerLineSymbol->changeSymbolLayer( 0, markerLine );
   l.pageCollection()->setPageStyleSymbol( markerLineSymbol.get() );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerpaper_markerborder" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerpaper_markerborder" ), &l );
 }
 
 void TestQgsLayoutPage::hiddenPages()
@@ -231,7 +231,7 @@ void TestQgsLayoutPage::hiddenPages()
 
   l.renderContext().setPagesVisible( false );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerpaper_hidden" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerpaper_hidden" ), &l );
 }
 
 void TestQgsLayoutPage::pageLayout()

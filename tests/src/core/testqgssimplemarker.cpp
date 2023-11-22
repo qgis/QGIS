@@ -206,7 +206,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbol()
   mSimpleMarkerLayer->setShape( Qgis::MarkerShape::Circle );
   mSimpleMarkerLayer->setSize( 5 );
   mSimpleMarkerLayer->setStrokeWidth( 1 );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker" ), QStringLiteral( "simplemarker" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker" ), QStringLiteral( "simplemarker" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolRotation()
@@ -218,7 +218,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolRotation()
   mSimpleMarkerLayer->setAngle( 45 );
   mSimpleMarkerLayer->setStrokeWidth( 0.2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::BevelJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_rotation" ), QStringLiteral( "simplemarker_rotation" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_rotation" ), QStringLiteral( "simplemarker_rotation" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolPreviewRotation()
@@ -238,7 +238,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolPreviewRotation()
 
   QgsExpressionContext ec;
   const QImage image = markerSymbol.bigSymbolPreviewImage( &ec, Qgis::SymbolPreviewFlags() );
-  QVERIFY( imageCheck( name, name, image, QString(), 500 ) );
+  QGSVERIFYIMAGECHECK( name, name, image, QString(), 500 );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolPreviewRotation_data()
@@ -260,7 +260,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolBevelJoin()
   mSimpleMarkerLayer->setAngle( 0 );
   mSimpleMarkerLayer->setStrokeWidth( 3 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::BevelJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_beveljoin" ), QStringLiteral( "simplemarker_beveljoin" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_beveljoin" ), QStringLiteral( "simplemarker_beveljoin" ), mMapSettings );
 
 }
 
@@ -272,7 +272,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolMiterJoin()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 3 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_miterjoin" ), QStringLiteral( "simplemarker_miterjoin" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_miterjoin" ), QStringLiteral( "simplemarker_miterjoin" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolRoundJoin()
@@ -283,7 +283,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolRoundJoin()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 3 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_roundjoin" ), QStringLiteral( "simplemarker_roundjoin" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_roundjoin" ), QStringLiteral( "simplemarker_roundjoin" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolCapStyle()
@@ -294,7 +294,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolCapStyle()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 3 );
   mSimpleMarkerLayer->setPenCapStyle( Qt::RoundCap );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_roundcap" ), QStringLiteral( "simplemarker_roundcap" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_roundcap" ), QStringLiteral( "simplemarker_roundcap" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerOctagon()
@@ -305,7 +305,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerOctagon()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_octagon" ), QStringLiteral( "simplemarker_octagon" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_octagon" ), QStringLiteral( "simplemarker_octagon" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerDecagon()
@@ -316,7 +316,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerDecagon()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_decagon" ), QStringLiteral( "simplemarker_decagon" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_decagon" ), QStringLiteral( "simplemarker_decagon" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerDiamondStar()
@@ -327,7 +327,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerDiamondStar()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_diamondstar" ), QStringLiteral( "simplemarker_diamondstar" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_diamondstar" ), QStringLiteral( "simplemarker_diamondstar" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerHeart()
@@ -338,7 +338,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerHeart()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_heart" ), QStringLiteral( "simplemarker_heart" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_heart" ), QStringLiteral( "simplemarker_heart" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerSquareWithCorners()
@@ -349,7 +349,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSquareWithCorners()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_square_with_corners" ), QStringLiteral( "simplemarker_square_with_corners" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_square_with_corners" ), QStringLiteral( "simplemarker_square_with_corners" ), mMapSettings );
 
 }
 
@@ -361,7 +361,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerRoundedSquare()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_roundedsquare" ), QStringLiteral( "simplemarker_roundedsquare" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_roundedsquare" ), QStringLiteral( "simplemarker_roundedsquare" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerShield()
@@ -372,7 +372,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerShield()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_shield" ), QStringLiteral( "simplemarker_shield" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_shield" ), QStringLiteral( "simplemarker_shield" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerTrapezoid()
@@ -383,7 +383,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerTrapezoid()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_trapezoid" ), QStringLiteral( "simplemarker_trapezoid" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_trapezoid" ), QStringLiteral( "simplemarker_trapezoid" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerParallelogramLeft()
@@ -394,7 +394,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerParallelogramLeft()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_parallelogramleft" ), QStringLiteral( "simplemarker_parallelogramleft" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_parallelogramleft" ), QStringLiteral( "simplemarker_parallelogramleft" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerParallelogramRight()
@@ -405,7 +405,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerParallelogramRight()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_parallelogramright" ), QStringLiteral( "simplemarker_parallelogramright" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_parallelogramright" ), QStringLiteral( "simplemarker_parallelogramright" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerAsterisk()
@@ -416,7 +416,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerAsterisk()
   mSimpleMarkerLayer->setSize( 25 );
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "simplemarker_asterisk" ), QStringLiteral( "simplemarker_asterisk" ), mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_asterisk" ), QStringLiteral( "simplemarker_asterisk" ), mMapSettings );
 }
 
 void TestQgsSimpleMarkerSymbol::bounds()
@@ -429,7 +429,7 @@ void TestQgsSimpleMarkerSymbol::bounds()
   mSimpleMarkerLayer->setStrokeWidth( 0.5 );
 
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
-  const bool result = renderMapSettingsCheck( QStringLiteral( "simplemarker_bounds" ), QStringLiteral( "simplemarker_bounds" ), mMapSettings );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_bounds" ), QStringLiteral( "simplemarker_bounds" ), mMapSettings );
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty() );
   QVERIFY( result );
@@ -445,7 +445,7 @@ void TestQgsSimpleMarkerSymbol::boundsWithOffset()
   mSimpleMarkerLayer->setStrokeWidth( 0.5 );
 
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
-  const bool result = renderMapSettingsCheck( QStringLiteral( "simplemarker_boundsoffset" ), QStringLiteral( "simplemarker_boundsoffset" ), mMapSettings );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_boundsoffset" ), QStringLiteral( "simplemarker_boundsoffset" ), mMapSettings );
 
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, QgsProperty() );
@@ -462,7 +462,7 @@ void TestQgsSimpleMarkerSymbol::boundsWithRotation()
   mSimpleMarkerLayer->setStrokeWidth( 0.5 );
 
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
-  const bool result = renderMapSettingsCheck( QStringLiteral( "simplemarker_boundsrotation" ), QStringLiteral( "simplemarker_boundsrotation" ), mMapSettings );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_boundsrotation" ), QStringLiteral( "simplemarker_boundsrotation" ), mMapSettings );
 
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty() );
@@ -480,7 +480,7 @@ void TestQgsSimpleMarkerSymbol::boundsWithRotationAndOffset()
   mSimpleMarkerLayer->setStrokeWidth( 0.5 );
 
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
-  const bool result = renderMapSettingsCheck( QStringLiteral( "simplemarker_boundsrotationoffset" ), QStringLiteral( "simplemarker_boundsrotationoffset" ), mMapSettings );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_boundsrotationoffset" ), QStringLiteral( "simplemarker_boundsrotationoffset" ), mMapSettings );
 
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, QgsProperty() );
@@ -520,7 +520,7 @@ void TestQgsSimpleMarkerSymbol::opacityWithDataDefinedColor()
   mSimpleMarkerLayer->setStrokeWidth( 0.5 );
   mMarkerSymbol->setOpacity( 0.5 );
 
-  const bool result = renderMapSettingsCheck( QStringLiteral( "simplemarker_opacityddcolor" ), QStringLiteral( "simplemarker_opacityddcolor" ), mMapSettings );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_opacityddcolor" ), QStringLiteral( "simplemarker_opacityddcolor" ), mMapSettings );
 
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
@@ -539,7 +539,7 @@ void TestQgsSimpleMarkerSymbol::dataDefinedOpacity()
   mSimpleMarkerLayer->setStrokeWidth( 0.5 );
   mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Heading\" > 100, 25, 50)" ) ) );
 
-  const bool result = renderMapSettingsCheck( QStringLiteral( "simplemarker_ddopacity" ), QStringLiteral( "simplemarker_ddopacity" ), mMapSettings );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_ddopacity" ), QStringLiteral( "simplemarker_ddopacity" ), mMapSettings );
 
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );

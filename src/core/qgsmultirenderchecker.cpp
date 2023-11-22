@@ -29,6 +29,13 @@ void QgsMultiRenderChecker::setControlName( const QString &name )
   mControlName = name;
 }
 
+void QgsMultiRenderChecker::setFileFunctionLine( const char *file, const char *function, int line )
+{
+  mSourceFile = QString( file );
+  mSourceFunction = QString( function );
+  mSourceLine = line;
+}
+
 void QgsMultiRenderChecker::setControlPathPrefix( const QString &prefix )
 {
   mControlPathPrefix = prefix;
