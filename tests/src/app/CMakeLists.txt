@@ -22,6 +22,7 @@ set(TESTS
   testqgslayerpropertiesdialogs.cpp
   testqgsmapcanvasdockwidget.cpp
   testqgsmaptooladdpart.cpp
+  testqgsmaptooladdring.cpp
   testqgsmaptooleditannotation.cpp
   testqgsmaptoolidentifyaction.cpp
   testqgsmaptoollabel.cpp
