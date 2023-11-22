@@ -17,5 +17,5 @@
     "expression": "hour(age('2012-05-12','2012-05-02'))",
     "returns": "240"
   }],
-  "tags": ["difference", "needs", "datetimes", "order", "extract", "information", "following", "interval", "dates", "functions", "yearmonthweekdayhourminutesecond"]
+  "tags": ["difference", "needs", "datetimes", "order", "extract", "information", "following", "interval", "dates", "functions", "year", "month", "week", "day", "hour", "minute", "second"]
 }
