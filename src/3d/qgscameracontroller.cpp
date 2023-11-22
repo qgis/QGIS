@@ -637,7 +637,7 @@ void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
 {
   Q_UNUSED( mouse )
 
-  mClickPoint = QPoint( 0, 0 );
+  mClickPoint = QPoint();
   setMouseParameters( MouseOperation::None );
 }
 
@@ -1063,7 +1063,7 @@ void QgsCameraController::setMouseParameters( const MouseOperation &newOperation
   // Indeed, if the sequence such as rotation -> zoom -> rotation updating mClickPoint on
   // the click point does not need to be updated because the relative mouse position is kept
   // during a zoom operation
-  if ( mClickPoint == QPoint( 0, 0 ) ||
+  if ( mClickPoint.isNull() ||
        ( ( newOperation == MouseOperation::Rotation || newOperation == MouseOperation::Translation ) &&
          ( mCurrentOperation == MouseOperation::Rotation ||  mCurrentOperation == MouseOperation::Translation ) ) )
   {
