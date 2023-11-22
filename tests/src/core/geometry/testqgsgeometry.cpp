@@ -1354,7 +1354,7 @@ void TestQgsGeometry::simplifyCheck1()
   QVERIFY( myLine.size() > 0 ); //check that the union created a feature
   dumpPolyline( myLine );
   delete mypSimplifyGeometry;
-  QVERIFY( imageCheck( "Checking simplify of line", "geometry_simplifyCheck1", mImage, QString(), 0 ) );
+  QGSVERIFYIMAGECHECK( "Checking simplify of line", "geometry_simplifyCheck1", mImage, QString(), 0 ) );
 }
 #endif
 
@@ -1374,7 +1374,7 @@ void TestQgsGeometry::intersectionCheck1()
   QgsPolygonXY myPolygon = mypIntersectionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   paintPolygon( myPolygon );
-  QVERIFY( imageCheck( "Checking if A intersects B", "geometry_intersectionCheck1", mImage, QString(), 0 ) );
+  QGSVERIFYIMAGECHECK( "Checking if A intersects B", "geometry_intersectionCheck1", mImage, QString(), 0 );
 }
 void TestQgsGeometry::intersectionCheck2()
 {
@@ -1465,7 +1465,7 @@ void TestQgsGeometry::unionCheck1()
   QgsMultiPolygonXY myMultiPolygon = mypUnionGeometry.asMultiPolygon();
   QVERIFY( myMultiPolygon.size() > 0 ); //check that the union did not fail
   paintMultiPolygon( myMultiPolygon );
-  QVERIFY( imageCheck( "Checking A union C produces 2 polys", "geometry_unionCheck1", mImage, QString(), 0 ) );
+  QGSVERIFYIMAGECHECK( "Checking A union C produces 2 polys", "geometry_unionCheck1", mImage, QString(), 0 );
 }
 
 void TestQgsGeometry::unionCheck2()
@@ -1477,7 +1477,7 @@ void TestQgsGeometry::unionCheck2()
   QgsPolygonXY myPolygon = mypUnionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   paintPolygon( myPolygon );
-  QVERIFY( imageCheck( "Checking A union B produces single union poly", "geometry_unionCheck2", mImage, QString(), 0 ) );
+  QGSVERIFYIMAGECHECK( "Checking A union B produces single union poly", "geometry_unionCheck2", mImage, QString(), 0 );
 
 }
 
@@ -1490,7 +1490,7 @@ void TestQgsGeometry::differenceCheck1()
   QgsPolygonXY myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union did not fail
   paintPolygon( myPolygon );
-  QVERIFY( imageCheck( "Checking (A - C) = A", "geometry_differenceCheck1", mImage, QString(), 0 ) );
+  QGSVERIFYIMAGECHECK( "Checking (A - C) = A", "geometry_differenceCheck1", mImage, QString(), 0 );
 }
 
 void TestQgsGeometry::differenceCheck2()
@@ -1502,7 +1502,7 @@ void TestQgsGeometry::differenceCheck2()
   QgsPolygonXY myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   paintPolygon( myPolygon );
-  QVERIFY( imageCheck( "Checking (A - B) = subset of A", "geometry_differenceCheck2", mImage, QString(), 0 ) );
+  QGSVERIFYIMAGECHECK( "Checking (A - B) = subset of A", "geometry_differenceCheck2", mImage, QString(), 0 );
 }
 void TestQgsGeometry::bufferCheck()
 {
@@ -1513,7 +1513,7 @@ void TestQgsGeometry::bufferCheck()
   QgsPolygonXY myPolygon = mypBufferGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature
   paintPolygon( myPolygon );
-  QVERIFY( imageCheck( "Checking buffer(10,10) of B", "geometry_bufferCheck", mImage, QString(), 0 ) );
+  QGSVERIFYIMAGECHECK( "Checking buffer(10,10) of B", "geometry_bufferCheck", mImage, QString(), 0 );
 }
 
 void TestQgsGeometry::smoothCheck()

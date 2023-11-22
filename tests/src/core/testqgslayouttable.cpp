@@ -511,7 +511,7 @@ void TestQgsLayoutTable::attributeTableRender()
   table->setBackgroundColor( Qt::yellow );
 
   table->setMaximumNumberOfFeatures( 20 );
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_render" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_render" ), &l );
 }
 
 void TestQgsLayoutTable::manualColumnWidth()
@@ -536,7 +536,7 @@ void TestQgsLayoutTable::manualColumnWidth()
 
   table->setMaximumNumberOfFeatures( 20 );
   table->columns()[0].setWidth( 5 );
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_columnwidth" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_columnwidth" ), &l );
 }
 
 void TestQgsLayoutTable::attributeTableEmpty()
@@ -565,14 +565,14 @@ void TestQgsLayoutTable::attributeTableEmpty()
   table->setFilterFeatures( true );
 
   table->setEmptyTableBehavior( QgsLayoutTable::HeadersOnly );
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_headersonly" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_headersonly" ), &l );
 
   table->setEmptyTableBehavior( QgsLayoutTable::HideTable );
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_hidetable" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_hidetable" ), &l );
 
   table->setEmptyTableBehavior( QgsLayoutTable::ShowMessage );
   table->setEmptyTableMessage( QStringLiteral( "no rows" ) );
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_showmessage" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_showmessage" ), &l );
 }
 
 void TestQgsLayoutTable::showEmptyRows()
@@ -597,7 +597,7 @@ void TestQgsLayoutTable::showEmptyRows()
 
   table->setMaximumNumberOfFeatures( 3 );
   table->setShowEmptyRows( true );
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_drawempty" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_drawempty" ), &l );
 }
 
 void TestQgsLayoutTable::attributeTableExtend()
@@ -981,7 +981,7 @@ void TestQgsLayoutTable::multiLineText()
 
   table->setMaximumNumberOfFeatures( 20 );
   table->setVectorLayer( multiLineLayer );
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_multiline" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_multiline" ), &l );
 
   delete multiLineLayer;
 }
@@ -1035,7 +1035,7 @@ void TestQgsLayoutTable::horizontalGrid()
   table->setHorizontalGrid( true );
   table->setVerticalGrid( false );
   table->setVectorLayer( multiLineLayer );
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_horizontalgrid" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_horizontalgrid" ), &l );
 
   delete multiLineLayer;
 }
@@ -1089,7 +1089,7 @@ void TestQgsLayoutTable::verticalGrid()
   table->setHorizontalGrid( false );
   table->setVerticalGrid( true );
   table->setVectorLayer( multiLineLayer );
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_verticalgrid" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_verticalgrid" ), &l );
 
   delete multiLineLayer;
 }
@@ -1114,7 +1114,7 @@ void TestQgsLayoutTable::testDataDefinedTextFormatForCell()
   textFormat.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromExpression( QStringLiteral( "if(@column_number = 1,35,15)" ) ) );
   table->setContentTextFormat( textFormat );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_datadefinedtextformat" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_datadefinedtextformat" ), &l );
 }
 
 void TestQgsLayoutTable::testIntegerNullCell()
@@ -1144,7 +1144,7 @@ void TestQgsLayoutTable::testIntegerNullCell()
   table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_integernullcell" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_integernullcell" ), &l );
 
 }
 
@@ -1199,7 +1199,7 @@ void TestQgsLayoutTable::align()
   table->columns()[1].setVAlignment( Qt::AlignVCenter );
   table->columns()[2].setHAlignment( Qt::AlignRight );
   table->columns()[2].setVAlignment( Qt::AlignBottom );
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_align" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_align" ), &l );
 
   delete multiLineLayer;
 }
@@ -1285,7 +1285,7 @@ void TestQgsLayoutTable::autoWrap()
 
   table->columns()[0].setWidth( 25 );
   table->columns()[1].setWidth( 25 );
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_autowrap" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_autowrap" ), &l );
 }
 
 void TestQgsLayoutTable::cellStyles()
@@ -1532,7 +1532,7 @@ void TestQgsLayoutTable::cellStylesRender()
   style.cellBackgroundColor = QColor( 50, 200, 200, 200 );
   table->setCellStyle( QgsLayoutTable::LastRow, style );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_cellstyle" ), &l, 0, 0, QSize(), 10 ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_cellstyle" ), &l, 0, 0, QSize(), 10 );
 }
 
 void TestQgsLayoutTable::conditionalFormatting()
@@ -1591,7 +1591,7 @@ void TestQgsLayoutTable::conditionalFormatting()
   style.cellBackgroundColor = QColor( 50, 200, 200, 200 );
   table->setCellStyle( QgsLayoutTable::LastRow, style );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_conditionalstyles" ), &l, 0, 0, QSize(), 10 ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_conditionalstyles" ), &l, 0, 0, QSize(), 10 );
 }
 
 void TestQgsLayoutTable::conditionalFormattingWithTextFormatting()
@@ -1658,7 +1658,7 @@ void TestQgsLayoutTable::conditionalFormattingWithTextFormatting()
   style.cellBackgroundColor = QColor( 50, 200, 200, 200 );
   table->setCellStyle( QgsLayoutTable::LastRow, style );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerattributetable_conditionalstyles_text" ), &l, 0, 0, QSize(), 10 ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerattributetable_conditionalstyles_text" ), &l, 0, 0, QSize(), 10 );
 }
 
 void TestQgsLayoutTable::dataDefinedSource()

@@ -215,7 +215,7 @@ void TestQgsLayoutAtlas::autoscale_render()
     mAtlas->seekTo( fit );
     mLabel1->adjustSizeToText();
 
-    QVERIFY( layoutCheck( QStringLiteral( "atlas_autoscale%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 ) );
+    QGSVERIFYLAYOUTCHECK( QStringLiteral( "atlas_autoscale%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 );
   }
   mAtlas->endRender();
 }
@@ -235,7 +235,7 @@ void TestQgsLayoutAtlas::fixedscale_render()
     mAtlas->seekTo( fit );
     mLabel1->adjustSizeToText();
 
-    QVERIFY( layoutCheck( QStringLiteral( "atlas_fixedscale%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 ) );
+    QGSVERIFYLAYOUTCHECK( QStringLiteral( "atlas_fixedscale%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 );
   }
   mAtlas->endRender();
 }
@@ -267,7 +267,7 @@ void TestQgsLayoutAtlas::predefinedscales_render()
     mAtlas->seekTo( fit );
     mLabel1->adjustSizeToText();
 
-    QVERIFY( layoutCheck( QStringLiteral( "atlas_predefinedscales%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 ) );
+    QGSVERIFYLAYOUTCHECK( QStringLiteral( "atlas_predefinedscales%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 );
   }
   mAtlas->endRender();
 }
@@ -289,7 +289,7 @@ void TestQgsLayoutAtlas::two_map_autoscale_render()
     mAtlas->seekTo( fit );
     mLabel1->adjustSizeToText();
 
-    QVERIFY( layoutCheck( QStringLiteral( "atlas_two_maps%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 ) );
+    QGSVERIFYLAYOUTCHECK( QStringLiteral( "atlas_two_maps%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 );
   }
   mAtlas->endRender();
 }
@@ -308,7 +308,7 @@ void TestQgsLayoutAtlas::hiding_render()
     mAtlas->seekTo( fit );
     mLabel1->adjustSizeToText();
 
-    QVERIFY( layoutCheck( QStringLiteral( "atlas_hiding%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 ) );
+    QGSVERIFYLAYOUTCHECK( QStringLiteral( "atlas_hiding%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 );
   }
   mAtlas->endRender();
 }
@@ -331,7 +331,7 @@ void TestQgsLayoutAtlas::sorting_render()
     mAtlas->seekTo( fit );
     mLabel1->adjustSizeToText();
 
-    QVERIFY( layoutCheck( QStringLiteral( "atlas_sorting%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 ) );
+    QGSVERIFYLAYOUTCHECK( QStringLiteral( "atlas_sorting%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 );
   }
   mAtlas->endRender();
 }
@@ -356,7 +356,7 @@ void TestQgsLayoutAtlas::filtering_render()
     mAtlas->seekTo( fit );
     mLabel1->adjustSizeToText();
 
-    QVERIFY( layoutCheck( QStringLiteral( "atlas_filtering%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 ) );
+    QGSVERIFYLAYOUTCHECK( QStringLiteral( "atlas_filtering%1" ).arg( ( ( int )fit ) + 1 ), mLayout, 0, 100 );
   }
   mAtlas->endRender();
 }

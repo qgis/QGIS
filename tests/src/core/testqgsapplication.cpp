@@ -110,17 +110,17 @@ void TestQgsApplication::themeIcon()
   QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
   QVERIFY( !icon.isNull() );
   QImage im( icon.pixmap( 16, 16 ).toImage() );
-  QVERIFY( imageCheck( QStringLiteral( "theme_icon" ), QStringLiteral( "theme_icon" ), im, QString(), 0 ) );
+  QVERIFY( QGSIMAGECHECK( QStringLiteral( "theme_icon" ), QStringLiteral( "theme_icon" ), im, QString(), 0 ) );
 
   // with colors
   icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 255, 100, 100 ), QColor( 255, 0, 0 ) );
   im = QImage( icon.pixmap( 16, 16 ).toImage() );
-  QVERIFY( imageCheck( QStringLiteral( "theme_icon_colors_1" ), QStringLiteral( "theme_icon_colors_1" ), im, QString(),  0 ) );
+  QVERIFY( QGSIMAGECHECK( QStringLiteral( "theme_icon_colors_1" ), QStringLiteral( "theme_icon_colors_1" ), im, QString(),  0 ) );
 
   // different colors
   icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 170, 255, 170 ), QColor( 0, 255, 0 ) );
   im = QImage( icon.pixmap( 16, 16 ).toImage() );
-  QVERIFY( imageCheck( QStringLiteral( "theme_icon_colors_2" ), QStringLiteral( "theme_icon_colors_2" ), im, QString(), 0 ) );
+  QVERIFY( QGSIMAGECHECK( QStringLiteral( "theme_icon_colors_2" ), QStringLiteral( "theme_icon_colors_2" ), im, QString(), 0 ) );
 }
 
 void TestQgsApplication::checkPaths()

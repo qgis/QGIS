@@ -71,6 +71,17 @@ class CORE_EXPORT QgsMultiRenderChecker
      */
     void setControlName( const QString &name );
 
+    /**
+     * Sets the source file, function and line from where the test originates.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.36
+     */
+    void setFileFunctionLine( const char *file, const char *function, int line ) SIP_SKIP;
+
+    /**
+     * Sets the path \a prefix where the control images are kept.
+     */
     void setControlPathPrefix( const QString &prefix );
 
     /**
@@ -158,6 +169,10 @@ class CORE_EXPORT QgsMultiRenderChecker
     static void drawBackground( QImage *image ) { QgsRenderChecker::drawBackground( image ); }
 
   private:
+    QString mSourceFile;
+    QString mSourceFunction;
+    int mSourceLine = -1;
+
     bool mResult = false;
     QString mReport;
     QString mMarkdownReport;

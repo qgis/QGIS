@@ -60,7 +60,7 @@ void TestQgsLayoutPolyline::drawArrowHead()
   testPainter.begin( &testImage );
   QgsLayoutItemPolyline::drawArrowHead( &testPainter, 100, 100, 45, 30 );
   testPainter.end();
-  QVERIFY( imageCheck( "composerutils_drawarrowhead", "composerutils_drawarrowhead", testImage, QString(), 40 ) );
+  QGSVERIFYIMAGECHECK( "composerutils_drawarrowhead", "composerutils_drawarrowhead", testImage, QString(), 40 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutPolyline )
