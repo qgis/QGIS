@@ -5220,7 +5220,20 @@ QVariantMap QgsWmsProviderMetadata::decodeUri( const QString &uri ) const
     }
     else
     {
-      decoded[ item.first ] = item.second;
+      if ( decoded.contains( item.first ) )
+      {
+        if ( decoded[ item.first ].type() == QVariant::String )
+        {
+          decoded[ item.first ] = QStringList() << decoded[ item.first ].toString();
+        }
+        QStringList items = decoded[ item.first ].toStringList();
+        items.append( item.second );
+        decoded[ item.first ] = items;
+      }
+      else
+      {
+        decoded[ item.first ] = item.second;
+      }
     }
   }
   return decoded;
@@ -5230,6 +5243,7 @@ QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QUrlQuery query;
   QList<QPair<QString, QString> > items;
+  QList<QPair<QString, QStringList> > listItems;
   for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
   {
     if ( it.key() == QLatin1String( "path" ) )
@@ -5238,11 +5252,30 @@ QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
     }
     else
     {
-      items.push_back( { it.key(), it.value().toString() } );
+      if ( it.value().type() == QVariant::StringList )
+      {
+        listItems.push_back( { it.key(), it.value().toStringList() } );
+      }
+      else
+      {
+        items.push_back( { it.key(), it.value().toString() } );
+      }
     }
   }
   query.setQueryItems( items );
-  return query.toString();
+  QString uri { query.toString() };
+  // Add lists
+  for ( auto it = listItems.constBegin(); it != listItems.constEnd(); ++it )
+  {
+    for ( auto itItem = it->second.constBegin(); itItem != it->second.constEnd(); ++itItem )
+    {
+      uri.append( '&' );
+      uri.append( it->first );
+      uri.append( '=' );
+      uri.append( *itItem );
+    }
+  }
+  return uri;
 }
 
 QList<QgsProviderSublayerDetails> QgsWmsProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback * ) const

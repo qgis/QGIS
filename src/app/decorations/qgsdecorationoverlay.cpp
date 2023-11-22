@@ -47,10 +47,11 @@ void QgsDecorationOverlay::paintEvent( QPaintEvent * )
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
   context.setPainter( &p );
+  context.setDevicePixelRatio( 1 );
 
   for ( QgsMapDecoration *item : decorations )
   {
-    // Do not render decorations with fixed map positionn they are rendered directly on the map canvas
+    // Do not render decorations with fixed map position they are rendered directly on the map canvas
     if ( item->hasFixedMapPosition() )
       continue;
     item->render( QgisApp::instance()->mapCanvas()->mapSettings(), context );

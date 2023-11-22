@@ -112,7 +112,7 @@ namespace QgsWms
       /**
        * Returns the map legend as a JSON object (or NULLPTR in case of error). The
        * caller takes ownership of the image object.
-       * \param legendNodeModel The legend node to use for building the legend
+       * \param legendNode The legend node to use for building the legend
        * \param jsonRenderFlags The JSON export flags
        * \returns the legend as a JSON object
        * \since QGIS 3.36
