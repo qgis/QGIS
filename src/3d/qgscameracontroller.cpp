@@ -328,9 +328,9 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   {
     // rotate/tilt using mouse (camera moves as it rotates around the clicked point)
 
-    double scale = std::max( mScene->engine()->size().width(), mScene->engine()->size().height() );
-    float pitchDiff = 180 * ( mouse->y() - mMiddleButtonClickPos.y() ) / scale;
-    float yawDiff = -180 * ( mouse->x() - mMiddleButtonClickPos.x() ) / scale;
+    float scale = static_cast<float>( std::max( mScene->engine()->size().width(), mScene->engine()->size().height() ) );
+    float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mMiddleButtonClickPos.y() ) / scale;
+    float yawDiff = -180.0f * static_cast<float>( mouse->x() - mMiddleButtonClickPos.x() ) / scale;
 
     if ( !mDepthBufferIsReady )
       return;
