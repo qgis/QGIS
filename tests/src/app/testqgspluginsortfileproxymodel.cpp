@@ -103,6 +103,11 @@ void TestQgsPluginSortFileProxyModel::testProxyModelFilters()
   QCOMPARE( mModelProxy->rowCount(), 1 );
   QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My Fantastic Plugin 1" );
 
+  filterRegExp = QRegularExpression( QString( "   gcarrillo   " ).simplified(), QRegularExpression::CaseInsensitiveOption );
+  mModelProxy->setFilterRegularExpression( filterRegExp );
+  QCOMPARE( mModelProxy->rowCount(), 1 );
+  QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My Fantastic Plugin 1" );
+
   filterRegExp = QRegularExpression( "caRril", QRegularExpression::CaseInsensitiveOption );
   mModelProxy->setFilterRegularExpression( filterRegExp );
   QCOMPARE( mModelProxy->rowCount(), 1 );
@@ -110,6 +115,11 @@ void TestQgsPluginSortFileProxyModel::testProxyModelFilters()
 
   // Filter by plugin title (display role)
   filterRegExp = QRegularExpression( "my fan", QRegularExpression::CaseInsensitiveOption );
+  mModelProxy->setFilterRegularExpression( filterRegExp );
+  QCOMPARE( mModelProxy->rowCount(), 1 );
+  QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My Fantastic Plugin 1" );
+
+  filterRegExp = QRegularExpression( QString( "   my   fan   " ).simplified(), QRegularExpression::CaseInsensitiveOption );
   mModelProxy->setFilterRegularExpression( filterRegExp );
   QCOMPARE( mModelProxy->rowCount(), 1 );
   QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My Fantastic Plugin 1" );
@@ -126,8 +136,19 @@ void TestQgsPluginSortFileProxyModel::testProxyModelFilters()
   QCOMPARE( mModelProxy->rowCount(), 1 );
   QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My New Fantastic Plugin" );
 
+  filterRegExp = QRegularExpression( QString( "   new   plUgi   " ).simplified(), QRegularExpression::CaseInsensitiveOption );  //#spellok
+  mModelProxy->setFilterRegularExpression( filterRegExp );
+  QCOMPARE( mModelProxy->rowCount(), 1 );
+  QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My New Fantastic Plugin" );
+
   // Filter by tags (full text search)
   filterRegExp = QRegularExpression( "abc", QRegularExpression::CaseInsensitiveOption );
+  mModelProxy->setFilterRegularExpression( filterRegExp );
+  QCOMPARE( mModelProxy->rowCount(), 2 );
+  QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My Fantastic Plugin 1" );
+  QCOMPARE( mModelProxy->data( mModelProxy->index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My New Fantastic Plugin" );
+
+  filterRegExp = QRegularExpression( QString( "   abc   " ).simplified(), QRegularExpression::CaseInsensitiveOption );
   mModelProxy->setFilterRegularExpression( filterRegExp );
   QCOMPARE( mModelProxy->rowCount(), 2 );
   QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My Fantastic Plugin 1" );
@@ -145,6 +166,12 @@ void TestQgsPluginSortFileProxyModel::testProxyModelFilters()
   QCOMPARE( mModelProxy->data( mModelProxy->index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My New Fantastic Plugin" );
 
   filterRegExp = QRegularExpression( "def ghi abc", QRegularExpression::CaseInsensitiveOption );
+  mModelProxy->setFilterRegularExpression( filterRegExp );
+  QCOMPARE( mModelProxy->rowCount(), 2 );
+  QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My Fantastic Plugin 1" );
+  QCOMPARE( mModelProxy->data( mModelProxy->index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My New Fantastic Plugin" );
+
+  filterRegExp = QRegularExpression( QString( "   def   ghi   abc   " ).simplified(), QRegularExpression::CaseInsensitiveOption );
   mModelProxy->setFilterRegularExpression( filterRegExp );
   QCOMPARE( mModelProxy->rowCount(), 2 );
   QCOMPARE( mModelProxy->data( mModelProxy->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), "My Fantastic Plugin 1" );

@@ -1474,6 +1474,7 @@ void QgsPluginManager::wvDetails_linkClicked( const QUrl &url )
 
 void QgsPluginManager::leFilter_textChanged( QString text )
 {
+  text = text.simplified(); // Trim the string and remove redundant whitespaces
   if ( text.startsWith( QLatin1String( "tag:" ), Qt::CaseInsensitive ) )
   {
     text = text.remove( QStringLiteral( "tag:" ) );
