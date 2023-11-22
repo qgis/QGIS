@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import math
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import QgsScaleWidget
 import unittest

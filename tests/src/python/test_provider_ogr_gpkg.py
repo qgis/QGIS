@@ -20,7 +20,6 @@ import tempfile
 import time
 from sqlite3 import OperationalError
 
-import qgis  # NOQA
 from osgeo import gdal, ogr
 from qgis.PyQt.QtCore import (
     QCoreApplication,

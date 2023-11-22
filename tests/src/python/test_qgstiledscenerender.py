@@ -9,7 +9,6 @@ __author__ = "Nyall Dawson"
 __date__ = "27/06/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsRectangle,

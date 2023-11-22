@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import os
 import tempfile
 
-import qgis  # NOQA
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,

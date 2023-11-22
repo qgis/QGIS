@@ -19,7 +19,6 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Matthias Kuhn'
 
-import qgis  # NOQA switch sip api
 
 import os
 import yaml

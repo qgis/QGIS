@@ -19,7 +19,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSize, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument

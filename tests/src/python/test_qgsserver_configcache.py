@@ -15,7 +15,6 @@ import os
 from pathlib import Path
 from time import time
 
-import qgis  # NOQA
 from qgis.core import QgsApplication
 from qgis.server import QgsConfigCache, QgsServerSettings
 from qgis.testing import unittest

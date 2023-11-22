@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
 from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.core import (

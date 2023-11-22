@@ -9,7 +9,6 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '23/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.core import QgsLayoutItemScaleBar
 import unittest
 from qgis.testing import start_app, QgisTestCase

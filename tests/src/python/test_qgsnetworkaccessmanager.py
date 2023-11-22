@@ -15,7 +15,6 @@ import socketserver
 import threading
 from functools import partial
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 from qgis.PyQt.QtTest import QSignalSpy

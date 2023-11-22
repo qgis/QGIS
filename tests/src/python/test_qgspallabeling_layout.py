@@ -18,7 +18,6 @@ import os
 import subprocess
 import sys
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter

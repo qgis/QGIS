@@ -13,7 +13,6 @@ import gc
 import os
 import tempfile
 
-import qgis  # NOQA
 from qgis.core import (
     QgsApplication,
     QgsPathResolver,

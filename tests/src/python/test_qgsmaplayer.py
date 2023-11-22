@@ -14,7 +14,6 @@ import os
 import shutil
 import tempfile
 
-import qgis  # NOQA
 import sip
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument

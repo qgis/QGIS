@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import pathlib
 
-import qgis  # NOQA switch sip api
 from qgis.core import QgsRasterLayer, QgsRasterRange
 from qgis.gui import QgsMapCanvas, QgsRasterTransparencyWidget
 from qgis.testing import TestCase, unittest

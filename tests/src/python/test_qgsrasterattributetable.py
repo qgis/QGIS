@@ -17,7 +17,6 @@ import os
 import shutil
 
 import numpy as np
-import qgis  # NOQA
 from osgeo import gdal, osr
 from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.PyQt.QtGui import QColor

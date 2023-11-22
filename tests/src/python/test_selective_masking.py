@@ -16,7 +16,6 @@ import os
 import subprocess
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QRectF, QSize, Qt, QUuid
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (

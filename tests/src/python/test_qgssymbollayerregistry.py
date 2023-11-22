@@ -9,7 +9,6 @@ __author__ = 'Denis Rouzaud'
 __date__ = '26/11/2021'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt import sip
 from qgis.core import (
     Qgis,

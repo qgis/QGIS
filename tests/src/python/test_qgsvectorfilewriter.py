@@ -15,7 +15,6 @@ import tempfile
 import json
 
 import osgeo.gdal  # NOQA
-import qgis  # NOQA
 from osgeo import gdal, ogr
 from qgis.PyQt.QtCore import (
     QByteArray,

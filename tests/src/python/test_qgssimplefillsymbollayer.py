@@ -21,7 +21,6 @@ __copyright__ = '(C) 2020, Nyall Dawson'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QPointF, QSize, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (

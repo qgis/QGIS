@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.core import (
     QgsCoordinateTransformContext,

@@ -9,7 +9,6 @@ __author__ = 'Mathieu Pellerin'
 __date__ = '09/05/2022'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QEvent,

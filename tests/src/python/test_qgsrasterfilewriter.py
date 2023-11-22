@@ -13,7 +13,6 @@ import glob
 import os
 import tempfile
 
-import qgis  # NOQA
 from osgeo import gdal
 from qgis.PyQt.QtCore import QDir, QTemporaryFile
 from qgis.core import (

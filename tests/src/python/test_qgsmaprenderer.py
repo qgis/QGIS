@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 from random import uniform
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.PyQt.QtTest import QSignalSpy

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '11.04.2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate
 from qgis.core import QgsDateRange, QgsDoubleRange, QgsIntRange
 from qgis.testing import unittest

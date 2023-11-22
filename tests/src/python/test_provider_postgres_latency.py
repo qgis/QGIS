@@ -20,7 +20,6 @@ import os
 import time
 
 import psycopg2
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QDir,
     QTemporaryFile,

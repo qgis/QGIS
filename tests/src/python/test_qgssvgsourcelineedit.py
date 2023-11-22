@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import QgsSvgSourceLineEdit
 import unittest

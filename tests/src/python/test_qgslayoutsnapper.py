@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '05/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QPointF, QRectF, Qt
 from qgis.PyQt.QtWidgets import QGraphicsLineItem
 from qgis.PyQt.QtXml import QDomDocument

@@ -16,7 +16,6 @@ import struct
 import tempfile
 from contextlib import contextmanager
 
-import qgis  # NOQA
 from osgeo import gdal
 from qgis.PyQt.QtGui import qRed
 from qgis.core import (

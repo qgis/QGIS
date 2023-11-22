@@ -10,7 +10,6 @@ __author__ = 'Denis Rouzaud'
 __date__ = '28.02.2018'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import Qgis, QgsReadWriteContext
 from qgis.testing import unittest

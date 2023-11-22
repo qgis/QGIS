@@ -13,7 +13,6 @@ import os
 import subprocess
 import tempfile
 
-import qgis  # NOQA
 from osgeo import gdal
 from qgis.PyQt.QtCore import (
     QDate,

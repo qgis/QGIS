@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QEvent, QLocale, QTemporaryDir, QIODevice, QBuffer, QDateTime
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument

@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QLocale, QSize, Qt, QTemporaryDir, QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument

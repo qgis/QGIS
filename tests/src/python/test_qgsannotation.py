@@ -11,7 +11,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QPointF, QRectF, QSize, QSizeF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QTextDocument
 from qgis.core import (

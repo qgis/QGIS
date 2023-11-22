@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '28/3/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSizeF, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument

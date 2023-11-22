@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 import os
 from tempfile import TemporaryDirectory
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QDir, QEvent, QSize
 from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.core import (

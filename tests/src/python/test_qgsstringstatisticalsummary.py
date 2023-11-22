@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '07/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsStringStatisticalSummary
 from qgis.testing import unittest

@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QFileInfo, QRectF
 from qgis.PyQt.QtGui import QPainter
 from qgis.core import (

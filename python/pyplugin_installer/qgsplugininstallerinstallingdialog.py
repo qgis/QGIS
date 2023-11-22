@@ -29,7 +29,6 @@ from qgis.PyQt.QtCore import QDir, QUrl, QFile, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
-import qgis
 from qgis.core import QgsNetworkAccessManager, QgsApplication, QgsNetworkRequestParameters
 
 from .ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase

@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import sys
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor, QFont
 from qgis.core import QgsApplication, QgsSettings

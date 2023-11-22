@@ -13,7 +13,6 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '20/08/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout
 from qgis.core import (
