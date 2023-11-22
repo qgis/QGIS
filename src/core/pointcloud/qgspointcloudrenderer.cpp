@@ -215,7 +215,7 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
 
   mRenderAsTriangles = element.attribute( QStringLiteral( "renderAsTriangles" ), QStringLiteral( "0" ) ).toInt();
   mHorizontalTriangleFilter = element.attribute( QStringLiteral( "horizontalTriangleFilter" ), QStringLiteral( "0" ) ).toInt();
-  mHorizontalTriangleFilterThreshold = element.attribute( QStringLiteral( "horizontalTriangleFilterThreshold" ), QStringLiteral( "5" ) ).toFloat();
+  mHorizontalTriangleFilterThreshold = element.attribute( QStringLiteral( "horizontalTriangleFilterThreshold" ), QStringLiteral( "5" ) ).toDouble();
   mHorizontalTriangleFilterUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "horizontalTriangleFilterUnit" ), QStringLiteral( "MM" ) ) );
 }
 

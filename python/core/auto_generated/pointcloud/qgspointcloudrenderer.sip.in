@@ -483,7 +483,7 @@ horizontally longer than the threshold in :py:func:`~QgsPointCloudRenderer.horiz
 .. versionadded:: 3.36
 %End
 
-    float horizontalTriangleFilterThreshold() const;
+    double horizontalTriangleFilterThreshold() const;
 %Docstring
 Returns threshold for filtering of triangles. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles` and
 :py:func:`~QgsPointCloudRenderer.horizontalTriangleFilter` are both enabled. If any edge of a triangle is horizontally longer
@@ -499,7 +499,7 @@ given by :py:func:`~QgsPointCloudRenderer.horizontalTriangleFilterUnits`.
 .. versionadded:: 3.36
 %End
 
-    void setHorizontalTriangleFilterThreshold( float threshold );
+    void setHorizontalTriangleFilterThreshold( double threshold );
 %Docstring
 Sets threshold for filtering of triangles. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles` and
 :py:func:`~QgsPointCloudRenderer.horizontalTriangleFilter` are both enabled. If any edge of a triangle is horizontally longer
@@ -517,7 +517,7 @@ given by :py:func:`~QgsPointCloudRenderer.horizontalTriangleFilterUnits`.
 
     Qgis::RenderUnit horizontalTriangleFilterUnit() const;
 %Docstring
-Returns units of the treshold for filtering of triangles. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles` and
+Returns units of the threshold for filtering of triangles. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles` and
 :py:func:`~QgsPointCloudRenderer.horizontalTriangleFilter` are both enabled.
 
 .. seealso:: :py:func:`horizontalTriangleFilter`
@@ -531,7 +531,7 @@ Returns units of the treshold for filtering of triangles. This only applies when
 
     void setHorizontalTriangleFilterUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets units of the treshold for filtering of triangles. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles` and
+Sets units of the threshold for filtering of triangles. This only applies when :py:func:`~QgsPointCloudRenderer.renderAsTriangles` and
 :py:func:`~QgsPointCloudRenderer.horizontalTriangleFilter` are both enabled.
 
 .. seealso:: :py:func:`horizontalTriangleFilter`
