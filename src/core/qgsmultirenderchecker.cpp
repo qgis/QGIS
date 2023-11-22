@@ -17,11 +17,27 @@
 #include "qgslayout.h"
 #include "qgslayoutexporter.h"
 #include <QDebug>
+#include <mutex>
+
+#ifndef CMAKE_SOURCE_DIR
+#error CMAKE_SOURCE_DIR undefined
+#endif // CMAKE_SOURCE_DIR
+
+int QgsMultiRenderChecker::sFilePrefixLength = -1;
 
 QgsMultiRenderChecker::QgsMultiRenderChecker()
 {
   if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" ) )
     mIsCiRun = true;
+
+  static std::once_flag initialized;
+  std::call_once( initialized, []
+  {
+    sFilePrefixLength = sizeof( CMAKE_SOURCE_DIR );
+    // cppcheck-suppress internalAstError
+    if ( CMAKE_SOURCE_DIR[sFilePrefixLength - 1] == '/' )
+      sFilePrefixLength++;
+  } );
 }
 
 void QgsMultiRenderChecker::setControlName( const QString &name )
@@ -31,7 +47,12 @@ void QgsMultiRenderChecker::setControlName( const QString &name )
 
 void QgsMultiRenderChecker::setFileFunctionLine( const char *file, const char *function, int line )
 {
-  mSourceFile = QString( file );
+#ifndef _MSC_VER
+  mSourceFile = file + ( file[0] == '/' ? sFilePrefixLength : 0 );
+#else
+  mSourceFile = file;
+#endif
+
   mSourceFunction = QString( function );
   mSourceLine = line;
 }
@@ -50,8 +71,8 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 {
   mResult = false;
 
-  mReport += "<h2>" + testName + "</h2>\n";
-  mMarkdownReport += QStringLiteral( "### %1\n\n" ).arg( testName );
+  mReportHeader = "<h2>" + testName + "</h2>\n";
+  mMarkdownReportHeader = QStringLiteral( "### %1\n\n" ).arg( testName );
 
   const QString baseDir = controlImagePath();
   if ( !QFile::exists( baseDir ) )
@@ -182,12 +203,29 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 
 QString QgsMultiRenderChecker::report() const
 {
-  return !mResult ? mReport : QString();
+  if ( mResult )
+    return QString();
+
+  QString report = mReportHeader;
+  if ( mSourceLine >= 0 )
+    report += QStringLiteral( "<b style=\"color: red\">Test failed in %1 at %2:%3</b>\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine );
+
+  report += mReport;
+  return report;
 }
 
 QString QgsMultiRenderChecker::markdownReport() const
 {
-  return !mResult ? mMarkdownReport : QString();
+  if ( mResult )
+    return QString();
+
+  QString report = mMarkdownReportHeader;
+
+  if ( mSourceLine >= 0 )
+    report += QStringLiteral( "**Test failed at %1 at %2:%3**\n\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine );
+
+  report += mMarkdownReport;
+  return report;
 }
 
 QString QgsMultiRenderChecker::controlImagePath() const

@@ -174,8 +174,13 @@ class CORE_EXPORT QgsMultiRenderChecker
     int mSourceLine = -1;
 
     bool mResult = false;
+
+    QString mReportHeader;
     QString mReport;
+
+    QString mMarkdownReportHeader;
     QString mMarkdownReport;
+
     QString mRenderedImage;
     QString mControlName;
     QString mControlPathPrefix;
@@ -186,6 +191,8 @@ class CORE_EXPORT QgsMultiRenderChecker
     bool mExpectFail = false;
 
     bool mIsCiRun = false;
+
+    static int sFilePrefixLength;
 };
 
 ///@cond PRIVATE
