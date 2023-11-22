@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.core import (
     QgsAttributeEditorElement,
     QgsFeature,

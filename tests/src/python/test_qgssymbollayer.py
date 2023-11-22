@@ -24,7 +24,6 @@ __copyright__ = '(C) 2012, Massimo Endrighi'
 
 import os
 
-import qgis  # NOQA
 import qgis.core
 from osgeo import ogr
 from qgis.PyQt.QtCore import (

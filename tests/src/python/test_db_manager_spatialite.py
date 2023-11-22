@@ -13,7 +13,6 @@ import os
 import shutil
 import tempfile
 
-import qgis  # NOQA
 from osgeo import ogr
 from plugins.db_manager.db_plugins import createDbPlugin, supportedDbTypes
 from plugins.db_manager.db_plugins.plugin import TableField

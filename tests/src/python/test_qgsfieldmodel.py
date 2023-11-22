@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '14/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QModelIndex, Qt, QVariant
 from qgis.core import (
     QgsEditorWidgetSetup,

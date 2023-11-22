@@ -10,7 +10,6 @@ __date__ = '2021-04'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QPointF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (

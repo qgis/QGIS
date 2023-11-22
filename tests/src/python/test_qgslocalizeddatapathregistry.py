@@ -15,7 +15,6 @@ import tempfile
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir
 from qgis.core import (
     QgsApplication,

@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from PyQt5.QtCore import QUrl, QUrlQuery
 from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.core import (

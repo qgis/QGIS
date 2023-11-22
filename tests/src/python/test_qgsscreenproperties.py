@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '22/06/2023'
 __copyright__ = 'Copyright 2023, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtGui import QGuiApplication
 from qgis.core import (
     QgsScreenProperties,

@@ -15,7 +15,6 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QPointF, QSizeF, Qt
 from qgis.PyQt.QtGui import QFont
 from qgis.core import (

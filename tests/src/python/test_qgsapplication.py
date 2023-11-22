@@ -9,7 +9,6 @@ __author__ = 'Tim Sutton (tim@linfiniti.com)'
 __date__ = '20/01/2011'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
 
 import unittest
 from qgis.testing import start_app, QgisTestCase

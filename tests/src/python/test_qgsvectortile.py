@@ -18,7 +18,6 @@ import shutil
 import tempfile
 from pathlib import Path
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,

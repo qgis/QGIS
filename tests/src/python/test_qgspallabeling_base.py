@@ -22,7 +22,6 @@ import shutil
 import sys
 from collections.abc import Callable
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize, Qt, qDebug
 from qgis.PyQt.QtGui import QColor, QFont
 from qgis.core import (

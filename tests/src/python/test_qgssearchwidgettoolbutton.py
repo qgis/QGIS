@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA switch sip api
 
 from qgis.gui import QgsSearchWidgetToolButton, QgsSearchWidgetWrapper
 import unittest

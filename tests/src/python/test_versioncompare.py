@@ -14,7 +14,6 @@ test_versioncompare.py
  ***************************************************************************/
 '''
 
-import qgis  # NOQA
 
 from pyplugin_installer.version_compare import compareVersions
 import unittest

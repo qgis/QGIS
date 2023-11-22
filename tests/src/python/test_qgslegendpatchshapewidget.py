@@ -9,7 +9,6 @@ __author__ = '(C) 2020 by Nyall Dawson'
 __date__ = '20/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsGeometry, QgsLegendPatchShape, QgsSymbol
 from qgis.gui import QgsLegendPatchShapeWidget

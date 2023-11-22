@@ -13,7 +13,6 @@ import os
 import shutil
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QPointF, Qt
 from qgis.PyQt.QtTest import QSignalSpy

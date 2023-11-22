@@ -14,7 +14,6 @@ import shutil
 import tempfile
 from math import sqrt
 
-import qgis  # NOQA
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 from qgis.PyQt.QtCore import QSize

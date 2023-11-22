@@ -10,7 +10,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '20/06/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsNetworkReplyContent
 import unittest

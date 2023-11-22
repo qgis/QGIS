@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import math
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QSize, QSizeF, Qt
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
 from qgis.PyQt.QtGui import QColor, QImage, QPolygonF

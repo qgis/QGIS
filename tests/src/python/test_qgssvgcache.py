@@ -15,7 +15,6 @@ import socketserver
 import threading
 import time
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (

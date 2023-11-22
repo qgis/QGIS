@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 
 import unittest
 
-import qgis  # NOQA
 from qgis.core import (
     Qgis,
     QgsTiledSceneRequest,

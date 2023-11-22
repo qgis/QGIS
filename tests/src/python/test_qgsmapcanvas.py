@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import time
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, Qt
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (

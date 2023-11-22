@@ -13,7 +13,6 @@ import os
 import shutil
 import tempfile
 
-import qgis  # NOQA
 from osgeo import ogr
 from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
 from qgis.core import (

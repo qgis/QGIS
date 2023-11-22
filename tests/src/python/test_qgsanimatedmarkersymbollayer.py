@@ -21,7 +21,6 @@ __copyright__ = '(C) 2022, Nyall Dawson'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSize
 from qgis.core import (
     QgsAnimatedMarkerSymbolLayer,

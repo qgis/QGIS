@@ -18,7 +18,6 @@ import os
 from shutil import copyfile
 
 import numpy as np
-import qgis  # NOQA
 from osgeo import gdal
 from qgis.PyQt.QtCore import QFileInfo, QSize, QTemporaryDir
 from qgis.PyQt.QtGui import QColor, QResizeEvent

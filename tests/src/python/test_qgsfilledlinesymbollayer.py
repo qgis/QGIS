@@ -21,7 +21,6 @@ __copyright__ = '(C) 2023, Nyall Dawson'
 
 from typing import Optional
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (

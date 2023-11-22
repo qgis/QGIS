@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '03/12/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     QgsAbstractValidityCheck,
