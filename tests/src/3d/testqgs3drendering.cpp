@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+#include "qgs3dtestcamerautils.h"
 
 #include "qgslinestring.h"
 #include "qgsmaplayerstylemanager.h"
@@ -52,7 +53,6 @@
 #include <QFileInfo>
 #include <QDir>
 
-class QgsCameraController4Test;
 
 class TestQgs3DRendering : public QgsTest
 {
@@ -101,30 +101,6 @@ class TestQgs3DRendering : public QgsTest
     QgsRasterLayer *mLayerDtm = nullptr;
     QgsRasterLayer *mLayerRgb = nullptr;
     QgsVectorLayer *mLayerBuildings = nullptr;
-};
-
-/**
- * \ingroup UnitTests
- * Helper class to access QgsCameraController properties
- */
-class QgsCameraController4Test : public QgsCameraController
-{
-    Q_OBJECT
-  public:
-    QgsCameraController4Test( Qgs3DMapScene *parent = nullptr )
-      : QgsCameraController( parent )
-    { }
-
-    // wraps protected methods
-    void superOnWheel( Qt3DInput::QWheelEvent *wheel ) { onWheel( wheel ); }
-    void superOnMousePressed( Qt3DInput::QMouseEvent *mouse ) { onMousePressed( mouse ); }
-    double superSampleDepthBuffer( const QImage &buffer, int px, int py ) { return sampleDepthBuffer( buffer, px, py ); }
-
-    // wraps protected member vars
-    QVector3D zoomPoint() { return mZoomPoint; }
-    double cumulatedWheelY() { return mCumulatedWheelY; }
-    Qt3DRender::QCamera *cameraBefore() { return mCameraBefore.get(); }
-    QgsCameraPose *cameraPose() { return &mCameraPose; }
 };
 
 QImage TestQgs3DRendering::convertDepthImageToGray16Image( const QImage &depthImage )
