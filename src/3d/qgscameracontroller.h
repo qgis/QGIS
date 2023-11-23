@@ -357,6 +357,7 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     // To test the cameracontroller
     friend class TestQgs3DRendering;
+    friend class TestQgs3DCameraController;
 };
 
 #endif // QGSCAMERACONTROLLER_H
