@@ -377,6 +377,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   }
   else if ( hasLeftButton && hasCtrl && !hasShift )
   {
+    setMouseParameters( MouseOperation::Rotation );
     // rotate/tilt using mouse (camera stays at one position as it rotates)
     const float diffPitch = 0.2f * dy;
     const float diffYaw = - 0.2f * dx;
