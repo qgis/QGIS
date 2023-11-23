@@ -229,10 +229,24 @@ class _3D_EXPORT QgsCameraController : public QObject
     {
       None = 0,
       Translation,
-      Rotation,
+      RotationCamera,
+      RotationCenter,
       Zoom,
       ZoomWheel
     };
+
+    // This list gathers all the rotation and translation operations.
+    // It is used to update the appropriate parameters when successive
+    // translation and rotation happen.
+    const QList<MouseOperation> mTranslateOrRotate =
+    {
+      MouseOperation::Translation,
+      MouseOperation::RotationCamera,
+      MouseOperation::RotationCenter
+    };
+
+    // check that current sequence (current operation and new operation) is a rotation or translation
+    bool isATranslationRotationSequence( MouseOperation newOperation ) const;
 
     void setMouseParameters( const MouseOperation &newOperation, const QPoint &clickPoint = QPoint() );
 
