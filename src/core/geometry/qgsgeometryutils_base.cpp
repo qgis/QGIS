@@ -209,7 +209,9 @@ void QgsGeometryUtilsBase::circleCenterRadius( double x1, double y1, double x2, 
 
 double QgsGeometryUtilsBase::circleLength( double x1, double y1, double x2, double y2, double x3, double y3 )
 {
-  double centerX, centerY, radius;
+  double centerX{0.0};
+  double centerY{0.0};
+  double radius{0.0};
   circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
   double length = M_PI / 180.0 * radius * sweepAngle( centerX, centerY, x1, y1, x2, y2, x3, y3 );
   if ( length < 0 )
@@ -466,8 +468,8 @@ bool QgsGeometryUtilsBase::skewLinesProjection( const QgsVector3D &P1, const Qgs
   // we want to find X1 (lies on u1)
   // solving the linear equation in r1 and r2: Xi = Pi + ri*ui
   // we are only interested in X1 so we only solve for r1.
-  float a1 = QgsVector3D::dotProduct( u1, u1 ), b1 = QgsVector3D::dotProduct( u1, u2 ), c1 = QgsVector3D::dotProduct( u1, d );
-  float a2 = QgsVector3D::dotProduct( u1, u2 ), b2 = QgsVector3D::dotProduct( u2, u2 ), c2 = QgsVector3D::dotProduct( u2, d );
+  const double a1 = QgsVector3D::dotProduct( u1, u1 ), b1 = QgsVector3D::dotProduct( u1, u2 ), c1 = QgsVector3D::dotProduct( u1, d );
+  const double a2 = QgsVector3D::dotProduct( u1, u2 ), b2 = QgsVector3D::dotProduct( u2, u2 ), c2 = QgsVector3D::dotProduct( u2, d );
   if ( !( std::fabs( b1 ) > epsilon ) )
   {
     // Denominator is close to zero.
@@ -596,7 +598,7 @@ bool QgsGeometryUtilsBase::linesIntersection3D( const QgsVector3D &La1, const Qg
 
   // first check if lines have an exact intersection point
   // do it by checking if the shortest distance is exactly 0
-  const float distance = skewLinesDistance( La1, La2, Lb1, Lb2 );
+  const double distance = skewLinesDistance( La1, La2, Lb1, Lb2 );
   if ( qgsDoubleNear( distance, 0.0 ) )
   {
     // 3d lines have exact intersection point.
