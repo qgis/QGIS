@@ -49,6 +49,7 @@ class QgsVector3D;
 class QgsWindow3DEngine;
 class Qgs3DMapScene;
 class TestQgs3DRendering;
+class TestQgs3DCameraController;
 
 /**
  * \ingroup 3d
@@ -358,6 +359,7 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     // To test the cameracontroller
     friend TestQgs3DRendering;
+    friend TestQgs3DCameraController;
 };
 
 #endif // QGSCAMERACONTROLLER_H
