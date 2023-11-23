@@ -46,6 +46,7 @@ from qgis.core import Qgis, QgsApplication, QgsMessageLog, QgsNetworkAccessManag
 from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin, OverrideCursor,
                         reloadPlugin, updateAvailablePlugins, plugins_metadata_parser, isPluginLoaded)
+from qgis import utils
 from .installer_data import (repositories, plugins, officialRepo,
                              reposGroup, removeDir)
 from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
@@ -322,7 +323,7 @@ class QgsPluginInstaller(QObject):
         dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin, stable=stable)
         dlg.exec_()
 
-        plugin_path = qgis.utils.home_plugin_path + "/" + key
+        plugin_path = utils.home_plugin_path + "/" + key
         if dlg.result():
             error = True
             infoString = (self.tr("Plugin installation failed"), dlg.result())
@@ -386,7 +387,7 @@ class QgsPluginInstaller(QObject):
                 dlg.exec_()
                 if dlg.result():
                     # revert installation
-                    pluginDir = qgis.utils.home_plugin_path + "/" + plugin["id"]
+                    pluginDir = utils.home_plugin_path + "/" + plugin["id"]
                     result = removeDir(pluginDir)
                     if QDir(pluginDir).exists():
                         error = True
@@ -435,7 +436,7 @@ class QgsPluginInstaller(QObject):
             unloadPlugin(key)
         except:
             pass
-        pluginDir = qgis.utils.home_plugin_path + "/" + plugin["id"]
+        pluginDir = utils.home_plugin_path + "/" + plugin["id"]
         result = removeDir(pluginDir)
         if result:
             QApplication.restoreOverrideCursor()
@@ -611,7 +612,7 @@ class QgsPluginInstaller(QObject):
                 QgsHelp.openHelp("plugins/plugins.html#the-install-from-zip-tab")
             return
 
-        pluginsDirectory = qgis.utils.home_plugin_path
+        pluginsDirectory = utils.home_plugin_path
         if not QDir(pluginsDirectory).exists():
             QDir().mkpath(pluginsDirectory)
 

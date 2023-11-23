@@ -30,6 +30,7 @@ from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from qgis.core import QgsNetworkAccessManager, QgsApplication, QgsNetworkRequestParameters
+from qgis import utils
 
 from .ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
 from .installer_data import removeDir, repositories
@@ -141,7 +142,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         self.file.close()
         self.stateChanged(0)
         reply.deleteLater()
-        pluginDir = qgis.utils.home_plugin_path
+        pluginDir = utils.home_plugin_path
         tmpPath = self.file.fileName()
         # make sure that the parent directory exists
         if not QDir(pluginDir).exists():

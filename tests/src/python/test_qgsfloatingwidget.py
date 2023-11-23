@@ -40,7 +40,7 @@ class TestQgsFloatingWidget(QgisTestCase):
         main_frame.setAttribute(103)
         main_frame.show()
 
-        fw = qgis.gui.QgsFloatingWidget(main_frame)
+        fw = QgsFloatingWidget(main_frame)
         fw.setMinimumSize(100, 50)
         fw.setAnchorWidget(anchor_widget)
 
@@ -89,7 +89,7 @@ class TestQgsFloatingWidget(QgisTestCase):
         main_frame.setAttribute(103)
         main_frame.show()
 
-        fw = qgis.gui.QgsFloatingWidget(main_frame)
+        fw = QgsFloatingWidget(main_frame)
         fw.setMinimumSize(100, 50)
         fw.setAnchorWidget(anchor_widget)
 
@@ -133,7 +133,7 @@ class TestQgsFloatingWidget(QgisTestCase):
         main_frame.setAttribute(103)
         main_frame.show()
 
-        fw = qgis.gui.QgsFloatingWidget(main_frame)
+        fw = QgsFloatingWidget(main_frame)
         fw.setMinimumSize(100, 50)
         fw.setAnchorWidget(anchor_widget)
 
@@ -171,7 +171,7 @@ class TestQgsFloatingWidget(QgisTestCase):
         main_frame.setAttribute(103)
         main_frame.show()
 
-        fw = qgis.gui.QgsFloatingWidget(main_frame)
+        fw = QgsFloatingWidget(main_frame)
         fw.setMinimumSize(300, 50)
         fw.setAnchorWidget(anchor_widget)
 

@@ -11,6 +11,8 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 
 import unittest
+
+from qgis.gui import QgsEncodingSelectionDialog
 from qgis.testing import start_app, QgisTestCase
 
 start_app()
@@ -20,7 +22,7 @@ class TestQgsEncodingSelectionDialog(QgisTestCase):
 
     def testGettersSetters(self):
         """ test dialog getters/setters """
-        dlg = qgis.gui.QgsEncodingSelectionDialog(encoding='UTF-16')
+        dlg = QgsEncodingSelectionDialog(encoding='UTF-16')
         self.assertEqual(dlg.encoding(), 'UTF-16')
         dlg.setEncoding('UTF-8')
         self.assertEqual(dlg.encoding(), 'UTF-8')
