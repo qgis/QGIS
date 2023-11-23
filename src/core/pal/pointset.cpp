@@ -649,7 +649,7 @@ void PointSet::extendLineByDistance( double startDistance, double endDistance, d
     {
       const double thisX = x[i];
       const double thisY = y[i];
-      const double thisSegmentLength = QgsGeometryUtils::distance2D( thisX, thisY, lastX, lastY );
+      const double thisSegmentLength = QgsGeometryUtilsBase::distance2D( thisX, thisY, lastX, lastY );
       distanceConsumed += thisSegmentLength;
       if ( distanceConsumed >= smoothDistance )
       {
@@ -662,7 +662,7 @@ void PointSet::extendLineByDistance( double startDistance, double endDistance, d
       lastY = thisY;
     }
 
-    const double distance = QgsGeometryUtils::distance2D( x1, y1, x0, y0 );
+    const double distance = QgsGeometryUtilsBase::distance2D( x1, y1, x0, y0 );
     const double extensionFactor = ( startDistance + distance ) / distance;
     const QgsPointXY newStart = QgsGeometryUtils::interpolatePointOnLine( x1, y1, x0, y0, extensionFactor );
     x0 = newStart.x();
@@ -685,7 +685,7 @@ void PointSet::extendLineByDistance( double startDistance, double endDistance, d
     {
       const double thisX = x[i];
       const double thisY = y[i];
-      const double thisSegmentLength = QgsGeometryUtils::distance2D( thisX, thisY, lastX, lastY );
+      const double thisSegmentLength = QgsGeometryUtilsBase::distance2D( thisX, thisY, lastX, lastY );
       distanceConsumed += thisSegmentLength;
       if ( distanceConsumed >= smoothDistance )
       {
@@ -698,7 +698,7 @@ void PointSet::extendLineByDistance( double startDistance, double endDistance, d
       lastY = thisY;
     }
 
-    const double distance = QgsGeometryUtils::distance2D( xend1, yend1, xend0, yend0 );
+    const double distance = QgsGeometryUtilsBase::distance2D( xend1, yend1, xend0, yend0 );
     const double extensionFactor = ( endDistance + distance ) / distance;
     const QgsPointXY newEnd = QgsGeometryUtils::interpolatePointOnLine( xend1, yend1, xend0, yend0, extensionFactor );
     x.emplace_back( newEnd.x() );

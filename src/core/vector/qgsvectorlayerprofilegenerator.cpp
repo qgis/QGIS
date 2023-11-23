@@ -1225,7 +1225,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
   auto triangleIsCollinearInXYPlane = []( const QgsPolygon * polygon )-> bool
   {
     const QgsLineString *ring = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() );
-    return QgsGeometryUtils::pointsAreCollinear( ring->xAt( 0 ), ring->yAt( 0 ),
+    return QgsGeometryUtilsBase::pointsAreCollinear( ring->xAt( 0 ), ring->yAt( 0 ),
         ring->xAt( 1 ), ring->yAt( 1 ),
         ring->xAt( 2 ), ring->yAt( 2 ), 0.005 );
   };
@@ -1298,7 +1298,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
               bool isIntersection = false;
               if ( QgsGeometryUtils::segmentIntersection( ring->pointN( vertexPair.first ), ring->pointN( vertexPair.second ), p1, p2, intersectionPoint, isIntersection ) )
               {
-                const double fraction = QgsGeometryUtils::pointFractionAlongLine( ring->xAt( vertexPair.first ), ring->yAt( vertexPair.first ), ring->xAt( vertexPair.second ), ring->yAt( vertexPair.second ), intersectionPoint.x(), intersectionPoint.y() );
+                const double fraction = QgsGeometryUtilsBase::pointFractionAlongLine( ring->xAt( vertexPair.first ), ring->yAt( vertexPair.first ), ring->xAt( vertexPair.second ), ring->yAt( vertexPair.second ), intersectionPoint.x(), intersectionPoint.y() );
                 const double intersectionZ = ring->zAt( vertexPair.first ) + ( ring->zAt( vertexPair.second ) - ring->zAt( vertexPair.first ) ) * fraction;
                 minZ = std::min( minZ, intersectionZ );
                 maxZ = std::max( maxZ, intersectionZ );

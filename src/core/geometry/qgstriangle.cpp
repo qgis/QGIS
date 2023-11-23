@@ -418,7 +418,7 @@ bool QgsTriangle::isDegenerate() const
   const QgsPoint p1( vertexAt( 0 ) );
   const QgsPoint p2( vertexAt( 1 ) );
   const QgsPoint p3( vertexAt( 2 ) );
-  return ( ( ( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || QgsGeometryUtils::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ) == 0 );
+  return ( ( ( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || QgsGeometryUtilsBase::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ) == 0 );
 }
 
 bool QgsTriangle::isIsocele( double lengthTolerance ) const

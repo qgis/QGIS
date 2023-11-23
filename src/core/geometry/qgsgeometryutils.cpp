@@ -1,6 +1,6 @@
 /***************************************************************************
-                       qgsgeometryutils.cpp
- -------------------------------------------------------------------
+                      qgsgeometryutils.cpp
+-------------------------------------------------------------------
 Date                 : 21 Nov 2014
 Copyright            : (C) 2014 by Marco Hugentobler
 email                : marco.hugentobler at sourcepole dot com
@@ -494,13 +494,13 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections(
 
 int QgsGeometryUtils::leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 )
 {
-  return leftOfLine( point.x(), point.y(), p1.x(), p1.y(), p2.x(), p2.y() );
+  return QgsGeometryUtilsBase::leftOfLine( point.x(), point.y(), p1.x(), p1.y(), p2.x(), p2.y() );
 }
 
 QgsPoint QgsGeometryUtils::pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance )
 {
   double x, y;
-  pointOnLineWithDistance( startPoint.x(), startPoint.y(), directionPoint.x(), directionPoint.y(), distance, x, y );
+  QgsGeometryUtilsBase::pointOnLineWithDistance( startPoint.x(), startPoint.y(), directionPoint.x(), directionPoint.y(), distance, x, y );
   return QgsPoint( x, y );
 }
 
@@ -514,17 +514,17 @@ QgsPoint QgsGeometryUtils::interpolatePointOnArc( const QgsPoint &pt1, const Qgs
   const double anglePt1 = std::atan2( pt1.y() - centerY, pt1.x() - centerX );
   const double anglePt2 = std::atan2( pt2.y() - centerY, pt2.x() - centerX );
   const double anglePt3 = std::atan2( pt3.y() - centerY, pt3.x() - centerX );
-  const bool isClockwise = circleClockwise( anglePt1, anglePt2, anglePt3 );
+  const bool isClockwise = QgsGeometryUtilsBase::circleClockwise( anglePt1, anglePt2, anglePt3 );
   const double angleDest = anglePt1 + ( isClockwise ? -theta : theta );
 
   const double x = centerX + radius * ( std::cos( angleDest ) );
   const double y = centerY + radius * ( std::sin( angleDest ) );
 
   const double z = pt1.is3D() ?
-                   interpolateArcValue( angleDest, anglePt1, anglePt2, anglePt3, pt1.z(), pt2.z(), pt3.z() )
+                   QgsGeometryUtilsBase::interpolateArcValue( angleDest, anglePt1, anglePt2, anglePt3, pt1.z(), pt2.z(), pt3.z() )
                    : 0;
   const double m = pt1.isMeasure() ?
-                   interpolateArcValue( angleDest, anglePt1, anglePt2, anglePt3, pt1.m(), pt2.m(), pt3.m() )
+                   QgsGeometryUtilsBase::interpolateArcValue( angleDest, anglePt1, anglePt2, anglePt3, pt1.m(), pt2.m(), pt3.m() )
                    : 0;
 
   return QgsPoint( pt1.wkbType(), x, y, z, m );
@@ -593,17 +593,17 @@ double QgsGeometryUtils::circleTangentDirection( const QgsPoint &tangentPoint, c
   double mX, mY, radius;
   circleCenterRadius( cp1, cp2, cp3, radius, mX, mY );
 
-  const double p1Angle = QgsGeometryUtils::ccwAngle( cp1.y() - mY, cp1.x() - mX );
-  const double p2Angle = QgsGeometryUtils::ccwAngle( cp2.y() - mY, cp2.x() - mX );
-  const double p3Angle = QgsGeometryUtils::ccwAngle( cp3.y() - mY, cp3.x() - mX );
+  const double p1Angle = QgsGeometryUtilsBase::ccwAngle( cp1.y() - mY, cp1.x() - mX );
+  const double p2Angle = QgsGeometryUtilsBase::ccwAngle( cp2.y() - mY, cp2.x() - mX );
+  const double p3Angle = QgsGeometryUtilsBase::ccwAngle( cp3.y() - mY, cp3.x() - mX );
   double angle = 0;
-  if ( circleClockwise( p1Angle, p2Angle, p3Angle ) )
+  if ( QgsGeometryUtilsBase::circleClockwise( p1Angle, p2Angle, p3Angle ) )
   {
-    angle = lineAngle( tangentPoint.x(), tangentPoint.y(), mX, mY ) - M_PI_2;
+    angle = QgsGeometryUtilsBase::lineAngle( tangentPoint.x(), tangentPoint.y(), mX, mY ) - M_PI_2;
   }
   else
   {
-    angle = lineAngle( mX, mY, tangentPoint.x(), tangentPoint.y() ) - M_PI_2;
+    angle = QgsGeometryUtilsBase::lineAngle( mX, mY, tangentPoint.x(), tangentPoint.y() ) - M_PI_2;
   }
   if ( angle < 0 )
     angle += 2 * M_PI;
@@ -659,8 +659,8 @@ bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2
       return false;
     }
 
-    const int a2Side = leftOfLine( a2.x(), a2.y(), a1.x(), a1.y(), a3.x(), a3.y() );
-    const int bSide  = leftOfLine( b.x(), b.y(), a1.x(), a1.y(), a3.x(), a3.y() );
+    const int a2Side = QgsGeometryUtilsBase::leftOfLine( a2.x(), a2.y(), a1.x(), a1.y(), a3.x(), a3.y() );
+    const int bSide  = QgsGeometryUtilsBase::leftOfLine( b.x(), b.y(), a1.x(), a1.y(), a3.x(), a3.y() );
 
     // Is the point b on the same side of a1/a3 as the mid-point a2 is?
     // If not, it's in the unbounded part of the circle, so it continues the arc, return true.
@@ -770,11 +770,11 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
 
       if ( hasZ )
       {
-        z = interpolateArcValue( angle, a1, a2, a3, circlePoint1.z(), circlePoint2.z(), circlePoint3.z() );
+        z = QgsGeometryUtilsBase::interpolateArcValue( angle, a1, a2, a3, circlePoint1.z(), circlePoint2.z(), circlePoint3.z() );
       }
       if ( hasM )
       {
-        m = interpolateArcValue( angle, a1, a2, a3, circlePoint1.m(), circlePoint2.m(), circlePoint3.m() );
+        m = QgsGeometryUtilsBase::interpolateArcValue( angle, a1, a2, a3, circlePoint1.m(), circlePoint2.m(), circlePoint3.m() );
       }
 
       stringPoints.insert( stringPoints.size(), QgsPoint( pointWkbType, x, y, z, m ) );
