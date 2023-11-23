@@ -24,6 +24,7 @@ Building QGIS from source - step by step
        * [3.11.1. Install build dependencies](#3111-install-build-dependencies)
        * [3.11.2. Suggested system tweaks](#3112-suggested-system-tweaks)
        * [3.11.3. Additional tools for QGIS development](#3113-additional-tools-for-qgis-development)
+   * [3.12. Building on local conda enviroment](#312-building-on-local-conda-enviroment)
 * [4. Building on Windows](#4-building-on-windows)
    * [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
        * [4.1.1. Visual Studio 2019 Community Edition](#411-visual-studio-2019-community-edition)
@@ -546,6 +547,28 @@ are required for the various QGIS source formatting and preparation scripts.
 ```bash
 dnf install ccache ninja-build astyle python3-autopep8 python3-mock python3-nose2 perl-YAML-Tiny
 ```
+
+# 3.12. Building on local conda enviroment
+
+With a conda isolated enviroment, developers can build and run qgis without need of installing a lot of dependencies to SO, neither dealing with containers. They just need to install [miniforge](https://github.com/conda-forge/miniforge#install) locally and create the enviroment from file conda-deps.yml. Developers can also add new dependencies to the enviroment updating the file e reloading it.
+
+[Install miniforge](https://github.com/conda-forge/miniforge#install)
+
+[3.6. Check out the QGIS Source Code](#36-check-out-the-qgis-source-code)
+
+Create or update the enviroment:
+
+```bash
+mamba env update -n qgis -f conda-deps.yml
+```
+
+Use the enviroment:
+
+```bash
+conda activate qgis
+```
+
+[3.7. Starting the compile](#37-starting-the-compile)
 
 # 4. Building on Windows
 
