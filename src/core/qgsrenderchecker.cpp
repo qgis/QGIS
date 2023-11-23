@@ -27,6 +27,23 @@
 #include <QBuffer>
 #include <QUuid>
 
+#ifndef CMAKE_SOURCE_DIR
+#error CMAKE_SOURCE_DIR undefined
+#endif // CMAKE_SOURCE_DIR
+
+QString QgsRenderChecker::sourcePath()
+{
+  static QString sSourcePathPrefix;
+  static std::once_flag initialized;
+  std::call_once( initialized, []
+  {
+    sSourcePathPrefix = QString( CMAKE_SOURCE_DIR );
+    if ( sSourcePathPrefix.endsWith( '/' ) )
+      sSourcePathPrefix.chop( 1 );
+  } );
+  return sSourcePathPrefix;
+}
+
 QgsRenderChecker::QgsRenderChecker()
   : mBasePath( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/control_images/" ) ) //defined in CmakeLists.txt
 {
@@ -119,6 +136,7 @@ void QgsRenderChecker::drawBackground( QImage *image )
   p.fillRect( QRect( 0, 0, image->width(), image->height() ), brush );
   p.end();
 }
+
 
 bool QgsRenderChecker::isKnownAnomaly( const QString &diffImageFile )
 {
@@ -703,7 +721,20 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   mReport += QLatin1String( "</td></tr>" );
   mReport += myImagesString;
 
-  mMarkdownReport += QStringLiteral( "Rendered image did not match %1 (found %2 pixels different)\n" ).arg( referenceImageFile ).arg( mMismatchCount );
+  const QString githubSha = qgetenv( "GITHUB_SHA" );
+  if ( !githubSha.isEmpty() )
+  {
+    const QString githubBlobUrl = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2" ).arg(
+                                    githubSha, QDir( sourcePath() ).relativeFilePath( referenceImageFile ) );
+    mMarkdownReport += QStringLiteral( "Rendered image did not match [%1](%2) (found %3 pixels different)\n" ).arg(
+                         QDir( sourcePath() ).relativeFilePath( referenceImageFile ), githubBlobUrl ).arg( mMismatchCount );
+  }
+  else
+  {
+    mMarkdownReport += QStringLiteral( "Rendered image did not match [%1](%2) (found %3 pixels different)\n" ).arg(
+                         QDir( sourcePath() ).relativeFilePath( referenceImageFile ),
+                         QUrl::fromLocalFile( referenceImageFile ).toString() ).arg( mMismatchCount );
+  }
 
   performPostTestActions( flags );
   return mResult;
