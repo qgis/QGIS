@@ -1,17 +1,17 @@
 /***************************************************************************
-                        qgsgeometryutils.cpp
-  -------------------------------------------------------------------
+                       qgsgeometryutils.cpp
+ -------------------------------------------------------------------
 Date                 : 21 Nov 2014
 Copyright            : (C) 2014 by Marco Hugentobler
 email                : marco.hugentobler at sourcepole dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
 
 #include "qgsgeometryutils.h"
 
@@ -579,8 +579,8 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
 
 QgsPoint QgsGeometryUtils::segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, const bool useShortestArc )
 {
-  double midPointAngle = averageAngle( lineAngle( center.x(), center.y(), p1.x(), p1.y() ),
-                                       lineAngle( center.x(), center.y(), p2.x(), p2.y() ) );
+  double midPointAngle = QgsGeometryUtilsBase::averageAngle( QgsGeometryUtilsBase::lineAngle( center.x(), center.y(), p1.x(), p1.y() ),
+                         QgsGeometryUtilsBase::lineAngle( center.x(), center.y(), p2.x(), p2.y() ) );
   if ( !useShortestArc )
     midPointAngle += M_PI;
   return center.project( center.distance( p1 ), midPointAngle * 180 / M_PI );

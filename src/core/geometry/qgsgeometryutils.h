@@ -1,17 +1,17 @@
 /***************************************************************************
-                        qgsgeometryutils.h
-  -------------------------------------------------------------------
+                       qgsgeometryutils.h
+ -------------------------------------------------------------------
 Date                 : 21 Nov 2014
 Copyright            : (C) 2014 by Marco Hugentobler
 email                : marco.hugentobler at sourcepole dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
 
 #pragma once
 
@@ -669,8 +669,10 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Returns the squared 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-    static double sqrDistance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return QgsGeometryUtilsBase::sqrDistance2D( x1, y1, x2, y2 ); }
+    Q_DECL_DEPRECATED static double sqrDistance2D( double x1, double y1, double x2, double y2 ) SIP_DEPRECATED SIP_HOLDGIL {return QgsGeometryUtilsBase::sqrDistance2D( x1, y1, x2, y2 ); }
 
     /**
      * Returns the squared 2D distance between two points.
@@ -682,8 +684,10 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Returns the 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-    static double distance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return QgsGeometryUtilsBase::distance2D( x1, y1, x2, y2 ); }
+    Q_DECL_DEPRECATED static double distance2D( double x1, double y1, double x2, double y2 ) SIP_DEPRECATED SIP_HOLDGIL {return QgsGeometryUtilsBase::distance2D( x1, y1, x2, y2 ); }
 
     /**
      * Returns the 2D distance between two points.
@@ -692,8 +696,10 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Returns the squared distance between a point and a line.
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-    static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::sqrDistToLine( ptX, ptY, x1, y1, x2, y2, minDistX, minDistY, epsilon );
     }
@@ -704,8 +710,10 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
      * on the line, or exactly in line with the segment) and the result is undefined.
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::leftOfLine( x, y, x1, y1, x2, y2 ) ;
     }
@@ -718,10 +726,11 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \note Not available in Python bindings
      * \since QGIS 3.4
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-    static void pointOnLineWithDistance( double x1, double y1, double x2, double y2, double distance, double &x, double &y,
-                                         double *z1 = nullptr, double *z2 = nullptr, double *z = nullptr,
-                                         double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP
+    Q_DECL_DEPRECATED static void pointOnLineWithDistance( double x1, double y1, double x2, double y2, double distance, double &x, double &y,
+        double *z1 = nullptr, double *z2 = nullptr, double *z = nullptr,
+        double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP
     {
       return QgsGeometryUtilsBase::pointOnLineWithDistance( x1, y1, x2, y2, distance, x, y,
           z1, z2, z,
@@ -754,16 +763,22 @@ class CORE_EXPORT QgsGeometryUtils
      * \endcode
      *
      * \since QGIS 3.20
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-    static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x SIP_OUT, double *y SIP_OUT )
+    Q_DECL_DEPRECATED static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x SIP_OUT, double *y SIP_OUT )
     {
       QgsGeometryUtilsBase::perpendicularOffsetPointAlongSegment( x1, y1, x2, y2, proportion, offset, x, y );
     }
 
 
 
-    //! Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
-    static double ccwAngle( double dy, double dx ) SIP_HOLDGIL
+
+    /**
+     *Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
+     */
+    Q_DECL_DEPRECATED static double ccwAngle( double dy, double dx ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::ccwAngle( dy, dx );
     }
@@ -774,16 +789,20 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * The angles are defined counter-clockwise from the origin, i.e. using
      * Euclidean angles as opposed to geographic "North up" angles.
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static bool circleClockwise( double angle1, double angle2, double angle3 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static bool circleClockwise( double angle1, double angle2, double angle3 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::circleClockwise( angle1, angle2, angle3 );
     }
 
-    //! Returns TRUE if, in a circle, angle is between angle1 and angle2
-
-    static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise ) SIP_HOLDGIL
+    /**
+     * Returns TRUE if, in a circle, angle is between angle1 and angle2
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
+     */
+    Q_DECL_DEPRECATED static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::circleAngleBetween( angle, angle1, angle2, clockwise );
     }
@@ -791,23 +810,30 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * Returns TRUE if an angle is between angle1 and angle3 on a circle described by
      * angle1, angle2 and angle3.
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::angleOnCircle( angle, angle1, angle2, angle3 );
     }
 
-    //! Length of a circular string segment defined by pt1, pt2, pt3
-
-    static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL
+    /**
+     * Length of a circular string segment defined by pt1, pt2, pt3
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
+     */
+    Q_DECL_DEPRECATED static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
     }
 
-    //! Calculates angle of a circular string part defined by pt1, pt2, pt3
-
-    static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL
+    /**
+     * Calculates angle of a circular string part defined by pt1, pt2, pt3
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
+     */
+    Q_DECL_DEPRECATED static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::sweepAngle( centerX, centerY, x1, y1, x2, y2, x3, y3 );
     }
@@ -815,9 +841,9 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
      * \since 3.0
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::interpolateArcValue( angle, a1, a2, a3, zm1, zm2, zm3 );
     }
@@ -826,9 +852,10 @@ class CORE_EXPORT QgsGeometryUtils
      * Ensures that an angle is in the range 0 <= angle < 2 pi.
      * \param angle angle in radians
      * \returns equivalent angle within the range [0, 2 pi)
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static double normalizedAngle( double angle ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static double normalizedAngle( double angle ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::normalizedAngle( angle );
     }
@@ -840,9 +867,10 @@ class CORE_EXPORT QgsGeometryUtils
      * \param x2 x-coordinate of line end
      * \param y2 y-coordinate of line end
      * \returns angle in radians. Returned value is undefined if start and end point are the same.
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static double lineAngle( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static double lineAngle( double x1, double y1, double x2, double y2 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::lineAngle( x1, y1, x2, y2 );
     }
@@ -857,9 +885,10 @@ class CORE_EXPORT QgsGeometryUtils
      * \param x3 x-coordinate of point c
      * \param y3 y-coordinate of point c
      * \returns angle between lines in radians. Returned value is undefined if two or more points are equal.
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static double angleBetweenThreePoints( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static double angleBetweenThreePoints( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::angleBetweenThreePoints( x1, y1, x2, y2, x3, y3 );
     }
@@ -872,9 +901,10 @@ class CORE_EXPORT QgsGeometryUtils
      * \param x2 x-coordinate of line end
      * \param y2 y-coordinate of line end
      * \returns angle in radians. Returned value is undefined if start and end point are the same.
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static double linePerpendicularAngle( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static double linePerpendicularAngle( double x1, double y1, double x2, double y2 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::linePerpendicularAngle( x1, y1, x2, y2 );
     }
@@ -882,9 +912,10 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * Calculates the average angle (in radians) between the two linear segments from
      * (\a x1, \a y1) to (\a x2, \a y2) and (\a x2, \a y2) to (\a x3, \a y3).
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::averageAngle( x1, y1, x2, y2, x3, y3 );
     }
@@ -894,8 +925,10 @@ class CORE_EXPORT QgsGeometryUtils
      * \param a1 first angle (in radians)
      * \param a2 second angle (in radians)
      * \returns average angle (in radians)
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-    static double averageAngle( double a1, double a2 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static double averageAngle( double a1, double a2 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::averageAngle( a1, a2 );
     }
@@ -922,9 +955,9 @@ class CORE_EXPORT QgsGeometryUtils
      * to the diagonal line extended from the rectangle's top-left corner.
      *
      * \since QGIS 3.20
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static int closestSideOfRectangle( double right, double bottom, double left, double top, double x, double y )
+    Q_DECL_DEPRECATED static int closestSideOfRectangle( double right, double bottom, double left, double top, double x, double y )
     {
       return QgsGeometryUtilsBase::closestSideOfRectangle( right, bottom, left, top, x, y );
     }
@@ -950,14 +983,14 @@ class CORE_EXPORT QgsGeometryUtils
      *
      *
      * \since QGIS 3.24
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static void perpendicularCenterSegment( double centerPointX, double centerPointY,
-                                            double segmentPoint1x, double segmentPoint1y,
-                                            double segmentPoint2x, double segmentPoint2y,
-                                            double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
-                                            double &perpendicularSegmentPoint2x SIP_OUT, double &perpendicularSegmentPoint2y SIP_OUT,
-                                            double segmentLength = 0 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static void perpendicularCenterSegment( double centerPointX, double centerPointY,
+        double segmentPoint1x, double segmentPoint1y,
+        double segmentPoint2x, double segmentPoint2y,
+        double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
+        double &perpendicularSegmentPoint2x SIP_OUT, double &perpendicularSegmentPoint2y SIP_OUT,
+        double segmentLength = 0 ) SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::perpendicularCenterSegment( centerPointX, centerPointY, segmentPoint1x, segmentPoint1y, segmentPoint2x, segmentPoint2y, perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y, segmentLength );
     }
@@ -969,9 +1002,10 @@ class CORE_EXPORT QgsGeometryUtils
      * \param P2 is the first point on the second line,
      * \param P22 is the second point on the second line.
      * \return the shortest distance
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12, const QgsVector3D &P2, const QgsVector3D &P22 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12, const QgsVector3D &P2, const QgsVector3D &P22 ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::skewLinesDistance( P1, P12, P2, P22 );
     }
@@ -985,11 +1019,13 @@ class CORE_EXPORT QgsGeometryUtils
      * \param X1 is the result projection point of line P2P22 onto line P1P12,
      * \param epsilon the tolerance to use.
      * \return TRUE if such point exists, FALSE - otherwise.
+     *
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-    static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
-                                     const QgsVector3D &P2, const QgsVector3D &P22,
-                                     QgsVector3D &X1 SIP_OUT,
-                                     double epsilon = 0.0001 ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
+        const QgsVector3D &P2, const QgsVector3D &P22,
+        QgsVector3D &X1 SIP_OUT,
+        double epsilon = 0.0001 ) SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::skewLinesProjection( P1, P12, P2, P22, X1, epsilon );
     }
@@ -1030,10 +1066,12 @@ class CORE_EXPORT QgsGeometryUtils
      *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0), QgsVector3D(0,5,5), QgsVector3D(5,5,5))
      *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
      *   \endcode
+     *
+     *   \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-    static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
-                                     const QgsVector3D &Lb1, const QgsVector3D &Lb2,
-                                     QgsVector3D &intersection SIP_OUT ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
+        const QgsVector3D &Lb1, const QgsVector3D &Lb2,
+        QgsVector3D &intersection SIP_OUT ) SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::linesIntersection3D( La1, La2, Lb1, Lb2, intersection );
     }
@@ -1043,9 +1081,9 @@ class CORE_EXPORT QgsGeometryUtils
      * (\a cX, \a cY).
      *
      * \since QGIS 3.10
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) SIP_DEPRECATED SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::triangleArea( aX, aY, bX, bY, cX, cY );
     }
@@ -1057,9 +1095,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \warning this method requires that the point definitely lies on the line!
      *
      * \since QGIS 3.32
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static double pointFractionAlongLine( double x1, double y1, double x2, double y2, double px, double py )
+    Q_DECL_DEPRECATED static double pointFractionAlongLine( double x1, double y1, double x2, double y2, double px, double py )
     {
       return QgsGeometryUtilsBase::pointFractionAlongLine( x1, y1, x2, y2, px, py );
     }
@@ -1080,10 +1118,10 @@ class CORE_EXPORT QgsGeometryUtils
      * \param pointY y-coordinate of generated point
      *
      * \since QGIS 3.10
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
-                                         double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
+        double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, pointX, pointY );
     }
@@ -1093,9 +1131,9 @@ class CORE_EXPORT QgsGeometryUtils
      * points can be considered collinear with a specified tolerance \a epsilon.
      *
      * \since QGIS 3.32
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static bool pointsAreCollinear( double x1, double y1, double x2, double y2, double x3, double y3, double epsilon )
+    Q_DECL_DEPRECATED static bool pointsAreCollinear( double x1, double y1, double x2, double y2, double x3, double y3, double epsilon )
     {
       return QgsGeometryUtilsBase::pointsAreCollinear( x1, y1, x2, y2, x3, y3, epsilon );
     }
@@ -1119,10 +1157,10 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns TRUE if the bisector exists (A B and C D are not collinear)
      *
      * \since QGIS 3.18
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static bool angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
-                               double &pointX SIP_OUT, double &pointY SIP_OUT, double &angle SIP_OUT ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static bool angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
+        double &pointX SIP_OUT, double &pointY SIP_OUT, double &angle SIP_OUT ) SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::angleBisector( aX, aY, bX, bY, cX, cY, dX, dY, pointX, pointY, angle );
     }
@@ -1142,15 +1180,17 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns TRUE if the bisector exists (A B and C are not collinear)
      *
      * \since QGIS 3.18
+     * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
-
-    static bool bisector( double aX, double aY, double bX, double bY, double cX, double cY,
-                          double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL
+    Q_DECL_DEPRECATED static bool bisector( double aX, double aY, double bX, double bY, double cX, double cY,
+                                            double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::bisector( aX, aY, bX, bY, cX, cY, pointX, pointY );
     }
 
-    //! Returns radius and center of the circle through pt1, pt2, pt3
+    /**
+     * Returns radius and center of the circle through pt1, pt2, pt3
+     */
     static void circleCenterRadius( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double &radius SIP_OUT,
                                     double &centerX SIP_OUT, double &centerY SIP_OUT ) SIP_HOLDGIL
     {
