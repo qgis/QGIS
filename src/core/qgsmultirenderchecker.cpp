@@ -19,25 +19,10 @@
 #include <QDebug>
 #include <mutex>
 
-#ifndef CMAKE_SOURCE_DIR
-#error CMAKE_SOURCE_DIR undefined
-#endif // CMAKE_SOURCE_DIR
-
-int QgsMultiRenderChecker::sFilePrefixLength = -1;
-
 QgsMultiRenderChecker::QgsMultiRenderChecker()
 {
   if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" ) )
     mIsCiRun = true;
-
-  static std::once_flag initialized;
-  std::call_once( initialized, []
-  {
-    sFilePrefixLength = sizeof( CMAKE_SOURCE_DIR );
-    // cppcheck-suppress internalAstError
-    if ( CMAKE_SOURCE_DIR[sFilePrefixLength - 1] == '/' )
-      sFilePrefixLength++;
-  } );
 }
 
 void QgsMultiRenderChecker::setControlName( const QString &name )
@@ -48,7 +33,7 @@ void QgsMultiRenderChecker::setControlName( const QString &name )
 void QgsMultiRenderChecker::setFileFunctionLine( const char *file, const char *function, int line )
 {
 #ifndef _MSC_VER
-  mSourceFile = file + ( file[0] == '/' ? sFilePrefixLength : 0 );
+  mSourceFile = QDir( QgsRenderChecker::sourcePath() ).relativeFilePath( file );
 #else
   mSourceFile = file;
 #endif
@@ -239,16 +224,17 @@ QString QgsMultiRenderChecker::markdownReport() const
   if ( mSourceLine >= 0 )
   {
     const QString githubSha = qgetenv( "GITHUB_SHA" );
+    QString fileLink;
     if ( !githubSha.isEmpty() )
     {
-      const QString githubBlobUrl = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg(
-                                      githubSha, mSourceFile ).arg( mSourceLine );
-      report += QStringLiteral( "**Test failed at %1 at [%2:%3](%4)**\n\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine ).arg( githubBlobUrl );
+      fileLink = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg(
+                   githubSha, mSourceFile ).arg( mSourceLine );
     }
     else
     {
-      report += QStringLiteral( "**Test failed at %1 at [%2:%3]**\n\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine );
+      fileLink = QUrl::fromLocalFile( QDir( QgsRenderChecker::sourcePath() ).filePath( mSourceFile ) ).toString();
     }
+    report += QStringLiteral( "**Test failed at %1 at [%2:%3](%4)**\n\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine ).arg( fileLink );
   }
   report += mMarkdownReport;
   return report;

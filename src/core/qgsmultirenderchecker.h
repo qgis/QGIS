@@ -191,8 +191,6 @@ class CORE_EXPORT QgsMultiRenderChecker
     bool mExpectFail = false;
 
     bool mIsCiRun = false;
-
-    static int sFilePrefixLength;
 };
 
 ///@cond PRIVATE
