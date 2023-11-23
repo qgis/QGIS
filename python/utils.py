@@ -222,6 +222,9 @@ def initInterface(pointer):
 #######################
 # PLUGINS
 
+# The current path for home directory Python plugins.
+HOME_PLUGIN_PATH: Optional[str] = None
+
 # list of plugin paths. it gets filled in by the QGIS python library
 plugin_paths = []
 
