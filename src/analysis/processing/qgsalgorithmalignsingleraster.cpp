@@ -68,18 +68,18 @@ void QgsAlignSingleRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
 
   QStringList resamplingMethods;
-  resamplingMethods << QObject::tr( "Nearest neighbour" )
-                    << QObject::tr( "Bilinear" )
-                    << QObject::tr( "Cubic" )
-                    << QObject::tr( "Cubic spline" )
-                    << QObject::tr( "Lanczos" )
+  resamplingMethods << QObject::tr( "Nearest Neighbour" )
+                    << QObject::tr( "Bilinear (2x2 Kernel)" )
+                    << QObject::tr( "Cubic (4x4 Kernel)" )
+                    << QObject::tr( "Cubic B-Spline (4x4 Kernel)" )
+                    << QObject::tr( "Lanczos (6x6 Kernel)" )
                     << QObject::tr( "Average" )
                     << QObject::tr( "Mode" )
                     << QObject::tr( "Maximum" )
                     << QObject::tr( "Minimum" )
                     << QObject::tr( "Median" )
-                    << QObject::tr( "First quartile" )
-                    << QObject::tr( "Third quartile" );
+                    << QObject::tr( "First Quartile (Q1)" )
+                    << QObject::tr( "Third Quartile (Q3)" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "RESAMPLING_METHOD" ), QObject::tr( "Resampling method" ), resamplingMethods, false, 0, false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "RESCALE" ), QObject::tr( "Rescale values according to the cell size" ), false ) );
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) ) );

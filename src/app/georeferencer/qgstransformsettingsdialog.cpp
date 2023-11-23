@@ -117,10 +117,10 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
   cmbCompressionComboBox->addItem( tr( "DEFLATE" ), QStringLiteral( "DEFLATE" ) );
 
   cmbResampling->addItem( tr( "Nearest Neighbour" ), static_cast< int >( QgsImageWarper::ResamplingMethod::NearestNeighbour ) );
-  cmbResampling->addItem( tr( "Linear" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Bilinear ) );
-  cmbResampling->addItem( tr( "Cubic" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Cubic ) );
-  cmbResampling->addItem( tr( "Cubic Spline" ), static_cast< int >( QgsImageWarper::ResamplingMethod::CubicSpline ) );
-  cmbResampling->addItem( tr( "Lanczos" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Lanczos ) );
+  cmbResampling->addItem( tr( "Bilinear (2x2 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Bilinear ) );
+  cmbResampling->addItem( tr( "Cubic (4x4 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Cubic ) );
+  cmbResampling->addItem( tr( "Cubic B-Spline (4x4 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::CubicSpline ) );
+  cmbResampling->addItem( tr( "Lanczos (6x6 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Lanczos ) );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsTransformSettingsDialog::showHelp );
 }
