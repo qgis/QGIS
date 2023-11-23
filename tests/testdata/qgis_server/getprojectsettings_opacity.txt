@@ -40,6 +40,7 @@ Content-Type: text/xml; charset=utf-8
     <Format>image/png; mode=8bit</Format>
     <Format>image/png; mode=1bit</Format>
     <Format>application/dxf</Format>
+    <Format>application/pdf</Format>
     <DCPType>
      <HTTP>
       <Get>

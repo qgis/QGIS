@@ -1142,6 +1142,35 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
         f = next(vl.getFeatures())
         self.assertEqual(f['name'], 'Apple')
 
+    def testRecomputeExtent(self):
+        """Test that extents are recomputed correctly after update"""
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
+        extent = vl.extent()
+        vl.startEditing()
+        for fet in vl.getFeatures():
+            vl.translateFeature(fet.id(), 1, -1)
+        vl.commitChanges()
+        updated_extent = vl.extent()
+        self.assertEqual(updated_extent.xMaximum(), extent.xMaximum() + 1)
+        self.assertEqual(updated_extent.xMinimum(), extent.xMinimum() + 1)
+        self.assertEqual(updated_extent.yMaximum(), extent.yMaximum() - 1)
+        self.assertEqual(updated_extent.yMinimum(), extent.yMinimum() - 1)
+
+        # close file and reopen, then recheck to confirm that changes were saved to file
+        del vl
+        vl = None
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
+        reopened_extent = vl.extent()
+        self.assertEqual(reopened_extent, updated_extent)
+
 
 if __name__ == '__main__':
     unittest.main()

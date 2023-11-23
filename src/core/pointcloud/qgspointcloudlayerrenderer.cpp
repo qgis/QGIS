@@ -24,6 +24,7 @@
 #include "qgspointcloudindex.h"
 #include "qgscolorramp.h"
 #include "qgselevationmap.h"
+#include "qgsmeshlayerutils.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudrenderer.h"
@@ -35,6 +36,9 @@
 #include "qgspointcloudblockrequest.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
+
+#include <delaunator.hpp>
+
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -279,7 +283,15 @@ bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex *pc )
   int nodesDrawn = 0;
   bool canceled = false;
 
-  switch ( mRenderer->drawOrder2d() )
+  Qgis::PointCloudDrawOrder drawOrder = mRenderer->drawOrder2d();
+  if ( mRenderer->renderAsTriangles() )
+  {
+    // Ordered rendering is ignored when drawing as surface, because all points are used for triangulation.
+    // We would need to have a way to detect if a point is occluded by some other points, which may be costly.
+    drawOrder = Qgis::PointCloudDrawOrder::Default;
+  }
+
+  switch ( drawOrder )
   {
     case Qgis::PointCloudDrawOrder::BottomToTop:
     case Qgis::PointCloudDrawOrder::TopToBottom:
@@ -355,6 +367,12 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloud
       mReadyToCompose = true;
     }
   }
+
+  if ( mRenderer->renderAsTriangles() )
+  {
+    renderTriangulatedSurface( context );
+  }
+
   return nodesDrawn;
 }
 
@@ -438,6 +456,11 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
     block.reset();
 
     blockRequest->deleteLater();
+  }
+
+  if ( mRenderer->renderAsTriangles() )
+  {
+    renderTriangulatedSurface( context );
   }
 
   return nodesDrawn;
@@ -567,6 +590,129 @@ int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<IndexedPointClo
   context.setOffset( contextOffset );
 
   return blockCount;
+}
+
+inline bool isEdgeTooLong( const QPointF &p1, const QPointF &p2, float length )
+{
+  QPointF p = p1 - p2;
+  return p.x() * p.x() + p.y() * p.y() > length;
+}
+
+static void renderTriangle( QImage &img, QPointF *pts, QRgb c0, QRgb c1, QRgb c2, float horizontalFilter, float *elev, QgsElevationMap *elevationMap )
+{
+  if ( horizontalFilter > 0 )
+  {
+    float filterThreshold2 = horizontalFilter * horizontalFilter;
+    if ( isEdgeTooLong( pts[0], pts[1], filterThreshold2 ) ||
+         isEdgeTooLong( pts[1], pts[2], filterThreshold2 ) ||
+         isEdgeTooLong( pts[2], pts[0], filterThreshold2 ) )
+      return;
+  }
+
+  QgsRectangle screenBBox = QgsMeshLayerUtils::triangleBoundingBox( pts[0], pts[1], pts[2] );
+
+  QSize outputSize = img.size();
+
+  int topLim = std::max( int( screenBBox.yMinimum() ), 0 );
+  int bottomLim = std::min( int( screenBBox.yMaximum() ), outputSize.height() - 1 );
+  int leftLim = std::max( int( screenBBox.xMinimum() ), 0 );
+  int rightLim = std::min( int( screenBBox.xMaximum() ), outputSize.width() - 1 );
+
+  int red0 = qRed( c0 ), green0 = qGreen( c0 ), blue0 = qBlue( c0 );
+  int red1 = qRed( c1 ), green1 = qGreen( c1 ), blue1 = qBlue( c1 );
+  int red2 = qRed( c2 ), green2 = qGreen( c2 ), blue2 = qBlue( c2 );
+
+  QRgb *elevData = elevationMap ? elevationMap->rawElevationImageData() : nullptr;
+
+  for ( int j = topLim; j <= bottomLim; j++ )
+  {
+    QRgb *scanLine = ( QRgb * ) img.scanLine( j );
+    QRgb *elevScanLine = elevData ? elevData + static_cast<size_t>( outputSize.width() * j ) : nullptr;
+    for ( int k = leftLim; k <= rightLim; k++ )
+    {
+      QPointF pt( k, j );
+      double lam1, lam2, lam3;
+      if ( !QgsMeshLayerUtils::calculateBarycentricCoordinates( pts[0], pts[1], pts[2], pt, lam3, lam2, lam1 ) )
+        continue;
+
+      // interpolate color
+      int r = static_cast<int>( red0 * lam1 + red1 * lam2 + red2 * lam3 );
+      int g = static_cast<int>( green0 * lam1 + green1 * lam2 + green2 * lam3 );
+      int b = static_cast<int>( blue0 * lam1 + blue1 * lam2 + blue2 * lam3 );
+      scanLine[k] = qRgb( r, g, b );
+
+      // interpolate elevation - in case we are doing global map shading
+      if ( elevScanLine )
+      {
+        float z = static_cast<float>( elev[0] * lam1 + elev[1] * lam2 + elev[2] * lam3 );
+        elevScanLine[k] = QgsElevationMap::encodeElevation( z );
+      }
+    }
+  }
+}
+
+void QgsPointCloudLayerRenderer::renderTriangulatedSurface( QgsPointCloudRenderContext &context )
+{
+  const QgsPointCloudRenderContext::TriangulationData &triangulation = context.triangulationData();
+  const std::vector<double> &points = triangulation.points;
+
+  // Delaunator would crash if it gets less than three points
+  if ( points.size() < 3 )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Need at least 3 points to triangulate" ), 4 );
+    return;
+  }
+
+  std::unique_ptr<delaunator::Delaunator> delaunator;
+  try
+  {
+    delaunator.reset( new delaunator::Delaunator( points ) );
+  }
+  catch ( std::exception &e )
+  {
+    // something went wrong, better to retrieve initial state
+    QgsDebugMsgLevel( QStringLiteral( "Error with triangulation" ), 4 );
+    return;
+  }
+
+  float horizontalFilter = 0;
+  if ( mRenderer->horizontalTriangleFilter() )
+  {
+    horizontalFilter = static_cast<float>( renderContext()->convertToPainterUnits(
+        mRenderer->horizontalTriangleFilterThreshold(), mRenderer->horizontalTriangleFilterUnit() ) );
+  }
+
+  QImage img( context.renderContext().deviceOutputSize(), QImage::Format_ARGB32_Premultiplied );
+  img.setDevicePixelRatio( context.renderContext().devicePixelRatio() );
+  img.fill( 0 );
+
+  const std::vector<size_t> &triangleIndexes = delaunator->triangles;
+  QPainter *painter = context.renderContext().painter();
+  QgsElevationMap *elevationMap = context.renderContext().elevationMap();
+  QPointF triangle[3];
+  float elev[3];
+  for ( size_t i = 0; i < triangleIndexes.size(); i += 3 )
+  {
+    size_t v0 = triangleIndexes[i], v1 = triangleIndexes[i + 1], v2 = triangleIndexes[i + 2];
+    triangle[0].rx() = points[v0 * 2];
+    triangle[0].ry() = points[v0 * 2 + 1];
+    triangle[1].rx() = points[v1 * 2];
+    triangle[1].ry() = points[v1 * 2 + 1];
+    triangle[2].rx() = points[v2 * 2];
+    triangle[2].ry() = points[v2 * 2 + 1];
+
+    if ( elevationMap )
+    {
+      elev[0] = triangulation.elevations[v0];
+      elev[1] = triangulation.elevations[v1];
+      elev[2] = triangulation.elevations[v2];
+    }
+
+    QRgb c0 = triangulation.colors[v0], c1 = triangulation.colors[v1], c2 = triangulation.colors[v2];
+    renderTriangle( img, triangle, c0, c1, c2, horizontalFilter, elev, elevationMap );
+  }
+
+  painter->drawImage( 0, 0, img );
 }
 
 bool QgsPointCloudLayerRenderer::forceRasterRender() const

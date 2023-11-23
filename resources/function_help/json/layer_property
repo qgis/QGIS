@@ -20,5 +20,5 @@
     "expression": "layer_property('landsat','crs')",
     "returns": "'EPSG:4326'"
   }],
-  "tags": ["property", "matching", "metadata"]
+  "tags": ["property", "matching", "metadata", "layer name", "layer id", "title", "abstract", "keywords", "data url", "attribution", "attribution url", "layer source", "minimum scale", "min scale", "maximum scale", "max scale", "is editable", "crs", "crs definition", "crs description", "layer extent", "distance units", "layer type", "storage type", "geometry type", "feature count", "file path"]
 }

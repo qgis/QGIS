@@ -6,6 +6,7 @@ set (WMS_SRCS
   qgswms.cpp
   qgswmsutils.cpp
   qgsdxfwriter.cpp
+  qgspdfwriter.cpp
   qgswmsdescribelayer.cpp
   qgswmsgetcapabilities.cpp
   qgswmsgetcontext.cpp

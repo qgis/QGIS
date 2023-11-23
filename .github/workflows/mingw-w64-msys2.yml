@@ -83,7 +83,7 @@ jobs:
             -DWITH_3D=ON \
             -DWITH_PDAL=OFF \
             -DWITH_CUSTOM_WIDGETS=ON \
-            -DWITH_QWTPOLAR=ON \
+            -DWITH_QWTPOLAR=OFF \
             -DWITH_BINDINGS=OFF \
             -DWITH_GRASS=OFF \
             -DWITH_DRACO=OFF \

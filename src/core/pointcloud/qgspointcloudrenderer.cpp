@@ -195,6 +195,11 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setMaximumScreenErrorUnit( mMaximumScreenErrorUnit );
   destination->setPointSymbol( mPointSymbol );
   destination->setDrawOrder2d( mDrawOrder2d );
+
+  destination->setRenderAsTriangles( mRenderAsTriangles );
+  destination->setHorizontalTriangleFilter( mHorizontalTriangleFilter );
+  destination->setHorizontalTriangleFilterThreshold( mHorizontalTriangleFilterThreshold );
+  destination->setHorizontalTriangleFilterUnit( mHorizontalTriangleFilterUnit );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
@@ -207,6 +212,11 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) );
   mPointSymbol = static_cast< Qgis::PointCloudSymbol >( element.attribute( QStringLiteral( "pointSymbol" ), QStringLiteral( "0" ) ).toInt() );
   mDrawOrder2d = static_cast< Qgis::PointCloudDrawOrder >( element.attribute( QStringLiteral( "drawOrder2d" ), QStringLiteral( "0" ) ).toInt() );
+
+  mRenderAsTriangles = element.attribute( QStringLiteral( "renderAsTriangles" ), QStringLiteral( "0" ) ).toInt();
+  mHorizontalTriangleFilter = element.attribute( QStringLiteral( "horizontalTriangleFilter" ), QStringLiteral( "0" ) ).toInt();
+  mHorizontalTriangleFilterThreshold = element.attribute( QStringLiteral( "horizontalTriangleFilterThreshold" ), QStringLiteral( "5" ) ).toDouble();
+  mHorizontalTriangleFilterUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "horizontalTriangleFilterUnit" ), QStringLiteral( "MM" ) ) );
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
@@ -219,6 +229,11 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   element.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( mMaximumScreenErrorUnit ) );
   element.setAttribute( QStringLiteral( "pointSymbol" ), QString::number( static_cast< int >( mPointSymbol ) ) );
   element.setAttribute( QStringLiteral( "drawOrder2d" ), QString::number( static_cast< int >( mDrawOrder2d ) ) );
+
+  element.setAttribute( QStringLiteral( "renderAsTriangles" ), QString::number( static_cast< int >( mRenderAsTriangles ) ) );
+  element.setAttribute( QStringLiteral( "horizontalTriangleFilter" ), QString::number( static_cast< int >( mHorizontalTriangleFilter ) ) );
+  element.setAttribute( QStringLiteral( "horizontalTriangleFilterThreshold" ), qgsDoubleToString( mHorizontalTriangleFilterThreshold ) );
+  element.setAttribute( QStringLiteral( "horizontalTriangleFilterUnit" ), QgsUnitTypes::encodeUnit( mHorizontalTriangleFilterUnit ) );
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const
