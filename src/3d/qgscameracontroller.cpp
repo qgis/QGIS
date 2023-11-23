@@ -638,7 +638,6 @@ void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
 {
   Q_UNUSED( mouse )
 
-  mClickPoint = QPoint();
   setMouseParameters( MouseOperation::None );
 }
 
@@ -1058,15 +1057,19 @@ void QgsCameraController::setMouseParameters( const MouseOperation &newOperation
     return;
   }
 
+  if ( newOperation == MouseOperation::None )
+  {
+    mClickPoint = QPoint();
+  }
   // click point and rotation angles are updated if:
   // - it has never been computed
   // - the current and new operations are both rotation and translation
   // Indeed, if the sequence such as rotation -> zoom -> rotation updating mClickPoint on
   // the click point does not need to be updated because the relative mouse position is kept
   // during a zoom operation
-  if ( mClickPoint.isNull() ||
-       ( ( newOperation == MouseOperation::Rotation || newOperation == MouseOperation::Translation ) &&
-         ( mCurrentOperation == MouseOperation::Rotation ||  mCurrentOperation == MouseOperation::Translation ) ) )
+  else if ( mClickPoint.isNull() ||
+            ( ( newOperation == MouseOperation::Rotation || newOperation == MouseOperation::Translation ) &&
+              ( mCurrentOperation == MouseOperation::Rotation ||  mCurrentOperation == MouseOperation::Translation ) ) )
   {
     mClickPoint = clickPoint;
     mRotationPitch = mCameraPose.pitchAngle();
