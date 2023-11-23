@@ -901,7 +901,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
     if ( qgsDoubleNear( y1, y2 ) && qgsDoubleNear( x1, x2 ) )
       continue;
     double vertexAngle = M_PI - ( std::atan2( y3 - y2, x3 - x2 ) - std::atan2( y2 - y1, x2 - x1 ) );
-    vertexAngle = QgsGeometryUtils::normalizedAngle( vertexAngle );
+    vertexAngle = QgsGeometryUtilsBase::normalizedAngle( vertexAngle );
 
     // extreme angles form more than 45 degree angle at a node - these are the ones we don't want labels to cross
     if ( vertexAngle < M_PI * 135.0 / 180.0 || vertexAngle > M_PI * 225.0 / 180.0 )
@@ -940,7 +940,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
     {
       // at an extreme angle node, so reset counters
       straightSegmentLengths << currentStraightSegmentLength;
-      straightSegmentAngles << QgsGeometryUtils::normalizedAngle( std::atan2( y[i] - segmentStartY, x[i] - segmentStartX ) );
+      straightSegmentAngles << QgsGeometryUtilsBase::normalizedAngle( std::atan2( y[i] - segmentStartY, x[i] - segmentStartX ) );
       longestSegmentLength = std::max( longestSegmentLength, currentStraightSegmentLength );
       currentStraightSegmentLength = 0;
       segmentStartX = x[i];
@@ -950,7 +950,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
   }
   distanceToSegment[line->nbPoints - 1] = totalLineLength;
   straightSegmentLengths << currentStraightSegmentLength;
-  straightSegmentAngles << QgsGeometryUtils::normalizedAngle( std::atan2( y[numberNodes - 1] - segmentStartY, x[numberNodes - 1] - segmentStartX ) );
+  straightSegmentAngles << QgsGeometryUtilsBase::normalizedAngle( std::atan2( y[numberNodes - 1] - segmentStartY, x[numberNodes - 1] - segmentStartX ) );
   longestSegmentLength = std::max( longestSegmentLength, currentStraightSegmentLength );
   const double lineAnchorPoint = totalLineLength * mLF->lineAnchorPercent();
 

@@ -900,7 +900,7 @@ QgsPointXY QgsMapToolMoveLabel::snapCalloutPointToCommonAngle( const QgsPointXY 
     const QgsPointXY end = start.project( cursorDistance * 2, angle + angleOffset );
     double minDistX = 0;
     double minDistY = 0;
-    const double angleDist = QgsGeometryUtils::sqrDistToLine( mapPoint.x(), mapPoint.y(), start.x(), start.y(), end.x(), end.y(), minDistX, minDistY, 4 * std::numeric_limits<double>::epsilon() );
+    const double angleDist = QgsGeometryUtilsBase::sqrDistToLine( mapPoint.x(), mapPoint.y(), start.x(), start.y(), end.x(), end.y(), minDistX, minDistY, 4 * std::numeric_limits<double>::epsilon() );
     if ( angleDist < closestDist )
     {
       closestDist = angleDist;

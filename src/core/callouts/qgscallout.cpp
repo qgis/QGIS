@@ -854,7 +854,7 @@ QgsCurve *QgsCurvedLineCallout::createCalloutLine( const QgsPoint &start, const 
   {
     // to calculate automatically the best curve orientation, we first check which side of the label bounding box
     // the callout origin is nearest to
-    switch ( QgsGeometryUtils::closestSideOfRectangle( rect.right(), rect.bottom(), rect.left(), rect.top(), start.x(), start.y() ) )
+    switch ( QgsGeometryUtilsBase::closestSideOfRectangle( rect.right(), rect.bottom(), rect.left(), rect.top(), start.x(), start.y() ) )
     {
       case 1:
         // closest to bottom
@@ -975,7 +975,7 @@ QgsCurve *QgsCurvedLineCallout::createCalloutLine( const QgsPoint &start, const 
   // by a proportion of the overall callout line length
   const double distance = ( orientation == Clockwise ? 1 : -1 ) * start.distance( end ) * curvature / 100.0;
   double midX, midY;
-  QgsGeometryUtils::perpendicularOffsetPointAlongSegment( start.x(), start.y(), end.x(), end.y(), 0.5, distance, &midX, &midY );
+  QgsGeometryUtilsBase::perpendicularOffsetPointAlongSegment( start.x(), start.y(), end.x(), end.y(), 0.5, distance, &midX, &midY );
 
   return new QgsCircularString( start, QgsPoint( midX, midY ), end );
 }
