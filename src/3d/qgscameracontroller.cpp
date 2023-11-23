@@ -629,7 +629,8 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
     if ( mCaptureFpsMouseMovements )
       mIgnoreNextMouseMove = true;
 
-    setMouseParameters( MouseOperation::Translation, mMousePos );
+    const MouseOperation operation = ( mouse->button() == Qt3DInput::QMouseEvent::LeftButton ) ? MouseOperation::Translation : MouseOperation::Zoom;
+    setMouseParameters( operation, mMousePos );
   }
 }
 
