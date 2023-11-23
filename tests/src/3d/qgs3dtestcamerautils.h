@@ -30,12 +30,17 @@ class QgsCameraController4Test : public QgsCameraController
     // wraps protected methods
     void superOnWheel( Qt3DInput::QWheelEvent *wheel ) { onWheel( wheel ); }
     void superOnMousePressed( Qt3DInput::QMouseEvent *mouse ) { onMousePressed( mouse ); }
+    void superOnMouseReleased( Qt3DInput::QMouseEvent *mouse ) { onMouseReleased( mouse ); }
+    void superOnMousePositionChanged( Qt3DInput::QMouseEvent *mouse ) { onPositionChanged( mouse ); }
     double superSampleDepthBuffer( const QImage &buffer, int px, int py ) { return sampleDepthBuffer( buffer, px, py ); }
 
     // wraps protected member vars
-    QVector3D zoomPoint() { return mZoomPoint; }
-    double cumulatedWheelY() { return mCumulatedWheelY; }
-    Qt3DRender::QCamera *cameraBefore() { return mCameraBefore.get(); }
+    QVector3D zoomPoint() const { return mZoomPoint; }
+    QPoint clickPoint() const { return mClickPoint; }
+    QPoint mousePosition() const { return mMousePos; }
+    MouseOperation mouseOperation() const { return mCurrentOperation; }
+    double cumulatedWheelY() const { return mCumulatedWheelY; }
+    Qt3DRender::QCamera *cameraBefore() const { return mCameraBefore.get(); }
     QgsCameraPose *cameraPose() { return &mCameraPose; }
 
 
