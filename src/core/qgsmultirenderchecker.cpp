@@ -208,7 +208,22 @@ QString QgsMultiRenderChecker::report() const
 
   QString report = mReportHeader;
   if ( mSourceLine >= 0 )
-    report += QStringLiteral( "<b style=\"color: red\">Test failed in %1 at %2:%3</b>\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine );
+  {
+    const QString githubSha = qgetenv( "GITHUB_SHA" );
+    if ( !githubSha.isEmpty() )
+    {
+      const QString githubBlobUrl = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg(
+                                      githubSha, mSourceFile ).arg( mSourceLine );
+      report += QStringLiteral( "<b style=\"color: red\">Test failed in %1 at <a href=\"%2\">%3:%4</a></b>\n" ).arg(
+                  mSourceFunction,
+                  githubBlobUrl,
+                  mSourceFile ).arg( mSourceLine );
+    }
+    else
+    {
+      report += QStringLiteral( "<b style=\"color: red\">Test failed in %1 at %2:%3</b>\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine );
+    }
+  }
 
   report += mReport;
   return report;
@@ -222,8 +237,19 @@ QString QgsMultiRenderChecker::markdownReport() const
   QString report = mMarkdownReportHeader;
 
   if ( mSourceLine >= 0 )
-    report += QStringLiteral( "**Test failed at %1 at %2:%3**\n\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine );
-
+  {
+    const QString githubSha = qgetenv( "GITHUB_SHA" );
+    if ( !githubSha.isEmpty() )
+    {
+      const QString githubBlobUrl = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg(
+                                      githubSha, mSourceFile ).arg( mSourceLine );
+      report += QStringLiteral( "**Test failed at %1 at [%2:%3](%4)**\n\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine ).arg( githubBlobUrl );
+    }
+    else
+    {
+      report += QStringLiteral( "**Test failed at %1 at [%2:%3]**\n\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine );
+    }
+  }
   report += mMarkdownReport;
   return report;
 }
