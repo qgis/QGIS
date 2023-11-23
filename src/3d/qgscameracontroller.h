@@ -230,7 +230,8 @@ class _3D_EXPORT QgsCameraController : public QObject
       None = 0,
       Translation,
       Rotation,
-      Zoom
+      Zoom,
+      ZoomWheel
     };
 
     void setMouseParameters( const MouseOperation &newOperation, const QPoint &clickPoint = QPoint() );

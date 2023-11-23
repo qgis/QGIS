@@ -595,9 +595,9 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
       // see: https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
       mCumulatedWheelY += scaling * wheel->angleDelta().y();
 
-      if ( mCurrentOperation != MouseOperation::Zoom )
+      if ( mCurrentOperation != MouseOperation::ZoomWheel )
       {
-        setMouseParameters( MouseOperation::Zoom );
+        setMouseParameters( MouseOperation::ZoomWheel );
       }
       else
       {
@@ -1045,7 +1045,7 @@ void QgsCameraController::depthBufferCaptured( const QImage &depthImage )
   mDepthBufferImage = depthImage;
   mDepthBufferIsReady = true;
 
-  if ( mCurrentOperation == MouseOperation::Zoom )
+  if ( mCurrentOperation == MouseOperation::ZoomWheel )
   {
     handleTerrainNavigationWheelZoom();
   }
