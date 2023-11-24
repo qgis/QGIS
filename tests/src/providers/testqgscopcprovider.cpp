@@ -296,7 +296,7 @@ void TestQgsCopcProvider::attributes()
   QVERIFY( layer->isValid() );
 
   const QgsPointCloudAttributeCollection attributes = layer->attributes();
-  QCOMPARE( attributes.count(), 18 );
+  QCOMPARE( attributes.count(), 21 );
   QCOMPARE( attributes.at( 0 ).name(), QStringLiteral( "X" ) );
   QCOMPARE( attributes.at( 0 ).type(), QgsPointCloudAttribute::Int32 );
   QCOMPARE( attributes.at( 1 ).name(), QStringLiteral( "Y" ) );
@@ -714,7 +714,10 @@ void TestQgsCopcProvider::testStatsCalculator()
 
   QVector<QgsPointCloudAttribute> attributes;
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Deviation" ), QgsPointCloudAttribute::Float ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "ClassFlags" ), QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Keypoint" ), QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::Char ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Red" ), QgsPointCloudAttribute::UShort ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "EdgeOfFlightLine" ), QgsPointCloudAttribute::Char ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Blue" ), QgsPointCloudAttribute::UShort ) );
@@ -750,9 +753,35 @@ void TestQgsCopcProvider::testStatsCalculator()
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ClassFlags" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Synthetic" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 1 );
+  }
+
+  {
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Keypoint" ) );
+    QCOMPARE( ( float )s.minimum, 0 );
+    QCOMPARE( ( float )s.maximum, 0 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 1 );
+  }
+
+  {
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Withheld" ) );
+    QCOMPARE( ( float )s.minimum, 0 );
+    QCOMPARE( ( float )s.maximum, 0 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 1 );
+  }
+
+  {
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Overlap" ) );
+    QCOMPARE( ( float )s.minimum, 0 );
+    QCOMPARE( ( float )s.maximum, 0 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 1 );
   }
 
   {
