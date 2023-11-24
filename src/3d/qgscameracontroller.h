@@ -200,6 +200,17 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     bool willHandleKeyEvent( QKeyEvent *event );
 
+    //! List of possible operations with the mouse in TerrainBased navigation
+    enum class MouseOperation SIP_SKIP
+    {
+      None = 0,       // no operation
+      Translation,    // left button pressed, no modifier
+      RotationCamera, // left button pressed + ctrl modifier
+      RotationCenter, // left button pressed + shift modifier
+      Zoom,           // right button pressed
+      ZoomWheel       // mouse wheel scroll
+    };
+
   public slots:
 
     /**
@@ -224,17 +235,6 @@ class _3D_EXPORT QgsCameraController : public QObject
     void moveCameraPositionBy( const QVector3D &posDiff );
     //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
     QWindow *window() const;
-
-    //! List of possible operations with the mouse in TerrainBased navigation
-    enum class MouseOperation
-    {
-      None = 0,       // no operation
-      Translation,    // left button pressed, no modifier
-      RotationCamera, // left button pressed + ctrl modifier
-      RotationCenter, // left button pressed + shift modifier
-      Zoom,           // right button pressed
-      ZoomWheel       // mouse wheel scroll
-    };
 
     // This list gathers all the rotation and translation operations.
     // It is used to update the appropriate parameters when successive

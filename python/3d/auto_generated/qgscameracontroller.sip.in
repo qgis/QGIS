@@ -189,6 +189,7 @@ preventing it from being instead handled by parents of the 3D window before
 the controller ever receives it.
 %End
 
+
   public slots:
 
     void setCameraNavigationMode( Qgis::NavigationMode navigationMode );
