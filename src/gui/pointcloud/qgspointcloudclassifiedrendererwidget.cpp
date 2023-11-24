@@ -487,15 +487,27 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
 
   const QString currentAttribute = mAttributeComboBox->currentAttribute();
   const QgsPointCloudStatistics stats = mLayer->statistics();
-  const QList<int> providerCategories = stats.classesOf( currentAttribute );
 
   const QgsPointCloudCategoryList currentCategories = mModel->categories();
 
-  const bool isClassificationAttribute = ! currentAttribute.compare( QStringLiteral( "Classification" ), Qt::CaseInsensitive );
+  const bool isClassificationAttribute = ( 0 == currentAttribute.compare( QStringLiteral( "Classification" ), Qt::CaseInsensitive ) );
+  const bool isBooleanAttribute = ( 0 == currentAttribute.compare( QStringLiteral( "Synthetic" ), Qt::CaseInsensitive ) ||
+                                    0 == currentAttribute.compare( QStringLiteral( "Keypoint" ), Qt::CaseInsensitive ) ||
+                                    0 == currentAttribute.compare( QStringLiteral( "Withheld" ), Qt::CaseInsensitive ) ||
+                                    0 == currentAttribute.compare( QStringLiteral( "Overlap" ), Qt::CaseInsensitive ) );
+
+  QList<int> providerCategories = stats.classesOf( currentAttribute );
+
+  // for 0/1 attributes we should always show both 0 and 1 categories, unless we have full stats
+  // so we can show categories that are actually available
+  if ( isBooleanAttribute &&
+       ( providerCategories.isEmpty() || stats.sampledPointsCount() < mLayer->pointCount() ) )
+    providerCategories = { 0, 1 };
+
   const QgsPointCloudCategoryList defaultLayerCategories = isClassificationAttribute ? QgsPointCloudRendererRegistry::classificationAttributeCategories( mLayer ) : QgsPointCloudCategoryList();
 
   mBlockChangedSignal = true;
-  for ( const int &providerCategory : providerCategories )
+  for ( const int &providerCategory : std::as_const( providerCategories ) )
   {
     // does this category already exist?
     bool found = false;
