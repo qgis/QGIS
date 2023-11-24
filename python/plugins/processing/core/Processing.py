@@ -122,14 +122,6 @@ class Processing:
                 except ImportError:
                     pass
 
-                try:
-                    from otbprovider.OtbAlgorithmProvider import OtbAlgorithmProvider
-                    p = OtbAlgorithmProvider()
-                    if QgsApplication.processingRegistry().addProvider(p):
-                        Processing.BASIC_PROVIDERS.append(p)
-                except ImportError:
-                    pass
-
             # And initialize
             ProcessingConfig.initialize()
             ProcessingConfig.readSettings()

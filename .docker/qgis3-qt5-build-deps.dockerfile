@@ -165,11 +165,6 @@ ENV PATH="/usr/sap/hdbclient:${PATH}"
 # RUN apt-get update
 # RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql17 mssql-tools
 
-# OTB: download and install otb packages for QGIS tests
-RUN curl -k https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-7.1.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
-ENV OTB_INSTALL_DIR=/opt/otb
-
-
 FROM binary-only
 
 RUN  apt-get update \
