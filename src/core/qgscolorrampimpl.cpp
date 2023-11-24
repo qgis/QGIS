@@ -1,17 +1,17 @@
 /***************************************************************************
-    qgscolorrampimpl.cpp
-    ---------------------
-    begin                : November 2009
-    copyright            : (C) 2009 by Martin Dobias
-    email                : wonder dot sk at gmail dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+   qgscolorrampimpl.cpp
+   ---------------------
+   begin                : November 2009
+   copyright            : (C) 2009 by Martin Dobias
+   email                : wonder dot sk at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
 
 #include "qgscolorrampimpl.h"
 #include "qgscolorbrewerpalette.h"
@@ -94,6 +94,8 @@ static QColor _interpolateHsv( const QColor &c1, const QColor &c2, const double 
           hue -= 1;
         break;
       }
+      case Qgis::AngularDirection::NoOrientation:
+        break;
     }
   }
 
@@ -151,6 +153,8 @@ static QColor _interpolateHsl( const QColor &c1, const QColor &c2, const double 
           hue -= 1;
         break;
       }
+      case Qgis::AngularDirection::NoOrientation:
+        break;
     }
   }
 
@@ -472,6 +476,8 @@ QVariantMap QgsGradientColorRamp::properties() const
       break;
     case Qgis::AngularDirection::CounterClockwise:
       map[QStringLiteral( "direction" ) ] = QStringLiteral( "ccw" );
+      break;
+    case Qgis::AngularDirection::NoOrientation:
       break;
   }
 
