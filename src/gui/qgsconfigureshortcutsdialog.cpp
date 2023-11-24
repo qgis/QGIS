@@ -561,7 +561,7 @@ void QgsConfigureShortcutsDialog::mLeFilter_textChanged( const QString &text )
 
 void QgsConfigureShortcutsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#keyboard-shortcuts" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#shortcuts" ) );
 }
 
 void QgsConfigureShortcutsDialog::saveShortcutsPdf()
