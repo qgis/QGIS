@@ -1508,6 +1508,7 @@ The development version
       {
       Clockwise,
       CounterClockwise,
+      NoOrientation,
     };
 
     enum class RendererUsage

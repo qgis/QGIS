@@ -2651,7 +2651,7 @@ class CORE_EXPORT QgsGeometry
      * \warning Only the first exterior ring is taken to perform this operation. In case of degenerate orders,
      * you have to perform in deep verification.
      *
-     * \warning returns Qgis::AngularDirection::Clockwise if the geometry is not a polygon type
+     * \warning returns Qgis::AngularDirection::NoOrientation if the geometry is not a polygon type or empty
      *
      * \since QGIS 3.36
      */
@@ -2663,7 +2663,7 @@ class CORE_EXPORT QgsGeometry
      * \warning Only the first exterior ring is taken to perform this operation. In case of degenerate orders,
      * you have to perform in deep verification.
      *
-     * \warning returns false if the geometry is not a polygon type
+     * \warning returns false if the geometry is not a polygon type or empty
      *
      * \see isPolygonClockwise()
      * \see forcePolygonClockwise()
@@ -2678,7 +2678,7 @@ class CORE_EXPORT QgsGeometry
      * \warning Only the first exterior ring is taken to perform this operation. In case of degenerate orders,
      * you have to perform in deep verification.
      *
-     * \warning returns true if the geometry is not a polygon type
+     * \warning returns true if the geometry is not a polygon type or empty
      *
      * \see isPolygonCounterClockwise()
      * \see forcePolygonClockwise()
