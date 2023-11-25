@@ -14,7 +14,6 @@ import os
 import socketserver
 import threading
 
-import qgis  # NOQA
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (

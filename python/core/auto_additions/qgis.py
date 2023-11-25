@@ -2542,7 +2542,10 @@ QgsCurve.Clockwise.__doc__ = "Clockwise direction"
 QgsCurve.CounterClockwise = Qgis.AngularDirection.CounterClockwise
 QgsCurve.CounterClockwise.is_monkey_patched = True
 QgsCurve.CounterClockwise.__doc__ = "Counter-clockwise direction"
-Qgis.AngularDirection.__doc__ = "Angular directions.\n\n.. versionadded:: 3.24\n\n" + '* ``Clockwise``: ' + Qgis.AngularDirection.Clockwise.__doc__ + '\n' + '* ``CounterClockwise``: ' + Qgis.AngularDirection.CounterClockwise.__doc__
+QgsCurve.NoOrientation = Qgis.AngularDirection.NoOrientation
+QgsCurve.NoOrientation.is_monkey_patched = True
+QgsCurve.NoOrientation.__doc__ = "Unknown orientation or sentinel value"
+Qgis.AngularDirection.__doc__ = "Angular directions.\n\n.. versionadded:: 3.24\n\n" + '* ``Clockwise``: ' + Qgis.AngularDirection.Clockwise.__doc__ + '\n' + '* ``CounterClockwise``: ' + Qgis.AngularDirection.CounterClockwise.__doc__ + '\n' + '* ``NoOrientation``: ' + Qgis.AngularDirection.NoOrientation.__doc__
 # --
 Qgis.AngularDirection.baseClass = Qgis
 # monkey patching scoped based enum

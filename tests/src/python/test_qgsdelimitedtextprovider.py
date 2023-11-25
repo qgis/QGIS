@@ -28,7 +28,6 @@ import time
 from collections.abc import Callable
 from pathlib import Path
 
-import qgis  # NOQA
 
 import test_qgsdelimitedtextprovider_wanted as want  # NOQA
 

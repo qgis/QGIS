@@ -20,7 +20,6 @@ __date__ = 'March 2019'
 __copyright__ = '(C) 2019, Nyall Dawson'
 
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (

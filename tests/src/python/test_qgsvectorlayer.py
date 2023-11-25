@@ -17,7 +17,6 @@ import os
 import shutil
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QDate,
     QDateTime,
@@ -4386,6 +4385,8 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         layer.createMapRenderer(QgsRenderContext())
         layer.extent()
         layer.sourceExtent()
+        layer.extent3D()
+        layer.sourceExtent3D()
         layer.fields()
         layer.attributeList()
         layer.primaryKeyAttributes()

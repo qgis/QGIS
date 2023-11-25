@@ -9,7 +9,6 @@ __author__ = 'Ivan Ivanov'
 __date__ = '11/1/2021'
 __copyright__ = 'Copyright 2021, QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     QgsFeature,

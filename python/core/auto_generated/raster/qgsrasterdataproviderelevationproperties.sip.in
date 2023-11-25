@@ -28,25 +28,6 @@ Handles elevation related properties for a raster data provider.
 Constructor for QgsRasterDataProviderElevationProperties.
 %End
 
-    bool containsElevationData() const;
-%Docstring
-Returns ``True`` if the raster data provider definitely contains elevation related data.
-
-.. note::
-
-   Even if this method returns ``False``, the raster data may still relate to elevation values. ``True`` will only
-   be returned in situations where elevation data is definitively present.
-
-.. seealso:: :py:func:`setContainsElevationData`
-%End
-
-    void setContainsElevationData( bool contains );
-%Docstring
-Sets whether the raster data provider definitely contains elevation related data.
-
-.. seealso:: :py:func:`containsElevationData`
-%End
-
 };
 
 /************************************************************************

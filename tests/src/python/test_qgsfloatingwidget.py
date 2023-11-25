@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '26/04/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtWidgets import QGridLayout, QWidget
 from qgis.gui import QgsFloatingWidget
 import unittest
@@ -41,7 +40,7 @@ class TestQgsFloatingWidget(QgisTestCase):
         main_frame.setAttribute(103)
         main_frame.show()
 
-        fw = qgis.gui.QgsFloatingWidget(main_frame)
+        fw = QgsFloatingWidget(main_frame)
         fw.setMinimumSize(100, 50)
         fw.setAnchorWidget(anchor_widget)
 
@@ -90,7 +89,7 @@ class TestQgsFloatingWidget(QgisTestCase):
         main_frame.setAttribute(103)
         main_frame.show()
 
-        fw = qgis.gui.QgsFloatingWidget(main_frame)
+        fw = QgsFloatingWidget(main_frame)
         fw.setMinimumSize(100, 50)
         fw.setAnchorWidget(anchor_widget)
 
@@ -134,7 +133,7 @@ class TestQgsFloatingWidget(QgisTestCase):
         main_frame.setAttribute(103)
         main_frame.show()
 
-        fw = qgis.gui.QgsFloatingWidget(main_frame)
+        fw = QgsFloatingWidget(main_frame)
         fw.setMinimumSize(100, 50)
         fw.setAnchorWidget(anchor_widget)
 
@@ -172,7 +171,7 @@ class TestQgsFloatingWidget(QgisTestCase):
         main_frame.setAttribute(103)
         main_frame.show()
 
-        fw = qgis.gui.QgsFloatingWidget(main_frame)
+        fw = QgsFloatingWidget(main_frame)
         fw.setMinimumSize(300, 50)
         fw.setAnchorWidget(anchor_widget)
 

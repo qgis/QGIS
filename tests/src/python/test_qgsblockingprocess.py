@@ -22,7 +22,6 @@ __copyright__ = '(C) 2021, Nyall Dawson'
 import os
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QProcess
 from qgis.core import QgsBlockingProcess, QgsFeedback
 import unittest

@@ -21,7 +21,6 @@ __copyright__ = '(C) 2012, Andrea Aime'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QDir,
     QFile,

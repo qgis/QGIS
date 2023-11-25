@@ -10,7 +10,6 @@ __date__ = '2021-07'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 
-import qgis  # NOQA
 from qgis.core import (
     QgsCoordinateTransformContext,
     QgsGroupLayer,

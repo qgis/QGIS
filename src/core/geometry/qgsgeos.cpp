@@ -2049,7 +2049,7 @@ Qgis::CoverageValidityResult QgsGeos::validateCoverage( double gapWidth, std::un
   ( void )gapWidth;
   ( void )invalidEdges;
   ( void )errorMsg;
-  throw QgsNotSupportedException( QObject::tr( "Validiting coverages requires a QGIS build based on GEOS 3.12 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "Validating coverages requires a QGIS build based on GEOS 3.12 or later" ) );
 #else
   if ( !mGeos )
   {

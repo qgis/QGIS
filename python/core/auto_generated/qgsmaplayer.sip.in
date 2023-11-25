@@ -522,6 +522,13 @@ Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for re
 Returns the extent of the layer.
 %End
 
+    virtual QgsBox3D extent3D() const;
+%Docstring
+Returns the 3D extent of the layer.
+
+.. versionadded:: 3.36
+%End
+
     QgsRectangle wgs84Extent( bool forceRecalculate = false ) const;
 %Docstring
 Returns the WGS84 extent (EPSG:4326) of the layer according to
@@ -2117,6 +2124,13 @@ Copies attributes like name, short name, ... into another layer.
     virtual void setExtent( const QgsRectangle &rect );
 %Docstring
 Sets the extent
+%End
+
+    virtual void setExtent3D( const QgsBox3D &box );
+%Docstring
+Sets the extent
+
+.. versionadded:: 3.36
 %End
 
     void setValid( bool valid );

@@ -9,7 +9,6 @@ __author__ = 'Samweli Mwakisambwe'
 __date__ = '6/3/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument

@@ -2208,6 +2208,23 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         server.handleRequest(request, response, project)
         self._img_diff_error(response.body(), response.headers(), "WMS_GetMap_LabelingOpacities")
 
+    def test_get_map_pdf(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,dem",
+            "STYLES": "",
+            "FORMAT": "application/pdf",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        self._assert_status_code(200, qs)
+
 
 if __name__ == '__main__':
     unittest.main()

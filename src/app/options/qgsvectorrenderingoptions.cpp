@@ -68,6 +68,11 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
   mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( QgsVectorLayer::settingsSimplifyAlgorithm->value() ) );
 }
 
+QString QgsVectorRenderingOptionsWidget::helpKey() const
+{
+  return QStringLiteral( "introduction/qgis_configuration.html#vector-rendering-options" );
+}
+
 void QgsVectorRenderingOptionsWidget::apply()
 {
   QgsSettings settings;

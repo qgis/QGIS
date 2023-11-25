@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSize
 from qgis.core import (
     QgsCoordinateReferenceSystem,

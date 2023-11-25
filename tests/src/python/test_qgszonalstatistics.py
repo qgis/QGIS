@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 import os
 import shutil
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QFile, QTemporaryDir
 from qgis.analysis import QgsZonalStatistics
 from qgis.core import (

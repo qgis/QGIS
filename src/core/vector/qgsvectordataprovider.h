@@ -202,6 +202,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     QgsCoordinateReferenceSystem sourceCrs() const override;
     QgsRectangle sourceExtent() const override;
+    QgsBox3D sourceExtent3D() const override;
     QString sourceName() const override { return QString(); }
 
     /**
@@ -633,6 +634,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() override;
     const QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
 
+    QgsDataProviderElevationProperties *elevationProperties() override;
+    const QgsDataProviderElevationProperties *elevationProperties() const override SIP_SKIP;
+
   signals:
 
     /**
@@ -713,6 +717,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     mutable QStringList mErrors;
 
     std::unique_ptr< QgsVectorDataProviderTemporalCapabilities > mTemporalCapabilities;
+    std::unique_ptr< QgsDataProviderElevationProperties > mElevationProperties;
 
     static QStringList sEncodings;
 

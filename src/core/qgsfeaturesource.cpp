@@ -97,7 +97,12 @@ QVariant QgsFeatureSource::maximumValue( int fieldIndex ) const
 
 QgsRectangle QgsFeatureSource::sourceExtent() const
 {
-  QgsRectangle r;
+  return sourceExtent3D().toRectangle();
+}
+
+QgsBox3D QgsFeatureSource::sourceExtent3D() const
+{
+  QgsBox3D r;
 
   QgsFeatureRequest req;
   req.setNoAttributes();
@@ -107,7 +112,7 @@ QgsRectangle QgsFeatureSource::sourceExtent() const
   while ( it.nextFeature( f ) )
   {
     if ( f.hasGeometry() )
-      r.combineExtentWith( f.geometry().boundingBox() );
+      r.combineWith( f.geometry().boundingBox3D() );
   }
   return r;
 }
@@ -191,4 +196,3 @@ QgsFeatureSource::SpatialIndexPresence QgsFeatureSource::hasSpatialIndex() const
 {
   return SpatialIndexUnknown;
 }
-

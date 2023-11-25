@@ -23,7 +23,6 @@ import time
 from datetime import datetime
 
 import psycopg2
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QByteArray,
     QDate,

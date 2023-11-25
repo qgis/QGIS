@@ -67,7 +67,13 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::clone() const
 
 void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context )
 {
-  const QgsRectangle visibleExtent = context.renderContext().extent();
+  QgsRectangle visibleExtent = context.renderContext().extent();
+  if ( renderAsTriangles() )
+  {
+    // we need to include also points slightly outside of the visible extent,
+    // otherwise the triangulation may be missing triangles near the edges and corners
+    visibleExtent.grow( std::max( visibleExtent.width(), visibleExtent.height() ) * 0.05 );
+  }
 
   const char *ptr = block->data();
   int count = block->pointCount();
@@ -136,9 +142,16 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
         }
       }
 
-      drawPoint( x, y, color, context );
-      if ( renderElevation )
-        drawPointToElevationMap( x, y, z, context );
+      if ( renderAsTriangles() )
+      {
+        addPointToTriangulation( x, y, z, color, context );
+      }
+      else
+      {
+        drawPoint( x, y, color, context );
+        if ( renderElevation )
+          drawPointToElevationMap( x, y, z, context );
+      }
       rendered++;
     }
   }

@@ -18,7 +18,6 @@ from shutil import copyfile
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 
-import qgis  # NOQA
 from osgeo import ogr
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir

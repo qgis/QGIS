@@ -9,7 +9,7 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
+import unittest
 
 from qgis.core import (
     QgsLayout,
@@ -19,7 +19,7 @@ from qgis.core import (
     QgsProject,
     QgsUnitTypes,
 )
-import unittest
+from qgis.gui import QgsLayoutItemPropertiesDialog
 from qgis.testing import start_app, QgisTestCase
 
 start_app()
@@ -29,7 +29,7 @@ class TestQgsLayoutItemPropertiesDialog(QgisTestCase):
 
     def testGettersSetters(self):
         """ test dialog getters/setters """
-        dlg = qgis.gui.QgsLayoutItemPropertiesDialog()
+        dlg = QgsLayoutItemPropertiesDialog()
 
         l = QgsLayout(QgsProject.instance())
         l.initializeDefaults()

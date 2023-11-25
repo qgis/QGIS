@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import os
 import shutil
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import Qgis, QgsLayerDefinition, QgsProject, QgsVectorLayer

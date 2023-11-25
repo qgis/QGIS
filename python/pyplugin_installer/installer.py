@@ -42,11 +42,20 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
-import qgis
 from qgis.core import Qgis, QgsApplication, QgsMessageLog, QgsNetworkAccessManager, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
 from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
-from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin, OverrideCursor,
-                        reloadPlugin, updateAvailablePlugins, plugins_metadata_parser, isPluginLoaded)
+from qgis.utils import (
+    iface,
+    startPlugin,
+    unloadPlugin,
+    loadPlugin,
+    OverrideCursor,
+    reloadPlugin,
+    updateAvailablePlugins,
+    plugins_metadata_parser,
+    isPluginLoaded,
+    HOME_PLUGIN_PATH
+)
 from .installer_data import (repositories, plugins, officialRepo,
                              reposGroup, removeDir)
 from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
@@ -323,7 +332,7 @@ class QgsPluginInstaller(QObject):
         dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin, stable=stable)
         dlg.exec_()
 
-        plugin_path = qgis.utils.home_plugin_path + "/" + key
+        plugin_path = HOME_PLUGIN_PATH + "/" + key
         if dlg.result():
             error = True
             infoString = (self.tr("Plugin installation failed"), dlg.result())
@@ -387,7 +396,7 @@ class QgsPluginInstaller(QObject):
                 dlg.exec_()
                 if dlg.result():
                     # revert installation
-                    pluginDir = qgis.utils.home_plugin_path + "/" + plugin["id"]
+                    pluginDir = HOME_PLUGIN_PATH + "/" + plugin["id"]
                     result = removeDir(pluginDir)
                     if QDir(pluginDir).exists():
                         error = True
@@ -436,7 +445,7 @@ class QgsPluginInstaller(QObject):
             unloadPlugin(key)
         except:
             pass
-        pluginDir = qgis.utils.home_plugin_path + "/" + plugin["id"]
+        pluginDir = HOME_PLUGIN_PATH + "/" + plugin["id"]
         result = removeDir(pluginDir)
         if result:
             QApplication.restoreOverrideCursor()
@@ -612,7 +621,7 @@ class QgsPluginInstaller(QObject):
                 QgsHelp.openHelp("plugins/plugins.html#the-install-from-zip-tab")
             return
 
-        pluginsDirectory = qgis.utils.home_plugin_path
+        pluginsDirectory = HOME_PLUGIN_PATH
         if not QDir(pluginsDirectory).exists():
             QDir().mkpath(pluginsDirectory)
 

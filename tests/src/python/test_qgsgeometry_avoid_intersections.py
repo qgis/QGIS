@@ -9,7 +9,6 @@ __author__ = 'Martin Dobias'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsFeature, QgsGeometry, QgsVectorLayer
 import unittest

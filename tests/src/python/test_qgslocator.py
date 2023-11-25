@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 from time import sleep
 
-import qgis  # NOQA
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (

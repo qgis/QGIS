@@ -3174,6 +3174,34 @@ QgsGeometry QgsGeometry::forceRHR() const
   return forcePolygonClockwise();
 }
 
+Qgis::AngularDirection QgsGeometry::polygonOrientation() const
+{
+  if ( !d->geometry )
+  {
+    return Qgis::AngularDirection::NoOrientation;
+  }
+
+  if ( isMultipart() )
+  {
+    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( d->geometry.get() );
+    const QgsAbstractGeometry *g = collection->geometryN( 0 );
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
+    {
+      return cp->exteriorRing() ? cp->exteriorRing()->orientation() : Qgis::AngularDirection::NoOrientation;
+    }
+  }
+  else
+  {
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( d->geometry.get() ) )
+    {
+      return cp->exteriorRing() ? cp->exteriorRing()->orientation() : Qgis::AngularDirection::NoOrientation;
+    }
+  }
+
+  return Qgis::AngularDirection::NoOrientation;
+
+}
+
 QgsGeometry QgsGeometry::forcePolygonClockwise() const
 {
   if ( !d->geometry )

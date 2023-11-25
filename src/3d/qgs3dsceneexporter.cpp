@@ -544,8 +544,6 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   if ( tessGeom )
   {
     QVector<QgsFeatureId> featureIds = tessGeom->featureIds();
-    // sort feature by their id in order to always export them in the same way:
-    std::sort( featureIds.begin(), featureIds.end() );
 
     QVector<uint> triangleIndex = tessGeom->triangleIndexStartingIndices();
     for ( int idx = 0; idx < featureIds.size(); idx++ )

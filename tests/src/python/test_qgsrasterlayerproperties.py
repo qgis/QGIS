@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import pathlib
 import typing
 
-import qgis  # NOQA
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QWidget
 from qgis.core import QgsMapLayer, QgsProject, QgsRasterLayer

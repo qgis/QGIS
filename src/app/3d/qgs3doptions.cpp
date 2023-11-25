@@ -60,6 +60,12 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   mGpuMemoryLimit->setValue( settings.value( QStringLiteral( "map3d/gpuMemoryLimit" ), 500.0, QgsSettings::App ).toDouble() );
 }
 
+QString Qgs3DOptionsWidget::helpKey() const
+{
+  // typo IS correct here!
+  return QStringLiteral( "introduction/qgis_configuration.html#d-options" );
+}
+
 void Qgs3DOptionsWidget::apply()
 {
   QgsSettings settings;

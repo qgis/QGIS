@@ -1,4 +1,4 @@
-Content-Length: 14317
+Content-Length: 14354
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="utf-8"?>
@@ -40,6 +40,7 @@ Content-Type: text/xml; charset=utf-8
     <Format>image/png; mode=8bit</Format>
     <Format>image/png; mode=1bit</Format>
     <Format>application/dxf</Format>
+    <Format>application/pdf</Format>
     <DCPType>
      <HTTP>
       <Get>

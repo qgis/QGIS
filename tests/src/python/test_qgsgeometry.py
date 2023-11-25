@@ -7438,6 +7438,121 @@ class TestQgsGeometry(QgisTestCase):
         res = g1.simplifyCoverageVW(10, True)
         self.assertEqual(res.asWkt(0), 'GeometryCollection (Polygon ((10 0, 10 10, 0 10, 0 0, 10 0)),Polygon ((10 0, 20 0, 20 10, 10 10, 10 0)))')
 
+    def testPolygonOrientation(self):
+        """
+        Test QgsGeometry.polygonOrientation, QgsGeometry.isPolygonClockwise and QgsGeometry.isPolygonCounterClockwise
+        """
+
+        # Empty geometry
+        geometry = QgsGeometry()
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.NoOrientation)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # Not a polygon
+        geometry = QgsGeometry.fromWkt('Point(1 2)')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.NoOrientation)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # Closed curve but not a polygon
+        geometry = QgsGeometry.fromWkt('LineString(0 0, 0 1, 1 1, 1 0, 0 0)')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.NoOrientation)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # Polygon Empty
+        geometry = QgsGeometry.fromWkt('Polygon EMPTY')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.NoOrientation)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # Polygon Clockwise
+        geometry = QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 1 0, 0 0))')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.Clockwise)
+        self.assertEqual(res_isClockwise, True)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # Polygon CounterClockwise
+        geometry = QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.CounterClockwise)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, True)
+
+        # MultiPolygon Empty
+        geometry = QgsGeometry.fromWkt('MultiPolygon EMPTY')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.NoOrientation)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # MultiPolygon Clockwise
+        geometry = QgsGeometry.fromWkt('MultiPolygon( ((0 0, 0 1, 1 1, 1 0, 0 0)) )')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.Clockwise)
+        self.assertEqual(res_isClockwise, True)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # MultiPolygon Clockwise with a CounterClockwise part
+        geometry = QgsGeometry.fromWkt('MultiPolygon( ((0 0, 0 1, 1 1, 1 0, 0 0)), ((4 4, 5 4, 5 5, 4 5, 4 4)) )')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.Clockwise)
+        self.assertEqual(res_isClockwise, True)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # MultiPolygon CounterClockwise
+        geometry = QgsGeometry.fromWkt('MultiPolygon( ((0 0, 1 0, 1 1, 0 1, 0 0)) )')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.CounterClockwise)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, True)
+
+        # MultiPolygon CounterClockwise with a Clockwise part
+        geometry = QgsGeometry.fromWkt('MultiPolygon( ((0 0, 1 0, 1 1, 0 1, 0 0)), ((4 4, 4 5, 5 5, 5 4, 4 4)) ) ')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.CounterClockwise)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, True)
+
 
 if __name__ == '__main__':
     unittest.main()

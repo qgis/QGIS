@@ -4127,7 +4127,6 @@ void QgsLayoutDesignerDialog::createAtlasWidget()
   atlasWidget->setMessageBar( mMessageBar );
   mAtlasDock->setWidget( atlasWidget );
 
-  mAtlasToolbar->show();
   mPanelsMenu->addAction( mAtlasDock->toggleViewAction() );
 
   connect( atlas, &QgsLayoutAtlas::messagePushed, mStatusBar, [ = ]( const QString & message )

@@ -21,7 +21,6 @@ __copyright__ = '(C) 2016, Hugo Mercier'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (

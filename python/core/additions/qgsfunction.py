@@ -118,7 +118,7 @@ def register_function(
     :param args: DEPRECATED since QGIS 3.32.  Use ``params_as_list`` if you want to pass parameters as a list.
     :param group: the expression group in which the function should be added
     :param usesgeometry: Defines if this expression requires the geometry. By default False.
-    :param referenced_columns: An array of field names on which this expression works. By default ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. Can be set to None for slightly faster evaluation.
+    :param referenced_columns: An array of names of fields on which this expression works. By default ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. Specifying a subset of fields or an empty list will result in a faster execution.
     :param handlesnull: Defines if this expression has custom handling for NULL values. If False, the result will always be NULL as soon as any parameter is NULL. False by default.
     :param params_as_list: If True, the function will receive the expression parameters as a list. If False, the function will receive the parameters as individual arguments. False by default.
 
@@ -185,7 +185,7 @@ def qgsfunction(args="auto", group="custom", **kwargs):
         * *usesgeometry* (``bool``) --
           Defines if this expression requires the geometry. By default False.
         * *referenced_columns* (``list``) --
-          An array of field names on which this expression works. By default ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. Can be set to None for slightly faster evaluation.
+          An array of names of fields on which this expression works. By default ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. Specifying a subset of fields or an empty list will result in a faster execution.
         * *handlesnull* (``bool``) --
           Defines if this expression has custom handling for NULL values. If False, the result will always be NULL as soon as any parameter is NULL. False by default.
         * *params_as_list* (``bool``) \since QGIS 3.32 --

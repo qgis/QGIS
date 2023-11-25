@@ -11,7 +11,6 @@ __author__ = 'Julien Cabieces'
 __date__ = '2022-04-19'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 
 from PyQt5.QtCore import QDateTime
 from qgis.core import (

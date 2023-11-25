@@ -17,13 +17,3 @@
 #include "qgsrasterdataproviderelevationproperties.h"
 
 QgsRasterDataProviderElevationProperties::QgsRasterDataProviderElevationProperties() = default;
-
-bool QgsRasterDataProviderElevationProperties::containsElevationData() const
-{
-  return mContainsElevationData;
-}
-
-void QgsRasterDataProviderElevationProperties::setContainsElevationData( bool contains )
-{
-  mContainsElevationData = contains;
-}

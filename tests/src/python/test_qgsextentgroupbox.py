@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -35,7 +34,7 @@ class TestQgsExtentGroupBox(QgisTestCase):
 
     def testGettersSetters(self):
         """ test widget getters/setters """
-        w = qgis.gui.QgsExtentGroupBox()
+        w = QgsExtentGroupBox()
 
         w.setOriginalExtent(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('epsg:3111'))
         self.assertEqual(w.originalExtent(), QgsRectangle(1, 2, 3, 4))
@@ -81,7 +80,7 @@ class TestQgsExtentGroupBox(QgisTestCase):
         self.assertEqual(len(spy), 3)
 
     def test_SettingExtent(self):
-        w = qgis.gui.QgsExtentGroupBox()
+        w = QgsExtentGroupBox()
 
         spy = QSignalSpy(w.extentChanged)
 
@@ -122,7 +121,7 @@ class TestQgsExtentGroupBox(QgisTestCase):
         QgsProject.instance().removeAllMapLayers()
 
     def testSetOutputCrs(self):
-        w = qgis.gui.QgsExtentGroupBox()
+        w = QgsExtentGroupBox()
         w.setCheckable(True)
 
         # ensure setting output crs doesn't change state of group box
@@ -147,7 +146,7 @@ class TestQgsExtentGroupBox(QgisTestCase):
         self.assertEqual(w.outputExtent().toString(20), QgsRectangle(1, 2, 3, 4).toString(20))
 
         # repeat, this time using original extents
-        w = qgis.gui.QgsExtentGroupBox()
+        w = QgsExtentGroupBox()
 
         w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:4326'))
         w.setOriginalExtent(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('epsg:4326'))
@@ -183,7 +182,7 @@ class TestQgsExtentGroupBox(QgisTestCase):
         self.assertEqual(w.outputExtent().toString(20), QgsRectangle(1, 2, 3, 4).toString(20))
 
         # custom extent
-        w = qgis.gui.QgsExtentGroupBox()
+        w = QgsExtentGroupBox()
 
         w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:4326'))
         w.setOutputExtentFromUser(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('epsg:4326'))

@@ -21,6 +21,7 @@
 
 #include "qgsmodule.h"
 #include "qgsdxfwriter.h"
+#include "qgspdfwriter.h"
 #include "qgswmsserviceexception.h"
 #include "qgswmsgetcapabilities.h"
 #include "qgswmsgetmap.h"
@@ -90,6 +91,10 @@ namespace QgsWms
           if QSTR_COMPARE( wmsRequest.wmsParameters().formatAsString(), "application/dxf" )
           {
             writeAsDxf( mServerIface, project, request, response );
+          }
+          else if QSTR_COMPARE( wmsRequest.wmsParameters().formatAsString(), "application/pdf" )
+          {
+            writeAsPdf( mServerIface, project, request, response );
           }
           else
           {

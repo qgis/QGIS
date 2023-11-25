@@ -22,7 +22,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'June 2021'
 __copyright__ = '(C) 2021, Nyall Dawson'
 
-import qgis  # NOQA
 from qgis.core import (
     QgsExpressionContext,
     QgsProperty,

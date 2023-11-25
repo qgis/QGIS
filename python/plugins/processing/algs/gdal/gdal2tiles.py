@@ -61,11 +61,11 @@ class gdal2tiles(GdalAlgorithm):
                          (self.tr('Raster'), 'raster'))
 
         self.methods = ((self.tr('Average'), 'average'),
-                        (self.tr('Nearest neighbour'), 'near'),
-                        (self.tr('Bilinear'), 'bilinear'),
-                        (self.tr('Cubic'), 'cubic'),
-                        (self.tr('Cubic spline'), 'cubicspline'),
-                        (self.tr('Lanczos windowed sinc'), 'lanczos'),
+                        (self.tr('Nearest Neighbour'), 'near'),
+                        (self.tr('Bilinear (2x2 Kernel)'), 'bilinear'),
+                        (self.tr('Cubic (4x4 Kernel)'), 'cubic'),
+                        (self.tr('Cubic B-Spline (4x4 Kernel)'), 'cubicspline'),
+                        (self.tr('Lanczos (6x6 Kernel)'), 'lanczos'),
                         (self.tr('Antialias'), 'antialias'))
 
         self.viewers = ((self.tr('All'), 'all'),

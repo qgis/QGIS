@@ -183,7 +183,14 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
     //add ring takes ownership of ring, and deletes it if there's an error
     QgsGeometry g = f.geometry();
 
-    addRingReturnCode = g.addRing( static_cast< QgsCurve * >( ring->clone() ) );
+    if ( ring->orientation() != g.polygonOrientation() )
+    {
+      addRingReturnCode = g.addRing( static_cast< QgsCurve * >( ring->clone() ) );
+    }
+    else
+    {
+      addRingReturnCode = g.addRing( static_cast< QgsCurve * >( ring->reversed() ) );
+    }
     if ( addRingReturnCode == Qgis::GeometryOperationResult::Success )
     {
       layer->changeGeometry( f.id(), g );
@@ -287,6 +294,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSe
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, QgsFeatureId featureId )
 {
+
   if ( !mLayer->isSpatial() )
     return Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound;
 
@@ -304,9 +312,13 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
   else
   {
     geometry = f.geometry();
+    if ( ring->orientation() != geometry.polygonOrientation() )
+    {
+      ring = ring->reversed();
+    }
   }
-
   Qgis::GeometryOperationResult errorCode = geometry.addPart( ring, mLayer->geometryType() );
+
   if ( errorCode == Qgis::GeometryOperationResult::Success )
   {
     if ( firstPart && QgsWkbTypes::isSingleType( mLayer->wkbType() )
@@ -342,6 +354,7 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing )
 {
+
   QgsPointSequence l;
   for ( QVector<QgsPointXY>::const_iterator it = splitLine.constBegin(); it != splitLine.constEnd(); ++it )
   {

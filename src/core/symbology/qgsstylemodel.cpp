@@ -745,7 +745,11 @@ void QgsStyleModel::rebuildSymbolIcons()
 {
   mIconCache[ QgsStyle::SymbolEntity ].clear();
   mExpressionContext.reset();
-  emit dataChanged( index( 0, 0 ), index( mEntityNames[ QgsStyle::SymbolEntity ].count() - 1, 0 ), QVector<int>() << Qt::DecorationRole );
+  const int lastRow = mEntityNames[ QgsStyle::SymbolEntity ].count() - 1;
+  if ( lastRow >= 0 )
+  {
+    emit dataChanged( index( 0, 0 ), index( lastRow, 0 ), QVector<int>() << Qt::DecorationRole );
+  }
 }
 
 void QgsStyleModel::iconGenerated( QgsStyle::StyleEntity type, const QString &name, const QIcon &icon )
