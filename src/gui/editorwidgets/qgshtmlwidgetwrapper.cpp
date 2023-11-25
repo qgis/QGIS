@@ -19,6 +19,7 @@
 #include "qgswebframe.h"
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgsattributeform.h"
+
 #include <QScreen>
 
 QgsHtmlWidgetWrapper::QgsHtmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
@@ -34,7 +35,6 @@ bool QgsHtmlWidgetWrapper::valid() const
 
 QWidget *QgsHtmlWidgetWrapper::createWidget( QWidget *parent )
 {
-
   QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
 
   if ( form )
@@ -44,9 +44,7 @@ QWidget *QgsHtmlWidgetWrapper::createWidget( QWidget *parent )
     {
       if ( attributeChanged )
       {
-        const thread_local QRegularExpression expRe { QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption };
-        const QRegularExpressionMatch match { expRe.match( mHtmlCode ) };
-        if ( match.hasMatch() && QgsValueRelationFieldFormatter::expressionRequiresFormScope( match.captured( 1 ) ) )
+        if ( mRequiresFormScope )
         {
           mFormFeature.setAttribute( attribute, newValue );
           setHtmlContext();
@@ -121,6 +119,18 @@ void QgsHtmlWidgetWrapper::checkGeometryNeeds()
 void QgsHtmlWidgetWrapper::setHtmlCode( const QString &htmlCode )
 {
   mHtmlCode = htmlCode;
+
+  bool ok = false;
+  const thread_local QRegularExpression expRe( QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption );
+  QRegularExpressionMatchIterator matchIt = expRe.globalMatch( mHtmlCode );
+  while ( !ok && matchIt.hasNext() )
+  {
+    const QRegularExpressionMatch match = matchIt.next();
+    const QgsExpression exp = match.captured( 1 );
+    ok = QgsValueRelationFieldFormatter::expressionRequiresFormScope( exp );
+  }
+  mRequiresFormScope = ok;
+
   checkGeometryNeeds();
 }
 
