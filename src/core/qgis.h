@@ -2565,6 +2565,7 @@ class CORE_EXPORT Qgis
       {
       Clockwise, //!< Clockwise direction
       CounterClockwise, //!< Counter-clockwise direction
+      NoOrientation, //!< Unknown orientation or sentinel value
     };
     Q_ENUM( AngularDirection )
 

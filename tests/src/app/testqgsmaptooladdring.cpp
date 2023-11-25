@@ -1,9 +1,9 @@
 /***************************************************************************
-     testqgsmaptooladdpart.cpp
+     testqgsmaptooladdring.cpp
      --------------------------------
-    Date                 : 2023-09-25
-    Copyright            : (C) 2023 by Mathieu Pellerin
-    Email                : mathieu@opengis.ch
+    Date                 : 2023-11-22
+    Copyright            : (C) 2023 by Loïc Bartoletti
+    Email                : loic dot bartoletti at oslandia dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,7 @@
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptooladdpart.h"
+#include "qgsmaptooladdring.h"
 #include "qgsproject.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
@@ -28,35 +28,35 @@
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the add part map tool
+ * This is a unit test for the add ring map tool
  */
-class TestQgsMapToolAddPart: public QObject
+class TestQgsMapToolAddRing: public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolAddPart();
+    TestQgsMapToolAddRing();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
-    void testAddPart();
-    void testAddPartClockWise();
+    void testAddRing();
+    void testAddRingClockWise();
 
   private:
     QPoint mapToPoint( double x, double y );
 
     QgisApp *mQgisApp = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
-    QgsMapToolAddPart *mCaptureTool = nullptr;
+    QgsMapToolAddRing *mCaptureTool = nullptr;
     QgsVectorLayer *mLayerMultiPolygon = nullptr;
 };
 
-TestQgsMapToolAddPart::TestQgsMapToolAddPart() = default;
+TestQgsMapToolAddRing::TestQgsMapToolAddRing() = default;
 
 
 //runs before all tests
-void TestQgsMapToolAddPart::initTestCase()
+void TestQgsMapToolAddRing::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
@@ -86,7 +86,7 @@ void TestQgsMapToolAddPart::initTestCase()
 
   mLayerMultiPolygon->startEditing();
   QgsFeature f;
-  const QString wkt( "MultiPolygon (((2 2, 4 2, 4 4, 2 4)))" );
+  const QString wkt( "MultiPolygon (((0 0, 5 0, 5 5, 0 5, 0 0)))" );
   f.setGeometry( QgsGeometry::fromWkt( wkt ) );
   mLayerMultiPolygon->dataProvider()->addFeatures( QgsFeatureList() << f );
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long )1 );
@@ -95,7 +95,7 @@ void TestQgsMapToolAddPart::initTestCase()
   mCanvas->setCurrentLayer( mLayerMultiPolygon );
 
   // create the tool
-  mCaptureTool = new QgsMapToolAddPart( mCanvas );
+  mCaptureTool = new QgsMapToolAddRing( mCanvas );
   mCanvas->setMapTool( mCaptureTool );
 
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
@@ -103,28 +103,28 @@ void TestQgsMapToolAddPart::initTestCase()
 }
 
 //runs after all tests
-void TestQgsMapToolAddPart::cleanupTestCase()
+void TestQgsMapToolAddRing::cleanupTestCase()
 {
   delete mCaptureTool;
   delete mCanvas;
   QgsApplication::exitQgis();
 }
 
-QPoint TestQgsMapToolAddPart::mapToPoint( double x, double y )
+QPoint TestQgsMapToolAddRing::mapToPoint( double x, double y )
 {
   const QgsPointXY mapPoint = mCanvas->mapSettings().mapToPixel().transform( x, y );
 
   return QPoint( static_cast<int>( std::round( mapPoint.x() ) ), static_cast<int>( std::round( mapPoint.y() ) ) );
 }
 
-void TestQgsMapToolAddPart::testAddPart()
+void TestQgsMapToolAddRing::testAddRing()
 {
   mLayerMultiPolygon->select( 1 );
 
   std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        mapToPoint( 5, 5 ),
+        mapToPoint( 1, 1 ),
         Qt::LeftButton
       ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
@@ -132,7 +132,7 @@ void TestQgsMapToolAddPart::testAddPart()
   event.reset( new QgsMapMouseEvent(
                  mCanvas,
                  QEvent::MouseButtonRelease,
-                 mapToPoint( 5, 5 ),
+                 mapToPoint( 1, 2 ),
                  Qt::LeftButton
                ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
@@ -140,7 +140,7 @@ void TestQgsMapToolAddPart::testAddPart()
   event.reset( new QgsMapMouseEvent(
                  mCanvas,
                  QEvent::MouseButtonRelease,
-                 mapToPoint( 6, 5 ),
+                 mapToPoint( 2, 2 ),
                  Qt::LeftButton
                ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
@@ -148,7 +148,7 @@ void TestQgsMapToolAddPart::testAddPart()
   event.reset( new QgsMapMouseEvent(
                  mCanvas,
                  QEvent::MouseButtonRelease,
-                 mapToPoint( 6, 6 ),
+                 mapToPoint( 2, 1 ),
                  Qt::LeftButton
                ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
@@ -156,24 +156,18 @@ void TestQgsMapToolAddPart::testAddPart()
   event.reset( new QgsMapMouseEvent(
                  mCanvas,
                  QEvent::MouseButtonRelease,
-                 mapToPoint( 5, 6 ),
-                 Qt::LeftButton
-               ) );
-  mCaptureTool->cadCanvasReleaseEvent( event.get() );
-
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 5, 5 ),
+                 mapToPoint( 1, 1 ),
                  Qt::RightButton
                ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4)),((5 5, 5 5, 6 5, 6 6, 5 6, 5 5)))";
+  // TODO: fix https://github.com/qgis/QGIS/issues/55361
+  // const QString wkt = "MultiPolygon (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 1 2, 2 2, 2 1, 1 1)))";
+  const QString wkt = "MultiPolygon (((0 0, 5 0, 5 5, 0 5, 0 0),CompoundCurve ((1 1, 1 2, 2 2, 2 1, 1 1))))";
   QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), wkt );
 }
 
-void TestQgsMapToolAddPart::testAddPartClockWise()
+void TestQgsMapToolAddRing::testAddRingClockWise()
 {
   mLayerMultiPolygon->select( 1 );
 
@@ -181,7 +175,7 @@ void TestQgsMapToolAddPart::testAddPartClockWise()
   std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        mapToPoint( 15, 15 ),
+        mapToPoint( 3, 3 ),
         Qt::LeftButton
       ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
@@ -189,7 +183,7 @@ void TestQgsMapToolAddPart::testAddPartClockWise()
   event.reset( new QgsMapMouseEvent(
                  mCanvas,
                  QEvent::MouseButtonRelease,
-                 mapToPoint( 15, 16 ),
+                 mapToPoint( 4, 3 ),
                  Qt::LeftButton
                ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
@@ -197,7 +191,7 @@ void TestQgsMapToolAddPart::testAddPartClockWise()
   event.reset( new QgsMapMouseEvent(
                  mCanvas,
                  QEvent::MouseButtonRelease,
-                 mapToPoint( 16, 16 ),
+                 mapToPoint( 4, 4 ),
                  Qt::LeftButton
                ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
@@ -205,7 +199,7 @@ void TestQgsMapToolAddPart::testAddPartClockWise()
   event.reset( new QgsMapMouseEvent(
                  mCanvas,
                  QEvent::MouseButtonRelease,
-                 mapToPoint( 16, 15 ),
+                 mapToPoint( 3, 4 ),
                  Qt::LeftButton
                ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
@@ -213,13 +207,15 @@ void TestQgsMapToolAddPart::testAddPartClockWise()
   event.reset( new QgsMapMouseEvent(
                  mCanvas,
                  QEvent::MouseButtonRelease,
-                 mapToPoint( 15, 15 ),
+                 mapToPoint( 3, 3 ),
                  Qt::RightButton
                ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4)),((5 5, 5 5, 6 5, 6 6, 5 6, 5 5)),((15 15, 16 15, 16 16, 15 16, 15 15)))";
+  // TODO: fix https://github.com/qgis/QGIS/issues/55361
+  // const QString wkt = "MultiPolygon (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 1 2, 2 2, 2 1, 1 1), (3 3, 3 4, 4 4, 4 3, 3 3)))";
+  const QString wkt = "MultiPolygon (((0 0, 5 0, 5 5, 0 5, 0 0),CompoundCurve ((1 1, 1 2, 2 2, 2 1, 1 1)),CompoundCurve ((3 3, 3 4, 4 4, 4 3, 3 3))))";
   QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), wkt );
 }
-QGSTEST_MAIN( TestQgsMapToolAddPart )
-#include "testqgsmaptooladdpart.moc"
+QGSTEST_MAIN( TestQgsMapToolAddRing )
+#include "testqgsmaptooladdring.moc"
