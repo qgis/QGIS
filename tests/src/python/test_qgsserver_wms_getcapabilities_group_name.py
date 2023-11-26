@@ -72,11 +72,11 @@ def make_map_request(instance, project):
         "MAP": urllib.parse.quote(project),
         "SERVICE": "WMS",
         "REQUEST": "GetMap",
-        "BBOX":    "6053181%2C594460%2C6053469%2C595183",
-        "CRS":     "EPSG%3A3346",
-        "WIDTH":   "1500",
-        "HEIGHT":  "600",
-        "LAYERS":  "layer_group",
+        "BBOX": "6053181%2C594460%2C6053469%2C595183",
+        "CRS": "EPSG%3A3346",
+        "WIDTH": "1500",
+        "HEIGHT": "600",
+        "LAYERS": "layer_group",
         "VERSION": "1.3.0"
     }.items())])
     r, h = instance._result(instance._execute_request(qs))

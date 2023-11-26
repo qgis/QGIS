@@ -499,7 +499,8 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
       }
       else if ( mLayerGroups.contains( lname ) )
       {
-        if ( QgsServerProjectUtils::wmsSkipNameForGroup( *mProject ) ) {
+        if ( QgsServerProjectUtils::wmsSkipNameForGroup( *mProject ) )
+        {
           QgsWmsParameter param( QgsWmsParameter::LAYER );
           param.mValue = lname;
           throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined,
@@ -553,7 +554,8 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
     }
     else if ( mLayerGroups.contains( nickname ) )
     {
-      if ( QgsServerProjectUtils::wmsSkipNameForGroup( *mProject ) ) {
+      if ( QgsServerProjectUtils::wmsSkipNameForGroup( *mProject ) )
+      {
         QgsWmsParameter param( QgsWmsParameter::LAYER );
         param.mValue = nickname;
         throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined,
