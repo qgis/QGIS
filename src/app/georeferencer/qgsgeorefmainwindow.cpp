@@ -2081,6 +2081,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   QgsLayoutExporter exporter( &layout );
   QgsLayoutExporter::PdfExportSettings settings;
   settings.dpi = 300;
+  settings.textRenderFormat = Qgis::TextRenderFormat::AlwaysText;
   exporter.exportToPdf( fileName, settings );
 
   return true;
