@@ -72,12 +72,11 @@ class CORE_EXPORT QgsMultiRenderChecker
     void setControlName( const QString &name );
 
     /**
-     * Sets the source file, function and line from where the test originates.
+     * Sets the source \a file, \a function and \a line from where the test originates.
      *
-     * \note Not available in Python bindings
      * \since QGIS 3.36
      */
-    void setFileFunctionLine( const char *file, const char *function, int line ) SIP_SKIP;
+    void setFileFunctionLine( const QString &file, const QString &function, int line );
 
     /**
      * Sets the path \a prefix where the control images are kept.
