@@ -30,7 +30,7 @@ void QgsMultiRenderChecker::setControlName( const QString &name )
   mControlName = name;
 }
 
-void QgsMultiRenderChecker::setFileFunctionLine( const char *file, const char *function, int line )
+void QgsMultiRenderChecker::setFileFunctionLine( const QString &file, const QString &function, int line )
 {
 #ifndef _MSC_VER
   mSourceFile = QDir( QgsRenderChecker::sourcePath() ).relativeFilePath( file );
@@ -38,7 +38,7 @@ void QgsMultiRenderChecker::setFileFunctionLine( const char *file, const char *f
   mSourceFile = file;
 #endif
 
-  mSourceFunction = QString( function );
+  mSourceFunction = function;
   mSourceLine = line;
 }
 
