@@ -30,10 +30,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from typing import (
-    Optional,
-    Tuple
-)
+from typing import Optional, Tuple
 from warnings import warn
 
 from qgis.PyQt.QtCore import QVariant, QDateTime, QDate, QDir, QUrl, QSize
@@ -50,8 +47,6 @@ from qgis.core import (
     QgsLayout,
     QgsLayoutChecker,
 )
-
-import unittest
 
 unittest.util._MAX_LENGTH = 2000
 
