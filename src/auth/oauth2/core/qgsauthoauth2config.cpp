@@ -38,6 +38,7 @@ QgsAuthOAuth2Config::QgsAuthOAuth2Config( QObject *parent )
   connect( this, &QgsAuthOAuth2Config::requestUrlChanged, this, &QgsAuthOAuth2Config::configChanged );
   connect( this, &QgsAuthOAuth2Config::tokenUrlChanged, this, &QgsAuthOAuth2Config::configChanged );
   connect( this, &QgsAuthOAuth2Config::refreshTokenUrlChanged, this, &QgsAuthOAuth2Config::configChanged );
+  connect( this, &QgsAuthOAuth2Config::redirectHostChanged, this, &QgsAuthOAuth2Config::configChanged );
   connect( this, &QgsAuthOAuth2Config::redirectUrlChanged, this, &QgsAuthOAuth2Config::configChanged );
   connect( this, &QgsAuthOAuth2Config::redirectPortChanged, this, &QgsAuthOAuth2Config::configChanged );
   connect( this, &QgsAuthOAuth2Config::clientIdChanged, this, &QgsAuthOAuth2Config::configChanged );
@@ -130,6 +131,15 @@ void QgsAuthOAuth2Config::setRefreshTokenUrl( const QString &value )
   mRefreshTokenUrl = value;
   if ( preval != value )
     emit refreshTokenUrlChanged( mRefreshTokenUrl );
+}
+
+void QgsAuthOAuth2Config::setRedirectHost( const QString &host )
+{
+  if ( mRedirectHost != host )
+  {
+    mRedirectHost = host;
+    emit redirectHostChanged( mRedirectHost );
+  }
 }
 
 void QgsAuthOAuth2Config::setRedirectUrl( const QString &value )
@@ -247,6 +257,7 @@ void QgsAuthOAuth2Config::setToDefaults()
   setRequestUrl( QString() );
   setTokenUrl( QString() );
   setRefreshTokenUrl( QString() );
+  setRedirectHost( QStringLiteral( "127.0.0.1" ) );
   setRedirectUrl( QString() );
   setRedirectPort( 7070 );
   setClientId( QString() );
@@ -272,6 +283,7 @@ bool QgsAuthOAuth2Config::operator==( const QgsAuthOAuth2Config &other ) const
            && other.requestUrl() == this->requestUrl()
            && other.tokenUrl() == this->tokenUrl()
            && other.refreshTokenUrl() == this->refreshTokenUrl()
+           && other.redirectHost() == this->redirectHost()
            && other.redirectUrl() == this->redirectUrl()
            && other.redirectPort() == this->redirectPort()
            && other.clientId() == this->clientId()
@@ -421,6 +433,7 @@ QVariantMap QgsAuthOAuth2Config::mappedProperties() const
   vmap.insert( QStringLiteral( "password" ), this->password() );
   vmap.insert( QStringLiteral( "persistToken" ), this->persistToken() );
   vmap.insert( QStringLiteral( "queryPairs" ), this->queryPairs() );
+  vmap.insert( QStringLiteral( "redirectHost" ), this->redirectHost() );
   vmap.insert( QStringLiteral( "redirectPort" ), this->redirectPort() );
   vmap.insert( QStringLiteral( "redirectUrl" ), this->redirectUrl() );
   vmap.insert( QStringLiteral( "refreshTokenUrl" ), this->refreshTokenUrl() );

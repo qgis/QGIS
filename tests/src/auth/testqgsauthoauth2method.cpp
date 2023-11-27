@@ -112,6 +112,7 @@ QgsAuthOAuth2Config *TestQgsAuthOAuth2Method::baseConfig( bool loaded )
     config->setRequestUrl( "https://request.oauth2.test" );
     config->setTokenUrl( "https://token.oauth2.test" );
     config->setRefreshTokenUrl( "https://refreshtoken.oauth2.test" );
+    config->setRedirectHost( "myhost" );
     config->setRedirectUrl( "subdir" );
     config->setRedirectPort( 7777 );
     config->setClientId( "myclientid" );
@@ -156,6 +157,7 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "        \"pf.password\": \"mypassword\",\n"
            "        \"pf.username\": \"myusername\"\n"
            "    },\n"
+           "    \"redirectHost\": \"myhost\",\n"
            "    \"redirectPort\": 7777,\n"
            "    \"redirectUrl\": \"subdir\",\n"
            "    \"refreshTokenUrl\": \"https://refreshtoken.oauth2.test\",\n"
@@ -183,6 +185,7 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "\"password\":\"mypassword\","
            "\"persistToken\":false,"
            "\"queryPairs\":{\"pf.password\":\"mypassword\",\"pf.username\":\"myusername\"},"
+           "\"redirectHost\":\"myhost\","
            "\"redirectPort\":7777,"
            "\"redirectUrl\":\"subdir\","
            "\"refreshTokenUrl\":\"https://refreshtoken.oauth2.test\","
@@ -216,6 +219,7 @@ QVariantMap TestQgsAuthOAuth2Method::baseVariantMap()
   qpairs.insert( "pf.password", "mypassword" );
   qpairs.insert( "pf.username", "myusername" );
   vmap.insert( "queryPairs", qpairs );
+  vmap.insert( "redirectHost", "myhost" );
   vmap.insert( "redirectPort", 7777 );
   vmap.insert( "redirectUrl", "subdir" );
   vmap.insert( "refreshTokenUrl", "https://refreshtoken.oauth2.test" );
