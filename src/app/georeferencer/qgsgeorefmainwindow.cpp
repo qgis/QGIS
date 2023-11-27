@@ -1683,7 +1683,7 @@ void QgsGeoreferencerMainWindow::postProcessGeoreferencedLayer( const QString &l
     saveGCPs();
   }
 
-  mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
+  mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "The layer was successfully georeferenced." ), Qgis::MessageLevel::Success );
   if ( mLoadInQgis )
   {
     switch ( type )
