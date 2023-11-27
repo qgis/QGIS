@@ -188,7 +188,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
           const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, f.id(), geom, ignoreFeatures );
           if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType )
           {
-            emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Critical );
+            emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Warning );
             vlayer->destroyEditCommand();
             stopCapturing();
             return;
