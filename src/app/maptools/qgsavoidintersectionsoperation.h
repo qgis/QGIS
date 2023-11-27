@@ -55,7 +55,7 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
       Qgis::GeometryOperationResult operationResult;
 
       /**
-       * TRUE if the geometry has changed during the avoid intersection operation
+       * True if the geometry has changed during the avoid intersection operation
        */
       bool geometryHasChanged;
     };
