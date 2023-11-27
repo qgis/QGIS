@@ -71,7 +71,7 @@ void QgsO2::initOAuthConfig()
   }
 
   // common properties to all grant flows
-  const QString localpolicy = QStringLiteral( "http://127.0.0.1:% 1/%1" ).arg( mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
+  const QString localpolicy = QStringLiteral( "http://%1:% 1/%2" ).arg( mOAuth2Config->redirectHost(), mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
   QgsDebugMsgLevel( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ), 2 );
   setLocalhostPolicy( localpolicy );
   setLocalPort( mOAuth2Config->redirectPort() );
