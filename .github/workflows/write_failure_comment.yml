@@ -48,7 +48,7 @@ jobs:
             let fs = require('fs');
             let issue_number = Number(fs.readFileSync('./pr_number'));
             let body = "# Tests failed for Qt ${{ matrix.qt-version }}\n\n" + String(fs.readFileSync('./summary.md')) +
-                 "\n\n**The full test report (included comparison of rendered vs expected images) can be found [here](https://github.com/qgis/QGIS/suites/${{ context.payload.workflow_run.check_suite_id }}/artifacts/{{steps.download_artifact.outputs.artifact_id}}).**\n\n" +
+                 "\n\n**The full test report (included comparison of rendered vs expected images) can be found [here](https://github.com/qgis/QGIS/suites/' +  context.payload.workflow_run.check_suite_id + '/artifacts/{{steps.download_artifact.outputs.artifact_id}}).**\n\n" +
                  "Further documentation on the QGIS test infrastructure can be found in the [Developer's Guide](https://docs.qgis.org/latest/en/docs/developers_guide/unittesting.html).";
             await github.rest.issues.createComment({
               owner: context.repo.owner,
