@@ -63,7 +63,7 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
     /**
      * Apply the avoid intersection operation to the geometry \a geom associated to the feature \a fid
      * from the layer \a layer.
-     * \param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
+     * \param ignoreFeatures possibility to give a list of features where intersections should be ignored
      * \returns the operation result
      * \since QGIS 3.34
      */
