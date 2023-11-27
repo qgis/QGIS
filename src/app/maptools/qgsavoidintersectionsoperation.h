@@ -1,7 +1,7 @@
 /***************************************************************************
     qgsavoidintersectionsoperation.h
     ---------------------
-    begin                : 2023/09/20
+    begin                : 2023-09-20
     copyright            : (C) 2023 by Julien Cabieces
     email                : julien dot cabieces at oslandia dot com
  ***************************************************************************
