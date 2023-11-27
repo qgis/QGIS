@@ -1,6 +1,6 @@
-"""QGIS Unit tests for QgsServer GetCapabilities group name attribute exclusion.
+"""QGIS Unit tests for QgsServer GetCapabilities/GetMap group name attribute exclusion.
 
-From build dir, run: ctest -R PyQgsServerWMSGetCapabilities -V
+From build dir, run: ctest -R PyQgsServerWMSGetCapabilitiesGroupName -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ from test_qgsserver import QgsServerTestBase
 
 
 class TestQgsServerWMSGetCapabilities(QgsServerTestBase):
-    """QGIS Server WMS Tests for GetFeatureInfo request"""
+    """QGIS Server WMS Tests for GetCapabilities/GetMap with group name skipping"""
 
     # Set to True to re-generate reference files for this class
     regenerate_reference = False
@@ -34,27 +34,19 @@ class TestQgsServerWMSGetCapabilities(QgsServerTestBase):
 
     def test_wms_getcapabilities_with(self):
         r = make_capabilities_request(self, self.project_with_name)
-        f = str(r).find('<Name>layer_group</Name>')
-        # attribute <name> should be specified for a layer group
-        self.assertGreater(f, 0)
+        self.assertIn(b'<Name>layer_group</Name>', r, 'attribute <name> should be specified for a layer group')
 
     def test_wms_getmap_with(self):
         r = make_map_request(self, self.project_with_name)
-        f = str(r).find('<ServiceException code="LayerNotDefined">')
-        # there should be no server exception for a layer group in LAYERS=
-        self.assertEqual(f, -1)
+        self.assertNotIn(b'<ServiceException code="LayerNotDefined">', r, 'there should be no server exception for a layer group in LAYERS=')
 
     def test_wms_getcapabilities_without(self):
         r = make_capabilities_request(self, self.project_without_name)
-        f = str(r).find('<Name>layer_group</Name>')
-        # attribute <name> should NOT be specified for a layer group
-        self.assertEqual(f, -1)
+        self.assertNotIn(b'<Name>layer_group</Name>', r, 'attribute <name> should NOT be specified for a layer group')
 
     def test_wms_getmap_without(self):
         r = make_map_request(self, self.project_without_name)
-        f = str(r).find('<ServiceException code="LayerNotDefined">')
-        # there should a server exception for a layer group in LAYERS=
-        self.assertGreater(f, 0)
+        self.assertIn(b'<ServiceException code="LayerNotDefined">', r, 'there should a server exception for a layer group in LAYERS=')
 
 
 def make_capabilities_request(instance, project):
