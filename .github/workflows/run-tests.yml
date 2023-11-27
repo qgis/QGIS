@@ -411,6 +411,11 @@ jobs:
           mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
           docker-compose -f .docker/$DOCKERFILE run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
 
+      - name: Fix permissions on test report
+        if: ${{ failure() }}
+        run: |
+          sudo chmod -R 777 qgis_test_report
+
       - name: Archive test results report
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
