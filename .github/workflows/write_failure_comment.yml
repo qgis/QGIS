@@ -35,7 +35,7 @@ jobs:
             });
             let fs = require('fs');
             fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/test-results-qt${{ matrix.qt-version }}.zip`, Buffer.from(download.data));
-            core.setOutput('artifact_url', matchArtifact.url);
+            core.setOutput('artifact_url', matchArtifact.archive_download_url);
 
       - name: 'Unzip artifact'
         run: unzip test-results-qt${{ matrix.qt-version }}.zip
