@@ -3092,7 +3092,7 @@ class CORE_EXPORT Qgis
     enum class SettingsOrigin : int
     {
       Any, //!< From any origin
-      Global, //!< Global settings are stored in `global_settings.ini`
+      Global, //!< Global settings are stored in `qgis_global_settings.ini`
       Local, //!< Local settings are stored in the user profile
     };
     Q_ENUM( SettingsOrigin )
