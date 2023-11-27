@@ -15,15 +15,16 @@
 #include "qgsguiutils.h"
 
 #include "qgsapplication.h"
+#include "qgsfileutils.h"
 #include "qgssettings.h"
 #include "qgsencodingfiledialog.h"
 #include "qgslogger.h"
 #include "qgis_gui.h"
 #include "qgis.h"
 
-#include <QImageWriter>
-#include <QFontDialog>
 #include <QApplication>
+#include <QFontDialog>
+#include <QImageWriter>
 #include <QRegularExpression>
 
 
@@ -93,14 +94,25 @@ namespace QgsGuiUtils
     // get a list of supported output image types
     QMap<QString, QString> filterMap;
     const auto supportedImageFormats { QImageWriter::supportedImageFormats() };
+    QStringList imageFormats;
+    // add PNG format first for certain file dialog to auto-fill from first listed extension
+    imageFormats << QStringLiteral( "*.png *.PNG" );
     for ( const QByteArray &format : supportedImageFormats )
     {
-      //svg doesn't work so skip it
+      // svg doesn't work so skip it
       if ( format == "svg" )
+      {
         continue;
+      }
 
       filterMap.insert( createFileFilter_( format ), format );
+
+      if ( format != "png" )
+      {
+        imageFormats << QStringLiteral( "*.%1 *.%2" ).arg( format, QString( format ).toUpper() );
+      }
     }
+    const QString formatByExtension = QStringLiteral( "%1 (%2)" ).arg( QObject::tr( "Format by Extension" ), imageFormats.join( QStringLiteral( " " ) ) );
 
 #ifdef QGISDEBUG
     QgsDebugMsgLevel( QStringLiteral( "Available Filters Map: " ), 2 );
@@ -113,10 +125,11 @@ namespace QgsGuiUtils
     QgsSettings settings;  // where we keep last used filter in persistent state
     const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
 
-    // Prefer "png" format unless the user previously chose a different format
-    const QString pngExtension = QStringLiteral( "png" );
-    const QString pngFilter = createFileFilter_( pngExtension );
-    QString selectedFilter = settings.value( QStringLiteral( "UI/lastSaveAsImageFilter" ), pngFilter ).toString();
+    QString selectedFilter = settings.value( QStringLiteral( "UI/lastSaveAsImageFilter" ), QString() ).toString();
+    if ( selectedFilter.isEmpty() )
+    {
+      selectedFilter = formatByExtension;
+    }
 
     QString initialPath;
     if ( defaultFilename.isNull() )
@@ -133,19 +146,10 @@ namespace QgsGuiUtils
     QString outputFileName;
     QString ext;
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
-    outputFileName = QFileDialog::getSaveFileName( parent, message, initialPath, qgsMapJoinKeys( filterMap, QStringLiteral( ";;" ) ), &selectedFilter );
-
-    if ( !outputFileName.isNull() )
-    {
-      ext = filterMap.value( selectedFilter, QString() );
-      if ( !ext.isNull() )
-        settings.setValue( QStringLiteral( "UI/lastSaveAsImageFilter" ), selectedFilter );
-      settings.setValue( QStringLiteral( "UI/lastSaveAsImageDir" ), QFileInfo( outputFileName ).absolutePath() );
-    }
+    outputFileName = QFileDialog::getSaveFileName( parent, message, initialPath, formatByExtension + QStringLiteral( ";;" ) + qgsMapJoinKeys( filterMap, QStringLiteral( ";;" ) ), &selectedFilter );
 #else
-
     //create a file dialog using the filter list generated above
-    std::unique_ptr<QFileDialog> fileDialog( new QFileDialog( parent, message, initialPath, qgsMapJoinKeys( filterMap, QStringLiteral( ";;" ) ) ) );
+    std::unique_ptr<QFileDialog> fileDialog( new QFileDialog( parent, message, initialPath, formatByExtension + QStringLiteral( ";;" ) + qgsMapJoinKeys( filterMap, QStringLiteral( ";;" ) ) ) );
 
     // allow for selection of more than one file
     fileDialog->setFileMode( QFileDialog::AnyFile );
@@ -162,21 +166,34 @@ namespace QgsGuiUtils
     {
       outputFileName = fileDialog->selectedFiles().first();
     }
-
-    selectedFilter = fileDialog->selectedNameFilter();
-    QgsDebugMsgLevel( "Selected filter: " + selectedFilter, 2 );
-    ext = filterMap.value( selectedFilter, QString() );
-
-    if ( !ext.isNull() )
-      settings.setValue( "/UI/lastSaveAsImageFilter", selectedFilter );
-
-    settings.setValue( "/UI/lastSaveAsImageDir", fileDialog->directory().absolutePath() );
 #endif
 
-    // Add the file type suffix to the fileName if required
-    if ( !ext.isNull() && !outputFileName.endsWith( '.' + ext.toLower(), Qt::CaseInsensitive ) )
+    if ( !outputFileName.isNull() )
     {
-      outputFileName += '.' + ext;
+      if ( selectedFilter == formatByExtension )
+      {
+        settings.setValue( QStringLiteral( "UI/lastSaveAsImageFilter" ), QString() );
+        ext = QFileInfo( outputFileName ).suffix();
+
+        auto match = std::find_if( filterMap.begin(), filterMap.end(), [&ext]( const QString & filter ) { return filter == ext; } );
+        if ( match == filterMap.end() )
+        {
+          // Use "png" format when extension missing or not matching
+          ext = QStringLiteral( "png" );
+          selectedFilter = createFileFilter_( ext );
+          outputFileName = QgsFileUtils::addExtensionFromFilter( outputFileName, selectedFilter );
+        }
+      }
+      else
+      {
+        ext = filterMap.value( selectedFilter, QString() );
+        if ( !ext.isEmpty() )
+        {
+          outputFileName = QgsFileUtils::addExtensionFromFilter( outputFileName, selectedFilter );
+          settings.setValue( QStringLiteral( "UI/lastSaveAsImageFilter" ), selectedFilter );
+        }
+      }
+      settings.setValue( QStringLiteral( "UI/lastSaveAsImageDir" ), QFileInfo( outputFileName ).absolutePath() );
     }
 
     return qMakePair( outputFileName, ext );
