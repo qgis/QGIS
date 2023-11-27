@@ -50,7 +50,7 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
           geometryHasChanged( false ) {}
 
       /**
-       * avoid intersection operation result
+       * The result of an avoid intersection operation
        */
       Qgis::GeometryOperationResult operationResult;
 
