@@ -204,11 +204,38 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setNoAttributes(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
-
   QgsGeometry allPoints;
 
-  const double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 1;
+  long long i = 0;
+  const double step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
+  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setNoAttributes(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    i++;
+
+    if ( feedback->isCanceled() )
+      break;
+
+    feedback->setProgress( i * step );
+
+    if ( !f.hasGeometry() )
+      continue;
+
+    const QgsAbstractGeometry *geom = f.geometry().constGet();
+    if ( QgsWkbTypes::isMultiType( geom->wkbType() ) )
+    {
+      const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
+      for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
+      {
+        allPoints.addPart( qgsgeometry_cast< QgsPoint * >( *pit )->clone(), Qgis::GeometryType::Point );
+      }
+    }
+    else
+    {
+      allPoints.addPart( qgsgeometry_cast< QgsPoint * >( geom )->clone(), Qgis::GeometryType::Point );
+    }
+  }
 
   QgsRectangle extent = mSource->sourceExtent();
   double delta = extent.width() * mBuffer / 100.0;
