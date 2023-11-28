@@ -614,10 +614,13 @@ void Qgs3DMapScene::updateTemporal()
   const QList<QgsMapLayer * > layers = mLayerEntities.keys();
   for ( QgsMapLayer *layer : layers )
   {
-    if ( layer->temporalProperties()->isActive() )
+    if ( QgsMapLayerTemporalProperties *temporalProperties = layer->temporalProperties() )
     {
-      removeLayerEntity( layer );
-      addLayerEntity( layer );
+      if ( temporalProperties->isActive() )
+      {
+        removeLayerEntity( layer );
+        addLayerEntity( layer );
+      }
     }
   }
 }
