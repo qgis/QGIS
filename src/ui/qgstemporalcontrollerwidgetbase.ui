@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>752</width>
-    <height>114</height>
+    <height>116</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -328,7 +328,7 @@
           <number>2</number>
          </property>
          <item>
-          <widget class="QPushButton" name="mRewindButton">
+          <widget class="QPushButton" name="mAnimationRewindButton">
            <property name="text">
             <string/>
            </property>
@@ -339,7 +339,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="mPreviousButton">
+          <widget class="QPushButton" name="mAnimationPreviousButton">
            <property name="text">
             <string/>
            </property>
@@ -350,7 +350,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="mBackButton">
+          <widget class="QPushButton" name="mAnimationBackButton">
            <property name="text">
             <string/>
            </property>
@@ -364,7 +364,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="mStopButton">
+          <widget class="QPushButton" name="mAnimationStopButton">
            <property name="text">
             <string/>
            </property>
@@ -381,7 +381,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="mForwardButton">
+          <widget class="QPushButton" name="mAnimationForwardButton">
            <property name="text">
             <string/>
            </property>
@@ -395,7 +395,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="mNextButton">
+          <widget class="QPushButton" name="mAnimationNextButton">
            <property name="text">
             <string/>
            </property>
@@ -406,7 +406,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="mFastForwardButton">
+          <widget class="QPushButton" name="mAnimationFastForwardButton">
            <property name="text">
             <string/>
            </property>
@@ -417,7 +417,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QSlider" name="mSlider">
+          <widget class="QSlider" name="mAnimationSlider">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -430,7 +430,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="mLoopingCheckBox">
+          <widget class="QCheckBox" name="mAnimationLoopingCheckBox">
            <property name="toolTip">
             <string>Automatically reset and repeat the animation endlessly</string>
            </property>
@@ -635,7 +635,7 @@
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="1">
-          <widget class="QPushButton" name="mPreviousButton_2">
+          <widget class="QPushButton" name="mMoviePreviousButton">
            <property name="text">
             <string/>
            </property>
@@ -646,7 +646,7 @@
           </widget>
          </item>
          <item row="0" column="8">
-          <widget class="QCheckBox" name="mLoopingCheckBox_2">
+          <widget class="QCheckBox" name="mMovieLoopingCheckBox">
            <property name="toolTip">
             <string>Automatically reset and repeat the animation endlessly</string>
            </property>
@@ -656,7 +656,7 @@
           </widget>
          </item>
          <item row="0" column="3">
-          <widget class="QPushButton" name="mStopButton_2">
+          <widget class="QPushButton" name="mMovieStopButton">
            <property name="text">
             <string/>
            </property>
@@ -673,7 +673,7 @@
           </widget>
          </item>
          <item row="0" column="5">
-          <widget class="QPushButton" name="mNextButton_2">
+          <widget class="QPushButton" name="mMovieNextButton">
            <property name="text">
             <string/>
            </property>
@@ -684,7 +684,7 @@
           </widget>
          </item>
          <item row="0" column="2">
-          <widget class="QPushButton" name="mBackButton_2">
+          <widget class="QPushButton" name="mMovieBackButton">
            <property name="text">
             <string/>
            </property>
@@ -698,7 +698,7 @@
           </widget>
          </item>
          <item row="0" column="7">
-          <widget class="QSlider" name="mSlider_2">
+          <widget class="QSlider" name="mMovieSlider">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -711,7 +711,7 @@
           </widget>
          </item>
          <item row="0" column="4">
-          <widget class="QPushButton" name="mForwardButton_2">
+          <widget class="QPushButton" name="mMovieForwardButton">
            <property name="text">
             <string/>
            </property>
@@ -725,7 +725,7 @@
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QPushButton" name="mRewindButton_2">
+          <widget class="QPushButton" name="mMovieRewindButton">
            <property name="text">
             <string/>
            </property>
@@ -736,7 +736,7 @@
           </widget>
          </item>
          <item row="0" column="6">
-          <widget class="QPushButton" name="mFastForwardButton_2">
+          <widget class="QPushButton" name="mMovieFastForwardButton">
            <property name="text">
             <string/>
            </property>
@@ -749,7 +749,7 @@
          <item row="1" column="0" colspan="9">
           <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,1,0,3">
            <item>
-            <widget class="QLabel" name="mRangeLabel_2">
+            <widget class="QLabel" name="mMovieRangeLabel">
              <property name="text">
               <string>Total frames</string>
              </property>
@@ -769,7 +769,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="mExportAnimationButton_2">
+            <widget class="QToolButton" name="mExportMovieButton">
              <property name="toolTip">
               <string>Export Animation</string>
              </property>
