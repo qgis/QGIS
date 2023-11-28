@@ -124,6 +124,9 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
     QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
 
     ~QgsVectorLayerChunkedEntity();
+
+    float terrainElevationOffset() const override;
+
   private slots:
     void onTerrainElevationOffsetChanged( float newOffset );
 

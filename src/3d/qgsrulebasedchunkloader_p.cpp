@@ -250,6 +250,11 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
   return true;
 }
 
+float QgsRuleBasedChunkedEntity::terrainElevationOffset() const
+{
+  return mTransform->translation()[1];
+}
+
 void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged( float newOffset )
 {
   mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );

@@ -246,6 +246,11 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
   return true;
 }
 
+float QgsVectorLayerChunkedEntity::terrainElevationOffset() const
+{
+  return mTransform->translation()[1];
+}
+
 void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged( float newOffset )
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged" ), 2 );
