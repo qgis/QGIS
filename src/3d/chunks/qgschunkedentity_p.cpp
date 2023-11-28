@@ -19,6 +19,7 @@
 #include <QVector4D>
 
 #include "qgs3dutils.h"
+#include "qgsaabb.h"
 #include "qgschunkboundsentity_p.h"
 #include "qgschunklist_p.h"
 #include "qgschunkloader_p.h"
@@ -341,10 +342,15 @@ void QgsChunkedEntity::pruneLoaderQueue( const SceneState &state )
   // (i.e. they are outside of the current view of the camera) and therefore loading
   // such chunks would be probably waste of time.
   QgsChunkListEntry *e = mChunkLoaderQueue->first();
+  const float verticalOffset = terrainElevationOffset();
   while ( e )
   {
     Q_ASSERT( e->chunk->state() == QgsChunkNode::QueuedForLoad || e->chunk->state() == QgsChunkNode::QueuedForUpdate );
-    if ( Qgs3DUtils::isCullable( e->chunk->bbox(), state.viewProjectionMatrix ) )
+
+    QgsAABB shiftedBBox = e->chunk->bbox();
+    shiftedBBox.yMin += verticalOffset;
+    shiftedBBox.yMax += verticalOffset;
+    if ( Qgs3DUtils::isCullable( shiftedBBox, state.viewProjectionMatrix ) )
     {
       toRemoveFromLoaderQueue.append( e->chunk );
     }
@@ -418,13 +424,18 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
   int renderedCount = 0;
   std::priority_queue<slotItem, std::vector<slotItem>, decltype( cmp_funct )> pq( cmp_funct );
   pq.push( std::make_pair( root, screenSpaceError( root, state ) ) );
+  const float verticalOffset = terrainElevationOffset();
   while ( !pq.empty() && renderedCount <= mPrimitivesBudget )
   {
     slotItem s = pq.top();
     pq.pop();
     QgsChunkNode *node = s.first;
 
-    if ( Qgs3DUtils::isCullable( node->bbox(), state.viewProjectionMatrix ) )
+    QgsAABB shiftedBBox = node->bbox();
+    shiftedBBox.yMin += verticalOffset;
+    shiftedBBox.yMax += verticalOffset;
+
+    if ( Qgs3DUtils::isCullable( shiftedBBox, state.viewProjectionMatrix ) )
     {
       ++mFrustumCulled;
       continue;
@@ -500,7 +511,10 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
           else
           {
             // chunk is not yet resident - let's try to load it
-            if ( Qgs3DUtils::isCullable( children[i]->bbox(), state.viewProjectionMatrix ) )
+            QgsAABB shiftedBBox = children[i]->bbox();
+            shiftedBBox.yMin += verticalOffset;
+            shiftedBBox.yMax += verticalOffset;
+            if ( Qgs3DUtils::isCullable( shiftedBBox, state.viewProjectionMatrix ) )
               continue;
 
             double dist = children[i]->bbox().center().distanceToPoint( state.cameraPos );
