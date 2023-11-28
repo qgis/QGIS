@@ -291,7 +291,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   }
 
   if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) ||
-       ( mapCanvas->mapSettings().isTemporal() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
+       ( mapCanvas->mapSettings().isTemporal() && layer->temporalProperties() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
   {
     return QString();
   }
