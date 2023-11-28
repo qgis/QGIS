@@ -2496,7 +2496,7 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="11" column="0" colspan="2">
+                     <item row="12" column="0" colspan="2">
                       <layout class="QGridLayout" name="gridLayout_9">
                        <item row="1" column="1">
                         <widget class="QLabel" name="mMaxWidthLabel_2">
@@ -2557,7 +2557,7 @@
                        </item>
                       </layout>
                      </item>
-                     <item row="10" column="0" colspan="2">
+                     <item row="11" column="0" colspan="2">
                       <layout class="QHBoxLayout" name="horizontalLayout_2">
                        <item>
                         <widget class="QLabel" name="mWMSUrlLabel">
@@ -2598,7 +2598,7 @@
                        </item>
                       </layout>
                      </item>
-                     <item row="9" column="0" colspan="2">
+                     <item row="10" column="0" colspan="2">
                       <layout class="QHBoxLayout" name="grpWMSPrecision">
                        <item>
                         <widget class="QLabel" name="label_5">
@@ -2861,6 +2861,16 @@
                       <widget class="QCheckBox" name="mAddLayerGroupsLegendGraphicCheckBox">
                        <property name="text">
                         <string>Add layer groups in GetLegendGraphic</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="0">
+                      <widget class="QCheckBox" name="mSkipNameForGroupCheckBox">
+                       <property name="toolTip">
+                         <string>GetCapabilities response would skip name attribute for group items while leaving title attribute as is, thus showing the group but making it impossible to include the whole group (rather than it's elements) in subsequent GetMap request LAYERS parameter.</string>
+                       </property>
+                       <property name="text">
+                        <string>Skip name attribute for groups</string>
                        </property>
                       </widget>
                      </item>
@@ -3343,7 +3353,7 @@
             </spacer>
            </item>
           </layout>
-         </widget>        
+         </widget>
         </widget>
        </item>
       </layout>
