@@ -279,11 +279,16 @@ QgsRange<float> QgsChunkedEntity::getNearFarPlaneRange( const QMatrix4x4 &viewMa
   float fnear = 1e9;
   float ffar = 0;
 
+  const float verticalOffset = terrainElevationOffset();
+
   for ( QgsChunkNode *node : std::as_const( activeEntityNodes ) )
   {
     // project each corner of bbox to camera coordinates
     // and determine closest and farthest point.
     QgsAABB bbox = node->bbox();
+    bbox.yMin += verticalOffset;
+    bbox.yMax += verticalOffset;
+
     float bboxfnear;
     float bboxffar;
     Qgs3DUtils::computeBoundingBoxNearFarPlanes( bbox, viewMatrix, bboxfnear, bboxffar );
