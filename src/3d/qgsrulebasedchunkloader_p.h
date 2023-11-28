@@ -128,6 +128,8 @@ class QgsRuleBasedChunkedEntity : public QgsChunkedEntity
     void onTerrainElevationOffsetChanged( float newOffset );
   private:
     Qt3DCore::QTransform *mTransform = nullptr;
+
+    bool applyTerrainOffset() const;
 };
 
 /// @endcond
