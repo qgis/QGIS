@@ -11,7 +11,6 @@ __author__ = '(C) 2022 by Nyall Dawson'
 __date__ = '14/07/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QTimeZone, QVariant
 from qgis.core import (
     NULL,

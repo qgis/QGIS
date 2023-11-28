@@ -9,7 +9,6 @@ __author__ = 'Nathan Woodrow'
 __date__ = '10.12.2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.processing import alg
 import unittest

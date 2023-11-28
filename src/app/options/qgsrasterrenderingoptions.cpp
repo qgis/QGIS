@@ -39,12 +39,12 @@ QgsRasterRenderingOptionsWidget::QgsRasterRenderingOptionsWidget( QWidget *paren
   spnBlue->setClearValue( 3 );
 
   mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest Neighbour" ), QStringLiteral( "nearest neighbour" ) );
-  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ), QStringLiteral( "bilinear" ) );
-  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic" ), QStringLiteral( "cubic" ) );
+  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear (2x2 Kernel)" ), QStringLiteral( "bilinear" ) );
+  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic (4x4 Kernel)" ), QStringLiteral( "cubic" ) );
 
   mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest Neighbour" ), QStringLiteral( "nearest neighbour" ) );
-  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Bilinear" ), QStringLiteral( "bilinear" ) );
-  mZoomedOutResamplingComboBox->insertItem( 2, tr( "Cubic" ), QStringLiteral( "cubic" ) );
+  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Bilinear (2x2 Kernel)" ), QStringLiteral( "bilinear" ) );
+  mZoomedOutResamplingComboBox->insertItem( 2, tr( "Cubic (4x4 Kernel)" ), QStringLiteral( "cubic" ) );
 
   QString zoomedInResampling = settings.value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
   mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( zoomedInResampling ) );
@@ -76,6 +76,11 @@ QgsRasterRenderingOptionsWidget::QgsRasterRenderingOptionsWidget( QWidget *paren
 
   spnThreeBandStdDev->setValue( settings.value( QStringLiteral( "/Raster/defaultStandardDeviation" ), QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR ).toDouble() );
   spnThreeBandStdDev->setClearValue( QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR );
+}
+
+QString QgsRasterRenderingOptionsWidget::helpKey() const
+{
+  return QStringLiteral( "introduction/qgis_configuration.html#raster-rendering-options" );
 }
 
 void QgsRasterRenderingOptionsWidget::apply()

@@ -2565,6 +2565,7 @@ class CORE_EXPORT Qgis
       {
       Clockwise, //!< Clockwise direction
       CounterClockwise, //!< Counter-clockwise direction
+      NoOrientation, //!< Unknown orientation or sentinel value
     };
     Q_ENUM( AngularDirection )
 
@@ -3121,7 +3122,7 @@ class CORE_EXPORT Qgis
     enum class SettingsOrigin : int
     {
       Any, //!< From any origin
-      Global, //!< Global settings are stored in `global_settings.ini`
+      Global, //!< Global settings are stored in `qgis_global_settings.ini`
       Local, //!< Local settings are stored in the user profile
     };
     Q_ENUM( SettingsOrigin )

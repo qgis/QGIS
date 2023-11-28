@@ -182,7 +182,7 @@ void TestQgsLayoutMap::render()
   l.addLayoutItem( map );
 
   map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  QVERIFY( layoutCheck( QStringLiteral( "composermap_render" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_render" ), &l );
 }
 
 void TestQgsLayoutMap::uniqueId()
@@ -415,7 +415,7 @@ void TestQgsLayoutMap::dataDefinedLayers()
         QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mPointsLayer->name() ) ) );
   map->setExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composermap_ddlayers" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_ddlayers" ), &l );
 }
 
 void TestQgsLayoutMap::dataDefinedStyles()
@@ -477,7 +477,7 @@ void TestQgsLayoutMap::dataDefinedStyles()
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );
   map->setExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composermap_ddstyles" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_ddstyles" ), &l );
 }
 
 void TestQgsLayoutMap::dataDefinedCrs()
@@ -581,14 +581,14 @@ void TestQgsLayoutMap::rasterized()
 
   QVERIFY( map->containsAdvancedEffects() );
 
-  QVERIFY( layoutCheck( QStringLiteral( "layoutmap_rasterized" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "layoutmap_rasterized" ), &l );
 
   // try rendering again, without requiring rasterization, for comparison
   // (we can use the same test image, because CompositionMode_Darken doesn't actually have any noticeable
   // rendering differences for the black grid!)
   grid->setBlendMode( QPainter::CompositionMode_SourceOver );
   QVERIFY( !map->containsAdvancedEffects() );
-  QVERIFY( layoutCheck( QStringLiteral( "layoutmap_rasterized" ), &l ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "layoutmap_rasterized" ), &l );
 }
 
 void TestQgsLayoutMap::layersToRender()
@@ -636,7 +636,7 @@ void TestQgsLayoutMap::mapRotation()
   map->setLayers( QList<QgsMapLayer *>() << layer );
 
   mControlPathPrefix = QStringLiteral( "composer_items" );
-  QVERIFY( layoutCheck( QStringLiteral( "composerrotation_maprotation" ), &l, 0, 200 ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerrotation_maprotation" ), &l, 0, 200 );
   mControlPathPrefix = QStringLiteral( "composer_map" );
 
   // test that rotation correctly applies to restored items
@@ -672,7 +672,7 @@ void TestQgsLayoutMap::mapItemRotation()
   map->setLayers( QList<QgsMapLayer *>() << layer );
 
   mControlPathPrefix = QStringLiteral( "composer_items" );
-  QVERIFY( layoutCheck( QStringLiteral( "composerrotation_mapitemrotation" ), &l, 0, 200 ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerrotation_mapitemrotation" ), &l, 0, 200 );
   mControlPathPrefix = QStringLiteral( "composer_map" );
 }
 

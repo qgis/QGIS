@@ -225,13 +225,29 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
     QWindow *window() const;
 
+    //! List of possible operations with the mouse in TerrainBased navigation
     enum class MouseOperation
     {
-      None = 0,
-      Translation,
-      Rotation,
-      Zoom
+      None = 0,       // no operation
+      Translation,    // left button pressed, no modifier
+      RotationCamera, // left button pressed + ctrl modifier
+      RotationCenter, // left button pressed + shift modifier
+      Zoom,           // right button pressed
+      ZoomWheel       // mouse wheel scroll
     };
+
+    // This list gathers all the rotation and translation operations.
+    // It is used to update the appropriate parameters when successive
+    // translation and rotation happen.
+    const QList<MouseOperation> mTranslateOrRotate =
+    {
+      MouseOperation::Translation,
+      MouseOperation::RotationCamera,
+      MouseOperation::RotationCenter
+    };
+
+    // check that current sequence (current operation and new operation) is a rotation or translation
+    bool isATranslationRotationSequence( MouseOperation newOperation ) const;
 
     void setMouseParameters( const MouseOperation &newOperation, const QPoint &clickPoint = QPoint() );
 

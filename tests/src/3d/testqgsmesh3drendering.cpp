@@ -137,7 +137,7 @@ void TestQgsMesh3DRendering::testMeshTerrain()
   delete scene;
   delete map;
 
-  QVERIFY( imageCheck( "mesh_terrain_1", "mesh_terrain_1", img, QString(), 40, QSize( 0, 0 ), 2 ) );
+  QGSVERIFYIMAGECHECK( "mesh_terrain_1", "mesh_terrain_1", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsMesh3DRendering::testMesh()
@@ -170,7 +170,7 @@ void TestQgsMesh3DRendering::testMesh()
   delete scene;
   delete map;
 
-  QVERIFY( imageCheck( "mesh3d", "mesh3d", img, QString(), 40, QSize( 0, 0 ), 2 ) );
+  QGSVERIFYIMAGECHECK( "mesh3d", "mesh3d", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsMesh3DRendering::testMesh_datasetOnFaces()
@@ -212,7 +212,7 @@ void TestQgsMesh3DRendering::testMesh_datasetOnFaces()
   delete scene;
   delete map;
 
-  QVERIFY( imageCheck( "mesh3dOnFace", "mesh3dOnFace", img, QString(), 40, QSize( 0, 0 ), 2 ) );
+  QGSVERIFYIMAGECHECK( "mesh3dOnFace", "mesh3dOnFace", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsMesh3DRendering::testMeshSimplified()
@@ -280,7 +280,7 @@ void TestQgsMesh3DRendering::testMeshSimplified()
     delete scene;
     delete map;
 
-    QVERIFY( imageCheck( QString( "mesh_simplified_%1" ).arg( i ), QString( "mesh_simplified_%1" ).arg( i ), img, QString(), 40, QSize( 0, 0 ), 2 ) );
+    QGSVERIFYIMAGECHECK( QString( "mesh_simplified_%1" ).arg( i ), QString( "mesh_simplified_%1" ).arg( i ), img, QString(), 40, QSize( 0, 0 ), 2 );
   }
 }
 
@@ -326,7 +326,7 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   delete scene;
   delete map;
 
-  QVERIFY( imageCheck( "mesh3d_filtered", "mesh3d_filtered", img, QString(), 40, QSize( 0, 0 ), 2 ) );
+  QGSVERIFYIMAGECHECK( "mesh3d_filtered", "mesh3d_filtered", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgsMesh3DRendering )

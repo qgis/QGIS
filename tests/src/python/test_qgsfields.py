@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '16/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QVariant
 from qgis.core import NULL, QgsVectorLayer
 import unittest

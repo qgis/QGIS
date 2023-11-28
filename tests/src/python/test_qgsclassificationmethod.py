@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import random
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QLocale
 from qgis.core import (
     QgsClassificationFixedInterval,

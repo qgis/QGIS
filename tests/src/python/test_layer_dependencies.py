@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import os
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QPoint, QSize
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (

@@ -116,7 +116,7 @@ void TestQgsLayoutMapGrid::grid()
   map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::Horizontal, QgsLayoutItemMapGrid::Bottom );
   map->grid()->setBlendMode( QPainter::CompositionMode_Overlay );
   map->updateBoundingRect();
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_grid" ), &l );
+  const bool testResult = QGSLAYOUTCHECK( QStringLiteral( "composermap_grid" ), &l );
   map->grid()->setEnabled( false );
   map->grid()->setAnnotationEnabled( false );
   QVERIFY( testResult );
@@ -154,7 +154,7 @@ void TestQgsLayoutMapGrid::reprojected()
   map->grid()->setFrameWidth( 10 );
   map->setFrameEnabled( false );
   map->updateBoundingRect();
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_gridreprojected" ), &l );
+  const bool testResult = QGSLAYOUTCHECK( QStringLiteral( "composermap_gridreprojected" ), &l );
 
   map->grid()->setEnabled( false );
   map->grid()->setCrs( crs );
@@ -191,7 +191,7 @@ void TestQgsLayoutMapGrid::crossGrid()
   map->grid()->setGridLineColor( QColor( 0, 255, 0 ) );
   map->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   map->updateBoundingRect();
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_crossgrid" ), &l );
+  const bool testResult = QGSLAYOUTCHECK( QStringLiteral( "composermap_crossgrid" ), &l );
   map->grid()->setStyle( QgsLayoutItemMapGrid::Solid );
   map->grid()->setEnabled( false );
   map->grid()->setAnnotationEnabled( false );
@@ -225,7 +225,7 @@ void TestQgsLayoutMapGrid::markerGrid()
   map->grid()->setAnnotationEnabled( false );
   map->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   map->updateBoundingRect();
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_markergrid" ), &l );
+  const bool testResult = QGSLAYOUTCHECK( QStringLiteral( "composermap_markergrid" ), &l );
   map->grid()->setStyle( QgsLayoutItemMapGrid::Solid );
   map->grid()->setEnabled( false );
   map->grid()->setAnnotationEnabled( false );
@@ -262,7 +262,7 @@ void TestQgsLayoutMapGrid::frameOnly()
   map->grid()->setFramePenSize( 0.5 );
   map->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   map->updateBoundingRect();
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_gridframeonly" ), &l );
+  const bool testResult = QGSLAYOUTCHECK( QStringLiteral( "composermap_gridframeonly" ), &l );
   map->grid()->setStyle( QgsLayoutItemMapGrid::Solid );
   map->grid()->setEnabled( false );
   map->grid()->setAnnotationEnabled( false );
@@ -304,8 +304,7 @@ void TestQgsLayoutMapGrid::zebraStyle()
   map->grid()->setEnabled( true );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_zebrastyle" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_zebrastyle" ), &l );
 }
 
 void TestQgsLayoutMapGrid::zebraStyleSides()
@@ -347,17 +346,17 @@ void TestQgsLayoutMapGrid::zebraStyleSides()
   map->grid()->setFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom, false );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_zebrastyle_left" ), &l );
+  const bool testResult = QGSLAYOUTCHECK( QStringLiteral( "composermap_zebrastyle_left" ), &l );
   QVERIFY( testResult );
 
   map->grid()->setFrameSideFlag( QgsLayoutItemMapGrid::FrameTop, true );
   map->updateBoundingRect();
-  const bool testResult2 = layoutCheck( QStringLiteral( "composermap_zebrastyle_lefttop" ), &l );
+  const bool testResult2 = QGSLAYOUTCHECK( QStringLiteral( "composermap_zebrastyle_lefttop" ), &l );
   QVERIFY( testResult2 );
 
   map->grid()->setFrameSideFlag( QgsLayoutItemMapGrid::FrameRight, true );
   map->updateBoundingRect();
-  const bool testResult3 = layoutCheck( QStringLiteral( "composermap_zebrastyle_lefttopright" ), &l );
+  const bool testResult3 = QGSLAYOUTCHECK( QStringLiteral( "composermap_zebrastyle_lefttopright" ), &l );
   QVERIFY( testResult3 );
 
   map->grid()->setFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom, true );
@@ -400,8 +399,7 @@ void TestQgsLayoutMapGrid::zebraStyleMargin()
   map->grid()->setEnabled( true );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_marginzebrastyle" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_marginzebrastyle" ), &l );
 }
 
 void TestQgsLayoutMapGrid::zebraStyleNautical()
@@ -439,8 +437,7 @@ void TestQgsLayoutMapGrid::zebraStyleNautical()
   map->grid()->setEnabled( true );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_zebranauticalstyle" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_zebranauticalstyle" ), &l );
 }
 
 void TestQgsLayoutMapGrid::frameDivisions()
@@ -484,7 +481,7 @@ void TestQgsLayoutMapGrid::frameDivisions()
   map->grid()->setFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom, true );
   map->updateBoundingRect();
 
-  bool testResult = layoutCheck( QStringLiteral( "composermap_rotatedframe" ), &l );
+  bool testResult = QGSLAYOUTCHECK( QStringLiteral( "composermap_rotatedframe" ), &l );
   QVERIFY( testResult );
 
   map->grid()->setFrameDivisions( QgsLayoutItemMapGrid::LatitudeOnly, QgsLayoutItemMapGrid::Left );
@@ -493,7 +490,7 @@ void TestQgsLayoutMapGrid::frameDivisions()
   map->grid()->setFrameDivisions( QgsLayoutItemMapGrid::LongitudeOnly, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  testResult = layoutCheck( QStringLiteral( "composermap_framedivisions" ), &l );
+  testResult = QGSLAYOUTCHECK( QStringLiteral( "composermap_framedivisions" ), &l );
   QVERIFY( testResult );
 
   map->grid()->setFrameDivisions( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Left );
@@ -541,8 +538,7 @@ void TestQgsLayoutMapGrid::annotationFilter()
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  bool testResult = layoutCheck( QStringLiteral( "composermap_rotatedannotations" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_rotatedannotations" ), &l );
 
   map->grid()->setAnnotationDisplay( QgsLayoutItemMapGrid::HideAll, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationDisplay( QgsLayoutItemMapGrid::LongitudeOnly, QgsLayoutItemMapGrid::Right );
@@ -550,8 +546,7 @@ void TestQgsLayoutMapGrid::annotationFilter()
   map->grid()->setAnnotationDisplay( QgsLayoutItemMapGrid::LongitudeOnly, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  testResult = layoutCheck( QStringLiteral( "composermap_filteredannotations" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_filteredannotations" ), &l );
 
   map->grid()->setAnnotationEnabled( false );
   map->grid()->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Left );
@@ -591,8 +586,7 @@ void TestQgsLayoutMapGrid::interiorTicks()
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_interiorticks" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_interiorticks" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
 }
@@ -628,8 +622,7 @@ void TestQgsLayoutMapGrid::interiorTicksMargin()
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_margininteriorticks" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_margininteriorticks" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
 }
@@ -669,8 +662,7 @@ void TestQgsLayoutMapGrid::interiorTicksAnnotated()
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_interiorticks_annotated" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_interiorticks_annotated" ), &l );
 
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Right );
@@ -678,8 +670,7 @@ void TestQgsLayoutMapGrid::interiorTicksAnnotated()
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  const bool testResult2 = layoutCheck( QStringLiteral( "composermap_interiorticks_annotated2" ), &l );
-  QVERIFY( testResult2 );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_interiorticks_annotated2" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
   map->grid()->setAnnotationEnabled( false );
@@ -715,8 +706,7 @@ void TestQgsLayoutMapGrid::exteriorTicks()
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_exteriorticks" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_exteriorticks" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
 }
@@ -752,8 +742,7 @@ void TestQgsLayoutMapGrid::exteriorTicksMargin()
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_marginexteriorticks" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_marginexteriorticks" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
 }
@@ -793,8 +782,7 @@ void TestQgsLayoutMapGrid::exteriorTicksAnnotated()
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_exteriorticks_annotated" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_exteriorticks_annotated" ), &l );
 
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Right );
@@ -802,8 +790,7 @@ void TestQgsLayoutMapGrid::exteriorTicksAnnotated()
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  const bool testResult2 = layoutCheck( QStringLiteral( "composermap_exteriorticks_annotated2" ), &l );
-  QVERIFY( testResult2 );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_exteriorticks_annotated2" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
   map->grid()->setAnnotationEnabled( false );
@@ -839,8 +826,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicks()
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_interiorexteriorticks" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_interiorexteriorticks" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
 }
@@ -876,8 +862,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksMargin()
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_margininteriorexteriorticks" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_margininteriorexteriorticks" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
 }
@@ -917,8 +902,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksAnnotated()
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_interiorexteriorticks_annotated" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_interiorexteriorticks_annotated" ), &l );
 
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Right );
@@ -926,8 +910,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksAnnotated()
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  const bool testResult2 = layoutCheck( QStringLiteral( "composermap_interiorexteriorticks_annotated2" ), &l );
-  QVERIFY( testResult2 );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_interiorexteriorticks_annotated2" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
   map->grid()->setAnnotationEnabled( false );
@@ -963,8 +946,7 @@ void TestQgsLayoutMapGrid::lineBorder()
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_lineborder" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_lineborder" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
 }
@@ -1000,8 +982,7 @@ void TestQgsLayoutMapGrid::lineBorderMargin()
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_marginlineborder" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_marginlineborder" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
 }
@@ -1037,8 +1018,7 @@ void TestQgsLayoutMapGrid::lineBorderNautical()
   map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_linebordernautical" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_linebordernautical" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
 }
@@ -1078,8 +1058,7 @@ void TestQgsLayoutMapGrid::lineBorderAnnotated()
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_lineborder_annotated" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_lineborder_annotated" ), &l );
 
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Right );
@@ -1087,8 +1066,7 @@ void TestQgsLayoutMapGrid::lineBorderAnnotated()
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  const bool testResult2 = layoutCheck( QStringLiteral( "composermap_lineborder_annotated2" ), &l );
-  QVERIFY( testResult2 );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_lineborder_annotated2" ), &l );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
   map->grid()->setAnnotationEnabled( false );
@@ -1194,8 +1172,7 @@ void TestQgsLayoutMapGrid::descendingAnnotations()
   map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  const bool testResult = layoutCheck( QStringLiteral( "composermap_verticaldescending_inside" ), &l );
-  QVERIFY( testResult );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_verticaldescending_inside" ), &l );
 
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Right );
@@ -1203,8 +1180,7 @@ void TestQgsLayoutMapGrid::descendingAnnotations()
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Bottom );
   map->updateBoundingRect();
 
-  const bool testResult2 = layoutCheck( QStringLiteral( "composermap_verticaldescending_outside" ), &l );
-  QVERIFY( testResult2 );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_verticaldescending_outside" ), &l );
 
   map->grid()->setAnnotationEnabled( false );
 }

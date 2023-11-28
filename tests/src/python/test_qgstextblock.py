@@ -11,7 +11,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsStringUtils, QgsTextBlock, QgsTextFragment
 import unittest

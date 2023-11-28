@@ -2647,6 +2647,48 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const SIP_THROW( QgsNotSupportedException );
 
     /**
+     * Returns the orientation of the polygon.
+     * \warning Only the first exterior ring is taken to perform this operation. In case of degenerate orders,
+     * you have to perform in deep verification.
+     *
+     * \warning returns Qgis::AngularDirection::NoOrientation if the geometry is not a polygon type or empty
+     *
+     * \since QGIS 3.36
+     */
+    Qgis::AngularDirection polygonOrientation() const;
+
+    /**
+     * Returns True if the Polygon is counter-clockwise.
+     *
+     * \warning Only the first exterior ring is taken to perform this operation. In case of degenerate orders,
+     * you have to perform in deep verification.
+     *
+     * \warning returns false if the geometry is not a polygon type or empty
+     *
+     * \see isPolygonClockwise()
+     * \see forcePolygonClockwise()
+     * \see forcePolygonCounterClockwise()
+     * \since QGIS 3.36
+     */
+    bool isPolygonCounterClockwise() const { return polygonOrientation() == Qgis::AngularDirection::CounterClockwise; }
+
+    /**
+     * Returns True if the Polygon is clockwise.
+     *
+     * \warning Only the first exterior ring is taken to perform this operation. In case of degenerate orders,
+     * you have to perform in deep verification.
+     *
+     * \warning returns true if the geometry is not a polygon type or empty
+     *
+     * \see isPolygonCounterClockwise()
+     * \see forcePolygonClockwise()
+     * \see forcePolygonCounterClockwise()
+     * \since QGIS 3.36
+     */
+    bool isPolygonClockwise() const { return polygonOrientation() == Qgis::AngularDirection::Clockwise; }
+
+
+    /**
      * Forces geometries to respect the Right-Hand-Rule, in which the area that is bounded by a polygon
      * is to the right of the boundary. In particular, the exterior ring is oriented in a clockwise direction
      * and the interior rings in a counter-clockwise direction.
@@ -2654,6 +2696,8 @@ class CORE_EXPORT QgsGeometry
      * \warning Due to the conflicting definitions of the right-hand-rule in general use, it is recommended
      * to use the explicit forcePolygonClockwise() or forcePolygonCounterClockwise() methods instead.
      *
+     * \see isPolygonClockwise()
+     * \see isPolygonCounterClockwise()
      * \see forcePolygonClockwise()
      * \see forcePolygonCounterClockwise()
      * \since QGIS 3.6
@@ -2665,6 +2709,8 @@ class CORE_EXPORT QgsGeometry
      *
      * This convention is used primarily by ESRI software.
      *
+     * \see isPolygonClockwise()
+     * \see isPolygonCounterClockwise()
      * \see forcePolygonCounterClockwise()
      * \since QGIS 3.24
      */
@@ -2675,6 +2721,8 @@ class CORE_EXPORT QgsGeometry
      *
      * This convention matches the OGC Simple Features specification.
      *
+     * \see isPolygonClockwise()
+     * \see isPolygonCounterClockwise()
      * \see forcePolygonClockwise()
      * \since QGIS 3.24
      */

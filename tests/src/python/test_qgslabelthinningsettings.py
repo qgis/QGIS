@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '2019-12-07'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsLabelThinningSettings, QgsPalLayerSettings
 import unittest

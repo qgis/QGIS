@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2014, The QGIS Project'
 import math
 from pprint import pprint
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QLocale
 from qgis.core import (
     QgsCoordinateReferenceSystem,

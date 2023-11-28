@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '11/01/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsApplication,

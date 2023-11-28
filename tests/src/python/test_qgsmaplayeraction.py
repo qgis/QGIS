@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import os
 
-import qgis  # NOQA switch sip api
 from qgis.core import QgsMapLayer, QgsRasterLayer, QgsVectorLayer
 from qgis.gui import QgsMapLayerAction
 import unittest

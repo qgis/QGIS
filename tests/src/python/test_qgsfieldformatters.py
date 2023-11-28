@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import os
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QDate,
@@ -422,8 +421,9 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
 
     def test_representValue(self):
         null_value = "NULL"
-        QgsSettings().setValue("qgis/nullValue", null_value)
-        layer = QgsVectorLayer("point?field=int:integer&field=str:string", "layer", "memory")
+        QgsApplication.setNullRepresentation(null_value)
+
+        layer = QgsVectorLayer("point?field=int:integer&field=str:string&field=bool:bool", "layer", "memory")
         self.assertTrue(layer.isValid())
 
         field_formatter = QgsCheckBoxFieldFormatter()
@@ -464,6 +464,12 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'yeah'), 'yeah')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'nooh'), 'nooh')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'oops'), "(oops)")
+
+        # bool
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowTrueFalse
+        self.assertEqual(field_formatter.representValue(layer, 2, config, None, True), 'true')
+        self.assertEqual(field_formatter.representValue(layer, 2, config, None, False), 'false')
+        self.assertEqual(field_formatter.representValue(layer, 2, config, None, QVariant(QVariant.Type.Bool)), 'NULL')
 
 
 class TestQgsFallbackFieldFormatter(QgisTestCase):

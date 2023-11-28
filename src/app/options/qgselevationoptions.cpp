@@ -38,6 +38,11 @@ QgsElevationOptionsWidget::QgsElevationOptionsWidget( QWidget *parent )
     mButtonBackgroundColor->setToNull();
 }
 
+QString QgsElevationOptionsWidget::helpKey() const
+{
+  return QStringLiteral( "introduction/qgis_configuration.html#elevation-options" );
+}
+
 void QgsElevationOptionsWidget::apply()
 {
   QgsElevationProfileWidget::settingBackgroundColor->setValue(

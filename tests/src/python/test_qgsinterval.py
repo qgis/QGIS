@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '10/05/2016'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsInterval, QgsUnitTypes
 from qgis.testing import unittest

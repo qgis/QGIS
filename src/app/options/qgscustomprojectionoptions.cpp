@@ -420,7 +420,7 @@ QString QgsCustomProjectionOptionsWidget::multiLineWktToSingleLine( const QStrin
 
 QString QgsCustomProjectionOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "working_with_projections/working_with_projections.html" );
+  return QStringLiteral( "working_with_projections/working_with_projections" );
 }
 
 

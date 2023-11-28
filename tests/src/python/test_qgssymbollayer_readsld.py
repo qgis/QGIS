@@ -21,7 +21,6 @@ __copyright__ = '(C) 2017, Jorge Gustavo Rocha'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (

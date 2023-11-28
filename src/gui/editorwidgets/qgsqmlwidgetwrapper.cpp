@@ -13,12 +13,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsqmlwidgetwrapper.h"
+#include "qgsattributeform.h"
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsvaluerelationfieldformatter.h"
 
-#include <QtQuickWidgets/QQuickWidget>
-#include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QUrl>
@@ -36,6 +37,24 @@ bool QgsQmlWidgetWrapper::valid() const
 
 QWidget *QgsQmlWidgetWrapper::createWidget( QWidget *parent )
 {
+  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
+
+  if ( form )
+  {
+    mFormFeature = form->feature();
+    connect( form, &QgsAttributeForm::widgetValueChanged, this, [ = ]( const QString & attribute, const QVariant & newValue, bool attributeChanged )
+    {
+      if ( attributeChanged )
+      {
+        if ( mRequiresFormScope )
+        {
+          mFormFeature.setAttribute( attribute, newValue );
+          setQmlContext();
+        }
+      }
+    } );
+  }
+
   return new QQuickWidget( parent );
 }
 
@@ -71,6 +90,24 @@ void QgsQmlWidgetWrapper::reinitWidget( )
 
 void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
 {
+  if ( mQmlCode == qmlCode )
+  {
+    return;
+  }
+
+  mQmlCode = qmlCode;
+
+  bool ok = false;
+  const thread_local QRegularExpression expRe( QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption );
+  QRegularExpressionMatchIterator matchIt = expRe.globalMatch( mQmlCode );
+  while ( !ok && matchIt.hasNext() )
+  {
+    const QRegularExpressionMatch match = matchIt.next();
+    const QgsExpression exp = match.captured( 1 );
+    ok = QgsValueRelationFieldFormatter::expressionRequiresFormScope( exp );
+  }
+  mRequiresFormScope = ok;
+
   if ( !mQmlFile.open() )
   {
     QgsMessageLog::logMessage( tr( "Failed to open temporary QML file" ) );
@@ -78,7 +115,7 @@ void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
   }
 
   mQmlFile.resize( 0 );
-  mQmlFile.write( qmlCode.toUtf8() );
+  mQmlFile.write( mQmlCode.toUtf8() );
 
   mQmlFile.close();
 }
@@ -90,7 +127,12 @@ void QgsQmlWidgetWrapper::setQmlContext( )
 
   const QgsAttributeEditorContext attributecontext = context();
   QgsExpressionContext expressionContext = layer()->createExpressionContext();
-  expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
+  expressionContext << QgsExpressionContextUtils::formScope( mFormFeature, attributecontext.attributeFormModeString() );
+  if ( attributecontext.parentFormFeature().isValid() )
+  {
+    expressionContext << QgsExpressionContextUtils::parentFormScope( attributecontext.parentFormFeature() );
+  }
+
   expressionContext.setFeature( mFeature );
 
   QmlExpression *qmlExpression = new QmlExpression();
@@ -105,6 +147,7 @@ void QgsQmlWidgetWrapper::setFeature( const QgsFeature &feature )
     return;
 
   mFeature = feature;
+  mFormFeature = feature;
 
   setQmlContext();
 }

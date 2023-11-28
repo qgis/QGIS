@@ -16,7 +16,6 @@ import os
 import socketserver
 import threading
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkReply
 from qgis.core import (

@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (
     Qgis,

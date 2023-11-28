@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.core import (
     QgsPointCloudLayer,
     QgsProviderRegistry,

@@ -9,7 +9,6 @@ __author__ = 'Mathieu Pellerin'
 __date__ = '08/02/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (

@@ -195,6 +195,11 @@ bool QgsServerProjectUtils::wmsAddLegendGroupsLegendGraphic( const QgsProject &p
          || legendGroups.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 }
 
+bool QgsServerProjectUtils::wmsSkipNameForGroup( const QgsProject &project )
+{
+  return project.readBoolEntry( QStringLiteral( "WMSSkipNameForGroup" ), QStringLiteral( "/" ), false );
+}
+
 int QgsServerProjectUtils::wmsFeatureInfoPrecision( const QgsProject &project )
 {
   return project.readNumEntry( QStringLiteral( "WMSPrecision" ), QStringLiteral( "/" ), 6 );

@@ -36,7 +36,7 @@ class Qgs3DOptionsWidget : public QgsOptionsPageWidget, private Ui::Qgs3DOptions
      * Constructor for Qgs3DOptionsWidget with the specified \a parent widget.
      */
     Qgs3DOptionsWidget( QWidget *parent );
-
+    QString helpKey() const override;
     void apply() override;
 
 };

@@ -71,6 +71,16 @@ class CORE_EXPORT QgsMultiRenderChecker
      */
     void setControlName( const QString &name );
 
+    /**
+     * Sets the source \a file, \a function and \a line from where the test originates.
+     *
+     * \since QGIS 3.36
+     */
+    void setFileFunctionLine( const QString &file, const QString &function, int line );
+
+    /**
+     * Sets the path \a prefix where the control images are kept.
+     */
     void setControlPathPrefix( const QString &prefix );
 
     /**
@@ -158,9 +168,18 @@ class CORE_EXPORT QgsMultiRenderChecker
     static void drawBackground( QImage *image ) { QgsRenderChecker::drawBackground( image ); }
 
   private:
+    QString mSourceFile;
+    QString mSourceFunction;
+    int mSourceLine = -1;
+
     bool mResult = false;
+
+    QString mReportHeader;
     QString mReport;
+
+    QString mMarkdownReportHeader;
     QString mMarkdownReport;
+
     QString mRenderedImage;
     QString mControlName;
     QString mControlPathPrefix;

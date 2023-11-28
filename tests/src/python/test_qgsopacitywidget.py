@@ -9,9 +9,9 @@ __author__ = 'Nyall Dawson'
 __date__ = '30/05/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.gui import QgsOpacityWidget
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -22,7 +22,7 @@ class TestQgsOpacityWidget(QgisTestCase):
 
     def testGettersSetters(self):
         """ test widget getters/setters """
-        w = qgis.gui.QgsOpacityWidget()
+        w = QgsOpacityWidget()
 
         w.setOpacity(0.2)
         self.assertEqual(w.opacity(), 0.2)
@@ -36,7 +36,7 @@ class TestQgsOpacityWidget(QgisTestCase):
     def test_ChangedSignals(self):
         """ test that signals are correctly emitted when setting opacity"""
 
-        w = qgis.gui.QgsOpacityWidget()
+        w = QgsOpacityWidget()
 
         spy = QSignalSpy(w.opacityChanged)
         w.setOpacity(0.2)

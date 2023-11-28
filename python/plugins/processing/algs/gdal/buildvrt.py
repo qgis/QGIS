@@ -89,10 +89,10 @@ class buildvrt(GdalAlgorithm):
                 return True, ''
 
         self.RESAMPLING_OPTIONS = ((self.tr('Nearest Neighbour'), 'nearest'),
-                                   (self.tr('Bilinear'), 'bilinear'),
-                                   (self.tr('Cubic Convolution'), 'cubic'),
-                                   (self.tr('B-Spline Convolution'), 'cubicspline'),
-                                   (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
+                                   (self.tr('Bilinear (2x2 Kernel)'), 'bilinear'),
+                                   (self.tr('Cubic (4x4 Kernel)'), 'cubic'),
+                                   (self.tr('Cubic B-Spline (4x4 Kernel)'), 'cubicspline'),
+                                   (self.tr('Lanczos (6x6 Kernel)'), 'lanczos'),
                                    (self.tr('Average'), 'average'),
                                    (self.tr('Mode'), 'mode'))
 

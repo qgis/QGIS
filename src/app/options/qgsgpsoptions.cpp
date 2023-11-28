@@ -313,6 +313,11 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   refreshDevices();
 }
 
+QString QgsGpsOptionsWidget::helpKey() const
+{
+  return QStringLiteral( "introduction/qgis_configuration.html#gps-options" );
+}
+
 void QgsGpsOptionsWidget::apply()
 {
   if ( QgsSymbol *markerSymbol = mGpsMarkerSymbolButton->symbol() )

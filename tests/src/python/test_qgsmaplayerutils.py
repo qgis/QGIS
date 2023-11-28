@@ -10,7 +10,6 @@ __date__ = '2021-05'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 
-import qgis  # NOQA
 from qgis.core import (
     QgsAnnotationLayer,
     QgsCoordinateReferenceSystem,

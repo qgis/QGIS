@@ -1683,7 +1683,7 @@ void QgsGeoreferencerMainWindow::postProcessGeoreferencedLayer( const QString &l
     saveGCPs();
   }
 
-  mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
+  mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "The layer was successfully georeferenced." ), Qgis::MessageLevel::Success );
   if ( mLoadInQgis )
   {
     switch ( type )
@@ -1961,46 +1961,63 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   }
 
   QGraphicsRectItem *previousItem = layoutMap;
+  QString parameterTitle;
   if ( wldTransform )
   {
-    QString parameterTitle = tr( "Transformation parameters" ) + QStringLiteral( " (" ) + QgsGcpTransformerInterface::methodToString( transform.transformParametrisation() ) + QStringLiteral( ")" );
-    parameterLabel = new QgsLayoutItemLabel( &layout );
-    parameterLabel->setTextFormat( titleFormat );
-    parameterLabel->setText( parameterTitle );
-    parameterLabel->adjustSizeToText();
-    layout.addLayoutItem( parameterLabel );
-    parameterLabel->attemptSetSceneRect( QRectF( leftMargin, layoutMap->rect().bottom() + layoutMap->pos().y() + 5, contentWidth, 8 ) );
-    parameterLabel->setFrameEnabled( false );
-
-    //calculate mean error
-    double meanError = 0;
-    calculateMeanError( meanError );
-
-    parameterTable = new QgsLayoutItemTextTable( &layout );
-    parameterTable->setHeaderTextFormat( tableHeaderFormat );
-    parameterTable->setContentTextFormat( tableContentFormat );
-
-    QgsLayoutTableColumns columns;
-    columns << QgsLayoutTableColumn( tr( "Translation x" ) )
-            << QgsLayoutTableColumn( tr( "Translation y" ) )
-            << QgsLayoutTableColumn( tr( "Scale x" ) )
-            << QgsLayoutTableColumn( tr( "Scale y" ) )
-            << QgsLayoutTableColumn( tr( "Rotation [degrees]" ) )
-            << QgsLayoutTableColumn( tr( "Mean error [%1]" ).arg( residualUnits ) );
-
-    parameterTable->setColumns( columns );
-    QStringList row;
-    row << QString::number( origin.x(), 'f', 3 ) << QString::number( origin.y(), 'f', 3 ) << QString::number( scaleX ) << QString::number( scaleY ) << QString::number( rotation * 180 / M_PI ) << QString::number( meanError );
-    parameterTable->addRow( row );
-
-    QgsLayoutFrame *tableFrame = new QgsLayoutFrame( &layout, parameterTable );
-    tableFrame->attemptSetSceneRect( QRectF( leftMargin, parameterLabel->rect().bottom() + parameterLabel->pos().y() + 5, contentWidth, 12 ) );
-    parameterTable->addFrame( tableFrame );
-
-    parameterTable->setGridStrokeWidth( 0.1 );
-
-    previousItem = tableFrame;
+    parameterTitle = tr( "Transformation parameters" );
   }
+  else
+  {
+    parameterTitle = tr( "Transformation parameter" );
+  }
+  parameterTitle += QStringLiteral( " (" ) + QgsGcpTransformerInterface::methodToString( transform.transformParametrisation() ) + QStringLiteral( ")" );
+  parameterLabel = new QgsLayoutItemLabel( &layout );
+  parameterLabel->setTextFormat( titleFormat );
+  parameterLabel->setText( parameterTitle );
+  parameterLabel->adjustSizeToText();
+  layout.addLayoutItem( parameterLabel );
+  parameterLabel->attemptSetSceneRect( QRectF( leftMargin, layoutMap->rect().bottom() + layoutMap->pos().y() + 5, contentWidth, 8 ) );
+  parameterLabel->setFrameEnabled( false );
+
+  //calculate mean error
+  double meanError = 0;
+  calculateMeanError( meanError );
+
+  parameterTable = new QgsLayoutItemTextTable( &layout );
+  parameterTable->setHeaderTextFormat( tableHeaderFormat );
+  parameterTable->setContentTextFormat( tableContentFormat );
+
+  QgsLayoutTableColumns parameterTableColumns;
+  if ( wldTransform )
+  {
+    parameterTableColumns << QgsLayoutTableColumn( tr( "Translation x" ) )
+                          << QgsLayoutTableColumn( tr( "Translation y" ) )
+                          << QgsLayoutTableColumn( tr( "Scale x" ) )
+                          << QgsLayoutTableColumn( tr( "Scale y" ) )
+                          << QgsLayoutTableColumn( tr( "Rotation [degrees]" ) );
+  }
+  parameterTableColumns << QgsLayoutTableColumn( tr( "Mean error [%1]" ).arg( residualUnits ) );
+  parameterTable->setColumns( parameterTableColumns );
+
+  QStringList parameterTableRow;
+  if ( wldTransform )
+  {
+    parameterTableRow << QString::number( origin.x(), 'f', 3 )
+                      << QString::number( origin.y(), 'f', 3 )
+                      << QString::number( scaleX )
+                      << QString::number( scaleY )
+                      << QString::number( rotation * 180 / M_PI );
+  }
+  parameterTableRow << QString::number( meanError );
+  parameterTable->addRow( parameterTableRow );
+
+  QgsLayoutFrame *tableFrame = new QgsLayoutFrame( &layout, parameterTable );
+  tableFrame->attemptSetSceneRect( QRectF( leftMargin, parameterLabel->rect().bottom() + parameterLabel->pos().y() + 5, contentWidth, 12 ) );
+  parameterTable->addFrame( tableFrame );
+
+  parameterTable->setGridStrokeWidth( 0.1 );
+
+  previousItem = tableFrame;
 
   QgsLayoutItemLabel *residualLabel = new QgsLayoutItemLabel( &layout );
   residualLabel->setTextFormat( titleFormat );
@@ -2023,18 +2040,18 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   gcpTable->setHeaderTextFormat( tableHeaderFormat );
   gcpTable->setContentTextFormat( tableContentFormat );
   gcpTable->setHeaderMode( QgsLayoutTable::AllFrames );
-  QgsLayoutTableColumns columns;
-  columns << QgsLayoutTableColumn( tr( "ID" ) )
-          << QgsLayoutTableColumn( tr( "Enabled" ) )
-          << QgsLayoutTableColumn( tr( "Pixel X" ) )
-          << QgsLayoutTableColumn( tr( "Pixel Y" ) )
-          << QgsLayoutTableColumn( tr( "Map X" ) )
-          << QgsLayoutTableColumn( tr( "Map Y" ) )
-          << QgsLayoutTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
-          << QgsLayoutTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
-          << QgsLayoutTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
+  QgsLayoutTableColumns gcpTableColumns;
+  gcpTableColumns << QgsLayoutTableColumn( tr( "ID" ) )
+                  << QgsLayoutTableColumn( tr( "Enabled" ) )
+                  << QgsLayoutTableColumn( tr( "Pixel X" ) )
+                  << QgsLayoutTableColumn( tr( "Pixel Y" ) )
+                  << QgsLayoutTableColumn( tr( "Map X" ) )
+                  << QgsLayoutTableColumn( tr( "Map Y" ) )
+                  << QgsLayoutTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
+                  << QgsLayoutTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
+                  << QgsLayoutTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
 
-  gcpTable->setColumns( columns );
+  gcpTable->setColumns( gcpTableColumns );
 
   QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
   QVector< QStringList > gcpTableContents;
@@ -2081,6 +2098,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   QgsLayoutExporter exporter( &layout );
   QgsLayoutExporter::PdfExportSettings settings;
   settings.dpi = 300;
+  settings.textRenderFormat = Qgis::TextRenderFormat::AlwaysText;
   exporter.exportToPdf( fileName, settings );
 
   return true;

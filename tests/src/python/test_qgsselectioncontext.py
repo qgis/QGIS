@@ -6,7 +6,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-import qgis  # NOQA
 
 from qgis.core import QgsSelectionContext
 from qgis.testing import unittest

@@ -1,17 +1,17 @@
 /***************************************************************************
-    qgsarcgisrestutils.cpp
-    ----------------------
-    begin                : Nov 25, 2015
-    copyright            : (C) 2015 by Sandro Mani
-    email                : manisandro@gmail.com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+   qgsarcgisrestutils.cpp
+   ----------------------
+   begin                : Nov 25, 2015
+   copyright            : (C) 2015 by Sandro Mani
+   email                : manisandro@gmail.com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
 
 #include "qgsarcgisrestutils.h"
 #include "qgsfields.h"
@@ -1412,6 +1412,8 @@ QVariantList QgsArcGisRestUtils::polygonToJsonRings( const QgsPolygon *polygon )
         rings.push_back( lineStringToJsonPath( reversed.get() ) );
         break;
       }
+      case Qgis::AngularDirection::NoOrientation:
+        break;
     }
   }
 
@@ -1431,6 +1433,8 @@ QVariantList QgsArcGisRestUtils::polygonToJsonRings( const QgsPolygon *polygon )
         rings.push_back( lineStringToJsonPath( reversed.get() ) );
         break;
       }
+      case Qgis::AngularDirection::NoOrientation:
+        break;
     }
   }
   return rings;
@@ -1457,6 +1461,8 @@ QVariantList QgsArcGisRestUtils::curvePolygonToJsonRings( const QgsCurvePolygon 
         rings.push_back( curveToJsonCurve( reversed.get(), true ) );
         break;
       }
+      case Qgis::AngularDirection::NoOrientation:
+        break;
     }
   }
 
@@ -1476,6 +1482,8 @@ QVariantList QgsArcGisRestUtils::curvePolygonToJsonRings( const QgsCurvePolygon 
         rings.push_back( curveToJsonCurve( reversed.get(), true ) );
         break;
       }
+      case Qgis::AngularDirection::NoOrientation:
+        break;
     }
   }
   return rings;

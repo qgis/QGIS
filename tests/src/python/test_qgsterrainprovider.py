@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import math
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsCoordinateReferenceSystem,

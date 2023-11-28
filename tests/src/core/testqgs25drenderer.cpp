@@ -112,7 +112,7 @@ void TestQgs25DRenderer::render()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
   mapSettings.setExpressionContext( context );
-  QVERIFY( renderMapSettingsCheck( "25d_render", "25d_render", mapSettings, 500, 20 ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "25d_render", "25d_render", mapSettings, 500, 20 );
 }
 
 void TestQgs25DRenderer::renderLayout()
@@ -127,7 +127,7 @@ void TestQgs25DRenderer::renderLayout()
 
   map->setExtent( mpPolysLayer->extent() );
 
-  QVERIFY( layoutCheck( QStringLiteral( "25d_composer" ), &l, 0, 100 ) );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "25d_composer" ), &l, 0, 100 );
 }
 
 QGSTEST_MAIN( TestQgs25DRenderer )

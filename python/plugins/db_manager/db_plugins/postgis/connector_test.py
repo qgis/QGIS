@@ -20,7 +20,6 @@ __date__ = 'May 2017'
 __copyright__ = '(C) 2017, Sandro Santilli'
 
 import os
-import qgis
 import unittest
 from qgis.testing import start_app, QgisTestCase
 from qgis.core import QgsDataSourceUri

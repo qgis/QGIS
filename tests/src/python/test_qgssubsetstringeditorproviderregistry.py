@@ -9,7 +9,6 @@ __author__ = 'Even Rouault'
 __date__ = '15/11/2020'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import Qt
 from qgis.core import QgsVectorLayer
 from qgis.gui import (

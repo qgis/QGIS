@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import urllib.parse
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
 from qgis.testing import unittest
 

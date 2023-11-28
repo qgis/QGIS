@@ -42,7 +42,11 @@ import configparser
 import qgis.utils
 from qgis.core import QgsNetworkAccessManager, QgsApplication
 from qgis.gui import QgsGui
-from qgis.utils import iface, plugin_paths
+from qgis.utils import (
+    iface,
+    plugin_paths,
+    HOME_PLUGIN_PATH
+)
 from .version_compare import pyQgisVersion, compareVersions, normalizeVersion, isCompatible
 
 
@@ -133,7 +137,7 @@ def removeDir(path):
     if QFile(path).exists():
         result = QCoreApplication.translate("QgsPluginInstaller", "Failed to remove the directory:") + "\n" + path + "\n" + QCoreApplication.translate("QgsPluginInstaller", "Check permissions or remove it manually")
     # restore plugin directory if removed by QDir().rmpath()
-    pluginDir = qgis.utils.home_plugin_path
+    pluginDir = HOME_PLUGIN_PATH
     if not QDir(pluginDir).exists():
         QDir().mkpath(pluginDir)
     return result

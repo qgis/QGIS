@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtWidgets import QComboBox
 from qgis.core import QgsCoordinateReferenceSystem, QgsProject

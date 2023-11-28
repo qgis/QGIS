@@ -19,7 +19,8 @@
 #include "qgswidgetwrapper.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
-#include <QtQuickWidgets/QQuickWidget>
+
+#include <QQuickWidget>
 
 /**
  * \ingroup gui
@@ -62,8 +63,11 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
   private:
     QTemporaryFile mQmlFile;
+    QString mQmlCode;
     QQuickWidget *mWidget = nullptr;
     QgsFeature mFeature;
+    QgsFeature mFormFeature;
+    bool mRequiresFormScope = false;
 };
 
 

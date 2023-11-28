@@ -13,7 +13,6 @@ import os
 import shutil
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QLocale, QVariant
 from qgis.PyQt.QtGui import QValidator
 from qgis.core import QgsVectorLayer

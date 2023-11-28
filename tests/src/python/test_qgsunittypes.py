@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '03.02.2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QLocale
 from qgis.core import (
     Qgis,

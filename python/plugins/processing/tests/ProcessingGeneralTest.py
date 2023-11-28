@@ -118,7 +118,6 @@ class TestProcessingGeneral(QgisTestCase):
         self.assertIn('script', providers)
         self.assertIn('model', providers)
         self.assertIn('grass7', providers)
-        self.assertIn('otb', providers)
 
 
 if __name__ == '__main__':
