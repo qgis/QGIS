@@ -51,8 +51,8 @@ SOFTWARE.
 #include <string>
 #include <iostream>
 
-#define PLYXX_BIG_ENDIAN 1
-#define PLYXX_LITTLE_ENDIAN 0
+#define BIG_ENDIAN 1
+#define LITTLE_ENDIAN 0
 
 namespace libply
 {
@@ -337,7 +337,7 @@ namespace libply
     const std::vector<PropertyDefinition> properties = elementDefinition.properties;
     size_t t_idx = 0;
     size_t e_idx = 0;
-    for ( const PropertyDefinition &p : properties )
+    for ( PropertyDefinition p : properties )
     {
       if ( t_idx == m_tokens.size() ||  e_idx == elementBuffer.size() )
       {
@@ -378,16 +378,16 @@ namespace libply
     char buffer[MAX_PROPERTY_SIZE];
     size_t e_idx = 0;
 
-    for ( const PropertyDefinition &p : properties )
+    for ( PropertyDefinition p : properties )
     {
       uint32_t endian;
       if ( format == File::Format::BINARY_LITTLE_ENDIAN )
       {
-        endian = PLYXX_LITTLE_ENDIAN;
+        endian = LITTLE_ENDIAN;
       }
       else
       {
-        endian = PLYXX_BIG_ENDIAN;
+        endian = BIG_ENDIAN;
       }
       if ( !p.isList )
       {
@@ -403,7 +403,7 @@ namespace libply
         const auto lengthType = p.listLengthType;
         const auto lengthTypeSize = TYPE_SIZE_MAP.at( lengthType );
         fs.read( buffer, lengthTypeSize );
-        size_t listLength = static_cast<size_t>( static_cast<unsigned long>( *buffer ) );
+        size_t listLength = static_cast<size_t>( *buffer );
 
         ListProperty *lp = dynamic_cast<ListProperty *>( &elementBuffer[e_idx] );
         lp->define( p.type, listLength );
@@ -512,9 +512,8 @@ namespace libply
       case Type::UINT32: return "uint";
       case Type::INT32: return "int";
       case Type::FLOAT32: return "float";
-      case Type::FLOAT64:
-      case Type::COORDINATE:
-        return "double";
+      case Type::FLOAT64: return "double";
+      case Type::COORDINATE: return "double";
     }
     return "";
   }
@@ -546,7 +545,7 @@ namespace libply
     std::stringstream ss;
     const std::vector<PropertyDefinition> properties = elementDefinition.properties;
     size_t e_idx = 0;
-    for ( const PropertyDefinition &p : properties )
+    for ( PropertyDefinition p : properties )
     {
       if ( !p.isList )
       {
@@ -582,11 +581,11 @@ namespace libply
 
     if ( format == File::Format::BINARY_LITTLE_ENDIAN )
     {
-      endian = PLYXX_LITTLE_ENDIAN;
+      endian = LITTLE_ENDIAN;
     }
     else
     {
-      endian =  PLYXX_BIG_ENDIAN;
+      endian = BIG_ENDIAN;
     }
 
     const std::vector<PropertyDefinition> properties = elementDefinition.properties;
@@ -598,7 +597,7 @@ namespace libply
         auto &cast = p.writeCastFunction;
         size_t write_size;
         cast( buffer[e_idx], write_buffer, write_size, endian );
-        file.write( reinterpret_cast<char *>( write_buffer ), static_cast<std::streamsize>( write_size ) );
+        file.write( reinterpret_cast<char *>( write_buffer ), write_size );
         e_idx++;
       }
       else
@@ -611,7 +610,7 @@ namespace libply
         {
           size_t write_size;
           cast( lp->value( i ), write_buffer, write_size, endian );
-          file.write( reinterpret_cast<char *>( write_buffer ), static_cast<std::streamsize>( write_size ) );
+          file.write( reinterpret_cast<char *>( write_buffer ), write_size );
         }
         e_idx++;
       }

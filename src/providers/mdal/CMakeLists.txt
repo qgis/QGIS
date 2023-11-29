@@ -48,6 +48,7 @@ if (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ply.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_mike21.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/libplyxx/libplyxx.cpp
   )
 
@@ -67,6 +68,7 @@ if (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ply.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_mike21.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/libplyxx.h
     ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/libplyxx/libplyxx_internal.h
     ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/textio.h
