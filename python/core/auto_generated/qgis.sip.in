@@ -1134,6 +1134,17 @@ The development version
       Idle,
     };
 
+    enum class PlaybackOperation
+    {
+      SkipToStart,
+      PreviousFrame,
+      PlayReverse,
+      Pause,
+      PlayForward,
+      NextFrame,
+      SkipToEnd,
+    };
+
     enum class VectorTemporalMode
       {
       FixedTemporalRange,

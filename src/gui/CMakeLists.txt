@@ -673,6 +673,7 @@ set(QGIS_GUI_SRCS
   qgspanelwidgetstack.cpp
   qgspasswordlineedit.cpp
   qgspixmaplabel.cpp
+  qgsplaybackcontrollerwidget.cpp
   qgspluginmanagerinterface.cpp
   qgspointcloudattributecombobox.cpp
   qgspointcloudquerybuilder.cpp
@@ -952,6 +953,7 @@ set(QGIS_GUI_HDRS
   qgspanelwidgetstack.h
   qgspasswordlineedit.h
   qgspixmaplabel.h
+  qgsplaybackcontrollerwidget.h
   qgspluginmanagerinterface.h
   qgspointcloudattributecombobox.h
   qgspointcloudquerybuilder.h

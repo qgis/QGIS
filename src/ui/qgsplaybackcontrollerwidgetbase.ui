@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsPlaybackControllerWidgetBase</class>
+ <widget class="QWidget" name="QgsPlaybackControllerWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>232</width>
+    <height>24</height>
+   </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>Playback controller</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item row="0" column="5">
+    <widget class="QPushButton" name="mNextButton">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/temporal_navigation/next.svg</normaloff>:/images/themes/default/temporal_navigation/next.svg</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4">
+    <widget class="QPushButton" name="mForwardButton">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/temporal_navigation/forward.svg</normaloff>:/images/themes/default/temporal_navigation/forward.svg</iconset>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QPushButton" name="mRewindButton">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/temporal_navigation/rewindToStart.svg</normaloff>:/images/themes/default/temporal_navigation/rewindToStart.svg</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="mPreviousButton">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/temporal_navigation/previous.svg</normaloff>:/images/themes/default/temporal_navigation/previous.svg</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QPushButton" name="mPauseButton">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/temporal_navigation/pause.svg</normaloff>:/images/themes/default/temporal_navigation/pause.svg</iconset>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="mBackButton">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/temporal_navigation/back.svg</normaloff>:/images/themes/default/temporal_navigation/back.svg</iconset>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="6">
+    <widget class="QPushButton" name="mFastForwardButton">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/temporal_navigation/skipToEnd.svg</normaloff>:/images/themes/default/temporal_navigation/skipToEnd.svg</iconset>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>mRewindButton</tabstop>
+  <tabstop>mPreviousButton</tabstop>
+  <tabstop>mBackButton</tabstop>
+  <tabstop>mPauseButton</tabstop>
+  <tabstop>mForwardButton</tabstop>
+  <tabstop>mNextButton</tabstop>
+  <tabstop>mFastForwardButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>
