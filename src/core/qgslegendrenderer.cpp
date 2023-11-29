@@ -124,11 +124,14 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
             if ( vLayer->renderer() )
             {
               const QString ruleKey { legendNodes.at( 0 )->data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
-              bool ok;
-              const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
-              if ( ok )
+              if ( ! ruleKey.isEmpty() )
               {
-                group[ QStringLiteral( "rule" ) ] = ruleExp;
+                bool ok;
+                const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
+                if ( ok )
+                {
+                  group[ QStringLiteral( "rule" ) ] = ruleExp;
+                }
               }
             }
           }
@@ -153,11 +156,14 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
               if ( vLayer->renderer() )
               {
                 const QString ruleKey { legendNode->data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
-                bool ok;
-                const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
-                if ( ok )
+                if ( ! ruleKey.isEmpty() )
                 {
-                  symbol[ QStringLiteral( "rule" ) ] = ruleExp;
+                  bool ok;
+                  const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
+                  if ( ok )
+                  {
+                    symbol[ QStringLiteral( "rule" ) ] = ruleExp;
+                  }
                 }
               }
             }
