@@ -284,6 +284,21 @@ tests:
         pk: id
 
   - algorithm: native:voronoipolygons
+    name: Voronoi without source atributes
+    params:
+      BUFFER: 0.0
+      COPY_ATTRIBUTES: false
+      INPUT:
+        name: points.gml
+        type: vector
+      TOLERANCE: 0.0
+    results:
+      OUTPUT:
+        name: expected/voronoi_no_attributes.gml
+        type: vector
+        pk: id
+
+  - algorithm: native:voronoipolygons
     name: Vornoi with vertical and horizontal Voronoi edges
     params:
       BUFFER: 0.0
