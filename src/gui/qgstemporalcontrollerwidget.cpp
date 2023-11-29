@@ -43,20 +43,42 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   mFixedRangeStartDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTime->maximumDateTime() );
   mFixedRangeEndDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTime->maximumDateTime() );
 
-  connect( mAnimationForwardButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePlayForward );
-  connect( mMovieForwardButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePlayForward );
-  connect( mAnimationBackButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePlayBackward );
-  connect( mMovieBackButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePlayBackward );
-  connect( mAnimationStopButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePause );
-  connect( mMovieStopButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePause );
-  connect( mAnimationNextButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::next );
-  connect( mMovieNextButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::next );
-  connect( mAnimationPreviousButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::previous );
-  connect( mMoviePreviousButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::previous );
-  connect( mAnimationFastForwardButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::skipToEnd );
-  connect( mMovieFastForwardButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::skipToEnd );
-  connect( mAnimationRewindButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::rewindToStart );
-  connect( mMovieRewindButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::rewindToStart );
+  auto handleOperation = [ = ]( Qgis::PlaybackOperation operation )
+  {
+    switch ( operation )
+    {
+      case Qgis::PlaybackOperation::SkipToStart:
+        mNavigationObject->rewindToStart();
+        break;
+
+      case Qgis::PlaybackOperation::PreviousFrame:
+        mNavigationObject->previous();
+        break;
+
+      case Qgis::PlaybackOperation::PlayReverse:
+        mNavigationObject->playBackward();
+        break;
+
+      case Qgis::PlaybackOperation::Pause:
+        mNavigationObject->pause();
+        break;
+
+      case Qgis::PlaybackOperation::PlayForward:
+        mNavigationObject->playForward();
+        break;
+
+      case Qgis::PlaybackOperation::NextFrame:
+        mNavigationObject->next();
+        break;
+
+      case Qgis::PlaybackOperation::SkipToEnd:
+        mNavigationObject->skipToEnd();
+        break;
+    }
+  };
+  connect( mAnimationController, &QgsPlaybackControllerWidget::operationTriggered, this, handleOperation );
+  connect( mMovieController, &QgsPlaybackControllerWidget::operationTriggered, this, handleOperation );
+
   connect( mAnimationLoopingCheckBox, &QCheckBox::toggled, this, [ = ]( bool state ) { mNavigationObject->setLooping( state ); mMovieLoopingCheckBox->setChecked( state ); } );
   connect( mMovieLoopingCheckBox, &QCheckBox::toggled, this, [ = ]( bool state ) { mNavigationObject->setLooping( state );  mAnimationLoopingCheckBox->setChecked( state ); } );
 
@@ -79,13 +101,8 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
 
   connect( mNavigationObject, &QgsTemporalNavigationObject::stateChanged, this, [ = ]( Qgis::AnimationState state )
   {
-    mAnimationForwardButton->setChecked( state == Qgis::AnimationState::Forward );
-    mAnimationBackButton->setChecked( state == Qgis::AnimationState::Reverse );
-    mAnimationStopButton->setChecked( state == Qgis::AnimationState::Idle );
-
-    mMovieForwardButton->setChecked( state == Qgis::AnimationState::Forward );
-    mMovieBackButton->setChecked( state == Qgis::AnimationState::Reverse );
-    mMovieStopButton->setChecked( state == Qgis::AnimationState::Idle );
+    mAnimationController->setState( state );
+    mMovieController->setState( state );
   } );
 
   connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::startEndDateTime_changed );
@@ -181,21 +198,6 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   mStepSpinBox->setSingleStep( 1 );
   mStepSpinBox->setValue( 1 );
 
-  mAnimationForwardButton->setToolTip( tr( "Play" ) );
-  mAnimationBackButton->setToolTip( tr( "Reverse" ) );
-  mAnimationNextButton->setToolTip( tr( "Go to next frame" ) );
-  mAnimationPreviousButton->setToolTip( tr( "Go to previous frame" ) );
-  mAnimationStopButton->setToolTip( tr( "Pause" ) );
-  mAnimationRewindButton->setToolTip( tr( "Rewind to start" ) );
-  mAnimationFastForwardButton->setToolTip( tr( "Fast forward to end" ) );
-  mMovieForwardButton->setToolTip( tr( "Play" ) );
-  mMovieBackButton->setToolTip( tr( "Reverse" ) );
-  mMovieNextButton->setToolTip( tr( "Go to next frame" ) );
-  mMoviePreviousButton->setToolTip( tr( "Go to previous frame" ) );
-  mMovieStopButton->setToolTip( tr( "Pause" ) );
-  mMovieRewindButton->setToolTip( tr( "Rewind to start" ) );
-  mMovieFastForwardButton->setToolTip( tr( "Fast forward to end" ) );
-
   updateFrameDuration();
 
   connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsTemporalControllerWidget::setWidgetStateFromProject );
@@ -212,7 +214,8 @@ void QgsTemporalControllerWidget::keyPressEvent( QKeyEvent *e )
 {
   if ( ( mAnimationSlider->hasFocus() || mMovieSlider->hasFocus() ) && e->key() == Qt::Key_Space )
   {
-    togglePause();
+    mAnimationController->togglePause();
+    // connections will auto-sync mMovieController state!
   }
   QgsPanelWidget::keyPressEvent( e );
 }
@@ -247,91 +250,6 @@ void QgsTemporalControllerWidget::aboutToShowRangeMenu()
     }
   }
   mRangeLayersSubMenu->setEnabled( !mRangeLayersSubMenu->actions().isEmpty() );
-}
-
-void QgsTemporalControllerWidget::togglePlayForward()
-{
-  mPlayingForward = true;
-
-  if ( mNavigationObject->animationState() != Qgis::AnimationState::Forward )
-  {
-    mAnimationStopButton->setChecked( false );
-    mAnimationBackButton->setChecked( false );
-    mAnimationForwardButton->setChecked( true );
-
-    mMovieStopButton->setChecked( false );
-    mMovieBackButton->setChecked( false );
-    mMovieForwardButton->setChecked( true );
-
-    mNavigationObject->playForward();
-  }
-  else
-  {
-    mAnimationBackButton->setChecked( true );
-    mAnimationForwardButton->setChecked( false );
-
-    mMovieBackButton->setChecked( true );
-    mMovieForwardButton->setChecked( false );
-
-    mNavigationObject->pause();
-  }
-}
-
-void QgsTemporalControllerWidget::togglePlayBackward()
-{
-  mPlayingForward = false;
-
-  if ( mNavigationObject->animationState() != Qgis::AnimationState::Reverse )
-  {
-    mAnimationStopButton->setChecked( false );
-    mAnimationBackButton->setChecked( true );
-    mAnimationForwardButton->setChecked( false );
-    mMovieStopButton->setChecked( false );
-    mMovieBackButton->setChecked( true );
-    mMovieForwardButton->setChecked( false );
-
-    mNavigationObject->playBackward();
-  }
-  else
-  {
-    mAnimationBackButton->setChecked( true );
-    mAnimationBackButton->setChecked( false );
-    mMovieBackButton->setChecked( true );
-    mMovieBackButton->setChecked( false );
-
-    mNavigationObject->pause();
-  }
-}
-
-void QgsTemporalControllerWidget::togglePause()
-{
-  if ( mNavigationObject->animationState() != Qgis::AnimationState::Idle )
-  {
-    mAnimationStopButton->setChecked( true );
-    mAnimationBackButton->setChecked( false );
-    mAnimationForwardButton->setChecked( false );
-
-    mMovieStopButton->setChecked( true );
-    mMovieBackButton->setChecked( false );
-    mMovieForwardButton->setChecked( false );
-
-    mNavigationObject->pause();
-  }
-  else
-  {
-    mAnimationBackButton->setChecked( mPlayingForward ? false : true );
-    mAnimationForwardButton->setChecked( mPlayingForward ? false : true );
-    mMovieBackButton->setChecked( mPlayingForward ? false : true );
-    mMovieForwardButton->setChecked( mPlayingForward ? false : true );
-    if ( mPlayingForward )
-    {
-      mNavigationObject->playForward();
-    }
-    else
-    {
-      mNavigationObject->playBackward();
-    }
-  }
 }
 
 void QgsTemporalControllerWidget::updateTemporalExtent()

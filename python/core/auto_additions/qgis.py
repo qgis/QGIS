@@ -1810,6 +1810,17 @@ QgsTemporalNavigationObject.Idle.__doc__ = "Animation is paused."
 Qgis.AnimationState.__doc__ = "Animation states.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsTemporalNavigationObject`.AnimationState\n\n.. versionadded:: 3.36\n\n" + '* ``Forward``: ' + Qgis.AnimationState.Forward.__doc__ + '\n' + '* ``Reverse``: ' + Qgis.AnimationState.Reverse.__doc__ + '\n' + '* ``Idle``: ' + Qgis.AnimationState.Idle.__doc__
 # --
 Qgis.AnimationState.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PlaybackOperation.SkipToStart.__doc__ = "Jump to start of playback"
+Qgis.PlaybackOperation.PreviousFrame.__doc__ = "Step to previous frame"
+Qgis.PlaybackOperation.PlayReverse.__doc__ = "Play in reverse"
+Qgis.PlaybackOperation.Pause.__doc__ = "Pause playback"
+Qgis.PlaybackOperation.PlayForward.__doc__ = "Play forward"
+Qgis.PlaybackOperation.NextFrame.__doc__ = "Step to next frame"
+Qgis.PlaybackOperation.SkipToEnd.__doc__ = "Jump to end of playback"
+Qgis.PlaybackOperation.__doc__ = "Media playback operations.\n\n.. versionadded:: 3.36\n\n" + '* ``SkipToStart``: ' + Qgis.PlaybackOperation.SkipToStart.__doc__ + '\n' + '* ``PreviousFrame``: ' + Qgis.PlaybackOperation.PreviousFrame.__doc__ + '\n' + '* ``PlayReverse``: ' + Qgis.PlaybackOperation.PlayReverse.__doc__ + '\n' + '* ``Pause``: ' + Qgis.PlaybackOperation.Pause.__doc__ + '\n' + '* ``PlayForward``: ' + Qgis.PlaybackOperation.PlayForward.__doc__ + '\n' + '* ``NextFrame``: ' + Qgis.PlaybackOperation.NextFrame.__doc__ + '\n' + '* ``SkipToEnd``: ' + Qgis.PlaybackOperation.SkipToEnd.__doc__
+# --
+Qgis.PlaybackOperation.baseClass = Qgis
 QgsVectorLayerTemporalProperties.TemporalMode = Qgis.VectorTemporalMode
 # monkey patching scoped based enum
 QgsVectorLayerTemporalProperties.ModeFixedTemporalRange = Qgis.VectorTemporalMode.FixedTemporalRange

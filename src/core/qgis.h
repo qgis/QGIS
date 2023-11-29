@@ -1901,6 +1901,23 @@ class CORE_EXPORT Qgis
     Q_ENUM( AnimationState )
 
     /**
+     * Media playback operations.
+     *
+     * \since QGIS 3.36
+     */
+    enum class PlaybackOperation : int
+    {
+      SkipToStart, //!< Jump to start of playback
+      PreviousFrame, //!< Step to previous frame
+      PlayReverse, //!< Play in reverse
+      Pause, //!< Pause playback
+      PlayForward, //!< Play forward
+      NextFrame, //!< Step to next frame
+      SkipToEnd, //!< Jump to end of playback
+    };
+    Q_ENUM( PlaybackOperation )
+
+    /**
      * Vector layer temporal feature modes
      *
      * \since QGIS 3.22

@@ -169,6 +169,7 @@
 %Include auto_generated/qgspanelwidgetstack.sip
 %Include auto_generated/qgspasswordlineedit.sip
 %Include auto_generated/qgspixmaplabel.sip
+%Include auto_generated/qgsplaybackcontrollerwidget.sip
 %Include auto_generated/qgspluginmanagerinterface.sip
 %Include auto_generated/qgspointcloudattributecombobox.sip
 %Include auto_generated/qgspointcloudquerybuilder.sip

@@ -80,11 +80,6 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 
     bool mHasTemporalLayersLoaded = false;
 
-    void togglePlayForward();
-    void togglePlayBackward();
-    void togglePause();
-    bool mPlayingForward = true;
-
     std::unique_ptr< QMenu > mRangeMenu;
     QAction *mRangeSetToProjectAction = nullptr;
     QAction *mRangeSetToAllLayersAction = nullptr;
