@@ -120,7 +120,7 @@ struct StatsProcessor
              attribute.name() == QLatin1String( "EdgeOfFlightLine" ) ||
              attribute.name() == QLatin1String( "PointSourceId" ) ||
              attribute.name() == QLatin1String( "Synthetic" ) ||
-             attribute.name() == QLatin1String( "Keypoint" ) ||
+             attribute.name() == QLatin1String( "KeyPoint" ) ||
              attribute.name() == QLatin1String( "Withheld" ) ||
              attribute.name() == QLatin1String( "Overlap" ) )
         {

@@ -321,15 +321,15 @@ void TestQgsCopcProvider::attributes()
   QCOMPARE( attributes.at( 10 ).type(), QgsPointCloudAttribute::Char );
   QCOMPARE( attributes.at( 11 ).name(), QStringLiteral( "PointSourceId" ) );
   QCOMPARE( attributes.at( 11 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 12 ).name(), QStringLiteral( "ScannerChannel" ) );
-  QCOMPARE( attributes.at( 12 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 13 ).name(), QStringLiteral( "Synthetic" ) );
-  QCOMPARE( attributes.at( 13 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 14 ).name(), QStringLiteral( "Keypoint" ) );
-  QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 15 ).name(), QStringLiteral( "Withheld" ) );
-  QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 16 ).name(), QStringLiteral( "Overlap" ) );
+  QCOMPARE( attributes.at( 12 ).name(), QStringLiteral( "Synthetic" ) );
+  QCOMPARE( attributes.at( 12 ).type(), QgsPointCloudAttribute::UChar );
+  QCOMPARE( attributes.at( 13 ).name(), QStringLiteral( "KeyPoint" ) );
+  QCOMPARE( attributes.at( 13 ).type(), QgsPointCloudAttribute::UChar );
+  QCOMPARE( attributes.at( 14 ).name(), QStringLiteral( "Withheld" ) );
+  QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::UChar );
+  QCOMPARE( attributes.at( 15 ).name(), QStringLiteral( "Overlap" ) );
+  QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::UChar );
+  QCOMPARE( attributes.at( 16 ).name(), QStringLiteral( "ScannerChannel" ) );
   QCOMPARE( attributes.at( 16 ).type(), QgsPointCloudAttribute::Char );
   QCOMPARE( attributes.at( 17 ).name(), QStringLiteral( "GpsTime" ) );
   QCOMPARE( attributes.at( 17 ).type(), QgsPointCloudAttribute::Double );
@@ -714,10 +714,10 @@ void TestQgsCopcProvider::testStatsCalculator()
 
   QVector<QgsPointCloudAttribute> attributes;
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Deviation" ), QgsPointCloudAttribute::Float ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::Char ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Keypoint" ), QgsPointCloudAttribute::Char ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::Char ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "KeyPoint" ), QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::UChar ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Red" ), QgsPointCloudAttribute::UShort ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "EdgeOfFlightLine" ), QgsPointCloudAttribute::Char ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Blue" ), QgsPointCloudAttribute::UShort ) );
@@ -761,7 +761,7 @@ void TestQgsCopcProvider::testStatsCalculator()
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Keypoint" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "KeyPoint" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
     QMap<int, int> classCount = s.classCount;

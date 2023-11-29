@@ -492,7 +492,7 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
 
   const bool isClassificationAttribute = ( 0 == currentAttribute.compare( QStringLiteral( "Classification" ), Qt::CaseInsensitive ) );
   const bool isBooleanAttribute = ( 0 == currentAttribute.compare( QStringLiteral( "Synthetic" ), Qt::CaseInsensitive ) ||
-                                    0 == currentAttribute.compare( QStringLiteral( "Keypoint" ), Qt::CaseInsensitive ) ||
+                                    0 == currentAttribute.compare( QStringLiteral( "KeyPoint" ), Qt::CaseInsensitive ) ||
                                     0 == currentAttribute.compare( QStringLiteral( "Withheld" ), Qt::CaseInsensitive ) ||
                                     0 == currentAttribute.compare( QStringLiteral( "Overlap" ), Qt::CaseInsensitive ) );
 

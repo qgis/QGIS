@@ -62,7 +62,7 @@ class QgsLazDecoder
       Blue,
       ScannerChannel,
       Synthetic,
-      Keypoint,
+      KeyPoint,
       Withheld,
       Overlap,
       NIR,

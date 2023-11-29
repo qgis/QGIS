@@ -267,9 +267,9 @@ std::vector< QgsLazDecoder::RequestedAttributeDetails > prepareRequestedAttribut
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Synthetic, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Keypoint" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( QLatin1String( "KeyPoint" ), Qt::CaseInsensitive ) == 0 )
     {
-      requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Keypoint, requestedAttribute.type(), requestedAttribute.size() ) );
+      requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::KeyPoint, requestedAttribute.type(), requestedAttribute.size() ) );
     }
     else if ( requestedAttribute.name().compare( QLatin1String( "Withheld" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -367,8 +367,18 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
         lazStoreToStream_<qint32>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.z() : p10.z );
         break;
       case QgsLazDecoder::LazAttribute::Classification:
-        lazStoreToStream_<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.classification() : p10.classification );
+      {
+        if ( isLas14 )
+        {
+          lazStoreToStream_<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, p14.classification() );
+        }
+        else
+        {
+          // p10 format encoded "Overlap" as Classification=12, so in that case we set Classification=0 (Never classified) and will set Overlap=1 a few lines below
+          lazStoreToStream_<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, ( p10.classification & 0x1F ) == 12 ? 0 : p10.classification & 0x1F );
+        }
         break;
+      }
       case QgsLazDecoder::LazAttribute::Intensity:
         lazStoreToStream_<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.intensity() : p10.intensity );
         break;
@@ -411,17 +421,27 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
         lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( p14.scannerChannel() ) );
         break;
       case QgsLazDecoder::LazAttribute::Synthetic:
-        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( p14.classFlags() & 0x01 ) );
+        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? char( ( p14.classFlags() >> 0 ) & 0x01 ) : char( ( p10.classification >> 5 ) & 0x01 ) );
         break;
-      case QgsLazDecoder::LazAttribute::Keypoint:
-        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( ( p14.classFlags() >> 1 ) & 0x01 ) );
+      case QgsLazDecoder::LazAttribute::KeyPoint:
+        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? char( ( p14.classFlags() >> 1 ) & 0x01 ) : char( ( p10.classification >> 6 ) & 0x01 ) );
         break;
       case QgsLazDecoder::LazAttribute::Withheld:
-        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( ( p14.classFlags() >> 2 ) & 0x01 ) );
+        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? char( ( p14.classFlags() >> 2 ) & 0x01 ) : char( ( p10.classification >> 7 ) & 0x01 ) );
         break;
       case QgsLazDecoder::LazAttribute::Overlap:
-        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( ( p14.classFlags() >> 3 ) & 0x01 ) );
+      {
+        if ( isLas14 )
+        {
+          lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( ( p14.classFlags() >> 3 ) & 0x01 ) );
+        }
+        else
+        {
+          // p10 format encoded "Overlap" as Classification=12, so in that case we set Overlap=1 (we have already set Classification=0)
+          lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, ( p10.classification & 0x1F ) == 12 ? 1 : 0 );
+        }
         break;
+      }
       case QgsLazDecoder::LazAttribute::NIR:
       {
         if ( lasPointFormat == 8 || lasPointFormat == 10 )

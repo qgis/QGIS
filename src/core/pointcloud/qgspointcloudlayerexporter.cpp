@@ -595,7 +595,7 @@ void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, 
   {
     mView->setField( pdal::Dimension::Id::ScanChannel, pointNumber, map[ QStringLiteral( "ScannerChannel" ) ].toInt() );
     const int classificationFlags = ( map[ QStringLiteral( "Synthetic" ) ].toInt() & 0x01 ) << 0 |
-                                    ( map[ QStringLiteral( "Keypoint" ) ].toInt() & 0x01 ) << 1 |
+                                    ( map[ QStringLiteral( "KeyPoint" ) ].toInt() & 0x01 ) << 1 |
                                     ( map[ QStringLiteral( "Withheld" ) ].toInt() & 0x01 ) << 2 |
                                     ( map[ QStringLiteral( "Overlap" ) ].toInt() & 0x01 ) << 3;
     mView->setField( pdal::Dimension::Id::ClassFlags, pointNumber, classificationFlags );

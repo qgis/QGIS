@@ -168,10 +168,10 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
     if ( name == QLatin1String( "ClassFlags" ) && size == 1 )
     {
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::Char ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Keypoint" ), QgsPointCloudAttribute::Char ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::Char ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::Char ) );
+      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::UChar ) );
+      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "KeyPoint" ), QgsPointCloudAttribute::UChar ) );
+      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::UChar ) );
+      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::UChar ) );
     }
     else if ( type == QLatin1String( "float" ) && ( size == 4 ) )
     {
