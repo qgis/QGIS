@@ -229,6 +229,7 @@ set(QGIS_APP_SRCS
   locator/qgslocatoroptionswidget.cpp
 
   maptools/qgsappmaptools.cpp
+  maptools/qgsavoidintersectionsoperation.cpp
   maptools/qgsmaptoolsdigitizingtechniquemanager.cpp
 
   maptools/qgsmaptoolshapecircleabstract.cpp
