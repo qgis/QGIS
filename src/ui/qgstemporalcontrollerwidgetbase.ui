@@ -94,14 +94,14 @@
      <item>
       <widget class="QToolButton" name="mNavigationMovie">
        <property name="toolTip">
-        <string>Animated temporal navigation</string>
+        <string>Animated movie</string>
        </property>
        <property name="text">
         <string/>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mTemporalNavigationAnimated.svg</normaloff>:/images/themes/default/mTemporalNavigationAnimated.svg</iconset>
+         <normaloff>:/images/themes/default/mTemporalNavigationMovie.svg</normaloff>:/images/themes/default/mTemporalNavigationMovie.svg</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
