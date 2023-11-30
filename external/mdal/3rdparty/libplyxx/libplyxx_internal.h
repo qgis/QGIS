@@ -115,8 +115,8 @@ namespace libply
     t.quad = 1;
     if ( t.islittle ^ endian ) return w;
 
-    auto ptr = reinterpret_cast<uint8_t *>( &w );
-    std::array<uint8_t, sizeof( T )> raw_src, raw_dst;
+    auto ptr = reinterpret_cast<std::uint8_t *>( &w );
+    std::array<std::uint8_t, sizeof( T )> raw_src, raw_dst;
 
     for ( std::size_t i = 0; i < sizeof( T ); ++i )
       raw_src[i] = ptr[i];
