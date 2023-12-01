@@ -79,7 +79,7 @@ class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     //! default constructor forbidden
     QgsFieldCalculator();
     //! Inserts existing fields into the combo box
-    void populateFields( const int &fieldIndex );
+    void populateFields( const int fieldIndex );
     //! Inserts the types supported by the provider into the combo box
     void populateOutputFieldTypes();
 
