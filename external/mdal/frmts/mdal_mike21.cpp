@@ -24,14 +24,14 @@
 #define DRIVER_NAME "Mike21"
 
 // function to split using regex, by default split on whitespace characters
-std::vector<std::string> _regex_split( const std::string &input, const std::regex &split_regex = std::regex{"\\s+"} )
+std::vector<std::string> regex_split( const std::string &input, const std::regex &split_regex = std::regex{"\\s+"} )
 {
   std::sregex_token_iterator iter( input.begin(), input.end(), split_regex, -1 );
   std::sregex_token_iterator end;
   return {iter, end};
 }
 
-static bool _parse_vertex_id_gaps( std::map<size_t, size_t> &vertexIDtoIndex, size_t vertexIndex, size_t vertexID )
+static bool parse_vertex_id_gaps( std::map<size_t, size_t> &vertexIDtoIndex, size_t vertexIndex, size_t vertexID )
 {
   if ( vertexIndex == vertexID )
     return false;
@@ -47,7 +47,7 @@ static bool _parse_vertex_id_gaps( std::map<size_t, size_t> &vertexIDtoIndex, si
   return false;
 }
 
-static void _persist_native_index( std::vector<double> &arr, size_t nativeID, size_t ourId, size_t maxOurId )
+static void persist_native_index( std::vector<double> &arr, size_t nativeID, size_t ourId, size_t maxOurId )
 {
   if ( !arr.empty() || ( nativeID != ourId + 1 ) )
   {
@@ -265,7 +265,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverMike21::load( const std::string &meshFil
   {
     if ( 0 < lineNumber && lineNumber < vertexCount + 1 )
     {
-      chunks = _regex_split( MDAL::trim( line ) );
+      chunks = regex_split( MDAL::trim( line ) );
       if ( chunks.size() != 5 )
       {
         MDAL::Log::error( MDAL_Status::Err_InvalidData, name(), "vertex line in invalid format." );
@@ -288,8 +288,8 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverMike21::load( const std::string &meshFil
       }
 
       // in case we have gaps/reorders in native indexes, store it
-      _persist_native_index( nativeVertexIds, nodeID, vertexIndex, vertexCount );
-      _parse_vertex_id_gaps( vertexIDtoIndex, vertexIndex, nodeID - 1 );
+      persist_native_index( nativeVertexIds, nodeID, vertexIndex, vertexCount );
+      parse_vertex_id_gaps( vertexIDtoIndex, vertexIndex, nodeID - 1 );
 
       assert( vertexIndex < vertexCount );
       Vertex &vertex = vertices[vertexIndex];
@@ -302,7 +302,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverMike21::load( const std::string &meshFil
 
     if ( vertexCount + 1 < lineNumber )
     {
-      chunks = _regex_split( MDAL::trim( line ) );
+      chunks = regex_split( MDAL::trim( line ) );
       assert( faceIndex < faceCount );
 
       size_t faceVertexCount = chunks.size() - 1;
@@ -323,7 +323,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverMike21::load( const std::string &meshFil
 
       // in case we have gaps/reorders in native indexes, store it
       size_t nativeID = MDAL::toSizeT( chunks[0] );
-      _persist_native_index( nativeFaceIds, nativeID, faceIndex, faceCount );
+      persist_native_index( nativeFaceIds, nativeID, faceIndex, faceCount );
 
       for ( size_t i = 0; i < faceVertexCount; ++i )
         face[i] = MDAL::toSizeT( chunks[i + 1] ) - 1; // Mike21 is numbered from 1
