@@ -42,6 +42,7 @@
 #include "qgsalgorithmcellstatistics.h"
 #include "qgsalgorithmcentroid.h"
 #include "qgsalgorithmcheckgeometrydangle.h"
+#include "qgsalgorithmcheckgeometrymultipart.h"
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconcavehull.h"
 #include "qgsalgorithmconditionalbranch.h"
@@ -310,6 +311,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCellStatisticsPercentRankFromValueAlgorithm() );
   addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsGeometryCheckDangleAlgorithm() );
+  addAlgorithm( new QgsGeometryCheckMultipartAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsCollectAlgorithm() );
   addAlgorithm( new QgsCombineStylesAlgorithm() );
