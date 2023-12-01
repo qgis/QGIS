@@ -322,7 +322,7 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %exclude %{python3_sitearch}/%{name}/_server.so
 
 %files server
-%doc src/server/admin.sld src/server/wms_metadata.xml %{name}-server-README.fedora
+%doc %{name}-server-README.fedora
 %doc %{name}-server-httpd.conf %{name}-server-nginx.conf %{name}-server-fcgi.socket %{name}-server-fcgi.service
 %{_bindir}/%{name}_mapserver
 %{_libdir}/%{name}/server/
