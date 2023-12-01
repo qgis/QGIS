@@ -253,7 +253,7 @@ class TestQgsAnnotation(QgisTestCase):
         a = QgsTextAnnotation()
         a.setFrameSizeMm(QSizeF(400 / 3.7795275, 250 / 3.7795275))
         a.setHasFixedMapPosition(False)
-        a.setFillSymbol(QgsFillSymbol.createSimple({'color': 'blue', 'width_border': '5', 'outline_color': 'black'}))
+        a.setFillSymbol(QgsFillSymbol.createSimple({'color': 'red', 'width_border': '5', 'outline_color': 'black'}))
         im = self.renderAnnotation(a, QPointF(20, 30))
         self.assertTrue(
             self.image_check(
