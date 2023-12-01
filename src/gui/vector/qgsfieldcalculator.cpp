@@ -486,7 +486,7 @@ void QgsFieldCalculator::mOutputFieldTypeComboBox_activated( int index )
   setPrecisionMinMax();
 }
 
-void QgsFieldCalculator::populateFields( const int &fieldIndex )
+void QgsFieldCalculator::populateFields( int fieldIndex )
 {
   if ( !mVectorLayer )
     return;
