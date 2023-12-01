@@ -1008,7 +1008,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
     if ( fieldOrigin == 1 || fieldOrigin == 3 )
       fieldCalculatorEnabled = true;
 
-    QAction *fieldCalculator = new QAction( tr( "Open &Field Calculator..." ), mHorizontalHeaderMenu );
+    QAction *fieldCalculator = new QAction( tr( "Open &Field Calculator…" ), mHorizontalHeaderMenu );
     connect( fieldCalculator, &QAction::triggered, this, &QgsDualView::fieldCalculator );
     fieldCalculator->setData( col );
     mHorizontalHeaderMenu->addAction( fieldCalculator );
