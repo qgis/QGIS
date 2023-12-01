@@ -124,10 +124,15 @@ class QgsRuleBasedChunkedEntity : public QgsChunkedEntity
     QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
 
     ~QgsRuleBasedChunkedEntity();
+
+    float terrainElevationOffset() const override;
+
   private slots:
     void onTerrainElevationOffsetChanged( float newOffset );
   private:
     Qt3DCore::QTransform *mTransform = nullptr;
+
+    bool applyTerrainOffset() const;
 };
 
 /// @endcond

@@ -75,6 +75,13 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     //! Returns the near to far plane range for the entity using the specified \a viewMatrix
     virtual QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const { Q_UNUSED( viewMatrix ) return QgsRange<float>( 1e9, 0 ); }
 
+    /**
+     * Returns the entity elevation offset (adjusts the entity position up and down)
+     * It returns 0 by default because some entities which inherit from Qgs3DMapSceneEntity
+     * do not handle the offset.
+     */
+    virtual float terrainElevationOffset() const { return 0.0f; }
+
 
     //! Sets the limit of the GPU memory used to render the entity
     void setGpuMemoryLimit( double gpuMemoryLimit ) { mGpuMemoryLimit = gpuMemoryLimit; }

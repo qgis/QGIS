@@ -90,6 +90,7 @@ class TestQgs3DRendering : public QgsTest
     void testAmbientOcclusion();
     void testDebugMap();
     void test3DSceneExporter();
+    void testTerrainOffset();
 
   private:
     QImage convertDepthImageToGray16Image( const QImage &depthImage );
@@ -1586,6 +1587,80 @@ void TestQgs3DRendering::test3DSceneExporter()
 
   delete scene;
   mapSettings.setLayers( {} );
+}
+
+void TestQgs3DRendering::testTerrainOffset()
+{
+  const QgsRectangle fullExtent = mLayerRgb->extent();
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  mapSettings->setLightSources( {defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 405, 24, 80 ), 600, 88, 0 );
+
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3dTerrain = new QgsPolygon3DSymbol;
+  symbol3dTerrain->setMaterialSettings( materialSettings.clone() );
+  symbol3dTerrain->setExtrusionHeight( 10.f );
+  symbol3dTerrain->setAltitudeClamping( Qgis::AltitudeClamping::Terrain );
+  QgsVectorLayer3DRenderer *renderer3dTerrain = new QgsVectorLayer3DRenderer( symbol3dTerrain );
+  mLayerBuildings->setRenderer3D( renderer3dTerrain );
+
+  // =============================================
+  // first test: no terrain offset
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img1 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "terrain_offset_1", "terrain_offset_1", img1, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // =============================================
+  // second test: terrain offset applied
+  // buildings follows the terrain because AltitudeClamping is set to terrain
+
+  mapSettings->setTerrainElevationOffset( -1000.0f );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 405, -976, 80 ), 600, 88, 0 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "terrain_offset_2", "terrain_offset_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // =============================================
+  // third test: change building AltitudeClamping
+  // buildings clamping now set to Absolute.
+  // It should not follow the terrain offset
+
+  QgsPolygon3DSymbol *symbol3dAbsolute = new QgsPolygon3DSymbol;
+  symbol3dAbsolute->setMaterialSettings( materialSettings.clone() );
+  symbol3dAbsolute->setExtrusionHeight( 10.f );
+  symbol3dAbsolute->setAltitudeClamping( Qgis::AltitudeClamping::Absolute );
+  QgsVectorLayer3DRenderer *renderer3dAbsolute = new QgsVectorLayer3DRenderer( symbol3dAbsolute );
+  mLayerBuildings->setRenderer3D( renderer3dAbsolute );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 405, -500, 80 ), 1200, 45, 0 );
+
+  QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "terrain_offset_3", "terrain_offset_3", img3, QString(), 40, QSize( 0, 0 ), 2 );
+
+  delete scene;
+  mapSettings->setLayers( {} );
+  delete mapSettings;
 }
 
 

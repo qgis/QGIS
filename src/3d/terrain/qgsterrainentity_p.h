@@ -70,7 +70,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     //! Returns the transform attached to the terrain entity
     Qt3DCore::QTransform *transform() const { return mTerrainTransform; }
     //! Returns the terrain elevation offset (adjusts the terrain position up and down)
-    float terrainElevationOffset() const;
+    float terrainElevationOffset() const override;
 
     QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
 
