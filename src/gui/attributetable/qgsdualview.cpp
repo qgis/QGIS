@@ -977,7 +977,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
 
   mConfig.update( mLayer->fields() );
   // get layer field index from column name
-  const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( col ).name );
+  const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( mConfig.mapVisibleColumnToIndex( col ) ).name );
   const int fieldOrigin  = mLayer->fields().fieldOrigin( fieldIndex );
 
   qDebug() << "THE WHAT " << fieldOrigin;
@@ -986,9 +986,9 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   mHorizontalHeaderMenu->addSeparator();
   if ( fieldOrigin == 4 )
   {
-    QAction *updateField = new QAction( tr( "Update &Field..." ), mHorizontalHeaderMenu );
+    QAction *updateField = new QAction( tr( "Update &Field…" ), mHorizontalHeaderMenu );
     connect( updateField, &QAction::triggered, this, &QgsDualView::updateField );
-    updateField->setData( col );
+    updateField->setData( fieldIndex );
     mHorizontalHeaderMenu->addAction( updateField );
 
     fieldCalculatorEnabled = true;
@@ -1010,7 +1010,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
 
     QAction *fieldCalculator = new QAction( tr( "Open &Field Calculator…" ), mHorizontalHeaderMenu );
     connect( fieldCalculator, &QAction::triggered, this, &QgsDualView::fieldCalculator );
-    fieldCalculator->setData( col );
+    fieldCalculator->setData( fieldIndex );
     mHorizontalHeaderMenu->addAction( fieldCalculator );
 
     fieldCalculator->setEnabled( fieldCalculatorEnabled );
@@ -1062,10 +1062,10 @@ void QgsDualView::hideColumn()
 void QgsDualView::fieldCalculator()
 {
   QAction *action = qobject_cast<QAction *>( sender() );
-  const int col_idx = action->data().toInt();
+  const int fieldIndex = action->data().toInt();
 
   mConfig.update( mLayer->fields() );
-  const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( col_idx ).name );
+  //const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( col_idx ).name );
   QgsFieldCalculator calc( mLayer, this, fieldIndex );
   if ( calc.exec() == QDialog::Accepted )
   {
@@ -1079,10 +1079,10 @@ void QgsDualView::fieldCalculator()
 void QgsDualView::updateField()
 {
   QAction *action = qobject_cast<QAction *>( sender() );
-  const int col_idx = action->data().toInt();
+  const int fieldIndex = action->data().toInt();
 
   mConfig.update( mLayer->fields() );
-  const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( col_idx ).name );
+  //const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( col_idx ).name );
 
   // Show expression builder
   const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
@@ -1094,8 +1094,8 @@ void QgsDualView::updateField()
   if ( dlg.exec() == QDialog::Accepted )
   {
     mLayer->updateExpressionField( fieldIndex, dlg.expressionText() );
-    mLayer->reload();
-    mMasterModel->reload( mMasterModel->index( 0, col_idx ), mMasterModel->index( mMasterModel->rowCount() - 1, col_idx ) );
+    //mLayer->reload();
+    //mMasterModel->reload( mMasterModel->index( 0, col_idx ), mMasterModel->index( mMasterModel->rowCount() - 1, col_idx ) );
   }
 
 }
