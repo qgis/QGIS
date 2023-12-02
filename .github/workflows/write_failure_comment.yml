@@ -37,7 +37,7 @@ jobs:
               });
               let fs = require('fs');
               fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/test-results-qt${{ matrix.qt-version }}.zip`, Buffer.from(download.data));
-              core.setOutput('artifact_id', matchArtifact.id);
+              core.setOutput('artifact_id', matchArtifacts[0].id);
             }
             else
             {
