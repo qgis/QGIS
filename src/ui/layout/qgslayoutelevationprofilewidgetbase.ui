@@ -77,7 +77,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-51</y>
+        <y>-694</y>
         <width>548</width>
         <height>1439</height>
        </rect>
@@ -399,7 +399,7 @@
              <number>6</number>
             </property>
             <property name="minimum">
-             <double>0.000001000000000</double>
+             <double>0.000000000000000</double>
             </property>
             <property name="maximum">
              <double>999999999999.000000000000000</double>
@@ -475,7 +475,7 @@
              <number>6</number>
             </property>
             <property name="minimum">
-             <double>0.000001000000000</double>
+             <double>0.000000000000000</double>
             </property>
             <property name="maximum">
              <double>999999999999.000000000000000</double>
@@ -852,7 +852,6 @@
   <tabstop>mDDBtnMaxElevation</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
