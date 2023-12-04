@@ -1394,14 +1394,12 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
         //does compoundcurve contain circular strings?
         //does provider support circular strings?
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
-        const bool isVectorLayer = ( vlayer != nullptr ) && ( vlayer->type() == Qgis::LayerType::Vector );
-        if ( isVectorLayer )
+        if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
         {
           const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
           const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-          if ( !isVectorLayer || ( hasCurvedSegments && providerSupportsCurvedSegments ) )
+          if ( hasCurvedSegments && providerSupportsCurvedSegments )
           {
             curveToAdd = captureCurve()->clone();
           }
