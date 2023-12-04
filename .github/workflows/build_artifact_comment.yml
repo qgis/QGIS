@@ -44,7 +44,7 @@ jobs:
       - name: 'Unzip artifact'
         if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
         run: |
-          unzip QGIS for Windows 64bit.zip
+          unzip "QGIS for Windows 64bit.zip"
           unzip qgis-portable-win64.zip
 
       - name: 'Post artifact download link as comment on PR'
