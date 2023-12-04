@@ -5,6 +5,9 @@ on:
     workflows: [🧪 QGIS tests]
     types:
       - completed
+    branches-ignore:
+      - 'master'
+      - 'release*'
 
 jobs:
   on-failure:
