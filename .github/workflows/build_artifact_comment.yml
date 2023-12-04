@@ -40,6 +40,17 @@ jobs:
             {
               core.setOutput('artifact_id', 0);
             }
+            let matchArtifactsDebugSymbols = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "QGIS for Windows 64bit Debug Symbols"
+            });
+            if (matchArtifactsDebugSymbols.length>0)
+            {
+              core.setOutput('debug_symbols_artifact_id', matchArtifactsDebugSymbols[0].id);
+            }
+            else
+            {
+              core.setOutput('debug_symbols_artifact_id', 0);
+            }
 
       - name: 'Unzip artifact'
         if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
@@ -57,6 +68,10 @@ jobs:
             let issue_number = Number(fs.readFileSync('./pr_number'));
             let body = "## 🪟 Windows builds ready!\n\n" +
                 "Windows builds of this PR are available for testing [here](https://github.com/qgis/QGIS/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.artifact_id}}).";
+            if ( ${{steps.download_artifact.outputs.debug_symbols_artifact_id}} > 0 )
+            {
+              body += " Debug symbols for this build are available [here](https://github.com/qgis/QGIS/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.debug_symbols_artifact_id}}).";
+            }
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
