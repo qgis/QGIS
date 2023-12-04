@@ -66,15 +66,34 @@ jobs:
           script: |
             let fs = require('fs');
             let issue_number = Number(fs.readFileSync('./pr_number'));
-            let body = "## 🪟 Windows builds ready!\n\n" +
+            const prComments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+            });
+            const PREFIX = "## 🪟 Windows builds ready!";
+            let body = PREFIX + "\n\n" +
                 "Windows builds of this PR are available for testing [here](https://github.com/qgis/QGIS/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.artifact_id}}).";
             if ( ${{steps.download_artifact.outputs.debug_symbols_artifact_id}} > 0 )
             {
               body += " Debug symbols for this build are available [here](https://github.com/qgis/QGIS/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.debug_symbols_artifact_id}}).";
             }
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue_number,
-              body: body
-            });
+
+            const winBuildComment = prComments.data?.find(c => c.body.startsWith(PREFIX));
+            if (!!winBuildComment) {
+              // update the existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: winBuildComment.id,
+                body: body
+              });
+            } else {
+              // submit a new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue_number,
+                body: body
+              });
+            }
