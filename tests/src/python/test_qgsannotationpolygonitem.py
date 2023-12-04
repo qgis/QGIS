@@ -171,7 +171,7 @@ class TestQgsAnnotationPolygonItem(QgisTestCase):
 
     def testRenderPolygon(self):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
-        item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setSymbol(QgsFillSymbol.createSimple({'color': '100,200,100', 'outline_color': 'black', 'outline_width': '2'}))
 
         settings = QgsMapSettings()
         settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
