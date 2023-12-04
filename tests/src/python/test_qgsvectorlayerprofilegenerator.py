@@ -366,6 +366,50 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.assertAlmostEqual(results.zRange().lower(), 27.7064, 2)
         self.assertAlmostEqual(results.zRange().upper(), 51.7598, 2)
 
+    def testLineGenerationFollowingLinestringExactly(self):
+        vl = QgsVectorLayer('MultiLineString?crs=EPSG:3857', 'lines', 'memory')
+        self.assertTrue(vl.isValid())
+
+        for line in ['MultiLineString ((872381.44973557780031115 6035318.57090197317302227, 868258.19322114891838282 6039288.30190788581967354, 870254.02483185648452491 6048565.62906535062938929, 884224.8461068095639348 6045999.55985158402472734, 876087.99415546329692006 6035472.0964104887098074))']:
+            f = QgsFeature()
+            f.setGeometry(QgsGeometry.fromWkt(line))
+            self.assertTrue(vl.dataProvider().addFeature(f))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString(872381.44973557780031115 6035318.57090197317302227, 868258.19322114891838282 6039288.30190788581967354, 870254.02483185648452491 6048565.62906535062938929, 884224.8461068095639348 6045999.55985158402472734, 876087.99415546329692006 6035472.0964104887098074)')
+        req = QgsProfileRequest(curve)
+        req.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+        results = generator.takeResults()
+
+        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                         {0.0: 0.0, 5723.6: 0.0, 15213.2: 0.0, 29417.7: 0.0, 42723.2: 0.0})
+
+        self.assertAlmostEqual(results.zRange().lower(), 0.0, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 0.0, 2)
+
+        # try with just a part of the original linestring as the capture curve
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (872381.44973557780031115 6035318.57090197317302227, 868258.19322114891838282 6039288.30190788581967354, 870254.02483185648452491 6048565.62906535062938929)')
+        req = QgsProfileRequest(curve)
+        req.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+        results = generator.takeResults()
+
+        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 1),
+                         {0.0: 0.0, 5723.6: 0.0, 15213.2: 0.0})
+
+        self.assertAlmostEqual(results.zRange().lower(), 0.0, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 0.0, 2)
+
     def testLineGenerationFollowingLinestringZExactly(self):
         vl = QgsVectorLayer('MultiLineStringZ?crs=EPSG:3857', 'lines', 'memory')
         self.assertTrue(vl.isValid())
