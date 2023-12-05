@@ -64,7 +64,7 @@ class ParsedDescription:
     Results of parsing a description file
     """
 
-    GROUP_ID_REGEX = re.compile(r'^[^\s\(]+')
+    GROUP_ID_REGEX = re.compile(r'^[^\s(]+')
 
     grass_command: Optional[str] = None
     short_description: Optional[str] = None
@@ -72,6 +72,8 @@ class ParsedDescription:
     display_name: Optional[str] = None
     group: Optional[str] = None
     group_id: Optional[str] = None
+
+    ext_path: Optional[str] = None
 
     has_raster_input: bool = False
     has_vector_input: bool = False
@@ -95,6 +97,7 @@ class ParsedDescription:
             'short_description': self.short_description,
             'group': self.group,
             'group_id': self.group_id,
+            'ext_path': self.ext_path,
             'inputs': {
                 'has_raster': self.has_raster_input,
                 'has_vector': self.has_vector_input
@@ -107,6 +110,34 @@ class ParsedDescription:
             'hardcoded_strings': self.hardcoded_strings,
             'parameters': self.param_strings
         }
+
+    @staticmethod
+    def from_dict(description: Dict) -> 'ParsedDescription':
+        """
+        Parses a dictionary as a description and returns the result
+        """
+        result = ParsedDescription()
+        result.name = description.get('name')
+        result.display_name = description.get('display_name')
+        result.grass_command = description.get('command')
+        result.short_description = description.get('short_description')
+        result.group = description.get('group')
+        result.group_id = description.get('group_id')
+        result.ext_path = description.get('ext_path')
+        result.has_raster_input = description.get('inputs', {}).get(
+            'has_raster', False)
+        result.has_vector_input = description.get('inputs', {}).get(
+            'has_vector', False)
+        result.has_raster_output = description.get('outputs', {}).get(
+            'has_raster', False)
+        result.has_vector_outputs = description.get('outputs', {}).get(
+            'has_vector', False)
+        result.hardcoded_strings = description.get('hardcoded_strings', [])
+        result.param_strings = description.get('parameters', [])
+        for param in result.param_strings:
+            result.params.append(getParameterFromString(param, "GrassAlgorithm"))
+
+        return result
 
     @staticmethod
     def parse_description_file(description_file: Path) -> 'ParsedDescription':

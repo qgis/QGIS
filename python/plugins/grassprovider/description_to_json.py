@@ -28,6 +28,11 @@ for folder in base_description_folders:
     for description_file in folder.glob('*.txt'):
         description = ParsedDescription.parse_description_file(
             description_file)
+
+        extpath = description_file.parents[1].joinpath('ext', description.name.replace('.', '_') + '.py')
+        if extpath.exists():
+            description.ext_path = 'grassprovider.ext.' + description.name
+
         algorithms.append(description.as_dict())
 
     with open(folder / 'algorithms.json', 'wt', encoding='utf8') as f_out:
