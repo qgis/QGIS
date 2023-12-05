@@ -31,7 +31,7 @@ for folder in base_description_folders:
 
         extpath = description_file.parents[1].joinpath('ext', description.name.replace('.', '_') + '.py')
         if extpath.exists():
-            description.ext_path = 'grassprovider.ext.' + description.name
+            description.ext_path = description.name.replace('.', '_')
 
         algorithms.append(description.as_dict())
 
