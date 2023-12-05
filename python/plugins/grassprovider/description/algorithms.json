@@ -6,6 +6,7 @@
     "short_description": "Samples a raster layer at vector point locations.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.sample",
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -31,6 +32,7 @@
     "short_description": "Performs Tasseled Cap (Kauth Thomas) transformation.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.tasscap",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -53,6 +55,7 @@
     "short_description": "r.li.shape.ascii - Calculates shape index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.shape.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -76,6 +79,7 @@
     "short_description": "Makes each output cell value a function of the values assigned to the corresponding cells in the input raster layers. Input rasters layers/bands must be separated in different data sources.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -102,6 +106,7 @@
     "short_description": "Sets color rules based on stddev from a raster map's mean value.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.colors.stddev",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -125,6 +130,7 @@
     "short_description": "Finds shortest path using timetables.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -156,6 +162,7 @@
     "short_description": "Calculates contrast weighted edge density index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.cwed",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -180,6 +187,7 @@
     "short_description": "Import GetFeature from WFS",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -205,6 +213,7 @@
     "short_description": "Exports a vector map to SVG file.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -229,6 +238,7 @@
     "short_description": "Imports E00 file into a vector map",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -251,6 +261,7 @@
     "short_description": "Computes biomass growth, precursor of crop yield calculation.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -277,6 +288,7 @@
     "short_description": "Creates topographic index layer from elevation raster layer",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -298,6 +310,7 @@
     "short_description": "Recodes categorical raster maps.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -322,6 +335,7 @@
     "short_description": "Generates raster layers of slope, aspect, curvatures and partial derivatives from a elevation raster layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -358,6 +372,7 @@
     "short_description": "Generates a raster layer of distance to features in input layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -383,6 +398,7 @@
     "short_description": "Produces the quantization file for a floating-point map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -409,6 +425,7 @@
     "short_description": "Exports a vector map layer to PostGIS feature table.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -436,6 +453,7 @@
     "short_description": "Construction of flowlines, flowpath lengths, and flowaccumulation (contributing areas) from a raster digital elevation model (DEM).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -466,6 +484,7 @@
     "short_description": "Calculates category or object oriented statistics.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.statistics",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -490,6 +509,7 @@
     "short_description": "Import ASCII x,y[,z] coordinates as a series of lines.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -513,6 +533,7 @@
     "short_description": "Converts 2D vector features to 3D by sampling of elevation raster map.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -540,6 +561,7 @@
     "short_description": "Outputs raster map layer values lying along user defined transect line(s).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -564,6 +586,7 @@
     "short_description": "Splits a raster map into tiles",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -588,6 +611,7 @@
     "short_description": "Toolset for cleaning topology of vector map.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -615,6 +639,7 @@
     "short_description": "Calculates Renyi's diversity index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.renyi",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -639,6 +664,7 @@
     "short_description": "Fills no-data areas in raster maps using spline interpolation.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -667,6 +693,7 @@
     "short_description": "Creates a GRASS vector layer of a user-defined grid.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -695,6 +722,7 @@
     "short_description": "Converts (rasterize) a vector layer into a raster layer.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -724,6 +752,7 @@
     "short_description": "Makes each cell value a function of attribute values and stores in an output raster map.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -748,6 +777,7 @@
     "short_description": "Calculates solar elevation, solar azimuth, and sun hours.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -778,6 +808,7 @@
     "short_description": "Creates a cycle connecting given nodes (Traveling salesman problem)",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.salesman",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -807,6 +838,7 @@
     "short_description": "v.net.report - Reports lines information of a network",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -831,6 +863,7 @@
     "short_description": "r.horizon.height - Horizon angle computation from a digital elevation model.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -866,6 +899,7 @@
     "short_description": "Calculates Top of Atmosphere Radiance/Reflectance/Brightness Temperature from ASTER DN.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -895,6 +929,7 @@
     "short_description": "Building contour determination and Region Growing algorithm for determining the building inside",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -919,6 +954,7 @@
     "short_description": "Overlays two vector maps.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -946,6 +982,7 @@
     "short_description": "Transforms raster maps from HIS (Hue-Intensity-Saturation) color space to RGB (Red-Green-Blue) color space.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -971,6 +1008,7 @@
     "short_description": "Flow computation for massive grids.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1000,6 +1038,7 @@
     "short_description": "Random location perturbations of GRASS vector points",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1025,6 +1064,7 @@
     "short_description": "Exports a vector map to a GRASS ASCII vector representation.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1054,6 +1094,7 @@
     "short_description": "Creates a vector map from an ASCII points file or ASCII vector file.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -1090,6 +1131,7 @@
     "short_description": "Creates a fractal surface of a given fractal dimension.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -1112,6 +1154,7 @@
     "short_description": "Randomly generate a 2D/3D vector points map.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1142,6 +1185,7 @@
     "short_description": "Reclassifies a raster layer, greater or less than user specified area size (in hectares)",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1168,6 +1212,7 @@
     "short_description": "r.li.patchdensity.ascii - Calculates patch density index on a raster map, using a 4 neighbour algorithm",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.patchdensity.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1191,6 +1236,7 @@
     "short_description": "Computes temporal integration of satellite ET actual (ETa) following the daily ET reference (ETo) from meteorological station(s).",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1217,6 +1263,7 @@
     "short_description": "r.topmodel.topidxstats - Builds a TOPMODEL topographic index statistics file.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1242,6 +1289,7 @@
     "short_description": "Correction of the v.lidar.growing output. It is the last of the three algorithms for LIDAR filtering.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1270,6 +1318,7 @@
     "short_description": "Makes each cell category value a function of the category values assigned to the cells around it",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.neighbors",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1299,6 +1348,7 @@
     "short_description": "Exports GRASS vector map layers to DXF file format.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1320,6 +1370,7 @@
     "short_description": "Builds polylines from lines or boundaries.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1343,6 +1394,7 @@
     "short_description": "Calculates univariate statistics from the non-null cells of a raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1371,6 +1423,7 @@
     "short_description": "Surface area estimation for rasters.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1394,6 +1447,7 @@
     "short_description": "r.li.mps.ascii - Calculates mean patch size index on a raster map, using a 4 neighbour algorithm",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.mps.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1417,6 +1471,7 @@
     "short_description": "r.mask.vect - Creates a MASK for limiting raster operation with a vector layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.mask.vect",
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -1442,6 +1497,7 @@
     "short_description": "Converts vector polygons or points to lines.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1464,6 +1520,7 @@
     "short_description": "Rescales the range of category values in a raster layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1487,6 +1544,7 @@
     "short_description": "r.li.patchnum.ascii - Calculates patch number index on a raster map, using a 4 neighbour algorithm.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.patchnum.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1510,6 +1568,7 @@
     "short_description": "Export a GRASS raster map as a non-georeferenced PNG image",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1534,6 +1593,7 @@
     "short_description": "Surface interpolation from vector point data by Inverse Distance Squared Weighting.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1559,6 +1619,7 @@
     "short_description": "Calculates mean patch size index on a raster map, using a 4 neighbour algorithm",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.mps",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1582,6 +1643,7 @@
     "short_description": "Generates red, green and blue raster layers combining hue, intensity and saturation (HIS) values from user-specified input raster layers.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1609,6 +1671,7 @@
     "short_description": "Prints terse list of category values found in a raster layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1636,6 +1699,7 @@
     "short_description": "r.what.coords - Queries raster maps on their category values and category labels on a point.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1666,6 +1730,7 @@
     "short_description": "r.walk.coords - Creates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost from a list of coordinates.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1699,6 +1764,7 @@
     "short_description": "Performs raster map matrix filter.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1723,6 +1789,7 @@
     "short_description": "Prints vector map attributes",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1754,6 +1821,7 @@
     "short_description": "Creates a raster map containing concentric rings around a given point.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -1779,6 +1847,7 @@
     "short_description": "Image fusion algorithms to sharpen multispectral with high-res panchromatic channels",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.pansharpen",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1808,6 +1877,7 @@
     "short_description": "Randomly partition points into test/train sets.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1831,6 +1901,7 @@
     "short_description": "Computes degree, centrality, betweenness, closeness and eigenvector centrality measures in the network.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.centrality",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1865,6 +1936,7 @@
     "short_description": "Performs transformation of 2D vector features to 3D.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.to.3d",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1891,6 +1963,7 @@
     "short_description": "Surface generation program from rasterized contours.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1912,6 +1985,7 @@
     "short_description": "Detects the object's edges from a LIDAR data set.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1941,6 +2015,7 @@
     "short_description": "Splits a raster map into red, green and blue maps.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.rgb",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -1964,6 +2039,7 @@
     "short_description": "Converts a vector map to VTK ASCII output.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -1990,6 +2066,7 @@
     "short_description": "Calculates top-of-atmosphere radiance or reflectance and temperature for Landsat MSS/TM/ETM+/OLI",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.landsat.toar",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2024,6 +2101,7 @@
     "short_description": "Extracts quality control parameters from MODIS QC layers.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2048,6 +2126,7 @@
     "short_description": "r.what.points - Queries raster maps on their category values and category labels on a layer of points.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -2078,6 +2157,7 @@
     "short_description": "Computes evaporative fraction (Bastiaanssen, 1995) and root zone soil moisture (Makin, Molden and Bastiaanssen, 2001).",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2105,6 +2185,7 @@
     "short_description": "r.li.padsd.ascii - Calculates standard deviation of patch area a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.padsd.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2128,6 +2209,7 @@
     "short_description": "Performs contextual image classification using sequential maximum a posteriori (SMAP) estimation.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.smap",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2153,6 +2235,7 @@
     "short_description": "Resamples raster layers to a coarser grid using aggregation.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2178,6 +2261,7 @@
     "short_description": "Removes outliers from vector point data.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -2206,6 +2290,7 @@
     "short_description": "Creates raster plane layer given dip (inclination), aspect (azimuth) and one point.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -2232,6 +2317,7 @@
     "short_description": "Traces paths from starting points following input directions.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -2260,6 +2346,7 @@
     "short_description": "Computes USLE Soil Erodibility Factor (K).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2284,6 +2371,7 @@
     "short_description": "Horizon angle computation from a digital elevation model.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.horizon",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2318,6 +2406,7 @@
     "short_description": "Calculates Shannon's diversity index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.shannon",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2341,6 +2430,7 @@
     "short_description": "Finds the mode of values in a cover layer within areas assigned the same category value in a user-specified base layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2363,6 +2453,7 @@
     "short_description": "Calculates patch number index on a raster map, using a 4 neighbour algorithm.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.patchnum",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2386,6 +2477,7 @@
     "short_description": "Imports SPOT VGT NDVI data into a raster map.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.in.spotvgt",
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -2408,6 +2500,7 @@
     "short_description": "Calculates univariate statistics for attribute. Variance and standard deviation is calculated only for points if specified.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -2437,6 +2530,7 @@
     "short_description": "Computes the viewshed of a point on an elevation raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2468,6 +2562,7 @@
     "short_description": "Converts LAS LiDAR point clouds to a GRASS vector map with libLAS.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -2503,6 +2598,7 @@
     "short_description": "Performs cluster identification",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -2530,6 +2626,7 @@
     "short_description": "Split lines to shorter segments by length.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -2556,6 +2653,7 @@
     "short_description": "Numerical calculation program for transient, confined and unconfined solute transport in two dimensions",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2603,6 +2701,7 @@
     "short_description": "Calculates dominance's diversity index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.dominance",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2626,6 +2725,7 @@
     "short_description": "Edits a vector map, allows adding, deleting and modifying selected vector features.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.edit",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -2667,6 +2767,7 @@
     "short_description": "Calculates shape index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.shape",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2690,6 +2791,7 @@
     "short_description": "Outputs a covariance/correlation matrix for user-specified raster layer(s).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2712,6 +2814,7 @@
     "short_description": "r.sunmask.position - Calculates cast shadow areas from sun position and elevation raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2739,6 +2842,7 @@
     "short_description": "Calculate new raster map from a r.mapcalc expression.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2766,6 +2870,7 @@
     "short_description": "r.quantile.plain - Compute quantiles using two passes and save them as plain text.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2791,6 +2896,7 @@
     "short_description": "Performs atmospheric correction using the 6S algorithm.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2821,6 +2927,7 @@
     "short_description": "Computes potential evapotranspiration calculation with hourly Penman-Monteith.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2849,6 +2956,7 @@
     "short_description": "Soil heat flux approximation (Bastiaanssen, 1995).",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2875,6 +2983,7 @@
     "short_description": "r.path.coordinate.txt - Traces paths from starting points following input directions.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2903,6 +3012,7 @@
     "short_description": "Numerical calculation program for transient, confined and unconfined groundwater flow in two dimensions.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2947,6 +3057,7 @@
     "short_description": "Converts files in DXF format to GRASS vector map format.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -2975,6 +3086,7 @@
     "short_description": "r.li.cwed.ascii - Calculates contrast weighted edge density index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.cwed.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -2999,6 +3111,7 @@
     "short_description": "Recursively traces the least cost path backwards to cells from which the cumulative cost was determined.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3022,6 +3135,7 @@
     "short_description": "r.li.mpa.ascii - Calculates mean pixel attribute index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.mpa.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3045,6 +3159,7 @@
     "short_description": "Sediment transport and erosion/deposition simulation using path sampling method (SIMWE).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -3085,6 +3200,7 @@
     "short_description": "Drapes a color raster over an shaded relief or aspect map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.shade",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3110,6 +3226,7 @@
     "short_description": "Exports the color table associated with a raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3132,6 +3249,7 @@
     "short_description": "Calculates different types of vegetation indices.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3163,6 +3281,7 @@
     "short_description": "Locates the closest points between objects in two raster maps.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3189,6 +3308,7 @@
     "short_description": "Computes evapotranspiration calculation Priestley and Taylor formulation, 1972.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3215,6 +3335,7 @@
     "short_description": "g.extension.manage - Install or uninstall GRASS addons.",
     "group": "General (g.*)",
     "group_id": "general",
+    "ext_path": "grassprovider.ext.g.extension.manage",
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -3238,6 +3359,7 @@
     "short_description": "Performs Landsat TM/ETM+ Automatic Cloud Cover Assessment (ACCA).",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.landsat.acca",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3267,6 +3389,7 @@
     "short_description": "Calculates range of patch area size on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.padrange",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3290,6 +3413,7 @@
     "short_description": "Resamples raster map to a finer grid using interpolation.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3312,6 +3436,7 @@
     "short_description": "r.li.shannon.ascii - Calculates Shannon's diversity index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.shannon.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3335,6 +3460,7 @@
     "short_description": "Performs auto-balancing of colors for RGB images.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.colors.enhance",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3365,6 +3491,7 @@
     "short_description": "Decimates a point cloud",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -3400,6 +3527,7 @@
     "short_description": "Compute quantiles using two passes.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3425,6 +3553,7 @@
     "short_description": "Calculates patch density index on a raster map, using a 4 neighbour algorithm",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.patchdensity",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3448,6 +3577,7 @@
     "short_description": "Queries colors for a raster map layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.what.color",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3471,6 +3601,7 @@
     "short_description": "Interpolates raster maps located (temporal or spatial) in between input raster maps at specific sampling positions.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.series.interp",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3498,6 +3629,7 @@
     "short_description": "Converts 3 GRASS raster layers (R,G,B) to a PPM image file",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3522,6 +3654,7 @@
     "short_description": "Imports Mapgen or Matlab-ASCII vector maps into GRASS.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -3545,6 +3678,7 @@
     "short_description": "Generate images with textural features from a raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3571,6 +3705,7 @@
     "short_description": "Zero-crossing \"edge detection\" raster function for image processing.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3595,6 +3730,7 @@
     "short_description": "Reinterpolates using regularized spline with tension and smoothing.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3632,6 +3768,7 @@
     "short_description": "Vector based generalization.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -3671,6 +3808,7 @@
     "short_description": "Calculates linear regression from two raster layers : y = a + b*x.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3693,6 +3831,7 @@
     "short_description": "r.sun.incidout - Solar irradiance and irradiation model ( for the set local time).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3740,6 +3879,7 @@
     "short_description": "r.category.out - Exports category values and labels associated with user-specified raster map layers.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3764,6 +3904,7 @@
     "short_description": "Net radiation approximation (Bastiaanssen, 1995).",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3793,6 +3934,7 @@
     "short_description": "r.li.padcv.ascii - Calculates coefficient of variation of patch area on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.padcv.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3816,6 +3958,7 @@
     "short_description": "Re-projects a vector layer to another coordinate reference system",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.proj",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -3841,6 +3984,7 @@
     "short_description": "Calculates coefficient of variation of patch area on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.padcv",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3864,6 +4008,7 @@
     "short_description": "Creates a raster layer of Gaussian deviates.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -3886,6 +4031,7 @@
     "short_description": "Export a raster layer to the Virtual Reality Modeling Language (VRML)",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -3909,6 +4055,7 @@
     "short_description": "Outputs basic information about a user-specified vector map.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -3935,6 +4082,7 @@
     "short_description": "Creates a buffer around vector features of given type.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -3969,6 +4117,7 @@
     "short_description": "Performs visibility graph construction.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.visibility",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -3992,6 +4141,7 @@
     "short_description": "Changes vector category values for an existing vector map according to results of SQL queries or a value in attribute table column.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.reclass",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -4016,6 +4166,7 @@
     "short_description": "Canonical components analysis (CCA) program for image processing.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.cca",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4038,6 +4189,7 @@
     "short_description": "Classifies attribute data, e.g. for thematic mapping.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -4064,6 +4216,7 @@
     "short_description": "Generates random cell values with spatial dependence.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -4087,6 +4240,7 @@
     "short_description": "Computes broad band albedo from surface reflectance.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.albedo",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4115,6 +4269,7 @@
     "short_description": "Manages NULL-values of given raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.null",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4143,6 +4298,7 @@
     "short_description": "Creates/modifies the color table associated with a raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.colors",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4174,6 +4330,7 @@
     "short_description": "Traces a flow through an elevation model on a raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.drain",
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -4203,6 +4360,7 @@
     "short_description": "r.li.richness.ascii - Calculates richness index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.richness.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4226,6 +4384,7 @@
     "short_description": "Exports a GRASS raster to a binary MAT-File",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4247,6 +4406,7 @@
     "short_description": "Computes bridges and articulation points in the network.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.bridge",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -4274,6 +4434,7 @@
     "short_description": "r.mask.rast - Creates a MASK for limiting raster operation.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.mask.rast",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4298,6 +4459,7 @@
     "short_description": "v.net.nreport - Reports nodes information of a network",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -4322,6 +4484,7 @@
     "short_description": "Generates statistics for i.smap from raster map.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.gensigset",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4345,6 +4508,7 @@
     "short_description": "Creates parallel line to input vector lines.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -4373,6 +4537,7 @@
     "short_description": "r.stats.quantile.out - Compute category quantiles using two passes and output statistics",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4402,6 +4567,7 @@
     "short_description": "Principal components analysis (PCA) for image processing.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.pca",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4427,6 +4593,7 @@
     "short_description": "Selects vector objects from a vector layer and creates a new layer containing only the selected objects.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -4456,6 +4623,7 @@
     "short_description": "Simulates elliptically anisotropic spread.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4492,6 +4660,7 @@
     "short_description": "Rescales histogram equalized the range of category values in a raster  layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4515,6 +4684,7 @@
     "short_description": "Watershed basin analysis program.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4557,6 +4727,7 @@
     "short_description": "Creates shaded relief from an elevation layer (DEM).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4583,6 +4754,7 @@
     "short_description": "Calculates category or object oriented statistics (accumulator-based statistics)",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4608,6 +4780,7 @@
     "short_description": "r.relief.scaling - Creates shaded relief from an elevation layer (DEM).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4634,6 +4807,7 @@
     "short_description": "Creates a latitude/longitude raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4656,6 +4830,7 @@
     "short_description": "Manages category values and labels associated with user-specified raster map layers.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.category",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4683,6 +4858,7 @@
     "short_description": "Dissolves boundaries between adjacent areas sharing a common category number or attribute.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -4705,6 +4881,7 @@
     "short_description": "Computes vertex connectivity between two sets of nodes in the network.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.connectivity",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -4735,6 +4912,7 @@
     "short_description": "Computes strongly and weakly connected components in the network.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.components",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -4764,6 +4942,7 @@
     "short_description": "r.li.edgedensity.ascii - Calculates edge density index on a raster map, using a 4 neighbour algorithm",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.edgedensity.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4789,6 +4968,7 @@
     "short_description": "Extracts terrain parameters from a DEM.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4817,6 +4997,7 @@
     "short_description": "Calculates standard deviation of patch area a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.padsd",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4840,6 +5021,7 @@
     "short_description": "Resamples raster map layers using an analytic kernel.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.resamp.filter",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4866,6 +5048,7 @@
     "short_description": "Tests for normality for points.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -4891,6 +5074,7 @@
     "short_description": "Outputs the raster layer values lying on user-defined line(s).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4918,6 +5102,7 @@
     "short_description": "Converts a raster map layer into a height-field file for POV-Ray",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -4942,6 +5127,7 @@
     "short_description": "Finds shortest path on vector network",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.path",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -4973,6 +5159,7 @@
     "short_description": "Computes the maximum flow between two sets of nodes in the network.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.flow",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5004,6 +5191,7 @@
     "short_description": "Generates random surface(s) with spatial dependence.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -5030,6 +5218,7 @@
     "short_description": "Performs surface interpolation from vector points map by splines.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -5074,6 +5263,7 @@
     "short_description": "Extrudes flat vector object to 3D with defined height.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.extrude",
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -5105,6 +5295,7 @@
     "short_description": "Computes the shortest path between all pairs of nodes in the network",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.allpairs",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5134,6 +5325,7 @@
     "short_description": "Imports geonames.org country files into a GRASS vector points map.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.in.geonames",
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -5155,6 +5347,7 @@
     "short_description": "Calculates geomorphons (terrain forms) and associated geometry using machine vision approach.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5182,6 +5375,7 @@
     "short_description": "r.walk.rast - Creates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost from a raster.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5214,6 +5408,7 @@
     "short_description": "Uploads vector values at positions of vector points to the table.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.what.vect",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5239,6 +5434,7 @@
     "short_description": "A simple utility for converting bearing and distance measurements to coordinates and vice versa. It assumes a Cartesian coordinate system",
     "group": "Miscellaneous (m.*)",
     "group_id": "miscellaneous",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -5265,6 +5461,7 @@
     "short_description": "v.surf.rst.cvdev - Performs surface interpolation from vector points map by splines.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -5301,6 +5498,7 @@
     "short_description": "Creates a Delaunay triangulation from an input vector map containing points or centroids.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5324,6 +5522,7 @@
     "short_description": "Finds the nearest element in vector map 'to' for elements in vector map 'from'.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.distance",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5354,6 +5553,7 @@
     "short_description": "Computes minimum spanning tree for the network.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.spanningtree",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5380,6 +5580,7 @@
     "short_description": "r.li.padrange.ascii - Calculates range of patch area size on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.padrange.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5403,6 +5604,7 @@
     "short_description": "Converts raster map series to MPEG movie",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5428,6 +5630,7 @@
     "short_description": "r.li.simpson.ascii - Calculates Simpson's diversity index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.simpson.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5451,6 +5654,7 @@
     "short_description": "Calculates mean pixel attribute index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.mpa",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5474,6 +5678,7 @@
     "short_description": "Computes emissivity from NDVI, generic method for sparse land.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5495,6 +5700,7 @@
     "short_description": "Calculates Simpson's diversity index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.simpson",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5518,6 +5724,7 @@
     "short_description": "v.voronoi - Creates a Voronoi diagram from an input vector layer containing points.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.voronoi",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5541,6 +5748,7 @@
     "short_description": "Simulates TOPMODEL which is a physically based hydrologic model.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -5566,6 +5774,7 @@
     "short_description": "Performs an affine transformation on a vector layer.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5595,6 +5804,7 @@
     "short_description": "Bicubic or bilinear spline interpolation with Tykhonov regularization.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5627,6 +5837,7 @@
     "short_description": "Converts raster maps into the VTK-ASCII format",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5661,6 +5872,7 @@
     "short_description": "i.topo.coor.ill - Creates illumination model for topographic correction of reflectance.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5687,6 +5899,7 @@
     "short_description": "Reports statistics for raster layers.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5721,6 +5934,7 @@
     "short_description": "Allocates subnets for nearest centers",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.alloc",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5751,6 +5965,7 @@
     "short_description": "Generates a raster layer with contiguous areas grown by one cell.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5777,6 +5992,7 @@
     "short_description": "Takes vector stream data, transforms it to raster and subtracts depth from the output DEM.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -5803,6 +6019,7 @@
     "short_description": "Surface interpolation utility for raster layers.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5826,6 +6043,7 @@
     "short_description": "Actual evapotranspiration for diurnal period (Bastiaanssen, 1995).",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5849,6 +6067,7 @@
     "short_description": "Creates a composite raster layer by using one (or more) layer(s) to fill in areas of \"no data\" in another map layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5871,6 +6090,7 @@
     "short_description": "v.voronoi.skeleton - Creates a Voronoi diagram for polygons or compute the center line/skeleton of polygons.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5898,6 +6118,7 @@
     "short_description": "Generates spectral signatures for land cover types in an image using a clustering algorithm.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.cluster",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5927,6 +6148,7 @@
     "short_description": "Produces a vector map of specified contours from a raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5953,6 +6175,7 @@
     "short_description": "Fast Fourier Transform (FFT) for image processing.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -5975,6 +6198,7 @@
     "short_description": "Change the type of geometry elements.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -5998,6 +6222,7 @@
     "short_description": "Exports a raster map to a text file as x,y,z values based on cell centers",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6021,6 +6246,7 @@
     "short_description": "Converts to POV-Ray format, GRASS x,y,z -> POV-Ray x,z,y",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -6046,6 +6272,7 @@
     "short_description": "Computes shortest distance via the network between the given sets of features.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.distance",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -6081,6 +6308,7 @@
     "short_description": "Produces tilings of the source projection for use in the destination region and projection.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.tileset",
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -6111,6 +6339,7 @@
     "short_description": "Re-projects a raster layer to another coordinate reference system",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.proj",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6137,6 +6366,7 @@
     "short_description": "Output basic information about a raster layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6162,6 +6392,7 @@
     "short_description": "Calculates Optimum-Index-Factor table for spectral bands",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.oif",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6185,6 +6416,7 @@
     "short_description": "Reports geometry statistics for vectors.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -6209,6 +6441,7 @@
     "short_description": "Calculates edge density index on a raster map, using a 4 neighbour algorithm",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.edgedensity",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6234,6 +6467,7 @@
     "short_description": "Uploads raster values at positions of vector centroids to the table.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.what.rast",
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -6260,6 +6494,7 @@
     "short_description": "Visualization and animation tool for GRASS data.",
     "group": "Visualization(NVIZ)",
     "group_id": "visualization",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -6284,6 +6519,7 @@
     "short_description": "Filters and generates a depressionless elevation layer and a flow direction layer from a given elevation raster layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6309,6 +6545,7 @@
     "short_description": "Creates points/segments from input vector lines and positions.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -6331,6 +6568,7 @@
     "short_description": "r.li.renyi.ascii - Calculates Renyi's diversity index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.renyi.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6355,6 +6593,7 @@
     "short_description": "Creates a raster layer and vector point map containing randomly located points.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6382,6 +6621,7 @@
     "short_description": "Computes USLE R factor, Rainfall erosivity index.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6404,6 +6644,7 @@
     "short_description": "Classifies the cell spectral reflectances in imagery data.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.maxlik",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6427,6 +6668,7 @@
     "short_description": "r.stats.quantile.rast - Compute category quantiles using two passes and output rasters.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.stats.quantile.rast",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6453,6 +6695,7 @@
     "short_description": "Computes topographic correction of reflectance.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6478,6 +6721,7 @@
     "short_description": "Calculate error matrix and kappa parameter for accuracy assessment of classification result.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6503,6 +6747,7 @@
     "short_description": "Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -6536,6 +6781,7 @@
     "short_description": "Produces a convex hull for a given vector map.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -6559,6 +6805,7 @@
     "short_description": "Creates a cross product of the category values from multiple raster map layers.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6581,6 +6828,7 @@
     "short_description": "Generates statistics for i.maxlik from raster map.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.gensig",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6603,6 +6851,7 @@
     "short_description": "Watershed basin creation program.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6625,6 +6874,7 @@
     "short_description": "Generates watershed subbasins raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6648,6 +6898,7 @@
     "short_description": "v.build.check - Checks for topological errors.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -6672,6 +6923,7 @@
     "short_description": "Rectifies a vector by computing a coordinate transformation for each object in the vector based on the control points.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.rectify",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -6701,6 +6953,7 @@
     "short_description": "Stream network extraction",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6731,6 +6984,7 @@
     "short_description": "Overland flow hydrologic simulation using path sampling method (SIMWE).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -6774,6 +7028,7 @@
     "short_description": "r.walk.points - Creates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost from point vector layers.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -6807,6 +7062,7 @@
     "short_description": "g.extension.list - List GRASS addons.",
     "group": "General (g.*)",
     "group_id": "general",
+    "ext_path": "grassprovider.ext.g.extension.list",
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -6830,6 +7086,7 @@
     "short_description": "Recategorizes data in a raster map by grouping cells that form physically discrete areas into unique categories.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6854,6 +7111,7 @@
     "short_description": "r.in.lidar.info - Extract information from LAS file",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -6882,6 +7140,7 @@
     "short_description": "r.blend.rgb - Blends color components of two raster maps by a given ratio and exports into three rasters.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.blend.rgb",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6910,6 +7169,7 @@
     "short_description": "i.eb.hsebal01.coords - Computes sensible heat flux iteration SEBAL 01. Inline coordinates",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6942,6 +7202,7 @@
     "short_description": "Creates a raster map layer showing buffer zones surrounding cells that contain non-NULL category values (low-memory alternative).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6966,6 +7227,7 @@
     "short_description": "Combines red, green and blue raster maps into a single composite raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -6995,6 +7257,7 @@
     "short_description": "Rapidly fills 'no data' cells (NULLs) of a raster map with interpolated values (IDW).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7025,6 +7288,7 @@
     "short_description": "Count points in areas and calculate statistics.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.vect.stats",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -7052,6 +7316,7 @@
     "short_description": "Produces a raster layer of uniform random deviates whose range can be expressed by the user.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": false
@@ -7075,6 +7340,7 @@
     "short_description": "Converts a raster layer to a PPM image file at the pixel resolution of the currently defined region.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7097,6 +7363,7 @@
     "short_description": "Performs network maintenance",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -7125,6 +7392,7 @@
     "short_description": "Converts a raster into a vector layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7153,6 +7421,7 @@
     "short_description": "Thins non-zero cells that denote linear features in a raster layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7175,6 +7444,7 @@
     "short_description": "r.sun.insoltime - Solar irradiance and irradiation model (daily sums).",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7221,6 +7491,7 @@
     "short_description": "Performs bilinear or bicubic spline interpolation with Tykhonov regularization.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7251,6 +7522,7 @@
     "short_description": "Fills lake at given point to given level.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7276,6 +7548,7 @@
     "short_description": "Inverse Fast Fourier Transform (IFFT) for image processing.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7298,6 +7571,7 @@
     "short_description": "Generates rate of spread raster maps.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7331,6 +7605,7 @@
     "short_description": "Tabulates the mutual occurrence (coincidence) of categories for two raster map layers.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7355,6 +7630,7 @@
     "short_description": "Create points along input lines",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -7381,6 +7657,7 @@
     "short_description": "Calculates the volume of data \"clumps\".",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7404,6 +7681,7 @@
     "short_description": "Computes evapotranspiration calculation modified or original Hargreaves formulation, 2001.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.evapo.mh",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7432,6 +7710,7 @@
     "short_description": "r.blend.combine - Blends color components of two raster maps by a given ratio and export into a unique raster.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.blend.combine",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7458,6 +7737,7 @@
     "short_description": "v.kernel.vector - Generates a vector density map from vector points on a vector network.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -7490,6 +7770,7 @@
     "short_description": "Creates Steiner tree for the network and given terminals",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.steiner",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -7518,6 +7799,7 @@
     "short_description": "Creates a new map layer whose category values are based upon a reclassification of the categories in an existing raster map layer.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.reclass",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7541,6 +7823,7 @@
     "short_description": "Calculates richness index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.richness",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7564,6 +7847,7 @@
     "short_description": "v.kernel.rast - Generates a raster density map from vector points map.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -7593,6 +7877,7 @@
     "short_description": "Identifies segments (objects) from imagery data.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.segment",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7625,6 +7910,7 @@
     "short_description": "Creates a raster map from LAS LiDAR points using univariate statistics.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7666,6 +7952,7 @@
     "short_description": "Calculates multiple linear regression from raster maps.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7690,6 +7977,7 @@
     "short_description": "Calculates univariate statistics from a raster map based on vector polygons and uploads statistics to new attribute columns.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.rast.stats",
     "inputs": {
       "has_raster": true,
       "has_vector": true
@@ -7718,6 +8006,7 @@
     "short_description": "Generates area statistics for raster layers.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7756,6 +8045,7 @@
     "short_description": "Calculates Pielou's diversity index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.pielou",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7779,6 +8069,7 @@
     "short_description": "r.li.dominance.ascii - Calculates dominance's diversity index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.dominance.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7802,6 +8093,7 @@
     "short_description": "Regroup multiple mono-band rasters into a single multiband raster.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": "grassprovider.ext.i.group",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7823,6 +8115,7 @@
     "short_description": "GRASS raster map layer data resampling capability using nearest neighbors.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7844,6 +8137,7 @@
     "short_description": "r.sunmask.datetime - Calculates cast shadow areas from sun position and elevation raster map.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7876,6 +8170,7 @@
     "short_description": "Splits network by cost isolines.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": "grassprovider.ext.v.net.iso",
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -7906,6 +8201,7 @@
     "short_description": "Indices for quadrat counts of vector point lists.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -7929,6 +8225,7 @@
     "short_description": "Mosaics several images and extends colormap.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7950,6 +8247,7 @@
     "short_description": "Transforms raster maps from RGB (Red-Green-Blue) color space to HIS (Hue-Intensity-Saturation) color space.",
     "group": "Imagery (i.*)",
     "group_id": "imagery",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7975,6 +8273,7 @@
     "short_description": "r.li.pielou.ascii - Calculates Pielou's diversity index on a raster map",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": "grassprovider.ext.r.li.pielou.ascii",
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -7998,6 +8297,7 @@
     "short_description": "Exports GRASS raster map to GRIDATB.FOR map file (TOPMODEL)",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -8019,6 +8319,7 @@
     "short_description": "Makes each output cell value an accumulation function of the values assigned to the corresponding cells in the input raster map layers.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -8049,6 +8350,7 @@
     "short_description": "Export a raster layer into a GRASS ASCII text file",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
@@ -8076,6 +8378,7 @@
     "short_description": "Selects features from vector map (A) by features from other vector map (B).",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -8105,6 +8408,7 @@
     "short_description": "Exports a vector map as GRASS GIS specific archive file.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -8127,6 +8431,7 @@
     "short_description": "Create a new vector map layer by combining other vector map layers.",
     "group": "Vector (v.*)",
     "group_id": "vector",
+    "ext_path": null,
     "inputs": {
       "has_raster": false,
       "has_vector": true
@@ -8150,6 +8455,7 @@
     "short_description": "Creates a raster map layer showing buffer zones surrounding cells that contain non-NULL category values.",
     "group": "Raster (r.*)",
     "group_id": "raster",
+    "ext_path": null,
     "inputs": {
       "has_raster": true,
       "has_vector": false
