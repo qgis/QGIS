@@ -2903,10 +2903,6 @@ QString QgsMapLayer::generalHtmlMetadata() const
     for ( const QString &key : keys )
     {
       const QVariant propValue = customProperty( key );
-      if ( propValue.isNull() )
-      {
-        continue;
-      }
       metadata += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( key.toHtmlEscaped(), propValue.toString().toHtmlEscaped() );
     }
     metadata += QStringLiteral( "</tbody></table>\n" );
