@@ -23,19 +23,119 @@ import stat
 import shutil
 import subprocess
 import os
+import re
 import sys
+from dataclasses import (
+    dataclass,
+    field
+)
 from pathlib import Path
+from typing import (
+    Optional,
+    List
+)
 
-from qgis.core import (Qgis,
-                       QgsApplication,
-                       QgsProcessingUtils,
-                       QgsMessageLog,
-                       QgsCoordinateReferenceSystem,
-                       QgsProcessingContext)
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsProcessingUtils,
+    QgsMessageLog,
+    QgsCoordinateReferenceSystem,
+    QgsProcessingContext,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterVectorLayer,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterRasterDestination
+)
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import userFolder, isWindows, isMac, mkdir
 from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.core.parameters import getParameterFromString
+
+
+@dataclass
+class ParsedDescription:
+    """
+    Results of parsing a description file
+    """
+
+    GROUP_ID_REGEX = re.compile(r'^[^\s\(]+')
+
+    grass_command: Optional[str] = None
+    short_description: Optional[str] = None
+    name: Optional[str] = None
+    display_name: Optional[str] = None
+    group: Optional[str] = None
+    group_id: Optional[str] = None
+
+    has_raster_input: bool = False
+    has_vector_input: bool = False
+
+    has_raster_output: bool = False
+    has_vector_outputs: bool = False
+
+    hardcoded_strings: List[str] = field(default_factory=list)
+    params: List[QgsProcessingParameterDefinition] = field(default_factory=list)
+
+    @staticmethod
+    def parse_description_file(description_file: Path) -> 'ParsedDescription':
+        """
+        Parses a description file and returns the result
+        """
+        result = ParsedDescription()
+
+        with description_file.open() as lines:
+            # First line of the file is the Grass algorithm name
+            line = lines.readline().strip('\n').strip()
+            result.grass_command = line
+            # Second line if the algorithm name in Processing
+            line = lines.readline().strip('\n').strip()
+            result.short_description = line
+            if " - " not in line:
+                result.name = result.grass_command
+            else:
+                result.name = line[:line.find(' ')].lower()
+            result.short_description = QCoreApplication.translate("GrassAlgorithm", line)
+            result.display_name = result.name
+            # Read the grass group
+            line = lines.readline().strip('\n').strip()
+            result.group = QCoreApplication.translate("GrassAlgorithm", line)
+            result.group_id = ParsedDescription.GROUP_ID_REGEX.search(line).group(0).lower()
+
+            # Then you have parameters/output definition
+            line = lines.readline().strip('\n').strip()
+            while line != '':
+                try:
+                    line = line.strip('\n').strip()
+                    if line.startswith('Hardcoded'):
+                        result.hardcoded_strings.append(line[len('Hardcoded|'):])
+                    parameter = getParameterFromString(line, "GrassAlgorithm")
+                    if parameter is not None:
+                        result.params.append(parameter)
+                        if isinstance(parameter, (QgsProcessingParameterVectorLayer, QgsProcessingParameterFeatureSource)):
+                            result.has_vector_input = True
+                        elif isinstance(parameter, QgsProcessingParameterRasterLayer):
+                            result.has_raster_input = True
+                        elif isinstance(parameter, QgsProcessingParameterMultipleLayers):
+                            if parameter.layerType() < 3 or parameter.layerType() == 5:
+                                result.has_vector_input = True
+                            elif parameter.layerType() == 3:
+                                result.has_raster_input = True
+                        elif isinstance(parameter, QgsProcessingParameterVectorDestination):
+                            result.has_vector_outputs = True
+                        elif isinstance(parameter, QgsProcessingParameterRasterDestination):
+                            result.has_raster_output = True
+                    line = lines.readline().strip('\n').strip()
+                except Exception as e:
+                    QgsMessageLog.logMessage(
+                        QCoreApplication.translate("GrassAlgorithm", 'Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(description_file, line),
+                        QCoreApplication.translate("GrassAlgorithm", 'Processing'), Qgis.Critical)
+                    raise e
+        return result
 
 
 class Grass7Utils:
