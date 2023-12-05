@@ -32,7 +32,8 @@ from dataclasses import (
 from pathlib import Path
 from typing import (
     Optional,
-    List
+    List,
+    Dict
 )
 
 from qgis.core import (
@@ -80,6 +81,32 @@ class ParsedDescription:
 
     hardcoded_strings: List[str] = field(default_factory=list)
     params: List[QgsProcessingParameterDefinition] = field(default_factory=list)
+    param_strings: List[str] = field(default_factory=list)
+
+    def as_dict(self) -> Dict:
+        """
+        Returns a JSON serializable dictionary representing the parsed
+        description
+        """
+        return {
+            'name': self.name,
+            'display_name': self.display_name,
+            'command': self.grass_command,
+            'short_description': self.short_description,
+            'group': self.group,
+            'group_id': self.group_id,
+            'inputs': {
+                'has_raster': self.has_raster_input,
+                'has_vector': self.has_vector_input
+            },
+            'outputs':
+                {
+                    'has_raster': self.has_raster_output,
+                    'has_vector': self.has_vector_outputs
+                },
+            'hardcoded_strings': self.hardcoded_strings,
+            'parameters': self.param_strings
+        }
 
     @staticmethod
     def parse_description_file(description_file: Path) -> 'ParsedDescription':
@@ -113,6 +140,7 @@ class ParsedDescription:
                     line = line.strip('\n').strip()
                     if line.startswith('Hardcoded'):
                         result.hardcoded_strings.append(line[len('Hardcoded|'):])
+                    result.param_strings.append(line)
                     parameter = getParameterFromString(line, "GrassAlgorithm")
                     if parameter is not None:
                         result.params.append(parameter)
