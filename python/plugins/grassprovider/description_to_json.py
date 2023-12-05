@@ -27,7 +27,7 @@ for folder in base_description_folders:
     algorithms = []
     for description_file in folder.glob('*.txt'):
         description = ParsedDescription.parse_description_file(
-            description_file)
+            description_file, translate=False)
 
         extpath = description_file.parents[1].joinpath('ext', description.name.replace('.', '_') + '.py')
         if extpath.exists():
