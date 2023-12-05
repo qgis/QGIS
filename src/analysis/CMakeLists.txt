@@ -60,6 +60,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
+  processing/qgsalgorithmcheckgeometryarea.cpp
   processing/qgsalgorithmcheckgeometrydangle.cpp
   processing/qgsalgorithmcheckgeometrymultipart.cpp
   processing/qgsalgorithmclip.cpp
