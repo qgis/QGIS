@@ -74,9 +74,10 @@ with warnings.catch_warnings():
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
-from processing.core.parameters import getParameterFromString
-
-from grassprovider.Grass7Utils import Grass7Utils
+from grassprovider.Grass7Utils import (
+    Grass7Utils,
+    ParsedDescription
+)
 
 from processing.tools.system import isWindows, getTempFilename
 
@@ -103,7 +104,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                          QgsProcessing.TypeVectorLine: 'line',
                          QgsProcessing.TypeVectorPolygon: 'area'}
 
-    def __init__(self, descriptionfile):
+    def __init__(self, descriptionfile: Path):
         super().__init__()
         self._name = ''
         self._display_name = ''
@@ -119,7 +120,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.outputCommands = []
         self.exportedLayers = {}
         self.fileOutputs = {}
-        self.descriptionFile = descriptionfile
+        self.descriptionFile: Path = descriptionfile
 
         # Default GRASS parameters
         self.region = None
@@ -207,54 +208,17 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         """
         Create algorithm parameters and outputs from a text file.
         """
-        with self.descriptionFile.open() as lines:
-            # First line of the file is the Grass algorithm name
-            line = lines.readline().strip('\n').strip()
-            self.grass7Name = line
-            # Second line if the algorithm name in Processing
-            line = lines.readline().strip('\n').strip()
-            self._short_description = line
-            if " - " not in line:
-                self._name = self.grass7Name
-            else:
-                self._name = line[:line.find(' ')].lower()
-            self._short_description = QCoreApplication.translate("GrassAlgorithm", line)
-            self._display_name = self._name
-            # Read the grass group
-            line = lines.readline().strip('\n').strip()
-            self._group = QCoreApplication.translate("GrassAlgorithm", line)
-            self._groupId = self.groupIdRegex.search(line).group(0).lower()
-            hasRasterOutput = False
-            hasRasterInput = False
-            hasVectorInput = False
-            vectorOutputs = False
-            # Then you have parameters/output definition
-            line = lines.readline().strip('\n').strip()
-            while line != '':
-                try:
-                    line = line.strip('\n').strip()
-                    if line.startswith('Hardcoded'):
-                        self.hardcodedStrings.append(line[len('Hardcoded|'):])
-                    parameter = getParameterFromString(line, "GrassAlgorithm")
-                    if parameter is not None:
-                        self.params.append(parameter)
-                        if isinstance(parameter, (QgsProcessingParameterVectorLayer, QgsProcessingParameterFeatureSource)):
-                            hasVectorInput = True
-                        elif isinstance(parameter, QgsProcessingParameterRasterLayer):
-                            hasRasterInput = True
-                        elif isinstance(parameter, QgsProcessingParameterMultipleLayers):
-                            if parameter.layerType() < 3 or parameter.layerType() == 5:
-                                hasVectorInput = True
-                            elif parameter.layerType() == 3:
-                                hasRasterInput = True
-                        elif isinstance(parameter, QgsProcessingParameterVectorDestination):
-                            vectorOutputs = True
-                        elif isinstance(parameter, QgsProcessingParameterRasterDestination):
-                            hasRasterOutput = True
-                    line = lines.readline().strip('\n').strip()
-                except Exception as e:
-                    QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line), self.tr('Processing'), Qgis.Critical)
-                    raise e
+
+        results = ParsedDescription.parse_description_file(
+            self.descriptionFile)
+        self.grass7Name = results.grass_command
+        self._name = results.name
+        self._short_description = results.short_description
+        self._display_name = results.display_name
+        self._group = results.group
+        self._groupId = results.group_id
+        self.hardcodedStrings = results.hardcoded_strings[:]
+        self.params = results.params
 
         param = QgsProcessingParameterExtent(
             self.GRASS_REGION_EXTENT_PARAMETER,
@@ -264,7 +228,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.params.append(param)
 
-        if hasRasterOutput or hasRasterInput:
+        if results.has_raster_output or results.has_raster_input:
             # Add a cellsize parameter
             param = QgsProcessingParameterNumber(
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
@@ -275,7 +239,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.params.append(param)
 
-        if hasRasterOutput:
+        if results.has_raster_output:
             # Add a createopt parameter for format export
             param = QgsProcessingParameterString(
                 self.GRASS_RASTER_FORMAT_OPT,
@@ -296,7 +260,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             param.setHelp(self.tr('Metadata options should be comma separated'))
             self.params.append(param)
 
-        if hasVectorInput:
+        if results.has_vector_input:
             param = QgsProcessingParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
                                                  self.tr('v.in.ogr snap tolerance (-1 = no snap)'),
                                                  type=QgsProcessingParameterNumber.Double,
@@ -312,7 +276,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.params.append(param)
 
-        if vectorOutputs:
+        if results.has_vector_outputs:
             # Add an optional output type
             param = QgsProcessingParameterEnum(self.GRASS_OUTPUT_TYPE_PARAMETER,
                                                self.tr('v.out.ogr output type'),
