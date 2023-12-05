@@ -19,28 +19,25 @@ __author__ = 'Victor Olaya'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Victor Olaya'
 
-import os
-from pathlib import Path
+import json
+from typing import List
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (Qgis,
                        QgsApplication,
+                       QgsProcessingAlgorithm,
                        QgsProcessingProvider,
                        QgsVectorFileWriter,
                        QgsMessageLog,
-                       QgsProcessingUtils,
                        QgsRuntimeProfiler)
 from processing.core.ProcessingConfig import (ProcessingConfig, Setting)
 from grassprovider.Grass7Utils import Grass7Utils
 from grassprovider.Grass7Algorithm import Grass7Algorithm
-from processing.tools.system import isWindows, isMac
 
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
-    descriptionFolders = Grass7Utils.grassDescriptionFolders()
 
     def __init__(self):
         super().__init__()
-        self.algs = []
 
     def load(self):
         with QgsRuntimeProfiler.profile('Grass Provider'):
@@ -84,20 +81,44 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_REXTERNAL)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_VEXTERNAL)
 
-    def createAlgsList(self):
+    def parse_algorithms(self) -> List[QgsProcessingAlgorithm]:
+        """
+        Parses all algorithm sources and returns a list of all GRASS
+        algorithms.
+        """
         algs = []
-        folders = self.descriptionFolders
-        for folder in folders:
-            for descriptionFile in folder.glob('*.txt'):
-                try:
-                    alg = Grass7Algorithm(descriptionFile)
-                    if alg.name().strip() != '':
-                        algs.append(alg)
-                    else:
-                        QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), Qgis.Critical)
-                except Exception as e:
-                    QgsMessageLog.logMessage(
-                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, e), self.tr('Processing'), Qgis.Critical)
+        for folder in Grass7Utils.grassDescriptionFolders():
+            if (folder / 'algorithms.json').exists():
+                # fast approach -- use aggregated JSON summary of algorithms
+                with open(folder / 'algorithms.json', 'rt', encoding='utf8') as f_in:
+                    algorithm_strings = f_in.read()
+
+                algorithms_json = json.loads(algorithm_strings)
+                for algorithm_json in algorithms_json:
+                    try:
+                        alg = Grass7Algorithm(
+                            json_definition=algorithm_json,
+                            description_folder=folder)
+                        if alg.name().strip() != '':
+                            algs.append(alg)
+                        else:
+                            QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(algorithm_json.get('name')), self.tr('Processing'), Qgis.Critical)
+                    except Exception as e:
+                        QgsMessageLog.logMessage(
+                            self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(algorithm_json.get('name'), e), self.tr('Processing'), Qgis.Critical)
+            else:
+                # slow approach - pass txt files one by one
+                for descriptionFile in folder.glob('*.txt'):
+                    try:
+                        alg = Grass7Algorithm(
+                            description_file=descriptionFile)
+                        if alg.name().strip() != '':
+                            algs.append(alg)
+                        else:
+                            QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), Qgis.Critical)
+                    except Exception as e:
+                        QgsMessageLog.logMessage(
+                            self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, e), self.tr('Processing'), Qgis.Critical)
         return algs
 
     def loadAlgorithms(self):
@@ -107,8 +128,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
                                      self.tr('Processing'), Qgis.Critical)
             return
 
-        self.algs = self.createAlgsList()
-        for a in self.algs:
+        for a in self.parse_algorithms():
             self.addAlgorithm(a)
 
     def name(self):
