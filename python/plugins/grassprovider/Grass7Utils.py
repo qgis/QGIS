@@ -120,8 +120,12 @@ class ParsedDescription:
         result.name = description.get('name')
         result.display_name = description.get('display_name')
         result.grass_command = description.get('command')
-        result.short_description = description.get('short_description')
-        result.group = description.get('group')
+        result.short_description = QCoreApplication.translate(
+            "GrassAlgorithm",
+            description.get('short_description')
+        )
+        result.group = QCoreApplication.translate("GrassAlgorithm",
+                                                  description.get('group'))
         result.group_id = description.get('group_id')
         result.ext_path = description.get('ext_path')
         result.has_raster_input = description.get('inputs', {}).get(
@@ -140,7 +144,9 @@ class ParsedDescription:
         return result
 
     @staticmethod
-    def parse_description_file(description_file: Path) -> 'ParsedDescription':
+    def parse_description_file(
+        description_file: Path,
+        translate: bool = True) -> 'ParsedDescription':
         """
         Parses a description file and returns the result
         """
@@ -157,11 +163,19 @@ class ParsedDescription:
                 result.name = result.grass_command
             else:
                 result.name = line[:line.find(' ')].lower()
-            result.short_description = QCoreApplication.translate("GrassAlgorithm", line)
+            if translate:
+                result.short_description = QCoreApplication.translate("GrassAlgorithm", line)
+            else:
+                result.short_description = line
+
             result.display_name = result.name
             # Read the grass group
             line = lines.readline().strip('\n').strip()
-            result.group = QCoreApplication.translate("GrassAlgorithm", line)
+            if translate:
+                result.group = QCoreApplication.translate("GrassAlgorithm", line)
+            else:
+                result.group = line
+
             result.group_id = ParsedDescription.GROUP_ID_REGEX.search(line).group(0).lower()
 
             # Then you have parameters/output definition
