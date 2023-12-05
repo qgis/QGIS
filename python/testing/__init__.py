@@ -239,8 +239,12 @@ class QgisTestCase(unittest.TestCase):
 
     @classmethod
     def render_layout_check(
-        cls, name: str, layout: QgsLayout, size: Optional[QSize] = None
-    ):
+        cls, name: str,
+        layout: QgsLayout,
+        size: Optional[QSize] = None,
+        color_tolerance: Optional[int] = None,
+        allowed_mismatch: Optional[int] = None,
+    ) -> bool:
         checker = QgsLayoutChecker(name, layout)
 
         caller_file, caller_function, caller_line_no = cls.get_test_caller_details()
@@ -249,9 +253,12 @@ class QgisTestCase(unittest.TestCase):
 
         if size is not None:
             checker.setSize(size)
+        if color_tolerance is not None:
+            checker.setColorTolerance(color_tolerance)
+
         if cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
-        result, message = checker.testLayout()
+        result, message = checker.testLayout(pixelDiff=allowed_mismatch or 0)
         if not result:
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
