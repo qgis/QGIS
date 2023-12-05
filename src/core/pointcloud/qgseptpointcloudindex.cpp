@@ -166,7 +166,14 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
     const int size = schemaObj.value( QLatin1String( "size" ) ).toInt();
 
-    if ( type == QLatin1String( "float" ) && ( size == 4 ) )
+    if ( name == QLatin1String( "ClassFlags" ) && size == 1 )
+    {
+      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::UChar ) );
+      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "KeyPoint" ), QgsPointCloudAttribute::UChar ) );
+      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::UChar ) );
+      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::UChar ) );
+    }
+    else if ( type == QLatin1String( "float" ) && ( size == 4 ) )
     {
       attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Float ) );
     }

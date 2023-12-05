@@ -564,7 +564,10 @@ void TestQgsEptProvider::testExtraBytesAttributesValues()
       QMap<QString, QVariant> point;
       point[ QStringLiteral( "Amplitude" ) ] =   "4.409999847412109"  ;
       point[ QStringLiteral( "Blue" ) ] =   "0"  ;
-      point[ QStringLiteral( "ClassFlags" ) ] =   "0"  ;
+      point[ QStringLiteral( "Synthetic" ) ] =   "0"  ;
+      point[ QStringLiteral( "KeyPoint" ) ] =   "0"  ;
+      point[ QStringLiteral( "Withheld" ) ] =   "0"  ;
+      point[ QStringLiteral( "Overlap" ) ] =   "0"  ;
       point[ QStringLiteral( "Classification" ) ] =   "5"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "2"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
@@ -588,7 +591,10 @@ void TestQgsEptProvider::testExtraBytesAttributesValues()
       QMap<QString, QVariant> point;
       point[ QStringLiteral( "Amplitude" ) ] =   "14.170000076293945"  ;
       point[ QStringLiteral( "Blue" ) ] =   "0"  ;
-      point[ QStringLiteral( "ClassFlags" ) ] =   "0"  ;
+      point[ QStringLiteral( "Synthetic" ) ] =   "0"  ;
+      point[ QStringLiteral( "KeyPoint" ) ] =   "0"  ;
+      point[ QStringLiteral( "Withheld" ) ] =   "0"  ;
+      point[ QStringLiteral( "Overlap" ) ] =   "0"  ;
       point[ QStringLiteral( "Classification" ) ] =   "2"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "0"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
@@ -750,7 +756,10 @@ void TestQgsEptProvider::testStatsCalculator()
 
   QVector<QgsPointCloudAttribute> attributes;
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Deviation" ), QgsPointCloudAttribute::Float ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "ClassFlags" ), QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "KeyPoint" ), QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::UChar ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Red" ), QgsPointCloudAttribute::UShort ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "EdgeOfFlightLine" ), QgsPointCloudAttribute::Char ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Blue" ), QgsPointCloudAttribute::UShort ) );
@@ -786,9 +795,35 @@ void TestQgsEptProvider::testStatsCalculator()
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ClassFlags" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Synthetic" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 1 );
+  }
+
+  {
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "KeyPoint" ) );
+    QCOMPARE( ( float )s.minimum, 0 );
+    QCOMPARE( ( float )s.maximum, 0 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 1 );
+  }
+
+  {
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Withheld" ) );
+    QCOMPARE( ( float )s.minimum, 0 );
+    QCOMPARE( ( float )s.maximum, 0 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 1 );
+  }
+
+  {
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Overlap" ) );
+    QCOMPARE( ( float )s.minimum, 0 );
+    QCOMPARE( ( float )s.maximum, 0 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 1 );
   }
 
   {
