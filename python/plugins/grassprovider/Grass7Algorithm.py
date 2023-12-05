@@ -109,9 +109,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                          QgsProcessing.TypeVectorPolygon: 'area'}
 
     def __init__(self,
-                 description_file: Optional[Path]=None,
-                 json_definition: Optional[Dict]=None,
-                 description_folder: Optional[Path]=None
+                 description_file: Optional[Path] = None,
+                 json_definition: Optional[Dict] = None,
+                 description_folder: Optional[Path] = None
                  ):
         super().__init__()
         self._name = ''
@@ -159,10 +159,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             ext_name = None
             if self._description_file:
                 ext_name = self.name().replace('.', '_')
-                extpath = self._description_file.parents[1].joinpath('ext', name + '.py')
+                extpath = self._description_file.parents[1].joinpath('ext', ext_name + '.py')
             elif self._json_definition.get('ext_path'):
                 ext_name = self._json_definition['ext_path']
-                extpath = self._description_folder.parents[1].joinpath(
+                extpath = self._description_folder.parents[0].joinpath(
                     'ext', ext_name + '.py')
 
             # this check makes it a bit faster
@@ -251,8 +251,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         )
 
     def _define_characteristics_from_parsed_description(
-        self,
-        description: ParsedDescription):
+            self,
+            description: ParsedDescription):
         """
         Create algorithm parameters and outputs from parsed description
         """
