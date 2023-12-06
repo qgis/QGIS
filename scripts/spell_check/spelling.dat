@@ -999,7 +999,6 @@ beseiging:besieging
 beteen:between
 beteween:between
 betweeen:between
-betweeness:betweenness
 betwen:between
 beween:between
 bewteen:between
@@ -7376,7 +7375,7 @@ unconditionaly:unconditionally
 unconfortability:discomfort
 uncontitutional:unconstitutional
 unconvential:unconventional
-uncorrect:incorrect
+uncorrect:incorrect:*
 uncorrectly:incorrectly
 uncoverted:unconverted
 uncrypted:unencrypted
