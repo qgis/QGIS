@@ -1526,8 +1526,8 @@ void QgsApplication::initQgis()
   // create project instance if doesn't exist
   QgsProject::instance();
 
-  // Initialize authentication manager and connect to database
-  authManager()->init( pluginPath(), qgisAuthDatabaseFilePath() );
+  // Setup authentication manager for lazy initialization
+  authManager()->setup( pluginPath(), qgisAuthDatabaseFilePath() );
 
   // Make sure we have a NAM created on the main thread.
   // Note that this might call QgsApplication::authManager to
