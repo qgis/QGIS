@@ -14,6 +14,7 @@ import os
 import shutil
 import sys
 import tempfile
+import math
 from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
@@ -3510,7 +3511,7 @@ class PyQgsOGRProvider(QgisTestCase):
             vl = QgsVectorLayer(dest_file_name, 'vl')
             self.assertEqual(vl.dataComment(), "my_alias")
 
-    def testExtent(self):
+    def testExtentCsv(self):
         # 2D points
         datasource_2d = os.path.join(self.basetestpath, 'testExtent2D.csv')
         with open(datasource_2d, 'w') as f:
@@ -3544,6 +3545,42 @@ class PyQgsOGRProvider(QgisTestCase):
 
         os.unlink(datasource_3d)
         self.assertFalse(os.path.exists(datasource_3d))
+
+    def testExtentShp(self):
+        # 2D points
+        vl = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'points', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.featureCount(), 9)
+        self.assertAlmostEqual(vl.extent().xMinimum(), -118.8888, places=3)
+        self.assertAlmostEqual(vl.extent().yMinimum(), 22.8002, places=3)
+        self.assertAlmostEqual(vl.extent().xMaximum(), -83.3333, places=3)
+        self.assertAlmostEqual(vl.extent().yMaximum(), 46.872, places=3)
+
+        self.assertAlmostEqual(vl.extent3D().xMinimum(), -118.8888, places=3)
+        self.assertAlmostEqual(vl.extent3D().yMinimum(), 22.8002, places=3)
+        self.assertTrue(math.isnan(vl.extent3D().zMinimum()))
+        self.assertAlmostEqual(vl.extent3D().xMaximum(), -83.3333, places=3)
+        self.assertAlmostEqual(vl.extent3D().yMaximum(), 46.872, places=3)
+        self.assertTrue(math.isnan(vl.extent3D().zMaximum()))
+        del vl
+
+        # 3D points
+        vl = QgsVectorLayer(os.path.join(unitTestDataPath(), '3d', 'points_with_z.shp'), 'points', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.featureCount(), 9)
+        self.assertAlmostEqual(vl.extent().xMinimum(), 321384.94, places=3)
+        self.assertAlmostEqual(vl.extent().yMinimum(), 129147.09, places=3)
+        self.assertAlmostEqual(vl.extent().xMaximum(), 322342.3, places=3)
+        self.assertAlmostEqual(vl.extent().yMaximum(), 130554.6, places=3)
+
+        self.assertAlmostEqual(vl.extent3D().xMinimum(), 321384.94, places=3)
+        self.assertAlmostEqual(vl.extent3D().yMinimum(), 129147.09, places=3)
+        self.assertAlmostEqual(vl.extent3D().zMinimum(), 64.9, places=3)
+        self.assertAlmostEqual(vl.extent3D().xMaximum(), 322342.3, places=3)
+        self.assertAlmostEqual(vl.extent3D().yMaximum(), 130554.6, places=3)
+        self.assertAlmostEqual(vl.extent3D().zMaximum(), 105.6, places=3)
+        del vl
+
 
 if __name__ == '__main__':
     unittest.main()
