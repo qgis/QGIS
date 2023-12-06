@@ -49,7 +49,7 @@ jobs:
 
       - name: 'Unzip artifact'
         if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
-        run: unzip test-results-qt${{ matrix.qt-version }}.zip
+        run: unzip -j test-results-qt${{ matrix.qt-version }}.zip summary.md pr_number git_commit
 
       - name: 'Post test report markdown summary as comment on PR'
         if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
@@ -61,7 +61,9 @@ jobs:
             if (fs.existsSync('./summary.md'))
             {
               let issue_number = Number(fs.readFileSync('./pr_number'));
-              let body = "# Tests failed for Qt ${{ matrix.qt-version }}\n\n" + String(fs.readFileSync('./summary.md')) +
+              let body = "# Tests failed for Qt ${{ matrix.qt-version }}\n\n";
+              body += "*One or more tests failed using the build from commit " + git_sha + "*\n\n";
+              body += String(fs.readFileSync('./summary.md')) +
                   "\n\n**The full test report (included comparison of rendered vs expected images) can be found [here](https://github.com/qgis/QGIS/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.artifact_id}}).**\n\n" +
                   "Further documentation on the QGIS test infrastructure can be found in the [Developer's Guide](https://docs.qgis.org/latest/en/docs/developers_guide/unittesting.html).";
               await github.rest.issues.createComment({
