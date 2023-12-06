@@ -467,16 +467,19 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   if ( mOgrOrigLayer )
   {
     bool is3D = true;
-    gdal::ogr_feature_unique_ptr f;
-
-    mOgrOrigLayer->ResetReading();
-    f.reset( mOgrOrigLayer->GetNextFeature() );
-    if ( f )
+    if ( !OGR_GT_HasZ( mOGRGeomType ) )
     {
-      OGRGeometryH g = OGR_F_GetGeometryRef( f.get() );
-      if ( g && !OGR_G_IsEmpty( g ) )
+      gdal::ogr_feature_unique_ptr f;
+
+      mOgrOrigLayer->ResetReading();
+      f.reset( mOgrOrigLayer->GetNextFeature() );
+      if ( f )
       {
-        is3D = OGR_G_Is3D( g );
+        OGRGeometryH g = OGR_F_GetGeometryRef( f.get() );
+        if ( g && !OGR_G_IsEmpty( g ) )
+        {
+          is3D = OGR_G_Is3D( g );
+        }
       }
     }
     elevationProperties()->setContainsElevationData( is3D );
