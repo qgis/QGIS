@@ -1232,6 +1232,7 @@ QgsBox3D QgsOgrProvider::extent3D() const
             QgsDebugMsgLevel( QStringLiteral( "WITH OLCFastGetExtent AND WITH geomCol: %1" ).arg( geomCol ), 3 );
 
             mOgrLayer->GetExtent( mExtent.get(), true );
+
             QByteArray geomColQuoted = quotedIdentifier( geomCol );
             QByteArray sql = "SELECT MIN(ST_MinZ("
                              + geomColQuoted
@@ -1241,7 +1242,9 @@ QgsBox3D QgsOgrProvider::extent3D() const
                              + quotedIdentifier( mOgrLayer->name() );
             qDebug() << "QgsOgrProvider::extent3D" << sql;
 
+            CPLPushErrorHandler( CPLQuietErrorHandler );
             QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
+            CPLPopErrorHandler();
             if ( l )
             {
               gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
