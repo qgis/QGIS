@@ -732,8 +732,8 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
     {
       QgsDebugMsgLevel( QStringLiteral( "setting proxy from stored authentication configuration %1" ).arg( authcfg ), 2 );
       // Never crash! Never.
-      if ( QgsApplication::authManager() )
-        QgsApplication::authManager()->updateNetworkProxy( proxy, authcfg );
+      if ( QgsAuthManager *authManager = QgsApplication::authManager() )
+        authManager->updateNetworkProxy( proxy, authcfg );
     }
   }
 
