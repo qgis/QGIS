@@ -2902,6 +2902,10 @@ QString QgsMapLayer::generalHtmlMetadata() const
     metadata += QStringLiteral( "<table class=\"list-view\">\n<tbody>" );
     for ( const QString &key : keys )
     {
+      // keys prefaced with _ are considered private/internal details
+      if ( key.startsWith( '_' ) )
+        continue;
+
       const QVariant propValue = customProperty( key );
       metadata += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( key.toHtmlEscaped(), propValue.toString().toHtmlEscaped() );
     }
