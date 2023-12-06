@@ -1401,14 +1401,26 @@ class PyQgsOGRProvider(QgisTestCase):
 
             # Test a nominal case
             handler = mockedwebserver.SequentialHandler()
+            # Asked when ogr provider try to open. See QgsOgrProvider::QgsOgrProvider#453 open( OpenModeForceReadOnly );
+            # See QgsOgrProvider::open#4012 mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, options, mLayerName, errCause, true );
             handler.add('GET', '/collections/foo', 200, {'Content-Type': 'application/json'}, '{ "id": "foo" }')
+
+            # See QgsOgrProvider::open#4012 mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, options, mLayerName, errCause, true );
             handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
                         '{ "type": "FeatureCollection", "features": [] }')
+
+            # See QgsOgrProvider::open#4066 computeCapabilities();
             handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
                         '{ "type": "FeatureCollection", "features": [] }')
+
             if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0):
                 handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
                             '{ "type": "FeatureCollection", "features": [] }')
+
+            # Asked when ogr provider check for elevation capabilities. See QgsOgrProvider::QgsOgrProvider#475 f.reset( mOgrOrigLayer->GetNextFeature() );
+            handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
+                        '{ "type": "FeatureCollection", "features": [] }')
+
             with mockedwebserver.install_http_handler(handler):
                 vl = QgsVectorLayer("OAPIF:http://127.0.0.1:%d/collections/foo" % port, 'test', 'ogr')
                 self.assertTrue(vl.isValid())
