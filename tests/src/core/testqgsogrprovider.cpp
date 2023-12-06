@@ -53,6 +53,7 @@ class TestQgsOgrProvider : public QgsTest
     void testThread();
     void testCsvFeatureAddition();
     void absoluteRelativeUri();
+    void testExtent();
 
   private:
     QString mTestDataDir;
@@ -418,6 +419,33 @@ void TestQgsOgrProvider::absoluteRelativeUri()
   relativeUri = QStringLiteral( "./points_gpkg.gpkg|layername=points_small" );
   QCOMPARE( ogrMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
   QCOMPARE( ogrMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+}
+
+void TestQgsOgrProvider::testExtent()
+{
+  QString uri2D = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points_gpkg.gpkg|layername=points_small" );
+  QgsVectorLayer *layer2D = new QgsVectorLayer( uri2D, QStringLiteral( "gpkg" ), QLatin1String( "ogr" ) );
+  QVERIFY( layer2D->isValid() );
+  QCOMPARE( layer2D->extent(), QgsRectangle( -102.436, 40.578, -93.1608, 41.2405 ) );
+  QCOMPARE( layer2D->extent3D(), QgsBox3D( -102.436, 40.578, std::numeric_limits<double>::quiet_NaN(), -93.1608, 41.2405, std::numeric_limits<double>::quiet_NaN() ) );
+  delete layer2D;
+
+  QString uri3D = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/3d/points_with_z.shp" );
+  // QString uri3D = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/3d/earth_size_sphere_4978.gpkg|layername=earth_size_sphere_4978" );
+  QgsVectorLayer *layer3D = new QgsVectorLayer( uri3D, QStringLiteral( "gpkg" ), QLatin1String( "ogr" ) );
+  QVERIFY( layer3D->isValid() );
+  QGSCOMPARENEAR( layer3D->sourceExtent().xMinimum(), 321384.94, 0.001 );
+  QGSCOMPARENEAR( layer3D->sourceExtent().xMaximum(), 322342.3, 0.001 );
+  QGSCOMPARENEAR( layer3D->sourceExtent().yMinimum(), 129147.09, 0.001 );
+  QGSCOMPARENEAR( layer3D->sourceExtent().yMaximum(), 130554.6, 0.001 );
+
+  QGSCOMPARENEAR( layer3D->sourceExtent3D().xMinimum(), 321384.94, 0.001 );
+  QGSCOMPARENEAR( layer3D->sourceExtent3D().xMaximum(), 322342.3, 0.001 );
+  QGSCOMPARENEAR( layer3D->sourceExtent3D().yMinimum(), 129147.09, 0.001 );
+  QGSCOMPARENEAR( layer3D->sourceExtent3D().yMaximum(), 130554.6, 0.001 );
+  QGSCOMPARENEAR( layer3D->sourceExtent3D().zMinimum(), 64.9, 0.001 );
+  QGSCOMPARENEAR( layer3D->sourceExtent3D().zMaximum(), 105.6, 0.001 );
+  delete layer3D;
 }
 
 

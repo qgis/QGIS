@@ -464,6 +464,25 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   }
   setNativeTypes( nativeTypes );
 
+  if ( mOgrOrigLayer )
+  {
+    bool is3D = true;
+    gdal::ogr_feature_unique_ptr f;
+
+    mOgrOrigLayer->ResetReading();
+    f.reset( mOgrOrigLayer->GetNextFeature() );
+    if ( f )
+    {
+      OGRGeometryH g = OGR_F_GetGeometryRef( f.get() );
+      if ( g && !OGR_G_IsEmpty( g ) )
+      {
+        is3D = OGR_G_Is3D( g );
+      }
+    }
+    elevationProperties()->setContainsElevationData( is3D );
+    mOgrOrigLayer->ResetReading(); // release
+  }
+
   // layer metadata
   loadMetadata();
 
@@ -1118,15 +1137,54 @@ unsigned char *QgsOgrProvider::getGeometryPointer( OGRFeatureH fet )
 
 QgsRectangle QgsOgrProvider::extent() const
 {
+  return extent3D().toRectangle();
+}
+
+void QgsOgrProvider::compute3DExtentSlowly( QgsOgrLayer *ogrLayer, OGREnvelope3D *extent ) const
+{
+  gdal::ogr_feature_unique_ptr f;
+
+  ogrLayer->ResetReading();
+  while ( f.reset( ogrLayer->GetNextFeature() ), f )
+  {
+    OGRGeometryH g = OGR_F_GetGeometryRef( f.get() );
+    if ( g && !OGR_G_IsEmpty( g ) )
+    {
+      OGREnvelope3D env;
+      OGR_G_GetEnvelope3D( g, &env );
+
+      extent->MinX = std::min( extent->MinX, env.MinX );
+      extent->MinY = std::min( extent->MinY, env.MinY );
+      extent->MaxX = std::max( extent->MaxX, env.MaxX );
+      extent->MaxY = std::max( extent->MaxY, env.MaxY );
+      extent->MinZ = std::min( extent->MinZ, env.MinZ );
+      extent->MaxZ = std::max( extent->MaxZ, env.MaxZ );
+    }
+  }
+  ogrLayer->ResetReading();
+}
+
+QgsBox3D QgsOgrProvider::extent3D() const
+{
   if ( !mExtent )
   {
     QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
     QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-    mExtent.reset( new OGREnvelope() );
+    mExtent.reset( new OGREnvelope3D() );
 
     // get the extent_ (envelope) of the layer
-    QgsDebugMsgLevel( QStringLiteral( "Starting get extent" ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Starting get extent3D. subset: %1" ).arg( mSubsetString ), 3 );
+
+    bool hasBeenComputed = false;
+    bool is3D = elevationProperties()->containsElevationData();
+
+    mExtent->MinX = std::numeric_limits<double>::max();
+    mExtent->MinY = std::numeric_limits<double>::max();
+    mExtent->MinZ = std::numeric_limits<double>::max();
+    mExtent->MaxX = -std::numeric_limits<double>::max();
+    mExtent->MaxY = -std::numeric_limits<double>::max();
+    mExtent->MaxZ = -std::numeric_limits<double>::max();
 
     if ( mForceRecomputeExtent && mValid && mWriteAccess &&
          ( mGDALDriverName == QLatin1String( "GPKG" ) ||
@@ -1139,55 +1197,95 @@ QgsRectangle QgsOgrProvider::extent() const
       mOgrOrigLayer->ExecuteSQLNoReturn( sql );
     }
 
-    mExtent->MinX = std::numeric_limits<double>::max();
-    mExtent->MinY = std::numeric_limits<double>::max();
-    mExtent->MaxX = -std::numeric_limits<double>::max();
-    mExtent->MaxY = -std::numeric_limits<double>::max();
-
-    // TODO: This can be expensive, do we really need it!
-    if ( mOgrLayer == mOgrOrigLayer.get() && mSubsetString.isEmpty() )
+    if ( mOgrLayer == mOgrOrigLayer.get() )
     {
-      if ( ( mGDALDriverName == QLatin1String( "OAPIF" ) || mGDALDriverName == QLatin1String( "WFS3" ) ) &&
-           !mOgrLayer->TestCapability( OLCFastGetExtent ) )
+      if ( !mOgrLayer->TestCapability( OLCFastGetExtent ) )
       {
-        // When the extent is not in the metadata, retrieving it would be
-        // super slow
-        mExtent->MinX = -180;
-        mExtent->MinY = -90;
-        mExtent->MaxX = 180;
-        mExtent->MaxY = 90;
+        QgsDebugMsgLevel( QStringLiteral( "WITHOUT OLCFastGetExtent" ), 3 );
+        if ( mGDALDriverName == QLatin1String( "OAPIF" ) || mGDALDriverName == QLatin1String( "WFS3" ) )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "WITHOUT OLCFastGetExtent AND is remote" ), 3 );
+          // When the extent is not in the metadata, retrieving it would be
+          // super slow for remote data sources
+          mExtent->MinX = -180;
+          mExtent->MinY = -90;
+          mExtent->MinZ = std::numeric_limits<double>::quiet_NaN();
+          mExtent->MaxX = 180;
+          mExtent->MaxY = 90;
+          mExtent->MaxZ = std::numeric_limits<double>::quiet_NaN();
+          hasBeenComputed = true;
+        }
       }
       else
       {
-        mOgrLayer->GetExtent( mExtent.get(), true );
+        if ( is3D && mSubsetString.isEmpty() ) // TODO: find a way to use mSubsetString in the request
+        {
+          QgsDebugMsgLevel( QStringLiteral( "WITH OLCFastGetExtent" ), 3 );
+          QRecursiveMutex *mutex = nullptr;
+          OGRLayerH layer = mOgrLayer->getHandleAndMutex( mutex );
+          const char *geomCol = OGR_L_GetGeometryColumn( layer );
+          if ( geomCol != NULL && strlen( geomCol ) > 0 )
+          {
+            QgsDebugMsgLevel( QStringLiteral( "WITH OLCFastGetExtent AND WITH geomCol: %1" ).arg( geomCol ), 3 );
+
+            mOgrLayer->GetExtent( mExtent.get(), true );
+            QByteArray geomColQuoted = quotedIdentifier( geomCol );
+            QByteArray sql = "SELECT MIN(ST_MinZ("
+                             + geomColQuoted
+                             + ")), MAX(ST_MaxZ("
+                             + geomColQuoted
+                             + ")) FROM "
+                             + quotedIdentifier( mOgrLayer->name() );
+            qDebug() << "QgsOgrProvider::extent3D" << sql;
+
+            QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
+            if ( l )
+            {
+              gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+              if ( f )
+              {
+                mExtent->MinZ = OGR_F_GetFieldAsDouble( f.get(), 0 );
+                mExtent->MaxZ = OGR_F_GetFieldAsDouble( f.get(), 1 );
+                hasBeenComputed = true;
+              }
+            }
+          }
+        }
       }
     }
     else
     {
-      gdal::ogr_feature_unique_ptr f;
-
-      mOgrLayer->ResetReading();
-      while ( f.reset( mOgrLayer->GetNextFeature() ), f )
-      {
-        OGRGeometryH g = OGR_F_GetGeometryRef( f.get() );
-        if ( g && !OGR_G_IsEmpty( g ) )
-        {
-          OGREnvelope env;
-          OGR_G_GetEnvelope( g, &env );
-
-          mExtent->MinX = std::min( mExtent->MinX, env.MinX );
-          mExtent->MinY = std::min( mExtent->MinY, env.MinY );
-          mExtent->MaxX = std::max( mExtent->MaxX, env.MaxX );
-          mExtent->MaxY = std::max( mExtent->MaxY, env.MaxY );
-        }
-      }
-      mOgrLayer->ResetReading();
+      QgsDebugMsgLevel( QStringLiteral( "mOgrLayer != mOgrOrigLayer" ), 3 );
+      hasBeenComputed = true; // cancel default extent computing
     }
 
-    QgsDebugMsgLevel( QStringLiteral( "Finished get extent" ), 4 );
+    if ( !hasBeenComputed ) // apply default extent computing
+    {
+      if ( !is3D && mSubsetString.isEmpty() )
+      {
+        mOgrLayer->GetExtent( mExtent.get(), true ); // GetExtent does not handle subset nor 3D
+      }
+      else
+      {
+        QgsDebugMsgLevel( QStringLiteral( "will apply slow default extent computing" ), 3 );
+        compute3DExtentSlowly( mOgrLayer, mExtent.get() );
+      }
+    }
+
+    if ( !is3D || ( mExtent->MinZ == std::numeric_limits<double>::max() && mExtent->MaxZ == -std::numeric_limits<double>::max() ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "is 2D/flat extent3D" ), 3 );
+      // flat extent
+      mExtent->MinZ = std::numeric_limits<double>::quiet_NaN();
+      mExtent->MaxZ = std::numeric_limits<double>::quiet_NaN();
+    }
   }
 
-  mExtentRect.set( mExtent->MinX, mExtent->MinY, mExtent->MaxX, mExtent->MaxY );
+  QgsDebugMsgLevel( QStringLiteral( "Finished get extent3D: (%1, %2, %3 : %4, %5, %6)" )
+                    .arg( mExtent->MinX ).arg( mExtent->MinY ).arg( mExtent->MinZ )
+                    .arg( mExtent->MaxX ).arg( mExtent->MaxY ).arg( mExtent->MaxZ ), 3 );
+
+  mExtentRect = QgsBox3D( mExtent->MinX, mExtent->MinY, mExtent->MinZ, mExtent->MaxX, mExtent->MaxY, mExtent->MaxZ );
   return mExtentRect;
 }
 

@@ -25,6 +25,7 @@ from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
     QgsApplication,
     QgsAuthMethodConfig,
+    QgsBox3D,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsDataProvider,
@@ -3509,6 +3510,40 @@ class PyQgsOGRProvider(QgisTestCase):
             vl = QgsVectorLayer(dest_file_name, 'vl')
             self.assertEqual(vl.dataComment(), "my_alias")
 
+    def testExtent(self):
+        # 2D points
+        datasource_2d = os.path.join(self.basetestpath, 'testExtent2D.csv')
+        with open(datasource_2d, 'w') as f:
+            f.write('id,WKT\n')
+            for i in range(9):
+                f.write(f'{i},POINT ({2*i} {i-3})\n')
+
+        vl = QgsVectorLayer(f'{datasource_2d}|layerid=0', 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.featureCount(), 9)
+        self.assertEqual(vl.extent(), QgsRectangle(0, -3, 16, 5))
+        self.assertEqual(vl.extent3D(), QgsBox3D(0, -3, float('nan'), 16, 5, float('nan')))
+        del vl
+
+        os.unlink(datasource_2d)
+        self.assertFalse(os.path.exists(datasource_2d))
+
+        # 3D points
+        datasource_3d = os.path.join(self.basetestpath, 'testExtent3D.csv')
+        with open(datasource_3d, 'w') as f:
+            f.write('id,WKT\n')
+            for i in range(13):
+                f.write(f'{i},POINT Z({2*i} {i-3} {i-5})\n')
+
+        vl = QgsVectorLayer(f'{datasource_3d}|layerid=0', 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.featureCount(), 12)
+        self.assertEqual(vl.extent(), QgsRectangle(0, -3, 24, 9))
+        self.assertEqual(vl.extent3D(), QgsBox3D(0, -3, -5, 24, 9, 7))
+        del vl
+
+        os.unlink(datasource_3d)
+        self.assertFalse(os.path.exists(datasource_3d))
 
 if __name__ == '__main__':
     unittest.main()
