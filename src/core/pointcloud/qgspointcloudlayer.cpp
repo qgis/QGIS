@@ -429,7 +429,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   setCrs( mDataProvider->crs() );
   if ( !( flags & QgsDataProvider::SkipGetExtent ) )
   {
-    setExtent( mDataProvider->extent() );
+    setExtent3D( mDataProvider->extent3D() );
   }
 
   bool loadDefaultStyleFlag = false;
