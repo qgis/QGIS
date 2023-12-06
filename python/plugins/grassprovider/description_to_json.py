@@ -19,9 +19,8 @@ from grassprovider.Grass7Utils import (
     ParsedDescription
 )
 
-
 base_description_folders = [f for f in Grass7Utils.grassDescriptionFolders()
-    if f != Grass7Utils.userDescriptionFolder()]
+                            if f != Grass7Utils.userDescriptionFolder()]
 
 for folder in base_description_folders:
     algorithms = []
