@@ -173,9 +173,6 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! Invalidate extent and optionally force its low level recomputation
     void invalidateCachedExtent( bool bForceRecomputeExtent );
 
-    //! combines 3D envelopes for all feature to find the extent. Slow process...
-    void compute3DExtentSlowly( QgsOgrLayer *ogrLayer, OGREnvelope3D *extent ) const;
-
     enum OpenMode
     {
       OpenModeInitial,

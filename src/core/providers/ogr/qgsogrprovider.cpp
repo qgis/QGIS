@@ -1143,33 +1143,6 @@ QgsRectangle QgsOgrProvider::extent() const
   return extent3D().toRectangle();
 }
 
-void QgsOgrProvider::compute3DExtentSlowly( QgsOgrLayer *ogrLayer, OGREnvelope3D *extent ) const
-{
-  gdal::ogr_feature_unique_ptr f;
-
-  ogrLayer->ResetReading();
-  while ( f.reset( ogrLayer->GetNextFeature() ), f )
-  {
-    OGRGeometryH g = OGR_F_GetGeometryRef( f.get() );
-    if ( g && !OGR_G_IsEmpty( g ) )
-    {
-      OGREnvelope3D env;
-      OGR_G_GetEnvelope3D( g, &env );
-
-      extent->MinX = std::min( extent->MinX, env.MinX );
-      extent->MinY = std::min( extent->MinY, env.MinY );
-      extent->MaxX = std::max( extent->MaxX, env.MaxX );
-      extent->MaxY = std::max( extent->MaxY, env.MaxY );
-      if ( OGR_G_Is3D( g ) )
-      {
-        extent->MinZ = std::min( extent->MinZ, env.MinZ );
-        extent->MaxZ = std::max( extent->MaxZ, env.MaxZ );
-      }
-    }
-  }
-  ogrLayer->ResetReading();
-}
-
 QgsBox3D QgsOgrProvider::extent3D() const
 {
   if ( !mExtent )
@@ -1221,72 +1194,47 @@ QgsBox3D QgsOgrProvider::extent3D() const
           mExtent->MaxZ = std::numeric_limits<double>::quiet_NaN();
           hasBeenComputed = true;
         }
+        // else slow computation
       }
-      else
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,9,0)
+      else if ( mSubsetString.isEmpty() )
+        // mSubsetString is not properly handled by mOgrLayer->GetExtent3D if gdal<3.9.0
+        // we need to scan all feature (via QgsOgrLayer::computeExtent3DSlowly) to take ino account the mSubsetString filter
       {
-        if ( is3D && mSubsetString.isEmpty() ) // TODO: find a way to use mSubsetString in the request
-        {
-          QgsDebugMsgLevel( QStringLiteral( "WITH OLCFastGetExtent" ), 3 );
-          QRecursiveMutex *mutex = nullptr;
-          OGRLayerH layer = mOgrLayer->getHandleAndMutex( mutex );
-          const char *geomCol = OGR_L_GetGeometryColumn( layer );
-          if ( geomCol != NULL && strlen( geomCol ) > 0 )
-          {
-            QgsDebugMsgLevel( QStringLiteral( "WITH OLCFastGetExtent AND WITH geomCol: %1" ).arg( geomCol ), 3 );
+        QgsDebugMsgLevel( QStringLiteral( "WITH OLCFastGetExtent" ), 3 );
+        if ( is3D )
+          hasBeenComputed = mOgrLayer->GetExtent3D( mExtent.get(), true ) == OGRERR_NONE;
+        else
+          hasBeenComputed = mOgrLayer->GetExtent( mExtent.get(), true ) == OGRERR_NONE;
+        // else slow computation
+      }
+      // else slow computation
+#endif
 
-            mOgrLayer->GetExtent( mExtent.get(), true );
+      if ( !hasBeenComputed )
+      {
+        OGRErr err;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
+        err = mOgrLayer->GetExtent3D( mExtent.get(), true ); // slow or optimized computation are delegated to gdal
+#else
+        QgsDebugMsgLevel( QStringLiteral( "will apply slow default extent computing" ), 3 );
+        err = mOgrLayer->computeExtent3DSlowly( mExtent.get() );
+#endif
+        if ( err != OGRERR_NONE )
+          QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute extent3D (ogr error: %1)" ).arg( err ), 1 );
+      }
 
-            QByteArray geomColQuoted = quotedIdentifier( geomCol );
-            QByteArray sql = "SELECT MIN(ST_MinZ("
-                             + geomColQuoted
-                             + ")), MAX(ST_MaxZ("
-                             + geomColQuoted
-                             + ")) FROM "
-                             + quotedIdentifier( mOgrLayer->name() );
-            qDebug() << "QgsOgrProvider::extent3D" << sql;
-
-            CPLPushErrorHandler( CPLQuietErrorHandler );
-            QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
-            CPLPopErrorHandler();
-            if ( l )
-            {
-              gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
-              if ( f )
-              {
-                mExtent->MinZ = OGR_F_GetFieldAsDouble( f.get(), 0 );
-                mExtent->MaxZ = OGR_F_GetFieldAsDouble( f.get(), 1 );
-                hasBeenComputed = true;
-              }
-            }
-          }
-        }
+      if ( !is3D || ( mExtent->MinZ == std::numeric_limits<double>::max() && mExtent->MaxZ == -std::numeric_limits<double>::max() ) )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "is 2D/flat extent3D" ), 3 );
+        // flat extent
+        mExtent->MinZ = std::numeric_limits<double>::quiet_NaN();
+        mExtent->MaxZ = std::numeric_limits<double>::quiet_NaN();
       }
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "mOgrLayer != mOgrOrigLayer" ), 3 );
-      hasBeenComputed = true; // cancel default extent computing
-    }
-
-    if ( !hasBeenComputed ) // apply default extent computing
-    {
-      if ( !is3D && mSubsetString.isEmpty() )
-      {
-        mOgrLayer->GetExtent( mExtent.get(), true ); // GetExtent does not handle subset nor 3D
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "will apply slow default extent computing" ), 3 );
-        compute3DExtentSlowly( mOgrLayer, mExtent.get() );
-      }
-    }
-
-    if ( !is3D || ( mExtent->MinZ == std::numeric_limits<double>::max() && mExtent->MaxZ == -std::numeric_limits<double>::max() ) )
-    {
-      QgsDebugMsgLevel( QStringLiteral( "is 2D/flat extent3D" ), 3 );
-      // flat extent
-      mExtent->MinZ = std::numeric_limits<double>::quiet_NaN();
-      mExtent->MaxZ = std::numeric_limits<double>::quiet_NaN();
+      QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute extent3D (mOgrLayer != mOgrOrigLayer)" ), 1 );
     }
   }
 

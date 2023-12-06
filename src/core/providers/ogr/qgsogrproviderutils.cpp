@@ -3106,6 +3106,92 @@ OGRErr QgsOgrLayer::GetExtent( OGREnvelope *psExtent, bool bForce )
   return OGR_L_GetExtent( hLayer, psExtent, bForce );
 }
 
+OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
+{
+  QMutexLocker locker( &ds->mutex );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
+  return OGR_L_GetExtent3D( hLayer, psExtent3D, bForce );
+#else
+
+  OGRErr err = OGRERR_UNSUPPORTED_OPERATION;
+  const char *geomCol = OGR_L_GetGeometryColumn( hLayer );
+  if ( geomCol != NULL && strlen( geomCol ) > 0 )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "WITH geomCol: %1" ).arg( geomCol ), 3 );
+
+    err = OGR_L_GetExtent( hLayer, psExtent3D, bForce );
+    if ( err == OGRERR_NONE )
+    {
+      err = OGRERR_UNSUPPORTED_OPERATION;
+      QByteArray geomColQuoted = QgsOgrProviderUtils::quotedIdentifier( geomCol, name() );
+      QByteArray sql = "SELECT MIN(ST_MinZ("
+                       + geomColQuoted
+                       + ")), MAX(ST_MaxZ("
+                       + geomColQuoted
+                       + ")) FROM "
+                       + QgsOgrProviderUtils::quotedIdentifier( name(), name() );
+      QgsDebugMsgLevel( QStringLiteral( "sql: %1" ).arg( sql.toStdString().c_str() ), 3 );
+
+      CPLPushErrorHandler( CPLQuietErrorHandler );
+      QgsOgrLayerUniquePtr l = ExecuteSQL( sql );
+      CPLPopErrorHandler();
+      if ( l )
+      {
+        gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+        if ( f )
+        {
+          psExtent3D->MinZ = OGR_F_GetFieldAsDouble( f.get(), 0 );
+          psExtent3D->MaxZ = OGR_F_GetFieldAsDouble( f.get(), 1 );
+          QgsDebugMsgLevel( QStringLiteral( "done with Z! %1/%2" ).arg( psExtent3D->MinZ ).arg( psExtent3D->MaxZ ), 3 );
+          err = OGRERR_NONE;
+        }
+        ResetReading();
+      }
+    }
+  }
+
+  if ( err != OGRERR_NONE )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Will computeExtent3DSlowly!" ), 3 );
+    err = computeExtent3DSlowly( psExtent3D );
+  }
+
+  return err;
+#endif
+}
+
+OGRErr QgsOgrLayer::computeExtent3DSlowly( OGREnvelope3D *extent )
+{
+  OGRErr err = OGRERR_NONE;
+  gdal::ogr_feature_unique_ptr f;
+
+  ResetReading();
+  while ( f.reset( GetNextFeature() ), ( err == OGRERR_NONE && f ) )
+  {
+    OGRGeometryH g = OGR_F_GetGeometryRef( f.get() );
+    if ( g && !OGR_G_IsEmpty( g ) )
+    {
+      OGREnvelope3D env;
+      OGR_G_GetEnvelope3D( g, &env );
+
+      extent->MinX = std::min( extent->MinX, env.MinX );
+      extent->MinY = std::min( extent->MinY, env.MinY );
+      extent->MaxX = std::max( extent->MaxX, env.MaxX );
+      extent->MaxY = std::max( extent->MaxY, env.MaxY );
+      if ( OGR_G_Is3D( g ) )
+      {
+        extent->MinZ = std::min( extent->MinZ, env.MinZ );
+        extent->MaxZ = std::max( extent->MaxZ, env.MaxZ );
+      }
+    }
+    else
+      err = OGRERR_UNSUPPORTED_GEOMETRY_TYPE;
+  }
+  ResetReading();
+  return err;
+}
+
+
 OGRGeometryH QgsOgrLayer::GetSpatialFilter()
 {
   QMutexLocker locker( &ds->mutex );
