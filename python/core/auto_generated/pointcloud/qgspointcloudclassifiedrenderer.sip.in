@@ -28,11 +28,13 @@ Represents an individual category (class) from a :py:class:`QgsPointCloudClassif
 Constructor for QgsPointCloudCategory.
 %End
 
-    QgsPointCloudCategory( int value, const QColor &color, const QString &label, bool render = true );
+    QgsPointCloudCategory( int value, const QColor &color, const QString &label, double pointSize = 0, bool render = true );
 %Docstring
 Constructor for a new QgsPointCloudCategory, with the specified ``value`` and ``color``.
 
 The ``label`` argument specifies the label used for this category in legends and the layer tree.
+
+A positive ``pointSize`` argument allows to override the layer's point size setting for this category.
 
 The ``render`` argument indicates whether the category should initially be rendered and appear checked in the layer tree.
 %End
@@ -51,6 +53,15 @@ Returns the value corresponding to this category.
 Returns the color which will be used to render this category.
 
 .. seealso:: :py:func:`setColor`
+%End
+
+    double pointSize() const;
+%Docstring
+Returns the point size for this category.
+
+.. seealso:: :py:func:`setPointSize`
+
+.. versionadded:: 3.36
 %End
 
     QString label() const;
@@ -73,6 +84,15 @@ Sets the ``value`` corresponding to this category.
 Sets the ``color`` which will be used to render this category.
 
 .. seealso:: :py:func:`color`
+%End
+
+    void setPointSize( double size );
+%Docstring
+Sets the point size for this category.
+
+.. seealso:: :py:func:`pointSize`
+
+.. versionadded:: 3.36
 %End
 
     void setLabel( const QString &label );

@@ -712,23 +712,33 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     void drawPoint( double x, double y, const QColor &color, QgsPointCloudRenderContext &context ) const
     {
+      drawPoint( x, y, color, mDefaultPainterPenWidth, context );
+    }
+
+    /**
+     * Draws a point using a \a color and painter \a width at the specified \a x and \a y (in map coordinates).
+     *
+     * \since QGIS 3.36
+     */
+    void drawPoint( double x, double y, const QColor &color, int width, QgsPointCloudRenderContext &context ) const
+    {
       const QPointF originalXY( x, y );
       context.renderContext().mapToPixel().transformInPlace( x, y );
       QPainter *painter = context.renderContext().painter();
       switch ( mPointSymbol )
       {
         case Qgis::PointCloudSymbol::Square:
-          painter->fillRect( QRectF( x - mPainterPenWidth * 0.5,
-                                     y - mPainterPenWidth * 0.5,
-                                     mPainterPenWidth, mPainterPenWidth ), color );
+          painter->fillRect( QRectF( x - width * 0.5,
+                                     y - width * 0.5,
+                                     width, width ), color );
           break;
 
         case Qgis::PointCloudSymbol::Circle:
           painter->setBrush( QBrush( color ) );
           painter->setPen( Qt::NoPen );
-          painter->drawEllipse( QRectF( x - mPainterPenWidth * 0.5,
-                                        y - mPainterPenWidth * 0.5,
-                                        mPainterPenWidth, mPainterPenWidth ) );
+          painter->drawEllipse( QRectF( x - width * 0.5,
+                                        y - width * 0.5,
+                                        width, width ) );
           break;
       };
     }
@@ -740,6 +750,12 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \since QGIS 3.28
      */
     void drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const;
+
+    /**
+     * Draws a point at the elevation \a z using at the specified \a x and \a y (in map coordinates) and painter \a width on the elevation map.
+     * \since QGIS 3.36
+     */
+    void drawPointToElevationMap( double x, double y, double z, int width, QgsPointCloudRenderContext &context ) const;
 #endif
 
     /**
@@ -796,7 +812,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     QgsMapUnitScale mPointSizeMapUnitScale;
 
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
-    int mPainterPenWidth = 1;
+    int mDefaultPainterPenWidth = 1;
     Qgis::PointCloudDrawOrder mDrawOrder2d = Qgis::PointCloudDrawOrder::Default;
 
     bool mRenderAsTriangles = false;

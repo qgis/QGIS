@@ -100,7 +100,7 @@ void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
   }
 #endif
 
-  mPainterPenWidth = context.renderContext().convertToPainterUnits( pointSize(), pointSizeUnit(), pointSizeMapUnitScale() );
+  mDefaultPainterPenWidth = context.renderContext().convertToPainterUnits( pointSize(), pointSizeUnit(), pointSizeMapUnitScale() );
 
   switch ( mPointSymbol )
   {
@@ -163,6 +163,11 @@ QStringList QgsPointCloudRenderer::legendRuleKeys() const
 
 void QgsPointCloudRenderer::drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const
 {
+  drawPointToElevationMap( x, y, z, mDefaultPainterPenWidth, context );
+}
+
+void QgsPointCloudRenderer::drawPointToElevationMap( double x, double y, double z, int width, QgsPointCloudRenderContext &context ) const
+{
   const QPointF originalXY( x, y );
   context.renderContext().mapToPixel().transformInPlace( x, y );
   QPainter *elevationPainter = context.renderContext().elevationMap()->painter();
@@ -171,17 +176,17 @@ void QgsPointCloudRenderer::drawPointToElevationMap( double x, double y, double 
   switch ( mPointSymbol )
   {
     case Qgis::PointCloudSymbol::Square:
-      elevationPainter->fillRect( QRectF( x - mPainterPenWidth * 0.5,
-                                          y - mPainterPenWidth * 0.5,
-                                          mPainterPenWidth, mPainterPenWidth ), brush );
+      elevationPainter->fillRect( QRectF( x - width * 0.5,
+                                          y - width * 0.5,
+                                          width, width ), brush );
       break;
 
     case Qgis::PointCloudSymbol::Circle:
       elevationPainter->setBrush( brush );
       elevationPainter->setPen( Qt::NoPen );
-      elevationPainter->drawEllipse( QRectF( x - mPainterPenWidth * 0.5,
-                                             y - mPainterPenWidth * 0.5,
-                                             mPainterPenWidth, mPainterPenWidth ) );
+      elevationPainter->drawEllipse( QRectF( x - width * 0.5,
+                                             y - width * 0.5,
+                                             width, width ) );
       break;
   };
 }
