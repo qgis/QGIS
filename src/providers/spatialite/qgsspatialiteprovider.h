@@ -105,6 +105,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
 
     long long featureCount() const override;
     QgsRectangle extent() const override;
+    QgsBox3D extent3D() const override;
     void updateExtents() override;
     QgsFields fields() const override;
     QVariant minimumValue( int index ) const override;
@@ -312,7 +313,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     QString mProj4text;
 
     //! Rectangle that contains the extent (bounding box) of the layer
-    QgsRectangle mLayerExtent;
+    QgsBox3D mLayerExtent;
 
     //! Number of features in the layer
     long long mNumberFeatures = 0;
