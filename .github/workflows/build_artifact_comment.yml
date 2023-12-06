@@ -69,6 +69,7 @@ jobs:
           script: |
             let fs = require('fs');
             let issue_number = Number(fs.readFileSync('./pr_number'));
+            let git_sha = String(fs.readFileSync('./git_commit'));
             const prComments = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -81,6 +82,7 @@ jobs:
             {
               body += " Debug symbols for this build are available [here](https://github.com/qgis/QGIS/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.debug_symbols_artifact_id}}).";
             }
+            body += "\n\n*(Built from commit " + git_sha + ")*";
 
             const winBuildComment = prComments.data?.find(c => c.body.startsWith(PREFIX));
             if (!!winBuildComment) {
