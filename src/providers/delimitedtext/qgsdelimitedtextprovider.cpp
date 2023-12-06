@@ -439,7 +439,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
   long nInvalidGeometry = 0;
   long nEmptyGeometry = 0;
   mNumberFeatures = 0;
-  mExtent = QgsRectangle();
+  mExtent = QgsBox3D();
 
   struct FieldTypeInformation
   {
@@ -513,7 +513,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
               {
                 mNumberFeatures++;
                 mWkbType = type;
-                mExtent = geom.boundingBox();
+                mExtent = geom.boundingBox3D();
                 foundFirstGeometry = true;
               }
               else
@@ -521,8 +521,8 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
                 mNumberFeatures++;
                 if ( geom.isMultipart() )
                   mWkbType = type;
-                const QgsRectangle bbox( geom.boundingBox() );
-                mExtent.combineExtentWith( bbox );
+                const QgsBox3D bbox( geom.boundingBox3D() );
+                mExtent.combineWith( bbox );
               }
               if ( buildSpatialIndex )
               {
@@ -576,12 +576,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
           if ( foundFirstGeometry )
           {
-            mExtent.combineExtentWith( pt.x(), pt.y() );
+            mExtent.combineWith( pt.x(), pt.y(), pt.z() );
           }
           else
           {
             // Extent for the first point is just the first point
-            mExtent.set( pt.x(), pt.y(), pt.x(), pt.y() );
+            mExtent = QgsBox3D( pt.x(), pt.y(), pt.z(), pt.x(), pt.y(), pt.z() );
             mWkbType = Qgis::WkbType::Point;
             if ( mZFieldIndex > -1 )
               mWkbType = QgsWkbTypes::addZ( mWkbType );
@@ -606,12 +606,20 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
           recordInvalidLine( tr( "Invalid X or Y fields at line %1" ) );
         }
       }
+
+      if ( ! QgsWkbTypes::hasZ( mWkbType ) )
+      {
+        mExtent.setZMinimum( std::numeric_limits<double>::quiet_NaN() );
+        mExtent.setZMinimum( std::numeric_limits<double>::quiet_NaN() );
+      }
     }
     else
     {
       mWkbType = Qgis::WkbType::NoGeometry;
       mNumberFeatures++;
     }
+
+    elevationProperties()->setContainsElevationData( QgsWkbTypes::hasZ( mWkbType ) );
 
     // Progress changed every 100 features
     if ( feedback && mNumberFeatures % 100 == 0 )
@@ -977,7 +985,7 @@ void QgsDelimitedTextProvider::rescanFile() const
   mUseSubsetIndex = false;
   QgsFeatureIterator fi = getFeatures( QgsFeatureRequest() );
   mNumberFeatures = 0;
-  mExtent = QgsRectangle();
+  mExtent = QgsBox3D();
   QgsFeature f;
   bool foundFirstGeometry = false;
   while ( fi.nextFeature( f ) )
@@ -986,13 +994,13 @@ void QgsDelimitedTextProvider::rescanFile() const
     {
       if ( !foundFirstGeometry )
       {
-        mExtent = f.geometry().boundingBox();
+        mExtent = f.geometry().boundingBox3D();
         foundFirstGeometry = true;
       }
       else
       {
-        const QgsRectangle bbox( f.geometry().boundingBox() );
-        mExtent.combineExtentWith( bbox );
+        const QgsBox3D bbox( f.geometry().boundingBox3D() );
+        mExtent.combineWith( bbox );
       }
       if ( buildSpatialIndex )
         mSpatialIndex->addFeature( f );
@@ -1001,6 +1009,13 @@ void QgsDelimitedTextProvider::rescanFile() const
       mSubsetIndex.append( ( quintptr ) f.id() );
     mNumberFeatures++;
   }
+
+  if ( ! QgsWkbTypes::hasZ( mWkbType ) )
+  {
+    mExtent.setZMinimum( std::numeric_limits<double>::quiet_NaN() );
+    mExtent.setZMinimum( std::numeric_limits<double>::quiet_NaN() );
+  }
+
   if ( buildSubsetIndex )
   {
     long recordCount = mFile->recordCount();
@@ -1318,6 +1333,13 @@ void QgsDelimitedTextProvider::onFileUpdated()
 }
 
 QgsRectangle QgsDelimitedTextProvider::extent() const
+{
+  if ( mRescanRequired )
+    rescanFile();
+  return mExtent.toRectangle();
+}
+
+QgsBox3D QgsDelimitedTextProvider::extent3D() const
 {
   if ( mRescanRequired )
     rescanFile();

@@ -99,6 +99,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
     QgsRectangle extent() const override;
+    QgsBox3D extent3D() const override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
@@ -203,7 +204,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     bool mWktHasPrefix = false;
 
     //! Layer extent
-    mutable QgsRectangle mExtent;
+    mutable QgsBox3D mExtent;
 
     int mGeomType;
 
