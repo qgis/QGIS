@@ -179,6 +179,12 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      */
     bool deleteFeature( const QgsFeature &feature );
 
+    /**
+     * Removes a feature from the index by \a id and \a bounds.
+     *
+     * \since QGIS 3.36
+     */
+    bool deleteFeature( QgsFeatureId id, const QgsRectangle &bounds );
 
     /* queries */
 
