@@ -87,21 +87,32 @@ class TestQgsSpatialIndex : public QObject
       QVERIFY( fids2.contains( 3 ) );
     }
 
-    void testQueryManualInsert()
+    void testQueryManualInsertAndDelete()
     {
       QgsSpatialIndex index;
       index.addFeature( 1, QgsRectangle( 2, 3, 2, 3 ) );
       index.addFeature( 2, QgsRectangle( 12, 13, 12, 13 ) );
       index.addFeature( 3, QgsRectangle( 14, 13, 14, 13 ) );
 
-      const QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 1, 2, 3, 4 ) );
+      QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 1, 2, 3, 4 ) );
       QVERIFY( fids.count() == 1 );
       QVERIFY( fids.at( 0 ) == 1 );
 
-      const QList<QgsFeatureId> fids2 = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
-      QVERIFY( fids2.count() == 2 );
-      QVERIFY( fids2.contains( 2 ) );
-      QVERIFY( fids2.contains( 3 ) );
+      fids = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
+      QVERIFY( fids.count() == 2 );
+      QVERIFY( fids.contains( 2 ) );
+      QVERIFY( fids.contains( 3 ) );
+
+      index.deleteFeature( 2, QgsRectangle( 12, 13, 12, 13 ) );
+      fids = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
+      QVERIFY( fids.count() == 1 );
+      QVERIFY( fids.contains( 3 ) );
+      fids = index.intersects( QgsRectangle( 1, 2, 3, 4 ) );
+      QVERIFY( fids.count() == 1 );
+      QVERIFY( fids.at( 0 ) == 1 );
+      index.deleteFeature( 3, QgsRectangle( 14, 13, 14, 13 ) );
+      fids = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
+      QVERIFY( fids.empty() );
     }
 
     void testInitFromEmptyIterator()

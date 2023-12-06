@@ -485,6 +485,17 @@ bool QgsSpatialIndex::deleteFeature( const QgsFeature &f )
   return d->mRTree->deleteData( r, FID_TO_NUMBER( id ) );
 }
 
+bool QgsSpatialIndex::deleteFeature( QgsFeatureId id, const QgsRectangle &bounds )
+{
+  const SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( bounds );
+
+  const QMutexLocker locker( &d->mMutex );
+  // TODO: handle exceptions (if the comment in the other ::deleteFeature implementation is correct!)
+  if ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries )
+    d->mGeometries.remove( id );
+  return d->mRTree->deleteData( r, FID_TO_NUMBER( id ) );
+}
+
 QList<QgsFeatureId> QgsSpatialIndex::intersects( const QgsRectangle &rect ) const
 {
   QList<QgsFeatureId> list;
