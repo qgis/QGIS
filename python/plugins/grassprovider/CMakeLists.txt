@@ -1,4 +1,5 @@
 file(GLOB PY_FILES *.py)
+list(FILTER PY_FILES EXCLUDE REGEX ".*description_to_json.py")
 file(GLOB OTHER_FILES grass7.txt metadata.txt)
 
 execute_process(
