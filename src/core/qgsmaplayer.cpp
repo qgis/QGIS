@@ -2894,6 +2894,21 @@ QString QgsMapLayer::generalHtmlMetadata() const
     metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Provider" ) + QStringLiteral( "</td><td>%1" ).arg( dataProvider()->name() ) + QStringLiteral( "</td></tr>\n" );
 
   metadata += QLatin1String( "</table>\n<br><br>" );
+
+  // custom properties
+  if ( const auto keys = customPropertyKeys(); !keys.isEmpty() )
+  {
+    metadata += QStringLiteral( "<h1>" ) + tr( "Custom Properties" ) + QStringLiteral( "</h1>\n<hr>\n" );
+    metadata += QStringLiteral( "<table class=\"list-view\">\n<tbody>" );
+    for ( const QString &key : keys )
+    {
+      const QVariant propValue = customProperty( key );
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( key.toHtmlEscaped(), propValue.toString().toHtmlEscaped() );
+    }
+    metadata += QStringLiteral( "</tbody></table>\n" );
+    metadata += QLatin1String( "<br><br>\n" );
+  }
+
   return metadata;
 }
 
