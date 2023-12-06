@@ -12,27 +12,45 @@ Parses .txt algorithm description files and builds aggregated .json
 description
 """
 
+import argparse
 import json
+import os
+from pathlib import Path
 
-from grassprovider.Grass7Utils import (
-    Grass7Utils,
-    ParsedDescription
-)
 
-base_description_folders = [f for f in Grass7Utils.grassDescriptionFolders()
-                            if f != Grass7Utils.userDescriptionFolder()]
+def main(description_folder: str, output_file: str):
+    from .parsed_description import (
+        ParsedDescription
+    )
 
-for folder in base_description_folders:
     algorithms = []
+    folder = Path(description_folder)
     for description_file in folder.glob('*.txt'):
+
         description = ParsedDescription.parse_description_file(
             description_file, translate=False)
 
-        extpath = description_file.parents[1].joinpath('ext', description.name.replace('.', '_') + '.py')
-        if extpath.exists():
+        ext_path = description_file.parents[1].joinpath(
+            'ext', description.name.replace('.', '_') + '.py')
+        if ext_path.exists():
             description.ext_path = description.name.replace('.', '_')
 
         algorithms.append(description.as_dict())
 
-    with open(folder / 'algorithms.json', 'wt', encoding='utf8') as f_out:
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+    with open(output_file, 'wt', encoding='utf8') as f_out:
         f_out.write(json.dumps(algorithms, indent=2))
+
+
+parser = argparse.ArgumentParser(description="Parses GRASS .txt algorithm "
+                                             "description files and builds "
+                                             "aggregated .json description")
+
+parser.add_argument("input", help="Path to the description directory")
+parser.add_argument("output", help="Path to the output algorithms.json file")
+args = parser.parse_args()
+
+if not os.path.isdir(args.input):
+    raise ValueError(f"Input directory '{args.input}' is not a directory.")
+
+main(args.input, args.output)

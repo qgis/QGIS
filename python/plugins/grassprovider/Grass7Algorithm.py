@@ -25,7 +25,6 @@ from typing import (
 )
 import sys
 import os
-import re
 import uuid
 import math
 import importlib
@@ -77,11 +76,10 @@ with warnings.catch_warnings():
     from osgeo import ogr
 
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.parameters import getParameterFromString
 
-from grassprovider.Grass7Utils import (
-    Grass7Utils,
-    ParsedDescription
-)
+from grassprovider.parsed_description import ParsedDescription
+from grassprovider.Grass7Utils import Grass7Utils
 
 from processing.tools.system import isWindows, getTempFilename
 
@@ -263,7 +261,51 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self._group = description.group
         self._groupId = description.group_id
         self.hardcodedStrings = description.hardcoded_strings[:]
-        self.params = description.params
+
+        self.params = []
+
+        has_raster_input: bool = False
+        has_vector_input: bool = False
+
+        has_raster_output: bool = False
+        has_vector_outputs: bool = False
+
+        for param_string in description.param_strings:
+            try:
+                parameter = getParameterFromString(param_string, "GrassAlgorithm")
+            except Exception as e:
+                QgsMessageLog.logMessage(
+                    QCoreApplication.translate("GrassAlgorithm",
+                                               'Could not open GRASS GIS 7 algorithm: {0}').format(
+                        self._name),
+                    QCoreApplication.translate("GrassAlgorithm",
+                                               'Processing'),
+                    Qgis.Critical)
+                raise e
+
+            if parameter is None:
+                continue
+
+            self.params.append(parameter)
+            if isinstance(parameter, (
+                    QgsProcessingParameterVectorLayer,
+                    QgsProcessingParameterFeatureSource)):
+                has_vector_input = True
+            elif isinstance(parameter,
+                            QgsProcessingParameterRasterLayer):
+                has_raster_input = True
+            elif isinstance(parameter,
+                            QgsProcessingParameterMultipleLayers):
+                if parameter.layerType() < 3 or parameter.layerType() == 5:
+                    has_vector_input = True
+                elif parameter.layerType() == 3:
+                    has_raster_input = True
+            elif isinstance(parameter,
+                            QgsProcessingParameterVectorDestination):
+                has_vector_outputs = True
+            elif isinstance(parameter,
+                            QgsProcessingParameterRasterDestination):
+                has_raster_output = True
 
         param = QgsProcessingParameterExtent(
             self.GRASS_REGION_EXTENT_PARAMETER,
@@ -273,7 +315,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.params.append(param)
 
-        if description.has_raster_output or description.has_raster_input:
+        if has_raster_output or has_raster_input:
             # Add a cellsize parameter
             param = QgsProcessingParameterNumber(
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
@@ -284,7 +326,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.params.append(param)
 
-        if description.has_raster_output:
+        if has_raster_output:
             # Add a createopt parameter for format export
             param = QgsProcessingParameterString(
                 self.GRASS_RASTER_FORMAT_OPT,
@@ -305,7 +347,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             param.setHelp(self.tr('Metadata options should be comma separated'))
             self.params.append(param)
 
-        if description.has_vector_input:
+        if has_vector_input:
             param = QgsProcessingParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
                                                  self.tr('v.in.ogr snap tolerance (-1 = no snap)'),
                                                  type=QgsProcessingParameterNumber.Double,
@@ -321,7 +363,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.params.append(param)
 
-        if description.has_vector_outputs:
+        if has_vector_outputs:
             # Add an optional output type
             param = QgsProcessingParameterEnum(self.GRASS_OUTPUT_TYPE_PARAMETER,
                                                self.tr('v.out.ogr output type'),

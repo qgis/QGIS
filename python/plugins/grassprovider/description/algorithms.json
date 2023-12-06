@@ -7,14 +7,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_sample",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Vector layer defining sample points|0|None|False",
@@ -33,14 +25,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_tasscap",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input rasters. Landsat4-7: bands 1,2,3,4,5,7; Landsat8: bands 2,3,4,5,6,7; MODIS: bands 1,2,3,4,5,6,7|3|None|False",
@@ -56,14 +40,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_shape_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -80,14 +56,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input raster layer(s)|3|None|False",
@@ -107,14 +75,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_colors_stddev",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|map|Name of raster map|None|False",
@@ -131,14 +91,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False",
@@ -163,14 +115,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_cwed",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -188,14 +132,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterString|url|GetFeature URL starting with 'http'|http://|False|False",
@@ -214,14 +150,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False",
@@ -239,14 +167,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFile|input|Name of input E00 file|QgsProcessingParameterFile.File|e00|None|False",
@@ -262,14 +182,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|fpar|Name of fPAR raster map|None|False",
@@ -289,14 +201,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input elevation layer|None|False",
@@ -311,14 +215,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input layer|None|False",
@@ -336,14 +232,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Elevation|None|False",
@@ -373,14 +261,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input input raster layer|None|False",
@@ -399,14 +279,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Raster layer(s) to be quantized|1|None|False",
@@ -426,14 +298,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False",
@@ -454,14 +318,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Elevation|None|False",
@@ -485,14 +341,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_statistics",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|base|Base raster layer|None|False",
@@ -510,14 +358,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFile|input|ASCII file to be imported|QgsProcessingParameterFile.File|txt|None|False",
@@ -534,14 +374,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False",
@@ -562,14 +394,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|map|Raster map to be queried|None|False",
@@ -587,14 +411,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -612,14 +428,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Layer to clean|-1|None|False",
@@ -640,14 +448,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_renyi",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -665,14 +465,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer to fill|None|False",
@@ -694,14 +486,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterString|grid|Number of rows and columns in grid|10,10",
@@ -723,14 +507,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False",
@@ -753,14 +529,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False",
@@ -778,14 +546,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterNumber|year|Year|QgsProcessingParameterNumber.Integer|2017|False|1950|2050",
@@ -809,14 +569,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_salesman",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False",
@@ -839,14 +591,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [
       "operation=report"
     ],
@@ -864,14 +608,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map|None|False",
@@ -900,14 +636,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Names of ASTER DN layers (15 layers)|3|None|False",
@@ -930,14 +658,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector (v.lidar.edgedetection output)|-1|None|False",
@@ -955,14 +675,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|ainput|Input layer (A)|-1|None|False",
@@ -983,14 +695,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|hue|Name of input raster map (hue)|None|False",
@@ -1009,14 +713,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Name of elevation raster map|None|False",
@@ -1039,14 +735,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Vector points to be spatially perturbed|-1|None|False",
@@ -1065,14 +753,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False",
@@ -1095,14 +775,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFile|input|ASCII file to be imported|QgsProcessingParameterFile.File|txt|None|False",
@@ -1132,14 +804,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterNumber|dimension|Fractal dimension of surface (2 < D < 3)|QgsProcessingParameterNumber.Double|2.05|True|2.0|3.0",
@@ -1155,14 +819,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterNumber|npoints|Number of points to be created|QgsProcessingParameterNumber.Double|100|False|0|None",
@@ -1186,14 +842,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -1213,14 +861,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_patchdensity_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -1237,14 +877,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|eta|Names of satellite ETa raster maps [mm/d or cm/d]|3|None|False",
@@ -1264,14 +896,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [
       "-p"
     ],
@@ -1290,14 +914,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector layer (v.lidar.growing output)|-1|None|False",
@@ -1319,14 +935,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_neighbors",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -1349,14 +957,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False",
@@ -1371,14 +971,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False",
@@ -1395,14 +987,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [
       "-t"
     ],
@@ -1424,14 +1008,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|map|Input layer|None|False",
@@ -1448,14 +1024,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_mps_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -1472,14 +1040,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_mask_vect",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|vector|Name of vector map to use as mask|1;2|None|False",
@@ -1498,14 +1058,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False",
@@ -1521,14 +1073,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -1545,14 +1089,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_patchnum_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -1569,14 +1105,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster|None|False",
@@ -1594,14 +1122,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector layer|0|None|False",
@@ -1620,14 +1140,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_mps",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -1644,14 +1156,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|hue|Hue|None|False",
@@ -1672,14 +1176,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|map|input raster layer|None|False",
@@ -1700,14 +1196,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|map|Name of raster map|None|False",
@@ -1731,14 +1219,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map|None|False",
@@ -1765,14 +1245,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input layer|None|False",
@@ -1790,14 +1262,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|map|Input vector map |-1|None|False",
@@ -1822,14 +1286,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterPoint|coordinates|The coordinate of the center (east,north)|0,0|False",
@@ -1848,14 +1304,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_pansharpen",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|red|Name of red channel|None|False",
@@ -1878,14 +1326,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|map|Input layer|-1|None|False",
@@ -1902,14 +1342,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_centrality",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False",
@@ -1937,14 +1369,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_to_3d",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False",
@@ -1964,14 +1388,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Raster layer with rasterized contours|None|False",
@@ -1986,14 +1402,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector layer|0|None|False",
@@ -2016,14 +1424,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_rgb",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -2040,14 +1440,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False",
@@ -2067,14 +1459,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_landsat_toar",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|rasters|Landsat input rasters|3|None|False",
@@ -2102,14 +1486,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input surface reflectance QC layer [bit array]|None|False",
@@ -2127,14 +1503,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|map|Name of raster map|None|False",
@@ -2158,14 +1526,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [
       "-m"
     ],
@@ -2186,14 +1546,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_padsd_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -2210,14 +1562,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_smap",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False",
@@ -2236,14 +1580,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -2262,14 +1598,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False",
@@ -2291,14 +1619,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterNumber|dip|Dip of plane|QgsProcessingParameterNumber.Double|0.0|False|-90.0|90.0",
@@ -2318,14 +1638,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input direction",
@@ -2347,14 +1659,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|psand|Name of soil sand fraction raster map [0.0-1.0]|None|False",
@@ -2372,14 +1676,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_horizon",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map|None|False",
@@ -2407,14 +1703,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_shannon",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -2431,14 +1719,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|base|Base layer to be reclassified|None|False",
@@ -2454,14 +1734,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_patchnum",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -2478,14 +1750,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_in_spotvgt",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFile|input|Name of input SPOT VGT NDVI HDF file|QgsProcessingParameterFile.File|hdf|None|False",
@@ -2501,14 +1765,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|map|Name of input vector map|-1|None|False",
@@ -2531,14 +1787,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Elevation|None|False",
@@ -2563,14 +1811,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [
       "-o"
     ],
@@ -2599,14 +1839,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input layer|-1|None|False",
@@ -2627,14 +1859,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input lines layer|1|None|False",
@@ -2654,14 +1878,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|c|The initial concentration in [kg/m^3]|None|False",
@@ -2702,14 +1918,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_dominance",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -2726,14 +1934,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_edit",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|map|Name of vector layer|-1|None|False",
@@ -2768,14 +1968,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_shape",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -2792,14 +1984,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|map|Input layers|3|None|False",
@@ -2815,14 +1999,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Elevation raster layer [meters]|None|False",
@@ -2843,14 +2019,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|a|Raster layer A|None|False",
@@ -2871,14 +2039,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -2897,14 +2057,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -2928,14 +2080,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map [m a.s.l.]|None|False",
@@ -2957,14 +2101,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|albedo|Name of albedo raster map [0.0;1.0]|None|False",
@@ -2984,14 +2120,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input direction",
@@ -3013,14 +2141,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|phead|The initial piezometric head in [m]|None|False",
@@ -3058,14 +2178,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFile|input|Name of input DXF file|QgsProcessingParameterFile.File|dxf|None|False",
@@ -3087,14 +2199,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_cwed_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -3112,14 +2216,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|x_input|x_input|None|False",
@@ -3136,14 +2232,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_mpa_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -3160,14 +2248,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Name of the elevation raster map [m]|None|False",
@@ -3201,14 +2281,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_shade",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|shade|Name of shaded relief or aspect raster map|None|False",
@@ -3227,14 +2299,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|map|Name of raster map|None|False",
@@ -3250,14 +2314,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|red|Name of input red channel surface reflectance map [0.0-1.0]|None|True",
@@ -3282,14 +2338,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|map|Name of two input raster for computing inter-class distances|3|None|False",
@@ -3309,14 +2357,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|net_radiation|Name of input net radiation raster map [W/m2]|None|False",
@@ -3336,14 +2376,6 @@
     "group": "General (g.*)",
     "group_id": "general",
     "ext_path": "g_extension_manage",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterString|extension|Name of Extension|None|False",
@@ -3360,14 +2392,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_landsat_acca",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|rasters|Landsat input rasters|3|None|False",
@@ -3390,14 +2414,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_padrange",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -3414,14 +2430,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -3437,14 +2445,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_shannon_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -3461,14 +2461,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_colors_enhance",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|red|Name of red channel|None|False",
@@ -3492,14 +2484,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector|1|None|False",
@@ -3528,14 +2512,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -3554,14 +2530,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_patchdensity",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -3578,14 +2546,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_what_color",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Raster map to query colors|None|False",
@@ -3602,14 +2562,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_series_interp",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input raster layer(s)|3|None|False",
@@ -3630,14 +2582,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|red|Name of raster map to be used for <red>|None|False",
@@ -3655,14 +2599,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFile|input|Name of input file in Mapgen/Matlab format|QgsProcessingParameterFile.File|txt|None|False",
@@ -3679,14 +2615,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -3706,14 +2634,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -3731,14 +2651,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Raster layer|None|False",
@@ -3769,14 +2681,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input layer|-1|None|False",
@@ -3809,14 +2713,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|mapx|Layer for x coefficient|None|False",
@@ -3832,14 +2728,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Elevation layer [meters]|None|False",
@@ -3880,14 +2768,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|map|Name of raster map|None|False",
@@ -3905,14 +2785,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|albedo|Name of albedo raster map [0.0;1.0]|None|False",
@@ -3935,14 +2807,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_padcv_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -3959,14 +2823,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_proj",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector to reproject|-1|None|False",
@@ -3985,14 +2841,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_padcv",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -4009,14 +2857,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterNumber|mean|Distribution mean|QgsProcessingParameterNumber.Double|0.0|True|None|None",
@@ -4032,14 +2872,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Elevation layer|None|False",
@@ -4056,14 +2888,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|map|Name of input vector map|-1|None|False",
@@ -4083,14 +2907,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False",
@@ -4118,14 +2934,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_visibility",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|-1|None|False",
@@ -4142,14 +2950,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_reclass",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input layer|-1|None|False",
@@ -4167,14 +2967,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_cca",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input rasters (2 to 8)|3|None|False",
@@ -4190,14 +2982,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|map|Input vector layer|-1|None|False",
@@ -4217,14 +3001,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterNumber|distance|Maximum distance of spatial correlation (value(s) >= 0.0)|QgsProcessingParameterNumber.Double|0.0|False|0.0|None",
@@ -4241,14 +3017,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_albedo",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Name of input raster maps|3|None|False",
@@ -4270,14 +3038,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_null",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|map|Name of raster map for which to edit null values|None|False",
@@ -4299,14 +3059,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_colors",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|map|Name of raster maps(s)|3|None|False",
@@ -4331,14 +3083,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_drain",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Elevation|None|False",
@@ -4361,14 +3105,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_richness_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -4385,14 +3121,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster|None|False",
@@ -4407,14 +3135,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_bridge",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False",
@@ -4435,14 +3155,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_mask_rast",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|raster|Name of raster map to use as mask|None|False",
@@ -4460,14 +3172,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [
       "operation=nreport"
     ],
@@ -4485,14 +3189,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_gensigset",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|trainingmap|Ground truth training map|None|False",
@@ -4509,14 +3205,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input lines|1|None|False",
@@ -4538,14 +3226,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [
       "-p"
     ],
@@ -4568,14 +3248,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_pca",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Name of two or more input raster maps|3|None|False",
@@ -4594,14 +3266,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Vector layer|-1|None|False",
@@ -4624,14 +3288,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|base_ros|Raster map containing base ROS (cm/min)|None|False",
@@ -4661,14 +3317,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -4685,14 +3333,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Elevation|None|False",
@@ -4728,14 +3368,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input elevation layer",
@@ -4755,14 +3387,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|base|Base raster|None|False",
@@ -4781,14 +3405,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input elevation layer",
@@ -4808,14 +3424,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -4831,14 +3439,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_category",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|map|Name of raster map|None|False",
@@ -4859,14 +3459,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector layer|2|None|False",
@@ -4882,14 +3474,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_connectivity",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False",
@@ -4913,14 +3497,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_components",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False",
@@ -4943,14 +3519,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_edgedensity_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -4969,14 +3537,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -4998,14 +3558,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_padsd",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -5022,14 +3574,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_resamp_filter",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -5049,14 +3593,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|map|point vector defining sample points|-1|None|False",
@@ -5075,14 +3611,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -5103,14 +3631,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster|None|False",
@@ -5128,14 +3648,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_path",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False",
@@ -5160,14 +3672,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_flow",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False",
@@ -5192,14 +3696,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterNumber|distance|Maximum distance of spatial correlation|QgsProcessingParameterNumber.Double|0.0|True|0.0|None",
@@ -5219,14 +3715,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input points layer|0|None|False",
@@ -5264,14 +3752,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_extrude",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input 2D vector map|-1|None|False",
@@ -5296,14 +3776,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_allpairs",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False",
@@ -5326,14 +3798,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_in_geonames",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFile|input|Uncompressed geonames file from (with .txt extension)|QgsProcessingParameterFile.File|txt|None|False",
@@ -5348,14 +3812,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map|None|False",
@@ -5376,14 +3832,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map|None|False",
@@ -5409,14 +3857,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_what_vect",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|map|Name of vector points map for which to edit attributes|0|None|False",
@@ -5435,14 +3875,6 @@
     "group": "Miscellaneous (m.*)",
     "group_id": "miscellaneous",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFile|input|Name of input file|QgsProcessingParameterFile.File|txt|None|False",
@@ -5462,14 +3894,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input points layer|0|None|False",
@@ -5499,14 +3923,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector layer|0|None|False",
@@ -5523,14 +3939,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_distance",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|from|'from' vector map|-1|None|False",
@@ -5554,14 +3962,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_spanningtree",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False",
@@ -5581,14 +3981,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_padrange_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -5605,14 +3997,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|view1|Name of input raster map(s) for view no.1|3|None|False",
@@ -5631,14 +4015,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_simpson_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -5655,14 +4031,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_mpa",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -5679,14 +4047,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of NDVI raster map [-]|None|False",
@@ -5701,14 +4061,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_simpson",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -5725,14 +4077,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_voronoi",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input points layer|0|None|False",
@@ -5749,14 +4093,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFile|parameters|Name of TOPMODEL parameters file|QgsProcessingParameterFile.File|txt|None|False",
@@ -5775,14 +4111,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False",
@@ -5805,14 +4133,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input points layer|-1|None|False",
@@ -5838,14 +4158,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input raster|3|None|False",
@@ -5873,14 +4185,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [
       "-i"
     ],
@@ -5900,14 +4204,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|map|Raster layer(s) to report on|3|None|False",
@@ -5935,14 +4231,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_alloc",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False",
@@ -5966,14 +4254,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|input raster layer|None|False",
@@ -5993,14 +4273,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|raster|Elevation|None|False",
@@ -6020,14 +4292,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster layer|None|False",
@@ -6044,14 +4308,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|netradiationdiurnal|Name of the diurnal net radiation map [W/m2]|None|False",
@@ -6068,14 +4324,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Raster layers to be patched together|3|None|False",
@@ -6091,14 +4339,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input polygons layer|2|None|False",
@@ -6119,14 +4359,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_cluster",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False",
@@ -6149,14 +4381,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster|None|False",
@@ -6176,14 +4400,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -6199,14 +4415,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of existing vector map|-1|None|False",
@@ -6223,14 +4431,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input raster(s)|3|None|False",
@@ -6247,14 +4447,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False",
@@ -6273,14 +4465,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_distance",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False",
@@ -6309,14 +4493,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_tileset",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterCrs|sourceproj|Source projection|None|False",
@@ -6340,14 +4516,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_proj",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster to reproject|None|False",
@@ -6367,14 +4535,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|map|Raster layer|None|False",
@@ -6393,14 +4553,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_oif",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Name of input raster map(s)|3|None|False",
@@ -6417,14 +4569,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|map|Input layer|-1|None|False",
@@ -6442,14 +4586,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_edgedensity",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -6468,14 +4604,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_what_rast",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|map|Name of vector points map for which to edit attributes|-1|None|False",
@@ -6495,14 +4623,6 @@
     "group": "Visualization(NVIZ)",
     "group_id": "visualization",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|elevation|Name of elevation raster map|3|None|False",
@@ -6520,14 +4640,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Elevation|None|False",
@@ -6546,14 +4658,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input lines layer|1|None|False",
@@ -6569,14 +4673,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_renyi_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -6594,14 +4690,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -6622,14 +4710,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of annual precipitation raster map [mm/year]|None|False",
@@ -6645,14 +4725,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_maxlik",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False",
@@ -6669,14 +4741,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_stats_quantile_rast",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|base|Name of base raster map|None|False",
@@ -6696,14 +4760,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Name of reflectance raster maps to be corrected topographically|3|None|False",
@@ -6722,14 +4778,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|classification|Raster layer containing classification result|None|False",
@@ -6748,14 +4796,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Unit cost layer|None|False",
@@ -6782,14 +4822,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input layer|0|None|False",
@@ -6806,14 +4838,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input raster layers|3|None|False",
@@ -6829,14 +4853,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_gensig",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|trainingmap|Ground truth training map|None|False",
@@ -6852,14 +4868,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Drainage direction raster|None|False",
@@ -6875,14 +4883,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|cnetwork|Input coded stream network raster layer|None|False",
@@ -6899,14 +4899,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [
       "-e"
     ],
@@ -6924,14 +4916,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_rectify",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False",
@@ -6954,14 +4938,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Input map: elevation map|None|False",
@@ -6985,14 +4961,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Name of the elevation raster map [m]|None|False",
@@ -7029,14 +4997,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map|None|False",
@@ -7063,14 +5023,6 @@
     "group": "General (g.*)",
     "group_id": "general",
     "ext_path": "g_extension_list",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterBoolean|-l|List available extensions in the official GRASS GIS Addons repository|False",
@@ -7087,14 +5039,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input layer|None|False",
@@ -7112,14 +5056,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [
       "-p",
       "-g",
@@ -7141,14 +5077,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_blend_rgb",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [
       "output=blended"
     ],
@@ -7170,14 +5098,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|netradiation|Name of instantaneous net radiation raster map [W/m2]|None|False",
@@ -7203,14 +5123,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -7228,14 +5140,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|red|Red|None|False",
@@ -7258,14 +5162,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer with data gaps to fill|None|False",
@@ -7289,14 +5185,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_vect_stats",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|points|Name of existing vector map with points|0|None|False",
@@ -7317,14 +5205,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterNumber|min|Minimum random value|QgsProcessingParameterNumber.Integer|0|True|None|None",
@@ -7341,14 +5221,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -7364,14 +5236,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|True",
@@ -7393,14 +5257,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -7422,14 +5278,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer to thin|None|False",
@@ -7445,14 +5293,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Elevation layer [meters]|None|False",
@@ -7492,14 +5332,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -7523,14 +5355,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Elevation|None|False",
@@ -7549,14 +5373,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|real|Name of input raster map (image fft, real part)|None|False",
@@ -7572,14 +5388,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|model|Raster map containing fuel models|None|False",
@@ -7606,14 +5414,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|first|Name of first raster map|None|False",
@@ -7631,14 +5431,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input lines layer|1|None|False",
@@ -7658,14 +5450,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map representing data that will be summed within clumps|None|False",
@@ -7682,14 +5466,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_evapo_mh",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|netradiation_diurnal|Name of input diurnal net radiation raster map [W/m2/d]|None|False",
@@ -7711,14 +5487,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_blend_combine",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [
       "-c"
     ],
@@ -7738,14 +5506,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map with training points|0|None|False",
@@ -7771,14 +5531,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_steiner",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False",
@@ -7800,14 +5552,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_reclass",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
@@ -7824,14 +5568,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_richness",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -7848,14 +5584,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map with training points|0|None|False",
@@ -7878,14 +5606,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_segment",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False",
@@ -7911,14 +5631,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFile|input|LAS input file|QgsProcessingParameterFile.File|las|None|False",
@@ -7953,14 +5665,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|mapx|Map(s) for x coefficient|3|None|False",
@@ -7978,14 +5682,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_rast_stats",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [
       "-c"
     ],
@@ -8007,14 +5703,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Name of input raster map|3|None|False",
@@ -8046,14 +5734,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_pielou",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -8070,14 +5750,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_dominance_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -8094,14 +5766,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": "i_group",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False",
@@ -8116,14 +5780,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer |None|False",
@@ -8138,14 +5794,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|elevation|Elevation raster layer [meters]|None|False",
@@ -8171,14 +5819,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": "v_net_iso",
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False",
@@ -8202,14 +5842,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Vector points layer|0|None|False",
@@ -8226,14 +5858,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False",
@@ -8248,14 +5872,6 @@
     "group": "Imagery (i.*)",
     "group_id": "imagery",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|red|Name for input raster map (red)|None|True",
@@ -8274,14 +5890,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": "r_li_pielou_ascii",
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -8298,14 +5906,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False",
@@ -8320,14 +5920,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input raster layer(s)|3|None|False",
@@ -8351,14 +5943,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster|None|False",
@@ -8379,14 +5963,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|ainput|Input layer (A)|-1|None|False",
@@ -8409,14 +5985,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterFeatureSource|input|Name of input vector map to pack|-1|None|False",
@@ -8432,14 +6000,6 @@
     "group": "Vector (v.*)",
     "group_id": "vector",
     "ext_path": null,
-    "inputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
-    "outputs": {
-      "has_raster": false,
-      "has_vector": true
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterMultipleLayers|input|Input layers|-1|None|False",
@@ -8456,14 +6016,6 @@
     "group": "Raster (r.*)",
     "group_id": "raster",
     "ext_path": null,
-    "inputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
-    "outputs": {
-      "has_raster": true,
-      "has_vector": false
-    },
     "hardcoded_strings": [],
     "parameters": [
       "QgsProcessingParameterRasterLayer|input|Input raster layer|None|False",
