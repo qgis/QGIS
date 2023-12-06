@@ -1157,8 +1157,11 @@ void QgsOgrProvider::compute3DExtentSlowly( QgsOgrLayer *ogrLayer, OGREnvelope3D
       extent->MinY = std::min( extent->MinY, env.MinY );
       extent->MaxX = std::max( extent->MaxX, env.MaxX );
       extent->MaxY = std::max( extent->MaxY, env.MaxY );
-      extent->MinZ = std::min( extent->MinZ, env.MinZ );
-      extent->MaxZ = std::max( extent->MaxZ, env.MaxZ );
+      if ( OGR_G_Is3D( g ) )
+      {
+        extent->MinZ = std::min( extent->MinZ, env.MinZ );
+        extent->MaxZ = std::max( extent->MaxZ, env.MaxZ );
+      }
     }
   }
   ogrLayer->ResetReading();
