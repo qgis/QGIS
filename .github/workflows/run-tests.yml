@@ -431,6 +431,7 @@ jobs:
         if: ${{ failure() }}
         run: |
           echo ${{ github.event.number }} | tee qgis_test_report/pr_number
+          echo ${{ github.sha }} | tee qgis_test_report/git_commit
 
       - name: Archive test results report
         if: ${{ failure() }}
