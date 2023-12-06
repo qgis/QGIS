@@ -19,11 +19,11 @@ __author__ = 'Victor Olaya'
 __date__ = 'February 2015'
 __copyright__ = '(C) 2014-2015, Victor Olaya'
 
-import stat
-import shutil
-import subprocess
 import os
 import re
+import shutil
+import stat
+import subprocess
 import sys
 from dataclasses import (
     dataclass,
@@ -36,6 +36,7 @@ from typing import (
     Dict
 )
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -51,11 +52,11 @@ from qgis.core import (
     QgsProcessingParameterVectorDestination,
     QgsProcessingParameterRasterDestination
 )
-from qgis.PyQt.QtCore import QCoreApplication
-from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import userFolder, isWindows, isMac, mkdir
+
 from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.parameters import getParameterFromString
+from processing.tools.system import userFolder, isWindows, isMac, mkdir
 
 
 @dataclass
@@ -82,7 +83,8 @@ class ParsedDescription:
     has_vector_outputs: bool = False
 
     hardcoded_strings: List[str] = field(default_factory=list)
-    params: List[QgsProcessingParameterDefinition] = field(default_factory=list)
+    params: List[QgsProcessingParameterDefinition] = field(
+        default_factory=list)
     param_strings: List[str] = field(default_factory=list)
 
     def as_dict(self) -> Dict:
@@ -106,7 +108,7 @@ class ParsedDescription:
                 {
                     'has_raster': self.has_raster_output,
                     'has_vector': self.has_vector_outputs
-                },
+            },
             'hardcoded_strings': self.hardcoded_strings,
             'parameters': self.param_strings
         }
@@ -139,14 +141,15 @@ class ParsedDescription:
         result.hardcoded_strings = description.get('hardcoded_strings', [])
         result.param_strings = description.get('parameters', [])
         for param in result.param_strings:
-            result.params.append(getParameterFromString(param, "GrassAlgorithm"))
+            result.params.append(
+                getParameterFromString(param, "GrassAlgorithm"))
 
         return result
 
     @staticmethod
     def parse_description_file(
-        description_file: Path,
-        translate: bool = True) -> 'ParsedDescription':
+            description_file: Path,
+            translate: bool = True) -> 'ParsedDescription':
         """
         Parses a description file and returns the result
         """
@@ -164,7 +167,8 @@ class ParsedDescription:
             else:
                 result.name = line[:line.find(' ')].lower()
             if translate:
-                result.short_description = QCoreApplication.translate("GrassAlgorithm", line)
+                result.short_description = QCoreApplication.translate(
+                    "GrassAlgorithm", line)
             else:
                 result.short_description = line
 
@@ -172,11 +176,13 @@ class ParsedDescription:
             # Read the grass group
             line = lines.readline().strip('\n').strip()
             if translate:
-                result.group = QCoreApplication.translate("GrassAlgorithm", line)
+                result.group = QCoreApplication.translate("GrassAlgorithm",
+                                                          line)
             else:
                 result.group = line
 
-            result.group_id = ParsedDescription.GROUP_ID_REGEX.search(line).group(0).lower()
+            result.group_id = ParsedDescription.GROUP_ID_REGEX.search(
+                line).group(0).lower()
 
             # Then you have parameters/output definition
             line = lines.readline().strip('\n').strip()
@@ -184,29 +190,40 @@ class ParsedDescription:
                 try:
                     line = line.strip('\n').strip()
                     if line.startswith('Hardcoded'):
-                        result.hardcoded_strings.append(line[len('Hardcoded|'):])
+                        result.hardcoded_strings.append(
+                            line[len('Hardcoded|'):])
                     result.param_strings.append(line)
                     parameter = getParameterFromString(line, "GrassAlgorithm")
                     if parameter is not None:
                         result.params.append(parameter)
-                        if isinstance(parameter, (QgsProcessingParameterVectorLayer, QgsProcessingParameterFeatureSource)):
+                        if isinstance(parameter, (
+                                QgsProcessingParameterVectorLayer,
+                                QgsProcessingParameterFeatureSource)):
                             result.has_vector_input = True
-                        elif isinstance(parameter, QgsProcessingParameterRasterLayer):
+                        elif isinstance(parameter,
+                                        QgsProcessingParameterRasterLayer):
                             result.has_raster_input = True
-                        elif isinstance(parameter, QgsProcessingParameterMultipleLayers):
+                        elif isinstance(parameter,
+                                        QgsProcessingParameterMultipleLayers):
                             if parameter.layerType() < 3 or parameter.layerType() == 5:
                                 result.has_vector_input = True
                             elif parameter.layerType() == 3:
                                 result.has_raster_input = True
-                        elif isinstance(parameter, QgsProcessingParameterVectorDestination):
+                        elif isinstance(parameter,
+                                        QgsProcessingParameterVectorDestination):
                             result.has_vector_outputs = True
-                        elif isinstance(parameter, QgsProcessingParameterRasterDestination):
+                        elif isinstance(parameter,
+                                        QgsProcessingParameterRasterDestination):
                             result.has_raster_output = True
                     line = lines.readline().strip('\n').strip()
                 except Exception as e:
                     QgsMessageLog.logMessage(
-                        QCoreApplication.translate("GrassAlgorithm", 'Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(description_file, line),
-                        QCoreApplication.translate("GrassAlgorithm", 'Processing'), Qgis.Critical)
+                        QCoreApplication.translate("GrassAlgorithm",
+                                                   'Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(
+                            description_file, line),
+                        QCoreApplication.translate("GrassAlgorithm",
+                                                   'Processing'),
+                        Qgis.Critical)
                     raise e
         return result
 
@@ -285,13 +302,13 @@ class Grass7Utils:
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             si.wShowWindow = subprocess.SW_HIDE
         with subprocess.Popen(
-                [Grass7Utils.command, '-v'],
-                shell=False,
-                stdout=subprocess.PIPE,
-                stdin=subprocess.DEVNULL,
-                stderr=subprocess.STDOUT,
-                universal_newlines=True,
-                startupinfo=si if isWindows() else None
+            [Grass7Utils.command, '-v'],
+            shell=False,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.DEVNULL,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+            startupinfo=si if isWindows() else None
         ) as proc:
             try:
                 lines = proc.stdout.readlines()
@@ -340,12 +357,16 @@ class Grass7Utils:
                 cmdList = [
                     "grass{}{}{}".format(major, minor, patch),
                     "grass",
-                    "grass{}{}{}.{}".format(major, minor, patch, "bat" if isWindows() else "sh"),
+                    "grass{}{}{}.{}".format(major, minor, patch,
+                                            "bat" if isWindows() else "sh"),
                     "grass.{}".format("bat" if isWindows() else "sh")
                 ]
         else:
-            cmdList = ["grass80", "grass78", "grass76", "grass74", "grass72", "grass70", "grass"]
-            cmdList.extend(["{}.{}".format(b, "bat" if isWindows() else "sh") for b in cmdList])
+            cmdList = ["grass80", "grass78", "grass76", "grass74", "grass72",
+                       "grass70", "grass"]
+            cmdList.extend(
+                ["{}.{}".format(b, "bat" if isWindows() else "sh") for b in
+                 cmdList])
 
         # For MS-Windows there is a difference between GRASS Path and GRASS binary
         if isWindows():
@@ -393,9 +414,17 @@ class Grass7Utils:
             if "GISBASE" in os.environ:
                 folder = os.environ["GISBASE"]
             else:
-                testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'grass')
+                testfolder = os.path.join(
+                    os.path.dirname(QgsApplication.prefixPath()), 'grass')
                 if os.path.isdir(testfolder):
-                    grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.') if v != 'svn'])
+                    grassfolders = sorted([f for f in os.listdir(testfolder) if
+                                           f.startswith(
+                                               "grass-7.") and os.path.isdir(
+                                               os.path.join(testfolder, f))],
+                                          reverse=True,
+                                          key=lambda x: [int(v) for v in x[
+                                              len("grass-"):].split(
+                                              '.') if v != 'svn'])
                     if grassfolders:
                         folder = os.path.join(testfolder, grassfolders[0])
         elif isMac():
@@ -404,7 +433,8 @@ class Grass7Utils:
                 folder = os.environ["GISBASE"]
             else:
                 # Find grass folder if it exists inside QGIS bundle
-                for version in ['', '8', '7', '80', '78', '76', '74', '72', '71', '70']:
+                for version in ['', '8', '7', '80', '78', '76', '74', '72',
+                                '71', '70']:
                     testfolder = os.path.join(str(QgsApplication.prefixPath()),
                                               'grass{}'.format(version))
                     if os.path.isdir(testfolder):
@@ -413,7 +443,8 @@ class Grass7Utils:
                     # If nothing found, try standalone GRASS installation
                     if folder is None:
                         for version in ['8', '6', '4', '2', '1', '0']:
-                            testfolder = '/Applications/GRASS-7.{}.app/Contents/MacOS'.format(version)
+                            testfolder = '/Applications/GRASS-7.{}.app/Contents/MacOS'.format(
+                                version)
                             if os.path.isdir(testfolder):
                                 folder = testfolder
                                 break
@@ -440,7 +471,8 @@ class Grass7Utils:
         Note that the provider will load from these in sequence, so we put the userDescriptionFolder first
         to allow users to create modified versions of stock algorithms shipped with QGIS.
         """
-        return [Grass7Utils.userDescriptionFolder(), Path(__file__).parent.joinpath('description')]
+        return [Grass7Utils.userDescriptionFolder(),
+                Path(__file__).parent.joinpath('description')]
 
     @staticmethod
     def getWindowsCodePage():
@@ -457,7 +489,8 @@ class Grass7Utils:
             if not isWindows():
                 fout.write('#!/bin/sh\n')
             else:
-                fout.write('chcp {}>NUL\n'.format(Grass7Utils.getWindowsCodePage()))
+                fout.write(
+                    'chcp {}>NUL\n'.format(Grass7Utils.getWindowsCodePage()))
             for command in commands:
                 Grass7Utils.writeCommand(fout, command)
             fout.write('exit')
@@ -494,7 +527,8 @@ class Grass7Utils:
         folder = Grass7Utils.grassMapsetFolder()
         mkdir(os.path.join(folder, 'PERMANENT'))
         mkdir(os.path.join(folder, 'PERMANENT', '.tmp'))
-        Grass7Utils.writeGrassWindow(os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
+        Grass7Utils.writeGrassWindow(
+            os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
         with open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w') as outfile:
             outfile.write(
                 'QGIS GRASS GIS 7 interface: temporary data processing location.\n')
@@ -503,7 +537,8 @@ class Grass7Utils:
         mkdir(os.path.join(folder, 'PERMANENT', 'sqlite'))
         with open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w') as outfile:
             outfile.write('DB_DRIVER: sqlite\n')
-            outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
+            outfile.write(
+                'DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
 
     @staticmethod
     def writeGrassWindow(filename):
@@ -544,7 +579,8 @@ class Grass7Utils:
         if 'GISBASE' in env:
             del env['GISBASE']
         Grass7Utils.createGrassBatchJobFileFromGrassCommands(commands)
-        os.chmod(Grass7Utils.grassBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
+        os.chmod(Grass7Utils.grassBatchJobFilename(),
+                 stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
         command = [Grass7Utils.command,
                    os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT'),
                    '--exec', Grass7Utils.grassBatchJobFilename()]
@@ -566,7 +602,8 @@ class Grass7Utils:
             si.wShowWindow = subprocess.SW_HIDE
             kw['startupinfo'] = si
             if sys.version_info >= (3, 6):
-                kw['encoding'] = "cp{}".format(Grass7Utils.getWindowsCodePage())
+                kw['encoding'] = "cp{}".format(
+                    Grass7Utils.getWindowsCodePage())
 
         def readline_with_recover(stdout):
             """A method wrapping stdout.readline() with try-except recovering.
@@ -583,19 +620,20 @@ class Grass7Utils:
                 return ''  # replaced-text
 
         with subprocess.Popen(
-                command,
-                shell=False,
-                stdout=subprocess.PIPE,
-                stdin=subprocess.DEVNULL,
-                stderr=subprocess.STDOUT,
-                universal_newlines=True,
-                env=grassenv,
-                **kw
+            command,
+            shell=False,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.DEVNULL,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+            env=grassenv,
+            **kw
         ) as proc:
             for line in iter(lambda: readline_with_recover(proc.stdout), ''):
                 if 'GRASS_INFO_PERCENT' in line:
                     try:
-                        feedback.setProgress(int(line[len('GRASS_INFO_PERCENT') + 2:]))
+                        feedback.setProgress(
+                            int(line[len('GRASS_INFO_PERCENT') + 2:]))
                     except Exception:
                         pass
                 else:
@@ -606,11 +644,14 @@ class Grass7Utils:
                         feedback.reportError(line.strip())
                     elif 'Segmentation fault' in line:
                         feedback.reportError(line.strip())
-                        feedback.reportError('\n' + Grass7Utils.tr('GRASS command crashed :( Try a different set of input parameters and consult the GRASS algorithm manual for more information.') + '\n')
-                        if ProcessingConfig.getSetting(Grass7Utils.GRASS_USE_REXTERNAL):
+                        feedback.reportError('\n' + Grass7Utils.tr(
+                            'GRASS command crashed :( Try a different set of input parameters and consult the GRASS algorithm manual for more information.') + '\n')
+                        if ProcessingConfig.getSetting(
+                                Grass7Utils.GRASS_USE_REXTERNAL):
                             feedback.reportError(Grass7Utils.tr(
                                 'Suggest disabling the experimental "use r.external" option from the Processing GRASS Provider options.') + '\n')
-                        if ProcessingConfig.getSetting(Grass7Utils.GRASS_USE_VEXTERNAL):
+                        if ProcessingConfig.getSetting(
+                                Grass7Utils.GRASS_USE_VEXTERNAL):
                             feedback.reportError(Grass7Utils.tr(
                                 'Suggest disabling the experimental "use v.external" option from the Processing GRASS Provider options.') + '\n')
                     elif line.strip():
@@ -622,7 +663,8 @@ class Grass7Utils:
         # are usually the output ones. If that is the case runs the output
         # commands again.
         if not grassOutDone and outputCommands:
-            command, grassenv = Grass7Utils.prepareGrassExecution(outputCommands)
+            command, grassenv = Grass7Utils.prepareGrassExecution(
+                outputCommands)
             # For MS-Windows, we need to hide the console window.
             kw = {}
             if isWindows():
@@ -631,7 +673,8 @@ class Grass7Utils:
                 si.wShowWindow = subprocess.SW_HIDE
                 kw['startupinfo'] = si
                 if sys.version_info >= (3, 6):
-                    kw['encoding'] = "cp{}".format(Grass7Utils.getWindowsCodePage())
+                    kw['encoding'] = "cp{}".format(
+                        Grass7Utils.getWindowsCodePage())
             with subprocess.Popen(
                 command,
                 shell=False,
@@ -642,7 +685,8 @@ class Grass7Utils:
                 env=grassenv,
                 **kw
             ) as proc:
-                for line in iter(lambda: readline_with_recover(proc.stdout), ''):
+                for line in iter(lambda: readline_with_recover(proc.stdout),
+                                 ''):
                     if 'GRASS_INFO_PERCENT' in line:
                         try:
                             feedback.setProgress(int(
@@ -657,7 +701,8 @@ class Grass7Utils:
                         feedback.pushConsoleInfo(line.strip())
 
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
-            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)
+            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing',
+                                     Qgis.Info)
 
     # GRASS session is used to hold the layers already exported or
     # produced in GRASS between multiple calls to GRASS algorithms.
@@ -700,12 +745,14 @@ class Grass7Utils:
         if Grass7Utils.installedVersion() is not None:
             # For Ms-Windows, we check GRASS binaries
             if isWindows():
-                cmdpath = os.path.join(Grass7Utils.path, 'bin', 'r.out.gdal.exe')
+                cmdpath = os.path.join(Grass7Utils.path, 'bin',
+                                       'r.out.gdal.exe')
                 if not os.path.exists(cmdpath):
                     return Grass7Utils.tr(
                         'The GRASS GIS folder "{}" does not contain a valid set '
                         'of GRASS modules.\nPlease, check that GRASS is correctly '
-                        'installed and available on your system.'.format(os.path.join(Grass7Utils.path, 'bin')))
+                        'installed and available on your system.'.format(
+                            os.path.join(Grass7Utils.path, 'bin')))
             Grass7Utils.isGrassInstalled = True
             return
         # Return error messages
