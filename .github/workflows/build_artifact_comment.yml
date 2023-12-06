@@ -69,7 +69,7 @@ jobs:
           script: |
             let fs = require('fs');
             let issue_number = Number(fs.readFileSync('./pr_number'));
-            let git_sha = String(fs.readFileSync('./git_commit'));
+            let git_sha = String(fs.readFileSync('./git_commit')).trim();
             const prComments = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
