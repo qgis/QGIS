@@ -24,6 +24,8 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 from qgis.PyQt.QtCore import NULL
 from qgis._core import *
 
+@MONKEYPATCH_INJECTIONS@
+
 from .additions.edit import edit, QgsEditError
 from .additions.fromfunction import fromFunction
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue
@@ -91,11 +93,6 @@ QgsVectorLayer.Cross.__doc__ = "Cross marker"
 QgsVectorLayer.NoMarker = Qgis.VertexMarkerType.NoMarker
 QgsVectorLayer.NoMarker.is_monkey_patched = True
 QgsVectorLayer.NoMarker.__doc__ = "No marker"
-
-QgsSymbol.RenderHints = Qgis.SymbolRenderHints
-QgsSymbol.PreviewFlags = Qgis.SymbolPreviewFlags
-QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
-QgsGeometry.ValidityFlags = Qgis.GeometryValidityFlags
 
 # Monkey patch static const "QgsDataProvider.SUBLAYER_SEPARATOR" which was removed for QGIS 3.12
 QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()

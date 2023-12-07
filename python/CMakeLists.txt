@@ -136,14 +136,16 @@ endif()
 
 IF(BUILD_WITH_QT6)
   SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
+  SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/PyQt6)
 ELSE()
   SET(QSCI_SIP_MOD_NAME Qsci/qscimod5.sip)
+  SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 ENDIF()
 
 set(QGIS_PYTHON_DIR ${Python_SITEARCH}/qgis)
 
 # core module
-file(GLOB_RECURSE sip_files_core core/*.sip core/*.sip.in)
+file(GLOB_RECURSE sip_files_core ${BINDING_FILES_ROOT_DIR}/core/*.sip ${BINDING_FILES_ROOT_DIR}/core/*.sip.in)
 set(SIP_EXTRA_FILES_DEPEND ${sip_files_core})
 set(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
 if((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
@@ -202,7 +204,7 @@ endif()
 if (WITH_GUI)
   set(PY_MODULES ${PY_MODULES} gui)
 
-  file(GLOB_RECURSE sip_files_gui gui/*.sip gui/*.sip.in)
+  file(GLOB_RECURSE sip_files_gui ${BINDING_FILES_ROOT_DIR}/gui/*.sip ${BINDING_FILES_ROOT_DIR}/gui/*.sip.in)
   set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
   set(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
   if((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
@@ -239,7 +241,7 @@ if (WITH_3D)
   )
   set(PY_MODULES ${PY_MODULES} 3d)
 
-  file(GLOB_RECURSE sip_files_3d 3d/*.sip 3d/*.sip.in)
+  file(GLOB_RECURSE sip_files_3d ${BINDING_FILES_ROOT_DIR}/3d/*.sip ${BINDING_FILES_ROOT_DIR}/3d/*.sip.in)
   set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_3d})
   set(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.3d.api)
   if((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
@@ -267,7 +269,7 @@ if (WITH_SERVER AND WITH_SERVER_PLUGINS)
 
   set(PY_MODULES ${PY_MODULES} server)
 
-  file(GLOB_RECURSE sip_files_server server/*.sip server/*.sip.in)
+  file(GLOB_RECURSE sip_files_server ${BINDING_FILES_ROOT_DIR}/server/*.sip ${BINDING_FILES_ROOT_DIR}/server/*.sip.in)
   set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_server})
   set(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)
   if((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
@@ -303,7 +305,7 @@ if(WITH_ANALYSIS)
   )
 
   # analysis module
-  file(GLOB_RECURSE sip_files_analysis analysis/*.sip analysis/*.sip.in)
+  file(GLOB_RECURSE sip_files_analysis ${BINDING_FILES_ROOT_DIR}/analysis/*.sip ${BINDING_FILES_ROOT_DIR}/analysis/*.sip.in)
 
   set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
   set(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
@@ -356,10 +358,13 @@ if(WITH_QSCIAPI)
   else()
      set(_python ${Python_EXECUTABLE})
   endif()
+
+  configure_file("${APIS_SRC_DIR}/generate_console_pap.py.in" ${CMAKE_BINARY_DIR}/generate_console_pap.py)
+
   add_custom_command(
     OUTPUT "${QGIS_PYTHON_PAP_FILE}"
     DEPENDS "${QGIS_PYTHON_API_FILE}"
-    COMMAND ${_python} "${APIS_SRC_DIR}/generate_console_pap.py" -platform offscreen "${QGIS_PYTHON_PAP_FILE}" "${APIS_SRC_DIR}" "${APIS_OUT_DIR}"
+    COMMAND ${_python} "${CMAKE_BINARY_DIR}/generate_console_pap.py" -platform offscreen "${QGIS_PYTHON_PAP_FILE}" "${APIS_SRC_DIR}" "${APIS_OUT_DIR}"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Generating pap file for console auto-completion" VERBATIM)
 
@@ -399,21 +404,25 @@ foreach(module ${PY_MODULES})
   add_dependencies(py${module} python_module_qgis__${module})
 
   # concat auto_additions/*.py in _module_/__init__.py
-  file(GLOB PY_FILES_AUTO_ADDITIONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${module}/auto_additions/*.py)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${module}/__init__.py.in ${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}/__init__.py COPYONLY)
+  file(GLOB PY_FILES_AUTO_ADDITIONS ${BINDING_FILES_ROOT_DIR}/${module}/auto_additions/*.py)
+  set(MONKEYPATCH_INJECTIONS "")
   foreach(pyfile ${PY_FILES_AUTO_ADDITIONS})
     file(READ ${pyfile} CONTENTS)
-    file(APPEND ${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}/__init__.py "${CONTENTS}")
+    string(APPEND MONKEYPATCH_INJECTIONS "${CONTENTS}")
   endforeach(pyfile)
+  configure_file(${BINDING_FILES_ROOT_DIR}/${module}/__init__.py.in ${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}/__init__.py @ONLY)
   install(FILES ${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}/__init__.py DESTINATION "${QGIS_PYTHON_DIR}/${module}")
 
-  file(GLOB PY_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${module}/*.py)
+  file(GLOB PY_FILES ${BINDING_FILES_ROOT_DIR}/${module}/*.py)
   install(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}/${module}")
-  file(GLOB PY_FILES_ADDITIONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${module}/additions/*.py)
+  file(GLOB PY_FILES_ADDITIONS ${BINDING_FILES_ROOT_DIR}/${module}/additions/*.py)
+
   install(FILES ${PY_FILES_ADDITIONS} DESTINATION "${QGIS_PYTHON_DIR}/${module}/additions")
   set(PY_FILES ${PY_FILES} ${PY_FILES_ADDITIONS})
   foreach(pyfile ${PY_FILES})
-    get_filename_component(subdir ${pyfile} DIRECTORY)
+    file(RELATIVE_PATH rel_pyfile ${BINDING_FILES_ROOT_DIR} ${pyfile})
+    get_filename_component(subdir ${rel_pyfile} DIRECTORY)
+
     add_custom_command(TARGET py${module}
       POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E make_directory "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${subdir}"

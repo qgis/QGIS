@@ -60,7 +60,7 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP SIP_FILES CPP_FILES
   FOREACH (_sip_file ${SIP_FILES})
     GET_FILENAME_COMPONENT(_sip_file_path ${_sip_file} PATH)
     GET_FILENAME_COMPONENT(_sip_file_name_we ${_sip_file} NAME_WE)
-    FILE(RELATIVE_PATH _sip_file_relpath ${CMAKE_CURRENT_SOURCE_DIR} "${_sip_file_path}/${_sip_file_name_we}")
+    FILE(RELATIVE_PATH _sip_file_relpath ${BINDING_FILES_ROOT_DIR} "${_sip_file_path}/${_sip_file_name_we}")
     SET(_out_sip_file "${CMAKE_CURRENT_BINARY_DIR}/${_sip_file_relpath}.sip")
     CONFIGURE_FILE(${_sip_file} ${_out_sip_file})
   ENDFOREACH (_sip_file)
