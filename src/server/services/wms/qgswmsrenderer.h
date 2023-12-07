@@ -145,7 +145,7 @@ namespace QgsWms
 
       /**
        * Returns a configured pdf export task
-       * \tmpFileName the name of the temporary file to store the pdf
+       * \param tmpFileName the name of the temporary file to store the pdf
        * \returns pdf export object
        * \since QGIS 3.36
        */
