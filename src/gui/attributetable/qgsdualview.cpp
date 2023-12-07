@@ -980,41 +980,27 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( mConfig.mapVisibleColumnToIndex( col ) ).name );
   const int fieldOrigin  = mLayer->fields().fieldOrigin( fieldIndex );
 
-  qDebug() << "THE WHAT " << fieldOrigin;
+  mHorizontalHeaderMenu->addSeparator();
   bool fieldCalculatorEnabled = false;
 
-  mHorizontalHeaderMenu->addSeparator();
-  if ( fieldOrigin == 4 )
-  {
-    QAction *updateField = new QAction( tr( "Update &Field…" ), mHorizontalHeaderMenu );
-    connect( updateField, &QAction::triggered, this, &QgsDualView::updateField );
-    updateField->setData( fieldIndex );
-    mHorizontalHeaderMenu->addAction( updateField );
-
+  if ( fieldOrigin == 1 || fieldOrigin == 3 )
     fieldCalculatorEnabled = true;
-    updateField->setEnabled( fieldCalculatorEnabled );
-  }
-  else
+
+  if ( fieldOrigin == 2 )
   {
-    if ( fieldOrigin == 2 )
-    {
-      int srcFieldIndex;
-      const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
 
-      if ( info && info->isEditable() )
-        fieldCalculatorEnabled = true;
-    }
-
-    if ( fieldOrigin == 1 || fieldOrigin == 3 )
+    if ( info && info->isEditable() )
       fieldCalculatorEnabled = true;
-
-    QAction *fieldCalculator = new QAction( tr( "Open &Field Calculator…" ), mHorizontalHeaderMenu );
-    connect( fieldCalculator, &QAction::triggered, this, &QgsDualView::fieldCalculator );
-    fieldCalculator->setData( fieldIndex );
-    mHorizontalHeaderMenu->addAction( fieldCalculator );
-
-    fieldCalculator->setEnabled( fieldCalculatorEnabled );
   }
+
+  QAction *fieldCalculator = new QAction( tr( "Open &Field Calculator…" ), mHorizontalHeaderMenu );
+  connect( fieldCalculator, &QAction::triggered, this, &QgsDualView::fieldCalculator );
+  fieldCalculator->setData( fieldIndex );
+  mHorizontalHeaderMenu->addAction( fieldCalculator );
+
+  fieldCalculator->setEnabled( fieldCalculatorEnabled );
 
   mHorizontalHeaderMenu->popup( mTableView->horizontalHeader()->mapToGlobal( point ) );
 }
@@ -1058,14 +1044,11 @@ void QgsDualView::hideColumn()
   }
 }
 
-
 void QgsDualView::fieldCalculator()
 {
   QAction *action = qobject_cast<QAction *>( sender() );
   const int fieldIndex = action->data().toInt();
-
   mConfig.update( mLayer->fields() );
-  //const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( col_idx ).name );
   QgsFieldCalculator calc( mLayer, this, fieldIndex );
   if ( calc.exec() == QDialog::Accepted )
   {
@@ -1074,30 +1057,6 @@ void QgsDualView::fieldCalculator()
     if ( col >= 0 )
       mMasterModel->reload( mMasterModel->index( 0, col ), mMasterModel->index( mMasterModel->rowCount() - 1, col ) );
   }
-}
-
-void QgsDualView::updateField()
-{
-  QAction *action = qobject_cast<QAction *>( sender() );
-  const int fieldIndex = action->data().toInt();
-
-  mConfig.update( mLayer->fields() );
-  //const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( col_idx ).name );
-
-  // Show expression builder
-  const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-
-  QgsExpressionBuilderDialog dlg( mLayer, mFeatureListView->displayExpression(), this, QStringLiteral( "generic" ), context );
-  dlg.setWindowTitle( tr( "Expression Builder" ) );
-  dlg.setExpressionText( mLayer->expressionField( fieldIndex ) );
-
-  if ( dlg.exec() == QDialog::Accepted )
-  {
-    mLayer->updateExpressionField( fieldIndex, dlg.expressionText() );
-    //mLayer->reload();
-    //mMasterModel->reload( mMasterModel->index( 0, col_idx ), mMasterModel->index( mMasterModel->rowCount() - 1, col_idx ) );
-  }
-
 }
 
 void QgsDualView::resizeColumn()
