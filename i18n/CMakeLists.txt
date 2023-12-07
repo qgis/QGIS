@@ -27,12 +27,15 @@ set(TS_FILES qgis_ar.ts qgis_az.ts qgis_bg.ts qgis_bs.ts qgis_ca.ts qgis_cs.ts q
 
 ADD_TRANSLATION_FILES (QM_FILES ${TS_FILES})
 
+# TODO QGIS 4.0: remove configure and call directly script
+configure_file(${CMAKE_SOURCE_DIR}/scripts/ts2appinfo.py.in ${CMAKE_BINARY_DIR}/ts2appinfo.py)
+
 if (UNIX AND NOT APPLE AND PYQT_FOUND)
   add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/org.qgis.qgis.desktop ${CMAKE_BINARY_DIR}/org.qgis.qgis.appdata.xml
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     COMMAND ${Python_EXECUTABLE}
-    ARGS ${CMAKE_SOURCE_DIR}/scripts/ts2appinfo.py "${CMAKE_BINARY_DIR}"
+    ARGS ${CMAKE_BINARY_DIR}/ts2appinfo.py "${CMAKE_BINARY_DIR}"
     COMMENT "Updating appinfo files..."
     DEPENDS ${QM_FILES} ${CMAKE_SOURCE_DIR}/linux/org.qgis.qgis.desktop.in ${CMAKE_SOURCE_DIR}/linux/org.qgis.qgis.appdata.xml.in
   )
