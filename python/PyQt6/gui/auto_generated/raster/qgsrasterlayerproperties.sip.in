@@ -1,0 +1,70 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterlayerproperties.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsRasterLayerProperties : QgsLayerPropertiesDialog
+{
+%Docstring(signature="appended")
+Property sheet for a raster map layer
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsrasterlayerproperties.h"
+%End
+  public:
+
+
+    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Constructor
+
+:param lyr: Map layer for which properties will be displayed
+:param canvas: the :py:class:`QgsMapCanvas` instance
+:param parent: the parent of this widget
+:param fl: windows flag
+%End
+
+    virtual void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory ) ${SIP_FINAL};
+
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
+    virtual bool eventFilter( QObject *obj, QEvent *ev );
+
+
+ void saveDefaultStyle() /Deprecated/;
+%Docstring
+Saves the default style when appropriate button is pressed
+
+.. deprecated::
+   use :py:func:`~QgsRasterLayerProperties.saveStyleAsDefault` instead
+%End
+
+  protected slots:
+    virtual void optionsStackedWidget_CurrentChanged( int index ) ${SIP_FINAL};
+
+    virtual void apply() ${SIP_FINAL};
+
+    virtual void rollback() ${SIP_FINAL};
+
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterlayerproperties.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

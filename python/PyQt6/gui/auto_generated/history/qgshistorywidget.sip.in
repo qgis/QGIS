@@ -1,0 +1,51 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistorywidget.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsHistoryWidget : QgsPanelWidget
+{
+%Docstring(signature="appended")
+A widget showing entries from a :py:class:`QgsHistoryProviderRegistry`.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgshistorywidget.h"
+%End
+  public:
+
+    QgsHistoryWidget( const QString &providerId = QString(),
+                      Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile,
+                      QgsHistoryProviderRegistry *registry = 0,
+                      const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(),
+                      QWidget *parent = 0 );
+%Docstring
+Constructor for QgsHistoryWidget, with the specified ``parent`` widget.
+
+If ``providerId`` is specified then the widget will contain only items from the matching
+history provider.
+If ``backends`` is specified then the widget will be filtered to only matching backends.
+
+If no ``registry`` is specified then the singleton :py:class:`QgsHistoryProviderRegistry` from :py:func:`QgsGui.historyProviderRegistry()`
+will be used.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistorywidget.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

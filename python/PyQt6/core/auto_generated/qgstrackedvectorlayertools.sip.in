@@ -1,0 +1,65 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstrackedvectorlayertools.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsTrackedVectorLayerTools : QgsVectorLayerTools
+{
+
+%TypeHeaderCode
+#include "qgstrackedvectorlayertools.h"
+%End
+  public:
+
+    QgsTrackedVectorLayerTools();
+%Docstring
+Constructor for QgsTrackedVectorLayerTools.
+%End
+
+    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget = 0, bool showModal = true, bool hideParent = false ) const;
+
+%Docstring
+This method calls the addFeature method of the backend :py:class:`QgsVectorLayerTools`
+
+:param layer: The layer to which the feature should be added
+:param defaultValues: Default values for the feature to add
+:param defaultGeometry: A default geometry to add to the feature
+:param feature: A pointer to the feature
+:param parentWidget: The widget calling this function to be passed to the used dialog
+:param showModal: If the used dialog should be modal or not
+:param hideParent: If the parent widget should be hidden, when the used dialog is opened
+
+:return: ``True`` in case of success, ``False`` if the operation failed/was aborted
+%End
+    virtual bool startEditing( QgsVectorLayer *layer ) const;
+
+    virtual bool stopEditing( QgsVectorLayer *layer, bool allowCancel ) const;
+
+    virtual bool saveEdits( QgsVectorLayer *layer ) const;
+
+    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double  dx = 0, double dy = 0, QString *errorMsg = 0, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = 0, QString *childrenInfoMsg = 0 ) const;
+
+
+    void setVectorLayerTools( const QgsVectorLayerTools *tools );
+%Docstring
+Set the vector layer tools that will be used to interact with the data
+%End
+
+    void rollback();
+%Docstring
+Delete all features which have been added via this object.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstrackedvectorlayertools.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

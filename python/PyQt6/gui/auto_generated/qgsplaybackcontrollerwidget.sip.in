@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsplaybackcontrollerwidget.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsPlaybackControllerWidget : QWidget
+{
+%Docstring(signature="appended")
+A compound widget containing a set of buttons for controlling media playback.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgsplaybackcontrollerwidget.h"
+%End
+  public:
+
+    explicit QgsPlaybackControllerWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsPlaybackControllerWidget, with the specified ``parent`` widget.
+%End
+
+    QPushButton *button( Qgis::PlaybackOperation operation );
+%Docstring
+Returns the button associated with the specified playback ``operation``.
+%End
+
+  public slots:
+
+    void setState( Qgis::AnimationState state );
+%Docstring
+Sets the current animation ``state`` for the widget.
+%End
+
+    void togglePause();
+%Docstring
+Toggles the pause state on or off.
+%End
+
+  signals:
+
+    void operationTriggered( Qgis::PlaybackOperation operation );
+%Docstring
+Emitted when a playback operation is triggered.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsplaybackcontrollerwidget.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

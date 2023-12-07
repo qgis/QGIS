@@ -1,0 +1,76 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsscrollarea.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsScrollArea : QScrollArea
+{
+%Docstring(signature="appended")
+A QScrollArea subclass with improved scrolling behavior.
+
+:py:class:`QgsScrollArea` should be used instead of QScrollArea widgets.
+In most cases the use is identical, however :py:class:`QgsScrollArea`
+has extra logic to avoid wheel events changing child widget
+values when the mouse cursor is temporarily located over
+a child widget during a scroll event.
+
+All QGIS code and plugins should use :py:class:`QgsScrollArea` in place
+of QScrollArea.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsscrollarea.h"
+%End
+  public:
+
+    explicit QgsScrollArea( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsScrollArea.
+%End
+
+    void scrollOccurred();
+%Docstring
+Should be called when a scroll occurs on with the
+QScrollArea itself or its child :py:func:`~QgsScrollArea.viewport`.
+%End
+
+    bool hasScrolled() const;
+%Docstring
+Returns ``True`` if a scroll recently occurred within
+the QScrollArea or its child :py:func:`~QgsScrollArea.viewport`
+%End
+
+
+    void setVerticalOnly( bool verticalOnly );
+%Docstring
+Sets whether the scroll area only applies vertical.
+
+If set to ``True``, then scroll area children will resize horizontally to match the width of
+the scroll area widget.
+
+.. versionadded:: 3.8
+%End
+
+  protected:
+    virtual void wheelEvent( QWheelEvent *event );
+
+    virtual void resizeEvent( QResizeEvent *event );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsscrollarea.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

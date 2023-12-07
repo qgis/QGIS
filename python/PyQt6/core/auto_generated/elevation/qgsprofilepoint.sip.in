@@ -1,0 +1,112 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilepoint.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProfilePoint
+{
+%Docstring(signature="appended")
+Encapsulates a point on a distance-elevation profile.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprofilepoint.h"
+%End
+  public:
+
+    QgsProfilePoint();
+%Docstring
+Constructor for an empty point.
+%End
+
+    QgsProfilePoint( double distance, double elevation ) /HoldGIL/;
+%Docstring
+Create a point at the specified distance and elevation coordinates
+%End
+
+    void setDistance( double distance ) /HoldGIL/;
+%Docstring
+Sets the ``distance`` of the point.
+
+.. seealso:: :py:func:`distance`
+%End
+
+    void setElevation( double elevation ) /HoldGIL/;
+%Docstring
+Sets the ``elevation`` of the point.
+
+.. seealso:: :py:func:`elevation`
+%End
+
+    double distance() const /HoldGIL/;
+%Docstring
+Returns the distance of the point.
+
+.. seealso:: :py:func:`setDistance`
+%End
+
+    double elevation() const /HoldGIL/;
+%Docstring
+Returns the elevation of the point.
+
+.. seealso:: :py:func:`setElevation`
+%End
+
+    bool isEmpty() const /HoldGIL/;
+%Docstring
+Returns ``True`` if the point is empty.
+
+A QgsProfilePoint is considered empty when the coordinates have not been explicitly filled in.
+%End
+
+    bool operator==( const QgsProfilePoint &other ) /HoldGIL/;
+
+    bool operator!=( const QgsProfilePoint &other ) const /HoldGIL/;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = sipCpp->isEmpty()
+                        ? QStringLiteral( "<QgsProfilePoint: EMPTY>" )
+                        : QStringLiteral( "<QgsProfilePoint: %1, %2>" ).arg( sipCpp->distance() ).arg( sipCpp->elevation() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    int __len__();
+%MethodCode
+    sipRes = 2;
+%End
+
+    SIP_PYOBJECT __getitem__( int );
+%MethodCode
+    if ( a0 == 0 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->distance() );
+    }
+    else if ( a0 == 1 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->elevation() );
+    }
+    else
+    {
+      QString msg = QString( "Bad index: %1" ).arg( a0 );
+      PyErr_SetString( PyExc_IndexError, msg.toLatin1().constData() );
+    }
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilepoint.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

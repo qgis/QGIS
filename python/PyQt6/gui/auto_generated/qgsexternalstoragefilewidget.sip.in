@@ -1,0 +1,188 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsexternalstoragefilewidget.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsExternalStorageFileWidget : QgsFileWidget
+{
+%Docstring(signature="appended")
+The :py:class:`QgsExternalStorageFileWidget` class creates a widget for selecting a file or a folder
+and stores it to a given external storage backend if defined
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsexternalstoragefilewidget.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsExternalStorageFileWidget *>( sipCpp ) )
+      sipType = sipType_QgsExternalStorageFileWidget;
+    else
+      sipType = NULL;
+%End
+  public:
+
+    explicit QgsExternalStorageFileWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+QgsExternalStorageFileWidget creates a widget for selecting a file or a folder.
+%End
+
+    void setStorageType( const QString &storageType );
+%Docstring
+Set ``storageType`` storage type unique identifier as defined in :py:class:`QgsExternalStorageRegistry` or
+null QString if there is no storage defined.
+If no external storage has been defined, QgsExternalStorageFileWidget will only update file path according to
+selected files.
+
+.. seealso:: :py:func:`storageType`
+
+.. versionadded:: 3.22
+%End
+
+    QString storageType() const;
+%Docstring
+Returns storage type unique identifier as defined in :py:class:`QgsExternalStorageRegistry`.
+Returns null QString if there is no storage defined, only file selection.
+
+.. seealso:: :py:func:`setStorageType`
+
+.. versionadded:: 3.22
+%End
+
+    QgsExternalStorage *externalStorage() const;
+%Docstring
+Returns external storage used to store selected file names, None if none have been defined.
+If no external storage has been defined, QgsExternalStorageFileWidget will only update file path according to
+selected files.
+
+.. seealso:: :py:func:`setStorageType`
+
+.. versionadded:: 3.22
+%End
+
+    void setStorageAuthConfigId( const QString &authCfg );
+%Docstring
+Sets the authentication configuration ID to be used for the current external storage (if
+defined)
+
+.. versionadded:: 3.22
+%End
+
+    const QString &storageAuthConfigId() const;
+%Docstring
+Returns the authentication configuration ID used for the current external storage (if defined)
+
+.. versionadded:: 3.22
+%End
+
+    void setStorageUrlExpression( const QString &urlExpression );
+%Docstring
+Set ``urlExpression`` expression, which once evaluated, provide the URL used to store selected
+documents. This is used only if an external storage has been defined
+
+.. seealso:: :py:func:`setStorageType`
+
+.. versionadded:: 3.22
+%End
+
+    QString storageUrlExpressionString() const;
+%Docstring
+Returns the original, unmodified expression string, which once evaluated, provide the
+URL used to store selected documents. This is used only if an external storage has been defined.
+Returns null if no expression has been set.
+
+.. seealso:: :py:func:`setStorageUrlExpression`
+
+.. versionadded:: 3.22
+%End
+
+    QgsExpression *storageUrlExpression() const;
+%Docstring
+Returns expression, which once evaluated, provide the URL used to store selected
+documents. This is used only if an external storage has been defined.
+Returns null if no expression has been set.
+
+.. seealso:: :py:func:`setStorageUrlExpression`
+
+.. versionadded:: 3.22
+%End
+
+    void setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Set expression context to be used when for storage URL expression evaluation
+
+.. seealso:: :py:func:`setStorageUrlExpression`
+
+.. versionadded:: 3.22
+%End
+
+    const QgsExpressionContext &expressionContext() const;
+%Docstring
+Returns expression context used for storage url expression evaluation
+
+.. seealso:: :py:func:`storageUrlExpression`
+
+.. versionadded:: 3.22
+%End
+
+    void setMessageBar( QgsMessageBar *messageBar );
+%Docstring
+Set ``messageBar`` to report messages
+
+.. versionadded:: 3.22
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns message bar used to report messages
+
+.. versionadded:: 3.22
+%End
+
+    static QgsExpressionContextScope *createFileWidgetScope();
+%Docstring
+Creates and Returns an expression context scope specific to QgsExternalStorageFileWidget
+It defines the variable containing the user selected file name
+
+.. versionadded:: 3.22
+%End
+
+    virtual void setReadOnly( bool readOnly );
+
+
+  protected:
+
+    virtual void updateLayout();
+
+
+    virtual void setSelectedFileNames( QStringList fileNames );
+
+
+    void addFileWidgetScope();
+%Docstring
+Add file widget specific scope to expression context
+%End
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+
+    virtual void dropEvent( QDropEvent *event );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsexternalstoragefilewidget.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

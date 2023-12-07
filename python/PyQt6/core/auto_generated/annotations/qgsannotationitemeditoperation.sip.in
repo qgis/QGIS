@@ -1,0 +1,242 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationitemeditoperation.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAbstractAnnotationItemEditOperation
+{
+%Docstring(signature="appended")
+Abstract base class for annotation item edit operations
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemeditoperation.h"
+%End
+  public:
+
+    enum class Type
+    {
+      MoveNode,
+      DeleteNode,
+      AddNode,
+      TranslateItem,
+    };
+
+    QgsAbstractAnnotationItemEditOperation( const QString &itemId );
+%Docstring
+Constructor for QgsAbstractAnnotationItemEditOperation, for the specified item id.
+%End
+
+    virtual ~QgsAbstractAnnotationItemEditOperation();
+
+    virtual Type type() const = 0;
+%Docstring
+Returns the operation type.
+%End
+
+    QString itemId() const;
+%Docstring
+Returns the associated item ID.
+%End
+
+  protected:
+
+
+};
+
+class QgsAnnotationItemEditOperationMoveNode : QgsAbstractAnnotationItemEditOperation
+{
+%Docstring(signature="appended")
+Annotation item edit operation consisting of moving a node
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemeditoperation.h"
+%End
+  public:
+
+    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after );
+%Docstring
+Constructor for QgsAnnotationItemEditOperationMoveNode, where the node with the specified ``id`` moves
+from ``before`` to ``after`` (in layer coordinates).
+%End
+
+    virtual Type type() const;
+
+
+    QgsVertexId nodeId() const;
+%Docstring
+Returns the associated node ID.
+%End
+
+    QgsPoint before() const;
+%Docstring
+Returns the node position before the move occurred (in layer coordinates).
+
+.. seealso:: :py:func:`after`
+%End
+
+    QgsPoint after() const;
+%Docstring
+Returns the node position after the move occurred (in layer coordinates).
+
+.. seealso:: :py:func:`before`
+%End
+
+};
+
+
+class QgsAnnotationItemEditOperationDeleteNode : QgsAbstractAnnotationItemEditOperation
+{
+%Docstring(signature="appended")
+Annotation item edit operation consisting of deleting a node
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemeditoperation.h"
+%End
+  public:
+
+    QgsAnnotationItemEditOperationDeleteNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before );
+%Docstring
+Constructor for QgsAnnotationItemEditOperationDeleteNode, where the node with the specified ``id`` and previous
+position ``before`` is deleted.
+%End
+
+    virtual Type type() const;
+
+
+    QgsVertexId nodeId() const;
+%Docstring
+Returns the deleted node ID.
+%End
+
+    QgsPoint before() const;
+%Docstring
+Returns the node position before the delete occurred (in layer coordinates).
+%End
+
+};
+
+class QgsAnnotationItemEditOperationAddNode : QgsAbstractAnnotationItemEditOperation
+{
+%Docstring(signature="appended")
+Annotation item edit operation consisting of adding a node
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemeditoperation.h"
+%End
+  public:
+
+    QgsAnnotationItemEditOperationAddNode( const QString &itemId, const QgsPoint &point );
+%Docstring
+Constructor for QgsAnnotationItemEditOperationAddNode at the specified ``point``.
+%End
+
+    virtual Type type() const;
+
+
+    QgsPoint point() const;
+%Docstring
+Returns the node position (in layer coordinates).
+%End
+
+};
+
+
+class QgsAnnotationItemEditOperationTranslateItem : QgsAbstractAnnotationItemEditOperation
+{
+%Docstring(signature="appended")
+Annotation item edit operation consisting of translating (moving) an item
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemeditoperation.h"
+%End
+  public:
+
+    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY );
+%Docstring
+Constructor for QgsAnnotationItemEditOperationTranslateItem, where the node with the specified ``id`` and translation
+(in map units)
+%End
+
+    virtual Type type() const;
+
+
+    QgsVertexId nodeId() const;
+%Docstring
+Returns the deleted node ID.
+%End
+
+    double translationX() const;
+%Docstring
+Returns the x-axis translation, in layer units.
+
+\since :py:func:`~QgsAnnotationItemEditOperationTranslateItem.translationY`
+%End
+
+    double translationY() const;
+%Docstring
+Returns the y-axis translation, in layer units.
+
+\since :py:func:`~QgsAnnotationItemEditOperationTranslateItem.translationX`
+%End
+
+};
+
+class QgsAnnotationItemEditOperationTransientResults
+{
+%Docstring(signature="appended")
+Encapsulates the transient results of an in-progress annotation edit operation.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemeditoperation.h"
+%End
+  public:
+
+    QgsAnnotationItemEditOperationTransientResults( const QgsGeometry &representativeGeometry );
+%Docstring
+Constructor for QgsAnnotationItemEditOperationTransientResults.
+
+The ``representativeGeometry`` parameter specifies a geometry (in layer CRS) which represents
+the shape of the item if the operation were to be applied. It is used for creating a graphical
+representation of the operation during interactive edits.
+%End
+
+    QgsGeometry representativeGeometry() const;
+%Docstring
+Returns the geometry (in layer CRS) which represents the shape of the item if the operation were to be applied.
+
+This is used for creating a graphical representation of the operation during interactive edits.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationitemeditoperation.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

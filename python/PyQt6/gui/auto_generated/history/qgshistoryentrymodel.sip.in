@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryentrymodel.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsHistoryEntryModel : QAbstractItemModel
+{
+%Docstring(signature="appended")
+An item model representing history entries in a hierarchical tree structure.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgshistoryentrymodel.h"
+%End
+  public:
+
+    QgsHistoryEntryModel( const QString &providerId = QString(),
+                          Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile,
+                          QgsHistoryProviderRegistry *registry = 0,
+                          const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(),
+                          QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsHistoryEntryModel, with the specified ``parent`` object.
+
+If ``providerId`` is specified then the model will contain only items from the matching
+history provider.
+If ``backends`` is specified then the model will be filtered to only matching backends.
+
+If no ``registry`` is specified then the singleton :py:class:`QgsHistoryProviderRegistry` from :py:func:`QgsGui.historyProviderRegistry()`
+will be used.
+%End
+
+    ~QgsHistoryEntryModel();
+
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const final;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const final;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const final;
+    QModelIndex parent( const QModelIndex &child ) const final;
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+    QgsHistoryEntryNode *index2node( const QModelIndex &index ) const;
+%Docstring
+Returns node for given index. Returns root node for invalid index.
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryentrymodel.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

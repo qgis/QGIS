@@ -1,0 +1,313 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsellipsesymbollayer.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
+{
+%Docstring(signature="appended")
+A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle, etc).
+%End
+
+%TypeHeaderCode
+#include "qgsellipsesymbollayer.h"
+%End
+  public:
+
+    enum Shape
+    {
+      Circle,
+      Rectangle,
+      Diamond,
+      Cross,
+      Arrow,
+      HalfArc,
+      Triangle,
+      RightHalfTriangle,
+      LeftHalfTriangle,
+      SemiCircle,
+      ThirdCircle,
+      QuarterCircle,
+      Pentagon,
+      Hexagon,
+      Octagon,
+      Star,
+    };
+
+    static QList< QgsEllipseSymbolLayer::Shape > availableShapes();
+%Docstring
+Returns a list of all available shape types.
+%End
+
+    static bool shapeIsFilled( const QgsEllipseSymbolLayer::Shape &shape );
+%Docstring
+Returns ``True`` if a ``shape`` has a fill.
+
+:return: ``True`` if shape uses a fill, or ``False`` if shape uses lines only
+
+.. versionadded:: 3.20
+%End
+
+    QgsEllipseSymbolLayer();
+    ~QgsEllipseSymbolLayer();
+
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+%Docstring
+Creates the symbol layer
+%End
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+
+    virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
+
+    virtual QString layerType() const;
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual QgsEllipseSymbolLayer *clone() const /Factory/;
+
+    virtual QVariantMap properties() const;
+
+
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+
+
+    virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
+
+
+ void setSymbolName( const QString &name ) /Deprecated/;
+%Docstring
+Sets the rendered ellipse marker shape using a symbol ``name``.
+
+.. seealso:: :py:func:`setShape`
+
+.. seealso:: :py:func:`shape`
+
+.. deprecated:: QGIS 3.20
+%End
+
+ QString symbolName() const /Deprecated/;
+%Docstring
+Returns the shape name for the rendered ellipse marker symbol.
+
+.. seealso:: :py:func:`shape`
+
+.. seealso:: :py:func:`setShape`
+
+.. deprecated:: QGIS 3.20
+%End
+
+    QgsEllipseSymbolLayer::Shape shape() const;
+%Docstring
+Returns the shape for the rendered ellipse marker symbol.
+
+.. seealso:: :py:func:`setShape`
+
+.. versionadded:: 3.20
+%End
+
+    void setShape( QgsEllipseSymbolLayer::Shape shape );
+%Docstring
+Sets the rendered ellipse marker shape.
+
+:param shape: new ellipse marker shape
+
+.. seealso:: :py:func:`shape`
+
+.. versionadded:: 3.20
+%End
+
+    static QgsEllipseSymbolLayer::Shape decodeShape( const QString &name, bool *ok = 0 );
+%Docstring
+Attempts to decode a string representation of a shape name to the corresponding
+shape.
+
+:param name: encoded shape name
+:param ok: if specified, will be set to ``True`` if shape was successfully decoded
+
+:return: decoded name
+
+.. seealso:: :py:func:`encodeShape`
+
+.. versionadded:: 3.20
+%End
+
+    static QString encodeShape( QgsEllipseSymbolLayer::Shape shape );
+%Docstring
+Encodes a shape to its string representation.
+
+:param shape: shape to encode
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeShape`
+
+.. versionadded:: 3.20
+%End
+
+    virtual void setSize( double size );
+
+
+    void setSymbolWidth( double w );
+    double symbolWidth() const;
+
+    void setSymbolHeight( double h );
+    double symbolHeight() const;
+
+    Qt::PenStyle strokeStyle() const;
+    void setStrokeStyle( Qt::PenStyle strokeStyle );
+
+    Qt::PenJoinStyle penJoinStyle() const;
+%Docstring
+Gets stroke join style.
+
+.. versionadded:: 2.16
+%End
+
+    void setPenJoinStyle( Qt::PenJoinStyle style );
+%Docstring
+Set stroke join style.
+
+.. versionadded:: 2.16
+%End
+
+    Qt::PenCapStyle penCapStyle() const;
+%Docstring
+Returns the marker's stroke cap style (e.g., flat, round, etc).
+
+.. seealso:: :py:func:`setPenCapStyle`
+
+.. seealso:: :py:func:`penJoinStyle`
+
+.. seealso:: :py:func:`strokeColor`
+
+.. seealso:: :py:func:`strokeStyle`
+
+.. versionadded:: 3.20
+%End
+
+    void setPenCapStyle( Qt::PenCapStyle style );
+%Docstring
+Sets the marker's stroke cap ``style`` (e.g., flat, round, etc).
+
+.. seealso:: :py:func:`penCapStyle`
+
+.. seealso:: :py:func:`penJoinStyle`
+
+.. seealso:: :py:func:`setStrokeColor`
+
+.. seealso:: :py:func:`setStrokeStyle`
+
+.. versionadded:: 3.20
+%End
+
+    void setStrokeWidth( double w );
+    double strokeWidth() const;
+
+    virtual void setFillColor( const QColor &c );
+    virtual QColor fillColor() const;
+
+    virtual void setStrokeColor( const QColor &c );
+    virtual QColor strokeColor() const;
+
+    void setSymbolWidthUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the units for the symbol's width.
+
+:param unit: symbol units
+
+.. seealso:: :py:func:`symbolWidthUnit`
+
+.. seealso:: :py:func:`setSymbolHeightUnit`
+%End
+
+    Qgis::RenderUnit symbolWidthUnit() const;
+%Docstring
+Returns the units for the symbol's width.
+
+.. seealso:: :py:func:`setSymbolWidthUnit`
+
+.. seealso:: :py:func:`symbolHeightUnit`
+%End
+
+    void setSymbolWidthMapUnitScale( const QgsMapUnitScale &scale );
+    const QgsMapUnitScale &symbolWidthMapUnitScale() const;
+
+    void setSymbolHeightUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the units for the symbol's height.
+
+:param unit: symbol units
+
+.. seealso:: :py:func:`symbolHeightUnit`
+
+.. seealso:: :py:func:`setSymbolWidthUnit`
+%End
+
+    Qgis::RenderUnit symbolHeightUnit() const;
+%Docstring
+Returns the units for the symbol's height.
+
+.. seealso:: :py:func:`setSymbolHeightUnit`
+
+.. seealso:: :py:func:`symbolWidthUnit`
+%End
+
+    void setSymbolHeightMapUnitScale( const QgsMapUnitScale &scale );
+    const QgsMapUnitScale &symbolHeightMapUnitScale() const;
+
+    void setStrokeWidthUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the units for the symbol's stroke width.
+
+:param unit: symbol units
+
+.. seealso:: :py:func:`strokeWidthUnit`
+%End
+
+    Qgis::RenderUnit strokeWidthUnit() const;
+%Docstring
+Returns the units for the symbol's stroke width.
+
+.. seealso:: :py:func:`setStrokeWidthUnit`
+%End
+
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
+    const QgsMapUnitScale &strokeWidthMapUnitScale() const;
+
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
+
+    virtual Qgis::RenderUnit outputUnit() const;
+
+    virtual bool usesMapUnits() const;
+
+
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
+
+    virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
+
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsellipsesymbollayer.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

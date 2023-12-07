@@ -1,0 +1,258 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsabstractdatasourcewidget.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsAbstractDataSourceWidget : QDialog
+{
+%Docstring(signature="appended")
+Abstract base Data Source Widget to create connections and add layers
+This class provides common functionality and the interface for all
+source select dialogs used by data providers to configure data sources
+and add layers.
+
+The implementation is generic enough to handle other layer search and
+selection widgets.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsabstractdatasourcewidget.h"
+%End
+  public:
+
+    virtual void setBrowserModel( QgsBrowserModel *model );
+%Docstring
+Sets a browser ``model`` to use with the widget.
+
+.. seealso:: :py:func:`browserModel`
+
+.. versionadded:: 3.18
+%End
+
+    virtual QgsMapCanvas *mapCanvas();
+%Docstring
+Returns the dialog map canvas
+
+.. seealso:: :py:func:`setMapCanvas`
+%End
+
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas );
+%Docstring
+Sets the dialog map canvas
+
+.. seealso:: :py:func:`mapCanvas`
+%End
+
+  public slots:
+
+    virtual void refresh();
+%Docstring
+Triggered when the provider's connections need to be refreshed
+The default implementation does nothing
+%End
+
+    virtual void addButtonClicked();
+%Docstring
+Triggered when the add button is clicked, the add layer signal is emitted
+Concrete classes should implement the right behavior depending on the layer
+being added.
+%End
+
+    virtual void reset();
+%Docstring
+Called when this source select widget is being shown in a "new and clean" dialog.
+
+The data source manager recycles existing source select widgets but will call
+this method on every reopening.
+This should clear any selection that has previously been done.
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool configureFromUri( const QString &uri );
+%Docstring
+Configure the widget from a layer ``uri`` by selecting the layer path or connection options.
+The base implementation does nothing and returns ``False``: providers with ConfigureSourceSelectFromUri capability
+must override to implement this functionality.
+
+:return: ``True`` on success.
+
+.. note::
+
+   Not all data providers may be able to configure the widget from the provided uri, in that case this method returns ``False``.
+
+.. versionadded:: 3.38
+%End
+
+  signals:
+
+    void connectionsChanged();
+%Docstring
+Emitted when the provider's connections have changed
+This signal is normally forwarded the app and used to refresh browser items
+%End
+
+    void addDatabaseLayers( const QStringList &paths, const QString &providerKey );
+%Docstring
+Emitted when a DB layer has been selected for addition
+%End
+
+ void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey ) /Deprecated/;
+%Docstring
+Emitted when a raster layer has been selected for addition
+
+.. deprecated::
+   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
+%End
+
+    void addRasterLayers( const QStringList &layersList );
+%Docstring
+Emitted when one or more GDAL supported layers are selected for addition
+
+:param layersList: list of layers protocol URIs
+
+.. versionadded:: 3.20
+%End
+
+ void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() ) /Deprecated/;
+%Docstring
+Emitted when a vector layer has been selected for addition.
+
+If ``providerKey`` is not specified, the default provider key associated with the source
+will be used.
+
+.. deprecated::
+   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
+%End
+
+ void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated/;
+%Docstring
+Emitted when a mesh layer has been selected for addition.
+
+.. deprecated::
+   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
+%End
+
+ void addVectorTileLayer( const QString &url, const QString &baseName ) /Deprecated/;
+%Docstring
+Emitted when a vector tile layer has been selected for addition.
+
+.. deprecated::
+   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
+%End
+
+ void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated/;
+%Docstring
+Emitted when a point cloud layer has been selected for addition.
+
+.. deprecated::
+   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
+%End
+
+    void addLayer( Qgis::LayerType type, const QString &url, const QString &baseName, const QString &providerKey );
+%Docstring
+Emitted when a layer has been selected for addition.
+
+This is a generic method, intended for replacing the specific layer type signals implemented above.
+
+.. warning::
+
+   For QGIS versions < 4.x, the specific layer type added signals must be emitted for vector, raster,
+   mesh, vector tile and point cloud layers in addition to this signal.
+
+.. versionadded:: 3.34
+%End
+
+    void addVectorLayers( const QStringList &layerList, const QString &encoding, const QString &dataSourceType );
+%Docstring
+Emitted when one or more OGR supported layers are selected for addition
+
+:param layerList: list of layers protocol URIs
+:param encoding: encoding
+:param dataSourceType: string (can be "file" or "database")
+%End
+
+    void replaceVectorLayer( const QString &oldId, const QString &source, const QString &name, const QString &provider );
+%Docstring
+Emitted when a layer needs to be replaced
+
+:param oldId: old layer ID
+:param source: URI of the layer
+:param name: of the layer
+:param provider: key
+%End
+
+ void progress( int, int ) /Deprecated/;
+%Docstring
+Emitted when a progress dialog is shown by the provider dialog.
+
+.. deprecated:: QGIS 3.4
+   this signal is no longer used. Use :py:class:`QgsProxyProgressTask` instead to show progress reports.
+%End
+
+    void progressMessage( QString message );
+%Docstring
+Emitted when a progress dialog is shown by the provider dialog
+%End
+
+    void enableButtons( bool enable );
+%Docstring
+Emitted when the ok/add buttons should be enabled/disabled
+%End
+
+    void pushMessage( const QString &title, const QString &message, const Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+%Docstring
+Emitted when a ``message`` with ``title`` and ``level`` must be shown to the user using the parent visible message bar
+
+.. versionadded:: 3.14
+%End
+
+  protected:
+
+    QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+%Docstring
+Constructor
+%End
+
+    QgsProviderRegistry::WidgetMode widgetMode() const;
+%Docstring
+Returns the widget mode
+%End
+
+    QgsBrowserModel *browserModel();
+%Docstring
+Returns the associated browser model (may be ``None``).
+
+.. versionadded:: 3.18
+%End
+
+    void setupButtons( QDialogButtonBox *buttonBox );
+%Docstring
+Connect the ok and apply/add buttons to the slots
+%End
+
+    QPushButton *addButton( ) const;
+%Docstring
+Returns the add Button
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsabstractdatasourcewidget.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

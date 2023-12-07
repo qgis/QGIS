@@ -1,0 +1,170 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgshighlight.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+%ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgshighlight.h>
+%End
+
+class QgsHighlight : QgsMapCanvasItem
+{
+%Docstring(signature="appended")
+A class for highlight features on the map.
+
+The :py:class:`QgsHighlight` class provides a transparent overlay canvas item
+for highlighting features or geometries on a map canvas.
+
+.. code-block:: python
+
+       color = QColor(Qt.red)
+       highlight = QgsHighlight(mapCanvas, feature, layer)
+       highlight.setColor(color)
+       color.setAlpha(50)
+       highlight.setFillColor(color)
+       highlight.show()
+%End
+
+%TypeHeaderCode
+#include "qgshighlight.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsHighlight *>( sipCpp ) )
+    {
+      sipType = sipType_QgsHighlight;
+      // We need to tweak the pointer as sip believes it is single inheritance
+      // from QgsMapCanvasItem, but the raw address of QgsHighlight (sipCpp)
+      // is actually a QObject
+      *sipCppRet = dynamic_cast<QgsHighlight *>( sipCpp );
+    }
+    else
+      sipType = nullptr;
+%End
+  public:
+
+
+    QgsHighlight( QgsMapCanvas *mapCanvas /TransferThis/, const QgsGeometry &geom, QgsMapLayer *layer );
+%Docstring
+Constructor for QgsHighlight
+
+:param mapCanvas: associated map canvas
+:param geom: initial geometry of highlight
+:param layer: associated map layer
+%End
+
+    QgsHighlight( QgsMapCanvas *mapCanvas /TransferThis/, const QgsFeature &feature, QgsVectorLayer *layer );
+%Docstring
+Constructor for highlighting ``True`` feature shape using feature attributes
+and renderer.
+
+:param mapCanvas: map canvas
+:param feature:
+:param layer: vector layer
+%End
+    ~QgsHighlight();
+
+    QColor color( ) const;
+%Docstring
+Returns the line/stroke color
+
+.. versionadded:: 3.4
+%End
+
+    void setColor( const QColor &color );
+%Docstring
+Set line/stroke to color, polygon fill to color with alpha = 63.
+This is legacy function, use :py:func:`~QgsHighlight.setFillColor` after :py:func:`~QgsHighlight.setColor` if different fill color is required.
+%End
+
+    QColor fillColor( ) const;
+%Docstring
+Returns the fill color
+
+.. versionadded:: 3.4
+%End
+
+    void setFillColor( const QColor &fillColor );
+%Docstring
+Fill color for the highlight.
+Will be used for polygons and points.
+
+.. versionadded:: 2.4
+%End
+
+    int width( ) const;
+%Docstring
+Returns the stroke width
+
+.. versionadded:: 3.4
+%End
+
+    void setWidth( int width );
+%Docstring
+Set stroke width.
+
+.. note::
+
+   Ignored in feature mode.
+%End
+
+    double buffer( ) const;
+%Docstring
+Returns the buffer
+
+.. versionadded:: 3.4
+%End
+
+    void setBuffer( double buffer );
+%Docstring
+Set line / stroke buffer in millimeters.
+
+.. versionadded:: 2.4
+%End
+
+    void setMinWidth( double width );
+%Docstring
+Set minimum line / stroke width in millimeters.
+
+.. versionadded:: 2.4
+%End
+
+    QgsMapLayer *layer() const;
+%Docstring
+Returns the layer for which this highlight has been created.
+%End
+
+    virtual void updatePosition();
+
+
+    void applyDefaultStyle();
+%Docstring
+Applies the default style from the user settings to the highlight.
+
+.. versionadded:: 3.30
+%End
+
+  protected:
+    virtual void paint( QPainter *p );
+
+
+    void updateRect();
+%Docstring
+recalculates needed rectangle
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgshighlight.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

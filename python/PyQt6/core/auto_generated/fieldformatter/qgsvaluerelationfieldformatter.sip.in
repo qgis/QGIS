@@ -1,0 +1,182 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgsvaluerelationfieldformatter.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsValueRelationFieldFormatter : QgsFieldFormatter
+{
+%Docstring(signature="appended")
+Field formatter for a value relation field.
+
+A value relation field formatter looks up the values from
+features on another layer.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsvaluerelationfieldformatter.h"
+%End
+  public:
+    struct ValueRelationItem
+    {
+      ValueRelationItem( const QVariant &key, const QString &value, const QString &description = QString() );
+%Docstring
+Constructor for ValueRelationItem
+%End
+
+      ValueRelationItem();
+%Docstring
+Constructor for ValueRelationItem
+%End
+
+      QVariant key;
+      QString value;
+      QString description;
+    };
+
+    typedef QVector < QgsValueRelationFieldFormatter::ValueRelationItem > ValueRelationCache;
+
+    QgsValueRelationFieldFormatter();
+%Docstring
+Constructor for QgsValueRelationFieldFormatter.
+%End
+
+    virtual QString id() const;
+
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+
+
+    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+
+
+    virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
+
+
+    static QStringList valueToStringList( const QVariant &value );
+%Docstring
+Utility to convert a list or a string representation of an (hstore style: {1,2...}) list in ``value`` to a string list
+
+.. versionadded:: 3.2
+%End
+
+    static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature(), const QgsFeature &parentFormFeature = QgsFeature() );
+%Docstring
+Create a cache for a value relation field.
+This can be used to keep the value map in the local memory
+if doing multiple lookups in a loop.
+
+:param config: The widget configuration
+:param formFeature: The feature currently being edited with current attribute values
+:param parentFormFeature: For embedded forms only, the feature currently being edited in the parent form with current attribute values
+
+:return: A kvp list of values for the widget
+
+.. versionadded:: 3.0
+%End
+
+    static bool expressionRequiresFormScope( const QString &expression );
+%Docstring
+Check if the ``expression`` requires a form scope (i.e. if it uses fields
+or geometry of the currently edited feature).
+
+:param expression: The widget's filter expression
+
+:return: ``True`` if the expression requires a form scope
+
+.. versionadded:: 3.2
+%End
+
+    static QSet<QString> expressionFormAttributes( const QString &expression );
+%Docstring
+Returns a list of attributes required by the form context ``expression``
+
+:param expression: Form filter expression
+
+:return: list of attributes required by the expression
+
+.. versionadded:: 3.2
+%End
+
+    static QSet<QString> expressionFormVariables( const QString &expression );
+%Docstring
+Returns a list of variables required by the form context ``expression``
+
+:param expression: Form filter expression
+
+:return: list of variables required by the expression
+
+.. versionadded:: 3.2
+%End
+
+    static bool expressionRequiresParentFormScope( const QString &expression );
+%Docstring
+Check if the ``expression`` requires a parent form scope (i.e. if it uses fields
+or geometry of the parent form's currently edited feature).
+
+:param expression: The widget's filter expression
+
+:return: ``True`` if the expression requires a parent form scope
+
+.. versionadded:: 3.14
+%End
+
+    static QSet<QString> expressionParentFormAttributes( const QString &expression );
+%Docstring
+Returns a list of attributes required by the parent form's form context ``expression``
+
+:param expression: Form filter expression
+
+:return: list of parent attributes required by the expression
+
+.. versionadded:: 3.14
+%End
+
+    static QSet<QString> expressionParentFormVariables( const QString &expression );
+%Docstring
+Returns a list of variables required by the parent form's form context ``expression``
+
+:param expression: Form filter expression
+
+:return: list of parent variables required by the expression
+
+.. versionadded:: 3.14
+%End
+
+
+    static bool expressionIsUsable( const QString &expression, const QgsFeature &feature, const QgsFeature &parentFeature = QgsFeature() );
+%Docstring
+Check whether the ``feature`` has all values required by the ``expression``,
+optionally checks for ``parentFeature``
+
+:return: ``True`` if the expression can be used
+
+.. versionadded:: 3.2
+%End
+
+    static QgsVectorLayer *resolveLayer( const QVariantMap &config, const QgsProject *project );
+%Docstring
+Returns the (possibly NULL) layer from the widget's ``config`` and ``project``
+
+.. versionadded:: 3.8
+%End
+
+
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgsvaluerelationfieldformatter.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
