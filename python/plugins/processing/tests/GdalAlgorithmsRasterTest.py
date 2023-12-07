@@ -35,7 +35,8 @@ from qgis.core import (QgsProcessingContext,
                        QgsPointXY,
                        QgsCoordinateReferenceSystem)
 
-from qgis.testing import (start_app,
+from qgis.testing import (QgisTestCase,
+                          start_app,
                           unittest)
 
 import AlgorithmsTestBase
@@ -83,7 +84,7 @@ from processing.algs.gdal.rgb2pct import rgb2pct
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):
