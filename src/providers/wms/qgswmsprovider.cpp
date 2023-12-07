@@ -590,6 +590,20 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
     if ( mCaps.mTileMatrixSets.contains( mSettings.mTileMatrixSetId ) )
     {
       mTileMatrixSet = &mCaps.mTileMatrixSets[ mSettings.mTileMatrixSetId ];
+
+      if ( crs.isEmpty() )
+      {
+        // if CRS is not specified, use default
+        mSettings.mCrsId = mTileMatrixSet->crs;
+        mExtentDirty = true;
+        mImageCrs = mSettings.mCrsId;
+      }
+      if ( mSettings.mImageMimeType.isEmpty() && mTileLayer )
+      {
+        // if format is not specified, use first available
+        mSettings.mImageMimeType = mTileLayer->formats.value( 0 );
+      }
+
       QList<double> keys = mTileMatrixSet->tileMatrices.keys();
       std::sort( keys.begin(), keys.end() );
       const auto constKeys = keys;
