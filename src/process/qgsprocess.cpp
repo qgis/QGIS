@@ -551,6 +551,12 @@ void QgsProcessingExec::loadPlugins()
       }
     }
   }
+
+  if ( !mPythonUtils->finalizeProcessingStartup() )
+  {
+    std::cerr << "error finalizing Processing plugin startup\n\n";
+  }
+
 #endif
 }
 
