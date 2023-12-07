@@ -1,0 +1,119 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/georeferencing/qgsgcppoint.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsGcpPoint
+{
+%Docstring(signature="appended")
+Contains properties of a ground control point (GCP).
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsgcppoint.h"
+%End
+  public:
+
+    enum class PointType
+    {
+      Source,
+      Destination,
+    };
+
+    QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &destinationPoint,
+                 const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled = true );
+%Docstring
+Constructor for QgsGcpPoint.
+
+:param sourcePoint: source coordinates. This may either be in pixels (for completely non-referenced images) OR in the source layer CRS.
+:param destinationPoint: destination coordinates
+:param destinationPointCrs: CRS of destination point
+:param enabled: whether the point is currently enabled
+%End
+
+    QgsPointXY sourcePoint() const;
+%Docstring
+Returns the source coordinates.
+
+This may either be in pixels (for completely non-referenced images) OR in the source layer CRS.
+
+.. seealso:: :py:func:`setSourcePoint`
+%End
+
+    void setSourcePoint( QgsPointXY point );
+%Docstring
+Sets the source coordinates.
+
+This may either be in pixels (for completely non-referenced images) OR in the source layer CRS.
+
+.. seealso:: :py:func:`sourcePoint`
+%End
+
+    QgsPointXY destinationPoint() const;
+%Docstring
+Returns the destination coordinates.
+
+.. seealso:: :py:func:`setDestinationPoint`
+%End
+
+    void setDestinationPoint( QgsPointXY point );
+%Docstring
+Sets the destination coordinates.
+
+.. seealso:: :py:func:`destinationPoint`
+%End
+
+    QgsCoordinateReferenceSystem destinationPointCrs() const;
+%Docstring
+Returns the CRS of the destination point.
+
+.. seealso:: :py:func:`setDestinationPointCrs`
+%End
+
+    void setDestinationPointCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the ``crs`` of the destination point.
+
+.. seealso:: :py:func:`destinationPointCrs`
+%End
+
+    QgsPointXY transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
+%Docstring
+Returns the :py:func:`~QgsGcpPoint.destionationPoint` transformed to the given target CRS.
+%End
+
+    bool isEnabled() const;
+%Docstring
+Returns ``True`` if the point is currently enabled.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether the point is currently enabled.
+
+.. seealso:: :py:func:`isEnabled`
+%End
+
+    bool operator==( const QgsGcpPoint &other ) const;
+
+    bool operator!=( const QgsGcpPoint &other ) const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/georeferencing/qgsgcppoint.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

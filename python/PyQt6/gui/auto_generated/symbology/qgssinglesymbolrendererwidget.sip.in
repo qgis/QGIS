@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgssinglesymbolrendererwidget.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsSingleSymbolRendererWidget : QgsRendererWidget
+{
+
+%TypeHeaderCode
+#include "qgssinglesymbolrendererwidget.h"
+%End
+  public:
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
+
+    QgsSingleSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    ~QgsSingleSymbolRendererWidget();
+
+    virtual QgsFeatureRenderer *renderer();
+
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+    virtual void setDockMode( bool dockMode );
+
+
+  protected:
+    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgssinglesymbolrendererwidget.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

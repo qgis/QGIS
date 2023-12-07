@@ -1,0 +1,14 @@
+# Specify the build system.
+[build-system]
+requires = ["sip >=5.0.0, <7", "PyQt-builder >=1.6, <2"]
+build-backend = "sipbuild.api"
+
+# Specify the PEP 566 metadata for the project.
+[tool.sip.metadata]
+name = "QGIS"
+version = "@COMPLETE_VERSION@"
+summary = "Python bindings for QGIS"
+home-page = "https://qgis.org"
+author = "The QGIS Community"
+license = "GPL v2"
+requires-dist = "PyQt5"

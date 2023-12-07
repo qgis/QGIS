@@ -1,0 +1,154 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    __init__.py
+    ---------------------
+    Date                 : May 2014
+    Copyright            : (C) 2014 by Nathan Woodrow
+    Email                : woodrow dot nathan at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Nathan Woodrow'
+__date__ = 'May 2014'
+__copyright__ = '(C) 2014, Nathan Woodrow'
+
+from qgis.PyQt.QtCore import NULL
+from qgis._core import *
+
+from .additions.edit import edit, QgsEditError
+from .additions.fromfunction import fromFunction
+from .additions.metaenum import metaEnumFromType, metaEnumFromValue
+from .additions.processing import processing_output_layer_repr, processing_source_repr
+from .additions.projectdirtyblocker import ProjectDirtyBlocker
+from .additions.providermetadata import PyProviderMetadata
+from .additions.qgsfeature import mapping_feature
+from .additions.qgsfunction import register_function, qgsfunction
+from .additions.qgsgeometry import _geometryNonZero, mapping_geometry
+from .additions.qgssettings import _qgssettings_enum_value, _qgssettings_set_enum_value, _qgssettings_flag_value
+from .additions.qgssettingsentry import PyQgsSettingsEntryEnumFlag
+from .additions.qgstaskwrapper import QgsTaskWrapper
+from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
+from .additions.runtimeprofiler import ScopedRuntimeProfileContextManager
+from .additions.validitycheck import check
+from .additions.ranges import datetime_range_repr, date_range_repr
+
+# Injections into classes
+QgsFeature.__geo_interface__ = property(mapping_feature)
+QgsGeometry.__bool__ = _geometryNonZero
+QgsGeometry.__geo_interface__ = property(mapping_geometry)
+QgsGeometry.__nonzero__ = _geometryNonZero
+QgsProcessingFeatureSourceDefinition.__repr__ = processing_source_repr
+QgsProcessingOutputLayerDefinition.__repr__ = processing_output_layer_repr
+QgsProject.blockDirtying = ProjectDirtyBlocker
+QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
+QgsRuntimeProfiler.profile = ScopedRuntimeProfileContextManager
+QgsSettings.enumValue = _qgssettings_enum_value
+QgsSettings.setEnumValue = _qgssettings_set_enum_value
+QgsSettings.flagValue = _qgssettings_flag_value
+QgsTask.fromFunction = fromFunction
+QgsDateTimeRange.__repr__ = datetime_range_repr
+QgsDateRange.__repr__ = date_range_repr
+
+# Classes patched
+QgsSettingsEntryEnumFlag = PyQgsSettingsEntryEnumFlag
+
+# Classes patched using a derived class
+QgsProviderMetadata = PyProviderMetadata
+
+# monkey patch deprecated enum values to maintain API
+# TODO - remove for QGIS 4.0
+QgsMarkerLineSymbolLayer.Interval = Qgis.MarkerLinePlacement.Interval
+QgsMarkerLineSymbolLayer.Vertex = Qgis.MarkerLinePlacement.Vertex
+QgsMarkerLineSymbolLayer.LastVertex = Qgis.MarkerLinePlacement.LastVertex
+QgsMarkerLineSymbolLayer.FirstVertex = Qgis.MarkerLinePlacement.FirstVertex
+QgsMarkerLineSymbolLayer.CentralPoint = Qgis.MarkerLinePlacement.CentralPoint
+QgsMarkerLineSymbolLayer.CurvePoint = Qgis.MarkerLinePlacement.CurvePoint
+
+QgsRasterFillSymbolLayer.FillCoordinateMode = Qgis.SymbolCoordinateReference
+QgsRasterFillSymbolLayer.Feature = Qgis.SymbolCoordinateReference.Feature
+QgsRasterFillSymbolLayer.Viewport = Qgis.SymbolCoordinateReference.Viewport
+
+QgsShapeburstFillSymbolLayer.ShapeburstColorType = Qgis.GradientColorSource
+QgsShapeburstFillSymbolLayer.SimpleTwoColor = Qgis.GradientColorSource.SimpleTwoColor
+QgsShapeburstFillSymbolLayer.ColorRamp = Qgis.GradientColorSource.ColorRamp
+
+QgsVectorLayer.VertexMarkerType = Qgis.VertexMarkerType
+QgsVectorLayer.SemiTransparentCircle = Qgis.VertexMarkerType.SemiTransparentCircle
+QgsVectorLayer.SemiTransparentCircle.is_monkey_patched = True
+QgsVectorLayer.SemiTransparentCircle.__doc__ = "Semi-transparent circle marker"
+QgsVectorLayer.Cross = Qgis.VertexMarkerType.Cross
+QgsVectorLayer.Cross.is_monkey_patched = True
+QgsVectorLayer.Cross.__doc__ = "Cross marker"
+QgsVectorLayer.NoMarker = Qgis.VertexMarkerType.NoMarker
+QgsVectorLayer.NoMarker.is_monkey_patched = True
+QgsVectorLayer.NoMarker.__doc__ = "No marker"
+
+QgsSymbol.RenderHints = Qgis.SymbolRenderHints
+QgsSymbol.PreviewFlags = Qgis.SymbolPreviewFlags
+QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
+QgsGeometry.ValidityFlags = Qgis.GeometryValidityFlags
+
+# Monkey patch static const "QgsDataProvider.SUBLAYER_SEPARATOR" which was removed for QGIS 3.12
+QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()
+
+# Monkey patch Qgis vars
+Qgis.QGIS_VERSION = Qgis.version()
+Qgis.QGIS_VERSION_INT = Qgis.versionInt()
+Qgis.QGIS_RELEASE_NAME = Qgis.releaseName()
+
+# Monkey patch QgsMapLayerType
+
+QgsMapLayerType = Qgis.LayerType
+QgsMapLayerType.VectorLayer = Qgis.LayerType.Vector
+QgsMapLayerType.VectorLayer.is_monkey_patched = True
+QgsMapLayerType.VectorLayer.__doc__ = "Vector layer"
+QgsMapLayerType.RasterLayer = Qgis.LayerType.Raster
+QgsMapLayerType.RasterLayer.is_monkey_patched = True
+QgsMapLayerType.RasterLayer.__doc__ = "Raster layer"
+QgsMapLayerType.PluginLayer = Qgis.LayerType.Plugin
+QgsMapLayerType.PluginLayer.is_monkey_patched = True
+QgsMapLayerType.PluginLayer.__doc__ = "Plugin based layer"
+QgsMapLayerType.MeshLayer = Qgis.LayerType.Mesh
+QgsMapLayerType.MeshLayer.is_monkey_patched = True
+QgsMapLayerType.MeshLayer.__doc__ = "Mesh layer. Added in QGIS 3.2"
+QgsMapLayerType.VectorTileLayer = Qgis.LayerType.VectorTile
+QgsMapLayerType.VectorTileLayer.is_monkey_patched = True
+QgsMapLayerType.VectorTileLayer.__doc__ = "Vector tile layer. Added in QGIS 3.14"
+QgsMapLayerType.AnnotationLayer = Qgis.LayerType.Annotation
+QgsMapLayerType.AnnotationLayer.is_monkey_patched = True
+QgsMapLayerType.AnnotationLayer.__doc__ = "Contains freeform, georeferenced annotations. Added in QGIS 3.16"
+QgsMapLayerType.PointCloudLayer = Qgis.LayerType.PointCloud
+QgsMapLayerType.PointCloudLayer.is_monkey_patched = True
+QgsMapLayerType.PointCloudLayer.__doc__ = "Point cloud layer. Added in QGIS 3.18"
+QgsMapLayerType.GroupLayer = Qgis.LayerType.Group
+QgsMapLayerType.GroupLayer.is_monkey_patched = True
+QgsMapLayerType.GroupLayer.__doc__ = "Composite group layer. Added in QGIS 3.24"
+QgsMapLayerType.baseClass = Qgis
+
+# Monkey patch QgsDxfExport
+QgsDxfExport.SymbologyExport = Qgis.FeatureSymbologyExport
+QgsDxfExport.SymbologyExport.FeatureSymbology = Qgis.FeatureSymbologyExport.PerFeature
+QgsDxfExport.SymbologyExport.SymbolLayerSymbology = Qgis.FeatureSymbologyExport.PerSymbolLayer
+QgsDxfExport.NoSymbology = Qgis.FeatureSymbologyExport.NoSymbology
+QgsDxfExport.FeatureSymbology = Qgis.FeatureSymbologyExport.PerFeature
+QgsDxfExport.SymbolLayerSymbology = Qgis.FeatureSymbologyExport.PerSymbolLayer
+
+# Maintain class name API
+QgsBox3d = QgsBox3D
+QgsMesh3dAveragingMethod = QgsMesh3DAveragingMethod
+QgsMesh3dDataBlock = QgsMesh3DDataBlock
+
+GEOWKT = geoWkt()
+PROJECT_SCALES = Qgis.defaultProjectScales()
+GEOPROJ4 = geoProj4()
+GEO_EPSG_CRS_AUTHID = geoEpsgCrsAuthId()
+GEO_NONE = geoNone()

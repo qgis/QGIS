@@ -1,0 +1,224 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrenderer.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsRasterRenderer : QgsRasterInterface
+{
+%Docstring(signature="appended")
+Raster renderer pipe that applies colors to a raster.
+%End
+
+%TypeHeaderCode
+#include "qgsrasterrenderer.h"
+%End
+  public:
+
+    static const QRgb NODATA_COLOR;
+
+    QgsRasterRenderer( QgsRasterInterface *input = 0, const QString &type = QString() );
+%Docstring
+Constructor for QgsRasterRenderer.
+%End
+    ~QgsRasterRenderer();
+
+
+    virtual QgsRasterRenderer *clone() const = 0 /Factory/;
+
+%Docstring
+QgsRasterRenderer cannot be copied. Use :py:func:`~QgsRasterRenderer.clone` instead.
+%End
+
+    virtual int bandCount() const;
+
+
+    virtual Qgis::DataType dataType( int bandNo ) const;
+
+
+    virtual QString type() const;
+%Docstring
+Returns a unique string representation of the renderer type.
+%End
+
+    virtual Qgis::RasterRendererFlags flags() const;
+%Docstring
+Returns flags which dictate renderer behavior.
+
+.. versionadded:: 3.28
+%End
+
+    virtual bool canCreateRasterAttributeTable( ) const;
+%Docstring
+Returns ``True`` if the renderer is suitable for attribute table creation.
+The default implementation returns ``False``.
+
+.. versionadded:: 3.30
+%End
+
+    virtual bool setInput( QgsRasterInterface *input );
+
+
+     virtual QgsRasterBlock *block( int bandNo,
+                           const QgsRectangle &extent,
+                           int width,
+                           int height,
+                           QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
+
+    bool usesTransparency() const;
+
+    void setOpacity( double opacity );
+%Docstring
+Sets the ``opacity`` for the renderer, where ``opacity`` is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
+.. seealso:: :py:func:`opacity`
+%End
+
+    double opacity() const;
+%Docstring
+Returns the opacity for the renderer, where opacity is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
+.. seealso:: :py:func:`setOpacity`
+%End
+
+    QColor nodataColor() const;
+%Docstring
+Returns the color to use for shading nodata pixels.
+
+If the returned value is an invalid color then the default transparent rendering of
+nodata values will be used.
+
+.. seealso:: :py:func:`renderColorForNodataPixel`
+
+.. seealso:: :py:func:`setNodataColor`
+
+.. versionadded:: 3.12
+%End
+
+    void setNodataColor( const QColor &color );
+%Docstring
+Sets the ``color`` to use for shading nodata pixels.
+
+If ``color`` is an invalid color then the default transparent rendering of
+nodata values will be used.
+
+.. seealso:: :py:func:`nodataColor`
+
+.. versionadded:: 3.12
+%End
+
+    void setRasterTransparency( QgsRasterTransparency *t /Transfer/ );
+    const QgsRasterTransparency *rasterTransparency() const;
+
+    void setAlphaBand( int band );
+    int alphaBand() const;
+
+    virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
+%Docstring
+Returns symbology items if provided by renderer.
+
+.. seealso:: :py:func:`createLegendNodes`
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+%Docstring
+Creates a set of legend nodes representing the renderer.
+
+The default implementation calls :py:func:`~QgsRasterRenderer.legendSymbologyItems` and creates corresponding legend nodes for each returned
+symbology item.
+
+Subclasses can override this to return more legend nodes which better represent the renderer.
+
+.. versionadded:: 3.18
+%End
+
+    virtual void readXml( const QDomElement &rendererElem );
+
+%Docstring
+Sets base class members from xml. Usually called from :py:func:`~QgsRasterRenderer.create` methods of subclasses
+%End
+
+    void copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin = true );
+%Docstring
+Copies common properties like opacity / transparency data from other renderer.
+Useful when cloning renderers.
+
+.. versionadded:: 2.16
+%End
+
+    virtual QList<int> usesBands() const;
+%Docstring
+Returns a list of band numbers used by the renderer
+%End
+
+    const QgsRasterMinMaxOrigin &minMaxOrigin() const;
+%Docstring
+Returns const reference to origin of min/max values
+%End
+
+    void setMinMaxOrigin( const QgsRasterMinMaxOrigin &origin );
+%Docstring
+Sets origin of min/max values
+%End
+
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+%Docstring
+Used from subclasses to create SLD Rule elements following SLD v1.0 specs
+
+.. versionadded:: 3.6
+%End
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
+with the renderer.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
+  protected:
+
+    void _writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const;
+%Docstring
+Write upper class info into rasterrenderer element (called by writeXml method of subclasses)
+%End
+
+
+
+
+
+    QRgb renderColorForNodataPixel() const;
+%Docstring
+Returns the color for the renderer to use to represent nodata pixels.
+
+Subclasses should use this rather then :py:func:`~QgsRasterRenderer.nodataColor` to determine the color to use for nodata pixels
+during an actual rendering operation.
+
+.. versionadded:: 3.10
+%End
+
+  private:
+    QgsRasterRenderer( const QgsRasterRenderer & );
+    const QgsRasterRenderer &operator=( const QgsRasterRenderer & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrenderer.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

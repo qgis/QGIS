@@ -1,0 +1,88 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectelevationproperties.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProjectElevationProperties : QObject
+{
+%Docstring(signature="appended")
+Contains elevation properties for a :py:class:`QgsProject`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprojectelevationproperties.h"
+%End
+  public:
+
+    QgsProjectElevationProperties( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectElevationProperties with the specified ``parent`` object.
+%End
+
+    ~QgsProjectElevationProperties();
+
+    void reset();
+%Docstring
+Resets the properties to a default state.
+%End
+
+    void resolveReferences( const QgsProject *project );
+%Docstring
+Resolves reference to layers from stored layer ID.
+%End
+
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads the property state from a DOM ``element``.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Returns a DOM element representing the properties.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    QgsAbstractTerrainProvider *terrainProvider();
+%Docstring
+Returns the project's terrain provider.
+
+.. seealso:: :py:func:`setTerrainProvider`
+%End
+
+    void setTerrainProvider( QgsAbstractTerrainProvider *provider /Transfer/ );
+%Docstring
+Sets the project's terrain ``provider``.
+
+Ownership of ``provider`` is transferred to this object.
+
+.. seealso:: :py:func:`terrainProvider`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the elevation properties change.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectelevationproperties.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,54 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dtypes.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class Qgs3DTypes
+{
+%Docstring(signature="appended")
+Defines enumerations and other auxiliary types for QGIS 3D
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgs3dtypes.h"
+%End
+  public:
+
+    enum CullingMode
+    {
+      NoCulling,
+      Front,
+      Back,
+      FrontAndBack
+    };
+
+    static const char *PROP_NAME_3D_RENDERER_FLAG;
+
+    enum Flag3DRenderer
+    {
+      Main3DRenderer,
+      Selected3DRenderer,
+    };
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dtypes.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

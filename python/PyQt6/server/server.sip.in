@@ -1,0 +1,53 @@
+%Module(name=qgis._server,
+        keyword_arguments="All")
+
+${DEFAULTDOCSTRINGSIGNATURE}
+
+%Import QtCore/QtCoremod.sip
+%Import QtGui/QtGuimod.sip
+%Import QtXml/QtXmlmod.sip
+
+%Import core/core.sip
+%Include qgsserverexception.sip
+
+%Feature HAVE_SERVER_PYTHON_PLUGINS
+
+%Include server_auto.sip
+
+
+%VirtualErrorHandler serverapi_badrequest_exception_handler
+    PyObject *type, *exception, *traceback, *pyStrException;
+
+    PyErr_Fetch(&type, &exception, &traceback);
+    pyStrException = PyObject_Str(exception);
+    Py_DECREF(pyStrException);
+
+    SIP_RELEASE_GIL( sipGILState );
+
+    QString strException = "API bad request error";
+    if ( pyStrException && PyUnicode_Check(pyStrException) )
+    {
+       strException = QString::fromUtf8( PyUnicode_AsUTF8(pyStrException) );
+    }
+
+    throw QgsServerApiBadRequestException( strException );
+%End
+
+
+%VirtualErrorHandler server_exception_handler
+    PyObject *type, *exception, *traceback, *pyStrException;
+
+    PyErr_Fetch(&type, &exception, &traceback);
+    pyStrException = PyObject_Str(exception);
+    Py_DECREF(pyStrException);
+
+    SIP_RELEASE_GIL( sipGILState );
+
+    QString strException = "Server internal error";
+    if ( pyStrException && PyUnicode_Check(pyStrException) )
+    {
+       strException = QString::fromUtf8( PyUnicode_AsUTF8(pyStrException) );
+    }
+
+    throw QgsServerException( strException );
+%End
