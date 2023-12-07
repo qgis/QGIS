@@ -71,7 +71,7 @@ Applies a ``capitalization`` style to the block's text.
 .. versionadded:: 3.16
 %End
 
-    int __len__() const;
+    Py_ssize_t __len__() const;
 %MethodCode
     sipRes = sipCpp->size();
 %End
@@ -97,7 +97,7 @@ Returns the fragment at the specified ``index``.
 
     QgsTextFragment &operator[]( int index ) /Factory/;
 %MethodCode
-    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+    Py_ssize_t idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
     if ( idx < 0 )
       sipIsErr = 1;
     else

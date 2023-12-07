@@ -22,7 +22,7 @@ Contains utility functions for working with data providers.
 %End
   public:
 
-    enum class SublayerCompletenessFlag
+    enum class SublayerCompletenessFlag /BaseType=IntFlag/
     {
       IgnoreUnknownFeatureCount,
       IgnoreUnknownGeometryType,

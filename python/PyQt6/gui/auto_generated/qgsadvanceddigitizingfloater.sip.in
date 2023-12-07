@@ -30,7 +30,7 @@ feature. It proxies display and actions to :py:class:`QgsMapToolAdvancedDigitizi
 %End
   public:
 
-    enum class FloaterItem
+    enum class FloaterItem /BaseType=IntFlag/
     {
       XCoordinate,
       YCoordinate,

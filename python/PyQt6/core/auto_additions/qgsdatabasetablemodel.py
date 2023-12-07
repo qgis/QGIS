@@ -1,0 +1,9 @@
+# The following has been generated automatically from src/core/qgsdatabasetablemodel.h
+QgsDatabaseTableModel.RoleTableName = QgsDatabaseTableModel.Role.RoleTableName
+QgsDatabaseTableModel.RoleSchema = QgsDatabaseTableModel.Role.RoleSchema
+QgsDatabaseTableModel.RoleTableFlags = QgsDatabaseTableModel.Role.RoleTableFlags
+QgsDatabaseTableModel.RoleComment = QgsDatabaseTableModel.Role.RoleComment
+QgsDatabaseTableModel.RoleCustomInfo = QgsDatabaseTableModel.Role.RoleCustomInfo
+QgsDatabaseTableModel.RoleWkbType = QgsDatabaseTableModel.Role.RoleWkbType
+QgsDatabaseTableModel.RoleCrs = QgsDatabaseTableModel.Role.RoleCrs
+QgsDatabaseTableModel.RoleEmpty = QgsDatabaseTableModel.Role.RoleEmpty

@@ -188,7 +188,7 @@ Sets the largest allowable difference in size between the rendered and the expec
 .. versionadded:: 2.12
 %End
 
-    enum class Flag
+    enum class Flag /BaseType=IntFlag/
     {
       AvoidExportingRenderedImage,
     };

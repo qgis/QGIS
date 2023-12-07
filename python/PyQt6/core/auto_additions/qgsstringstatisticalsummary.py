@@ -1,0 +1,13 @@
+# The following has been generated automatically from src/core/qgsstringstatisticalsummary.h
+QgsStringStatisticalSummary.Count = QgsStringStatisticalSummary.Statistic.Count
+QgsStringStatisticalSummary.CountDistinct = QgsStringStatisticalSummary.Statistic.CountDistinct
+QgsStringStatisticalSummary.CountMissing = QgsStringStatisticalSummary.Statistic.CountMissing
+QgsStringStatisticalSummary.Min = QgsStringStatisticalSummary.Statistic.Min
+QgsStringStatisticalSummary.Max = QgsStringStatisticalSummary.Statistic.Max
+QgsStringStatisticalSummary.MinimumLength = QgsStringStatisticalSummary.Statistic.MinimumLength
+QgsStringStatisticalSummary.MaximumLength = QgsStringStatisticalSummary.Statistic.MaximumLength
+QgsStringStatisticalSummary.MeanLength = QgsStringStatisticalSummary.Statistic.MeanLength
+QgsStringStatisticalSummary.Minority = QgsStringStatisticalSummary.Statistic.Minority
+QgsStringStatisticalSummary.Majority = QgsStringStatisticalSummary.Statistic.Majority
+QgsStringStatisticalSummary.All = QgsStringStatisticalSummary.Statistic.All
+QgsStringStatisticalSummary.Statistics = lambda flags=0: QgsStringStatisticalSummary.Statistic(flags)

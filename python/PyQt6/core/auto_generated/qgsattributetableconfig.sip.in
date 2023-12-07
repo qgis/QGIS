@@ -78,7 +78,7 @@ Returns the number of columns in the configuration.
 .. versionadded:: 3.22
 %End
 
-    int __len__() const;
+    Py_ssize_t __len__() const;
 %MethodCode
     sipRes = sipCpp->size();
 %End

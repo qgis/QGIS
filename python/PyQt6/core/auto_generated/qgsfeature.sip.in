@@ -135,7 +135,7 @@ geometry and a list of field/values attributes.
       sipCpp->deleteAttribute( fieldIdx );
 %End
 
-    long __hash__() const;
+    Py_hash_t __hash__() const;
 %MethodCode
     sipRes = qHash( *sipCpp );
 %End

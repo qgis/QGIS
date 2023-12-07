@@ -49,7 +49,7 @@ An interface for objects which can create sets of parameter values for processin
 %End
   public:
 
-    enum class Flag
+    enum class Flag /BaseType=IntFlag/
     {
       SkipDefaultValueParameters,
     };

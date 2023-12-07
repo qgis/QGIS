@@ -1,0 +1,12 @@
+# The following has been generated automatically from src/core/qgsfieldmodel.h
+QgsFieldModel.FieldNameRole = QgsFieldModel.FieldRoles.FieldNameRole
+QgsFieldModel.FieldIndexRole = QgsFieldModel.FieldRoles.FieldIndexRole
+QgsFieldModel.ExpressionRole = QgsFieldModel.FieldRoles.ExpressionRole
+QgsFieldModel.IsExpressionRole = QgsFieldModel.FieldRoles.IsExpressionRole
+QgsFieldModel.ExpressionValidityRole = QgsFieldModel.FieldRoles.ExpressionValidityRole
+QgsFieldModel.FieldTypeRole = QgsFieldModel.FieldRoles.FieldTypeRole
+QgsFieldModel.FieldOriginRole = QgsFieldModel.FieldRoles.FieldOriginRole
+QgsFieldModel.IsEmptyRole = QgsFieldModel.FieldRoles.IsEmptyRole
+QgsFieldModel.EditorWidgetType = QgsFieldModel.FieldRoles.EditorWidgetType
+QgsFieldModel.JoinedFieldIsEditable = QgsFieldModel.FieldRoles.JoinedFieldIsEditable
+QgsFieldModel.FieldIsWidgetEditable = QgsFieldModel.FieldRoles.FieldIsWidgetEditable

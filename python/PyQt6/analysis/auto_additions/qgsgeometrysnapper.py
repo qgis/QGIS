@@ -1,0 +1,8 @@
+# The following has been generated automatically from src/analysis/vector/qgsgeometrysnapper.h
+QgsGeometrySnapper.PreferNodes = QgsGeometrySnapper.SnapMode.PreferNodes
+QgsGeometrySnapper.PreferClosest = QgsGeometrySnapper.SnapMode.PreferClosest
+QgsGeometrySnapper.PreferNodesNoExtraVertices = QgsGeometrySnapper.SnapMode.PreferNodesNoExtraVertices
+QgsGeometrySnapper.PreferClosestNoExtraVertices = QgsGeometrySnapper.SnapMode.PreferClosestNoExtraVertices
+QgsGeometrySnapper.EndPointPreferNodes = QgsGeometrySnapper.SnapMode.EndPointPreferNodes
+QgsGeometrySnapper.EndPointPreferClosest = QgsGeometrySnapper.SnapMode.EndPointPreferClosest
+QgsGeometrySnapper.EndPointToEndPoint = QgsGeometrySnapper.SnapMode.EndPointToEndPoint

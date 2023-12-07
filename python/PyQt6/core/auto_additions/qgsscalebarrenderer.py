@@ -1,19 +1,35 @@
 # The following has been generated automatically from src/core/scalebar/qgsscalebarrenderer.h
 # monkey patching scoped based enum
 QgsScaleBarRenderer.Flag.FlagUsesLineSymbol.__doc__ = "Renderer utilizes the scalebar line symbol (see QgsScaleBarSettings.lineSymbol() )"
+QgsScaleBarRenderer.FlagUsesLineSymbol = QgsScaleBarRenderer.Flag.FlagUsesLineSymbol
 QgsScaleBarRenderer.Flag.FlagUsesFillSymbol.__doc__ = "Renderer utilizes the scalebar fill symbol (see QgsScaleBarSettings.fillSymbol() )"
+QgsScaleBarRenderer.FlagUsesFillSymbol = QgsScaleBarRenderer.Flag.FlagUsesFillSymbol
 QgsScaleBarRenderer.Flag.FlagUsesAlternateFillSymbol.__doc__ = "Renderer utilizes the alternate scalebar fill symbol (see QgsScaleBarSettings.alternateFillSymbol() )"
+QgsScaleBarRenderer.FlagUsesAlternateFillSymbol = QgsScaleBarRenderer.Flag.FlagUsesAlternateFillSymbol
 QgsScaleBarRenderer.Flag.FlagRespectsUnits.__doc__ = "Renderer respects the QgsScaleBarSettings.units() setting"
+QgsScaleBarRenderer.FlagRespectsUnits = QgsScaleBarRenderer.Flag.FlagRespectsUnits
 QgsScaleBarRenderer.Flag.FlagRespectsMapUnitsPerScaleBarUnit.__doc__ = "Renderer respects the QgsScaleBarSettings.mapUnitsPerScaleBarUnit() setting"
+QgsScaleBarRenderer.FlagRespectsMapUnitsPerScaleBarUnit = QgsScaleBarRenderer.Flag.FlagRespectsMapUnitsPerScaleBarUnit
 QgsScaleBarRenderer.Flag.FlagUsesUnitLabel.__doc__ = "Renderer uses the QgsScaleBarSettings.unitLabel() setting"
+QgsScaleBarRenderer.FlagUsesUnitLabel = QgsScaleBarRenderer.Flag.FlagUsesUnitLabel
 QgsScaleBarRenderer.Flag.FlagUsesSegments.__doc__ = "Renderer uses the scalebar segments"
+QgsScaleBarRenderer.FlagUsesSegments = QgsScaleBarRenderer.Flag.FlagUsesSegments
 QgsScaleBarRenderer.Flag.FlagUsesLabelBarSpace.__doc__ = "Renderer uses the QgsScaleBarSettings.labelBarSpace() setting"
+QgsScaleBarRenderer.FlagUsesLabelBarSpace = QgsScaleBarRenderer.Flag.FlagUsesLabelBarSpace
 QgsScaleBarRenderer.Flag.FlagUsesLabelVerticalPlacement.__doc__ = "Renderer uses the QgsScaleBarSettings.labelVerticalPlacement() setting"
+QgsScaleBarRenderer.FlagUsesLabelVerticalPlacement = QgsScaleBarRenderer.Flag.FlagUsesLabelVerticalPlacement
 QgsScaleBarRenderer.Flag.FlagUsesLabelHorizontalPlacement.__doc__ = "Renderer uses the QgsScaleBarSettings.labelHorizontalPlacement() setting"
+QgsScaleBarRenderer.FlagUsesLabelHorizontalPlacement = QgsScaleBarRenderer.Flag.FlagUsesLabelHorizontalPlacement
 QgsScaleBarRenderer.Flag.FlagUsesAlignment.__doc__ = "Renderer uses the QgsScaleBarSettings.alignment() setting"
+QgsScaleBarRenderer.FlagUsesAlignment = QgsScaleBarRenderer.Flag.FlagUsesAlignment
 QgsScaleBarRenderer.Flag.FlagUsesSubdivisions.__doc__ = "Renderer uses the scalebar subdivisions (see QgsScaleBarSettings.numberOfSubdivisions() )"
+QgsScaleBarRenderer.FlagUsesSubdivisions = QgsScaleBarRenderer.Flag.FlagUsesSubdivisions
 QgsScaleBarRenderer.Flag.FlagUsesDivisionSymbol.__doc__ = "Renderer utilizes the scalebar division symbol (see QgsScaleBarSettings.divisionLineSymbol() )"
+QgsScaleBarRenderer.FlagUsesDivisionSymbol = QgsScaleBarRenderer.Flag.FlagUsesDivisionSymbol
 QgsScaleBarRenderer.Flag.FlagUsesSubdivisionSymbol.__doc__ = "Renderer utilizes the scalebar subdivision symbol (see QgsScaleBarSettings.subdivisionLineSymbol() )"
+QgsScaleBarRenderer.FlagUsesSubdivisionSymbol = QgsScaleBarRenderer.Flag.FlagUsesSubdivisionSymbol
 QgsScaleBarRenderer.Flag.FlagUsesSubdivisionsHeight.__doc__ = "Renderer uses the scalebar subdivisions height (see QgsScaleBarSettings.subdivisionsHeight() )"
+QgsScaleBarRenderer.FlagUsesSubdivisionsHeight = QgsScaleBarRenderer.Flag.FlagUsesSubdivisionsHeight
 QgsScaleBarRenderer.Flag.__doc__ = "Flags which control scalebar renderer behavior.\n\n.. versionadded:: 3.14\n\n" + '* ``FlagUsesLineSymbol``: ' + QgsScaleBarRenderer.Flag.FlagUsesLineSymbol.__doc__ + '\n' + '* ``FlagUsesFillSymbol``: ' + QgsScaleBarRenderer.Flag.FlagUsesFillSymbol.__doc__ + '\n' + '* ``FlagUsesAlternateFillSymbol``: ' + QgsScaleBarRenderer.Flag.FlagUsesAlternateFillSymbol.__doc__ + '\n' + '* ``FlagRespectsUnits``: ' + QgsScaleBarRenderer.Flag.FlagRespectsUnits.__doc__ + '\n' + '* ``FlagRespectsMapUnitsPerScaleBarUnit``: ' + QgsScaleBarRenderer.Flag.FlagRespectsMapUnitsPerScaleBarUnit.__doc__ + '\n' + '* ``FlagUsesUnitLabel``: ' + QgsScaleBarRenderer.Flag.FlagUsesUnitLabel.__doc__ + '\n' + '* ``FlagUsesSegments``: ' + QgsScaleBarRenderer.Flag.FlagUsesSegments.__doc__ + '\n' + '* ``FlagUsesLabelBarSpace``: ' + QgsScaleBarRenderer.Flag.FlagUsesLabelBarSpace.__doc__ + '\n' + '* ``FlagUsesLabelVerticalPlacement``: ' + QgsScaleBarRenderer.Flag.FlagUsesLabelVerticalPlacement.__doc__ + '\n' + '* ``FlagUsesLabelHorizontalPlacement``: ' + QgsScaleBarRenderer.Flag.FlagUsesLabelHorizontalPlacement.__doc__ + '\n' + '* ``FlagUsesAlignment``: ' + QgsScaleBarRenderer.Flag.FlagUsesAlignment.__doc__ + '\n' + '* ``FlagUsesSubdivisions``: ' + QgsScaleBarRenderer.Flag.FlagUsesSubdivisions.__doc__ + '\n' + '* ``FlagUsesDivisionSymbol``: ' + QgsScaleBarRenderer.Flag.FlagUsesDivisionSymbol.__doc__ + '\n' + '* ``FlagUsesSubdivisionSymbol``: ' + QgsScaleBarRenderer.Flag.FlagUsesSubdivisionSymbol.__doc__ + '\n' + '* ``FlagUsesSubdivisionsHeight``: ' + QgsScaleBarRenderer.Flag.FlagUsesSubdivisionsHeight.__doc__
 # --
+QgsScaleBarRenderer.Flags = lambda flags=0: QgsScaleBarRenderer.Flag(flags)

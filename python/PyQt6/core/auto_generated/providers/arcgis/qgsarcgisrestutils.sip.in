@@ -177,7 +177,7 @@ Returns a null rectangle if the value cannot be converted.
 .. versionadded:: 3.34
 %End
 
-    enum class FeatureToJsonFlag
+    enum class FeatureToJsonFlag /BaseType=IntFlag/
     {
       IncludeGeometry,
       IncludeNonObjectIdAttributes,

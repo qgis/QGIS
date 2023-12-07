@@ -260,7 +260,7 @@ Multiply x and y by the given value
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    int __len__();
+    Py_ssize_t __len__();
 %MethodCode
     sipRes = 2;
 %End
@@ -283,7 +283,7 @@ Multiply x and y by the given value
     }
 %End
 
-    long __hash__() const;
+    Py_hash_t __hash__() const;
 %MethodCode
     sipRes = qHash( *sipCpp );
 %End
