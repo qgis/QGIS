@@ -36,7 +36,7 @@ be used in different contexts like when updating the SQL of an existing query la
   public:
 
 
-    enum class QueryWidgetMode
+    enum class QueryWidgetMode /BaseType=IntFlag/
     {
       SqlQueryMode,
       QueryLayerUpdateMode,

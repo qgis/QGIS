@@ -64,7 +64,7 @@ Returns the ID of the layer this dependency depends on
     bool operator==( const QgsMapLayerDependency &other ) const;
 
     //! hash operator
-    long __hash__() const;
+    Py_hash_t __hash__() const;
 %MethodCode
     sipRes = qHash( *sipCpp );
 %End

@@ -43,7 +43,7 @@ can be generated using an optional base color.
 %End
   public:
 
-    enum SchemeFlag
+    enum SchemeFlag /BaseType=IntFlag/
     {
       ShowInColorDialog,
       ShowInColorButtonMenu,

@@ -50,7 +50,7 @@ Constructor for LayerOptions with optional ``transformContext``.
     };
 
 
-    enum class PointCloudStatisticsCalculationState
+    enum class PointCloudStatisticsCalculationState /BaseType=IntFlag/
     {
       NotStarted,
       Calculating,

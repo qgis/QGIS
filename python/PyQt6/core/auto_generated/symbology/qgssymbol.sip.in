@@ -178,7 +178,7 @@ Returns the total number of symbol layers contained in the symbol.
 %End
 
 
-    int __len__() const;
+    Py_ssize_t __len__() const;
 %Docstring
 Returns the number of symbol layers contained in the symbol.
 %End

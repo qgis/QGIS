@@ -22,7 +22,7 @@ Class to select destination file, type and CRS for ogr layers
 %End
   public:
 
-    enum class Option
+    enum class Option /BaseType=IntFlag/
     {
       Symbology,
       DestinationCrs,

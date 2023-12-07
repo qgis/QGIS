@@ -424,7 +424,7 @@ setCaChain set the CA chain
 
   for ( int i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
   {
-    *qlist << ( QSslError::SslError )SIPLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
+    *qlist << ( QSslError::SslError )PyLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
   }
 
   *sipCppPtr = qlist;

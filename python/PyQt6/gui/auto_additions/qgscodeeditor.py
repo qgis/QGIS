@@ -1,8 +1,11 @@
 # The following has been generated automatically from src/gui/codeeditors/qgscodeeditor.h
 # monkey patching scoped based enum
 QgsCodeEditor.Mode.ScriptEditor.__doc__ = "Standard mode, allows for display and edit of entire scripts"
+QgsCodeEditor.ScriptEditor = QgsCodeEditor.Mode.ScriptEditor
 QgsCodeEditor.Mode.OutputDisplay.__doc__ = "Read only mode for display of command outputs"
+QgsCodeEditor.OutputDisplay = QgsCodeEditor.Mode.OutputDisplay
 QgsCodeEditor.Mode.CommandInput.__doc__ = "Command input mode"
+QgsCodeEditor.CommandInput = QgsCodeEditor.Mode.CommandInput
 QgsCodeEditor.Mode.__doc__ = "Code editor modes.\n\n.. versionadded:: 3.30\n\n" + '* ``ScriptEditor``: ' + QgsCodeEditor.Mode.ScriptEditor.__doc__ + '\n' + '* ``OutputDisplay``: ' + QgsCodeEditor.Mode.OutputDisplay.__doc__ + '\n' + '* ``CommandInput``: ' + QgsCodeEditor.Mode.CommandInput.__doc__
 # --
 QgsCodeEditor.Mode.baseClass = QgsCodeEditor
@@ -10,20 +13,26 @@ QgsCodeEditor.Mode.baseClass = QgsCodeEditor
 QgsCodeEditor.LineNumbers = QgsCodeEditor.MarginRole.LineNumbers
 QgsCodeEditor.LineNumbers.is_monkey_patched = True
 QgsCodeEditor.LineNumbers.__doc__ = "Line numbers"
+QgsCodeEditor.LineNumbers = QgsCodeEditor.MarginRole.LineNumbers
 QgsCodeEditor.ErrorIndicators = QgsCodeEditor.MarginRole.ErrorIndicators
 QgsCodeEditor.ErrorIndicators.is_monkey_patched = True
 QgsCodeEditor.ErrorIndicators.__doc__ = "Error indicators"
+QgsCodeEditor.ErrorIndicators = QgsCodeEditor.MarginRole.ErrorIndicators
 QgsCodeEditor.FoldingControls = QgsCodeEditor.MarginRole.FoldingControls
 QgsCodeEditor.FoldingControls.is_monkey_patched = True
 QgsCodeEditor.FoldingControls.__doc__ = "Folding controls"
+QgsCodeEditor.FoldingControls = QgsCodeEditor.MarginRole.FoldingControls
 QgsCodeEditor.MarginRole.__doc__ = "Margin roles.\n\nThis enum contains the roles which the different numbered margins are used for.\n\n.. versionadded:: 3.16\n\n" + '* ``LineNumbers``: ' + QgsCodeEditor.MarginRole.LineNumbers.__doc__ + '\n' + '* ``ErrorIndicators``: ' + QgsCodeEditor.MarginRole.ErrorIndicators.__doc__ + '\n' + '* ``FoldingControls``: ' + QgsCodeEditor.MarginRole.FoldingControls.__doc__
 # --
 QgsCodeEditor.MarginRole.baseClass = QgsCodeEditor
 # monkey patching scoped based enum
 QgsCodeEditor.Flag.CodeFolding.__doc__ = "Indicates that code folding should be enabled for the editor"
+QgsCodeEditor.CodeFolding = QgsCodeEditor.Flag.CodeFolding
 QgsCodeEditor.Flag.ImmediatelyUpdateHistory.__doc__ = "Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close. Since QGIS 3.32."
+QgsCodeEditor.ImmediatelyUpdateHistory = QgsCodeEditor.Flag.ImmediatelyUpdateHistory
 QgsCodeEditor.Flag.__doc__ = "Flags controlling behavior of code editor\n\n.. versionadded:: 3.28\n\n" + '* ``CodeFolding``: ' + QgsCodeEditor.Flag.CodeFolding.__doc__ + '\n' + '* ``ImmediatelyUpdateHistory``: ' + QgsCodeEditor.Flag.ImmediatelyUpdateHistory.__doc__
 # --
 QgsCodeEditor.Flag.baseClass = QgsCodeEditor
+QgsCodeEditor.Flags = lambda flags=0: QgsCodeEditor.Flag(flags)
 QgsCodeEditor.Flags.baseClass = QgsCodeEditor
 Flags = QgsCodeEditor  # dirty hack since SIP seems to introduce the flags in module

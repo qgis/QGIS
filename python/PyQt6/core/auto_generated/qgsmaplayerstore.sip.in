@@ -45,7 +45,7 @@ Returns the number of valid layers contained in the store.
 %End
 
 
-    int __len__() const;
+    Py_ssize_t __len__() const;
 %Docstring
 Returns the number of layers contained in the store.
 %End

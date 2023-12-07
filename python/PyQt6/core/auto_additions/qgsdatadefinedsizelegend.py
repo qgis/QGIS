@@ -1,0 +1,5 @@
+# The following has been generated automatically from src/core/qgsdatadefinedsizelegend.h
+QgsDataDefinedSizeLegend.LegendSeparated = QgsDataDefinedSizeLegend.LegendType.LegendSeparated
+QgsDataDefinedSizeLegend.LegendCollapsed = QgsDataDefinedSizeLegend.LegendType.LegendCollapsed
+QgsDataDefinedSizeLegend.AlignCenter = QgsDataDefinedSizeLegend.VerticalAlignment.AlignCenter
+QgsDataDefinedSizeLegend.AlignBottom = QgsDataDefinedSizeLegend.VerticalAlignment.AlignBottom

@@ -22,7 +22,7 @@ Abstract base class for annotation item edit operations
 %End
   public:
 
-    enum class Type
+    enum class Type /BaseType=IntFlag/
     {
       MoveNode,
       DeleteNode,

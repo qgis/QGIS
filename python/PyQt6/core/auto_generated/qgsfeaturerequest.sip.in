@@ -64,7 +64,7 @@ Examples:
 #include "qgsfeaturerequest.h"
 %End
   public:
-    enum Flag
+    enum Flag /BaseType=IntFlag/
     {
       NoFlags,
       NoGeometry,

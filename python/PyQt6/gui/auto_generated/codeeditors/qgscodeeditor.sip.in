@@ -89,14 +89,14 @@ A text editor based on QScintilla2.
       CommandInput,
     };
 
-    enum class MarginRole
+    enum class MarginRole /BaseType=IntFlag/
       {
       LineNumbers,
       ErrorIndicators,
       FoldingControls,
     };
 
-    enum class Flag
+    enum class Flag /BaseType=IntFlag/
     {
       CodeFolding,
       ImmediatelyUpdateHistory,

@@ -344,7 +344,7 @@ their acceptable ranges, defaults, etc.
 %End
   public:
 
-    enum Flag
+    enum Flag /BaseType=IntFlag/
     {
       FlagAdvanced,
       FlagHidden,

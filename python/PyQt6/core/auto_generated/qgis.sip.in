@@ -74,7 +74,7 @@ The development version
       NoLevel,
     };
 
-    enum class LayerType
+    enum class LayerType /BaseType=IntFlag/
       {
       Vector,
       Raster,
@@ -87,7 +87,7 @@ The development version
       TiledScene,
     };
 
-    enum class LayerFilter
+    enum class LayerFilter /BaseType=IntFlag/
       {
       RasterLayer,
       NoGeometry,
@@ -173,7 +173,7 @@ The development version
       MultiPolygon25D
     };
 
-    enum class GeometryType
+    enum class GeometryType /BaseType=IntFlag/
       {
       Point,
       Line,
@@ -182,7 +182,7 @@ The development version
       Null,
     };
 
-    enum class DataType
+    enum class DataType /BaseType=IntFlag/
       {
       UnknownDataType,
       Byte,
@@ -201,7 +201,7 @@ The development version
       ARGB32_Premultiplied
     };
 
-    enum class CaptureTechnique
+    enum class CaptureTechnique /BaseType=IntFlag/
     {
       StraightSegments,
       CircularString,
@@ -209,14 +209,14 @@ The development version
       Shape,
     };
 
-    enum class VectorLayerTypeFlag
+    enum class VectorLayerTypeFlag /BaseType=IntFlag/
     {
       SqlQuery
     };
     typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
 
 
-    enum class PythonMacroMode
+    enum class PythonMacroMode /BaseType=IntFlag/
       {
       Never,
       Ask,
@@ -225,7 +225,7 @@ The development version
       NotForThisSession,
     };
 
-    enum class FeatureCountState
+    enum class FeatureCountState /BaseType=IntFlag/
       {
       Uncounted,
       UnknownCount,
@@ -241,7 +241,7 @@ The development version
     typedef QFlags<Qgis::VectorDataProviderAttributeEditCapability> VectorDataProviderAttributeEditCapabilities;
 
 
-    enum class SymbolType
+    enum class SymbolType /BaseType=IntFlag/
       {
       Marker,
       Line,
@@ -249,13 +249,13 @@ The development version
       Hybrid
     };
 
-    enum class ScaleMethod
+    enum class ScaleMethod /BaseType=IntFlag/
       {
       ScaleArea,
       ScaleDiameter
     };
 
-    enum class SettingsType
+    enum class SettingsType /BaseType=IntFlag/
       {
       Custom,
       Variant,
@@ -276,7 +276,7 @@ The development version
       NamedList,
     };
 
-    enum class SettingsTreeNodeOption
+    enum class SettingsTreeNodeOption /BaseType=IntFlag/
     {
       NamedListSelectedItemSetting,
     };
@@ -284,7 +284,7 @@ The development version
     typedef QFlags<Qgis::SettingsTreeNodeOption> SettingsTreeNodeOptions;
 
 
-    enum class PropertyType
+    enum class PropertyType /BaseType=IntFlag/
       {
       Invalid,
       Static,
@@ -292,7 +292,7 @@ The development version
       Expression,
     };
 
-    enum class SldExportOption
+    enum class SldExportOption /BaseType=IntFlag/
     {
       NoOptions,
       Svg,
@@ -301,7 +301,7 @@ The development version
     typedef QFlags<Qgis::SldExportOption> SldExportOptions;
 
 
-    enum class SldExportVendorExtension
+    enum class SldExportVendorExtension /BaseType=IntFlag/
     {
       NoVendorExtension,
       GeoServerVendorExtension,
@@ -309,7 +309,7 @@ The development version
     };
 
 
-    enum class SettingsOption
+    enum class SettingsOption /BaseType=IntFlag/
     {
       SaveFormerValue,
       SaveEnumFlagAsInt,
@@ -317,14 +317,14 @@ The development version
     typedef QFlags<Qgis::SettingsOption> SettingsOptions;
 
 
-    enum class SnappingMode
+    enum class SnappingMode /BaseType=IntFlag/
       {
       ActiveLayer,
       AllLayers,
       AdvancedConfiguration,
     };
 
-    enum class SnappingType
+    enum class SnappingType /BaseType=IntFlag/
       {
       NoSnap,
       Vertex,
@@ -337,41 +337,41 @@ The development version
     typedef QFlags<Qgis::SnappingType> SnappingTypes;
 
 
-    enum class SymbolRenderHint
+    enum class SymbolRenderHint /BaseType=IntFlag/
       {
       DynamicRotation,
     };
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
 
-    enum class SymbolRotationMode
+    enum class SymbolRotationMode /BaseType=IntFlag/
     {
       RespectMapRotation,
       IgnoreMapRotation,
     };
 
-    enum class SymbolFlag
+    enum class SymbolFlag /BaseType=IntFlag/
     {
       RendererShouldUseSymbolLevels,
     };
     typedef QFlags<Qgis::SymbolFlag> SymbolFlags;
 
 
-    enum class SymbolPreviewFlag
+    enum class SymbolPreviewFlag /BaseType=IntFlag/
       {
       FlagIncludeCrosshairsForMarkerSymbols,
     };
     typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
 
 
-    enum class SymbolLayerFlag
+    enum class SymbolLayerFlag /BaseType=IntFlag/
     {
       DisableFeatureClipping,
     };
     typedef QFlags<Qgis::SymbolLayerFlag> SymbolLayerFlags;
 
 
-    enum class SymbolLayerUserFlag
+    enum class SymbolLayerUserFlag /BaseType=IntFlag/
     {
       DisableSelectionRecoloring,
     };
@@ -379,7 +379,7 @@ The development version
     typedef QFlags<Qgis::SymbolLayerUserFlag> SymbolLayerUserFlags;
 
 
-    enum class BrowserItemType
+    enum class BrowserItemType /BaseType=IntFlag/
       {
       Collection,
       Directory,
@@ -392,14 +392,14 @@ The development version
       Field,
     };
 
-    enum class BrowserItemState
+    enum class BrowserItemState /BaseType=IntFlag/
       {
       NotPopulated,
       Populating,
       Populated,
     };
 
-    enum class BrowserItemCapability
+    enum class BrowserItemCapability /BaseType=IntFlag/
       {
       NoCapabilities,
       SetCrs,
@@ -414,7 +414,7 @@ The development version
     typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
 
 
-    enum class BrowserLayerType
+    enum class BrowserLayerType /BaseType=IntFlag/
       {
       NoType,
       Vector,
@@ -432,20 +432,20 @@ The development version
       TiledScene,
     };
 
-    enum class BrowserDirectoryMonitoring
+    enum class BrowserDirectoryMonitoring /BaseType=IntFlag/
     {
       Default,
       NeverMonitor,
       AlwaysMonitor,
     };
 
-    enum class HttpMethod
+    enum class HttpMethod /BaseType=IntFlag/
     {
       Get,
       Post
     };
 
-    enum class VectorExportResult
+    enum class VectorExportResult /BaseType=IntFlag/
       {
       Success,
       ErrorCreatingDataSource,
@@ -461,7 +461,7 @@ The development version
       UserCanceled,
     };
 
-    enum class VectorFileWriterCapability
+    enum class VectorFileWriterCapability /BaseType=IntFlag/
     {
       FieldAliases,
       FieldComments,
@@ -470,7 +470,7 @@ The development version
     typedef QFlags<Qgis::VectorFileWriterCapability> VectorFileWriterCapabilities;
 
 
-    enum class SqlLayerDefinitionCapability
+    enum class SqlLayerDefinitionCapability /BaseType=IntFlag/
     {
       SubsetStringFilter,
       GeometryColumn,
@@ -480,7 +480,7 @@ The development version
     typedef QFlags<Qgis::SqlLayerDefinitionCapability> SqlLayerDefinitionCapabilities;
 
 
-    enum class SqlKeywordCategory
+    enum class SqlKeywordCategory /BaseType=IntFlag/
     {
       Keyword,
       Constant,
@@ -493,7 +493,7 @@ The development version
       Identifier
     };
 
-    enum class DriveType
+    enum class DriveType /BaseType=IntFlag/
     {
       Unknown,
       Invalid,
@@ -505,26 +505,26 @@ The development version
       Cloud,
     };
 
-    enum class ActionStart
+    enum class ActionStart /BaseType=IntFlag/
       {
       Deferred,
       Immediate,
     };
 
-    enum class UnplacedLabelVisibility
+    enum class UnplacedLabelVisibility /BaseType=IntFlag/
     {
       FollowEngineSetting,
       NeverShow,
     };
 
-    enum class LabelOverlapHandling
+    enum class LabelOverlapHandling /BaseType=IntFlag/
     {
       PreventOverlap,
       AllowOverlapIfRequired,
       AllowOverlapAtNoCost,
     };
 
-    enum class LabelPlacement
+    enum class LabelPlacement /BaseType=IntFlag/
       {
       AroundPoint,
       OverPoint,
@@ -537,7 +537,7 @@ The development version
       OutsidePolygons,
     };
 
-    enum class LabelPredefinedPointPosition
+    enum class LabelPredefinedPointPosition /BaseType=IntFlag/
       {
       TopLeft,
       TopSlightlyLeft,
@@ -553,13 +553,13 @@ The development version
       BottomRight,
     };
 
-    enum class LabelOffsetType
+    enum class LabelOffsetType /BaseType=IntFlag/
       {
       FromPoint,
       FromSymbolBounds,
     };
 
-    enum class LabelQuadrantPosition
+    enum class LabelQuadrantPosition /BaseType=IntFlag/
       {
       AboveLeft,
       Above,
@@ -572,7 +572,7 @@ The development version
       BelowRight,
     };
 
-    enum class LabelLinePlacementFlag
+    enum class LabelLinePlacementFlag /BaseType=IntFlag/
       {
       OnLine,
       AboveLine,
@@ -583,7 +583,7 @@ The development version
     typedef QFlags<Qgis::LabelLinePlacementFlag> LabelLinePlacementFlags;
 
 
-    enum class LabelPolygonPlacementFlag
+    enum class LabelPolygonPlacementFlag /BaseType=IntFlag/
       {
       AllowPlacementOutsideOfPolygon,
       AllowPlacementInsideOfPolygon,
@@ -592,14 +592,14 @@ The development version
     typedef QFlags<Qgis::LabelPolygonPlacementFlag> LabelPolygonPlacementFlags;
 
 
-    enum class UpsideDownLabelHandling
+    enum class UpsideDownLabelHandling /BaseType=IntFlag/
       {
       FlipUpsideDownLabels,
       AllowUpsideDownWhenRotationIsDefined,
       AlwaysAllowUpsideDown
     };
 
-    enum class LabelMultiLineAlignment
+    enum class LabelMultiLineAlignment /BaseType=IntFlag/
       {
       Left,
       Center,
@@ -608,7 +608,7 @@ The development version
       Justify,
     };
 
-    enum class FileFilterType
+    enum class FileFilterType /BaseType=IntFlag/
       {
       Vector,
       Raster,
@@ -619,7 +619,7 @@ The development version
       TiledScene,
     };
 
-    enum class SublayerQueryFlag
+    enum class SublayerQueryFlag /BaseType=IntFlag/
     {
       FastScan,
       ResolveGeometryType,
@@ -629,14 +629,14 @@ The development version
     typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
 
 
-    enum class SublayerFlag
+    enum class SublayerFlag /BaseType=IntFlag/
     {
       SystemTable,
     };
     typedef QFlags<Qgis::SublayerFlag> SublayerFlags;
 
 
-    enum class RasterPipeInterfaceRole
+    enum class RasterPipeInterfaceRole /BaseType=IntFlag/
       {
       Unknown,
       Provider,
@@ -648,7 +648,7 @@ The development version
       HueSaturation,
     };
 
-    enum class RasterResamplingStage
+    enum class RasterResamplingStage /BaseType=IntFlag/
       {
       //! Resampling occurs in ResamplingFilter
       ResampleFilter,
@@ -656,7 +656,7 @@ The development version
       Provider
     };
 
-    enum class RasterRendererFlag
+    enum class RasterRendererFlag /BaseType=IntFlag/
     {
       InternalLayerOpacityHandling,
     };
@@ -665,7 +665,7 @@ The development version
 
 
 
-    enum class RasterAttributeTableFieldUsage
+    enum class RasterAttributeTableFieldUsage /BaseType=IntFlag/
     {
       Generic,
       PixelCount,
@@ -688,19 +688,19 @@ The development version
       MaxCount
     };
 
-    enum class RasterAttributeTableType
+    enum class RasterAttributeTableType /BaseType=IntFlag/
     {
       Thematic,
       Athematic
     };
 
-    enum class RasterExportType
+    enum class RasterExportType /BaseType=IntFlag/
       {
       Raw,
       RenderedImage
     };
 
-    enum class RasterFileWriterResult
+    enum class RasterFileWriterResult /BaseType=IntFlag/
       {
       Success,
       SourceProviderError,
@@ -711,7 +711,7 @@ The development version
       Canceled,
     };
 
-    enum class MeshEditingErrorType
+    enum class MeshEditingErrorType /BaseType=IntFlag/
     {
       NoError,
       InvalidFace,
@@ -722,13 +722,13 @@ The development version
       ManifoldFace,
     };
 
-    enum class FilePathType
+    enum class FilePathType /BaseType=IntFlag/
     {
       Absolute,
       Relative,
     };
 
-    enum class SublayerPromptMode
+    enum class SublayerPromptMode /BaseType=IntFlag/
     {
       AlwaysAsk,
       AskExcludingRasterBands,
@@ -736,7 +736,7 @@ The development version
       NeverAskLoadAll,
     };
 
-    enum class FieldConfigurationFlag
+    enum class FieldConfigurationFlag /BaseType=IntFlag/
     {
       NoFlag,
       NotSearchable,
@@ -747,21 +747,21 @@ The development version
     typedef QFlags<Qgis::FieldConfigurationFlag> FieldConfigurationFlags;
 
 
-    enum class FieldMetadataProperty
+    enum class FieldMetadataProperty /BaseType=IntFlag/
     {
       GeometryCrs,
       GeometryWkbType,
       CustomProperty,
     };
 
-    enum class SelectionRenderingMode
+    enum class SelectionRenderingMode /BaseType=IntFlag/
     {
       Default,
       CustomColor,
       CustomSymbol,
     };
 
-    enum class SelectBehavior
+    enum class SelectBehavior /BaseType=IntFlag/
       {
       SetSelection,
       AddToSelection,
@@ -769,13 +769,13 @@ The development version
       RemoveFromSelection,
     };
 
-    enum class SelectGeometryRelationship
+    enum class SelectGeometryRelationship /BaseType=IntFlag/
     {
       Intersect,
       Within,
     };
 
-    enum class SelectionFlag
+    enum class SelectionFlag /BaseType=IntFlag/
     {
       SingleFeatureSelection,
       ToggleSelection,
@@ -785,7 +785,7 @@ The development version
 
 
 
-    enum class VectorEditResult
+    enum class VectorEditResult /BaseType=IntFlag/
       {
       Success,
       EmptyGeometry,
@@ -794,14 +794,14 @@ The development version
       InvalidLayer,
     };
 
-    enum class VertexMarkerType
+    enum class VertexMarkerType /BaseType=IntFlag/
       {
       SemiTransparentCircle,
       Cross,
       NoMarker,
     };
 
-    enum class ContentStatus
+    enum class ContentStatus /BaseType=IntFlag/
     {
       NotStarted,
       Running,
@@ -810,7 +810,7 @@ The development version
       Canceled,
     };
 
-    enum class GpsConnectionType
+    enum class GpsConnectionType /BaseType=IntFlag/
     {
       Automatic,
       Internal,
@@ -818,14 +818,14 @@ The development version
       Gpsd,
     };
 
-    enum class DeviceConnectionStatus
+    enum class DeviceConnectionStatus /BaseType=IntFlag/
       {
       Disconnected,
       Connecting,
       Connected,
     };
 
-    enum class GpsFixStatus
+    enum class GpsFixStatus /BaseType=IntFlag/
       {
       NoData,
       NoFix,
@@ -860,7 +860,7 @@ The development version
       Simulation,
     };
 
-    enum class GpsInformationComponent
+    enum class GpsInformationComponent /BaseType=IntFlag/
     {
       Location,
       Altitude,
@@ -887,7 +887,7 @@ The development version
     typedef QFlags<Qgis::GpsInformationComponent> GpsInformationComponents;
 
 
-    enum class BabelFormatCapability
+    enum class BabelFormatCapability /BaseType=IntFlag/
     {
       Import,
       Export,
@@ -898,21 +898,21 @@ The development version
     typedef QFlags<Qgis::BabelFormatCapability> BabelFormatCapabilities;
 
 
-    enum class BabelCommandFlag
+    enum class BabelCommandFlag /BaseType=IntFlag/
     {
       QuoteFilePaths,
     };
     typedef QFlags<Qgis::BabelCommandFlag> BabelCommandFlags;
 
 
-    enum class GpsFeatureType
+    enum class GpsFeatureType /BaseType=IntFlag/
     {
       Waypoint,
       Route,
       Track,
     };
 
-    enum class GeometryOperationResult
+    enum class GeometryOperationResult /BaseType=IntFlag/
       {
       Success,
       NothingHappened,
@@ -935,60 +935,60 @@ The development version
       GeometryTypeHasChanged,
     };
 
-    enum class GeometryValidityFlag
+    enum class GeometryValidityFlag /BaseType=IntFlag/
       {
       AllowSelfTouchingHoles,
     };
     typedef QFlags<Qgis::GeometryValidityFlag> GeometryValidityFlags;
 
 
-    enum class GeometryValidationEngine
+    enum class GeometryValidationEngine /BaseType=IntFlag/
       {
       QgisInternal,
       Geos,
     };
 
-    enum class BufferSide
+    enum class BufferSide /BaseType=IntFlag/
       {
       Left,
       Right,
     };
 
-    enum class EndCapStyle
+    enum class EndCapStyle /BaseType=IntFlag/
       {
       Round,
       Flat,
       Square,
     };
 
-    enum class JoinStyle
+    enum class JoinStyle /BaseType=IntFlag/
       {
       Round,
       Miter,
       Bevel,
     };
 
-    enum class CoverageValidityResult
+    enum class CoverageValidityResult /BaseType=IntFlag/
     {
       Invalid,
       Valid,
       Error,
     };
 
-    enum class MakeValidMethod
+    enum class MakeValidMethod /BaseType=IntFlag/
     {
       Linework,
       Structure,
     };
 
-    enum class SpatialFilterType
+    enum class SpatialFilterType /BaseType=IntFlag/
     {
       NoFilter,
       BoundingBox,
       DistanceWithin,
     };
 
-    enum class FileOperationFlag
+    enum class FileOperationFlag /BaseType=IntFlag/
     {
       IncludeMetadataFile,
       IncludeStyleFile,
@@ -996,7 +996,7 @@ The development version
     typedef QFlags<Qgis::FileOperationFlag> FileOperationFlags;
 
 
-    enum class MapLayerProperty
+    enum class MapLayerProperty /BaseType=IntFlag/
     {
       UsersCannotToggleEditing,
       IsBasemapLayer,
@@ -1004,21 +1004,21 @@ The development version
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
 
 
-    enum class AutoRefreshMode
+    enum class AutoRefreshMode /BaseType=IntFlag/
     {
       Disabled,
       ReloadData,
       RedrawOnly,
     };
 
-    enum class DataProviderFlag
+    enum class DataProviderFlag /BaseType=IntFlag/
     {
       IsBasemapSource,
     };
     typedef QFlags<Qgis::DataProviderFlag> DataProviderFlags;
 
 
-    enum class CrsType
+    enum class CrsType /BaseType=IntFlag/
     {
       Unknown,
       Geodetic,
@@ -1035,7 +1035,7 @@ The development version
       DerivedProjected,
     };
 
-    enum class CrsAxisDirection
+    enum class CrsAxisDirection /BaseType=IntFlag/
     {
       North,
       NorthNorthEast,
@@ -1079,47 +1079,47 @@ The development version
       Unspecified,
     };
 
-    enum class CoordinateOrder
+    enum class CoordinateOrder /BaseType=IntFlag/
     {
       Default,
       XY,
       YX,
     };
 
-    enum class Axis
+    enum class Axis /BaseType=IntFlag/
     {
       X,
       Y,
       Z
     };
 
-    enum class AnnotationItemFlag
+    enum class AnnotationItemFlag /BaseType=IntFlag/
     {
       ScaleDependentBoundingBox,
     };
     typedef QFlags<Qgis::AnnotationItemFlag> AnnotationItemFlags;
 
 
-    enum class AnnotationItemGuiFlag
+    enum class AnnotationItemGuiFlag /BaseType=IntFlag/
     {
       FlagNoCreationTools,
     };
     typedef QFlags<Qgis::AnnotationItemGuiFlag> AnnotationItemGuiFlags;
 
 
-    enum class AnnotationItemNodeType
+    enum class AnnotationItemNodeType /BaseType=IntFlag/
     {
       VertexHandle,
     };
 
-    enum class AnnotationItemEditOperationResult
+    enum class AnnotationItemEditOperationResult /BaseType=IntFlag/
     {
       Success,
       Invalid,
       ItemCleared,
     };
 
-    enum class TemporalNavigationMode
+    enum class TemporalNavigationMode /BaseType=IntFlag/
       {
       Disabled,
       Animated,
@@ -1127,14 +1127,14 @@ The development version
       Movie,
     };
 
-    enum class AnimationState
+    enum class AnimationState /BaseType=IntFlag/
       {
       Forward,
       Reverse,
       Idle,
     };
 
-    enum class PlaybackOperation
+    enum class PlaybackOperation /BaseType=IntFlag/
     {
       SkipToStart,
       PreviousFrame,
@@ -1145,7 +1145,7 @@ The development version
       SkipToEnd,
     };
 
-    enum class VectorTemporalMode
+    enum class VectorTemporalMode /BaseType=IntFlag/
       {
       FixedTemporalRange,
       FeatureDateTimeInstantFromField,
@@ -1155,27 +1155,27 @@ The development version
       RedrawLayerOnly,
     };
 
-    enum class VectorTemporalLimitMode
+    enum class VectorTemporalLimitMode /BaseType=IntFlag/
     {
       IncludeBeginExcludeEnd,
       IncludeBeginIncludeEnd,
     };
 
-    enum class VectorDataProviderTemporalMode
+    enum class VectorDataProviderTemporalMode /BaseType=IntFlag/
       {
       HasFixedTemporalRange,
       StoresFeatureDateTimeInstantInField,
       StoresFeatureDateTimeStartAndEndInSeparateFields,
     };
 
-    enum class RasterTemporalMode
+    enum class RasterTemporalMode /BaseType=IntFlag/
       {
       FixedTemporalRange,
       TemporalRangeFromDataProvider,
       RedrawLayerOnly,
     };
 
-    enum class TemporalIntervalMatchMethod
+    enum class TemporalIntervalMatchMethod /BaseType=IntFlag/
       {
       MatchUsingWholeRange,
       MatchExactUsingStartOfRange,
@@ -1184,7 +1184,7 @@ The development version
       FindClosestMatchToEndOfRange
     };
 
-    enum class RasterTemporalCapabilityFlag
+    enum class RasterTemporalCapabilityFlag /BaseType=IntFlag/
     {
       RequestedTimesMustExactlyMatchAllAvailableTemporalRanges,
     };
@@ -1192,13 +1192,13 @@ The development version
     typedef QFlags<Qgis::RasterTemporalCapabilityFlag> RasterTemporalCapabilityFlags;
 
 
-    enum class TransformDirection
+    enum class TransformDirection /BaseType=IntFlag/
       {
       Forward,
       Reverse
     };
 
-    enum class CoordinateTransformationFlag
+    enum class CoordinateTransformationFlag /BaseType=IntFlag/
     {
       BallparkTransformsAreAppropriate,
       IgnoreImpossibleTransformations,
@@ -1207,7 +1207,7 @@ The development version
     typedef QFlags<Qgis::CoordinateTransformationFlag> CoordinateTransformationFlags;
 
 
-    enum class MapSettingsFlag
+    enum class MapSettingsFlag /BaseType=IntFlag/
       {
       Antialiasing,
       DrawEditingInfo,
@@ -1231,7 +1231,7 @@ The development version
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
 
-    enum class RenderContextFlag
+    enum class RenderContextFlag /BaseType=IntFlag/
       {
       DrawEditingInfo,
       ForceVectorOutput,
@@ -1257,7 +1257,7 @@ The development version
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
 
-    enum class MapLayerRendererFlag
+    enum class MapLayerRendererFlag /BaseType=IntFlag/
     {
       RenderPartialOutputs,
       RenderPartialOutputOverPreviousCachedImage,
@@ -1267,13 +1267,13 @@ The development version
 
 
 
-    enum class TextRenderFormat
+    enum class TextRenderFormat /BaseType=IntFlag/
       {
       AlwaysOutlines,
       AlwaysText,
     };
 
-    enum class LabelingFlag
+    enum class LabelingFlag /BaseType=IntFlag/
       {
       UseAllLabels,
       UsePartialCandidates,
@@ -1289,20 +1289,20 @@ The development version
     typedef QFlags<Qgis::LabelingFlag> LabelingFlags;
 
 
-    enum class LabelPlacementEngineVersion
+    enum class LabelPlacementEngineVersion /BaseType=IntFlag/
       {
       Version1,
       Version2,
     };
 
-    enum class TextOrientation
+    enum class TextOrientation /BaseType=IntFlag/
       {
       Horizontal,
       Vertical,
       RotationBased,
     };
 
-    enum class TextLayoutMode
+    enum class TextLayoutMode /BaseType=IntFlag/
       {
       Rectangle,
       Point,
@@ -1311,7 +1311,7 @@ The development version
       RectangleAscentBased,
     };
 
-    enum class TextComponent
+    enum class TextComponent /BaseType=IntFlag/
       {
       Text,
       Buffer,
@@ -1319,7 +1319,7 @@ The development version
       Shadow,
     };
 
-    enum class TextHorizontalAlignment
+    enum class TextHorizontalAlignment /BaseType=IntFlag/
       {
       Left,
       Center,
@@ -1327,21 +1327,21 @@ The development version
       Justify,
     };
 
-    enum class TextVerticalAlignment
+    enum class TextVerticalAlignment /BaseType=IntFlag/
       {
       Top,
       VerticalCenter,
       Bottom,
     };
 
-    enum class TextCharacterVerticalAlignment
+    enum class TextCharacterVerticalAlignment /BaseType=IntFlag/
     {
       Normal,
       SuperScript,
       SubScript,
     };
 
-    enum class RenderSubcomponentProperty
+    enum class RenderSubcomponentProperty /BaseType=IntFlag/
     {
       Generic,
       ShadowOffset,
@@ -1349,13 +1349,13 @@ The development version
       GlowSpread,
     };
 
-    enum class VertexType
+    enum class VertexType /BaseType=IntFlag/
       {
       Segment,
       Curve,
     };
 
-    enum class MarkerShape
+    enum class MarkerShape /BaseType=IntFlag/
       {
       Square,
       Diamond,
@@ -1396,7 +1396,7 @@ The development version
       RoundedSquare,
     };
 
-    enum class MarkerLinePlacement
+    enum class MarkerLinePlacement /BaseType=IntFlag/
       {
       Interval,
       Vertex,
@@ -1410,39 +1410,39 @@ The development version
     typedef QFlags<Qgis::MarkerLinePlacement> MarkerLinePlacements;
 
 
-    enum class GradientColorSource
+    enum class GradientColorSource /BaseType=IntFlag/
       {
       SimpleTwoColor,
       ColorRamp,
     };
 
-    enum class GradientType
+    enum class GradientType /BaseType=IntFlag/
       {
       Linear,
       Radial,
       Conical,
     };
 
-    enum class SymbolCoordinateReference
+    enum class SymbolCoordinateReference /BaseType=IntFlag/
       {
       Feature,
       Viewport,
     };
 
-    enum class GradientSpread
+    enum class GradientSpread /BaseType=IntFlag/
       {
       Pad,
       Reflect,
       Repeat,
     };
 
-    enum class PointCountMethod
+    enum class PointCountMethod /BaseType=IntFlag/
       {
       Absolute,
       DensityBased,
     };
 
-    enum class MarkerClipMode
+    enum class MarkerClipMode /BaseType=IntFlag/
     {
       NoClipping,
       Shape,
@@ -1450,14 +1450,14 @@ The development version
       CompletelyWithin,
     };
 
-    enum class LineClipMode
+    enum class LineClipMode /BaseType=IntFlag/
     {
       ClipPainterOnly,
       ClipToIntersection,
       NoClipping,
     };
 
-    enum class DashPatternLineEndingRule
+    enum class DashPatternLineEndingRule /BaseType=IntFlag/
     {
       NoRule,
       FullDash,
@@ -1466,14 +1466,14 @@ The development version
       HalfGap,
     };
 
-    enum class DashPatternSizeAdjustment
+    enum class DashPatternSizeAdjustment /BaseType=IntFlag/
     {
       ScaleBothDashAndGap,
       ScaleDashOnly,
       ScaleGapOnly,
     };
 
-    enum class GraduatedMethod
+    enum class GraduatedMethod /BaseType=IntFlag/
       {
       Color,
       Size,
@@ -1505,7 +1505,7 @@ The development version
     };
 
 
-    enum class Capitalization
+    enum class Capitalization /BaseType=IntFlag/
       {
       MixedCase,
       AllUppercase,
@@ -1517,34 +1517,34 @@ The development version
       AllSmallCaps,
     };
 
-    enum class TextRendererFlag
+    enum class TextRendererFlag /BaseType=IntFlag/
     {
       WrapLines,
     };
     typedef QFlags<Qgis::TextRendererFlag> TextRendererFlags;
 
 
-    enum class ScaleToTileZoomLevelMethod
+    enum class ScaleToTileZoomLevelMethod /BaseType=IntFlag/
     {
       MapBox,
       Esri,
     };
 
-    enum class AngularDirection
+    enum class AngularDirection /BaseType=IntFlag/
       {
       Clockwise,
       CounterClockwise,
       NoOrientation,
     };
 
-    enum class RendererUsage
+    enum class RendererUsage /BaseType=IntFlag/
     {
       View,
       Export,
       Unknown,
     };
 
-    enum class ViewSyncModeFlag
+    enum class ViewSyncModeFlag /BaseType=IntFlag/
     {
       Sync3DTo2D,
       Sync2DTo3D,
@@ -1559,7 +1559,7 @@ The development version
       Never,
     };
 
-    enum class HistoryProviderBackend
+    enum class HistoryProviderBackend /BaseType=IntFlag/
     {
       LocalProfile,
 //      Project = 1 << 1, //!< QGIS Project  (not yet implemented)
@@ -1567,7 +1567,7 @@ The development version
     typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
 
 
-    enum class ProcessingModelChildParameterSource
+    enum class ProcessingModelChildParameterSource /BaseType=IntFlag/
     {
       ModelParameter,
       ChildOutput,
@@ -1577,13 +1577,13 @@ The development version
       ModelOutput,
     };
 
-    enum class CrsDefinitionFormat
+    enum class CrsDefinitionFormat /BaseType=IntFlag/
       {
       Wkt,
       Proj,
     };
 
-    enum class FieldDomainSplitPolicy
+    enum class FieldDomainSplitPolicy /BaseType=IntFlag/
     {
       DefaultValue,
       Duplicate,
@@ -1591,48 +1591,48 @@ The development version
       UnsetField,
     };
 
-    enum class FieldDomainMergePolicy
+    enum class FieldDomainMergePolicy /BaseType=IntFlag/
     {
       DefaultValue,
       Sum,
       GeometryWeighted,
     };
 
-    enum class FieldDomainType
+    enum class FieldDomainType /BaseType=IntFlag/
     {
       Coded,
       Range,
       Glob,
     };
 
-    enum class TransactionMode
+    enum class TransactionMode /BaseType=IntFlag/
     {
       Disabled,
       AutomaticGroups,
       BufferedGroups,
     };
 
-    enum class AltitudeClamping
+    enum class AltitudeClamping /BaseType=IntFlag/
     {
       Absolute,
       Relative,
       Terrain,
     };
 
-    enum class AltitudeBinding
+    enum class AltitudeBinding /BaseType=IntFlag/
     {
       Vertex,
       Centroid,
     };
 
-    enum class BetweenLineConstraint
+    enum class BetweenLineConstraint /BaseType=IntFlag/
     {
       NoConstraint,
       Perpendicular,
       Parallel
     };
 
-    enum class LineExtensionSide
+    enum class LineExtensionSide /BaseType=IntFlag/
     {
       BeforeVertex,
       AfterVertex,
@@ -1640,7 +1640,7 @@ The development version
     };
 
 
-    enum class CadConstraintType
+    enum class CadConstraintType /BaseType=IntFlag/
     {
       Generic,
       Angle,
@@ -1652,7 +1652,7 @@ The development version
     };
 
 
-    enum class ProjectFlag
+    enum class ProjectFlag /BaseType=IntFlag/
     {
       EvaluateDefaultValuesOnProviderSide,
       TrustStoredLayerStatistics,
@@ -1662,46 +1662,46 @@ The development version
     typedef QFlags<Qgis::ProjectFlag> ProjectFlags;
 
 
-    enum class PlotToolFlag
+    enum class PlotToolFlag /BaseType=IntFlag/
     {
       ShowContextMenu,
     };
     typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
 
 
-    enum class LightSourceType
+    enum class LightSourceType /BaseType=IntFlag/
     {
       Point,
       Directional,
     };
 
-    enum class NavigationMode
+    enum class NavigationMode /BaseType=IntFlag/
     {
       TerrainBased,
       Walk
     };
 
-    enum class VerticalAxisInversion
+    enum class VerticalAxisInversion /BaseType=IntFlag/
     {
       Never,
       WhenDragging,
       Always,
     };
 
-    enum class ProfileSurfaceSymbology
+    enum class ProfileSurfaceSymbology /BaseType=IntFlag/
     {
       Line,
       FillBelow,
       FillAbove,
     };
 
-    enum class VectorProfileType
+    enum class VectorProfileType /BaseType=IntFlag/
     {
       IndividualFeatures,
       ContinuousSurface,
     };
 
-    enum class ProfileGeneratorFlag
+    enum class ProfileGeneratorFlag /BaseType=IntFlag/
     {
       RespectsMaximumErrorMapUnit,
       RespectsDistanceRange,
@@ -1710,40 +1710,40 @@ The development version
     typedef QFlags<Qgis::ProfileGeneratorFlag> ProfileGeneratorFlags;
 
 
-    enum class ProfileExportType
+    enum class ProfileExportType /BaseType=IntFlag/
     {
       Features3D,
       Profile2D,
       DistanceVsElevationTable,
     };
 
-    enum class PointCloudSymbol
+    enum class PointCloudSymbol /BaseType=IntFlag/
       {
       Square,
       Circle,
     };
 
-    enum class PointCloudDrawOrder
+    enum class PointCloudDrawOrder /BaseType=IntFlag/
       {
       Default,
       BottomToTop,
       TopToBottom,
     };
 
-    enum class AvoidIntersectionsMode
+    enum class AvoidIntersectionsMode /BaseType=IntFlag/
       {
       AllowIntersections,
       AvoidIntersectionsCurrentLayer,
       AvoidIntersectionsLayers,
     };
 
-    enum class ProjectFileFormat
+    enum class ProjectFileFormat /BaseType=IntFlag/
       {
       Qgz,
       Qgs,
     };
 
-    enum class ProjectReadFlag
+    enum class ProjectReadFlag /BaseType=IntFlag/
       {
       DontResolveLayers,
       DontLoadLayouts,
@@ -1757,7 +1757,7 @@ The development version
     typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
 
 
-    enum class ProjectCapability
+    enum class ProjectCapability /BaseType=IntFlag/
     {
       ProjectStyles,
     };
@@ -1765,7 +1765,7 @@ The development version
     typedef QFlags<Qgis::ProjectCapability> ProjectCapabilities;
 
 
-    enum class MapBoxGlStyleSourceType
+    enum class MapBoxGlStyleSourceType /BaseType=IntFlag/
     {
       Vector,
       Raster,
@@ -1776,7 +1776,7 @@ The development version
       Unknown,
     };
 
-    enum class ArcGisRestServiceType
+    enum class ArcGisRestServiceType /BaseType=IntFlag/
       {
       FeatureServer,
       MapServer,
@@ -1787,19 +1787,19 @@ The development version
       Unknown,
     };
 
-    enum class RelationshipType
+    enum class RelationshipType /BaseType=IntFlag/
       {
       Normal,
       Generated,
     };
 
-    enum class RelationshipStrength
+    enum class RelationshipStrength /BaseType=IntFlag/
       {
       Association,
       Composition,
     };
 
-    enum class RelationshipCardinality
+    enum class RelationshipCardinality /BaseType=IntFlag/
     {
       OneToOne,
       OneToMany,
@@ -1807,7 +1807,7 @@ The development version
       ManyToMany,
     };
 
-    enum class RelationshipCapability
+    enum class RelationshipCapability /BaseType=IntFlag/
     {
       MultipleFieldKeys,
       ForwardPathLabel,
@@ -1817,21 +1817,21 @@ The development version
     typedef QFlags<Qgis::RelationshipCapability> RelationshipCapabilities;
 
 
-    enum class CoordinateDisplayType
+    enum class CoordinateDisplayType /BaseType=IntFlag/
     {
       MapCrs,
       MapGeographic,
       CustomCrs,
     };
 
-    enum class SettingsOrigin
+    enum class SettingsOrigin /BaseType=IntFlag/
     {
       Any,
       Global,
       Local,
     };
 
-    enum class ScriptLanguage
+    enum class ScriptLanguage /BaseType=IntFlag/
     {
       Css,
       QgisExpression,
@@ -1846,7 +1846,7 @@ The development version
       Unknown,
     };
 
-    enum class ScriptLanguageCapability
+    enum class ScriptLanguageCapability /BaseType=IntFlag/
     {
       Reformat,
       CheckSyntax,
@@ -1856,14 +1856,14 @@ The development version
     typedef QFlags<Qgis::ScriptLanguageCapability> ScriptLanguageCapabilities;
 
 
-    enum class LayerTreeInsertionMethod
+    enum class LayerTreeInsertionMethod /BaseType=IntFlag/
     {
       AboveInsertionPoint,
       TopOfTree,
       OptimalInInsertionGroup,
     };
 
-    enum class LayerTreeFilterFlag
+    enum class LayerTreeFilterFlag /BaseType=IntFlag/
     {
       SkipVisibilityCheck,
     };
@@ -1872,21 +1872,21 @@ The development version
 
 
 
-    enum class LegendJsonRenderFlag
+    enum class LegendJsonRenderFlag /BaseType=IntFlag/
     {
       ShowRuleDetails,
     };
     typedef QFlags<Qgis::LegendJsonRenderFlag> LegendJsonRenderFlags;
 
 
-    enum class ActionType
+    enum class ActionType /BaseType=IntFlag/
     {
       Invalid,
       MapLayerAction,
       AttributeAction
     };
 
-    enum class MapLayerActionTarget
+    enum class MapLayerActionTarget /BaseType=IntFlag/
     {
       Layer,
       SingleFeature,
@@ -1897,7 +1897,7 @@ The development version
     typedef QFlags<Qgis::MapLayerActionTarget> MapLayerActionTargets;
 
 
-    enum class MapLayerActionFlag
+    enum class MapLayerActionFlag /BaseType=IntFlag/
     {
       EnabledOnlyWhenEditable,
     };
@@ -1905,7 +1905,7 @@ The development version
     typedef QFlags<Qgis::MapLayerActionFlag> MapLayerActionFlags;
 
 
-    enum class AttributeActionType
+    enum class AttributeActionType /BaseType=IntFlag/
       {
       Generic,
       GenericPython,
@@ -1925,7 +1925,7 @@ The development version
       Superseded,
     };
 
-    enum class RasterColorInterpretation
+    enum class RasterColorInterpretation /BaseType=IntFlag/
       {
       Undefined,
       GrayIndex,
@@ -1947,7 +1947,7 @@ The development version
       ContinuousPalette
     };
 
-    enum class RasterLayerType
+    enum class RasterLayerType /BaseType=IntFlag/
       {
       GrayOrUndefined,
       Palette,
@@ -1955,7 +1955,7 @@ The development version
       SingleBandColorData,
     };
 
-    enum class RasterDrawingStyle
+    enum class RasterDrawingStyle /BaseType=IntFlag/
       {
       Undefined,
       SingleBandGray,
@@ -1970,21 +1970,21 @@ The development version
       SingleBandColorData,
     };
 
-    enum class RasterPyramidFormat
+    enum class RasterPyramidFormat /BaseType=IntFlag/
       {
       GeoTiff,
       Internal,
       Erdas
     };
 
-    enum class RasterBuildPyramidOption
+    enum class RasterBuildPyramidOption /BaseType=IntFlag/
       {
       No,
       Yes,
       CopyExisting
     };
 
-    enum class RasterIdentifyFormat
+    enum class RasterIdentifyFormat /BaseType=IntFlag/
       {
       Undefined,
       Value,
@@ -1993,13 +1993,13 @@ The development version
       Feature,
     };
 
-    enum class ElevationMapCombineMethod
+    enum class ElevationMapCombineMethod /BaseType=IntFlag/
     {
       HighestElevation,
       NewerElevation,
     };
 
-    enum class BlendMode
+    enum class BlendMode /BaseType=IntFlag/
       {
       Normal,
       Lighten,
@@ -2027,7 +2027,7 @@ The development version
       Xor,
     };
 
-    enum class SystemOfMeasurement
+    enum class SystemOfMeasurement /BaseType=IntFlag/
       {
       Unknown,
       Metric,
@@ -2035,14 +2035,14 @@ The development version
       USCS,
     };
 
-    enum class MapToolUnit
+    enum class MapToolUnit /BaseType=IntFlag/
       {
       Layer,
       Pixels,
       Project
     };
 
-    enum class UnitType
+    enum class UnitType /BaseType=IntFlag/
       {
       Distance,
       Area,
@@ -2051,7 +2051,7 @@ The development version
       Temporal,
     };
 
-    enum class DistanceUnit
+    enum class DistanceUnit /BaseType=IntFlag/
       {
       Meters,
       Kilometers,
@@ -2066,14 +2066,14 @@ The development version
       Unknown,
     };
 
-    enum class DistanceUnitType
+    enum class DistanceUnitType /BaseType=IntFlag/
       {
       Standard,
       Geographic,
       Unknown,
     };
 
-    enum class AreaUnit
+    enum class AreaUnit /BaseType=IntFlag/
       {
       SquareMeters,
       SquareKilometers,
@@ -2090,7 +2090,7 @@ The development version
       Unknown,
     };
 
-    enum class VolumeUnit
+    enum class VolumeUnit /BaseType=IntFlag/
       {
       CubicMeters,
       CubicFeet,
@@ -2105,7 +2105,7 @@ The development version
       Unknown,
     };
 
-    enum class AngleUnit
+    enum class AngleUnit /BaseType=IntFlag/
       {
       Degrees,
       Radians,
@@ -2118,7 +2118,7 @@ The development version
       Unknown,
     };
 
-    enum class TemporalUnit
+    enum class TemporalUnit /BaseType=IntFlag/
       {
       Milliseconds,
       Seconds,
@@ -2134,7 +2134,7 @@ The development version
       Unknown
     };
 
-    enum class RenderUnit
+    enum class RenderUnit /BaseType=IntFlag/
       {
       Millimeters,
       MapUnits,
@@ -2146,7 +2146,7 @@ The development version
       MetersInMapUnits,
     };
 
-    enum class LayoutUnit
+    enum class LayoutUnit /BaseType=IntFlag/
       {
       Millimeters,
       Centimeters,
@@ -2158,13 +2158,13 @@ The development version
       Pixels
     };
 
-    enum class LayoutUnitType
+    enum class LayoutUnitType /BaseType=IntFlag/
       {
       PaperUnits,
       ScreenUnits
     };
 
-    enum class InputControllerType
+    enum class InputControllerType /BaseType=IntFlag/
     {
       Map2D,
       Map3D
@@ -2185,7 +2185,7 @@ The development version
       PartitionedTable,
     };
 
-    enum class DatabaseProviderConnectionCapability2
+    enum class DatabaseProviderConnectionCapability2 /BaseType=IntFlag/
     {
       SetFieldComment,
       SetFieldAlias,
@@ -2202,14 +2202,14 @@ The development version
     typedef QFlags<Qgis::ProviderStyleStorageCapability> ProviderStyleStorageCapabilities;
 
 
-    enum class UserProfileSelectionPolicy
+    enum class UserProfileSelectionPolicy /BaseType=IntFlag/
     {
       LastProfile,
       DefaultProfile,
       AskUser,
     };
 
-    enum class AttributeEditorType
+    enum class AttributeEditorType /BaseType=IntFlag/
       {
       Container,
       Field,
@@ -2222,28 +2222,28 @@ The development version
       Invalid,
     };
 
-    enum class AttributeEditorContainerType
+    enum class AttributeEditorContainerType /BaseType=IntFlag/
     {
       GroupBox,
       Tab,
       Row,
     };
 
-    enum class AttributeFormLayout
+    enum class AttributeFormLayout /BaseType=IntFlag/
       {
       AutoGenerated,
       DragAndDrop,
       UiFile
     };
 
-    enum class AttributeFormSuppression
+    enum class AttributeFormSuppression /BaseType=IntFlag/
       {
       Default,
       On,
       Off
     };
 
-    enum class AttributeFormPythonInitCodeSource
+    enum class AttributeFormPythonInitCodeSource /BaseType=IntFlag/
       {
       NoSource,
       File,
@@ -2258,14 +2258,14 @@ The development version
       RasterCalculator,
     };
 
-    enum class FeatureSymbologyExport
+    enum class FeatureSymbologyExport /BaseType=IntFlag/
       {
       NoSymbology,
       PerFeature,
       PerSymbolLayer
     };
 
-    enum class VectorTileProviderFlag
+    enum class VectorTileProviderFlag /BaseType=IntFlag/
     {
       AlwaysUseTileMatrixSetFromProvider,
     };
@@ -2273,7 +2273,7 @@ The development version
     typedef QFlags<Qgis::VectorTileProviderFlag> VectorTileProviderFlags;
 
 
-    enum class VectorTileProviderCapability
+    enum class VectorTileProviderCapability /BaseType=IntFlag/
     {
       ReadLayerMetadata,
     };
@@ -2289,7 +2289,7 @@ The development version
       UseLowerZoomLevelTile,
     };
 
-    enum class TiledSceneProviderCapability
+    enum class TiledSceneProviderCapability /BaseType=IntFlag/
     {
       ReadLayerMetadata,
     };
@@ -2317,7 +2317,7 @@ The development version
       NeedFetching,
     };
 
-    enum class TiledSceneRequestFlag
+    enum class TiledSceneRequestFlag /BaseType=IntFlag/
     {
       NoHierarchyFetch,
     };
@@ -2325,7 +2325,7 @@ The development version
     typedef QFlags<Qgis::TiledSceneRequestFlag> TiledSceneRequestFlags;
 
 
-    enum class TiledSceneRendererFlag
+    enum class TiledSceneRendererFlag /BaseType=IntFlag/
     {
       RequiresTextures,
       ForceRasterRender,
@@ -2336,7 +2336,7 @@ The development version
     typedef QFlags<Qgis::TiledSceneRendererFlag> TiledSceneRendererFlags;
 
 
-    enum class GdalResampleAlgorithm
+    enum class GdalResampleAlgorithm /BaseType=IntFlag/
     {
       RA_NearestNeighbour,
       RA_Bilinear,

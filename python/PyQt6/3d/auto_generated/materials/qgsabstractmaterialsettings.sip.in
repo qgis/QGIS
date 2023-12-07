@@ -11,7 +11,7 @@
 
 
 
-enum class QgsMaterialSettingsRenderingTechnique
+enum class QgsMaterialSettingsRenderingTechnique /BaseType=IntFlag/
   {
   Triangles,
   Lines,

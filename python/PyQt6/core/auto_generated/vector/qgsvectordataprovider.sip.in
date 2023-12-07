@@ -28,7 +28,7 @@ of feature and attribute information from a spatial datasource.
   public:
 
 
-    enum Capability
+    enum Capability /BaseType=IntFlag/
     {
       NoCapabilities,
       AddFeatures,

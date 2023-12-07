@@ -24,7 +24,7 @@ An interface for classes which can visit style entity (e.g. symbol) nodes (using
 %End
   public:
 
-    enum class NodeType
+    enum class NodeType /BaseType=IntFlag/
     {
       Project,
       Layer,

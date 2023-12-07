@@ -48,7 +48,7 @@ and parameters.
       PythonQgsProcessingAlgorithmSubclass,
     };
 
-    enum class LayerOptionsFlag
+    enum class LayerOptionsFlag /BaseType=IntFlag/
     {
       SkipIndexGeneration,
     };

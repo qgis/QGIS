@@ -1,0 +1,6 @@
+# The following has been generated automatically from src/core/qgsfeaturepickermodelbase.h
+QgsFeaturePickerModelBase.IdentifierValueRole = QgsFeaturePickerModelBase.Role.IdentifierValueRole
+QgsFeaturePickerModelBase.IdentifierValuesRole = QgsFeaturePickerModelBase.Role.IdentifierValuesRole
+QgsFeaturePickerModelBase.ValueRole = QgsFeaturePickerModelBase.Role.ValueRole
+QgsFeaturePickerModelBase.FeatureRole = QgsFeaturePickerModelBase.Role.FeatureRole
+QgsFeaturePickerModelBase.FeatureIdRole = QgsFeaturePickerModelBase.Role.FeatureIdRole

@@ -60,7 +60,7 @@ Returns the geometry type for features returned by this source.
 %End
 
 
-    int __len__() const;
+    Py_ssize_t __len__() const;
 %Docstring
 Returns the number of features contained in the source, or -1
 if the feature count is unknown.

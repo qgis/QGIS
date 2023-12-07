@@ -48,7 +48,7 @@ Returns the number of geometries within the collection.
 %End
 
 
-    int __len__() const;
+    Py_ssize_t __len__() const;
 %Docstring
 Returns the number of geometries within the collection.
 %End

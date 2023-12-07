@@ -279,7 +279,7 @@ Decodes a provider key and layer ``uri`` from an encoded string, for use with
 .. versionadded:: 3.14
 %End
 
-    enum class LayerHint
+    enum class LayerHint /BaseType=IntFlag/
     {
       UnknownType,
       Vector,

@@ -1,0 +1,9 @@
+# The following has been generated automatically from src/core/classification/qgsclassificationmethod.h
+QgsClassificationMethod.NoFlag = QgsClassificationMethod.MethodProperty.NoFlag
+QgsClassificationMethod.ValuesNotRequired = QgsClassificationMethod.MethodProperty.ValuesNotRequired
+QgsClassificationMethod.SymmetricModeAvailable = QgsClassificationMethod.MethodProperty.SymmetricModeAvailable
+QgsClassificationMethod.IgnoresClassCount = QgsClassificationMethod.MethodProperty.IgnoresClassCount
+QgsClassificationMethod.MethodProperties = lambda flags=0: QgsClassificationMethod.MethodProperty(flags)
+QgsClassificationMethod.LowerBound = QgsClassificationMethod.ClassPosition.LowerBound
+QgsClassificationMethod.Inner = QgsClassificationMethod.ClassPosition.Inner
+QgsClassificationMethod.UpperBound = QgsClassificationMethod.ClassPosition.UpperBound

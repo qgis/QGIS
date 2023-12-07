@@ -659,7 +659,7 @@ Exports the context's settings to a variant map.
 .. versionadded:: 3.24
 %End
 
-    enum class ProcessArgumentFlag
+    enum class ProcessArgumentFlag /BaseType=IntFlag/
     {
       IncludeProjectPath,
     };
