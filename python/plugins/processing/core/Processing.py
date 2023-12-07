@@ -140,9 +140,10 @@ class Processing:
             return
 
         # Add the model providers
+        # note that we don't add the Project Provider, as this cannot be called
+        # from qgis_process
         model_providers = [
-            ModelerAlgorithmProvider,
-            ProjectProvider
+            ModelerAlgorithmProvider
         ]
 
         for c in model_providers:
