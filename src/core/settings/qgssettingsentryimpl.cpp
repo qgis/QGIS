@@ -262,7 +262,8 @@ bool QgsSettingsEntryColor::copyValueFromKeys( const QString &redKey, const QStr
       settings->remove( alphaKey );
     }
 
-    setVariantValue( oldValue );
+    if ( value() != oldValue )
+      setVariantValue( oldValue );
     return true;
   }
   return false;

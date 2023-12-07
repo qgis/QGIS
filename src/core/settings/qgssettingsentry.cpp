@@ -151,6 +151,7 @@ bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString
 
 bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const
 {
+  mHasChanged = true;
   auto settings = QgsSettings::get();
   if ( mOptions.testFlag( Qgis::SettingsOption::SaveFormerValue ) )
   {
@@ -256,6 +257,14 @@ void QgsSettingsEntryBase::copyValueToKey( const QString &key, const QStringList
 {
   const QString completeKey = completeKeyPrivate( key, dynamicKeyPartList );
   QgsSettings::get()->setValue( completeKey, valueAsVariant( dynamicKeyPartList ) );
+}
+
+void QgsSettingsEntryBase::copyValueToKeyIfChanged( const QString &key, const QStringList &dynamicKeyPartList ) const
+{
+  if ( hasChanged() )
+  {
+    copyValueToKey( key, dynamicKeyPartList );
+  }
 }
 
 QString QgsSettingsEntryBase::formerValuekey( const QStringList &dynamicKeyPartList ) const

@@ -39,6 +39,7 @@ class TestQgsSettingsEntry : public QObject
     void enumValue();
     void flagValue();
     void testFormerValue();
+    void testChanged();
 };
 
 void TestQgsSettingsEntry::settingsKey()
@@ -208,6 +209,26 @@ void TestQgsSettingsEntry::testFormerValue()
 
   settingsEntryInteger.setValue( 2 );
   QCOMPARE( settingsEntryInteger.formerValue(), 3 );
+}
+
+void TestQgsSettingsEntry::testChanged()
+{
+  const QString settingsKey( QStringLiteral( "settingsEntryInteger/integer-value" ) );
+  QgsSettings().remove( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ) );
+  int defaultValue = 111;
+
+  QgsSettings().setValue( QStringLiteral( "testSetting" ), 1 );
+
+  QgsSettingsEntryInteger settingsEntryInteger = QgsSettingsEntryInteger( settingsKey, mSettingsSection, defaultValue );
+  QVERIFY( !settingsEntryInteger.hasChanged() );
+  settingsEntryInteger.copyValueToKeyIfChanged( QStringLiteral( "testSetting" ) );
+  QCOMPARE( QgsSettings().value( QStringLiteral( "testSetting" ) ).toInt(), 1 );
+
+  settingsEntryInteger.setValue( 11111 );
+  QVERIFY( settingsEntryInteger.hasChanged() );
+
+  settingsEntryInteger.copyValueToKeyIfChanged( QStringLiteral( "testSetting" ) );
+  QCOMPARE( QgsSettings().value( QStringLiteral( "testSetting" ) ).toInt(), 11111 );
 }
 
 
