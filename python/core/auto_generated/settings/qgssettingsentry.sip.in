@@ -328,6 +328,16 @@ Copies the settings to the given key.
 .. versionadded:: 3.30
 %End
 
+    void copyValueToKeyIfChanged( const QString &key, const QStringList &dynamicKeyPartList = QStringList() ) const;
+%Docstring
+Copies the settings to the given key, if it has changed during the current QGIS session (see :py:func:`~QgsSettingsEntryBase.hasChanged`).
+
+:param key: the key to copy the setting value to.
+:param dynamicKeyPartList: is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
+
+.. versionadded:: 3.36
+%End
+
     QgsSettingsTreeNode *parent() const;
 %Docstring
 Returns the parent tree element
@@ -338,6 +348,13 @@ Returns the parent tree element
     virtual bool checkValueVariant( const QVariant &value ) const;
 %Docstring
 Returns ``True`` if the given ``value`` is valid towards the setting definition
+%End
+
+    bool hasChanged() const;
+%Docstring
+Returns ``True`` if the setting was changed during the current QGIS session.
+
+.. versionadded:: 3.36
 %End
 
 };

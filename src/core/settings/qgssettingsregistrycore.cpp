@@ -388,23 +388,27 @@ void QgsSettingsRegistryCore::backwardCompatibility()
   QgsSettings::holdFlush();
   auto settings = QgsSettings::get();
 
+  // CAREFUL! There's a mix of copyValueToKeyIfChanged and copyValueToKey used here.
+  // copyValueToKeyIfChanged should be used if copyValueFromKey did NOT have the removeSettingAtKey argument set to True
+  // in migrateOldSettings
+
   // single settings - added in 3.30
-  QgsLayout::settingsSearchPathForTemplates->copyValueToKey( QStringLiteral( "core/Layout/searchPathsForTemplates" ) );
+  QgsLayout::settingsSearchPathForTemplates->copyValueToKeyIfChanged( QStringLiteral( "core/Layout/searchPathsForTemplates" ) );
 
-  QgsProcessing::settingsPreferFilenameAsLayerName->copyValueToKey( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );
-  QgsProcessing::settingsTempPath->copyValueToKey( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) );
-  QgsProcessing::settingsDefaultOutputVectorLayerExt->copyValueToKey( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt->copyValueToKey( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ) );
+  QgsProcessing::settingsPreferFilenameAsLayerName->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );
+  QgsProcessing::settingsTempPath->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) );
+  QgsProcessing::settingsDefaultOutputVectorLayerExt->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ) );
 
-  QgsNetworkAccessManager::settingsNetworkTimeout->copyValueToKey( QStringLiteral( "qgis/networkAndProxy/networkTimeout" ) );
+  QgsNetworkAccessManager::settingsNetworkTimeout->copyValueToKeyIfChanged( QStringLiteral( "qgis/networkAndProxy/networkTimeout" ) );
 
-  settingsLayerTreeShowFeatureCountForNewLayers->copyValueToKey( QStringLiteral( "core/layer-tree/show_feature_count_for_new_layers" ) );
+  settingsLayerTreeShowFeatureCountForNewLayers->copyValueToKeyIfChanged( QStringLiteral( "core/layer-tree/show_feature_count_for_new_layers" ) );
 
 #if defined( HAVE_QTSERIALPORT )
-  QgsGpsDetector::settingsGpsStopBits->copyValueToKey( QStringLiteral( "core/gps/stop_bits" ) );
-  QgsGpsDetector::settingsGpsFlowControl->copyValueToKey( QStringLiteral( "core/gps/flow_control" ) );
-  QgsGpsDetector::settingsGpsDataBits->copyValueToKey( QStringLiteral( "core/gps/data_bits" ) );
-  QgsGpsDetector::settingsGpsParity->copyValueToKey( QStringLiteral( "core/gps/parity" ) );
+  QgsGpsDetector::settingsGpsStopBits->copyValueToKeyIfChanged( QStringLiteral( "core/gps/stop_bits" ) );
+  QgsGpsDetector::settingsGpsFlowControl->copyValueToKeyIfChanged( QStringLiteral( "core/gps/flow_control" ) );
+  QgsGpsDetector::settingsGpsDataBits->copyValueToKeyIfChanged( QStringLiteral( "core/gps/data_bits" ) );
+  QgsGpsDetector::settingsGpsParity->copyValueToKeyIfChanged( QStringLiteral( "core/gps/parity" ) );
 #endif
 
   QgsRasterLayer::settingsRasterDefaultOversampling->copyValueToKey( QStringLiteral( "Raster/defaultOversampling" ) );
@@ -414,11 +418,12 @@ void QgsSettingsRegistryCore::backwardCompatibility()
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueToKey( QStringLiteral( "core/rendering/label_candidates_limit_lines" ) );
   pal::Pal::settingsRenderingLabelCandidatesLimitPolygons->copyValueToKey( QStringLiteral( "core/rendering/label_candidates_limit_polygons" ) );
 
-
   // digitizing settings - added in 3.30
   {
-    settingsDigitizingLineColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
-    settingsDigitizingFillColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/fill_color_red" ), QStringLiteral( "qgis/digitizing/fill_color_green" ), QStringLiteral( "qgis/digitizing/fill_color_blue" ), QStringLiteral( "qgis/digitizing/fill_color_alpha" ) );
+    if ( settingsDigitizingLineColor->hasChanged() )
+      settingsDigitizingLineColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
+    if ( settingsDigitizingFillColor->hasChanged() )
+      settingsDigitizingFillColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/fill_color_red" ), QStringLiteral( "qgis/digitizing/fill_color_green" ), QStringLiteral( "qgis/digitizing/fill_color_blue" ), QStringLiteral( "qgis/digitizing/fill_color_alpha" ) );
 
     const QList<const QgsSettingsEntryBase *> settings = QgsSettingsTree::sTreeDigitizing->childrenSettings();
     for ( const QgsSettingsEntryBase *setting : settings )
@@ -437,7 +442,7 @@ void QgsSettingsRegistryCore::backwardCompatibility()
       {
         name.replace( '-', '_' );
       }
-      setting->copyValueToKey( QString( "qgis/digitizing/%1" ).arg( name ) );
+      setting->copyValueToKeyIfChanged( QString( "qgis/digitizing/%1" ).arg( name ) );
     }
   }
 
