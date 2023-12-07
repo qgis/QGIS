@@ -43,13 +43,14 @@ class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsFieldCalculator, with the specified \a parent widget.
-     * 
+     *
      * The target layer must be specified using the \a vl argument.
-     * 
+     *
      * Since QGIS 3.36, the optional \a fieldIndex argument can be used to automatically
-     * select the existing field with the specified index in the dialog. 
+     * select the existing field with the specified index in the dialog.
      */
     QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = nullptr, int fieldIndex = -1 );
 
