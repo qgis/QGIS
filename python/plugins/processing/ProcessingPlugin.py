@@ -202,6 +202,9 @@ class ProcessingPlugin(QObject):
             self.initialized = True
             Processing.initialize()
 
+    def finalizeStartup(self):
+        Processing.perform_deferred_model_initialization()
+
     def initGui(self):
         # port old log, ONCE ONLY!
         settings = QgsSettings()
