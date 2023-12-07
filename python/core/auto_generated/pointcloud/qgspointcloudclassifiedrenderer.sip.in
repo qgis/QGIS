@@ -34,7 +34,7 @@ Constructor for a new QgsPointCloudCategory, with the specified ``value`` and ``
 
 The ``label`` argument specifies the label used for this category in legends and the layer tree.
 
-A positive ``pointSize`` argument allows to override the layer's point size setting for this category.
+A positive ``pointSize`` argument overrides the layer's point size setting for this category.
 
 The ``render`` argument indicates whether the category should initially be rendered and appear checked in the layer tree.
 %End

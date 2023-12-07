@@ -15,7 +15,7 @@ in vec3 vertexPosition;
 in float vertexParameter;
 in vec3 vertexColor;
 in vec3 vertexNormal; //used when points are triangulated
-in float vertexSize; //contains overriden pointSize for classification rendering
+in float vertexSize; //contains overridden pointSize for classification rendering
 
 out float parameter;
 flat out int classParameter;
