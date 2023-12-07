@@ -190,26 +190,47 @@ QgsProcessingAlgorithmInformation QgsProcessingRegistry::algorithmInformation( c
 
 const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QString &constId ) const
 {
+  if ( constId.isEmpty() )
+    return nullptr;
+
   // allow mapping of algorithm via registered algorithm aliases
   const QString id = mAlgorithmAliases.value( constId, constId );
 
+  // try to match just the one target provider, if we can determine it from the id easily
+  static thread_local QRegularExpression reSplitProviderId( QStringLiteral( "^(.*?):(.*)$" ) );
+  const QRegularExpressionMatch match = reSplitProviderId.match( id );
+  if ( match.hasMatch() )
+  {
+    if ( QgsProcessingProvider *provider = mProviders.value( match.captured( 1 ) ) )
+    {
+      if ( const QgsProcessingAlgorithm *algorithm = provider->algorithm( match.captured( 2 ) ) )
+        return algorithm;
+    }
+
+    // try mapping 'qgis' algs to 'native' algs - this allows us to freely move algorithms
+    // from the python 'qgis' provider to the c++ 'native' provider without breaking API
+    // or existing models
+    if ( match.captured( 1 ) == QLatin1String( "qgis" ) )
+    {
+      const QString algorithmName = id.mid( 5 );
+      if ( QgsProcessingProvider *provider = mProviders.value( QStringLiteral( "native" ) ) )
+      {
+        if ( const QgsProcessingAlgorithm *algorithm = provider->algorithm( algorithmName ) )
+          return algorithm;
+      }
+    }
+  }
+
+  // slow: iterate through ALL providers to find a match
   QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
   for ( ; it != mProviders.constEnd(); ++it )
   {
-    const auto constAlgorithms = it.value()->algorithms();
-    for ( const QgsProcessingAlgorithm *alg : constAlgorithms )
+    const QList< const QgsProcessingAlgorithm * > algorithms = it.value()->algorithms();
+    for ( const QgsProcessingAlgorithm *alg : algorithms )
       if ( alg->id() == id )
         return alg;
   }
 
-  // try mapping 'qgis' algs to 'native' algs - this allows us to freely move algorithms
-  // from the python 'qgis' provider to the c++ 'native' provider without breaking API
-  // or existing models
-  if ( id.startsWith( QLatin1String( "qgis:" ) ) )
-  {
-    const QString newId = QStringLiteral( "native:" ) + id.mid( 5 );
-    return algorithmById( newId );
-  }
   return nullptr;
 }
 
