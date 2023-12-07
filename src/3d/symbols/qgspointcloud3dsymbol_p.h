@@ -57,7 +57,7 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     {
       QVector<QVector3D> positions;  // Contains triplets of float x,y,z for each point
       QVector<float> parameter;
-      QVector<float> pointSizes; // Contains point sizes, in case they are overriden for classification renderer
+      QVector<float> pointSizes; // Contains point sizes, in case they are overridden for classification renderer
       QVector<QVector3D> colors;
       QByteArray triangles; // In case of points triangulation, contains index of point in the array positions
       QByteArray normals; // In case of points triangulation, contains the normals of the solid surface on each vertex
