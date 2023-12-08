@@ -314,14 +314,14 @@ void Qgs3DMapScene::onCameraChanged()
     mEngine->camera()->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, mEngine->camera()->nearPlane(), mEngine->camera()->farPlane() );
   }
 
-  updateScene();
+  updateScene( true );
   bool changedCameraPlanes = updateCameraNearFarPlanes();
 
   if ( changedCameraPlanes )
   {
     // repeat update of entities - because we have updated camera's near/far planes,
     // the active nodes may have changed as well
-    updateScene();
+    updateScene( true );
     updateCameraNearFarPlanes();
   }
 
@@ -364,15 +364,19 @@ void addQLayerComponentsToHierarchy( Qt3DCore::QEntity *entity, const QVector<Qt
   }
 }
 
-void Qgs3DMapScene::updateScene()
+void Qgs3DMapScene::updateScene( bool forceUpdate )
 {
-  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
+  if ( forceUpdate )
+    QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
 
   for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
   {
-    entity->handleSceneUpdate( buildSceneContext() );
-    if ( entity->hasReachedGpuMemoryLimit() )
-      emit gpuMemoryLimitReached();
+    if ( forceUpdate || ( entity->isEnabled() && entity->needsUpdate() ) )
+    {
+      entity->handleSceneUpdate( buildSceneContext() );
+      if ( entity->hasReachedGpuMemoryLimit() )
+        emit gpuMemoryLimitReached();
+    }
   }
 
   updateSceneState();
@@ -442,18 +446,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 {
   mCameraController->frameTriggered( dt );
 
-  for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
-  {
-    if ( entity->isEnabled() && entity->needsUpdate() )
-    {
-      QgsDebugMsgLevel( QStringLiteral( "need for update" ), 2 );
-      entity->handleSceneUpdate( buildSceneContext() );
-      if ( entity->hasReachedGpuMemoryLimit() )
-        emit gpuMemoryLimitReached();
-    }
-  }
-
-  updateSceneState();
+  updateScene();
 
   // lock changing the FPS counter to 5 fps
   static int frameCount = 0;
