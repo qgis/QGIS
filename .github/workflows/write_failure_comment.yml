@@ -68,7 +68,7 @@ jobs:
                 issue_number: issue_number,
               });
 
-              const PREFIX = "# Tests failed for Qt ${{ matrix.qt-version }};
+              const PREFIX = "# Tests failed for Qt ${{ matrix.qt-version }}";
 
               let body = PREFIX + "\n\n";
               body += "*One or more tests failed using the build from commit " + git_sha + "*\n\n";
