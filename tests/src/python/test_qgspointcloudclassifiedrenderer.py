@@ -186,6 +186,33 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderClassificationOverridePointSizes(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        categories = QgsPointCloudRendererRegistry.classificationAttributeCategories(layer)
+        categories[0].setPointSize(1)
+        categories[2].setPointSize(.3)
+        categories[3].setPointSize(.5)
+
+        renderer = QgsPointCloudClassifiedRenderer('Classification', categories)
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(.15)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMapUnits)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check('classified_override_pointsize', 'classified_override_pointsize', mapsettings)
+        )
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderZRange(self):
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
         self.assertTrue(layer.isValid())
