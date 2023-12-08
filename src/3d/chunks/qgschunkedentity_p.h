@@ -72,7 +72,7 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     ~QgsChunkedEntity() override;
 
     //! Called when e.g. camera changes and entity may need updated
-    void handleSceneUpdate( const SceneState &state ) override;
+    void handleSceneUpdate( const SceneContext &sceneContext ) override;
 
     //! Returns number of jobs pending for this entity until it is fully loaded/updated in the current view
     int pendingJobsCount() const override;
@@ -112,10 +112,10 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     void setNeedsUpdate( bool needsUpdate ) { mNeedsUpdate = needsUpdate; }
 
   private:
-    void update( QgsChunkNode *node, const SceneState &state );
+    void update( QgsChunkNode *node, const SceneContext &sceneContext );
 
     //! Removes chunks for loading queue that are currently not needed
-    void pruneLoaderQueue( const SceneState &state );
+    void pruneLoaderQueue( const SceneContext &sceneContext );
 
     //! make sure that the chunk will be loaded soon (if not loaded yet) and not unloaded anytime soon (if loaded already)
     void requestResidency( QgsChunkNode *node );
