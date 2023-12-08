@@ -23,7 +23,7 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgspointclouddataprovider.h"
 
-QgsPointCloudCategory::QgsPointCloudCategory( const int value, const QColor &color, const QString &label, double pointSize, bool render )
+QgsPointCloudCategory::QgsPointCloudCategory( const int value, const QColor &color, const QString &label, bool render, double pointSize )
   : mValue( value )
   , mColor( color )
   , mPointSize( pointSize )
@@ -201,7 +201,7 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &ele
         const QString label = catElem.attribute( QStringLiteral( "label" ) );
         const bool render = catElem.attribute( QStringLiteral( "render" ) ) != QLatin1String( "false" );
         const QColor color = QgsSymbolLayerUtils::decodeColor( catElem.attribute( QStringLiteral( "color" ) ) );
-        categories.append( QgsPointCloudCategory( value, color, label, size, render ) );
+        categories.append( QgsPointCloudCategory( value, color, label, render, size ) );
       }
       catElem = catElem.nextSiblingElement();
     }

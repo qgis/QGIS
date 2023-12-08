@@ -43,11 +43,11 @@ class CORE_EXPORT QgsPointCloudCategory
     *
     * The \a label argument specifies the label used for this category in legends and the layer tree.
     *
-    * A positive \a pointSize argument overrides the layer's point size setting for this category.
-    *
     * The \a render argument indicates whether the category should initially be rendered and appear checked in the layer tree.
+    *
+    * A positive \a pointSize argument overrides the layer's point size setting for this category.
     */
-    QgsPointCloudCategory( int value, const QColor &color, const QString &label, double pointSize = 0, bool render = true );
+    QgsPointCloudCategory( int value, const QColor &color, const QString &label, bool render = true, double pointSize = 0 );
 
     /**
      * Equality operator.
