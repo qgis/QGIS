@@ -28,15 +28,15 @@ Represents an individual category (class) from a :py:class:`QgsPointCloudClassif
 Constructor for QgsPointCloudCategory.
 %End
 
-    QgsPointCloudCategory( int value, const QColor &color, const QString &label, double pointSize = 0, bool render = true );
+    QgsPointCloudCategory( int value, const QColor &color, const QString &label, bool render = true, double pointSize = 0 );
 %Docstring
 Constructor for a new QgsPointCloudCategory, with the specified ``value`` and ``color``.
 
 The ``label`` argument specifies the label used for this category in legends and the layer tree.
 
-A positive ``pointSize`` argument overrides the layer's point size setting for this category.
-
 The ``render`` argument indicates whether the category should initially be rendered and appear checked in the layer tree.
+
+A positive ``pointSize`` argument overrides the layer's point size setting for this category.
 %End
 
     bool operator==( const QgsPointCloudCategory &other ) const;
