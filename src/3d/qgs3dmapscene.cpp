@@ -235,7 +235,7 @@ void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
   }
 }
 
-QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent()
+QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
 {
   Qt3DRender::QCamera *camera = mCameraController->camera();
   QVector<QgsPointXY> extent;
@@ -278,7 +278,7 @@ int Qgs3DMapScene::totalPendingJobsCount() const
   return count;
 }
 
-float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
+float Qgs3DMapScene::worldSpaceError( float epsilon, float distance ) const
 {
   Qt3DRender::QCamera *camera = mCameraController->camera();
   float fov = camera->fieldOfView();
@@ -1087,7 +1087,7 @@ QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLay
   return chunks;
 }
 
-QgsRectangle Qgs3DMapScene::sceneExtent()
+QgsRectangle Qgs3DMapScene::sceneExtent() const
 {
   return mMap.extent();
 }
