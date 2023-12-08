@@ -101,7 +101,7 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
   emit newEntityCreated( newChunkedEntity );
 }
 
-void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneState &state )
+void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneContext )
 {
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
   for ( int i = 0; i < subIndexes.size(); ++i )
@@ -114,19 +114,19 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneState &state )
     // magic number 256 is the common span value for a COPC root node
     constexpr int SPAN = 256;
     const float epsilon = std::min( bbox.xExtent(), bbox.yExtent() ) / SPAN;
-    const float distance = bbox.distanceFromPoint( state.cameraPos );
-    const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, state.screenSizePx, state.cameraFov );
+    const float distance = bbox.distanceFromPoint( sceneContext.cameraPos );
+    const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, sceneContext.screenSizePx, sceneContext.cameraFov );
     constexpr float THRESHOLD = .2;
 
     // always display as bbox for the initial temporary camera pos (0, 0, 0)
     // then once the camera changes we display as bbox depending on screen space error
-    const bool displayAsBbox = state.cameraPos.isNull() || sse < THRESHOLD;
+    const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < THRESHOLD;
     if ( !displayAsBbox && !subIndexes.at( i ).index() )
       emit subIndexNeedsLoading( i );
 
     setRenderSubIndexAsBbox( i, displayAsBbox );
     if ( !displayAsBbox && mChunkedEntitiesMap.contains( i ) )
-      mChunkedEntitiesMap[i]->handleSceneUpdate( state );
+      mChunkedEntitiesMap[i]->handleSceneUpdate( sceneContext );
   }
   updateBboxEntity();
 }
