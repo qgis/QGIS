@@ -153,6 +153,22 @@ void QgsVectorTileLayerProperties::apply()
   mLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
   mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
   mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
+
+  //layer title and abstract
+  mLayer->setShortName( mLayerShortNameLineEdit->text() );
+  mLayer->setTitle( mLayerTitleLineEdit->text() );
+  mLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
+  mLayer->setKeywordList( mLayerKeywordListLineEdit->text() );
+  mLayer->setDataUrl( mLayerDataUrlLineEdit->text() );
+  mLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
+
+  //layer attribution
+  mLayer->setAttribution( mLayerAttributionLineEdit->text() );
+  mLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
+
+  // LegendURL
+  mLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+  mLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 }
 
 void QgsVectorTileLayerProperties::syncToLayer()
@@ -211,6 +227,32 @@ void QgsVectorTileLayerProperties::syncToLayer()
    */
   chkUseScaleDependentRendering->setChecked( mLayer->hasScaleBasedVisibility() );
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
+
+  /*
+   * Server
+   */
+  //layer title and abstract
+  mLayer->setShortName( mLayerShortNameLineEdit->text() );
+  mLayerTitleLineEdit->setText( mLayer->title() );
+  mLayerAbstractTextEdit->setPlainText( mLayer->abstract() );
+  mLayerKeywordListLineEdit->setText( mLayer->keywordList() );
+  mLayerDataUrlLineEdit->setText( mLayer->dataUrl() );
+  mLayerDataUrlFormatComboBox->setCurrentIndex(
+    mLayerDataUrlFormatComboBox->findText(
+      mLayer->dataUrlFormat()
+    )
+  );
+  //layer attribution
+  mLayerAttributionLineEdit->setText( mLayer->attribution() );
+  mLayerAttributionUrlLineEdit->setText( mLayer->attributionUrl() );
+
+  // layer legend url
+  mLayerLegendUrlLineEdit->setText( mLayer->legendUrl() );
+  mLayerLegendUrlFormatComboBox->setCurrentIndex(
+    mLayerLegendUrlFormatComboBox->findText(
+      mLayer->legendUrlFormat()
+    )
+  );
 }
 
 void QgsVectorTileLayerProperties::saveDefaultStyle()
