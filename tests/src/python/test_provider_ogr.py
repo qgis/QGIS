@@ -3178,7 +3178,7 @@ class PyQgsOGRProvider(QgisTestCase):
         f = next(vl.getFeatures())
         self.assertEqual(f.attributes(), ['1', "feat 1"])
 
-        self.assertTrue(vl.startEditing())
+        self.assertFalse(vl.startEditing())
         self.assertTrue(vl.addAttribute(QgsField('newf', QVariant.String)))
         self.assertTrue(vl.changeAttributeValues(3, {2: 'fid 3'}))
         self.assertTrue(vl.changeAttributeValues(1, {2: 'fid 1'}))
