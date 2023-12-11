@@ -113,6 +113,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     int mMaxZoom = 12;
     int mDpi = 96;
     bool mAntialias = true;
+    bool mSkipEmptyTiles = false;
     int mJpgQuality = 75;
     int mMetaTileSize = 4;
     int mThreadsNumber = 1;

@@ -111,6 +111,7 @@ void QgsXyzTilesBaseAlgorithm::createCommonParameters()
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DPI" ), QObject::tr( "DPI" ), QgsProcessingParameterNumber::Integer, 96, false, 48, 600 ) );
   addParameter( new QgsProcessingParameterColor( QStringLiteral( "BACKGROUND_COLOR" ), QObject::tr( "Background color" ), QColor( Qt::transparent ), true, true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "ANTIALIAS" ), QObject::tr( "Enable antialiasing" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "Skip Empty Tiles" ), QObject::tr( "Skip empty tiles" ), true ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "TILE_FORMAT" ), QObject::tr( "Tile format" ), QStringList() << QStringLiteral( "PNG" ) << QStringLiteral( "JPG" ), false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "QUALITY" ), QObject::tr( "Quality (JPG only)" ), QgsProcessingParameterNumber::Integer, 75, false, 1, 100 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "METATILESIZE" ), QObject::tr( "Metatile size" ), QgsProcessingParameterNumber::Integer, 4, false, 1, 20 ) );
@@ -157,6 +158,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     feedback->pushWarning( QObject::tr( "Background color setting ignored, the JPG format only supports fully opaque colors" ) );
   }
   mAntialias = parameterAsBool( parameters, QStringLiteral( "ANTIALIAS" ), context );
+  mSkipEmptyTiles = parameterAsBool( parameters, QStringLiteral( "Skip Empty Tiles" ), context );
   mTileFormat = parameterAsEnum( parameters, QStringLiteral( "TILE_FORMAT" ), context ) ? QStringLiteral( "JPG" ) : QStringLiteral( "PNG" );
   mJpgQuality = parameterAsInt( parameters, QStringLiteral( "QUALITY" ), context );
   mMetaTileSize = parameterAsInt( parameters, QStringLiteral( "METATILESIZE" ), context );
@@ -493,6 +495,21 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
 {
   MetaTile metaTile = mRendererJobs.value( job );
   QImage img = job->renderedImage();
+
+  // print SKIP EMPTY TILES TRUE OR FALSE
+  if ( mSkipEmptyTiles == true)
+  {
+    feedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to true" ) );
+  }
+  else if ( mSkipEmptyTiles == false)
+  {
+    feedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to false" ) );
+  }
+  else
+  {
+    feedback->pushWarning( QObject::tr( "SkipEmptyTiles is something else" ) );
+  }
+  
 
   QMap<QPair<int, int>, Tile>::const_iterator it = metaTile.tiles.constBegin();
   while ( it != metaTile.tiles.constEnd() )
