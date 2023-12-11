@@ -105,9 +105,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      */
     QVector<QgsPointXY> viewFrustum2DExtent() const;
 
-    //! Returns number of pending jobs of the terrain entity
-    int terrainPendingJobsCount() const;
-
     /**
      * Returns number of pending jobs for all chunked entities
      * \since QGIS 3.12

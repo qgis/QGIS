@@ -265,11 +265,6 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
   return extent;
 }
 
-int Qgs3DMapScene::terrainPendingJobsCount() const
-{
-  return mTerrain ? mTerrain->pendingJobsCount() : 0;
-}
-
 int Qgs3DMapScene::totalPendingJobsCount() const
 {
   int count = 0;

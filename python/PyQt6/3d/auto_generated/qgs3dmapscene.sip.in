@@ -56,11 +56,6 @@ Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed t
 .. versionadded:: 3.26
 %End
 
-    int terrainPendingJobsCount() const;
-%Docstring
-Returns number of pending jobs of the terrain entity
-%End
-
     int totalPendingJobsCount() const;
 %Docstring
 Returns number of pending jobs for all chunked entities
