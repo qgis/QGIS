@@ -14,36 +14,42 @@ fi
 
 pushd ${DIR} > /dev/null || exit
 
-modules=(core gui analysis server)
+modules=(3d core gui analysis server)
 
 code=0
-for module in "${modules[@]}"; do
-  while read -r sipfile; do
+for root_dir in python python/PyQt6; do
+
+  if [[ $root_dir == "python/PyQt6" ]]; then
+    IS_QT6="--qt6"
+  fi
+
+  for module in "${modules[@]}"; do
+    while read -r sipfile; do
       header=$(${GP}sed -E 's@(.*)\.sip@src/\1.h@; s@auto_generated/@@' <<< $sipfile)
       pyfile=$(${GP}sed -E 's@([^\/]+\/)*([^\/]+)\.sip@\2.py@;' <<< $sipfile)
       if [ ! -f $header ]; then
         echo "*** Missing header: $header for sipfile $sipfile"
       else
-        outdiff=$(./scripts/sipify.pl -p python/${module}/auto_additions/${pyfile}.temp $header | diff python/$sipfile.in -)
+        outdiff=$(./scripts/sipify.pl $IS_QT6 -p $root_dir/${module}/auto_additions/${pyfile}.temp $header | diff $root_dir/$sipfile.in -)
         if [[ -n "$outdiff" ]]; then
-          echo " *** SIP file not up to date: $sipfile"
+          echo " *** SIP file not up to date: $root_dir/$sipfile"
           echo " $outdiff "
           code=1
         fi
-        if [[ -f python/${module}/auto_additions/${pyfile}.temp ]]; then
-          outdiff2=$(diff python/${module}/auto_additions/${pyfile} python/${module}/auto_additions/${pyfile}.temp)
+        if [[ -f $root_dir/${module}/auto_additions/${pyfile}.temp ]]; then
+          outdiff2=$(diff $root_dir/${module}/auto_additions/${pyfile} $root_dir/${module}/auto_additions/${pyfile}.temp)
           if [[ -n "$outdiff2" ]]; then
-            echo " *** Python addition file not up to date: $sipfile"
+            echo " *** Python addition file not up to date: $root_dir/$sipfile"
             echo " $outdiff2 "
             code=1
           fi
         fi
       fi
-  done < <(
-      ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip
-  )
+    done < <(
+      ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" $root_dir/${module}/${module}_auto.sip
+    )
+  done
 done
-
 
 popd > /dev/null || exit
 
