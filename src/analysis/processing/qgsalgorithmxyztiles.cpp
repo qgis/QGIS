@@ -499,6 +499,7 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
   // print SKIP EMPTY TILES TRUE OR FALSE
   if ( mSkipEmptyTiles == true)
   {
+    
     feedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to true" ) );
   }
   else if ( mSkipEmptyTiles == false)
