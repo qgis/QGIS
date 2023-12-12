@@ -60,6 +60,8 @@ class QgsSensorThingsFeatureIterator : public QgsAbstractFeatureIteratorFromSour
     // Remaining feature IDs which haven't yet been fetched
     QList< QgsFeatureId > mRemainingFeatureIds;
 
+    QgsFeatureIds mAlreadyFetchedIds;
+
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
     QgsRectangle mGeometryTestFilterRect;

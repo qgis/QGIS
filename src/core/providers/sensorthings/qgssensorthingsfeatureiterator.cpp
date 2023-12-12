@@ -128,7 +128,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( mDeferredFeaturesInFilterRectCheck || !mCurrentPage.isEmpty() )
   {
-    const QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect, mInterruptionChecker, mCurrentPage, mNextPage );
+    const QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect, mInterruptionChecker, mCurrentPage, mNextPage, mAlreadyFetchedIds );
     mCurrentPage.clear();
 
     if ( !mRequestFeatureIdList.isEmpty() )
@@ -191,6 +191,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
         return false;
 
       bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, mInterruptionChecker );
+      mAlreadyFetchedIds.insert( mRequest.filterFid() );
       if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
         return false;
 
@@ -229,6 +230,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
         }
 
         bool success = mSource->sharedData()->getFeature( mFeatureIterator, f, mInterruptionChecker );
+        mAlreadyFetchedIds.insert( mFeatureIterator );
 
         if ( !mCurrentPageFeatureIdList.empty() )
         {
@@ -288,6 +290,7 @@ bool QgsSensorThingsFeatureIterator::rewind()
     return false;
   mFeatureIterator = 0;
   mCurrentPage.clear();
+  mAlreadyFetchedIds.clear();
   mRemainingFeatureIds = mRequestFeatureIdList;
   if ( !mRemainingFeatureIds.empty() )
     mFeatureIterator = mRemainingFeatureIds.at( 0 );

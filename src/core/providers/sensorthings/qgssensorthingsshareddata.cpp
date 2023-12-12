@@ -233,7 +233,7 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
   return featureFetched;
 }
 
-QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback, const QString &thisPage, QString &nextPage )
+QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback, const QString &thisPage, QString &nextPage, const QgsFeatureIds &alreadyFetchedIds )
 {
   const QgsGeometry extentGeom = QgsGeometry::fromRect( extent );
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
@@ -244,19 +244,28 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
     return qgis::listToSet( mSpatialIndex.intersects( extent ) );
   }
 
-  // otherwise, ask the server nicely
-
   // TODO -- is using 'geography' always correct here?
   QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$filter=geo.intersects(%2, geography'%3')&$top=%4&$count=false" ).arg( mEntityBaseUri, mGeometryField, extent.asWktPolygon() ).arg( mMaximumPageSize );
+
+  if ( thisPage.isEmpty() && mCachedExtent.intersects( extentGeom ) )
+  {
+    // we have SOME of the results from this extent cached. Let's return those first.
+    // This is slightly nicer from a rendering point of view, because panning the map won't see features
+    // previously visible disappear temporarily while we wait for them to be included in the service's result set...
+    nextPage = queryUrl;
+    return qgis::listToSet( mSpatialIndex.intersects( extent ) );
+  }
+
   locker.unlock();
 
   QgsFeatureIds ids;
 
   bool noMoreFeatures = false;
   bool hasFirstPage = false;
-  const bool res = processFeatureRequest( queryUrl, feedback, [&ids]( const QgsFeature & feature )
+  const bool res = processFeatureRequest( queryUrl, feedback, [&ids, &alreadyFetchedIds]( const QgsFeature & feature )
   {
-    ids.insert( feature.id() );
+    if ( !alreadyFetchedIds.contains( feature.id() ) )
+      ids.insert( feature.id() );
   }, [&hasFirstPage]
   {
     if ( !hasFirstPage )
