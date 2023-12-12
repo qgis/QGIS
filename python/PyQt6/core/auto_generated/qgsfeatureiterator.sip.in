@@ -35,16 +35,17 @@ base class constructor - stores the iteration parameters
 
     virtual bool nextFeature( QgsFeature &f );
 %Docstring
-fetch next feature, return ``True`` on success
+Fetch next feature and stores in ``f``, returns ``True`` on success.
 %End
 
     virtual bool rewind() = 0;
 %Docstring
-reset the iterator to the starting position
+Resets the iterator to the starting position.
 %End
+
     virtual bool close() = 0;
 %Docstring
-end of iterating: free the resources / lock
+Call to end the iteration. This frees any resources used by the iterator.
 %End
 
 
@@ -259,8 +260,19 @@ Copy constructor copies the iterator, increases ref.count
 
 
     bool nextFeature( QgsFeature &f );
+%Docstring
+Fetch next feature and stores in ``f``, returns ``True`` on success.
+%End
+
     bool rewind();
+%Docstring
+Resets the iterator to the starting position.
+%End
+
     bool close();
+%Docstring
+Call to end the iteration. This frees any resources used by the iterator.
+%End
 
     bool isValid() const;
 %Docstring
