@@ -414,8 +414,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual([f["selfLink"][-10:] for f in features], ['/Things(1)', '/Things(2)', '/Things(3)'])
             self.assertEqual([f["name"] for f in features], ['Thing 1', 'Thing 2', 'Thing 3'])
             self.assertEqual([f["description"] for f in features], ['Desc 1', 'Desc 2', 'Desc 3'])
-            # TODO!
-            self.assertEqual([f["properties"] for f in features], [None, None, None])
+            self.assertEqual([f["properties"] for f in features], [{'owner': 'owner 1'}, {'owner': 'owner 2'}, {'owner': 'owner 3'}])
 
     def test_location(self):
         with tempfile.TemporaryDirectory() as temp_dir:
