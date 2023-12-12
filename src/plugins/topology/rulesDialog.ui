@@ -80,8 +80,8 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
-        <string></string>
+       <property name="toolTip">
+        <string>Add rule</string>
        </property>
       </widget>
      </item>
