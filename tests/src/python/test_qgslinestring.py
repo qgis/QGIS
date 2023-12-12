@@ -27,18 +27,22 @@ class TestQgsLineString(QgisTestCase):
         self.assertEqual(line.endPoint(), QgsPoint(3, 4))
 
         # With list
-        line = QgsLineString([ [1, 2], [3, 4] ])
+        line = QgsLineString([[1, 2], [3, 4]])
         self.assertEqual(line.startPoint(), QgsPoint(1, 2))
         self.assertEqual(line.endPoint(), QgsPoint(3, 4))
 
     def testMeasureLine(self):
-        line = QgsLineString([ [0, 0], [2, 0], [4, 0]])
+        line = QgsLineString()
         m_line = line.measuredLine(10, 20)
-        self.assertEqual(m_line, QgsLineString([QgsPoint(0, 0, m=10),QgsPoint(2, 0, m=15) ,QgsPoint(4, 0, m=20) ]))
+        self.assertEqual(m_line, QgsLineString())
 
-        line = QgsLineString([ [0, 0], [9, 0], [10, 0]])
+        line = QgsLineString([[0, 0], [2, 0], [4, 0]])
         m_line = line.measuredLine(10, 20)
-        self.assertEqual(m_line, QgsLineString([QgsPoint(0, 0, m=10),QgsPoint(9, 0, m=19) ,QgsPoint(10, 0, m=20) ]))
+        self.assertEqual(m_line, QgsLineString([QgsPoint(0, 0, m=10), QgsPoint(2, 0, m=15), QgsPoint(4, 0, m=20)]))
+
+        line = QgsLineString([[0, 0], [9, 0], [10, 0]])
+        m_line = line.measuredLine(10, 20)
+        self.assertEqual(m_line, QgsLineString([QgsPoint(0, 0, m=10), QgsPoint(9, 0, m=19), QgsPoint(10, 0, m=20)]))
 
 
 if __name__ == '__main__':
