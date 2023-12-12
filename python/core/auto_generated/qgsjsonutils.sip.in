@@ -368,6 +368,7 @@ Returns a null geometry if the geometry could not be parsed.
 
 
 
+
 };
 
 /************************************************************************

@@ -781,6 +781,21 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
 
 QVariant QgsJsonUtils::parseJson( const std::string &jsonString, QString &error )
 {
+  error.clear();
+  try
+  {
+    const json j = json::parse( jsonString );
+    return jsonToVariant( j );
+  }
+  catch ( json::parse_error &ex )
+  {
+    error = QString::fromStdString( ex.what() );
+  }
+  return QVariant();
+}
+
+QVariant QgsJsonUtils::jsonToVariant( const json &value )
+{
   // tracks whether entire json string is a primitive
   bool isPrimitive = true;
 
@@ -870,17 +885,7 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString, QString &error 
     }
   };
 
-  error.clear();
-  try
-  {
-    const json j = json::parse( jsonString );
-    return _parser( j );
-  }
-  catch ( json::parse_error &ex )
-  {
-    error = QString::fromStdString( ex.what() );
-  }
-  return QVariant();
+  return _parser( value );
 }
 
 QVariant QgsJsonUtils::parseJson( const QString &jsonString )
