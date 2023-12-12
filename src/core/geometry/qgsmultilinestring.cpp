@@ -185,14 +185,13 @@ QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end )
 
   QgsMultiLineString *result{createEmptyWithSameType()};
 
-  if ( isEmpty() )
+  if ( !result->convertTo( QgsWkbTypes::addM( mWkbType ) ) )
   {
     return result;
   }
 
-  if ( !result->convertTo( QgsWkbTypes::addM( mWkbType ) ) )
+  if ( isEmpty() )
   {
-    qDebug() << "Impossible to convert type to M type\n";
     return result;
   }
 

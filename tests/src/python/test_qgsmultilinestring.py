@@ -33,7 +33,7 @@ class TestQgsLineString(QgisTestCase):
     def testMeasureLine(self):
         multiline = QgsMultiLineString()
         m_line = multiline.measuredLine(10, 20)
-        self.assertEqual(m_line, QgsMultiLineString())
+        self.assertEqual(m_line.asWkt(0), "MultiLineStringM EMPTY")
 
         multiline.addGeometry(QgsLineString([[0, 0], [2, 0], [4, 0]]))
         m_line = multiline.measuredLine(10, 20)
