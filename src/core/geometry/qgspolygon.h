@@ -55,6 +55,7 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
+    QString asWkt( int precision = 17 ) const override;
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
 
     /**
