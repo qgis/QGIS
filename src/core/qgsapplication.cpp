@@ -459,6 +459,26 @@ void QgsApplication::init( QString profileFolder )
 
 void QgsApplication::installTranslators()
 {
+  // Remove translators if any are already installed
+  if ( mQgisTranslator )
+  {
+    removeTranslator( mQgisTranslator );
+    delete mQgisTranslator;
+    mQgisTranslator = nullptr;
+  }
+  if ( mQtTranslator )
+  {
+    removeTranslator( mQtTranslator );
+    delete mQtTranslator;
+    mQtTranslator = nullptr;
+  }
+  if ( mQtBaseTranslator )
+  {
+    removeTranslator( mQtBaseTranslator );
+    delete mQtBaseTranslator;
+    mQtBaseTranslator = nullptr;
+  }
+
   if ( *sTranslation() != QLatin1String( "C" ) )
   {
     mQgisTranslator = new QTranslator( this );
