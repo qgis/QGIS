@@ -179,7 +179,7 @@ bool QgsMultiLineString::wktOmitChildType() const
   return true;
 }
 
-QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end )
+QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end ) const
 {
 
 

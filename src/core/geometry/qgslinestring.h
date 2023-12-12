@@ -1074,7 +1074,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \since QGIS 3.36
      */
-    QgsLineString *measuredLine( double start, double end );
+    QgsLineString *measuredLine( double start, double end ) const SIP_FACTORY;
 
   protected:
 
