@@ -36,7 +36,7 @@ The ``label`` argument specifies the label used for this category in legends and
 
 The ``render`` argument indicates whether the category should initially be rendered and appear checked in the layer tree.
 
-A positive ``pointSize`` argument overrides the layer's point size setting for this category.
+A positive ``pointSize`` argument overrides the layer's point size setting for this category (added in QGIS 3.36).
 %End
 
     bool operator==( const QgsPointCloudCategory &other ) const;

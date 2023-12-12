@@ -45,7 +45,7 @@ class CORE_EXPORT QgsPointCloudCategory
     *
     * The \a render argument indicates whether the category should initially be rendered and appear checked in the layer tree.
     *
-    * A positive \a pointSize argument overrides the layer's point size setting for this category.
+    * A positive \a pointSize argument overrides the layer's point size setting for this category (added in QGIS 3.36).
     */
     QgsPointCloudCategory( int value, const QColor &color, const QString &label, bool render = true, double pointSize = 0 );
 
