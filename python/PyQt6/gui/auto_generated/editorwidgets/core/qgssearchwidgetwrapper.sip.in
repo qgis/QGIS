@@ -69,7 +69,7 @@ Shows a search widget on a filter form.
 %End
   public:
 
-    enum FilterFlag /BaseType=IntFlag/
+    enum FilterFlag
     {
       EqualTo,
       NotEqualTo,

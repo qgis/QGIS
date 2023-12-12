@@ -28,7 +28,7 @@ of feature and attribute information from a spatial datasource.
   public:
 
 
-    enum Capability /BaseType=IntFlag/
+    enum Capability
     {
       NoCapabilities,
       AddFeatures,
@@ -711,14 +711,11 @@ Usually done in the constructor.
 .. versionadded:: 3.0
 %End
 
-%If( !PYQT6 )
-
     QTextCodec *textEncoding() const;
 %Docstring
 Gets this providers encoding
 
 .. versionadded:: 3.0
-%End
 %End
 
     static QgsGeometry convertToProviderType( const QgsGeometry &geometry,  Qgis::WkbType providerGeometryType );

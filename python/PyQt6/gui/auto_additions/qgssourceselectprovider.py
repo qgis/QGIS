@@ -6,9 +6,7 @@ QgsSourceSelectProvider.OrderSearchProvider = QgsSourceSelectProvider.Ordering.O
 QgsSourceSelectProvider.OrderOtherProvider = QgsSourceSelectProvider.Ordering.OrderOtherProvider
 # monkey patching scoped based enum
 QgsSourceSelectProvider.Capability.NoCapabilities.__doc__ = "No capabilities"
-QgsSourceSelectProvider.NoCapabilities = QgsSourceSelectProvider.Capability.NoCapabilities
 QgsSourceSelectProvider.Capability.ConfigureFromUri.__doc__ = "The source select widget can be configured from a URI"
-QgsSourceSelectProvider.ConfigureFromUri = QgsSourceSelectProvider.Capability.ConfigureFromUri
 QgsSourceSelectProvider.Capability.__doc__ = "The Capability enum describes the capabilities of the source select implementation.\n\n.. versionadded:: 3.38\n\n" + '* ``NoCapabilities``: ' + QgsSourceSelectProvider.Capability.NoCapabilities.__doc__ + '\n' + '* ``ConfigureFromUri``: ' + QgsSourceSelectProvider.Capability.ConfigureFromUri.__doc__
 # --
 QgsSourceSelectProvider.Capability.baseClass = QgsSourceSelectProvider

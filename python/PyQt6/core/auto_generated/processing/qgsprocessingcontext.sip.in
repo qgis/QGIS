@@ -58,28 +58,28 @@ Copies all settings which are safe for use across different threads from
 ``other`` to this context.
 %End
 
-    QgsProcessingContext::Flags flags() const;
+    QgsProcessingContext::Flags flags() const /HoldGIL/;
 %Docstring
 Returns any flags set in the context.
 
 .. seealso:: :py:func:`setFlags`
 %End
 
-    void setFlags( QgsProcessingContext::Flags flags );
+    void setFlags( QgsProcessingContext::Flags flags ) /HoldGIL/;
 %Docstring
 Sets ``flags`` for the context.
 
 .. seealso:: :py:func:`flags`
 %End
 
-    QgsProject *project() const;
+    QgsProject *project() const /HoldGIL/;
 %Docstring
 Returns the project in which the algorithm is being executed.
 
 .. seealso:: :py:func:`setProject`
 %End
 
-    void setProject( QgsProject *project );
+    void setProject( QgsProject *project ) /HoldGIL/;
 %Docstring
 Sets the ``project`` in which the algorithm will be executed.
 
@@ -89,7 +89,7 @@ This also automatically sets the :py:func:`~QgsProcessingContext.transformContex
 .. seealso:: :py:func:`project`
 %End
 
-    QgsExpressionContext &expressionContext();
+    QgsExpressionContext &expressionContext() /HoldGIL/;
 %Docstring
 Returns the expression context.
 %End
@@ -100,14 +100,14 @@ Returns the expression context.
 Sets the expression ``context``.
 %End
 
-    QgsCoordinateTransformContext transformContext() const;
+    QgsCoordinateTransformContext transformContext() const /HoldGIL/;
 %Docstring
 Returns the coordinate transform context.
 
 .. seealso:: :py:func:`setTransformContext`
 %End
 
-    void setTransformContext( const QgsCoordinateTransformContext &context );
+    void setTransformContext( const QgsCoordinateTransformContext &context ) /HoldGIL/;
 %Docstring
 Sets the coordinate transform ``context``.
 
@@ -117,7 +117,7 @@ context.
 .. seealso:: :py:func:`transformContext`
 %End
 
-    QString ellipsoid() const;
+    QString ellipsoid() const /HoldGIL/;
 %Docstring
 Returns the ellipsoid to use for distance and area calculations.
 
@@ -126,7 +126,7 @@ Returns the ellipsoid to use for distance and area calculations.
 .. versionadded:: 3.16
 %End
 
-    void setEllipsoid( const QString &ellipsoid );
+    void setEllipsoid( const QString &ellipsoid ) /HoldGIL/;
 %Docstring
 Sets a specified ``ellipsoid`` to use for distance and area calculations.
 
@@ -137,7 +137,7 @@ If not explicitly set, the ellipsoid will default to the :py:func:`~QgsProcessin
 .. versionadded:: 3.16
 %End
 
-    Qgis::DistanceUnit distanceUnit() const;
+    Qgis::DistanceUnit distanceUnit() const /HoldGIL/;
 %Docstring
 Returns the distance unit to use for distance calculations.
 
@@ -148,7 +148,7 @@ Returns the distance unit to use for distance calculations.
 .. versionadded:: 3.16
 %End
 
-    void setDistanceUnit( Qgis::DistanceUnit unit );
+    void setDistanceUnit( Qgis::DistanceUnit unit ) /HoldGIL/;
 %Docstring
 Sets the ``unit`` to use for distance calculations.
 
@@ -161,7 +161,7 @@ If not explicitly set, the unit will default to the :py:func:`~QgsProcessingCont
 .. versionadded:: 3.16
 %End
 
-    Qgis::AreaUnit areaUnit() const;
+    Qgis::AreaUnit areaUnit() const /HoldGIL/;
 %Docstring
 Returns the area unit to use for area calculations.
 
@@ -172,7 +172,7 @@ Returns the area unit to use for area calculations.
 .. versionadded:: 3.16
 %End
 
-    void setAreaUnit( Qgis::AreaUnit areaUnit );
+    void setAreaUnit( Qgis::AreaUnit areaUnit ) /HoldGIL/;
 %Docstring
 Sets the ``unit`` to use for area calculations.
 
@@ -185,7 +185,7 @@ If not explicitly set, the unit will default to the :py:func:`~QgsProcessingCont
 .. versionadded:: 3.16
 %End
 
-    QgsDateTimeRange currentTimeRange() const;
+    QgsDateTimeRange currentTimeRange() const /HoldGIL/;
 %Docstring
 Returns the current time range to use for temporal operations.
 
@@ -194,7 +194,7 @@ Returns the current time range to use for temporal operations.
 .. versionadded:: 3.18
 %End
 
-    void setCurrentTimeRange( const QgsDateTimeRange &currentTimeRange );
+    void setCurrentTimeRange( const QgsDateTimeRange &currentTimeRange ) /HoldGIL/;
 %Docstring
 Sets the ``current`` time range to use for temporal operations.
 
@@ -203,7 +203,7 @@ Sets the ``current`` time range to use for temporal operations.
 .. versionadded:: 3.18
 %End
 
-    QgsMapLayerStore *temporaryLayerStore();
+    QgsMapLayerStore *temporaryLayerStore() /HoldGIL/;
 %Docstring
 Returns a reference to the layer store used for storing temporary layers during
 algorithm execution.
@@ -275,7 +275,7 @@ Sets a ``layer`` name to match this output, respecting any local user settings w
 
     };
 
-    QMap< QString, QgsProcessingContext::LayerDetails > layersToLoadOnCompletion() const;
+    QMap< QString, QgsProcessingContext::LayerDetails > layersToLoadOnCompletion() const /HoldGIL/;
 %Docstring
 Returns a map of layers (by ID or datasource) to LayerDetails, to load into the canvas upon completion of the algorithm or model.
 
@@ -288,7 +288,7 @@ Returns a map of layers (by ID or datasource) to LayerDetails, to load into the 
 .. seealso:: :py:func:`layerToLoadOnCompletionDetails`
 %End
 
-    bool willLoadLayerOnCompletion( const QString &layer ) const;
+    bool willLoadLayerOnCompletion( const QString &layer ) const /HoldGIL/;
 %Docstring
 Returns ``True`` if the given ``layer`` (by ID or datasource) will be loaded into the current project
 upon completion of the algorithm or model.
@@ -304,7 +304,7 @@ upon completion of the algorithm or model.
 .. versionadded:: 3.2
 %End
 
-    void setLayersToLoadOnCompletion( const QMap< QString, QgsProcessingContext::LayerDetails > &layers );
+    void setLayersToLoadOnCompletion( const QMap< QString, QgsProcessingContext::LayerDetails > &layers ) /HoldGIL/;
 %Docstring
 Sets the map of ``layers`` (by ID or datasource) to LayerDetails, to load into the canvas upon completion of the algorithm or model.
 
@@ -317,7 +317,7 @@ Sets the map of ``layers`` (by ID or datasource) to LayerDetails, to load into t
 .. seealso:: :py:func:`layerToLoadOnCompletionDetails`
 %End
 
-    void addLayerToLoadOnCompletion( const QString &layer, const QgsProcessingContext::LayerDetails &details );
+    void addLayerToLoadOnCompletion( const QString &layer, const QgsProcessingContext::LayerDetails &details ) /HoldGIL/;
 %Docstring
 Adds a ``layer`` to load (by ID or datasource) into the canvas upon completion of the algorithm or model.
 The ``details`` parameter dictates the LayerDetails.
@@ -331,7 +331,7 @@ The ``details`` parameter dictates the LayerDetails.
 .. seealso:: :py:func:`layerToLoadOnCompletionDetails`
 %End
 
-    QgsProcessingContext::LayerDetails &layerToLoadOnCompletionDetails( const QString &layer );
+    QgsProcessingContext::LayerDetails &layerToLoadOnCompletionDetails( const QString &layer ) /HoldGIL/;
 %Docstring
 Returns a reference to the details for a given ``layer`` which is loaded on completion of the
 algorithm or model.
@@ -352,7 +352,7 @@ algorithm or model.
 .. versionadded:: 3.2
 %End
 
-    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
+    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const /HoldGIL/;
 %Docstring
 Returns the behavior used for checking invalid geometries in input layers.
 
@@ -417,28 +417,28 @@ called using the feature which encountered the transform error as a parameter.
 %End
 
 
-    QString defaultEncoding() const;
+    QString defaultEncoding() const /HoldGIL/;
 %Docstring
 Returns the default encoding to use for newly created files.
 
 .. seealso:: :py:func:`setDefaultEncoding`
 %End
 
-    void setDefaultEncoding( const QString &encoding );
+    void setDefaultEncoding( const QString &encoding ) /HoldGIL/;
 %Docstring
 Sets the default ``encoding`` to use for newly created files.
 
 .. seealso:: :py:func:`defaultEncoding`
 %End
 
-    QgsProcessingFeedback *feedback();
+    QgsProcessingFeedback *feedback() /HoldGIL/;
 %Docstring
 Returns the associated feedback object.
 
 .. seealso:: :py:func:`setFeedback`
 %End
 
-    void setFeedback( QgsProcessingFeedback *feedback );
+    void setFeedback( QgsProcessingFeedback *feedback ) /HoldGIL/;
 %Docstring
 Sets an associated ``feedback`` object. This allows context related functions
 to report feedback and errors to users and processing logs. While ideally this feedback
@@ -449,7 +449,7 @@ Ownership of ``feedback`` is not transferred.
 .. seealso:: :py:func:`setFeedback`
 %End
 
-    QThread *thread();
+    QThread *thread() /HoldGIL/;
 %Docstring
 Returns the thread in which the context lives.
 
@@ -496,7 +496,7 @@ from a context.
 .. seealso:: :py:func:`getMapLayer`
 %End
 
-    QString preferredVectorFormat() const;
+    QString preferredVectorFormat() const /HoldGIL/;
 %Docstring
 Returns the preferred vector format to use for vector outputs.
 
@@ -517,7 +517,7 @@ and to provide an appropriate fallback when the returned format is not usable.
 .. versionadded:: 3.10
 %End
 
-    void setPreferredVectorFormat( const QString &format );
+    void setPreferredVectorFormat( const QString &format ) /HoldGIL/;
 %Docstring
 Sets the preferred vector ``format`` to use for vector outputs.
 
@@ -535,7 +535,7 @@ function will be used when creating these outputs.
 .. versionadded:: 3.10
 %End
 
-    QString preferredRasterFormat() const;
+    QString preferredRasterFormat() const /HoldGIL/;
 %Docstring
 Returns the preferred raster format to use for vector outputs.
 
@@ -556,7 +556,7 @@ and to provide an appropriate fallback when the returned format is not usable.
 .. versionadded:: 3.10
 %End
 
-    void setPreferredRasterFormat( const QString &format );
+    void setPreferredRasterFormat( const QString &format ) /HoldGIL/;
 %Docstring
 Sets the preferred raster ``format`` to use for vector outputs.
 
@@ -574,7 +574,7 @@ function will be used when creating these outputs.
 .. versionadded:: 3.10
 %End
 
-    LogLevel logLevel() const;
+    LogLevel logLevel() const /HoldGIL/;
 %Docstring
 Returns the logging level for algorithms to use when pushing feedback messages to users.
 
@@ -583,7 +583,7 @@ Returns the logging level for algorithms to use when pushing feedback messages t
 .. versionadded:: 3.20
 %End
 
-    void setLogLevel( LogLevel level );
+    void setLogLevel( LogLevel level ) /HoldGIL/;
 %Docstring
 Sets the logging ``level`` for algorithms to use when pushing feedback messages to users.
 
@@ -592,7 +592,7 @@ Sets the logging ``level`` for algorithms to use when pushing feedback messages 
 .. versionadded:: 3.20
 %End
 
-    QString temporaryFolder() const;
+    QString temporaryFolder() const /HoldGIL/;
 %Docstring
 Returns the (optional) temporary folder to use when running algorithms.
 
@@ -604,7 +604,7 @@ for all temporary files created during algorithm execution.
 .. versionadded:: 3.32
 %End
 
-    void setTemporaryFolder( const QString &folder );
+    void setTemporaryFolder( const QString &folder ) /HoldGIL/;
 %Docstring
 Sets the (optional) temporary ``folder`` to use when running algorithms.
 
@@ -616,7 +616,7 @@ for all temporary files created during algorithm execution.
 .. versionadded:: 3.32
 %End
 
-    int maximumThreads() const;
+    int maximumThreads() const /HoldGIL/;
 %Docstring
 Returns the (optional) number of threads to use when running algorithms.
 
@@ -632,7 +632,7 @@ Returns the (optional) number of threads to use when running algorithms.
 .. versionadded:: 3.32
 %End
 
-    void setMaximumThreads( int threads );
+    void setMaximumThreads( int threads ) /HoldGIL/;
 %Docstring
 Sets the (optional) number of ``threads`` to use when running algorithms.
 
@@ -652,7 +652,7 @@ setting will be ignored.
 .. versionadded:: 3.32
 %End
 
-    QVariantMap exportToMap() const;
+    QVariantMap exportToMap() const /HoldGIL/;
 %Docstring
 Exports the context's settings to a variant map.
 
