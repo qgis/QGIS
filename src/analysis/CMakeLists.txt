@@ -302,6 +302,7 @@ set(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsgeometrycheckerutils.cpp
   vector/geometry_checker/qgsgeometrycheckregistry.cpp
   vector/geometry_checker/qgsgeometrycontainedcheck.cpp
+  vector/geometry_checker/qgsgeometrycurvecheck.cpp
   vector/geometry_checker/qgsgeometrydanglecheck.cpp
   vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp
   vector/geometry_checker/qgsgeometryduplicatecheck.cpp

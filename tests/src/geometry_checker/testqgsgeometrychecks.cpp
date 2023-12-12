@@ -21,6 +21,7 @@
 #include "qgsgeometryanglecheck.h"
 #include "qgsgeometryareacheck.h"
 #include "qgsgeometrycontainedcheck.h"
+#include "qgsgeometrycurvecheck.h"
 #include "qgsgeometrydanglecheck.h"
 #include "qgsgeometrydegeneratepolygoncheck.h"
 #include "qgsgeometryduplicatecheck.h"
@@ -47,6 +48,7 @@
 #include "qgsfeedback.h"
 
 #include "qgsgeometrytypecheck.h"
+#include <qtestcase.h>
 
 class TestQgsGeometryChecks: public QObject
 {
@@ -79,6 +81,7 @@ class TestQgsGeometryChecks: public QObject
     void testAngleCheck();
     void testAreaCheck();
     void testContainedCheck();
+    void testCurveCheck();
     void testDangleCheck();
     void testDegeneratePolygonCheck();
     void testDuplicateCheck();
@@ -325,6 +328,60 @@ void TestQgsGeometryChecks::testContainedCheck()
   QgsFeature f;
   const bool valid = testContext.second[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   QVERIFY( !valid );
+
+  cleanupTestContext( testContext );
+}
+
+void TestQgsGeometryChecks::testCurveCheck()
+{
+  QTemporaryDir dir;
+  QMap<QString, QString> layers;
+  layers.insert( QStringLiteral( "point_layer.shp" ), QString() );
+  layers.insert( QStringLiteral( "line_layer.shp" ), QString() );
+  layers.insert( QStringLiteral( "polygon_layer.shp" ), QString() );
+  layers.insert( QStringLiteral( "curved_line.gpkg" ), QString() );
+  layers.insert( QStringLiteral( "curved_polygon.gpkg" ), QString() );
+  const auto testContext = createTestContext( dir, layers );
+
+  // Test detection
+  QList<QgsGeometryCheckError *> checkErrors;
+  QStringList messages;
+
+  const QgsGeometryCurveCheck check( testContext.first, QVariantMap() );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
+  listErrors( checkErrors, messages );
+
+  QList<QgsGeometryCheckError *> errs1;
+  QList<QgsGeometryCheckError *> errs2;
+
+  QCOMPARE( checkErrors.size(), 4 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"] ).isEmpty() );
+
+  QVERIFY( ( errs1 = searchCheckErrors( checkErrors, layers["curved_line.gpkg"], 2, QgsPointXY( 0.427921, 0.915679 ), QgsVertexId() ) ).size() == 1 );
+  QVERIFY( ( errs2 = searchCheckErrors( checkErrors, layers["curved_line.gpkg"], 3, QgsPointXY( 0.00970782, -0.225534 ), QgsVertexId() ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["curved_polygon.gpkg"], 2, QgsPointXY( -0.0659905, 0.312651 ), QgsVertexId() ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["curved_polygon.gpkg"], 3, QgsPointXY( -1.10633, -1.01106 ), QgsVertexId() ).size() == 1 );
+
+  // Test fixes
+  // Delete
+  QVERIFY( fixCheckError( testContext.second,  errs1[0],
+                          QgsGeometryCurveCheck::Delete, QgsGeometryCheckError::StatusFixed,
+  {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()}} ) );
+  QgsFeature f;
+  const bool valid = testContext.second[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
+  QVERIFY( !valid );
+
+  // Convert to Straight segments
+  QVERIFY( fixCheckError( testContext.second,  errs2[0],
+                          QgsGeometryCurveCheck::StraightCurves, QgsGeometryCheckError::StatusFixed,
+  {{errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeChanged, QgsVertexId()}} ) );
+  QgsFeature f2;
+  const bool valid2 = testContext.second[errs2[0]->layerId()]->getFeature( errs2[0]->featureId(), f2 );
+  QVERIFY( valid2 );
+  QVERIFY( ! f2.geometry().constGet()->hasCurvedSegments() );
 
   cleanupTestContext( testContext );
 }
