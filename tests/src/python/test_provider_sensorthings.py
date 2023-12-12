@@ -14,7 +14,7 @@ import hashlib
 import tempfile
 import unittest
 
-from qgis.PyQt.QtCore import QVariant, QCoreApplication
+from qgis.PyQt.QtCore import QVariant, QCoreApplication, QDateTime, Qt
 from qgis.core import (
     Qgis,
     QgsProviderRegistry,
@@ -410,11 +410,21 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             features = list(vl.getFeatures())
             self.assertEqual([f.id() for f in features], [0, 1, 2])
-            self.assertEqual([f["id"] for f in features], ['1', '2', '3'])
-            self.assertEqual([f["selfLink"][-10:] for f in features], ['/Things(1)', '/Things(2)', '/Things(3)'])
-            self.assertEqual([f["name"] for f in features], ['Thing 1', 'Thing 2', 'Thing 3'])
-            self.assertEqual([f["description"] for f in features], ['Desc 1', 'Desc 2', 'Desc 3'])
-            self.assertEqual([f["properties"] for f in features], [{'owner': 'owner 1'}, {'owner': 'owner 2'}, {'owner': 'owner 3'}])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-10:] for f in features],
+                ["/Things(1)", "/Things(2)", "/Things(3)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features], ["Thing 1", "Thing 2", "Thing 3"]
+            )
+            self.assertEqual(
+                [f["description"] for f in features], ["Desc 1", "Desc 2", "Desc 3"]
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 1"}, {"owner": "owner 2"}, {"owner": "owner 3"}],
+            )
 
     def test_location(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -442,17 +452,108 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "wt",
                 encoding="utf8",
             ) as f:
-                f.write("""{"@iot.count":30,"value":[]}""")
+                f.write("""{"@iot.count":3,"value":[]}""")
+
+            with open(
+                sanitize(endpoint, "/Locations?$top=2&$count=false"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "@iot.selfLink": "endpoint/Locations(1)",
+      "@iot.id": 1,
+      "name": "Location 1",
+      "description": "Desc 1",
+      "encodingType": "application/geo+json",
+      "location": {
+        "type": "Point",
+        "coordinates": [
+          11.623373,
+          52.132017
+        ]
+      },
+      "properties": {
+        "owner": "owner 1"
+      },
+      "Things@iot.navigationLink": "endpoint/Locations(1)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Locations(1)/HistoricalLocations"
+    },
+    {
+      "@iot.selfLink": "endpoint/Locations(2)",
+      "@iot.id": 2,
+      "name": "Location 2",
+      "description": "Desc 2",
+      "encodingType": "application/geo+json",
+      "location": {
+        "type": "Point",
+        "coordinates": [
+          12.623373,
+          53.132017
+        ]
+      },
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Things@iot.navigationLink": "endpoint/Locations(2)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Locations(2)/HistoricalLocations"
+
+    }
+  ],
+  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2"
+}
+                """.replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+                with open(
+                    sanitize(endpoint, "/Locations?$top=2&$skip=2"),
+                    "wt",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "value": [
+                {
+                  "@iot.selfLink": "endpoint/Locations(3)",
+                  "@iot.id": 3,
+                  "name": "Location 3",
+                  "description": "Desc 3",
+                  "encodingType": "application/geo+json",
+                  "location": {
+                    "type": "Point",
+                    "coordinates": [
+                      13.623373,
+                      55.132017
+                    ]
+                  },
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Things@iot.navigationLink": "endpoint/Locations(3)/Things",
+                  "HistoricalLocations@iot.navigationLink": "endpoint/Locations(3)/HistoricalLocations"
+                }
+              ]
+            }
+                            """.replace(
+                            "endpoint", "http://" + endpoint
+                        )
+                    )
 
             vl = QgsVectorLayer(
-                f"url='http://{endpoint}' type=PointZ entity='Location'",
+                f"url='http://{endpoint}' type=PointZ pageSize=2 entity='Location'",
                 "test",
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
-            self.assertEqual(vl.featureCount(), 30)
+            self.assertEqual(vl.featureCount(), 3)
             self.assertEqual(vl.crs().authid(), "EPSG:4326")
             self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Locations"', vl.htmlMetadata())
@@ -476,6 +577,30 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     QVariant.String,
                     QVariant.Map,
                 ],
+            )
+
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-13:] for f in features],
+                ["/Locations(1)", "/Locations(2)", "/Locations(3)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Location 1", "Location 2", "Location 3"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features], ["Desc 1", "Desc 2", "Desc 3"]
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 1"}, {"owner": "owner 2"}, {"owner": "owner 3"}],
+            )
+
+            self.assertEqual(
+                [f.geometry().asWkt(1) for f in features],
+                ["Point (11.6 52.1)", "Point (12.6 53.1)", "Point (13.6 55.1)"],
             )
 
     def test_historical_location(self):
@@ -504,17 +629,72 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "wt",
                 encoding="utf8",
             ) as f:
-                f.write("""{"@iot.count":28,"value":[]}""")
+                f.write("""{"@iot.count":3,"value":[]}""")
+
+            with open(
+                sanitize(endpoint, "/HistoricalLocations?$top=2&$count=false"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "@iot.selfLink": "endpoint/HistoricalLocations(1)",
+      "@iot.id": 1,
+      "time": "2020-03-20T16:35:23.383586Z",
+      "Things@iot.navigationLink": "endpoint/HistoricalLocations(1)/Things",
+      "Locations@iot.navigationLink": "endpoint/HistoricalLocations(1)/Locations"
+    },
+    {
+      "@iot.selfLink": "endpoint/HistoricalLocations(2)",
+      "@iot.id": 2,
+      "time": "2021-03-20T16:35:23.383586Z",
+      "Things@iot.navigationLink": "endpoint/HistoricalLocations(2)/Things",
+      "Locations@iot.navigationLink": "endpoint/HistoricalLocations(2)/Locations"
+
+    }
+  ],
+  "@iot.nextLink": "endpoint/HistoricalLocations?$top=2&$skip=2"
+}
+                """.replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+                with open(
+                    sanitize(endpoint, "/HistoricalLocations?$top=2&$skip=2"),
+                    "wt",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "value": [
+                {
+                  "@iot.selfLink": "endpoint/HistoricalLocations(3)",
+                  "@iot.id": 3,
+                  "time": "2022-03-20T16:35:23.383586Z",
+                  "Things@iot.navigationLink": "endpoint/HistoricalLocations(3)/Things",
+                  "Locations@iot.navigationLink": "endpoint/HistoricalLocations(3)/Locations"
+                }
+              ]
+            }
+                            """.replace(
+                            "endpoint", "http://" + endpoint
+                        )
+                    )
 
             vl = QgsVectorLayer(
-                f"url='http://{endpoint}' type=PointZ entity='HistoricalLocation'",
+                f"url='http://{endpoint}' type=PointZ pageSize=2 entity='HistoricalLocation'",
                 "test",
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
-            self.assertEqual(vl.featureCount(), 28)
+            self.assertEqual(vl.featureCount(), 3)
             self.assertFalse(vl.crs().isValid())
             self.assertIn(
                 "Entity Type</td><td>HistoricalLocation</td>", vl.htmlMetadata()
@@ -537,6 +717,26 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     QVariant.String,
                     QVariant.String,
                     QVariant.DateTime,
+                ],
+            )
+
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-23:] for f in features],
+                [
+                    "/HistoricalLocations(1)",
+                    "/HistoricalLocations(2)",
+                    "/HistoricalLocations(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["time"] for f in features],
+                [
+                    QDateTime(2020, 3, 20, 16, 35, 23, 384, Qt.TimeSpec(1)),
+                    QDateTime(2021, 3, 20, 16, 35, 23, 384, Qt.TimeSpec(1)),
+                    QDateTime(2022, 3, 20, 16, 35, 23, 384, Qt.TimeSpec(1)),
                 ],
             )
 
@@ -566,17 +766,108 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 "wt",
                 encoding="utf8",
             ) as f:
-                f.write("""{"@iot.count":27,"value":[]}""")
+                f.write("""{"@iot.count":3,"value":[]}""")
+
+            with open(
+                sanitize(endpoint, "/Datastreams?$top=2&$count=false"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "@iot.selfLink": "endpoint/Datastreams(1)",
+      "@iot.id": 1,
+      "name": "Datastream 1",
+      "description": "Desc 1",
+      "unitOfMeasurement": {
+        "name": "ug.m-3",
+        "symbol": "ug.m-3",
+        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+      },
+      "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+      "phenomenonTime": "2017-12-31T23:00:00Z/2018-01-12T04:00:00Z",
+      "resultTime": "2017-12-31T23:30:00Z/2017-12-31T23:31:00Z",
+      "properties": {
+        "owner": "owner 1"
+      },
+      "Things@iot.navigationLink": "endpoint/Datastreams(1)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Datastreams(1)/HistoricalLocations"
+    },
+    {
+      "@iot.selfLink": "endpoint/Datastreams(2)",
+      "@iot.id": 2,
+      "name": "Datastream 2",
+      "description": "Desc 2",
+      "unitOfMeasurement": {
+        "name": "ug.m-3",
+        "symbol": "ug.m-3",
+        "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+      },
+      "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+      "phenomenonTime": "2018-12-31T23:00:00Z/2019-01-12T04:00:00Z",
+      "resultTime": "2018-12-31T23:30:00Z/2018-12-31T23:31:00Z",
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Things@iot.navigationLink": "endpoint/Datastreams(2)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Datastreams(2)/HistoricalLocations"
+
+    }
+  ],
+  "@iot.nextLink": "endpoint/Datastreams?$top=2&$skip=2"
+}
+                """.replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+                with open(
+                    sanitize(endpoint, "/Datastreams?$top=2&$skip=2"),
+                    "wt",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "value": [
+                {
+                  "@iot.selfLink": "endpoint/Datastreams(3)",
+                  "@iot.id": 3,
+                  "name": "Datastream 3",
+                  "description": "Desc 3",
+                  "unitOfMeasurement": {
+                    "name": "ug.m-3",
+                    "symbol": "ug.m-3",
+                    "definition": "http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3"
+                  },
+                  "observationType": "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement",
+                  "phenomenonTime": "2020-12-31T23:00:00Z/2021-01-12T04:00:00Z",
+                  "resultTime": "2020-12-31T23:30:00Z/2020-12-31T23:31:00Z",
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Things@iot.navigationLink": "endpoint/Datastreams(3)/Things",
+                  "HistoricalLocations@iot.navigationLink": "endpoint/Datastreams(3)/HistoricalLocations"
+                }
+              ]
+            }
+                            """.replace(
+                            "endpoint", "http://" + endpoint
+                        )
+                    )
 
             vl = QgsVectorLayer(
-                f"url='http://{endpoint}' type=PointZ entity='Datastream'",
+                f"url='http://{endpoint}' pageSize=2 type=PointZ entity='Datastream'",
                 "test",
                 "sensorthings",
             )
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
-            self.assertEqual(vl.featureCount(), 27)
+            self.assertEqual(vl.featureCount(), 3)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Datastream</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Datastreams"', vl.htmlMetadata())
@@ -612,6 +903,51 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     QVariant.DateTime,
                     QVariant.DateTime,
                 ],
+            )
+
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-15:] for f in features],
+                ["/Datastreams(1)", "/Datastreams(2)", "/Datastreams(3)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Datastream 1", "Datastream 2", "Datastream 3"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features], ["Desc 1", "Desc 2", "Desc 3"]
+            )
+            self.assertEqual(
+                [f["unitOfMeasurement"] for f in features], [{'definition': 'http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3', 'name': 'ug.m-3', 'symbol': 'ug.m-3'}, {'definition': 'http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3', 'name': 'ug.m-3', 'symbol': 'ug.m-3'}, {'definition': 'http://dd.eionet.europa.eu/vocabulary/uom/concentration/ug.m-3', 'name': 'ug.m-3', 'symbol': 'ug.m-3'}]
+            )
+            self.assertEqual(
+                [f["observationType"] for f in features], ['http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement', 'http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement', 'http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement']
+            )
+            self.assertEqual(
+                [f["phenomenonTimeStart"] for f in features], [QDateTime(2017, 12, 31, 23, 0, 0, 0, Qt.TimeSpec(1)),
+                                                               QDateTime(2018, 12, 31, 23, 0, 0, 0, Qt.TimeSpec(1)),
+                                                               QDateTime(2020, 12, 31, 23, 0, 0, 0, Qt.TimeSpec(1))]
+            )
+            self.assertEqual(
+                [f["phenomenonTimeEnd"] for f in features], [QDateTime(2018, 1, 12, 4, 0, 0, 0, Qt.TimeSpec(1)),
+                                                             QDateTime(2019, 1, 12, 4, 0, 0, 0, Qt.TimeSpec(1)),
+                                                             QDateTime(2021, 1, 12, 4, 0, 0, 0, Qt.TimeSpec(1))]
+            )
+            self.assertEqual(
+                [f["resultTimeStart"] for f in features], [QDateTime(2017, 12, 31, 23, 30, 0, 0, Qt.TimeSpec(1)),
+                                                           QDateTime(2018, 12, 31, 23, 30, 0, 0, Qt.TimeSpec(1)),
+                                                           QDateTime(2020, 12, 31, 23, 30, 0, 0, Qt.TimeSpec(1))]
+            )
+            self.assertEqual(
+                [f["resultTimeEnd"] for f in features], [QDateTime(2017, 12, 31, 23, 31, 0, 0, Qt.TimeSpec(1)),
+                                                         QDateTime(2018, 12, 31, 23, 31, 0, 0, Qt.TimeSpec(1)),
+                                                         QDateTime(2020, 12, 31, 23, 31, 0, 0, Qt.TimeSpec(1))]
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 1"}, {"owner": "owner 2"}, {"owner": "owner 3"}],
             )
 
     def test_sensor(self):

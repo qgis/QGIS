@@ -385,6 +385,52 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                 return QString::fromStdString( json[tag].get<std::string >() );
               };
 
+              auto getDateTime = []( const basic_json<> &json, const char *tag ) -> QVariant
+              {
+                if ( !json.contains( tag ) )
+                  return QVariant();
+
+                const auto &jObj = json[tag];
+                if ( jObj.is_string() )
+                {
+                  const QString dateTimeString = QString::fromStdString( json[tag].get<std::string >() );
+                  return QDateTime::fromString( dateTimeString, Qt::ISODateWithMs );
+                }
+
+                return QVariant();
+              };
+
+              auto getVariantMap = []( const basic_json<> &json, const char *tag ) -> QVariant
+              {
+                if ( !json.contains( tag ) )
+                  return QVariant();
+
+                return QgsJsonUtils::jsonToVariant( json[tag] );
+              };
+
+              auto getDateTimeRange = []( const basic_json<> &json, const char *tag ) -> std::pair< QVariant, QVariant >
+              {
+                if ( !json.contains( tag ) )
+                  return { QVariant(), QVariant() };
+
+                const auto &jObj = json[tag];
+                if ( jObj.is_string() )
+                {
+                  const QString rangeString = QString::fromStdString( json[tag].get<std::string >() );
+                  const QStringList rangeParts = rangeString.split( '/' );
+                  if ( rangeParts.size() == 2 )
+                  {
+                    return
+                    {
+                      QDateTime::fromString( rangeParts.at( 0 ), Qt::ISODateWithMs ),
+                      QDateTime::fromString( rangeParts.at( 1 ), Qt::ISODateWithMs )
+                    };
+                  }
+                }
+
+                return { QVariant(), QVariant() };
+              };
+
               // Set attributes
               const QString iotId = getString( featureData, "@iot.id" ).toString();
               auto existingFeatureIdIt = mIotIdToFeatureId.constFind( iotId );
@@ -400,11 +446,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
 
               const QString selfLink = getString( featureData, "@iot.selfLink" ).toString();
 
-              QVariant properties;
-              if ( featureData.contains( "properties" ) )
-              {
-                properties = QgsJsonUtils::jsonToVariant( featureData["properties"] );
-              }
+              const QVariant properties = getVariantMap( featureData, "properties" );
 
               switch ( mEntityType )
               {
@@ -438,26 +480,30 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                     QgsAttributes()
                     << iotId
                     << selfLink
-                    << QVariant() // TODO -- datetime parsing
+                    << getDateTime( featureData, "time" )
                   );
                   break;
 
                 case Qgis::SensorThingsEntity::Datastream:
+                {
+                  std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( featureData, "phenomenonTime" );
+                  std::pair< QVariant, QVariant > resultTime = getDateTimeRange( featureData, "resultTime" );
                   feature.setAttributes(
                     QgsAttributes()
                     << iotId
                     << selfLink
                     << getString( featureData, "name" )
                     << getString( featureData, "description" )
-                    << QVariant() // TODO unitOfMeasurement
+                    << getVariantMap( featureData, "unitOfMeasurement" )
                     << getString( featureData, "observationType" )
                     << properties
-                    << QVariant() // TODO -- datetime parsing
-                    << QVariant() // TODO -- datetime parsing
-                    << QVariant() // TODO -- datetime parsing
-                    << QVariant() // TODO -- datetime parsing
+                    << phenomenonTime.first
+                    << phenomenonTime.second
+                    << resultTime.first
+                    << resultTime.second
                   );
                   break;
+                }
 
                 case Qgis::SensorThingsEntity::Sensor:
                   feature.setAttributes(
