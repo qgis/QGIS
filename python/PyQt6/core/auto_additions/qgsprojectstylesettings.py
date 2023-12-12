@@ -3,7 +3,6 @@ QgsProjectStyleDatabaseModel.StyleRole = QgsProjectStyleDatabaseModel.Role.Style
 QgsProjectStyleDatabaseModel.PathRole = QgsProjectStyleDatabaseModel.Role.PathRole
 # monkey patching scoped based enum
 QgsProjectStyleDatabaseProxyModel.Filter.FilterHideReadOnly.__doc__ = "Hide read-only style databases"
-QgsProjectStyleDatabaseProxyModel.FilterHideReadOnly = QgsProjectStyleDatabaseProxyModel.Filter.FilterHideReadOnly
 QgsProjectStyleDatabaseProxyModel.Filter.__doc__ = "Available filter flags for filtering the model\n\n" + '* ``FilterHideReadOnly``: ' + QgsProjectStyleDatabaseProxyModel.Filter.FilterHideReadOnly.__doc__
 # --
 QgsProjectStyleDatabaseProxyModel.Filter.baseClass = QgsProjectStyleDatabaseProxyModel

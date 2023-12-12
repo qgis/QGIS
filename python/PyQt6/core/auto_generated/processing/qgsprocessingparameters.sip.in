@@ -344,7 +344,7 @@ their acceptable ranges, defaults, etc.
 %End
   public:
 
-    enum Flag /BaseType=IntFlag/
+    enum Flag
     {
       FlagAdvanced,
       FlagHidden,
@@ -4970,6 +4970,8 @@ Returns a list of the point cloud format file extensions supported for this para
 Creates a new parameter using the definition from a script code.
 %End
 };
+
+
 
 
 /************************************************************************

@@ -137,6 +137,12 @@ Add a feature ``id`` to the index with a specified bounding box.
 Removes a ``feature`` from the index.
 %End
 
+    bool deleteFeature( QgsFeatureId id, const QgsRectangle &bounds );
+%Docstring
+Removes a feature from the index by ``id`` and ``bounds``.
+
+.. versionadded:: 3.36
+%End
 
 
     QList<QgsFeatureId> intersects( const QgsRectangle &rectangle ) const;

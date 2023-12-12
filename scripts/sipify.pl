@@ -1223,7 +1223,7 @@ while ($LINE_IDX < $LINE_COUNT){
                         }
                     }
 
-                    if ( $is_qt6 eq 1 and $enum_member ne "" )
+                    if ( $is_scope_based eq "0" and $is_qt6 eq 1 and $enum_member ne "" )
                     {
                       my $basename = join( ".", @CLASS_AND_STRUCT );
                       if ( $basename ne "" ){
