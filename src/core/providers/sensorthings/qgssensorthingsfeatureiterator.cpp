@@ -102,11 +102,13 @@ QgsSensorThingsFeatureIterator::QgsSensorThingsFeatureIterator( QgsSensorThingsF
       break;
   }
 
-  mFeatureIdList = qgis::setToList( requestIds );
-  std::sort( mFeatureIdList.begin(), mFeatureIdList.end() );
-  mRemainingFeatureIds = mFeatureIdList;
+  mRequestFeatureIdList = qgis::setToList( requestIds );
+  std::sort( mRequestFeatureIdList.begin(), mRequestFeatureIdList.end() );
+  mRemainingFeatureIds = mRequestFeatureIdList;
   if ( !mRemainingFeatureIds.empty() )
     mFeatureIterator = mRemainingFeatureIds.at( 0 );
+
+  mGeometryTestFilterRect = mFilterRect;
 }
 
 QgsSensorThingsFeatureIterator::~QgsSensorThingsFeatureIterator()
@@ -124,26 +126,36 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
     return false;
 
-  if ( mDeferredFeaturesInFilterRectCheck )
+  if ( mDeferredFeaturesInFilterRectCheck || !mCurrentPage.isEmpty() )
   {
-    const QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect, mInterruptionChecker );
-    if ( !mFeatureIdList.isEmpty() )
+    const QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect, mInterruptionChecker, mCurrentPage, mNextPage );
+    mCurrentPage.clear();
+
+    if ( !mRequestFeatureIdList.isEmpty() )
     {
-      QgsFeatureIds requestIds = qgis::listToSet( mFeatureIdList );
+      QgsFeatureIds requestIds = qgis::listToSet( mRequestFeatureIdList );
       requestIds.intersect( featuresInRect );
-      mFeatureIdList = qgis::setToList( requestIds );
+      mCurrentPageFeatureIdList = qgis::setToList( requestIds );
     }
     else
     {
-      mFeatureIdList = qgis::setToList( featuresInRect );
+      mCurrentPageFeatureIdList = qgis::setToList( featuresInRect );
     }
-    if ( mFeatureIdList.empty() )
+    if ( mCurrentPageFeatureIdList.empty() )
     {
-      return false;
+      if ( mNextPage.isEmpty() )
+      {
+        return false;
+      }
+      else
+      {
+        mCurrentPage = mNextPage;
+        return fetchFeature( f );
+      }
     }
 
-    std::sort( mFeatureIdList.begin(), mFeatureIdList.end() );
-    mRemainingFeatureIds = mFeatureIdList;
+    std::sort( mCurrentPageFeatureIdList.begin(), mCurrentPageFeatureIdList.end() );
+    mRemainingFeatureIds = mCurrentPageFeatureIdList;
     if ( !mRemainingFeatureIds.empty() )
       mFeatureIterator = mRemainingFeatureIds.at( 0 );
 
@@ -153,12 +165,23 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
     {
       // discard the filter rect - we know that the features in mRemainingFeatureIds are guaranteed
       // to be intersecting the rect, so avoid any extra unnecessary checks
-      mFilterRect = QgsRectangle();
+      mGeometryTestFilterRect = QgsRectangle();
     }
   }
 
-  if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )
-    return false;
+  if ( !mCurrentPageFeatureIdList.empty() && mRemainingFeatureIds.empty() )
+  {
+    if ( mNextPage.isEmpty() )
+    {
+      return false;
+    }
+    else
+    {
+      // request next page
+      mCurrentPage = mNextPage;
+      return fetchFeature( f );
+    }
+  }
 
   switch ( mRequest.filterType() )
   {
@@ -191,12 +214,23 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
         if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
           return false;
 
-        if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )
-          return false;
+        if ( !mCurrentPageFeatureIdList.empty() && mRemainingFeatureIds.empty() )
+        {
+          if ( mNextPage.isEmpty() )
+          {
+            return false;
+          }
+          else
+          {
+            // fetch next page
+            mCurrentPage = mNextPage;
+            return fetchFeature( f );
+          }
+        }
 
         bool success = mSource->sharedData()->getFeature( mFeatureIterator, f, mInterruptionChecker );
 
-        if ( !mFeatureIdList.empty() )
+        if ( !mCurrentPageFeatureIdList.empty() )
         {
           mRemainingFeatureIds.removeAll( mFeatureIterator );
           if ( !mRemainingFeatureIds.empty() )
@@ -209,7 +243,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
           ++mFeatureIterator;
         }
 
-        if ( success && !mFilterRect.isNull() )
+        if ( success && !mGeometryTestFilterRect.isNull() )
         {
           if ( !f.hasGeometry() )
             success = false;
@@ -218,13 +252,13 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
             if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
             {
               // exact intersection check requested
-              if ( !f.geometry().intersects( mFilterRect ) )
+              if ( !f.geometry().intersects( mGeometryTestFilterRect ) )
                 success = false;
             }
             else
             {
               // bounding box intersect check only
-              if ( !f.geometry().boundingBoxIntersects( mFilterRect ) )
+              if ( !f.geometry().boundingBoxIntersects( mGeometryTestFilterRect ) )
                 success = false;
             }
           }
@@ -253,7 +287,8 @@ bool QgsSensorThingsFeatureIterator::rewind()
   if ( mClosed )
     return false;
   mFeatureIterator = 0;
-  mRemainingFeatureIds = mFeatureIdList;
+  mCurrentPage.clear();
+  mRemainingFeatureIds = mRequestFeatureIdList;
   if ( !mRemainingFeatureIds.empty() )
     mFeatureIterator = mRemainingFeatureIds.at( 0 );
   return true;
