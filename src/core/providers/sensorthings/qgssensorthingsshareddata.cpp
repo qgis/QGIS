@@ -399,8 +399,13 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
               feature.setId( mNextFeatureId++ );
 
               const QString selfLink = getString( featureData, "@iot.selfLink" ).toString();
-              // TODO!
-              const QVariant properties;
+
+              QVariant properties;
+              if ( featureData.contains( "properties" ) )
+              {
+                properties = QgsJsonUtils::jsonToVariant( featureData["properties"] );
+              }
+
               switch ( mEntityType )
               {
                 case Qgis::SensorThingsEntity::Invalid:
