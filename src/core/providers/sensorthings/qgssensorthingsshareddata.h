@@ -53,7 +53,8 @@ class QgsSensorThingsSharedData
 
     bool hasCachedAllFeatures() const;
     bool getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback = nullptr );
-    QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback, const QString &thisPage, QString &nextPage );
+    QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback, const QString &thisPage, QString &nextPage,
+                                         const QgsFeatureIds &alreadyFetchedIds );
 
     void clearCache();
 
