@@ -13,6 +13,7 @@
 
 
 
+
 class Qgs3DMapScene : QObject
 {
 %Docstring(signature="appended")

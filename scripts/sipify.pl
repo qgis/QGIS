@@ -698,7 +698,7 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $SIP_RUN == 1 && $LINE =~ m/^ *% (If|End)(.*)?$/ ){
         $LINE = "%$1$2";
         $COMMENT = '';
-        write_output("COD", $LINE."\n");
+        write_output("COD", $LINE);
         next;
     }
 
