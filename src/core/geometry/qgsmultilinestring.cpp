@@ -198,19 +198,19 @@ QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end )
   /* Calculate the total length of the line */
   const double length{this->length()};
   const double range{end - start};
-  double length_so_far{0.0};
+  double lengthSoFar{0.0};
 
   result->reserve( numGeometries() );
   for ( int i = 0; i < numGeometries(); i++ )
   {
-    const double sub_length{geometryN( i )->length()};
+    const double subLength{geometryN( i )->length()};
 
-    const double sub_start{ ( start + range *length_so_far / length ) };
-    const double sub_end{ ( start + range * ( length_so_far + sub_length ) / length ) };
+    const double subStart{ ( start + range *lengthSoFar / length ) };
+    const double subEnd{ ( start + range * ( lengthSoFar + subLength ) / length ) };
 
-    result->addGeometry( qgsgeometry_cast<QgsLineString *>( geometryN( i ) )->measuredLine( sub_start, sub_end ) );
+    result->addGeometry( qgsgeometry_cast<QgsLineString *>( geometryN( i ) )->measuredLine( subStart, subEnd ) );
 
-    length_so_far += sub_length;
+    lengthSoFar += subLength;
   }
 
   return result;

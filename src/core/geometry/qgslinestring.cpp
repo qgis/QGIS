@@ -2384,29 +2384,29 @@ QgsLineString *QgsLineString::measuredLine( double start, double end )
 {
   const int nbpoints = numPoints();
   QgsLineString *cloned = clone();
+
+  if ( !cloned->convertTo( QgsWkbTypes::addM( mWkbType ) ) )
+  {
+    return cloned;
+  }
+
   if ( isEmpty() || ( nbpoints < 2 ) )
   {
     return cloned;
   }
 
-  if ( !cloned->convertTo( QgsWkbTypes::addM( mWkbType ) ) )
-  {
-    qDebug() << "Impossible to convert type to M type\n";
-    return cloned;
-  }
-
   const double range = end - start;
-  double line_length = length();
-  double length_so_far = 0.0;
+  double lineLength = length();
+  double lengthSoFar = 0.0;
 
   cloned->setMAt( 0, start );
   for ( int i = 1; i < nbpoints ; ++i )
   {
-    length_so_far += QgsGeometryUtilsBase::distance2D( mX[ i - 1], mY[ i - 1 ], mX[ i ], mY[ i ] );
-    if ( line_length > 0.0 )
-      cloned->setMAt( i, start + range * length_so_far / line_length );
+    lengthSoFar += QgsGeometryUtilsBase::distance2D( mX[ i - 1], mY[ i - 1 ], mX[ i ], mY[ i ] );
+    if ( lineLength > 0.0 )
+      cloned->setMAt( i, start + range * lengthSoFar / lineLength );
     /* #3172, support (valid) zero-length inputs */
-    else if ( line_length == 0.0 && nbpoints > 1 )
+    else if ( lineLength == 0.0 && nbpoints > 1 )
       cloned->setMAt( i, start + range * i / ( nbpoints - 1 ) );
     else
       cloned->setMAt( i, 0.0 );
