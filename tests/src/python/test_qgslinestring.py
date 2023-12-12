@@ -34,7 +34,7 @@ class TestQgsLineString(QgisTestCase):
     def testMeasureLine(self):
         line = QgsLineString()
         m_line = line.measuredLine(10, 20)
-        self.assertEqual(m_line, QgsLineString())
+        self.assertEqual(m_line.asWkt(0), "LineStringM EMPTY")
 
         line = QgsLineString([[0, 0], [2, 0], [4, 0]])
         m_line = line.measuredLine(10, 20)
