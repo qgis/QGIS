@@ -1,9 +1,4 @@
-# Install miniforge:
-# https://github.com/conda-forge/miniforge#install
-# Create or update the enviroment:
-# mamba env update -n qgis -f conda-deps.yml
-# Use the enviroment:
-# conda activate qgis
+# Conda espec for create a environment for building and running. See INSTALL.md
 channels:
   - conda-forge
   - defaults
