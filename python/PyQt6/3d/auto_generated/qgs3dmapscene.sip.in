@@ -31,7 +31,7 @@ Entity that encapsulates our 3D scene - contains all other entities (such as ter
 %End
   public:
 
-    QgsCameraController *cameraController();
+    QgsCameraController *cameraController() const;
 %Docstring
 Returns camera controller
 %End
@@ -49,7 +49,7 @@ Resets camera view to show the extent ``extent`` (top view)
 .. versionadded:: 3.26
 %End
 
-    QVector<QgsPointXY> viewFrustum2DExtent();
+    QVector<QgsPointXY> viewFrustum2DExtent() const;
 %Docstring
 Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed trapezoid
 
@@ -79,7 +79,7 @@ Returns number of pending jobs for all chunked entities
 Returns the current state of the scene
 %End
 
-    float worldSpaceError( float epsilon, float distance );
+    float worldSpaceError( float epsilon, float distance ) const;
 %Docstring
 Given screen error (in pixels) and distance from camera (in 3D world coordinates), this function
 estimates the error in world space. Takes into account camera's field of view and the screen (3D view) size.
@@ -93,7 +93,7 @@ Exports the scene according to the scene export settings
 
 
 
-    QgsRectangle sceneExtent();
+    QgsRectangle sceneExtent() const;
 %Docstring
 Returns the scene extent in the map's CRS
 
