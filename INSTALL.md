@@ -550,7 +550,7 @@ dnf install ccache ninja-build astyle python3-autopep8 python3-mock python3-nose
 
 # 3.12. Building on local conda environment
 
-With a conda isolated environment, developers can build and run qgis without need of installing a lot of dependencies to O.S., neither dealing with containers. They just need to install [miniforge](https://github.com/conda-forge/miniforge#install) locally and create the environment from file conda-deps.yml. Developers can also add new dependencies to the environment updating the file and reloading it.
+Using a conda isolated environment, it is possible to build and run qgis without the need of installing lots of dependencies in the O.S., neither dealing with containers. It is just needed to install [miniforge](https://github.com/conda-forge/miniforge#install) locally and create the environment from the conda-deps.yml file. It's also possible to add new dependencies to the environment by editing the file and updating the environment.
 
 1. [Install miniforge](https://github.com/conda-forge/miniforge#install)
 
