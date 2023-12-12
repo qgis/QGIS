@@ -408,6 +408,30 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                 return QgsJsonUtils::jsonToVariant( json[tag] );
               };
 
+              auto getStringList = []( const basic_json<> &json, const char *tag ) -> QVariant
+              {
+                if ( !json.contains( tag ) )
+                  return QVariant();
+
+                const auto &jObj = json[tag];
+                if ( jObj.is_string() )
+                {
+                  return QStringList{ QString::fromStdString( json[tag].get<std::string >() ) };
+                }
+                else if ( jObj.is_array() )
+                {
+                  QStringList res;
+                  for ( const auto &element : jObj )
+                  {
+                    if ( element.is_string() )
+                      res.append( QString::fromStdString( element.get<std::string >() ) );
+                  }
+                  return res;
+                }
+
+                return QVariant();
+              };
+
               auto getDateTimeRange = []( const basic_json<> &json, const char *tag ) -> std::pair< QVariant, QVariant >
               {
                 if ( !json.contains( tag ) )
@@ -448,6 +472,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
 
               const QVariant properties = getVariantMap( featureData, "properties" );
 
+              const char *geometryTag = nullptr;
               switch ( mEntityType )
               {
                 case Qgis::SensorThingsEntity::Invalid:
@@ -473,6 +498,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                     << getString( featureData, "description" )
                     << properties
                   );
+                  geometryTag = "location";
                   break;
 
                 case Qgis::SensorThingsEntity::HistoricalLocation:
@@ -530,20 +556,24 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                   break;
 
                 case Qgis::SensorThingsEntity::Observation:
+                {
+                  std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( featureData, "phenomenonTime" );
+                  std::pair< QVariant, QVariant > validTime = getDateTimeRange( featureData, "validTime" );
                   feature.setAttributes(
                     QgsAttributes()
                     << iotId
                     << selfLink
-                    << QVariant() // TODO -- datetime parsing
-                    << QVariant() // TODO -- datetime parsing
-                    << QVariant() // TODO -- result type handling!
-                    << QVariant() // TODO -- datetime parsing
-                    << QVariant() // TODO -- list parsing
-                    << QVariant() // TODO -- datetime parsing
-                    << QVariant() // TODO -- datetime parsing
-                    << QVariant() // TODO -- parameters parsing
+                    << phenomenonTime.first
+                    << phenomenonTime.second
+                    << getString( featureData, "result" ) // TODO -- result type handling!
+                    << getDateTime( featureData, "resultTime" )
+                    << getStringList( featureData, "resultQuality" )
+                    << validTime.first
+                    << validTime.second
+                    << getVariantMap( featureData, "parameters" )
                   );
                   break;
+                }
 
                 case Qgis::SensorThingsEntity::FeatureOfInterest:
                   feature.setAttributes(
@@ -554,13 +584,14 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                     << getString( featureData, "description" )
                     << properties
                   );
+                  geometryTag = "feature";
                   break;
               }
 
               // Set geometry
-              if ( mGeometryType != Qgis::WkbType::NoGeometry && featureData.contains( "location" ) )
+              if ( mGeometryType != Qgis::WkbType::NoGeometry && geometryTag && featureData.contains( geometryTag ) )
               {
-                feature.setGeometry( QgsJsonUtils::geometryFromGeoJson( featureData["location"] ) );
+                feature.setGeometry( QgsJsonUtils::geometryFromGeoJson( featureData[geometryTag] ) );
               }
 
               mCachedFeatures.insert( feature.id(), feature );
