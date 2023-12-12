@@ -45,7 +45,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Show:</string>
+         <string>Filter errors by rule</string>
         </property>
        </widget>
       </item>
