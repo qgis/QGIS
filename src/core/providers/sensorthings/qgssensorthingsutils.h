@@ -52,6 +52,11 @@ class CORE_EXPORT QgsSensorThingsUtils
     static QgsFields fieldsForEntityType( Qgis::SensorThingsEntity type );
 
     /**
+     * Returns the geometry field for a specified entity \a type.
+     */
+    static QString geometryFieldForEntityType( Qgis::SensorThingsEntity type );
+
+    /**
      * Returns TRUE if the specified entity \a type can have geometry attached.
      */
     static bool entityTypeHasGeometry( Qgis::SensorThingsEntity type );
