@@ -2405,7 +2405,6 @@ QgsLineString *QgsLineString::measuredLine( double start, double end )
     lengthSoFar += QgsGeometryUtilsBase::distance2D( mX[ i - 1], mY[ i - 1 ], mX[ i ], mY[ i ] );
     if ( lineLength > 0.0 )
       cloned->setMAt( i, start + range * lengthSoFar / lineLength );
-    /* #3172, support (valid) zero-length inputs */
     else if ( lineLength == 0.0 && nbpoints > 1 )
       cloned->setMAt( i, start + range * i / ( nbpoints - 1 ) );
     else
