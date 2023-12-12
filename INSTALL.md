@@ -569,7 +569,9 @@ conda activate qgis
 ```
 
 5. [Starting the compile](#37-starting-the-compile)
+6. For updating the environment using a new conda-deps.yml:
 
+        mamba update -n qgis -f conda-deps.yml
 # 4. Building on Windows
 
 ## 4.1. Building with Microsoft Visual Studio
