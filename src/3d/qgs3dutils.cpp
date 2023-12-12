@@ -846,7 +846,7 @@ QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Q
   return results;
 }
 
-float Qgs3DUtils::screenSpaceError( float epsilon, float distance, float screenSize, float fov )
+float Qgs3DUtils::screenSpaceError( float epsilon, float distance, int screenSize, float fov )
 {
   /* This routine approximately calculates how an error (epsilon) of an object in world coordinates
    * at given distance (between camera and the object) will look like in screen coordinates.
@@ -868,7 +868,7 @@ float Qgs3DUtils::screenSpaceError( float epsilon, float distance, float screenS
    *       \|/    angle = field of view
    *       camera
    */
-  float phi = epsilon * screenSize / ( 2 * distance * tan( fov * M_PI / ( 2 * 180 ) ) );
+  float phi = epsilon * static_cast<float>( screenSize ) / static_cast<float>( 2 * distance *  tan( fov * M_PI / ( 2 * 180 ) ) );
   return phi;
 }
 
