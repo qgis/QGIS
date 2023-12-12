@@ -606,6 +606,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
 
               fetchedFeatureCallback( feature );
             }
+            locker.unlock();
 
             if ( rootContent.contains( "@iot.nextLink" ) )
             {
