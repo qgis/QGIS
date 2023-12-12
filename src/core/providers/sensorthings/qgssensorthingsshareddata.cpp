@@ -34,7 +34,8 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
 
   mEntityType = qgsEnumKeyToValue( uriParts.value( QStringLiteral( "entity" ) ).toString(), Qgis::SensorThingsEntity::Invalid );
   mFields = QgsSensorThingsUtils::fieldsForEntityType( mEntityType );
-  mMaximumPageSize = uriParts.value( QStringLiteral( "pageSize" ), 1000 ).toInt();
+  // use initial value of maximum page size as default
+  mMaximumPageSize = uriParts.value( QStringLiteral( "pageSize" ), mMaximumPageSize ).toInt();
 
   if ( QgsSensorThingsUtils::entityTypeHasGeometry( mEntityType ) )
   {
@@ -231,7 +232,7 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
   return featureFetched;
 }
 
-QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback )
+QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback, const QString &thisPage, QString &nextPage )
 {
   const QgsGeometry extentGeom = QgsGeometry::fromRect( extent );
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
@@ -245,27 +246,35 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   // otherwise, ask the server nicely
 
   // TODO -- is using 'geography' always correct here?
-  QString queryUrl = QStringLiteral( "%1?$filter=geo.intersects(location, geography'%2')&$top=%3&$count=false" ).arg( mEntityBaseUri, extent.asWktPolygon() ).arg( mMaximumPageSize );
+  QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$filter=geo.intersects(location, geography'%2')&$top=%3&$count=false" ).arg( mEntityBaseUri, extent.asWktPolygon() ).arg( mMaximumPageSize );
   locker.unlock();
 
   QgsFeatureIds ids;
 
   bool noMoreFeatures = false;
+  bool hasFirstPage = false;
   const bool res = processFeatureRequest( queryUrl, feedback, [&ids]( const QgsFeature & feature )
   {
     ids.insert( feature.id() );
-  }, [&noMoreFeatures]
+  }, [&hasFirstPage]
   {
-    return !noMoreFeatures;
+    if ( !hasFirstPage )
+    {
+      hasFirstPage = true;
+      return true;
+    }
+
+    return false;
   }, [&noMoreFeatures]
   {
     noMoreFeatures = true;
   } );
-  if ( res && ( !feedback || !feedback->isCanceled() ) )
+  if ( noMoreFeatures && res && ( !feedback || !feedback->isCanceled() ) )
   {
     locker.changeMode( QgsReadWriteLocker::Write );
     mCachedExtent = QgsGeometry::unaryUnion( { mCachedExtent, extentGeom } );
   }
+  nextPage = noMoreFeatures ? QString() : queryUrl;
 
   return ids;
 }

@@ -53,18 +53,24 @@ class QgsSensorThingsFeatureIterator : public QgsAbstractFeatureIteratorFromSour
   private:
     QgsFeatureId mFeatureIterator = 0;
 
-    // All feature IDs to fetch
-    QList< QgsFeatureId > mFeatureIdList;
+    QList< QgsFeatureId > mRequestFeatureIdList;
+
+    // Feature IDs from current page to fetch
+    QList< QgsFeatureId > mCurrentPageFeatureIdList;
     // Remaining feature IDs which haven't yet been fetched
     QList< QgsFeatureId > mRemainingFeatureIds;
 
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
+    QgsRectangle mGeometryTestFilterRect;
     QgsGeometry mDistanceWithinGeom;
     std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
 
     QgsFeedback *mInterruptionChecker = nullptr;
     bool mDeferredFeaturesInFilterRectCheck = false;
+
+    QString mCurrentPage;
+    QString mNextPage;
 };
 
 ///@endcond PRIVATE
