@@ -68,7 +68,7 @@ for module in "${modules[@]}"; do
   else
      root_dir=python
   fi
-  module_dir=python/PyQt6/${module}
+  module_dir=${root_dir}/${module}
 
   # clean auto_additions and auto_generated folders
   rm -rf ${module_dir}/auto_additions/*.py
