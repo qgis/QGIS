@@ -864,6 +864,15 @@ Calculates the minimal 3D bounding box for the geometry.
 .. versionadded:: 3.34
 %End
 
+
+    QgsLineString *measuredLine( double start, double end ) const /Factory/;
+%Docstring
+Re-write the measure ordinate (or add one, if it isn't already there) interpolating
+the measure between the supplied ``start`` and ``end`` values.
+
+.. versionadded:: 3.36
+%End
+
   protected:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;

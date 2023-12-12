@@ -2380,7 +2380,7 @@ void QgsLineString::transformVertices( const std::function<QgsPoint( const QgsPo
 }
 
 
-QgsLineString *QgsLineString::measuredLine( double start, double end )
+QgsLineString *QgsLineString::measuredLine( double start, double end ) const
 {
   const int nbpoints = numPoints();
   QgsLineString *cloned = clone();

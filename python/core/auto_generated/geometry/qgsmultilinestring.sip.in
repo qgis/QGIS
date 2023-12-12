@@ -88,7 +88,7 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsMult
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QgsMultiLineString *measuredLine( double start, double end );
+    QgsMultiLineString *measuredLine( double start, double end ) const /Factory/;
 %Docstring
 Re-write the measure ordinate (or add one, if it isn't already there) interpolating
 the measure between the supplied ``start`` and ``end`` values.
