@@ -78,6 +78,7 @@ class QgsSensorThingsSharedData
     Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
 
     Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;
+    QString mGeometryField;
     QgsFields mFields;
     QgsCoordinateReferenceSystem mSourceCRS;
 

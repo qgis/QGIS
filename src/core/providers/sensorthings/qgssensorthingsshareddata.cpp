@@ -34,6 +34,7 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
 
   mEntityType = qgsEnumKeyToValue( uriParts.value( QStringLiteral( "entity" ) ).toString(), Qgis::SensorThingsEntity::Invalid );
   mFields = QgsSensorThingsUtils::fieldsForEntityType( mEntityType );
+  mGeometryField = QgsSensorThingsUtils::geometryFieldForEntityType( mEntityType );
   // use initial value of maximum page size as default
   mMaximumPageSize = uriParts.value( QStringLiteral( "pageSize" ), mMaximumPageSize ).toInt();
 
@@ -246,7 +247,7 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   // otherwise, ask the server nicely
 
   // TODO -- is using 'geography' always correct here?
-  QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$filter=geo.intersects(location, geography'%2')&$top=%3&$count=false" ).arg( mEntityBaseUri, extent.asWktPolygon() ).arg( mMaximumPageSize );
+  QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$filter=geo.intersects(%2, geography'%3')&$top=%4&$count=false" ).arg( mEntityBaseUri, mGeometryField, extent.asWktPolygon() ).arg( mMaximumPageSize );
   locker.unlock();
 
   QgsFeatureIds ids;
@@ -471,8 +472,6 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
               const QString selfLink = getString( featureData, "@iot.selfLink" ).toString();
 
               const QVariant properties = getVariantMap( featureData, "properties" );
-
-              const char *geometryTag = nullptr;
               switch ( mEntityType )
               {
                 case Qgis::SensorThingsEntity::Invalid:
@@ -498,7 +497,6 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                     << getString( featureData, "description" )
                     << properties
                   );
-                  geometryTag = "location";
                   break;
 
                 case Qgis::SensorThingsEntity::HistoricalLocation:
@@ -584,14 +582,13 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                     << getString( featureData, "description" )
                     << properties
                   );
-                  geometryTag = "feature";
                   break;
               }
 
               // Set geometry
-              if ( mGeometryType != Qgis::WkbType::NoGeometry && geometryTag && featureData.contains( geometryTag ) )
+              if ( mGeometryType != Qgis::WkbType::NoGeometry && featureData.contains( mGeometryField.toLocal8Bit().constData() ) )
               {
-                feature.setGeometry( QgsJsonUtils::geometryFromGeoJson( featureData[geometryTag] ) );
+                feature.setGeometry( QgsJsonUtils::geometryFromGeoJson( featureData[mGeometryField.toLocal8Bit().constData()] ) );
               }
 
               mCachedFeatures.insert( feature.id(), feature );
