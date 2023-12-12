@@ -281,7 +281,7 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.32
      */
-    static float screenSpaceError( float epsilon, float distance, float screenSize, float fov );
+    static float screenSpaceError( float epsilon, float distance, int screenSize, float fov );
 
     /**
      * This routine computes \a nearPlane \a farPlane from the closest and farthest corners point
