@@ -556,7 +556,7 @@ Using a conda isolated environment, it is possible to build and run qgis without
 
 2. [Check out the QGIS Source Code](#36-check-out-the-qgis-source-code)
 
-3. Create or update the environment:
+3. Create the environment:
 
 ```bash
 mamba env update -n qgis -f conda-deps.yml
