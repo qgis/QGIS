@@ -37,49 +37,32 @@ pushd ${DIR} > /dev/null
 
 count=0
 
-IS_QT6=""
-
-modules=()
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    --qt6)
-      IS_QT6="--qt6"
-      shift
-      ;;
-    -*)
-      echo "Unknown option $1"
-      exit 1
-      ;;
-    *)
-      modules+=("$1")
-      shift
-      ;;
-  esac
-done
-
-if (( ${#modules[@]} == 0 )); then
+if [[ -n $1 ]]; then
+  modules=("$1")
+else
   modules=(core gui analysis server 3d)
 fi
 
-for module in "${modules[@]}"; do
+for root_dir in python python/PyQt6; do
 
-  if [[ $IS_QT6 != "" ]]; then
-     root_dir=python/PyQt6
-  else
-     root_dir=python
+  if [[ $root_dir == "python/PyQt6" ]]; then
+    IS_QT6="--qt6"
   fi
-  module_dir=${root_dir}/${module}
 
-  # clean auto_additions and auto_generated folders
-  rm -rf ${module_dir}/auto_additions/*.py
-  rm -rf ${module_dir}/auto_generated/*.py
-  # put back __init__.py
-  echo '"""
+  for module in "${modules[@]}"; do
+
+    module_dir=${root_dir}/${module}
+
+    # clean auto_additions and auto_generated folders
+    rm -rf ${module_dir}/auto_additions/*.py
+    rm -rf ${module_dir}/auto_generated/*.py
+    # put back __init__.py
+    echo '"""
 This folder is completed using sipify.pl script
 It is not aimed to be manually edited
 """' > ${module_dir}/auto_additions/__init__.py
 
-  while read -r sipfile; do
+    while read -r sipfile; do
       echo "$sipfile.in"
       header=$(${GP}sed -E 's@(.*)\.sip@src/\1.h@; s@auto_generated/@@' <<< $sipfile)
       pyfile=$(${GP}sed -E 's@([^\/]+\/)*([^\/]+)\.sip@\2.py@;' <<< $sipfile)
@@ -91,7 +74,8 @@ It is not aimed to be manually edited
         ./scripts/sipify.pl $IS_QT6 -s ${root_dir}/$sipfile.in -p ${module_dir}/auto_additions/${pyfile} $header &
       fi
       count=$((count+1))
-  done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
+    done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
+  done
 done
 wait # wait for sipify processes to finish
 
