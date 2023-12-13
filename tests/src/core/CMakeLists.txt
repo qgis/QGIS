@@ -167,6 +167,7 @@ set(TESTS
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
  testqgsruntimeprofiler.cpp
+ testqgssensorthingsconnection.cpp
  testqgssettings.cpp
  testqgssettingsentry.cpp
  testqgssettingsregistry.cpp
