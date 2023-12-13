@@ -22,7 +22,6 @@
 #include "qgssensorthingsconnection.h"
 #include "qgssensorthingsconnectionwidget.h"
 #include "qgssensorthingsconnectiondialog.h"
-#include "qgsowsconnection.h"
 #include "qgssensorthingssourcewidget.h"
 #include "qgssensorthingsprovider.h"
 
@@ -126,15 +125,12 @@ void QgsSensorThingsSourceSelect::btnDelete_clicked()
 
 void QgsSensorThingsSourceSelect::btnSave_clicked()
 {
-#if 0
-  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::XyzTiles );
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::SensorThings );
   dlg.exec();
-#endif
 }
 
 void QgsSensorThingsSourceSelect::btnLoad_clicked()
 {
-#if 0
   const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
                            tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
@@ -142,10 +138,9 @@ void QgsSensorThingsSourceSelect::btnLoad_clicked()
     return;
   }
 
-  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::XyzTiles, fileName );
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::SensorThings, fileName );
   dlg.exec();
   populateConnectionList();
-#endif
 }
 
 void QgsSensorThingsSourceSelect::addButtonClicked()
