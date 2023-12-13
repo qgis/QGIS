@@ -24,6 +24,7 @@
 #include "qgsreadwritelocker.h"
 #include "qgssensorthingsfeatureiterator.h"
 #include "qgssensorthingsdataitems.h"
+#include "qgssensorthingsconnection.h"
 
 #include <QIcon>
 #include <QNetworkRequest>
@@ -401,6 +402,26 @@ QgsSensorThingsProvider *QgsSensorThingsProviderMetadata::createProvider( const 
 QList<Qgis::LayerType> QgsSensorThingsProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::Vector };
+}
+
+QMap<QString, QgsAbstractProviderConnection *> QgsSensorThingsProviderMetadata::connections( bool cached )
+{
+  return connectionsProtected<QgsSensorThingsProviderConnection, QgsSensorThingsProviderConnection>( cached );
+}
+
+QgsAbstractProviderConnection *QgsSensorThingsProviderMetadata::createConnection( const QString &name )
+{
+  return new QgsSensorThingsProviderConnection( name );
+}
+
+void QgsSensorThingsProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsSensorThingsProviderConnection>( name );
+}
+
+void QgsSensorThingsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name )
+{
+  saveConnectionProtected( connection, name );
 }
 
 ///@endcond

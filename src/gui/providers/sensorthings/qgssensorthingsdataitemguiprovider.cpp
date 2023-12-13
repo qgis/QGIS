@@ -58,16 +58,20 @@ void QgsSensorThingsDataItemGuiProvider::populateContextMenu( QgsDataItem *item,
 void QgsSensorThingsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
-  const QgsSensorThingsConnection connection = QgsSensorThingsConnectionUtils::connection( connectionName );
 
+  const QgsSensorThingsProviderConnection::Data connection = QgsSensorThingsProviderConnection::connection( connectionName );
+  const QString uri = QgsSensorThingsProviderConnection::encodedUri( connection );
   QgsSensorThingsConnectionDialog dlg;
 
-  dlg.setConnection( connection );
+  dlg.setConnection( connectionName, uri );
   if ( !dlg.exec() )
     return;
 
-  QgsSensorThingsConnectionUtils::deleteConnection( connectionName );
-  QgsSensorThingsConnectionUtils::addConnection( dlg.connection() );
+  QgsSensorThingsProviderConnection( QString() ).remove( connectionName );
+
+  QgsSensorThingsProviderConnection::Data newConnection = QgsSensorThingsProviderConnection::decodedUri( dlg.connectionUri() );
+  QgsSensorThingsProviderConnection::addConnection( dlg.connectionName(), newConnection );
+
   item->parent()->refreshConnections();
 }
 
@@ -77,7 +81,7 @@ void QgsSensorThingsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  QgsSensorThingsConnectionUtils::deleteConnection( item->name() );
+  QgsSensorThingsProviderConnection( QString() ).remove( item->name() );
 
   item->parent()->refreshConnections();
 }
@@ -88,7 +92,9 @@ void QgsSensorThingsDataItemGuiProvider::newConnection( QgsDataItem *item )
   if ( !dlg.exec() )
     return;
 
-  QgsSensorThingsConnectionUtils::addConnection( dlg.connection() );
+  QgsSensorThingsProviderConnection::Data conn = QgsSensorThingsProviderConnection::decodedUri( dlg.connectionUri() );
+  QgsSensorThingsProviderConnection::addConnection( dlg.connectionName(), conn );
+
   item->refreshConnections();
 }
 

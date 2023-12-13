@@ -295,7 +295,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         connections = QgsTiledSceneProviderConnection::sTreeConnectionTiledScene->items();
         break;
       case SensorThings:
-        connections = QgsSensorThingsConnection::sTreeSensorThingsConnections->items();
+        connections = QgsSensorThingsProviderConnection::sTreeSensorThingsConnections->items();
         break;
     }
     for ( const QString &connection : std::as_const( connections ) )
@@ -825,10 +825,10 @@ QDomDocument QgsManageConnectionsDialog::saveSensorThingsConnections( const QStr
     QDomElement el = doc.createElement( QStringLiteral( "sensorthings" ) );
 
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
-    el.setAttribute( QStringLiteral( "url" ), QgsSensorThingsConnection::settingsUrl->value( connections[ i ] ) );
-    el.setAttribute( QStringLiteral( "authcfg" ), QgsSensorThingsConnection::settingsAuthcfg->value( connections[ i ] ) );
-    el.setAttribute( QStringLiteral( "username" ), QgsSensorThingsConnection::settingsUsername->value( connections[ i ] ) );
-    el.setAttribute( QStringLiteral( "password" ), QgsSensorThingsConnection::settingsPassword->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "url" ), QgsSensorThingsProviderConnection::settingsUrl->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsSensorThingsProviderConnection::settingsAuthcfg->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsSensorThingsProviderConnection::settingsUsername->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsSensorThingsProviderConnection::settingsPassword->value( connections[ i ] ) );
 
     QgsHttpHeaders httpHeader( QgsTiledSceneProviderConnection::settingsHeaders->value( connections[ i ] ) );
     httpHeader.updateDomElement( el );
@@ -1805,13 +1805,13 @@ void QgsManageConnectionsDialog::loadSensorThingsConnections( const QDomDocument
       keys << connectionName;
     }
 
-    QgsSensorThingsConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), connectionName );
-    QgsSensorThingsConnection::settingsAuthcfg->setValue( child.attribute( QStringLiteral( "authcfg" ) ), connectionName );
-    QgsSensorThingsConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), connectionName );
-    QgsSensorThingsConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), connectionName );
+    QgsSensorThingsProviderConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), connectionName );
+    QgsSensorThingsProviderConnection::settingsAuthcfg->setValue( child.attribute( QStringLiteral( "authcfg" ) ), connectionName );
+    QgsSensorThingsProviderConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), connectionName );
+    QgsSensorThingsProviderConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), connectionName );
 
     QgsHttpHeaders httpHeader( child );
-    QgsSensorThingsConnection::settingsHeaders->setValue( httpHeader.headers(), connectionName );
+    QgsSensorThingsProviderConnection::settingsHeaders->setValue( httpHeader.headers(), connectionName );
 
     child = child.nextSiblingElement();
   }

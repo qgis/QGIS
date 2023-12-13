@@ -34,9 +34,10 @@ class QgsSensorThingsConnectionDialog : public QDialog, public Ui::QgsSensorThin
   public:
     explicit QgsSensorThingsConnectionDialog( QWidget *parent = nullptr );
 
-    void setConnection( const QgsSensorThingsConnection &conn );
+    void setConnection( const QString &name, const QString &uri );
 
-    QgsSensorThingsConnection connection() const;
+    QString connectionUri() const;
+    QString connectionName() const;
 
     QgsSensorThingsConnectionWidget *connectionWidget() { return mConnectionWidget; }
 

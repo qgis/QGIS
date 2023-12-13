@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssensorthingsconnection.cpp
+    QgsSensorThingsProviderConnection.cpp
     ---------------------
     Date                 : December 2023
     Copyright            : (C) 2023 by Nyall Dawson
@@ -20,56 +20,125 @@
 #include "qgsdatasourceuri.h"
 #include "qgssettingsentryimpl.h"
 
+///@cond PRIVATE
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeSensorThingsConnections, QString() ) ;
+const QgsSettingsEntryVariantMap *QgsSensorThingsProviderConnection::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeSensorThingsConnections ) ;
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeSensorThingsConnections ) ;
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeSensorThingsConnections ) ;
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeSensorThingsConnections ) ;
+///@endcond
 
-const QgsSettingsEntryString *QgsSensorThingsConnection::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeSensorThingsConnections, QString() ) ;
-const QgsSettingsEntryVariantMap *QgsSensorThingsConnection::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsConnection::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsConnection::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsConnection::settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeSensorThingsConnections ) ;
 
-QString QgsSensorThingsConnection::encodedUri() const
+
+QgsSensorThingsProviderConnection::QgsSensorThingsProviderConnection( const QString &name )
+  : QgsAbstractProviderConnection( name )
 {
-  QgsDataSourceUri uri;
-  uri.setParam( QStringLiteral( "url" ), url );
-  if ( ! authCfg.isEmpty() )
-    uri.setAuthConfigId( authCfg );
-  if ( ! username.isEmpty() )
-    uri.setUsername( username );
-  if ( ! password.isEmpty() )
-    uri.setPassword( password );
-
-  uri.setHttpHeaders( httpHeaders );
-  return uri.uri( false );
+  const QgsSensorThingsProviderConnection::Data connectionData = connection( name );
+  setUri( encodedUri( connectionData ) );
 }
 
-QStringList QgsSensorThingsConnectionUtils::connectionList()
+QgsSensorThingsProviderConnection::QgsSensorThingsProviderConnection( const QString &uri, const QVariantMap &configuration )
+  : QgsAbstractProviderConnection( uri, configuration )
 {
-  return QgsSensorThingsConnection::sTreeSensorThingsConnections->items();
 }
 
-QgsSensorThingsConnection QgsSensorThingsConnectionUtils::connection( const QString &name )
+void QgsSensorThingsProviderConnection::store( const QString &name ) const
 {
-  QgsSensorThingsConnection conn;
-  conn.name = name;
-  conn.url = QgsSensorThingsConnection::settingsUrl->value( name );
-  conn.authCfg = QgsSensorThingsConnection::settingsAuthcfg->value( name );
-  conn.username = QgsSensorThingsConnection::settingsUsername->value( name );
-  conn.password = QgsSensorThingsConnection::settingsPassword->value( name );
-  conn.httpHeaders = QgsSensorThingsConnection::settingsHeaders->value( name );
+  QgsSensorThingsProviderConnection::Data connectionData = decodedUri( uri() );
+  addConnection( name, connectionData );
+}
+
+void QgsSensorThingsProviderConnection::remove( const QString &name ) const
+{
+  sTreeSensorThingsConnections->deleteItem( name );
+}
+
+QString QgsSensorThingsProviderConnection::selectedConnection()
+{
+  return sTreeSensorThingsConnections->selectedItem();
+}
+
+void QgsSensorThingsProviderConnection::setSelectedConnection( const QString &name )
+{
+  sTreeSensorThingsConnections->setSelectedItem( name );
+}
+
+void QgsSensorThingsProviderConnection::addConnection( const QString &name, const Data &conn )
+{
+  settingsUrl->setValue( conn.url, name );
+  settingsAuthcfg->setValue( conn.authCfg, name );
+  settingsUsername->setValue( conn.username, name );
+  settingsPassword->setValue( conn.password, name );
+  settingsHeaders->setValue( conn.httpHeaders.headers(), name );
+}
+
+QgsSensorThingsProviderConnection::Data QgsSensorThingsProviderConnection::connection( const QString &name )
+{
+  if ( !settingsUrl->exists( name ) )
+    return QgsSensorThingsProviderConnection::Data();
+
+  QgsSensorThingsProviderConnection::Data conn;
+  conn.url = settingsUrl->value( name );
+  conn.authCfg = settingsAuthcfg->value( name );
+  conn.username = settingsUsername->value( name );
+  conn.password = settingsPassword->value( name );
+
+  if ( settingsHeaders->exists( name ) )
+    conn.httpHeaders = QgsHttpHeaders( settingsHeaders->value( name ) );
+
   return conn;
 }
 
-void QgsSensorThingsConnectionUtils::deleteConnection( const QString &name )
+QStringList QgsSensorThingsProviderConnection::connectionList()
 {
-  QgsSensorThingsConnection::sTreeSensorThingsConnections->deleteItem( name );
+  return QgsSensorThingsProviderConnection::sTreeSensorThingsConnections->items();
 }
 
-void QgsSensorThingsConnectionUtils::addConnection( const QgsSensorThingsConnection &conn )
+QString QgsSensorThingsProviderConnection::encodedUri( const QgsSensorThingsProviderConnection::Data &data )
 {
-  QgsSensorThingsConnection::settingsUrl->setValue( conn.url, conn.name );
-  QgsSensorThingsConnection::settingsAuthcfg->setValue( conn.authCfg, conn.name );
-  QgsSensorThingsConnection::settingsUsername->setValue( conn.username, conn.name );
-  QgsSensorThingsConnection::settingsPassword->setValue( conn.password, conn.name );
-  QgsSensorThingsConnection::settingsHeaders->setValue( conn.httpHeaders.headers(), conn.name );
+  QgsDataSourceUri uri;
+  if ( !data.url.isEmpty() )
+    uri.setParam( QStringLiteral( "url" ), data.url );
+  if ( !data.authCfg.isEmpty() )
+    uri.setAuthConfigId( data.authCfg );
+  if ( !data.username.isEmpty() )
+    uri.setUsername( data.username );
+  if ( !data.password.isEmpty() )
+    uri.setPassword( data.password );
+
+  uri.setHttpHeaders( data.httpHeaders );
+  return uri.encodedUri();
+}
+
+QgsSensorThingsProviderConnection::Data QgsSensorThingsProviderConnection::decodedUri( const QString &uri )
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  QgsSensorThingsProviderConnection::Data conn;
+  conn.url = dsUri.param( QStringLiteral( "url" ) );
+  conn.authCfg = dsUri.authConfigId();
+  conn.username = dsUri.username();
+  conn.password = dsUri.password();
+  conn.httpHeaders = dsUri.httpHeaders();
+
+  return conn;
+}
+
+QString QgsSensorThingsProviderConnection::encodedLayerUri( const QgsSensorThingsProviderConnection::Data &data )
+{
+  QgsDataSourceUri uri;
+
+  uri.setParam( QStringLiteral( "url" ), data.url );
+  if ( !data.authCfg.isEmpty() )
+    uri.setAuthConfigId( data.authCfg );
+  if ( !data.username.isEmpty() )
+    uri.setUsername( data.username );
+  if ( !data.password.isEmpty() )
+    uri.setPassword( data.password );
+
+  uri.setHttpHeaders( data.httpHeaders );
+
+  return uri.uri( false );
 }
 

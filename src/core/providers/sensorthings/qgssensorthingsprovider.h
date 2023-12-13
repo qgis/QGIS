@@ -85,6 +85,14 @@ class QgsSensorThingsProviderMetadata: public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) const override;
     QgsSensorThingsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
+
+    // handling of stored connections
+
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
+
 };
 
 ///@endcond PRIVATE

@@ -90,9 +90,9 @@ void QgsSensorThingsSourceSelect::btnNew_clicked()
   }
   if ( nc.exec() )
   {
-    QgsSensorThingsConnectionUtils::addConnection( nc.connection() );
+    QgsSensorThingsProviderConnection::Data connectionData = QgsSensorThingsProviderConnection::decodedUri( nc.connectionUri() );
 
-    QgsSensorThingsConnection::sTreeSensorThingsConnections->setSelectedItem( nc.connection().name );
+    QgsSensorThingsProviderConnection::addConnection( nc.connectionName(), connectionData );
     populateConnectionList();
     emit connectionsChanged();
   }
@@ -100,11 +100,19 @@ void QgsSensorThingsSourceSelect::btnNew_clicked()
 
 void QgsSensorThingsSourceSelect::btnEdit_clicked()
 {
+  const QString oldName = cmbConnections->currentText();
+  const QgsSensorThingsProviderConnection::Data connection = QgsSensorThingsProviderConnection::connection( oldName );
+  const QString uri = QgsSensorThingsProviderConnection::encodedUri( connection );
+
   QgsSensorThingsConnectionDialog nc( this );
-  nc.setConnection( QgsSensorThingsConnectionUtils::connection( cmbConnections->currentText() ) );
+  nc.setConnection( oldName, uri );
   if ( nc.exec() )
   {
-    QgsSensorThingsConnectionUtils::addConnection( nc.connection() );
+    QgsSensorThingsProviderConnection::Data connectionData = QgsSensorThingsProviderConnection::decodedUri( nc.connectionUri() );
+
+    QgsSensorThingsProviderConnection( QString() ).remove( oldName );
+
+    QgsSensorThingsProviderConnection::addConnection( nc.connectionName(), connectionData );
     populateConnectionList();
     emit connectionsChanged();
   }
@@ -117,7 +125,7 @@ void QgsSensorThingsSourceSelect::btnDelete_clicked()
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
-  QgsSensorThingsConnectionUtils::deleteConnection( cmbConnections->currentText() );
+  QgsSensorThingsProviderConnection( QString() ).remove( cmbConnections->currentText() );
 
   populateConnectionList();
   emit connectionsChanged();
@@ -160,7 +168,7 @@ void QgsSensorThingsSourceSelect::populateConnectionList()
   cmbConnections->blockSignals( true );
   cmbConnections->clear();
   cmbConnections->addItem( tr( "Custom" ), QStringLiteral( "~~custom~~" ) );
-  cmbConnections->addItems( QgsSensorThingsConnectionUtils::connectionList() );
+  cmbConnections->addItems( QgsSensorThingsProviderConnection::connectionList() );
   cmbConnections->blockSignals( false );
 
   btnSave->setDisabled( cmbConnections->count() == 1 );
@@ -170,7 +178,7 @@ void QgsSensorThingsSourceSelect::populateConnectionList()
 
 void QgsSensorThingsSourceSelect::setConnectionListPosition()
 {
-  const QString toSelect = QgsSensorThingsConnection::sTreeSensorThingsConnections->selectedItem();
+  const QString toSelect = QgsSensorThingsProviderConnection::selectedConnection();
 
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
@@ -189,7 +197,7 @@ void QgsSensorThingsSourceSelect::setConnectionListPosition()
 
 void QgsSensorThingsSourceSelect::cmbConnections_currentTextChanged( const QString &text )
 {
-  QgsSensorThingsConnection::sTreeSensorThingsConnections->setSelectedItem( text );
+  QgsSensorThingsProviderConnection::setSelectedConnection( text );
 
   const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
   btnEdit->setDisabled( isCustom );
@@ -204,7 +212,7 @@ void QgsSensorThingsSourceSelect::cmbConnections_currentTextChanged( const QStri
     }
     else
     {
-      mConnectionWidget->setSourceUri( QgsSensorThingsConnectionUtils::connection( cmbConnections->currentText() ).encodedUri() );
+      mConnectionWidget->setSourceUri( QgsSensorThingsProviderConnection::encodedLayerUri( QgsSensorThingsProviderConnection::connection( cmbConnections->currentText() ) ) );
     }
     mBlockChanges--;
   }
