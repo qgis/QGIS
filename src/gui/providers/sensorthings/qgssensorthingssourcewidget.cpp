@@ -91,6 +91,11 @@ QString QgsSensorThingsSourceWidget::sourceUri() const
                            ) );
 }
 
+QString QgsSensorThingsSourceWidget::groupTitle() const
+{
+  return QObject::tr( "SensorThings Configuration" );
+}
+
 QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connectionUri ) const
 {
   QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(
