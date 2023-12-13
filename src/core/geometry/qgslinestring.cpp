@@ -2383,16 +2383,16 @@ void QgsLineString::transformVertices( const std::function<QgsPoint( const QgsPo
 QgsLineString *QgsLineString::measuredLine( double start, double end ) const
 {
   const int nbpoints = numPoints();
-  QgsLineString *cloned = clone();
+  std::unique_ptr< QgsLineString > cloned( clone() );
 
   if ( !cloned->convertTo( QgsWkbTypes::addM( mWkbType ) ) )
   {
-    return cloned;
+    return cloned.release();
   }
 
   if ( isEmpty() || ( nbpoints < 2 ) )
   {
-    return cloned;
+    return cloned.release();
   }
 
   const double range = end - start;
