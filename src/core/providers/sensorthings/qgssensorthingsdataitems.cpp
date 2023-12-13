@@ -37,7 +37,7 @@ QgsSensorThingsRootItem::QgsSensorThingsRootItem( QgsDataItem *parent, QString n
 QVector<QgsDataItem *> QgsSensorThingsRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  const auto connectionList = QgsSensorThingsConnectionUtils::connectionList();
+  const auto connectionList = QgsSensorThingsProviderConnection::connectionList();
   for ( const QString &connName : connectionList )
   {
     QgsDataItem *conn = new QgsSensorThingsConnectionItem( this, connName, mPath + '/' + connName );
@@ -71,8 +71,8 @@ QVector<QgsDataItem *> QgsSensorThingsConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
 
-  const QgsSensorThingsConnection connection = QgsSensorThingsConnectionUtils::connection( mConnName );
-  const QString uri = connection.encodedUri();
+  const QgsSensorThingsProviderConnection::Data connectionData = QgsSensorThingsProviderConnection::connection( mConnName );
+  const QString uri = QgsSensorThingsProviderConnection::encodedLayerUri( connectionData );
   const QVariantMap connectionUriParts = QgsProviderRegistry::instance()->decodeUri(
       QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, uri );
 

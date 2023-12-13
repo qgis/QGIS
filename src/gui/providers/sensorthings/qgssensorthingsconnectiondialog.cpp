@@ -44,9 +44,12 @@ QgsSensorThingsConnectionDialog::QgsSensorThingsConnectionDialog( QWidget *paren
   connect( mConnectionWidget, &QgsSensorThingsConnectionWidget::validChanged, this, &QgsSensorThingsConnectionDialog::updateOkButtonState );
 }
 
-void QgsSensorThingsConnectionDialog::setConnection( const QgsSensorThingsConnection &conn )
+void QgsSensorThingsConnectionDialog::setConnection( const QString &name, const QString &uri )
 {
-  mEditName->setText( conn.name );
+  mEditName->setText( name );
+
+  const QgsSensorThingsProviderConnection::Data conn = QgsSensorThingsProviderConnection::decodedUri( uri );
+
   mConnectionWidget->setUrl( conn.url );
   mConnectionWidget->setUsername( conn.username );
   mConnectionWidget->setPassword( conn.password );
@@ -54,17 +57,22 @@ void QgsSensorThingsConnectionDialog::setConnection( const QgsSensorThingsConnec
   mConnectionWidget->setAuthCfg( conn.authCfg );
 }
 
-QgsSensorThingsConnection QgsSensorThingsConnectionDialog::connection() const
+QString QgsSensorThingsConnectionDialog::connectionUri() const
 {
-  QgsSensorThingsConnection conn;
-  conn.name = mEditName->text();
+  QgsSensorThingsProviderConnection::Data conn;
   conn.url = mConnectionWidget->url();
+
   conn.username = mConnectionWidget->username();
   conn.password = mConnectionWidget->password();
-  if ( !mConnectionWidget->referer().isEmpty() )
-    conn.httpHeaders[QgsHttpHeaders::KEY_REFERER] = mConnectionWidget->referer();
-  conn.authCfg = mConnectionWidget->authcfg( );
-  return conn;
+  conn.httpHeaders[QgsHttpHeaders::KEY_REFERER] = mConnectionWidget->referer();
+  conn.authCfg = mConnectionWidget->authcfg();
+
+  return QgsSensorThingsProviderConnection::encodedUri( conn );
+}
+
+QString QgsSensorThingsConnectionDialog::connectionName() const
+{
+  return mEditName->text();
 }
 
 void QgsSensorThingsConnectionDialog::updateOkButtonState()
