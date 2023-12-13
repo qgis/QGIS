@@ -31,6 +31,8 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
 {
   setupUi( this );
 
+  mSpinPageSize->setClearValue( 0, tr( "Default" ) );
+
   for ( Qgis::SensorThingsEntity type :
         {
           Qgis::SensorThingsEntity::Thing,
@@ -50,6 +52,7 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
 
   connect( mComboEntityType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::entityTypeChanged );
   connect( mComboGeometryType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::validate );
+  connect( mSpinPageSize, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsSensorThingsSourceWidget::validate );
 }
 
 void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
@@ -63,6 +66,17 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
   mComboEntityType->setCurrentIndex( mComboEntityType->findData( QVariant::fromValue( type ) ) );
   rebuildGeometryTypes( type );
   setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() );
+
+  bool ok = false;
+  const int maxPageSizeParam = mSourceParts.value( QStringLiteral( "pageSize" ) ).toInt( &ok );
+  if ( ok )
+  {
+    mSpinPageSize->setValue( maxPageSizeParam );
+  }
+  else
+  {
+    mSpinPageSize->clear();
+  }
 
   mIsValid = true;
 }
@@ -97,6 +111,15 @@ QString QgsSensorThingsSourceWidget::sourceUri() const
       default:
         break;
     }
+  }
+
+  if ( mSpinPageSize->value() > 0 )
+  {
+    parts.insert( QStringLiteral( "pageSize" ), QString::number( mSpinPageSize->value() ) );
+  }
+  else
+  {
+    parts.remove( QStringLiteral( "pageSize" ) );
   }
 
   return QgsProviderRegistry::instance()->encodeUri(
