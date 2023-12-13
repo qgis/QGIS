@@ -1196,7 +1196,11 @@ QgsBox3D QgsOgrProvider::extent3D() const
         }
         // else slow computation
       }
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,9,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
+      else if ( is3D || mSubsetString.isEmpty() ) // if is3D (with or without subset) or 2D but without subset, then we delegate to gdal
+        hasBeenComputed = mOgrLayer->GetExtent3D( mExtent.get(), true ) == OGRERR_NONE;
+      // else only 2D with subset need slow computation
+#else
       else if ( mSubsetString.isEmpty() )
         // mSubsetString is not properly handled by mOgrLayer->GetExtent3D if gdal<3.9.0
         // we need to scan all feature (via QgsOgrLayer::computeExtent3DSlowly) to take ino account the mSubsetString filter
@@ -1206,20 +1210,14 @@ QgsBox3D QgsOgrProvider::extent3D() const
           hasBeenComputed = mOgrLayer->GetExtent3D( mExtent.get(), true ) == OGRERR_NONE;
         else
           hasBeenComputed = mOgrLayer->GetExtent( mExtent.get(), true ) == OGRERR_NONE;
-        // else slow computation
       }
-      // else slow computation
 #endif
+      // else slow computation
 
       if ( !hasBeenComputed )
       {
-        OGRErr err;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
-        err = mOgrLayer->GetExtent3D( mExtent.get(), true ); // slow or optimized computation are delegated to gdal
-#else
         QgsDebugMsgLevel( QStringLiteral( "will apply slow default extent computing" ), 3 );
-        err = mOgrLayer->computeExtent3DSlowly( mExtent.get() );
-#endif
+        OGRErr err = mOgrLayer->computeExtent3DSlowly( mExtent.get() );
         if ( err != OGRERR_NONE )
           QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute extent3D (ogr error: %1)" ).arg( err ), 1 );
       }

@@ -3110,7 +3110,7 @@ OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
 {
   QMutexLocker locker( &ds->mutex );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
-  return OGR_L_GetExtent3D( hLayer, psExtent3D, bForce );
+  return OGR_L_GetExtent3D( hLayer, /* iGeomField = */ 0, psExtent3D, bForce );
 #else
 
   OGRErr err = OGRERR_UNSUPPORTED_OPERATION;
