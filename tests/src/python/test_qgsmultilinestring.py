@@ -51,6 +51,13 @@ class TestQgsLineString(QgisTestCase):
         self.assertEqual(m_line.numGeometries(), 2)
         self.assertEqual(m_line.asWkt(0), "MultiLineStringM ((1 0 10, 3 0 12, 4 0 12),(0 0 12, 9 0 19, 10 0 20))")
 
+        multiline = QgsMultiLineString()
+        multiline.addGeometry(QgsLineString([[1, 0], [1, 0], [1, 0]]))
+        multiline.addGeometry(QgsLineString([[2, 2], [2, 2], [2, 2]]))
+        m_line = multiline.measuredLine(10, 20)
+        self.assertEqual(m_line.numGeometries(), 2)
+        self.assertEqual(m_line.asWkt(0), "MultiLineStringM ((1 0 nan, 1 0 nan, 1 0 nan),(2 2 nan, 2 2 nan, 2 2 nan))")
+
 
 if __name__ == '__main__':
     unittest.main()
