@@ -23,6 +23,7 @@
 #include "qgsthreadingutils.h"
 #include "qgsreadwritelocker.h"
 #include "qgssensorthingsfeatureiterator.h"
+#include "qgssensorthingsdataitems.h"
 
 #include <QIcon>
 #include <QNetworkRequest>
@@ -262,14 +263,7 @@ QIcon QgsSensorThingsProviderMetadata::icon() const
 
 QList<QgsDataItemProvider *> QgsSensorThingsProviderMetadata::dataItemProviders() const
 {
-  QList<QgsDataItemProvider *> providers;
-
-#if 0
-  providers
-      << new QgsArcGisRestDataItemProvider;
-#endif
-
-  return providers;
+  return { new QgsSensorThingsDataItemProvider() };
 }
 
 QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) const
