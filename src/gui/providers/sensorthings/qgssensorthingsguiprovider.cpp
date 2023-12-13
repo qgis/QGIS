@@ -46,7 +46,12 @@ QString QgsSensorThingsSourceSelectProvider::text() const
 
 QIcon QgsSensorThingsSourceSelectProvider::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddXyzLayer.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSensorThingsLayer.svg" ) );
+}
+
+int QgsSensorThingsSourceSelectProvider::ordering() const
+{
+  return OrderRemoteProvider + 200;
 }
 
 QgsAbstractDataSourceWidget *QgsSensorThingsSourceSelectProvider::createDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ) const

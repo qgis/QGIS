@@ -30,11 +30,11 @@ class QgsSensorThingsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    QString providerKey() const override;
-    QString text() const override;
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
-    QIcon icon() const override;
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override;
+    QString providerKey() const final;
+    QString text() const final;
+    QIcon icon() const final;
+    int ordering() const final;
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const final;
 };
 
 class QgsSensorThingsSourceWidgetProvider : public QgsProviderSourceWidgetProvider
