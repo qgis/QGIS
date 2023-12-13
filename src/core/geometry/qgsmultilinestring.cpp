@@ -181,17 +181,10 @@ bool QgsMultiLineString::wktOmitChildType() const
 
 QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end ) const
 {
-
-
-  QgsMultiLineString *result{createEmptyWithSameType()};
-
-  if ( !result->convertTo( QgsWkbTypes::addM( mWkbType ) ) )
-  {
-    return result;
-  }
-
+  std::unique_ptr< QgsMultiLineString > result = std::make_unique< QgsMultiLineString >();)
   if ( isEmpty() )
   {
+    result->convertTo( QgsWkbTypes::addM( mWkbType ) )
     return result;
   }
 
