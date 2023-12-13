@@ -22,6 +22,6 @@ __date__ = 'October 2017'
 __copyright__ = '(C) 2018, Nyall Dawson'
 
 try:
-    from PyQt5.sip import *
+    from PyQt@QT_VERSION_MAJOR@.sip import *
 except ImportError:
     from sip import *
