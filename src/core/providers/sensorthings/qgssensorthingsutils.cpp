@@ -104,6 +104,34 @@ Qgis::SensorThingsEntity QgsSensorThingsUtils::entitySetStringToEntity( const QS
   return Qgis::SensorThingsEntity::Invalid;
 }
 
+QString QgsSensorThingsUtils::entityToSetString( Qgis::SensorThingsEntity type )
+{
+  switch ( type )
+  {
+    case Qgis::SensorThingsEntity::Invalid:
+      return QString();
+    case Qgis::SensorThingsEntity::Thing:
+      return QStringLiteral( "Things" );
+    case Qgis::SensorThingsEntity::Location:
+      return QStringLiteral( "Locations" );
+    case Qgis::SensorThingsEntity::HistoricalLocation:
+      return QStringLiteral( "HistoricalLocations" );
+    case Qgis::SensorThingsEntity::Datastream:
+      return QStringLiteral( "Datastreams" );
+    case Qgis::SensorThingsEntity::Sensor:
+      return QStringLiteral( "Sensors" );
+    case Qgis::SensorThingsEntity::ObservedProperty:
+      return QStringLiteral( "ObservedProperties" );
+    case Qgis::SensorThingsEntity::Observation:
+      return QStringLiteral( "Observations" );
+    case Qgis::SensorThingsEntity::FeatureOfInterest:
+      return QStringLiteral( "FeaturesOfInterest" );
+    case Qgis::SensorThingsEntity::MultiDatastream:
+      return QStringLiteral( "MultiDatastreams" );
+  }
+  BUILTIN_UNREACHABLE
+}
+
 QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity type )
 {
   QgsFields fields;
@@ -202,6 +230,27 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       break;
   }
 
+  return fields;
+}
+
+QgsFields QgsSensorThingsUtils::fieldsForExpandedEntityType( Qgis::SensorThingsEntity baseType, const QList<Qgis::SensorThingsEntity> &expandedTypes )
+{
+  if ( expandedTypes.empty() )
+    return fieldsForEntityType( baseType );
+
+  QgsFields fields = fieldsForEntityType( baseType );
+  QString path;
+  for ( const Qgis::SensorThingsEntity expandedType : expandedTypes )
+  {
+    path = ( path.isEmpty() ? QString() : ( path + '_' ) ) + qgsEnumValueToKey( expandedType );
+    const QgsFields expandedFields = fieldsForEntityType( expandedType );
+    for ( const QgsField &expandedField : expandedFields )
+    {
+      QgsField renamedExpandedField = expandedField;
+      renamedExpandedField.setName( QStringLiteral( "%1_%2" ).arg( path, expandedField.name() ) );
+      fields.append( renamedExpandedField );
+    }
+  }
   return fields;
 }
 
@@ -452,4 +501,108 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
       types.append( geometryType );
   }
   return types;
+}
+
+QList<QList<Qgis::SensorThingsEntity> > QgsSensorThingsUtils::expandableTargets( Qgis::SensorThingsEntity type )
+{
+  // note that we are restricting these choices so that the geometry enabled entity type MUST be the base type
+  switch ( type )
+  {
+    case Qgis::SensorThingsEntity::Invalid:
+      return {};
+
+    case Qgis::SensorThingsEntity::Thing:
+      return
+      {
+        { Qgis::SensorThingsEntity::HistoricalLocation },
+        { Qgis::SensorThingsEntity::Datastream },
+        { Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Sensor },
+        { Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::ObservedProperty },
+        { Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Observation },
+      };
+
+    case Qgis::SensorThingsEntity::Location:
+      return
+      {
+        { Qgis::SensorThingsEntity::Thing },
+        { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::Datastream },
+        { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Sensor },
+        { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::ObservedProperty },
+        { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Observation },
+        { Qgis::SensorThingsEntity::HistoricalLocation },
+      };
+
+    case Qgis::SensorThingsEntity::HistoricalLocation:
+      return
+      {
+        {Qgis::SensorThingsEntity::Thing },
+        { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::Datastream },
+        { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Sensor },
+        { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::ObservedProperty },
+        { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Observation },
+      };
+
+    case Qgis::SensorThingsEntity::Datastream:
+      return
+      {
+        {Qgis::SensorThingsEntity::Thing},
+        { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::HistoricalLocation },
+        {Qgis::SensorThingsEntity::Sensor},
+        {Qgis::SensorThingsEntity::ObservedProperty},
+        {Qgis::SensorThingsEntity::Observation}
+      };
+
+    case Qgis::SensorThingsEntity::Sensor:
+      return
+      {
+        {Qgis::SensorThingsEntity::Datastream},
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Thing},
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::HistoricalLocation },
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::ObservedProperty},
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Observation}
+      };
+
+    case Qgis::SensorThingsEntity::ObservedProperty:
+      return
+      {
+        {Qgis::SensorThingsEntity::Datastream},
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Sensor},
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Thing},
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::HistoricalLocation },
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Observation}
+      };
+
+    case Qgis::SensorThingsEntity::Observation:
+      return
+      {
+        {Qgis::SensorThingsEntity::Datastream},
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Sensor},
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Thing},
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::HistoricalLocation },
+        {Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::ObservedProperty}
+      };
+
+    case Qgis::SensorThingsEntity::FeatureOfInterest:
+      return
+      {
+        {Qgis::SensorThingsEntity::Observation},
+        {Qgis::SensorThingsEntity::Observation, Qgis::SensorThingsEntity::Datastream},
+        {Qgis::SensorThingsEntity::Observation, Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Sensor},
+        {Qgis::SensorThingsEntity::Observation, Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Thing},
+        {Qgis::SensorThingsEntity::Observation, Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::HistoricalLocation },
+        {Qgis::SensorThingsEntity::Observation, Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::ObservedProperty}
+      };
+
+
+    case Qgis::SensorThingsEntity::MultiDatastream:
+      return
+      {
+        {Qgis::SensorThingsEntity::Thing},
+        { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::HistoricalLocation },
+        {Qgis::SensorThingsEntity::Sensor},
+        {Qgis::SensorThingsEntity::ObservedProperty},
+        {Qgis::SensorThingsEntity::Observation}
+      };
+  }
+  BUILTIN_UNREACHABLE
 }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>537</width>
-    <height>134</height>
+    <height>180</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,16 +26,6 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="mComboGeometryType"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Entity type</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="2">
     <widget class="QToolButton" name="mRetrieveTypesButton">
      <property name="minimumSize">
@@ -63,26 +53,53 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QgsSpinBox" name="mSpinPageSize">
-     <property name="maximum">
-      <number>9999999</number>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Extent limit</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="2">
+   <item row="5" column="1" colspan="2">
     <widget class="QWidget" name="mExtentLimitFrame" native="true">
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_3">
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="mComboEntityType"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Page size</string>
+      <string>Entity type</string>
      </property>
     </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Expand to</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Feature limit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <widget class="QgsSpinBox" name="mSpinFeatureLimit">
+     <property name="maximum">
+      <number>999999999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QComboBox" name="mComboExpandTo"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
@@ -91,27 +108,20 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_5">
+   <item row="1" column="1">
+    <widget class="QComboBox" name="mComboGeometryType"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Extent limit</string>
+      <string>Page size</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="mComboEntityType"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Feature limit</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QgsSpinBox" name="mSpinFeatureLimit">
+   <item row="2" column="1" colspan="2">
+    <widget class="QgsSpinBox" name="mSpinPageSize">
      <property name="maximum">
-      <number>999999999</number>
+      <number>9999999</number>
      </property>
     </widget>
    </item>
@@ -129,6 +139,7 @@
   <tabstop>mComboGeometryType</tabstop>
   <tabstop>mRetrieveTypesButton</tabstop>
   <tabstop>mSpinPageSize</tabstop>
+  <tabstop>mComboExpandTo</tabstop>
   <tabstop>mSpinFeatureLimit</tabstop>
   <tabstop>mExtentLimitFrame</tabstop>
  </tabstops>

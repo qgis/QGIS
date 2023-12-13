@@ -58,7 +58,7 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui
     void connectionPropertiesTaskCompleted();
 
   private:
-    void rebuildGeometryTypes( Qgis::SensorThingsEntity type );
+    void setCurrentEntityType( Qgis::SensorThingsEntity type );
     void setCurrentGeometryTypeFromString( const QString &geometryType );
 
     QgsExtentWidget *mExtentWidget = nullptr;
