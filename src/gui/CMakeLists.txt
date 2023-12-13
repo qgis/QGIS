@@ -457,7 +457,10 @@ set(QGIS_GUI_SRCS
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
 
+  providers/sensorthings/qgssensorthingsconnectiondialog.cpp
+  providers/sensorthings/qgssensorthingsconnectionwidget.cpp
   providers/sensorthings/qgssensorthingsguiprovider.cpp
+  providers/sensorthings/qgssensorthingssourceselect.cpp
   providers/sensorthings/qgssensorthingssourcewidget.cpp
 
   providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.cpp
@@ -1414,7 +1417,10 @@ set(QGIS_GUI_HDRS
   providers/ogr/qgsogritemguiprovider.h
   providers/ogr/qgsogrsourceselect.h
 
+  providers/sensorthings/qgssensorthingsconnectiondialog.h
+  providers/sensorthings/qgssensorthingsconnectionwidget.h
   providers/sensorthings/qgssensorthingsguiprovider.h
+  providers/sensorthings/qgssensorthingssourceselect.h
   providers/sensorthings/qgssensorthingssourcewidget.h
 
   providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.h

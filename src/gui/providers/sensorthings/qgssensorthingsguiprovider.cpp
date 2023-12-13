@@ -25,8 +25,34 @@
 #include <QMessageBox>
 
 #include "qgsmaplayer.h"
+#include "qgssensorthingssourceselect.h"
 #include "qgssensorthingssourcewidget.h"
 #include "qgssensorthingsprovider.h"
+#include "qgsapplication.h"
+
+//
+// QgsSensorThingsSourceSelectProvider
+//
+
+QString QgsSensorThingsSourceSelectProvider::providerKey() const
+{
+  return QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY;
+}
+
+QString QgsSensorThingsSourceSelectProvider::text() const
+{
+  return QObject::tr( "SensorThings" );
+}
+
+QIcon QgsSensorThingsSourceSelectProvider::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddXyzLayer.svg" ) );
+}
+
+QgsAbstractDataSourceWidget *QgsSensorThingsSourceSelectProvider::createDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ) const
+{
+  return new QgsSensorThingsSourceSelect( parent, fl, widgetMode );
+}
 
 
 //
@@ -65,11 +91,14 @@ QgsSensorThingsProviderGuiMetadata::QgsSensorThingsProviderGuiMetadata():
 {
 }
 
+QList<QgsSourceSelectProvider *> QgsSensorThingsProviderGuiMetadata::sourceSelectProviders()
+{
+  return { new QgsSensorThingsSourceSelectProvider };
+}
+
 QList<QgsProviderSourceWidgetProvider *> QgsSensorThingsProviderGuiMetadata::sourceWidgetProviders()
 {
-  QList<QgsProviderSourceWidgetProvider *> providers;
-  providers << new QgsSensorThingsSourceWidgetProvider();
-  return providers;
+  return { new QgsSensorThingsSourceWidgetProvider() };
 }
 
 ///@endcond

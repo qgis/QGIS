@@ -144,10 +144,11 @@ void QgsSensorThingsSourceWidget::validate()
   if ( QgsSensorThingsUtils::entityTypeHasGeometry( entityType ) )
     valid = valid && mComboGeometryType->currentIndex() >= 0;
 
-  if ( valid != mIsValid )
-    emit validChanged( valid );
+  if ( valid == mIsValid )
+    return;
 
   mIsValid = valid;
+  emit validChanged( mIsValid );
 }
 
 void QgsSensorThingsSourceWidget::rebuildGeometryTypes( Qgis::SensorThingsEntity type )

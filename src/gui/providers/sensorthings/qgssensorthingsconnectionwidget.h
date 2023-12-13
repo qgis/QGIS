@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgssensorthingssourcewidget.h
+    qgssensorthingsconnectionwidget.h
      --------------------------------------
     Date                 : December 2023
     Copyright            : (C) 2023 by Nyall Dawson
@@ -14,43 +14,55 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSSENSORTHINGSSOURCEWIDGET_H
-#define QGSSENSORTHINGSSOURCEWIDGET_H
+#ifndef QGSSENSORTHINGSCONNECTIONWIDGET_H
+#define QGSSENSORTHINGSCONNECTIONWIDGET_H
 
-#include "qgsprovidersourcewidget.h"
-#include "qgis.h"
-#include "ui_qgssensorthingssourcewidgetbase.h"
+#include "ui_qgssensorthingsconnectionwidgetbase.h"
 #include <QVariantMap>
 
-class QgsFileWidget;
-
-///@cond PRIVATE
 #define SIP_NO_FILE
+///@cond PRIVATE
 
-class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui::QgsSensorThingsSourceWidgetBase
+class QgsSensorThingsConnectionWidget : public QWidget, private Ui::QgsSensorThingsConnectionWidgetBase
 {
     Q_OBJECT
 
   public:
-    QgsSensorThingsSourceWidget( QWidget *parent = nullptr );
+    QgsSensorThingsConnectionWidget( QWidget *parent = nullptr );
 
-    void setSourceUri( const QString &uri ) override;
-    QString sourceUri() const override;
+    void setSourceUri( const QString &uri );
+    QString sourceUri() const;
+
+    void setUrl( const QString &url );
+    QString url() const;
+
+    void setUsername( const QString &username );
+    void setPassword( const QString &password );
+    void setAuthCfg( const QString &id );
+
+    QString username() const;
+    QString password() const;
+    QString authcfg() const;
+
+    void setReferer( const QString &referer );
+    QString referer() const;
 
     bool isValid() const { return mIsValid; }
 
+  signals:
+
+    void changed();
+    void validChanged( bool valid );
+
   private slots:
 
-    void entityTypeChanged();
     void validate();
 
   private:
-    void rebuildGeometryTypes( Qgis::SensorThingsEntity type );
-    void setCurrentGeometryTypeFromString( const QString &geometryType );
 
     QVariantMap mSourceParts;
     bool mIsValid = false;
 };
 
-///@endcond
-#endif // QGSSENSORTHINGSSOURCEWIDGET_H
+///@endcond PRIVATE
+#endif // QGSSENSORTHINGSCONNECTIONWIDGET_H
