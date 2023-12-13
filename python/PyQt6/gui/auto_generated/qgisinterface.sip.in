@@ -302,6 +302,8 @@ Returns a reference to the main window "Web" menu.
     virtual QMenu *meshMenu() = 0;
 %Docstring
 Returns a reference to the main window "Mesh" menu.
+
+.. versionadded:: 3.34
 %End
 
     virtual QMenu *firstRightStandardMenu() = 0;
