@@ -126,9 +126,9 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     //! Has spatial index
     bool mHasSpatialIndex = false;
     //! Raster size x
-    qlonglong mWidth = 0;
+    long mWidth = 0;
     //! Raster size y
-    qlonglong mHeight = 0;
+    long mHeight = 0;
     //! Raster tile size x
     int mTileWidth = 0;
     //! Raster tile size y
