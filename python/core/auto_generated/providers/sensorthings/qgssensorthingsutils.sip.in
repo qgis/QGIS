@@ -28,6 +28,13 @@ Converts a string value to a :py:class:`Qgis`.SensorThingsEntity type.
 Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could not be converted to a known entity type.
 %End
 
+    static QString displayString( Qgis::SensorThingsEntity type, bool plural = false );
+%Docstring
+Converts a :py:class:`Qgis`.SensorThingsEntity ``type`` to a user-friendly translated string.
+
+If ``plural`` is ``True`` then a plural string is returned (ie "Things" instead of "Thing").
+%End
+
     static Qgis::SensorThingsEntity entitySetStringToEntity( const QString &type );
 %Docstring
 Converts a string value corresponding to a SensorThings entity set to a :py:class:`Qgis`.SensorThingsEntity type.

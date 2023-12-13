@@ -40,6 +40,32 @@ Qgis::SensorThingsEntity QgsSensorThingsUtils::stringToEntity( const QString &ty
   return Qgis::SensorThingsEntity::Invalid;
 }
 
+QString QgsSensorThingsUtils::displayString( Qgis::SensorThingsEntity type, bool plural )
+{
+  switch ( type )
+  {
+    case Qgis::SensorThingsEntity::Invalid:
+      return QString();
+    case Qgis::SensorThingsEntity::Thing:
+      return plural ? QObject::tr( "Things" ) : QObject::tr( "Thing" );
+    case Qgis::SensorThingsEntity::Location:
+      return plural ? QObject::tr( "Locations" ) : QObject::tr( "Location" );
+    case Qgis::SensorThingsEntity::HistoricalLocation:
+      return plural ? QObject::tr( "Historical Locations" ) : QObject::tr( "Historical Location" );
+    case Qgis::SensorThingsEntity::Datastream:
+      return plural ? QObject::tr( "Datastreams" ) : QObject::tr( "Datastream" );
+    case Qgis::SensorThingsEntity::Sensor:
+      return plural ? QObject::tr( "Sensors" ) : QObject::tr( "Sensor" );
+    case Qgis::SensorThingsEntity::ObservedProperty:
+      return plural ? QObject::tr( "Observed Properties" ) : QObject::tr( "Observed Property" );
+    case Qgis::SensorThingsEntity::Observation:
+      return plural ? QObject::tr( "Observations" ) : QObject::tr( "Observation" );
+    case Qgis::SensorThingsEntity::FeatureOfInterest:
+      return plural ? QObject::tr( "Features of Interest" ) : QObject::tr( "Feature of Interest" );
+  }
+  BUILTIN_UNREACHABLE
+}
+
 Qgis::SensorThingsEntity QgsSensorThingsUtils::entitySetStringToEntity( const QString &type )
 {
   const QString trimmed = type.trimmed();

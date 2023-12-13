@@ -457,6 +457,9 @@ set(QGIS_GUI_SRCS
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
 
+  providers/sensorthings/qgssensorthingsguiprovider.cpp
+  providers/sensorthings/qgssensorthingssourcewidget.cpp
+
   providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.cpp
   providers/vtpkvectortiles/qgsvtpkvectortilesourcewidget.cpp
 
@@ -1411,6 +1414,9 @@ set(QGIS_GUI_HDRS
   providers/ogr/qgsogritemguiprovider.h
   providers/ogr/qgsogrsourceselect.h
 
+  providers/sensorthings/qgssensorthingsguiprovider.h
+  providers/sensorthings/qgssensorthingssourcewidget.h
+
   providers/vtpkvectortiles/qgsvtpkvectortileguiprovider.h
   providers/vtpkvectortiles/qgsvtpkvectortilesourcewidget.h
 
@@ -1648,6 +1654,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/mbtilesvectortiles
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/sensorthings
   ${CMAKE_SOURCE_DIR}/src/gui/providers/vtpkvectortiles
   ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
