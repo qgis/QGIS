@@ -2821,8 +2821,6 @@ void TestQgsPolygon::toFromWKT()
   QString wkt = pl1.asWkt();
   QVERIFY( !wkt.isEmpty() );
 
-  qDebug() << "XXXX" << wkt;
-
   QgsPolygon pl2;
   QVERIFY( pl2.fromWkt( wkt ) );
   QCOMPARE( pl1, pl2 );
