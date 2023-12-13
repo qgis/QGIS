@@ -496,6 +496,8 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
   MetaTile metaTile = mRendererJobs.value( job );
   QImage img = job->renderedImage();
 
+  //CHANGE
+
   // print SKIP EMPTY TILES TRUE OR FALSE
   if ( mSkipEmptyTiles == true)
   {
@@ -515,14 +517,42 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
   QMap<QPair<int, int>, Tile>::const_iterator it = metaTile.tiles.constBegin();
   while ( it != metaTile.tiles.constEnd() )
   {
+    
+    
+
+
     QPair<int, int> tm = it.key();
     Tile tile = it.value();
     QImage tileImage = img.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
     QByteArray ba;
     QBuffer buffer( &ba );
     buffer.open( QIODevice::WriteOnly );
+
+    //CHANGE
+    if (mSkipEmptyTiles == true)
+    {
+      tempImage = QImage( mTileWidth, mTileHeight, QImage::Format_ARGB32_Premultiplied );
+      tempImage.fill( mBackgroundColor );
+
+      // Try next time
+      // isBlank = ( tileImage == tempImage );
+      if ( tempImage == tileImage)
+      {
+        ++it;
+        continue;
+      }
+    }
+
     tileImage.save( &buffer, mTileFormat.toStdString().c_str(), mJpgQuality );
     mMbtilesWriter->setTileData( tile.z, tile.x, tile2tms( tile.y, tile.z ), ba );
+
+    // Try next time
+    // if ( !isblank)
+    // {
+    //   tileImage.save( &buffer, mTileFormat.toStdString().c_str(), mJpgQuality );
+    //   mMbtilesWriter->setTileData( tile.z, tile.x, tile2tms( tile.y, tile.z ), ba );
+    // }
+    
     ++it;
   }
 
