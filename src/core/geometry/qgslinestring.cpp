@@ -2399,16 +2399,18 @@ QgsLineString *QgsLineString::measuredLine( double start, double end ) const
   double lineLength = length();
   double lengthSoFar = 0.0;
 
-  cloned->setMAt( 0, start );
+  
+  double *mOut = cloned->mM.data();
+  *mOut++ = start;
   for ( int i = 1; i < nbpoints ; ++i )
   {
     lengthSoFar += QgsGeometryUtilsBase::distance2D( mX[ i - 1], mY[ i - 1 ], mX[ i ], mY[ i ] );
     if ( lineLength > 0.0 )
-      cloned->setMAt( i, start + range * lengthSoFar / lineLength );
+      *mOut++ = start + range * lengthSoFar / lineLength;
     else if ( lineLength == 0.0 && nbpoints > 1 )
-      cloned->setMAt( i, start + range * i / ( nbpoints - 1 ) );
+      *mOut++ = start + range * i / ( nbpoints - 1 );
     else
-      cloned->setMAt( i, 0.0 );
+      *mOut++ = 0.0;
   }
 
   return cloned;
