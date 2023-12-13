@@ -21,4 +21,4 @@ __author__ = 'Juergen E. Fischer'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Juergen E. Fischer'
 
-from PyQt5.QtSvg import *
+from PyQt@QT_VERSION_MAJOR@.QtSvg import *

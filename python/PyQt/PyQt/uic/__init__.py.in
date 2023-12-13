@@ -22,10 +22,10 @@ __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Jürgen E. Fischer'
 
 import warnings
-from PyQt5.uic.Compiler import indenter, compiler
-from PyQt5.uic.objcreator import widgetPluginPath
-from PyQt5.uic import properties, uiparser, Compiler
-from PyQt5.uic import *
+from PyQt@QT_VERSION_MAJOR@.uic.Compiler import indenter, compiler
+from PyQt@QT_VERSION_MAJOR@.uic.objcreator import widgetPluginPath
+from PyQt@QT_VERSION_MAJOR@.uic import properties, uiparser, Compiler
+from PyQt@QT_VERSION_MAJOR@.uic import *
 
 __PyQtLoadUiType = loadUiType
 

@@ -21,6 +21,6 @@ __author__ = 'Juergen E. Fischer'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Juergen E. Fischer'
 
-from PyQt5.uic import pyuic
+from PyQt@QT_VERSION_MAJOR@.uic import pyuic
 if (callable(pyuic.main)):
     pyuic.main()

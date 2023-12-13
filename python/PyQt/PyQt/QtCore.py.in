@@ -21,7 +21,7 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'November 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-from PyQt5.QtCore import *
+from PyQt@QT_VERSION_MAJOR@.QtCore import *
 
 from types import MethodType
 
