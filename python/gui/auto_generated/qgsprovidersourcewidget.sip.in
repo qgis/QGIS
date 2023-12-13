@@ -41,6 +41,15 @@ Returns the source URI as currently defined by the widget.
 .. seealso:: :py:func:`setSourceUri`
 %End
 
+    virtual QString groupTitle() const;
+%Docstring
+Returns an optional group title for the source settings, for use in layer properties dialogs.
+
+If not specified, a default title will be used.
+
+.. versionadded:: 3.36
+%End
+
     virtual void setMapCanvas( QgsMapCanvas *mapCanvas );
 %Docstring
 Sets a map ``canvas`` associated with the widget.
