@@ -85,7 +85,18 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
 
 QString QgsSensorThingsSourceWidget::sourceUri() const
 {
-  QVariantMap parts = mSourceParts;
+  return updateUriFromGui( QgsProviderRegistry::instance()->encodeUri(
+                             QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
+                             mSourceParts
+                           ) );
+}
+
+QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connectionUri ) const
+{
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(
+                        QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
+                        connectionUri
+                      );
 
   const Qgis::SensorThingsEntity entityType = mComboEntityType->currentData().value< Qgis::SensorThingsEntity >();
   parts.insert( QStringLiteral( "entity" ), qgsEnumValueToKey( entityType ) );

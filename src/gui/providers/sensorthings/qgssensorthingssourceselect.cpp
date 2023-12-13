@@ -146,10 +146,13 @@ void QgsSensorThingsSourceSelect::btnLoad_clicked()
 void QgsSensorThingsSourceSelect::addButtonClicked()
 {
   const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+
+  const QString providerUri = mConnectionWidget->sourceUri();
+  const QString layerUri = mSourceWidget->updateUriFromGui( providerUri );
   Q_NOWARN_DEPRECATED_PUSH
-  emit addVectorLayer( mSourceWidget->sourceUri(), isCustom ? tr( "SensorThings Layer" ) : cmbConnections->currentText(), QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY );
+  emit addVectorLayer( layerUri, isCustom ? tr( "SensorThings Layer" ) : cmbConnections->currentText(), QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY );
   Q_NOWARN_DEPRECATED_POP
-  emit addLayer( Qgis::LayerType::Vector, mSourceWidget->sourceUri(), isCustom ? tr( "SensorThings Layer" ) : cmbConnections->currentText(), QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY );
+  emit addLayer( Qgis::LayerType::Vector, layerUri, isCustom ? tr( "SensorThings Layer" ) : cmbConnections->currentText(), QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY );
 }
 
 void QgsSensorThingsSourceSelect::populateConnectionList()
