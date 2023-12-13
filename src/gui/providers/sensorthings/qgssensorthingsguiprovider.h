@@ -20,10 +20,22 @@
 #define QGSSENSORTHINGSGUIPROVIDER_H
 
 #include "qgsproviderguimetadata.h"
+#include "qgssourceselectprovider.h"
 #include "qgsprovidersourcewidgetprovider.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
+
+class QgsSensorThingsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    QString providerKey() const override;
+    QString text() const override;
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
+    QIcon icon() const override;
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override;
+};
 
 class QgsSensorThingsSourceWidgetProvider : public QgsProviderSourceWidgetProvider
 {
@@ -38,6 +50,7 @@ class QgsSensorThingsProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
     QgsSensorThingsProviderGuiMetadata();
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
     QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders() override;
 };
 

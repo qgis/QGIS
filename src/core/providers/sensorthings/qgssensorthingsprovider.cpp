@@ -283,6 +283,22 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
   {
     components.insert( QStringLiteral( "authcfg" ), dsUri.authConfigId() );
   }
+  if ( !dsUri.username().isEmpty() )
+  {
+    components.insert( QStringLiteral( "username" ), dsUri.username() );
+  }
+  if ( !dsUri.password().isEmpty() )
+  {
+    components.insert( QStringLiteral( "password" ), dsUri.password() );
+  }
+  if ( !dsUri.param( QStringLiteral( "referer" ) ).isEmpty() )
+  {
+    components.insert( QStringLiteral( "referer" ), dsUri.param( QStringLiteral( "referer" ) ) );
+  }
+  if ( !dsUri.param( QStringLiteral( "http-header:referer" ) ).isEmpty() )
+  {
+    components.insert( QStringLiteral( "referer" ), dsUri.param( QStringLiteral( "http-header:referer" ) ) );
+  }
 
   const QString entityParam = dsUri.param( QStringLiteral( "entity" ) );
   Qgis::SensorThingsEntity entity = QgsSensorThingsUtils::entitySetStringToEntity( entityParam );
@@ -330,6 +346,18 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
   if ( !parts.value( QStringLiteral( "authcfg" ) ).toString().isEmpty() )
   {
     dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
+  }
+  if ( !parts.value( QStringLiteral( "username" ) ).toString().isEmpty() )
+  {
+    dsUri.setUsername( parts.value( QStringLiteral( "username" ) ).toString() );
+  }
+  if ( !parts.value( QStringLiteral( "password" ) ).toString().isEmpty() )
+  {
+    dsUri.setPassword( parts.value( QStringLiteral( "password" ) ).toString() );
+  }
+  if ( !parts.value( QStringLiteral( "referer" ) ).toString().isEmpty() )
+  {
+    dsUri.setParam( QStringLiteral( "referer" ), parts.value( QStringLiteral( "referer" ) ).toString() );
   }
 
   Qgis::SensorThingsEntity entity = QgsSensorThingsUtils::entitySetStringToEntity(
