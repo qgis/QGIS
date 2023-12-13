@@ -18,6 +18,7 @@
 #define QGSSENSORTHINGSSOURCEWIDGET_H
 
 #include "qgsprovidersourcewidget.h"
+#include "qgis.h"
 #include "ui_qgssensorthingssourcewidgetbase.h"
 #include <QVariantMap>
 
@@ -38,9 +39,12 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui
 
   private slots:
 
+    void entityTypeChanged();
     void validate();
 
   private:
+    void rebuildGeometryTypes( Qgis::SensorThingsEntity type );
+    void setCurrentGeometryTypeFromString( const QString &geometryType );
 
     QVariantMap mSourceParts;
     bool mIsValid = false;

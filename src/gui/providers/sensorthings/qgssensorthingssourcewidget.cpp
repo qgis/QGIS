@@ -21,6 +21,7 @@
 #include "qgsproviderregistry.h"
 #include "qgssensorthingsutils.h"
 #include "qgssensorthingsprovider.h"
+#include "qgsiconutils.h"
 #include <QHBoxLayout>
 #include <QLabel>
 
@@ -45,8 +46,10 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
     mComboEntityType->addItem( QgsSensorThingsUtils::displayString( type, true ), QVariant::fromValue( type ) );
   }
 
+  rebuildGeometryTypes( Qgis::SensorThingsEntity::Location );
 
-  connect( mComboEntityType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::validate );
+  connect( mComboEntityType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::entityTypeChanged );
+  connect( mComboGeometryType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::validate );
 }
 
 void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
@@ -58,6 +61,8 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
 
   const Qgis::SensorThingsEntity type = QgsSensorThingsUtils::stringToEntity( mSourceParts.value( QStringLiteral( "entity" ) ).toString() );
   mComboEntityType->setCurrentIndex( mComboEntityType->findData( QVariant::fromValue( type ) ) );
+  rebuildGeometryTypes( type );
+  setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() );
 
   mIsValid = true;
 }
@@ -66,7 +71,33 @@ QString QgsSensorThingsSourceWidget::sourceUri() const
 {
   QVariantMap parts = mSourceParts;
 
-  parts.insert( QStringLiteral( "entity" ), qgsEnumValueToKey( mComboEntityType->currentData().value< Qgis::SensorThingsEntity >() ) );
+  const Qgis::SensorThingsEntity entityType = mComboEntityType->currentData().value< Qgis::SensorThingsEntity >();
+  parts.insert( QStringLiteral( "entity" ), qgsEnumValueToKey( entityType ) );
+  if ( !QgsSensorThingsUtils::entityTypeHasGeometry( entityType ) )
+  {
+    parts.remove( QStringLiteral( "geometryType" ) );
+  }
+  else
+  {
+    const Qgis::WkbType newWkbType = mComboGeometryType->currentData().value< Qgis::WkbType >();
+    switch ( newWkbType )
+    {
+      case Qgis::WkbType::Point:
+        parts.insert( QStringLiteral( "geometryType" ), QStringLiteral( "point" ) );
+        break;
+      case Qgis::WkbType::MultiPoint:
+        parts.insert( QStringLiteral( "geometryType" ), QStringLiteral( "multipoint" ) );
+        break;
+      case Qgis::WkbType::MultiLineString:
+        parts.insert( QStringLiteral( "geometryType" ), QStringLiteral( "line" ) );
+        break;
+      case Qgis::WkbType::MultiPolygon:
+        parts.insert( QStringLiteral( "geometryType" ), QStringLiteral( "polygon" ) );
+        break;
+      default:
+        break;
+    }
+  }
 
   return QgsProviderRegistry::instance()->encodeUri(
            QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
@@ -74,14 +105,68 @@ QString QgsSensorThingsSourceWidget::sourceUri() const
          );
 }
 
+void QgsSensorThingsSourceWidget::entityTypeChanged()
+{
+  const Qgis::SensorThingsEntity entityType = mComboEntityType->currentData().value< Qgis::SensorThingsEntity >();
+  rebuildGeometryTypes( entityType );
+
+  validate();
+}
+
 void QgsSensorThingsSourceWidget::validate()
 {
-  const bool valid = mComboEntityType->currentIndex() >= 0;
+  bool valid = mComboEntityType->currentIndex() >= 0;
+
+  const Qgis::SensorThingsEntity entityType = mComboEntityType->currentData().value< Qgis::SensorThingsEntity >();
+  if ( QgsSensorThingsUtils::entityTypeHasGeometry( entityType ) )
+    valid = valid && mComboGeometryType->currentIndex() >= 0;
 
   if ( valid != mIsValid )
     emit validChanged( valid );
 
   mIsValid = valid;
+}
+
+void QgsSensorThingsSourceWidget::rebuildGeometryTypes( Qgis::SensorThingsEntity type )
+{
+  if ( QgsSensorThingsUtils::entityTypeHasGeometry( type ) && mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::Point ) ) < 0 )
+  {
+    mComboGeometryType->clear();
+    mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::Point ), tr( "Point" ), QVariant::fromValue( Qgis::WkbType::Point ) );
+    mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPoint ), tr( "Multipoint" ), QVariant::fromValue( Qgis::WkbType::MultiPoint ) );
+    mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiLineString ), tr( "Line" ), QVariant::fromValue( Qgis::WkbType::MultiLineString ) );
+    mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPolygon ), tr( "Polygon" ), QVariant::fromValue( Qgis::WkbType::MultiPolygon ) );
+    setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() );
+  }
+  else if ( !QgsSensorThingsUtils::entityTypeHasGeometry( type ) && mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::NoGeometry ) ) < 0 )
+  {
+    mComboGeometryType->clear();
+    mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::NoGeometry ), tr( "No Geometry" ), QVariant::fromValue( Qgis::WkbType::NoGeometry ) );
+  }
+}
+
+void QgsSensorThingsSourceWidget::setCurrentGeometryTypeFromString( const QString &geometryType )
+{
+  if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::Point ) ) );
+  }
+  else if ( geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::MultiPoint ) ) );
+  }
+  else if ( geometryType.compare( QLatin1String( "line" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::MultiLineString ) ) );
+  }
+  else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::MultiPolygon ) ) );
+  }
+  else if ( geometryType.isEmpty() )
+  {
+    mComboGeometryType->setCurrentIndex( 0 );
+  }
 }
 
 
