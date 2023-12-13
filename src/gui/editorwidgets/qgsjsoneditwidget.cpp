@@ -60,6 +60,11 @@ QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   connect( mCodeEditorJson, &QsciScintillaBase::SCN_DWELLEND, this, &QgsJsonEditWidget::codeEditorJsonDwellEnd );
 }
 
+QgsCodeEditorJson *QgsJsonEditWidget::jsonEditor()
+{
+  return mCodeEditorJson;
+}
+
 void QgsJsonEditWidget::setJsonText( const QString &jsonText )
 {
   mJsonText = jsonText;

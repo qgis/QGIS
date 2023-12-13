@@ -56,6 +56,13 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     explicit QgsJsonEditWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
+     * Returns a reference to the JSON code editor used in the widget.
+     *
+     * \since QGIS 3.36
+     */
+    QgsCodeEditorJson *jsonEditor();
+
+    /**
      * \brief Set the JSON text in the widget to \a jsonText.
      */
     void setJsonText( const QString &jsonText );

@@ -753,6 +753,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     {
       QgsJsonEditWidget *jsonEditWidget = new QgsJsonEditWidget();
       jsonEditWidget->setJsonText( representedValue );
+      jsonEditWidget->jsonEditor()->setWrapMode( QsciScintilla::WrapWord );
       jsonEditWidget->setView( static_cast<QgsJsonEditWidget::View>( setup.config().value( QStringLiteral( "DefaultView" ) ).toInt() ) );
       jsonEditWidget->setFormatJsonMode( static_cast<QgsJsonEditWidget::FormatJson>( setup.config().value( QStringLiteral( "FormatJson" ) ).toInt() ) );
       jsonEditWidget->setControlsVisible( false );
