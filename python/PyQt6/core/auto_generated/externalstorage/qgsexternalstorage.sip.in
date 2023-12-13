@@ -1,0 +1,223 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/externalstorage/qgsexternalstorage.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsExternalStorage
+{
+%Docstring(signature="appended")
+Abstract interface for external storage - to be implemented by various backends
+and registered in :py:class:`QgsExternalStorageRegistry`.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsexternalstorage.h"
+%End
+  public:
+
+    virtual ~QgsExternalStorage();
+
+    virtual QString type() const = 0;
+%Docstring
+Unique identifier of the external storage type.
+%End
+
+    virtual QString displayName() const = 0;
+%Docstring
+Returns the translated external storage name, which should be used for any
+user-visible display of the external storage name.
+%End
+
+    QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ActionStart storingMode = Qgis::ActionStart::Deferred ) const /Factory/;
+%Docstring
+Stores file ``filePath`` to the ``url`` for this project external storage.
+Storing process is run in background.
+Returns a :py:class:`QgsExternalStorageStoredContent` to follow the status of the stored resource.
+
+``storingMode`` defines if the download will start immediately or shall be manually triggered
+calling :py:func:`QgsExternalStorageStoredContent.store()`. User should use
+:py:class:`Qgis`.ActionStart.Deferred if he needs to connect the :py:func:`~QgsExternalStorage.stored` signal.
+
+After using this method, user wait for :py:func:`QgsExternalStorageStoredContent.stored()`,
+:py:func:`QgsExternalStorageStoredContent.errorOccurred()` or :py:func:`QgsExternalStorageStoredContent.canceled()` signals.
+
+It's possible to give ``authCfg`` authentication configuration id in case its needed.
+
+Caller takes ownership of the returned symbol.
+%End
+
+    QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authCfg = QString(), Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred ) const /Factory/;
+%Docstring
+Fetches file from ``url`` for this project external storage.
+Fetching process is run in background.
+Returns a :py:class:`QgsExternalStorageFetchedContent` to follow the status of the fetched resource.
+
+``fetchingMode`` defines if the download will start immediately or shall be manually triggered
+calling :py:func:`QgsExternalStorageFetchedContent.fetch()`. User should use
+:py:class:`Qgis`.ActionStart.Deferred if he needs to connect the :py:func:`~QgsExternalStorage.fetched` signal.
+
+After using this method, user should wait for :py:func:`QgsExternalStorageStoredContent.fetched()`,
+:py:func:`QgsExternalStorageStoredContent.errorOccurred()` or :py:func:`QgsExternalStorageStoredContent.canceled()` signals.
+
+It's possible to give ``authCfg`` authentication configuration id in case its needed.
+%End
+
+  protected:
+
+    virtual QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authCfg = QString() ) const = 0 /Factory/;
+%Docstring
+Stores file ``filePath`` to the ``url`` using ``authCfg`` authentication for this project external storage.
+
+.. seealso:: :py:func:`QgsExternalStorage.store`
+%End
+
+    virtual QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authCfg = QString() ) const = 0 /Factory/;
+%Docstring
+Fetches file from ``url`` using ``authCfg`` for this project external storage.
+
+.. seealso:: :py:func:`QgsExternalStorage.fetch`
+%End
+};
+
+class QgsExternalStorageContent : QObject
+{
+%Docstring(signature="appended")
+Base class for QgsExternalStorage stored and fetched content
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsexternalstorage.h"
+%End
+  public:
+
+    Qgis::ContentStatus status() const;
+%Docstring
+Returns content status
+%End
+
+    const QString &errorString() const;
+%Docstring
+Returns error textual description if an error occurred and :py:func:`~QgsExternalStorageContent.status` returns Failed
+%End
+
+  public slots:
+
+    virtual void cancel();
+%Docstring
+Cancels content fetching/storing
+%End
+  signals:
+
+    void errorOccurred( const QString &errorString );
+%Docstring
+The signal is emitted when an error occurred. ``errorString`` is a textual description of the error
+%End
+
+    void progressChanged( double progress );
+%Docstring
+The signal is emitted whenever content fetching/storing estimated progression value ``progress`` has changed.
+``progress`` value is between 0 and 100.
+%End
+
+    void canceled();
+%Docstring
+The signal is emitted when content fetching/storing has been canceled
+%End
+
+  protected:
+
+    void reportError( const QString &errorMsg );
+%Docstring
+Update content according to given ``errorMsg`` error message
+Inherited classes should call this method whenever they meet an error.
+%End
+
+    void setStatus( Qgis::ContentStatus status );
+%Docstring
+Sets the external storage ``status``
+%End
+
+
+
+};
+
+class QgsExternalStorageFetchedContent : QgsExternalStorageContent
+{
+%Docstring(signature="appended")
+Class for :py:class:`QgsExternalStorage` fetched content
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsexternalstorage.h"
+%End
+  public:
+
+    virtual QString filePath() const = 0;
+%Docstring
+Returns fetched resource file path
+%End
+
+    virtual void fetch() = 0;
+%Docstring
+Starts fetching
+%End
+
+  signals:
+
+    void fetched();
+%Docstring
+The signal is emitted when the resource has successfully been fetched
+%End
+};
+
+class QgsExternalStorageStoredContent : QgsExternalStorageContent
+{
+%Docstring(signature="appended")
+Class for :py:class:`QgsExternalStorage` stored content
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsexternalstorage.h"
+%End
+  public:
+
+    virtual QString url() const = 0;
+%Docstring
+Returns stored resource URL
+%End
+
+    virtual void store() = 0;
+%Docstring
+Starts storing
+%End
+
+  signals:
+
+    void stored();
+%Docstring
+The signal is emitted when the resource has successfully been stored
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/externalstorage/qgsexternalstorage.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

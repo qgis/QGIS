@@ -1,0 +1,40 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscommandlineutils.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsCommandLineUtils
+{
+%Docstring(signature="appended")
+Utils class for QGIS command line tools.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgscommandlineutils.h"
+%End
+  public:
+
+    static QString allVersions( );
+%Docstring
+Display all versions in the standard output stream
+
+.. versionadded:: 3.22
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscommandlineutils.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

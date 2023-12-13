@@ -1,0 +1,9 @@
+# The following has been generated automatically from src/core/qgsdatetimestatisticalsummary.h
+QgsDateTimeStatisticalSummary.Count = QgsDateTimeStatisticalSummary.Statistic.Count
+QgsDateTimeStatisticalSummary.CountDistinct = QgsDateTimeStatisticalSummary.Statistic.CountDistinct
+QgsDateTimeStatisticalSummary.CountMissing = QgsDateTimeStatisticalSummary.Statistic.CountMissing
+QgsDateTimeStatisticalSummary.Min = QgsDateTimeStatisticalSummary.Statistic.Min
+QgsDateTimeStatisticalSummary.Max = QgsDateTimeStatisticalSummary.Statistic.Max
+QgsDateTimeStatisticalSummary.Range = QgsDateTimeStatisticalSummary.Statistic.Range
+QgsDateTimeStatisticalSummary.All = QgsDateTimeStatisticalSummary.Statistic.All
+QgsDateTimeStatisticalSummary.Statistics = lambda flags=0: QgsDateTimeStatisticalSummary.Statistic(flags)

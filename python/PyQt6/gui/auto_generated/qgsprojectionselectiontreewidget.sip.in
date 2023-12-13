@@ -1,0 +1,228 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprojectionselectiontreewidget.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProjectionSelectionTreeWidget : QWidget
+{
+%Docstring(signature="appended")
+A widget for selecting a coordinate reference system from a tree.
+
+This widget implements a tree view of projections, as seen in the
+:py:class:`QgsProjectionSelectionDialog` dialog. In most cases it is more
+suitable to use the compact :py:class:`QgsProjectionSelectionWidget` widget.
+
+.. seealso:: :py:class:`QgsProjectionSelectionDialog`
+
+.. seealso:: :py:class:`QgsProjectionSelectionWidget`
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprojectionselectiontreewidget.h"
+%End
+  public:
+
+    QgsProjectionSelectionTreeWidget( QWidget *parent /TransferThis/ = 0,
+                                      QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+%Docstring
+Constructor for QgsProjectionSelectionTreeWidget, with the specified ``parent`` widget.
+
+Since QGIS 3.34, the optional ``filter`` argument can be used to specify filters on the systems
+shown in the widget. The default is to show all horizontal and compound CRS in order to match
+the behavior of older QGIS releases. The ``filter`` can be altered to also include vertical CRS if desired.
+%End
+
+    ~QgsProjectionSelectionTreeWidget();
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the CRS currently selected in the widget.
+
+.. seealso:: :py:func:`setCrs`
+
+.. versionadded:: 3.0
+%End
+
+    void setShowNoProjection( bool show );
+%Docstring
+Sets whether a "no/invalid" projection option should be shown. If this
+option is selected, calling :py:func:`~QgsProjectionSelectionTreeWidget.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+
+.. seealso:: :py:func:`showNoProjection`
+
+.. versionadded:: 3.0
+%End
+
+    void setShowBoundsMap( bool show );
+%Docstring
+Sets whether to show the bounds preview map.
+
+.. seealso:: :py:func:`showBoundsMap`
+
+.. versionadded:: 3.0
+%End
+
+    bool showNoProjection() const;
+%Docstring
+Returns whether the "no/invalid" projection option is shown. If this
+option is selected, calling :py:func:`~QgsProjectionSelectionTreeWidget.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+
+.. seealso:: :py:func:`setShowNoProjection`
+
+.. versionadded:: 3.0
+%End
+
+    void setNotSetText( const QString &text );
+%Docstring
+Sets the text to show for the not set option. Note that this option is not shown
+by default and must be set visible by calling :py:func:`~QgsProjectionSelectionTreeWidget.setShowNoProjection`.
+
+.. versionadded:: 3.16
+%End
+
+    bool showBoundsMap() const;
+%Docstring
+Returns whether the bounds preview map is shown.
+
+.. seealso:: :py:func:`setShowBoundsMap`
+
+.. versionadded:: 3.0
+%End
+
+    bool hasValidSelection() const;
+%Docstring
+Returns ``True`` if the current selection in the widget is a valid choice. Valid
+selections include any projection and also the "no/invalid projection" option
+(if :py:func:`~QgsProjectionSelectionTreeWidget.setShowNoProjection` was called). Invalid selections are the group
+headers (such as "Geographic Coordinate Systems")
+%End
+
+    QgsRectangle previewRect() const;
+%Docstring
+The initial "preview" rectangle for the bounds overview map.
+
+.. seealso:: :py:func:`previewRect`
+
+.. versionadded:: 3.0
+%End
+
+    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+%Docstring
+Returns the filters set on the available CRS.
+
+.. seealso:: :py:func:`setFilters`
+
+.. versionadded:: 3.34
+%End
+
+    void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
+%Docstring
+Sets ``filters`` for the available CRS.
+
+.. seealso:: :py:func:`filters`
+
+.. versionadded:: 3.34
+%End
+
+  public slots:
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the initial ``crs`` to show within the dialog.
+
+.. seealso:: :py:func:`crs`
+
+.. versionadded:: 3.0
+%End
+
+    void setPreviewRect( const QgsRectangle &rect );
+%Docstring
+Sets the initial "preview" rectangle for the bounds overview map.
+
+.. seealso:: :py:func:`previewRect`
+
+.. versionadded:: 3.0
+%End
+
+    void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
+%Docstring
+Filters this widget by the given CRSs.
+
+Sets this widget to filter the available projections to those listed
+by the given Coordinate Reference Systems.
+
+:param crsFilter: a list of the authority:id strings for Coordinate Reference Systems to include
+                  in the widget.
+%End
+
+ void pushProjectionToFront() /Deprecated/;
+%Docstring
+Marks the current selected projection for push to front of recent projections list.
+
+.. deprecated::
+   Has no effect since QGIS 3.20
+%End
+
+    void clearRecentCrs();
+%Docstring
+Clear the list of recent projections.
+
+.. versionadded:: 3.32
+%End
+
+  signals:
+
+    void crsSelected();
+%Docstring
+Emitted when a projection is selected in the widget.
+%End
+
+ void initialized() /Deprecated/;
+%Docstring
+Notifies others that the widget is now fully initialized, including deferred selection of projection.
+
+.. deprecated::
+   no longer emitted
+%End
+
+    void projectionDoubleClicked();
+%Docstring
+Emitted when a projection is double clicked in the list.
+
+.. versionadded:: 2.14
+%End
+
+    void hasValidSelectionChanged( bool isValid );
+%Docstring
+Emitted when the selection in the tree is changed from a valid selection to an invalid selection, or vice-versa.
+
+.. versionadded:: 3.18
+%End
+
+  protected:
+
+    virtual void resizeEvent( QResizeEvent *event );
+
+
+    virtual bool eventFilter( QObject *obj, QEvent *ev );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprojectionselectiontreewidget.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

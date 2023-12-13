@@ -1,0 +1,4 @@
+# The following has been generated automatically from src/gui/qgsnewgeopackagelayerdialog.h
+QgsNewGeoPackageLayerDialog.Prompt = QgsNewGeoPackageLayerDialog.OverwriteBehavior.Prompt
+QgsNewGeoPackageLayerDialog.Overwrite = QgsNewGeoPackageLayerDialog.OverwriteBehavior.Overwrite
+QgsNewGeoPackageLayerDialog.AddNewLayer = QgsNewGeoPackageLayerDialog.OverwriteBehavior.AddNewLayer

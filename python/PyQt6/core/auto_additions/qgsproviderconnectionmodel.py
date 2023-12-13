@@ -1,0 +1,6 @@
+# The following has been generated automatically from src/core/qgsproviderconnectionmodel.h
+QgsProviderConnectionModel.RoleConnectionName = QgsProviderConnectionModel.Role.RoleConnectionName
+QgsProviderConnectionModel.RoleUri = QgsProviderConnectionModel.Role.RoleUri
+QgsProviderConnectionModel.RoleConfiguration = QgsProviderConnectionModel.Role.RoleConfiguration
+QgsProviderConnectionModel.RoleEmpty = QgsProviderConnectionModel.Role.RoleEmpty
+QgsProviderConnectionModel.Role.baseClass = QgsProviderConnectionModel

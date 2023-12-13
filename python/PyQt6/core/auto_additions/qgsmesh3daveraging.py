@@ -1,0 +1,5 @@
+# The following has been generated automatically from src/core/mesh/qgsmesh3daveraging.h
+QgsMesh3DAveragingMethod.MultiLevelsAveragingMethod = QgsMesh3DAveragingMethod.Method.MultiLevelsAveragingMethod
+QgsMesh3DAveragingMethod.SigmaAveragingMethod = QgsMesh3DAveragingMethod.Method.SigmaAveragingMethod
+QgsMesh3DAveragingMethod.RelativeHeightAveragingMethod = QgsMesh3DAveragingMethod.Method.RelativeHeightAveragingMethod
+QgsMesh3DAveragingMethod.ElevationAveragingMethod = QgsMesh3DAveragingMethod.Method.ElevationAveragingMethod

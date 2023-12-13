@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistorywidgetcontext.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsHistoryWidgetContext
+{
+%Docstring(signature="appended")
+Contains settings which reflect the context in which a history widget is shown, e.g., an associated message bar.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgshistorywidgetcontext.h"
+%End
+  public:
+
+    QgsHistoryWidgetContext();
+%Docstring
+Constructor for QgsHistoryWidgetContext.
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
+to the appropriate message bar.
+
+.. seealso:: :py:func:`messageBar`
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the widget.
+
+.. seealso:: :py:func:`setMessageBar`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistorywidgetcontext.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

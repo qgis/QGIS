@@ -1,0 +1,363 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspointlocator.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+class QgsPointLocator : QObject
+{
+%Docstring(signature="appended")
+The class defines interface for querying point location:
+
+- query nearest vertices / edges to a point
+- query vertices / edges in rectangle
+- query areas covering a point
+
+Works with one layer.
+
+.. versionadded:: 2.8
+%End
+
+%TypeHeaderCode
+#include "qgspointlocator.h"
+%End
+  public:
+
+    explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+                              const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
+                              const QgsRectangle *extent = 0 );
+%Docstring
+Construct point locator for a ``layer``.
+
+If a valid :py:class:`QgsCoordinateReferenceSystem` is passed for ``destinationCrs`` then the locator will
+do the searches on data reprojected to the given CRS. For accurate reprojection it is important
+to set the correct ``transformContext`` if a ``destinationCrs`` is specified. This is usually taken
+from the current :py:func:`QgsProject.transformContext()`.
+
+If ``extent`` is not ``None``, the locator will index only a subset of the layer which falls within that extent.
+%End
+
+    ~QgsPointLocator();
+
+    QgsVectorLayer *layer() const;
+%Docstring
+Gets associated layer
+
+.. versionadded:: 2.14
+%End
+
+    QgsCoordinateReferenceSystem destinationCrs() const;
+%Docstring
+Gets destination CRS - may be an invalid :py:class:`QgsCoordinateReferenceSystem` if not doing OTF reprojection
+
+.. versionadded:: 2.14
+%End
+
+    const QgsRectangle *extent() const;
+%Docstring
+Gets extent of the area point locator covers - if ``None`` then it caches the whole layer
+
+.. versionadded:: 2.14
+%End
+
+    void setExtent( const QgsRectangle *extent );
+%Docstring
+Configure extent - if not ``None``, it will index only that area
+
+.. versionadded:: 2.14
+%End
+
+    void setRenderContext( const QgsRenderContext *context );
+%Docstring
+Configure render context  - if not ``None``, it will use to index only visible feature
+
+.. versionadded:: 3.2
+%End
+
+    enum Type
+    {
+      Invalid,
+      Vertex,
+      Edge,
+      Area,
+      Centroid,
+      MiddleOfSegment,
+      LineEndpoint,
+      All
+    };
+
+    typedef QFlags<QgsPointLocator::Type> Types;
+
+
+    bool init( int maxFeaturesToIndex = -1, bool relaxed = false );
+%Docstring
+Prepare the index for queries. Does nothing if the index already exists.
+If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
+to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
+
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+in the constructor. if ``True``, index building will be done in another thread and :py:func:`~QgsPointLocator.init` method returns
+immediately. :py:func:`~QgsPointLocator.initFinished` signal will be emitted once the initialization is over.
+
+Returns ``False`` if the creation of index is blocking and has been prematurely stopped due to the limit of features, otherwise ``True``
+
+.. seealso:: :py:class:`QgsPointLocator`
+%End
+
+    bool hasIndex() const;
+%Docstring
+Indicate whether the data have been already indexed
+%End
+
+    struct Match
+    {
+        Match();
+%Docstring
+construct invalid match
+%End
+
+        Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = 0 );
+
+        QgsPointLocator::Type type() const;
+
+        bool isValid() const;
+        bool hasVertex() const;
+%Docstring
+Returns ``True`` if the Match is a vertex
+%End
+        bool hasEdge() const;
+%Docstring
+Returns ``True`` if the Match is an edge
+%End
+        bool hasCentroid() const;
+%Docstring
+Returns ``True`` if the Match is a centroid
+%End
+        bool hasArea() const;
+%Docstring
+Returns ``True`` if the Match is an area
+%End
+        bool hasMiddleSegment() const;
+%Docstring
+Returns ``True`` if the Match is the middle of a segment
+%End
+
+        bool hasLineEndpoint() const;
+%Docstring
+Returns ``True`` if the Match is a line endpoint (start or end vertex).
+
+.. versionadded:: 3.20
+%End
+
+        double distance() const;
+%Docstring
+for vertex / edge match
+units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
+%End
+
+        QgsPointXY point() const;
+%Docstring
+for vertex / edge match
+coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
+%End
+
+        int vertexIndex() const;
+%Docstring
+for vertex / edge match (first vertex of the edge)
+%End
+
+        QgsVectorLayer *layer() const;
+%Docstring
+The vector layer where the snap occurred.
+Will be ``None`` if the snap happened on an intersection.
+%End
+
+        QgsFeatureId featureId() const;
+%Docstring
+The id of the feature to which the snapped geometry belongs.
+%End
+
+        void edgePoints( QgsPointXY &pt1 /Out/, QgsPointXY &pt2 /Out/ ) const;
+%Docstring
+Only for a valid edge match - obtain endpoints of the edge
+%End
+
+        QgsPoint interpolatedPoint( const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem() ) const;
+%Docstring
+Convenient method to return a point on an edge with linear
+interpolation of the Z value.
+The parameter ``destinationCrs`` depends of where the instance of this Match is created (geom.cache: layer CRS, map canvas snapper: dest CRS)
+
+.. versionadded:: 3.10
+%End
+
+        bool operator==( const QgsPointLocator::Match &other ) const;
+
+      protected:
+    };
+
+    typedef QList<QgsPointLocator::Match> MatchList;
+
+    struct MatchFilter
+    {
+      virtual ~MatchFilter();
+      virtual bool acceptMatch( const QgsPointLocator::Match &match ) = 0;
+    };
+
+
+    Match nearestVertex( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Find nearest vertex to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+%End
+
+    Match nearestCentroid( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Find nearest centroid to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+
+.. versionadded:: 3.12
+%End
+
+    Match nearestMiddleOfSegment( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Find nearest middle of segment to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+
+.. versionadded:: 3.12
+%End
+
+    Match nearestLineEndpoints( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Find nearest line endpoint (start or end vertex) to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+
+.. versionadded:: 3.20
+%End
+
+    Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Find nearest edge to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+%End
+
+    Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Find nearest area to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+This will first perform a pointInPolygon and return first result.
+If no match is found and tolerance is not 0, it will return nearestEdge.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+
+.. versionadded:: 3.0
+%End
+
+    MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Find edges within a specified rectangle
+Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+%End
+
+    MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Override of edgesInRect that construct rectangle from a center point and tolerance
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+%End
+
+    MatchList verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Find vertices within a specified rectangle
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+Optional filter may discard unwanted matches.
+
+.. versionadded:: 3.6
+%End
+
+    MatchList verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Override of verticesInRect that construct rectangle from a center point and tolerance
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+
+.. versionadded:: 3.6
+%End
+
+
+
+    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Find out if the ``point`` is in any polygons
+
+:param point: The point to check polygons against, in map coordinates
+:param relaxed: ``True`` if index build has to be non blocking
+:param filter: since QGIS 3.36, Optional filter may discard unwanted matches.
+
+.. note::
+
+   Parameters ``filter`` and ``relaxed`` are in reversed order compared to the rest of MatchList returning methods.
+%End
+
+    int cachedGeometryCount() const;
+%Docstring
+Returns how many geometries are cached in the index
+
+.. versionadded:: 2.14
+%End
+
+    bool isIndexing() const;
+%Docstring
+Returns ``True`` if the point locator is currently indexing the data.
+This method is useful if constructor parameter ``relaxed`` is ``True``
+
+.. seealso:: :py:class:`QgsPointLocator`
+%End
+
+    void waitForIndexingFinished();
+%Docstring
+If the point locator has been initialized relaxedly and is currently indexing,
+this methods waits for the indexing to be finished
+%End
+
+  signals:
+
+    void initFinished( bool ok );
+%Docstring
+Emitted whenever index has been built and initialization is finished
+
+:param ok: ``False`` if the creation of index has been prematurely stopped due to the limit of
+           features, otherwise ``True``
+%End
+
+  protected:
+    bool rebuildIndex( int maxFeaturesToIndex = -1 );
+
+  protected slots:
+    void destroyIndex();
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspointlocator.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

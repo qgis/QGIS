@@ -52,8 +52,6 @@ while getopts "p:am:" o; do
 done
 shift $((OPTIND-1))
 
-CLANG_TIDY_CHECKS=$(cat ${SOURCE_DIR}/tests/code_layout/clangtidy_checks.txt | grep -ve "^#" | grep -ve "^$" | tr -d '\n')
-
 if [[ ! -f "$BUILD_DIR/compile_commands.json" ]]; then
   echo "compile_commands.json file is missing, you need to add -DCMAKE_EXPORT_COMPILE_COMMANDS=ON when you run cmake to generate it."
   exit 1
@@ -80,5 +78,5 @@ set +e
 
 for file in $FILES;
 do
-  clang-tidy -p=$BUILD_DIR -checks="$CLANG_TIDY_CHECKS" $file
+  clang-tidy -p=$BUILD_DIR $file
 done

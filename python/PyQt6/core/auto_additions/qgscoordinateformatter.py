@@ -1,0 +1,8 @@
+# The following has been generated automatically from src/core/qgscoordinateformatter.h
+QgsCoordinateFormatter.FormatPair = QgsCoordinateFormatter.Format.FormatPair
+QgsCoordinateFormatter.FormatDegreesMinutesSeconds = QgsCoordinateFormatter.Format.FormatDegreesMinutesSeconds
+QgsCoordinateFormatter.FormatDegreesMinutes = QgsCoordinateFormatter.Format.FormatDegreesMinutes
+QgsCoordinateFormatter.FormatDecimalDegrees = QgsCoordinateFormatter.Format.FormatDecimalDegrees
+QgsCoordinateFormatter.FlagDegreesUseStringSuffix = QgsCoordinateFormatter.FormatFlag.FlagDegreesUseStringSuffix
+QgsCoordinateFormatter.FlagDegreesPadMinutesSeconds = QgsCoordinateFormatter.FormatFlag.FlagDegreesPadMinutesSeconds
+QgsCoordinateFormatter.FormatFlags = lambda flags=0: QgsCoordinateFormatter.FormatFlag(flags)

@@ -1,0 +1,115 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/georeferencing/qgsvectorwarper.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsVectorWarper
+{
+%Docstring(signature="appended")
+Vector layer warper which warps vector layers based on a list of source and destination GCPs.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsvectorwarper.h"
+%End
+  public:
+
+    explicit QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QList < QgsGcpPoint > &points,
+                              const QgsCoordinateReferenceSystem &destinationCrs );
+%Docstring
+Constructor for QgsVectorWarper.
+
+:param method: specifies the transformation method
+:param points: list of GCP points to use for the transformation
+:param destinationCrs: target CRS for transformed features
+%End
+
+    bool transformFeatures( QgsFeatureIterator &iterator, QgsFeatureSink *sink,
+                            const QgsCoordinateTransformContext &context,
+                            QgsFeedback *feedback = 0 ) const;
+%Docstring
+Transforms the features from ``iterator`` and adds the results to the specified ``sink``.
+
+The optional ``feedback`` argument can be used for progress reporting and cancellation.
+
+:return: ``True`` if all features were successfully transformed
+%End
+
+    QString error() const;
+%Docstring
+Returns the last error obtained during transformation.
+%End
+
+};
+
+
+class QgsVectorWarperTask : QgsTask
+{
+%Docstring(signature="appended")
+A task for warping a vector layer in a background thread.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsvectorwarper.h"
+%End
+  public:
+
+    QgsVectorWarperTask( QgsGcpTransformerInterface::TransformMethod method, const QList < QgsGcpPoint > &points,
+                         const QgsCoordinateReferenceSystem &destinationCrs,
+                         QgsVectorLayer *layer,
+                         const QString &fileName );
+%Docstring
+Constructor for QgsVectorWarperTask.
+
+:param method: transformation method
+:param points: GCP point list
+:param destinationCrs: destination layer CRS
+:param layer: source layer
+:param fileName: filename for destination layer
+%End
+
+    virtual void cancel();
+
+
+    enum class Result
+    {
+      Success,
+      Canceled,
+      Error,
+    };
+
+    Result result() const;
+%Docstring
+Returns the result of running the task.
+%End
+
+    QString errorMessage() const;
+%Docstring
+Returns the descriptive error message, if an error occurred.
+%End
+
+  protected:
+
+    virtual bool run();
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/georeferencing/qgsvectorwarper.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

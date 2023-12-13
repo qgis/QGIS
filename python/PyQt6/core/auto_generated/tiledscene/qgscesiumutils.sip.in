@@ -1,0 +1,88 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgscesiumutils.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsCesiumUtils
+{
+%Docstring(signature="appended")
+Contains utilities for working with Cesium data.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgscesiumutils.h"
+%End
+  public:
+
+
+    static QgsBox3D parseRegion( const QVariantList &region );
+%Docstring
+Parses a ``region`` object from a Cesium JSON document to a 3D box.
+%End
+
+
+    static QgsOrientedBox3D parseBox( const QVariantList &box );
+%Docstring
+Parses a ``box`` object from a Cesium JSON document to an oriented bounding box.
+%End
+
+
+    static QgsSphere parseSphere( const QVariantList &sphere );
+%Docstring
+Parses a ``sphere`` object from a Cesium JSON document.
+%End
+
+    static QgsSphere transformSphere( const QgsSphere &sphere, const QgsMatrix4x4 &transform );
+%Docstring
+Applies a ``transform`` to a sphere.
+%End
+
+    struct B3DMContents
+    {
+      QByteArray gltf;
+
+      QgsVector3D rtcCenter;
+    };
+
+    static B3DMContents extractGltfFromB3dm( const QByteArray &tileContent );
+%Docstring
+Extracts GLTF binary data and other contents from the legacy b3dm (Batched 3D Model) tile format.
+Returns empty byte array on error.
+%End
+
+    struct TileContents
+    {
+      QByteArray gltf;
+
+      QgsVector3D rtcCenter;
+    };
+
+    static TileContents extractGltfFromTileContent( const QByteArray &tileContent );
+%Docstring
+Parses tile content.
+Returns empty byte array on error.
+
+.. note::
+
+   cmpt, pnts, i3dm tile types are currently not supported
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgscesiumutils.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

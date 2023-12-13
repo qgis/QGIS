@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/settings/qgssettingstreewidget.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsSettingsTreeWidget : QWidget, QgsOptionsDialogHighlightWidget
+{
+%Docstring(signature="appended")
+:py:class:`QgsSettingsTreeWidget` is a widget with the settings tree to visualize, search and edit settings
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgssettingstreewidget.h"
+%End
+  public:
+    explicit QgsSettingsTreeWidget( QWidget *parent = 0 );
+%Docstring
+Constructor
+%End
+
+
+    void applyChanges() const;
+%Docstring
+Apply changes to settings value
+%End
+
+  protected:
+    virtual bool searchText( const QString &text );
+
+    virtual bool highlightText( const QString &text );
+
+    virtual void reset();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/settings/qgssettingstreewidget.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

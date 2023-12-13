@@ -1,0 +1,197 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotcanvas.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+%ModuleHeaderCode
+#include "qgsplotcanvas.h"
+#include "qgselevationprofilecanvas.h"
+%End
+
+class QgsPlotCanvas : QGraphicsView
+{
+%Docstring(signature="appended")
+Plot canvas is a class for displaying interactive 2d charts and plots.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplotcanvas.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsElevationProfileCanvas *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsElevationProfileCanvas;
+    else if ( qobject_cast<QgsPlotCanvas *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotCanvas;
+    else
+      sipType = nullptr;
+%End
+  public:
+
+    QgsPlotCanvas( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsPlotCanvas, with the specified ``parent`` widget.
+%End
+
+    ~QgsPlotCanvas();
+
+
+    void setTool( QgsPlotTool *tool );
+%Docstring
+Sets the interactive tool currently being used on the canvas.
+%End
+
+    void unsetTool( QgsPlotTool *tool );
+%Docstring
+Unset the current ``tool``.
+
+This is called from destructor of plot tools to make sure
+that this map tool won't be used any more.
+
+You don't have to call it manually, :py:class:`QgsPlotTool` takes care of it.
+%End
+
+    QgsPlotTool *tool();
+%Docstring
+Returns the currently active tool.
+%End
+
+    virtual QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the coordinate reference system (CRS) for map coordinates used by the canvas.
+
+May return an invalid CRS if no CRS is associated with the canvas.
+%End
+
+    virtual QgsPoint toMapCoordinates( const QgsPointXY &point ) const;
+%Docstring
+Converts a ``point`` on the canvas to the associated map coordinate.
+
+May return an empty point if the canvas point cannot be converted to a map point.
+%End
+
+    virtual QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const;
+%Docstring
+Converts a ``point`` in map coordinates to the associated canvas point.
+
+May return an empty point if the map point cannot be converted to a canvas point.
+%End
+
+    virtual void panContentsBy( double dx, double dy );
+%Docstring
+Pans the plot contents by ``dx``, ``dy`` in canvas units.
+
+The default implementation does nothing.
+%End
+
+    virtual void centerPlotOn( double x, double y );
+%Docstring
+Centers the plot on the plot point corresponding to ``x``, ``y`` in canvas units.
+
+The default implementation does nothing.
+%End
+
+    virtual void scalePlot( double factor );
+%Docstring
+Scales the plot by a specified ``scale`` factor.
+
+The default implementation does nothing.
+%End
+
+    virtual void zoomToRect( const QRectF &rect );
+%Docstring
+Zooms the plot to the specified ``rect`` in canvas units.
+
+The default implementation does nothing.
+%End
+
+    virtual QgsPointXY snapToPlot( QPoint point );
+%Docstring
+Snap a canvas point to the plot
+
+Returns an empty point if snapping was not possible.
+
+:param point: point in canvas coordinates
+%End
+
+  public slots:
+
+    virtual void refresh();
+%Docstring
+Updates and redraws the plot.
+%End
+
+  signals:
+
+    void toolChanged( QgsPlotTool *newTool );
+%Docstring
+Emitted when the plot tool is changed.
+%End
+
+    void plotAreaChanged();
+%Docstring
+Emitted whenever the visible area of the plot is changed.
+%End
+
+    void contextMenuAboutToShow( QMenu *menu, QgsPlotMouseEvent *event );
+%Docstring
+Emitted before the canvas context menu will be shown.
+Can be used to extend the context menu.
+%End
+
+    void willBeDeleted();
+%Docstring
+Emitted in the destructor when the canvas is about to be deleted,
+but is still in a perfectly valid state.
+%End
+
+  protected:
+
+    virtual bool event( QEvent *e );
+
+    virtual void keyPressEvent( QKeyEvent *e );
+
+    virtual void keyReleaseEvent( QKeyEvent *e );
+
+    virtual void mouseDoubleClickEvent( QMouseEvent *e );
+
+    virtual void mouseMoveEvent( QMouseEvent *e );
+
+    virtual void mousePressEvent( QMouseEvent *e );
+
+    virtual void mouseReleaseEvent( QMouseEvent *e );
+
+    virtual void wheelEvent( QWheelEvent *e );
+
+    virtual void resizeEvent( QResizeEvent *e );
+
+    virtual bool viewportEvent( QEvent *event );
+
+
+    virtual void wheelZoom( QWheelEvent *event );
+%Docstring
+Zoom plot from a mouse wheel ``event``.
+
+The default implementation does nothing.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotcanvas.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

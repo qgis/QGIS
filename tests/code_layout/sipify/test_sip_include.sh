@@ -8,23 +8,27 @@ REV=$(git -C ${srcdir} log -n1 --pretty=%H)
 pushd ${DIR} > /dev/null || exit
 
 code=0
-modules=(core gui analysis server)
-for module in "${modules[@]}"; do
-  cp python/${module}/${module}_auto.sip python/${module}/${module}_auto.sip.$REV.bak
+modules=(3d core gui analysis server)
+for root_dir in python python/PyQt6; do
+  for module in "${modules[@]}"; do
+    cp $root_dir/${module}/${module}_auto.sip $root_dir/${module}/${module}_auto.sip.$REV.bak
+  done
 done
 
 ./scripts/sip_include.sh
 
-for module in "${modules[@]}"; do
-  outdiff=$(diff python/${module}/${module}_auto.sip python/${module}/${module}_auto.sip.$REV.bak)
-  if [[ -n $outdiff ]]; then
-    echo -e " *** SIP include file for \x1B[33m${module}\x1B[0m not up to date."
-    echo "$outdiff"
-    code=1
-    mv python/${module}/${module}_auto.sip.$REV.bak python/${module}/${module}_auto.sip
-  else
-    rm python/${module}/${module}_auto.sip.$REV.bak
-  fi
+for root_dir in python python/PyQt6; do
+  for module in "${modules[@]}"; do
+    outdiff=$(diff $root_dir/${module}/${module}_auto.sip $root_dir/${module}/${module}_auto.sip.$REV.bak)
+    if [[ -n $outdiff ]]; then
+      echo -e " *** SIP include file for \x1B[33m${module}\x1B[0m not up to date."
+      echo "$outdiff"
+      code=1
+      mv $root_dir/${module}/${module}_auto.sip.$REV.bak $root_dir/${module}/${module}_auto.sip
+    else
+      rm $root_dir/${module}/${module}_auto.sip.$REV.bak
+    fi
+  done
 done
 
 if [[ code -eq 1 ]]; then
