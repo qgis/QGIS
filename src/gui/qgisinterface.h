@@ -329,6 +329,8 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Returns a reference to the main window "Mesh" menu.
+     *
+     * \since QGIS 3.34
      */
     virtual QMenu *meshMenu() = 0;
 
