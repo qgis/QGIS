@@ -28,6 +28,7 @@
 #include "qgssensorthingssourceselect.h"
 #include "qgssensorthingssourcewidget.h"
 #include "qgssensorthingsprovider.h"
+#include "qgssensorthingsdataitemguiprovider.h"
 #include "qgsapplication.h"
 
 //
@@ -104,6 +105,11 @@ QList<QgsSourceSelectProvider *> QgsSensorThingsProviderGuiMetadata::sourceSelec
 QList<QgsProviderSourceWidgetProvider *> QgsSensorThingsProviderGuiMetadata::sourceWidgetProviders()
 {
   return { new QgsSensorThingsSourceWidgetProvider() };
+}
+
+QList<QgsDataItemGuiProvider *> QgsSensorThingsProviderGuiMetadata::dataItemGuiProviders()
+{
+  return { new QgsSensorThingsDataItemGuiProvider() };
 }
 
 ///@endcond

@@ -52,6 +52,7 @@ class QgsSensorThingsProviderGuiMetadata: public QgsProviderGuiMetadata
     QgsSensorThingsProviderGuiMetadata();
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
     QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders() override;
+    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
 };
 
 ///@endcond
