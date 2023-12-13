@@ -36,6 +36,7 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui
 
     void setSourceUri( const QString &uri ) override;
     QString sourceUri() const override;
+    QString groupTitle() const override;
 
     /**
      * Updates a connection uri with the layer specific URI settings defined in the widget.
