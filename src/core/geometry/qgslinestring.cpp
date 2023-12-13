@@ -2399,7 +2399,7 @@ QgsLineString *QgsLineString::measuredLine( double start, double end ) const
   double lineLength = length();
   double lengthSoFar = 0.0;
 
-  
+
   double *mOut = cloned->mM.data();
   *mOut++ = start;
   for ( int i = 1; i < nbpoints ; ++i )
@@ -2413,5 +2413,5 @@ QgsLineString *QgsLineString::measuredLine( double start, double end ) const
       *mOut++ = 0.0;
   }
 
-  return cloned;
+  return cloned.release();
 }
