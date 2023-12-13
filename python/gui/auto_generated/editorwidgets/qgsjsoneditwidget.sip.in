@@ -42,6 +42,13 @@ Constructor for QgsJsonEditWidget.
 :param parent: parent widget
 %End
 
+    QgsCodeEditorJson *jsonEditor();
+%Docstring
+Returns a reference to the JSON code editor used in the widget.
+
+.. versionadded:: 3.36
+%End
+
     void setJsonText( const QString &jsonText );
 %Docstring
 Set the JSON text in the widget to ``jsonText``.
