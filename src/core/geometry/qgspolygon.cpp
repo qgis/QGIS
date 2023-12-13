@@ -207,7 +207,7 @@ QString QgsPolygon::asWkt( int precision ) const
     for ( const QgsCurve *curve : mInteriorRings )
     {
       QString childWkt;
-      if ( true || curve->hasCurvedSegments() )
+      if ( ! qgsgeometry_cast<QgsLineString *>( curve ) )
       {
         std::unique_ptr<QgsLineString> line( curve->curveToLine() );
         childWkt = line->asWkt( precision );
