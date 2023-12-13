@@ -55,16 +55,31 @@ class CORE_EXPORT QgsSensorThingsUtils
     static QString displayString( Qgis::SensorThingsEntity type, bool plural = false );
 
     /**
-    * Converts a string value corresponding to a SensorThings entity set to a Qgis::SensorThingsEntity type.
-    *
-    * Returns Qgis::SensorThingsEntity::Invalid if the string could not be converted to a known entity set type.
+     * Converts a string value corresponding to a SensorThings entity set to a Qgis::SensorThingsEntity type.
+     *
+     * Returns Qgis::SensorThingsEntity::Invalid if the string could not be converted to a known entity set type.
     */
     static Qgis::SensorThingsEntity entitySetStringToEntity( const QString &type );
+
+    /**
+     * Converts a SensorThings entity set to a SensorThings entity set string.
+     *
+     * \since QGIS 3.38
+    */
+    static QString entityToSetString( Qgis::SensorThingsEntity type );
 
     /**
      * Returns the fields which correspond to a specified entity \a type.
      */
     static QgsFields fieldsForEntityType( Qgis::SensorThingsEntity type );
+
+    /**
+     * Returns the fields which correspond to a specified entity \a baseType, expanded
+     * using the specified list of \a expandedTypes.
+     *
+     * \since QGIS 3.38
+     */
+    static QgsFields fieldsForExpandedEntityType( Qgis::SensorThingsEntity baseType, const QList< Qgis::SensorThingsEntity > &expandedTypes );
 
     /**
      * Returns the geometry field for a specified entity \a type.
@@ -117,6 +132,13 @@ class CORE_EXPORT QgsSensorThingsUtils
      * This method will block while network requests are made to the server.
      */
     static QList< Qgis::GeometryType > availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback = nullptr, const QString &authCfg = QString() );
+
+    /**
+     * Returns a list of permissible expand targets for a given base entity \a type.
+     *
+     * \since QGIS 3.38
+     */
+    static QList< QList< Qgis::SensorThingsEntity > > expandableTargets( Qgis::SensorThingsEntity type );
 
 };
 

@@ -64,7 +64,7 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   }
   mComboEntityType->setCurrentIndex( mComboEntityType->findData( QVariant::fromValue( Qgis::SensorThingsEntity::Location ) ) );
 
-  rebuildGeometryTypes( Qgis::SensorThingsEntity::Location );
+  setCurrentEntityType( Qgis::SensorThingsEntity::Location );
 
   connect( mComboEntityType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::entityTypeChanged );
   connect( mComboGeometryType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::validate );
@@ -72,6 +72,7 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   connect( mRetrieveTypesButton, &QToolButton::clicked, this, &QgsSensorThingsSourceWidget::retrieveTypes );
   mRetrieveTypesButton->setEnabled( false );
   connect( mExtentWidget, &QgsExtentWidget::extentChanged, this, &QgsSensorThingsSourceWidget::validate );
+  connect( mComboExpandTo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::validate );
   validate();
 }
 
@@ -96,7 +97,7 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
   if ( type != Qgis::SensorThingsEntity::Invalid )
     mComboEntityType->setCurrentIndex( mComboEntityType->findData( QVariant::fromValue( type ) ) );
 
-  rebuildGeometryTypes( mComboEntityType->currentData().value< Qgis::SensorThingsEntity >() );
+  setCurrentEntityType( mComboEntityType->currentData().value< Qgis::SensorThingsEntity >() );
   setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() );
 
   bool ok = false;
@@ -133,6 +134,14 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
   {
     mExtentWidget->clear();
   }
+
+  const QStringList expandTo = mSourceParts.value( QStringLiteral( "expandTo" ) ).toStringList();
+  if ( !expandTo.isEmpty() )
+  {
+    mComboExpandTo->setCurrentIndex( mComboExpandTo->findData( expandTo.join( ',' ) ) );
+  }
+  if ( mComboExpandTo->currentIndex() < 0 )
+    mComboExpandTo->setCurrentIndex( 0 );
 
   mIsValid = true;
 }
@@ -217,6 +226,15 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
     parts.remove( QStringLiteral( "featureLimit" ) );
   }
 
+  if ( !mComboExpandTo->currentData().isValid() )
+  {
+    parts.remove( QStringLiteral( "expandTo" ) );
+  }
+  else
+  {
+    parts.insert( QStringLiteral( "expandTo" ), mComboExpandTo->currentData().toString().split( ',' ) );
+  }
+
   if ( mExtentWidget->outputExtent().isNull() )
     parts.remove( QStringLiteral( "bounds" ) );
   else
@@ -231,7 +249,7 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
 void QgsSensorThingsSourceWidget::entityTypeChanged()
 {
   const Qgis::SensorThingsEntity entityType = mComboEntityType->currentData().value< Qgis::SensorThingsEntity >();
-  rebuildGeometryTypes( entityType );
+  setCurrentEntityType( entityType );
 
   validate();
 }
@@ -292,7 +310,7 @@ void QgsSensorThingsSourceWidget::connectionPropertiesTaskCompleted()
     mComboGeometryType->setCurrentIndex( 0 );
 }
 
-void QgsSensorThingsSourceWidget::rebuildGeometryTypes( Qgis::SensorThingsEntity type )
+void QgsSensorThingsSourceWidget::setCurrentEntityType( Qgis::SensorThingsEntity type )
 {
   if ( mPropertiesTask )
   {
@@ -344,6 +362,37 @@ void QgsSensorThingsSourceWidget::rebuildGeometryTypes( Qgis::SensorThingsEntity
     mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::NoGeometry ), tr( "No Geometry" ), QVariant::fromValue( Qgis::WkbType::NoGeometry ) );
     setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() ); mComboGeometryType->setCurrentIndex( 0 );
   }
+
+  mComboExpandTo->clear();
+  mComboExpandTo->addItem( QString() );
+  const QList< QList< Qgis::SensorThingsEntity > > expandToEntities = QgsSensorThingsUtils::expandableTargets( type );
+  QList< std::pair< QString, QVariant > > sortedExpandToEntities;
+  sortedExpandToEntities.reserve( expandToEntities.size() );
+  for ( const QList< Qgis::SensorThingsEntity > &expandTypes : expandToEntities )
+  {
+    QStringList expandToTranslatedStrings;
+    QStringList expandToRawStrings;
+    expandToTranslatedStrings.reserve( expandTypes.size() );
+    expandToRawStrings.reserve( expandTypes.size() );
+    for ( Qgis::SensorThingsEntity entity : expandTypes )
+    {
+      expandToTranslatedStrings.append( QgsSensorThingsUtils::displayString( entity, true ) );
+      expandToRawStrings.append( qgsEnumValueToKey( entity ) );
+    }
+
+    sortedExpandToEntities.append( {expandToTranslatedStrings.join( QStringLiteral( " > " ) ), expandToRawStrings.join( ',' ) } );
+  }
+  std::sort( sortedExpandToEntities.begin(), sortedExpandToEntities.end(), []( const std::pair< QString, QVariant > &a, const std::pair< QString, QVariant > &b ) -> bool
+  {
+    return QString::localeAwareCompare( a.first, b.first ) < 0;
+  } );
+
+  for ( const std::pair< QString, QVariant > &expandTo : sortedExpandToEntities )
+  {
+    mComboExpandTo->addItem( expandTo.first, expandTo.second );
+  }
+
+  mComboExpandTo->setCurrentIndex( 0 );
 }
 
 void QgsSensorThingsSourceWidget::setCurrentGeometryTypeFromString( const QString &geometryType )

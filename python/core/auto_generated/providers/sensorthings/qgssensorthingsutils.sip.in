@@ -42,9 +42,24 @@ Converts a string value corresponding to a SensorThings entity set to a :py:clas
 Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could not be converted to a known entity set type.
 %End
 
+    static QString entityToSetString( Qgis::SensorThingsEntity type );
+%Docstring
+Converts a SensorThings entity set to a SensorThings entity set string.
+
+.. versionadded:: 3.38
+%End
+
     static QgsFields fieldsForEntityType( Qgis::SensorThingsEntity type );
 %Docstring
 Returns the fields which correspond to a specified entity ``type``.
+%End
+
+    static QgsFields fieldsForExpandedEntityType( Qgis::SensorThingsEntity baseType, const QList< Qgis::SensorThingsEntity > &expandedTypes );
+%Docstring
+Returns the fields which correspond to a specified entity ``baseType``, expanded
+using the specified list of ``expandedTypes``.
+
+.. versionadded:: 3.38
 %End
 
     static QString geometryFieldForEntityType( Qgis::SensorThingsEntity type );
@@ -97,6 +112,13 @@ Returns a list of available geometry types for the server at the specified ``uri
 and entity ``type``.
 
 This method will block while network requests are made to the server.
+%End
+
+    static QList< QList< Qgis::SensorThingsEntity > > expandableTargets( Qgis::SensorThingsEntity type );
+%Docstring
+Returns a list of permissible expand targets for a given base entity ``type``.
+
+.. versionadded:: 3.38
 %End
 
 };
