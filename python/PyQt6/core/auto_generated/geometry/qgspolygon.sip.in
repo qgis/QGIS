@@ -50,6 +50,8 @@ Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
 
     virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
+    virtual QString asWkt( int precision = 17 ) const;
+
     virtual QgsPolygon *surfaceToPolygon() const /Factory/;
 
 
