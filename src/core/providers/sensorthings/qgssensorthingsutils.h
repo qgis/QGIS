@@ -40,6 +40,13 @@ class CORE_EXPORT QgsSensorThingsUtils
     static Qgis::SensorThingsEntity stringToEntity( const QString &type );
 
     /**
+     * Converts a Qgis::SensorThingsEntity \a type to a user-friendly translated string.
+     *
+     * If \a plural is TRUE then a plural string is returned (ie "Things" instead of "Thing").
+    */
+    static QString displayString( Qgis::SensorThingsEntity type, bool plural = false );
+
+    /**
     * Converts a string value corresponding to a SensorThings entity set to a Qgis::SensorThingsEntity type.
     *
     * Returns Qgis::SensorThingsEntity::Invalid if the string could not be converted to a known entity set type.
