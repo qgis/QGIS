@@ -377,6 +377,10 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
   if ( entity != Qgis::SensorThingsEntity::Invalid )
     components.insert( QStringLiteral( "entity" ), qgsEnumValueToKey( entity ) );
 
+  const QString expandToParam = dsUri.param( QStringLiteral( "expandTo" ) );
+  if ( !expandToParam.isEmpty() )
+    components.insert( QStringLiteral( "expandTo" ), expandToParam.split( ',' ) );
+
   bool ok = false;
   const int maxPageSizeParam = dsUri.param( QStringLiteral( "pageSize" ) ).toInt( &ok );
   if ( ok )
@@ -465,6 +469,10 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
     dsUri.setParam( QStringLiteral( "entity" ),
                     qgsEnumValueToKey( entity ) );
   }
+
+  const QStringList expandToParam = parts.value( QStringLiteral( "expandTo" ) ).toStringList();
+  if ( !expandToParam.isEmpty() )
+    dsUri.setParam( QStringLiteral( "expandTo" ), expandToParam.join( ',' ) );
 
   bool ok = false;
   const int maxPageSizeParam = parts.value( QStringLiteral( "pageSize" ) ).toInt( &ok );
