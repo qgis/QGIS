@@ -2453,6 +2453,12 @@ if (WITH_PDAL)
   )
 endif()
 
+if (WITH_QTWEBENGINE)
+    target_link_libraries(qgis_core
+      ${QT_VERSION_BASE}::WebEngineCore
+    )
+endif()
+
 if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_core
     provider_wms_a
