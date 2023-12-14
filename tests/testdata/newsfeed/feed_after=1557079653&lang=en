@@ -1,0 +1,22 @@
+[
+  {
+    "pk": 3,
+    "publish_from": 1557073748.136,
+    "publish_to":   1557078653,
+    "title": "QGIS acquired by ESRI",
+    "image": "",
+    "content": "<p>QGIS is finally part of the ESRI ecosystem, it has been rebranded as CrashGIS to better integrate with ESRI products line.</p>",
+    "url": "https://www.qgis.com",
+    "sticky": false
+  },
+  {
+    "pk": 11,
+    "publish_from": 1557360008.132,
+    "publish_to":   7868426853,
+    "title": "QGIS Italian Meeting Revisited",
+    "image": "",
+    "content": "<p>Hello from Italy!</p>",
+    "url": null,
+    "sticky": false
+  }
+]

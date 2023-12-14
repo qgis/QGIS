@@ -157,7 +157,7 @@ jobs:
         with:
           separator: ' '
       - name: Spell Test
-        run: ./scripts/spell_check/check_spelling.sh -r ${{ steps.changed_files.outputs.all_changed_files }}
+        run: ./scripts/spell_check/check_spelling.sh -r "${{ steps.changed_files.outputs.all_changed_files }}"
 
   sip_check:
     runs-on: ubuntu-latest
