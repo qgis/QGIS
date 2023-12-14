@@ -122,6 +122,16 @@ of a call to :py:func:`~QgsNewsFeedParser.fetch`).
 .. seealso:: :py:func:`fetch`
 %End
 
+    void entryUpdated( const QgsNewsFeedParser::Entry &entry );
+%Docstring
+Emitted whenever an existing ``entry`` is available from the feed (as a result
+of a call to :py:func:`~QgsNewsFeedParser.fetch`).
+
+.. seealso:: :py:func:`fetch`
+
+.. versionadded:: 3.36
+%End
+
     void entryDismissed( const QgsNewsFeedParser::Entry &entry );
 %Docstring
 Emitted whenever an ``entry`` is dismissed (as a result of a call
