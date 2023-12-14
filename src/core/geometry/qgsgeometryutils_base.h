@@ -483,6 +483,8 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \return true if all the differences between pairs of values are within epsilon, false otherwise.
      * \throws std::invalid_argument If the number of arguments is not greater than 0 or not even.
      *
+     * \see fuzzyDistanceEqual
+     *
      * \since QGIS 3.36
      */
     template<typename T, typename... Args>
@@ -507,6 +509,46 @@ class CORE_EXPORT QgsGeometryUtilsBase
       }
     }
 
+    /**
+     * Compare equality between multiple pairs of values with a specified epsilon.
+     *
+     * \tparam T Floating-point type (double or float) for the values to be compared.
+     * \tparam Args Type of arguments for the values to be compared.
+     * \param epsilon The range within which the differences are checked.
+     * \param args Variadic list of values to be compared in pairs.
+     *             The number of arguments must be greater than or equal to 4.
+     *             It must follow the pattern: x1, y1, x2, y2, or x1, y1, z1, x2, y2, z2, ...
+     * \return true if the squares of differences between pairs of values sum up to less than epsilon squared, false otherwise.
+     * \throws std::invalid_argument If the number of arguments is less than 4 or not even.
+     *
+     * \see fuzzyEqual
+     *
+     * \since QGIS 3.36
+     */
+    template<typename T, typename... Args>
+    static bool fuzzyDistanceEqual( T epsilon, const Args &... args )
+    {
+      constexpr size_t numArgs = sizeof...( args );
+      if ( numArgs < 4 || numArgs % 2 != 0 )
+      {
+        throw std::invalid_argument( "The number of arguments must be greater than or equal to 4 and even" );
+      }
+      else
+      {
+        const T squaredEpsilon = epsilon * epsilon;
+        T sum = 0;
+
+        T values[] = {static_cast<T>( args )...};
+
+        for ( size_t i = 0; i < numArgs / 2; ++i )
+        {
+          const T diff = values[i] - values[i + numArgs / 2];
+          sum += diff * diff;
+        }
+
+        return sum < squaredEpsilon;
+      }
+    }
 #endif
 
 };
