@@ -393,6 +393,10 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   connect( mCanvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, this, &Qgs3DMapCanvasWidget::onTotalPendingJobsCountChanged );
   connect( mCanvas->scene(), &Qgs3DMapScene::gpuMemoryLimitReached, this, &Qgs3DMapCanvasWidget::onGpuMemoryLimitReached );
 
+  // update the navigation widget when the near/far planes have been updated by the map scene
+  connect( mCanvas->cameraController()->camera(), &Qt3DRender::QCamera::nearPlaneChanged, mNavigationWidget, &Qgs3DNavigationWidget::updateFromCamera );
+  connect( mCanvas->cameraController()->camera(), &Qt3DRender::QCamera::farPlaneChanged, mNavigationWidget, &Qgs3DNavigationWidget::updateFromCamera );
+
   mAnimationWidget->setCameraController( mCanvas->cameraController() );
   mAnimationWidget->setMap( map );
 
