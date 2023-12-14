@@ -2033,10 +2033,10 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
     }
 
     // if the default style failed to load or was disabled use some very basic defaults
-    if ( !defaultLoadedFlag && isSpatial() )
+    if ( !defaultLoadedFlag )
     {
-      // add single symbol renderer
-      setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
+      // add single symbol renderer for spatial layers
+      setRenderer( isSpatial() ? QgsFeatureRenderer::defaultRenderer( geometryType() ) : nullptr );
     }
 
     if ( !mSetLegendFromStyle )
@@ -4179,7 +4179,10 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
   // we must allow setting a renderer if our geometry type is unknown
   // as this allows the renderer to be correctly set even for layers
   // with broken sources
-  if ( !isSpatial() && mWkbType != Qgis::WkbType::Unknown )
+  // (note that we allow REMOVING the renderer for non-spatial layers,
+  // e.g. to permit removing the renderer when the layer changes from
+  // a spatial layer to a non-spatial one)
+  if ( r && !isSpatial() && mWkbType != Qgis::WkbType::Unknown )
     return;
 
   if ( r != mRenderer )
