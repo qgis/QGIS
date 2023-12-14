@@ -510,6 +510,22 @@ if(WITH_CORE)
     set(HAVE_3D TRUE)  # used in qgsconfig.h
   endif()
 
+  set (WITH_QTWEBENGINE FALSE CACHE BOOL "Enable QtWebEngine support")
+  if (WITH_QTWEBENGINE)
+    if(WITH_3D)
+      message(FATAL_ERROR "QtWebEngine support cannot be enabled if QGIS 3D support is enabled")
+    endif()
+    if(WITH_QTWEBKIT)
+      message(FATAL_ERROR "QtWebEngine support cannot be enabled if Qt WebKit support is enabled")
+    endif()
+    add_definitions(-DWITH_QTWEBENGINE)
+    message(STATUS "QtWebEngine support enabled")
+    set(HAVE_WEBENGINE TRUE)  # used in qgsconfig.h
+  else()
+    message(STATUS "QtWebEngine support DISABLED.")
+    set(HAVE_WEBENGINE FALSE)  # used in qgsconfig.h
+  endif()
+
   # get the Qt plugins directory
   get_target_property(QMAKE_EXECUTABLE ${QT_VERSION_BASE}::qmake LOCATION)
 
