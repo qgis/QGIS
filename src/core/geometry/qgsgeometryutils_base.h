@@ -32,6 +32,20 @@ class CORE_EXPORT QgsGeometryUtilsBase
   public:
 
     /**
+     * Returns the squared 3D distance between (\a x1, \a y1), (\a x2, \a y2) and (\a z2, \a z2).
+     *
+     * No check is done, if z contains NaN value.
+     */
+    static double sqrDistance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) SIP_HOLDGIL {return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 ) + ( z1 - z2 ) * ( z1 - z2 ); }
+
+    /**
+     * Returns the 3D distance between (\a x1, \a y1), (\a x2, \a y2) and (\a z2, \a z2).
+     *
+     * No check is done, if z contains NaN value.
+     */
+    static double distance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) SIP_HOLDGIL {return std::sqrt( sqrDistance3D( x1, y1, z1, x2, y2, z2 ) ); }
+
+    /**
      * Returns the squared 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
      */
     static double sqrDistance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 ); }
