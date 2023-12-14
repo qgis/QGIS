@@ -683,6 +683,16 @@ class CORE_EXPORT QgsGeometryUtils
     }
 
     /**
+     * Returns the squared 3D distance between two points.
+     *
+     * No check is done, if z contains NaN value.
+     */
+    static double sqrDistance3D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::sqrDistance3D( pt1.x(), pt1.y(), pt1.z(), pt2.x(), pt2.y(), pt2.z() );
+    }
+
+    /**
      * Returns the 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
      *
      * \deprecated Use QgsGeometryUtilsBase methods instead.
@@ -693,6 +703,17 @@ class CORE_EXPORT QgsGeometryUtils
      * Returns the 2D distance between two points.
      */
     static double distance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL { return QgsGeometryUtilsBase::distance2D( pt1.x(), pt1.y(), pt2.x(), pt2.y() );}
+
+    /**
+     * Returns the 3D distance between two points.
+     *
+     * No check is done, if z contains NaN value.
+     */
+    static double distance3D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::distance3D( pt1.x(), pt1.y(), pt1.z(), pt2.x(), pt2.y(), pt2.z() );
+    }
+
 
     /**
      * Returns the squared distance between a point and a line.
