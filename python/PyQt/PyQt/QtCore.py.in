@@ -70,4 +70,4 @@ QVariant.__eq__ = __eq__
 QVariant.__ne__ = __ne__
 QVariant.__hash__ = __hash__
 
-NULL = QVariant(QVariant.Int)
+NULL = QVariant(QMetaType.Type.Int)
