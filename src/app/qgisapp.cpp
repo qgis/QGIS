@@ -6637,8 +6637,8 @@ bool QgisApp::fileSave()
 
     Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
     const QString qgisProjectExt = tr( "QGIS Project Formats" ) + ( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgz ? " (*.qgz *.QGZ *.qgs *.QGS)" : " (*.qgs *.QGS *.qgz *.QGZ)" );
-    const QString qgzProjectExt = tr( "QGIS Standard Project Format" ) + " (*.qgz *.QGZ)";
-    const QString qgsProjectExt = tr( "QGIS Text Project Format" ) + " (*.qgs *.QGS)";
+    const QString qgzProjectExt = tr( "QGIS Bundled Project Format" ) + " (*.qgz *.QGZ)";
+    const QString qgsProjectExt = tr( "QGIS XML Project Format" ) + " (*.qgs *.QGS)";
 
     QString filter;
     QString path = QFileDialog::getSaveFileName(
@@ -6753,8 +6753,8 @@ void QgisApp::fileSaveAs()
 
   Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
   const QString qgisProjectExt = tr( "QGIS Project Formats" ) + ( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgz ? " (*.qgz *.QGZ *.qgs *.QGS)" : " (*.qgs *.QGS *.qgz *.QGZ)" );
-  const QString qgzProjectExt = tr( "QGIS Standard Project Format" ) + " (*.qgz *.QGZ)";
-  const QString qgsProjectExt = tr( "QGIS Text Project Format" ) + " (*.qgs *.QGS)";
+  const QString qgzProjectExt = tr( "QGIS Bundled Project Format" ) + " (*.qgz *.QGZ)";
+  const QString qgsProjectExt = tr( "QGIS XML Project Format" ) + " (*.qgs *.QGS)";
 
   QString filter;
   QString path = QFileDialog::getSaveFileName(
