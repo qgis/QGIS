@@ -76,7 +76,7 @@ def import_tokens(module, classes):
 
 def fix_file(filename: str, args: argparse.Namespace) -> int:
 
-    if (filename != "../python/plugins/processing/gui/BatchInputSelectionPanel.py"):
+    if (filename != "../python/plugins/processing/gui/BatchPanel.py"):
         return 0
 
     with (open(filename, encoding='UTF-8') as f):
@@ -129,11 +129,14 @@ def fix_file(filename: str, args: argparse.Namespace) -> int:
 
         if token.offset in fix_moved_classes:
             # TODO We need to deal with case where we have removed all imported classes
-            tokens[i] = tokens[i]._replace(src="")
-            j = i + 1
-            while tokens[j].src == "," or tokens[j].name == 'UNIMPORTANT_WS' or tokens[j].name == 'NEWLINE':
-                tokens[j] = tokens[j]._replace(src="")
-                j += 1
+
+            tokens.pop(i)
+            while tokens[i].src == "," or tokens[i].name in ['UNIMPORTANT_WS', 'NEWLINE', 'NL']:
+                tokens.pop(i)
+
+            # TODO Ugly, do better
+            if tokens[i - 1].src == '    ':
+                tokens.pop(i - 1)
 
         if token.offset == last_import:
 
