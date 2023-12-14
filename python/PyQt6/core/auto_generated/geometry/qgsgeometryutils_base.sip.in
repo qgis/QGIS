@@ -489,6 +489,8 @@ Calculates Cartesian azimuth between points (``x1``, ``y1``) and (``x2``, ``y2``
 
 .. versionadded:: 3.34
 %End
+
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *
