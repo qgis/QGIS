@@ -389,7 +389,14 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared3D()
      * \since QGIS 3.0
     */
-    double distance3D( double x, double y, double z ) const SIP_HOLDGIL;
+    double distance3D( double x, double y, double z ) const SIP_HOLDGIL
+    {
+      if ( is3D() || !std::isnan( z ) )
+      {
+        return QgsGeometryUtilsBase::distance3D( mX, mY, mZ, x, y, z );
+      }
+      return QgsGeometryUtilsBase::distance2D( mX, mY, x, y );
+    }
 
     /**
      * Returns the Cartesian 3D distance between this point and another point. In certain
@@ -398,7 +405,14 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared3D()
      * \since QGIS 3.0
     */
-    double distance3D( const QgsPoint &other ) const SIP_HOLDGIL;
+    double distance3D( const QgsPoint &other ) const SIP_HOLDGIL
+    {
+      if ( is3D() || other.is3D() )
+      {
+        return QgsGeometryUtilsBase::distance3D( mX, mY, mZ, other.x(), other.y(), other.z() );
+      }
+      return QgsGeometryUtilsBase::distance2D( mX, mY, other.x(), other.y() );
+    }
 
     /**
      * Returns the Cartesian 3D squared distance between this point and a specified x, y, z coordinate. Calling
@@ -407,7 +421,14 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance3D()
      * \since QGIS 3.0
     */
-    double distanceSquared3D( double x, double y, double z ) const SIP_HOLDGIL;
+    double distanceSquared3D( double x, double y, double z ) const SIP_HOLDGIL
+    {
+      if ( is3D() || !std::isnan( z ) )
+      {
+        return QgsGeometryUtilsBase::sqrDistance3D( mX, mY, mZ, x, y, z );
+      }
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, x, y );
+    }
 
     /**
      * Returns the Cartesian 3D squared distance between this point and another point. Calling
@@ -416,7 +437,14 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance3D()
      * \since QGIS 3.0
     */
-    double distanceSquared3D( const QgsPoint &other ) const SIP_HOLDGIL;
+    double distanceSquared3D( const QgsPoint &other ) const SIP_HOLDGIL
+    {
+      if ( is3D() || other.is3D() )
+      {
+        return QgsGeometryUtilsBase::sqrDistance3D( mX, mY, mZ, other.x(), other.y(), other.z() );
+      }
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, other.x(), other.y() );
+    }
 
     /**
      * Calculates Cartesian azimuth between this point and other one (clockwise in degree, starting from north)
