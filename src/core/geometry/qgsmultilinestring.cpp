@@ -14,6 +14,7 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsmultilinestring.h"
+#include "qgsabstractgeometry.h"
 #include "qgsapplication.h"
 #include "qgscurve.h"
 #include "qgscircularstring.h"
@@ -178,3 +179,32 @@ bool QgsMultiLineString::wktOmitChildType() const
   return true;
 }
 
+QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end ) const
+{
+  std::unique_ptr< QgsMultiLineString > result = std::make_unique< QgsMultiLineString >();
+  if ( isEmpty() )
+  {
+    result->convertTo( QgsWkbTypes::addM( mWkbType ) );
+    return result.release();
+  }
+
+  /* Calculate the total length of the line */
+  const double length{this->length()};
+  const double range{end - start};
+  double lengthSoFar{0.0};
+
+  result->reserve( numGeometries() );
+  for ( int i = 0; i < numGeometries(); i++ )
+  {
+    const double subLength{geometryN( i )->length()};
+
+    const double subStart{ ( start + range *lengthSoFar / length ) };
+    const double subEnd{ ( start + range * ( lengthSoFar + subLength ) / length ) };
+
+    result->addGeometry( qgsgeometry_cast<QgsLineString *>( geometryN( i ) )->measuredLine( subStart, subEnd ) );
+
+    lengthSoFar += subLength;
+  }
+
+  return result.release();
+}
