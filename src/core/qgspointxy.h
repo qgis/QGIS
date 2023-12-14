@@ -255,11 +255,29 @@ class CORE_EXPORT QgsPointXY
      * \param other point to compare with
      * \param epsilon maximum difference for coordinates between the points
      * \returns TRUE if points are equal within specified tolerance
+     *
+     * \see distanceCompare
+     *
      * \since QGIS 2.9
      */
     bool compare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::fuzzyEqual( epsilon, mX, mY, other.x(), other.y() );
+    }
+
+    /**
+     * Compares this point with another point with a fuzzy tolerance using distance comparison
+     * \param other point to compare with
+     * \param epsilon maximum difference for coordinates between the points
+     * \returns TRUE if points are equal within specified tolerance
+     *
+     * \see compare
+     *
+     * \since QGIS 3.36
+     */
+    bool distanceCompare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, mX, mY, other.x(), other.y() );
     }
 
     //! equality operator
