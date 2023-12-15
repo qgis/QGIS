@@ -776,4 +776,7 @@
 %Include auto_generated/vectortile/qgsvectortilewriter.sip
 %Include auto_generated/vectortile/qgsvtpktiles.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip
+%If ( HAVE_WEBENGINE_SIP )
+%Include auto_generated/web/qgswebenginepage.sip
+%End
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip

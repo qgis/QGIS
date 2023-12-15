@@ -175,6 +175,10 @@ if(NOT WITH_QTPRINTER)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QTPRINTER)
 endif()
 
+if(NOT WITH_QTWEBENGINE)
+  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_WEBENGINE_SIP)
+endif()
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/core/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/core/project.py @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/core/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/core/pyproject.toml @ONLY)
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp_files)

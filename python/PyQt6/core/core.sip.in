@@ -105,6 +105,7 @@ done:
 %Feature HAVE_QTPRINTER
 %Feature ANDROID
 %Feature VECTOR_MAPPED_TYPE
+%Feature HAVE_WEBENGINE_SIP
 %Feature PYQT6
 
 %Include conversions.sip

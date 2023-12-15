@@ -2077,6 +2077,15 @@ if (HAVE_OPENCL)
     )
 endif()
 
+if (HAVE_WEBENGINE)
+    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+        web/qgswebenginepage.cpp
+    )
+    set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+        web/qgswebenginepage.h
+    )
+endif()
+
 if(MSVC)
   set_source_files_properties(
       ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
@@ -2323,6 +2332,7 @@ target_include_directories(qgis_core PUBLIC
   validity
   vector
   vectortile
+  web
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/nlohmann
