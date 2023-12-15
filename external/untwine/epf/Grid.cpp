@@ -89,7 +89,7 @@ void Grid::resetLevel(int level)
     }
 }
 
-VoxelKey Grid::key(double x, double y, double z)
+VoxelKey Grid::key(double x, double y, double z) const
 {
     int xi = (int)std::floor((x - m_bounds.minx) / m_xsize);
     int yi = (int)std::floor((y - m_bounds.miny) / m_ysize);
