@@ -482,7 +482,6 @@ class CORE_EXPORT QgsGeometryUtilsBase
      *             The number of arguments must be greater than 0 and even.
      *             It must follow the pattern: x1, y1, x2, y2, or x1, y1, z1, x2, y2, z2, ...
      * \return true if all the differences between pairs of values are within epsilon, false otherwise.
-     * \throws std::invalid_argument If the number of arguments is not greater than 0 or not even.
      *
      * \see fuzzyDistanceEqual
      *
@@ -514,7 +513,6 @@ class CORE_EXPORT QgsGeometryUtilsBase
      *             The number of arguments must be greater than or equal to 4.
      *             It must follow the pattern: x1, y1, x2, y2, or x1, y1, z1, x2, y2, z2, ...
      * \return true if the squares of differences between pairs of values sum up to less than epsilon squared, false otherwise.
-     * \throws std::invalid_argument If the number of arguments is less than 4 or not even.
      *
      * \see fuzzyEqual
      *
