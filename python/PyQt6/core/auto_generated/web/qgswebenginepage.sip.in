@@ -1,0 +1,99 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/web/qgswebenginepage.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsWebEnginePage : QObject
+{
+%Docstring(signature="appended")
+A wrapper around the QWebEnginePage class, adding extra functionality.
+
+.. warning::
+
+   This class is only available on QGIS builds with WebEngine support enabled.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgswebenginepage.h"
+%End
+  public:
+
+    QgsWebEnginePage( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsWebEnginePage, with the specified ``parent`` widget.
+%End
+    ~QgsWebEnginePage();
+
+
+    void setContent( const QByteArray &data, const QString &mimeType = QString(), const QUrl &baseUrl = QUrl() );
+%Docstring
+Sets the content of the web page to ``data``. If the ``mimeType`` argument is empty, it is assumed that the content is text/plain,charset=US-ASCII
+
+The ``baseUrl`` is optional and used to resolve relative URLs in the document, such as referenced images or stylesheets.
+
+The html is loaded immediately; external objects are loaded asynchronously.
+%End
+
+    void setHtml( const QString &html, const QUrl &baseUrl = QUrl() );
+%Docstring
+Sets the content of this page to ``html``.
+
+The ``baseUrl`` is optional and used to resolve relative URLs in the document, such as referenced images or stylesheets.
+
+The html is loaded immediately; external objects are loaded asynchronously.
+
+.. note::
+
+   This function works only for HTML, for other mime types (such as XHTML and SVG) :py:func:`~QgsWebEnginePage.setContent` should be used instead.
+%End
+
+    void setUrl( const QUrl &url );
+%Docstring
+Sets the ``url`` of the web page to be displayed.
+
+Setting this property clears the page and loads the URL.
+%End
+
+  signals:
+
+    void loadStarted();
+%Docstring
+This signal is emitted when the page starts loading content.
+%End
+
+    void loadProgress( int progress );
+%Docstring
+This signal is emitted when the global ``progress`` status changes.
+
+The current value is provided by ``progress`` and scales from 0 to 100.
+It accumulates changes from all the child frames.
+%End
+
+    void loadFinished( bool ok );
+%Docstring
+This signal is emitted when the page finishes loading content.
+
+This signal is independent of script execution or page rendering.
+
+``ok`` will indicate whether the load was successful or any error occurred.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/web/qgswebenginepage.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
