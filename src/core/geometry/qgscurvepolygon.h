@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgssurface.h"
+#include "qgscurve.h"
 #include <memory>
 
 class QgsPolygon;
@@ -38,8 +39,80 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurvePolygon( const QgsCurvePolygon &p );
     QgsCurvePolygon &operator=( const QgsCurvePolygon &p );
 
-    bool operator==( const QgsAbstractGeometry &other ) const override;
-    bool operator!=( const QgsAbstractGeometry &other ) const override;
+#ifndef SIP_RUN
+  private:
+    bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
+    {
+      const QgsCurvePolygon *otherPolygon = qgsgeometry_cast< const QgsCurvePolygon * >( &other );
+      if ( !otherPolygon )
+        return false;
+
+      //run cheap checks first
+      if ( mWkbType != otherPolygon->mWkbType )
+        return false;
+
+      if ( ( !mExteriorRing && otherPolygon->mExteriorRing ) || ( mExteriorRing && !otherPolygon->mExteriorRing ) )
+        return false;
+
+      if ( mInteriorRings.count() != otherPolygon->mInteriorRings.count() )
+        return false;
+
+      // compare rings
+      if ( mExteriorRing && otherPolygon->mExteriorRing )
+      {
+        if ( useDistance )
+        {
+          if ( !( *mExteriorRing ).fuzzyDistanceEqual( *otherPolygon->mExteriorRing, epsilon ) )
+            return false;
+        }
+        else
+        {
+          if ( !( *mExteriorRing ).fuzzyEqual( *otherPolygon->mExteriorRing, epsilon ) )
+            return false;
+        }
+      }
+
+      for ( int i = 0; i < mInteriorRings.count(); ++i )
+      {
+        if ( ( !mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) ) ||
+             ( mInteriorRings.at( i ) && !otherPolygon->mInteriorRings.at( i ) ) )
+          return false;
+
+        if ( useDistance )
+        {
+          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) &&
+               !( *mInteriorRings.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
+            return false;
+        }
+        else
+        {
+          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) &&
+               !( *mInteriorRings.at( i ) ).fuzzyEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
+            return false;
+        }
+      }
+
+      return true;
+    }
+#endif
+  public:
+    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    {
+      return fuzzyHelper( other, epsilon, false );
+    }
+    bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    {
+      return fuzzyHelper( other, epsilon, true );
+    }
+    bool operator==( const QgsAbstractGeometry &other ) const override
+    {
+      return fuzzyEqual( other, 1e-8 );
+    }
+
+    bool operator!=( const QgsAbstractGeometry &other ) const override
+    {
+      return !operator==( other );
+    }
 
     ~QgsCurvePolygon() override;
 

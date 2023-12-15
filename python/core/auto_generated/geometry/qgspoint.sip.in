@@ -118,6 +118,12 @@ based on the following rules:
 
 
 
+
+  public:
+    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+
+    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+
     virtual bool operator==( const QgsAbstractGeometry &other ) const /HoldGIL/;
 
     virtual bool operator!=( const QgsAbstractGeometry &other ) const /HoldGIL/;

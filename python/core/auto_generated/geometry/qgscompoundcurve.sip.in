@@ -25,6 +25,10 @@ Compound curve geometry type
     QgsCompoundCurve( const QgsCompoundCurve &curve );
     ~QgsCompoundCurve();
 
+  public:
+    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+
     virtual bool equals( const QgsCurve &other ) const;
 
 

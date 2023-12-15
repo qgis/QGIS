@@ -163,6 +163,26 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool operator!=( const QgsAbstractGeometry &other ) const = 0;
 
     /**
+     * Performs fuzzy comparison between this geometry and \a other using an \a epsilon.
+     *
+     * \see fuzzyDistanceEqual
+     * \see QgsGeometryUtilsBase::fuzzyEqual
+     *
+     * \since QGIS 3.36
+     */
+    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const = 0;
+
+    /**
+     * Performs fuzzy distance comparison between this geometry and \a other using an \a epsilon.
+     *
+     * \see fuzzyEqual
+     * \see QgsGeometryUtilsBase::fuzzyDistanceEqual
+     *
+     * \since QGIS 3.36
+     */
+    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const = 0;
+
+    /**
      * Clones the geometry by performing a deep copy
      */
     virtual QgsAbstractGeometry *clone() const = 0 SIP_FACTORY;
