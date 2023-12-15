@@ -99,6 +99,28 @@ Constructor for QgsAbstractGeometry.
     virtual bool operator==( const QgsAbstractGeometry &other ) const = 0;
     virtual bool operator!=( const QgsAbstractGeometry &other ) const = 0;
 
+    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const = 0;
+%Docstring
+Performs fuzzy comparison between this geometry and ``other`` using an ``epsilon``.
+
+.. seealso:: :py:func:`fuzzyDistanceEqual`
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.fuzzyEqual`
+
+.. versionadded:: 3.36
+%End
+
+    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const = 0;
+%Docstring
+Performs fuzzy distance comparison between this geometry and ``other`` using an ``epsilon``.
+
+.. seealso:: :py:func:`fuzzyEqual`
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.fuzzyDistanceEqual`
+
+.. versionadded:: 3.36
+%End
+
     virtual QgsAbstractGeometry *clone() const = 0 /Factory/;
 %Docstring
 Clones the geometry by performing a deep copy
