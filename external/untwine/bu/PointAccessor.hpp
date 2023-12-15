@@ -57,6 +57,8 @@ public:
 
     size_t size()
     {
+        // start() returns the number of points in the file infos before the last one.
+        // adding numPoints() provides the total number of points.
         if (m_fileInfos.empty())
             return 0;
         else

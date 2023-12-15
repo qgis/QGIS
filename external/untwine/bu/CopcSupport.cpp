@@ -24,7 +24,6 @@
 
 #include "../untwine/Common.hpp"
 #include "../untwine/FileDimInfo.hpp"
-#include "../untwine/Las.hpp"
 
 namespace untwine
 {
@@ -32,10 +31,14 @@ namespace bu
 {
 
 CopcSupport::CopcSupport(const BaseInfo& b) : m_b(b),
-    m_lazVlr(b.pointFormatId, extraByteSize(), lazperf::VariableChunkSize),
-    m_ebVlr(),
-    m_wktVlr(b.srs.getWKT())
+    m_lazVlr(b.pointFormatId, extraByteSize(), lazperf::VariableChunkSize)
 {
+
+    if (b.opts.a_srs.size())
+        m_wktVlr = pdal::SpatialReference(b.opts.a_srs).getWKT();
+    else
+        m_wktVlr = b.srs.getWKT();
+
     m_f.open(toNative(b.opts.outputName), std::ios::out | std::ios::binary);
 
     //ABELL
