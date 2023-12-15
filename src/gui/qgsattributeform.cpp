@@ -922,7 +922,7 @@ void QgsAttributeForm::resetValues()
   // Prepare value dependencies
   updateFieldDependencies();
 
-  // Update dependent fields
+  // Update dependent virtual fields (not default values / not referencing laer values)
   for ( QgsWidgetWrapper *ww : constMWidgets )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
@@ -931,7 +931,7 @@ void QgsAttributeForm::resetValues()
 
     // Append field index here, so it's not updated recursively
     mAlreadyUpdatedFields.append( eww->fieldIdx() );
-    updateValuesDependencies( eww->fieldIdx() );
+    updateValuesDependenciesVirtualFields( eww->fieldIdx() );
     mAlreadyUpdatedFields.removeAll( eww->fieldIdx() );
   }
 
