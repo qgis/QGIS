@@ -19,6 +19,7 @@ email                : loic dot bartoletti at oslandia dot com
 #include "qgis_sip.h"
 #include "qgsvector3d.h"
 #include "qgsvector.h"
+#include <iterator>
 
 /**
  * \ingroup core
@@ -488,25 +489,19 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \since QGIS 3.36
      */
     template<typename T, typename... Args>
-    static bool fuzzyEqual( T epsilon, const Args &... args )
+    static bool fuzzyEqual( T epsilon, const Args &... args ) noexcept
     {
+      static_assert( ( sizeof...( args ) % 2 == 0 || sizeof...( args ) != 0 ), "The number of arguments must be greater than 0 and even" );
       constexpr size_t numArgs = sizeof...( args );
-      if ( numArgs % 2 != 0 || numArgs == 0 )
-      {
-        throw std::invalid_argument( "The number of arguments must be greater than 0 and even" );
-      }
-      else
-      {
-        bool result = true;
-        T values[] = {static_cast<T>( args )...};
+      bool result = true;
+      T values[] = {static_cast<T>( args )...};
 
-        for ( size_t i = 0; i < numArgs / 2; ++i )
-        {
-          result = result && qgsNumberNear( values[i], values[i + numArgs / 2], epsilon );
-        }
-
-        return result;
+      for ( size_t i = 0; i < numArgs / 2; ++i )
+      {
+        result = result && qgsNumberNear( values[i], values[i + numArgs / 2], epsilon );
       }
+
+      return result;
     }
 
     /**
@@ -526,28 +521,22 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \since QGIS 3.36
      */
     template<typename T, typename... Args>
-    static bool fuzzyDistanceEqual( T epsilon, const Args &... args )
+    static bool fuzzyDistanceEqual( T epsilon, const Args &... args ) noexcept
     {
+      static_assert( ( sizeof...( args ) % 2 == 0 || sizeof...( args ) >= 4 ), "The number of arguments must be greater than 4 and even" );
       constexpr size_t numArgs = sizeof...( args );
-      if ( numArgs < 4 || numArgs % 2 != 0 )
+      const T squaredEpsilon = epsilon * epsilon;
+      T sum = 0;
+
+      T values[] = {static_cast<T>( args )...};
+
+      for ( size_t i = 0; i < numArgs / 2; ++i )
       {
-        throw std::invalid_argument( "The number of arguments must be greater than or equal to 4 and even" );
+        const T diff = values[i] - values[i + numArgs / 2];
+        sum += diff * diff;
       }
-      else
-      {
-        const T squaredEpsilon = epsilon * epsilon;
-        T sum = 0;
 
-        T values[] = {static_cast<T>( args )...};
-
-        for ( size_t i = 0; i < numArgs / 2; ++i )
-        {
-          const T diff = values[i] - values[i + numArgs / 2];
-          sum += diff * diff;
-        }
-
-        return sum < squaredEpsilon;
-      }
+      return sum < squaredEpsilon;
     }
 #endif
 
