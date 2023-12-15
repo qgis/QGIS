@@ -538,7 +538,7 @@ void QgsAttributeForm::updateValuesDependencies( const int originIdx )
 
 void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originIdx )
 {
-  if ( !mDefaultValueDependencies.contains( originIdx ) )
+  if ( !mDefaultValueDependencies.contains( originIdx ) && mWidgetsWithDefaultValueFunctionDependencies.isEmpty() )
     return;
 
   if ( !mFeature.isValid()
@@ -548,8 +548,8 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
   // create updated Feature
   QgsFeature updatedFeature = getUpdatedFeature();
 
-  // go through depending fields and update the fields with defaultexpression
-  QList<QgsWidgetWrapper *> relevantWidgets = mDefaultValueDependencies.values( originIdx );
+  // go through depending fields and the ones with functions and update the fields with defaultexpression
+  QList<QgsWidgetWrapper *> relevantWidgets = mDefaultValueDependencies.values( originIdx ) + mWidgetsWithDefaultValueFunctionDependencies;
   for ( QgsWidgetWrapper *ww : std::as_const( relevantWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
@@ -579,7 +579,7 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
 
 void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originIdx )
 {
-  if ( !mVirtualFieldsDependencies.contains( originIdx ) )
+  if ( !mVirtualFieldsDependencies.contains( originIdx ) && mWidgetsWithVirtualFieldsFunctionDependencies.isEmpty() )
     return;
 
   if ( !mFeature.isValid() )
@@ -588,8 +588,8 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
   // create updated Feature
   QgsFeature updatedFeature = getUpdatedFeature();
 
-  // go through depending fields and update the virtual field with its expression
-  const QList<QgsWidgetWrapper *> relevantWidgets = mVirtualFieldsDependencies.values( originIdx );
+  // go through depending fields and the ones with functions and update the virtual field with its expression
+  const QList<QgsWidgetWrapper *> relevantWidgets = mVirtualFieldsDependencies.values( originIdx ) + mWidgetsWithVirtualFieldsFunctionDependencies;
   for ( QgsWidgetWrapper *ww : relevantWidgets )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
@@ -3130,7 +3130,9 @@ bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
 void QgsAttributeForm::updateFieldDependencies()
 {
   mDefaultValueDependencies.clear();
+  mWidgetsWithDefaultValueFunctionDependencies.clear();
   mVirtualFieldsDependencies.clear();
+  mWidgetsWithVirtualFieldsFunctionDependencies.clear();
   mRelatedLayerFieldsDependencies.clear();
 
   //create defaultValueDependencies
@@ -3152,6 +3154,9 @@ void QgsAttributeForm::updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapp
 
   if ( exp.needsGeometry() )
     mNeedsGeometry = true;
+
+  if ( !exp.referencedFunctions().isEmpty() )
+    mWidgetsWithDefaultValueFunctionDependencies.append( eww );
 
   const QSet<QString> referencedColumns = exp.referencedColumns();
   for ( const QString &referencedColumn : referencedColumns )
@@ -3182,6 +3187,9 @@ void QgsAttributeForm::updateFieldDependenciesVirtualFields( QgsEditorWidgetWrap
 
   if ( exp.needsGeometry() )
     mNeedsGeometry = true;
+
+  if ( !exp.referencedFunctions().isEmpty() )
+    mWidgetsWithVirtualFieldsFunctionDependencies.append( eww );
 
   const QSet<QString> referencedColumns = exp.referencedColumns();
   for ( const QString &referencedColumn : referencedColumns )

@@ -556,10 +556,20 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QMultiMap<int, QgsWidgetWrapper *> mDefaultValueDependencies;
 
     /**
+     * List of widgets containing default value expression with functions.
+     */
+    QList<QgsWidgetWrapper *> mWidgetsWithDefaultValueFunctionDependencies;
+
+    /**
      * Dependency map for values from virtual fields. Attribute index -> widget wrapper.
      * Attribute indexes will be added multiple times if more than one widget depends on them.
      */
     QMultiMap<int, QgsWidgetWrapper *> mVirtualFieldsDependencies;
+
+    /**
+     * List of widgets of virtual fields with functions.
+     */
+    QList<QgsWidgetWrapper *> mWidgetsWithVirtualFieldsFunctionDependencies;
 
     /**
      * Dependency list for values depending on related layers.
