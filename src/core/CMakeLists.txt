@@ -2456,6 +2456,7 @@ endif()
 if (WITH_QTWEBENGINE)
     target_link_libraries(qgis_core
       ${QT_VERSION_BASE}::WebEngineCore
+      ${QT_VERSION_BASE}::WebEngineWidgets
     )
 endif()
 

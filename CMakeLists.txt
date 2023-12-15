@@ -522,7 +522,7 @@ if(WITH_CORE)
       message(FATAL_ERROR "QtWebEngine support cannot be enabled if Qt WebKit support is enabled")
     endif()
 
-    find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore WebEngineWidgets REQUIRED)
 
     add_definitions(-DWITH_QTWEBENGINE)
     message(STATUS "QtWebEngine support enabled")
