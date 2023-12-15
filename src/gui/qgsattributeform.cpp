@@ -922,7 +922,7 @@ void QgsAttributeForm::resetValues()
   // Prepare value dependencies
   updateFieldDependencies();
 
-  // Update dependent virtual fields (not default values / not referencing laer values)
+  // Update dependent virtual fields (not default values / not referencing layer values)
   for ( QgsWidgetWrapper *ww : constMWidgets )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
